@@ -15,19 +15,53 @@
 
 package eu.esdihumboldt.hale.common.core;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 
+import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.internal.CoreBundle;
+import eu.esdihumboldt.hale.common.core.service.ServiceConstants;
+import eu.esdihumboldt.hale.common.core.service.ServiceManager;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.util.nonosgi.NonOsgiPlatform;
 
 /**
- * Helper methods
+ * Helper methods for the Hale platform.
  * 
  * @author Simon Templer
  */
 public class HalePlatform {
 
+	private static class PlatformServiceProvider implements ServiceProvider {
+
+		private static final ServiceManager globalScope = new ServiceManager(
+				ServiceConstants.SCOPE_GLOBAL);
+
+		@Override
+		public <T> T getService(Class<T> serviceInterface) {
+			T service = globalScope.getService(serviceInterface);
+			// TODO service manager with SPI support?
+
+			// try OSGi as fall-back
+			if (service == null && CoreBundle.isOsgi()) {
+				service = OsgiUtils.getService(serviceInterface);
+			}
+
+			return service;
+		}
+
+	}
+
+	private static final ServiceProvider serviceProvider = new PlatformServiceProvider();
+
+	/**
+	 * Get the content type manager. Uses the default Eclipse content type
+	 * manager if running in OSGi, otherwise an adapted version.
+	 * 
+	 * @return the content type manager
+	 */
 	public static IContentTypeManager getContentTypeManager() {
 		if (CoreBundle.isOsgi()) {
 			return Platform.getContentTypeManager();
@@ -35,6 +69,28 @@ public class HalePlatform {
 		else {
 			return NonOsgiPlatform.getContentTypeManager();
 		}
+	}
+
+	/**
+	 * Get a service based on it's interface type. The service provided here
+	 * have global scope, services that are UI-specific are not included, use
+	 * HaleUI instead to access those services.
+	 * 
+	 * @param serviceClass the service class
+	 * @return the service instance or <code>null</code>
+	 */
+	@Nullable
+	public static <S> S getService(Class<S> serviceClass) {
+		return getServiceProvider().getService(serviceClass);
+	}
+
+	/**
+	 * Get the platform global scoped service provider.
+	 * 
+	 * @return the service provider
+	 */
+	public static ServiceProvider getServiceProvider() {
+		return serviceProvider;
 	}
 
 }

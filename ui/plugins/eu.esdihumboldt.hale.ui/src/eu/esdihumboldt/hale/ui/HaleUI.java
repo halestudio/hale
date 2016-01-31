@@ -25,7 +25,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -69,14 +69,14 @@ public abstract class HaleUI {
 			// first try project scope
 			T service = projectScope.getService(serviceInterface);
 
+			// then platform services
+			if (service == null) {
+				service = HalePlatform.getService(serviceInterface);
+			}
+
 			// then workbench
 			if (service == null) {
 				service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
-			}
-
-			// then OSGi
-			if (service == null) {
-				service = OsgiUtils.getService(serviceInterface);
 			}
 
 			return service;

@@ -30,17 +30,6 @@ import eu.esdihumboldt.hale.common.core.service.internal.ServiceFactoryExtension
  */
 public class ServiceManager implements ServiceProvider, ServiceConstants {
 
-	/*
-	 * An alternative to the ServiceManager would be something like a
-	 * ServicePublisher, e.g. for publishing service as OSGi service. But for
-	 * this either all services would have to be created an provided, or (better
-	 * option) a proxy object should be published.
-	 * 
-	 * TODO Create a ServicePublisher based on proxies and create and install it
-	 * in the core bundle activator for the 'global' scope, so these services
-	 * always are available through OSGi.
-	 */
-
 	private static final ALogger log = ALoggerFactory.getLogger(ServiceManager.class);
 
 	private final String serviceScope;
