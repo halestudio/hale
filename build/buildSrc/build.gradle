@@ -19,20 +19,23 @@
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
 repositories {
-	mavenCentral()
-	// not generally available
-//	maven {
-//		url 'http://www.cityserver3d.de:8082/artifactory/repo'
-//	}
+	mavenLocal()
+	jcenter()
 }
 
 dependencies {
-    compile 'com.beust:jcommander:1.32'
+	localGroovy()
+	
+	compile 'com.beust:jcommander:1.32'
     compile 'de.undercouch:gradle-download-task:0.4'
     compile 'org.apache.maven:maven-embedder:3.1.1'
     compile 'org.apache.maven.wagon:wagon-http-lightweight:2.4'
-    compile 'org.eclipse.tycho:org.eclipse.osgi:3.6.2.R36x_v20110210'
+    compile 'org.eclipse.tycho:org.eclipse.osgi:3.10.101.v20150820-1432'
     compile 'org.eclipse.aether:aether-connector-wagon:0.9.0.M2'
     compile 'org.yaml:snakeyaml:1.13'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
+	
+	compile 'org.akhikhl.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
+		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+	}
 }

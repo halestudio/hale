@@ -29,7 +29,8 @@ class CommandLineBuilder {
     private def jc = new JCommander(main)
     private def commitStage = new CommitStageCommand()
     private def integrationStage = new IntegrationStageCommand()
-//    private def deployArtifacts = new DeployArtifactsCommand()
+    private def deployArtifacts = new DeployArtifactsCommand()
+	private def installArtifacts = new InstallArtifactsCommand()
     private def client = new ClientCommand()
     private def server = new ServerCommand()
 	private def product = new ProductFileCommand()
@@ -46,7 +47,8 @@ class CommandLineBuilder {
         jc.setProgramName('build')
         jc.addCommand('commitStage', commitStage)
         jc.addCommand('integrationStage', integrationStage)
-//        jc.addCommand('deployArtifacts', deployArtifacts)
+        jc.addCommand('deployArtifacts', deployArtifacts)
+		jc.addCommand('installArtifacts', deployArtifacts)
         jc.addCommand('client', client)
         jc.addCommand('server', server)
 		jc.addCommand('product', product)
@@ -86,6 +88,8 @@ class CommandLineBuilder {
             integrationStage.run()
         } else if (cmd == 'deployArtifacts') {
             deployArtifacts.run()
+		} else if (cmd == 'installArtifacts') {
+			installArtifacts.run()
         } else if (cmd == 'product') {
 			product.run()
 		} else if (cmd == 'site') {
@@ -139,25 +143,24 @@ class CommandLineBuilder {
 
     @Parameters(commandDescription = 'Deploys artifacts to remote Maven repository')
     class DeployArtifactsCommand {
-        @Parameter(names = [ '-r', '--release' ], description = 'Deploy release artifacts instead of snapshots')
-        boolean release
-
         def run() {
-            if (release) {
-                project.tasks['cli'].dependsOn(project.tasks['deployReleaseArtifacts'])
-            } else {
-                project.tasks['cli'].dependsOn(project.tasks['deployArtifacts'])
-            }
+			project.afterEvaluate {
+				project.tasks['cli'].dependsOn(project.tasks['uploadEclipse'])
+			}
         }
     }
 	
+	@Parameters(commandDescription = 'Deploys artifacts to local Maven repository')
+	class InstallArtifactsCommand {
+		def run() {
+			project.afterEvaluate {
+				project.tasks['cli'].dependsOn(project.tasks['installEclipse'])
+			}
+		}
+	}
+	
 	@Parameters(commandDescription = 'Build an Eclipse Update Site / p2 repository')
 	class SiteCommand {
-		@Override
-		String getType() {
-			return 'site'
-		}
-		
 		@Parameter(description = '[<featureId>]')
 		List<String> featureIds = []
 
