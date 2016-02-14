@@ -32,10 +32,9 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.core.runtime.Platform;
-
 import com.google.common.io.ByteStreams;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -77,7 +76,8 @@ public class AppSchemaMappingFileWriter extends AbstractAppSchemaConfigurator {
 			throws IOProviderConfigurationException, IOException {
 		if (getContentType() == null) {
 			// contentType was not specified, use default (mapping file)
-			setContentType(Platform.getContentTypeManager().getContentType(DEFAULT_CONTENT_TYPE_ID));
+			setContentType(HalePlatform.getContentTypeManager().getContentType(
+					DEFAULT_CONTENT_TYPE_ID));
 		}
 
 		if (getContentType().getId().equals(AppSchemaIO.CONTENT_TYPE_MAPPING)) {

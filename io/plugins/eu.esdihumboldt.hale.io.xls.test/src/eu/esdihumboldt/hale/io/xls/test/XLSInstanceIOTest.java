@@ -6,12 +6,12 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Test;
 
 import com.google.common.io.Files;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -55,7 +55,7 @@ public class XLSInstanceIOTest extends TestCase {
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
 		InstanceCollection instances = XLSInstanceWriterTestExamples.createInstanceCollection();
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				"eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		File tempDir = Files.createTempDir();

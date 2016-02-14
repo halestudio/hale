@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="CodeDefinitionFactory">
-	<implementation class="eu.esdihumboldt.hale.common.instance.geometry.impl.internal.CodeDefinitionFactory"/>
- <service>
-    <provide interface="eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionFactory"/>
- </service>
-</scr:component>

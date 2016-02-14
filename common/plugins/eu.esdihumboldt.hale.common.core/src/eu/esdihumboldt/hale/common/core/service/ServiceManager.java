@@ -15,8 +15,13 @@
 
 package eu.esdihumboldt.hale.common.core.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -30,17 +35,6 @@ import eu.esdihumboldt.hale.common.core.service.internal.ServiceFactoryExtension
  */
 public class ServiceManager implements ServiceProvider, ServiceConstants {
 
-	/*
-	 * An alternative to the ServiceManager would be something like a
-	 * ServicePublisher, e.g. for publishing service as OSGi service. But for
-	 * this either all services would have to be created an provided, or (better
-	 * option) a proxy object should be published.
-	 * 
-	 * TODO Create a ServicePublisher based on proxies and create and install it
-	 * in the core bundle activator for the 'global' scope, so these services
-	 * always are available through OSGi.
-	 */
-
 	private static final ALogger log = ALoggerFactory.getLogger(ServiceManager.class);
 
 	private final String serviceScope;
@@ -48,12 +42,12 @@ public class ServiceManager implements ServiceProvider, ServiceConstants {
 	/**
 	 * Service factories.
 	 */
-	private final Map<Class<?>, ServiceFactory> factories = new HashMap<Class<?>, ServiceFactory>();
+	private final ListMultimap<Class<?>, ServiceFactory> factories = ArrayListMultimap.create();
 
 	/**
 	 * Instantiated services.
 	 */
-	private final Map<Class<?>, Object> services = new HashMap<Class<?>, Object>();
+	private final ListMultimap<Class<?>, Object> services = ArrayListMultimap.create();
 
 	/**
 	 * Create a service manager for the given scope.
@@ -76,26 +70,54 @@ public class ServiceManager implements ServiceProvider, ServiceConstants {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getService(Class<T> serviceInterface) {
+		Collection<T> services = getServices(serviceInterface);
+		if (!services.isEmpty()) {
+			return services.iterator().next();
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get service instances providing the given interface.
+	 * 
+	 * @param serviceInterface the service interface
+	 * @return the service instances available
+	 */
+	@SuppressWarnings("unchecked")
+	public <T> Collection<T> getServices(Class<T> serviceInterface) {
 		synchronized (services) {
-			Object service = services.get(serviceInterface);
-			if (service == null) {
-				ServiceFactory factory = factories.get(serviceInterface);
-				if (factory != null) {
+			List<T> instances = (List<T>) services.get(serviceInterface);
+			if (instances.isEmpty()) {
+				List<ServiceFactory> serviceFactories = factories.get(serviceInterface);
+				for (ServiceFactory factory : serviceFactories) {
 					try {
-						service = factory.createService(serviceInterface, this);
-						services.put(serviceInterface, service);
+						T service = factory.createService(serviceInterface, this);
+						if (service != null) {
+							services.put(serviceInterface, service);
+						}
 					} catch (Exception e) {
 						log.error("Error creating " + getServiceScope()
 								+ " service instance for interface " + serviceInterface.getName(),
 								e);
 					}
 				}
+				if (instances.isEmpty()) {
+					// add null to mark that we tried to create the services
+					// already
+					instances.add(null);
+				}
 			}
-
-			return (T) service;
+			if (instances.size() == 1 && instances.get(0) == null) {
+				// no services available
+				return Collections.emptyList();
+			}
+			else {
+				return ImmutableList.copyOf(instances);
+			}
 		}
 	}
 

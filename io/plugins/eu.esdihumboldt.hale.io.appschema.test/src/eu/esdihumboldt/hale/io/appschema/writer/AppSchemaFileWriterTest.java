@@ -48,7 +48,6 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.Platform;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,6 +65,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -268,7 +268,8 @@ public class AppSchemaFileWriterTest {
 		alignWriter.setTarget(new FileIOSupplier(targetFile));
 		DataStore dataStoreParam = createDataStoreParam();
 		alignWriter.setParameter(AppSchemaIO.PARAM_DATASTORE, new ComplexValue(dataStoreParam));
-		alignWriter.setContentType(Platform.getContentTypeManager().getContentType(contentType));
+		alignWriter
+				.setContentType(HalePlatform.getContentTypeManager().getContentType(contentType));
 
 		IOReport report = alignWriter.execute(new LogProgressIndicator());
 		assertNotNull(report);

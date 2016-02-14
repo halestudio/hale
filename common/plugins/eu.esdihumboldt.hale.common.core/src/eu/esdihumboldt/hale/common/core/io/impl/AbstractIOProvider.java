@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -227,7 +227,8 @@ public abstract class AbstractIOProvider implements IOProvider {
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
-			setContentType(Platform.getContentTypeManager().getContentType(value.as(String.class)));
+			setContentType(HalePlatform.getContentTypeManager().getContentType(
+					value.as(String.class)));
 		}
 		if (name.equals(PARAM_CHARSET)) {
 			// configure character set

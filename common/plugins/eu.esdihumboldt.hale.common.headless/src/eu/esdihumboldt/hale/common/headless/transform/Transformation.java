@@ -34,13 +34,13 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
@@ -281,28 +281,33 @@ public class Transformation {
 			 */
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				TransformationService transformationService = OsgiUtils
+				TransformationService transformationService = HalePlatform
 						.getService(TransformationService.class);
 
 				TransformationReport report = transformationService.transform(alignment,
 						sourceToUse, targetSink, serviceProvider, new ProgressMonitorIndicator(
 								monitor));
 
-				if (monitor.isCanceled()) {
-					targetSink.done(true);
-					return Status.CANCEL_STATUS;
-				}
-				else
-					targetSink.done(false);
+				try {
+					// publish report
+					reportHandler.publishReport(report);
 
-				// publish report
-				reportHandler.publishReport(report);
-
-				if (report.isSuccess()) {
-					return Status.OK_STATUS;
-				}
-				else {
-					return ERROR_STATUS;
+					if (report.isSuccess()) {
+						return Status.OK_STATUS;
+					}
+					else {
+						return ERROR_STATUS;
+					}
+				} finally {
+					// only close target sink after publishing the report
+					// as this will terminate the transformation process
+					// and may lead to the transformation report being lost
+					if (monitor.isCanceled()) {
+						targetSink.done(true);
+						return Status.CANCEL_STATUS;
+					}
+					else
+						targetSink.done(false);
 				}
 			}
 		};

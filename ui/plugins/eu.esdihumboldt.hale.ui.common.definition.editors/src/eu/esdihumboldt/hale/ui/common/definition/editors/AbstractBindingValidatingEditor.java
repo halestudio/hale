@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
 
 /**
@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
  */
 public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<T> {
 
-	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+	private final ConversionService cs = HalePlatform.getService(ConversionService.class);
 	private final Class<? extends T> binding;
 	private String stringValue;
 	private T objectValue;

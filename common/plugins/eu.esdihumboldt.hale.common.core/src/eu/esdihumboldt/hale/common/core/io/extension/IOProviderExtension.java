@@ -23,7 +23,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
@@ -34,6 +33,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.parameter.IOProviderParameter;
 
@@ -100,7 +100,7 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 
 				for (IConfigurationElement child : children) {
 					String id = child.getAttribute("ref");
-					IContentType ct = Platform.getContentTypeManager().getContentType(id);
+					IContentType ct = HalePlatform.getContentTypeManager().getContentType(id);
 					if (ct != null) {
 						result.add(ct);
 					}

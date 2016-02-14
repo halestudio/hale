@@ -46,6 +46,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBWriter;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -314,7 +315,7 @@ public abstract class OSerializationHelper {
 		ODocument doc = new ODocument();
 
 		// try conversion to string first
-		final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		final ConversionService cs = HalePlatform.getService(ConversionService.class);
 		if (cs != null) {
 			// check if conversion allowed and possible
 			if (CONV_WHITE_LIST.contains(value.getClass())

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.converters" name="Converters for conversion service" schema="schema/eu.esdihumboldt.hale.converters.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.hale.common.convert.ConversionServiceFactory"
+            id="eu.esdihumboldt.hale.common.convert"
+            scope="global">
+         <service
+               interface="org.springframework.core.convert.ConversionService">
+         </service>
+         <service
+               interface="org.springframework.core.convert.converter.ConverterRegistry">
+         </service>
+      </services>
+   </extension>
+
+</plugin>

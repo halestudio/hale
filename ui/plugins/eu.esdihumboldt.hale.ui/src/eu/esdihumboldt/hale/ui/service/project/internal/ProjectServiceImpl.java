@@ -52,11 +52,11 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
@@ -146,7 +146,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			// check if project reader requires clean-up
 			if (provider instanceof TemporaryFiles || provider instanceof Cleanup) {
-				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				CleanupService cs = HalePlatform.getService(CleanupService.class);
 				if (provider instanceof TemporaryFiles) {
 					cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables.toArray(
 							((TemporaryFiles) provider).getTemporaryFiles(), File.class));
@@ -499,7 +499,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					InterruptedException {
 				ATransaction trans = log.begin("Clean project");
 
-				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				CleanupService cs = HalePlatform.getService(CleanupService.class);
 				if (cs != null) {
 					cs.triggerProjectCleanup();
 				}

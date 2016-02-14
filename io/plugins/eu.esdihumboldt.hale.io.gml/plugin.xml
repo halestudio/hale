@@ -10,7 +10,7 @@
             name="GML file"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="FeatureCollection">
@@ -24,7 +24,7 @@
             name="CityGML file"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="CityModel">
@@ -38,7 +38,7 @@
             name="GML (INSPIRE SpatialDataSet)"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="SpatialDataSet">
@@ -640,6 +640,48 @@
             </valueDescriptor>
          </providerParameter>
       </provider>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.converters">
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDateTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlDateTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToTimestamp">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToSQLDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToTimestamp">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToTimestamp">
+      </converter>
    </extension>
 
 </plugin>

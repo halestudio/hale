@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.joda.time.Duration;
 import org.joda.time.ReadableDuration;
@@ -35,6 +34,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -138,7 +138,7 @@ public class TransformationWorkspace {
 	 *             exist
 	 */
 	protected TransformationWorkspace(final String workspaceId, ReadableDuration leaseDuration) {
-		workspaces = OsgiUtils.getService(WorkspaceService.class);
+		workspaces = HalePlatform.getService(WorkspaceService.class);
 
 		if (workspaces == null) {
 			throw new IllegalStateException("WorkspaceService not available through OSGi");
@@ -181,7 +181,7 @@ public class TransformationWorkspace {
 	 */
 	public ListenableFuture<Boolean> transform(String envId, List<InstanceReader> sources,
 			IOConfiguration target) throws Exception {
-		EnvironmentService environments = OsgiUtils.getService(EnvironmentService.class);
+		EnvironmentService environments = HalePlatform.getService(EnvironmentService.class);
 		if (environments == null) {
 			throw new IllegalStateException("WorkspaceService not available through OSGi");
 		}
@@ -357,7 +357,7 @@ public class TransformationWorkspace {
 				.as(String.class);
 		IContentType contentType = null;
 		if (id != null) {
-			contentType = Platform.getContentTypeManager().getContentType(id);
+			contentType = HalePlatform.getContentTypeManager().getContentType(id);
 		}
 		return getFileExtension(contentType);
 	}
