@@ -48,7 +48,7 @@ class CommandLineBuilder {
         jc.addCommand('commitStage', commitStage)
         jc.addCommand('integrationStage', integrationStage)
         jc.addCommand('deployArtifacts', deployArtifacts)
-		jc.addCommand('installArtifacts', deployArtifacts)
+		jc.addCommand('installArtifacts', installArtifacts)
         jc.addCommand('client', client)
         jc.addCommand('server', server)
 		jc.addCommand('product', product)
