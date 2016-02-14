@@ -46,10 +46,11 @@ gradle.taskGraph.whenReady {
 	// determine context qualifier
 	if (project.version.endsWith("-SNAPSHOT")) {
 		// buildID as qualifier
-		project.ext.contextQualifier = buildID
+//		project.ext.contextQualifier = buildID
+		project.ext.contextQualifier = 'SNAPSHOT'
 	}
 	else {
-		// mark as release (used for product, application bundles only)
+		// mark as release
 		project.ext.contextQualifier = 'release'
 	}
 }
