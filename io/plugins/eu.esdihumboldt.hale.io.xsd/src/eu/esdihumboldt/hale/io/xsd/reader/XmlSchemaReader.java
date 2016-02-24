@@ -525,7 +525,15 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined
 					// on the spot if it is mappable
-					elementType.setConstraint(MappingRelevantFlag.get(mainSchema));
+					if (mainSchema) {
+						elementType.setConstraint(MappingRelevantFlag.get(true));
+					}
+					else {
+						// do not override with false, e.g. when a schema is
+						// loaded multiple times (e.g. because of different
+						// import locations)
+						elementType.setConstraintIfNotSet(MappingRelevantFlag.get(false));
+					}
 					// XXX needed? may result in conflicts when defining
 					// mappable types manually XXX the element is also marked
 					// with the Mappable constraint, to help with cases where
