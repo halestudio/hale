@@ -19,8 +19,10 @@
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
 repositories {
-	mavenLocal()
 	jcenter()
+	maven { // Sonatype snapshots (for custom unpuzzle)
+		url 'http://oss.sonatype.org/content/repositories/snapshots/'
+	}
 }
 
 dependencies {
@@ -35,7 +37,7 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.13'
 	compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
 	
-	compile 'org.akhikhl.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
+	compile 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
 }
