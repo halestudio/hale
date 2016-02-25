@@ -18,7 +18,7 @@
 // You should have received a copy of the GNU General Public License
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
-apply plugin: 'download-task'
+apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 apply from: 'gradle/tycho.gradle'
 apply from: 'gradle/updateSite.gradle'
