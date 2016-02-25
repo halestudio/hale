@@ -41,3 +41,8 @@ dependencies {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
 }
+
+configurations.all {
+	// ensure SNAPSHOTs are updated every time if needed
+	resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
