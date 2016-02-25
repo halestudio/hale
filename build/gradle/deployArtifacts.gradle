@@ -198,7 +198,8 @@ repositories {
 
 unpuzzle {
 	
-	// localMavenRepositoryDir = file('build/m2')
+	// deploy to default repository if installing locally 
+	localMavenRepositoryDir = new File(new File(System.getProperty('user.home'), '.m2'), 'repository')
 
 	unpuzzleDir = file('build/unpuzzle')
 
