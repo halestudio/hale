@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension;
+package eu.esdihumboldt.hale.common.schema.presets.extension;
 
 /**
  * Common interface for comparating {@link SchemaCategory} and

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension;
+package eu.esdihumboldt.hale.common.schema.presets.extension;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +22,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.internal.SchemaCategoryImpl;
+import eu.esdihumboldt.hale.common.schema.presets.extension.internal.SchemaCategoryImpl;
 
 /**
  * Extension point for schema categories.

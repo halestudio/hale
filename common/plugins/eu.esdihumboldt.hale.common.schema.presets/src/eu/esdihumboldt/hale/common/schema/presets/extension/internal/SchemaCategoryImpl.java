@@ -13,13 +13,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension.internal;
+package eu.esdihumboldt.hale.common.schema.presets.extension.internal;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPresetExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPresetExtension;
 
 /**
  * Default {@link SchemaCategory} implementation.

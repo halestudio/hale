@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension.internal;
+package eu.esdihumboldt.hale.common.schema.presets.extension.internal;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -25,9 +25,9 @@ import org.osgi.framework.Bundle;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategoryExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 
 /**
  * Predefined schema based on a configuration element.
@@ -51,7 +51,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getName()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getName()
 	 */
 	@Override
 	public String getName() {
@@ -59,7 +59,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getDescription()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getDescription()
 	 */
 	@Override
 	public String getDescription() {
@@ -67,7 +67,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getLocation()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getLocation()
 	 */
 	@Override
 	public LocatableInputSupplier<? extends InputStream> getLocation() {
@@ -83,7 +83,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getIconURL()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getIconURL()
 	 */
 	@Override
 	public URL getIconURL() {
@@ -105,7 +105,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getId()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getId()
 	 */
 	@Override
 	public String getId() {
@@ -113,7 +113,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getTag()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getTag()
 	 */
 	@Override
 	public String getTag() {
@@ -121,7 +121,7 @@ public class PredefinedSchemaImpl implements SchemaPreset {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset#getVersion()
+	 * @see eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset#getVersion()
 	 */
 	@Override
 	public String getVersion() {

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.schema.presets.internal;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 

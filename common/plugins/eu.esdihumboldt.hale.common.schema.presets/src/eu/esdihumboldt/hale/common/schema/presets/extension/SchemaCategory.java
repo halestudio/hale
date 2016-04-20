@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension;
+package eu.esdihumboldt.hale.common.schema.presets.extension;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 

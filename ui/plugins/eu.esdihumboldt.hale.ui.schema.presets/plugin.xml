@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="eu.esdihumboldt.hale.ui.schema.presets" name="Schema presets" schema="schema/eu.esdihumboldt.hale.ui.schema.presets.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">
       <source

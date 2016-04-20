@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension;
+package eu.esdihumboldt.hale.common.schema.presets.extension;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,7 +27,7 @@ import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.internal.PredefinedSchemaImpl;
+import eu.esdihumboldt.hale.common.schema.presets.extension.internal.PredefinedSchemaImpl;
 
 /**
  * Extension point for predefined schemas.

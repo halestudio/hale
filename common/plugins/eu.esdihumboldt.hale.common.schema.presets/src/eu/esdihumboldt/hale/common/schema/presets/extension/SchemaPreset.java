@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.schema.presets.extension;
+package eu.esdihumboldt.hale.common.schema.presets.extension;
 
 import java.io.InputStream;
 import java.net.URL;
