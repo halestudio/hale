@@ -20,11 +20,11 @@ import net.jcip.annotations.Immutable;
 
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.condition.EntityCondition;
 import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -139,7 +139,7 @@ public class BindingCondition implements TypeCondition {
 
 		if (allowConversion) {
 			// check if a corresponding conversion is possible
-			ConversionService conversionService = OsgiUtils.getService(ConversionService.class);
+			ConversionService conversionService = HalePlatform.getService(ConversionService.class);
 
 			if (to) {
 				if (conversionService.canConvert(compatibleClass, binding)) {

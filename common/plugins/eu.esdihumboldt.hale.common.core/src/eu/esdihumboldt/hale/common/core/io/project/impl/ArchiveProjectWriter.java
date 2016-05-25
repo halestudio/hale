@@ -30,14 +30,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
-import org.eclipse.core.runtime.Platform;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -96,8 +96,10 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		File baseFile = new File(tempDir, "project.halex");
 
 		// mark the temporary directory for clean-up if the project is closed
-		CleanupService clean = OsgiUtils.getService(CleanupService.class);
-		clean.addTemporaryFiles(CleanupContext.PROJECT, tempDir);
+		CleanupService clean = HalePlatform.getService(CleanupService.class);
+		if (clean != null) {
+			clean.addTemporaryFiles(CleanupContext.PROJECT, tempDir);
+		}
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
 		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
@@ -153,6 +155,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		// reset the save configurations that has been overridden by the XML
 		// project writer
 		getProject().setSaveConfiguration(oldSaveConfig);
+
+		if (clean == null) {
+			// if no clean service is available, assume the directory is not
+			// needed anymore
+			FileUtils.deleteDirectory(tempDir);
+		}
 
 		return report;
 	}
@@ -302,7 +310,7 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				Value ct = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 				IContentType contentType = null;
 				if (ct != null) {
-					contentType = Platform.getContentTypeManager().getContentType(
+					contentType = HalePlatform.getContentTypeManager().getContentType(
 							ct.as(String.class));
 				}
 				ResourceAdvisor ra = ResourceAdvisorExtension.getInstance().getAdvisor(contentType);

@@ -25,7 +25,7 @@ import javax.xml.namespace.QName;
 
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -160,7 +160,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 					Binding binding = property.getPropertyType().getConstraint(Binding.class);
 					try {
 						if (!binding.getBinding().equals(String.class)) {
-							ConversionService conversionService = OsgiUtils
+							ConversionService conversionService = HalePlatform
 									.getService(ConversionService.class);
 							if (conversionService.canConvert(String.class, binding.getBinding())) {
 								value = conversionService.convert(part, binding.getBinding());

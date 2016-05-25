@@ -44,5 +44,16 @@
             name="eu.esdihumboldt.hale.common.instance.model">
       </allowPackage>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.hale.common.instance.InstanceServiceFactory"
+            id="eu.esdihumboldt.hale.common.instance"
+            scope="global">
+         <service
+               interface="eu.esdihumboldt.hale.common.instance.model.InstanceFactory">
+         </service>
+      </services>
+   </extension>
 
 </plugin>

@@ -448,6 +448,13 @@ public class ExecTransformation implements ConsoleConstants {
 		}
 		else {
 			fail("Transformation failed, please check the reports for details.");
+			// Job threads might still be active, wait a moment to allow them to
+			// complete and file their report (otherwise error may get lost)
+			try {
+				Thread.sleep(3000);
+			} catch (Throwable e) {
+				// ignore
+			}
 		}
 	}
 

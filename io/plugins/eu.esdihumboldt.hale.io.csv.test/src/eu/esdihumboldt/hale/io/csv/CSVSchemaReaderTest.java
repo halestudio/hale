@@ -52,7 +52,7 @@ public class CSVSchemaReaderTest {
 //
 //			@Override
 //			public boolean evaluate() {
-//				return OsgiUtils.getService(ConversionService.class) != null;
+//				return HalePlatform.getService(ConversionService.class) != null;
 //			}
 //		}, 30));
 //	}

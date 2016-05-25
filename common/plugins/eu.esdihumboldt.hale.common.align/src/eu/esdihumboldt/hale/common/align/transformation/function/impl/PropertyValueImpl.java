@@ -19,10 +19,10 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.convert.ConversionServiceNotAvailableException;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * Default {@link PropertyValue} implementation.
@@ -69,7 +69,7 @@ public class PropertyValueImpl implements PropertyValue {
 			return (T) value;
 		}
 
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = HalePlatform.getService(ConversionService.class);
 		if (cs == null) {
 			throw new ConversionServiceNotAvailableException();
 		}

@@ -144,7 +144,7 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 		try {
 			script = service.parseScript(document, binding);
 
-			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition(),
+			GroovyUtil.evaluateAll(script, builder, targetType.getDefinition().getDefinition(),
 					service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);

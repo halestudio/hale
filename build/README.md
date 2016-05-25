@@ -112,6 +112,23 @@ If you want only specific content included contained in an Update Site, you can 
 
     ./build.sh site <featureId>
 
+
+### Building Maven artifacts
+
+Use
+
+    ./build.sh installArtifacts
+
+to create and install Maven artifacts to your local Maven repository.
+
+With
+
+    ./build.sh deployArtifacts
+
+build the artifacts and upoad them to the wetransform artifactory (given you have corresponding credentials)
+or configure a different repository.
+
+
 Build properties
 ----------------
 

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
+import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -41,6 +42,8 @@ import groovy.transform.CompileStatic;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -147,33 +150,73 @@ public class GroovyUtil implements GroovyConstants {
 	 * @param service the Groovy service
 	 * @return the created instance
 	 * @throws TransformationException if the target binding does not contain
-	 *             exactly one result after script evaluation
+	 *             exactly one result after script evaluation or an internal
+	 *             error occurs
 	 * @throws NoResultException if the script implies that no result should be
 	 *             created
 	 */
 	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
 			final TypeDefinition type, GroovyService service) throws TransformationException,
 			NoResultException {
+		Iterable<MutableInstance> results = evaluateAll(script, builder, type, service);
+		Iterator<MutableInstance> it = results.iterator();
+		MutableInstance result;
+		if (it.hasNext()) {
+			result = it.next();
+
+			if (it.hasNext()) {
+				throw new TransformationException(
+						"Cell script does not produce exactly one result.");
+			}
+		}
+		else {
+			throw new NoResultException();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Evaluate a Groovy type script.
+	 * 
+	 * @param script the script
+	 * @param builder the instance builder
+	 * @param type the type of the instance to create
+	 * @param service the Groovy service
+	 * @return the created instance
+	 * @throws TransformationException if an internal error occurs
+	 * @throws NoResultException if the script implies that no result should be
+	 *             created
+	 */
+	public static Iterable<MutableInstance> evaluateAll(Script script,
+			final InstanceBuilder builder, final TypeDefinition type, GroovyService service)
+			throws TransformationException, NoResultException {
 		try {
-			return service.evaluate(script, new ResultProcessor<MutableInstance>() {
+			return service.evaluate(script, new ResultProcessor<Iterable<MutableInstance>>() {
 
 				@Override
-				public MutableInstance process(Script script, Object returnValue) throws Exception {
+				public Iterable<MutableInstance> process(Script script, Object returnValue)
+						throws Exception {
 					// get target binding
 					Object result = script.getBinding().getVariable(BINDING_TARGET);
 
 					// collector or closure
 					if (result instanceof TargetCollector) {
-						if (((TargetCollector) result).size() != 1) {
-							throw new TransformationException(
-									"Cell script does not produce exactly one result.");
+						if (((TargetCollector) result).size() <= 0) {
+							// TODO warn?
 						}
-						result = ((TargetCollector) result).toMultiValue(builder, type).get(0);
+						MultiValue instances = ((TargetCollector) result).toMultiValue(builder,
+								type);
+						Collection<MutableInstance> multiResult = new ArrayList<>(instances.size());
+						for (Object instance : instances) {
+							multiResult.add((MutableInstance) instance);
+						}
+						return multiResult;
 					}
 					else {
 						result = builder.createInstance(type, (Closure<?>) result);
 					}
-					return (MutableInstance) result;
+					return Collections.singleton((MutableInstance) result);
 				}
 			});
 		} catch (RuntimeException | TransformationException | NoResultException e) {

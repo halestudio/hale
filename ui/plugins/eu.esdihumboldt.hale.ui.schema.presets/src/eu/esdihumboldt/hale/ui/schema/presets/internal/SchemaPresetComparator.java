@@ -20,9 +20,9 @@ import java.util.Objects;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.Named;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.Named;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategoryExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 
 /**
  * Comparator for {@link SchemaPreset}s.

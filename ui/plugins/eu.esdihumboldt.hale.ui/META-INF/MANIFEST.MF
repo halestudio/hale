@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Main UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 2.9.5.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.1",
@@ -38,6 +38,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.common.align.transformation.report.impl,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.cache,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.internal,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,

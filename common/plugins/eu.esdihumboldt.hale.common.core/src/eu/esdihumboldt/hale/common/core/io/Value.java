@@ -16,10 +16,9 @@
 package eu.esdihumboldt.hale.common.core.io;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.w3c.dom.Element;
-
-import com.google.common.base.Objects;
 
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
@@ -299,11 +298,11 @@ public abstract class Value implements Serializable {
 			/*
 			 * Both represented as String, use string representation to compare
 			 */
-			return Objects.equal(other.getStringRepresentation(), getStringRepresentation());
+			return Objects.equals(other.getStringRepresentation(), getStringRepresentation());
 		}
 
 		// in any other case, compare the internal values
-		return Objects.equal(other.getValue(), getValue());
+		return Objects.equals(other.getValue(), getValue());
 	}
 
 	@Override

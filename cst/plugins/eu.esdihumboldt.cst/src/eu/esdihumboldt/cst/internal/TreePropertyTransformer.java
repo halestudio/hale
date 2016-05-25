@@ -26,7 +26,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.extension.hooks.HooksUtil;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook.TreeState;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
@@ -42,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -109,7 +109,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 		}
 		builder = new InstanceBuilder();
 
-		treeHooks = OsgiUtils.getService(TransformationTreeHooks.class);
+		treeHooks = HalePlatform.getService(TransformationTreeHooks.class);
 
 		executorService = new ThreadPoolExecutor(4, 4, // 4 threads
 				0L, TimeUnit.MILLISECONDS,

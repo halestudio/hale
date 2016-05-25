@@ -19,7 +19,8 @@ package eu.esdihumboldt.hale.common.instance.geometry;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.internal.CodeDefinitionFactory;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.internal.WKTDefinitionFactory;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.util.definition.AbstractObjectFactory;
 
@@ -58,9 +59,11 @@ public class CRSDefinitionManager extends
 	@Override
 	protected List<CRSDefinitionFactory<?>> getDefinitions() {
 		List<CRSDefinitionFactory<?>> result = new ArrayList<CRSDefinitionFactory<?>>();
-		for (CRSDefinitionFactory<?> def : OsgiUtils.getServices(CRSDefinitionFactory.class)) {
-			result.add(def);
-		}
+
+		// TODO make configurable again? e.g. via extension point?
+		result.add(new CodeDefinitionFactory());
+		result.add(new WKTDefinitionFactory());
+
 		return result;
 	}
 

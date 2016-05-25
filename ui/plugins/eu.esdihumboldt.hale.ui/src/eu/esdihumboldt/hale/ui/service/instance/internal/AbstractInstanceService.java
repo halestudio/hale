@@ -19,9 +19,9 @@ package eu.esdihumboldt.hale.ui.service.instance.internal;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -188,7 +188,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * @return the transformationService
 	 */
 	protected TransformationService getTransformationService() {
-		return OsgiUtils.getService(TransformationService.class);
+		return HalePlatform.getService(TransformationService.class);
 	}
 
 	/**

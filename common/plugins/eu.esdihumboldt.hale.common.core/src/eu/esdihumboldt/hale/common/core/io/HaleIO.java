@@ -26,7 +26,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.w3c.dom.Element;
@@ -38,6 +37,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -133,7 +133,7 @@ public abstract class HaleIO {
 			// clear results because only an ambiguous result was found
 			results.clear();
 			// use input stream to make a better test
-			IContentTypeManager ctm = Platform.getContentTypeManager();
+			IContentTypeManager ctm = HalePlatform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();
 
@@ -529,7 +529,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		String[] typeExts = cts.getFileExtensions(contentType);
 //		if (typeExts != null) {
 //			for (String typeExt : typeExts) {
@@ -562,7 +562,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		for (ContentType contentType : contentTypes) {
 //			String[] typeExts = cts.getFileExtensions(contentType);
 //			if (typeExts != null) {

@@ -73,13 +73,13 @@ import org.springframework.core.convert.ConversionService;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
@@ -614,7 +614,7 @@ public class ClassificationMappingParameterPage extends
 	 * @param values the values to add
 	 */
 	private void addSourceValuesIfNew(Iterable<?> values) {
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = HalePlatform.getService(ConversionService.class);
 		for (Object value : values) {
 			Value sourceValue = Value.of(cs.convert(value, String.class));
 			if (!lookupTable.containsKey(sourceValue))

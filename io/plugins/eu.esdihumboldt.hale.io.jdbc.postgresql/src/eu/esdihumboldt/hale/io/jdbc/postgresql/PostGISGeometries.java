@@ -146,7 +146,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		CoordinateReferenceSystem targetCRS = null;
 		String authName = columnTypeMetadata.getAuthName();
 		if (authName != null && authName.equals("EPSG")) {
-			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs());
+			// PostGIS assumes lon/lat
+			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs(), true);
 		}
 		else {
 			String wkt = columnTypeMetadata.getSrsText();
@@ -198,6 +199,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			CRSDefinition crsDef = null;
 			String authName = columnTypeMetadata.getAuthName();
 			if (authName != null && authName.equals("EPSG")) {
+				// FIXME PostGIS assumes lon/lat order, but this representation
+				// results in a CRS with lat/lon order
 				crsDef = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), null);
 			}
 			else {

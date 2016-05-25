@@ -21,11 +21,11 @@ import org.springframework.core.convert.ConversionService;
 
 import com.google.common.base.Preconditions;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunction;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * Helper using the {@link ConversionService} for value conversions.
@@ -41,7 +41,7 @@ public class ConversionHelper implements HelperFunction<Object> {
 
 		@Override
 		protected ConversionService initialValue() {
-			return OsgiUtils.getService(ConversionService.class);
+			return HalePlatform.getService(ConversionService.class);
 		}
 	};
 

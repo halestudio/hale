@@ -50,10 +50,10 @@ import org.eclipse.ui.PlatformUI;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -87,7 +87,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	private ControlDecoration decoration;
 
 	private Class<?> binding;
-	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+	private final ConversionService cs = HalePlatform.getService(ConversionService.class);
 
 	private CodeList codeList;
 	private final String codeListNamespace;

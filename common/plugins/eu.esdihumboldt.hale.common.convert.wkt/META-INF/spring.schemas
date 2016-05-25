@@ -1,6 +1,0 @@
-# Add a custom location for the spring-*.xsd schemas, so the
-# org.springframework.beans.factory.xml.PluggableSchemaResolver can find
-# the schemas even if there is no Internet connection.
-http\://www.springframework.org/schema/beans/spring-beans.xsd=META-INF/spring-beans.xsd
-http\://www.springframework.org/schema/osgi/spring-osgi.xsd=META-INF/spring-osgi.xsd
-http\://www.springframework.org/schema/tool/spring-tool.xsd=META-INF/spring-tool.xsd

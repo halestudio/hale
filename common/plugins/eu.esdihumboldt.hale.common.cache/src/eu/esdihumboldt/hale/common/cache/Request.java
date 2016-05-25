@@ -86,6 +86,7 @@ public class Request {
 	 * Constructor.
 	 */
 	private Request() {
+		// FIXME right way to aquire configuration service?
 		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
 		if (org == null) {
 			// if no configuration service is present, fall back to new instance

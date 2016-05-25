@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategoryExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
