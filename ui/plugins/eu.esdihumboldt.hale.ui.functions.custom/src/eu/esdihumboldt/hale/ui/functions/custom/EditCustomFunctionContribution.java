@@ -51,6 +51,8 @@ public class EditCustomFunctionContribution extends ContributionItem {
 				item.fill(menu, index++);
 			}
 		}
+
+		// TODO add base alignment functions (disabled, with separator)?
 	}
 
 	@Override

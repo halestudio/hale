@@ -138,7 +138,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 			if (localId.startsWith(PREFIX_ALIGNMENT_FUNCTION)) {
 				localId = localId.substring(PREFIX_ALIGNMENT_FUNCTION.length());
 			}
-			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(localId);
+			CustomPropertyFunction cf = al.getAllCustomPropertyFunctions().get(localId);
 			if (cf != null) {
 				return new AlignmentFunctionDescriptor(cf.getDescriptor());
 			}
@@ -174,7 +174,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
 			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
-			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
+			for (CustomPropertyFunction cf : al.getAllCustomPropertyFunctions().values()) {
 				cfs.add(new AlignmentFunctionDescriptor(cf.getDescriptor()));
 			}
 			cfs.addAll(functions);
@@ -198,7 +198,7 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
 			List<PropertyFunctionDefinition> cfs = new ArrayList<>();
-			for (CustomPropertyFunction cf : al.getCustomPropertyFunctions().values()) {
+			for (CustomPropertyFunction cf : al.getAllCustomPropertyFunctions().values()) {
 				PropertyFunctionDefinition descriptor = cf.getDescriptor();
 				if (Objects.equal(categoryId, descriptor.getCategoryId())) {
 					cfs.add(new AlignmentFunctionDescriptor(descriptor));

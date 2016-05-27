@@ -51,7 +51,21 @@ public interface Alignment {
 	 * 
 	 * @return function identifiers mapped to function descriptors
 	 */
+	public Map<String, CustomPropertyFunction> getAllCustomPropertyFunctions();
+
+	/**
+	 * Yield custom property functions defined directly in the alignment.
+	 * 
+	 * @return function identifiers mapped to function descriptors
+	 */
 	public Map<String, CustomPropertyFunction> getCustomPropertyFunctions();
+
+	/**
+	 * Yield defined custom property functions from base alignments.
+	 * 
+	 * @return function identifiers mapped to function descriptors
+	 */
+	public Map<String, CustomPropertyFunction> getBasePropertyFunctions();
 
 	/**
 	 * Add a custom property function that is saved as part of the alignment.

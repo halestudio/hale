@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -36,13 +37,13 @@ import org.xml.sax.InputSource;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.io.PathUpdate;
@@ -269,9 +270,10 @@ public class AlignmentBean extends
 	}
 
 	@Override
-	protected void loadCustomFunctions(AlignmentBean source, DefaultAlignment alignment,
+	protected Collection<CustomPropertyFunction> getPropertyFunctions(AlignmentBean alignment,
 			TypeIndex sourceTypes, TypeIndex targetTypes) {
 		// not supported
+		return Collections.emptyList();
 	}
 
 	/**

@@ -29,6 +29,7 @@ import java.util.Set;
 
 import com.google.common.base.Strings;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -85,6 +86,20 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @return cell representations
 	 */
 	protected abstract Collection<C> getCells(A alignment);
+
+	/**
+	 * Returns a collection of property function definitions of the given
+	 * alignment representation.
+	 * 
+	 * @param alignment the alignment representation in question
+	 * @param sourceTypes the source types to use for resolving definition
+	 *            references
+	 * @param targetTypes the target types to use for resolving definition
+	 *            references
+	 * @return list of property functions representations
+	 */
+	protected abstract Collection<CustomPropertyFunction> getPropertyFunctions(A alignment,
+			TypeIndex sourceTypes, TypeIndex targetTypes);
 
 	/**
 	 * Returns the cell id of the given cell.
@@ -253,6 +268,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		}
 
 		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet()) {
+			Collection<CustomPropertyFunction> baseFunctions = getPropertyFunctions(base.getKey(),
+					sourceTypes, targetTypes);
 			Collection<C> baseCells = getCells(base.getKey());
 			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
 					baseCells.size());
@@ -264,7 +281,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 							.getValue().prefix));
 			}
 			alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
-					createdCells);
+					createdCells, baseFunctions);
 		}
 
 		// add modifiers of base alignments
@@ -439,8 +456,14 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 * @param sourceTypes the source types
 	 * @param targetTypes the target types
 	 */
-	protected abstract void loadCustomFunctions(A source, DefaultAlignment alignment,
-			TypeIndex sourceTypes, TypeIndex targetTypes);
+	protected void loadCustomFunctions(A source, DefaultAlignment alignment, TypeIndex sourceTypes,
+			TypeIndex targetTypes) {
+		Collection<CustomPropertyFunction> functions = getPropertyFunctions(source, sourceTypes,
+				targetTypes);
+		for (CustomPropertyFunction cf : functions) {
+			alignment.addCustomPropertyFunction(cf);
+		}
+	}
 
 	/**
 	 * Function to fill the prefixMapping and alignmentToInfo maps.

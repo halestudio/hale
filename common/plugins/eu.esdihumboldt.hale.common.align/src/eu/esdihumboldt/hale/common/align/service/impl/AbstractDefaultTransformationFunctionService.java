@@ -110,7 +110,7 @@ public abstract class AbstractDefaultTransformationFunctionService extends
 			if (localId.startsWith(PREFIX_ALIGNMENT_FUNCTION)) {
 				localId = localId.substring(PREFIX_ALIGNMENT_FUNCTION.length());
 			}
-			CustomPropertyFunction cf = al.getCustomPropertyFunctions().get(localId);
+			CustomPropertyFunction cf = al.getAllCustomPropertyFunctions().get(localId);
 			if (cf != null) {
 				cfs.add(new CustomPropertyFunctionFactory(cf));
 			}

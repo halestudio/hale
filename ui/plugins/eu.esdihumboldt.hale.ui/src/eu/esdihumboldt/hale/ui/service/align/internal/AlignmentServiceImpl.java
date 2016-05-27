@@ -227,9 +227,23 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 
 		synchronized (this) {
 			// XXX this needs merging, see above
-			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet())
+			boolean first = true;
+			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet()) {
+				Collection<CustomPropertyFunction> baseFunctions;
+				if (first) {
+					// XXX hack - insert all base functions with the first base
+					// alignment
+					baseFunctions = alignment.getBasePropertyFunctions().values();
+				}
+				else {
+					// base functions should only be added once
+					baseFunctions = Collections.<CustomPropertyFunction> emptyList();
+				}
+
 				this.alignment.addBaseAlignment(baseAlignment.getKey(), baseAlignment.getValue(),
-						alignment.getBaseAlignmentCells(baseAlignment.getValue()));
+						alignment.getBaseAlignmentCells(baseAlignment.getValue()), //
+						baseFunctions);
+			}
 		}
 
 		// add custom functions

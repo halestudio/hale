@@ -62,7 +62,6 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
-import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -367,12 +366,13 @@ public class JaxbToAlignment extends
 	}
 
 	@Override
-	protected void loadCustomFunctions(AlignmentType source, DefaultAlignment alignment,
+	protected Collection<CustomPropertyFunction> getPropertyFunctions(AlignmentType source,
 			TypeIndex sourceTypes, TypeIndex targetTypes) {
 		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
 		context.setSourceTypes(sourceTypes);
 		context.setTargetTypes(targetTypes);
 
+		Collection<CustomPropertyFunction> result = new ArrayList<>();
 		List<CustomFunctionType> functions = source.getCustomFunction();
 		if (functions != null) {
 			for (CustomFunctionType function : functions) {
@@ -381,11 +381,12 @@ public class JaxbToAlignment extends
 					CustomPropertyFunction cf = HaleIO.getComplexValue(elem,
 							CustomPropertyFunction.class, context);
 					if (cf != null) {
-						alignment.addCustomPropertyFunction(cf);
+						result.add(cf);
 					}
 				}
 			}
 		}
+		return result;
 	}
 
 	/**
