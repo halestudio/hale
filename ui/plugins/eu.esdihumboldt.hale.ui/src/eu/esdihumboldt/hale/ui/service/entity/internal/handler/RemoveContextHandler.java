@@ -42,8 +42,9 @@ public class RemoveContextHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
+			EntityDefinitionService eds = PlatformUI.getWorkbench()
 					.getService(EntityDefinitionService.class);
 
 			for (Object element : ((IStructuredSelection) selection).toList()) {

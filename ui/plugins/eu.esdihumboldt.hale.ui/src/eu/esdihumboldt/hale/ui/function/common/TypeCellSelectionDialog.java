@@ -110,8 +110,7 @@ public class TypeCellSelectionDialog extends AbstractViewerSelectionDialog<Cell,
 		viewer.applyLayout();
 
 		// input and selection
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		viewer.setInput(as.getAlignment().getTypeCells());
 		if (initialSelection != null)
 			viewer.setSelection(new StructuredSelection(initialSelection));

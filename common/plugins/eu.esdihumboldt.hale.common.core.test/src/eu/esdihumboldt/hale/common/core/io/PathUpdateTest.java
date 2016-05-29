@@ -13,7 +13,7 @@
  *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
-package eu.esdihumboldt.util.io;
+package eu.esdihumboldt.hale.common.core.io;
 
 import static org.junit.Assert.*;
 
@@ -21,7 +21,7 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import eu.esdihumboldt.util.io.PathUpdate;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 
 /**
  * Testing class for {@link PathUpdate}

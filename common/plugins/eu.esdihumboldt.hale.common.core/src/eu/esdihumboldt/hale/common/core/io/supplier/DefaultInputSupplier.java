@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**

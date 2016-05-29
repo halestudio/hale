@@ -102,14 +102,15 @@ public class AttributeInputDialog extends Dialog {
 			label.setText(message);
 			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
 					| GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+			data.widthHint = convertHorizontalDLUsToPixels(
+					IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 			label.setLayoutData(data);
 			label.setFont(parent.getFont());
 		}
 
 		// create editor
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-				AttributeEditorFactory.class);
+		AttributeEditorFactory aef = PlatformUI.getWorkbench()
+				.getService(AttributeEditorFactory.class);
 		editor = aef.createEditor(composite, definition, entity, false);
 		editor.getControl().setLayoutData(
 				new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));

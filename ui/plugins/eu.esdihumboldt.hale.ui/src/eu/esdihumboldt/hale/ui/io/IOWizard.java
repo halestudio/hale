@@ -68,13 +68,15 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 /**
  * Abstract I/O wizard based on {@link IOProvider} descriptors
  * 
- * @param <P> the {@link IOProvider} type used in the wizard
+ * @param
+ * 			<P>
+ *            the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class IOWizard<P extends IOProvider> extends Wizard implements
-		IPageChangingListener {
+public abstract class IOWizard<P extends IOProvider> extends Wizard
+		implements IPageChangingListener {
 
 	private static final ALogger log = ALoggerFactory.getLogger(IOWizard.class);
 
@@ -381,8 +383,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 	 */
 	public List<IOProviderDescriptor> getFactories() {
 		// FIXME rename method
-		return IOProviderExtension.getInstance().getFactories(
-				new FactoryFilter<IOProvider, IOProviderDescriptor>() {
+		return IOProviderExtension.getInstance()
+				.getFactories(new FactoryFilter<IOProvider, IOProviderDescriptor>() {
 
 					@Override
 					public boolean acceptFactory(IOProviderDescriptor factory) {
@@ -519,8 +521,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			// validate configuration
 			provider.validate();
 
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
 			boolean isProjectResource = false;
 			if (actionId != null) {
@@ -538,8 +539,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					currentAbsolute = projectLoc.resolve(currentAbsolute);
 
 				for (IOConfiguration conf : ((Project) ps.getProjectInfo()).getResources()) {
-					Value otherResourceValue = conf.getProviderConfiguration().get(
-							ImportProvider.PARAM_SOURCE);
+					Value otherResourceValue = conf.getProviderConfiguration()
+							.get(ImportProvider.PARAM_SOURCE);
 					if (otherResourceValue == null)
 						continue;
 
@@ -550,7 +551,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 					String action = conf.getActionId();
 					// resource is already loaded into the project
 					if (currentAbsolute.equals(otherAbsolute) && Objects.equal(actionId, action)) {
-						log.userError("Resource is already loaded. Loading duplicate resources is aborted!");
+						log.userError(
+								"Resource is already loaded. Loading duplicate resources is aborted!");
 						return false;
 					}
 				}
@@ -565,8 +567,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 			if (report != null) {
 				// add report to report server
-				ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-						ReportService.class);
+				ReportService repService = PlatformUI.getWorkbench()
+						.getService(ReportService.class);
 				repService.addReport(report);
 
 				// show message to user
@@ -591,8 +593,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 
 						});
 					} catch (InvocationTargetException e) {
-						log.userError("Error processing results:\n"
-								+ e.getCause().getLocalizedMessage(), e.getCause());
+						log.userError(
+								"Error processing results:\n" + e.getCause().getLocalizedMessage(),
+								e.getCause());
 						return false;
 					} catch (Exception e) {
 						log.userError("Error processing results:\n" + e.getLocalizedMessage(), e);
@@ -677,8 +680,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard implements
 			getContainer().run(true, provider.isCancelable(), new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
 					ATransaction trans = log.begin(defaultReporter.getTaskName());
 					try {
 						IOReport result = provider.execute(new ProgressMonitorIndicator(monitor));

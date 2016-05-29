@@ -38,8 +38,7 @@ public class DefaultCRSManager extends AbstractCRSManager {
 	public DefaultCRSManager(InstanceReader reader, CRSProvider provider) {
 		super(reader, provider);
 
-		projectService = (ProjectService) PlatformUI.getWorkbench()
-				.getService(ProjectService.class);
+		projectService = PlatformUI.getWorkbench().getService(ProjectService.class);
 	}
 
 	/**

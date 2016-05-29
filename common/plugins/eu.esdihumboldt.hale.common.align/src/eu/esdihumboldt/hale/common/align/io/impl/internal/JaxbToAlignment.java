@@ -64,13 +64,13 @@ import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -78,8 +78,8 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * 
  * @author Simon Templer
  */
-public class JaxbToAlignment extends
-		AbstractBaseAlignmentLoader<AlignmentType, CellType, ModifierType> {
+public class JaxbToAlignment
+		extends AbstractBaseAlignmentLoader<AlignmentType, CellType, ModifierType> {
 
 	private final TypeIndex targetTypes;
 	private final TypeIndex sourceTypes;
@@ -174,7 +174,7 @@ public class JaxbToAlignment extends
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, projectLocation,
 				sourceTypes, targetTypes, reporter);
 	}
@@ -208,8 +208,8 @@ public class JaxbToAlignment extends
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					parameters.put(cpt.getName(), new ParameterValue(new ElementValue(cpt.getAny(),
-							context)));
+					parameters.put(cpt.getName(),
+							new ParameterValue(new ElementValue(cpt.getAny(), context)));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");
@@ -240,8 +240,8 @@ public class JaxbToAlignment extends
 				AnnotationType annot = (AnnotationType) element;
 
 				// but first load it from the DOM
-				AnnotationDescriptor<?> desc = AnnotationExtension.getInstance().get(
-						annot.getType());
+				AnnotationDescriptor<?> desc = AnnotationExtension.getInstance()
+						.get(annot.getType());
 				if (desc != null) {
 					try {
 						Object value = desc.fromDOM(annot.getAny(), null);

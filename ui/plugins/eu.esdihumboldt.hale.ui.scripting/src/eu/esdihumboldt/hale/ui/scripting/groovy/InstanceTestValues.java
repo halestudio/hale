@@ -109,10 +109,9 @@ public class InstanceTestValues implements TestValues {
 	 */
 	protected Instance getInstance(EntityDefinition entity) {
 		// TODO cache instance?
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
-		InstanceCollection instances = is.getInstances(DataSet.SOURCE).select(
-				new TypeFilter(entity.getType()));
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+		InstanceCollection instances = is.getInstances(DataSet.SOURCE)
+				.select(new TypeFilter(entity.getType()));
 		if (entity.getFilter() != null) {
 			instances = instances.select(entity.getFilter());
 		}

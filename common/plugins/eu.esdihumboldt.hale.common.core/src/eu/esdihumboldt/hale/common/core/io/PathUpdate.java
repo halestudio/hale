@@ -14,10 +14,11 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.util.io;
+package eu.esdihumboldt.hale.common.core.io;
 
 import java.net.URI;
 
+import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -127,7 +128,7 @@ public class PathUpdate {
 		if (!uri.isAbsolute()) {
 			if (newLocation != null) {
 				URI newAbsolute = newLocation.resolve(uri);
-				if (IOUtils.testStream(newAbsolute, allowResource)) {
+				if (HaleIO.testStream(newAbsolute, allowResource)) {
 					if (keepRelative)
 						return uri;
 					else
@@ -136,7 +137,7 @@ public class PathUpdate {
 			}
 			if (oldLocation != null) {
 				URI oldAbsolute = oldLocation.resolve(uri);
-				if (IOUtils.testStream(oldAbsolute, allowResource)) {
+				if (HaleIO.testStream(oldAbsolute, allowResource)) {
 					if (keepRelative)
 						return IOUtils.getRelativePath(oldAbsolute, newLocation);
 					else
@@ -147,10 +148,10 @@ public class PathUpdate {
 		else {
 			if (oldLocation != null && newLocation != null) {
 				URI changed = changePath(uri);
-				if (IOUtils.testStream(changed, allowResource))
+				if (HaleIO.testStream(changed, allowResource))
 					return changed;
 			}
-			if (IOUtils.testStream(uri, allowResource))
+			if (HaleIO.testStream(uri, allowResource))
 				return uri;
 		}
 		if (tryFallback)
@@ -186,10 +187,9 @@ public class PathUpdate {
 		n = (nindex >= 0) ? (n.substring(0, nindex)) : "";
 
 		int commonEndLength = 0;
-		while (commonEndLength < o.length()
-				&& commonEndLength < n.length()
-				&& o.charAt(o.length() - commonEndLength - 1) == n.charAt(n.length()
-						- commonEndLength - 1)) {
+		while (commonEndLength < o.length() && commonEndLength < n.length()
+				&& o.charAt(o.length() - commonEndLength - 1) == n
+						.charAt(n.length() - commonEndLength - 1)) {
 			commonEndLength++;
 		}
 		oldRaw = o.substring(0, o.length() - commonEndLength);

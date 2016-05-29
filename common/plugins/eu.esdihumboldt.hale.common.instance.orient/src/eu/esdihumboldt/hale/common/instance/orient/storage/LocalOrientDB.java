@@ -187,6 +187,7 @@ public class LocalOrientDB {
 	public void clear() {
 		dbLock.writeLock().lock();
 		try {
+			@SuppressWarnings("resource")
 			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
 			db.drop();
@@ -204,6 +205,7 @@ public class LocalOrientDB {
 	public void delete() {
 		dbLock.writeLock().lock();
 		try {
+			@SuppressWarnings("resource")
 			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
 			db.drop();

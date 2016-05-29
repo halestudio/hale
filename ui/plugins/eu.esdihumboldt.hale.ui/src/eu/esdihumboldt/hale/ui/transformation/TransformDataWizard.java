@@ -80,13 +80,12 @@ public class TransformDataWizard extends Wizard {
 
 		// Create a copy of the current alignment to be independent and run
 		// everything in a job.
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+		AlignmentService alignmentService = PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 		Alignment alignment = new DefaultAlignment(alignmentService.getAlignment());
 
 		// schema service for getting source schema
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 
 		Transformation.transform(rawSources, targetSink, sourceSelectionPage.getExportJob(),
 				sourceSelectionPage.getValidationJob(), alignment,

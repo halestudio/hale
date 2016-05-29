@@ -19,10 +19,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.google.common.io.ByteStreams;
-import com.google.common.io.InputSupplier;
 
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.util.io.InputSupplier;
 
 /**
  * Project file that takes its content from an existing source. This kind of

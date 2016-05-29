@@ -183,8 +183,8 @@ public class FeatureChainingConfigurationPage extends
 				page.dispose();
 			pages.clear();
 
-			AlignmentService alignmentService = HaleUI.getServiceProvider().getService(
-					AlignmentService.class);
+			AlignmentService alignmentService = HaleUI.getServiceProvider()
+					.getService(AlignmentService.class);
 			Alignment alignment = alignmentService.getAlignment();
 
 			int pageIdx = 0;
@@ -256,7 +256,8 @@ public class FeatureChainingConfigurationPage extends
 					Object currentPage = event.getCurrentPage();
 					Object targetPage = event.getTargetPage();
 
-					if ((currentPage instanceof ChainPage || currentPage instanceof AppSchemaDataStoreConfigurationPage)
+					if ((currentPage instanceof ChainPage
+							|| currentPage instanceof AppSchemaDataStoreConfigurationPage)
 							&& targetPage instanceof FeatureChainingConfigurationPage) {
 						goingBack = true;
 					}
@@ -302,11 +303,11 @@ public class FeatureChainingConfigurationPage extends
 							.getDefinition().getDisplayName()
 					+ " and "
 					+ AlignmentUtil.getTypeEntity(joinConditions.get(chainIdx).joinProperty)
-							.getDefinition().getDisplayName(), null);
+							.getDefinition().getDisplayName(),
+					null);
 			this.joinCondition = joinConditions.get(chainIdx);
-			this.message = "Please select target for nested source type "
-					+ AlignmentUtil.getTypeEntity(joinCondition.joinProperty).getDefinition()
-							.getDisplayName();
+			this.message = "Please select target for nested source type " + AlignmentUtil
+					.getTypeEntity(joinCondition.joinProperty).getDefinition().getDisplayName();
 			this.joinTypes = joinTypes;
 			this.joinTarget = joinTarget;
 			this.pageIdx = pageIdx;
@@ -340,14 +341,14 @@ public class FeatureChainingConfigurationPage extends
 			// can't reliably get the previous chain configuration from current
 			// chain configuration, because the latter may not exist yet
 			int previousChainIndex = joinTypes.indexOf(containerTypeSource) - 1;
-			ChainConfiguration previousChainConf = (previousChainIndex >= 0) ? featureChaining
-					.getChain(joinCellId, previousChainIndex) : null;
+			ChainConfiguration previousChainConf = (previousChainIndex >= 0)
+					? featureChaining.getChain(joinCellId, previousChainIndex) : null;
 			ChainConfiguration chainConf = featureChaining.getChain(joinCellId, chainIdx);
 			// set nested type target
 			if (chainConf != null) {
 				nestedTypeTarget = chainConf.getNestedTypeTarget();
-				uniqueMapping = (chainConf.getMappingName() != null && !chainConf.getMappingName()
-						.isEmpty());
+				uniqueMapping = (chainConf.getMappingName() != null
+						&& !chainConf.getMappingName().isEmpty());
 				checkUniqueMapping.setSelection(uniqueMapping);
 			}
 			else {
@@ -404,10 +405,10 @@ public class FeatureChainingConfigurationPage extends
 			gridData.minimumHeight = 150;
 			tableParent.setLayoutData(gridData);
 
-			final TableViewer tableViewer = new TableViewer(tableParent, SWT.H_SCROLL
-					| SWT.V_SCROLL | SWT.BORDER);
-			tableViewer.getControl().setLayoutData(
-					new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
+			final TableViewer tableViewer = new TableViewer(tableParent,
+					SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+			tableViewer.getControl()
+					.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 			tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 			tableViewer.getTable().setHeaderVisible(true);
 			tableViewer.getTable().setLinesVisible(true);
@@ -422,7 +423,8 @@ public class FeatureChainingConfigurationPage extends
 				}
 			});
 
-			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(tableViewer, true, true);
+			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(tableViewer, true,
+					true);
 			TableViewerColumn typeColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(typeColumn.getColumn(), new ColumnWeightData(1, true));
 			typeColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -466,8 +468,8 @@ public class FeatureChainingConfigurationPage extends
 
 			PatternFilter patternFilter = new SchemaPatternFilter();
 			patternFilter.setIncludeLeadingWildcard(true);
-			final FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.SINGLE
-					| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+			final FilteredTree filteredTree = new TreePathFilteredTree(parent,
+					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2);
 			gridData.minimumHeight = 160;
 			gridData.minimumWidth = 140;
@@ -476,7 +478,7 @@ public class FeatureChainingConfigurationPage extends
 
 			viewer.setComparator(new DefinitionComparator());
 
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+			EntityDefinitionService eds = PlatformUI.getWorkbench()
 					.getService(EntityDefinitionService.class);
 			viewer.setContentProvider(new TreePathProviderAdapter(
 					new EntityTypeIterableContentProvider(eds, SchemaSpaceID.TARGET)));
@@ -497,8 +499,8 @@ public class FeatureChainingConfigurationPage extends
 						List<ChildContext> selectedPropertyPath = selectedProperty
 								.getPropertyPath();
 
-						SchemaService schemaService = HaleUI.getServiceProvider().getService(
-								SchemaService.class);
+						SchemaService schemaService = HaleUI.getServiceProvider()
+								.getService(SchemaService.class);
 						SchemaSpace targetSchema = schemaService.getSchemas(SchemaSpaceID.TARGET);
 						List<ChildContext> containerPath = containerTypeTarget.getPropertyPath();
 
@@ -561,8 +563,8 @@ public class FeatureChainingConfigurationPage extends
 			@Override
 			public String getText(Object element) {
 				TypeEntityDefinition typeEntityDef = (TypeEntityDefinition) element;
-				PropertyEntityDefinition property = (typeEntityDef.equals(containerTypeSource)) ? joinCondition.baseProperty
-						: joinCondition.joinProperty;
+				PropertyEntityDefinition property = (typeEntityDef.equals(containerTypeSource))
+						? joinCondition.baseProperty : joinCondition.joinProperty;
 				return property.getDefinition().getDisplayName();
 			}
 

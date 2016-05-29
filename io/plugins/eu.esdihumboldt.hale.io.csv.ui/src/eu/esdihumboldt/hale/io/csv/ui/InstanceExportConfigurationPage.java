@@ -43,8 +43,8 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  * 
  * @author Patrick Lieb
  */
-public class InstanceExportConfigurationPage extends
-		AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
+public class InstanceExportConfigurationPage
+		extends AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
 
 	private Button solveNestedProperties;
 	private TypeDefinitionSelector typeSelector;
@@ -56,8 +56,7 @@ public class InstanceExportConfigurationPage extends
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (!(element instanceof TypeDefinition))
 				return false;
-			InstanceService ins = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService ins = PlatformUI.getWorkbench().getService(InstanceService.class);
 			// select all source type which has at least one instance
 			if (!ins.getInstances(DataSet.SOURCE).select(new TypeFilter((TypeDefinition) element))
 					.isEmpty()) {

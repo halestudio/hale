@@ -73,8 +73,8 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
  * 
  * @author Simon Templer
  */
-public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
-		IEntityConnectionStyleProvider, IFigureProvider {
+public class GraphLabelProvider extends LabelProvider
+		implements IEntityStyleProvider, IEntityConnectionStyleProvider, IFigureProvider {
 
 	/**
 	 * The maximum figure width
@@ -107,8 +107,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	private final Map<String, Image> baseAlignmentFunctionImages = new HashMap<String, Image>();
 
-	private final Image baseAlignmentFunctionOverlay = GraphUIPlugin.getImageDescriptor(
-			"icons/base_align_cell_overlay.gif").createImage(); //$NON-NLS-1$
+	private final Image baseAlignmentFunctionOverlay = GraphUIPlugin
+			.getImageDescriptor("icons/base_align_cell_overlay.gif").createImage(); //$NON-NLS-1$
 
 	/**
 	 * Local resource manager.
@@ -165,8 +165,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		incompatibleCells = new ArrayList<Cell>();
 
 		// initiate compatibility mode checkups and changes
-		final CompatibilityService cs = ((CompatibilityService) PlatformUI.getWorkbench()
-				.getService(CompatibilityService.class));
+		final CompatibilityService cs = PlatformUI.getWorkbench()
+				.getService(CompatibilityService.class);
 
 		lastCompatibilityMode = cs.getCurrentDefinition().getDisplayName();
 
@@ -223,8 +223,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	protected Font createFigureFont() {
 		FontData[] defFontData = JFaceResources.getDefaultFont().getFontData();
-		return resources.createFont(FontDescriptor.createFrom(defFontData[0].getName(), 9,
-				SWT.NORMAL));
+		return resources
+				.createFont(FontDescriptor.createFrom(defFontData[0].getName(), 9, SWT.NORMAL));
 	}
 
 	/**
@@ -245,7 +245,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function image if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			FunctionDefinition function = FunctionUtil.getFunction(functionId, serviceProvider);
+			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
 			if (function != null) {
 				Image image = functionLabels.getImage(function);
 				if (cell.isBaseCell()) {
@@ -298,7 +298,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function name if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			FunctionDefinition function = FunctionUtil.getFunction(functionId, serviceProvider);
+			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
 
 			if (function != null) {
 				return functionLabels.getText(function);
@@ -334,7 +334,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 //		cellBorderHighlightColor.dispose();
 
 		resources.dispose();
-		((CompatibilityService) PlatformUI.getWorkbench().getService(CompatibilityService.class))
+		PlatformUI.getWorkbench().getService(CompatibilityService.class)
 				.removeCompatibilityListener(csl);
 
 		super.dispose();
@@ -453,8 +453,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getTooltip(Object entity) {
 		if (entity instanceof Cell) {
 			Cell cell = (Cell) entity;
-			FunctionDefinition function = FunctionUtil.getFunction(cell.getTransformationIdentifier(),
-					serviceProvider);
+			FunctionDefinition<?> function = FunctionUtil
+					.getFunction(cell.getTransformationIdentifier(), serviceProvider);
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {

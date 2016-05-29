@@ -76,7 +76,7 @@ public class SetPriorityContribution extends ContributionItem {
 		if (getOriginalCell() == null)
 			return;
 
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+		AlignmentService alignmentService = PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 
 		Cell cell = getOriginalCell();
@@ -102,8 +102,8 @@ public class SetPriorityContribution extends ContributionItem {
 		}
 
 		// retrieve first selected cell
-		IStructuredSelection sel = SelectionTrackerUtil.getTracker().getSelection(
-				IStructuredSelection.class);
+		IStructuredSelection sel = SelectionTrackerUtil.getTracker()
+				.getSelection(IStructuredSelection.class);
 		for (Object object : sel.toList()) {
 			if (object instanceof Cell) {
 				return (Cell) object;

@@ -77,9 +77,8 @@ public class SchemaSelectionFunctionContribution extends AbstractFunctionWizardC
 		FunctionDefinition<?> function = descriptor.getFunction();
 		// rule out functions not supported by the compatibility mode
 		try {
-			if (!((CompatibilityService) PlatformUI.getWorkbench().getService(
-					CompatibilityService.class)).getCurrent().supportsFunction(function.getId(),
-					HaleUI.getServiceProvider())) {
+			if (!PlatformUI.getWorkbench().getService(CompatibilityService.class).getCurrent()
+					.supportsFunction(function.getId(), HaleUI.getServiceProvider())) {
 				return false;
 			}
 		} catch (NullPointerException npe) {

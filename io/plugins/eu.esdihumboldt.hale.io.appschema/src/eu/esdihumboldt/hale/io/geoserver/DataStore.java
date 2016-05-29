@@ -92,6 +92,7 @@ public abstract class DataStore extends AbstractResource {
 	 * 
 	 * @return the connection parameters
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getConnectionParameters() {
 		return (Map<String, String>) getAttribute(CONNECTION_PARAMS);
 	}

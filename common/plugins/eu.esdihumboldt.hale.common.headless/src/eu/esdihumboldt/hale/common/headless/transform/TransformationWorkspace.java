@@ -31,7 +31,6 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
@@ -188,8 +187,8 @@ public class TransformationWorkspace {
 		TransformationEnvironment env = environments.getEnvironment(envId);
 
 		if (env == null) {
-			throw new IllegalStateException("Transformation environment for project " + envId
-					+ " not available.");
+			throw new IllegalStateException(
+					"Transformation environment for project " + envId + " not available.");
 		}
 
 		return transform(env, sources, target, null);
@@ -221,7 +220,8 @@ public class TransformationWorkspace {
 			writer.setTarget(customTarget);
 		}
 		else {
-			File out = new File(targetFolder, "result." + getFileExtension(writer.getContentType()));
+			File out = new File(targetFolder,
+					"result." + getFileExtension(writer.getContentType()));
 			writer.setTarget(new FileIOSupplier(out));
 		}
 
@@ -310,8 +310,8 @@ public class TransformationWorkspace {
 	 * @throws IOException if the workspace configuration file cannot be read or
 	 *             written
 	 */
-	protected void setTransformationSuccess(boolean success) throws FileNotFoundException,
-			IOException {
+	protected void setTransformationSuccess(boolean success)
+			throws FileNotFoundException, IOException {
 		workspaces.set(workspaceId, SETTING_TRANSFORMATION_SUCCESS, String.valueOf(success));
 
 		FileUtils.deleteDirectory(getSourceFolder());

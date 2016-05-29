@@ -34,7 +34,8 @@ import org.eclipse.ui.intro.config.IIntroAction;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**
- * An IIntroAction, ILiveHelpAction and ICheatSheetAction to open a project. <br>
+ * An IIntroAction, ILiveHelpAction and ICheatSheetAction to open a project.
+ * <br>
  * Parameters are <code>closeIntro</code> (or param1 in case of a
  * cheatsheet/live help), <code>path</code> (param2), <code>type</code> (param3)
  * and <code>bundle</code> (param4). All are optional. <br>
@@ -55,8 +56,8 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * 
  * @author Kai Schwierczek
  */
-public class LoadProjectAction extends Action implements IIntroAction, ICheatSheetAction,
-		ILiveHelpAction {
+public class LoadProjectAction extends Action
+		implements IIntroAction, ICheatSheetAction, ILiveHelpAction {
 
 	/**
 	 * Value for type parameter, specifying that the path is a file path.
@@ -98,8 +99,7 @@ public class LoadProjectAction extends Action implements IIntroAction, ICheatShe
 		}
 
 		// executes event with last configuration
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		// load a given file or show open project dialog
 		if (path != null) {
 			if (TYPE_FILE.equalsIgnoreCase(type) || type == null)

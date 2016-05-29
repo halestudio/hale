@@ -31,9 +31,7 @@ class CommandLineBuilder {
     private def integrationStage = new IntegrationStageCommand()
     private def deployArtifacts = new DeployArtifactsCommand()
 	private def installArtifacts = new InstallArtifactsCommand()
-    private def client = new ClientCommand()
-    private def server = new ServerCommand()
-	private def product = new ProductFileCommand()
+    private def product = new ProductFileCommand()
     private def clean = new CleanCommand()
     private def help = new HelpCommand()
 	private def site = new SiteCommand()
@@ -49,9 +47,7 @@ class CommandLineBuilder {
         jc.addCommand('integrationStage', integrationStage)
         jc.addCommand('deployArtifacts', deployArtifacts)
 		jc.addCommand('installArtifacts', installArtifacts)
-        jc.addCommand('client', client)
-        jc.addCommand('server', server)
-		jc.addCommand('product', product)
+        jc.addCommand('product', product)
         jc.addCommand('clean', clean)
         jc.addCommand('help', help)
 		jc.addCommand('site', site)
@@ -76,11 +72,7 @@ class CommandLineBuilder {
         }
 
         def cmd = jc.getParsedCommand()
-        if (cmd == 'client') {
-            client.run()
-        } else if (cmd == 'server') {
-            server.run()
-        } else if (cmd == 'clean') {
+        if (cmd == 'clean') {
             clean.run()
         } else if (cmd == 'help') {
             help.run()
@@ -197,6 +189,12 @@ class CommandLineBuilder {
 		@Parameter(names = [ '--no-installer' ], description = 'For Windows builds create a ZIP package instead of an installer')
 		boolean noInstaller = false;
 
+        @Parameter(names = [ '--docker-image' ], description = 'Image name for Docker image to create, only applicable for Linux server products')
+        String dockerImage
+
+        @Parameter(names = [ '--publish' ], description = 'For Docker builds publish the Docker image, only applicable for Linux server products')
+        boolean publish = false;
+
         abstract String getType()
 
         def run() {
@@ -241,6 +239,18 @@ class CommandLineBuilder {
             if (lang != null) {
                 project.ext.language = lang
             }
+
+            // docker
+            if (dockerImage) {
+                project.ext.dockerImageName = dockerImage
+            }
+            else {
+                // docker image name specified for product
+                project.ext.dockerImageName = project.ext.productImages[productName]
+            }
+            // publish flag
+            project.ext.publishProduct = publish
+
             project.tasks['cli'].dependsOn(project.tasks['packageProduct'])
         }
     }

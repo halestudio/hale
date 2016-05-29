@@ -68,8 +68,7 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 
 		Expression enabledWhen = factory.getEnabledWhen();
 		if (enabledWhen != null) {
-			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(
-					IEvaluationService.class);
+			IEvaluationService es = PlatformUI.getWorkbench().getService(IEvaluationService.class);
 			evaluationReference = es.addEvaluationListener(enabledWhen,
 					new IPropertyChangeListener() {
 
@@ -93,8 +92,7 @@ public class IOWizardAction extends AbstractFactoryAction<ActionUI> {
 	 */
 	public void dispose() {
 		if (evaluationReference != null) {
-			IEvaluationService es = (IEvaluationService) PlatformUI.getWorkbench().getService(
-					IEvaluationService.class);
+			IEvaluationService es = PlatformUI.getWorkbench().getService(IEvaluationService.class);
 			es.removeEvaluationListener(evaluationReference);
 		}
 	}

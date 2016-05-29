@@ -54,8 +54,7 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 	 */
 	public CompatibilityModeComposite() {
 		super();
-		this.cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
-				CompatibilityService.class);
+		this.cs = PlatformUI.getWorkbench().getService(CompatibilityService.class);
 	}
 
 	/**
@@ -79,8 +78,8 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 
 		// label for displaying the status of the mode
 		final Label statusLabel = new Label(comp, SWT.NONE);
-		statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_SIGNED_YES));
+		statusLabel.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_SIGNED_YES));
 
 		// label for displaying the mode itself
 		final Label modeLabel = new Label(comp, SWT.NONE);
@@ -143,13 +142,13 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 					@Override
 					public void run() {
 						if (isCompatible) {
-							statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
-									CommonSharedImages.IMG_SIGNED_YES));
+							statusLabel.setImage(CommonSharedImages.getImageRegistry()
+									.get(CommonSharedImages.IMG_SIGNED_YES));
 							statusLabel.setToolTipText("No incompatibility detected!");
 						}
 						if (!isCompatible) {
-							statusLabel.setImage(CommonSharedImages.getImageRegistry().get(
-									CommonSharedImages.IMG_SIGNED_NO));
+							statusLabel.setImage(CommonSharedImages.getImageRegistry()
+									.get(CommonSharedImages.IMG_SIGNED_NO));
 							statusLabel.setToolTipText("Incompatibility detected!");
 						}
 					}

@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URI;
 
 import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -28,7 +29,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Base class for schema readers that are able to cache a loaded schema through
@@ -36,8 +36,8 @@ import eu.esdihumboldt.util.io.IOUtils;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReader implements
-		CachingImportProvider {
+public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReader
+		implements CachingImportProvider {
 
 	private Value cache;
 
@@ -118,7 +118,7 @@ public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReade
 		URI loc = getSource().getLocation();
 		if (loc != null) {
 			// try based on URI
-			return !IOUtils.testStream(loc, true);
+			return !HaleIO.testStream(loc, true);
 		}
 		else {
 			// try opening stream
@@ -133,7 +133,8 @@ public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReade
 
 	/**
 	 * Determines if the given value provides valid cache information that could
-	 * be used in {@link #loadFromCache(Value, ProgressIndicator, IOReporter)}.<br>
+	 * be used in {@link #loadFromCache(Value, ProgressIndicator, IOReporter)}.
+	 * <br>
 	 * <br>
 	 * The default implementation classifies the cache value as valid if it is
 	 * not <code>null</code> or the NULL value.

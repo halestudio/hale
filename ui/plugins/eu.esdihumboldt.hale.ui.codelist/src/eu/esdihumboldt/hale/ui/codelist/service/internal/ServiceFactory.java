@@ -38,8 +38,7 @@ public class ServiceFactory extends AbstractServiceFactory {
 	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
 			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(CodeListService.class)) {
-			return new CodeListServiceImpl(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new CodeListServiceImpl(locator.getService(ProjectService.class));
 		}
 		return null;
 	}

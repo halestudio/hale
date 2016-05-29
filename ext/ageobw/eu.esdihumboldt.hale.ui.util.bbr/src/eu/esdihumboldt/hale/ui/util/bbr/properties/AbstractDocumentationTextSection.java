@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.ui.views.properties.definition.DefaultDefinitionSect
  * 
  * @author Simon Templer
  */
-public abstract class AbstractDocumentationTextSection extends
-		DefaultDefinitionSection<Definition<?>> {
+public abstract class AbstractDocumentationTextSection
+		extends DefaultDefinitionSection<Definition<?>> {
 
 	private Text descriptionText;
 
@@ -51,11 +51,11 @@ public abstract class AbstractDocumentationTextSection extends
 		FormData data;
 
 		if (useMultilineText()) {
-			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 					SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		}
 		else {
-			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+			descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 					SWT.SINGLE | SWT.BORDER);
 		}
 		descriptionText.setEditable(false);
@@ -71,7 +71,7 @@ public abstract class AbstractDocumentationTextSection extends
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		descriptionText.setLayoutData(data);
 
-		label = getWidgetFactory().createCLabel(composite, getDocumentationLabel()); //$NON-NLS-1$
+		label = getWidgetFactory().createCLabel(composite, getDocumentationLabel()); // $NON-NLS-1$
 		data = new FormData();
 		data.left = new FormAttachment(0, 0);
 		data.right = new FormAttachment(descriptionText, -ITabbedPropertyConstants.HSPACE);
@@ -102,8 +102,7 @@ public abstract class AbstractDocumentationTextSection extends
 	 */
 	@Override
 	public void refresh() {
-		DocumentationService ds = (DocumentationService) PlatformUI.getWorkbench().getService(
-				DocumentationService.class);
+		DocumentationService ds = PlatformUI.getWorkbench().getService(DocumentationService.class);
 
 		Documentation doc = ds.getDocumentation(getDefinition());
 

@@ -26,8 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import com.google.common.io.InputSupplier;
-import com.google.common.io.OutputSupplier;
+import eu.esdihumboldt.util.io.InputSupplier;
+import eu.esdihumboldt.util.io.OutputSupplier;
 
 /**
  * I/O supplier based on a {@link File}
@@ -36,8 +36,8 @@ import com.google.common.io.OutputSupplier;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public class FileIOSupplier implements LocatableInputSupplier<InputStream>,
-		LocatableOutputSupplier<OutputStream> {
+public class FileIOSupplier
+		implements LocatableInputSupplier<InputStream>, LocatableOutputSupplier<OutputStream> {
 
 	private final File file;
 	private final URI usedURI;

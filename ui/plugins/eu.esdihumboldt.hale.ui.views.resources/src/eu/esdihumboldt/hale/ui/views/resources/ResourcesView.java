@@ -49,8 +49,7 @@ public class ResourcesView extends PropertiesViewPart {
 		viewer.setContentProvider(new ResourcesContentProvider());
 		viewer.setLabelProvider(new ResourcesLabelProvider());
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		ps.addListener(projectServiceListener = new ProjectServiceAdapter() {
 
@@ -109,8 +108,7 @@ public class ResourcesView extends PropertiesViewPart {
 	 * Update the resource viewer input.
 	 */
 	protected void update() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps != null) {
 			viewer.setInput(ps.getResources());
 		}
@@ -126,8 +124,7 @@ public class ResourcesView extends PropertiesViewPart {
 
 	@Override
 	public void dispose() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (projectServiceListener != null) {
 			ps.removeListener(projectServiceListener);
 		}

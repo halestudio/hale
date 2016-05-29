@@ -72,11 +72,11 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			styleImage = InstanceStylePlugin.getImageDescriptor("/icons/styles.gif").createImage(); //$NON-NLS-1$
 		}
 
-		setTitle(MessageFormat.format(Messages.FeatureStyleDialog_Title, type.getName()
-				.getLocalPart()));
+		setTitle(MessageFormat.format(Messages.FeatureStyleDialog_Title,
+				type.getName().getLocalPart()));
 		setImage(styleImage);
 
-		styles = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		styles = PlatformUI.getWorkbench().getService(StyleService.class);
 	}
 
 	/**
@@ -104,11 +104,11 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 			try {
 				temp = oldPage.getStyle(false);
 			} catch (Exception e) {
-				if (MessageDialog.openConfirm(
-						getShell(),
-						Messages.FeatureStyleDialog_SwitchStyleTitle,
-						MessageFormat.format(Messages.FeatureStyleDialog_SwitchStyleDescription,
-								e.getMessage()))) {
+				if (MessageDialog
+						.openConfirm(getShell(), Messages.FeatureStyleDialog_SwitchStyleTitle,
+								MessageFormat.format(
+										Messages.FeatureStyleDialog_SwitchStyleDescription,
+										e.getMessage()))) {
 					// revert changes
 					temp = null;
 				}
@@ -191,9 +191,7 @@ public class FeatureStyleDialog extends MultiPageDialog<FeatureStylePage> {
 		try {
 			temp = page.getStyle(true);
 		} catch (Exception e) {
-			MessageDialog.openError(
-					getShell(),
-					Messages.FeatureStyleDialog_ErrorMessageTitle,
+			MessageDialog.openError(getShell(), Messages.FeatureStyleDialog_ErrorMessageTitle,
 					MessageFormat.format(Messages.FeatureStyleDialog_ErrorMessageDescription,
 							e.getMessage()));
 			return false;

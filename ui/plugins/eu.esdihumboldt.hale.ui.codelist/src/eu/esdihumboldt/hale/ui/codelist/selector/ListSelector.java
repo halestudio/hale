@@ -73,8 +73,8 @@ public class ListSelector implements CodeListSelector {
 		gridLayout.horizontalSpacing = 0;
 		page.setLayout(gridLayout);
 
-		CodeListService codeListService = (CodeListService) PlatformUI.getWorkbench().getService(
-				CodeListService.class);
+		CodeListService codeListService = PlatformUI.getWorkbench()
+				.getService(CodeListService.class);
 
 		codeLists = codeListService.getCodeLists();
 		Collections.sort(codeLists, new Comparator<CodeList>() {
@@ -92,15 +92,15 @@ public class ListSelector implements CodeListSelector {
 		});
 
 		// search field
-		String tip = Messages.ListSelector_0; //$NON-NLS-1$
+		String tip = Messages.ListSelector_0; // $NON-NLS-1$
 
 		Label searchLabel = new Label(page, SWT.NONE);
-		searchLabel.setText(Messages.ListSelector_1); //$NON-NLS-1$
+		searchLabel.setText(Messages.ListSelector_1); // $NON-NLS-1$
 		searchLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		searchLabel.setToolTipText(tip);
 
-		final Text searchText = new Text(page, SWT.SINGLE | SWT.BORDER | SWT.SEARCH
-				| SWT.ICON_CANCEL);
+		final Text searchText = new Text(page,
+				SWT.SINGLE | SWT.BORDER | SWT.SEARCH | SWT.ICON_CANCEL);
 		searchText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		searchText.setToolTipText(tip);
 
@@ -134,8 +134,8 @@ public class ListSelector implements CodeListSelector {
 		listViewer.getControl().setLayoutData(layoutData);
 
 		// info
-		final Text info = new Text(page, SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP
-				| SWT.V_SCROLL);
+		final Text info = new Text(page,
+				SWT.BORDER | SWT.MULTI | SWT.READ_ONLY | SWT.WRAP | SWT.V_SCROLL);
 
 		layoutData = new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1);
 		layoutData.widthHint = SWT.DEFAULT;
@@ -155,11 +155,11 @@ public class ListSelector implements CodeListSelector {
 						info.setText(desc);
 					}
 					else {
-						info.setText(Messages.ListSelector_4); //$NON-NLS-1$
+						info.setText(Messages.ListSelector_4); // $NON-NLS-1$
 					}
 				}
 				else {
-					info.setText(Messages.ListSelector_5); //$NON-NLS-1$
+					info.setText(Messages.ListSelector_5); // $NON-NLS-1$
 				}
 			}
 		});

@@ -24,9 +24,8 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**

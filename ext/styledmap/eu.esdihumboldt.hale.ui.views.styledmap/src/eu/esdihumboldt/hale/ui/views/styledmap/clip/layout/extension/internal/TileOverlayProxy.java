@@ -48,8 +48,7 @@ public class TileOverlayProxy implements PainterProxy {
 	 */
 	@Override
 	public void setClip(Clip clip) {
-		ITileOverlayService tos = (ITileOverlayService) PlatformUI.getWorkbench().getService(
-				ITileOverlayService.class);
+		ITileOverlayService tos = PlatformUI.getWorkbench().getService(ITileOverlayService.class);
 
 		for (TileOverlayPainter painter : tos.getActiveObjects()) {
 			TileOverlayFactory def = tos.getDefinition(painter);
@@ -71,8 +70,7 @@ public class TileOverlayProxy implements PainterProxy {
 	 */
 	@Override
 	public void enable() {
-		ITileOverlayService tos = (ITileOverlayService) PlatformUI.getWorkbench().getService(
-				ITileOverlayService.class);
+		ITileOverlayService tos = PlatformUI.getWorkbench().getService(ITileOverlayService.class);
 		TileOverlayFactory def = tos.getFactory(id);
 		if (def != null) {
 			tos.activate(def);
@@ -84,8 +82,7 @@ public class TileOverlayProxy implements PainterProxy {
 	 */
 	@Override
 	public void disable() {
-		ITileOverlayService tos = (ITileOverlayService) PlatformUI.getWorkbench().getService(
-				ITileOverlayService.class);
+		ITileOverlayService tos = PlatformUI.getWorkbench().getService(ITileOverlayService.class);
 		TileOverlayFactory def = tos.getFactory(id);
 		if (def != null) {
 			tos.deactivate(def);
@@ -97,8 +94,7 @@ public class TileOverlayProxy implements PainterProxy {
 	 */
 	@Override
 	public String getName() {
-		ITileOverlayService tos = (ITileOverlayService) PlatformUI.getWorkbench().getService(
-				ITileOverlayService.class);
+		ITileOverlayService tos = PlatformUI.getWorkbench().getService(ITileOverlayService.class);
 		TileOverlayFactory def = tos.getFactory(id);
 		if (def != null) {
 			return def.getDisplayName();

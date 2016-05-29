@@ -50,9 +50,9 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
  * 
  * @author Patrick Lieb
  */
-public class SaveConfigurationInstanceExportPage extends
-		AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard> implements
-		ExportConfigurations {
+public class SaveConfigurationInstanceExportPage
+		extends AbstractConfigurationPage<InstanceWriter, SaveConfigurationInstanceExportWizard>
+		implements ExportConfigurations {
 
 	private Text name;
 	private Text description;
@@ -201,14 +201,14 @@ public class SaveConfigurationInstanceExportPage extends
 		setErrorMessage(null);
 
 		// configuration with that name already present?
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		IOConfiguration conf = ps.getExportConfiguration(confName);
 		if (conf == null) {
 			setMessage(null);
 		}
 		else {
-			setMessage("Overrides an existing configuration with the same name", DialogPage.WARNING);
+			setMessage("Overrides an existing configuration with the same name",
+					DialogPage.WARNING);
 		}
 		setPageComplete(true);
 	}

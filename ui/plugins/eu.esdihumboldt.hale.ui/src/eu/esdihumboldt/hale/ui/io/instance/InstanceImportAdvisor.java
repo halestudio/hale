@@ -96,8 +96,7 @@ public class InstanceImportAdvisor extends DefaultIOAdvisor<InstanceReader> {
 		}
 
 		// apply sampling before adding to the instance service
-		InstanceViewService ivs = (InstanceViewService) PlatformUI.getWorkbench().getService(
-				InstanceViewService.class);
+		InstanceViewService ivs = PlatformUI.getWorkbench().getService(InstanceViewService.class);
 		if (ivs != null) {
 			instances = ivs.sample(instances);
 		}

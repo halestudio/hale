@@ -33,6 +33,7 @@ import org.eclipse.osgi.framework.util.Headers;
  * </p>
  * 
  */
+@SuppressWarnings("restriction")
 public class RegistryStrategyNonOSGI extends RegistryStrategy {
 
 	private Object token;

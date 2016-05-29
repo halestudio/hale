@@ -38,6 +38,7 @@ public class MemoryDocumentTest extends AbstractDocumentTest {
 	/**
 	 * @see AbstractDocumentTest#init()
 	 */
+	@SuppressWarnings("resource")
 	@Override
 	public void init() {
 //		assertNotNull(EmbeddedOrientDB.getServer()); // to activate the embedded DB

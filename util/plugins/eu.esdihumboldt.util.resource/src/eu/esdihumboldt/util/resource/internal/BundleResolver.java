@@ -26,10 +26,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import com.google.common.io.InputSupplier;
-
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.ResourceNotFoundException;
 import eu.esdihumboldt.util.resource.ResourceResolver;
 
@@ -100,8 +99,8 @@ public class BundleResolver implements ResourceResolver {
 			// no OSGi
 			final ClassLoader loader = getClass().getClassLoader(); // ClassLoader.getSystemClassLoader();
 			String pathCandidate = uri.getPath();
-			final String path = (pathCandidate != null && pathCandidate.startsWith("/")) ? (pathCandidate
-					.substring(1)) : (pathCandidate);
+			final String path = (pathCandidate != null && pathCandidate.startsWith("/"))
+					? (pathCandidate.substring(1)) : (pathCandidate);
 			Enumeration<URL> resources;
 			try {
 				resources = loader.getResources(path);

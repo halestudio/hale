@@ -23,8 +23,8 @@ import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.io.InputSupplier;
 
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.internal.ResolverConfiguration;
 import eu.esdihumboldt.util.resource.internal.ResolverExtension;
 
@@ -49,7 +49,8 @@ public abstract class Resources implements ResourcesConstants {
 	 * @return an input supplier for the resource or <code>null</code> if it was
 	 *         not found through resource resolvers
 	 */
-	public static final InputSupplier<? extends InputStream> tryResolve(URI uri, String resourceType) {
+	public static final InputSupplier<? extends InputStream> tryResolve(URI uri,
+			String resourceType) {
 		init();
 
 		if (resourceType != null) {
@@ -89,7 +90,8 @@ public abstract class Resources implements ResourcesConstants {
 			resolvers = new HashMap<String, Multimap<String, ResourceResolver>>();
 
 			// register resolvers
-			for (ResolverConfiguration resolverConf : ResolverExtension.getInstance().getElements()) {
+			for (ResolverConfiguration resolverConf : ResolverExtension.getInstance()
+					.getElements()) {
 				String resourceType = resolverConf.getResourceTypeId();
 
 				Multimap<String, ResourceResolver> typeResolvers = resolvers.get(resourceType);

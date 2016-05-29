@@ -43,8 +43,7 @@ public class MarkTypeUnmappableHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
-			SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService schemaService = PlatformUI.getWorkbench().getService(SchemaService.class);
 			Iterator<?> it = ((IStructuredSelection) selection).iterator();
 			List<TypeDefinition> sourceTypes = new ArrayList<>();
 			List<TypeDefinition> targetTypes = new ArrayList<>();

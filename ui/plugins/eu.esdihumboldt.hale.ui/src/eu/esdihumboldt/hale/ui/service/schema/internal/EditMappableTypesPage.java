@@ -71,8 +71,7 @@ public class EditMappableTypesPage extends WizardPage {
 			if (element instanceof String)
 				return true;
 			TypeDefinition type = (TypeDefinition) element;
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			if (as.getAlignment().getCells(type, spaceID).size() > 0)
 				return false;
 			return true;
@@ -136,8 +135,8 @@ public class EditMappableTypesPage extends WizardPage {
 		// create filtered tree
 		PatternFilter patternFilter = new PatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.BORDER | SWT.CHECK | SWT.H_SCROLL
-				| SWT.V_SCROLL, patternFilter, true) {
+		FilteredTree tree = new FilteredTree(parent,
+				SWT.BORDER | SWT.CHECK | SWT.H_SCROLL | SWT.V_SCROLL, patternFilter, true) {
 
 			@Override
 			protected TreeViewer doCreateTreeViewer(Composite parent, int style) {
@@ -223,7 +222,8 @@ public class EditMappableTypesPage extends WizardPage {
 				}
 				else {
 //					if (mappedTypeFilter.select(viewer, null, event.getElement()))
-					checkStateOfTypeChanged((TypeDefinition) event.getElement(), event.getChecked());
+					checkStateOfTypeChanged((TypeDefinition) event.getElement(),
+							event.getChecked());
 //					else if (!event.getChecked())
 //						viewer.setChecked(event.getElement(), true);
 				}

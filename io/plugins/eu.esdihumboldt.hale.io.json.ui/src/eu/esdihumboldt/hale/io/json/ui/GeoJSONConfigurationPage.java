@@ -65,8 +65,8 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
  * 
  * @author Kai Schwierczek
  */
-public class GeoJSONConfigurationPage extends
-		AbstractConfigurationPage<GeoJSONInstanceWriter, IOWizard<GeoJSONInstanceWriter>> {
+public class GeoJSONConfigurationPage
+		extends AbstractConfigurationPage<GeoJSONInstanceWriter, IOWizard<GeoJSONInstanceWriter>> {
 
 	private final GeoJSONConfig config = new GeoJSONConfig();
 
@@ -86,7 +86,8 @@ public class GeoJSONConfigurationPage extends
 	 */
 	@Override
 	public boolean updateConfiguration(GeoJSONInstanceWriter provider) {
-		provider.setParameter(GeoJSONInstanceWriter.PARAM_GEOMETRY_CONFIG, new ComplexValue(config));
+		provider.setParameter(GeoJSONInstanceWriter.PARAM_GEOMETRY_CONFIG,
+				new ComplexValue(config));
 		return true;
 	}
 
@@ -97,8 +98,8 @@ public class GeoJSONConfigurationPage extends
 	protected void createContent(final Composite page) {
 		page.setLayout(new GridLayout(1, false));
 		Label explanation = new Label(page, SWT.NONE);
-		explanation
-				.setText("If a geometry is set to \"none\", instances will still be included as GeoJSON features,\nbut without default geometries.");
+		explanation.setText(
+				"If a geometry is set to \"none\", instances will still be included as GeoJSON features,\nbut without default geometries.");
 		final DynamicScrolledComposite sc = new DynamicScrolledComposite(page, SWT.V_SCROLL);
 		sc.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		Composite parent = new Composite(sc, SWT.NONE);
@@ -107,10 +108,9 @@ public class GeoJSONConfigurationPage extends
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).spacing(6, 12)
 				.applyTo(parent);
 
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 
 		Set<TypeDefinition> types = is.getInstanceTypes(DataSet.TRANSFORMED);
 

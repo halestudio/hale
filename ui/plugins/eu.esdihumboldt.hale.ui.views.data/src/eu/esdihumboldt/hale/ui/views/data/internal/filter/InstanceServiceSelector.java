@@ -162,8 +162,8 @@ public class InstanceServiceSelector implements InstanceSelector {
 			});
 
 			// filter field
-			filterField = new CQLFilterField((selectedType == null) ? (null) : (selectedType),
-					this, SWT.NONE, spaceID);
+			filterField = new CQLFilterField((selectedType == null) ? (null) : (selectedType), this,
+					SWT.NONE, spaceID);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new PropertyChangeListener() {
 
@@ -218,8 +218,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 			}
 
 			// service listeners
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 			ss.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
 
 				@Override
@@ -260,8 +259,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 				}
 			});
 
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 			is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 				@Override
@@ -294,8 +292,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 
 			DataSet dataset = (space == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
 					: (DataSet.TRANSFORMED);
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 
 			// get instance types
 			List<TypeDefinition> filteredTypes = new ArrayList<TypeDefinition>(
@@ -303,10 +300,9 @@ public class InstanceServiceSelector implements InstanceSelector {
 
 			if (filteredTypes.isEmpty()) {
 				// if there are no instances present, show all types
-				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-						SchemaService.class);
-				filteredTypes = new ArrayList<TypeDefinition>(ss.getSchemas(space)
-						.getMappingRelevantTypes());
+				SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
+				filteredTypes = new ArrayList<TypeDefinition>(
+						ss.getSchemas(space).getMappingRelevantTypes());
 			}
 
 			typeDefinitions.setInput(filteredTypes);
@@ -363,8 +359,7 @@ public class InstanceServiceSelector implements InstanceSelector {
 				Integer max = (Integer) ((IStructuredSelection) count.getSelection())
 						.getFirstElement();
 
-				InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-						InstanceService.class);
+				InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 
 				List<Instance> instanceList = new ArrayList<Instance>();
 				DataSet dataset = (space == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
@@ -384,8 +379,8 @@ public class InstanceServiceSelector implements InstanceSelector {
 					String metaFilter = filterExpression.substring("id:".length());
 					String[] values = metaFilter.split(",");
 
-					filter = new MetaFilter(type, InstanceMetadata.METADATA_ID, new HashSet<>(
-							Arrays.asList(values)));
+					filter = new MetaFilter(type, InstanceMetadata.METADATA_ID,
+							new HashSet<>(Arrays.asList(values)));
 				}
 				else if (filterExpression.startsWith("source:")) {
 					// XXX meta source ID "hack"
@@ -438,10 +433,8 @@ public class InstanceServiceSelector implements InstanceSelector {
 		 */
 		@Override
 		public void dispose() {
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 
 			ss.removeSchemaServiceListener(schemaListener);
 			is.removeListener(instanceListener);

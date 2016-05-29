@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.supplier;
 
-import com.google.common.io.OutputSupplier;
+import eu.esdihumboldt.util.io.OutputSupplier;
 
 /**
  * Locatable {@link OutputSupplier} providing an URI as location

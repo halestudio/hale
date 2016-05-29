@@ -455,8 +455,8 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		private final Map<JoinCondition, Button> removeConditionButtons = new HashMap<>();
 
 		protected ConditionPage(int typeIndex) {
-			super("join" + typeIndex, "Join "
-					+ types.get(typeIndex).getDefinition().getDisplayName(), null);
+			super("join" + typeIndex,
+					"Join " + types.get(typeIndex).getDefinition().getDisplayName(), null);
 			setDescription("Please select join conditions for type "
 					+ types.get(typeIndex).getDefinition().getDisplayName());
 			setPageComplete(false);
@@ -494,22 +494,23 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			baseViewer = createTypeViewer(main, types.subList(0, typeIndex));
 
 			joinText = new Label(main, SWT.NONE);
-			joinText.setText("Join type " + types.get(typeIndex).getDefinition().getDisplayName()
-					+ " on:");
+			joinText.setText(
+					"Join type " + types.get(typeIndex).getDefinition().getDisplayName() + " on:");
 			joinText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
 			conditionViewer = createConditionViewer(main, conditions);
 		}
 
-		private TableViewer createConditionViewer(Composite parent, Collection<JoinCondition> input) {
+		private TableViewer createConditionViewer(Composite parent,
+				Collection<JoinCondition> input) {
 			parent = new Composite(parent, SWT.NONE);
 			TableColumnLayout layout = new TableColumnLayout();
 			parent.setLayout(layout);
 			GridData gridData = new GridData(SWT.FILL, SWT.BOTTOM, true, true, 3, 1);
 			gridData.minimumHeight = 80;
 			parent.setLayoutData(gridData);
-			TableViewer viewer = new TableViewer(parent, SWT.FULL_SELECTION | SWT.H_SCROLL
-					| SWT.V_SCROLL | SWT.BORDER);
+			TableViewer viewer = new TableViewer(parent,
+					SWT.FULL_SELECTION | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 
 			viewer.getTable().setHeaderVisible(true);
 			viewer.getTable().setLinesVisible(true);
@@ -625,8 +626,8 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 						button = removeConditionButtons.get(condition);
 					else {
 						button = new Button((Composite) cell.getViewerRow().getControl(), SWT.NONE);
-						button.setImage(CommonSharedImages.getImageRegistry().get(
-								CommonSharedImages.IMG_REMOVE));
+						button.setImage(CommonSharedImages.getImageRegistry()
+								.get(CommonSharedImages.IMG_REMOVE));
 						removeConditionButtons.put(condition, button);
 						button.addSelectionListener(new SelectionAdapter() {
 
@@ -649,11 +650,12 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 			return viewer;
 		}
 
-		private TreeViewer createTypeViewer(Composite parent, Collection<TypeEntityDefinition> input) {
+		private TreeViewer createTypeViewer(Composite parent,
+				Collection<TypeEntityDefinition> input) {
 			PatternFilter patternFilter = new SchemaPatternFilter();
 			patternFilter.setIncludeLeadingWildcard(true);
-			final FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.SINGLE
-					| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+			final FilteredTree filteredTree = new TreePathFilteredTree(parent,
+					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
 			gridData.minimumHeight = 160;
 			gridData.minimumWidth = 140;
@@ -662,7 +664,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 			viewer.setComparator(new DefinitionComparator());
 
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+			EntityDefinitionService eds = PlatformUI.getWorkbench()
 					.getService(EntityDefinitionService.class);
 			viewer.setContentProvider(new TreePathProviderAdapter(
 					new EntityTypeIterableContentProvider(eds, SchemaSpaceID.SOURCE)));
@@ -745,8 +747,8 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 						&& rightDef instanceof PropertyEntityDefinition) {
 					PropertyEntityDefinition leftProp = (PropertyEntityDefinition) leftDef;
 					PropertyEntityDefinition rightProp = (PropertyEntityDefinition) rightDef;
-					if (leftProp.getDefinition().getPropertyType()
-							.getConstraint(HasValueFlag.class).isEnabled()
+					if (leftProp.getDefinition().getPropertyType().getConstraint(HasValueFlag.class)
+							.isEnabled()
 							&& rightProp.getDefinition().getPropertyType()
 									.getConstraint(HasValueFlag.class).isEnabled())
 						enable = true;
@@ -784,7 +786,8 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 				// chain.
 				// For this purpose use the validate method of JoinParameter...
 				if (conditions.size() > 1 && createJoinParameter(typeIndex).validate() != null)
-					setErrorMessage("Conditions depend on different types which do not depend on each other.");
+					setErrorMessage(
+							"Conditions depend on different types which do not depend on each other.");
 				else {
 					pageComplete = true;
 					setErrorMessage(null);

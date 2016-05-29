@@ -48,13 +48,14 @@ public class OpenWebTemplate extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		final Display display = HandlerUtil.getActiveShell(event).getDisplay();
 
-		ProgressMonitorDialog taskDlg = new ProgressMonitorDialog(HandlerUtil.getActiveShell(event));
+		ProgressMonitorDialog taskDlg = new ProgressMonitorDialog(
+				HandlerUtil.getActiveShell(event));
 		try {
 			taskDlg.run(true, false, new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
 					monitor.beginTask("Downloading template list", IProgressMonitor.UNKNOWN);
 
 					// load templates
@@ -74,13 +75,13 @@ public class OpenWebTemplate extends AbstractHandler {
 
 							@Override
 							public void run() {
-								WebTemplatesDialog dlg = new WebTemplatesDialog(display
-										.getActiveShell(), templates);
+								WebTemplatesDialog dlg = new WebTemplatesDialog(
+										display.getActiveShell(), templates);
 								if (dlg.open() == WebTemplatesDialog.OK) {
 									WebTemplate template = dlg.getObject();
 									if (template != null) {
-										ProjectService ps = (ProjectService) PlatformUI
-												.getWorkbench().getService(ProjectService.class);
+										ProjectService ps = PlatformUI.getWorkbench()
+												.getService(ProjectService.class);
 										ps.load(template.getProject());
 									}
 								}

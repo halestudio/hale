@@ -100,8 +100,8 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 
 			@Override
 			protected TypeDefinition getTargetType() {
-				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-						.getUnfinishedCell().getTarget());
+				Property targetProperty = (Property) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetProperty != null) {
 					return targetProperty.getDefinition().getDefinition().getPropertyType();
 				}
@@ -109,14 +109,15 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 			}
 		};
 
-		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
-				.getServiceProvider().getService(HelperFunctionsService.class));
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(
+				HaleUI.getServiceProvider().getService(HelperFunctionsService.class));
 
-		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
-				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-				BINDING_TRANSFORMATION_CONTEXT, BINDING_HELPER_FUNCTIONS), ImmutableList.of(
-				targetCompletions, functionCompletions));
+		return new SimpleGroovySourceViewerConfiguration(colorManager,
+				ImmutableList.of(BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES,
+						BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+						BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT,
+						BINDING_HELPER_FUNCTIONS),
+				ImmutableList.of(targetCompletions, functionCompletions));
 	}
 
 	@Override
@@ -139,8 +140,8 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 			}
 		}
 
-		Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-				.getUnfinishedCell().getTarget());
+		Property targetProperty = (Property) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 		if (targetProperty == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -154,8 +155,7 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 		boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		GroovyService gs = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
@@ -180,8 +180,8 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 			}
 			script = gs.parseScript(document, binding);
 
-			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
-					.getDefinition().getPropertyType(), gs);
+			GroovyTransformation.evaluate(script, builder,
+					targetProperty.getDefinition().getDefinition().getPropertyType(), gs);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}
@@ -242,8 +242,8 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 				Cell cell = getWizard().getUnfinishedCell();
 
 				boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
-						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(
-						Boolean.class);
+						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false))
+						.as(Boolean.class);
 
 				for (EntityDefinition variable : getVariables()) {
 					if (variable.getDefinition() instanceof PropertyDefinition) {
@@ -257,12 +257,12 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 						else {
 							// use dummy type with only the
 							// binding/HasValueFlag copied
-							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(prop
-									.getPropertyType().getName());
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									Binding.class));
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									HasValueFlag.class));
+							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(
+									prop.getPropertyType().getName());
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(Binding.class));
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(HasValueFlag.class));
 							propertyType = crippledType;
 						}
 
@@ -285,11 +285,11 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-						.getUnfinishedCell().getTarget());
+				Property targetProperty = (Property) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetProperty != null) {
-					return Collections.singleton(targetProperty.getDefinition().getDefinition()
-							.getPropertyType());
+					return Collections.singleton(
+							targetProperty.getDefinition().getDefinition().getPropertyType());
 				}
 				return Collections.emptyList();
 			}

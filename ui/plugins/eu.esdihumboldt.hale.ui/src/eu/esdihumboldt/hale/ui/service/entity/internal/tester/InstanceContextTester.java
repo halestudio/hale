@@ -111,7 +111,8 @@ public class InstanceContextTester extends PropertyTester {
 			return testAllowAddCondition((EntityDefinition) receiver);
 		}
 
-		if (property.equals(PROPERTY_ALLOW_EDIT_CONDITION) && receiver instanceof EntityDefinition) {
+		if (property.equals(PROPERTY_ALLOW_EDIT_CONDITION)
+				&& receiver instanceof EntityDefinition) {
 			return testAllowEditCondition((EntityDefinition) receiver);
 		}
 
@@ -147,8 +148,7 @@ public class InstanceContextTester extends PropertyTester {
 		}
 
 		// check if there are any alignment cells related to that context
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		if (AlignmentUtil.entityOrChildMapped(entityDef, as.getAlignment())) {
 			return false;
 		}

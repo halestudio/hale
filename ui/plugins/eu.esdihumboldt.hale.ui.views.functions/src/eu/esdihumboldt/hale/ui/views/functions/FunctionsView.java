@@ -73,10 +73,10 @@ public class FunctionsView extends PropertiesViewPart {
 				@Override
 				public boolean select(Viewer viewer, Object parentElement, Object element) {
 					if (element instanceof FunctionDefinition<?>) {
-						if (((CompatibilityService) PlatformUI.getWorkbench().getService(
-								CompatibilityService.class)).getCurrent().supportsFunction(
-								((FunctionDefinition<?>) element).getId(),
-								HaleUI.getServiceProvider())) {
+						if (PlatformUI.getWorkbench().getService(CompatibilityService.class)
+								.getCurrent()
+								.supportsFunction(((FunctionDefinition<?>) element).getId(),
+										HaleUI.getServiceProvider())) {
 							return true;
 						}
 						else
@@ -129,33 +129,33 @@ public class FunctionsView extends PropertiesViewPart {
 
 		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 		IAction filterAction = new FilterAction("Filter incompatible functions",
-				Action.AS_CHECK_BOX, CommonSharedImages.getImageRegistry().getDescriptor(
-						"IMG_FILTER_CLEAR"));
+				Action.AS_CHECK_BOX,
+				CommonSharedImages.getImageRegistry().getDescriptor("IMG_FILTER_CLEAR"));
 		manager.add(filterAction);
 		filterAction.setChecked(true);
 		filterAction.run();
 
-		CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
-				CompatibilityService.class);
-		cs.addListener(compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
-
-			@Override
-			public void currentObjectChanged(CompatibilityMode current,
-					CompatibilityModeFactory definition) {
-				// refresh the viewer when the compatibility mode is changed
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
+		CompatibilityService cs = PlatformUI.getWorkbench().getService(CompatibilityService.class);
+		cs.addListener(
+				compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
 
 					@Override
-					public void run() {
-						viewer.refresh();
+					public void currentObjectChanged(CompatibilityMode current,
+							CompatibilityModeFactory definition) {
+						// refresh the viewer when the compatibility mode is
+						// changed
+						final Display display = PlatformUI.getWorkbench().getDisplay();
+						display.syncExec(new Runnable() {
+
+							@Override
+							public void run() {
+								viewer.refresh();
+							}
+						});
 					}
 				});
-			}
-		});
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.addListener(alignListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -203,14 +203,13 @@ public class FunctionsView extends PropertiesViewPart {
 	@Override
 	public void dispose() {
 		if (compListener != null) {
-			CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
-					CompatibilityService.class);
+			CompatibilityService cs = PlatformUI.getWorkbench()
+					.getService(CompatibilityService.class);
 			cs.removeListener(compListener);
 		}
 
 		if (alignListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.removeListener(alignListener);
 		}
 

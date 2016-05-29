@@ -37,7 +37,7 @@ public class ToggleInstanceValidationState extends State {
 	 * Constructor.
 	 */
 	public ToggleInstanceValidationState() {
-		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		final InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 
 		listener = new InstanceValidationListener() {
@@ -59,7 +59,7 @@ public class ToggleInstanceValidationState extends State {
 
 	@Override
 	public void dispose() {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 		ivs.removeListener(listener);
 		super.dispose();
