@@ -619,6 +619,55 @@ def packageServer(productOutputPath) {
 				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
             }
         }
+
+        // Docker image
+        // right now mainly intended for Infocenter product
+        if (Helper.buildForLinux(project) && project.ext.dockerImageName) {
+            def dockerDir = new File(buildDir, 'docker-build')
+
+            // copy artifact
+            copy {
+                from packageFileName
+                into dockerDir
+            }
+
+            // create Dockerfile
+            new File(dockerDir, 'Dockerfile').text = """
+                |FROM ubuntu:16.04
+                |ADD ${packageName}.tar.gz /opt
+                |RUN sed -i "s/-Dserver_port=.*/-Dserver_port=80/" /opt/${packageName}/${launcherName}.ini && \\
+                |  sed -i "s/-Dserver_host=.*/-Dserver_host=0.0.0.0/" /opt/${packageName}/${launcherName}.ini
+                |EXPOSE 80
+                |WORKDIR /opt/${packageName}
+                |CMD ./${launcherName}
+            """.trim().stripMargin()
+
+            // build docker image
+            def buildProcess = ([
+                'docker',
+                'build',
+                '-t',
+                "${project.ext.dockerImageName}:${project.version}",
+                dockerDir.absolutePath as String
+            ]).execute()
+            buildProcess.waitForProcessOutput(System.out, System.err)
+            if (buildProcess.exitValue() != 0) {
+                throw new IllegalStateException("Building docker image failed with exit code ${buildProcess.exitValue()}")
+            }
+
+            // push docker image
+            if (project.ext.publishProduct == true) {
+                def pushProcess = ([
+                    'docker',
+                    'push',
+                    "${project.ext.dockerImageName}:${project.version}",
+                ]).execute()
+                pushProcess.waitForProcessOutput(System.out, System.err)
+                if (pushProcess.exitValue() != 0) {
+                    throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
+                }
+            }
+        }
     }
 }
 

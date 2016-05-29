@@ -189,6 +189,12 @@ class CommandLineBuilder {
 		@Parameter(names = [ '--no-installer' ], description = 'For Windows builds create a ZIP package instead of an installer')
 		boolean noInstaller = false;
 
+        @Parameter(names = [ '--docker-image' ], description = 'Image name for Docker image to create, only applicable for Linux server products')
+        String dockerImage
+
+        @Parameter(names = [ '--publish' ], description = 'For Docker builds publish the Docker image, only applicable for Linux server products')
+        boolean publish = false;
+
         abstract String getType()
 
         def run() {
@@ -233,6 +239,18 @@ class CommandLineBuilder {
             if (lang != null) {
                 project.ext.language = lang
             }
+
+            // docker
+            if (dockerImage) {
+                project.ext.dockerImageName = dockerImage
+            }
+            else {
+                // docker image name specified for product
+                project.ext.dockerImageName = project.ext.productImages[productName]
+            }
+            // publish flag
+            project.ext.publishProduct = publish
+
             project.tasks['cli'].dependsOn(project.tasks['packageProduct'])
         }
     }

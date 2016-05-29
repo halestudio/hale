@@ -38,5 +38,10 @@ project = {
 			Server: '../server/plugins/eu.esdihumboldt.hale.server.application/Server.product',
 			Templates: '../server/plugins/eu.esdihumboldt.hale.server.application/Templates.product'
 		]
+
+		// Docker image settings
+		productImages = [
+			Infocenter: 'wetransform/hale-infocenter'
+		]
 	}
 }
