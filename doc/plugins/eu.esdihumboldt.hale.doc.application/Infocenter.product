@@ -7,9 +7,12 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-clean</programArgs>
-      <vmArgs>-Dserver_port=8082 -Dserver_host=localhost</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+      <programArgs>-clean
+      </programArgs>
+      <vmArgs>-Dserver_port=8082 -Dserver_host=localhost
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <launcher name="Infocenter">
@@ -38,8 +41,8 @@
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="javax.el"/>
+      <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
-      <plugin id="javax.servlet3"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="log4j.over.slf4j"/>

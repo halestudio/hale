@@ -181,6 +181,7 @@
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
@@ -269,8 +270,10 @@
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
       <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.annotations"/>
       <plugin id="org.eclipse.e4.core.di.extensions"/>
       <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.emf.xpath"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
       <plugin id="org.eclipse.e4.ui.css.core"/>
       <plugin id="org.eclipse.e4.ui.css.swt"/>
