@@ -31,9 +31,7 @@ class CommandLineBuilder {
     private def integrationStage = new IntegrationStageCommand()
     private def deployArtifacts = new DeployArtifactsCommand()
 	private def installArtifacts = new InstallArtifactsCommand()
-    private def client = new ClientCommand()
-    private def server = new ServerCommand()
-	private def product = new ProductFileCommand()
+    private def product = new ProductFileCommand()
     private def clean = new CleanCommand()
     private def help = new HelpCommand()
 	private def site = new SiteCommand()
@@ -49,9 +47,7 @@ class CommandLineBuilder {
         jc.addCommand('integrationStage', integrationStage)
         jc.addCommand('deployArtifacts', deployArtifacts)
 		jc.addCommand('installArtifacts', installArtifacts)
-        jc.addCommand('client', client)
-        jc.addCommand('server', server)
-		jc.addCommand('product', product)
+        jc.addCommand('product', product)
         jc.addCommand('clean', clean)
         jc.addCommand('help', help)
 		jc.addCommand('site', site)
@@ -76,11 +72,7 @@ class CommandLineBuilder {
         }
 
         def cmd = jc.getParsedCommand()
-        if (cmd == 'client') {
-            client.run()
-        } else if (cmd == 'server') {
-            server.run()
-        } else if (cmd == 'clean') {
+        if (cmd == 'clean') {
             clean.run()
         } else if (cmd == 'help') {
             help.run()

@@ -7,7 +7,8 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-nl en_US -clean -console -consoleLog</programArgs>
+      <programArgs>-nl en_US -clean -console -consoleLog
+      </programArgs>
       <vmArgs>-Declipse.ignoreApp=true
 -Dosgi.noShutdown=true
 -Djetty.home.bundle=org.eclipse.jetty.osgi.boot
@@ -23,8 +24,10 @@
 -Dhale.webapp.loginpage=false
 -Dhale.webapp.breadcrumbs=true
 -Drecaptcha.private=
--Drecaptcha.public=</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Drecaptcha.public=
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
@@ -142,6 +145,7 @@
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webjars" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war"/>
+      <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
