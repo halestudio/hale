@@ -34,8 +34,8 @@ import eu.esdihumboldt.hale.ui.HaleUI;
  * 
  * @author Simon Templer
  */
-public abstract class PropertiesViewPart extends ViewPart implements
-		ITabbedPropertySheetPageContributor {
+public abstract class PropertiesViewPart extends ViewPart
+		implements ITabbedPropertySheetPageContributor {
 
 	/**
 	 * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
@@ -66,6 +66,7 @@ public abstract class PropertiesViewPart extends ViewPart implements
 	/**
 	 * @see WorkbenchPart#getAdapter(Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter.equals(IPropertySheetPage.class)) {

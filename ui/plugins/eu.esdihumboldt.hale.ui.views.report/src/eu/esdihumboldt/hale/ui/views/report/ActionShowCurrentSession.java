@@ -37,9 +37,9 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  */
 public class ActionShowCurrentSession extends Action {
 
-	private TreeViewer _treeViewer;
-	private CurrentSessionFilter sessionFilter = new CurrentSessionFilter();
-	private ReportService repService;
+	private final TreeViewer _treeViewer;
+	private final CurrentSessionFilter sessionFilter = new CurrentSessionFilter();
+	private final ReportService repService;
 
 	/**
 	 * Constructor.
@@ -61,7 +61,7 @@ public class ActionShowCurrentSession extends Action {
 		_treeViewer = treeViewer;
 
 		// get the report service
-		repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService = PlatformUI.getWorkbench().getService(ReportService.class);
 	}
 
 	@Override

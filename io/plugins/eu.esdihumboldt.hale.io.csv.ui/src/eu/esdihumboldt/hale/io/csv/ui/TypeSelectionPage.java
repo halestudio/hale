@@ -93,8 +93,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type:");
 
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		sel = new TypeDefinitionSelector(page, "Select the corresponding schema type",
 				ss.getSchemas(SchemaSpaceID.SOURCE), null);
 		sel.getControl().setLayoutData(

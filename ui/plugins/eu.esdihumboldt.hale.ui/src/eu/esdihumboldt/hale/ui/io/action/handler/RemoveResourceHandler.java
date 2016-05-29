@@ -49,15 +49,16 @@ public class RemoveResourceHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 
 			if (element instanceof Resource) {
 				Resource resource = (Resource) element;
 
 				// retrieve action UI advisor
-				ActionUI actionUI = ActionUIExtension.getInstance().findActionUI(
-						resource.getActionId());
+				ActionUI actionUI = ActionUIExtension.getInstance()
+						.findActionUI(resource.getActionId());
 				if (actionUI != null) {
 					IOAction action = IOActionExtension.getInstance().get(resource.getActionId());
 					ActionUIAdvisor<?> advisor = actionUI.getUIAdvisor();
@@ -81,13 +82,13 @@ public class RemoveResourceHandler extends AbstractHandler {
 
 						String message;
 						if (name == null) {
-							message = MessageFormat.format(
-									"Do you really want to remove this {0}?", resourceType);
+							message = MessageFormat.format("Do you really want to remove this {0}?",
+									resourceType);
 						}
 						else {
-							message = MessageFormat
-									.format("Do you really want to remove the {0} {1}?",
-											resourceType, name);
+							message = MessageFormat.format(
+									"Do you really want to remove the {0} {1}?", resourceType,
+									name);
 						}
 
 						if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event),
@@ -98,7 +99,7 @@ public class RemoveResourceHandler extends AbstractHandler {
 							if (advisor.removeResource(id)) {
 								// removal succeeded, so remove from project as
 								// well
-								ProjectService ps = (ProjectService) PlatformUI.getWorkbench()
+								ProjectService ps = PlatformUI.getWorkbench()
 										.getService(ProjectService.class);
 								ps.removeResource(id);
 							}

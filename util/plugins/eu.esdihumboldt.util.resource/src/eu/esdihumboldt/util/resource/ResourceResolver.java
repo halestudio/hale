@@ -19,7 +19,7 @@ package eu.esdihumboldt.util.resource;
 import java.io.InputStream;
 import java.net.URI;
 
-import com.google.common.io.InputSupplier;
+import eu.esdihumboldt.util.io.InputSupplier;
 
 /**
  * Resolve URIs to an input supplier.

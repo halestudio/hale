@@ -77,8 +77,7 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 		messages.clear();
 		limitedPaths.clear();
 		if (newInput instanceof Collection<?>) {
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 			TreePath emptyPath = new TreePath(new Object[0]);
 			for (Object o : (Collection<?>) newInput) {
 				if (o instanceof InstanceValidationMessage) {
@@ -89,8 +88,8 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						childCache.put(emptyPath, baseTypes);
 					}
 					// XXX maybe expand messages with SSID?
-					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(
-							message.getType());
+					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET)
+							.getType(message.getType());
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
 					baseTypes.add(use);
@@ -132,8 +131,8 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						Object child = name;
 						Object parent = parentPath.getLastSegment();
 						if (parent instanceof Definition<?>) {
-							ChildDefinition<?> childDef = DefinitionUtil.getChild(
-									(Definition<?>) parent, name);
+							ChildDefinition<?> childDef = DefinitionUtil
+									.getChild((Definition<?>) parent, name);
 							if (childDef != null)
 								child = childDef;
 						}

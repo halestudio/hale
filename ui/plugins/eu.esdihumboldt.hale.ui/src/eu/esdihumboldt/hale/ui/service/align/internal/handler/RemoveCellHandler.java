@@ -49,8 +49,7 @@ public class RemoveCellHandler extends AbstractHandler {
 
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete cells",
 				"Do you really want to delete the selected cells?")) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 
 			if (selection instanceof IStructuredSelection) {
 				List<?> list = ((IStructuredSelection) selection).toList();

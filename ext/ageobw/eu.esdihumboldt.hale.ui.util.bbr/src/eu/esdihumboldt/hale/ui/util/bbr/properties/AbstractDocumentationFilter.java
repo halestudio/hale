@@ -39,8 +39,7 @@ public abstract class AbstractDocumentationFilter extends DefaultDefinitionFilte
 			return true;
 		}
 
-		DocumentationService ds = (DocumentationService) PlatformUI.getWorkbench().getService(
-				DocumentationService.class);
+		DocumentationService ds = PlatformUI.getWorkbench().getService(DocumentationService.class);
 		Documentation doc = ds.getDocumentation(input);
 		if (doc == null) {
 			return true;

@@ -44,8 +44,8 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 
 	private final Map<String, Image> actionImages = new HashMap<>();
 
-	private final Image projectImage = ResourcesViewPlugin.getImageDescriptor(
-			"icons/project_open.gif").createImage();
+	private final Image projectImage = ResourcesViewPlugin
+			.getImageDescriptor("icons/project_open.gif").createImage();
 
 	@Override
 	public void update(ViewerCell cell) {
@@ -104,8 +104,7 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 	@Override
 	public String getText(Object element) {
 		if (element instanceof ProjectToken) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			String name = ps.getProjectInfo().getName();
 			if (name == null) {
 				return "<Unnamed project>";

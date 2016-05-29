@@ -42,8 +42,8 @@ import eu.esdihumboldt.hale.ui.util.viewer.TipProvider;
  * 
  * @author Simon Templer
  */
-public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider implements
-		TipProvider {
+public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider
+		implements TipProvider {
 
 	private final Color typeCellColor;
 	private final Color propertyCellColor;
@@ -128,8 +128,7 @@ public class SchemaExplorerLabelProvider extends StyledDefinitionLabelProvider i
 	@Override
 	public Color getBackground(Object element) {
 		if (element instanceof EntityDefinition) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			Alignment alignment = as.getAlignment();
 
 			EntityDefinition entityDef = (EntityDefinition) element;

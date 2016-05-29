@@ -50,10 +50,10 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
+import com.google.common.io.ByteSink;
+import com.google.common.io.ByteSource;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
-import com.google.common.io.InputSupplier;
-import com.google.common.io.OutputSupplier;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -126,8 +126,8 @@ public class XsltGenerator implements XsltConstants {
 			XslPropertyTransformation result = cachedTransformations.get(functionId);
 			if (result == null) {
 				try {
-					result = XslPropertyTransformationExtension.getInstance().getTransformation(
-							functionId);
+					result = XslPropertyTransformationExtension.getInstance()
+							.getTransformation(functionId);
 				} catch (Exception e) {
 					return null;
 				}
@@ -137,8 +137,7 @@ public class XsltGenerator implements XsltConstants {
 		}
 
 		@Override
-		public Template loadTemplate(Class<?> transformation,
-				InputSupplier<? extends InputStream> resource, String id)
+		public Template loadTemplate(Class<?> transformation, ByteSource resource, String id)
 				throws ResourceNotFoundException, ParseErrorException, Exception {
 			File templateFile = new File(workDir, "_" + transformation.getCanonicalName()
 					+ ((id == null) ? ("") : ("_" + id)) + ".xsl");
@@ -146,7 +145,7 @@ public class XsltGenerator implements XsltConstants {
 			synchronized (ve) {
 				if (!templateFile.exists()) {
 					// copy template to template directory
-					InputStream in = resource.getInput();
+					InputStream in = resource.openBufferedStream();
 					OutputStream out = new FileOutputStream(templateFile);
 					try {
 						ByteStreams.copy(in, out);
@@ -162,22 +161,22 @@ public class XsltGenerator implements XsltConstants {
 
 		@Override
 		public Template loadTemplate(final Class<?> transformation) throws Exception {
-			return loadTemplate(transformation, new InputSupplier<InputStream>() {
+			return loadTemplate(transformation, new ByteSource() {
 
 				@Override
-				public InputStream getInput() throws IOException {
-					return transformation.getResourceAsStream(transformation.getSimpleName()
-							+ ".xsl");
+				public InputStream openStream() throws IOException {
+					return transformation
+							.getResourceAsStream(transformation.getSimpleName() + ".xsl");
 				}
 			}, null);
 		}
 
 		@Override
-		public OutputSupplier<? extends OutputStream> addInclude() {
+		public ByteSink addInclude() {
 			String filename = "include_" + (++numIncludes) + ".xsl";
 			includes.add(filename);
 			File file = new File(workDir, filename);
-			return Files.newOutputStreamSupplier(file, false);
+			return Files.asByteSink(file);
 		}
 
 		@Override
@@ -422,8 +421,8 @@ public class XsltGenerator implements XsltConstants {
 					typeIds.add(id);
 				}
 				else {
-					reporter.warn(new IOMessageImpl("Ignoring type relation without target type",
-							null));
+					reporter.warn(
+							new IOMessageImpl("Ignoring type relation without target type", null));
 				}
 			}
 		}
@@ -562,9 +561,9 @@ public class XsltGenerator implements XsltConstants {
 	 */
 	private void writeContainerFragment(File templateFile,
 			Multimap<TypeDefinition, String> groupedResults, Map<String, QName> targetElements)
-			throws XMLStreamException, IOException {
-		XMLStreamWriter writer = XslTransformationUtil.setupXMLWriter(new BufferedOutputStream(
-				new FileOutputStream(templateFile)), prefixes);
+					throws XMLStreamException, IOException {
+		XMLStreamWriter writer = XslTransformationUtil.setupXMLWriter(
+				new BufferedOutputStream(new FileOutputStream(templateFile)), prefixes);
 		try {
 			// write container
 			GmlWriterUtil.writeStartElement(writer, targetContainer.getName());
@@ -605,11 +604,10 @@ public class XsltGenerator implements XsltConstants {
 					writer.writeAttribute("select", ".");
 				}
 				else {
-					reporter.warn(new IOMessageImpl(
-							MessageFormat
-									.format("No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
-											type.getDisplayName(), targetContainer.getName()
-													.getLocalPart()), null));
+					reporter.warn(new IOMessageImpl(MessageFormat.format(
+							"No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
+							type.getDisplayName(), targetContainer.getName().getLocalPart()),
+							null));
 				}
 			}
 			if (lastDescent != null) {
@@ -753,8 +751,8 @@ public class XsltGenerator implements XsltConstants {
 			Cell typeCell, File targetfile) throws TransformationException {
 		XslTypeTransformation xslt;
 		try {
-			xslt = XslTypeTransformationExtension.getInstance().getTransformation(
-					typeCell.getTransformationIdentifier());
+			xslt = XslTypeTransformationExtension.getInstance()
+					.getTransformation(typeCell.getTransformationIdentifier());
 		} catch (Exception e) {
 			throw new TransformationException(
 					"Could not retrieve XSLT transformation generator for cell function", e);
@@ -762,7 +760,8 @@ public class XsltGenerator implements XsltConstants {
 
 		xslt.setContext(context);
 
-		xslt.generateTemplate(templateName, targetElement, typeCell, new FileIOSupplier(targetfile));
+		xslt.generateTemplate(templateName, targetElement, typeCell,
+				new FileIOSupplier(targetfile));
 	}
 
 }

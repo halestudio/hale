@@ -45,15 +45,14 @@ public abstract class HaleUI {
 		/**
 		 * Project scope services
 		 */
-		private final ServiceManager projectScope = new ServiceManager(ServiceManager.SCOPE_PROJECT);
+		private final ServiceManager projectScope = new ServiceManager(
+				ServiceManager.SCOPE_PROJECT);
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
 			synchronized (this) {
 				if (!initialized) {
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-							ProjectService.class);
+					ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 					ps.addListener(new ProjectServiceAdapter() {
 
 						@Override
@@ -76,7 +75,7 @@ public abstract class HaleUI {
 
 			// then workbench
 			if (service == null) {
-				service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
+				service = PlatformUI.getWorkbench().getService(serviceInterface);
 			}
 
 			return service;

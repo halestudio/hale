@@ -182,10 +182,10 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		GridLayout gl = GridLayoutFactory.fillDefaults().create();
 		page.setLayout(gl);
 
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-				AttributeEditorFactory.class);
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(
-				DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = PlatformUI.getWorkbench()
+				.getService(AttributeEditorFactory.class);
+		DefinitionLabelFactory dlf = PlatformUI.getWorkbench()
+				.getService(DefinitionLabelFactory.class);
 
 		// identifier type
 		TypeDefinition identifierType = null;
@@ -194,9 +194,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (def instanceof PropertyDefinition) {
 			TypeDefinition typeDef = ((PropertyDefinition) def).getPropertyType();
 			for (ChildDefinition<?> child : typeDef.getChildren()) {
-				if (child.asProperty() != null
-						&& child.asProperty().getPropertyType().getName().getLocalPart()
-								.equals("IdentifierType")) {
+				if (child.asProperty() != null && child.asProperty().getPropertyType().getName()
+						.getLocalPart().equals("IdentifierType")) {
 					identifierType = child.asProperty().getPropertyType();
 				}
 			}
@@ -214,7 +213,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 		// localId
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("namespace")) {
@@ -241,7 +240,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		configureParameterLabel(ccLabel, param);
 
 		this.countryCode = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.countryCode.setText(initialCountry); //$NON-NLS-1$
+		this.countryCode.setText(initialCountry); // $NON-NLS-1$
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -254,7 +253,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		configureParameterLabel(providerLabel, param);
 
 		this.providerName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.providerName.setText(initialProvider); //$NON-NLS-1$
+		this.providerName.setText(initialProvider); // $NON-NLS-1$
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -267,7 +266,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		configureParameterLabel(productLabel, param);
 
 		this.productName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.productName.setText(initialProduct); //$NON-NLS-1$
+		this.productName.setText(initialProduct); // $NON-NLS-1$
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -280,7 +279,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		// localId
 		Control idLabel = null;
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String LocalName = child.getName().getLocalPart();
 				if (LocalName.equals("localId")) {
@@ -298,9 +297,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		Control localId = dlf.createLabel(idGroup,
-				getWizard().getUnfinishedCell().getSource().get(null).get(0).getDefinition()
-						.getDefinition(), true);
+		Control localId = dlf.createLabel(idGroup, getWizard().getUnfinishedCell().getSource()
+				.get(null).get(0).getDefinition().getDefinition(), true);
 		localId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Version group
@@ -312,7 +310,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		// Version
 		Control versionLabel = null;
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("versionId")) {
@@ -332,13 +330,13 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 		this.version = new Text(versGroup, SWT.BORDER | SWT.SINGLE);
-		this.version.setText(initialVersion); //$NON-NLS-1$
+		this.version.setText(initialVersion); // $NON-NLS-1$
 		this.version.setEnabled(true);
 		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// version nil reason
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("versionId")) {
@@ -365,9 +363,10 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 				// editor
 				nilEditor = aef.createEditor(versGroup, propDef, null, false);
-				nilEditor.getControl().setLayoutData(
-						new GridData(SWT.FILL, SWT.CENTER, true, false));
-				nilEditor.setAsText(initialVersionNil); // default to unknown //$NON-NLS-1$
+				nilEditor.getControl()
+						.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+				nilEditor.setAsText(initialVersionNil); // default to unknown
+														// //$NON-NLS-1$
 			}
 
 		}
@@ -397,8 +396,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			if (descr != null && !descr.isEmpty()) {
 				ControlDecoration dec = new ControlDecoration(paramLabel, SWT.RIGHT);
 				dec.setDescriptionText(descr);
-				FieldDecoration fd = FieldDecorationRegistry.getDefault().getFieldDecoration(
-						FieldDecorationRegistry.DEC_INFORMATION);
+				FieldDecoration fd = FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 				dec.setImage(fd.getImage());
 			}
 		}

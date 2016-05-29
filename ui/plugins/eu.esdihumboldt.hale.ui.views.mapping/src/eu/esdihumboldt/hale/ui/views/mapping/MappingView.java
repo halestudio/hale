@@ -93,8 +93,8 @@ public class MappingView extends AbstractMappingView {
 		};
 		showCellsOnChildren.setChecked(false);
 		showCellsOnChildren.setToolTipText(active);
-		showCellsOnChildren.setImageDescriptor(MappingViewPlugin
-				.getImageDescriptor("icons/sub_co.gif"));
+		showCellsOnChildren
+				.setImageDescriptor(MappingViewPlugin.getImageDescriptor("icons/sub_co.gif"));
 	}
 
 	/**
@@ -143,7 +143,8 @@ public class MappingView extends AbstractMappingView {
 					ListMultimap<String, Type> sources = ArrayListMultimap.create();
 					ListMultimap<String, Type> targets = ArrayListMultimap.create();
 
-					Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(selection);
+					Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
+							selection);
 					for (EntityDefinition def : items.getFirst())
 						sources.put(null, new DefaultType(AlignmentUtil.getTypeEntity(def)));
 					for (EntityDefinition def : items.getSecond())
@@ -176,13 +177,13 @@ public class MappingView extends AbstractMappingView {
 	 * @param selection the selection
 	 */
 	protected void update(SchemaSelection selection) {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 
 		List<Cell> cells = new ArrayList<Cell>();
 
-		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(selection);
+		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
+				selection);
 
 		// find cells associated with the selection
 		for (Cell cell : alignment.getCells()) {
@@ -260,8 +261,7 @@ public class MappingView extends AbstractMappingView {
 	 */
 	public boolean selectCell(String cellId) {
 		// try to retrieve cell
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		if (as != null) {
 			Cell cell = as.getAlignment().getCell(cellId);
 			if (cell != null) {

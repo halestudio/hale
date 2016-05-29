@@ -39,8 +39,7 @@ public class InstanceSamplingToggleState extends State {
 	public InstanceSamplingToggleState() {
 		super();
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.addListener(projectListener = new ProjectServiceAdapter() {
 
 			@Override
@@ -87,8 +86,7 @@ public class InstanceSamplingToggleState extends State {
 
 	@Override
 	public void dispose() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.removeListener(projectListener);
 	}
 

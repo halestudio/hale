@@ -97,8 +97,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		PatternFilter filter = new PatternFilter();
 		filter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL, filter, true);
+		FilteredTree tree = new FilteredTree(parent,
+				SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
 
 		viewer = tree.getViewer();
 		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer(),
@@ -160,8 +160,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 		// load page configuration
 		// XXX would be better if called from outside
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		restore(ps.getConfigurationService());
 
 		return new Pair<StructuredViewer, Control>(viewer, tree);

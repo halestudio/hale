@@ -56,7 +56,7 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 		FormData data;
 
-		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 		descriptionText.setEditable(false);
 
@@ -182,8 +182,7 @@ public class ValuesSection extends DefaultDefinitionSection<Definition<?>> {
 	 */
 	@Override
 	public void refresh() {
-		DocumentationService ds = (DocumentationService) PlatformUI.getWorkbench().getService(
-				DocumentationService.class);
+		DocumentationService ds = PlatformUI.getWorkbench().getService(DocumentationService.class);
 
 		Documentation doc = ds.getDocumentation(getDefinition());
 

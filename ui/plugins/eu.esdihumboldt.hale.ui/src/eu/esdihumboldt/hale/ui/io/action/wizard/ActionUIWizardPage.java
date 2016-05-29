@@ -36,7 +36,6 @@ import org.eclipse.ui.services.IEvaluationService;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.action.ActionUIExtension;
@@ -120,8 +119,7 @@ public class ActionUIWizardPage extends ViewerWizardSelectionPage {
 				return null;
 			}
 
-			IEvaluationService ies = (IEvaluationService) PlatformUI.getWorkbench().getService(
-					IEvaluationService.class);
+			IEvaluationService ies = PlatformUI.getWorkbench().getService(IEvaluationService.class);
 			try {
 				EvaluationResult evalResult = enabledWhen.evaluate(ies.getCurrentState());
 				if (evalResult == EvaluationResult.FALSE) {

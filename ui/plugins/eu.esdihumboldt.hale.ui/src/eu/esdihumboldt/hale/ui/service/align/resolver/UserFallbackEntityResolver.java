@@ -63,8 +63,8 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
 			if (candidate != null) {
 				// ensure the corresponding contexts are present
-				EntityDefinitionService es = HaleUI.getServiceProvider().getService(
-						EntityDefinitionService.class);
+				EntityDefinitionService es = HaleUI.getServiceProvider()
+						.getService(EntityDefinitionService.class);
 				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
@@ -73,8 +73,8 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 				@Override
 				public void run() {
-					PropertyEntityDialog dlg = new PropertyEntityDialog(Display.getCurrent()
-							.getActiveShell(), schemaSpace, null,
+					PropertyEntityDialog dlg = new PropertyEntityDialog(
+							Display.getCurrent().getActiveShell(), schemaSpace, null,
 							"Cell entity could not be resolved", candidate) {
 
 						@Override
@@ -95,8 +95,8 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			EntityDefinition def = result.get();
 			if (canceled.get()) {
 				// return a dummy so the cell is not lost
-				return new DefaultProperty((PropertyEntityDefinition) EntityToDef.toDummyDef(
-						entity, schemaSpace));
+				return new DefaultProperty(
+						(PropertyEntityDefinition) EntityToDef.toDummyDef(entity, schemaSpace));
 			}
 			else if (def == null) {
 				// caller must take care about this
@@ -118,8 +118,8 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			final EntityDefinition candidate = EntityCandidates.find(entity, schema, schemaSpace);
 			if (candidate != null) {
 				// ensure the corresponding contexts are present
-				EntityDefinitionService es = HaleUI.getServiceProvider().getService(
-						EntityDefinitionService.class);
+				EntityDefinitionService es = HaleUI.getServiceProvider()
+						.getService(EntityDefinitionService.class);
 				es.addContexts(candidate);
 			}
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
@@ -128,9 +128,9 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 				@Override
 				public void run() {
-					TypeEntityDialog dlg = new TypeEntityDialog(Display.getCurrent()
-							.getActiveShell(), schemaSpace, "Cell entity could not be resolved",
-							candidate, false) {
+					TypeEntityDialog dlg = new TypeEntityDialog(
+							Display.getCurrent().getActiveShell(), schemaSpace,
+							"Cell entity could not be resolved", candidate, false) {
 
 						@Override
 						public void create() {
@@ -161,8 +161,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 
 				// make sure that the type is classified as mapping relevant
 				if (!ted.getType().getConstraint(MappingRelevantFlag.class).isEnabled()) {
-					SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-							SchemaService.class);
+					SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 					ss.toggleMappable(schemaSpace, Collections.singleton(ted.getType()));
 				}
 

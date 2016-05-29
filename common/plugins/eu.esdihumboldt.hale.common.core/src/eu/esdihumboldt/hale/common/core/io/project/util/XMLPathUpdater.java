@@ -85,7 +85,8 @@ public class XMLPathUpdater {
 	 * referenced resources are present in both calls, they are copied multiple
 	 * times. You should select your XPath expression accordingly. <br>
 	 * Example:<br>
-	 * resource file is 'C:/Local/Temp/1348138164029-0/watercourse/wfs_va.xsd' <br>
+	 * resource file is 'C:/Local/Temp/1348138164029-0/watercourse/wfs_va.xsd'
+	 * <br>
 	 * oldFile is 'C:/igd/hale/watercourse/wfs_va.xsd'.<br>
 	 * wfs_va.xsd has one schema import with location
 	 * 'C:/igd/hale/watercourse/schemas/feature.xsd'<br>
@@ -128,7 +129,7 @@ public class XMLPathUpdater {
 	 */
 	private static void update(File xmlResource, URI oldPath, String locationXPath,
 			boolean includeWebResources, IOReporter reporter, Map<URI, File> updates)
-			throws IOException {
+					throws IOException {
 		// every XML resource should be updated (and copied) only once
 		// so we save the currently adapted resource in a map
 		updates.put(oldPath, xmlResource);
@@ -146,8 +147,8 @@ public class XMLPathUpdater {
 		builder.setEntityResolver(new EntityResolver() {
 
 			@Override
-			public InputSource resolveEntity(String publicId, String systemId) throws SAXException,
-					IOException {
+			public InputSource resolveEntity(String publicId, String systemId)
+					throws SAXException, IOException {
 				// FIXME some documentation would be nice why this is OK here?!
 				return new InputSource(new StringReader(""));
 			}
@@ -187,7 +188,6 @@ public class XMLPathUpdater {
 				locationUri = oldPath.resolve(locationUri);
 			}
 
-			@SuppressWarnings("null")
 			String scheme = locationUri.getScheme();
 			InputStream input = null;
 			if (scheme != null) {
@@ -201,8 +201,8 @@ public class XMLPathUpdater {
 			}
 			else {
 				// file is invalid - at least report that
-				reporter.error(new IOMessageImpl(
-						"Skipped resource because it cannot be loaded from "
+				reporter.error(
+						new IOMessageImpl("Skipped resource because it cannot be loaded from "
 								+ locationUri.toString(), null));
 				continue;
 			}
@@ -231,8 +231,8 @@ public class XMLPathUpdater {
 				try {
 					includednewFile.getParentFile().mkdirs();
 				} catch (SecurityException e) {
-					throw new IOException("Can not create directories "
-							+ includednewFile.getParent(), e);
+					throw new IOException(
+							"Can not create directories " + includednewFile.getParent(), e);
 				}
 
 				// copy to new directory

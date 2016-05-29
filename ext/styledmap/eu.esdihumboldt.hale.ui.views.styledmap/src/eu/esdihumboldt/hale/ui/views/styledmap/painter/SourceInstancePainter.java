@@ -32,8 +32,7 @@ public class SourceInstancePainter extends AbstractInstancePainter {
 	 * Default constructor
 	 */
 	public SourceInstancePainter() {
-		super((InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class),
-				DataSet.SOURCE);
+		super(PlatformUI.getWorkbench().getService(InstanceService.class), DataSet.SOURCE);
 	}
 
 }

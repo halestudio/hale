@@ -71,7 +71,7 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	 */
 	@Override
 	public void fill(ToolBar parent, int index) {
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+		AlignmentService alignmentService = PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 
 		for (FunctionWizardDescriptor<?> descriptor : getFunctionWizardDescriptors()) {
@@ -122,7 +122,7 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 	public void fill(Menu menu, int index) {
 		boolean added = false;
 
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+		AlignmentService alignmentService = PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 
 		List<AbstractWizardAction<?>> augmentationActions = new ArrayList<AbstractWizardAction<?>>();
@@ -184,7 +184,7 @@ public abstract class AbstractFunctionWizardContribution extends ContributionIte
 
 		if (!added) {
 			MenuItem item = new MenuItem(menu, SWT.PUSH, index++);
-			item.setText(Messages.FunctionWizardContribution_2); //$NON-NLS-1$
+			item.setText(Messages.FunctionWizardContribution_2); // $NON-NLS-1$
 			item.setEnabled(false);
 		}
 	}

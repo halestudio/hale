@@ -33,11 +33,11 @@ import com.google.common.io.ByteStreams;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultResourceAdvisor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * Resource advisor for Shapefiles. When copying a Shapefile it also copies the
@@ -51,8 +51,8 @@ public class ShapefileAdvisor extends DefaultResourceAdvisor {
 
 	@Override
 	public void copyResource(LocatableInputSupplier<? extends InputStream> resource,
-			final Path target, IContentType resourceType, boolean includeRemote, IOReporter reporter)
-			throws IOException {
+			final Path target, IContentType resourceType, boolean includeRemote,
+			IOReporter reporter) throws IOException {
 		URI orgUri = resource.getLocation();
 		if (orgUri == null) {
 			throw new IOException("URI for original resource must be known");
@@ -74,8 +74,8 @@ public class ShapefileAdvisor extends DefaultResourceAdvisor {
 				filemain = filemain.substring(0, extPos);
 			}
 			// matcher for associated files
-			final PathMatcher auxfiles = orgPath.getFileSystem().getPathMatcher(
-					"glob:" + filemain + ".???");
+			final PathMatcher auxfiles = orgPath.getFileSystem()
+					.getPathMatcher("glob:" + filemain + ".???");
 
 			// find all associated files
 			Path orgDir = orgPath.getParent();
@@ -98,8 +98,9 @@ public class ShapefileAdvisor extends DefaultResourceAdvisor {
 			// copy if not accessible through file system
 
 			// copy the main file
-			try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(target))) {
-				ByteStreams.copy(new DefaultInputSupplier(orgUri), out);
+			try (OutputStream out = new BufferedOutputStream(Files.newOutputStream(target));
+					InputStream in = new DefaultInputSupplier(orgUri).getInput()) {
+				ByteStreams.copy(in, out);
 			}
 
 			// determine base URI w/o dot and extension
@@ -120,13 +121,14 @@ public class ShapefileAdvisor extends DefaultResourceAdvisor {
 				if (!type.equals(ShpFileType.SHP)) {
 					try {
 						URI source = URI.create(base + type.extensionWithPeriod);
-						if (IOUtils.testStream(source, true)) {
-							Path targetFile = target.resolveSibling(filemain
-									+ type.extensionWithPeriod);
+						if (HaleIO.testStream(source, true)) {
+							Path targetFile = target
+									.resolveSibling(filemain + type.extensionWithPeriod);
 							// copy the auxiliary file
 							try (OutputStream out = new BufferedOutputStream(
-									Files.newOutputStream(targetFile))) {
-								ByteStreams.copy(new DefaultInputSupplier(source), out);
+									Files.newOutputStream(targetFile));
+									InputStream in = new DefaultInputSupplier(source).getInput()) {
+								ByteStreams.copy(in, out);
 							}
 						}
 					} catch (Exception e) {

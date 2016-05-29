@@ -26,8 +26,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class ReportPropertiesViewPart extends ViewPart implements
-		ITabbedPropertySheetPageContributor {
+public abstract class ReportPropertiesViewPart extends ViewPart
+		implements ITabbedPropertySheetPageContributor {
 
 	/**
 	 * @see ITabbedPropertySheetPageContributor#getContributorId()
@@ -40,6 +40,7 @@ public abstract class ReportPropertiesViewPart extends ViewPart implements
 	/**
 	 * @see WorkbenchPart#getAdapter(Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter == IPropertySheetPage.class)

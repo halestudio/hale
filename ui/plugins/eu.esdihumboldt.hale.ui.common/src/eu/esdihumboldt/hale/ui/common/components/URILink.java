@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.ui.common.components;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -133,8 +135,10 @@ public class URILink {
 
 						if (!name.isEmpty()) {
 							File tmpFile = Files.createTempFile("resource", name).toFile();
-							ByteStreams.copy(new DefaultInputSupplier(newuri), new FileIOSupplier(
-									tmpFile));
+							try (OutputStream out = new FileIOSupplier(tmpFile).getOutput();
+									InputStream in = new DefaultInputSupplier(newuri).getInput()) {
+								ByteStreams.copy(in, out);
+							}
 							tmpFile.deleteOnExit();
 							newuri = tmpFile.toURI();
 						}

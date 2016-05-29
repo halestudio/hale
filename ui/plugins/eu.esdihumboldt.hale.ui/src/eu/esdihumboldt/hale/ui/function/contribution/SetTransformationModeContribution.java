@@ -66,16 +66,16 @@ public class SetTransformationModeContribution extends ContributionItem {
 			ImageDescriptor desc = null;
 			switch (mode) {
 			case active:
-				desc = CommonSharedImages.getImageRegistry().getDescriptor(
-						CommonSharedImages.IMG_MARKER_GREEN);
+				desc = CommonSharedImages.getImageRegistry()
+						.getDescriptor(CommonSharedImages.IMG_MARKER_GREEN);
 				break;
 			case passive:
-				desc = CommonSharedImages.getImageRegistry().getDescriptor(
-						CommonSharedImages.IMG_MARKER_YELLOW);
+				desc = CommonSharedImages.getImageRegistry()
+						.getDescriptor(CommonSharedImages.IMG_MARKER_YELLOW);
 				break;
 			case disabled:
-				desc = CommonSharedImages.getImageRegistry().getDescriptor(
-						CommonSharedImages.IMG_MARKER_RED);
+				desc = CommonSharedImages.getImageRegistry()
+						.getDescriptor(CommonSharedImages.IMG_MARKER_RED);
 			}
 			if (desc != null) {
 				setImageDescriptor(desc);
@@ -84,8 +84,7 @@ public class SetTransformationModeContribution extends ContributionItem {
 
 		@Override
 		public void run() {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.setCellProperty(cellId, Cell.PROPERTY_TRANSFORMATION_MODE, mode);
 		}
 
@@ -117,8 +116,8 @@ public class SetTransformationModeContribution extends ContributionItem {
 	 */
 	public Cell getOriginalCell() {
 		// retrieve first selected cell
-		IStructuredSelection sel = SelectionTrackerUtil.getTracker().getSelection(
-				IStructuredSelection.class);
+		IStructuredSelection sel = SelectionTrackerUtil.getTracker()
+				.getSelection(IStructuredSelection.class);
 		for (Object object : sel.toList()) {
 			if (object instanceof Cell) {
 				return (Cell) object;

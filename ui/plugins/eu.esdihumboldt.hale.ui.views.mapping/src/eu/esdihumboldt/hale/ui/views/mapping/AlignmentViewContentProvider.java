@@ -95,8 +95,7 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 	private Object[] getEdges(Cell typeCell) {
 		List<Edge> edges = new ArrayList<Edge>();
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 
 		boolean dummyCell;
@@ -128,7 +127,8 @@ public class AlignmentViewContentProvider extends ReverseCellGraphContentProvide
 			else {
 				// add edges leading to the cell for each source entity
 				if (reparentCell.getSource() != null) {
-					for (Entry<String, ? extends Entity> entry : reparentCell.getSource().entries()) {
+					for (Entry<String, ? extends Entity> entry : reparentCell.getSource()
+							.entries()) {
 						edges.add(new Edge(entry.getValue(), cell, entry.getKey()));
 					}
 				}

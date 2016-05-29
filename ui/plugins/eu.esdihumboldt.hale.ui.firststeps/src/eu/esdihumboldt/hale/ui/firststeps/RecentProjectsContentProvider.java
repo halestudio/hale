@@ -154,8 +154,8 @@ public class RecentProjectsContentProvider implements IIntroContentProvider {
 	}
 
 	private RecentProjectsService.Entry[] getRecentFiles() {
-		RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench().getService(
-				RecentProjectsService.class);
+		RecentProjectsService rfs = PlatformUI.getWorkbench()
+				.getService(RecentProjectsService.class);
 		RecentProjectsService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null)
 			entries = new RecentProjectsService.Entry[0];

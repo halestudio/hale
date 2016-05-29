@@ -6,7 +6,8 @@ Bundle-Version: 2.9.5.qualifier
 Fragment-Host: eu.esdihumboldt.hale.io.jdbc.spatialite;bundle-version="2.9.1"
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: eu.esdihumboldt.cst.test,
+Import-Package: com.google.common.io;version="17.0.0",
+ eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.test,
  org.junit;version="4.11.0",
  org.sqlite;version="3.8.7"

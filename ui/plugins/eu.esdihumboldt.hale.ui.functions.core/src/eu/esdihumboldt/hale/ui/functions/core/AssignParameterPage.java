@@ -138,14 +138,14 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			title = new Composite(page, SWT.NONE);
 			title.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 //			title.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.END).create());
-			DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench()
+			DefinitionLabelFactory dlf = PlatformUI.getWorkbench()
 					.getService(DefinitionLabelFactory.class);
 			dlf.createLabel(title, propDef, false);
 			Label label = new Label(title, SWT.NONE);
 			label.setText(" = ");
 
-			editor = ((AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-					AttributeEditorFactory.class)).createEditor(page, propDef, entityDef, false);
+			editor = PlatformUI.getWorkbench().getService(AttributeEditorFactory.class)
+					.createEditor(page, propDef, entityDef, false);
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 

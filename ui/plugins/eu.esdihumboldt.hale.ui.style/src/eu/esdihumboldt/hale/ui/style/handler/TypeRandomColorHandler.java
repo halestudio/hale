@@ -51,8 +51,7 @@ public class TypeRandomColorHandler extends AbstractHandler {
 
 		Style style = StyleHelper.getRandomStyles(types);
 
-		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(
-				StyleService.class);
+		StyleService styleService = PlatformUI.getWorkbench().getService(StyleService.class);
 		styleService.addStyles(style);
 
 		return null;

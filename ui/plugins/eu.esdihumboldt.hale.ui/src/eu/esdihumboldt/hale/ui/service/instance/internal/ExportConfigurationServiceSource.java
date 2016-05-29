@@ -46,8 +46,7 @@ public class ExportConfigurationServiceSource extends AbstractSourceProvider {
 	public ExportConfigurationServiceSource() {
 		super();
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.addListener(projectListener = new ProjectServiceAdapter() {
 
 			/**
@@ -63,8 +62,7 @@ public class ExportConfigurationServiceSource extends AbstractSourceProvider {
 	}
 
 	private boolean hasExportConfigurations() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		return !ps.getExportConfigurationNames().isEmpty();
 	}
 
@@ -73,8 +71,7 @@ public class ExportConfigurationServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.removeListener(projectListener);
 	}
 

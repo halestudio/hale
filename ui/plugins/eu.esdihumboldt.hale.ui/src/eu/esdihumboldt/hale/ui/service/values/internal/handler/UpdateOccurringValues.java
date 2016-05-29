@@ -41,11 +41,12 @@ public class UpdateOccurringValues extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 
 			if (element instanceof PropertyEntityDefinition) {
-				OccurringValuesService ovs = (OccurringValuesService) PlatformUI.getWorkbench()
+				OccurringValuesService ovs = PlatformUI.getWorkbench()
 						.getService(OccurringValuesService.class);
 
 				if (ovs != null) {

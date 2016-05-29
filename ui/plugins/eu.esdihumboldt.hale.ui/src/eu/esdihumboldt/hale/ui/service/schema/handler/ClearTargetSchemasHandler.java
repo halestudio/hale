@@ -40,8 +40,7 @@ public class ClearTargetSchemasHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Clear target schemas",
 				"Do you really want to clear all target schemas?")) {
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 			ss.clearSchemas(SchemaSpaceID.TARGET);
 		}
 

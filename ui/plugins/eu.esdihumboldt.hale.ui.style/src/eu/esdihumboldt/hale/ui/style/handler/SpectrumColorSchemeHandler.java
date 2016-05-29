@@ -48,8 +48,7 @@ public class SpectrumColorSchemeHandler extends AbstractHandler {
 
 		// collect all types
 		SetMultimap<DataSet, TypeDefinition> types = HashMultimap.create();
-		SchemaService schemas = (SchemaService) PlatformUI.getWorkbench().getService(
-				SchemaService.class);
+		SchemaService schemas = PlatformUI.getWorkbench().getService(SchemaService.class);
 		for (TypeDefinition type : schemas.getSchemas(SchemaSpaceID.SOURCE)
 				.getMappingRelevantTypes()) {
 			types.put(DataSet.SOURCE, type);
@@ -61,8 +60,7 @@ public class SpectrumColorSchemeHandler extends AbstractHandler {
 
 		Style style = StyleHelper.getSpectrumStyles(types);
 
-		StyleService styleService = (StyleService) PlatformUI.getWorkbench().getService(
-				StyleService.class);
+		StyleService styleService = PlatformUI.getWorkbench().getService(StyleService.class);
 		styleService.addStyles(style);
 
 		return null;

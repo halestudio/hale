@@ -53,7 +53,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 
 		// name
 
-		nameText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+		nameText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 				SWT.SINGLE | SWT.BORDER);
 
 		data = new FormData();
@@ -80,7 +80,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 
 		// author
 
-		authorText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+		authorText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 				SWT.SINGLE | SWT.BORDER);
 
 		data = new FormData();
@@ -107,7 +107,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 
 		// description
 
-		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$ 
+		descriptionText = getWidgetFactory().createText(composite, "", //$NON-NLS-1$
 				SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 
 		data = new FormData();
@@ -136,8 +136,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 
 	private void updateProject() {
 		if (updateProject) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			ps.updateProjectInfo(this);
 		}
 	}
@@ -161,8 +160,7 @@ public class ProjectProperties extends AbstractPropertySection implements Projec
 	public void refresh() {
 		super.refresh();
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ProjectInfo info = ps.getProjectInfo();
 
 		updateProject = false;

@@ -63,8 +63,7 @@ public class FunctionWizardUtil {
 
 			if (dialog.open() == WizardDialog.OK) {
 				MutableCell cell = wizard.getResult();
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-						AlignmentService.class);
+				AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 				as.addCell(cell);
 				return cell;
 			}

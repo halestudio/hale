@@ -75,7 +75,7 @@ public class ServiceSchemaExplorer {
 		this.explorer = explorer;
 //		this.schemaSpace = schemaSpace;
 
-		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
+		schemaService = PlatformUI.getWorkbench().getService(SchemaService.class);
 		schemaService.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
 
 			@Override
@@ -123,8 +123,7 @@ public class ServiceSchemaExplorer {
 		});
 
 		// redraw on alignment change
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceListener() {
 
 			@Override
@@ -162,8 +161,7 @@ public class ServiceSchemaExplorer {
 			}
 		});
 
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-				PopulationService.class);
+		PopulationService ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 		ps.addListener(populationListener = new PopulationListener() {
 
 			@Override
@@ -174,8 +172,8 @@ public class ServiceSchemaExplorer {
 		});
 
 		// listen on default geometry changes
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 		gss.addListener(geometryListener = new GeometrySchemaServiceListener() {
 
 			@Override
@@ -185,7 +183,7 @@ public class ServiceSchemaExplorer {
 		});
 
 		// listen on entity context changes
-		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+		EntityDefinitionService eds = PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
 		eds.addListener(entityListener = new EntityDefinitionServiceListener() {
 
@@ -255,26 +253,24 @@ public class ServiceSchemaExplorer {
 		}
 
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
 		}
 
 		if (entityListener != null) {
-			EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+			EntityDefinitionService eds = PlatformUI.getWorkbench()
 					.getService(EntityDefinitionService.class);
 			eds.removeListener(entityListener);
 		}
 
 		if (geometryListener != null) {
-			GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench()
+			GeometrySchemaService gss = PlatformUI.getWorkbench()
 					.getService(GeometrySchemaService.class);
 			gss.removeListener(geometryListener);
 		}
 
 		if (populationListener != null) {
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-					PopulationService.class);
+			PopulationService ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 			ps.removeListener(populationListener);
 		}
 	}

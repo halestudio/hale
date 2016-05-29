@@ -42,7 +42,7 @@ public class HaleOrientInstanceSink extends OrientInstanceSink {
 	public HaleOrientInstanceSink(LocalOrientDB database, boolean lockNow) {
 		super(database, lockNow);
 
-		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
 
 	/**

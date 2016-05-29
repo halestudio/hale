@@ -73,8 +73,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	public InstanceServiceSource() {
 		super();
 
-		final InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		final InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
@@ -94,8 +93,7 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 
 		});
 
-		final ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		final ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.addListener(projectServiceListener = new ProjectServiceAdapter() {
 
 			@Override
@@ -125,12 +123,10 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.removeListener(instanceListener);
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		ps.removeListener(projectServiceListener);
 	}
 
@@ -139,10 +135,8 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_TRANSFORMED_INSTANCES, hasTransformedInstances(is));
@@ -173,7 +167,8 @@ public class InstanceServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public String[] getProvidedSourceNames() {
-		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES, HAS_SOURCE_RESOURCES };
+		return new String[] { HAS_TRANSFORMED_INSTANCES, HAS_SOURCE_INSTANCES,
+				HAS_SOURCE_RESOURCES };
 	}
 
 }

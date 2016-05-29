@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class EntityDialog extends
-		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> implements IMenuListener {
+		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer>implements IMenuListener {
 
 	/**
 	 * The schema space
@@ -90,8 +90,8 @@ public abstract class EntityDialog extends
 		};
 		patternFilter.setUseEarlyReturnIfMatcherIsNull(false);
 		patternFilter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new TreePathFilteredTree(parent, SWT.SINGLE | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		FilteredTree tree = new TreePathFilteredTree(parent,
+				SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 		tree.getViewer().setComparator(new DefinitionComparator());
 
 		// create context menu
@@ -105,7 +105,7 @@ public abstract class EntityDialog extends
 			// condition contexts only supported for source schema
 
 			// ensure viewer is updated on context changes
-			final EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+			final EntityDefinitionService eds = PlatformUI.getWorkbench()
 					.getService(EntityDefinitionService.class);
 			eds.addListener(entityDefinitionListener = new EntityDefinitionServiceListener() {
 

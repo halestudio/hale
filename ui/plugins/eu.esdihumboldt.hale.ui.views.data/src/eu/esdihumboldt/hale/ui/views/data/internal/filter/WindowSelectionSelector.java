@@ -107,12 +107,12 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 				}
 
 			});
-			instanceTypes.getControl().setLayoutData(
-					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			instanceTypes.getControl()
+					.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 			// filter field
-			filterField = new CQLFilterField((selectedType == null) ? (null) : (selectedType),
-					this, SWT.NONE, SchemaSpaceID.TARGET);
+			filterField = new CQLFilterField((selectedType == null) ? (null) : (selectedType), this,
+					SWT.NONE, SchemaSpaceID.TARGET);
 			filterField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 			filterField.addListener(new PropertyChangeListener() {
 
@@ -184,8 +184,8 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 
 			boolean enabled = !selectableTypes.isEmpty();
 			if (enabled)
-				instanceTypes.setSelection(new StructuredSelection(selectableTypes.iterator()
-						.next()));
+				instanceTypes
+						.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
 
 			instanceTypes.getControl().setEnabled(enabled);
 			count.getControl().setEnabled(enabled);
@@ -211,13 +211,14 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 				List<?> elements = lastSelection.toList();
 				Collection<Instance> result = new ArrayList<Instance>(elements.size());
 
-				final InstanceService instanceService = (InstanceService) PlatformUI.getWorkbench()
+				final InstanceService instanceService = PlatformUI.getWorkbench()
 						.getService(InstanceService.class);
 
 				// collect instances from selection that match the data set
 				for (Object element : elements) {
 					Instance instance = null;
-					if (element instanceof Instance && ((Instance) element).getDataSet() == dataSet) {
+					if (element instanceof Instance
+							&& ((Instance) element).getDataSet() == dataSet) {
 						instance = (Instance) element;
 					}
 					else if (element instanceof InstanceReference
@@ -225,8 +226,8 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 						instance = instanceService.getInstance((InstanceReference) element);
 					}
 
-					if (instance != null
-							&& (typeFilter == null || typeFilter.equals(instance.getDefinition()))) {
+					if (instance != null && (typeFilter == null
+							|| typeFilter.equals(instance.getDefinition()))) {
 						// add instance if type filter matches
 						result.add(instance);
 					}
@@ -375,60 +376,61 @@ public class WindowSelectionSelector implements AdvancedInstanceSelector {
 		if (current != null && !current.isDisposed()) {
 			current.selectionChanged(new IWorkbenchPart() { // dummy part
 
-						@Override
-						public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-							// dummy
-							return null;
-						}
+				@SuppressWarnings("unchecked")
+				@Override
+				public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+					// dummy
+					return null;
+				}
 
-						@Override
-						public void setFocus() {
-							// dummy
-						}
+				@Override
+				public void setFocus() {
+					// dummy
+				}
 
-						@Override
-						public void removePropertyListener(IPropertyListener listener) {
-							// dummy
-						}
+				@Override
+				public void removePropertyListener(IPropertyListener listener) {
+					// dummy
+				}
 
-						@Override
-						public String getTitleToolTip() {
-							// dummy
-							return null;
-						}
+				@Override
+				public String getTitleToolTip() {
+					// dummy
+					return null;
+				}
 
-						@Override
-						public Image getTitleImage() {
-							return image;
-						}
+				@Override
+				public Image getTitleImage() {
+					return image;
+				}
 
-						@Override
-						public String getTitle() {
-							// dummy
-							return null;
-						}
+				@Override
+				public String getTitle() {
+					// dummy
+					return null;
+				}
 
-						@Override
-						public IWorkbenchPartSite getSite() {
-							// dummy
-							return null;
-						}
+				@Override
+				public IWorkbenchPartSite getSite() {
+					// dummy
+					return null;
+				}
 
-						@Override
-						public void dispose() {
-							// dummy
-						}
+				@Override
+				public void dispose() {
+					// dummy
+				}
 
-						@Override
-						public void createPartControl(Composite parent) {
-							// dummy
-						}
+				@Override
+				public void createPartControl(Composite parent) {
+					// dummy
+				}
 
-						@Override
-						public void addPropertyListener(IPropertyListener listener) {
-							// dummy
-						}
-					}, is);
+				@Override
+				public void addPropertyListener(IPropertyListener listener) {
+					// dummy
+				}
+			}, is);
 		}
 	}
 

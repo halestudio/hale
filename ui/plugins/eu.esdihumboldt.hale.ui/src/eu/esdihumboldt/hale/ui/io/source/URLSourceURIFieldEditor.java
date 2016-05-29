@@ -84,8 +84,8 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 		// ensure resource control is added before the text control
 		historyButton = new Button(parent, SWT.PUSH | SWT.FLAT);
 		historyButton.setToolTipText("Choose from recent URLs");
-		historyButton.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_HISTORY));
+		historyButton.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_HISTORY));
 		historyButton.setEnabled(false);
 
 		return super.getTextControl(parent);
@@ -108,8 +108,7 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 	 * @param types the supported content types
 	 */
 	public void setContentTypes(Set<IContentType> types) {
-		RecentResources rr = (RecentResources) PlatformUI.getWorkbench().getService(
-				RecentResources.class);
+		RecentResources rr = PlatformUI.getWorkbench().getService(RecentResources.class);
 		if (rr != null) {
 			Predicate<URI> selectUris = new Predicate<URI>() {
 
@@ -136,7 +135,8 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 							final IContentType contentType = pair.getSecond();
 							try {
 								MenuItem item = new MenuItem(filesMenu, SWT.PUSH);
-								item.setText(RecentProjectsMenu.shorten(location.toString(), 80, 20));
+								item.setText(
+										RecentProjectsMenu.shorten(location.toString(), 80, 20));
 								item.addSelectionListener(new SelectionAdapter() {
 
 									@Override
@@ -152,8 +152,8 @@ public class URLSourceURIFieldEditor extends URIFieldEditor {
 							}
 						}
 
-						Point histLoc = historyButton.getParent().toDisplay(
-								historyButton.getLocation());
+						Point histLoc = historyButton.getParent()
+								.toDisplay(historyButton.getLocation());
 						filesMenu.setLocation(histLoc.x, histLoc.y + historyButton.getSize().y);
 						filesMenu.setVisible(true);
 					}

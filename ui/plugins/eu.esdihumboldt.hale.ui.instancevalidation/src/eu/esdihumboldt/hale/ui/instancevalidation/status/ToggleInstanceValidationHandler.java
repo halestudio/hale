@@ -36,7 +36,7 @@ public class ToggleInstanceValidationHandler extends AbstractHandler implements 
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 		ivs.setValidationEnabled(!ivs.isValidationEnabled());
 		return null;
@@ -44,7 +44,7 @@ public class ToggleInstanceValidationHandler extends AbstractHandler implements 
 
 	@Override
 	public void updateElement(UIElement element, @SuppressWarnings("rawtypes") Map parameters) {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 		element.setChecked(ivs.isValidationEnabled());
 	}

@@ -76,7 +76,8 @@ public abstract class StyleHelper {
 	 * @param dataSet the data set (if known)
 	 * @return the style
 	 */
-	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef, @Nullable DataSet dataSet) {
+	public static FeatureTypeStyle getDefaultStyle(TypeDefinition typeDef,
+			@Nullable DataSet dataSet) {
 //		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(GeometrySchemaService.class);
 //		List<QName> geomPath = gss.getDefaultGeometry(typeDef);
 		// TODO determine default style from default geometry?
@@ -174,8 +175,8 @@ public abstract class StyleHelper {
 
 		Style style = styleFactory.createStyle();
 
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 
 		for (DataSet dataSet : dataSetTypes.keySet()) {
 			float saturation;
@@ -377,11 +378,11 @@ public abstract class StyleHelper {
 	 * @return the point symbolizer
 	 */
 	public static PointSymbolizer createPointSymbolizer(Color color, double width) {
-		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(
-				null,
+		return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(null,
 				styleBuilder.createMark(StyleBuilder.MARK_X,
 						styleBuilder.createFill(color, DEFAULT_FILL_OPACITY),
-						styleBuilder.createStroke(color, width)), null));
+						styleBuilder.createStroke(color, width)),
+				null));
 	}
 
 	/**

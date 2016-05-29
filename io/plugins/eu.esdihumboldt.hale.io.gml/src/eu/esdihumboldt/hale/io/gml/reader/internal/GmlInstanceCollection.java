@@ -171,8 +171,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 						String xsiType = null;
 						for (int i = 0; i < reader.getAttributeCount() && xsiType == null; i++) {
 							String ns = reader.getAttributeNamespace(i);
-							if (ns != null
-									&& ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+							if (ns != null && ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
 									&& reader.getAttributeLocalName(i).equals("type")) {
 								// found xsi:type
 								xsiType = reader.getAttributeValue(i);
@@ -350,11 +349,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 			if (ignoreNamespaces) {
 				// also allow a local name match
 				for (PropertyDefinition property : allProperties) {
-					if (!property.getConstraint(XmlAttributeFlag.class).isEnabled()
-							&& property.getName().getLocalPart().equals(elementName.getLocalPart())) {
-						log.debug(MessageFormat
-								.format("Descending property with differing namespace - {0} replaced with {1}",
-										elementName.toString(), property.getName().toString()));
+					if (!property.getConstraint(XmlAttributeFlag.class).isEnabled() && property
+							.getName().getLocalPart().equals(elementName.getLocalPart())) {
+						log.debug(MessageFormat.format(
+								"Descending property with differing namespace - {0} replaced with {1}",
+								elementName.toString(), property.getName().toString()));
 						return property.getPropertyType();
 					}
 				}
@@ -511,7 +510,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 		}
 
-		private String buildErrorString(String text, @Nullable String code, @Nullable String locator) {
+		private String buildErrorString(String text, @Nullable String code,
+				@Nullable String locator) {
 			StringBuilder error = new StringBuilder(text);
 			if (code != null || locator != null) {
 				error.append(" [");
@@ -564,8 +564,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			try {
-				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict,
-						null, crsProvider, nextType, null, false, ignoreNamespaces);
+				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict, null,
+						crsProvider, nextType, null, false, ignoreNamespaces);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -650,7 +650,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	}
 
-	protected final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
+	private final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
 
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;

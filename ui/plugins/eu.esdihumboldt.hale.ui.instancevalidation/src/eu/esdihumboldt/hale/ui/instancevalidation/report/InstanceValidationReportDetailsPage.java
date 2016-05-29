@@ -92,8 +92,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		filter.setIncludeLeadingWildcard(true);
 
 		// create FilteredTree
-		FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL, filter, true);
+		FilteredTree filteredTree = new TreePathFilteredTree(parent,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
 
 		treeViewer = filteredTree.getViewer();
 
@@ -102,8 +102,8 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		treeViewer.setContentProvider(contentProvider);
 
 		// set label provider
-		treeViewer.setLabelProvider(new InstanceValidationReportDetailsLabelProvider(
-				contentProvider));
+		treeViewer.setLabelProvider(
+				new InstanceValidationReportDetailsLabelProvider(contentProvider));
 
 		// set comparator
 		treeViewer.setComparator(new ViewerComparator() {
@@ -154,8 +154,9 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 
 		Image noReportBaseImage = InstanceValidationUIPlugin.getDefault().getImageRegistry()
 				.get(InstanceValidationUIPlugin.IMG_INSTANCE_VALIDATION);
-		reportImage = new DecorationOverlayIcon(noReportBaseImage, PlatformUI.getWorkbench()
-				.getSharedImages().getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING),
+		reportImage = new DecorationOverlayIcon(noReportBaseImage,
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+						ISharedImages.IMG_DEC_FIELD_WARNING),
 				IDecoration.BOTTOM_LEFT).createImage();
 
 		return filteredTree;
@@ -205,8 +206,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 			firstMessage = restIter.next();
 		}
 
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		// check first message for valid instance reference
 		if (firstMessage.getInstanceReference() == null
 				|| is.getInstance(firstMessage.getInstanceReference()) == null)

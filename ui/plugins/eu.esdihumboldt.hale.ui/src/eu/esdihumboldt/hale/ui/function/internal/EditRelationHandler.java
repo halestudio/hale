@@ -69,15 +69,15 @@ public class EditRelationHandler extends AbstractHandler {
 				final Cell originalCell = (Cell) selected;
 
 				FunctionWizard wizard = null;
-				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension
-						.getInstance()
+				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance()
 						.getFactories(
 								new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
 
 									@Override
-									public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
-										return factory.getFunctionId().equals(
-												originalCell.getTransformationIdentifier());
+									public boolean acceptFactory(
+											FunctionWizardDescriptor<?> factory) {
+										return factory.getFunctionId()
+												.equals(originalCell.getTransformationIdentifier());
 									}
 
 									@Override
@@ -94,12 +94,12 @@ public class EditRelationHandler extends AbstractHandler {
 				}
 
 				if (wizard == null) {
-					AbstractFunction<?> function = FunctionUtil.getFunction(originalCell
-							.getTransformationIdentifier());
+					AbstractFunction<?> function = FunctionUtil
+							.getFunction(originalCell.getTransformationIdentifier());
 					if (function == null) {
-						log.userError(MessageFormat.format(
-								"Function with identifier ''{0}'' is unknown.",
-								originalCell.getTransformationIdentifier()));
+						log.userError(
+								MessageFormat.format("Function with identifier ''{0}'' is unknown.",
+										originalCell.getTransformationIdentifier()));
 						return null;
 					}
 					// create generic wizard
@@ -120,8 +120,8 @@ public class EditRelationHandler extends AbstractHandler {
 				if (dialog.open() == WizardDialog.OK) {
 					MutableCell cell = wizard.getResult();
 
-					AlignmentService alignmentService = (AlignmentService) PlatformUI
-							.getWorkbench().getService(AlignmentService.class);
+					AlignmentService alignmentService = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
 					// remove the original cell
 					// and add the new cell
 					alignmentService.replaceCell(originalCell, cell);

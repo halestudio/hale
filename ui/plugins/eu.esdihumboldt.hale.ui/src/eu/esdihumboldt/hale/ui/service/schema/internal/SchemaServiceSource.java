@@ -75,8 +75,7 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	public SchemaServiceSource() {
 		super();
 
-		final SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-				SchemaService.class);
+		final SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		ss.addSchemaServiceListener(schemaListener = new SchemaServiceAdapter() {
 
 			/**
@@ -135,8 +134,7 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		ss.removeSchemaServiceListener(schemaListener);
 	}
 
@@ -145,8 +143,7 @@ public class SchemaServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_MAPPABLE_SOURCE_SCHEMA, hasMappableType(ss, SchemaSpaceID.SOURCE));

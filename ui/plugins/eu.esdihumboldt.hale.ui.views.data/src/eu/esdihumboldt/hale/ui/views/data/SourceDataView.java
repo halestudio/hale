@@ -63,8 +63,8 @@ public class SourceDataView extends AbstractDataView {
 	 * Default constructor
 	 */
 	public SourceDataView() {
-		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE), SchemaSpaceID.SOURCE, ID
-				+ ".viewer");
+		super(new InstanceServiceSelector(SchemaSpaceID.SOURCE), SchemaSpaceID.SOURCE,
+				ID + ".viewer");
 
 		instanceSelector = (InstanceServiceSelector) getDefaultInstanceSelector();
 		// another selector based on the map selection
@@ -84,8 +84,8 @@ public class SourceDataView extends AbstractDataView {
 	 */
 	@Override
 	protected void onSelectionChange(Iterable<Instance> selection) {
-		InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench().getService(
-				InstanceSampleService.class);
+		InstanceSampleService rss = PlatformUI.getWorkbench()
+				.getService(InstanceSampleService.class);
 
 		List<Instance> res = new ArrayList<Instance>();
 		if (selection != null) {
@@ -114,7 +114,7 @@ public class SourceDataView extends AbstractDataView {
 			instanceImage = DataViewPlugin.getImageDescriptor("icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText(Messages.ReferenceTableView_0); //$NON-NLS-1$
+		instanceButton.setToolTipText(Messages.ReferenceTableView_0); // $NON-NLS-1$
 		instanceButton.setSelection(true);
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
@@ -130,7 +130,7 @@ public class SourceDataView extends AbstractDataView {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/synced.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.ReferenceTableView_1); //$NON-NLS-1$
+		mapButton.setToolTipText(Messages.ReferenceTableView_1); // $NON-NLS-1$
 		mapButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override

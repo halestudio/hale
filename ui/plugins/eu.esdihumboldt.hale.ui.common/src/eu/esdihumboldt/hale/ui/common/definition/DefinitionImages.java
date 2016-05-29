@@ -158,14 +158,14 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 
 	}
 
-	private final Image attribOverlay = CommonUIPlugin.getImageDescriptor(
-			"/icons/attrib_overlay2.gif").createImage(); //$NON-NLS-1$
+	private final Image attribOverlay = CommonUIPlugin
+			.getImageDescriptor("/icons/attrib_overlay2.gif").createImage(); //$NON-NLS-1$
 
-	private final Image defOverlay = CommonUIPlugin
-			.getImageDescriptor("/icons/def_overlay.gif").createImage(); //$NON-NLS-1$
+	private final Image defOverlay = CommonUIPlugin.getImageDescriptor("/icons/def_overlay.gif") //$NON-NLS-1$
+			.createImage();
 
-	private final Image mandatoryOverlay = CommonUIPlugin.getImageDescriptor(
-			"/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
+	private final Image mandatoryOverlay = CommonUIPlugin
+			.getImageDescriptor("/icons/mandatory_ov2.gif").createImage(); //$NON-NLS-1$
 
 	private final Map<ImageConf, Image> overlayedImages = new HashMap<ImageConf, Image>();
 
@@ -224,8 +224,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	 * @return <code>true</code> if the type has a geometry, false otherwise
 	 */
 	protected boolean hasGeometry(TypeDefinition type) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 
 		return gss.getDefaultGeometry(type) != null;
 	}
@@ -238,8 +238,9 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 	 * @param definedOnly if only for defined styles a image shall be created
 	 * @return the legend image or <code>null</code>
 	 */
-	protected BufferedImage getLegendImage(TypeDefinition type, DataSet dataSet, boolean definedOnly) {
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+	protected BufferedImage getLegendImage(TypeDefinition type, DataSet dataSet,
+			boolean definedOnly) {
+		StyleService ss = PlatformUI.getWorkbench().getService(StyleService.class);
 		Style style = (definedOnly) ? (ss.getDefinedStyle(type)) : (ss.getStyle(type, dataSet));
 		if (style == null) {
 			return null;
@@ -357,9 +358,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				if (def instanceof PropertyDefinition) {
 					Cardinality cardinality = ((PropertyDefinition) def)
 							.getConstraint(Cardinality.class);
-					mandatory = cardinality.getMinOccurs() > 0
-							&& !((PropertyDefinition) def).getConstraint(NillableFlag.class)
-									.isEnabled();
+					mandatory = cardinality.getMinOccurs() > 0 && !((PropertyDefinition) def)
+							.getConstraint(NillableFlag.class).isEnabled();
 				}
 				else if (def instanceof GroupPropertyDefinition) {
 					Cardinality cardinality = ((GroupPropertyDefinition) def)
@@ -376,8 +376,8 @@ public class DefinitionImages implements CommonSharedImagesConstants {
 				deflt = DefaultGeometryUtil.isDefaultGeometry(entityDef);
 
 				// and to determine population
-				PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-						PopulationService.class);
+				PopulationService ps = PlatformUI.getWorkbench()
+						.getService(PopulationService.class);
 				if (ps != null && ps.hasPopulation(entityDef.getSchemaSpace())) {
 					Population pop = ps.getPopulation(entityDef);
 					faded = (pop != null && pop.getOverallCount() == 0);

@@ -39,8 +39,8 @@ import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImp
  * 
  * @author Simon Templer
  */
-public class ParameterEditorExtension extends
-		AbstractExtension<EditorFactory, ParameterEditorFactory> {
+public class ParameterEditorExtension
+		extends AbstractExtension<EditorFactory, ParameterEditorFactory> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ParameterEditorExtension.class);
 
@@ -88,20 +88,21 @@ public class ParameterEditorExtension extends
 	 */
 	public Editor<?> createEditor(final Composite parent, final String functionId,
 			final FunctionParameter parameter, final ParameterValue initialValue) {
-		List<ParameterEditorFactory> factories = getFactories(new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
+		List<ParameterEditorFactory> factories = getFactories(
+				new FactoryFilter<EditorFactory, ParameterEditorFactory>() {
 
-			@Override
-			public boolean acceptFactory(ParameterEditorFactory factory) {
-				return factory.getParameterName().equals(parameter.getName())
-						&& factory.getFunctionId().equals(functionId);
-			}
+					@Override
+					public boolean acceptFactory(ParameterEditorFactory factory) {
+						return factory.getParameterName().equals(parameter.getName())
+								&& factory.getFunctionId().equals(functionId);
+					}
 
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<EditorFactory, ParameterEditorFactory> collection) {
-				return true;
-			}
-		});
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<EditorFactory, ParameterEditorFactory> collection) {
+						return true;
+					}
+				});
 
 		if (!factories.isEmpty()) {
 			ParameterEditorFactory fact = factories.get(0);
@@ -117,8 +118,8 @@ public class ParameterEditorExtension extends
 		}
 
 		// default editor
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-				AttributeEditorFactory.class);
+		AttributeEditorFactory aef = PlatformUI.getWorkbench()
+				.getService(AttributeEditorFactory.class);
 		return aef.createEditor(parent, parameter, initialValue);
 	}
 

@@ -68,7 +68,8 @@ public class CustomTypeContentHelper {
 	 * @param association the custom type configuration for an individual
 	 *            property
 	 */
-	public static void applyConfiguration(XmlIndex index, CustomTypeContentAssociation association) {
+	public static void applyConfiguration(XmlIndex index,
+			CustomTypeContentAssociation association) {
 		CustomTypeContent config = association.getConfig();
 
 		// property identified by a list of qualified names
@@ -79,7 +80,8 @@ public class CustomTypeContentHelper {
 			QName typeName = property.get(0);
 			TypeDefinition type = index.getType(typeName);
 			if (type != null) {
-				LinkedList<QName> nameQueue = new LinkedList<>(property.subList(1, property.size()));
+				LinkedList<QName> nameQueue = new LinkedList<>(
+						property.subList(1, property.size()));
 				Definition<?> parent = null;
 				Definition<?> child = type;
 				while (!nameQueue.isEmpty() && child != null) {
@@ -107,7 +109,8 @@ public class CustomTypeContentHelper {
 					}
 				}
 				else {
-					log.warn("Cannot apply custom type content configuration due to invalid property path");
+					log.warn(
+							"Cannot apply custom type content configuration due to invalid property path");
 					return;
 				}
 			}
@@ -137,11 +140,11 @@ public class CustomTypeContentHelper {
 	private static void applyElementsMode(PropertyDefinition propDef, DefinitionGroup propParent,
 			CustomTypeContent config, XmlIndex index) {
 		// build new property type based on config
-		DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(propDef.getIdentifier(),
-				"customElementsContentType"), false);
+		DefaultTypeDefinition type = new DefaultTypeDefinition(
+				new QName(propDef.getIdentifier(), "customElementsContentType"), false);
 		type.setConstraint(MappableFlag.DISABLED);
-		DefaultGroupPropertyDefinition choice = new DefaultGroupPropertyDefinition(new QName(
-				propDef.getIdentifier(), "customElementsContentChoice"), type, false);
+		DefaultGroupPropertyDefinition choice = new DefaultGroupPropertyDefinition(
+				new QName(propDef.getIdentifier(), "customElementsContentChoice"), type, false);
 		choice.setConstraint(new DisplayName("elements"));
 		choice.setConstraint(ChoiceFlag.ENABLED);
 		choice.setConstraint(Cardinality.CC_ANY_NUMBER);
@@ -163,6 +166,7 @@ public class CustomTypeContentHelper {
 		replaceTypeForProperty(propDef, propParent, type);
 	}
 
+	@SuppressWarnings("unused")
 	private static void applySimpleMode(PropertyDefinition propDef, DefinitionGroup propParent,
 			CustomTypeContent config) {
 		// XXX currently no modification needed
@@ -190,7 +194,8 @@ public class CustomTypeContentHelper {
 //			// TODO
 //		}
 		else {
-			log.error("Could not update custom content property because of unsupported parent definition group");
+			log.error(
+					"Could not update custom content property because of unsupported parent definition group");
 		}
 	}
 }

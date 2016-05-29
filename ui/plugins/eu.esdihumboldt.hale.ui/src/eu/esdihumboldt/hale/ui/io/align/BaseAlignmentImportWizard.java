@@ -42,8 +42,7 @@ public class BaseAlignmentImportWizard extends ImportWizard<BaseAlignmentReader>
 	 */
 	@Override
 	public boolean performFinish() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		return as.addBaseAlignment(new BaseAlignmentLoader() {
 
 			@Override

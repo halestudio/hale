@@ -39,8 +39,7 @@ public class ClearInstancesHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete source data",
 				"Do you really want to delete all source data?")) {
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 			is.clearInstances();
 		}
 

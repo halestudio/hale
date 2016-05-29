@@ -111,13 +111,13 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 			});
-			typesCombo.getControl().setLayoutData(
-					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			typesCombo.getControl()
+					.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 			updateFeatureTypesSelection();
 
 			// service listeners
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+			InstanceSampleService rss = PlatformUI.getWorkbench()
 					.getService(InstanceSampleService.class);
 			rss.addObserver(referenceListener = new Observer() {
 
@@ -127,8 +127,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 			});
 
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService alService = PlatformUI.getWorkbench()
+					.getService(AlignmentService.class);
 			alService.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 				@Override
@@ -192,10 +192,10 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						final InstanceSampleService rss = (InstanceSampleService) PlatformUI
-								.getWorkbench().getService(InstanceSampleService.class);
-						final AlignmentService alService = (AlignmentService) PlatformUI
-								.getWorkbench().getService(AlignmentService.class);
+						final InstanceSampleService rss = PlatformUI.getWorkbench()
+								.getService(InstanceSampleService.class);
+						final AlignmentService alService = PlatformUI.getWorkbench()
+								.getService(AlignmentService.class);
 						final TransformationService cst = HalePlatform
 								.getService(TransformationService.class);
 
@@ -209,8 +209,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 							DefaultInstanceSink target = new DefaultInstanceSink();
 
 							// transform features
-							TransformationReport report = cst.transform(
-									alService.getAlignment(), // Alignment
+							TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
 									instances, target, HaleUI.getServiceProvider(),
 									new ProgressMonitorIndicator(monitor));
 
@@ -228,8 +227,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 								while (it.hasNext()) {
 									Instance inst = it.next();
 									for (Instance instance : target.getInstances()) {
-										if (InstanceMetadata.getID(inst).equals(
-												InstanceMetadata.getSourceID(instance))) {
+										if (InstanceMetadata.getID(inst)
+												.equals(InstanceMetadata.getSourceID(instance))) {
 											targetSorted.add(instance);
 										}
 									}
@@ -331,12 +330,12 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		 */
 		@Override
 		public void dispose() {
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+			InstanceSampleService rss = PlatformUI.getWorkbench()
 					.getService(InstanceSampleService.class);
 			rss.deleteObserver(referenceListener);
 
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService alService = PlatformUI.getWorkbench()
+					.getService(AlignmentService.class);
 			alService.removeListener(alignmentListener);
 
 			listeners.clear();

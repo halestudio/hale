@@ -103,10 +103,10 @@ public class CellPrioritySection extends AbstractCellSection implements ISelecti
 				Priority priority = (Priority) firstElement;
 				Cell cell = getCell();
 				if (cell.getPriority() != priority) {
-					AlignmentService alignmentService = (AlignmentService) PlatformUI
-							.getWorkbench().getService(AlignmentService.class);
-					alignmentService
-							.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY, priority);
+					AlignmentService alignmentService = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
+					alignmentService.setCellProperty(cell.getId(), Cell.PROPERTY_PRIORITY,
+							priority);
 				}
 			}
 		}
