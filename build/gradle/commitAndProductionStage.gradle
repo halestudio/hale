@@ -854,15 +854,10 @@ def runTests(args = []) {
 	// evaluate test report
 	def root = new groovy.util.XmlSlurper().parse(reportFile)
 	def failures = root.@failures as String
-	println "> ${root.@tests} tests"
-	println "> ${root.@errors} errors"
-	println "> ${failures} failed"
-	println "> ${root.@skip} skipped"
-	println "in ${root.@time} seconds"
-
+	
 	// print failures
 	if (failures && failures != '0') {
-		println 'Failures: '
+		println '>>> Test failures: '
 		root.testcase.each { test ->
 			if (test.failure.size() > 0) {
 				def testClass = test.@classname as String
@@ -874,6 +869,13 @@ def runTests(args = []) {
 			}
 		}
 	}
+
+	println '>>> Test summary'
+	println "> ${root.@tests} tests"
+	println "> ${root.@errors} errors"
+	println "> ${failures} failed"
+	println "> ${root.@skip} skipped"
+	println "in ${root.@time} seconds"
 }
 
 /**
