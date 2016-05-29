@@ -51,10 +51,13 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class CustomGroovyTransformation extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		PropertyTransformation<TransformationEngine> {
+public class CustomGroovyTransformation
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements PropertyTransformation<TransformationEngine> {
 
+	/**
+	 * Binding parameter name for function parameters.
+	 */
 	public static final String BINDING_PARAMS = "_params";
 
 	private final DefaultCustomPropertyFunction customFunction;
@@ -96,8 +99,8 @@ public class CustomGroovyTransformation extends
 			Script groovyScript = GroovyUtil.getScript(this, binding, service, true);
 
 			// evaluate the script
-			result = GroovyTransformation.evaluate(groovyScript, builder, resultProperty
-					.getDefinition().getPropertyType(), service);
+			result = GroovyTransformation.evaluate(groovyScript, builder,
+					resultProperty.getDefinition().getPropertyType(), service);
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the custom function script", e);
 		}
@@ -139,8 +142,8 @@ public class CustomGroovyTransformation extends
 				}
 				else {
 					// value
-					binding.setVariable(varName, GroovyTransformation.getUseValue(values.get(0)
-							.getValue(), useInstanceVariable));
+					binding.setVariable(varName, GroovyTransformation
+							.getUseValue(values.get(0).getValue(), useInstanceVariable));
 				}
 			}
 		}

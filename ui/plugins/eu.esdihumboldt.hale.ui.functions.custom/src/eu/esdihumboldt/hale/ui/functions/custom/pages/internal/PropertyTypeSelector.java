@@ -32,10 +32,6 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
- * TODO Type description
- * @author simon
- */
-/**
  * Selector for type definitions.
  * 
  * @author Simon Templer
@@ -50,7 +46,7 @@ public class PropertyTypeSelector extends AbstractSelector<TypeDefinition, Entit
 	 * 
 	 * @param parent the parent composite
 	 * @param dialogTitle the title for the selection dialog
-	 * @param ssid
+	 * @param ssid the schema space identifier
 	 * @param filters the view filters or <code>null</code>
 	 */
 	public PropertyTypeSelector(Composite parent, String dialogTitle, SchemaSpaceID ssid,

@@ -39,8 +39,8 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
  * 
  * @author Simon Templer
  */
-public class CustomPropertyFunctionEntitiesPage extends
-		HaleWizardPage<CustomPropertyFunctionWizard> implements CustomFunctionWizardPage {
+public class CustomPropertyFunctionEntitiesPage extends HaleWizardPage<CustomPropertyFunctionWizard>
+		implements CustomFunctionWizardPage {
 
 	private BindingOrTypeEditor target;
 	private CustomPropertyFunctionEntityList sources;
@@ -205,10 +205,6 @@ public class CustomPropertyFunctionEntitiesPage extends
 		}
 	}
 
-	/**
-	 * @param value
-	 * @return
-	 */
 	private DefaultCustomPropertyFunctionEntity createTargetEntity(BindingOrType value) {
 		DefaultCustomPropertyFunctionEntity result = new DefaultCustomPropertyFunctionEntity();
 

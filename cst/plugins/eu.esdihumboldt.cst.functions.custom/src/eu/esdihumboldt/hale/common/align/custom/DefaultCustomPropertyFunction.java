@@ -203,10 +203,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 		this.name = name;
 	}
 
-	/**
-	 * @param target2
-	 * @return
-	 */
+	@SuppressWarnings("javadoc")
 	protected PropertyParameterDefinition createParamDefinition(
 			final DefaultCustomPropertyFunctionEntity entity) {
 		return entity;

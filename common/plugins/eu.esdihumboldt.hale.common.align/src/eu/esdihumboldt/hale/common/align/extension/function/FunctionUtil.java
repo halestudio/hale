@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("javadoc")
 public abstract class FunctionUtil {
 
 	/**

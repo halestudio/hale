@@ -25,8 +25,8 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
  * 
  * @author Simon Templer
  */
-public class NewCustomPropertyFunctionHandler extends
-		AbstractWizardHandler<CustomPropertyFunctionWizard> {
+public class NewCustomPropertyFunctionHandler
+		extends AbstractWizardHandler<CustomPropertyFunctionWizard> {
 
 	@Override
 	protected CustomPropertyFunctionWizard createWizard() {
@@ -37,8 +37,7 @@ public class NewCustomPropertyFunctionHandler extends
 
 	@Override
 	protected void onComplete(CustomPropertyFunctionWizard wizard) {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.addCustomPropertyFunction(wizard.getResultFunction());
 	}
 

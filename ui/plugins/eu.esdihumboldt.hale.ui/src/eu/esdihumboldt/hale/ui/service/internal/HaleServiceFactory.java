@@ -156,13 +156,12 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (FunctionService.class.equals(serviceInterface)) {
-			return new HaleFunctionService(
-					(AlignmentService) locator.getService(AlignmentService.class));
+			return new HaleFunctionService(locator.getService(AlignmentService.class));
 		}
 
 		if (TransformationFunctionService.class.equals(serviceInterface)) {
 			return new HaleTransformationFunctionService(
-					(AlignmentService) locator.getService(AlignmentService.class));
+					locator.getService(AlignmentService.class));
 		}
 
 		return null;

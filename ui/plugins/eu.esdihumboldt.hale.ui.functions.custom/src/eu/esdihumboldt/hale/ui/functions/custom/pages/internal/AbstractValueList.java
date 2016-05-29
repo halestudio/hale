@@ -115,8 +115,8 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 		// component
 		// so they're not drawn outside of the ScrolledComposite in case it's
 		// present.
-		editorContainer.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(6, 0, 0, 0)
-				.create());
+		editorContainer
+				.setLayout(GridLayoutFactory.fillDefaults().extendedMargins(6, 0, 0, 0).create());
 
 		propertyChangeListener = new IPropertyChangeListener() {
 
@@ -226,6 +226,7 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 		updateState();
 	}
 
+	@SuppressWarnings("javadoc")
 	protected void updateLayout() {
 		// layout new editor in scrolled pane
 		// FIXME this is currently very specific!

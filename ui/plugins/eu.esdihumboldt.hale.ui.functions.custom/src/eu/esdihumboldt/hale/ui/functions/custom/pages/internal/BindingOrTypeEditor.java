@@ -41,8 +41,8 @@ public class BindingOrTypeEditor extends AbstractEditor<BindingOrType> {
 	private ComboViewer bindingSelect;
 
 	private static enum PossibleBindings {
-		NONE(null, "Schema type"), STRING(String.class, "String"), NUMBER(Number.class, "Number"), BOOLEAN(
-				boolean.class, "Boolean");
+		NONE(null, "Schema type"), STRING(String.class, "String"), NUMBER(Number.class,
+				"Number"), BOOLEAN(boolean.class, "Boolean");
 
 		PossibleBindings(Class<?> binding, String name) {
 			this.binding = binding;
@@ -56,10 +56,7 @@ public class BindingOrTypeEditor extends AbstractEditor<BindingOrType> {
 	private PropertyTypeSelector typeSelect;
 	private Control mainControl;
 
-	/**
-	 * @param parent
-	 * @param ssid
-	 */
+	@SuppressWarnings("javadoc")
 	public BindingOrTypeEditor(Composite parent, SchemaSpaceID ssid) {
 		super();
 //		GridLayoutFactory.fillDefaults().applyTo(page);
@@ -99,8 +96,8 @@ public class BindingOrTypeEditor extends AbstractEditor<BindingOrType> {
 	@Override
 	public void setValue(BindingOrType value) {
 		if (value.isUseBinding()) {
-			bindingSelect.setSelection(new StructuredSelection(possibleBindingForClass(value
-					.getBinding())));
+			bindingSelect.setSelection(
+					new StructuredSelection(possibleBindingForClass(value.getBinding())));
 		}
 		else {
 			bindingSelect.setSelection(new StructuredSelection(PossibleBindings.NONE));
@@ -113,10 +110,6 @@ public class BindingOrTypeEditor extends AbstractEditor<BindingOrType> {
 		}
 	}
 
-	/**
-	 * @param binding
-	 * @return
-	 */
 	private PossibleBindings possibleBindingForClass(Class<?> binding) {
 		if (binding == null) {
 			return PossibleBindings.NONE;

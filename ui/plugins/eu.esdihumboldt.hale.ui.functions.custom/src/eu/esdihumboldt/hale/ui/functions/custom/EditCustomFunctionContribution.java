@@ -36,7 +36,7 @@ public class EditCustomFunctionContribution extends ContributionItem {
 
 	@Override
 	public void fill(Menu menu, int index) {
-		AlignmentService alignmentService = (AlignmentService) PlatformUI.getWorkbench()
+		AlignmentService alignmentService = PlatformUI.getWorkbench()
 				.getService(AlignmentService.class);
 
 		Collection<CustomPropertyFunction> functions = alignmentService.getAlignment()

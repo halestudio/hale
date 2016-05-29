@@ -116,9 +116,7 @@ public class AsDeepAsPossible implements ContextMatcher {
 
 	private final ServiceProvider serviceProvider;
 
-	/**
-	 * @param serviceProvider
-	 */
+	@SuppressWarnings("javadoc")
 	public AsDeepAsPossible(ServiceProvider serviceProvider) {
 		this.serviceProvider = serviceProvider;
 	}

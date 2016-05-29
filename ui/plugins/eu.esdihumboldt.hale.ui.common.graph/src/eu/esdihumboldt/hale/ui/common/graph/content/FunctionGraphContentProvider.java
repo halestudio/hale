@@ -36,8 +36,8 @@ import eu.esdihumboldt.util.Pair;
  * 
  * @author Patrick Lieb
  */
-public class FunctionGraphContentProvider extends ArrayContentProvider implements
-		IGraphEntityContentProvider {
+public class FunctionGraphContentProvider extends ArrayContentProvider
+		implements IGraphEntityContentProvider {
 
 	/**
 	 * @see IGraphEntityContentProvider#getConnectedTo(Object)
@@ -46,7 +46,7 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 	public Object[] getConnectedTo(Object entity) {
 		Collection<Object> result = new ArrayList<Object>();
 		if (entity instanceof FunctionDefinition) {
-			return ((FunctionDefinition) entity).getTarget().toArray();
+			return ((FunctionDefinition<?>) entity).getTarget().toArray();
 		}
 		if (entity instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) entity;
@@ -69,10 +69,12 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 			collection.add(function);
 
 			if (inputElement instanceof TypeFunctionDefinition) {
-				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function).getSource()) {
+				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function)
+						.getSource()) {
 					collection.add(new Pair<Object, Object>(type, function));
 				}
-				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function).getTarget()) {
+				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function)
+						.getTarget()) {
 					collection.add(type);
 				}
 			}
