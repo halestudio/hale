@@ -2,6 +2,7 @@
 
 import java.text.DateFormat
 import java.util.Map.Entry
+import java.util.jar.Manifest
 
 /*
  * Class and interface definitions
@@ -71,13 +72,15 @@ class ProjectPreferencesApplier {
           defaults.put(key, properties)
           foundPreferences = true
           
-          println("Loaded default preferences: " + prefFile.getName())
+          // println("Loaded default preferences: " + prefFile.getName())
         } catch (FileNotFoundException e) {
           // ignore
         } catch (IOException e) {
           println("Error reading preference file: " + prefFile.getAbsolutePath())
         }
       }
+
+      println('Loaded preferences from: ' + path as String)
     }
     
     return foundPreferences
@@ -244,14 +247,46 @@ void apply(File prefs, File searchPath, ProjectFilter projectFilter = { File pro
  * Script
  */
 
+// filter that detects Java 8 projects and updates the classpath setting
+def isJava8 = { File projectDir ->
+  File manifestFile = new File(new File(projectDir, 'META-INF'), 'MANIFEST.MF')
+  boolean match = false
+  if (manifestFile.exists()) {
+    manifestFile.withInputStream {
+      def manifest = new Manifest(it)
+      def attributes = manifest.getMainAttributes()
+      def env = attributes.getValue('Bundle-RequiredExecutionEnvironment')
+      match = (env == 'JavaSE-1.8')
+    }
+  }
+  
+  if (match) {
+    // update to Java 8 -> also replace classpath setting
+    // XXX kind of a hack to do it in the filter
+    File classpathFile = new File(projectDir, '.classpath')
+    if (classpathFile.exists()) {
+      def fileContent = classpathFile.text
+      def java7cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+      def java8cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+      if (fileContent.contains(java7cp)) {
+        classpathFile.text = fileContent.replace(java7cp, java8cp)
+      }
+    }
+  }
+
+  match
+}
+
 
 // apply preferences to projects
 
-def common = 'platform/preferences/common' as File
+def java7 = 'platform/preferences/java7' as File
+def java8 = 'platform/preferences/java8' as File
 def searchPaths = ['common', 'cst', 'io', 'server', 'doc', 'ui', 'util', 'app', 'ext/styledmap']
 
 searchPaths.each {
-  apply(common, it as File)
+  apply(java7, it as File, { !isJava8(it) } as ProjectFilter)
+  apply(java8, it as File, isJava8 as ProjectFilter)
 }
 
 
@@ -259,4 +294,4 @@ searchPaths.each {
 
 apply('platform/preferences/xslt' as File, 'ext/xslt' as File)
 apply('platform/preferences/xslt' as File, 'ext/ageobw' as File)
-apply('platform/preferences/mdl' as File, 'ext/mdl eu.xsdi.mdl eu.xsdi.mdlui' as File)
+apply('platform/preferences/mdl' as File, 'ext/mdl' as File)
