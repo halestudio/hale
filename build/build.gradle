@@ -163,12 +163,12 @@ ext {
                 'x86': 'jre-8u91-linux-i586.tar.gz',
                 'x86_64': 'jre-8u91-linux-x64.tar.gz'
             ]
-        ],
+        ]/*, -- not available right now
         'macosx': [
             'cocoa': [
-                'x86_64': 'jre-8u91-macosx-x64.tar.gz'
+                'x86_64': 'jdk-min-8u91-macosx-x64.tar.gz'
             ]
-        ]
+        ]*/
     ]
 
     // Names of zip files containing mongodb instances (sorted by their respective platform)
