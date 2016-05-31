@@ -46,6 +46,7 @@
       <plugin id="com.github.jnr.enxio"/>
       <plugin id="com.github.jnr.ffi"/>
       <plugin id="com.github.jnr.jffi"/>
+      <plugin id="com.github.jnr.jffi.native" fragment="true"/>
       <plugin id="com.github.jnr.posix"/>
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
@@ -347,13 +348,13 @@
       <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm-4"/>
-      <plugin id="org.objectweb.asm.analysis-4"/>
-      <plugin id="org.objectweb.asm.tree-4"/>
-      <plugin id="org.objectweb.asm.util-4"/>
+      <plugin id="org.objectweb.asm-5"/>
+      <plugin id="org.objectweb.asm.analysis-5"/>
+      <plugin id="org.objectweb.asm.tree-5"/>
+      <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
+      <plugin id="org.parboiled.java"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.springframework.aop"/>

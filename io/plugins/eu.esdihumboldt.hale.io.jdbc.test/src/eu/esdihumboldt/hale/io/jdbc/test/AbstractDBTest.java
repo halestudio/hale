@@ -122,8 +122,12 @@ public abstract class AbstractDBTest {
 			Thread.currentThread().setContextClassLoader(cl);
 		}
 
-		jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()),
-				client.getHostName()));
+		String host = client.getHostName();
+		if (host == null) {
+			// assuming localhost as default (probably unix socket connection)
+			host = "localhost";
+		}
+		jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()), host));
 
 		TestUtil.startConversionService();
 
@@ -254,9 +258,9 @@ public abstract class AbstractDBTest {
 				if (map.containsKey(name))
 					assertEquals(map.get(name), k.getBinding());
 				else
-					fail(MessageFormat
-							.format("No expected binding specified for type {0} (SQL type {1}) - binding is {2}",
-									name, t.getType(), k.getBinding()));
+					fail(MessageFormat.format(
+							"No expected binding specified for type {0} (SQL type {1}) - binding is {2}",
+							name, t.getType(), k.getBinding()));
 			}
 		}
 
