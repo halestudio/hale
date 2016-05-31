@@ -145,6 +145,13 @@ ext {
 		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
 		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
+	
+	/*
+	 * List of bundles that are not platform specific, even if they are detected as such.
+	 */
+	notPlatformSpecificBundles = [
+		'com.github.jnr.x86asm'
+	]
 
 	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
 	artifactsCommit = '18b78a2e5b480f152c0b7792463713d28bccde30'

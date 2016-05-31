@@ -256,10 +256,14 @@ def filterPlatformSpecificFragments(productFile) {
 		}
 	}
 
+	def notPlatformBundles = new HashSet(project.ext.notPlatformSpecificBundles ?: [])
+	
     // remove bundles from product file
     bundlesToRemove.each { p ->
-        productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
-		println "Removed platform specific bundle $p from product configuration"
+		if (!notPlatformBundles.contains(p)) {
+			productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
+			println "Removed platform specific bundle $p from product configuration"
+		}
     }
 
 	// remove features from product file
