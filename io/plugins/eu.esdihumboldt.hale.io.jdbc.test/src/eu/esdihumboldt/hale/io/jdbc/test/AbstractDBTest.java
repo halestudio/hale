@@ -124,10 +124,12 @@ public abstract class AbstractDBTest {
 
 		String host = client.getHostName();
 		if (host == null) {
-			// assuming localhost as default (probably unix socket connection)
-			host = "localhost";
+			// using docker container directly (probably unix socket connection)
+			jdbcUri = URI.create(dbi.getJDBCURL(dbi.getDBPort(), client.getContainerIp()));
 		}
-		jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()), host));
+		else {
+			jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()), host));
+		}
 
 		TestUtil.startConversionService();
 

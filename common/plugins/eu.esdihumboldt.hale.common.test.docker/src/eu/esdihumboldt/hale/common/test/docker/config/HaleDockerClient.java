@@ -39,6 +39,8 @@ public class HaleDockerClient implements DockerContainer {
 	private final ContainerParameters dbc;
 	private ContainerCreation creation;
 
+	private String containerIp;
+
 	/**
 	 * A parameterized constructor
 	 * 
@@ -110,6 +112,13 @@ public class HaleDockerClient implements DockerContainer {
 	}
 
 	/**
+	 * @return the container IP address
+	 */
+	public String getContainerIp() {
+		return containerIp;
+	}
+
+	/**
 	 * start a container. Container can be started in the privileged mode if the
 	 * 'isPrivileged' key in the configuration is set as true.
 	 * 
@@ -121,9 +130,9 @@ public class HaleDockerClient implements DockerContainer {
 			dc.inspectImage(containerConf.image());
 		} catch (ImageNotFoundException e) {
 			// pull image if it is not present
-			LOGGER.info(MessageFormat.format(
-					"Docker image not found, attempting to pull image {0}...",
-					containerConf.image()));
+			LOGGER.info(
+					MessageFormat.format("Docker image not found, attempting to pull image {0}...",
+							containerConf.image()));
 			dc.pull(containerConf.image());
 		}
 		// TODO also add a setting to pull the image always?
@@ -135,13 +144,24 @@ public class HaleDockerClient implements DockerContainer {
 		LOGGER.info(MessageFormat.format("Created container with ID {0}, now starting...",
 				containerId));
 
-		final HostConfig hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
-				.privileged(dbc.isPrivileged()).build();
+		final HostConfig hostConfig;
+		if (getHostName() == null) {
+			// don't publish ports (probably unix socket connection)
+			hostConfig = HostConfig.builder().publishAllPorts(false).privileged(dbc.isPrivileged())
+					.build();
+		}
+		else {
+			// XXX publishing all ports can be very bad if the host is
+			// accessible externally
+			hostConfig = HostConfig.builder().publishAllPorts(dbc.isExposeAllPorts())
+					.privileged(dbc.isPrivileged()).build();
+		}
 
 		dc.startContainer(containerId, hostConfig);
 
 		final ContainerInfo info = dc.inspectContainer(containerId);
 		portMapper = info.networkSettings().ports();
+		containerIp = info.networkSettings().ipAddress();
 	}
 
 	/**
