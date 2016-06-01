@@ -55,7 +55,6 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	private static final ALogger log = ALoggerFactory.getLogger(MarkdownCellExplanation.class);
 
 	private final PegDownProcessor pegdown = new PegDownProcessor(Extensions.AUTOLINKS | //
-			Extensions.SUPPRESS_ALL_HTML | //
 			Extensions.HARDWRAPS | //
 			Extensions.SMARTYPANTS | //
 			Extensions.TABLES);
@@ -134,10 +133,23 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		// parameters
 		binding.put("_params", new ParameterBinding(cell, function));
 
+		// entities
 		addEntityBindings(binding, function.getSource(), cell.getSource(), "_source", html);
 		addEntityBindings(binding, function.getTarget(), cell.getTarget(), "_target", html);
 
+		// customization
+		customizeBinding(binding);
+
 		return binding;
+	}
+
+	/**
+	 * Customize the binding provided to the template.
+	 * 
+	 * @param binding the binding
+	 */
+	protected void customizeBinding(Map<String, Object> binding) {
+		// override me
 	}
 
 	private void addEntityBindings(Map<String, Object> binding,

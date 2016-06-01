@@ -16,32 +16,16 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
 /**
  * Explanation for the assign function.
  * 
  * @author Simon Templer
  */
-public class AssignExplanation extends AbstractCellExplanation implements AssignFunction {
+public class AssignExplanation extends MarkdownCellExplanation implements AssignFunction {
 
-	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String value = CellUtil.getFirstParameter(cell, PARAMETER_VALUE).as(String.class);
-
-		if (target != null && value != null) {
-			return MessageFormat.format("Assigns the value {1} to the {0} property.",
-					formatEntity(target, html, true), quoteText(value, html));
-		}
-		return null;
-	}
+	// nothing to do
 
 }
