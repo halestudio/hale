@@ -270,7 +270,8 @@
       <plugin id="org.opengis"/>
       <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
+      <plugin id="org.pegdown"/>
       <plugin id="org.quartz-scheduler.quartz"/>
       <plugin id="org.reflections"/>
       <plugin id="org.springframework.aop"/>
