@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import com.google.common.collect.ListMultimap;
 
@@ -35,8 +36,8 @@ import eu.esdihumboldt.hale.common.lookup.LookupTable;
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMappingExplanation extends AbstractCellExplanation implements
-		ClassificationMappingFunction {
+public class ClassificationMappingExplanation extends AbstractCellExplanation
+		implements ClassificationMappingFunction {
 
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property from the {1} property with values according to the following mapping:\n"
 			+ "{2}\nNot mapped source values will result in the following target value: {3}.";
@@ -46,11 +47,11 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
-		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
-				cell.getTransformationParameters(), provider);
+		LookupTable lookup = ClassificationMappingUtil
+				.getClassificationLookup(cell.getTransformationParameters(), provider);
 		ListMultimap<Value, Value> revLookup = lookup.reverse();
-		String notClassifiedAction = CellUtil.getFirstParameter(cell,
-				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
+		String notClassifiedAction = CellUtil
+				.getFirstParameter(cell, PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
@@ -90,16 +91,16 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
-		LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(
-				cell.getTransformationParameters(), provider);
+		LookupTable lookup = ClassificationMappingUtil
+				.getClassificationLookup(cell.getTransformationParameters(), provider);
 		ListMultimap<Value, Value> revLookup = lookup.reverse();
-		String notClassifiedAction = CellUtil.getFirstParameter(cell,
-				PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
+		String notClassifiedAction = CellUtil
+				.getFirstParameter(cell, PARAMETER_NOT_CLASSIFIED_ACTION).as(String.class);
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
-			mappingString
-					.append("<table border=\"1\"><tr><th>Source values</th><th>Target value</th></tr>");
+			mappingString.append(
+					"<table border=\"1\"><tr><th>Source values</th><th>Target value</th></tr>");
 			for (Value targetValue : revLookup.keySet()) {
 				mappingString.append("<tr><td>");
 
@@ -127,18 +128,17 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation im
 						notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1), true);
 			// otherwise it's null or USE_NULL_ACTION
 
-			return MessageFormat
-					.format(EXPLANATION_PATTERN, formatEntity(target, true, true),
-							formatEntity(source, true, true), mappingString.toString(),
-							notClassifiedResult).replaceAll("\n", "<br />");
+			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, true, true),
+					formatEntity(source, true, true), mappingString.toString(), notClassifiedResult)
+					.replaceAll("\n", "<br />");
 		}
 
 		return null;
 	}
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		// will not be called
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		// FIXME
 		return null;
 	}
 }

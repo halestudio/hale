@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -36,11 +37,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class InlineExplanation extends AbstractCellExplanation {
 
-	/**
-	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		TypeEntityDefinition sourceType = getPropertyType(source);
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());

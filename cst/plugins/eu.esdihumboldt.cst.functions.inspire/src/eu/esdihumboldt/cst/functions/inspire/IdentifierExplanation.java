@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.inspire;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,25 +31,23 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class IdentifierExplanation extends AbstractCellExplanation implements IdentifierFunction {
 
-	/**
-	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		String country = CellUtil.getFirstParameter(cell, COUNTRY_PARAMETER_NAME).as(String.class);
-		String provider = CellUtil.getFirstParameter(cell, DATA_PROVIDER_PARAMETER_NAME).as(
-				String.class);
+		String provider = CellUtil.getFirstParameter(cell, DATA_PROVIDER_PARAMETER_NAME)
+				.as(String.class);
 		String product = CellUtil.getFirstParameter(cell, PRODUCT_PARAMETER_NAME).as(String.class);
-		String namespace = Identifier.getNamespace(country, provider, product, target
-				.getDefinition().getType());
+		String namespace = Identifier.getNamespace(country, provider, product,
+				target.getDefinition().getType());
 
 		String version = CellUtil.getFirstParameter(cell, VERSION).as(String.class);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("The {1} property is populated with an Inspire Identifier composed as follows: <br /><br />");
+		sb.append(
+				"The {1} property is populated with an Inspire Identifier composed as follows: <br /><br />");
 		sb.append("1. <i>localId</i> contains the value of the {0} property.<br />");
 		sb.append("2. The <i>namespace</i> is <b>{2}</b>.<br />");
 		if (version != null && !version.isEmpty()) {
@@ -67,10 +66,10 @@ public class IdentifierExplanation extends AbstractCellExplanation implements Id
 		String result = sb.toString();
 
 		if (source != null) {
-			result = MessageFormat.format(result,//
-					formatEntity(source, html, true),//
-					formatEntity(target, html, true),//
-					namespace,//
+			result = MessageFormat.format(result, //
+					formatEntity(source, html, true), //
+					formatEntity(target, html, true), //
+					namespace, //
 					version);
 		}
 

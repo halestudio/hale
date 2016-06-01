@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
+import java.util.Locale;
+
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -33,14 +35,10 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
  */
 public class JoinExplanation extends AbstractCellExplanation implements JoinFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN).as(
-				JoinParameter.class);
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN)
+				.as(JoinParameter.class);
 
 		if (join != null && join.types != null && !join.types.isEmpty()) {
 			StringBuilder sb = new StringBuilder();

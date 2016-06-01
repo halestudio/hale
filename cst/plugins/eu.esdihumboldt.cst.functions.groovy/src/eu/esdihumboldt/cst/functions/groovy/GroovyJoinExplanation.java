@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
+import java.util.Locale;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation;
 
@@ -26,8 +28,8 @@ import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplan
 public class GroovyJoinExplanation extends JoinExplanation {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		String superExplanation = super.getExplanation(cell, html);
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		String superExplanation = super.getExplanation(cell, html, locale);
 
 		String script = GroovyExplanation.getScript(cell);
 		if (script != null) {

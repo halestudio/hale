@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,18 +31,14 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * 
  * @author Simon Templer
  */
-public class FormattedStringExplanation extends AbstractCellExplanation implements
-		FormattedStringFunction {
+public class FormattedStringExplanation extends AbstractCellExplanation
+		implements FormattedStringFunction {
 
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a string formatted according to this pattern:\n"
 			+ "{1}\nSource property names in curly braces are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn''t set.";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String.class);
 
@@ -60,7 +57,8 @@ public class FormattedStringExplanation extends AbstractCellExplanation implemen
 			if (sources != null && html) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<br /><br />Replacement table:<br />");
-				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+				sb.append(
+						"<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
 					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
 							'{' + getEntityNameWithoutCondition(entity) + '}',

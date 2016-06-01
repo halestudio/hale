@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -31,12 +32,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class GenerateUIDExplanation extends AbstractCellExplanation implements AssignFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		return MessageFormat.format("Generates a unique id for the {0} property.",
 				formatEntity(target, html, true));

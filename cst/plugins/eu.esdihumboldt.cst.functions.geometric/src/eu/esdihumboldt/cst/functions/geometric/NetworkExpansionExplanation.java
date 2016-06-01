@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.geometric;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,22 +31,18 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * @author Simon Templer
  * @author Kai Schwierczek
  */
-public class NetworkExpansionExplanation extends AbstractCellExplanation implements
-		NetworkExpansionFunction {
+public class NetworkExpansionExplanation extends AbstractCellExplanation
+		implements NetworkExpansionFunction {
 
 	private static final String EXPLANATION_PATTERN = "Takes a geometry found in the {0} property and creates a buffer geometry. The buffer geometry is assigned to the {1} property in the target type.\n"
-			+ "The following expression specifies the buffer size used:\n"
-			+ "{2}\n"
+			+ "The following expression specifies the buffer size used:\n" + "{2}\n"
 			+ "Source property variables in the expression are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn't set.";
 
-	/**
-	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String expression = CellUtil.getFirstParameter(cell, PARAMETER_BUFFER_WIDTH).as(
-				String.class);
+		String expression = CellUtil.getFirstParameter(cell, PARAMETER_BUFFER_WIDTH)
+				.as(String.class);
 		List<? extends Entity> variables = cell.getSource().get(ENTITY_VARIABLE);
 		List<? extends Entity> geom = cell.getSource().get(null);
 
@@ -64,7 +61,8 @@ public class NetworkExpansionExplanation extends AbstractCellExplanation impleme
 														// method to produce
 														// them
 				sb.append("<br /><br />Replacement table:<br />");
-				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+				sb.append(
+						"<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : variables)
 					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
 							getEntityNameWithoutCondition(entity),

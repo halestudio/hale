@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -35,12 +36,8 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
 			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn''t set.";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		String script = getScript(cell);

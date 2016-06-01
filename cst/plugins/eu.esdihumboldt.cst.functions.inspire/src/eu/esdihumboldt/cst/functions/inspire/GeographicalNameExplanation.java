@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.inspire;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
@@ -33,17 +34,18 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * 
  * @author Kevin Mais
  */
-public class GeographicalNameExplanation extends AbstractCellExplanation implements
-		GeographicalNameFunction {
+public class GeographicalNameExplanation extends AbstractCellExplanation
+		implements GeographicalNameFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("The {0} property is populated with an Inspire Geographical Name composed as follows:");
+		sb.append(
+				"The {0} property is populated with an Inspire Geographical Name composed as follows:");
 		addLineBreak(sb, html);
 		addLineBreak(sb, html);
 
@@ -67,16 +69,18 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 		List<? extends Entity> sources = cell.getSource().get(null);
 //		PROPERTY_TEXT
 		List<ParameterValue> scripts = cell.getTransformationParameters().get(PROPERTY_SCRIPT);
-		List<ParameterValue> transs = cell.getTransformationParameters().get(
-				PROPERTY_TRANSLITERATION);
+		List<ParameterValue> transs = cell.getTransformationParameters()
+				.get(PROPERTY_TRANSLITERATION);
 
 		if (!sources.isEmpty()) {
-			sb.append("For each source property a spelling is created, the spelling text is the value of the source property.");
+			sb.append(
+					"For each source property a spelling is created, the spelling text is the value of the source property.");
 			addLineBreak(sb, html);
 
 			if (html) {
 				sb.append("<table border=\"1\">");
-				sb.append("<tr><th>Source property</th><th>Script</th><th>Transliteration</th></tr>");
+				sb.append(
+						"<tr><th>Source property</th><th>Script</th><th>Transliteration</th></tr>");
 			}
 
 			int index = 0;

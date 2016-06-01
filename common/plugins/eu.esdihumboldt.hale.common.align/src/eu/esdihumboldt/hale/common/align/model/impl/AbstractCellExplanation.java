@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -38,20 +39,14 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  */
 public abstract class AbstractCellExplanation implements CellExplanation {
 
-	/**
-	 * @see CellExplanation#getExplanation(Cell, ServiceProvider)
-	 */
 	@Override
-	public String getExplanation(Cell cell, ServiceProvider provider) {
-		return getExplanation(cell, false);
+	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale) {
+		return getExplanation(cell, false, locale);
 	}
 
-	/**
-	 * @see CellExplanation#getExplanationAsHtml(Cell, ServiceProvider)
-	 */
 	@Override
-	public String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
-		return getExplanation(cell, true);
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale) {
+		return getExplanation(cell, true, locale);
 	}
 
 	/**
@@ -60,9 +55,11 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 * @param cell the cell to create an explanation for
 	 * @param html if the format should be HMTL, otherwise the format is just
 	 *            text
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
 	 * @return the explanation or <code>null</code>
 	 */
-	protected abstract String getExplanation(Cell cell, boolean html);
+	protected abstract String getExplanation(Cell cell, boolean html, Locale locale);
 
 	/**
 	 * Format an entity for inclusion in an explanation.

@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.geometric;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,19 +31,16 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class OrdinatesToPointExplanation extends AbstractCellExplanation {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity sourceX = cell.getSource().get("x").get(0);
 		Entity sourceY = cell.getSource().get("y").get(0);
 		Entity sourceZ = null;
 
-		String srsName = CellUtil.getFirstParameter(cell,
-				OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM).as(String.class);
+		String srsName = CellUtil
+				.getFirstParameter(cell, OrdinatesToPoint.PARAMETER_REFERENCE_SYSTEM)
+				.as(String.class);
 
 		if (!cell.getSource().get("z").isEmpty())
 			sourceZ = cell.getSource().get("z").get(0);

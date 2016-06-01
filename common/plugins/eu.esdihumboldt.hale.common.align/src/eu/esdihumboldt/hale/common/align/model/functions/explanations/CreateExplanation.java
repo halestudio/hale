@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -35,11 +36,11 @@ public class CreateExplanation extends AbstractCellExplanation implements Create
 	private static final String EXPLANATION_PATTERN = "Creates {0} of type {1}.";
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		int number = CellUtil.getOptionalParameter(cell, PARAM_NUMBER, Value.of(1)).as(
-				Integer.class);
+		int number = CellUtil.getOptionalParameter(cell, PARAM_NUMBER, Value.of(1))
+				.as(Integer.class);
 		String instancesString;
 		if (number == 1) {
 			instancesString = "one instance";

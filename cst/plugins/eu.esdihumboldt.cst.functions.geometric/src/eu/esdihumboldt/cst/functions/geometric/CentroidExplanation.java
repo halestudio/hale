@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.geometric;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,12 +31,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class CentroidExplanation extends AbstractCellExplanation {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());

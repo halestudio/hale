@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.numeric;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -34,17 +35,14 @@ public class MathematicalExpressionExplanation extends AbstractCellExplanation {
 	private static final String EXPLANATION_PATTERN = "Populates the {0} property with a number resulting from the following calculation:\n"
 			+ "{1}\nSource property names are replaced by the corresponding property value, if the context condition/index matches, otherwise the value isn't set.";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String expression = CellUtil.getFirstParameter(cell,
-				MathematicalExpression.PARAMETER_EXPRESSION).as(String.class);
-		List<? extends Entity> sources = cell.getSource().get(
-				MathematicalExpression.ENTITY_VARIABLE);
+		String expression = CellUtil
+				.getFirstParameter(cell, MathematicalExpression.PARAMETER_EXPRESSION)
+				.as(String.class);
+		List<? extends Entity> sources = cell.getSource()
+				.get(MathematicalExpression.ENTITY_VARIABLE);
 
 		if (target != null && expression != null) {
 			if (html)
@@ -56,7 +54,8 @@ public class MathematicalExpressionExplanation extends AbstractCellExplanation {
 			if (html) {
 				StringBuilder sb = new StringBuilder();
 				sb.append("<br /><br />Replacement table:<br />");
-				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
+				sb.append(
+						"<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
 				for (Entity entity : sources)
 					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
 							getEntityNameWithoutCondition(entity),

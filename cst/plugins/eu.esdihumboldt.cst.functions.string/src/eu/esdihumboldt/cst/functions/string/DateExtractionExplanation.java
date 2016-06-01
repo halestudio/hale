@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.string;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,22 +31,18 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class DateExtractionExplanation extends AbstractCellExplanation {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String format = CellUtil.getFirstParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT).as(
-				String.class);
+		String format = CellUtil.getFirstParameter(cell, DateExtraction.PARAMETER_DATE_FORMAT)
+				.as(String.class);
 
 		if (target != null && format != null) {
-			return MessageFormat
-					.format("Populates the {1} property with a date created by parsing the {0} property using the format {2}.",
-							formatEntity(source, html, true), formatEntity(target, html, true),
-							quoteText(format, html));
+			return MessageFormat.format(
+					"Populates the {1} property with a date created by parsing the {0} property using the format {2}.",
+					formatEntity(source, html, true), formatEntity(target, html, true),
+					quoteText(format, html));
 		}
 
 		return null;

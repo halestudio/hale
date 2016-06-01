@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -34,16 +35,18 @@ public class RetypeExplanation extends AbstractCellExplanation {
 	private static final String EXPLANATION_PATTERN = "Creates a {1} instance for each {0} instance in the source data set.";
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		if (source != null && target != null) {
 			String text = EXPLANATION_PATTERN;
-			boolean structuralRename = CellUtil.getFirstParameter(cell,
-					RenameFunction.PARAMETER_STRUCTURAL_RENAME).as(Boolean.class, false);
-			boolean ignoreNamespaces = CellUtil.getFirstParameter(cell,
-					RenameFunction.PARAMETER_IGNORE_NAMESPACES).as(Boolean.class, false);
+			boolean structuralRename = CellUtil
+					.getFirstParameter(cell, RenameFunction.PARAMETER_STRUCTURAL_RENAME)
+					.as(Boolean.class, false);
+			boolean ignoreNamespaces = CellUtil
+					.getFirstParameter(cell, RenameFunction.PARAMETER_IGNORE_NAMESPACES)
+					.as(Boolean.class, false);
 			if (structuralRename) {
 				text += " Furthermore child properties are copied, if the property names in source and target match.";
 				if (ignoreNamespaces)
