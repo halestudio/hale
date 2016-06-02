@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractResourceBundleCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
@@ -36,14 +36,11 @@ import eu.esdihumboldt.hale.common.lookup.LookupTable;
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMappingExplanation extends AbstractCellExplanation
+public class ClassificationMappingExplanation extends AbstractResourceBundleCellExplanation
 		implements ClassificationMappingFunction {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property from the {1} property with values according to the following mapping:\n"
-			+ "{2}\nNot mapped source values will result in the following target value: {3}.";
-
 	@Override
-	public String getExplanation(Cell cell, ServiceProvider provider) {
+	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
@@ -57,7 +54,9 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 			StringBuilder mappingString = new StringBuilder();
 			for (Value targetValue : revLookup.keySet()) {
 				mappingString.append(quoteText(targetValue.as(String.class), false));
-				mappingString.append(" when source value is one of ");
+				mappingString.append(' ');
+				mappingString.append(getMessage("oneOf", locale));
+				mappingString.append(' ');
 				int i = 1;
 				for (Value sourceValue : revLookup.get(targetValue)) {
 					if (i != 1) {
@@ -70,24 +69,26 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 				mappingString.append(".\n");
 			}
 			String notClassifiedResult = "null";
-			if (USE_SOURCE_ACTION.equals(notClassifiedAction))
-				notClassifiedResult = "the source value";
+			if (USE_SOURCE_ACTION.equals(notClassifiedAction)) {
+				notClassifiedResult = getMessage("useSource", locale);
+			}
 			else if (notClassifiedAction != null
-					&& notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
+					&& notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX)) {
 				notClassifiedResult = quoteText(
 						notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1), false);
+			}
 			// otherwise it's null or USE_NULL_ACTION
 
-			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, false, true),
-					formatEntity(source, false, true), mappingString.toString(),
-					notClassifiedResult);
+			return MessageFormat.format(getMessage("main", locale),
+					formatEntity(target, false, true), formatEntity(source, false, true),
+					mappingString.toString(), notClassifiedResult);
 		}
 
 		return null;
 	}
 
 	@Override
-	public String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 
@@ -99,8 +100,11 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
-			mappingString.append(
-					"<table border=\"1\"><tr><th>Source values</th><th>Target value</th></tr>");
+			mappingString.append("<table border=\"1\"><tr><th>");
+			mappingString.append(getMessage("captionSource", locale));
+			mappingString.append("</th><th>");
+			mappingString.append(getMessage("captionTarget", locale));
+			mappingString.append("</th></tr>");
 			for (Value targetValue : revLookup.keySet()) {
 				mappingString.append("<tr><td>");
 
@@ -121,16 +125,16 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 			mappingString.append("</table>");
 			String notClassifiedResult = "null";
 			if (USE_SOURCE_ACTION.equals(notClassifiedAction))
-				notClassifiedResult = "the source value";
+				notClassifiedResult = getMessage("useSource", locale);
 			else if (notClassifiedAction != null
 					&& notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
 				notClassifiedResult = quoteText(
 						notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1), true);
 			// otherwise it's null or USE_NULL_ACTION
 
-			return MessageFormat.format(EXPLANATION_PATTERN, formatEntity(target, true, true),
-					formatEntity(source, true, true), mappingString.toString(), notClassifiedResult)
-					.replaceAll("\n", "<br />");
+			return MessageFormat.format(getMessage("main", locale),
+					formatEntity(target, true, true), formatEntity(source, true, true),
+					mappingString.toString(), notClassifiedResult).replaceAll("\n", "<br />");
 		}
 
 		return null;
@@ -138,7 +142,7 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
-		// FIXME
+		// is not getting called
 		return null;
 	}
 }
