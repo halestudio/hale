@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl.mdexpl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -92,7 +93,14 @@ public class ParameterBinding extends GroovyObjectSupport {
 			}
 		}
 
-		List<ParameterValue> values = cell.getTransformationParameters().get(property);
+		List<ParameterValue> values;
+		if (cell != null && cell.getTransformationParameters() != null) {
+			values = cell.getTransformationParameters().get(property);
+		}
+		else {
+			values = Collections.emptyList();
+		}
+
 		if (getAsList) {
 			// yield parameters as list
 			return values.stream().map(value -> extractParameterValue(value, paramDef))

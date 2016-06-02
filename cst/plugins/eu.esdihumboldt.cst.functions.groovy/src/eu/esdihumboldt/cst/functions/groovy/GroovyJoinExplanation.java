@@ -28,12 +28,17 @@ import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplan
 public class GroovyJoinExplanation extends JoinExplanation {
 
 	@Override
+	protected Class<?> getDefaultMessageClass() {
+		return JoinExplanation.class;
+	}
+
+	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		String superExplanation = super.getExplanation(cell, html, locale);
 
 		String script = GroovyExplanation.getScript(cell);
 		if (script != null) {
-			String explanation = "Before the property transformations are run, the target instance is populated by executing the following Groovy script:\n\n";
+			String explanation = getMessage("main", locale, GroovyJoinExplanation.class) + "\n\n";
 
 			if (html) {
 				explanation = explanation.replaceAll("\n", "<br />");

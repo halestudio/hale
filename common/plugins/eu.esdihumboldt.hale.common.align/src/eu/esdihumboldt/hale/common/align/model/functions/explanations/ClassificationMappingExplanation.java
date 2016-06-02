@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUtil;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractResourceBundleCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.common.lookup.LookupTable;
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMappingExplanation extends AbstractResourceBundleCellExplanation
+public class ClassificationMappingExplanation extends AbstractCellExplanation
 		implements ClassificationMappingFunction {
 
 	@Override
@@ -53,7 +53,7 @@ public class ClassificationMappingExplanation extends AbstractResourceBundleCell
 		if (target != null && source != null) {
 			StringBuilder mappingString = new StringBuilder();
 			for (Value targetValue : revLookup.keySet()) {
-				mappingString.append(quoteText(targetValue.as(String.class), false));
+				mappingString.append(quoteValue(targetValue.as(String.class), false));
 				mappingString.append(' ');
 				mappingString.append(getMessage("oneOf", locale));
 				mappingString.append(' ');
@@ -62,7 +62,7 @@ public class ClassificationMappingExplanation extends AbstractResourceBundleCell
 					if (i != 1) {
 						mappingString.append(", ");
 					}
-					mappingString.append(quoteText(sourceValue.as(String.class), false));
+					mappingString.append(quoteValue(sourceValue.as(String.class), false));
 
 					i++;
 				}
@@ -80,8 +80,9 @@ public class ClassificationMappingExplanation extends AbstractResourceBundleCell
 			// otherwise it's null or USE_NULL_ACTION
 
 			return MessageFormat.format(getMessage("main", locale),
-					formatEntity(target, false, true), formatEntity(source, false, true),
-					mappingString.toString(), notClassifiedResult);
+					formatEntity(target, false, true, locale),
+					formatEntity(source, false, true, locale), mappingString.toString(),
+					notClassifiedResult);
 		}
 
 		return null;
@@ -132,9 +133,11 @@ public class ClassificationMappingExplanation extends AbstractResourceBundleCell
 						notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1), true);
 			// otherwise it's null or USE_NULL_ACTION
 
-			return MessageFormat.format(getMessage("main", locale),
-					formatEntity(target, true, true), formatEntity(source, true, true),
-					mappingString.toString(), notClassifiedResult).replaceAll("\n", "<br />");
+			return MessageFormat
+					.format(getMessage("main", locale), formatEntity(target, true, true, locale),
+							formatEntity(source, true, true, locale), mappingString.toString(),
+							notClassifiedResult)
+					.replaceAll("\n", "<br />");
 		}
 
 		return null;

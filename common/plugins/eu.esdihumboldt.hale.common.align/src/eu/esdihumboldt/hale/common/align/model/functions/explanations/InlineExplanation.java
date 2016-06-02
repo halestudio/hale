@@ -46,11 +46,11 @@ public class InlineExplanation extends AbstractCellExplanation {
 
 		if (sourceType != null && targetType != null) {
 			String retypeName = (html) ? ("<i>Retype</i>") : ("Retype");
-			String text = "To transform the data contained in {0} to {1}, any {4} transformations defined between the corresponding property types are used.\n"
-					+ "Thus a {4} type transformation must be defined between the types {2} (source) and {3} (target), which is utilised for this property transformation.";
-			return MessageFormat.format(text, formatEntity(source, html, true),
-					formatEntity(target, html, true), formatEntity(sourceType, html, true),
-					formatEntity(targetType, html, true), retypeName);
+			String text = getMessage("main", locale);
+			return MessageFormat.format(text, formatEntity(source, html, true, locale),
+					formatEntity(target, html, true, locale),
+					formatEntity(sourceType, html, true, locale),
+					formatEntity(targetType, html, true, locale), retypeName);
 		}
 
 		return null;

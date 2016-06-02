@@ -33,8 +33,6 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class CreateExplanation extends AbstractCellExplanation implements CreateFunction {
 
-	private static final String EXPLANATION_PATTERN = "Creates {0} of type {1}.";
-
 	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
@@ -43,15 +41,15 @@ public class CreateExplanation extends AbstractCellExplanation implements Create
 				.as(Integer.class);
 		String instancesString;
 		if (number == 1) {
-			instancesString = "one instance";
+			instancesString = getMessage("one", locale);
 		}
 		else {
-			instancesString = number + " instances";
+			instancesString = MessageFormat.format(getMessage("many", locale), number);
 		}
 
 		if (target != null)
-			return MessageFormat.format(EXPLANATION_PATTERN, instancesString,
-					formatEntity(target, html, true));
+			return MessageFormat.format(getMessage("main", locale), instancesString,
+					formatEntity(target, html, true, locale));
 
 		return null;
 	}

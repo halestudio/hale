@@ -33,6 +33,10 @@ public class IdentifierExplanation extends AbstractCellExplanation implements Id
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		// only one locale supported in this explanation (the function is
+		// deprecated)
+		Locale targetLocale = Locale.ENGLISH;
+
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
@@ -67,8 +71,8 @@ public class IdentifierExplanation extends AbstractCellExplanation implements Id
 
 		if (source != null) {
 			result = MessageFormat.format(result, //
-					formatEntity(source, html, true), //
-					formatEntity(target, html, true), //
+					formatEntity(source, html, true, targetLocale), //
+					formatEntity(target, html, true, targetLocale), //
 					namespace, //
 					version);
 		}

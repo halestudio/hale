@@ -39,6 +39,10 @@ public class GeographicalNameExplanation extends AbstractCellExplanation
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		// only one locale supported in this explanation (the function is
+		// deprecated)
+		Locale targetLocale = Locale.ENGLISH;
+
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
@@ -93,7 +97,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation
 				if (html) {
 					sb.append("<tr>");
 					sb.append("<td>");
-					sb.append(formatEntity(source, html, false));
+					sb.append(formatEntity(source, html, false, targetLocale));
 					sb.append("</td>");
 					sb.append("<td>");
 					if (script != null) {
@@ -109,7 +113,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation
 				}
 				else {
 					sb.append("Source: ");
-					sb.append(formatEntity(source, html, false));
+					sb.append(formatEntity(source, html, false, targetLocale));
 					addLineBreak(sb, html);
 
 					if (script != null && !script.isEmpty()) {
@@ -138,7 +142,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation
 		String result = sb.toString();
 
 		if (target != null) {
-			result = MessageFormat.format(result, formatEntity(target, html, true));
+			result = MessageFormat.format(result, formatEntity(target, html, true, targetLocale));
 		}
 
 		return result;

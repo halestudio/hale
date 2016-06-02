@@ -106,25 +106,31 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html, Locale locale) {
-		Optional<Template> maybeTemplate = getTemplate(getClass(), locale);
+		Optional<Template> maybeTemplate = getTemplate(getDefaultMessageClass(), locale);
 		if (maybeTemplate.isPresent()) {
-			Template template = maybeTemplate.get();
+			try {
+				Template template = maybeTemplate.get();
 
-			// process template
-			String explanation = template.make(createBinding(cell, html)).toString();
+				// process template
+				String explanation = template.make(createBinding(cell, html, locale)).toString();
 
-			if (html) {
-				explanation = pegdown.markdownToHtml(explanation);
+				if (html) {
+					explanation = pegdown.markdownToHtml(explanation);
+				}
+
+				return explanation;
+			} catch (Exception e) {
+				log.error("Error generating cell explanation for function "
+						+ cell.getTransformationIdentifier(), e);
+				return null;
 			}
-
-			return explanation;
 		}
 		else {
 			return null;
 		}
 	}
 
-	private Map<String, Object> createBinding(Cell cell, boolean html) {
+	private Map<String, Object> createBinding(Cell cell, boolean html, Locale locale) {
 		Map<String, Object> binding = new HashMap<>();
 
 		AbstractFunction<? extends AbstractParameter> function = FunctionUtil
@@ -134,8 +140,8 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		binding.put("_params", new ParameterBinding(cell, function));
 
 		// entities
-		addEntityBindings(binding, function.getSource(), cell.getSource(), "_source", html);
-		addEntityBindings(binding, function.getTarget(), cell.getTarget(), "_target", html);
+		addEntityBindings(binding, function.getSource(), cell.getSource(), "_source", html, locale);
+		addEntityBindings(binding, function.getTarget(), cell.getTarget(), "_target", html, locale);
 
 		// customization
 		customizeBinding(binding);
@@ -154,19 +160,21 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 
 	private void addEntityBindings(Map<String, Object> binding,
 			Set<? extends AbstractParameter> definitions,
-			ListMultimap<String, ? extends Entity> entities, String defaultName, boolean html) {
+			ListMultimap<String, ? extends Entity> entities, String defaultName, boolean html,
+			Locale locale) {
 		if (!definitions.isEmpty()) {
 			if (definitions.size() == 1) {
 				// single entity
 				AbstractParameter def = definitions.iterator().next();
 
 				// _defaultName always maps to single entity
-				addEntityBindingValue(defaultName, def, entities.get(def.getName()), html, binding);
+				addEntityBindingValue(defaultName, def, entities.get(def.getName()), html, binding,
+						locale);
 
 				// in addition also the name if it is present
 				String name = def.getName();
 				if (name != null) {
-					addEntityBindingValue(name, def, entities.get(name), html, binding);
+					addEntityBindingValue(name, def, entities.get(name), html, binding, locale);
 				}
 			}
 			else {
@@ -175,11 +183,12 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 					// used for the null entity
 					String name = def.getName();
 					if (name != null) {
-						addEntityBindingValue(name, def, entities.get(name), html, binding);
+						addEntityBindingValue(name, def, entities.get(name), html, binding, locale);
 					}
 					else {
 						// null entity -> default name
-						addEntityBindingValue(defaultName, def, entities.get(name), html, binding);
+						addEntityBindingValue(defaultName, def, entities.get(name), html, binding,
+								locale);
 					}
 				}
 			}
@@ -187,7 +196,8 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	}
 
 	private void addEntityBindingValue(String bindingName, AbstractParameter definition,
-			List<? extends Entity> entities, boolean html, Map<String, Object> binding) {
+			List<? extends Entity> entities, boolean html, Map<String, Object> binding,
+			Locale locale) {
 		final Object entityBinding;
 		if (definition.getMaxOccurrence() == 1) {
 			// single entity
@@ -196,13 +206,13 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 				entityBinding = null;
 			}
 			else {
-				entityBinding = formatEntity(entities.get(0), html, true);
+				entityBinding = formatEntity(entities.get(0), html, false, locale);
 			}
 		}
 		else {
 			// entity list
 			entityBinding = entities.stream().map(entity -> {
-				return formatEntity(entity, html, true);
+				return formatEntity(entity, html, true, locale);
 			}).collect(Collectors.toList());
 		}
 

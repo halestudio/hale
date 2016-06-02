@@ -15,34 +15,15 @@
 
 package eu.esdihumboldt.cst.functions.geometric.interiorpoint;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.Entity;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
 /**
  * Explanation for Interior Point cells.
  * 
  * @author Simon Templer
  */
-public class InteriorPointExplanation extends AbstractCellExplanation {
+public class InteriorPointExplanation extends MarkdownCellExplanation {
 
-	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
-
-		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-
-		if (target != null && source != null) {
-			String message = "Determines a point that lies within the geometry or geometries contained in the {1} property and assigns the result to the {0} property.";
-
-			return MessageFormat.format(message, formatEntity(target, html, true),
-					formatEntity(source, html, true));
-		}
-		return null;
-	}
+	// nothing to do
 
 }
