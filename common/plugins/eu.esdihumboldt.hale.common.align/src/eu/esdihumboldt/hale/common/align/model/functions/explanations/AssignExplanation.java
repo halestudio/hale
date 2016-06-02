@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
@@ -26,6 +28,15 @@ import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanati
  */
 public class AssignExplanation extends MarkdownCellExplanation implements AssignFunction {
 
-	// nothing to do
+	@Override
+	protected void customizeBinding(Map<String, Object> binding) {
+		super.customizeBinding(binding);
+
+		// to work with Assign and Bound assign both, add empty _source for
+		// Assign
+		if (!binding.containsKey("_source")) {
+			binding.put("_source", null);
+		}
+	}
 
 }
