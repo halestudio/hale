@@ -19,6 +19,7 @@ import javax.xml.namespace.QName
 
 import org.w3c.dom.Element
 
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomFunctionExplanation
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionParameter
@@ -76,6 +77,12 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 			if (defTag) {
 				result.functionDefinition = DOMValueUtil.fromTag(defTag, context)
 			}
+
+			// explanation
+			def explTag = fragment.firstChild(NS_CUSTOM_FUNCTION, "explanation")
+			if (explTag) {
+				result.explanation = explanationFromTag(explTag)
+			}
 		}
 
 		result
@@ -109,6 +116,11 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 
 					// definition
 					DOMValueUtil.valueTag(builder, 'cf:definition', value.functionDefinition ?: Value.NULL)
+
+					// explanation
+					if (value.explanation) {
+						explanationTag(builder, 'cf:explanation', value.explanation)
+					}
 				}
 
 		return fragment;
@@ -223,6 +235,45 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 							}
 						}
 					}
+		}
+		else {
+			null
+		}
+	}
+
+	DefaultCustomFunctionExplanation explanationFromTag(Element element) {
+		Map<Locale, Value> templates = [:]
+
+		use (NSDOMCategory) {
+			element.children(NS_CUSTOM_FUNCTION, 'locale').each { Element localeElem ->
+				def templateElem = localeElem.firstChild(NS_CUSTOM_FUNCTION, 'template')
+				if (templateElem) {
+					Value value = DOMValueUtil.fromTag(templateElem)
+
+					if (value) {
+						String language = localeElem.getAttribute('language')
+						String country = localeElem.getAttribute('country')
+						String variant = localeElem.getAttribute('variant')
+						Locale locale = new Locale(language, country, variant)
+
+						templates[locale] = value
+					}
+				}
+			}
+		}
+
+		DefaultCustomFunctionExplanation explanation = new DefaultCustomFunctionExplanation(templates, null)
+	}
+
+	Element explanationTag(NSDOMBuilder builder, String tagName, DefaultCustomFunctionExplanation explanation) {
+		if (explanation) {
+			builder."$tagName"(/* TODO add a type? e.g. type: 'gstring-markdown'*/) {
+				explanation.templates.each { Locale locale, Value value ->
+					builder.'cf:locale'(language: locale.language, country: locale.country, variant: locale.variant) {
+						DOMValueUtil.valueTag(builder, 'cf:template', value)
+					}
+				}
+			}
 		}
 		else {
 			null

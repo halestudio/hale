@@ -28,6 +28,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 import org.pegdown.Extensions;
 import org.pegdown.PegDownProcessor;
 
@@ -72,16 +74,32 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	 * @return the loaded template as string, if available
 	 */
 	public Optional<Template> getTemplate(Class<?> clazz, Locale locale) {
-		return templateCache.computeIfAbsent(locale, cl -> {
-			return findResource(clazz, clazz.getSimpleName(), "md", cl).flatMap(url -> {
-				try (Reader reader = new InputStreamReader(url.openStream(),
-						StandardCharsets.UTF_8)) {
-					return Optional.ofNullable(engine.createTemplate(reader));
-				} catch (Exception e) {
-					log.error("Could not read cell explanation template", e);
-					return Optional.empty();
-				}
-			});
+		return templateCache.computeIfAbsent(locale, cl -> loadTemplate(clazz, cl));
+	}
+
+	/**
+	 * @return the template engine
+	 */
+	protected TemplateEngine getEngine() {
+		return engine;
+	}
+
+	/**
+	 * Load an explanation template. The default implementation locates
+	 * localized Markdown files located next to the class.
+	 * 
+	 * @param clazz the explanation class
+	 * @param locale the locale
+	 * @return the loaded template, if available
+	 */
+	protected Optional<Template> loadTemplate(Class<?> clazz, Locale locale) {
+		return findResource(clazz, clazz.getSimpleName(), "md", locale).flatMap(url -> {
+			try (Reader reader = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8)) {
+				return Optional.ofNullable(engine.createTemplate(reader));
+			} catch (Exception e) {
+				log.error("Could not read cell explanation template", e);
+				return Optional.empty();
+			}
 		});
 	}
 
@@ -137,8 +155,8 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 			Locale locale) {
 		Map<String, Object> binding = new HashMap<>();
 
-		FunctionDefinition<? extends ParameterDefinition> function = FunctionUtil
-				.getFunction(cell.getTransformationIdentifier(), provider);
+		FunctionDefinition<? extends ParameterDefinition> function = loadFunction(
+				cell.getTransformationIdentifier(), provider);
 
 		// parameters
 		binding.put("_params", new ParameterBinding(cell, function));
@@ -151,6 +169,19 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		customizeBinding(binding);
 
 		return binding;
+	}
+
+	/**
+	 * Load the function definition associated to the cell to be explained.
+	 * 
+	 * @param functionId the function identifier
+	 * @param provider the service provider, if available
+	 * @return the function definition or <code>null</code>
+	 */
+	@Nullable
+	protected FunctionDefinition<? extends ParameterDefinition> loadFunction(String functionId,
+			@Nullable ServiceProvider provider) {
+		return FunctionUtil.getFunction(functionId, provider);
 	}
 
 	/**

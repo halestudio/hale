@@ -19,24 +19,29 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.junit.Test;
 import org.w3c.dom.Element;
 
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomFunctionExplanation;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionEntity;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionParameter;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import groovy.xml.XmlUtil;
 
 /**
- * TODO Type description
+ * Custom function serialization tests.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class DefaultCustomPropertyFunctionTypeTest {
 
@@ -81,8 +86,20 @@ public class DefaultCustomPropertyFunctionTypeTest {
 
 		f.setParameters(parameters);
 
+		// explanation
+		Map<Locale, Value> templates = new HashMap<>();
+		templates.put(Locale.ROOT, Value.of(new Text("Hello")));
+		templates.put(Locale.GERMAN, Value.of(new Text("Hallo")));
+		templates.put(Locale.FRANCE, Value.of(new Text("Salut")));
+		DefaultCustomFunctionExplanation explanation = new DefaultCustomFunctionExplanation(
+				templates, null);
+		f.setExplanation(explanation);
+
 		// convert to DOM
 		Element fragment = HaleIO.getComplexElement(f);
+
+		// DEBUG
+		System.out.println(XmlUtil.serialize(fragment));
 
 		// convert back
 		DefaultCustomPropertyFunction conv = HaleIO.getComplexValue(fragment,
@@ -127,6 +144,23 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		assertEquals(0, cp2.getMinOccurrence());
 		assertEquals(1, cp2.getMaxOccurrence());
 		assertEquals(String.class, cp2.getBindingClass());
+
+		// explanation
+		assertNotNull(conv.getExplanation());
+		Map<Locale, Value> tempConv = conv.getExplanation().getTemplates();
+		assertEquals(3, tempConv.size());
+
+		Value tempRoot = tempConv.get(Locale.ROOT);
+		assertNotNull(tempRoot);
+		assertEquals("Hello", tempRoot.as(Text.class).getText());
+
+		Value tempGerman = tempConv.get(Locale.GERMAN);
+		assertNotNull(tempGerman);
+		assertEquals("Hallo", tempGerman.as(Text.class).getText());
+
+		Value tempFrance = tempConv.get(Locale.FRANCE);
+		assertNotNull(tempFrance);
+		assertEquals("Salut", tempFrance.as(Text.class).getText());
 	}
 
 	private DefaultCustomPropertyFunctionEntity createEntity(String name, int min, int max,

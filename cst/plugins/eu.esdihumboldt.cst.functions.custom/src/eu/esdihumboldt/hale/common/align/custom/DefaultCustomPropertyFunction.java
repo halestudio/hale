@@ -91,7 +91,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		@Override
 		public CellExplanation getExplanation() {
-			return null;
+			return explanation;
 		}
 
 		@Override
@@ -111,7 +111,10 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		@Override
 		public Collection<FunctionParameterDefinition> getDefinedParameters() {
-			// TODO Auto-generated method stub
+			// TODO
+//			if (parameters != null) {
+//				return parameters; // are these the right parameters?
+//			}
 			return Collections.emptyList();
 		}
 
@@ -125,6 +128,8 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	private List<DefaultCustomPropertyFunctionEntity> sources;
 
 	private List<DefaultCustomPropertyFunctionParameter> parameters;
+
+	private DefaultCustomFunctionExplanation explanation;
 
 	private String identifier;
 	private String name;
@@ -150,6 +155,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		setFunctionDefinition(other.getFunctionDefinition());
 
+		// copy target
 		DefaultCustomPropertyFunctionEntity otherTarget = other.getTarget();
 		if (otherTarget != null) {
 			setTarget(new DefaultCustomPropertyFunctionEntity(otherTarget));
@@ -158,6 +164,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 			setTarget(null);
 		}
 
+		// copy sources
 		List<DefaultCustomPropertyFunctionEntity> sources = new ArrayList<>();
 		List<DefaultCustomPropertyFunctionEntity> targetSources = other.getSources();
 		if (targetSources != null) {
@@ -166,6 +173,19 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 			}
 		}
 		setSources(sources);
+
+		// copy parameters
+		List<DefaultCustomPropertyFunctionParameter> parameters = new ArrayList<>();
+		List<DefaultCustomPropertyFunctionParameter> otherParameters = other.getParameters();
+		if (otherParameters != null) {
+			for (DefaultCustomPropertyFunctionParameter parameter : otherParameters) {
+				parameters.add(new DefaultCustomPropertyFunctionParameter(parameter));
+			}
+		}
+		setParameters(parameters);
+
+		// copy explanation (copy is done in set)
+		setExplanation(getExplanation());
 	}
 
 	/**
@@ -242,6 +262,22 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	 */
 	public void setTarget(DefaultCustomPropertyFunctionEntity target) {
 		this.target = target;
+	}
+
+	/**
+	 * @return the explanation
+	 */
+	public DefaultCustomFunctionExplanation getExplanation() {
+		return explanation;
+	}
+
+	/**
+	 * @param explanation the explanation to set
+	 */
+	public void setExplanation(DefaultCustomFunctionExplanation explanation) {
+		DefaultCustomFunctionExplanation copy = new DefaultCustomFunctionExplanation(explanation);
+		copy.setFunctionResolver(() -> descriptor);
+		this.explanation = copy;
 	}
 
 	/**
