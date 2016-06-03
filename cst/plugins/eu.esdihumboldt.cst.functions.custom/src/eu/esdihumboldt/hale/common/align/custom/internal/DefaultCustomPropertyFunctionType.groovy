@@ -131,7 +131,7 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 
 		use (NSDOMCategory) {
 			// attributes
-			entity.name = element.getAttribute('name')
+			entity.name = element.getAttributeOrNull('name')
 			entity.minOccurrence = Integer.parseInt(element.getAttribute('minOccurs'))
 			entity.maxOccurrence = Integer.parseInt(element.getAttribute('maxOccurs'))
 			entity.eager = Boolean.parseBoolean(element.getAttribute('eager'))

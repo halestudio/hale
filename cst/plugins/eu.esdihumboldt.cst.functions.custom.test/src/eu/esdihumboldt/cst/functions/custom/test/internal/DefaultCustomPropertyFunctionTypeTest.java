@@ -131,6 +131,7 @@ public class DefaultCustomPropertyFunctionTypeTest {
 
 		// target
 		assertNotNull(conv.getTarget());
+		assertEquals(null, conv.getTarget().getName());
 
 		// parameters
 		assertEquals(2, conv.getParameters().size());
