@@ -216,4 +216,24 @@ class NSDOMBuilder extends DOMBuilder {
 			return new QName(methodName)
 		}
 	}
+
+	protected Object createNode(Object name, Map attributes) {
+		super.createNode(name, filterAttributes(attributes))
+	}
+
+	protected Map filterAttributes(Map attributes) {
+		Map result = [:]
+
+		attributes.each { key, value ->
+			if (key != null && value != null) {
+				/*
+				 * A null value should not result in an empty attribute (which is an empty string).
+				 * Instead, don't write the attribute.
+				 */
+				result[key] = value
+			}
+		}
+
+		result
+	}
 }
