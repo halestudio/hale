@@ -65,9 +65,10 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 				log.error("Could not create embedded browser, using text field as fall-back", e);
 			}
 
-			textField = new Text(page, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
-			textField.setLayoutData(GridDataFactory.fillDefaults().hint(17, 17).grab(true, true)
-					.create());
+			textField = new Text(page,
+					SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.READ_ONLY);
+			textField.setLayoutData(
+					GridDataFactory.fillDefaults().hint(17, 17).grab(true, true).create());
 		}
 	}
 
@@ -84,8 +85,8 @@ public class HtmlExplanationCellSection extends AbstractCellSection {
 
 		Cell cell = getCell();
 		if (cell != null) {
-			FunctionDefinition<?> function = FunctionUtil.getFunction(
-					cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
+			FunctionDefinition<?> function = FunctionUtil
+					.getFunction(cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
