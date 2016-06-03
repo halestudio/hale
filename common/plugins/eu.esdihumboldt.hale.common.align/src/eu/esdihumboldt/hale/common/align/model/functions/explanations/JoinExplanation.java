@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for join function cells.
@@ -37,7 +38,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 public class JoinExplanation extends AbstractCellExplanation implements JoinFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN)
 				.as(JoinParameter.class);
 

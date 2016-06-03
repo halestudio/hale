@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for {@link NetworkExpansion} cells.
@@ -37,7 +38,8 @@ public class NetworkExpansionExplanation extends AbstractCellExplanation
 		implements NetworkExpansionFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String expression = CellUtil.getFirstParameter(cell, PARAMETER_BUFFER_WIDTH)
 				.as(String.class);

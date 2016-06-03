@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for formatted string cells.
@@ -37,7 +38,8 @@ public class FormattedStringExplanation extends AbstractCellExplanation
 		implements FormattedStringFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 		String pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String.class);
 

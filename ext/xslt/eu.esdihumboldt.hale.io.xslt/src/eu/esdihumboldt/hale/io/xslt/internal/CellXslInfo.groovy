@@ -54,7 +54,7 @@ public class CellXslInfo {
 		}
 
 		// function
-		FunctionDefinition<?> function = FunctionUtil.getFunction(cell.transformationIdentifier);
+		FunctionDefinition<?> function = FunctionUtil.getFunction(cell.transformationIdentifier, null);
 		if (function) {
 			result << "<!-- Relation: $function.displayName -->"
 

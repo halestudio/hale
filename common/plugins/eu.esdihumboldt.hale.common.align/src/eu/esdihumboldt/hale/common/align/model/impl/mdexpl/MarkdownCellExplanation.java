@@ -35,12 +35,13 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import groovy.text.GStringTemplateEngine;
 import groovy.text.Template;
 import groovy.text.TemplateEngine;
@@ -105,14 +106,16 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	}
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider provider,
+			Locale locale) {
 		Optional<Template> maybeTemplate = getTemplate(getDefaultMessageClass(), locale);
 		if (maybeTemplate.isPresent()) {
 			try {
 				Template template = maybeTemplate.get();
 
 				// process template
-				String explanation = template.make(createBinding(cell, html, locale)).toString();
+				String explanation = template.make(createBinding(cell, html, provider, locale))
+						.toString();
 
 				if (html) {
 					explanation = pegdown.markdownToHtml(explanation);
@@ -130,11 +133,12 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		}
 	}
 
-	private Map<String, Object> createBinding(Cell cell, boolean html, Locale locale) {
+	private Map<String, Object> createBinding(Cell cell, boolean html, ServiceProvider provider,
+			Locale locale) {
 		Map<String, Object> binding = new HashMap<>();
 
-		AbstractFunction<? extends AbstractParameter> function = FunctionUtil
-				.getFunction(cell.getTransformationIdentifier());
+		FunctionDefinition<? extends ParameterDefinition> function = FunctionUtil
+				.getFunction(cell.getTransformationIdentifier(), provider);
 
 		// parameters
 		binding.put("_params", new ParameterBinding(cell, function));
@@ -159,13 +163,13 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	}
 
 	private void addEntityBindings(Map<String, Object> binding,
-			Set<? extends AbstractParameter> definitions,
+			Set<? extends ParameterDefinition> definitions,
 			ListMultimap<String, ? extends Entity> entities, String defaultName, boolean html,
 			Locale locale) {
 		if (!definitions.isEmpty()) {
 			if (definitions.size() == 1) {
 				// single entity
-				AbstractParameter def = definitions.iterator().next();
+				ParameterDefinition def = definitions.iterator().next();
 
 				// _defaultName always maps to single entity
 				addEntityBindingValue(defaultName, def, entities.get(def.getName()), html, binding,
@@ -178,7 +182,7 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 				}
 			}
 			else {
-				for (AbstractParameter def : definitions) {
+				for (ParameterDefinition def : definitions) {
 					// add each entity based on its name, the default name is
 					// used for the null entity
 					String name = def.getName();
@@ -195,7 +199,7 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		}
 	}
 
-	private void addEntityBindingValue(String bindingName, AbstractParameter definition,
+	private void addEntityBindingValue(String bindingName, ParameterDefinition definition,
 			List<? extends Entity> entities, boolean html, Map<String, Object> binding,
 			Locale locale) {
 		final Object entityBinding;

@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang.StringEscapeUtils;
 
 import com.google.common.base.Joiner;
@@ -45,12 +47,12 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 
 	@Override
 	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale) {
-		return getExplanation(cell, false, locale);
+		return getExplanation(cell, false, provider, locale);
 	}
 
 	@Override
 	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale) {
-		return getExplanation(cell, true, locale);
+		return getExplanation(cell, true, provider, locale);
 	}
 
 	/**
@@ -59,11 +61,13 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 * @param cell the cell to create an explanation for
 	 * @param html if the format should be HMTL, otherwise the format is just
 	 *            text
+	 * @param provider the service provider, if available
 	 * @param locale the locale for the explanation, to be matched if content is
 	 *            available
 	 * @return the explanation or <code>null</code>
 	 */
-	protected abstract String getExplanation(Cell cell, boolean html, Locale locale);
+	protected abstract String getExplanation(Cell cell, boolean html,
+			@Nullable ServiceProvider provider, Locale locale);
 
 	/**
 	 * Format an entity for inclusion in an explanation.

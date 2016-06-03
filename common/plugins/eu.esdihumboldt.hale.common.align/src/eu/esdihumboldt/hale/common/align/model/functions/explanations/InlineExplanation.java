@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -38,7 +39,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class InlineExplanation extends AbstractCellExplanation {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		TypeEntityDefinition sourceType = getPropertyType(source);
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());

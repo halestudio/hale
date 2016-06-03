@@ -59,9 +59,9 @@ import eu.esdihumboldt.hale.ui.util.groovy.ast.GroovyAST;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 
 /**
- * TODO Type description
+ * Configuration page for custom property function script.
  * 
- * @author simon
+ * @author Simon Templer
  */
 @SuppressWarnings("restriction")
 public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyFunctionWizard>
@@ -100,10 +100,11 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 			}
 		};
 
-		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
-				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-				BINDING_TRANSFORMATION_CONTEXT, CustomGroovyTransformation.BINDING_PARAMS),
+		return new SimpleGroovySourceViewerConfiguration(colorManager,
+				ImmutableList.of(BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES,
+						BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+						BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT,
+						CustomGroovyTransformation.BINDING_PARAMS),
 				ImmutableList.of(targetCompletions));
 	}
 
@@ -208,11 +209,12 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 	private EntityDefinition createDummyEntity(DefaultCustomPropertyFunctionEntity entity,
 			SchemaSpaceID ssid) {
 		DefaultTypeDefinition parent = new DefaultTypeDefinition(new QName("dummy"));
-		DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-				entity.getName()), parent, createDummyType(entity));
-		property.setConstraint(Cardinality.get(entity.getMinOccurrence(), entity.getMaxOccurrence()));
-		return new PropertyEntityDefinition(parent, Collections.singletonList(new ChildContext(
-				property)), ssid, null);
+		DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+				new QName(entity.getName()), parent, createDummyType(entity));
+		property.setConstraint(
+				Cardinality.get(entity.getMinOccurrence(), entity.getMaxOccurrence()));
+		return new PropertyEntityDefinition(parent,
+				Collections.singletonList(new ChildContext(property)), ssid, null);
 	}
 
 	private TypeDefinition createDummyType(DefaultCustomPropertyFunctionEntity entity) {
@@ -267,12 +269,12 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 						else {
 							// use dummy type with only the
 							// binding/HasValueFlag copied
-							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(prop
-									.getPropertyType().getName());
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									Binding.class));
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									HasValueFlag.class));
+							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(
+									prop.getPropertyType().getName());
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(Binding.class));
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(HasValueFlag.class));
 							propertyType = crippledType;
 						}
 

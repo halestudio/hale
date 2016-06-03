@@ -21,8 +21,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
@@ -36,7 +36,7 @@ import groovy.lang.GroovyObjectSupport;
 public class ParameterBinding extends GroovyObjectSupport {
 
 	private final Cell cell;
-	private final AbstractFunction<?> function;
+	private final FunctionDefinition<?> function;
 
 	/**
 	 * Create a parameter binding for the given cell.
@@ -44,7 +44,7 @@ public class ParameterBinding extends GroovyObjectSupport {
 	 * @param cell the cell
 	 * @param function the function definition for the cell
 	 */
-	public ParameterBinding(Cell cell, AbstractFunction<?> function) {
+	public ParameterBinding(Cell cell, FunctionDefinition<?> function) {
 		super();
 		this.cell = cell;
 		this.function = function;
@@ -58,7 +58,7 @@ public class ParameterBinding extends GroovyObjectSupport {
 	 * @return the extracted value
 	 */
 	protected Object extractParameterValue(ParameterValue value,
-			Optional<FunctionParameter> paramDef) {
+			Optional<FunctionParameterDefinition> paramDef) {
 		// TODO handle scripted parameters?
 
 		if (paramDef.isPresent()) {
@@ -78,7 +78,7 @@ public class ParameterBinding extends GroovyObjectSupport {
 	public Object getProperty(String property) {
 		boolean getAsList = true;
 
-		final Optional<FunctionParameter> paramDef;
+		final Optional<FunctionParameterDefinition> paramDef;
 		if (function != null) {
 			paramDef = function.getDefinedParameters().stream()
 					.filter(param -> Objects.equals(property, param.getName())).findFirst();

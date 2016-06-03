@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for the Create function.
@@ -34,7 +35,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 public class CreateExplanation extends AbstractCellExplanation implements CreateFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		int number = CellUtil.getOptionalParameter(cell, PARAM_NUMBER, Value.of(1))

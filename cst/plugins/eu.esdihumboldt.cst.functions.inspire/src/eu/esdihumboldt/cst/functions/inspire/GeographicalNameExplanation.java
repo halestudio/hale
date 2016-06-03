@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation class for the geographical name function
@@ -38,7 +39,8 @@ public class GeographicalNameExplanation extends AbstractCellExplanation
 		implements GeographicalNameFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		// only one locale supported in this explanation (the function is
 		// deprecated)
 		Locale targetLocale = Locale.ENGLISH;

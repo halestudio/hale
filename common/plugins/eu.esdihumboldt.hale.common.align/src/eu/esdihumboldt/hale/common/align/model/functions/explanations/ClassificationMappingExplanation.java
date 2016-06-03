@@ -144,7 +144,8 @@ public class ClassificationMappingExplanation extends AbstractCellExplanation
 	}
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		// is not getting called
 		return null;
 	}

@@ -19,6 +19,7 @@ import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for {@link GroovyJoin}
@@ -33,8 +34,9 @@ public class GroovyJoinExplanation extends JoinExplanation {
 	}
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html, Locale locale) {
-		String superExplanation = super.getExplanation(cell, html, locale);
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
+		String superExplanation = super.getExplanation(cell, html, services, locale);
 
 		String script = GroovyExplanation.getScript(cell);
 		if (script != null) {
