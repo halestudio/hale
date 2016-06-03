@@ -145,30 +145,37 @@ ext {
 		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
 		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
+	
+	/*
+	 * List of bundles that are not platform specific, even if they are detected as such.
+	 */
+	notPlatformSpecificBundles = [
+		'com.github.jnr.x86asm'
+	]
 
 	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-	artifactsCommit = '1a7ed39df3f250142be386c172ddf5a1166aa887'
+	artifactsCommit = '18b78a2e5b480f152c0b7792463713d28bccde30'
 	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
         'win32': [
             'win32': [
-                'x86': 'jre-7u51-windows-i586.tar.gz',
-                'x86_64': 'jre-7u51-windows-x64.tar.gz'
+                'x86': 'jre-8u91-windows-i586.tar.gz',
+                'x86_64': 'jre-8u91-windows-x64.tar.gz'
             ]
         ],
         'linux': [
             'gtk': [
-                'x86': 'jre-7u51-linux-i586.tar.gz',
-                'x86_64': 'jre-7u51-linux-x64.tar.gz'
+                'x86': 'jre-8u91-linux-i586.tar.gz',
+                'x86_64': 'jre-8u91-linux-x64.tar.gz'
             ]
-        ],
+        ]/*, -- not available right now
         'macosx': [
             'cocoa': [
-                'x86_64': 'jdk-min-7u60-macosx-x64.tar.gz'
+                'x86_64': 'jdk-min-8u91-macosx-x64.tar.gz'
             ]
-        ]
+        ]*/
     ]
 
     // Names of zip files containing mongodb instances (sorted by their respective platform)

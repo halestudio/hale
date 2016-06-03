@@ -260,14 +260,14 @@
       <plugin id="org.jdom"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm-4"/>
-      <plugin id="org.objectweb.asm.analysis-4"/>
-      <plugin id="org.objectweb.asm.tree-4"/>
-      <plugin id="org.objectweb.asm.util-4"/>
+      <plugin id="org.objectweb.asm-5"/>
+      <plugin id="org.objectweb.asm.analysis-5"/>
+      <plugin id="org.objectweb.asm.tree-5"/>
+      <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
+      <plugin id="org.parboiled.java"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.quartz-scheduler.quartz"/>
       <plugin id="org.reflections"/>
