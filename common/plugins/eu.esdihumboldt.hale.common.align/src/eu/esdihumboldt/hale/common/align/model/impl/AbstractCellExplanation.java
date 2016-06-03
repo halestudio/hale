@@ -16,8 +16,13 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
@@ -38,20 +43,14 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  */
 public abstract class AbstractCellExplanation implements CellExplanation {
 
-	/**
-	 * @see CellExplanation#getExplanation(Cell, ServiceProvider)
-	 */
 	@Override
-	public String getExplanation(Cell cell, ServiceProvider provider) {
-		return getExplanation(cell, false);
+	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale) {
+		return getExplanation(cell, false, locale);
 	}
 
-	/**
-	 * @see CellExplanation#getExplanationAsHtml(Cell, ServiceProvider)
-	 */
 	@Override
-	public String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
-		return getExplanation(cell, true);
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale) {
+		return getExplanation(cell, true, locale);
 	}
 
 	/**
@@ -60,9 +59,11 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 * @param cell the cell to create an explanation for
 	 * @param html if the format should be HMTL, otherwise the format is just
 	 *            text
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
 	 * @return the explanation or <code>null</code>
 	 */
-	protected abstract String getExplanation(Cell cell, boolean html);
+	protected abstract String getExplanation(Cell cell, boolean html, Locale locale);
 
 	/**
 	 * Format an entity for inclusion in an explanation.
@@ -72,14 +73,17 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 *            text
 	 * @param indexInFront whether index conditions should be in front of the
 	 *            property name or behind in brackets
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
 	 * @return the formatted entity name or <code>null</code> in case of
 	 *         <code>null</code> input
 	 */
-	protected String formatEntity(Entity entity, boolean html, boolean indexInFront) {
+	protected String formatEntity(Entity entity, boolean html, boolean indexInFront,
+			Locale locale) {
 		if (entity == null)
 			return null;
 
-		return formatEntity(entity.getDefinition(), html, indexInFront);
+		return formatEntity(entity.getDefinition(), html, indexInFront, locale);
 	}
 
 	/**
@@ -90,27 +94,32 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	 *            text
 	 * @param indexInFront whether index conditions should be in front of the
 	 *            property name or behind in brackets
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
 	 * @return the formatted entity name or <code>null</code> in case of
 	 *         <code>null</code> input
 	 */
-	protected String formatEntity(EntityDefinition entityDef, boolean html, boolean indexInFront) {
+	protected String formatEntity(EntityDefinition entityDef, boolean html, boolean indexInFront,
+			Locale locale) {
 		if (entityDef == null)
 			return null;
 		// get name and standard text
 		String name = entityDef.getDefinition().getDisplayName();
-		String text = quoteText(name, html);
+		String text = quoteName(name, html);
 
 		// modify text with filter
 		List<ChildContext> path = entityDef.getPropertyPath();
 		// different output than AlignmentUtil in case of property with index
 		// condition
 		if (path != null && !path.isEmpty() && path.get(path.size() - 1).getIndex() != null) {
-			if (indexInFront)
-				text = formatNumber(path.get(path.size() - 1).getIndex() + 1) + " value of the "
-						+ text;
-			else
-				text += " (the " + formatNumber(path.get(path.size() - 1).getIndex() + 1)
-						+ " value)";
+			if (indexInFront) {
+				text = MessageFormat.format(getBaseMessage("index_pre", locale),
+						formatNumber(path.get(path.size() - 1).getIndex() + 1, locale), text);
+			}
+			else {
+				text += " " + MessageFormat.format(getBaseMessage("index_post", locale),
+						formatNumber(path.get(path.size() - 1).getIndex() + 1, locale));
+			}
 		}
 		else {
 			String filterString = AlignmentUtil.getContextText(entityDef);
@@ -118,7 +127,8 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 				filterString = StringEscapeUtils.escapeHtml(filterString);
 			}
 			if (filterString != null)
-				text += " (matching " + quoteText(filterString, html) + ")";
+				text += " " + MessageFormat.format(getBaseMessage("filter", locale),
+						quoteText(filterString, html));
 		}
 		return text;
 	}
@@ -172,22 +182,162 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 			return "'" + text + "'";
 	}
 
-	private String formatNumber(int number) {
+	/**
+	 * Quote or otherwise format (in case of HTML) the given value.
+	 * 
+	 * @param value the value to quote, may be <code>null</code>
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
+	 * @return the quoted text or <code>null</code> in case of <code>null</code>
+	 *         input
+	 */
+	protected String quoteValue(Object value, boolean html) {
+		if (value == null)
+			return null;
+		if (html)
+			return "<code>" + value + "</code>";
+		else
+			return "`" + value + "`";
+	}
+
+	/**
+	 * Quote or otherwise format (in case of HTML) the given name (e.g. an
+	 * entity or parameter name).
+	 * 
+	 * @param name the name to quote, may be <code>null</code>
+	 * @param html if the format should be HMTL, otherwise the format is just
+	 *            text
+	 * @return the quoted text or <code>null</code> in case of <code>null</code>
+	 *         input
+	 */
+	protected String quoteName(String name, boolean html) {
+		if (name == null)
+			return null;
+		if (html)
+			return "<em>" + name + "</em>";
+		else
+			return "'" + name + "'";
+	}
+
+	private String formatNumber(int number, Locale locale) {
 		switch (number) {
 		case 1:
-			return "first";
+			return getBaseMessage("first", locale);
 		case 2:
-			return "second";
+			return getBaseMessage("second", locale);
 		case 3:
-			return "third";
+			return getBaseMessage("third", locale);
 		case 4:
-			return "fourth";
+			return getBaseMessage("fourth", locale);
 		case 5:
-			return "fifth";
+			return getBaseMessage("fifth", locale);
 		case 6:
-			return "sixth";
+			return getBaseMessage("sixth", locale);
 		default:
 			return (number + 1) + ".";
 		}
 	}
+
+	/**
+	 * Get a message for a specific locale.
+	 * 
+	 * @param key the message key
+	 * @param locale the locale
+	 * @return the message string
+	 */
+	protected String getMessage(String key, Locale locale) {
+		return getMessage(key, locale, getDefaultMessageClass());
+	}
+
+	/**
+	 * Get a message for a specific locale.
+	 * 
+	 * @param key the message key
+	 * @param locale the locale
+	 * @param messageClass the class the messages to retrieve are associated to
+	 * @return the message string
+	 */
+	protected String getMessage(String key, Locale locale, Class<?> messageClass) {
+		return ResourceBundle
+				.getBundle(messageClass.getName(), locale, messageClass.getClassLoader(),
+						ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
+				.getString(key);
+	}
+
+	/**
+	 * Get the class used to retrieve messages via
+	 * {@link #getMessage(String, Locale)}
+	 * 
+	 * @return the default message class
+	 */
+	protected Class<?> getDefaultMessageClass() {
+		return getClass();
+	}
+
+	/**
+	 * Get a message for a specific locale that is stored with the
+	 * {@link AbstractCellExplanation} explanation base class.
+	 * 
+	 * @param key the message key
+	 * @param locale the locale
+	 * @return the message string
+	 */
+	private String getBaseMessage(String key, Locale locale) {
+		return ResourceBundle
+				.getBundle(AbstractCellExplanation.class.getName(), locale,
+						AbstractCellExplanation.class.getClassLoader(),
+						ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
+				.getString(key);
+	}
+
+	/**
+	 * Create a string enumerating the given items.
+	 * 
+	 * @param items the collection of items
+	 * @param locale the locale
+	 * @return the joined string
+	 */
+	protected String enumerateJoin(List<String> items, Locale locale) {
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < items.size(); i++) {
+			result.append(items.get(i));
+
+			if (i == items.size() - 2) {
+				result.append(' ');
+				result.append(getBaseMessage("and", locale));
+				result.append(' ');
+			}
+			else if (i < items.size() - 2) {
+				result.append(", ");
+			}
+		}
+		return result.toString();
+	}
+
+	/**
+	 * Build a replacement table (HTML only).
+	 * 
+	 * @param varToProperty variable expressions mapped to the entities that
+	 *            replace them
+	 * @param locale the locale
+	 * @return the replacement table as string
+	 */
+	protected String buildReplacementTable(Map<String, String> varToProperty, Locale locale) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<br /><br />");
+		sb.append(getBaseMessage("rt_intro", locale));
+		sb.append("<br />");
+		sb.append("<table border=\"1\"><tr><th>");
+		sb.append(getBaseMessage("rt_variable", locale));
+		sb.append("</th><th>");
+		sb.append(getBaseMessage("rt_property", locale));
+		sb.append("</th></tr>");
+		for (Entry<String, String> entry : varToProperty.entrySet()) {
+			sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>", entry.getKey(),
+					entry.getValue()));
+		}
+		sb.append("</table>");
+		return sb.toString();
+	}
+
 }

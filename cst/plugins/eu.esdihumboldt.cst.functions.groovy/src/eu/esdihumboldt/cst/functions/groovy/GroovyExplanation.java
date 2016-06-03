@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -32,15 +33,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
-			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn''t set.";
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		String script = getScript(cell);
@@ -51,8 +45,8 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 		if (target != null && script != null) {
 			if (html)
 				script = "<pre>" + script + "</pre>";
-			String explanation = MessageFormat.format(EXPLANATION_PATTERN,
-					formatEntity(target, html, true), script);
+			String explanation = MessageFormat.format(getMessage("main", locale),
+					formatEntity(target, html, true, locale), script);
 			if (html)
 				explanation = explanation.replaceAll("\n", "<br />");
 //			if (html && sources != null) {

@@ -1,0 +1,1 @@
+Weist dem Attribut $_target den Wert `$_params.value` zu<%= _source ? ", falls in der Quelle das Attribut $_source existiert." : '.' %>

@@ -16,30 +16,16 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
-import java.text.MessageFormat;
-
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
 /**
  * Explanation for the Generate Unique Id function.
  * 
  * @author Andrea Antonello
  */
-public class GenerateUIDExplanation extends AbstractCellExplanation implements AssignFunction {
+public class GenerateUIDExplanation extends MarkdownCellExplanation implements AssignFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
-	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		return MessageFormat.format("Generates a unique id for the {0} property.",
-				formatEntity(target, html, true));
-	}
+	// nothing to do
 
 }

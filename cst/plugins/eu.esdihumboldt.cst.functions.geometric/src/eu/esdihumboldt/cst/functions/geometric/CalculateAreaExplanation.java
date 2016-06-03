@@ -16,37 +16,15 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
-import java.text.MessageFormat;
-
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.Entity;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
 /**
  * Explanation for CalculateArea cells
  * 
  * @author Kevin Mais
  */
-public class CalculateAreaExplanation extends AbstractCellExplanation {
+public class CalculateAreaExplanation extends MarkdownCellExplanation {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
-	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-
-		Entity source = CellUtil.getFirstEntity(cell.getSource());
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-
-		if (target != null && source != null) {
-			String message = "Calculates the area of the geometry contained in the {1} property and assignes the result to the {0} property.";
-
-			return MessageFormat.format(message, formatEntity(target, html, true),
-					formatEntity(source, html, true));
-		}
-		return null;
-	}
+	// nothing to do
 
 }

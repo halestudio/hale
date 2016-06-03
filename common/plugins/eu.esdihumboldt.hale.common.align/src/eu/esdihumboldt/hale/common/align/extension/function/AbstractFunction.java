@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.jcip.annotations.Immutable;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -34,11 +32,14 @@ import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiab
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import net.jcip.annotations.Immutable;
 
 /**
  * {@link IConfigurationElement} based function base class
  * 
- * @param <P> the parameter type
+ * @param
+ * 			<P>
+ *            the parameter type
  * @author Simon Templer
  */
 @Immutable
@@ -53,6 +54,9 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	protected final IConfigurationElement conf;
 
 	private final Map<String, FunctionParameterDefinition> parameters;
+
+	private boolean explanationInitialized = false;
+	private CellExplanation explanation;
 
 	/**
 	 * Create a function definition based on the given configuration element
@@ -86,16 +90,23 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 	 */
 	@Override
 	public CellExplanation getExplanation() {
+		if (explanationInitialized) {
+			return explanation;
+		}
+
 		if (conf.getAttribute("cellExplanation") == null
 				|| conf.getAttribute("cellExplanation").isEmpty()) {
+			explanationInitialized = true;
 			return null;
 		}
 		try {
-			return (CellExplanation) conf.createExecutableExtension("cellExplanation");
+			explanation = (CellExplanation) conf.createExecutableExtension("cellExplanation");
 		} catch (CoreException e) {
+			explanationInitialized = true;
 			log.error("Could not create cell explanation for function", e);
-			return null;
 		}
+		explanationInitialized = true;
+		return explanation;
 	}
 
 	/**

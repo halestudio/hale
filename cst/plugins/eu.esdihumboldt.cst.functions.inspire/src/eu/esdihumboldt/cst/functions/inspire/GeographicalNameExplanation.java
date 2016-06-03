@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.inspire;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -33,17 +34,22 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  * 
  * @author Kevin Mais
  */
-public class GeographicalNameExplanation extends AbstractCellExplanation implements
-		GeographicalNameFunction {
+public class GeographicalNameExplanation extends AbstractCellExplanation
+		implements GeographicalNameFunction {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, Locale locale) {
+		// only one locale supported in this explanation (the function is
+		// deprecated)
+		Locale targetLocale = Locale.ENGLISH;
+
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID, null);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("The {0} property is populated with an Inspire Geographical Name composed as follows:");
+		sb.append(
+				"The {0} property is populated with an Inspire Geographical Name composed as follows:");
 		addLineBreak(sb, html);
 		addLineBreak(sb, html);
 
@@ -67,16 +73,18 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 		List<? extends Entity> sources = cell.getSource().get(null);
 //		PROPERTY_TEXT
 		List<ParameterValue> scripts = cell.getTransformationParameters().get(PROPERTY_SCRIPT);
-		List<ParameterValue> transs = cell.getTransformationParameters().get(
-				PROPERTY_TRANSLITERATION);
+		List<ParameterValue> transs = cell.getTransformationParameters()
+				.get(PROPERTY_TRANSLITERATION);
 
 		if (!sources.isEmpty()) {
-			sb.append("For each source property a spelling is created, the spelling text is the value of the source property.");
+			sb.append(
+					"For each source property a spelling is created, the spelling text is the value of the source property.");
 			addLineBreak(sb, html);
 
 			if (html) {
 				sb.append("<table border=\"1\">");
-				sb.append("<tr><th>Source property</th><th>Script</th><th>Transliteration</th></tr>");
+				sb.append(
+						"<tr><th>Source property</th><th>Script</th><th>Transliteration</th></tr>");
 			}
 
 			int index = 0;
@@ -89,7 +97,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 				if (html) {
 					sb.append("<tr>");
 					sb.append("<td>");
-					sb.append(formatEntity(source, html, false));
+					sb.append(formatEntity(source, html, false, targetLocale));
 					sb.append("</td>");
 					sb.append("<td>");
 					if (script != null) {
@@ -105,7 +113,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 				}
 				else {
 					sb.append("Source: ");
-					sb.append(formatEntity(source, html, false));
+					sb.append(formatEntity(source, html, false, targetLocale));
 					addLineBreak(sb, html);
 
 					if (script != null && !script.isEmpty()) {
@@ -134,7 +142,7 @@ public class GeographicalNameExplanation extends AbstractCellExplanation impleme
 		String result = sb.toString();
 
 		if (target != null) {
-			result = MessageFormat.format(result, formatEntity(target, html, true));
+			result = MessageFormat.format(result, formatEntity(target, html, true, targetLocale));
 		}
 
 		return result;
