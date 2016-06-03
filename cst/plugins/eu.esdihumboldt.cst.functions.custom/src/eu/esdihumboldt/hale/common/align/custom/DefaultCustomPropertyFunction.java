@@ -185,7 +185,7 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 		setParameters(parameters);
 
 		// copy explanation (copy is done in set)
-		setExplanation(getExplanation());
+		setExplanation(other.getExplanation());
 	}
 
 	/**

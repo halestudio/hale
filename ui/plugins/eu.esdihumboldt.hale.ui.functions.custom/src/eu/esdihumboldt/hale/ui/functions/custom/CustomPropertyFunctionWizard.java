@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
+import eu.esdihumboldt.hale.ui.functions.custom.pages.CustomFunctionExplanationPage;
 import eu.esdihumboldt.hale.ui.functions.custom.pages.CustomPropertyFunctionEntitiesPage;
 import eu.esdihumboldt.hale.ui.functions.custom.pages.MainPage;
 import eu.esdihumboldt.hale.ui.functions.custom.pages.PropertyFunctionScriptPage;
@@ -29,12 +30,12 @@ import eu.esdihumboldt.hale.ui.functions.custom.pages.PropertyFunctionScriptPage
  * 
  * @author Simon Templer
  */
-public class CustomPropertyFunctionWizard
-		extends
+public class CustomPropertyFunctionWizard extends
 		AbstractGenericCustomFunctionWizard<DefaultCustomPropertyFunction, PropertyFunctionDefinition, PropertyTransformation<?>> {
 
 	private CustomPropertyFunctionEntitiesPage entityPage;
 	private PropertyFunctionScriptPage scriptPage;
+	private CustomFunctionExplanationPage explanationPage;
 
 	/**
 	 * Default constructor
@@ -53,7 +54,8 @@ public class CustomPropertyFunctionWizard
 	}
 
 	@Override
-	protected DefaultCustomPropertyFunction createCustomFunction(DefaultCustomPropertyFunction org) {
+	protected DefaultCustomPropertyFunction createCustomFunction(
+			DefaultCustomPropertyFunction org) {
 		if (org == null) {
 			return new DefaultCustomPropertyFunction();
 		}
@@ -77,6 +79,10 @@ public class CustomPropertyFunctionWizard
 		// script page
 		scriptPage = new PropertyFunctionScriptPage();
 		addPage(scriptPage);
+
+		// explanation page
+		explanationPage = new CustomFunctionExplanationPage();
+		addPage(explanationPage);
 	}
 
 }

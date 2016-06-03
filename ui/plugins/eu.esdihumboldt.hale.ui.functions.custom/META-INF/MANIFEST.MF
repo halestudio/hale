@@ -4,7 +4,7 @@ Bundle-Name: Custom Functions UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.custom;singleton:=true
 Bundle-Version: 2.9.3.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
  org.eclipse.core.runtime;bundle-version="3.10.0",
  eu.esdihumboldt.hale.ui;bundle-version="2.9.1",

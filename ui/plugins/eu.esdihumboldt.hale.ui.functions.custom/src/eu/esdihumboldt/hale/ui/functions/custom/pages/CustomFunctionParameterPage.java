@@ -15,11 +15,43 @@
 
 package eu.esdihumboldt.hale.ui.functions.custom.pages;
 
+import org.eclipse.swt.widgets.Composite;
+
+import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.functions.custom.CustomPropertyFunctionWizard;
 
 /**
  * TODO Type description
- * @author simon
+ * 
+ * @author Simon Templer
  */
-public class CustomFunctionParameterPage {
+public class CustomFunctionParameterPage extends HaleWizardPage<CustomPropertyFunctionWizard>
+		implements CustomFunctionWizardPage {
+
+	/**
+	 * Default constructor.
+	 */
+	public CustomFunctionParameterPage() {
+		super("parameters");
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.custom.pages.CustomFunctionWizardPage#apply()
+	 */
+	@Override
+	public void apply() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	protected void createContent(Composite page) {
+		// TODO Auto-generated method stub
+
+	}
 
 }

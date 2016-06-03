@@ -68,14 +68,29 @@ public class DefaultCustomFunctionExplanation extends MarkdownCellExplanation
 	}
 
 	/**
+	 * Create an explanation with the given templates.
+	 * 
+	 * @param templates map of localized templates
+	 */
+	public DefaultCustomFunctionExplanation(Map<Locale, Value> templates) {
+		this(templates, null);
+	}
+
+	/**
 	 * Copy constructor.
 	 * 
 	 * @param other the explanation to copy
 	 */
 	public DefaultCustomFunctionExplanation(DefaultCustomFunctionExplanation other) {
 		super();
-		templates = new HashMap<>(other.templates);
-		functionResolver = other.functionResolver;
+		if (other != null) {
+			templates = new HashMap<>(other.templates);
+			functionResolver = other.functionResolver;
+		}
+		else {
+			templates = new HashMap<>();
+			functionResolver = null;
+		}
 	}
 
 	/**
