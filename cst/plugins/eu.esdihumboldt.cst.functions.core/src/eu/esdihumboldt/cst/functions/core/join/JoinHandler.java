@@ -18,6 +18,8 @@ package eu.esdihumboldt.cst.functions.core.join;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +76,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
 				|| transformationParameters.get(PARAMETER_JOIN).isEmpty()) {
@@ -188,11 +190,18 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			}
 		}
 
+		/*
+		 * Use string representation for URIs and URLs.
+		 */
+		if (value instanceof URI || value instanceof URL) {
+			value = value.toString();
+		}
+
 		return value;
 	}
 
-	private class JoinIterator extends
-			GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
+	private class JoinIterator
+			extends GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
 
 		private final InstanceCollection instances;
 		// type -> direct-parent
@@ -238,7 +247,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					// in contrast to an empty set.
 					Set<InstanceReference> possibleInstances = null;
 					// ParentType -> JoinConditions
-					for (Map.Entry<Integer, JoinCondition> joinCondition : joinConditions.entries()) {
+					for (Map.Entry<Integer, JoinCondition> joinCondition : joinConditions
+							.entries()) {
 						Collection<Object> currentValues = AlignmentUtil.getValues(
 								currentInstances[joinCondition.getKey()],
 								joinCondition.getValue().baseProperty, true);
@@ -251,8 +261,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 						// Allow targets with any of the property values.
 						HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
 						for (Object currentValue : currentValues) {
-							matches.addAll(index.get(joinCondition.getValue().joinProperty).get(
-									processValue(currentValue,
+							matches.addAll(index.get(joinCondition.getValue().joinProperty)
+									.get(processValue(currentValue,
 											joinCondition.getValue().baseProperty)));
 						}
 						if (possibleInstances == null)
