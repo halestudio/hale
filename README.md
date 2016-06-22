@@ -32,7 +32,6 @@ The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spat
 * [HALE User Guide](http://hale.igd.fraunhofer.de/)
 * [HALE Community Website with issue tracker, forum, downloads...](http://www.esdi-community.eu/projects/hale)
 * [HALE Community Blog](http://blog.dhpanel.eu/)
-* [Subscribe to dev@esdi-humboldt.eu](mailto:dev-subscribe@esdi-humboldt.eu)
 
 ## License
 
