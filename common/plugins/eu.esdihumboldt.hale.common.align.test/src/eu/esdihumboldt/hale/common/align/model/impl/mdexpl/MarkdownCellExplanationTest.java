@@ -83,7 +83,7 @@ public class MarkdownCellExplanationTest {
 				"Target 'target1Type'\n" + //
 				"test 1\n" + //
 				"test 2\n" + //
-				"pattern 3\n";
+				"pattern 3";
 
 		String expl = exp.getExplanation(cell, null, Locale.getDefault());
 		assertNotNull(expl);
