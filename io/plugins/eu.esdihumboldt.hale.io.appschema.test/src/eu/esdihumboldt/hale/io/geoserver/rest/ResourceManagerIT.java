@@ -87,7 +87,14 @@ public class ResourceManagerIT extends AbstractDockerTest {
 		client.createContainer();
 		client.startContainer();
 
-		geoserverURL = "http://localhost:" + client.getHostPort(8080) + "/geoserver";
+		String host = client.getHostName();
+		if (host == null) {
+			// using docker container directly (probably unix socket connection)
+			geoserverURL = "http://" + client.getContainerIp() + ":" + 8080 + "/geoserver";
+		}
+		else {
+			geoserverURL = "http://" + host + ":" + client.getHostPort(8080) + "/geoserver";
+		}
 
 		waitForGeoServer();
 	}
