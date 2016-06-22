@@ -38,7 +38,7 @@ class MappingDocumentationTest extends GroovyTestCase {
 
 		// create template binding from alignment
 		//TODO also retrieve project information?
-		Map binding = MappingDocumentation.createBinding(null, ex.alignment)
+		Map binding = MappingDocumentation.createBinding(null, ex.alignment, null)
 
 		// basic checks
 		assertNotNull binding.alignment

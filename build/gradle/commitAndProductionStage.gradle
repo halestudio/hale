@@ -929,6 +929,10 @@ def runTests(args = []) {
 	println "> ${failures} failed"
 	println "> ${root.@skip} skipped"
 	println "in ${root.@time} seconds"
+	
+	if (failures && failures != '0') {
+		throw new RuntimeException("$failures tests failed")
+	}
 }
 
 /**

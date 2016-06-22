@@ -59,17 +59,17 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		// create template binding
 		@SuppressWarnings("unchecked")
 		Map<String, Object> binding = MappingDocumentation.createBinding(getProjectInfo(),
-				getAlignment());
+				getAlignment(), getServiceProvider());
 
 		// read javascript from file and store it in the binding
 		StringBuilder js = new StringBuilder();
-		try (Reader reader = new InputStreamReader(getClass()
-				.getResourceAsStream("snap.svg-min.js"), StandardCharsets.UTF_8)) {
+		try (Reader reader = new InputStreamReader(
+				getClass().getResourceAsStream("snap.svg-min.js"), StandardCharsets.UTF_8)) {
 			js.append(CharStreams.toString(reader));
 		}
 		js.append("\n\n");
-		try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(
-				"render-mapping.js"), StandardCharsets.UTF_8)) {
+		try (Reader reader = new InputStreamReader(
+				getClass().getResourceAsStream("render-mapping.js"), StandardCharsets.UTF_8)) {
 			js.append(CharStreams.toString(reader));
 		}
 		binding.put("javascript", js.toString());

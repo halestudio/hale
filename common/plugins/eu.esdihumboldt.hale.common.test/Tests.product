@@ -356,7 +356,7 @@
       <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java"/>
+      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.springframework.aop"/>

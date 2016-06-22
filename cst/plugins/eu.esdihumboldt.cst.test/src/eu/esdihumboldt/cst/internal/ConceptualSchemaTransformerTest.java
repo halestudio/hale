@@ -16,7 +16,9 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -25,6 +27,10 @@ import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.ThreadSafeInstanceSink;
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
@@ -256,8 +262,30 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
 		ThreadSafeInstanceSink<DefaultInstanceSink> sink = new ThreadSafeInstanceSink<>(
 				new DefaultInstanceSink());
-		// FIXME global scope not supported yet
-		ServiceProvider serviceProvider = new ServiceManager(ServiceManager.SCOPE_PROJECT);
+
+		final Map<Class<?>, Object> customServices = new HashMap<>();
+		customServices.put(FunctionService.class,
+				new AlignmentFunctionService(example.getAlignment()));
+		customServices.put(TransformationFunctionService.class,
+				new AlignmentTransformationFunctionService(example.getAlignment()));
+
+		final ServiceProvider serviceProvider = new ServiceProvider() {
+
+			private final ServiceProvider projectScope = new ServiceManager(
+					ServiceManager.SCOPE_PROJECT);
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public <T> T getService(Class<T> serviceInterface) {
+				if (customServices.containsKey(serviceInterface)) {
+					return (T) customServices.get(serviceInterface);
+				}
+
+				// FIXME global scope not supported yet
+				return projectScope.getService(serviceInterface);
+			}
+		};
+
 		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
 				serviceProvider, new NullProgressIndicator());
 

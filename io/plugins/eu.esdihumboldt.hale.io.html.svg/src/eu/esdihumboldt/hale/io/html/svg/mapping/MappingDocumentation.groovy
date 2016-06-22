@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
@@ -60,19 +61,19 @@ class MappingDocumentation {
 	 * @param alignment the project alignment
 	 * @return the template bindings
 	 */
-	static Map createBinding(ProjectInfo projectInfo, Alignment alignment) {
+	static Map createBinding(ProjectInfo projectInfo, Alignment alignment, ServiceProvider services) {
 		def b = [:]
 
 		// make project info available
 		b.project = projectInfoBinding(projectInfo)
 
 		// make cell information available
-		b.alignment = alignmentBinding(alignment)
+		b.alignment = alignmentBinding(alignment, services)
 
 		b
 	}
 
-	private static Map alignmentBinding(Alignment alignment) {
+	private static Map alignmentBinding(Alignment alignment, ServiceProvider services) {
 		def b = [:]
 
 		// cell ID mapping (as the original cell IDs may contain invalid characters)
@@ -103,12 +104,12 @@ class MappingDocumentation {
 			// create JSON representation
 			StringWriter writer = new StringWriter()
 			writer.withWriter { Writer w ->
-				cellInfoJSON(cell, new JsonStreamBuilder(w))
+				cellInfoJSON(cell, new JsonStreamBuilder(w), services)
 			}
 			cellData[id] = writer.toString()
 
 			// create cell explanation
-			cellExplanations[id] = cellExplanation(cell)
+			cellExplanations[id] = cellExplanation(cell, services)
 		}
 		b.cells = cellData
 		b.explanations = cellExplanations
@@ -117,10 +118,10 @@ class MappingDocumentation {
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
-	private static String cellExplanation(Cell cell) {
+	private static String cellExplanation(Cell cell, ServiceProvider services) {
 		// get the associated function
 		FunctionDefinition<?> function = FunctionUtil.getFunction(cell
-				.getTransformationIdentifier())
+				.getTransformationIdentifier(), services)
 
 		String exp = null
 		if (function?.explanation) {
@@ -154,7 +155,8 @@ class MappingDocumentation {
 	/**
 	 * Create a JSON representation from a cell.
 	 */
-	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, CellJsonExtension ext = null, ValueRepresentation valueRep = null) {
+	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
+		CellJsonExtension ext = null, ValueRepresentation valueRep = null) {
 		// collect cell information
 
 		// get the associated function
@@ -213,7 +215,7 @@ class MappingDocumentation {
 				json 'targets', []
 			}
 
-			String explanation = cellExplanation(cell)
+			String explanation = cellExplanation(cell, services)
 			if (explanation) {
 				json 'explanation', explanation
 			}
