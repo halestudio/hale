@@ -1,4 +1,4 @@
-hale
+hale [![Build Status](https://builds.wetransform.to/buildStatus/icon?job=hale/hale~publish(master))](https://builds.wetransform.to/job/hale/job/hale~publish(master)/)
 ====
 
 (Spatial) data harmonisation with the HUMBOLDT Alignment Editor
