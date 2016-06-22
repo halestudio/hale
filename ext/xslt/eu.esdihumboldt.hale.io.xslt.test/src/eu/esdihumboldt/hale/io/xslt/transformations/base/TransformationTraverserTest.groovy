@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
 
@@ -104,7 +105,9 @@ class TransformationTraverserTest extends GroovyTestCase {
 		// create the transformation tree
 		TransformationTree tree = new TransformationTreeImpl(alignment, typeCell)
 
+		def functionService = new AlignmentFunctionService(alignment)
+
 		// create the transformation graph
-		new TGraphImpl(tree)
+		new TGraphImpl(tree, functionService)
 	}
 }
