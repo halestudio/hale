@@ -23,6 +23,7 @@ import com.tinkerpop.blueprints.util.ElementHelper
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
+import eu.esdihumboldt.hale.common.align.service.FunctionService
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphHelpers
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
@@ -50,8 +51,8 @@ class TGraphImpl implements TGraph {
 	 * 
 	 * @param ttree the transformation tree
 	 */
-	TGraphImpl(TransformationTree ttree) {
-		graph = TGraphFactory.create(ttree)
+	TGraphImpl(TransformationTree ttree, FunctionService functions) {
+		graph = TGraphFactory.create(ttree, functions)
 	}
 
 	/**
@@ -84,7 +85,7 @@ class TGraphImpl implements TGraph {
 		 * have no children where the cardinality can be moved to the proxy
 		 * nodes.  
 		 */
-		
+
 		graph.V(P_TYPE, NodeType.Target) // find target nodes
 				.filter{
 					it.inE(EDGE_RESULT).count() > 1} // with more than one cell attached
