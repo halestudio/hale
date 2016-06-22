@@ -882,6 +882,11 @@ def runTests(args = []) {
 	File errFile = new File(testReportDir, "${launcherName}.err")
 	File reportFile = new File(testReportDir, "${launcherName}.xml")
 	File launcherFile = new File(productOutputPath, launcherName)
+	
+	// remove files to be sure to have up-to-date files
+	outFile.delete()
+	errFile.delete()
+	reportFile.delete()
 
 	// make launcher executable
 	ant.chmod(file: launcherFile, perm:'a+x')
