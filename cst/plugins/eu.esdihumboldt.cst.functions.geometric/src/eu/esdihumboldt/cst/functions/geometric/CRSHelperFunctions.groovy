@@ -38,7 +38,8 @@ class CRSHelperFunctions {
 	result: 'the CRS definition') {
 		//
 		code('The code of the coordinate reference system')
-		longitudeFirst('If instead of the default an axis order with longitude first should be used, if applicable for the CRS')
+		longitudeFirst('If instead of the default an axis order with longitude first should be used, if applicable for the CRS',
+		value: false)
 	} //
 
 	@CompileStatic
