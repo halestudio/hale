@@ -32,6 +32,7 @@ import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgum
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
@@ -277,6 +278,49 @@ class GeometryHelperFunctions {
 		return all.findAll { prop ->
 			Geometry geom = prop.getGeometry()
 			return geom instanceof Point || geom instanceof MultiPoint
+		}
+	}
+
+	/**
+	 * Specification for the splitMulti function
+	 */
+	public static final Specification _splitMulti_spec = SpecBuilder.newSpec( //
+	description: 'Split multi-geometries into separate geometries.',
+	result: 'the list of single geometries (each wrapped in a GeometryProperty)') { //
+		geometries('A single or multiple (as a list/iterable) geometries, geometry properties or instances holding a geometry') }
+
+	@CompileStatic
+	static Collection<GeometryProperty<? extends Geometry>> _splitMulti(def geometryHolders) {
+		List<GeometryProperty<? extends Geometry>> all = _findAll(geometryHolders)
+
+		return all.collectMany { prop ->
+			Geometry geom = prop.getGeometry()
+			if (geom.getNumGeometries() > 1) {
+				Deque<Geometry> multis = new ArrayDeque<>()
+				multis << geom
+				def results = []
+				while (!multis.empty) {
+					Geometry multi = multis.pop()
+					for (int i = 0; i < multi.getNumGeometries(); i++) {
+						Geometry single = multi.getGeometryN(i)
+						if (single.getNumGeometries() > 1) {
+							// handle later
+							multis << single
+						}
+						else {
+							// create geometry property
+							DefaultGeometryProperty<?> singleProp = new DefaultGeometryProperty<Geometry>(
+									prop.getCRSDefinition(), single)
+							results << singleProp
+						}
+					}
+				}
+				results
+			}
+			else {
+				// as is
+				[prop]
+			}
 		}
 	}
 

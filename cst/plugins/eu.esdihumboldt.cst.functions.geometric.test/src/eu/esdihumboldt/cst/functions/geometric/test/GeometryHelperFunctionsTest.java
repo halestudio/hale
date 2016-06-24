@@ -98,6 +98,37 @@ public class GeometryHelperFunctionsTest {
 		assertEquals(4, list.size());
 	}
 
+	@Test
+	public void testSplitMulti_Singles() {
+		List<Geometry> geoms = new ArrayList<>();
+		geoms.add(createPolygon());
+		geoms.add(createPoint());
+		geoms.add(createPoint());
+		geoms.add(createPolygon());
+		geoms.add(createLineString());
+		geoms.add(createPoint());
+
+		Collection<GeometryProperty<?>> list = GeometryHelperFunctions._splitMulti(geoms);
+		assertEquals(6, list.size());
+	}
+
+	@Test
+	public void testSplitMulti_Mixed() {
+		List<Geometry> geoms = new ArrayList<>();
+		geoms.add(createPolygon());
+		geoms.add(createPoint());
+		geoms.add(createMultiLineString(2));
+		geoms.add(createPoint());
+		geoms.add(createPolygon());
+		geoms.add(createMultiPolygon(3));
+		geoms.add(createLineString());
+		geoms.add(createMultiPoint(1));
+		geoms.add(createPoint());
+
+		Collection<GeometryProperty<?>> list = GeometryHelperFunctions._splitMulti(geoms);
+		assertEquals(12, list.size());
+	}
+
 	// Helpers
 
 	protected Coordinate createCoordinate() {
@@ -123,7 +154,13 @@ public class GeometryHelperFunctionsTest {
 	}
 
 	protected MultiPolygon createMultiPolygon() {
-		int num = random.nextInt(3) + 1;
+		return createMultiPolygon(1);
+	}
+
+	protected MultiPolygon createMultiPolygon(int num) {
+		if (num <= 0) {
+			num = random.nextInt(3) + 1;
+		}
 		Polygon[] polygons = new Polygon[num];
 		for (int i = 0; i < num; i++) {
 			polygons[i] = createPolygon();
@@ -136,7 +173,13 @@ public class GeometryHelperFunctionsTest {
 	}
 
 	protected MultiLineString createMultiLineString() {
-		int num = random.nextInt(3) + 1;
+		return createMultiLineString(1);
+	}
+
+	protected MultiLineString createMultiLineString(int num) {
+		if (num <= 0) {
+			num = random.nextInt(3) + 1;
+		}
 		LineString[] lines = new LineString[num];
 		for (int i = 0; i < num; i++) {
 			lines[i] = createLineString();
@@ -149,7 +192,13 @@ public class GeometryHelperFunctionsTest {
 	}
 
 	protected MultiPoint createMultiPoint() {
-		int num = random.nextInt(3) + 1;
+		return createMultiPoint(1);
+	}
+
+	protected MultiPoint createMultiPoint(int num) {
+		if (num <= 0) {
+			num = random.nextInt(3) + 1;
+		}
 		Point[] point = new Point[num];
 		for (int i = 0; i < num; i++) {
 			point[i] = createPoint();
