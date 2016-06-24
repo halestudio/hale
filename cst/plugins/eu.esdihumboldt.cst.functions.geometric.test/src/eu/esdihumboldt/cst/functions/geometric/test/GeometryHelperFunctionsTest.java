@@ -16,10 +16,13 @@
 package eu.esdihumboldt.cst.functions.geometric.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import org.junit.Test;
@@ -127,6 +130,19 @@ public class GeometryHelperFunctionsTest {
 
 		Collection<GeometryProperty<?>> list = GeometryHelperFunctions._splitMulti(geoms);
 		assertEquals(12, list.size());
+	}
+
+	@Test
+	public void testWith() {
+		Map<String, Object> args = new HashMap<>();
+		Geometry geom = createMultiPolygon();
+		args.put("geometry", geom);
+		args.put("crs", 4326);
+		GeometryProperty<?> prop = GeometryHelperFunctions._with(args);
+		assertNotNull(prop);
+		assertEquals(geom, prop.getGeometry());
+		assertNotNull(prop.getCRSDefinition());
+		assertNotNull(prop.getCRSDefinition().getCRS());
 	}
 
 	// Helpers

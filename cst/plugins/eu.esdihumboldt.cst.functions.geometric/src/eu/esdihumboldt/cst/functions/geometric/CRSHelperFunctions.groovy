@@ -44,18 +44,31 @@ class CRSHelperFunctions {
 
 	@CompileStatic
 	static CRSDefinition _from(Map args) {
-		String code = args.code as String
+		def code = args.code
+		if (code == null) {
+			return null
+		}
+
+		String codeString
+		if (code instanceof Number) {
+			// default to EPSG code for numbers
+			codeString = 'EPSG:' + code.longValue()
+		}
+		else {
+			codeString = code as String
+		}
+
 		boolean longitudeFirst = false
 		if (args.containsKey('longitudeFirst')) {
 			longitudeFirst = args['longitudeFirst'] as boolean
 		}
 
 		if (longitudeFirst) {
-			def crs = CRS.decode(code, true) // not cached!
-			new CodeDefinition(code, crs)
+			def crs = CRS.decode(codeString, true) // not cached!
+			new CodeDefinition(codeString, crs)
 		}
 		else {
-			new CodeDefinition(code, null)
+			new CodeDefinition(codeString, null)
 		}
 	}
 

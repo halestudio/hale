@@ -18,12 +18,14 @@ package eu.esdihumboldt.cst.functions.geometric;
 import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryFactory
 import com.vividsolutions.jts.geom.LineString
 import com.vividsolutions.jts.geom.MultiLineString
 import com.vividsolutions.jts.geom.MultiPoint
 import com.vividsolutions.jts.geom.MultiPolygon
 import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.geom.Polygon
+import com.vividsolutions.jts.io.WKTReader
 
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
@@ -36,6 +38,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import groovy.transform.CompileStatic
 
@@ -47,6 +50,8 @@ import groovy.transform.CompileStatic
 class GeometryHelperFunctions {
 
 	public static final String GEOM_HOLDER_DESC = 'A geometry, geometry property or instance holding a geometry'
+
+	private static final GeometryFactory factory = new GeometryFactory()
 
 	/**
 	 * Specification for the centroid function
@@ -321,6 +326,58 @@ class GeometryHelperFunctions {
 				// as is
 				[prop]
 			}
+		}
+	}
+
+	/**
+	 * Specification for the with function
+	 */
+	public static final Specification _with_spec = SpecBuilder.newSpec( //
+	description: 'Create a geometry property from a given geometry and CRS.',
+	result: 'the geometry wrapped in a GeometryProperty and with the given CRS associated') {
+		//
+		geometry('A geometry object, a WKT geometry definition, a geometry property or an instance holding a geometry') //
+		crs('the coordinate reference system definition object or code') }
+
+	@CompileStatic
+	static GeometryProperty<? extends Geometry> _with(Map args) {
+		def geometryHolder = args.geometry
+		def crs = args.crs
+
+		GeometryProperty<? extends Geometry> geom
+		if (geometryHolder instanceof String || geometryHolder instanceof GString) {
+			WKTReader reader = new WKTReader(factory)
+			Geometry g = reader.read(geometryHolder as String)
+			if (!g) {
+				geom == null
+			}
+			else {
+				geom = new DefaultGeometryProperty<>(null, g)
+			}
+		}
+		else {
+			// search for geometry
+			geom = _find(geometryHolder)
+		}
+
+		if (geom) {
+			// apply CRS
+			CRSDefinition crsDef
+			if (crs == null) {
+				crsDef = null
+			}
+			else if (crs instanceof CRSDefinition) {
+				crsDef = (CRSDefinition) crs
+			}
+			else {
+				crsDef = CRSHelperFunctions._from(code: crs)
+			}
+
+			new DefaultGeometryProperty<Geometry>(crsDef, geom.getGeometry())
+		}
+		else {
+			// nothing here
+			null
 		}
 	}
 
