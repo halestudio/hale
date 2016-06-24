@@ -18,6 +18,12 @@ package eu.esdihumboldt.cst.functions.geometric;
 import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.LineString
+import com.vividsolutions.jts.geom.MultiLineString
+import com.vividsolutions.jts.geom.MultiPoint
+import com.vividsolutions.jts.geom.MultiPolygon
+import com.vividsolutions.jts.geom.Point
+import com.vividsolutions.jts.geom.Polygon
 
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
@@ -217,6 +223,60 @@ class GeometryHelperFunctions {
 			return AggregateTransformation.aggregateGeometries(geoms, null, null)
 		} catch (NoResultException e) {
 			return null
+		}
+	}
+
+	/**
+	 * Specification for the findPolygons function
+	 */
+	public static final Specification _findPolygons_spec = SpecBuilder.newSpec( //
+	description: 'Find polygon or multi-polygon geometries in the given objects.',
+	result: 'the list of found geometries (each wrapped in a GeometryProperty)') { //
+		objects('An object or a list of objects to search for geometries') }
+
+	@CompileStatic
+	static Collection<GeometryProperty<? extends Geometry>> _findPolygons(def geometryHolders) {
+		List<GeometryProperty<? extends Geometry>> all = _findAll(geometryHolders)
+
+		return all.findAll { prop ->
+			Geometry geom = prop.getGeometry()
+			return geom instanceof Polygon || geom instanceof MultiPolygon
+		}
+	}
+
+	/**
+	 * Specification for the findLines function
+	 */
+	public static final Specification _findLines_spec = SpecBuilder.newSpec( //
+	description: 'Find line or multi-line geometries in the given objects.',
+	result: 'the list of found geometries (each wrapped in a GeometryProperty)') { //
+		objects('An object or a list of objects to search for geometries') }
+
+	@CompileStatic
+	static Collection<GeometryProperty<? extends Geometry>> _findLines(def geometryHolders) {
+		List<GeometryProperty<? extends Geometry>> all = _findAll(geometryHolders)
+
+		return all.findAll { prop ->
+			Geometry geom = prop.getGeometry()
+			return geom instanceof LineString || geom instanceof MultiLineString
+		}
+	}
+
+	/**
+	 * Specification for the findPoints function
+	 */
+	public static final Specification _findPoints_spec = SpecBuilder.newSpec( //
+	description: 'Find point or multi-point geometries in the given objects.',
+	result: 'the list of found geometries (each wrapped in a GeometryProperty)') { //
+		objects('An object or a list of objects to search for geometries') }
+
+	@CompileStatic
+	static Collection<GeometryProperty<? extends Geometry>> _findPoints(def geometryHolders) {
+		List<GeometryProperty<? extends Geometry>> all = _findAll(geometryHolders)
+
+		return all.findAll { prop ->
+			Geometry geom = prop.getGeometry()
+			return geom instanceof Point || geom instanceof MultiPoint
 		}
 	}
 
