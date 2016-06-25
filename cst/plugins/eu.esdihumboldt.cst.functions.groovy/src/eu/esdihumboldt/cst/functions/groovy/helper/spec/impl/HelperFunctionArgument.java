@@ -82,23 +82,16 @@ public class HelperFunctionArgument implements Argument {
 		return description;
 	}
 
-	/**
-	 * @return gets default value
-	 */
+	@Override
 	public Object getDefaultValue() {
 		return defaultValue;
 	}
 
 	/**
-	 * @return the defaultValue of an argument
+	 * @param defaultValue the defaultValue to set
 	 */
-	public String getDefaultValueDisplay() {
-
-		if (defaultValue instanceof Number || defaultValue instanceof String
-				|| defaultValue instanceof Boolean) {
-			return String.valueOf(defaultValue);
-		}
-		return null;
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
 }

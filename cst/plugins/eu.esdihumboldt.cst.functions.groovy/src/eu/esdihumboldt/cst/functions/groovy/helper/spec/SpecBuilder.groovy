@@ -71,6 +71,11 @@ class SpecBuilder extends BuilderBase {
 				arg.description = params[0]
 			}
 
+			if (attributes && attributes.value != null) {
+				// default value
+				arg.defaultValue = attributes.value
+			}
+
 			parent.addArgument(arg)
 
 			node = arg

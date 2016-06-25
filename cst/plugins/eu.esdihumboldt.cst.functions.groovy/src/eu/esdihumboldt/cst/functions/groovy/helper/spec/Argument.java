@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.groovy.helper.spec;
 
+import javax.annotation.Nullable;
+
 /**
  * Describes a helper function argument.
  * 
@@ -31,5 +33,11 @@ public interface Argument {
 	 * @return the description of the argument
 	 */
 	public String getDescription();
+
+	/**
+	 * @return the default value
+	 */
+	@Nullable
+	public Object getDefaultValue();
 
 }
