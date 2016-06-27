@@ -8,6 +8,13 @@
             class="eu.esdihumboldt.cst.functions.groovy.helpers.ConversionHelper"
             name="convert">
       </helper>
+      <category
+            path="crypto">
+      </category>
+      <helper
+            category="crypto"
+            class="eu.esdihumboldt.cst.functions.groovy.helpers.CryptoHelpers">
+      </helper>
    </extension>
 
 </plugin>

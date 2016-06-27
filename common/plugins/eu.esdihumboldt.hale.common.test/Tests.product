@@ -89,6 +89,8 @@
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
