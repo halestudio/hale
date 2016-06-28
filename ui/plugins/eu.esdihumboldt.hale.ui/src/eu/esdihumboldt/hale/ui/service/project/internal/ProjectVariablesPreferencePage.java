@@ -103,7 +103,7 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(page);
 
 		varList = new Composite(page, SWT.NONE);
-		GridLayoutFactory.swtDefaults().numColumns(3).equalWidth(false).applyTo(varList);
+		GridLayoutFactory.fillDefaults().numColumns(3).equalWidth(false).applyTo(varList);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(varList);
 
 		for (String varName : variables.keySet()) {
@@ -111,9 +111,8 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 		}
 
 		// add Add button
-		// add button (using a directory dialog)
 		Button add = new Button(page, SWT.PUSH);
-		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).grab(true, false);
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.BEGINNING).applyTo(add);
 		add.setImage(
 				CommonSharedImages.getImageRegistry().get(CommonSharedImagesConstants.IMG_ADD));
 		add.setToolTipText("Add variable");
