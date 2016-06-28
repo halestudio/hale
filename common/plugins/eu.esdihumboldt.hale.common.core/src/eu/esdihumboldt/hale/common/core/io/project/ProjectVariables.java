@@ -58,15 +58,16 @@ public class ProjectVariables {
 			ComplexConfigurationService projectConfiguration) {
 		Value variables = projectConfiguration.getProperty(PROJECT_PROPERTY_VARIABLES);
 		ValueProperties properties = variables.as(ValueProperties.class);
-		if (properties != null) {
-			properties.put(name, value);
-			projectConfiguration.setProperty(PROJECT_PROPERTY_VARIABLES, Value.complex(properties));
+		if (properties == null) {
+			properties = new ValueProperties();
 		}
 		else {
-			if (variables.getValue() == null) {
+			if (variables.getValue() != null) {
 				log.error("Unknown representation of project variables");
 			}
 		}
+		properties.put(name, value);
+		projectConfiguration.setProperty(PROJECT_PROPERTY_VARIABLES, Value.complex(properties));
 	}
 
 	private final ProjectInfoService projectInfo;
@@ -108,7 +109,7 @@ public class ProjectVariables {
 				return properties.getSafe(name);
 			}
 			else {
-				if (variables.getValue() == null) {
+				if (variables.getValue() != null) {
 					log.error("Unknown representation of project variables");
 				}
 			}
