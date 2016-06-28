@@ -369,7 +369,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 void updateAboutInfo(productOutputPath) {
 	def productBundle = getProductDefiningBundleName()
 
-	def jars = fileTree(dir: productOutputPath, includes: [ "plugins/${productBundle}_*.jar" ])
+	def jars = fileTree(dir: productOutputPath, includes: [ "**/plugins/${productBundle}_*.jar" ])
 	if (jars.isEmpty()) {
 		println "Could not find product defining bundle $productBundle"
 		return
@@ -516,8 +516,15 @@ def packageClient(productOutputPath) {
 		def packageName = getPackageName()
 		def launcherName = getProductLauncher()
 
+		// rename app
+		def mvCmd = ['mv', 'Eclipse.app', "${launcherName}.app"]
+		def mvProc = mvCmd.execute(null, productOutputPath)
+		def mvBuffer = new StringBuffer()
+		mvProc.consumeProcessErrorStream(mvBuffer)
+		mvProc.waitFor()
+		
 		// Set file permissions
-		def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
+		def permCmd = ['chmod', '755', "${launcherName}.app/Contents/MacOS/${launcherName}"]
 		def permProc = permCmd.execute(null, productOutputPath)
 		def permBuffer = new StringBuffer()
 		permProc.consumeProcessErrorStream(permBuffer)
