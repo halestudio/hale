@@ -35,9 +35,8 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * 
  * @author Kai Schwierczek
  */
-public class DateExtraction extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		DateExtractionFunction {
+public class DateExtraction extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements DateExtractionFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
@@ -54,11 +53,15 @@ public class DateExtraction extends
 			TransformationLog log) throws TransformationException {
 		if (getParameters() == null || getParameters().get(PARAMETER_DATE_FORMAT) == null
 				|| getParameters().get(PARAMETER_DATE_FORMAT).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_DATE_FORMAT));
+			throw new TransformationException(MessageFormat
+					.format("Mandatory parameter {0} not defined", PARAMETER_DATE_FORMAT));
 		}
 
 		String dateFormat = getParameters().get(PARAMETER_DATE_FORMAT).get(0).as(String.class);
+
+		// replace transformation variables in date format
+		dateFormat = getExecutionContext().getVariables().replaceVariables(dateFormat);
+
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 

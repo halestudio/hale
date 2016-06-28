@@ -38,17 +38,12 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 public abstract class AbstractSingleTargetScriptedPropertyTransformation<E extends TransformationEngine>
 		extends AbstractScriptedPropertyTransformation<E> {
 
-	/**
-	 * @see AbstractScriptedPropertyTransformation#evaluateImpl(String,
-	 *      TransformationEngine, ListMultimap, ListMultimap, Map,
-	 *      TransformationLog)
-	 */
 	@Override
 	protected ListMultimap<String, Object> evaluateImpl(String transformationIdentifier, E engine,
 			ListMultimap<String, PropertyValue> variables,
 			ListMultimap<String, PropertyEntityDefinition> resultNames,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 		assert resultNames.size() == 1;
 		Entry<String, PropertyEntityDefinition> entry = resultNames.entries().iterator().next();
 		ListMultimap<String, Object> resultMap = ArrayListMultimap.create(1, 1);

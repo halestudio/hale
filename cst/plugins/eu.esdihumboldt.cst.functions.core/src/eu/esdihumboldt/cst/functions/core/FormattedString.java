@@ -44,9 +44,9 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * 
  * @author Simon Templer
  */
-public class FormattedString extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		FormattedStringFunction {
+public class FormattedString
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements FormattedStringFunction {
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -54,6 +54,9 @@ public class FormattedString extends
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		String pattern = getParameterChecked(PARAMETER_PATTERN).as(String.class);
+
+		// replace transformation variables
+		pattern = getExecutionContext().getVariables().replaceVariables(pattern);
 
 		// name/value mapping
 		Map<String, Object> values = new LinkedHashMap<String, Object>();

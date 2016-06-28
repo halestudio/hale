@@ -65,6 +65,10 @@ public class DefaultTransformationVariables implements TransformationVariables {
 
 	@Override
 	public String replaceVariables(String input) {
+		if (input == null) {
+			return null;
+		}
+
 		String result = input;
 		try {
 			String re = "\\{\\{([^}]+)\\}\\}";

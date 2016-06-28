@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.ListMultimap;
 import com.iabcinc.jmep.Environment;
@@ -36,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import net.jcip.annotations.Immutable;
 
 /**
  * Mathematical expression evaluation function.
@@ -43,9 +42,9 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
  * @author Simon Templer
  */
 @Immutable
-public class MathematicalExpression extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		MathematicalExpressionFunction {
+public class MathematicalExpression
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements MathematicalExpressionFunction {
 
 	/**
 	 * @see AbstractSingleTargetPropertyTransformation#evaluate(String,
@@ -59,6 +58,9 @@ public class MathematicalExpression extends
 			TransformationLog log) throws TransformationException {
 		// get the mathematical expression
 		String expression = getParameterChecked(PARAMETER_EXPRESSION).as(String.class);
+
+		// replace transformation variables in expression
+		expression = getExecutionContext().getVariables().replaceVariables(expression);
 
 		List<PropertyValue> vars = variables.get(ENTITY_VARIABLE);
 

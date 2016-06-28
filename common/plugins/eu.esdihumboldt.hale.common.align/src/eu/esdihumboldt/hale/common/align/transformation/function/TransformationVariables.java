@@ -42,4 +42,26 @@ public interface TransformationVariables {
 	 */
 	public String replaceVariables(String input);
 
+	/**
+	 * Replace variable references in a string-represented value by variable
+	 * values.
+	 * 
+	 * @param input the input value
+	 * @return the input value w/ variable references replaced by values, if
+	 *         applicable
+	 */
+	default public Value replaceVariables(Value input) {
+		if (input.isSimple()) {
+			String strValue = input.as(String.class);
+			if (strValue != null) {
+				String replaced = replaceVariables(strValue);
+				if (!strValue.equals(replaced)) {
+					return Value.of(replaced);
+				}
+			}
+		}
+
+		return input;
+	}
+
 }
