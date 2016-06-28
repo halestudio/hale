@@ -86,6 +86,9 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 	public ProjectVariablesPreferencePage() {
 		super();
 		noDefaultButton();
+		setDescription(
+				"Specify project variables that can be used in certain transformation functions. "
+						+ "Project variables may be overridden by system properties or environment variables (using a specific prefix).");
 	}
 
 	@Override
