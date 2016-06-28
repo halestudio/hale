@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImagesConstants;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
 
 /**
  * Preference page for project variables.
@@ -77,6 +78,8 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 
 	private Composite page;
 
+	private DynamicScrolledComposite sc;
+
 	/**
 	 * Default constructor.
 	 */
@@ -98,7 +101,13 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 			}
 		}
 
-		page = new Composite(parent, SWT.NONE);
+		sc = new DynamicScrolledComposite(parent, SWT.V_SCROLL);
+		sc.setExpandHorizontal(true);
+
+		sc.setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
+
+		page = new Composite(sc, SWT.NONE);
 
 		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(page);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(page);
@@ -149,6 +158,8 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 			}
 		});
 
+		sc.setContent(page);
+
 		return page;
 	}
 
@@ -191,7 +202,7 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 						c.dispose();
 					}
 					variables.remove(varName);
-					page.layout(true, true);
+					updateLayout();
 					changed = true;
 				}
 			});
@@ -200,13 +211,18 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 			varControls.put(varName, controls);
 
 			if (layout) {
-				page.layout(true, true);
+				updateLayout();
 			}
 		}
 
 		// update text field
 		Text textField = (Text) controls.get(1);
 		textField.setText(variables.getSafe(varName).as(String.class, ""));
+	}
+
+	private void updateLayout() {
+		page.layout(true, true);
+		sc.layout();
 	}
 
 	@Override
