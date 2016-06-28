@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -106,7 +107,8 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 		GridLayoutFactory.fillDefaults().numColumns(3).equalWidth(false).applyTo(varList);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(varList);
 
-		for (String varName : variables.keySet()) {
+		Map<String, Value> sorted = new TreeMap<>(variables);
+		for (String varName : sorted.keySet()) {
 			addEditor(varName, false);
 		}
 
