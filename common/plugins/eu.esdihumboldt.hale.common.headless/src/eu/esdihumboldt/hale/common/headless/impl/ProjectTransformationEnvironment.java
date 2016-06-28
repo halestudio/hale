@@ -38,7 +38,9 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.project.FixedProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.ExportConfigurationMap;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -111,7 +113,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	public ProjectTransformationEnvironment(String id,
 			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler)
-			throws IOException {
+					throws IOException {
 		this(id, input, reportHandler, null);
 	}
 
@@ -168,6 +170,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 					}
 				}
 			});
+			// make project information available
+			addService(ProjectInfoService.class, new FixedProjectInfoService(project));
 
 			init(project);
 		}

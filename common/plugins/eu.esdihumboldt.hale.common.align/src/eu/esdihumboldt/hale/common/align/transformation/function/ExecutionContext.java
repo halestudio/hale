@@ -19,6 +19,9 @@ package eu.esdihumboldt.hale.common.align.transformation.function;
 import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.DefaultTransformationVariables;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -73,5 +76,15 @@ public interface ExecutionContext extends ServiceProvider {
 	 * @return the transformation alignment
 	 */
 	public Alignment getAlignment();
+
+	/**
+	 * Get the transformation variables.
+	 * 
+	 * @return the transformation variables
+	 */
+	default public TransformationVariables getVariables() {
+		return new DefaultTransformationVariables(
+				new ProjectVariables(this.getService(ProjectInfoService.class)));
+	}
 
 }

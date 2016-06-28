@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -40,7 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
  * @author Thorsten Reitz
  * @author Simon Templer
  */
-public interface ProjectService {
+public interface ProjectService extends ProjectInfoService {
 
 	/**
 	 * Adds a project service listener
@@ -116,6 +117,7 @@ public interface ProjectService {
 	 * 
 	 * @return the project info
 	 */
+	@Override
 	public ProjectInfo getProjectInfo();
 
 	/**
@@ -225,7 +227,8 @@ public interface ProjectService {
 	 * 
 	 * @return the export configuration names
 	 */
-	public Collection<String> getExportConfigurationNames(Class<? extends IOProvider> providerClass);
+	public Collection<String> getExportConfigurationNames(
+			Class<? extends IOProvider> providerClass);
 
 	/**
 	 * Returns the location the current project was loaded from. May be

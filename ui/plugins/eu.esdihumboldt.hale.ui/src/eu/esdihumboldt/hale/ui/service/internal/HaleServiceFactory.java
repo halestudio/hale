@@ -23,6 +23,7 @@ import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
@@ -102,6 +103,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 
 		if (ProjectService.class.equals(serviceInterface)) {
 			return new ProjectServiceImpl();
+		}
+
+		if (ProjectInfoService.class.equals(serviceInterface)) {
+			return locator.getService(ProjectService.class);
 		}
 
 		if (RecentProjectsService.class.equals(serviceInterface)) {
