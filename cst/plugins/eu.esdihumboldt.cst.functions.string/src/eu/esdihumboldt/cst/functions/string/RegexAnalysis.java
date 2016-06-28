@@ -39,14 +39,6 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
 		implements RegexAnalysisFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine,
-	 *      com.google.common.collect.ListMultimap, java.lang.String,
-	 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition,
-	 *      java.util.Map,
-	 *      eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog)
-	 */
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
@@ -54,17 +46,20 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 			TransformationLog log) throws TransformationException, NoResultException {
 		if (getParameters() == null || getParameters().get(PARAMETER_REGEX_PATTERN) == null
 				|| getParameters().get(PARAMETER_REGEX_PATTERN).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_REGEX_PATTERN));
+			throw new TransformationException(MessageFormat
+					.format("Mandatory parameter {0} not defined", PARAMETER_REGEX_PATTERN));
 		}
 		if (getParameters() == null || getParameters().get(PARAMETER_OUTPUT_FORMAT) == null
 				|| getParameters().get(PARAMETER_OUTPUT_FORMAT).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", PARAMETER_OUTPUT_FORMAT));
+			throw new TransformationException(MessageFormat
+					.format("Mandatory parameter {0} not defined", PARAMETER_OUTPUT_FORMAT));
 		}
 
 		String regexPattern = getParameters().get(PARAMETER_REGEX_PATTERN).get(0).as(String.class);
 		String outputFormat = getParameters().get(PARAMETER_OUTPUT_FORMAT).get(0).as(String.class);
+
+		// replace transformation variables in output format
+		outputFormat = getExecutionContext().getVariables().replaceVariables(outputFormat);
 
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 

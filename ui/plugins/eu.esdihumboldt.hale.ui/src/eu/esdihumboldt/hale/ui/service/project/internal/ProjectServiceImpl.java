@@ -1104,4 +1104,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	public URI getLoadLocation() {
 		return projectLocation;
 	}
+
+	@Override
+	public Value getProperty(String name) {
+		return getConfigurationService().getProperty(name);
+	}
+
 }

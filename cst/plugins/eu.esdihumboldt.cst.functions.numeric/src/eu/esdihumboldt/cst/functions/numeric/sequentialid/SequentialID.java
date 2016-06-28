@@ -51,6 +51,11 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
+
+		// replace transformation variables in prefix and suffix
+		prefix = getExecutionContext().getVariables().replaceVariables(prefix);
+		suffix = getExecutionContext().getVariables().replaceVariables(suffix);
+
 		// assume type as default for sequence
 		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Value.of(Sequence.type.name()))
 				.as(String.class);

@@ -576,6 +576,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService">
+         </service>
       </serviceFactory>
       <sourceProvider
             provider="eu.esdihumboldt.hale.ui.service.schema.internal.SchemaServiceSource">
@@ -1346,6 +1349,12 @@
             class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectPreferencePage"
             id="eu.esdihumboldt.hale.ui.preferences.project"
             name="Project">
+      </page>
+      <page
+            category="eu.esdihumboldt.hale.ui.preferences.project"
+            class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectVariablesPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.projectvars"
+            name="Variables">
       </page>
    </extension>
    <extension

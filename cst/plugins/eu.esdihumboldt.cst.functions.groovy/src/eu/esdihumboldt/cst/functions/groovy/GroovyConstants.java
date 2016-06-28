@@ -86,6 +86,11 @@ public interface GroovyConstants {
 	public static final String BINDING_LOG = "_log";
 
 	/**
+	 * Name of the project variable in the binding.
+	 */
+	public static final String BINDING_PROJECT = "_project";
+
+	/**
 	 * Name of the cell context variable in the binding.
 	 */
 	public static final String BINDING_CELL_CONTEXT = "withCellContext";

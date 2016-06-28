@@ -15,6 +15,12 @@
 
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions;
@@ -30,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTr
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Text;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -39,12 +46,6 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 import groovy.transform.CompileStatic;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Groovy function utilities.
@@ -114,8 +115,9 @@ public class GroovyUtil implements GroovyConstants {
 		 * transformation thread.
 		 */
 		ThreadLocal<Script> localScript;
-		Map<Object, Object> context = (functionCached) ? (function.getExecutionContext()
-				.getFunctionContext()) : (function.getExecutionContext().getCellContext());
+		Map<Object, Object> context = (functionCached)
+				? (function.getExecutionContext().getFunctionContext())
+				: (function.getExecutionContext().getCellContext());
 		synchronized (context) {
 			Object tmp = context.get(CONTEXT_SCRIPT);
 
@@ -156,8 +158,8 @@ public class GroovyUtil implements GroovyConstants {
 	 *             created
 	 */
 	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
-			final TypeDefinition type, GroovyService service) throws TransformationException,
-			NoResultException {
+			final TypeDefinition type, GroovyService service)
+					throws TransformationException, NoResultException {
 		Iterable<MutableInstance> results = evaluateAll(script, builder, type, service);
 		Iterator<MutableInstance> it = results.iterator();
 		MutableInstance result;
@@ -190,7 +192,7 @@ public class GroovyUtil implements GroovyConstants {
 	 */
 	public static Iterable<MutableInstance> evaluateAll(Script script,
 			final InstanceBuilder builder, final TypeDefinition type, GroovyService service)
-			throws TransformationException, NoResultException {
+					throws TransformationException, NoResultException {
 		try {
 			return service.evaluate(script, new ResultProcessor<Iterable<MutableInstance>>() {
 
@@ -244,7 +246,8 @@ public class GroovyUtil implements GroovyConstants {
 		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
-		binding.setVariable(BINDING_LOG, new TransformationLogWrapper(log));
+		TransformationLogWrapper cellLog = new TransformationLogWrapper(log);
+		binding.setVariable(BINDING_LOG, cellLog);
 		binding.setVariable(BINDING_CELL_CONTEXT,
 				SynchronizedContextProvider.getContextClosure(executionContext.getCellContext()));
 		binding.setVariable(BINDING_FUNCTION_CONTEXT, SynchronizedContextProvider
@@ -267,6 +270,9 @@ public class GroovyUtil implements GroovyConstants {
 		}
 		binding.setVariable(BINDING_SOURCE_TYPES, sourceTypes);
 		binding.setVariable(BINDING_TARGET_TYPE, targetType);
+
+		binding.setVariable(BINDING_PROJECT, new ProjectAccessor(
+				executionContext.getService(ProjectInfoService.class), cellLog, executionContext));
 
 		return binding;
 	}
