@@ -34,6 +34,14 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ProjectPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
+	/**
+	 * Default constructor.
+	 */
+	public ProjectPreferencePage() {
+		super();
+		noDefaultAndApplyButton();
+	}
+
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite page = new Composite(parent, SWT.NONE);
@@ -52,7 +60,8 @@ public class ProjectPreferencePage extends PreferencePage implements IWorkbenchP
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).applyTo(warnImage);
 
 		Label warn = new Label(warnComp, SWT.WRAP);
-		warn.setText("All settings on sub-pages to this page are saved in the current project, not for the application.");
+		warn.setText(
+				"All settings on sub-pages to this page are saved in the current project, not for the application.");
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
 				.hint(300, SWT.DEFAULT).applyTo(warn);
 
