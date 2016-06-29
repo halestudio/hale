@@ -90,6 +90,10 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		param3.setMinOccurrence(1);
 		param3.setMaxOccurrence(1);
 		param3.setDefaultValue(Value.of(false));
+		String p3display = "Awesome flag";
+		param3.setDisplayName(p3display);
+		String p3desc = "Awesome flag estimated in 2016.\nAll rights conserved.";
+		param3.setDescription(p3desc);
 		parameters.add(param3);
 
 		f.setParameters(parameters);
@@ -160,6 +164,8 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		assertEquals(1, cp3.getMaxOccurrence());
 		assertEquals(Boolean.class, cp3.getBindingClass());
 		assertEquals(false, cp3.getDefaultValue().as(Boolean.class));
+		assertEquals(p3display, cp3.getDisplayName());
+		assertEquals(p3desc, cp3.getDescription());
 
 		// explanation
 		assertNotNull(conv.getExplanation());

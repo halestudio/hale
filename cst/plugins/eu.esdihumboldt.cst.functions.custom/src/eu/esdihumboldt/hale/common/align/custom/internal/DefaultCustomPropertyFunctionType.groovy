@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunctionPar
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
+import eu.esdihumboldt.hale.common.core.io.Text
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
@@ -219,6 +220,20 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 			if (defaultElem) {
 				param.defaultValue = DOMValueUtil.fromTag(defaultElem)
 			}
+
+			// parameter description
+			def descElem = element.firstChild(NS_CUSTOM_FUNCTION, 'description')
+			if (descElem) {
+				Value descValue = DOMValueUtil.fromTag(descElem)
+				param.description = descValue as String
+			}
+
+			// display name
+			def displayElem = element.firstChild(NS_CUSTOM_FUNCTION, 'display')
+			if (displayElem) {
+				Value descValue = DOMValueUtil.fromTag(displayElem)
+				param.displayName = descValue as String
+			}
 		}
 
 		param
@@ -230,6 +245,15 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 					name: param.name,
 					minOccurs: param.minOccurrence,
 					maxOccurs: param.maxOccurrence) {
+						if (param.description) {
+							// parameter description
+							Value descValue = Value.complex(new Text(param.description))
+							DOMValueUtil.valueTag(builder, 'cf:description', descValue)
+						}
+						if (param.displayName) {
+							// display name
+							DOMValueUtil.valueTag(builder, 'cf:display', Value.of(param.displayName))
+						}
 						if (param.bindingClass) {
 							// binding class
 							'cf:binding'(param.bindingClass.getName())
@@ -242,7 +266,7 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 						}
 						if (param.defaultValue) {
 							// default value
-							DOMValueUtil.valueTag(builder, 'cf:default',param.defaultValue)
+							DOMValueUtil.valueTag(builder, 'cf:default', param.defaultValue)
 						}
 					}
 		}
