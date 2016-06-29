@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.esdihumboldt.hale.common.align.custom.groovy.CustomGroovyTransformation;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
@@ -111,11 +112,8 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 
 		@Override
 		public Collection<FunctionParameterDefinition> getDefinedParameters() {
-			// TODO
-//			if (parameters != null) {
-//				return parameters; // are these the right parameters?
-//			}
-			return Collections.emptyList();
+			return parameters.stream().map(DefaultCustomPropertyFunctionParameterDefinition::new)
+					.collect(Collectors.toList());
 		}
 
 		@Override

@@ -18,8 +18,10 @@ package eu.esdihumboldt.hale.common.align.custom;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+
 /**
- * TODO Type description
+ * Default implementation of a custom function parameter.
  * 
  * @author Simon Templer
  */

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.custom;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
@@ -23,59 +24,89 @@ import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.core.parameter.Validator;
 
 /**
- * Default implementation of a custom function parameter.
+ * Wrapper for default implementation of a custom function parameter that
+ * exposes a {@link FunctionParameterDefinition} interface.
  * 
  * @author Simon Templer
  */
-public class DefaultCustomFunctionParameter extends MinimalParameter implements
-		FunctionParameterDefinition {
+public class DefaultCustomPropertyFunctionParameterDefinition
+		implements FunctionParameterDefinition {
 
-	private Class<?> bindingClass;
+	private final DefaultCustomPropertyFunctionParameter parameter;
 
 	/**
-	 * @param binding the parameter binding class to set
+	 * Constructor.
+	 * 
+	 * @param parameter the parameter to wrap
 	 */
-	public void setBinding(Class<?> binding) {
-		this.bindingClass = binding;
+	public DefaultCustomPropertyFunctionParameterDefinition(
+			DefaultCustomPropertyFunctionParameter parameter) {
+		super();
+		this.parameter = parameter;
+	}
+
+	@Override
+	public int getMinOccurrence() {
+		return parameter.getMinOccurrence();
+	}
+
+	@Override
+	public int getMaxOccurrence() {
+		return parameter.getMaxOccurrence();
+	}
+
+	@Override
+	public String getName() {
+		return parameter.getName();
+	}
+
+	@Override
+	public String getDisplayName() {
+		return parameter.getDisplayName();
+	}
+
+	@Override
+	public String getDescription() {
+		return parameter.getDescription();
 	}
 
 	@Override
 	public Class<?> getBinding() {
-		return bindingClass;
+		return parameter.getBindingClass();
 	}
 
 	@Override
 	public List<String> getEnumeration() {
-		// XXX for now not supported
-		return null;
+		return new ArrayList<>(parameter.getEnumeration());
 	}
 
 	@Override
 	public Validator getValidator() {
-		// XXX for now not supported
+		// TODO not supported yet
 		return null;
 	}
 
 	@Override
 	public boolean isScriptable() {
-		// XXX for now not supported
+		// TODO not supported yet
 		return false;
 	}
 
 	@Override
 	public boolean isDeprecated() {
+		// TODO not supported yet
 		return false;
 	}
 
 	@Override
 	public ComplexValueDefinition getComplexBinding() {
-		// XXX for now not supported
+		// TODO not supported yet
 		return null;
 	}
 
 	@Override
 	public ParameterValueDescriptor getValueDescriptor() {
-		// XXX for now not supported
+		// TODO not supported yet
 		return null;
 	}
 
