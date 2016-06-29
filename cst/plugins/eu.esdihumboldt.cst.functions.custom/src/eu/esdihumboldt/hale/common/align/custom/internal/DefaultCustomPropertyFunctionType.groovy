@@ -213,6 +213,12 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 			if (values) {
 				param.enumeration = values
 			}
+
+			// default value
+			def defaultElem = element.firstChild(NS_CUSTOM_FUNCTION, 'default')
+			if (defaultElem) {
+				param.defaultValue = DOMValueUtil.fromTag(defaultElem)
+			}
 		}
 
 		param
@@ -233,6 +239,10 @@ ComplexValueType<DefaultCustomPropertyFunction, LoadAlignmentContext> {
 							for (def value in param.enumeration) {
 								'cf:value'(value)
 							}
+						}
+						if (param.defaultValue) {
+							// default value
+							DOMValueUtil.valueTag(builder, 'cf:default',param.defaultValue)
 						}
 					}
 		}

@@ -84,6 +84,14 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		param2.setMaxOccurrence(1);
 		parameters.add(param2);
 
+		DefaultCustomPropertyFunctionParameter param3 = new DefaultCustomPropertyFunctionParameter();
+		param3.setName("flag");
+		param3.setBindingClass(Boolean.class);
+		param3.setMinOccurrence(1);
+		param3.setMaxOccurrence(1);
+		param3.setDefaultValue(Value.of(false));
+		parameters.add(param3);
+
 		f.setParameters(parameters);
 
 		// explanation
@@ -134,7 +142,7 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		assertEquals(null, conv.getTarget().getName());
 
 		// parameters
-		assertEquals(2, conv.getParameters().size());
+		assertEquals(3, conv.getParameters().size());
 
 		DefaultCustomPropertyFunctionParameter cp1 = conv.getParameters().get(0);
 		assertEquals("gender", cp1.getName());
@@ -145,6 +153,13 @@ public class DefaultCustomPropertyFunctionTypeTest {
 		assertEquals(0, cp2.getMinOccurrence());
 		assertEquals(1, cp2.getMaxOccurrence());
 		assertEquals(String.class, cp2.getBindingClass());
+
+		DefaultCustomPropertyFunctionParameter cp3 = conv.getParameters().get(2);
+		assertEquals("flag", cp3.getName());
+		assertEquals(1, cp3.getMinOccurrence());
+		assertEquals(1, cp3.getMaxOccurrence());
+		assertEquals(Boolean.class, cp3.getBindingClass());
+		assertEquals(false, cp3.getDefaultValue().as(Boolean.class));
 
 		// explanation
 		assertNotNull(conv.getExplanation());

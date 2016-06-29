@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.parameter.ParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.core.parameter.Validator;
@@ -106,7 +107,32 @@ public class DefaultCustomPropertyFunctionParameterDefinition
 
 	@Override
 	public ParameterValueDescriptor getValueDescriptor() {
-		// TODO not supported yet
+		Value def = parameter.getDefaultValue();
+		if (def != null && def.getValue() != null) {
+			return new ParameterValueDescriptor() {
+
+				@Override
+				public String getSampleDescription() {
+					return null;
+				}
+
+				@Override
+				public Value getSampleData() {
+					return null;
+				}
+
+				@Override
+				public Value getDefaultValue() {
+					return def;
+				}
+
+				@Override
+				public String getDefaultDescription() {
+					return null;
+				}
+			};
+		}
+
 		return null;
 	}
 
