@@ -18,8 +18,10 @@ package eu.esdihumboldt.hale.common.align.custom;
 import java.util.HashSet;
 import java.util.Set;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+
 /**
- * TODO Type description
+ * Default implementation of a custom function parameter.
  * 
  * @author Simon Templer
  */
@@ -27,6 +29,7 @@ public class DefaultCustomPropertyFunctionParameter extends MinimalParameter {
 
 	private Class<?> bindingClass;
 	private Set<String> enumeration;
+	private Value defaultValue;
 
 	/**
 	 * Default constructor.
@@ -49,6 +52,7 @@ public class DefaultCustomPropertyFunctionParameter extends MinimalParameter {
 		else {
 			setEnumeration(null);
 		}
+		setDefaultValue(other.getDefaultValue());
 	}
 
 	/**
@@ -77,6 +81,20 @@ public class DefaultCustomPropertyFunctionParameter extends MinimalParameter {
 	 */
 	public void setEnumeration(Set<String> enumeration) {
 		this.enumeration = enumeration;
+	}
+
+	/**
+	 * @return the defaultValue
+	 */
+	public Value getDefaultValue() {
+		return defaultValue;
+	}
+
+	/**
+	 * @param defaultValue the defaultValue to set
+	 */
+	public void setDefaultValue(Value defaultValue) {
+		this.defaultValue = defaultValue;
 	}
 
 }

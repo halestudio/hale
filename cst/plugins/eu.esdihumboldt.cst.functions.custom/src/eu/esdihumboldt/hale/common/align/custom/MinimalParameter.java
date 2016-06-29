@@ -27,6 +27,8 @@ public class MinimalParameter implements ParameterDefinition {
 	private String name;
 	private int minOccurrence;
 	private int maxOccurrence;
+	private String description;
+	private String displayName;
 
 	/**
 	 * Default constructor.
@@ -45,6 +47,10 @@ public class MinimalParameter implements ParameterDefinition {
 		setName(other.getName());
 		setMinOccurrence(other.getMinOccurrence());
 		setMaxOccurrence(other.getMaxOccurrence());
+		if (other.displayName != null) {
+			setDisplayName(other.getDisplayName());
+		}
+		setDescription(other.getDescription());
 	}
 
 	/**
@@ -83,14 +89,31 @@ public class MinimalParameter implements ParameterDefinition {
 		return name;
 	}
 
+	/**
+	 * @param displayName the displayName to set
+	 */
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	@Override
 	public String getDisplayName() {
+		if (displayName != null) {
+			return displayName;
+		}
 		return (getName() == null) ? ("") : (getName());
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	@Override
 	public String getDescription() {
-		return null;
+		return description;
 	}
 
 }
