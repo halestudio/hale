@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.align.custom;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -78,7 +79,13 @@ public class DefaultCustomPropertyFunctionParameterDefinition
 
 	@Override
 	public List<String> getEnumeration() {
-		return new ArrayList<>(parameter.getEnumeration());
+		Set<String> values = parameter.getEnumeration();
+		if (values != null) {
+			return new ArrayList<>(values);
+		}
+		else {
+			return null;
+		}
 	}
 
 	@Override
