@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.ParameterBinding;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
@@ -148,7 +149,9 @@ public class CustomGroovyTransformation
 			}
 		}
 
-		// TODO create binding(s) for parameters
+		// create binding(s) for parameters
+		binding.setVariable(BINDING_PARAMS,
+				new ParameterBinding(cell, customFunction.getDescriptor()));
 
 		return binding;
 	}
