@@ -78,7 +78,8 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	 * @param alignmentService the alignment service, needed to get Groovy
 	 *            scripts from cells
 	 */
-	public PreferencesGroovyService(ProjectService projectService, AlignmentService alignmentService) {
+	public PreferencesGroovyService(ProjectService projectService,
+			AlignmentService alignmentService) {
 		this.projectService = projectService;
 		this.alignmentService = alignmentService;
 		projectService.addListener(new ProjectServiceAdapter() {
@@ -179,8 +180,9 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 						}
 					}
 					message += "\n\nWARNING: The Groovy script can then do \"anything\", so be sure to trust your source!";
-					boolean result = MessageDialog.openQuestion(Display.getCurrent()
-							.getActiveShell(), "Groovy script restriction", message);
+					boolean result = MessageDialog.openQuestion(
+							Display.getCurrent().getActiveShell(), "Groovy script restriction",
+							message);
 					disableRestriction.set(result);
 				}
 			});
@@ -259,6 +261,8 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 					}
 				}
 			}
+
+			// FIXME what about custom functions?
 
 			// order scripts (for consistent hash)
 			Collections.sort(scripts);
