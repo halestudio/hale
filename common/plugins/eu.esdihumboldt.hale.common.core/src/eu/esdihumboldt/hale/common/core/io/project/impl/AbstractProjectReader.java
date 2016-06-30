@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.osgi.framework.Version;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
@@ -39,6 +41,8 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
  */
 public abstract class AbstractProjectReader extends AbstractImportProvider
 		implements ProjectReader {
+
+	private static final ALogger log = ALoggerFactory.getLogger(AbstractProjectReader.class);
 
 	/**
 	 * The additional project files, file names are mapped to project file
@@ -97,9 +101,13 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 			Version haleVersion = stripQualifier(HalePlatform.getCoreVersion());
 			if (haleVersion.compareTo(projectVersion) < 0) {
 				// project is newer than HALE
-				reporter.warn(new IOMessageImpl(MessageFormat.format(
+				String message = MessageFormat.format(
 						"The version of HALE the loaded project was created with ({1}) is newer than this version of HALE ({0}). Consider updating to avoid possible information loss or unexpected behavior.",
-						haleVersion, projectVersion), null));
+						haleVersion, projectVersion);
+				// report
+				reporter.warn(new IOMessageImpl(message, null));
+				// and log explicitly
+				log.userWarn(message);
 			}
 		}
 	}
