@@ -15,12 +15,19 @@
 
 package eu.esdihumboldt.hale.common.core;
 
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 import javax.annotation.Nullable;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentTypeManager;
+import org.osgi.framework.Version;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.internal.CoreBundle;
 import eu.esdihumboldt.hale.common.core.service.ServiceConstants;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
@@ -33,6 +40,8 @@ import eu.esdihumboldt.hale.util.nonosgi.NonOsgiPlatform;
  * @author Simon Templer
  */
 public class HalePlatform {
+
+	private static final ALogger log = ALoggerFactory.getLogger(HalePlatform.class);
 
 	private static class PlatformServiceProvider implements ServiceProvider {
 
@@ -91,6 +100,39 @@ public class HalePlatform {
 	 */
 	public static ServiceProvider getServiceProvider() {
 		return serviceProvider;
+	}
+
+	private static volatile Version coreVersion;
+
+	/**
+	 * Determine the version of the currently used HALE core bundle/library.
+	 * 
+	 * @return the version of the HALE core bundle/library
+	 */
+	public static Version getCoreVersion() {
+		if (coreVersion == null) {
+			try {
+				if (CoreBundle.isOsgi() && CoreBundle.getInstance() != null) {
+					coreVersion = CoreBundle.getInstance().getContext().getBundle().getVersion();
+				}
+				else {
+					String classFile = HalePlatform.class.getSimpleName() + ".class";
+					String classPath = HalePlatform.class.getResource(classFile).toString();
+					String manifestPath = classPath.replace(
+							HalePlatform.class.getCanonicalName().replaceAll("\\.", "/") + ".class",
+							"META-INF/MANIFEST.MF");
+					Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+					Attributes attr = manifest.getMainAttributes();
+					String versionString = attr.getValue("Bundle-Version");
+					coreVersion = Version.parseVersion(versionString);
+				}
+			} catch (Exception e) {
+				log.error("Failure determining HALE core version", e);
+				coreVersion = Version.emptyVersion;
+			}
+		}
+
+		return coreVersion;
 	}
 
 }
