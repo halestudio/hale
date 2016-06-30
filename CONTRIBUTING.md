@@ -64,6 +64,7 @@ To run all tests the simplest way is to run the *Tests* product from within Ecli
 # Additional Resources
 
 * [Setting up your development environment](https://github.com/halestudio/hale/wiki/Set-up-your-development-environment)
+* [Extend the HALE target platform](https://github.com/halestudio/hale/wiki/Extend-the-target-platform) (or how to add third party dependencies)
 * [Contributor License Agreement](https://wetransform.box.com/v/hale-cla)
 * [General GitHub documentation](https://help.github.com/)
 * [GitHub pull request documentation](https://help.github.com/send-pull-requests/)
