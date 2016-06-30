@@ -113,7 +113,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 
 					if (name.equals(ProjectIO.PROJECT_FILE)) {
 						try {
-							setProject(Project.load(new EntryInputStream(zip)));
+							setProjectChecked(Project.load(new EntryInputStream(zip)), reporter);
 						} catch (Exception e) {
 							// fail if main project file cannot be loaded
 							throw new IOProviderConfigurationException(
@@ -143,7 +143,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 		else {
 			// read from XML
 			try {
-				setProject(Project.load(in));
+				setProjectChecked(Project.load(in), reporter);
 			} catch (Exception e) {
 				// fail if main project file cannot be loaded
 				throw new IOProviderConfigurationException("Source is no valid project file", e);

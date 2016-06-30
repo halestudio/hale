@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.core.io.project.impl;
 import java.net.URI;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractExportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
@@ -32,7 +33,8 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractProjectWriter extends AbstractExportProvider implements ProjectWriter {
+public abstract class AbstractProjectWriter extends AbstractExportProvider
+		implements ProjectWriter {
 
 	/**
 	 * The additional project files, file names are mapped to project file
@@ -68,6 +70,11 @@ public abstract class AbstractProjectWriter extends AbstractExportProvider imple
 	@Override
 	public void setProject(Project project) {
 		this.project = project;
+
+		// ensure a HALE version is set
+		if (this.project.getHaleVersion() == null) {
+			this.project.setHaleVersion(HalePlatform.getCoreVersion());
+		}
 	}
 
 	/**
