@@ -22,6 +22,45 @@ There are a few guidelines that we need contributors to follow so that we can ha
 * Make sure you have added the necessary tests for your changes.
 * Run _all_ the tests to assure nothing else was accidentally broken.
 
+## Conventions
+
+### Project preferences and code formatting
+
+All HALE projects use the same set of project preferences in Eclipse.
+These preferences include settings for compiler warnings and code formatting.
+Code formatting is applied automatically each time a file is saved in Eclipse.
+
+We use a Groovy script `apply-preferences.groovy` to set the preferences for new projects or update the preferences of existing projects.
+When creating a new project in the default HALE plugin folders, run the script to set the project preferences.
+
+Part of the preferences are also templates for the code comments. If you want to use another default author name than your login name, just add
+
+```
+-Duser.name=Your Name
+```
+
+to the eclipse.ini-File of your Eclipse installation - just make sure you add it after the `-vmargs`-Line.
+
+
+### Project and package names
+
+Projects in the default HALE plugin folders (`common`, `ui`, `util`, etc.) have a common prefix that should also be used for new projects.
+
+The name of a project/bundle must conform to a package name, which is the root package of the bundle.
+There may be no two projects that have classes in the same package (with OSGi bundle fragments being the only exception).
+
+
+### Tests
+
+Tests are implemented using *JUnit*. Tests for classes in a bundle are not added to the bundle itself, but to a separate bundle for fragment that adds the suffix `.test` to the name of the original bundle.
+
+Names of test classes by convention end with `Test`, or with `IT` if they are integration tests.
+
+Test bundles/fragments need to be added to the `Tests.product`. Make sure the product validates.
+
+To run all tests the simplest way is to run the *Tests* product from within Eclipse. To run single test classes or methods, you can right click them in Eclipse and select *Run As* → *JUnit Plug-in Test*.
+
+
 ## Submitting Changes
 
 * Sign the [Contributor License Agreement](https://wetransform.box.com/v/hale-cla).
