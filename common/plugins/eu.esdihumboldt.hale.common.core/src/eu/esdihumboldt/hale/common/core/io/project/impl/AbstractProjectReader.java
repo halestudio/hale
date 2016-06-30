@@ -99,7 +99,8 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 		Version projectVersion = stripQualifier(project.getHaleVersion());
 		if (projectVersion != null) {
 			Version haleVersion = stripQualifier(HalePlatform.getCoreVersion());
-			if (haleVersion.compareTo(projectVersion) < 0) {
+			int compared = haleVersion.compareTo(projectVersion);
+			if (compared < 0) {
 				// project is newer than HALE
 				String message = MessageFormat.format(
 						"The version of HALE the loaded project was created with ({1}) is newer than this version of HALE ({0}). Consider updating to avoid possible information loss or unexpected behavior.",
@@ -108,6 +109,13 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 				reporter.warn(new IOMessageImpl(message, null));
 				// and log explicitly
 				log.userWarn(message);
+			}
+			else if (compared == 0 && HalePlatform.isSnapshotVersion()) {
+				// same version, but used version is a SNAPSHOT version
+				reporter.warn(new IOMessageImpl(MessageFormat.format(
+						"You are using a SNAPSHOT version of HALE {0} to load a project of the same version. "
+								+ "Thus there is the possibility that in the loaded project there are HALE features used that are not yet supported by your SNAPSHOT.",
+						haleVersion), null));
 			}
 		}
 	}

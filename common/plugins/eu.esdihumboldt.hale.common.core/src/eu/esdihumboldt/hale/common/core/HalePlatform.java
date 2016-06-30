@@ -135,4 +135,15 @@ public class HalePlatform {
 		return coreVersion;
 	}
 
+	/**
+	 * Determine if the HALE core bundle/library is a SNAPSHOT version.
+	 * 
+	 * @return <code>true</code> if the HALE core bundle/library used is
+	 *         verified to be a SNAPSHOT version, <code>false</code> otherwise
+	 */
+	public static boolean isSnapshotVersion() {
+		String qualifier = getCoreVersion().getQualifier();
+		return qualifier != null && (qualifier.equals("SNAPSHOT") || qualifier.equals("qualifier"));
+	}
+
 }
