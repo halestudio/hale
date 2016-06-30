@@ -150,6 +150,16 @@ String stripQualifier(String version) {
 	noQualifier.toString()
 }
 
+String findMajorVersion(String version) {
+	try {
+		def v = new org.osgi.framework.Version(version)
+		v.major as String
+	} catch (e) {
+		// invalid version encountered
+		null
+	}
+}
+
 /**
  * Adapt version numbers of HALE bundles for publishing to Maven.
  */
@@ -255,6 +265,14 @@ unpuzzle {
 			}
 		  
 			if (mapping) {
+				// check if there is a variant of the mapping to be applied
+				// -> determine major version
+				def majorVersion = findMajorVersion(version)
+				// use mapping specific for major version, if it is defined
+				if (majorVersion && mapping["mapping-v$majorVersion"]) {
+					mapping = mapping["mapping-v$majorVersion"]
+				}
+				
 				// apply artifact mapping
 				group = mapping.group
 				name = mapping.name
