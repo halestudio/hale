@@ -92,10 +92,9 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 		this.project = project;
 
 		// check version
-		Version projectVersion = project.getHaleVersion();
+		Version projectVersion = stripQualifier(project.getHaleVersion());
 		if (projectVersion != null) {
-			Version haleVersion = HalePlatform.getCoreVersion();
-			// XXX ignore qualifiers in comparison?
+			Version haleVersion = stripQualifier(HalePlatform.getCoreVersion());
 			if (haleVersion.compareTo(projectVersion) < 0) {
 				// project is newer than HALE
 				reporter.warn(new IOMessageImpl(MessageFormat.format(
@@ -103,6 +102,14 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 						haleVersion, projectVersion), null));
 			}
 		}
+	}
+
+	private Version stripQualifier(Version v) {
+		if (v != null) {
+			return new Version(v.getMajor(), v.getMinor(), v.getMicro());
+		}
+
+		return null;
 	}
 
 	/**
