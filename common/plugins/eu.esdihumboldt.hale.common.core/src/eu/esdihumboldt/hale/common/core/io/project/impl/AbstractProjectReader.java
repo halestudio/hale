@@ -16,8 +16,12 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.impl;
 
+import java.text.MessageFormat;
 import java.util.Map;
 
+import org.osgi.framework.Version;
+
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
@@ -25,13 +29,16 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * Abstract project reader with information on project and projectfiles
  * 
  * @author Patrick Lieb
  */
-public abstract class AbstractProjectReader extends AbstractImportProvider implements ProjectReader {
+public abstract class AbstractProjectReader extends AbstractImportProvider
+		implements ProjectReader {
 
 	/**
 	 * The additional project files, file names are mapped to project file
@@ -73,6 +80,29 @@ public abstract class AbstractProjectReader extends AbstractImportProvider imple
 	 */
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	/**
+	 * Set the loaded project and do a version check.
+	 * 
+	 * @param project the project to set
+	 * @param reporter the reporter
+	 */
+	public void setProjectChecked(Project project, IOReporter reporter) {
+		this.project = project;
+
+		// check version
+		Version projectVersion = project.getHaleVersion();
+		if (projectVersion != null) {
+			Version haleVersion = HalePlatform.getCoreVersion();
+			// XXX ignore qualifiers in comparison?
+			if (haleVersion.compareTo(projectVersion) < 0) {
+				// project is newer than HALE
+				reporter.warn(new IOMessageImpl(MessageFormat.format(
+						"The version of HALE the loaded project was created with ({1}) is newer than this version of HALE ({0}). Consider updating to avoid possible information loss or unexpected behavior.",
+						haleVersion, projectVersion), null));
+			}
+		}
 	}
 
 	/**

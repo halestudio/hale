@@ -379,7 +379,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Default constructor
 	 */
 	public ProjectServiceImpl() {
-		haleVersion = Version.parseVersion(Display.getAppVersion());
+		haleVersion = HalePlatform.getCoreVersion(); // Version.parseVersion(Display.getAppVersion());
 		synchronized (this) {
 			main = createDefaultProject();
 		}
