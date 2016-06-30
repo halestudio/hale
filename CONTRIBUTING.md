@@ -33,14 +33,6 @@ Code formatting is applied automatically each time a file is saved in Eclipse.
 We use a Groovy script `apply-preferences.groovy` to set the preferences for new projects or update the preferences of existing projects.
 When creating a new project in the default HALE plugin folders, run the script to set the project preferences.
 
-Part of the preferences are also templates for the code comments. If you want to use another default author name than your login name, just add
-
-```
--Duser.name=Your Name
-```
-
-to the eclipse.ini-File of your Eclipse installation - just make sure you add it after the `-vmargs`-Line.
-
 
 ### Project and package names
 
