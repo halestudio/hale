@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceDelegate;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -223,11 +223,19 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		}
 
 		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
+		 * Create a family instance from an instance reference.
+		 * 
+		 * @param ref the instance reference
+		 * @return the family instance created from the reference
 		 */
+		protected FamilyInstance createFamilyInstance(InstanceReference ref) {
+//			return new FamilyInstanceImpl(instances.getInstance(ref));
+			return new FamilyInstanceDelegate(ref, instances);
+		}
+
 		@Override
 		protected FamilyInstance convert(InstanceReference next) {
-			FamilyInstance base = new FamilyInstanceImpl(instances.getInstance(next));
+			FamilyInstance base = createFamilyInstance(next);
 			FamilyInstance[] currentInstances = new FamilyInstance[parent.length];
 			currentInstances[0] = base;
 
@@ -285,8 +293,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 					if (possibleInstances != null && !possibleInstances.isEmpty()) {
 						FamilyInstance parent = currentInstances[currentType];
 						for (InstanceReference ref : possibleInstances) {
-							FamilyInstance child = new FamilyInstanceImpl(
-									instances.getInstance(ref));
+							FamilyInstance child = createFamilyInstance(ref);
 							parent.addChild(child);
 							currentInstances[i] = child;
 							join(currentInstances, i);
