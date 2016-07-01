@@ -17,6 +17,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.util.groovy.sandbox,
  eu.esdihumboldt.util.http,
+ eu.esdihumboldt.util.io,
  org.joda.time;version="2.3.0",
  org.joda.time.format;version="2.3.0"
 Export-Package: eu.esdihumboldt.hale.app.transform
