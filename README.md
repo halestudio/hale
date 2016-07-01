@@ -35,10 +35,10 @@ To contribute please check the [contribution guidelines](CONTRIBUTING.md) and re
 
 * [HALE User Guide](http://hale.igd.fraunhofer.de/)
 * [HALE Community Forum](http://www.esdi-community.eu/projects/hale/boards)
-* [HALE Community Blog](http://blog.dhpanel.eu/)
+* [HALE Community Blog](https://www.wetransform.to/category/news/)
 
 ## License
 
-* The main HALE components/libaries have been released under the GNU Lesser General Public License (LGPL) v3.0.
-* The HALE continuous delivery build (*hale-build* in **build/**) has been released under the GNU General Public License (GPL) v3.0.
+* The main HALE components/libaries is released under the GNU Lesser General Public License (LGPL) v3.0.
+* The HALE continuous delivery build (*hale-build* in **build/**) is released under the GNU General Public License (GPL) v3.0.
 * Different licenses may apply to the extensions residing in **ext/**, please see the respective subfolders.
