@@ -610,6 +610,10 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceDelegate">
+      </allow>
    </extension>
 
 </plugin>
