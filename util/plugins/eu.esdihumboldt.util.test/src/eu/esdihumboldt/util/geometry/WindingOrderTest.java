@@ -121,7 +121,15 @@ public class WindingOrderTest {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true);
 		assertTrue(result instanceof Polygon);
 		assertFalse(clockWise2.equalsExact(result));
+
 		assertTrue(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
+		assertFalse(WindingOrder.isCounterClockwise(((Polygon) result).getInteriorRingN(0)));
+
+		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getInteriorRingN(0)) != WindingOrder
+				.isCounterClockwise(((Polygon) result).getInteriorRingN(0)));
+		assertFalse(
+				clockWise2.getInteriorRingN(0).equalsExact(((Polygon) result).getInteriorRingN(0)));
+
 	}
 
 	@Test
