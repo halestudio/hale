@@ -41,30 +41,29 @@ public class WindingOrderTest {
 
 	private static GeometryCollection clockWise4;
 
+	private static LinearRing r1, r2, h1, h2;
+
 	@BeforeClass
 	public static void setUp() {
 		GeometryFactory factory = new GeometryFactory();
 
-		LinearRing r1 = factory.createLinearRing(new Coordinate[] { new Coordinate(10, 30),
+		r1 = factory.createLinearRing(new Coordinate[] { new Coordinate(10, 30),
 				new Coordinate(20, 0), new Coordinate(0, 0), new Coordinate(10, 30) });
 
+		r2 = factory.createLinearRing(new Coordinate[] { new Coordinate(49.87445, 8.64729),
+				new Coordinate(49.87582, 8.65441), new Coordinate(49.87095, 8.65694),
+				new Coordinate(49.86978, 8.65032), new Coordinate(49.87197, 8.64758),
+				new Coordinate(49.87341, 8.64688), new Coordinate(49.87445, 8.64729) });
+
+		h1 = factory.createLinearRing(new Coordinate[] { new Coordinate(49.87327, 8.64991),
+				new Coordinate(49.8735, 8.6521), new Coordinate(49.87253, 8.65239),
+				new Coordinate(49.8723, 8.65045), new Coordinate(49.87327, 8.64991) });
+
+		h2 = factory.createLinearRing(new Coordinate[] { new Coordinate(49.87203, 8.65208),
+				new Coordinate(49.87209, 8.6531), new Coordinate(49.87156, 8.65312),
+				new Coordinate(49.87145, 8.65227), new Coordinate(49.87203, 8.65208) });
+
 		clockWise1 = factory.createPolygon(r1);
-
-		LinearRing r2 = factory
-				.createLinearRing(new Coordinate[] { new Coordinate(49.87445, 8.64729),
-						new Coordinate(49.87582, 8.65441), new Coordinate(49.87095, 8.65694),
-						new Coordinate(49.86978, 8.65032), new Coordinate(49.87197, 8.64758),
-						new Coordinate(49.87341, 8.64688), new Coordinate(49.87445, 8.64729) });
-
-		LinearRing h1 = factory
-				.createLinearRing(new Coordinate[] { new Coordinate(49.87327, 8.64991),
-						new Coordinate(49.8735, 8.6521), new Coordinate(49.87253, 8.65239),
-						new Coordinate(49.8723, 8.65045), new Coordinate(49.87327, 8.64991) });
-
-		LinearRing h2 = factory
-				.createLinearRing(new Coordinate[] { new Coordinate(49.87203, 8.65208),
-						new Coordinate(49.87209, 8.6531), new Coordinate(49.87156, 8.65312),
-						new Coordinate(49.87145, 8.65227), new Coordinate(49.87203, 8.65208) });
 
 		clockWise2 = factory.createPolygon(r2, new LinearRing[] { h1, h2 });
 
@@ -82,6 +81,20 @@ public class WindingOrderTest {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise2WOHoles, true);
 		assertTrue(result instanceof Polygon);
 		assertTrue(clockWise2WOHoles.equalsExact(result));
+	}
+
+	@Test
+	public void testOrderHolesCCW() {
+		assertTrue(WindingOrder.isCounterClockwise(h1));
+		assertTrue(WindingOrder.isCounterClockwise(h2));
+	}
+
+	@Test
+	public void testUnifyHoles() {
+		assertTrue(WindingOrder.isCounterClockwise(h1));
+		Geometry result = WindingOrder.unifyWindingOrder(h1, true);
+		assertTrue(WindingOrder.isCounterClockwise(result));
+		assertTrue(h1.equalsExact(result));
 	}
 
 	@Test

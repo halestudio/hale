@@ -25,13 +25,13 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 /**
- * TODO Type description
+ * Winding order changer for Geometry objects.
  * 
  * @author Arun
  */
 public class WindingOrder {
 
-	private static GeometryFactory factory = new GeometryFactory();
+	private static final GeometryFactory factory = new GeometryFactory();
 
 	/**
 	 * Identifying order of Geometry object CounterClockwise or not?
@@ -46,17 +46,11 @@ public class WindingOrder {
 
 		// Get coordinates of geometry
 		Coordinate[] coordinates = geometry.getCoordinates();
-		// Using algorithm get order of geometry
+
+		// Get order of geometry using algorithm
 		boolean orientation = false;
-		try {
-			orientation = CGAlgorithms.isCCW(coordinates);
-		} catch (IllegalArgumentException ex) {
-			System.err.println("Illegal Argument");
-			// TODO:: or Throw ?
-		}
-
+		orientation = CGAlgorithms.isCCW(coordinates);
 		return orientation;
-
 	}
 
 	/**
@@ -123,18 +117,24 @@ public class WindingOrder {
 		LinearRing shell = unifyWindingOrderForLinearRing((LinearRing) poly.getExteriorRing(),
 				counterClockWise);
 
+		Polygon revPoly;
+
 		// Checking and reversing Holes
-		LinearRing holes[] = new LinearRing[poly.getNumInteriorRing()];
-		for (int i = 0; i < poly.getNumInteriorRing(); i++) {
-			holes[i] = unifyWindingOrderForLinearRing((LinearRing) poly.getInteriorRingN(i),
-					!counterClockWise);
+		if (poly.getNumInteriorRing() > 0) {
+			LinearRing holes[] = new LinearRing[poly.getNumInteriorRing()];
+			for (int i = 0; i < poly.getNumInteriorRing(); i++) {
+				holes[i] = unifyWindingOrderForLinearRing((LinearRing) poly.getInteriorRingN(i),
+						!counterClockWise);
+			}
+
+			// Create New Polygon using unified shell and holes both.
+			revPoly = factory.createPolygon(shell, holes);
 		}
+		else
+			// Create New Polygon using unified shell only
+			revPoly = factory.createPolygon(shell);
 
-		// Create New Polygon using unified shell and holes
-		Polygon tempPoly = factory.createPolygon(shell,
-				poly.getNumInteriorRing() > 0 ? holes : null);
-
-		return tempPoly;
+		return revPoly;
 	}
 
 	/**
@@ -158,6 +158,7 @@ public class WindingOrder {
 			revGeoms[i] = unifyWindingOrderForPolyGon((Polygon) multiPoly.getGeometryN(i),
 					counterClockWise);
 		}
+		// new multipolygon of unified polygons
 		return factory.createMultiPolygon(revGeoms);
 	}
 
@@ -178,28 +179,10 @@ public class WindingOrder {
 		Geometry[] revGeoms = new Geometry[noOfGeoms];
 		// Unify each geometry one by one
 		for (int i = 0; i < noOfGeoms; i++) {
-			Geometry geometry = geoCollection.getGeometryN(i);
-			if (geometry instanceof MultiPolygon) {
-				revGeoms[i] = unifyWindingOrderForMultiPolygon((MultiPolygon) geometry,
-						counterClockWise);
-			}
-			else if (geometry instanceof Polygon) {
-				revGeoms[i] = unifyWindingOrderForPolyGon((Polygon) geometry, counterClockWise);
-			}
-			else if (geometry instanceof LinearRing) {
-				revGeoms[i] = unifyWindingOrderForLinearRing((LinearRing) geometry,
-						counterClockWise);
-			}
-			else if (geometry instanceof GeometryCollection) {
-				revGeoms[i] = unifyWindingOrderForGeometryCollection((GeometryCollection) geometry,
-						counterClockWise);
-			}
-			else
-				revGeoms[i] = geometry;
+			revGeoms[i] = unifyWindingOrder(geoCollection.getGeometryN(i), counterClockWise);
 		}
-
+		// new geolmetry collection object of unified geometry objects.
 		return factory.createGeometryCollection(revGeoms);
-
 	}
 
 }
