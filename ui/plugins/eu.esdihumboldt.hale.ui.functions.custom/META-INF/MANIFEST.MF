@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Custom Functions UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.custom;singleton:=true
-Bundle-Version: 2.9.3.qualifier
+Bundle-Version: 2.9.5.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.106.0",
