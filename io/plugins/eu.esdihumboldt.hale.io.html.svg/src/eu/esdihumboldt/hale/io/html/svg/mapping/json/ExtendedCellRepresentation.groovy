@@ -20,10 +20,15 @@ import com.google.common.collect.Multimap
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
+import eu.esdihumboldt.hale.common.align.io.impl.internal.EntityDefinitionToJaxb
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.Entity
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import groovy.transform.CompileStatic
@@ -34,12 +39,15 @@ import groovy.transform.CompileStatic
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 @CompileStatic
 class ExtendedCellRepresentation implements CellJsonExtension {
 
 	private final Multimap<String, String> parentIds = HashMultimap.create()
 
 	private final ServiceProvider serviceProvider
+
+	private final JaxbAlignmentJson jaxbJson = new JaxbAlignmentJson()
 
 	ExtendedCellRepresentation(Alignment alignment, ServiceProvider serviceProvider) {
 		this.serviceProvider = serviceProvider
@@ -89,12 +97,18 @@ class ExtendedCellRepresentation implements CellJsonExtension {
 		 * representation is provided in addition.
 		 */
 
-		//FIXME
-		// StringWriter writer = new StringWriter()
-		// writer.withWriter { w ->
-		// 	AlignmentJson.writeEntity(w, entity.definition)
-		// }
-		// json 'entity', new RawJson(writer.toString())
+		EntityDefinition entityDef = entity.definition
+		ClassType xentity
+		if (entityDef instanceof PropertyEntityDefinition) {
+			xentity = EntityDefinitionToJaxb.convert(entityDef).value
+		}
+		else if (entityDef instanceof TypeEntityDefinition) {
+			xentity = EntityDefinitionToJaxb.convert(entityDef).value
+		}
+
+		json 'entity', {
+			jaxbJson.writeEntity(json, xentity)
+		}
 	}
 
 }
