@@ -371,5 +371,16 @@
             path="ROOT">
       </category>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.cst.functions.groovy.GroovyServiceFactory"
+            id="eu.esdihumboldt.cst.functions.groovy.GroovyServiceFactory"
+            scope="global">
+         <service
+               interface="eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService">
+         </service>
+      </services>
+   </extension>
 
 </plugin>
