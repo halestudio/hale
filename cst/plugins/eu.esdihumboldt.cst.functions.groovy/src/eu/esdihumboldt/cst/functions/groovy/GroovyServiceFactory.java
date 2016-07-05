@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Data Harmonisation Panel
+ * Copyright (c) 2016 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -13,35 +13,27 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.functions.groovy.internal;
-
-import java.util.Hashtable;
-
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
+package eu.esdihumboldt.cst.functions.groovy;
 
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 import eu.esdihumboldt.cst.functions.groovy.helper.extension.HelperFunctionsExtension;
+import eu.esdihumboldt.hale.common.core.service.ServiceFactory;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
- * Bundle activator.
+ * Factory for instance related services (those not specific to the UI).
  * 
  * @author Simon Templer
  */
-public class Activator implements BundleActivator {
+public class GroovyServiceFactory implements ServiceFactory {
 
-	private ServiceRegistration<HelperFunctionsService> helperFunctionsReg;
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public void start(BundleContext context) throws Exception {
-		helperFunctionsReg = context.registerService(HelperFunctionsService.class,
-				new HelperFunctionsExtension(), new Hashtable<String, Object>());
-	}
-
-	@Override
-	public void stop(BundleContext context) throws Exception {
-		helperFunctionsReg.unregister();
+	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator) {
+		if (HelperFunctionsService.class.equals(serviceInterface)) {
+			return (T) new HelperFunctionsExtension();
+		}
+		return null;
 	}
 
 }
