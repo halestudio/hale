@@ -58,7 +58,8 @@ public class WindingOrder {
 	 * LinearRing) as CounterClockwise or Clockwise.
 	 * 
 	 * @param geometry Geometry object for unifying.
-	 * @param counterClockWise
+	 * @param counterClockWise true, if unify geometry counterClockwise else
+	 *            false.
 	 * @return Geometry unified object.
 	 */
 	public static Geometry unifyWindingOrder(Geometry geometry, boolean counterClockWise) {
@@ -76,7 +77,8 @@ public class WindingOrder {
 		else if (geometry instanceof LinearRing) {
 			return unifyWindingOrderForLinearRing((LinearRing) geometry, counterClockWise);
 		}
-		else if (geometry instanceof GeometryCollection) {
+		else if (geometry instanceof GeometryCollection
+				&& geometry.getClass() == GeometryCollection.class) {
 			return unifyWindingOrderForGeometryCollection((GeometryCollection) geometry,
 					counterClockWise);
 		}

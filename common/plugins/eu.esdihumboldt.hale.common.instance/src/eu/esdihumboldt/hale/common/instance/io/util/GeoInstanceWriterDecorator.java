@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.common.instance.io.util;
 
-import javax.annotation.Nullable;
-
 import eu.esdihumboldt.hale.common.core.io.util.ExportProviderDecorator;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -58,10 +56,10 @@ public class GeoInstanceWriterDecorator<T extends GeoInstanceWriter>
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter#setWindingOrder(java.lang.String)
+	 * @see eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter#setWindingOrder(eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes)
 	 */
 	@Override
-	public void setWindingOrder(@Nullable EnumWindingOrderTypes windingOrderType) {
+	public void setWindingOrder(EnumWindingOrderTypes windingOrderType) {
 		internalProvider.setWindingOrder(windingOrderType);
 	}
 

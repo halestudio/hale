@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer;
 
+import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
@@ -43,6 +44,14 @@ public class GmlInstanceWriter extends StreamGmlWriter {
 	@Override
 	protected boolean requiresDefaultContainer() {
 		return true; // requires a FeatureCollection being present
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter#getDefaultWindingOrder()
+	 */
+	@Override
+	protected EnumWindingOrderTypes getDefaultWindingOrder() {
+		return EnumWindingOrderTypes.counterClockwise;
 	}
 
 }

@@ -74,7 +74,22 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 
 	@Override
 	public EnumWindingOrderTypes getWindingOrder() {
-		return getParameter(PARAM_UNIFY_WINDING_ORDER).as(EnumWindingOrderTypes.class);
+		EnumWindingOrderTypes value = getParameter(PARAM_UNIFY_WINDING_ORDER)
+				.as(EnumWindingOrderTypes.class);
+		if (value == null)
+			return getDefaultWindingOrder();
+		else
+			return value;
+	}
+
+	/**
+	 * Get default Winding Order. Function is to give functionality to the
+	 * subType to change the default Winding order.
+	 * 
+	 * @return EnumWindingOrderTypes default Winding order
+	 */
+	protected EnumWindingOrderTypes getDefaultWindingOrder() {
+		return EnumWindingOrderTypes.noChanges;
 	}
 
 	/**
@@ -128,7 +143,7 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	protected Pair<Geometry, CRSDefinition> extractGeometry(Object value, boolean allowConvert,
 			IOReporter report) {
 		Pair<Geometry, CRSDefinition> pair = getGeometryPair(value, allowConvert, report);
-		return unifyGeometryPair(pair);
+		return unifyGeometryPair(pair, report);
 	}
 
 	/**
@@ -175,9 +190,11 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	 * 
 	 * @param pair A pair of Geometry and CRSDefinition, on which winding
 	 *            process will get done.
+	 * @param report the reporter
 	 * @return Unified Pair .
 	 */
-	protected Pair<Geometry, CRSDefinition> unifyGeometryPair(Pair<Geometry, CRSDefinition> pair) {
+	protected Pair<Geometry, CRSDefinition> unifyGeometryPair(Pair<Geometry, CRSDefinition> pair,
+			IOReporter report) {
 
 		// get Geometry object
 		Geometry geom = pair.getFirst();
@@ -185,7 +202,7 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 			return pair;
 		}
 		// unify geometry
-		geom = unifyGeometry(geom);
+		geom = unifyGeometry(geom, report);
 		return new Pair<>(geom, pair.getSecond());
 	}
 
@@ -194,16 +211,17 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	 * supplied.
 	 * 
 	 * @param geom The Geometry object, on which winding process will get done.
+	 * @param report the reporter
 	 * @return Unified geometry .
 	 */
-	protected Geometry unifyGeometry(Geometry geom) {
+	protected Geometry unifyGeometry(Geometry geom, IOReporter report) {
 		if (geom == null) {
 			return geom;
 		}
 		// getting winding order
 		EnumWindingOrderTypes windingOrder = getWindingOrder();
 
-		if (windingOrder == null || windingOrder == EnumWindingOrderTypes.DONTCHANGE) {
+		if (windingOrder == null || windingOrder == EnumWindingOrderTypes.noChanges) {
 			return geom;
 		}
 		else {
@@ -212,14 +230,17 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 
 			switch (windingOrder) {
 
-			case COUNTERCLOCKWISE:
+			case counterClockwise:
 				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true);
 				break;
-			case CLOCKWISE:
+			case clockwise:
 				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, false);
 				break;
 			default:
-				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true);
+				if (report != null) {
+					report.error(new IOMessageImpl("WindingOrder is not set", null));
+				}
+				unifiedGeometry = geom;
 				break;
 			}
 			return unifiedGeometry;

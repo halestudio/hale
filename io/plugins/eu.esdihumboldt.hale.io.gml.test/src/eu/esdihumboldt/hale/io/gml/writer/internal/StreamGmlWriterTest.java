@@ -529,6 +529,7 @@ public class StreamGmlWriterTest {
 	 * 
 	 * @throws Exception if an error occurs
 	 */
+
 	@Test
 	public void testGeometryPrimitive_32_MultiLineString_Curve2() throws Exception {
 		// create the geometry
@@ -653,7 +654,7 @@ public class StreamGmlWriterTest {
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
 				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
-				false, false, "COUNTERCLOCKWISE");
+				false, false, EnumWindingOrderTypes.counterClockwise);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 	}
@@ -676,7 +677,7 @@ public class StreamGmlWriterTest {
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
 				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
-				false, false, "CLOCKWISE");
+				false, false, EnumWindingOrderTypes.clockwise);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 
@@ -700,7 +701,7 @@ public class StreamGmlWriterTest {
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
 				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
-				false, false, "DONTCHANGE");
+				false, false, EnumWindingOrderTypes.noChanges);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
 
@@ -772,7 +773,7 @@ public class StreamGmlWriterTest {
 	 */
 	private IOReport fillFeatureTest(String elementName, URI targetSchema,
 			Map<List<QName>, Object> values, String testName, String srsName, boolean skipValueTest,
-			boolean expectWriteFail, String windingOrderParam) throws Exception {
+			boolean expectWriteFail, EnumWindingOrderTypes windingOrderParam) throws Exception {
 		// load the sample schema
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
@@ -853,7 +854,7 @@ public class StreamGmlWriterTest {
 		InstanceWriter writer = new GmlInstanceWriter();
 		if (windingOrderParam != null) {
 			writer.setParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER,
-					Value.of(windingOrderParam.toUpperCase()));
+					Value.of(windingOrderParam));
 		}
 		writer.setInstances(instances);
 		DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace();
@@ -862,8 +863,11 @@ public class StreamGmlWriterTest {
 		File outFile = File.createTempFile(testName, ".gml"); //$NON-NLS-1$
 		writer.setTarget(new FileIOSupplier(outFile));
 
-		assertTrue(writer.getParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER)
-				.as(EnumWindingOrderTypes.class) == EnumWindingOrderTypes.COUNTERCLOCKWISE);
+		if (windingOrderParam != null
+				&& windingOrderParam == EnumWindingOrderTypes.counterClockwise) {
+			assertTrue(writer.getParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER)
+					.as(EnumWindingOrderTypes.class) == EnumWindingOrderTypes.counterClockwise);
+		}
 
 		IOReport report = writer.execute(null); // new LogProgressIndicator());
 		if (expectWriteFail) {
@@ -921,22 +925,20 @@ public class StreamGmlWriterTest {
 
 						// I have to comment below line to test Winding Order.
 						// Below method got assertion failed error.
-						matchGeometries((Geometry) expected, (Geometry) value);
-
+						if (windingOrderParam == null) {
+							matchGeometries((Geometry) expected, (Geometry) value);
+						}
 						// Winding Order Test.
 						if (windingOrderParam != null) {
-							if (windingOrderParam
-									.toUpperCase() == EnumWindingOrderTypes.COUNTERCLOCKWISE
-											.toString()) {
+							if (windingOrderParam == EnumWindingOrderTypes.counterClockwise) {
 								assertFalse(((Geometry) expected).equalsExact((Geometry) value));
 								assertTrue(((Geometry) expected)
 										.getNumGeometries() == ((Geometry) value)
 												.getNumGeometries());
 								assertTrue(WindingOrder.isCounterClockwise((Geometry) value));
 							}
-							else if (windingOrderParam
-									.toUpperCase() == EnumWindingOrderTypes.CLOCKWISE.toString()) {
-								assertTrue(((Geometry) expected).equalsExact((Geometry) value));
+							else if (windingOrderParam == EnumWindingOrderTypes.clockwise) {
+								assertFalse(WindingOrder.isCounterClockwise((Geometry) value));
 							}
 							else {
 								assertTrue(WindingOrder
@@ -946,8 +948,8 @@ public class StreamGmlWriterTest {
 						}
 						else {
 							// TODO check winding order is CCW
-							assertTrue(WindingOrder.isCounterClockwise((Geometry) value));
-							// assertTrue(1 == 0);
+							if (value instanceof Polygon || value instanceof MultiPolygon)
+								assertTrue(WindingOrder.isCounterClockwise((Geometry) value));
 						}
 					}
 					else {

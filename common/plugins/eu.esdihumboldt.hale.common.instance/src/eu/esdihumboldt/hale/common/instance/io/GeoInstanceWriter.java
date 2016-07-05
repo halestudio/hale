@@ -45,7 +45,7 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	/**
 	 * Name of the parameter specifying a Winding order of Geometry.
 	 */
-	public static final String PARAM_UNIFY_WINDING_ORDER = "counterclockwise";
+	public static final String PARAM_UNIFY_WINDING_ORDER = "geometry.unifyWindingOrder";
 
 	/**
 	 * Set the target CRS for written instances. Note that supporting the target
@@ -83,7 +83,7 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	/**
 	 * Set winding order of geometry.
 	 * 
-	 * @param windingOrderType Winding order of
+	 * @param windingOrderType Winding order
 	 */
 	public void setWindingOrder(@Nullable EnumWindingOrderTypes windingOrderType);
 

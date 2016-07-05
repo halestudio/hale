@@ -16,10 +16,24 @@
 package eu.esdihumboldt.hale.common.instance.io.util;
 
 /**
- * TODO Type description
+ * Enumeration for different types of winding orders for Geometry. Selected type
+ * will be applied geometry. In case of Polygon/MultiPolygon selected type will
+ * be applied to the shell and the reversed type is applied to the holes.
  * 
  * @author Arun
  */
 public enum EnumWindingOrderTypes {
-	CLOCKWISE, COUNTERCLOCKWISE, DONTCHANGE;
+
+	/**
+	 * Unified geometry by Clockwise Winding order to the shell and Counter
+	 * Clockwise to the holes.
+	 */
+	clockwise, /**
+				 * Unified geometry by Counter Clockwise Winding order to the
+				 * shell and Clockwise to the holes.
+				 */
+	counterClockwise, /**
+						 * no change in Geometry. Leave it as it is.
+						 */
+	noChanges;
 }
