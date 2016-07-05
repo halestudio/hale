@@ -173,15 +173,18 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	 * Returns a pair of unified geometry of given geometry and associated CRS
 	 * definition based on Winding order supplied.
 	 * 
-	 * @param geom The Geometry object, on which winding process will get done.
-	 * @return Unified geometry .
+	 * @param pair A pair of Geometry and CRSDefinition, on which winding
+	 *            process will get done.
+	 * @return Unified Pair .
 	 */
 	protected Pair<Geometry, CRSDefinition> unifyGeometryPair(Pair<Geometry, CRSDefinition> pair) {
 
+		// get Geometry object
 		Geometry geom = pair.getFirst();
 		if (geom == null) {
 			return pair;
 		}
+		// unify geometry
 		geom = unifyGeometry(geom);
 		return new Pair<>(geom, pair.getSecond());
 	}
