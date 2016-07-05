@@ -31,9 +31,11 @@ import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.geometry.WindingOrder;
 
 /**
  * Abstract {@link GeoInstanceWriter} base implementation
@@ -41,8 +43,8 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  * @since 2.9
  */
-public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter implements
-		GeoInstanceWriter {
+public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
+		implements GeoInstanceWriter {
 
 	@Override
 	public void setTargetCRS(CRSDefinition crs) {
@@ -51,8 +53,8 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 
 	@Override
 	public CRSDefinition getTargetCRS() {
-		return CRSDefinitionManager.getInstance().parse(
-				getParameter(PARAM_TARGET_CRS).as(String.class));
+		return CRSDefinitionManager.getInstance()
+				.parse(getParameter(PARAM_TARGET_CRS).as(String.class));
 	}
 
 	@Override
@@ -63,6 +65,16 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 	@Override
 	public String getCustomEPSGPrefix() {
 		return getParameter(PARAM_CRS_CODE_FORMAT).as(String.class);
+	}
+
+	@Override
+	public void setWindingOrder(EnumWindingOrderTypes windingOrderType) {
+		setParameter(PARAM_UNIFY_WINDING_ORDER, Value.of(windingOrderType));
+	}
+
+	@Override
+	public EnumWindingOrderTypes getWindingOrder() {
+		return getParameter(PARAM_UNIFY_WINDING_ORDER).as(EnumWindingOrderTypes.class);
 	}
 
 	/**
@@ -82,8 +94,8 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 				&& getTargetCRS().getCRS() != null) {
 			try {
 				// TODO cache mathtransforms?
-				MathTransform transform = CRS.findMathTransform(sourceCrs.getCRS(), getTargetCRS()
-						.getCRS());
+				MathTransform transform = CRS.findMathTransform(sourceCrs.getCRS(),
+						getTargetCRS().getCRS());
 				Geometry targetGeometry = JTS.transform(geom, transform);
 				return new Pair<>(targetGeometry, getTargetCRS());
 			} catch (Exception e) {
@@ -115,6 +127,25 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 	 */
 	protected Pair<Geometry, CRSDefinition> extractGeometry(Object value, boolean allowConvert,
 			IOReporter report) {
+		Pair<Geometry, CRSDefinition> pair = getGeometryPair(value, allowConvert, report);
+		return unifyGeometryPair(pair);
+	}
+
+	/**
+	 * Returns a pair of geometry and associated CRS definition for the given
+	 * value. The value has to be a Geometry or a GeometryProperty, otherwise
+	 * <code>null</code> is returned.
+	 * 
+	 * @param value the value to extract the information from
+	 * @param allowConvert if conversion to the target CRS should be performed
+	 *            if applicable
+	 * @param report the reporter
+	 * @return a pair of geometry and CRS definition (latter may be
+	 *         <code>null</code>), or <code>null</code> if the argument doesn't
+	 *         contain a geometry
+	 */
+	private Pair<Geometry, CRSDefinition> getGeometryPair(Object value, boolean allowConvert,
+			IOReporter report) {
 		// TODO collection handling (-> happens for example with target
 		// CompositeSurface)
 		if (value instanceof Collection) {
@@ -136,6 +167,60 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter i
 		}
 		else
 			return null;
+	}
+
+	/**
+	 * Returns a pair of unified geometry of given geometry and associated CRS
+	 * definition based on Winding order supplied.
+	 * 
+	 * @param geom The Geometry object, on which winding process will get done.
+	 * @return Unified geometry .
+	 */
+	protected Pair<Geometry, CRSDefinition> unifyGeometryPair(Pair<Geometry, CRSDefinition> pair) {
+
+		Geometry geom = pair.getFirst();
+		if (geom == null) {
+			return pair;
+		}
+		geom = unifyGeometry(geom);
+		return new Pair<>(geom, pair.getSecond());
+	}
+
+	/**
+	 * Returns a unified geometry of given geometry based on Winding order
+	 * supplied.
+	 * 
+	 * @param geom The Geometry object, on which winding process will get done.
+	 * @return Unified geometry .
+	 */
+	protected Geometry unifyGeometry(Geometry geom) {
+		if (geom == null) {
+			return geom;
+		}
+		// getting winding order
+		EnumWindingOrderTypes windingOrder = getWindingOrder();
+
+		if (windingOrder == null || windingOrder == EnumWindingOrderTypes.DONTCHANGE) {
+			return geom;
+		}
+		else {
+			Geometry unifiedGeometry;
+			// unify geometry using WindingOrder utility.
+
+			switch (windingOrder) {
+
+			case COUNTERCLOCKWISE:
+				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true);
+				break;
+			case CLOCKWISE:
+				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, false);
+				break;
+			default:
+				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true);
+				break;
+			}
+			return unifiedGeometry;
+		}
 	}
 
 	/**

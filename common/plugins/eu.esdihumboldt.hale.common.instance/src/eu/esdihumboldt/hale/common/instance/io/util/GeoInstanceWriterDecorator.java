@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.instance.io.util;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.core.io.util.ExportProviderDecorator;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -25,8 +27,8 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
  * @param <T> the provider type
  * @author Simon Templer
  */
-public class GeoInstanceWriterDecorator<T extends GeoInstanceWriter> extends
-		InstanceWriterDecorator<T> implements GeoInstanceWriter {
+public class GeoInstanceWriterDecorator<T extends GeoInstanceWriter>
+		extends InstanceWriterDecorator<T>implements GeoInstanceWriter {
 
 	/**
 	 * @see ExportProviderDecorator#ExportProviderDecorator(eu.esdihumboldt.hale.common.core.io.ExportProvider)
@@ -53,6 +55,22 @@ public class GeoInstanceWriterDecorator<T extends GeoInstanceWriter> extends
 	@Override
 	public String getCustomEPSGPrefix() {
 		return internalProvider.getCustomEPSGPrefix();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter#setWindingOrder(java.lang.String)
+	 */
+	@Override
+	public void setWindingOrder(@Nullable EnumWindingOrderTypes windingOrderType) {
+		internalProvider.setWindingOrder(windingOrderType);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter#getWindingOrder()
+	 */
+	@Override
+	public EnumWindingOrderTypes getWindingOrder() {
+		return internalProvider.getWindingOrder();
 	}
 
 }

@@ -50,13 +50,16 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
@@ -79,6 +82,7 @@ import eu.esdihumboldt.hale.io.xml.validator.XmlInstanceValidator;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.util.geometry.WindingOrder;
 
 /**
  * Tests for {@link StreamGmlWriter}.
@@ -92,8 +96,8 @@ public class StreamGmlWriterTest {
 	/**
 	 * Property path for the geometry property
 	 */
-	private static final List<QName> GEOMETRY_PROPERTY = Arrays.asList(new QName(
-			"eu:esdihumboldt:hale:test", "geometry"));
+	private static final List<QName> GEOMETRY_PROPERTY = Arrays
+			.asList(new QName("eu:esdihumboldt:hale:test", "geometry"));
 
 	/**
 	 * If temporary files shall be deleted
@@ -147,7 +151,7 @@ public class StreamGmlWriterTest {
 		Point point = createPoint(10.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, point); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, point); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -167,7 +171,7 @@ public class StreamGmlWriterTest {
 		Point point = createPoint(10.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, point); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, point); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -187,7 +191,7 @@ public class StreamGmlWriterTest {
 		Point point = createPoint(10.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, point); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, point); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -206,11 +210,11 @@ public class StreamGmlWriterTest {
 	@Test
 	public void testGeometry_2_MultiPoint() throws Exception {
 		// create the geometry
-		MultiPoint mp = geomFactory.createMultiPoint(new Point[] { createPoint(0.0),
-				createPoint(1.0), createPoint(2.0) });
+		MultiPoint mp = geomFactory.createMultiPoint(
+				new Point[] { createPoint(0.0), createPoint(1.0), createPoint(2.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -227,11 +231,11 @@ public class StreamGmlWriterTest {
 	@Test
 	public void testGeometryAggregate_32_MultiPoint() throws Exception {
 		// create the geometry
-		MultiPoint mp = geomFactory.createMultiPoint(new Point[] { createPoint(0.0),
-				createPoint(1.0), createPoint(2.0) });
+		MultiPoint mp = geomFactory.createMultiPoint(
+				new Point[] { createPoint(0.0), createPoint(1.0), createPoint(2.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -267,7 +271,7 @@ public class StreamGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, polygon); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, polygon); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -310,7 +314,7 @@ public class StreamGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, polygon); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, polygon); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml31.xsd").toURI(), //$NON-NLS-1$
@@ -332,7 +336,7 @@ public class StreamGmlWriterTest {
 		Polygon polygon = createPolygon(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, polygon); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, polygon); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -370,7 +374,7 @@ public class StreamGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, lineString); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, lineString); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -390,7 +394,7 @@ public class StreamGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, lineString); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, lineString); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -411,7 +415,7 @@ public class StreamGmlWriterTest {
 		LineString lineString = createLineString(0.0);
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, lineString); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, lineString); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -464,7 +468,7 @@ public class StreamGmlWriterTest {
 				createLineString(0.0), createLineString(1.0), createLineString(2.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mls); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -486,7 +490,7 @@ public class StreamGmlWriterTest {
 				createLineString(0.0), createLineString(1.0), createLineString(2.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mls); // $NON-NLS-1$
 
 		fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -509,7 +513,7 @@ public class StreamGmlWriterTest {
 				.createMultiLineString(new LineString[] { createLineString(0.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mls); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -531,7 +535,7 @@ public class StreamGmlWriterTest {
 		MultiLineString mls = createCurve();
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mls); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -554,7 +558,7 @@ public class StreamGmlWriterTest {
 				createLineString(0.0), createLineString(1.0), createLineString(2.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mls); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mls); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -574,11 +578,11 @@ public class StreamGmlWriterTest {
 	@Test
 	public void testGeometry_2_MultiPolygon() throws Exception {
 		// create the geometry
-		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[] { createPolygon(0.0),
-				createPolygon(1.0), createPolygon(-1.0) });
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("Test", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml2.xsd").toURI(), //$NON-NLS-1$
@@ -595,11 +599,11 @@ public class StreamGmlWriterTest {
 	@Test
 	public void testGeometryPrimitive_32_MultiPolygon() throws Exception {
 		// create the geometry
-		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[] { createPolygon(0.0),
-				createPolygon(1.0), createPolygon(-1.0) });
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("PrimitiveTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -617,11 +621,11 @@ public class StreamGmlWriterTest {
 	@Test
 	public void testGeometryAggregate_32_MultiPolygon() throws Exception {
 		// create the geometry
-		MultiPolygon mp = geomFactory.createMultiPolygon(new Polygon[] { createPolygon(0.0),
-				createPolygon(1.0), createPolygon(-1.0) });
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
 
 		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
-		values.put(GEOMETRY_PROPERTY, mp); //$NON-NLS-1$
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
@@ -629,6 +633,77 @@ public class StreamGmlWriterTest {
 				true, false);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
+	 * with Winding Order in CounterClockWise
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiPolygon_WindingOrder_CCW() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
+
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
+
+		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				false, false, "COUNTERCLOCKWISE");
+
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+	}
+
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
+	 * with Winding Order in ClockWise
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiPolygon_WindingOrder_CW() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
+
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
+
+		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				false, false, "CLOCKWISE");
+
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+
+	}
+
+	/**
+	 * Test writing a {@link MultiPolygon} to a GML 3.2 geometry primitive type
+	 * with Winding Order in ClockWise
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testGeometryPrimitive_32_MultiPolygon_WindingOrder() throws Exception {
+		// create the geometry
+		MultiPolygon mp = geomFactory.createMultiPolygon(
+				new Polygon[] { createPolygon(0.0), createPolygon(1.0), createPolygon(-1.0) });
+
+		Map<List<QName>, Object> values = new HashMap<List<QName>, Object>();
+		values.put(GEOMETRY_PROPERTY, mp); // $NON-NLS-1$
+
+		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
+				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				false, false, "DONTCHANGE");
+
+		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
+
 	}
 
 	/**
@@ -670,8 +745,34 @@ public class StreamGmlWriterTest {
 	 * @throws Exception if any error occurs
 	 */
 	private IOReport fillFeatureTest(String elementName, URI targetSchema,
-			Map<List<QName>, Object> values, String testName, String srsName,
-			boolean skipValueTest, boolean expectWriteFail) throws Exception {
+			Map<List<QName>, Object> values, String testName, String srsName, boolean skipValueTest,
+			boolean expectWriteFail) throws Exception {
+		return fillFeatureTest(elementName, targetSchema, values, testName, srsName, skipValueTest,
+				expectWriteFail, null);
+	}
+
+	/**
+	 * Create a feature, fill it with values, write it as GML, validate the GML
+	 * and load the GML file again to compare the loaded values with the ones
+	 * that were written
+	 * 
+	 * @param elementName the element name of the feature type to use, if
+	 *            <code>null</code> a random element will be used
+	 * @param targetSchema the schema to use, the first element will be used for
+	 *            the type of the feature
+	 * @param values the values to set on the feature
+	 * @param testName the name of the test
+	 * @param srsName the SRS name
+	 * @param skipValueTest if the check for equality shall be skipped
+	 * @param expectWriteFail if the GML writing is expected to fail
+	 * @param windingOrderParam winding order parameter or <code>null</code>
+	 * @return the validation report or the GML writing report if writing
+	 *         expected to fail
+	 * @throws Exception if any error occurs
+	 */
+	private IOReport fillFeatureTest(String elementName, URI targetSchema,
+			Map<List<QName>, Object> values, String testName, String srsName, boolean skipValueTest,
+			boolean expectWriteFail, String windingOrderParam) throws Exception {
 		// load the sample schema
 		XmlSchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
@@ -745,16 +846,24 @@ public class StreamGmlWriterTest {
 			parent.addProperty(properties.get(properties.size() - 1), entry.getValue());
 		}
 
-		InstanceCollection instances = new DefaultInstanceCollection(Collections.singleton(feature));
+		InstanceCollection instances = new DefaultInstanceCollection(
+				Collections.singleton(feature));
 
 		// write to file
 		InstanceWriter writer = new GmlInstanceWriter();
+		if (windingOrderParam != null) {
+			writer.setParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER,
+					Value.of(windingOrderParam.toUpperCase()));
+		}
 		writer.setInstances(instances);
 		DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace();
 		schemaSpace.addSchema(schema);
 		writer.setTargetSchema(schemaSpace);
 		File outFile = File.createTempFile(testName, ".gml"); //$NON-NLS-1$
 		writer.setTarget(new FileIOSupplier(outFile));
+
+		assertTrue(writer.getParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER)
+				.as(EnumWindingOrderTypes.class) == EnumWindingOrderTypes.COUNTERCLOCKWISE);
 
 		IOReport report = writer.execute(null); // new LogProgressIndicator());
 		if (expectWriteFail) {
@@ -809,7 +918,37 @@ public class StreamGmlWriterTest {
 					Object value = geoms.iterator().next().getGeometry();
 
 					if (expected instanceof Geometry && value instanceof Geometry) {
+
+						// I have to comment below line to test Winding Order.
+						// Below method got assertion failed error.
 						matchGeometries((Geometry) expected, (Geometry) value);
+
+						// Winding Order Test.
+						if (windingOrderParam != null) {
+							if (windingOrderParam
+									.toUpperCase() == EnumWindingOrderTypes.COUNTERCLOCKWISE
+											.toString()) {
+								assertFalse(((Geometry) expected).equalsExact((Geometry) value));
+								assertTrue(((Geometry) expected)
+										.getNumGeometries() == ((Geometry) value)
+												.getNumGeometries());
+								assertTrue(WindingOrder.isCounterClockwise((Geometry) value));
+							}
+							else if (windingOrderParam
+									.toUpperCase() == EnumWindingOrderTypes.CLOCKWISE.toString()) {
+								assertTrue(((Geometry) expected).equalsExact((Geometry) value));
+							}
+							else {
+								assertTrue(WindingOrder
+										.isCounterClockwise((Geometry) value) == WindingOrder
+												.isCounterClockwise((Geometry) expected));
+							}
+						}
+						else {
+							// TODO check winding order is CCW
+							assertTrue(WindingOrder.isCounterClockwise((Geometry) value));
+							// assertTrue(1 == 0);
+						}
 					}
 					else {
 						assertEquals(expected.toString(), value.toString());
@@ -851,8 +990,8 @@ public class StreamGmlWriterTest {
 			}
 		}
 
-		assertEquals(
-				"Geometry not compatible to expected geometry", expected.toString(), value.toString()); //$NON-NLS-1$
+		assertEquals("Geometry not compatible to expected geometry", expected.toString(), //$NON-NLS-1$
+				value.toString());
 	}
 
 	/**
@@ -865,8 +1004,8 @@ public class StreamGmlWriterTest {
 	 * @throws IOProviderConfigurationException if the instance reader is not
 	 *             configured correctly
 	 */
-	private InstanceCollection loadGML(URI sourceData, Schema schema) throws IOException,
-			IOProviderConfigurationException {
+	private InstanceCollection loadGML(URI sourceData, Schema schema)
+			throws IOException, IOProviderConfigurationException {
 		InstanceReader instanceReader = new GmlInstanceReader();
 
 		instanceReader.setSource(new DefaultInputSupplier(sourceData));
