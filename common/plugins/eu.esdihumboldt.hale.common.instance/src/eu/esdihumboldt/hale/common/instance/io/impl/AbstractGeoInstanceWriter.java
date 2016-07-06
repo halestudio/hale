@@ -143,6 +143,10 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	protected Pair<Geometry, CRSDefinition> extractGeometry(Object value, boolean allowConvert,
 			IOReporter report) {
 		Pair<Geometry, CRSDefinition> pair = getGeometryPair(value, allowConvert, report);
+
+		if (pair == null)
+			return null;
+
 		return unifyGeometryPair(pair, report);
 	}
 
