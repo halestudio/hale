@@ -18,19 +18,19 @@ package eu.esdihumboldt.cst.functions.groovy;
 import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation;
+import eu.esdihumboldt.hale.common.align.model.functions.explanations.MergeExplanation;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
- * Explanation for {@link GroovyJoin}
+ * Explanation for {@link GroovyMerge}
  * 
  * @author Simon Templer
  */
-public class GroovyJoinExplanation extends JoinExplanation {
+public class GroovyMergeExplanation extends MergeExplanation {
 
 	@Override
 	protected Class<?> getDefaultMessageClass() {
-		return JoinExplanation.class;
+		return MergeExplanation.class;
 	}
 
 	@Override
