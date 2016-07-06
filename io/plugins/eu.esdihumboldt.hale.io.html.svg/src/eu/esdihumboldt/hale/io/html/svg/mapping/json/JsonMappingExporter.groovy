@@ -24,12 +24,14 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
+import groovy.transform.CompileStatic
 
 /**
  * Exports an alignment to a JSON representation.
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class JsonMappingExporter extends AbstractAlignmentWriter {
 
 	@Override
@@ -49,7 +51,7 @@ class JsonMappingExporter extends AbstractAlignmentWriter {
 			new OutputStreamWriter(getTarget().getOutput(), StandardCharsets.UTF_8).withWriter { out ->
 				JsonStreamBuilder json = new JsonStreamBuilder(out, true)
 				AlignmentJson.alignmentInfoJSON(alignment, json, serviceProvider,
-						projectInfo, ext, rep)
+						projectInfo, ext, rep, Locale.getDefault())
 
 				reporter.setSuccess(true)
 			}

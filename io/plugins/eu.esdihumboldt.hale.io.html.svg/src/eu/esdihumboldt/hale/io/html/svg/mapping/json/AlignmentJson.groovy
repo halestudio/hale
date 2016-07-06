@@ -53,7 +53,6 @@ import groovy.transform.TypeCheckingMode
 @CompileStatic
 class AlignmentJson {
 	
-	@CompileStatic(TypeCheckingMode.SKIP)
 	public static String cellExplanation(Cell cell, ServiceProvider services,
 		Locale locale = Locale.getDefault()) {
 		
@@ -92,8 +91,8 @@ class AlignmentJson {
 	
 	@CompileStatic(TypeCheckingMode.SKIP)
 	static String alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
-		ServiceProvider services, ProjectInfo project = null, CellJsonExtension ext = null,
-		ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
+		ServiceProvider services, ProjectInfo project, CellJsonExtension ext,
+		ValueRepresentation valueRep, Locale locale) {
 		
 		json {
 			json.export {
