@@ -18,12 +18,14 @@ package eu.esdihumboldt.hale.common.instance.io;
 
 import javax.annotation.Nullable;
 
+import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 
 /**
  * Provides support for writing instances
  * 
  * @author Simon Templer
+ * @modifiedby Arun Varma (04.07.2016)
  * @since 2.9
  */
 public interface GeoInstanceWriter extends InstanceWriter {
@@ -39,6 +41,11 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	 * parameter is optional.
 	 */
 	public static final String PARAM_CRS_CODE_FORMAT = "crs.epsg.prefix";
+
+	/**
+	 * Name of the parameter specifying a Winding order of Geometry.
+	 */
+	public static final String PARAM_UNIFY_WINDING_ORDER = "geometry.unifyWindingOrder";
 
 	/**
 	 * Set the target CRS for written instances. Note that supporting the target
@@ -72,5 +79,20 @@ public interface GeoInstanceWriter extends InstanceWriter {
 	 */
 	@Nullable
 	public String getCustomEPSGPrefix();
+
+	/**
+	 * Set winding order of geometry.
+	 * 
+	 * @param windingOrderType Winding order
+	 */
+	public void setWindingOrder(@Nullable EnumWindingOrderTypes windingOrderType);
+
+	/**
+	 * Get winding order of geometry.
+	 * 
+	 * @return the winding order of geometry
+	 */
+	@Nullable
+	public EnumWindingOrderTypes getWindingOrder();
 
 }

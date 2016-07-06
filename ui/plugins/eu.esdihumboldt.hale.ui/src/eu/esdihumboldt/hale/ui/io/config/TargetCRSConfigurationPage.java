@@ -36,6 +36,7 @@ import org.geotools.referencing.CRS;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.instance.crs.SelectCRSDialog;
@@ -45,12 +46,14 @@ import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
  * Configuration page for the character encoding.
  * 
  * @param <W> the concrete I/O wizard type
- * @param <P> the {@link IOProvider} type used in the wizard
+ * @param
+ * 			<P>
+ *            the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  */
-public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends IOWizard<P>> extends
-		AbstractConfigurationPage<P, W> {
+public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends IOWizard<P>>
+		extends AbstractConfigurationPage<P, W> {
 
 	private Label crsLabel;
 	private Button checkConvert;
@@ -58,6 +61,7 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 	private CRSDefinition crsDef;
 	private Button checkPrefix;
 	private ComboViewer prefixCombo;
+	private ComboViewer windingorderCombo;
 
 	/**
 	 * Default constructor.
@@ -66,7 +70,7 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 		super("targetCRS");
 
 		setTitle("Coordinate reference system");
-		setDescription("Configure the target coordinate reference system");
+		setDescription("Configure the target coordinate reference system and winding order");
 
 		setPageComplete(false);
 	}
@@ -109,6 +113,11 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 			}
 			checkPrefix.setSelection(prefixValue != null);
 
+			EnumWindingOrderTypes windingorder = getWizard().getProvider().getWindingOrder();
+			if (windingorder != null) {
+				windingorderCombo.setSelection(new StructuredSelection(windingorder));
+			}
+
 			update();
 		}
 	}
@@ -134,6 +143,17 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 			}
 		}
 		provider.setCustomEPSGPrefix(prefix);
+
+		EnumWindingOrderTypes windingorder = null;
+		ISelection order = windingorderCombo.getSelection();
+		if (!order.isEmpty() && order instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) windingorderCombo.getSelection())
+					.getFirstElement();
+			if (selected instanceof EnumWindingOrderTypes) {
+				windingorder = (EnumWindingOrderTypes) selected;
+			}
+		}
+		provider.setWindingOrder(windingorder);
 
 		return true;
 	}
@@ -211,6 +231,29 @@ public class TargetCRSConfigurationPage<P extends GeoInstanceWriter, W extends I
 		});
 		prefixCombo.setInput(SrsSyntax.class);
 		prefixCombo.setSelection(new StructuredSelection(SrsSyntax.OGC_HTTP_URI));
+
+		// Winding Order
+
+		Group windingOrderGroup = new Group(page, SWT.NONE);
+		windingOrderGroup.setText("Unify winding order");
+		GridLayoutFactory.swtDefaults().numColumns(1).applyTo(windingOrderGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(windingOrderGroup);
+
+		windingorderCombo = new ComboViewer(windingOrderGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(windingorderCombo.getControl());
+		windingorderCombo.setContentProvider(EnumContentProvider.getInstance());
+		windingorderCombo.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof EnumWindingOrderTypes) {
+					return ((EnumWindingOrderTypes) element).getWindingOrder();
+				}
+				return super.getText(element);
+			}
+
+		});
+		windingorderCombo.setInput(EnumWindingOrderTypes.class);
 
 		// only update on first show
 		// update();

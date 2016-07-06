@@ -43,6 +43,9 @@ public class WindingOrderTest {
 
 	private static LinearRing r1, r2, h1, h2;
 
+	/**
+	 * Setup for different tests
+	 */
 	@BeforeClass
 	public static void setUp() {
 		GeometryFactory factory = new GeometryFactory();
@@ -76,6 +79,9 @@ public class WindingOrderTest {
 
 	}
 
+	/**
+	 * Testing of Polygon without holes.
+	 */
 	@Test
 	public void testUnifyWOHoles() {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise2WOHoles, true);
@@ -83,12 +89,18 @@ public class WindingOrderTest {
 		assertTrue(clockWise2WOHoles.equalsExact(result));
 	}
 
+	/**
+	 * Test of holes of Polygon as Counter ClockWise
+	 */
 	@Test
 	public void testOrderHolesCCW() {
 		assertTrue(WindingOrder.isCounterClockwise(h1));
 		assertTrue(WindingOrder.isCounterClockwise(h2));
 	}
 
+	/**
+	 * Test of winding order of hole which is already counter clockwise
+	 */
 	@Test
 	public void testUnifyHoles() {
 		assertTrue(WindingOrder.isCounterClockwise(h1));
@@ -97,17 +109,26 @@ public class WindingOrderTest {
 		assertTrue(h1.equalsExact(result));
 	}
 
+	/**
+	 * Test winding order of polygon as clockwise
+	 */
 	@Test
 	public void testOrderClockwise() {
 		assertFalse(WindingOrder.isCounterClockwise(clockWise1.getExteriorRing()));
 
 	}
 
+	/**
+	 * Test winding order of polygon as counter clockwise
+	 */
 	@Test
 	public void testOrderCounterClockwise() {
 		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getExteriorRing()));
 	}
 
+	/**
+	 * Test winding order of simple polygon as counter clockwise
+	 */
 	@Test
 	public void testUnifyCCWSimple() {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise1, true);
@@ -116,6 +137,10 @@ public class WindingOrderTest {
 		assertTrue(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
 	}
 
+	/**
+	 * Test winding order of polygon with holes as counter clockwise
+	 * 
+	 */
 	@Test
 	public void testUnifyCCWWithHoles() {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true);
@@ -132,6 +157,9 @@ public class WindingOrderTest {
 
 	}
 
+	/**
+	 * Test winding order of MultiPolygon
+	 */
 	@Test
 	public void testUnifyMultiPolygon() {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise3, false);
@@ -139,6 +167,9 @@ public class WindingOrderTest {
 		assertFalse(clockWise3.equalsExact(result));
 	}
 
+	/**
+	 * Test winding order of GeometryCollection
+	 */
 	@Test
 	public void testUnifyGeometryCollection() {
 		Geometry result = WindingOrder.unifyWindingOrder(clockWise4, true);
