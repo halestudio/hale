@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.html.svg.mapping.json
 
+import java.time.Instant
+import java.time.format.DateTimeFormatter
 import java.util.Map.Entry
 
 import org.pegdown.Extensions
@@ -24,13 +26,16 @@ import org.w3c.dom.Element
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
+import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.ParameterValue
+import eu.esdihumboldt.hale.common.core.HalePlatform
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -84,11 +89,51 @@ class AlignmentJson {
 			return value.getStringRepresentation()
 		}
 	}
+	
+	@CompileStatic(TypeCheckingMode.SKIP)
+	static String alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
+		ServiceProvider services, ProjectInfo project = null, CellJsonExtension ext = null,
+		ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
+		
+		json {
+			json.export {
+				json.timestamp DateTimeFormatter.ISO_INSTANT.format(Instant.now())
+				json.haleVersion HalePlatform.coreVersion as String
+			}
+			if (project) {
+				json.project {
+					if (project.name) {
+						json.name project.name
+					}
+					if (project.author) {
+						json.author project.author
+					}
+					if (project.haleVersion) {
+						json.haleVersion project.haleVersion as String
+					}
+					if (project.created) {
+						json.created DateTimeFormatter.ISO_INSTANT.format(project.created.toInstant())
+					}
+					if (project.modified) {
+						json.modified DateTimeFormatter.ISO_INSTANT.format(project.modified.toInstant())
+					}
+					if (project.description) {
+						json.description markdownToHtml(project.description)
+					}
+				}
+			}
+			alignment.cells.each { Cell cell ->
+				'cells[]' {
+					AlignmentJson.cellInfoJSON(cell, json, services, ext, valueRep, locale)
+				}
+			}
+		}
+	}
 
 	/**
 	 * Create a JSON representation from a cell.
 	 */
-	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
+	public static void cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
 		CellJsonExtension ext = null, ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
 		// collect cell information
 
