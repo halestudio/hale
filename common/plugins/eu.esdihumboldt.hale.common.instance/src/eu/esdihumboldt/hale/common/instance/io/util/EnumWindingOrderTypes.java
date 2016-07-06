@@ -28,16 +28,32 @@ public enum EnumWindingOrderTypes {
 	 * Unified geometry by Clockwise Winding order to the shell and Counter
 	 * Clockwise to the holes.
 	 */
-	clockwise,
+	clockwise("Unify winding order to clockwise"),
 
 	/**
 	 * Unified geometry by Counter Clockwise Winding order to the shell and
 	 * Clockwise to the holes.
 	 */
-	counterClockwise,
+	counterClockwise("Unify winding order to counterclockwise"),
 
 	/**
 	 * no change in Geometry. Leave it as it is.
 	 */
-	noChanges;
+	noChanges("No changes");
+
+	private String windingOrder;
+
+	private EnumWindingOrderTypes(String windingOrder) {
+		this.windingOrder = windingOrder;
+	}
+
+	/**
+	 * To get description of Winding order
+	 * 
+	 * @return Winding order
+	 */
+	public String getWindingOrder() {
+		return windingOrder;
+	}
+
 }
