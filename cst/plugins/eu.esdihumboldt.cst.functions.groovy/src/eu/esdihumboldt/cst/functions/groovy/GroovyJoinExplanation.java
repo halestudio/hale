@@ -44,7 +44,7 @@ public class GroovyJoinExplanation extends JoinExplanation {
 
 			if (html) {
 				explanation = explanation.replaceAll("\n", "<br />");
-				script = "<pre>" + script + "</pre>";
+				script = "<pre><code class=\"language-groovy\">" + script + "</code></pre>";
 			}
 
 			explanation = explanation + script;
