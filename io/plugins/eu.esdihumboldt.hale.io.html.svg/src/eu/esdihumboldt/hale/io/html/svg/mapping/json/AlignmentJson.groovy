@@ -49,16 +49,18 @@ import groovy.transform.TypeCheckingMode
 class AlignmentJson {
 	
 	@CompileStatic(TypeCheckingMode.SKIP)
-	public static String cellExplanation(Cell cell, ServiceProvider services) {
+	public static String cellExplanation(Cell cell, ServiceProvider services,
+		Locale locale = Locale.getDefault()) {
+		
 		// get the associated function
 		FunctionDefinition<?> function = FunctionUtil.getFunction(cell
 				.getTransformationIdentifier(), services)
 
 		String exp = null
 		if (function?.explanation) {
-			exp = function.explanation.getExplanationAsHtml(cell, null)
+			exp = function.explanation.getExplanationAsHtml(cell, services, locale)
 			if (!exp) {
-				exp = function.explanation.getExplanation(cell, null)
+				exp = function.explanation.getExplanation(cell, services, locale)
 				if (exp) {
 					exp = markdownToHtml(exp)
 				}
@@ -87,12 +89,12 @@ class AlignmentJson {
 	 * Create a JSON representation from a cell.
 	 */
 	public static String cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
-		CellJsonExtension ext = null, ValueRepresentation valueRep = null) {
+		CellJsonExtension ext = null, ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
 		// collect cell information
 
 		// get the associated function
 		FunctionDefinition function = FunctionUtil.getFunction(cell
-				.getTransformationIdentifier(), null)
+				.getTransformationIdentifier(), services)
 
 		// create JSON representation of individual cell
 		json {
@@ -146,7 +148,7 @@ class AlignmentJson {
 				json 'targets', []
 			}
 
-			String explanation = cellExplanation(cell, services)
+			String explanation = cellExplanation(cell, services, locale)
 			if (explanation) {
 				json 'explanation', explanation
 			}
