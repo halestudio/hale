@@ -69,7 +69,7 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 
 	@Override
 	public void setWindingOrder(EnumWindingOrderTypes windingOrderType) {
-		setParameter(PARAM_UNIFY_WINDING_ORDER, Value.of(windingOrderType));
+		setParameter(PARAM_UNIFY_WINDING_ORDER, Value.of(windingOrderType.toString()));
 	}
 
 	@Override
@@ -238,7 +238,10 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 				break;
 			default:
 				if (report != null) {
-					report.error(new IOMessageImpl("WindingOrder is not set", null));
+					report.error(new IOMessageImpl(
+							"Parameter encountered as winding order is not known: "
+									+ windingOrder.toString(),
+							null));
 				}
 				unifiedGeometry = geom;
 				break;

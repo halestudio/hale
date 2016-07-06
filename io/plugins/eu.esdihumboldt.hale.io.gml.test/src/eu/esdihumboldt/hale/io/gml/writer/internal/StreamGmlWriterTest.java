@@ -922,16 +922,13 @@ public class StreamGmlWriterTest {
 					Object value = geoms.iterator().next().getGeometry();
 
 					if (expected instanceof Geometry && value instanceof Geometry) {
-
-						// I have to comment below line to test Winding Order.
-						// Below method got assertion failed error.
-						if (windingOrderParam == null) {
+						if (windingOrderParam == null
+								|| windingOrderParam == EnumWindingOrderTypes.noChanges) {
 							matchGeometries((Geometry) expected, (Geometry) value);
 						}
 						// Winding Order Test.
 						if (windingOrderParam != null) {
 							if (windingOrderParam == EnumWindingOrderTypes.counterClockwise) {
-								assertFalse(((Geometry) expected).equalsExact((Geometry) value));
 								assertTrue(((Geometry) expected)
 										.getNumGeometries() == ((Geometry) value)
 												.getNumGeometries());

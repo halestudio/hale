@@ -77,8 +77,7 @@ public class WindingOrder {
 		else if (geometry instanceof LinearRing) {
 			return unifyWindingOrderForLinearRing((LinearRing) geometry, counterClockWise);
 		}
-		else if (geometry instanceof GeometryCollection
-				&& geometry.getClass() == GeometryCollection.class) {
+		else if (GeometryCollection.class.equals(geometry.getClass())) {
 			return unifyWindingOrderForGeometryCollection((GeometryCollection) geometry,
 					counterClockWise);
 		}

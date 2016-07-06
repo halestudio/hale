@@ -28,12 +28,16 @@ public enum EnumWindingOrderTypes {
 	 * Unified geometry by Clockwise Winding order to the shell and Counter
 	 * Clockwise to the holes.
 	 */
-	clockwise, /**
-				 * Unified geometry by Counter Clockwise Winding order to the
-				 * shell and Clockwise to the holes.
-				 */
-	counterClockwise, /**
-						 * no change in Geometry. Leave it as it is.
-						 */
+	clockwise,
+
+	/**
+	 * Unified geometry by Counter Clockwise Winding order to the shell and
+	 * Clockwise to the holes.
+	 */
+	counterClockwise,
+
+	/**
+	 * no change in Geometry. Leave it as it is.
+	 */
 	noChanges;
 }
