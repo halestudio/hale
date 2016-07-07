@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.util.geometry;
 
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.cs.AxisDirection;
+
 import com.vividsolutions.jts.algorithm.CGAlgorithms;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -32,6 +35,44 @@ import com.vividsolutions.jts.geom.Polygon;
 public class WindingOrder {
 
 	private static final GeometryFactory factory = new GeometryFactory();
+
+	/**
+	 * To determine axis of given CRS is flip or not
+	 * 
+	 * @param crs the CRS
+	 * @return true, if CRS is flip, else false
+	 */
+	public static boolean isCRSFlip(CoordinateReferenceSystem crs) {
+		// get number of dimensions and it should be two
+		if (crs.getCoordinateSystem().getDimension() == 2) {
+			AxisDirection axis1 = crs.getCoordinateSystem().getAxis(0).getDirection();
+			AxisDirection axis2 = crs.getCoordinateSystem().getAxis(1).getDirection();
+
+			// check if direction is flip?
+			if (axis1.equals(AxisDirection.EAST) || axis1.equals(AxisDirection.WEST)) {
+				if (axis1.equals(AxisDirection.EAST) && (axis2.equals(AxisDirection.SOUTH)
+						|| axis2.equals(AxisDirection.DOWN))) {
+					return true;
+				}
+				else if (axis1.equals(AxisDirection.WEST)
+						&& (axis2.equals(AxisDirection.NORTH) || axis2.equals(AxisDirection.UP))) {
+					return true;
+				}
+			}
+			else { // Check if order of axis flip?
+				if ((axis1.equals(AxisDirection.SOUTH) || axis1.equals(AxisDirection.DOWN))
+						&& axis2.equals(AxisDirection.WEST)) {
+					return true;
+				}
+				else if ((axis1.equals(AxisDirection.NORTH) || axis1.equals(AxisDirection.UP))
+						&& axis2.equals(AxisDirection.EAST)) {
+					return true;
+				}
+			}
+		}
+		// if not any case return false above.
+		return false;
+	}
 
 	/**
 	 * Identifying order of Geometry object CounterClockwise or not?
@@ -60,13 +101,18 @@ public class WindingOrder {
 	 * @param geometry Geometry object for unifying.
 	 * @param counterClockWise true, if unify geometry counterClockwise else
 	 *            false.
+	 * @param crs Coordinate Reference System
 	 * @return Geometry unified object.
 	 */
-	public static Geometry unifyWindingOrder(Geometry geometry, boolean counterClockWise) {
+	public static Geometry unifyWindingOrder(Geometry geometry, boolean counterClockWise,
+			CoordinateReferenceSystem crs) {
 
 		if (geometry == null) {
 			return null;
 		}
+
+		if (crs != null && isCRSFlip(crs))
+			counterClockWise = !counterClockWise;
 
 		if (geometry instanceof MultiPolygon) {
 			return unifyWindingOrderForMultiPolygon((MultiPolygon) geometry, counterClockWise);
@@ -180,7 +226,7 @@ public class WindingOrder {
 		Geometry[] revGeoms = new Geometry[noOfGeoms];
 		// Unify each geometry one by one
 		for (int i = 0; i < noOfGeoms; i++) {
-			revGeoms[i] = unifyWindingOrder(geoCollection.getGeometryN(i), counterClockWise);
+			revGeoms[i] = unifyWindingOrder(geoCollection.getGeometryN(i), counterClockWise, null);
 		}
 		// new geolmetry collection object of unified geometry objects.
 		return factory.createGeometryCollection(revGeoms);

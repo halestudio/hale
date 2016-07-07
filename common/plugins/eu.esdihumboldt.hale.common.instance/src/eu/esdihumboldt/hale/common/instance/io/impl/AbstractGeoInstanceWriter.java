@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -205,8 +206,13 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 		if (geom == null) {
 			return pair;
 		}
+
+		// getting CRS
+		CoordinateReferenceSystem crs = pair.getSecond().getCRS();
+
 		// unify geometry
-		geom = unifyGeometry(geom, report);
+		geom = unifyGeometry(geom, report, crs);
+
 		return new Pair<>(geom, pair.getSecond());
 	}
 
@@ -216,9 +222,11 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	 * 
 	 * @param geom The Geometry object, on which winding process will get done.
 	 * @param report the reporter
+	 * @param crs Coordinate Reference System
 	 * @return Unified geometry .
 	 */
-	protected Geometry unifyGeometry(Geometry geom, IOReporter report) {
+	protected Geometry unifyGeometry(Geometry geom, IOReporter report,
+			CoordinateReferenceSystem crs) {
 		if (geom == null) {
 			return geom;
 		}
@@ -235,10 +243,10 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 			switch (windingOrder) {
 
 			case counterClockwise:
-				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true);
+				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, true, crs);
 				break;
 			case clockwise:
-				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, false);
+				unifiedGeometry = WindingOrder.unifyWindingOrder(geom, false, crs);
 				break;
 			default:
 				if (report != null) {

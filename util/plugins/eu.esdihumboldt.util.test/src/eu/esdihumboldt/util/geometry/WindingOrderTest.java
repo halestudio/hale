@@ -18,9 +18,16 @@ package eu.esdihumboldt.util.geometry;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
+
+import org.geotools.referencing.CRS;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -42,6 +49,20 @@ public class WindingOrderTest {
 	private static GeometryCollection clockWise4;
 
 	private static LinearRing r1, r2, h1, h2;
+
+	private static final String code = "EPSG:4026";
+	private static CoordinateReferenceSystem crs;
+
+	private static final LoadingCache<String, CoordinateReferenceSystem> CRS_CACHE = CacheBuilder
+			.newBuilder().maximumSize(100).expireAfterAccess(1, TimeUnit.HOURS)
+			.build(new CacheLoader<String, CoordinateReferenceSystem>() {
+
+				@Override
+				public CoordinateReferenceSystem load(String code) throws Exception {
+					return CRS.decode(code);
+				}
+
+			});
 
 	/**
 	 * Setup for different tests
@@ -77,6 +98,48 @@ public class WindingOrderTest {
 		clockWise4 = factory.createGeometryCollection(
 				new Geometry[] { clockWise2, clockWise2WOHoles, clockWise3, r2 });
 
+		if (crs == null) {
+			try {
+				crs = CRS_CACHE.get(code);
+			} catch (Exception e) {
+				throw new IllegalStateException("Invalid CRS code", e);
+			}
+		}
+	}
+
+	/**
+	 * Test of Flip state of CRS
+	 */
+	@Test
+	public void testCRSFlipped() {
+		assertTrue(WindingOrder.isCRSFlip(crs));
+	}
+
+	/**
+	 * test geometry on CRS
+	 */
+	@Test
+	public void testGeometryFlippedOnCRS() {
+		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getExteriorRing()));
+		assertTrue(WindingOrder.isCRSFlip(crs));
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, crs);
+		assertTrue(result instanceof Polygon);
+		assertFalse(clockWise2.equalsExact(result));
+		assertFalse(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
+	}
+
+	/**
+	 * test geometry flip on giving null CRS
+	 */
+	@Test
+	public void testGeometryFlippedOnNULLCRS() {
+		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getExteriorRing()));
+
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, null);
+
+		assertTrue(result instanceof Polygon);
+
+		assertTrue(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
 	}
 
 	/**
@@ -84,7 +147,7 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testUnifyWOHoles() {
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise2WOHoles, true);
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2WOHoles, true, null);
 		assertTrue(result instanceof Polygon);
 		assertTrue(clockWise2WOHoles.equalsExact(result));
 	}
@@ -104,7 +167,7 @@ public class WindingOrderTest {
 	@Test
 	public void testUnifyHoles() {
 		assertTrue(WindingOrder.isCounterClockwise(h1));
-		Geometry result = WindingOrder.unifyWindingOrder(h1, true);
+		Geometry result = WindingOrder.unifyWindingOrder(h1, true, null);
 		assertTrue(WindingOrder.isCounterClockwise(result));
 		assertTrue(h1.equalsExact(result));
 	}
@@ -131,7 +194,7 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testUnifyCCWSimple() {
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise1, true);
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise1, true, null);
 		assertTrue(result instanceof Polygon);
 		assertFalse(clockWise1.equalsExact(result));
 		assertTrue(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
@@ -143,7 +206,7 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testUnifyCCWWithHoles() {
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true);
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, null);
 		assertTrue(result instanceof Polygon);
 		assertFalse(clockWise2.equalsExact(result));
 
@@ -162,7 +225,7 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testUnifyMultiPolygon() {
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise3, false);
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise3, false, null);
 		assertTrue(result instanceof MultiPolygon);
 		assertFalse(clockWise3.equalsExact(result));
 	}
@@ -172,7 +235,7 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testUnifyGeometryCollection() {
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise4, true);
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise4, true, null);
 		assertTrue(result instanceof GeometryCollection);
 		assertFalse(clockWise4.equalsExact(result));
 		assertTrue(
