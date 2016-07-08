@@ -110,7 +110,7 @@ public class WindingOrder {
 		if (geometry == null) {
 			return null;
 		}
-
+		// Getting isCRS flip? if yes, then reverse the winding order of input
 		if (crs != null && isCRSFlip(crs))
 			counterClockWise = !counterClockWise;
 

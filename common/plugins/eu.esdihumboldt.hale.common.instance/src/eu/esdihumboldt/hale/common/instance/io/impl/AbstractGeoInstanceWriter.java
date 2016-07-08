@@ -208,7 +208,10 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 		}
 
 		// getting CRS
-		CoordinateReferenceSystem crs = pair.getSecond().getCRS();
+		CRSDefinition def = pair.getSecond();
+		CoordinateReferenceSystem crs = null;
+		if (def != null)
+			crs = pair.getSecond().getCRS();
 
 		// unify geometry
 		geom = unifyGeometry(geom, report, crs);
