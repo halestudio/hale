@@ -4,7 +4,7 @@ Erstellt ein $_target Objekt für jedes $_source Objekt in den Quell-Daten.
   if (_params.ignoreNamespaces) {
   	out << ' Beim Vergleich der Attributnamen werden die jeweiligen Namensräume nicht berücksichtigt.'
   }
-}
-if (!_params.copyGeometries) {
-  out << '\nGeometrie-Objekte werden nicht mit übernommen.'
+  if (!_params.copyGeometries) {
+    out << '\nGeometrie-Objekte werden nicht mit übernommen.'
+  }
 } %>

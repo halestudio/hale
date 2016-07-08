@@ -111,7 +111,7 @@
       </propertyFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
-            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.RetypeExplanation"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyRetypeExplanation"
             description="Use a Groovy script to do a 1:1 instance conversion."
             help="help/retype.xhtml"
             icon="icons/star.png"
@@ -141,7 +141,7 @@
       </typeFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
-            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.CreateExplanation"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyCreateExplanation"
             description="Use a Groovy script to create target instances."
             help="help/create.xhtml"
             icon="icons/star.png"
@@ -176,7 +176,7 @@
       </typeFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
-            cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.MergeExplanation"
+            cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyMergeExplanation"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             help="help/merge.xhtml"
             icon="icons/star.png"

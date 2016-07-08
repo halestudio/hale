@@ -18,19 +18,20 @@ package eu.esdihumboldt.hale.io.html.svg.mapping.json;
 import java.nio.charset.StandardCharsets
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter
-import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
+import groovy.transform.CompileStatic
 
 /**
  * Exports an alignment to a JSON representation.
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class JsonMappingExporter extends AbstractAlignmentWriter {
 
 	@Override
@@ -43,21 +44,14 @@ class JsonMappingExporter extends AbstractAlignmentWriter {
 	throws IOProviderConfigurationException, IOException {
 		progress.begin('Generate JSON representation', ProgressIndicator.UNKNOWN)
 
-		// getAlignment(), getServiceProvider());
-
 		CellJsonExtension ext = new ExtendedCellRepresentation(alignment, serviceProvider)
 		ValueRepresentation rep = new JsonValueRepresentation()
 
 		try {
 			new OutputStreamWriter(getTarget().getOutput(), StandardCharsets.UTF_8).withWriter { out ->
 				JsonStreamBuilder json = new JsonStreamBuilder(out, true)
-				json {
-					alignment.cells.each { Cell cell ->
-						'cells[]' {
-							AlignmentJson.cellInfoJSON(cell, json, serviceProvider, ext, rep)
-						}
-					}
-				}
+				AlignmentJson.alignmentInfoJSON(alignment, json, serviceProvider,
+						projectInfo, ext, rep, Locale.getDefault())
 
 				reporter.setSuccess(true)
 			}

@@ -46,7 +46,7 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 
 		if (target != null && script != null) {
 			if (html)
-				script = "<pre>" + script + "</pre>";
+				script = "<pre><code class=\"language-groovy\">" + script + "</code></pre>";
 			String explanation = MessageFormat.format(getMessage("main", locale),
 					formatEntity(target, html, true, locale), script);
 			if (html)
