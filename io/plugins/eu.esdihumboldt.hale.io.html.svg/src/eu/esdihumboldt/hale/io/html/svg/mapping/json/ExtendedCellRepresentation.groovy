@@ -25,8 +25,10 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.model.Priority
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider
@@ -80,6 +82,19 @@ class ExtendedCellRepresentation implements CellJsonExtension {
 		// transformation mode
 		if (AlignmentUtil.isTypeCell(cell)) {
 			json 'mode', cell.getTransformationMode().name()
+		}
+
+		String notes = CellUtil.getNotes(cell)
+		if (notes) {
+			json 'notes', AlignmentJson.markdownToHtml(notes)
+		}
+
+		def priority = cell.priority
+		if (priority != null) {
+			json 'priority', priority.value()
+		}
+		else {
+			json 'priority', Priority.NORMAL
 		}
 
 		FunctionDefinition<?> function = FunctionUtil.getFunction(cell.transformationIdentifier, serviceProvider)
