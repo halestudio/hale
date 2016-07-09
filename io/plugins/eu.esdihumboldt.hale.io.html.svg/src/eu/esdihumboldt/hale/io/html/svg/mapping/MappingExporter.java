@@ -16,15 +16,14 @@
 package eu.esdihumboldt.hale.io.html.svg.mapping;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-
-import com.google.common.io.CharStreams;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -32,6 +31,12 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.AlignmentJson;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.CellJsonExtension;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.ExtendedCellRepresentation;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.JsonValueRepresentation;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.ValueRepresentation;
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder;
 import groovy.lang.Writable;
 import groovy.text.GStringTemplateEngine;
 
@@ -42,6 +47,8 @@ import groovy.text.GStringTemplateEngine;
  * @author Simon Templer
  */
 public class MappingExporter extends AbstractAlignmentWriter {
+
+	private static final String HALEJS_VERSION = "1.0.0-SNAPSHOT";
 
 	@Override
 	public boolean isCancelable() {
@@ -56,23 +63,23 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		// retrieve template URL
 		URL templateUrl = getClass().getResource("mapping.html");
 
-		// create template binding
-		@SuppressWarnings("unchecked")
-		Map<String, Object> binding = MappingDocumentation.createBinding(getProjectInfo(),
-				getAlignment(), getServiceProvider());
+		// generate Json representation
+		CellJsonExtension ext = new ExtendedCellRepresentation(getAlignment(),
+				getServiceProvider());
+		ValueRepresentation rep = new JsonValueRepresentation();
 
-		// read javascript from file and store it in the binding
-		StringBuilder js = new StringBuilder();
-		try (Reader reader = new InputStreamReader(
-				getClass().getResourceAsStream("snap.svg-min.js"), StandardCharsets.UTF_8)) {
-			js.append(CharStreams.toString(reader));
-		}
-		js.append("\n\n");
-		try (Reader reader = new InputStreamReader(
-				getClass().getResourceAsStream("render-mapping.js"), StandardCharsets.UTF_8)) {
-			js.append(CharStreams.toString(reader));
-		}
-		binding.put("javascript", js.toString());
+		StringWriter jsonWriter = new StringWriter();
+		JsonStreamBuilder json = new JsonStreamBuilder(jsonWriter, true);
+		AlignmentJson.alignmentInfoJSON(getAlignment(), json, getServiceProvider(),
+				getProjectInfo(), ext, rep, Locale.getDefault());
+
+		// create template binding
+		Map<String, Object> binding = new HashMap<>();
+		binding.put("json", jsonWriter.toString());
+		String title = getProjectInfo().getName() != null ? getProjectInfo().getName()
+				: "Mapping documentation";
+		binding.put("title", title);
+		binding.put("halejsVersion", HALEJS_VERSION);
 
 		// initialize template engine
 		GStringTemplateEngine engine = new GStringTemplateEngine();
