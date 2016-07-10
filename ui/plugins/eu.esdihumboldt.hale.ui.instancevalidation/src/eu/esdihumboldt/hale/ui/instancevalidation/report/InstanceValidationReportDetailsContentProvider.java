@@ -92,6 +92,10 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 							.getType(message.getType());
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
+					if (use == null) {
+						// fall-back to generic category
+						use = "General";
+					}
 					baseTypes.add(use);
 					messages.put(new TreePath(new Object[] { use }), message);
 				}

@@ -22,5 +22,16 @@ package eu.esdihumboldt.hale.common.instance.extension.validation;
  * @author Kai Schwierczek
  */
 public interface ConstraintValidator {
-	// only a marker interface
+
+	/**
+	 * Check the validation context after all instances have been validated.
+	 * 
+	 * @param context the validation context
+	 * @throws ValidationException if the instances are invalid
+	 */
+	@SuppressWarnings("unused")
+	default void validateContext(InstanceValidationContext context) throws ValidationException {
+		// override me
+	}
+
 }
