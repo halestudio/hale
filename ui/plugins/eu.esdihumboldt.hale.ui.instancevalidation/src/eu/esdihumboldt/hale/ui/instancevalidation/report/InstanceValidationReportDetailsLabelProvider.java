@@ -29,7 +29,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 

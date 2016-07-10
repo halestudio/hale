@@ -16,10 +16,15 @@
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.validator;
 
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationMessage;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 
 /**
@@ -30,7 +35,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 public class XLinkReferenceContext {
 
 	private final Set<String> identifiers = new HashSet<>();
-	private final Set<String> localRefs = new HashSet<>();
+	private final Map<String, ValidationLocation> localRefs = new HashMap<>();
 
 	/**
 	 * Add an identifier used in an XML ID.
@@ -45,24 +50,27 @@ public class XLinkReferenceContext {
 	 * Add a local XLink reference.
 	 * 
 	 * @param id the identifier to add
+	 * @param location the validation location
 	 */
-	public void addLocalReference(String id) {
-		localRefs.add(id);
+	public void addLocalReference(String id, ValidationLocation location) {
+		localRefs.put(id, location);
 	}
 
 	/**
 	 * Validate references.
 	 * 
-	 * @throws ValidationException if local references cannot be resolved
+	 * @param reporter the instance validation reporter
 	 */
-	public void validate() throws ValidationException {
-		Set<String> localRefs = new HashSet<>(this.localRefs);
-		localRefs.removeAll(identifiers);
+	public void validate(InstanceValidationReporter reporter) {
+		Map<String, ValidationLocation> localRefs = new HashMap<>(this.localRefs);
+		for (String id : identifiers) {
+			localRefs.remove(id);
+		}
 
-		if (!localRefs.isEmpty()) {
-			throw new ValidationException(
-					MessageFormat.format("{0} local references cannot be resolved (e.g. #{1})",
-							localRefs.size(), localRefs.iterator().next()));
+		for (Entry<String, ValidationLocation> entry : localRefs.entrySet()) {
+			reporter.warn(new DefaultInstanceValidationMessage(entry.getValue(),
+					XLinkReference.class.getSimpleName(), MessageFormat
+							.format("Local reference #{0} cannot be resolved", entry.getKey())));
 		}
 	}
 

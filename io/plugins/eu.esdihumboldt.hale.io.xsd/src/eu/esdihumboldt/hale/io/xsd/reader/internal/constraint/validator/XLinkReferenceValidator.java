@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.validator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
@@ -35,8 +37,8 @@ public class XLinkReferenceValidator implements PropertyConstraintValidator {
 
 	@Override
 	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint,
-			PropertyDefinition property, InstanceValidationContext context)
-					throws ValidationException {
+			PropertyDefinition property, InstanceValidationContext context,
+			ValidationLocation location) throws ValidationException {
 		if (values == null) {
 			return;
 		}
@@ -59,7 +61,7 @@ public class XLinkReferenceValidator implements PropertyConstraintValidator {
 				if (value != null) {
 					String id = value.toString();
 					if (id != null && id.startsWith("#")) {
-						ctx.addLocalReference(id.substring(1));
+						ctx.addLocalReference(id.substring(1), location);
 					}
 				}
 			}
@@ -83,11 +85,12 @@ public class XLinkReferenceValidator implements PropertyConstraintValidator {
 	}
 
 	@Override
-	public void validateContext(InstanceValidationContext context) throws ValidationException {
+	public void validateContext(InstanceValidationContext context,
+			InstanceValidationReporter reporter) throws ValidationException {
 		Object contextObj = context.getContext(XLinkReferenceValidator.class);
 
 		if (contextObj instanceof XLinkReferenceContext) {
-			((XLinkReferenceContext) contextObj).validate();
+			((XLinkReferenceContext) contextObj).validate(reporter);
 		}
 	}
 

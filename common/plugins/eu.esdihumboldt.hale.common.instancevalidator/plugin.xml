@@ -39,15 +39,4 @@
             validator="eu.esdihumboldt.hale.common.instancevalidator.validators.UniqueValidator">
       </propertyConstraintValidator>
    </extension>
-   <extension
-         point="eu.esdihumboldt.hale.report">
-      <messageDefinition
-            class="eu.esdihumboldt.hale.common.instancevalidator.report.impl.InstanceValidationMessageDefinition"
-            id="eu.esdihumboldt.hale.common.instancevalidator">
-      </messageDefinition>
-      <reportDefinition
-            class="eu.esdihumboldt.hale.common.instancevalidator.report.impl.InstanceValidationReportDefinition"
-            id="eu.esdihumboldt.hale.common.instancevalidator">
-      </reportDefinition>
-   </extension>
 </plugin>

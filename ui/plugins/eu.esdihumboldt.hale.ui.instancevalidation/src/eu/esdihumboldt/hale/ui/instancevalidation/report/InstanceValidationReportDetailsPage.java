@@ -56,8 +56,8 @@ import org.eclipse.ui.views.properties.PropertySheet;
 import com.google.common.collect.Iterators;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
 import eu.esdihumboldt.hale.ui.selection.InstanceSelection;

@@ -35,6 +35,11 @@ import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidat
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.TypeConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationReporter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -42,10 +47,6 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReporter;
-import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationMessage;
-import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationReporter;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
@@ -133,7 +134,7 @@ public class InstanceValidator {
 			ConstraintValidator validator, Class<?> constraintClass,
 			InstanceValidationReporter reporter) {
 		try {
-			validator.validateContext(context);
+			validator.validateContext(context, reporter);
 		} catch (ValidationException e) {
 			reporter.warn(new DefaultInstanceValidationMessage(null, null,
 					Collections.<QName> emptyList(), constraintClass.getSimpleName(),
@@ -335,6 +336,8 @@ public class InstanceValidator {
 	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef,
 			InstanceValidationReporter reporter, QName type, List<QName> path,
 			InstanceReference reference, InstanceValidationContext context) {
+		ValidationLocation loc = new ValidationLocation(reference, type,
+				new ArrayList<QName>(path));
 		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> entry : ConstraintValidatorExtension
 				.getInstance().getPropertyConstraintValidators().entrySet())
 			try {
@@ -342,11 +345,10 @@ public class InstanceValidator {
 						propertyDef
 								.getConstraint((Class<? extends PropertyConstraint>) ConstraintUtil
 										.getConstraintType(entry.getKey())),
-						propertyDef, context);
+						propertyDef, context, loc);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
-						new ArrayList<QName>(path), entry.getKey().getSimpleName(),
-						vE.getMessage()));
+				reporter.warn(new DefaultInstanceValidationMessage(loc,
+						entry.getKey().getSimpleName(), vE.getMessage()));
 			}
 
 		validateChildren(properties, propertyDef, reporter, type, path, false, reference, context);

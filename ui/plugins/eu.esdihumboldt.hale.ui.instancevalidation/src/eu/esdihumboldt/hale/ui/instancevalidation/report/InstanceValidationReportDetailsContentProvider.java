@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
