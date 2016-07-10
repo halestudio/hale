@@ -33,7 +33,14 @@ public class SharedDatabaseConnection {
 
 	private static final ALogger log = ALoggerFactory.getLogger(SharedDatabaseConnection.class);
 
-	private static final Map<Object, SharedDatabaseConnection> cachedConnections = new IdentityHashMap<>();
+	private static final ThreadLocal<Map<Object, SharedDatabaseConnection>> cachedConnections = new ThreadLocal<Map<Object, SharedDatabaseConnection>>() {
+
+		@Override
+		protected Map<Object, SharedDatabaseConnection> initialValue() {
+			return new IdentityHashMap<>();
+		}
+
+	};
 
 	/**
 	 * Create a shared database connection.
@@ -45,33 +52,28 @@ public class SharedDatabaseConnection {
 	public static SharedDatabaseConnection openRead(LocalOrientDB lodb, final Object owner) {
 		final String ownerName = owner.getClass().getSimpleName() + '#' + Objects.hashCode(owner);
 
-		synchronized (cachedConnections) {
-			SharedDatabaseConnection connection = cachedConnections.get(owner);
+		SharedDatabaseConnection connection = cachedConnections.get().get(owner);
 
-			if (connection == null || connection.getDb().getDatabase().isClosed()) {
-				DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-				DatabaseHandle handle = new DatabaseHandle(db.getDatabase()) {
+		if (connection == null || connection.getDb().getDatabase().isClosed()) {
+			DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead(false);
+			DatabaseHandle handle = new DatabaseHandle(db.getDatabase()) {
 
-					@Override
-					public synchronized void tryClose() {
-						super.tryClose();
+				@Override
+				public synchronized void tryClose() {
+					super.tryClose();
 
-						if (database.isClosed()) {
-							synchronized (cachedConnections) {
-								cachedConnections.remove(owner);
-							}
-							log.info("Closed shared database connection on " + ownerName);
-						}
+					if (database.isClosed()) {
+						log.info("Closed shared database connection on " + ownerName);
 					}
+				}
 
-				};
-				connection = new SharedDatabaseConnection(db, handle);
-				cachedConnections.put(owner, connection);
-				log.info("Created shared database connection on " + ownerName);
-			}
-
-			return connection;
+			};
+			connection = new SharedDatabaseConnection(db, handle);
+			cachedConnections.get().put(owner, connection);
+			log.info("Created shared database connection on " + ownerName);
 		}
+
+		return connection;
 	}
 
 	private final DatabaseReference<ODatabaseDocumentTx> db;
