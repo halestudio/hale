@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -33,11 +33,11 @@ public class SharedDatabaseConnection {
 
 	private static final ALogger log = ALoggerFactory.getLogger(SharedDatabaseConnection.class);
 
-	private static final ThreadLocal<Map<Object, SharedDatabaseConnection>> cachedConnections = new ThreadLocal<Map<Object, SharedDatabaseConnection>>() {
+	private static final ThreadLocal<Map<OwnerReference, SharedDatabaseConnection>> cachedConnections = new ThreadLocal<Map<OwnerReference, SharedDatabaseConnection>>() {
 
 		@Override
-		protected Map<Object, SharedDatabaseConnection> initialValue() {
-			return new IdentityHashMap<>();
+		protected Map<OwnerReference, SharedDatabaseConnection> initialValue() {
+			return new HashMap<>();
 		}
 
 	};
@@ -51,8 +51,9 @@ public class SharedDatabaseConnection {
 	 */
 	public static SharedDatabaseConnection openRead(LocalOrientDB lodb, final Object owner) {
 		final String ownerName = owner.getClass().getSimpleName() + '#' + Objects.hashCode(owner);
+		final OwnerReference ref = new OwnerReference(owner);
 
-		SharedDatabaseConnection connection = cachedConnections.get().get(owner);
+		SharedDatabaseConnection connection = cachedConnections.get().get(ref);
 
 		if (connection == null || connection.getDb().getDatabase().isClosed()) {
 			DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead(false);
@@ -69,7 +70,7 @@ public class SharedDatabaseConnection {
 
 			};
 			connection = new SharedDatabaseConnection(db, handle);
-			cachedConnections.get().put(owner, connection);
+			cachedConnections.get().put(ref, connection);
 			log.info("Created shared database connection on " + ownerName);
 		}
 
