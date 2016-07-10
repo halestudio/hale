@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instancevalidator.validators;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -33,15 +34,15 @@ public class NillableFlagValidator implements PropertyConstraintValidator {
 
 	@Override
 	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint,
-			PropertyDefinition property, InstanceValidationContext context)
-			throws ValidationException {
+			PropertyDefinition property, InstanceValidationContext context,
+			ValidationLocation location) throws ValidationException {
 		if (!((NillableFlag) constraint).isEnabled() && values != null) {
 			for (Object value : values)
 				if (value == null
 						|| (value instanceof Instance
 								&& ((Instance) value).getDefinition()
-										.getConstraint(HasValueFlag.class).isEnabled() && ((Instance) value)
-								.getValue() == null))
+										.getConstraint(HasValueFlag.class).isEnabled()
+								&& ((Instance) value).getValue() == null))
 					throw new ValidationException("Property that isn't nillable has no content.");
 		}
 	}

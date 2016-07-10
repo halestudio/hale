@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;

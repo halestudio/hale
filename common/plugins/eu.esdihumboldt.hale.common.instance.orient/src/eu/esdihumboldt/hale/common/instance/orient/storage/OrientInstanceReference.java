@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
-import net.jcip.annotations.Immutable;
-
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.id.ORID;
@@ -30,6 +28,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import net.jcip.annotations.Immutable;
 
 /**
  * Instance reference for an instance stored in a {@link LocalOrientDB}.
@@ -135,12 +134,14 @@ public class OrientInstanceReference implements InstanceReference {
 	 * Load the instance specified by the reference from the given database.
 	 * 
 	 * @param lodb the database
+	 * @param owner the instance collection owning the reference
 	 * @return the instance or <code>null</code> if no instance matching the
 	 *         reference is present
 	 */
-	public Instance load(LocalOrientDB lodb) {
-		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
+	public Instance load(LocalOrientDB lodb, Object owner) {
+		SharedDatabaseConnection connection = SharedDatabaseConnection.openRead(lodb, owner);
+		DatabaseReference<ODatabaseDocumentTx> db = connection.getDb();
+		DatabaseHandle handle = connection.getHandle();
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {

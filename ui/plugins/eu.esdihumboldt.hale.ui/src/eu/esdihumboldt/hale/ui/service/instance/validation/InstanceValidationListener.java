@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.service.instance.validation;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 
 /**
  * Listener for instance validation.

@@ -27,11 +27,11 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;

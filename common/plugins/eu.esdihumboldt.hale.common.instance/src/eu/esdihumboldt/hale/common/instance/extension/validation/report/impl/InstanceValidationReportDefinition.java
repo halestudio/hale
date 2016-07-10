@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report.impl;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report.impl;
 
 import java.util.Properties;
 
@@ -22,8 +22,8 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReporter;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
 
 /**
  * Definition for {@link InstanceValidationReport}s.

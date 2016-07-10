@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2014 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,20 +10,27 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report;
+package eu.esdihumboldt.hale.io.html.svg.mapping.json;
 
-import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import groovy.json.JsonOutput;
 
 /**
- * {@link Reporter} with {@link InstanceValidationMessage}s.
+ * Representation of {@link Value}s as Json values.
  * 
- * @author Kai Schwierczek
+ * @author Simon Templer
  */
-public interface InstanceValidationReporter extends Reporter<InstanceValidationMessage>,
-		InstanceValidationReport {
-	// nothing to add, just for concrete type...
+public interface ValueRepresentation {
+
+	/**
+	 * Get the representation of the given value.
+	 * 
+	 * @param value the value to convert
+	 * @return anything {@link JsonOutput}.toJson can handle, e.g. a String
+	 */
+	Object getValueRepresentation(Value value);
+
 }

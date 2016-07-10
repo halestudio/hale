@@ -20,7 +20,7 @@
       <detailpage
             class="eu.esdihumboldt.hale.ui.instancevalidation.report.InstanceValidationReportDetailsPage"
             id="eu.esdihumboldt.hale.ui.instancevalidation.report.detailpage"
-            reportType="eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport">
+            reportType="eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport">
       </detailpage>
    </extension>
    <extension

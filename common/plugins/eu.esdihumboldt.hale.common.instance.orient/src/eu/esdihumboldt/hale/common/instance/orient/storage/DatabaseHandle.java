@@ -28,7 +28,10 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
  */
 public class DatabaseHandle {
 
-	private final ODatabaseDocumentTx database;
+	/**
+	 * The database connection.
+	 */
+	protected final ODatabaseDocumentTx database;
 
 	private long count = 0;
 

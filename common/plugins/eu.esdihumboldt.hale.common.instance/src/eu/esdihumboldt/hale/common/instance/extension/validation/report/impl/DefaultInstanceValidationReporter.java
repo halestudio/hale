@@ -14,13 +14,13 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report.impl;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report.impl;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReporter;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
 
 /**
  * Reporter for instance validation messages.

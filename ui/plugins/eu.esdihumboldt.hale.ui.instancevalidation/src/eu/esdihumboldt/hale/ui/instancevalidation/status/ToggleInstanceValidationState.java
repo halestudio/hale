@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui.instancevalidation.status;
 import org.eclipse.core.commands.State;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationListener;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 

@@ -24,6 +24,7 @@ import java.util.Set;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
@@ -35,14 +36,10 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Unique;
  */
 public class UniqueValidator implements PropertyConstraintValidator {
 
-	/**
-	 * @see PropertyConstraintValidator#validatePropertyConstraint(Object[],
-	 *      PropertyConstraint, PropertyDefinition, InstanceValidationContext)
-	 */
 	@Override
 	public void validatePropertyConstraint(Object[] values, PropertyConstraint constraint,
-			PropertyDefinition property, InstanceValidationContext context)
-			throws ValidationException {
+			PropertyDefinition property, InstanceValidationContext context,
+			ValidationLocation location) throws ValidationException {
 		Unique unique = (Unique) constraint;
 		if (unique.isEnabled() && values != null) {
 			for (Object value : values) {

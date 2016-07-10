@@ -247,6 +247,29 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="XML ID to specify for the container element, if possible"
                label="Container ID"
                name="xml.containerId"
@@ -351,6 +374,29 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="XML ID to specify for the container element, if possible"
                label="Container ID"
                name="xml.containerId"
@@ -434,6 +480,29 @@
                   defaultDescription="By default the CRS code is not modified."
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -623,6 +692,29 @@
                   defaultDescription="By default the CRS code is not modified."
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
