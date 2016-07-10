@@ -165,7 +165,7 @@ public class SQLQueryInstanceCollection implements InstanceCollection {
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
 
-		return ref.load(database);
+		return ref.load(database, this);
 	}
 
 	@Override
