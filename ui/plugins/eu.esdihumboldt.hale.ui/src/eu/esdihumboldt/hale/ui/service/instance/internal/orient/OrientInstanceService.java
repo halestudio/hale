@@ -379,7 +379,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
 		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE)) ? (source) : (transformed);
 
-		return ref.load(lodb);
+		return ref.load(lodb, this);
 	}
 
 	/**

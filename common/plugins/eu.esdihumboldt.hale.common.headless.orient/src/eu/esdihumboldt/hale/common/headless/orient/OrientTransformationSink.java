@@ -65,7 +65,7 @@ public class OrientTransformationSink implements TransformationSink {
 		@Override
 		public Instance getInstance(InstanceReference reference) {
 			OrientInstanceReference ref = (OrientInstanceReference) reference;
-			return ref.load(database);
+			return ref.load(database, this);
 		}
 
 		@Override
