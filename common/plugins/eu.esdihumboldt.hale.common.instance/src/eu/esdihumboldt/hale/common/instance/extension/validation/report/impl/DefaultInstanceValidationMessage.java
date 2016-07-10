@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report.impl;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report.impl;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -22,16 +22,17 @@ import java.util.List;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
 
 /**
  * Default implementation of {@link InstanceValidationMessage}.
  * 
  * @author Kai Schwierczek
  */
-public class DefaultInstanceValidationMessage extends MessageImpl implements
-		InstanceValidationMessage {
+public class DefaultInstanceValidationMessage extends MessageImpl
+		implements InstanceValidationMessage {
 
 	private final InstanceReference instanceReference;
 	private final QName type;
@@ -55,6 +56,18 @@ public class DefaultInstanceValidationMessage extends MessageImpl implements
 		this.type = type;
 		this.path = path;
 		this.category = category;
+	}
+
+	/**
+	 * Create a new instance validation message.
+	 * 
+	 * @param location the validation location
+	 * @param category the message's category
+	 * @param message the message string
+	 */
+	public DefaultInstanceValidationMessage(ValidationLocation location, String category,
+			String message) {
+		this(location.getReference(), location.getType(), location.getPath(), category, message);
 	}
 
 	/**

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report.impl;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +23,8 @@ import java.util.Properties;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.report.impl.AbstractMessageDefinition;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
 
 /**
  * Definition for {@link InstanceValidationMessage}s.

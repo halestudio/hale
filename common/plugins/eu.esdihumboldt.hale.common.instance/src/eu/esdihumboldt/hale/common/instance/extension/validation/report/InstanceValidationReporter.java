@@ -14,15 +14,16 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report;
 
-import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.Reporter;
 
 /**
- * {@link Report} with {@link InstanceValidationMessage}s.
+ * {@link Reporter} with {@link InstanceValidationMessage}s.
  * 
  * @author Kai Schwierczek
  */
-public interface InstanceValidationReport extends Report<InstanceValidationMessage> {
+public interface InstanceValidationReporter extends Reporter<InstanceValidationMessage>,
+		InstanceValidationReport {
 	// nothing to add, just for concrete type...
 }

@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.instancevalidator.report;
+package eu.esdihumboldt.hale.common.instance.extension.validation.report;
 
 import java.util.List;
 
