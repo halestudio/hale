@@ -64,6 +64,14 @@ public class SharedDatabaseConnection {
 					super.tryClose();
 
 					if (database.isClosed()) {
+						/*
+						 * FIXME the handle should be removed (and thus the
+						 * finalizer thread). Make the cache not thread local
+						 * again?
+						 * 
+						 * XXX but this method (and removeReference) seems to be
+						 * never called anyway.
+						 */
 						log.info("Closed shared database connection on " + ownerName);
 					}
 				}
