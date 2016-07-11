@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.jdbc.config">
+      <connection
+            configurer="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessConnectionConfigurer"
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess"
+            type="java.sql.Connection">
+      </connection>
+      <driver
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess.driver"
+            name="MsAccessDriver"
+            testUri="jdbc:ucanaccess://msaccess-test.accdb"
+            uriBuilder="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessURIBuilder">
+      </driver>
+   </extension>
+
+</plugin>
