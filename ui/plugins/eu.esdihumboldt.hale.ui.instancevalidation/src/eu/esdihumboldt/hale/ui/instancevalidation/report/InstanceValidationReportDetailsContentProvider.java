@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -92,6 +92,10 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 							.getType(message.getType());
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
+					if (use == null) {
+						// fall-back to generic category
+						use = "General";
+					}
 					baseTypes.add(use);
 					messages.put(new TreePath(new Object[] { use }), message);
 				}

@@ -125,7 +125,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			}
 
 			// update class if needed
-			while (currentClass != null && (currentIterator == null || !currentIterator.hasNext())) {
+			while (currentClass != null
+					&& (currentIterator == null || !currentIterator.hasNext())) {
 				currentClass = classQueue.poll();
 				if (ref.getDatabase().getMetadata().getSchema().getClass(currentClass) != null
 						&& ref.getDatabase().countClass(currentClass) > 0) {
@@ -147,7 +148,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			if (hasNext()) {
 				ODocument doc = currentIterator.next();
 				allowUpdate = true; // allow updating in hasNext
-				Instance instance = new OInstance(doc, getCurrentType(), ref.getDatabase(), dataSet);
+				Instance instance = new OInstance(doc, getCurrentType(), ref.getDatabase(),
+						dataSet);
 				handle.addReference(instance);
 				return instance;
 			}
@@ -198,7 +200,8 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	 * @param types the type index
 	 * @param dataSet the data set the instances are associated to
 	 */
-	public BrowseOrientInstanceCollection(LocalOrientDB database, TypeIndex types, DataSet dataSet) {
+	public BrowseOrientInstanceCollection(LocalOrientDB database, TypeIndex types,
+			DataSet dataSet) {
 		super();
 		this.database = database;
 		this.types = types;
@@ -346,7 +349,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
 
-		return ref.load(database);
+		return ref.load(database, this);
 	}
 
 }

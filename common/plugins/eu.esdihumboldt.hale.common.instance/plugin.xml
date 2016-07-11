@@ -55,5 +55,15 @@
          </service>
       </services>
    </extension>
-
+   <extension
+         point="eu.esdihumboldt.hale.report">
+      <messageDefinition
+            class="eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.InstanceValidationMessageDefinition"
+            id="eu.esdihumboldt.hale.common.instancevalidator">
+      </messageDefinition>
+      <reportDefinition
+            class="eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.InstanceValidationReportDefinition"
+            id="eu.esdihumboldt.hale.common.instancevalidator">
+      </reportDefinition>
+   </extension>
 </plugin>

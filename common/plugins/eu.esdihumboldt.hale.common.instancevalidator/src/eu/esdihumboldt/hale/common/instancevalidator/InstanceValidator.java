@@ -28,12 +28,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidatorExtension;
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.PropertyConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.TypeConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
+import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationLocation;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationReporter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -41,10 +47,6 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReporter;
-import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationMessage;
-import eu.esdihumboldt.hale.common.instancevalidator.report.impl.DefaultInstanceValidationReporter;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyConstraint;
@@ -53,6 +55,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.ConstraintUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -81,8 +84,8 @@ public class InstanceValidator {
 	 */
 	public static InstanceValidationReport validateInstances(InstanceCollection instances,
 			IProgressMonitor monitor) {
-		monitor.beginTask("Instance validation", instances.hasSize() ? instances.size()
-				: IProgressMonitor.UNKNOWN);
+		monitor.beginTask("Instance validation",
+				instances.hasSize() ? instances.size() : IProgressMonitor.UNKNOWN);
 
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
@@ -102,8 +105,43 @@ public class InstanceValidator {
 			iterator.close();
 			trans.end();
 		}
+		validateContext(context, reporter);
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	private static void validateContext(InstanceValidationContext context,
+			InstanceValidationReporter reporter) {
+		ConstraintValidatorExtension extension = ConstraintValidatorExtension.getInstance();
+
+		for (Entry<Class<TypeConstraint>, TypeConstraintValidator> validator : extension
+				.getTypeConstraintValidators().entrySet()) {
+			validateContext(context, validator.getValue(), validator.getKey(), reporter);
+		}
+
+		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> validator : extension
+				.getPropertyConstraintValidators().entrySet()) {
+			validateContext(context, validator.getValue(), validator.getKey(), reporter);
+		}
+
+		for (Entry<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> validator : extension
+				.getGroupPropertyConstraintValidators().entrySet()) {
+			validateContext(context, validator.getValue(), validator.getKey(), reporter);
+		}
+	}
+
+	private static void validateContext(InstanceValidationContext context,
+			ConstraintValidator validator, Class<?> constraintClass,
+			InstanceValidationReporter reporter) {
+		try {
+			validator.validateContext(context, reporter);
+		} catch (ValidationException e) {
+			reporter.warn(new DefaultInstanceValidationMessage(null, null,
+					Collections.<QName> emptyList(), constraintClass.getSimpleName(),
+					e.getMessage()));
+		} catch (Exception e) {
+			log.error("Error performing instance validation", e);
+		}
 	}
 
 	/**
@@ -128,13 +166,13 @@ public class InstanceValidator {
 					.getGroupPropertyConstraintValidators().get(ChoiceFlag.class);
 			if (validator != null)
 				try {
-					validator
-							.validateGroupPropertyConstraint(new Object[] { object }, childDef
-									.asGroup().getConstraint(ChoiceFlag.class), childDef.asGroup(),
-									context);
+					validator.validateGroupPropertyConstraint(new Object[] { object },
+							childDef.asGroup().getConstraint(ChoiceFlag.class), childDef.asGroup(),
+							context);
 				} catch (ValidationException vE) {
-					reporter.warn(new DefaultInstanceValidationMessage(null, null, Collections
-							.<QName> emptyList(), ChoiceFlag.class.getSimpleName(), vE.getMessage()));
+					reporter.warn(new DefaultInstanceValidationMessage(null, null,
+							Collections.<QName> emptyList(), ChoiceFlag.class.getSimpleName(),
+							vE.getMessage()));
 				}
 			onlyCheckExistingChildren = childDef.asGroup().getConstraint(ChoiceFlag.class)
 					.isEnabled();
@@ -195,7 +233,8 @@ public class InstanceValidator {
 						typeDef.getConstraint(entry.getKey()), context);
 			} catch (ValidationException vE) {
 				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
-						new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
+						new ArrayList<QName>(path), entry.getKey().getSimpleName(),
+						vE.getMessage()));
 			}
 
 		validateGroupChildren(instance, reporter, type, path, onlyCheckExistingChildren, reference,
@@ -231,8 +270,8 @@ public class InstanceValidator {
 	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
 			InstanceReference reference, InstanceValidationContext context) {
-		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil.getAllChildren(group
-				.getDefinition());
+		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil
+				.getAllChildren(group.getDefinition());
 		validateGroupChildren(group, childDefs, reporter, type, path, onlyCheckExistingChildren,
 				reference, context);
 	}
@@ -253,10 +292,9 @@ public class InstanceValidator {
 	 * @param context the instance validation context
 	 */
 	private static void validateGroupChildren(Group group,
-			Collection<? extends ChildDefinition<?>> childDefs,
-			InstanceValidationReporter reporter, QName type, List<QName> path,
-			boolean onlyCheckExistingChildren, InstanceReference reference,
-			InstanceValidationContext context) {
+			Collection<? extends ChildDefinition<?>> childDefs, InstanceValidationReporter reporter,
+			QName type, List<QName> path, boolean onlyCheckExistingChildren,
+			InstanceReference reference, InstanceValidationContext context) {
 		for (ChildDefinition<?> childDef : childDefs) {
 			QName name = childDef.getName();
 			path.add(name);
@@ -294,17 +332,23 @@ public class InstanceValidator {
 	 * @param reference the instance reference
 	 * @param context the instance validation context
 	 */
+	@SuppressWarnings("unchecked")
 	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef,
 			InstanceValidationReporter reporter, QName type, List<QName> path,
 			InstanceReference reference, InstanceValidationContext context) {
+		ValidationLocation loc = new ValidationLocation(reference, type,
+				new ArrayList<QName>(path));
 		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> entry : ConstraintValidatorExtension
 				.getInstance().getPropertyConstraintValidators().entrySet())
 			try {
 				entry.getValue().validatePropertyConstraint(properties,
-						propertyDef.getConstraint(entry.getKey()), propertyDef, context);
+						propertyDef
+								.getConstraint((Class<? extends PropertyConstraint>) ConstraintUtil
+										.getConstraintType(entry.getKey())),
+						propertyDef, context, loc);
 			} catch (ValidationException vE) {
-				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
-						new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
+				reporter.warn(new DefaultInstanceValidationMessage(loc,
+						entry.getKey().getSimpleName(), vE.getMessage()));
 			}
 
 		validateChildren(properties, propertyDef, reporter, type, path, false, reference, context);
@@ -335,7 +379,8 @@ public class InstanceValidator {
 						groupDef.getConstraint(entry.getKey()), groupDef, context);
 			} catch (ValidationException vE) {
 				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
-						new ArrayList<QName>(path), entry.getKey().getSimpleName(), vE.getMessage()));
+						new ArrayList<QName>(path), entry.getKey().getSimpleName(),
+						vE.getMessage()));
 			}
 
 		// In case of enabled choice flag only check existing children.
@@ -376,14 +421,15 @@ public class InstanceValidator {
 				else {
 					if (childDef.asGroup() != null)
 						reporter.warn(new DefaultInstanceValidationMessage(reference, type,
-								new ArrayList<QName>(path), "Wrong group", "A property is no group"));
+								new ArrayList<QName>(path), "Wrong group",
+								"A property is no group"));
 					else if (childDef.asProperty() != null) {
 						if (!skipValidation(childDef.asProperty().getPropertyType(), property)) {
 							// don't skip property
 
 							// wrap value in dummy instance for type validation
-							MutableInstance instance = new DefaultInstance(childDef.asProperty()
-									.getPropertyType(), null);
+							MutableInstance instance = new DefaultInstance(
+									childDef.asProperty().getPropertyType(), null);
 							instance.setValue(property);
 							validateInstance(instance, reporter, type, path,
 									onlyCheckExistingChildren, reference, context);
@@ -412,16 +458,16 @@ public class InstanceValidator {
 				List<ChildDefinition<?>> attributes = new ArrayList<ChildDefinition<?>>();
 				for (ChildDefinition<?> child : childDef.asProperty().getPropertyType()
 						.getChildren()) {
-					if (child.asProperty() != null
-							&& child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					if (child.asProperty() != null && child.asProperty()
+							.getConstraint(XmlAttributeFlag.class).isEnabled()) {
 						attributes.add(child);
 					}
 				}
 
 				if (!attributes.isEmpty()) {
 					// create an empty dummy instance
-					Instance instance = new DefaultInstance(
-							childDef.asProperty().getPropertyType(), null);
+					Instance instance = new DefaultInstance(childDef.asProperty().getPropertyType(),
+							null);
 					validateGroupChildren(instance, attributes, reporter, type, path,
 							onlyCheckExistingChildren, reference, context);
 				}
