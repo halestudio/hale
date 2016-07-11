@@ -26,6 +26,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import net.jcip.annotations.Immutable;
@@ -122,6 +123,10 @@ public class OrientInstanceReference implements InstanceReference {
 		if (instance.getDataSet() == null) {
 			throw new IllegalArgumentException(
 					"Instance data set may not be null for retrieving reference");
+		}
+
+		while (instance instanceof InstanceDecorator) {
+			instance = ((InstanceDecorator) instance).getOriginalInstance();
 		}
 
 		OInstance inst = (OInstance) instance;
