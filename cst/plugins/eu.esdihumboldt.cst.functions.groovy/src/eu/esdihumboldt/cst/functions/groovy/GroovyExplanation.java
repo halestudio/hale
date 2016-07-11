@@ -41,28 +41,24 @@ public class GroovyExplanation extends AbstractCellExplanation implements Groovy
 
 		String script = getScript(cell);
 
-//		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
-//				.get(ENTITY_VARIABLE));
-
 		if (target != null && script != null) {
 			if (html)
 				script = "<pre><code class=\"language-groovy\">" + script + "</code></pre>";
-			String explanation = MessageFormat.format(getMessage("main", locale),
-					formatEntity(target, html, true, locale), script);
-			if (html)
-				explanation = explanation.replaceAll("\n", "<br />");
-//			if (html && sources != null) {
-//				StringBuilder sb = new StringBuilder();
-//				sb.append("<br /><br />Replacement table:<br />");
-//				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
-//				for (Entity entity : sources)
-//					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
-//							getEntityNameWithoutCondition(entity).replace('.', '_'),
-//							formatEntity(entity, true, false)));
-//				sb.append("</table>");
-//				explanation += sb.toString();
-//			}
-			return explanation;
+			String pre = MessageFormat.format(getMessage("pre", locale),
+					formatEntity(target, html, true, locale));
+			String post = MessageFormat.format(getMessage("post", locale),
+					formatEntity(target, html, true, locale));
+			if (html) {
+				pre = pre.replaceAll("\n", "<br />");
+				pre = pre + "<br /><br />";
+				post = post.replaceAll("\n", "<br />");
+				post = "<br />" + post;
+			}
+			else {
+				pre = pre + "\n\n";
+				post = "\n\n" + post;
+			}
+			return pre + script + post;
 		}
 
 		return null;
