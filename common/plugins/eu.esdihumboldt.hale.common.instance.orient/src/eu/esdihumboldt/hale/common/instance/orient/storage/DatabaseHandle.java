@@ -17,7 +17,10 @@
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.lang.ref.Reference;
+import java.util.Arrays;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.base.FinalizablePhantomReference;
 import com.google.common.base.FinalizableReferenceQueue;
@@ -26,6 +29,10 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.impl.GroupDecorator;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 
 /**
  * Database handle that manages objects referencing the database object. It will
@@ -80,7 +87,10 @@ public class DatabaseHandle {
 	}
 
 	/**
-	 * Add an object that references the database connection
+	 * Add an object that references the database connection.
+	 * 
+	 * It is preferred to use {@link #addInstance(Instance)} or
+	 * {@link #addGroup(Group)} instead.
 	 * 
 	 * @param object the object referencing the database
 	 */
@@ -96,6 +106,77 @@ public class DatabaseHandle {
 		};
 		references.add(ref);
 		count++;
+	}
+
+	/**
+	 * Augment an instance and add a reference for the database connection.
+	 * Makes sure child instances or groups also reference the database
+	 * connection.
+	 * 
+	 * @param instance the instance to augment
+	 * @return the augmented instance
+	 */
+	public Instance addInstance(Instance instance) {
+		if (instance == null) {
+			return null;
+		}
+
+		Instance result = new InstanceDecorator(instance) {
+
+			@Override
+			public Object[] getProperty(QName propertyName) {
+				return augmentValues(getOriginalInstance().getProperty(propertyName));
+			}
+
+		};
+		addReference(result);
+		return result;
+	}
+
+	/**
+	 * Augment a group and add a reference for the database connection. Makes
+	 * sure child instances or groups also reference the database connection.
+	 * 
+	 * @param group the group to augment
+	 * @return the augmented group
+	 */
+	public Group addGroup(Group group) {
+		if (group == null) {
+			return null;
+		}
+
+		Group result = new GroupDecorator(group) {
+
+			@Override
+			public Object[] getProperty(QName propertyName) {
+				return augmentValues(getOriginalGroup().getProperty(propertyName));
+			}
+
+		};
+		addReference(result);
+		return result;
+	}
+
+	/**
+	 * Augment an array of values.
+	 * 
+	 * @param values the values to augment
+	 * @return the augmented objects
+	 */
+	protected Object[] augmentValues(Object[] values) {
+		if (values == null) {
+			return null;
+		}
+
+		return Arrays.stream(values).map(value -> {
+			if (value instanceof Instance) {
+				return addInstance((Instance) value);
+			}
+			if (value instanceof Group) {
+				return addGroup((Group) value);
+			}
+			return value;
+		}).toArray();
 	}
 
 	private synchronized void removeReference() {
