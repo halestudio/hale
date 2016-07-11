@@ -50,8 +50,9 @@ public class WindingOrderTest {
 
 	private static LinearRing r1, r2, h1, h2;
 
-	private static final String code = "EPSG:4026";
-	private static CoordinateReferenceSystem crs;
+	private static final String code1 = "EPSG:4026";
+	private static final String code2 = "EPSG:25832";
+	private static CoordinateReferenceSystem crs1, crs2;
 
 	private static final LoadingCache<String, CoordinateReferenceSystem> CRS_CACHE = CacheBuilder
 			.newBuilder().maximumSize(100).expireAfterAccess(1, TimeUnit.HOURS)
@@ -98,9 +99,17 @@ public class WindingOrderTest {
 		clockWise4 = factory.createGeometryCollection(
 				new Geometry[] { clockWise2, clockWise2WOHoles, clockWise3, r2 });
 
-		if (crs == null) {
+		if (crs1 == null) {
 			try {
-				crs = CRS_CACHE.get(code);
+				crs1 = CRS_CACHE.get(code1);
+			} catch (Exception e) {
+				throw new IllegalStateException("Invalid CRS code", e);
+			}
+		}
+
+		if (crs2 == null) {
+			try {
+				crs2 = CRS_CACHE.get(code2);
 			} catch (Exception e) {
 				throw new IllegalStateException("Invalid CRS code", e);
 			}
@@ -112,17 +121,34 @@ public class WindingOrderTest {
 	 */
 	@Test
 	public void testCRSFlipped() {
-		assertTrue(WindingOrder.isCRSFlip(crs));
+		// Flipped CRS
+		assertTrue(WindingOrder.isCRSFlip(crs1));
+
+		// Normal CRS
+		assertFalse(WindingOrder.isCRSFlip(crs2));
 	}
 
 	/**
-	 * test geometry on CRS
+	 * test geometry on normal CRS
+	 */
+	@Test
+	public void testGeometryNormalOnCRS() {
+		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getExteriorRing()));
+		assertFalse(WindingOrder.isCRSFlip(crs2));
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, crs2);
+		assertTrue(result instanceof Polygon);
+		assertFalse(clockWise2.equalsExact(result));
+		assertTrue(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));
+	}
+
+	/**
+	 * test geometry on Flipped CRS
 	 */
 	@Test
 	public void testGeometryFlippedOnCRS() {
 		assertTrue(WindingOrder.isCounterClockwise(clockWise2.getExteriorRing()));
-		assertTrue(WindingOrder.isCRSFlip(crs));
-		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, crs);
+		assertTrue(WindingOrder.isCRSFlip(crs1));
+		Geometry result = WindingOrder.unifyWindingOrder(clockWise2, true, crs1);
 		assertTrue(result instanceof Polygon);
 		assertFalse(clockWise2.equalsExact(result));
 		assertFalse(WindingOrder.isCounterClockwise(((Polygon) result).getExteriorRing()));

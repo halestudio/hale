@@ -5,7 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.util.test
 Bundle-Version: 2.9.5.qualifier
 Fragment-Host: eu.esdihumboldt.util;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
+Import-Package: com.google.common.cache;version="17.0.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
  org.junit;version="4.8.1"
-Require-Bundle: com.google.guava,
- org.geotools
+Require-Bundle: org.geotools
