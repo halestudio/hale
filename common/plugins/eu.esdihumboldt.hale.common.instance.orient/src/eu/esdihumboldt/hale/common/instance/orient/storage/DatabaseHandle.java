@@ -16,8 +16,12 @@
 
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
+import java.lang.ref.Reference;
+import java.util.Set;
+
+import com.google.common.base.FinalizablePhantomReference;
 import com.google.common.base.FinalizableReferenceQueue;
-import com.google.common.base.FinalizableWeakReference;
+import com.google.common.collect.Sets;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 /**
@@ -37,6 +41,10 @@ public class DatabaseHandle {
 
 	private final FinalizableReferenceQueue referenceQueue = new FinalizableReferenceQueue();
 
+	private final Set<Reference<?>> references = Sets.newConcurrentHashSet();
+	// This ensures that the FinalizablePhantomReference itself is not
+	// garbage-collected.
+
 	/**
 	 * Create a database handle
 	 * 
@@ -54,14 +62,17 @@ public class DatabaseHandle {
 	 * @param object the object referencing the database
 	 */
 	public synchronized void addReference(Object object) {
-		count++;
-		new FinalizableWeakReference<Object>(object, referenceQueue) {
+		FinalizablePhantomReference<?> ref = new FinalizablePhantomReference<Object>(object,
+				referenceQueue) {
 
 			@Override
 			public void finalizeReferent() {
+				references.remove(this);
 				removeReference();
 			}
 		};
+		references.add(ref);
+		count++;
 	}
 
 	private synchronized void removeReference() {
@@ -75,7 +86,15 @@ public class DatabaseHandle {
 	public synchronized void tryClose() {
 		if (count <= 0) {
 			database.close();
+			onClose();
 		}
+	}
+
+	/**
+	 * Called when the database connection was closed.
+	 */
+	protected void onClose() {
+		// override me
 	}
 
 	/**
