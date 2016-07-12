@@ -26,6 +26,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import net.jcip.annotations.Immutable;
@@ -124,6 +125,10 @@ public class OrientInstanceReference implements InstanceReference {
 					"Instance data set may not be null for retrieving reference");
 		}
 
+		while (instance instanceof InstanceDecorator) {
+			instance = ((InstanceDecorator) instance).getOriginalInstance();
+		}
+
 		OInstance inst = (OInstance) instance;
 		ORID id = inst.getDocument().getIdentity();
 
@@ -147,18 +152,7 @@ public class OrientInstanceReference implements InstanceReference {
 			if (document != null) {
 				OInstance instance = new OInstance(document, getTypeDefinition(), db.getDatabase(),
 						getDataSet());
-				handle.addReference(instance);
-				return instance;
-				/*
-				 * Alternative: Returning a copy of the instance.
-				 * 
-				 * But this can be very expensive if dealing with an instance
-				 * with deep sub-structures. Example: A Merge on ~150 GML
-				 * features took ~200 times longer (over 6 minutes instead of 2
-				 * seconds) when copying instances that were retrieved through
-				 * instance references.
-				 */
-//				return new DefaultInstance(instance);
+				return handle.addInstance(instance);
 			}
 			else
 				return null;
