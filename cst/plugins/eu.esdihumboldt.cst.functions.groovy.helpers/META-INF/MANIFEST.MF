@@ -4,7 +4,7 @@ Bundle-Name: Groovy Helper Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy.helpers;singleton:=true
 Bundle-Version: 2.9.5.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.cst.functions.groovy;bundle-version="2.9.3",
  groovy;bundle-version="2.3.7"
 Import-Package: com.google.common.base;version="17.0.0",
@@ -12,3 +12,5 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.hale.common.core,
  javax.annotation,
  org.springframework.core.convert;version="3.1.1.RELEASE"
+Export-Package: eu.esdihumboldt.cst.functions.groovy.helpers,
+ eu.esdihumboldt.cst.functions.groovy.helpers.util
