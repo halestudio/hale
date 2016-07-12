@@ -27,9 +27,11 @@ public class MsAccessDataReader extends MsAccessDataReaderTestSuit {
 	 */
 	public MsAccessDataReader() {
 
-		SOURCE_DB_NAME = "transform.mdb";
+		SOURCE_DB_NAME = "transform";
 
-		SOURCE_DB_PATH = "data/" + SOURCE_DB_NAME;
+		SOURCE_DB_EXT = ".mdb";
+
+		SOURCE_DB_PATH = "data/" + SOURCE_DB_NAME + SOURCE_DB_EXT;
 
 		USER_NAME = null;
 

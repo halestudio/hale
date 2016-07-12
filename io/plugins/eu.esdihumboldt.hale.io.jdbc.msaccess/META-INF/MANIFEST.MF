@@ -13,7 +13,11 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: data harmonisation panel
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.schema.persist,
  eu.esdihumboldt.util.io,
  net.ucanaccess.jdbc;version="3.0.6",
+ org.eclipse.core.runtime.content,
  org.osgi.framework,
  org.slf4j;version="1.7.10"
+Export-Package: eu.esdihumboldt.hale.io.jdbc.msaccess,
+ eu.esdihumboldt.hale.io.jdbc.msaccess.internal;x-internal:=true

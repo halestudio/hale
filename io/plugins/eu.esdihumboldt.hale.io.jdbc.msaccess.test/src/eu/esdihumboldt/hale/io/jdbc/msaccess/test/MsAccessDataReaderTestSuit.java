@@ -1,4 +1,21 @@
+/*
+ * Copyright (c) 2016 wetransform GmbH
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     wetransform GmbH <http://www.wetransform.to>
+ */
+
 package eu.esdihumboldt.hale.io.jdbc.msaccess.test;
+
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,11 +24,23 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 
 import com.google.common.io.ByteSink;
 import com.google.common.io.ByteSource;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader;
 
 /**
  * To test Access database
@@ -21,10 +50,17 @@ import com.google.common.io.Resources;
  */
 public abstract class MsAccessDataReaderTestSuit {
 
+	private static final ALogger log = ALoggerFactory.getLogger(MsAccessDataReaderTestSuit.class);
+
 	/**
 	 * Source Database name
 	 */
 	protected String SOURCE_DB_NAME;
+
+	/**
+	 * Source Database Extension
+	 */
+	protected String SOURCE_DB_EXT;
 
 	/**
 	 * Source Database path
@@ -46,35 +82,39 @@ public abstract class MsAccessDataReaderTestSuit {
 	 */
 	protected String SQL_QUERY;
 
-	private static Long RANDOM_NUMBER;
+	private static File TEMP_SOURCE_FILE_NAME = null;
 
 	/**
 	 * Copies the source database to a temporary file.
 	 * 
-	 * @throws IOException if temp file can't be created
+	 * @throws IOException
+	 *             if temp file can't be created
 	 */
 	public void createSourceTempFile() throws IOException {
-		ByteSource source = Resources.asByteSource(
-				MsAccessDataReaderTestSuit.class.getClassLoader().getResource(SOURCE_DB_PATH));
-		ByteSink dest = Files.asByteSink(new File(getSourceTempFilePath()));
-
+		ByteSource source = Resources.asByteSource(MsAccessDataReaderTestSuit.class.getClassLoader().getResource(SOURCE_DB_PATH));
+		ByteSink dest = Files.asByteSink(getSourceTempFilePath());
 		source.copyTo(dest);
 	}
 
 	/**
 	 * Generates a random path (within the system's temporary folder) for the
-	 * source database. The random number used to construct the path is saved in
-	 * a static variable and thus the path will remain constant for the whole
-	 * run.
+	 * source database.
 	 * 
 	 * @return the absolute path of the source temp file
 	 */
-	public String getSourceTempFilePath() {
-		return getTempDir() + File.separator + getRandomNumber() + "_" + SOURCE_DB_NAME;
-	}
+	public File getSourceTempFilePath() {
 
-	private static String getTempDir() {
-		return System.getProperty("java.io.tmpdir");
+		if (TEMP_SOURCE_FILE_NAME == null) {
+			try {
+				TEMP_SOURCE_FILE_NAME = File.createTempFile(SOURCE_DB_NAME, SOURCE_DB_EXT);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return TEMP_SOURCE_FILE_NAME;
+		// return getTempDir() + File.separator + getRandomNumber() + "_" +
+		// SOURCE_DB_NAME;
 	}
 
 	/**
@@ -84,18 +124,10 @@ public abstract class MsAccessDataReaderTestSuit {
 		deleteTempFile(getSourceTempFilePath());
 	}
 
-	private void deleteTempFile(String tempFilePath) {
-		File toBeDeleted = new File(tempFilePath);
-		if (toBeDeleted.exists()) {
-			toBeDeleted.delete();
+	private void deleteTempFile(File tempFile) {
+		if (tempFile.exists()) {
+			tempFile.delete();
 		}
-	}
-
-	private static long getRandomNumber() {
-		if (RANDOM_NUMBER == null) {
-			RANDOM_NUMBER = System.currentTimeMillis();
-		}
-		return RANDOM_NUMBER;
 	}
 
 	/**
@@ -108,8 +140,7 @@ public abstract class MsAccessDataReaderTestSuit {
 		Connection con = null;
 
 		try {
-			con = DriverManager.getConnection("jdbc:ucanaccess://" + getSourceTempFilePath(),
-					USER_NAME, PASSWORD);
+			con = DriverManager.getConnection("jdbc:ucanaccess://" + getSourceTempFilePath(), USER_NAME, PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -124,9 +155,9 @@ public abstract class MsAccessDataReaderTestSuit {
 	 * @return String value, First row data joined by delimiter \t
 	 */
 	public String getFirstData() {
-		Connection con;
-		Statement st;
-		ResultSet rs;
+		Connection con = null;
+		Statement st = null;
+		ResultSet rs = null;
 
 		try {
 			con = getConnection();
@@ -150,12 +181,70 @@ public abstract class MsAccessDataReaderTestSuit {
 
 			return row.toString();
 
-		} catch (SQLException e) {
-			System.out.println(e.toString());
+		} catch (Exception e) {
+			log.error("Could not able to get data from MsAccessDatabase", e);
+			return null;
+		} finally {
+			try {
+				if (st != null)
+					st.close();
+				if (con != null)
+					con.close();
+			} catch (SQLException e) {
+				// ignore
+			}
 		}
+	}
 
-		return null;
+	/**
+	 * Test - reads a sample MsAccess Database schema. UCanAccess lib should not
+	 * throw any error.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
+	 */
+	public void schemaReaderTest() throws Exception {
+		MsAccessSchemaReader schemaReader = new MsAccessSchemaReader();
+		schemaReader.setSource(new FileIOSupplier(getSourceTempFilePath()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(USER_NAME));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(PASSWORD));
+		schemaReader.setIsSchemaNameQuoted(false);
+
+		IOReport report = schemaReader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		Schema schema = schemaReader.getSchema();
+		Collection<? extends TypeDefinition> k = schema.getTypes();
+
+		for (TypeDefinition def : k)
+			System.out.println(def.getDisplayName());
+
+		assertTrue(schema != null);
+	}
+
+	/**
+	 * Test - reads a sample MsAccess Database schema. UCanAccess lib should not
+	 * throw any error.
+	 * 
+	 * @throws Exception
+	 *             if an error occurs
+	 */
+	public void schemaReaderWithErrorTest() throws Exception {
+		MsAccessSchemaReader schemaReader = new MsAccessSchemaReader();
+		schemaReader.setSource(new FileIOSupplier(getSourceTempFilePath()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(USER_NAME));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(PASSWORD));
+
+		IOReport report = schemaReader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		Schema schema = schemaReader.getSchema();
+		Collection<? extends TypeDefinition> k = schema.getTypes();
+
+		for (TypeDefinition def : k)
+			System.out.println(def.getDisplayName());
+
+		assertTrue(schema != null);
 	}
 
 }
-//'eu.esdihumboldt.hale.io.jdbc.msaccess',
