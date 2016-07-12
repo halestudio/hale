@@ -15,10 +15,12 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
+import java.text.MessageFormat;
 import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.functions.explanations.CreateExplanation;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -26,17 +28,13 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * 
  * @author Simon Templer
  */
-public class GroovyCreateExplanation extends CreateExplanation {
-
-	@Override
-	protected Class<?> getDefaultMessageClass() {
-		return CreateExplanation.class;
-	}
+public class GroovyCreateExplanation extends AbstractCellExplanation {
 
 	@Override
 	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
 			Locale locale) {
-		String superExplanation = super.getExplanation(cell, html, services, locale);
+		String superExplanation = MessageFormat.format(getMessage("main", locale),
+				formatEntity(CellUtil.getFirstEntity(cell.getTarget()), html, false, locale));
 
 		String script = GroovyExplanation.getScript(cell);
 		if (script != null) {

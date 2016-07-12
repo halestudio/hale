@@ -15,6 +15,23 @@
             category="crypto"
             class="eu.esdihumboldt.cst.functions.groovy.helpers.CryptoHelpers">
       </helper>
+      <category
+            path="context">
+      </category>
+      <helper
+            category="context"
+            class="eu.esdihumboldt.cst.functions.groovy.helpers.ContextHelpers">
+      </helper>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.cst.functions.groovy.helpers.util.Collector">
+      </allow>
+      <import
+            class="eu.esdihumboldt.cst.functions.groovy.helpers.util.Collector">
+      </import>
    </extension>
 
 </plugin>

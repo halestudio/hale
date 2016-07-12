@@ -17,14 +17,14 @@
 package eu.esdihumboldt.cst;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import net.jcip.annotations.Immutable;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -65,6 +66,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import net.jcip.annotations.Immutable;
 
 /**
  * Transformation service implementation
@@ -125,6 +127,10 @@ public class ConceptualSchemaTransformer implements TransformationService {
 					target, engines, context);
 
 			Collection<? extends Cell> typeCells = alignment.getActiveTypeCells();
+
+			// sort type cell by priority
+			typeCells = sortTypeCells(typeCells);
+
 			for (Cell typeCell : typeCells) {
 				if (progressIndicator.isCanceled()) {
 					break;
@@ -134,11 +140,11 @@ public class ConceptualSchemaTransformer implements TransformationService {
 						.getTypeTransformations(typeCell.getTransformationIdentifier());
 
 				if (transformations == null || transformations.isEmpty()) {
-					reporter.error(new TransformationMessageImpl(
-							typeCell,
-							MessageFormat
-									.format("No transformation for function {0} found. Skipped type transformation.",
-											typeCell.getTransformationIdentifier()), null));
+					reporter.error(new TransformationMessageImpl(typeCell,
+							MessageFormat.format(
+									"No transformation for function {0} found. Skipped type transformation.",
+									typeCell.getTransformationIdentifier()),
+							null));
 				}
 				else {
 					// TODO select based on e.g. preferred transformation
@@ -164,6 +170,29 @@ public class ConceptualSchemaTransformer implements TransformationService {
 		} finally {
 			progressIndicator.end();
 		}
+	}
+
+	/**
+	 * Sort type cells to define order of execution.
+	 * 
+	 * @param typeCells the type cells to sort
+	 * @return the sorted list of cells
+	 */
+	private List<? extends Cell> sortTypeCells(Collection<? extends Cell> typeCells) {
+		List<Cell> cells = new ArrayList<>(typeCells);
+
+		Collections.sort(cells, new Comparator<Cell>() {
+
+			@Override
+			public int compare(Cell o1, Cell o2) {
+				Priority p1 = o1.getPriority();
+				Priority p2 = o2.getPriority();
+
+				return p1.compareTo(p2);
+			}
+		});
+
+		return cells;
 	}
 
 	/**
@@ -234,8 +263,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			// type cell w/o source
 			// -> execute exactly once w/ null source
 			source = null;
-			iterator = new GenericResourceIteratorAdapter<Object, FamilyInstance>(Collections
-					.singleton(null).iterator()) {
+			iterator = new GenericResourceIteratorAdapter<Object, FamilyInstance>(
+					Collections.singleton(null).iterator()) {
 
 				@Override
 				protected FamilyInstance convert(Object next) {
@@ -255,11 +284,11 @@ public class ConceptualSchemaTransformer implements TransformationService {
 				progressIndicator.setCurrentTask("Perform instance partitioning");
 				try {
 					iterator = instanceHandler.partitionInstances(source,
-							transformation.getFunctionId(), engine, parameters,
-							executionParameters, cellLog);
+							transformation.getFunctionId(), engine, parameters, executionParameters,
+							cellLog);
 				} catch (TransformationException e) {
-					cellLog.error(cellLog.createMessage("Type transformation: partitioning failed",
-							e));
+					cellLog.error(
+							cellLog.createMessage("Type transformation: partitioning failed", e));
 					return;
 				}
 			}
@@ -295,8 +324,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 					((TypeTransformation) function).execute(transformation.getFunctionId(), engine,
 							executionParameters, cellLog, typeCell);
 				} catch (TransformationException e) {
-					cellLog.error(cellLog.createMessage(
-							"Type transformation failed, skipping instance.", e));
+					cellLog.error(cellLog
+							.createMessage("Type transformation failed, skipping instance.", e));
 				}
 			}
 		} finally {
@@ -325,8 +354,8 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			for (Entity sourceEntity : typeCell.getSource().values()) {
 				Type sourceType = (Type) sourceEntity;
 				Filter filter = sourceType.getDefinition().getFilter();
-				lookup.put(sourceType.getDefinition().getDefinition(), filter == null ? NO_FILTER
-						: filter);
+				lookup.put(sourceType.getDefinition().getDefinition(),
+						filter == null ? NO_FILTER : filter);
 			}
 		}
 
