@@ -31,11 +31,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class DefaultCustomPropertyFunctionEntity extends MinimalParameter implements
-		CustomPropertyFunctionEntity {
+public class DefaultCustomPropertyFunctionEntity extends MinimalParameter
+		implements CustomPropertyFunctionEntity {
 
 	private boolean eager;
-	private Class<?> bindingClass = String.class; // default binding
+	private Class<?> bindingClass;
 	private TypeDefinition bindingType;
 
 	/**
@@ -102,13 +102,13 @@ public class DefaultCustomPropertyFunctionEntity extends MinimalParameter implem
 					return entity.getDefinition().getDefinition().equals(bindingType);
 				}
 			};
-			return Collections.<PropertyCondition> singletonList(new PropertyTypeCondition(
-					typeCondition));
+			return Collections
+					.<PropertyCondition> singletonList(new PropertyTypeCondition(typeCondition));
 		}
 		else if (bindingClass != null) {
 			TypeCondition typeCondition = new BindingCondition(bindingClass, true, false);
-			return Collections.<PropertyCondition> singletonList(new PropertyTypeCondition(
-					typeCondition));
+			return Collections
+					.<PropertyCondition> singletonList(new PropertyTypeCondition(typeCondition));
 		}
 		else
 			return Collections.emptyList();
