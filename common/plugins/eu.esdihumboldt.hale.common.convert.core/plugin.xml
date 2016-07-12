@@ -33,6 +33,9 @@
       <converter
             class="eu.esdihumboldt.hale.common.convert.core.CalendarToJodaDateTimeConverter">
       </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.GStringImplToURIConverter">
+      </converter>
    </extension>
 
 </plugin>
