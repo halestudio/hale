@@ -93,6 +93,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 //	public static final String PARAM_SCHEMAS = "schemas";
 
+	private boolean useQuote;
+
 	/**
 	 * Default constructor
 	 */
@@ -101,6 +103,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 		addSupportedParameter(PARAM_USER);
 		addSupportedParameter(PARAM_PASSWORD);
+
+		useQuote = true;
 	}
 
 	@Override
@@ -116,9 +120,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		}
 	}
 
-	@Override
-	public void setIsSchemaNameQuoted(boolean isSchemaNameQuoted) {
-		super.setIsSchemaNameQuoted(isSchemaNameQuoted);
+	/**
+	 * To set useQuote parameter
+	 * 
+	 * @param useQuote true or false value
+	 */
+	public void setUseQuotes(boolean useQuote) {
+		this.useQuote = useQuote;
 	}
 
 	@Override
@@ -344,7 +352,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @return quoted unqoted string
 	 */
 	private String getQuotedValue(String value) {
-		if (getIsSchemaNameQuoted()) {
+		if (useQuote) {
 			value = quote(value);
 		}
 		return value;

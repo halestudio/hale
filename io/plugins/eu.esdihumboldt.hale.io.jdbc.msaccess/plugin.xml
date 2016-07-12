@@ -6,7 +6,7 @@
       <connection
             configurer="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessConnectionConfigurer"
             id="eu.esdihumboldt.hale.io.jdbc.msaccess"
-            type="java.sql.Connection">
+            type="net.ucanaccess.jdbc.UcanaccessConnection">
       </connection>
       <driver
             id="eu.esdihumboldt.hale.io.jdbc.msaccess.driver"

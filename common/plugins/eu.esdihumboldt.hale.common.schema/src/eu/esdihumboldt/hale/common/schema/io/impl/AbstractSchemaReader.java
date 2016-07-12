@@ -32,8 +32,6 @@ public abstract class AbstractSchemaReader extends GZipEnabledImport implements 
 
 	private SchemaSpaceID schemaSpace;
 
-	private Boolean isSchemaNameQuoted;
-
 	@Override
 	public void setSchemaSpace(SchemaSpaceID schemaSpace) {
 		this.schemaSpace = schemaSpace;
@@ -61,27 +59,6 @@ public abstract class AbstractSchemaReader extends GZipEnabledImport implements 
 	 */
 	public TypeIndex getSharedTypes() {
 		return sharedTypes;
-	}
-
-	/**
-	 * Set value of parameter that depicts Schema name with quotation or not.
-	 * 
-	 * @param isSchemaNameQuoted true or false
-	 */
-	public void setIsSchemaNameQuoted(boolean isSchemaNameQuoted) {
-		this.isSchemaNameQuoted = Boolean.valueOf(isSchemaNameQuoted);
-	}
-
-	/**
-	 * Get the boolean value of parameter that depicts SchemaName with quotation
-	 * set or not.
-	 * 
-	 * @return boolean value true or false
-	 */
-	public boolean getIsSchemaNameQuoted() {
-		if (isSchemaNameQuoted == null)
-			return true;
-		return isSchemaNameQuoted.booleanValue();
 	}
 
 }

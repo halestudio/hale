@@ -28,11 +28,10 @@ import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderTestSuit;
 public class MsAccessSchemaReaderTest {
 
 	/**
-	 * Invoke {@link MsAccessDataReaderTestSuite#schemaReaderTest()} on the test
+	 * Invoke {@link MsAccessDataReaderTestSuit#schemaReaderTest()} on the test
 	 * suite class.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMsAccessDataReaderTest() throws Exception {

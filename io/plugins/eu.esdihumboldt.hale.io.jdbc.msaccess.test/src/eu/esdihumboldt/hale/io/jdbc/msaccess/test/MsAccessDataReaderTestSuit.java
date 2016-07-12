@@ -87,11 +87,11 @@ public abstract class MsAccessDataReaderTestSuit {
 	/**
 	 * Copies the source database to a temporary file.
 	 * 
-	 * @throws IOException
-	 *             if temp file can't be created
+	 * @throws IOException if temp file can't be created
 	 */
 	public void createSourceTempFile() throws IOException {
-		ByteSource source = Resources.asByteSource(MsAccessDataReaderTestSuit.class.getClassLoader().getResource(SOURCE_DB_PATH));
+		ByteSource source = Resources.asByteSource(
+				MsAccessDataReaderTestSuit.class.getClassLoader().getResource(SOURCE_DB_PATH));
 		ByteSink dest = Files.asByteSink(getSourceTempFilePath());
 		source.copyTo(dest);
 	}
@@ -140,7 +140,8 @@ public abstract class MsAccessDataReaderTestSuit {
 		Connection con = null;
 
 		try {
-			con = DriverManager.getConnection("jdbc:ucanaccess://" + getSourceTempFilePath(), USER_NAME, PASSWORD);
+			con = DriverManager.getConnection("jdbc:ucanaccess://" + getSourceTempFilePath(),
+					USER_NAME, PASSWORD);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -200,15 +201,13 @@ public abstract class MsAccessDataReaderTestSuit {
 	 * Test - reads a sample MsAccess Database schema. UCanAccess lib should not
 	 * throw any error.
 	 * 
-	 * @throws Exception
-	 *             if an error occurs
+	 * @throws Exception if an error occurs
 	 */
 	public void schemaReaderTest() throws Exception {
 		MsAccessSchemaReader schemaReader = new MsAccessSchemaReader();
 		schemaReader.setSource(new FileIOSupplier(getSourceTempFilePath()));
 		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(USER_NAME));
 		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(PASSWORD));
-		schemaReader.setIsSchemaNameQuoted(false);
 
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 		assertTrue(report.isSuccess());
@@ -221,30 +220,4 @@ public abstract class MsAccessDataReaderTestSuit {
 
 		assertTrue(schema != null);
 	}
-
-	/**
-	 * Test - reads a sample MsAccess Database schema. UCanAccess lib should not
-	 * throw any error.
-	 * 
-	 * @throws Exception
-	 *             if an error occurs
-	 */
-	public void schemaReaderWithErrorTest() throws Exception {
-		MsAccessSchemaReader schemaReader = new MsAccessSchemaReader();
-		schemaReader.setSource(new FileIOSupplier(getSourceTempFilePath()));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(USER_NAME));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(PASSWORD));
-
-		IOReport report = schemaReader.execute(new LogProgressIndicator());
-		assertTrue(report.isSuccess());
-
-		Schema schema = schemaReader.getSchema();
-		Collection<? extends TypeDefinition> k = schema.getTypes();
-
-		for (TypeDefinition def : k)
-			System.out.println(def.getDisplayName());
-
-		assertTrue(schema != null);
-	}
-
 }

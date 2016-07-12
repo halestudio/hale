@@ -40,6 +40,9 @@ public class MsAccessSchemaReader extends SchemaReaderDecorator<JDBCSchemaReader
 	 */
 	public MsAccessSchemaReader() {
 		super(new JDBCSchemaReader());
+
+		// remove quotation from Schema and Table name in query.
+		internalProvider.setUseQuotes(false);
 	}
 
 	@Override
@@ -75,16 +78,4 @@ public class MsAccessSchemaReader extends SchemaReaderDecorator<JDBCSchemaReader
 		this.source = source;
 		internalProvider.setSource(new MsAccessJdbcIOSupplier(new File(source.getLocation())));
 	}
-
-	/**
-	 * Set Schema Name quoted or not for query
-	 * 
-	 * @param isSchemaNameQuoted
-	 *            true or false
-	 */
-	public void setIsSchemaNameQuoted(boolean isSchemaNameQuoted) {
-		internalProvider.setIsSchemaNameQuoted(isSchemaNameQuoted);
-
-	}
-
 }

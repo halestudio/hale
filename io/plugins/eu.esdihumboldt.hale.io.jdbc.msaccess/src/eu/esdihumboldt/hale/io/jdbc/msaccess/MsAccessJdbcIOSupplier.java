@@ -21,15 +21,20 @@ import java.net.URI;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 
 /**
- * I/O supplier for Microsoft Access databases. Converts a file path to a JDBC URI and
- * viceversa.
+ * I/O supplier for Microsoft Access databases. Converts a file path to a JDBC
+ * URI and viceversa.
  * 
  * @author Arun Varma
  */
 public class MsAccessJdbcIOSupplier extends FileIOSupplier {
 
 	private URI jdbcUri;
-	
+
+	/**
+	 * Constructor
+	 * 
+	 * @param file MSAccess database file object
+	 */
 	public MsAccessJdbcIOSupplier(File file) {
 		super(file);
 		if (file != null) {
