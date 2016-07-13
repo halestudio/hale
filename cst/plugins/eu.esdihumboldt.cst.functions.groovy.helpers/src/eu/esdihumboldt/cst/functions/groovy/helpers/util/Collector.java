@@ -185,7 +185,7 @@ public class Collector extends GroovyObjectSupport {
 
 	/**
 	 * Iterate over the values (one argument) or over the child collectors and
-	 * values (two arguments) and resets the respective values or collectors.
+	 * values (two arguments) and resets the respective values.
 	 * 
 	 * @param closure the closure called for each value or key/values pair
 	 */
@@ -195,10 +195,9 @@ public class Collector extends GroovyObjectSupport {
 			Map<String, Collector> props;
 			synchronized (properties) {
 				props = new HashMap<>(properties);
-				properties.clear();
 			}
-			props.forEach((key, value) -> {
-				closure.call(key, value.values());
+			props.forEach((key, collector) -> {
+				closure.call(key, collector.clear());
 			});
 		}
 		else {
