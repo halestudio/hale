@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc.msaccess.test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -74,6 +75,9 @@ public abstract class MsAccessDataReaderTestSuit {
 	protected String SQL_QUERY;
 
 	private static File TEMP_SOURCE_FILE_NAME = null;
+
+	private static String[] tablesShouldNotInSchema = new String[] { "prop", "columns",
+			"columns_view", "tables" };
 
 	/**
 	 * Copies the source database to a temporary file.
@@ -135,12 +139,27 @@ public abstract class MsAccessDataReaderTestSuit {
 		assertTrue(report.isSuccess());
 
 		Schema schema = schemaReader.getSchema();
-		Collection<? extends TypeDefinition> k = schema.getTypes();
+		assertTrue(schema != null);
+		Collection<? extends TypeDefinition> k = schema.getMappingRelevantTypes();
 
 		for (TypeDefinition def : k)
 			System.out.println(def.getDisplayName());
 
-		assertTrue(schema != null);
+		checkTables(k);
+	}
+
+	/**
+	 * Check table names should not be in excluded table list (UCA_METADATA
+	 * table list)
+	 * 
+	 * @param tableNames table names collection return from Schema
+	 */
+	public void checkTables(Collection<? extends TypeDefinition> tableNames) {
+
+		for (TypeDefinition def : tableNames) {
+			for (String table : tablesShouldNotInSchema)
+				assertFalse(def.getDisplayName().equalsIgnoreCase(table));
+		}
 	}
 
 }

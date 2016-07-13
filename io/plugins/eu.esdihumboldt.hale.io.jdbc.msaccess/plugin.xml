@@ -10,10 +10,35 @@
       </connection>
       <driver
             id="eu.esdihumboldt.hale.io.jdbc.msaccess.driver"
-            name="MsAccessDriver"
-            testUri="jdbc:ucanaccess://msaccess-test.accdb"
+            name="MS Access Driver"
+            testUri="jdbc:ucanaccess:///msaccess-test.mdb"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessURIBuilder">
       </driver>
+      <readSchemaAdvisor
+            class="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReaderAdvisor"
+            connection="net.ucanaccess.jdbc.UcanaccessConnection"
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess">
+      </readSchemaAdvisor>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader"
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader"
+            name="MS Access">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jdbc.msaccess">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="mdb,accdb"
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess"
+            name="MS Access Database file"
+            priority="normal">
+      </content-type>
    </extension>
 
 </plugin>

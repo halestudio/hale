@@ -13,7 +13,7 @@ public class MsAccessURIBuilder implements URIBuilder {
 
 	private static final String DRIVER = "jdbc:ucanaccess://";
 
-	private static final String PARAM = ";showschema=true;sysschema=true";
+	private static final String PARAM = ";showschema=true";
 
 	@Override
 	public URI createJdbcUri(String host, String databaseFile) {

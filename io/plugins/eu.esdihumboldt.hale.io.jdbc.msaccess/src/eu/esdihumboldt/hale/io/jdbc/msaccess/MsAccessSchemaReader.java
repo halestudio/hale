@@ -18,12 +18,12 @@ package eu.esdihumboldt.hale.io.jdbc.msaccess;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
-import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import net.ucanaccess.jdbc.UcanaccessConnection;
 
 /**
  * Reads a schema from a MSAccess DB. extended {@link JDBCSchemaReader}.
@@ -57,12 +57,13 @@ public class MsAccessSchemaReader extends JDBCSchemaReader {
 	}
 
 	@Override
-	protected Connection getConnection() throws SQLException {
+	protected UcanaccessConnection getConnection() throws SQLException {
 
 		String user = getParameter(PARAM_USER).as(String.class);
 		String password = getParameter(PARAM_PASSWORD).as(String.class);
 
-		return DriverManager.getConnection(this.uri.toString(), user, password);
+		return (UcanaccessConnection) DriverManager.getConnection(this.uri.toString(), user,
+				password);
 	}
 
 }
