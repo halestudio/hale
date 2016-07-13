@@ -18,8 +18,10 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 import java.net.URI;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Enumeration;
 
 import com.google.common.base.Preconditions;
 
@@ -47,6 +49,12 @@ public abstract class JDBCConnection implements JDBCConstants {
 	 */
 	public static Connection getConnection(URI jdbcUri, String user, String password)
 			throws SQLException {
+
+		Enumeration<Driver> driverList = DriverManager.getDrivers();
+
+		for (; driverList.hasMoreElements();)
+			System.out.println(driverList.nextElement().toString());
+
 		Connection connection = DriverManager.getConnection(jdbcUri.toString(), user, password);
 
 		// do database specific configuration

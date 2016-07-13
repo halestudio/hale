@@ -19,11 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 
 import com.google.common.io.ByteSink;
@@ -31,8 +26,6 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -49,8 +42,6 @@ import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader;
  *
  */
 public abstract class MsAccessDataReaderTestSuit {
-
-	private static final ALogger log = ALoggerFactory.getLogger(MsAccessDataReaderTestSuit.class);
 
 	/**
 	 * Source Database name
@@ -108,13 +99,11 @@ public abstract class MsAccessDataReaderTestSuit {
 			try {
 				TEMP_SOURCE_FILE_NAME = File.createTempFile(SOURCE_DB_NAME, SOURCE_DB_EXT);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		return TEMP_SOURCE_FILE_NAME;
-		// return getTempDir() + File.separator + getRandomNumber() + "_" +
-		// SOURCE_DB_NAME;
+
 	}
 
 	/**
@@ -127,80 +116,6 @@ public abstract class MsAccessDataReaderTestSuit {
 	private void deleteTempFile(File tempFile) {
 		if (tempFile.exists()) {
 			tempFile.delete();
-		}
-	}
-
-	/**
-	 * To get {@link Connection} object by giving database location, user name
-	 * and password.
-	 * 
-	 * @return Connection object
-	 */
-	public Connection getConnection() {
-		Connection con = null;
-
-		try {
-			try {
-				Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-			con = DriverManager.getConnection(
-					"jdbc:ucanaccess://" + getSourceTempFilePath().toURI().getPath(), USER_NAME,
-					PASSWORD);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return con;
-
-	}
-
-	/**
-	 * Connection to MS Access database and getting first row data.
-	 * 
-	 * @return String value, First row data joined by delimiter \t
-	 */
-	public String getFirstData() {
-		Connection con = null;
-		Statement st = null;
-		ResultSet rs = null;
-
-		try {
-			con = getConnection();
-
-			st = con.createStatement();
-			rs = st.executeQuery(SQL_QUERY);
-
-			StringBuilder row = new StringBuilder();
-			if (rs != null) {
-				rs.next();
-
-				row.append(String.valueOf(rs.getInt(1)));
-				row.append("\t");
-				row.append(rs.getString(2));
-				row.append("\t");
-				row.append(String.valueOf(rs.getInt(3)));
-				row.append("\t");
-				row.append(String.valueOf(rs.getInt(4)));
-
-			}
-
-			return row.toString();
-
-		} catch (Exception e) {
-			log.error("Could not able to get data from MsAccessDatabase", e);
-			return null;
-		} finally {
-			try {
-				if (st != null)
-					st.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				// ignore
-			}
 		}
 	}
 
@@ -227,4 +142,5 @@ public abstract class MsAccessDataReaderTestSuit {
 
 		assertTrue(schema != null);
 	}
+
 }

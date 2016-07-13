@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.io.jdbc.msaccess.reader;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReader;
@@ -42,24 +40,6 @@ public class MsAccessSchemaReaderTest {
 			testSuite.schemaReaderTest();
 		} finally {
 			testSuite.deleteSourceTempFile();
-		}
-	}
-
-	/**
-	 * Testing connection and data reading from access database
-	 * 
-	 * @throws Exception if an error occurs
-	 */
-	@Test
-	public void testMsAccessGetData() throws Exception {
-		MsAccessDataReaderTestSuit obj = new MsAccessDataReader();
-		try {
-			obj.createSourceTempFile();
-			String rs = obj.getFirstData();
-			assertTrue(rs != null);
-			assertTrue(rs.length() > 0);
-		} finally {
-			obj.deleteSourceTempFile();
 		}
 	}
 

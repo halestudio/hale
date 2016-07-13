@@ -18,31 +18,28 @@ package eu.esdihumboldt.hale.io.jdbc.msaccess;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.common.schema.io.util.SchemaReaderDecorator;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 
 /**
- * Reads a schema from a MS Access DB. Wraps {@link JDBCSchemaReader}.
+ * Reads a schema from a MSAccess DB. extended {@link JDBCSchemaReader}.
  * 
  * @author Arun
  */
-public class MsAccessSchemaReader extends SchemaReaderDecorator<JDBCSchemaReader> {
+public class MsAccessSchemaReader extends JDBCSchemaReader {
 
 	private LocatableInputSupplier<? extends InputStream> source;
+	private URI uri;
 
 	/**
 	 * Default Constructor
 	 */
 	public MsAccessSchemaReader() {
-		super(new JDBCSchemaReader());
-
-		// remove quotation from Schema and Table name in query.
-		internalProvider.setUseQuotes(false);
+		setUseQuotes(false);
 	}
 
 	@Override
@@ -51,31 +48,21 @@ public class MsAccessSchemaReader extends SchemaReaderDecorator<JDBCSchemaReader
 	}
 
 	@Override
-	public void loadConfiguration(Map<String, Value> configuration) {
-		super.loadConfiguration(configuration);
-
-		Value source = configuration.get(PARAM_SOURCE);
-		if (source != null && !source.isEmpty()) {
-			setSource(new DefaultInputSupplier(URI.create(source.as(String.class))));
-		}
-	}
-
-	@Override
-	public void storeConfiguration(Map<String, Value> configuration) {
-		super.storeConfiguration(configuration);
-
-		// store original source
-		if (source != null) {
-			URI location = source.getUsedLocation();
-			if (location != null) {
-				configuration.put(PARAM_SOURCE, Value.of(location.toString()));
-			}
-		}
-	}
-
-	@Override
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
 		this.source = source;
-		internalProvider.setSource(new MsAccessJdbcIOSupplier(new File(source.getLocation())));
+		MsAccessJdbcIOSupplier inputSource = new MsAccessJdbcIOSupplier(
+				new File(source.getLocation()));
+		uri = inputSource.getLocation();
+		super.setSource(inputSource);
 	}
+
+	@Override
+	protected Connection getConnection() throws SQLException {
+
+		String user = getParameter(PARAM_USER).as(String.class);
+		String password = getParameter(PARAM_PASSWORD).as(String.class);
+
+		return DriverManager.getConnection(this.uri.toString(), user, password);
+	}
+
 }

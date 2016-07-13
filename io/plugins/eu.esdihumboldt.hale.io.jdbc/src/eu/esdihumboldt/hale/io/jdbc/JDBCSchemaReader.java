@@ -129,6 +129,16 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		this.useQuote = useQuote;
 	}
 
+	/**
+	 * To get Connection. Override this to load the customized connection
+	 * 
+	 * @return Connection object after loading driver.
+	 * @throws SQLException if connection could not be made.
+	 */
+	protected Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(this);
+	}
+
 	@Override
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -139,7 +149,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		try {
 			// connect to the database
 			try {
-				connection = JDBCConnection.getConnection(this);
+				connection = getConnection();
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
