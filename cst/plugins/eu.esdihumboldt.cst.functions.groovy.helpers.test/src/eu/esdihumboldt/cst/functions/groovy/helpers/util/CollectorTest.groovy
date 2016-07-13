@@ -185,6 +185,36 @@ class CollectorTest {
 	}
 
 	@Test
+	void testEachCollector() {
+		def c = new Collector()
+
+		def v1 = 'a'
+		def v2 = URI.create('#')
+		def v3 = 1.2f
+
+		c.l1[v1] = 'a'
+		c.l1[v2] = 'b'
+		c.l1[v3] = 'c'
+
+		def keyList = []
+		def valueList = []
+
+		c.l1.eachCollector { key, collector ->
+			keyList << key
+			assertTrue(collector instanceof Collector)
+			assertEquals(1, collector.values().size())
+			valueList << collector.values()[0]
+		}
+
+		assertEquals(3, keyList.size())
+		assertTrue(keyList.contains(v1))
+		assertTrue(keyList.contains(v2))
+		assertTrue(keyList.contains(v3))
+
+		checkList(valueList)
+	}
+
+	@Test
 	void testGString() {
 		def c = new Collector()
 
