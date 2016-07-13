@@ -7,6 +7,14 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.instance.orient.OInstance">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.instance.orient.storage.DatabaseHandle$InstanceHandle">
+      </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.instance.orient.storage.DatabaseHandle$GroupHandle">
+      </allow>
    </extension>
 
 </plugin>

@@ -42,6 +42,32 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
  */
 public class DatabaseHandle {
 
+	@SuppressWarnings("javadoc")
+	public final class InstanceHandle extends InstanceDecorator {
+
+		public InstanceHandle(Instance instance) {
+			super(instance);
+		}
+
+		@Override
+		public Object[] getProperty(QName propertyName) {
+			return augmentValues(getOriginalInstance().getProperty(propertyName));
+		}
+	}
+
+	@SuppressWarnings("javadoc")
+	public final class GroupHandle extends GroupDecorator {
+
+		public GroupHandle(Group group) {
+			super(group);
+		}
+
+		@Override
+		public Object[] getProperty(QName propertyName) {
+			return augmentValues(getOriginalGroup().getProperty(propertyName));
+		}
+	}
+
 	private static final ALogger log = ALoggerFactory.getLogger(DatabaseHandle.class);
 
 	/**
@@ -121,14 +147,7 @@ public class DatabaseHandle {
 			return null;
 		}
 
-		Instance result = new InstanceDecorator(instance) {
-
-			@Override
-			public Object[] getProperty(QName propertyName) {
-				return augmentValues(getOriginalInstance().getProperty(propertyName));
-			}
-
-		};
+		Instance result = new InstanceHandle(instance);
 		addReference(result);
 		return result;
 	}
@@ -145,14 +164,7 @@ public class DatabaseHandle {
 			return null;
 		}
 
-		Group result = new GroupDecorator(group) {
-
-			@Override
-			public Object[] getProperty(QName propertyName) {
-				return augmentValues(getOriginalGroup().getProperty(propertyName));
-			}
-
-		};
+		Group result = new GroupHandle(group);
 		addReference(result);
 		return result;
 	}
