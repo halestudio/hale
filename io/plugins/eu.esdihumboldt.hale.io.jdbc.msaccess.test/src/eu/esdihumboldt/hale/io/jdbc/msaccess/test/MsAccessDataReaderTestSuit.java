@@ -140,8 +140,15 @@ public abstract class MsAccessDataReaderTestSuit {
 		Connection con = null;
 
 		try {
-			con = DriverManager.getConnection("jdbc:ucanaccess://" + getSourceTempFilePath(),
-					USER_NAME, PASSWORD);
+			try {
+				Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+			con = DriverManager.getConnection(
+					"jdbc:ucanaccess://" + getSourceTempFilePath().toURI().getPath(), USER_NAME,
+					PASSWORD);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

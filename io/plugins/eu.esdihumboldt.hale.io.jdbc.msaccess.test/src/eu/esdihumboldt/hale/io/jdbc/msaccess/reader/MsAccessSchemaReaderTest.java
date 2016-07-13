@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.jdbc.msaccess.reader;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReader;
@@ -28,19 +30,13 @@ import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderTestSuit;
 public class MsAccessSchemaReaderTest {
 
 	/**
-	 * Invoke {@link MsAccessDataReaderTestSuit#schemaReaderTest()} on the test
-	 * suite class.
+	 * Test for Schema Reader from MS Access database
 	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
 	public void testMsAccessDataReaderTest() throws Exception {
 		MsAccessDataReaderTestSuit testSuite = new MsAccessDataReader();
-
-		testRead(testSuite);
-	}
-
-	private void testRead(MsAccessDataReaderTestSuit testSuite) throws Exception {
 		try {
 			testSuite.createSourceTempFile();
 			testSuite.schemaReaderTest();
@@ -48,4 +44,23 @@ public class MsAccessSchemaReaderTest {
 			testSuite.deleteSourceTempFile();
 		}
 	}
+
+	/**
+	 * Testing connection and data reading from access database
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMsAccessGetData() throws Exception {
+		MsAccessDataReaderTestSuit obj = new MsAccessDataReader();
+		try {
+			obj.createSourceTempFile();
+			String rs = obj.getFirstData();
+			assertTrue(rs != null);
+			assertTrue(rs.length() > 0);
+		} finally {
+			obj.deleteSourceTempFile();
+		}
+	}
+
 }
