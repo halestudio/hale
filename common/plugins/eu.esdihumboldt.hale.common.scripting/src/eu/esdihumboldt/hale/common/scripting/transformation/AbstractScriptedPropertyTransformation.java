@@ -60,8 +60,14 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 
 		if (originalParameters != null) {
 			for (Map.Entry<String, ParameterValue> entry : originalParameters.entries()) {
-				if (!entry.getValue().needsProcessing())
-					transformedParameters.put(entry.getKey(), entry.getValue().intern());
+				if (!entry.getValue().needsProcessing()) {
+					Value value = entry.getValue().intern();
+					if (!value.isRepresentedAsDOM()) {
+						value = Value.simple(getExecutionContext().getVariables()
+								.replaceVariables(value.getStringRepresentation()));
+					}
+					transformedParameters.put(entry.getKey(), value);
+				}
 				else {
 					// type is a script
 					ScriptFactory factory = ScriptExtension.getInstance()
