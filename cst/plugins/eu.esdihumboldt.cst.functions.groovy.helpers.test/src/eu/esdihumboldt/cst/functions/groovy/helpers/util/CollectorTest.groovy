@@ -105,7 +105,10 @@ class CollectorTest {
 		c.l1['l2']['b'] = 'b'
 		c.l1['l2'].c = 'c'
 
+		c.l1['l2'].c.x = 'x'
+
 		assertNotNull(c.l1.l2.a.value())
+		assertEquals('x', c.l1.l2.c.x.value())
 
 		def keyList = []
 		def valueList = []
@@ -120,5 +123,6 @@ class CollectorTest {
 		checkList(valueList)
 
 		assertNull(c.l1.l2.a.value())
+		assertEquals('x', c.l1.l2.c.x.value())
 	}
 }
