@@ -173,14 +173,36 @@ public class Collector extends GroovyObjectSupport {
 			synchronized (properties) {
 				props = new HashMap<>(properties);
 			}
-			props.forEach((key, value) -> {
-				closure.call(key, value.values());
+			props.forEach((key, collector) -> {
+				closure.call(key, collector.values());
 			});
 		}
 		else {
 			// iterate values
 			values().forEach(value -> closure.call(value));
 		}
+	}
+
+	/**
+	 * Iterate over the child collectors.
+	 * 
+	 * @param closure the closure called for each collector key and collector
+	 *            (two arguments) or only the collector (one argument)
+	 */
+	public void eachCollector(Closure<?> closure) {
+		// iterate map
+		Map<Object, Collector> props;
+		synchronized (properties) {
+			props = new HashMap<>(properties);
+		}
+		props.forEach((key, collector) -> {
+			if (closure.getMaximumNumberOfParameters() >= 2) {
+				closure.call(key, collector);
+			}
+			else {
+				closure.call(collector);
+			}
+		});
 	}
 
 	/**
