@@ -15,11 +15,15 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
-import eu.esdihumboldt.cst.functions.core.Create;
+import java.util.Collections;
+import java.util.Map;
+
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
+import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -33,41 +37,42 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyCreate extends Create implements GroovyConstants {
+public class GroovyCreate extends AbstractTypeTransformation<TransformationEngine>
+		implements GroovyConstants {
 
 	@Override
-	protected MutableInstance createInstance(TypeDefinition type, int index, TransformationLog log,
+	public void execute(String transformationIdentifier, TransformationEngine engine,
+			Map<String, String> executionParameters, TransformationLog log, Cell cell)
+					throws TransformationException {
+
+		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
+				.getDefinition();
+		Iterable<MutableInstance> target = createInstances(targetType, log, cell);
+		for (MutableInstance instance : target) {
+			getPropertyTransformer().publish(null, instance, log, cell);
+		}
+	}
+
+	private Iterable<MutableInstance> createInstances(TypeDefinition type, TransformationLog log,
 			Cell cell) throws TransformationException {
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = createBinding(index, cell, builder, log, getExecutionContext());
+		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, getExecutionContext());
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
 			Script script = GroovyUtil.getScript(this, binding, service);
-			return GroovyUtil.evaluate(script, builder, type, service);
+			return GroovyUtil.evaluateAll(script, builder, type, service);
 		} catch (TransformationException e) {
 			throw e;
+		} catch (NoResultException e) {
+			log.info(log.createMessage(
+					"Skipping target instance because received NoResultException from script",
+					null));
+			return Collections.emptyList();
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}
-	}
-
-	/**
-	 * Create the binding for the Groovy Create script function.
-	 * 
-	 * @param index the instance index
-	 * @param typeCell the type cell
-	 * @param builder the instance builder
-	 * @param log the transformation log
-	 * @param context the execution context
-	 * @return the binding
-	 */
-	public static Binding createBinding(int index, Cell typeCell, InstanceBuilder builder,
-			TransformationLog log, ExecutionContext context) {
-		Binding binding = GroovyUtil.createBinding(builder, typeCell, typeCell, log, context);
-		binding.setVariable(BINDING_INDEX, index);
-		return binding;
 	}
 
 }
