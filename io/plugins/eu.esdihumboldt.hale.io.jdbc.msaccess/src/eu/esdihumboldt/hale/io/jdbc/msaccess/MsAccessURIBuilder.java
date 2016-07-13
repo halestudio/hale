@@ -11,7 +11,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
  */
 public class MsAccessURIBuilder implements URIBuilder {
 
-	private static final String DRIVER = "jdbc:ucanaccess:/";
+	private static final String DRIVER = "jdbc:ucanaccess://";
 
 	private static final String PARAM = ";showschema=true;sysschema=true";
 
@@ -23,8 +23,7 @@ public class MsAccessURIBuilder implements URIBuilder {
 	}
 
 	/**
-	 * @param jdbcUri
-	 *            the JDBC URI
+	 * @param jdbcUri the JDBC URI
 	 * @return the file system path to the SpatiaLite database
 	 */
 	public static String getDatabase(URI jdbcUri) {
