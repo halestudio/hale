@@ -69,9 +69,9 @@ class CollectorTest {
 
 	private void checkList(List<?> list) {
 		assertEquals(3, list.size())
-		assertEquals('a', list[0])
-		assertEquals('b', list[1])
-		assertEquals('c', list[2])
+		assertTrue(list.contains('a'))
+		assertTrue(list.contains('b'))
+		assertTrue(list.contains('c'))
 	}
 
 	@Test
@@ -124,5 +124,77 @@ class CollectorTest {
 
 		assertNull(c.l1.l2.a.value())
 		assertEquals('x', c.l1.l2.c.x.value())
+	}
+
+	@Test
+	void testIntKeys() {
+		def c = new Collector()
+
+		c.l1[0] = 'a'
+		c.l1[1] = 'b'
+		c.l1[2] = 'c'
+
+		def keyList = []
+		def valueList = []
+
+		c.l1.consume { key, values ->
+			keyList << key
+			assertEquals(1, values.size())
+			valueList << values[0]
+		}
+
+		assertEquals(3, keyList.size())
+		assertEquals(0, keyList[0])
+		assertEquals(1, keyList[1])
+		assertEquals(2, keyList[2])
+
+		checkList(valueList)
+	}
+
+	@Test
+	void testMixedKeys() {
+		def c = new Collector()
+
+		def v1 = 'a'
+		def v2 = URI.create('#')
+		def v3 = 1.2f
+
+		c.l1[v1] = 'a'
+		c.l1[v2] = 'b'
+		c.l1[v3] = 'c'
+
+		c.l1[v3].x = 'x'
+
+		def keyList = []
+		def valueList = []
+
+		c.l1.consume { key, values ->
+			keyList << key
+			assertEquals(1, values.size())
+			valueList << values[0]
+		}
+
+		assertEquals(3, keyList.size())
+		assertTrue(keyList.contains(v1))
+		assertTrue(keyList.contains(v2))
+		assertTrue(keyList.contains(v3))
+
+		checkList(valueList)
+
+		assertEquals('x', c.l1[v3].x.value())
+	}
+
+	@Test
+	void testGString() {
+		def c = new Collector()
+
+		def var = 'list'
+
+		c.list << 'a'
+		c["$var"] << 'b'
+		c["list"] << 'c'
+
+		def list = c.list.values()
+		checkList(list)
 	}
 }
