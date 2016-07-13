@@ -192,8 +192,12 @@ public class Collector extends GroovyObjectSupport {
 	public void consume(Closure<?> closure) {
 		if (closure.getMaximumNumberOfParameters() >= 2) {
 			// iterate map
-			properties.forEach((key, value) -> {
-				closure.call(key, value.clear());
+			Map<String, Collector> props;
+			synchronized (properties) {
+				props = new HashMap<>(properties);
+			}
+			props.forEach((key, collector) -> {
+				closure.call(key, collector.clear());
 			});
 		}
 		else {
