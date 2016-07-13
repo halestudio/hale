@@ -30,22 +30,13 @@ import groovy.lang.GroovyObjectSupport;
  */
 public class Collector extends GroovyObjectSupport {
 
-	private final Map<String, Collector> properties = new HashMap<>();
+	private final Map<Object, Collector> properties = new HashMap<>();
 
 	private final List<Object> values = new ArrayList<>();
 
 	@Override
 	public Collector getProperty(String property) {
-		synchronized (properties) {
-			Collector child = properties.get(property);
-
-			if (child == null) {
-				child = new Collector();
-				properties.put(property, child);
-			}
-
-			return child;
-		}
+		return getAt(property);
 	}
 
 	@Override
@@ -146,8 +137,17 @@ public class Collector extends GroovyObjectSupport {
 	 * @param property the collector name
 	 * @return the child collector
 	 */
-	public Collector getAt(String property) {
-		return getProperty(property);
+	public Collector getAt(Object property) {
+		synchronized (properties) {
+			Collector child = properties.get(property);
+
+			if (child == null) {
+				child = new Collector();
+				properties.put(property, child);
+			}
+
+			return child;
+		}
 	}
 
 	/**
@@ -156,8 +156,8 @@ public class Collector extends GroovyObjectSupport {
 	 * @param property the child collector name
 	 * @param value the value to set on the child collector
 	 */
-	public void putAt(String property, Object value) {
-		setProperty(property, value);
+	public void putAt(Object property, Object value) {
+		getAt(property).set(value);
 	}
 
 	/**
@@ -169,7 +169,7 @@ public class Collector extends GroovyObjectSupport {
 	public void each(Closure<?> closure) {
 		if (closure.getMaximumNumberOfParameters() >= 2) {
 			// iterate map
-			Map<String, Collector> props;
+			Map<Object, Collector> props;
 			synchronized (properties) {
 				props = new HashMap<>(properties);
 			}
@@ -192,7 +192,7 @@ public class Collector extends GroovyObjectSupport {
 	public void consume(Closure<?> closure) {
 		if (closure.getMaximumNumberOfParameters() >= 2) {
 			// iterate map
-			Map<String, Collector> props;
+			Map<Object, Collector> props;
 			synchronized (properties) {
 				props = new HashMap<>(properties);
 			}
