@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader;
 
 /**
- * To test Access database
+ * Abstract suit class to test Access database
  * 
  * @author Arun
  *
@@ -74,7 +74,7 @@ public abstract class MsAccessDataReaderTestSuit {
 	 */
 	protected String SQL_QUERY;
 
-	private static File TEMP_SOURCE_FILE_NAME = null;
+	private File TEMP_SOURCE_FILE_NAME = null;
 
 	private static String[] tablesShouldNotInSchema = new String[] { "prop", "columns",
 			"columns_view", "tables" };
@@ -138,6 +138,7 @@ public abstract class MsAccessDataReaderTestSuit {
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 		assertTrue(report.isSuccess());
 
+		TEMP_SOURCE_FILE_NAME = null;
 		Schema schema = schemaReader.getSchema();
 		assertTrue(schema != null);
 		Collection<? extends TypeDefinition> k = schema.getMappingRelevantTypes();

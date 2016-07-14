@@ -58,10 +58,10 @@ public class MsAccessSchemaReader extends JDBCSchemaReader {
 
 	@Override
 	protected UcanaccessConnection getConnection() throws SQLException {
-
 		String user = getParameter(PARAM_USER).as(String.class);
 		String password = getParameter(PARAM_PASSWORD).as(String.class);
 
+		// return specific UCanAccessConnection
 		return (UcanaccessConnection) DriverManager.getConnection(this.uri.toString(), user,
 				password);
 	}

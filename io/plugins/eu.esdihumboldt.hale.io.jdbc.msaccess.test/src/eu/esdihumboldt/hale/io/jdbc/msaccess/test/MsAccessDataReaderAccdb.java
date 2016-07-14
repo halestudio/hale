@@ -16,27 +16,24 @@
 package eu.esdihumboldt.hale.io.jdbc.msaccess.test;
 
 /**
- * Concrete class for MsAccessDataReaderTestSuit for .mdb extension
+ * Concrete class for MsAccessDataReaderTestSuit for .accdb extension
  * 
  * @author Arun
  */
-public class MsAccessDataReader extends MsAccessDataReaderTestSuit {
+public class MsAccessDataReaderAccdb extends MsAccessDataReaderTestSuit {
 
 	/**
-	 * Constructor
+	 * 
 	 */
-	public MsAccessDataReader() {
+	public MsAccessDataReaderAccdb() {
+		SOURCE_DB_NAME = "transform";
 
-		SOURCE_DB_NAME = "CDDA-SVK-20150922";
-
-		SOURCE_DB_EXT = ".mdb";
+		SOURCE_DB_EXT = ".accdb";
 
 		SOURCE_DB_PATH = "data/" + SOURCE_DB_NAME + SOURCE_DB_EXT;
 
 		USER_NAME = null;
 
 		PASSWORD = null;
-
 	}
-
 }

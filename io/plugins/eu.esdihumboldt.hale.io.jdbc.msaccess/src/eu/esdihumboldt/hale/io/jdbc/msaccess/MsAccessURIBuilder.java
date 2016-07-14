@@ -11,9 +11,11 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
  */
 public class MsAccessURIBuilder implements URIBuilder {
 
+	// UCanAccess Driver;
 	private static final String DRIVER = "jdbc:ucanaccess://";
 
-	private static final String PARAM = ";showschema=true";
+	// UCanAccess Driver properties;
+	private static final String PARAM = ";showschema=true;sysschema=true";
 
 	@Override
 	public URI createJdbcUri(String host, String databaseFile) {

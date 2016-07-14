@@ -22,7 +22,7 @@ import schemacrawler.schemacrawler.InclusionRule;
 import schemacrawler.schemacrawler.SchemaCrawlerOptions;
 
 /**
- * TODO Type description
+ * SchemaReader Advisor for MS Access Database
  * 
  * @author Arun
  */
@@ -59,9 +59,18 @@ public class MsAccessSchemaReaderAdvisor implements JDBCSchemaReaderAdvisor {
 
 			@Override
 			public boolean test(String t) {
+				// pattern for UCA_METADATA tables.
 				final Pattern uca_metadata_TablePattern = Pattern.compile("\\w*.UCA_METADATA.\\w*");
+				// pattern for SYS tables.
+				final Pattern sys_TablePattern = Pattern.compile("\\w*.SYS.\\w*");
+
 				boolean isuca_metadata_Table = uca_metadata_TablePattern.matcher(t).matches();
 				if (isuca_metadata_Table) {
+					return false;
+				}
+
+				boolean isSys_Table = sys_TablePattern.matcher(t).matches();
+				if (isSys_Table) {
 					return false;
 				}
 

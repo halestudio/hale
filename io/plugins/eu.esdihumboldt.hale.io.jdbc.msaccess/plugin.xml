@@ -34,7 +34,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
-            file-extensions="mdb,accdb"
+            file-extensions="mdb"
             id="eu.esdihumboldt.hale.io.jdbc.msaccess"
             name="MS Access Database file"
             priority="normal">

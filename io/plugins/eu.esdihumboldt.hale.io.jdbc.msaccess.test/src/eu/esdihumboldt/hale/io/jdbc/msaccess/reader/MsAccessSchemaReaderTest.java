@@ -15,26 +15,46 @@
 
 package eu.esdihumboldt.hale.io.jdbc.msaccess.reader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReader;
+import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderAccdb;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderTestSuit;
 
 /**
- * TODO Type description
+ * Contains tests for MsAccess Schema Reader
  * 
  * @author Arun
  */
 public class MsAccessSchemaReaderTest {
 
 	/**
-	 * Test for Schema Reader from MS Access database
+	 * Test for Schema Reader from MS Access database of mdb extension
 	 * 
 	 * @throws Exception if an error occurs
 	 */
 	@Test
-	public void testMsAccessDataReaderTest() throws Exception {
+	public void testMsAccessSchemaReaderForMdbTest() throws Exception {
 		MsAccessDataReaderTestSuit testSuite = new MsAccessDataReader();
+		try {
+			testSuite.createSourceTempFile();
+			testSuite.schemaReaderTest();
+		} finally {
+			testSuite.deleteSourceTempFile();
+		}
+	}
+
+	/**
+	 * Test for Schema Reader from MS Access database of accdb extension.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Ignore // Will test afterwards once finished everything with MDB extension
+			// first.
+	@Test
+	public void testMsAccessSchemaReaderForAccdbTest() throws Exception {
+		MsAccessDataReaderTestSuit testSuite = new MsAccessDataReaderAccdb();
 		try {
 			testSuite.createSourceTempFile();
 			testSuite.schemaReaderTest();
