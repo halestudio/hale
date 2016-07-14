@@ -32,6 +32,10 @@ public class DatabaseTable implements TypeConstraint {
 
 	private final String tableName;
 
+	// for usage quotation in {@link #getFullTableName}. Added for MsAccess
+	// Database support.
+	private final boolean useQuote;
+
 	/**
 	 * Create a default constraint. The default table name is the given type
 	 * local name.
@@ -49,9 +53,23 @@ public class DatabaseTable implements TypeConstraint {
 	 * @param tableName the table name
 	 */
 	public DatabaseTable(String schemaName, String tableName) {
+		this(schemaName, tableName, false);
+	}
+
+	/**
+	 * Create a constraint with the given schema and table names and quotation
+	 * usage decision as boolean value
+	 * 
+	 * @param schemaName the schema name, may be <code>null</code>
+	 * @param tableName the table name
+	 * @param useQuote true if quotation needed in {@link #getFullTableName},
+	 *            else false
+	 */
+	public DatabaseTable(String schemaName, String tableName, boolean useQuote) {
 		super();
 		this.schemaName = schemaName;
 		this.tableName = tableName;
+		this.useQuote = useQuote;
 	}
 
 	/**
@@ -76,11 +94,24 @@ public class DatabaseTable implements TypeConstraint {
 	 */
 	public String getFullTableName() {
 		if (schemaName == null || schemaName.isEmpty()) {
-			return JDBCUtil.quote(tableName);
+			return getQuotedValue(tableName);
 		}
 		else {
-			return JDBCUtil.quote(schemaName) + '.' + JDBCUtil.quote(tableName);
+			return getQuotedValue(schemaName) + '.' + getQuotedValue(tableName);
 		}
+	}
+
+	/**
+	 * Get quoted value by deciding on {@link #useQuote} parameter.
+	 * 
+	 * @param value String
+	 * @return quoted or unquoted string
+	 */
+	private String getQuotedValue(String value) {
+		if (useQuote) {
+			value = JDBCUtil.quote(value);
+		}
+		return value;
 	}
 
 	@Override

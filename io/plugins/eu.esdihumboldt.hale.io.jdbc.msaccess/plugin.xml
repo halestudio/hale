@@ -25,7 +25,15 @@
       <provider
             class="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader"
             id="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader"
-            name="MS Access">
+            name="MS Access Database">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jdbc.msaccess">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader"
+            id="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader"
+            name="MS Access Database">
          <contentType
                ref="eu.esdihumboldt.hale.io.jdbc.msaccess">
          </contentType>

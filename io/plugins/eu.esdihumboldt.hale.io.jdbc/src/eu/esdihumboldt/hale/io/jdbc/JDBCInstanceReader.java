@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,19 +65,47 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 		return false;
 	}
 
+	/**
+	 * To get Connection. Override this to load the customized connection
+	 * 
+	 * @return Connection object after loading driver.
+	 * @throws SQLException if connection could not be made.
+	 */
+	protected Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(this);
+	}
+
+	/**
+	 * To test Connection. Override this to load the customized connection
+	 * testing
+	 * 
+	 * @return true if connection succeeded or <code>null</code>
+	 * @throws SQLException if connection could not be made.
+	 */
+	protected boolean testConnection() throws SQLException {
+
+		// test connection
+		Connection connection = getConnection();
+		try {
+			connection.createStatement().executeQuery("SELECT 1;");
+		} catch (SQLSyntaxErrorException e) {
+			log.warn(
+					"SELECT 1 query is not supported by Oracle database. Instead uses SELECT 1 from dual.");
+			connection.createStatement().executeQuery("SELECT 1 from dual");
+		} finally {
+			// Database connection must be close.
+			connection.close();
+		}
+		return true;
+	}
+
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Configure database connection", ProgressIndicator.UNKNOWN);
 		try {
-			// test connection
-			Connection connection = JDBCConnection.getConnection(this);
-			try {
-				connection.createStatement().executeQuery("SELECT 1;");
-			} catch (SQLSyntaxErrorException e) {
-				log.warn("SELECT 1 query is not supported by Oracle database. Instead uses SELECT 1 from dual.");
-				connection.createStatement().executeQuery("SELECT 1 from dual");
-			}
+
+			testConnection();
 
 			String user = getParameter(PARAM_USER).as(String.class);
 			String password = getParameter(PARAM_PASSWORD).as(String.class);
@@ -87,8 +116,18 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 			for (TypeDefinition type : getSourceSchema().getMappingRelevantTypes()) {
 				// TODO test if table exists in DB?
 
-				collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
-						user, password));
+				collections.put(type,
+						new JDBCTableCollection(type, getSource().getLocation(), user, password) {
+
+							// To provide extensibility for getting customized
+							// database connection for
+							// Instance reading.
+							@Override
+							protected Connection createConnection() throws SQLException {
+								return JDBCInstanceReader.this.getConnection();
+							}
+
+						});
 			}
 
 			collection = new PerTypeInstanceCollection(collections);
