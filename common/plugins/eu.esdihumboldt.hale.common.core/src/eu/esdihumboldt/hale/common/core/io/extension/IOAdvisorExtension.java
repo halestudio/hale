@@ -30,6 +30,7 @@ import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisorRegister;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -37,7 +38,8 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * 
  * @author Simon Templer
  */
-public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdvisorFactory> {
+public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdvisorFactory>
+		implements IOAdvisorRegister {
 
 	/**
 	 * Factory for {@link IOAdvisor} based on an {@link IConfigurationElement}
@@ -148,27 +150,29 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 	 *            configured with
 	 * @return the advisor or <code>null</code>
 	 */
+	@Override
 	public IOAdvisor<?> findAdvisor(final String actionId, final ServiceProvider serviceProvider) {
 		// find associated advisor(s)
-		List<IOAdvisorFactory> advisors = getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+		List<IOAdvisorFactory> advisors = getFactories(
+				new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
 
-			@Override
-			public boolean acceptFactory(IOAdvisorFactory factory) {
-				return factory.getActionID().equals(actionId);
-			}
+					@Override
+					public boolean acceptFactory(IOAdvisorFactory factory) {
+						return factory.getActionID().equals(actionId);
+					}
 
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
-				return true;
-			}
-		});
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<IOAdvisor<?>, IOAdvisorFactory> collection) {
+						return true;
+					}
+				});
 
 		// create advisor if possible
 		IOAdvisor<?> advisor;
 		if (advisors == null || advisors.isEmpty()) {
-			throw new IllegalStateException(MessageFormat.format("No advisor for action {0} found",
-					actionId));
+			throw new IllegalStateException(
+					MessageFormat.format("No advisor for action {0} found", actionId));
 		}
 		else {
 			if (advisors.size() > 1) {
