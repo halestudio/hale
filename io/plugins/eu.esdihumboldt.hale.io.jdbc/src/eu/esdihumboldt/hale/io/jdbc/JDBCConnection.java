@@ -48,10 +48,8 @@ public abstract class JDBCConnection implements JDBCConstants {
 	public static Connection getConnection(URI jdbcUri, String user, String password)
 			throws SQLException {
 		Connection connection = DriverManager.getConnection(jdbcUri.toString(), user, password);
-
 		// do database specific configuration
 		ConnectionConfigurerExtension.getInstance().applyAll(connection);
-
 		return connection;
 	}
 

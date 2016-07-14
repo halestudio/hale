@@ -52,6 +52,7 @@
       <plugin id="com.github.jnr.x86asm"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.healthmarketscience.jackcess"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.orientechnologies.common"/>
@@ -78,6 +79,7 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
@@ -152,6 +154,8 @@
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite"/>
@@ -232,6 +236,7 @@
       <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
+      <plugin id="net.sf.ucanaccess"/>
       <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>

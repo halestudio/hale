@@ -20,6 +20,7 @@ target/
 /workspace/
 pom.xml
 .metadata/
+.recommenders/
 
 # generic main project
 /.project

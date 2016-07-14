@@ -32,21 +32,6 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import schemacrawler.schema.Catalog;
-import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
-//import schemacrawler.schema.Database;
-import schemacrawler.schema.IndexColumn;
-import schemacrawler.schema.PrimaryKey;
-import schemacrawler.schema.ResultsColumn;
-import schemacrawler.schema.ResultsColumns;
-import schemacrawler.schema.Table;
-import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
-import schemacrawler.schemacrawler.SchemaCrawlerException;
-import schemacrawler.schemacrawler.SchemaCrawlerOptions;
-import schemacrawler.schemacrawler.SchemaInfoLevel;
-import schemacrawler.utility.SchemaCrawlerUtility;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -84,6 +69,20 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
+import schemacrawler.schema.Catalog;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.ColumnDataType;
+//import schemacrawler.schema.Database;
+import schemacrawler.schema.IndexColumn;
+import schemacrawler.schema.PrimaryKey;
+import schemacrawler.schema.ResultsColumn;
+import schemacrawler.schema.ResultsColumns;
+import schemacrawler.schema.Table;
+import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
+import schemacrawler.schemacrawler.SchemaCrawlerException;
+import schemacrawler.schemacrawler.SchemaCrawlerOptions;
+import schemacrawler.schemacrawler.SchemaInfoLevel;
+import schemacrawler.utility.SchemaCrawlerUtility;
 
 /**
  * Reads a database schema through JDBC.
@@ -94,6 +93,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 //	public static final String PARAM_SCHEMAS = "schemas";
 
+	private boolean useQuote;
+
 	/**
 	 * Default constructor
 	 */
@@ -102,6 +103,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 		addSupportedParameter(PARAM_USER);
 		addSupportedParameter(PARAM_PASSWORD);
+
+		useQuote = true;
 	}
 
 	@Override
@@ -117,6 +120,25 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		}
 	}
 
+	/**
+	 * To set useQuote parameter
+	 * 
+	 * @param useQuote true or false value
+	 */
+	public void setUseQuotes(boolean useQuote) {
+		this.useQuote = useQuote;
+	}
+
+	/**
+	 * To get Connection. Override this to load the customized connection
+	 * 
+	 * @return Connection object after loading driver.
+	 * @throws SQLException if connection could not be made.
+	 */
+	protected Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(this);
+	}
+
 	@Override
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -127,7 +149,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		try {
 			// connect to the database
 			try {
-				connection = JDBCConnection.getConnection(this);
+				connection = getConnection();
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
@@ -272,12 +294,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						String fullTableName = quote(table.getName());
+						// get if in table name, quotation required or not.
+						String fullTableName = getQuotedValue(table.getName());
 						if (schema.getName() != null) {
-							fullTableName = quote(schema.getName()) + "." + fullTableName;
+							fullTableName = getQuotedValue(schema.getName()) + "." + fullTableName;
 						}
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + fullTableName
-								+ " WHERE 1 = 0");
+						ResultSet rs = stmt
+								.executeQuery("SELECT * FROM " + fullTableName + " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
 						reporter.warn(new IOMessageImpl(
@@ -330,6 +353,19 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		}
 
 		return typeIndex;
+	}
+
+	/**
+	 * Get quoted value by deciding on isSchemaNameQuoted parameter.
+	 * 
+	 * @param value String
+	 * @return quoted unqoted string
+	 */
+	private String getQuotedValue(String value) {
+		if (useQuote) {
+			value = quote(value);
+		}
+		return value;
 	}
 
 	/**
@@ -414,9 +450,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// since they can have multiple columns
 		if (column.isPartOfForeignKey()) {
 			Column referenced = column.getReferencedColumn();
-			property.setConstraint(new Reference(getOrCreateTableType(schema,
-					referenced.getParent(), overallNamespace, namespace, typeIndex, connection,
-					reporter, catalog)));
+			property.setConstraint(new Reference(
+					getOrCreateTableType(schema, referenced.getParent(), overallNamespace,
+							namespace, typeIndex, connection, reporter, catalog)));
 		}
 
 		return property;
@@ -447,8 +483,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		QName typeName = new QName(overallNamespace, localName);
 
 		// check for geometry type
-		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance().getTypeInfo(
-				columnType.getName(), connection);
+		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance()
+				.getTypeInfo(columnType.getName(), connection);
 		@SuppressWarnings("rawtypes")
 		GeometryAdvisor geomAdvisor = null;
 		if (geomType != null) {
@@ -492,8 +528,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		if (geomType != null && geomAdvisor != null) {
 			// configure geometry type
 			@SuppressWarnings("unchecked")
-			Class<? extends Geometry> geomClass = geomAdvisor.configureGeometryColumnType(
-					connection, column, type);
+			Class<? extends Geometry> geomClass = geomAdvisor
+					.configureGeometryColumnType(connection, column, type);
 			type.setConstraint(GeometryType.get(geomClass));
 			// always a single geometry
 			type.setConstraint(Binding.get(GeometryProperty.class));
@@ -558,10 +594,10 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 					// XXX for now, stick to what we can determine
 					int dimension = SQLArray.UNKNOWN_DIMENSION;
-					String specificTypeName = (itemType != null) ? (itemType
-							.getDatabaseSpecificTypeName()) : (null);
-					type.setConstraint(new SQLArray(elementBinding, specificTypeName, dimension,
-							null));
+					String specificTypeName = (itemType != null)
+							? (itemType.getDatabaseSpecificTypeName()) : (null);
+					type.setConstraint(
+							new SQLArray(elementBinding, specificTypeName, dimension, null));
 
 					// set binding
 					if (dimension <= 1) {
@@ -654,8 +690,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		try {
 			key = table.getPrimaryKey();
 		} catch (Exception e) {
-			reporter.warn(new IOMessageImpl("Could not read primary key metadata for table: "
-					+ table.getFullName(), e));
+			reporter.warn(new IOMessageImpl(
+					"Could not read primary key metadata for table: " + table.getFullName(), e));
 		}
 
 		if (key != null) {
@@ -667,10 +703,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			else if (columns.size() == 1) {
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
-				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
-						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
-								table.getColumn(columns.get(0).getName()), overallNamespace,
-								namespace, types, connection, reporter, catalog).getName())));
+				type.setConstraint(
+						new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
+								Collections.<QName> singletonList(getOrCreateProperty(schema, type,
+										table.getColumn(columns.get(0).getName()), overallNamespace,
+										namespace, types, connection, reporter, catalog)
+												.getName())));
 			}
 		}
 
