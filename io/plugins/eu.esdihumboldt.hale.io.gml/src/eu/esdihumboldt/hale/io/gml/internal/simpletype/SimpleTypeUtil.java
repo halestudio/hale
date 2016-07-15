@@ -17,12 +17,15 @@
 package eu.esdihumboldt.hale.io.gml.internal.simpletype;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
 
+import org.apache.xmlbeans.GDate;
+import org.apache.xmlbeans.GDateBuilder;
 import org.apache.xmlbeans.XmlAnySimpleType;
 import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
@@ -48,6 +51,7 @@ public class SimpleTypeUtil {
 	 * XML simple type names mapped to the corresponding XmlBeans type
 	 */
 	private static final Map<String, Class<? extends XmlAnySimpleType>> TYPE_MAP = new HashMap<String, Class<? extends XmlAnySimpleType>>();
+
 	static {
 		// TODO add additional simple types
 
@@ -80,6 +84,22 @@ public class SimpleTypeUtil {
 		if (simpleType != null) {
 			try {
 				XmlAnySimpleType simpleTypeValue = conversionService.convert(value, simpleType);
+				if (simpleTypeValue instanceof XmlDateTime) {
+					XmlDateTime xmlDateTime = (XmlDateTime) simpleTypeValue;
+
+					// use Zulu time to have a reproducable result
+					// (as the old Java Date types always assume the current
+					// time zone!)
+					//
+					// XXX this should be removed when time/date types are used
+					// that are timezone aware
+					Calendar calendar = xmlDateTime.getCalendarValue();
+					GDateBuilder builder = new GDateBuilder(calendar);
+					builder.normalizeToTimeZone(0);
+					GDate gdate = builder.toGDate();
+
+					xmlDateTime.setGDateValue(gdate);
+				}
 				if (simpleTypeValue != null) {
 					return simpleTypeValue.getStringValue();
 				}
@@ -147,8 +167,8 @@ public class SimpleTypeUtil {
 		return convertFromXml(value, simpleType, binding);
 	}
 
-	private static Object convertFromXml(String value,
-			Class<? extends XmlAnySimpleType> simpleType, Class<?> binding) {
+	private static Object convertFromXml(String value, Class<? extends XmlAnySimpleType> simpleType,
+			Class<?> binding) {
 		ConversionService conversionService = HalePlatform.getService(ConversionService.class);
 
 		// try using simple type for conversion
@@ -193,8 +213,8 @@ public class SimpleTypeUtil {
 		}
 
 		if (type.getName().getNamespaceURI().equals(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-			Class<? extends XmlAnySimpleType> simpleType = TYPE_MAP.get(type.getName()
-					.getLocalPart());
+			Class<? extends XmlAnySimpleType> simpleType = TYPE_MAP
+					.get(type.getName().getLocalPart());
 
 			if (simpleType != null) {
 				return simpleType;
