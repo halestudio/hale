@@ -34,6 +34,7 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 
 	private static final String NAME_SCHEMA = "schema";
 	private static final String NAME_TABLE = "table";
+	private static final String USE_QUOTE = "usequote";
 
 	@Override
 	public Value store(DatabaseTable constraint, Map<TypeDefinition, String> typeIndex)
@@ -50,6 +51,9 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 			props.put(NAME_TABLE, Value.of(table));
 		}
 
+		boolean useQuote = constraint.useQuote();
+		props.put(USE_QUOTE, Value.of(useQuote));
+
 		return props.toValue();
 	}
 
@@ -58,17 +62,19 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
 		String schema = null;
 		String table = null;
+		boolean useQuote = true;
 
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
 			schema = props.getSafe(NAME_SCHEMA).as(String.class);
 			table = props.getSafe(NAME_TABLE).as(String.class);
+			useQuote = props.getSafe(USE_QUOTE).as(Boolean.class);
 		}
 
 		if (table == null) {
 			throw new IllegalStateException("Database table constraint w/o table name");
 		}
-		return new DatabaseTable(schema, table);
+		return new DatabaseTable(schema, table, useQuote);
 	}
 
 }

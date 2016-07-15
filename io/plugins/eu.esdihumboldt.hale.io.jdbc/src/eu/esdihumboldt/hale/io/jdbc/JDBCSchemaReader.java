@@ -683,7 +683,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(HasValueFlag.DISABLED);
 
 		// set schema and table name
-		type.setConstraint(new DatabaseTable(unquote(schema.getName()), unquote(table.getName())));
+		type.setConstraint(
+				new DatabaseTable(unquote(schema.getName()), unquote(table.getName()), useQuote));
 
 		// set primary key if possible
 		PrimaryKey key = null;

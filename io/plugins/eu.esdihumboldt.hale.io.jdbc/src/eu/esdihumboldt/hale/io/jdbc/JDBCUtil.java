@@ -24,7 +24,8 @@ package eu.esdihumboldt.hale.io.jdbc;
 public class JDBCUtil {
 
 	/**
-	 * Removes one pair of leading/trailing quotes ("x" or 'x' becomes x).
+	 * Removes one pair of leading/trailing quotes ("x" or 'x' or `x` becomes
+	 * x).
 	 * 
 	 * @param s the string to remove quotes from
 	 * @return the string with one pair of quotes less if possible
@@ -36,7 +37,7 @@ public class JDBCUtil {
 
 		char startChar = s.charAt(0);
 		char endChar = s.charAt(s.length() - 1);
-		if ((startChar == '\'' || startChar == '"') && startChar == endChar)
+		if ((startChar == '\'' || startChar == '"' || startChar == '`') && startChar == endChar)
 			return s.substring(1, s.length() - 1);
 		else
 			return s;

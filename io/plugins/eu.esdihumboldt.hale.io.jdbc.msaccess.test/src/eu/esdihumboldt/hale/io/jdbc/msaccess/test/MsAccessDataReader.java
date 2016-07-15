@@ -27,7 +27,7 @@ public class MsAccessDataReader extends MsAccessDataReaderTestSuit {
 	 */
 	public MsAccessDataReader() {
 
-		SOURCE_DB_NAME = "CDDA-SVK-20150922";
+		SOURCE_DB_NAME = "transform";
 
 		SOURCE_DB_EXT = ".mdb";
 
@@ -35,7 +35,7 @@ public class MsAccessDataReader extends MsAccessDataReaderTestSuit {
 
 		USER_NAME = null;
 
-		PASSWORD = null;
+		PASSWORD = "123456";
 
 	}
 
