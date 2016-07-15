@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.jdbc.msaccess.test;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -31,9 +32,11 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader;
 
 /**
@@ -147,6 +150,77 @@ public abstract class MsAccessDataReaderTestSuit {
 			System.out.println(def.getDisplayName());
 
 		checkTables(k);
+	}
+
+	/**
+	 * Test - reads a sample MsAccess schema and data.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	public void instanceRaderTest() throws Exception {
+
+		// ****** read Schema ******//
+
+		Schema schema = readSchema(getSourceTempFilePath());
+		assertNotNull(schema);
+		System.out.println("MappingRelevantTypes:" + schema.getMappingRelevantTypes().size());
+		// assertEquals(1, schema.getMappingRelevantTypes().size());
+
+		// Test properties
+		// TypeDefinition schemaType =
+		// schema.getMappingRelevantTypes().iterator().next();
+		// Check every property for their existence
+
+		// ****** read Instances ******//
+		InstanceCollection instances = readInstances(schema, getSourceTempFilePath());
+		assertTrue(instances.hasSize());
+		System.out.println("instances size:" + instances.size());
+		// assertEquals(SOURCE_INSTANCES_COUNT, instances.size());
+
+	}
+
+	/**
+	 * Reads a schema from a MsAccess database file.
+	 * 
+	 * @param sourceFile the file of the source database.
+	 * @return the schema
+	 * @throws Exception any exception thrown by {@link MsAccessSchemaReader}
+	 */
+
+	public Schema readSchema(File sourceFile) throws Exception {
+
+		MsAccessSchemaReader schemaReader = new MsAccessSchemaReader();
+		schemaReader.setSource(new FileIOSupplier(sourceFile));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(USER_NAME));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(PASSWORD));
+
+		IOReport report = schemaReader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		return schemaReader.getSchema();
+	}
+
+	/**
+	 * Reads instances from from a MsAccess database file with the provided
+	 * schema.
+	 * 
+	 * @param sourceSchema the schema of the source database
+	 * @param sourceFile the file of the source database.
+	 * @return the read instances
+	 * @throws Exception any exception thrown by {@link MsAccessInstanceReader}
+	 */
+	public InstanceCollection readInstances(Schema sourceSchema, File sourceFile) throws Exception {
+
+		MsAccessInstanceReader instanceReader = new MsAccessInstanceReader();
+		instanceReader.setSource(new FileIOSupplier(sourceFile));
+		instanceReader.setSourceSchema(sourceSchema);
+
+		// Test instances
+		IOReport report = instanceReader.execute(new LogProgressIndicator());
+		assertTrue("Data import was not successfull.", report.isSuccess());
+
+		return instanceReader.getInstances();
+
 	}
 
 	/**
