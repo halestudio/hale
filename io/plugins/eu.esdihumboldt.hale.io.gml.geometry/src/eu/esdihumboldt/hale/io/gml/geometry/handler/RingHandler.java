@@ -19,10 +19,12 @@ package eu.esdihumboldt.hale.io.gml.geometry.handler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -90,11 +92,12 @@ public class RingHandler extends FixedConstraintsGeometryHandler {
 
 				try {
 					ring = getGeometryFactory().createLinearRing(
-							prop.getGeometry().getCoordinates());
+							filterDuplicates(prop.getGeometry().getCoordinates()));
 				} catch (IllegalArgumentException e) {
 					if (allowTryOtherDimension) {
 						// the error
-						// "Points of LinearRing do not form a closed linestring"
+						// "Points of LinearRing do not form a closed
+						// linestring"
 						// can be an expression of a wrong dimension being used
 						// we try an alternative, to be sure (e.g. 3D instead of
 						// 2D)
@@ -122,6 +125,30 @@ public class RingHandler extends FixedConstraintsGeometryHandler {
 		}
 
 		throw new GeometryNotSupportedException();
+	}
+
+	/**
+	 * Filter duplicate appearing directly after each other in a sequence of
+	 * coordinates.
+	 * 
+	 * @param coordinates the sequence of coordinates
+	 * @return the filtered sequence
+	 */
+	private Coordinate[] filterDuplicates(Coordinate[] coordinates) {
+		if (coordinates == null) {
+			return null;
+		}
+
+		Coordinate lastCoordinate = null;
+		List<Coordinate> result = new ArrayList<>(coordinates.length);
+		for (Coordinate coordinate : coordinates) {
+			if (lastCoordinate == null || !lastCoordinate.equals3D(coordinate)) {
+				result.add(coordinate);
+				lastCoordinate = coordinate;
+			}
+		}
+
+		return result.toArray(new Coordinate[result.size()]);
 	}
 
 	@Override
