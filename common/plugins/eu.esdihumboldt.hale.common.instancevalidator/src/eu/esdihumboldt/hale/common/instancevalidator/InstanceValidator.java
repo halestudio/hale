@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -98,7 +99,8 @@ public class InstanceValidator {
 					return reporter;
 				Instance instance = iterator.next();
 				validateInstance(instance, reporter, instance.getDefinition().getName(),
-						new ArrayList<QName>(), false, instances.getReference(instance), context);
+						new ArrayList<QName>(), false, instances.getReference(instance), context,
+						null);
 				monitor.worked(1);
 			}
 		} finally {
@@ -197,7 +199,7 @@ public class InstanceValidator {
 		reporter.setSuccess(false);
 		InstanceValidationContext context = new InstanceValidationContext();
 		validateInstance(instance, reporter, instance.getDefinition().getName(),
-				new ArrayList<QName>(), false, null, context);
+				new ArrayList<QName>(), false, null, context, null);
 		reporter.setSuccess(true);
 		return reporter;
 	}
@@ -205,7 +207,7 @@ public class InstanceValidator {
 	/**
 	 * Validates the instances value against existing
 	 * {@link TypeConstraintValidator}s and calls
-	 * {@link #validateGroupChildren(Group, InstanceValidationReporter, QName, List, boolean, InstanceReference, InstanceValidationContext)}
+	 * {@link #validateGroupChildren(Group, InstanceValidationReporter, QName, List, boolean, InstanceReference, InstanceValidationContext, ChildDefinition)}
 	 * .
 	 * 
 	 * @param instance the instance to validate
@@ -216,10 +218,13 @@ public class InstanceValidator {
 	 *            children (in case of a choice) or not
 	 * @param reference the instance reference
 	 * @param context the instance validation context
+	 * @param presentIn the child definition this instance is present in, if
+	 *            applicable
 	 */
 	private static void validateInstance(Instance instance, InstanceValidationReporter reporter,
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
-			InstanceReference reference, InstanceValidationContext context) {
+			InstanceReference reference, InstanceValidationContext context,
+			@Nullable ChildDefinition<?> presentIn) {
 		TypeDefinition typeDef = instance.getDefinition();
 
 		if (skipValidation(typeDef, instance)) {
@@ -238,7 +243,7 @@ public class InstanceValidator {
 			}
 
 		validateGroupChildren(instance, reporter, type, path, onlyCheckExistingChildren, reference,
-				context);
+				context, presentIn);
 	}
 
 	/**
@@ -266,12 +271,45 @@ public class InstanceValidator {
 	 *            children (in case of a choice) or not
 	 * @param reference the instance reference
 	 * @param context the instance validation context
+	 * @param presentIn the child definition this group is present in, if
+	 *            applicable
 	 */
 	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
-			InstanceReference reference, InstanceValidationContext context) {
+			InstanceReference reference, InstanceValidationContext context,
+			@Nullable ChildDefinition<?> presentIn) {
 		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil
 				.getAllChildren(group.getDefinition());
+
+		// special case handling - nillable XML element with only attributes ->
+		// check only existing children (=attributes)
+		if (group instanceof Instance && presentIn != null && presentIn.asProperty() != null) {
+			Instance instance = (Instance) group;
+			if (presentIn.asProperty().getConstraint(NillableFlag.class).isEnabled()
+					&& instance.getValue() == null) {
+				// test if all properties present are attributes
+				boolean onlyAttributes = true;
+				// but there must be an attribute present (otherwise we are not
+				// sure this is XML)
+				boolean foundAttribute = false;
+				for (QName propertyName : group.getPropertyNames()) {
+					ChildDefinition<?> childDef = presentIn.asProperty().getPropertyType()
+							.getChild(propertyName);
+					if (childDef == null || childDef.asProperty() == null || !childDef.asProperty()
+							.getConstraint(XmlAttributeFlag.class).isEnabled()) {
+						onlyAttributes = false;
+						break;
+					}
+					else {
+						foundAttribute = true;
+					}
+				}
+				if (onlyAttributes && foundAttribute) {
+					onlyCheckExistingChildren = true;
+				}
+			}
+		}
+
 		validateGroupChildren(group, childDefs, reporter, type, path, onlyCheckExistingChildren,
 				reference, context);
 	}
@@ -412,11 +450,11 @@ public class InstanceValidator {
 			for (Object property : properties) {
 				if (property instanceof Instance) {
 					validateInstance((Instance) property, reporter, type, path,
-							onlyCheckExistingChildren, reference, context);
+							onlyCheckExistingChildren, reference, context, childDef);
 				}
 				else if (property instanceof Group) {
 					validateGroupChildren((Group) property, reporter, type, path,
-							onlyCheckExistingChildren, reference, context);
+							onlyCheckExistingChildren, reference, context, childDef);
 				}
 				else {
 					if (childDef.asGroup() != null)
@@ -432,7 +470,7 @@ public class InstanceValidator {
 									childDef.asProperty().getPropertyType(), null);
 							instance.setValue(property);
 							validateInstance(instance, reporter, type, path,
-									onlyCheckExistingChildren, reference, context);
+									onlyCheckExistingChildren, reference, context, childDef);
 						}
 					}
 				}
