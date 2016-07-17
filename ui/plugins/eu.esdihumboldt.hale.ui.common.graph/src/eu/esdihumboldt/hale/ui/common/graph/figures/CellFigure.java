@@ -102,17 +102,17 @@ public class CellFigure extends CustomShapeFigure {
 			Image modeImage;
 			switch (cell.getTransformationMode()) {
 			case active:
-				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_MARKER_GREEN);
+				modeImage = CommonSharedImages.getImageRegistry()
+						.get(CommonSharedImages.IMG_MARKER_GREEN);
 				break;
 			case passive:
-				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_MARKER_YELLOW);
+				modeImage = CommonSharedImages.getImageRegistry()
+						.get(CommonSharedImages.IMG_MARKER_YELLOW);
 				break;
 			case disabled:
 			default:
-				modeImage = CommonSharedImages.getImageRegistry().get(
-						CommonSharedImages.IMG_MARKER_RED);
+				modeImage = CommonSharedImages.getImageRegistry()
+						.get(CommonSharedImages.IMG_MARKER_RED);
 			}
 
 			Label modeLabel = new Label(modeImage);
@@ -131,8 +131,8 @@ public class CellFigure extends CustomShapeFigure {
 		setIconLabel(mainLabel);
 
 		if (isInherited) {
-			Label inheritedLabel = new Label(CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_INHERITED_ARROW_SMALL));
+			Label inheritedLabel = new Label(CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_INHERITED_ARROW_SMALL));
 			Label ineritedToolTip = new Label("Relation by inheritance");
 			inheritedLabel.setToolTip(ineritedToolTip);
 
@@ -143,17 +143,29 @@ public class CellFigure extends CustomShapeFigure {
 		Label priorityLabel = new Label();
 		Image priorityImage = null;
 		switch (cell.getPriority()) {
+		case HIGHEST:
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_HIGHEST);
+			break;
+		case HIGHER:
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_HIGHER);
+			break;
 		case HIGH:
-			priorityImage = CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_PRIORITY_HIGH);
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_HIGH);
 			break;
 		case LOW:
-			priorityImage = CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_PRIORITY_LOW);
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_LOW);
+			break;
+		case LOWER:
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_LOWER);
 			break;
 		case LOWEST:
-			priorityImage = CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_PRIORITY_LOWEST);
+			priorityImage = CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_PRIORITY_LOWEST);
 			break;
 		case NORMAL:
 		default:
