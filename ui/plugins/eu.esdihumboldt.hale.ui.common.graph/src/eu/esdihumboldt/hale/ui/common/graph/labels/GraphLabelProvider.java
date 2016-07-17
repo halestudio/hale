@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
@@ -248,6 +249,11 @@ public class GraphLabelProvider extends LabelProvider
 			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
 			if (function != null) {
 				Image image = functionLabels.getImage(function);
+				if (image == null) {
+					// use a default image if none is available
+					image = CommonSharedImages.getImageRegistry()
+							.get(CommonSharedImages.IMG_FUNCTION);
+				}
 				if (cell.isBaseCell()) {
 					Image baseAlignmentImage = baseAlignmentFunctionImages.get(functionId);
 					if (baseAlignmentImage == null) {
