@@ -25,6 +25,14 @@ import java.util.Comparator;
  */
 public enum Priority {
 	/**
+	 * Highest priority.
+	 */
+	HIGHEST("highest", Integer.MAX_VALUE), //
+	/**
+	 * Higher priority.
+	 */
+	HIGHER("higher", 2), //
+	/**
 	 * High priority.
 	 */
 	HIGH("high", 1), //
@@ -35,7 +43,11 @@ public enum Priority {
 	/**
 	 * Low priority.
 	 */
-	LOW("low", -1),
+	LOW("low", -1), //
+	/**
+	 * Lower priority.
+	 */
+	LOWER("lower", -2), //
 	/**
 	 * Lowest priority.
 	 */

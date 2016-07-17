@@ -107,6 +107,16 @@ public interface CommonSharedImagesConstants {
 	public static final String IMG_PRIORITY_HIGH = "IMG_PRIORITY_HIGH";
 
 	/**
+	 * Key for higher priority image
+	 */
+	public static final String IMG_PRIORITY_HIGHER = "IMG_PRIORITY_HIGHER";
+
+	/**
+	 * Key for highest priority image
+	 */
+	public static final String IMG_PRIORITY_HIGHEST = "IMG_PRIORITY_HIGHEST";
+
+	/**
 	 * Key for normal priority image
 	 */
 	public static final String IMG_PRIORITY_NORMAL = "IMG_PRIORITY_NORMAL";
@@ -115,6 +125,11 @@ public interface CommonSharedImagesConstants {
 	 * Key for low priority image
 	 */
 	public static final String IMG_PRIORITY_LOW = "IMG_PRIORITY_LOW";
+
+	/**
+	 * Key for lower priority image
+	 */
+	public static final String IMG_PRIORITY_LOWER = "IMG_PRIORITY_LOWER";
 
 	/**
 	 * Key for lowest priority image
