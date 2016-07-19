@@ -76,6 +76,11 @@ public class DefaultCustomFunctionExplanation extends MarkdownCellExplanation
 		this(templates, null);
 	}
 
+	@Override
+	public Iterable<Locale> getSupportedLocales() {
+		return Collections.unmodifiableSet(templates.keySet());
+	}
+
 	/**
 	 * Copy constructor.
 	 * 

@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl.mdexpl;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
@@ -75,6 +76,17 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	 */
 	public Optional<Template> getTemplate(Class<?> clazz, Locale locale) {
 		return templateCache.computeIfAbsent(locale, cl -> loadTemplate(clazz, cl));
+	}
+
+	@Override
+	public Iterable<Locale> getSupportedLocales() {
+		try {
+			return AbstractCellExplanation.findLocales(getDefaultMessageClass(),
+					getDefaultMessageClass().getSimpleName(), "md", getDefaultLocale());
+		} catch (IOException e) {
+			log.error("Error determining supported locales for explanation", e);
+			return null;
+		}
 	}
 
 	/**

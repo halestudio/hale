@@ -55,7 +55,9 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.exolab.castor.core.exceptions,
  org.pegdown;version="1.6.0",
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="3.0.0.RELEASE",
+ org.springframework.core.io;version="3.1.1.RELEASE",
+ org.springframework.core.io.support;version="3.1.1.RELEASE"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
  groovy;bundle-version="1.8.6",
