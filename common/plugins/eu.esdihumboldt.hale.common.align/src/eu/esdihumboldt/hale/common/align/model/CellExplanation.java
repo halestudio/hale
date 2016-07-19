@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.Locale;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -76,5 +78,13 @@ public interface CellExplanation {
 	 *         available
 	 */
 	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale);
+
+	/**
+	 * Get the locales supported for explanations.
+	 * 
+	 * @return the supported locales or <code>null</code> if unknown
+	 */
+	@Nullable
+	public Iterable<Locale> getSupportedLocales();
 
 }

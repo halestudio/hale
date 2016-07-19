@@ -16,20 +16,27 @@
 
 package eu.esdihumboldt.hale.common.align.model.impl;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.google.common.base.Joiner;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
@@ -44,6 +51,8 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * @author Simon Templer
  */
 public abstract class AbstractCellExplanation implements CellExplanation {
+
+	private static final ALogger log = ALoggerFactory.getLogger(AbstractCellExplanation.class);
 
 	@Override
 	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale) {
@@ -292,6 +301,96 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 						AbstractCellExplanation.class.getClassLoader(),
 						ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
 				.getString(key);
+	}
+
+	@Override
+	public Iterable<Locale> getSupportedLocales() {
+		try {
+			return findLocales(getDefaultMessageClass(), getDefaultMessageClass().getSimpleName(),
+					"properties", getDefaultLocale());
+		} catch (IOException e) {
+			log.error("Error determining supported locales for explanation", e);
+			return null;
+		}
+	}
+
+	/**
+	 * Get the default locale assumed for resources with an unspecified locale.
+	 * 
+	 * @return the default locale assumed for messages
+	 */
+	protected Locale getDefaultLocale() {
+		return Locale.ENGLISH;
+	}
+
+	/**
+	 * Determine the locales a resource is available for.
+	 * 
+	 * @param clazz the clazz the resource resides next to
+	 * @param baseName the base name of the resource
+	 * @param suffix the suffix of the resource file, e.g.
+	 *            <code>properties</code>
+	 * @param defaultLocale the default locale to be assumed for an unqualified
+	 *            resource
+	 * @return the set of locales the resource is available for
+	 * @throws IOException if an error occurs trying to determine the resource
+	 *             files
+	 */
+	public static Set<Locale> findLocales(final Class<?> clazz, final String baseName,
+			final String suffix, Locale defaultLocale) throws IOException {
+		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
+				clazz.getClassLoader());
+		String pkg = clazz.getPackage().getName().replaceAll("\\.", "/");
+		String pattern = pkg + "/" + baseName + "*." + suffix;
+		return Arrays.stream(resolver.getResources(pattern)).map(resource -> {
+			String fileName = resource.getFilename();
+
+			if (fileName != null && fileName.startsWith(baseName)) {
+				fileName = fileName.substring(baseName.length());
+				if (fileName.endsWith("." + suffix)) {
+					if (fileName.length() == suffix.length() + 1) {
+						// default locale file
+						return defaultLocale;
+					}
+					else {
+						String localeIdent = fileName.substring(0,
+								fileName.length() - suffix.length() - 1);
+
+						String language = "";
+						String country = "";
+						String variant = "";
+
+						String[] parts = localeIdent.split("_");
+						int index = 0;
+						if (parts.length > index && parts[index].isEmpty()) {
+							index++;
+						}
+
+						if (parts.length > index) {
+							language = parts[index++];
+						}
+
+						if (parts.length > index) {
+							country = parts[index++];
+						}
+
+						if (parts.length > index) {
+							variant = parts[index++];
+						}
+
+						return new Locale(language, country, variant);
+					}
+				}
+				else {
+					log.error("Invalid resource encountered");
+					return null;
+				}
+			}
+			else {
+				log.error("Invalid resource encountered");
+				return null;
+			}
+		}).filter(locale -> locale != null).collect(Collectors.toSet());
 	}
 
 	/**

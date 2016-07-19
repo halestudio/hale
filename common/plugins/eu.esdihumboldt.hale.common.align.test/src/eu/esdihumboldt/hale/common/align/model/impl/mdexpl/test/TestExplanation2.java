@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.common.align.model.impl.mdexpl;
+package eu.esdihumboldt.hale.common.align.model.impl.mdexpl.test;
 
 import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 

@@ -16,17 +16,19 @@
 package eu.esdihumboldt.hale.common.align.model.impl.mdexpl;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -37,6 +39,8 @@ import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.test.TestExplanation1;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.test.TestExplanation2;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -86,8 +90,31 @@ public class MarkdownCellExplanationTest {
 				"pattern 3";
 
 		String expl = exp.getExplanation(cell, null, Locale.getDefault());
-		assertNotNull(expl);
+		org.junit.Assert.assertNotNull(expl);
 		assertEquals(expected, expl);
+	}
+
+	@Test
+	public void testLocales1() {
+		TestExplanation1 exp = new TestExplanation1();
+
+		Set<Locale> locales = new HashSet<>();
+		Iterables.addAll(locales, exp.getSupportedLocales());
+
+		assertTrue(locales.contains(Locale.ENGLISH));
+		assertTrue(locales.contains(Locale.GERMAN));
+		assertEquals(2, locales.size());
+	}
+
+	@Test
+	public void testLocales2() {
+		TestExplanation2 exp = new TestExplanation2();
+
+		Set<Locale> locales = new HashSet<>();
+		Iterables.addAll(locales, exp.getSupportedLocales());
+
+		assertTrue(locales.contains(Locale.ENGLISH));
+		assertEquals(1, locales.size());
 	}
 
 	@SuppressWarnings("unused")
