@@ -42,7 +42,7 @@ import groovy.text.GStringTemplateEngine;
 
 /**
  * Exports an alignment as HTML mapping documentation based on
- * {@link MappingDocumentation} and the associated template.
+ * {@link AlignmentJson} and the associated template.
  * 
  * @author Simon Templer
  */
