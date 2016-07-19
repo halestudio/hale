@@ -9,6 +9,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader">
+         </provider>
       </configPage>
    </extension>
 

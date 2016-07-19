@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.io.jdbc.constraints;
 
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.JDBCUtil;
 
 /**
@@ -36,14 +35,18 @@ public class DatabaseTable implements TypeConstraint {
 	// Database support.
 	private final boolean useQuote;
 
+	private final boolean isTable;
+
 	/**
-	 * Create a default constraint. The default table name is the given type
-	 * local name.
+	 * Create a default constraint.
 	 * 
-	 * @param type the type definition the table is associated to
 	 */
-	public DatabaseTable(TypeDefinition type) {
-		this(null, type.getName().getLocalPart());
+	public DatabaseTable() {
+		super();
+		this.schemaName = null;
+		this.tableName = null;
+		this.useQuote = false;
+		this.isTable = false;
 	}
 
 	/**
@@ -70,6 +73,7 @@ public class DatabaseTable implements TypeConstraint {
 		this.schemaName = schemaName;
 		this.tableName = tableName;
 		this.useQuote = useQuote;
+		this.isTable = true;
 	}
 
 	/**
@@ -93,6 +97,8 @@ public class DatabaseTable implements TypeConstraint {
 	 * @return the full table name
 	 */
 	public String getFullTableName() {
+		if (!isTable)
+			return null;
 		if (schemaName == null || schemaName.isEmpty()) {
 			return getQuotedValue(tableName);
 		}
@@ -117,6 +123,21 @@ public class DatabaseTable implements TypeConstraint {
 	@Override
 	public boolean isInheritable() {
 		return false;
+	}
+
+	/**
+	 * @return the boolean value stating if constraint is database table or not.
+	 */
+	public boolean isTable() {
+		return isTable;
+	}
+
+	/**
+	 * @return the boolean value for quotation usage in
+	 *         {@link #getFullTableName}.
+	 */
+	public boolean useQuote() {
+		return useQuote;
 	}
 
 }

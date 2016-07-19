@@ -14,8 +14,9 @@ public class MsAccessURIBuilder implements URIBuilder {
 	// UCanAccess Driver;
 	private static final String DRIVER = "jdbc:ucanaccess://";
 
-	// UCanAccess Driver properties;
-	private static final String PARAM = ";showschema=true;sysschema=true";
+	// UCanAccess Driver properties. Property : singleconnection to release the
+	// connection after closing it.
+	private static final String PARAM = ";showschema=true;sysschema=false;singleconnection=true";
 
 	@Override
 	public URI createJdbcUri(String host, String databaseFile) {

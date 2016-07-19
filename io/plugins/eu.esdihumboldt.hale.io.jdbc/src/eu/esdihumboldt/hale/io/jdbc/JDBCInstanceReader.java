@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 
 /**
  * Reads instances from a JDBC database.
@@ -115,19 +116,22 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 			// only load instances for mapping relevant types
 			for (TypeDefinition type : getSourceSchema().getMappingRelevantTypes()) {
 				// TODO test if table exists in DB?
+				// check constraint is a Database table or not?
+				if (type.getConstraint(DatabaseTable.class).isTable()) {
+					collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
+							user, password) {
 
-				collections.put(type,
-						new JDBCTableCollection(type, getSource().getLocation(), user, password) {
+						// To provide extensibility for getting customized
+						// database connection for
+						// Instance reading.
+						@Override
+						protected Connection createConnection() throws SQLException {
+							return JDBCInstanceReader.this.getConnection();
+						}
 
-							// To provide extensibility for getting customized
-							// database connection for
-							// Instance reading.
-							@Override
-							protected Connection createConnection() throws SQLException {
-								return JDBCInstanceReader.this.getConnection();
-							}
+					});
+				}
 
-						});
 			}
 
 			collection = new PerTypeInstanceCollection(collections);
