@@ -195,7 +195,7 @@ class AlignmentJson {
 				if (explLocales) {
 					// explanations by locale
 					json 'explanations', {
-						for (Locale explLocale : explLocales) {
+						explLocales.each { Locale explLocale ->
 							json explLocale as String, cellExplanation(cell, function.explanation, services, explLocale)
 						}
 					}
