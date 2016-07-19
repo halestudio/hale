@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.CellExplanation
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
@@ -53,18 +54,14 @@ import groovy.transform.TypeCheckingMode
 @CompileStatic
 class AlignmentJson {
 	
-	public static String cellExplanation(Cell cell, ServiceProvider services,
+	public static String cellExplanation(Cell cell, CellExplanation explanation, ServiceProvider services,
 		Locale locale = Locale.getDefault()) {
 		
-		// get the associated function
-		FunctionDefinition<?> function = FunctionUtil.getFunction(cell
-				.getTransformationIdentifier(), services)
-
 		String exp = null
-		if (function?.explanation) {
-			exp = function.explanation.getExplanationAsHtml(cell, services, locale)
+		if (explanation) {
+			exp = explanation.getExplanationAsHtml(cell, services, locale)
 			if (!exp) {
-				exp = function.explanation.getExplanation(cell, services, locale)
+				exp = explanation.getExplanation(cell, services, locale)
 				if (exp) {
 					exp = markdownToHtml(exp)
 				}
@@ -192,9 +189,22 @@ class AlignmentJson {
 				json 'targets', []
 			}
 
-			String explanation = cellExplanation(cell, services, locale)
-			if (explanation) {
-				json 'explanation', explanation
+			
+			if (function?.explanation) {
+				def explLocales = function.explanation.getSupportedLocales()
+				if (explLocales) {
+					// explanations by locale
+					json 'explanations', {
+						for (Locale explLocale : explLocales) {
+							json explLocale as String, cellExplanation(cell, function.explanation, services, explLocale)
+						}
+					}
+				}
+				else {
+					// simple single explanation
+					String explanation = cellExplanation(cell, function.explanation, services, locale)
+					json 'explanation', explanation
+				}
 			}
 
 			if (ext != null) {
