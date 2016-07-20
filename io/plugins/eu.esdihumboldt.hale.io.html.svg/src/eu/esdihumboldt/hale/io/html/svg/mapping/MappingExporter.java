@@ -22,8 +22,11 @@ import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -37,6 +40,7 @@ import eu.esdihumboldt.hale.io.html.svg.mapping.json.ExtendedCellRepresentation;
 import eu.esdihumboldt.hale.io.html.svg.mapping.json.JsonValueRepresentation;
 import eu.esdihumboldt.hale.io.html.svg.mapping.json.ValueRepresentation;
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder;
+import groovy.json.JsonOutput;
 import groovy.lang.Writable;
 import groovy.text.GStringTemplateEngine;
 
@@ -48,7 +52,7 @@ import groovy.text.GStringTemplateEngine;
  */
 public class MappingExporter extends AbstractAlignmentWriter {
 
-	private static final String HALEJS_VERSION = "1.0.0-SNAPSHOT";
+	private static final String HALEJS_VERSION = "1.1.0-SNAPSHOT";
 
 	@Override
 	public boolean isCancelable() {
@@ -70,8 +74,11 @@ public class MappingExporter extends AbstractAlignmentWriter {
 
 		StringWriter jsonWriter = new StringWriter();
 		JsonStreamBuilder json = new JsonStreamBuilder(jsonWriter, true);
-		AlignmentJson.alignmentInfoJSON(getAlignment(), json, getServiceProvider(),
-				getProjectInfo(), ext, rep, Locale.getDefault());
+		Set<Locale> locales = AlignmentJson.alignmentInfoJSON(getAlignment(), json,
+				getServiceProvider(), getProjectInfo(), ext, rep, Locale.getDefault());
+
+		// create language binding
+		String languageJson = getLanguageJson(locales);
 
 		// create template binding
 		Map<String, Object> binding = new HashMap<>();
@@ -79,6 +86,7 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		String title = (getProjectInfo() != null && getProjectInfo().getName() != null)
 				? getProjectInfo().getName() : "Mapping documentation";
 		binding.put("title", title);
+		binding.put("languages", languageJson);
 		binding.put("halejsVersion", HALEJS_VERSION);
 
 		// initialize template engine
@@ -98,6 +106,30 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		}
 
 		return reporter;
+	}
+
+	private String getLanguageJson(Set<Locale> locales) {
+		if (locales == null || locales.isEmpty()) {
+			return "[]";
+		}
+
+		Map<String, String> languageNames = new HashMap<>();
+
+		for (Locale locale : locales) {
+			String code = locale.getLanguage();
+			if (code != null && !code.isEmpty()) {
+				languageNames.put(code, locale.getDisplayLanguage(locale));
+			}
+		}
+
+		List<Map<String, String>> locs = languageNames.entrySet().stream().map(entry -> {
+			Map<String, String> languageObj = new HashMap<>();
+			languageObj.put("code", entry.getKey());
+			languageObj.put("name", entry.getValue());
+			return languageObj;
+		}).collect(Collectors.toList());
+
+		return JsonOutput.toJson(locs);
 	}
 
 	@Override
