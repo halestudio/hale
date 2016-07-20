@@ -109,7 +109,7 @@ public class DefaultCustomFunctionExplanation extends MarkdownCellExplanation
 
 	private Optional<Value> findTemplate(Locale locale) {
 		ResourceBundle.Control control = ResourceBundle.Control
-				.getControl(ResourceBundle.Control.FORMAT_DEFAULT);
+				.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT);
 
 		List<Locale> candidateLocales = control.getCandidateLocales("baseName", locale);
 

@@ -118,7 +118,7 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	private Optional<URL> findResource(Class<?> clazz, String baseName, String suffix,
 			Locale locale) {
 		ResourceBundle.Control control = ResourceBundle.Control
-				.getControl(ResourceBundle.Control.FORMAT_DEFAULT);
+				.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT);
 
 		List<Locale> candidateLocales = control.getCandidateLocales(baseName, locale);
 
