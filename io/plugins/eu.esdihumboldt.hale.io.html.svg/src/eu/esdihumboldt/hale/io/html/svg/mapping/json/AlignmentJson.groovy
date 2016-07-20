@@ -87,9 +87,11 @@ class AlignmentJson {
 	}
 	
 	@CompileStatic(TypeCheckingMode.SKIP)
-	static String alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
+	static Set<Locale> alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
 		ServiceProvider services, ProjectInfo project, CellJsonExtension ext,
 		ValueRepresentation valueRep, Locale locale) {
+		
+		Set<Locale> collectedLocales = new HashSet<>()
 		
 		json {
 			json.export {
@@ -120,17 +122,26 @@ class AlignmentJson {
 			}
 			alignment.cells.each { Cell cell ->
 				'cells[]' {
-					AlignmentJson.cellInfoJSON(cell, json, services, ext, valueRep, locale)
+					def cellLocales = AlignmentJson.cellInfoJSON(cell, json, services, ext, valueRep, locale)
+					if (cellLocales) {
+						collectedLocales.addAll(cellLocales)
+					}
 				}
 			}
 		}
+		
+		collectedLocales
 	}
 
 	/**
 	 * Create a JSON representation from a cell.
 	 */
-	public static void cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
+	public static Set<Locale> cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
 		CellJsonExtension ext = null, ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
+		
+		// collect locale content is available for
+		Set<Locale> collectedLocales = new HashSet<>()
+		
 		// collect cell information
 
 		// get the associated function
@@ -196,6 +207,7 @@ class AlignmentJson {
 					// explanations by locale
 					json 'explanations', {
 						explLocales.each { Locale explLocale ->
+							collectedLocales.add(explLocale) // add locale
 							json explLocale as String, cellExplanation(cell, function.explanation, services, explLocale)
 						}
 					}
@@ -211,6 +223,8 @@ class AlignmentJson {
 				ext.augmentCellJson(cell, json)
 			}
 		}
+		
+		collectedLocales
 	}
 
 	private static def entityJSON(JsonStreamBuilder json, String name, Entity entity, CellJsonExtension ext) {
