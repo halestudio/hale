@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Map File
+Bundle-SymbolicName: de.fhg.igd.mapviewer.server.file;singleton:=true
+Bundle-Version: 10.0.0
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: de.fhg.igd.eclipse.ui.util.extension,
+ de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.mapviewer.server;version="1.0.0",
+ org.apache.commons.logging;version="1.1.1",
+ org.eclipse.swt,
+ org.eclipse.swt.widgets,
+ org.jdesktop.swingx.mapviewer;version="1.0.0",
+ org.jdesktop.swingx.painter
+Export-Package: de.fhg.igd.mapviewer.server.file;version="1.0.0"
+Require-Bundle: org.eclipse.ui.workbench;bundle-version="3.5.0"
