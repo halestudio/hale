@@ -273,7 +273,8 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 	protected String getMessage(String key, Locale locale, Class<?> messageClass) {
 		return ResourceBundle
 				.getBundle(messageClass.getName(), locale, messageClass.getClassLoader(),
-						ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
+						ResourceBundle.Control
+								.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES))
 				.getString(key);
 	}
 
@@ -299,7 +300,8 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 		return ResourceBundle
 				.getBundle(AbstractCellExplanation.class.getName(), locale,
 						AbstractCellExplanation.class.getClassLoader(),
-						ResourceBundle.Control.getControl(ResourceBundle.Control.FORMAT_PROPERTIES))
+						ResourceBundle.Control
+								.getNoFallbackControl(ResourceBundle.Control.FORMAT_PROPERTIES))
 				.getString(key);
 	}
 

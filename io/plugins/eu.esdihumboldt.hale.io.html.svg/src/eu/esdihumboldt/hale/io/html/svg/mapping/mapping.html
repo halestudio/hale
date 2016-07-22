@@ -10,6 +10,7 @@
 		src="http://build-artifacts.wetransform.to/halejs/${halejsVersion}/halejs.full.min.js"></script>
 	
 	<script type="text/javascript">
+		angular.module('halejs').value('LANGUAGES', ${languages});
 		angular.module('hale', ['halejs']).controller('alignmentCtrl', function(\$scope) {
 			\$scope.alignment = ${json};
 		});
@@ -17,7 +18,7 @@
 </head>
 <body ng-app="hale">
 	<div class="container" ng-controller="alignmentCtrl">
-		<div hale-alignment="alignment"></div>
+		<hale-documentation alignment="alignment"></hale-documentation>
 	</div>
 </body>
 </html>
