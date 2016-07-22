@@ -155,8 +155,10 @@ public class InstanceFilterDefinition implements Filter {
 				&& this.excludedTypes.size() == 0)
 			return true;
 
-		// apply unconditional and typed filter
-		return (applyUnconditionalFilter(instance) || applyTypedFilter(instance));
+		// applying all filters one by one (also handling lazy evaluation)
+		return (this.unconditionalFilters.size() == 0 ? false : applyUnconditionalFilter(instance))
+				|| (this.typeFilters.size() == 0 ? false : applyTypedFilter(instance))
+				|| (this.excludedTypes.size() == 0 ? false : applyExcludeFilters(instance));
 
 	}
 
@@ -164,8 +166,7 @@ public class InstanceFilterDefinition implements Filter {
 		for (Filter filter : this.unconditionalFilters)
 			if (filter.match(instance))
 				return true;
-		// Instance does not match any of the unconditional filter or if
-		// unconditional filters are not supplied
+		// Instance does not match any of the unconditional filter
 		return false;
 	}
 
@@ -182,14 +183,19 @@ public class InstanceFilterDefinition implements Filter {
 				return false;
 			}
 		}
+		// it reaches here that means Instance does not match any type of type
+		// filters.
+		// Method should return true.
+		return true;
+	}
 
+	private boolean applyExcludeFilters(Instance instance) {
 		// for excluded Types
 		for (String excludedType : this.excludedTypes)
 			if (instance.getDefinition().getName().getLocalPart().equals(excludedType + "Type"))
 				return false;
-		// it reaches here that means Instance does not match any type of type
-		// filters and excluded types.
-		// Method should return true.
+
+		// instance does not match any excludeed types.
 		return true;
 	}
 

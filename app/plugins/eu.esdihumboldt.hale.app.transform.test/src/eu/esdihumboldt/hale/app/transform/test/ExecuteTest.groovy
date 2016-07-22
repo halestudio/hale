@@ -48,7 +48,8 @@ class ExecuteTest extends GroovyTestCase {
 	private static final String FILTER_EXPRESSION3 = "River:CQL:width='28.0'";
 	private static final String FILTER_EXPRESSION4 = "River:CQL:width='28.0' AND name='River Till'";
 	private static final String EXCLUDED_TYPE = "River";
-	private static final int TRANSFORMED_DATA_SIZE = 241;
+	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 241;
+	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 13;
 	private static final int EXCLUDE_TYPE_DATA_SIZE = 0;
 	//private static final String FILTER_EXPRESSION=null;
 
@@ -130,7 +131,7 @@ class ExecuteTest extends GroovyTestCase {
 			assert code == 0
 		}
 
-		validateFilteredHydroXml(targetFile)
+		validateTypedFilteredHydroXml(targetFile)
 	}
 
 
@@ -171,7 +172,7 @@ class ExecuteTest extends GroovyTestCase {
 			assert code == 0
 		}
 
-		validateFilteredHydroXml(targetFile)
+		validateUnconditionalFilteredHydroXml(targetFile)
 	}
 
 	/**
@@ -271,23 +272,37 @@ class ExecuteTest extends GroovyTestCase {
 		// check transformed feature count
 		assert root.member.Watercourse.size() == EXCLUDE_TYPE_DATA_SIZE
 		// check metadata language tag
-		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
-		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateFilteredHydroXml(File targetFile) {
+	private void validateUnconditionalFilteredHydroXml(File targetFile) {
 		// check written file
 		def root = new XmlSlurper().parse(targetFile)
 		// check container
 		assert root.name() == 'SpatialDataSet'
 		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER
 		// check metadata language tag
-		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
-		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateTypedFilteredHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_TYPEDFILTER
+		// check metadata language tag
+		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata date tag
+		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -299,9 +314,9 @@ class ExecuteTest extends GroovyTestCase {
 		// check transformed feature count
 		assert root.member.Watercourse.size() == 982
 		// check metadata language tag
-		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
-		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	/**
