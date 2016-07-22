@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -51,6 +52,7 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
+import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -86,6 +88,29 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param validator the instance validator, may be <code>null</code>
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 */
+	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
+
+		return transform(sources, target, environment, reportHandler, processId, validator, null);
+	}
+
+	/**
+	 * Transform the instances provided through the given instance readers and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the instance readers
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -108,13 +133,16 @@ public class Transformation {
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
 	 * @param validator the instance validator, may be <code>null</code>
+	 * @param filterDefinition {@link InstanceFilterDefinition} object as a
+	 *            filter may be <code>null</code>
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
+			final ReportHandler reportHandler, Object processId, InstanceValidator validator,
+			InstanceFilterDefinition filterDefinition) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -161,12 +189,13 @@ public class Transformation {
 					}
 				});
 
-		MultiInstanceCollection sourceCollection = new MultiInstanceCollection(sourceList);
+		// Apply Filter
+		MultiInstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
 
 		final TransformationSink targetSink;
 		try {
-			targetSink = TransformationSinkExtension.getInstance().createSink(
-					!target.isPassthrough());
+			targetSink = TransformationSinkExtension.getInstance()
+					.createSink(!target.isPassthrough());
 			targetSink.setTypes(environment.getTargetSchema());
 		} catch (Exception e) {
 			throw new IllegalStateException("Error creating target sink", e);
@@ -285,8 +314,8 @@ public class Transformation {
 						.getService(TransformationService.class);
 
 				TransformationReport report = transformationService.transform(alignment,
-						sourceToUse, targetSink, serviceProvider, new ProgressMonitorIndicator(
-								monitor));
+						sourceToUse, targetSink, serviceProvider,
+						new ProgressMonitorIndicator(monitor));
 
 				try {
 					// publish report
@@ -466,4 +495,20 @@ public class Transformation {
 		// execution was not successful
 		result.set(false);
 	}
+
+	private static MultiInstanceCollection applyFilter(List<InstanceCollection> sourceData,
+			InstanceFilterDefinition filterDefinition) {
+
+		List<InstanceCollection> filteredData = new ArrayList<InstanceCollection>();
+
+		for (int i = 0; i < sourceData.size(); i++) {
+			InstanceCollection collection = sourceData.get(i);
+			filteredData.add(collection.select(filterDefinition));
+		}
+
+		MultiInstanceCollection filteredCollection = new MultiInstanceCollection(filteredData);
+
+		return filteredCollection;
+	}
+
 }

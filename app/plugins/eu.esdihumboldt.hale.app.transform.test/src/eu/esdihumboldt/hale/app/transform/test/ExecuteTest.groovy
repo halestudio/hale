@@ -38,19 +38,31 @@ class ExecuteTest extends GroovyTestCase {
 
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
 	// works, same as absolute path does
+
+	private static final String CDDA_DATA = "C://Users/Arun/Downloads/Databases/CDDA_v13.mdb"
+
 	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
+
+	private static final String FILTER_EXPRESSION1 = "CQL:name='River Till'";
+	private static final String FILTER_EXPRESSION2 = "River1:CQL:width='28.0'";
+	private static final String FILTER_EXPRESSION3 = "River:CQL:width='28.0'";
+	private static final String FILTER_EXPRESSION4 = "River:CQL:width='28.0' AND name='River Till'";
+	private static final String EXCLUDED_TYPE = "River";
+	private static final int TRANSFORMED_DATA_SIZE = 241;
+	private static final int EXCLUDE_TYPE_DATA_SIZE = 0;
+	//private static final String FILTER_EXPRESSION=null;
 
 	/**
 	 * XXX Disabled because for some reason it breaks the test execution
 	 * part of the build process, even though the test itself is executed w/o problems.
 	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
 	 * within the transformation in this test.
-	 * 
-	 * Test transformation of an example project.	 * 
+	 *
+	 * Test typed filter of an example project.	 *
 	 */
-	void ignore_testTransformXml() {
+	void testExcludeTypeTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
-		targetFile.deleteOnExit()
+		//targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([
@@ -58,6 +70,8 @@ class ExecuteTest extends GroovyTestCase {
 			HYDRO_PROJECT,
 			'-source',
 			HYDRO_DATA,
+			'-exclude-type',
+			EXCLUDED_TYPE,
 			'-target',
 			targetFile.absolutePath,
 			// select target provider
@@ -69,6 +83,113 @@ class ExecuteTest extends GroovyTestCase {
 			'-Sinspire.sds.metadata',
 			METADATA_PATH
 		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateExcludeTypeHydroXml(targetFile)
+	}
+
+
+	/**
+	 * XXX Disabled because for some reason it breaks the test execution
+	 * part of the build process, even though the test itself is executed w/o problems.
+	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
+	 * within the transformation in this test.
+	 *
+	 * Test typed filter of an example project.	 *
+	 */
+	void testTypedFilteredTransformXml() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		//targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			'-project',
+			HYDRO_PROJECT,
+			'-source',
+			HYDRO_DATA,
+			'-filter',
+			FILTER_EXPRESSION1,
+			'-filter-on',
+			FILTER_EXPRESSION3,
+			'-target',
+			targetFile.absolutePath,
+			// select target provider
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234',
+			'-Sinspire.sds.metadata',
+			METADATA_PATH
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateFilteredHydroXml(targetFile)
+	}
+
+
+
+	/**
+	 * XXX Disabled because for some reason it breaks the test execution
+	 * part of the build process, even though the test itself is executed w/o problems.
+	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
+	 * within the transformation in this test.
+	 *
+	 * Test unconditional filtered transformation of an example project.	 *
+	 */
+	void testUnconditionalFilteredTransformXml() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		//targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			'-project',
+			HYDRO_PROJECT,
+			'-source',
+			HYDRO_DATA,
+			'-filter',
+			FILTER_EXPRESSION1,
+			'-target',
+			targetFile.absolutePath,
+			// select target provider
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234',
+			'-Sinspire.sds.metadata',
+			METADATA_PATH
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateFilteredHydroXml(targetFile)
+	}
+
+	/**
+	 * XXX Disabled because for some reason it breaks the test execution
+	 * part of the build process, even though the test itself is executed w/o problems.
+	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
+	 * within the transformation in this test.
+	 * 
+	 * Test transformation of an example project.	 * 
+	 */
+	void testTransformXml() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
+			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', METADATA_PATH]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -92,20 +213,9 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([
-			'-project',
-			HYDRO_PROJECT,
-			'-source',
-			HYDRO_DATA,
-			'-target',
-			targetFile.absolutePath,
-			// select target provider for export
-			'-providerId',
-			'eu.esdihumboldt.hale.io.inspiregml.writer',
-			// override a setting
-			'-Xinspire.sds.metadata.inline',
-			METADATA_PATH
-		]) { //
+		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider for export
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
+			'-Xinspire.sds.metadata.inline', METADATA_PATH]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -128,20 +238,9 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([
-			'-project',
-			HYDRO_PROJECT,
-			'-source',
-			HYDRO_DATA,
-			'-target',
-			targetFile.absolutePath,
-			// select preset for export
-			'-preset',
-			'INSPIRE SpatialDataSet',
-			// override a setting
-			'-Sinspire.sds.localId',
-			'1234'
-		]) { //
+		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select preset for export
+			'-preset', 'INSPIRE SpatialDataSet', // override a setting
+			'-Sinspire.sds.localId', '1234']) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -160,6 +259,35 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.member.Watercourse.size() == 982
 		// check local ID
 		assert root.identifier.Identifier.localId[0].text() == dataSetId
+	}
+
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateExcludeTypeHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == EXCLUDE_TYPE_DATA_SIZE
+		// check metadata language tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata date tag
+		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateFilteredHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE
+		// check metadata language tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata date tag
+		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
