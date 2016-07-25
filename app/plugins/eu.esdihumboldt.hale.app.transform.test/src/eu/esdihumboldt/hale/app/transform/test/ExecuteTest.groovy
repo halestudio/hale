@@ -39,19 +39,16 @@ class ExecuteTest extends GroovyTestCase {
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
 	// works, same as absolute path does
 
-	private static final String CDDA_DATA = "C://Users/Arun/Downloads/Databases/CDDA_v13.mdb"
-
 	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
 
 	private static final String FILTER_EXPRESSION1 = "CQL:name='River Till'";
-	private static final String FILTER_EXPRESSION2 = "River1:CQL:width='28.0'";
-	private static final String FILTER_EXPRESSION3 = "River:CQL:width='28.0'";
-	private static final String FILTER_EXPRESSION4 = "River:CQL:width='28.0' AND name='River Till'";
+	private static final String FILTER_EXPRESSION2 = "CQL:width>'15.0'";
+	private static final String FILTER_EXPRESSION3 = "River:width>'15.0'";
+	private static final String FILTER_EXPRESSION4 = "CQL:width>'15.0' AND name='River Till'";
 	private static final String EXCLUDED_TYPE = "River";
-	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 241;
+	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 262;
 	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 13;
 	private static final int EXCLUDE_TYPE_DATA_SIZE = 0;
-	//private static final String FILTER_EXPRESSION=null;
 
 	/**
 	 * XXX Disabled because for some reason it breaks the test execution
@@ -63,7 +60,7 @@ class ExecuteTest extends GroovyTestCase {
 	 */
 	void testExcludeTypeTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
-		//targetFile.deleteOnExit()
+		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([
@@ -103,7 +100,7 @@ class ExecuteTest extends GroovyTestCase {
 	 */
 	void testTypedFilteredTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
-		//targetFile.deleteOnExit()
+		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([
@@ -111,8 +108,6 @@ class ExecuteTest extends GroovyTestCase {
 			HYDRO_PROJECT,
 			'-source',
 			HYDRO_DATA,
-			'-filter',
-			FILTER_EXPRESSION1,
 			'-filter-on',
 			FILTER_EXPRESSION3,
 			'-target',
@@ -146,7 +141,7 @@ class ExecuteTest extends GroovyTestCase {
 	 */
 	void testUnconditionalFilteredTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
-		//targetFile.deleteOnExit()
+		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([
@@ -155,7 +150,7 @@ class ExecuteTest extends GroovyTestCase {
 			'-source',
 			HYDRO_DATA,
 			'-filter',
-			FILTER_EXPRESSION1,
+			FILTER_EXPRESSION4,
 			'-target',
 			targetFile.absolutePath,
 			// select target provider

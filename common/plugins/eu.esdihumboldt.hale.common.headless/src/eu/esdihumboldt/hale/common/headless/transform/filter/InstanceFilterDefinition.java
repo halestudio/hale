@@ -26,9 +26,11 @@ import com.google.common.collect.Multimap;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
- * TODO Type description
+ * Filter definition is a group of filters, applied on {@link Instance}s one by
+ * one.
  * 
  * @author Arun
  */
@@ -48,8 +50,6 @@ public class InstanceFilterDefinition implements Filter {
 	 * Excluded types for
 	 */
 	private final Set<String> excludedTypes;
-
-	// private final Set<String> excludeTypes;
 
 	/**
 	 * Default constructor
@@ -143,7 +143,6 @@ public class InstanceFilterDefinition implements Filter {
 	 */
 	@Override
 	public boolean match(Instance instance) {
-
 		return applyFilters(instance);
 	}
 
@@ -155,10 +154,14 @@ public class InstanceFilterDefinition implements Filter {
 				&& this.excludedTypes.size() == 0)
 			return true;
 
-		// applying all filters one by one (also handling lazy evaluation)
-		return (this.unconditionalFilters.size() == 0 ? false : applyUnconditionalFilter(instance))
-				|| (this.typeFilters.size() == 0 ? false : applyTypedFilter(instance))
-				|| (this.excludedTypes.size() == 0 ? false : applyExcludeFilters(instance));
+		// applying exclude filter first
+		if (applyExcludeFilters(instance))
+			return false;
+
+		// applying remaining filters one by one (also handling lazy evaluation)
+		return (this.typeFilters.size() == 0 ? false : applyTypedFilter(instance))
+				|| (this.unconditionalFilters.size() == 0 ? false
+						: applyUnconditionalFilter(instance));
 
 	}
 
@@ -173,7 +176,7 @@ public class InstanceFilterDefinition implements Filter {
 	private boolean applyTypedFilter(Instance instance) {
 		// Loop through all the type filters
 		for (String type : this.typeFilters.keySet()) {
-			if (instance.getDefinition().getName().getLocalPart().equals(type + "Type")) {
+			if (checkType(instance.getDefinition(), type)) {
 				// instance equals type name
 				for (Filter innerFilter : this.typeFilters.get(type)) {
 					if (innerFilter.match(instance))
@@ -183,20 +186,25 @@ public class InstanceFilterDefinition implements Filter {
 				return false;
 			}
 		}
-		// it reaches here that means Instance does not match any type of type
-		// filters.
-		// Method should return true.
+		// it reaches here that means Instance does not match any type of
+		// type filters. Method should return true.
 		return true;
 	}
 
 	private boolean applyExcludeFilters(Instance instance) {
 		// for excluded Types
 		for (String excludedType : this.excludedTypes)
-			if (instance.getDefinition().getName().getLocalPart().equals(excludedType + "Type"))
-				return false;
+			if (checkType(instance.getDefinition(), excludedType))
+				return true;
+		// instance does not match any excluded types.
+		return false;
+	}
 
-		// instance does not match any excludeed types.
-		return true;
+	// Checking type of instance with givenType.
+	private boolean checkType(TypeDefinition instanceType, String givenType) {
+		// Here giveType is supplied by user which should be trailed by "Type"
+		givenType += "Type";
+		return instanceType.getName().getLocalPart().equals(givenType);
 	}
 
 }

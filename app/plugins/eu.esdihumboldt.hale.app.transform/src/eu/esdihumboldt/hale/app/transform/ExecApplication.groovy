@@ -135,7 +135,7 @@ $baseCommand
          [<setting>...]
 	 [-filter <filter-expression>]
 	 [-filter-on <Type>:<filter-expression>]
- 	 [-exclude-type <Type>:...]
+ 	 [-exclude-type <Type>]
      [-validate <ID-of-target-validator> [<setting>...]]
      [options...]
 
@@ -153,11 +153,13 @@ $baseCommand
   control which files to load.
   If you do not specify -include, it defaults to "**", i.e. all files being
   included, even if they are in sub-directories.
-  If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance. 
-  If instance matches any of the filter will be included for transformation.
   Patterns use the glob pattern syntax as defined in Java and should be quoted
   to not be interpreted by the shell, see
   http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
+
+  -filter, -filter-on and -exclude-type are filtration, applied on source data.
+  If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance. 
+  If instance matches any of the filter, will be included for transformation.
 		""".trim()
 
 		// general error code
@@ -227,23 +229,18 @@ $baseCommand
 				break
 
 			case '-filter-on':
-			//<Type>:CQL:<EXPRESSION>
-				if(value.findIndexValues {it = ':'}.size() >=2 ){
-					int typeNameIndex = value.indexOf(':')
-					if(typeNameIndex>0){
-						String typeName = value.take(typeNameIndex)
-						String expression = value.substring(typeNameIndex+1)
-						executionContext.filters.addTypeFilter(typeName, expression)
-					}
-				}else {
+				int typeNameIndex = value.indexOf(':')
+				if(typeNameIndex>0){
+					String typeName = value.take(typeNameIndex)
+					String expression = value.substring(typeNameIndex+1)
+					executionContext.filters.addTypeFilter(typeName, expression)
+				}
+				else {
 					warn("Illegal parameter -filter-on should be applied with Type")
 				}
-
 				break
 			case '-exclude-type':
-			// <Type1>:<Type2>:<Type3>
-				String[] types = value.split(':')
-				types.each {executionContext.filters.addExcludedType((String)it)}
+				executionContext.filters.addExcludedType(value)
 				break
 			case '-exclude': // fall through
 			case '-include':
