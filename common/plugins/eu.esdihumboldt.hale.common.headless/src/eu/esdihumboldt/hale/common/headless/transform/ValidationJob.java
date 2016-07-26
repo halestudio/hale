@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.common.headless.transform;
 
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,8 +30,10 @@ import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
+import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
 /**
  * Job for validating transformed instances.
@@ -42,16 +48,21 @@ public class ValidationJob extends AbstractTransformationJob {
 	private ReportHandler reportHandler;
 	private InstanceValidator validator;
 
+	private final InstanceWriter writer;
+
 	/**
 	 * Create a job for validating transformed instances.
 	 * 
 	 * @param validator the validator
 	 * @param reportHandler the report handler
+	 * @param writer the instance writer
 	 */
-	public ValidationJob(InstanceValidator validator, ReportHandler reportHandler) {
+	public ValidationJob(InstanceValidator validator, ReportHandler reportHandler,
+			@Nullable InstanceWriter writer) {
 		super("Validation");
 
 		this.validator = validator;
+		this.writer = writer;
 		this.reportHandler = reportHandler;
 	}
 
@@ -66,6 +77,12 @@ public class ValidationJob extends AbstractTransformationJob {
 		try {
 			ATransaction trans = log.begin(defaultReporter.getTaskName());
 			try {
+				if (writer != null) {
+					// set validation schemas (may have been determined only
+					// during writer execution)
+					List<? extends Locatable> schemas = writer.getValidationSchemas();
+					validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+				}
 				IOReport result = validator.execute(new ProgressMonitorIndicator(monitor));
 				if (result != null) {
 					report = result;

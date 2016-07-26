@@ -269,7 +269,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			}
 			else if (validationJob == null) {
 				final InstanceValidator validator = (InstanceValidator) provider;
-				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance()) {
+				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance(),
+						null) {
 
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
