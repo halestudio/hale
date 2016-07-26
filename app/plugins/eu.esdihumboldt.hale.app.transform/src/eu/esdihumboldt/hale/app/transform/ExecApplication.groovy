@@ -124,7 +124,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		println """
 Usage:
 $baseCommand
-	 [-args-file <Path>]
+     [-args-file <Path>]
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
@@ -163,7 +163,7 @@ $baseCommand
   If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance.   
   If instance matches any of the filter, will be included for transformation.
   If instance matches -exclude-type filter, then it will be excluded from the transformation, irrespective of trueness of other filters.
-  
+
   You can also specify all the parameters in file using -args-file parameter. File content should follow specific rule. e.g. 
   -param1
   value
