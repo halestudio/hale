@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.headless.transform.AbstractTransformationSink;
 import eu.esdihumboldt.hale.common.headless.transform.LimboInstanceSink;
-import eu.esdihumboldt.hale.common.headless.transform.TransformationSink;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-public class OrientTransformationSink implements TransformationSink {
+public class OrientTransformationSink extends AbstractTransformationSink {
 
 	private class OrientLimboCollection implements InstanceCollection {
 
@@ -187,7 +187,7 @@ public class OrientTransformationSink implements TransformationSink {
 	}
 
 	@Override
-	public void done(boolean cancel) {
+	protected void internalDone(boolean cancel) {
 		dbThread.execute(new Runnable() {
 
 			@Override
@@ -218,10 +218,12 @@ public class OrientTransformationSink implements TransformationSink {
 		} catch (IOException e) {
 			log.warn("Could not delete database directory", e);
 		}
+
+		super.dispose();
 	}
 
 	@Override
-	public void addInstance(final Instance instance) {
+	protected void internalAddInstance(final Instance instance) {
 		dbThread.execute(new Runnable() {
 
 			@Override

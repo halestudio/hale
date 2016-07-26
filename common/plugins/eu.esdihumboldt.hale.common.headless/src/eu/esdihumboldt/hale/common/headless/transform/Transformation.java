@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
+import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -168,6 +169,13 @@ public class Transformation {
 			targetSink = TransformationSinkExtension.getInstance()
 					.createSink(!target.isPassthrough());
 			targetSink.setTypes(environment.getTargetSchema());
+
+			// add validation to sink
+			// XXX for now default validation if env variable is set
+			String env = System.getenv("HALE_TRANSFORMATION_INTERNAL_VALIDATION");
+			if (env != null && env.equalsIgnoreCase("true")) {
+				targetSink.addValidator(new DefaultTransformedInstanceValidator(reportHandler));
+			}
 		} catch (Exception e) {
 			throw new IllegalStateException("Error creating target sink", e);
 		}
