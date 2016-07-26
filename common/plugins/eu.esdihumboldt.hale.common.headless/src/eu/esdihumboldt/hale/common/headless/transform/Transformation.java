@@ -165,8 +165,8 @@ public class Transformation {
 
 		final TransformationSink targetSink;
 		try {
-			targetSink = TransformationSinkExtension.getInstance().createSink(
-					!target.isPassthrough());
+			targetSink = TransformationSinkExtension.getInstance()
+					.createSink(!target.isPassthrough());
 			targetSink.setTypes(environment.getTargetSchema());
 		} catch (Exception e) {
 			throw new IllegalStateException("Error creating target sink", e);
@@ -196,7 +196,7 @@ public class Transformation {
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		if (validator != null) {
-			validationJob = new ValidationJob(validator, reportHandler);
+			validationJob = new ValidationJob(validator, reportHandler, target);
 		}
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
@@ -285,8 +285,8 @@ public class Transformation {
 						.getService(TransformationService.class);
 
 				TransformationReport report = transformationService.transform(alignment,
-						sourceToUse, targetSink, serviceProvider, new ProgressMonitorIndicator(
-								monitor));
+						sourceToUse, targetSink, serviceProvider,
+						new ProgressMonitorIndicator(monitor));
 
 				try {
 					// publish report
