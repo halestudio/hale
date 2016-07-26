@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.headless.transform;
 
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
+import eu.esdihumboldt.hale.common.headless.transform.validate.TransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -56,5 +57,13 @@ public interface TransformationSink extends InstanceSink {
 	 * Dispose the transformation sink when it is no longer needed.
 	 */
 	public void dispose();
+
+	/**
+	 * Add a validator to the sink. Should be done before the first instance has
+	 * been passed in.
+	 * 
+	 * @param validator a validator for transformed instances
+	 */
+	public void addValidator(TransformedInstanceValidator validator);
 
 }
