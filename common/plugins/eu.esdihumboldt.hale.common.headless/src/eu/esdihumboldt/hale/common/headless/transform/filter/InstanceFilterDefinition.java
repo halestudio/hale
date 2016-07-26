@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -27,6 +29,8 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionMan
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
 /**
  * Filter definition is a group of filters, applied on {@link Instance}s one by
@@ -159,10 +163,7 @@ public class InstanceFilterDefinition implements Filter {
 			return false;
 
 		// applying remaining filters one by one (also handling lazy evaluation)
-		return (this.typeFilters.size() == 0 ? false : applyTypedFilter(instance))
-				|| (this.unconditionalFilters.size() == 0 ? false
-						: applyUnconditionalFilter(instance));
-
+		return applyTypedFilter(instance) || applyUnconditionalFilter(instance);
 	}
 
 	private boolean applyUnconditionalFilter(Instance instance) {
@@ -187,8 +188,8 @@ public class InstanceFilterDefinition implements Filter {
 			}
 		}
 		// it reaches here that means Instance does not match any type of
-		// type filters. Method should return true.
-		return true;
+		// type filters. Method should return false for lazy evaluation.
+		return false;
 	}
 
 	private boolean applyExcludeFilters(Instance instance) {
@@ -202,9 +203,22 @@ public class InstanceFilterDefinition implements Filter {
 
 	// Checking type of instance with givenType.
 	private boolean checkType(TypeDefinition instanceType, String givenType) {
-		// Here giveType is supplied by user which should be trailed by "Type"
-		givenType += "Type";
-		return instanceType.getName().getLocalPart().equals(givenType);
+		// Here givenType is supplied by user
+
+		QName qNameOfGivenType = QName.valueOf(givenType);
+
+		if (instanceType.getName().equals(qNameOfGivenType))
+			return true;
+
+		if (instanceType.getDisplayName().equals(givenType))
+			return true;
+
+		for (XmlElement element : instanceType.getConstraint(XmlElements.class).getElements()) {
+			if (element.getName().equals(qNameOfGivenType))
+				return true;
+		}
+
+		return false;
 	}
 
 }

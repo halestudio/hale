@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
+
 /**
  * Application that executes a transformation based on a project file.
  * 
@@ -134,7 +135,8 @@ $baseCommand
          [-providerId <ID-of-target-writer>]
          [<setting>...]
 	 [-filter <filter-expression>]
-	 [-filter-on <Type>:<filter-expression>]
+	 [-filter-on <Type> <filter-expression>]
+ 	 [-args-file <Path>]
  	 [-exclude-type <Type>]
      [-validate <ID-of-target-validator> [<setting>...]]
      [options...]
@@ -157,15 +159,110 @@ $baseCommand
   to not be interpreted by the shell, see
   http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 
-  -filter, -filter-on and -exclude-type are filtration, applied on source data.
-  If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance. 
+  -filter, -filter-on and -exclude-type are different types filter, applied on source data.
+  If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance.   
   If instance matches any of the filter, will be included for transformation.
-		""".trim()
+  If instance matches -exclude-type filter, then it will be excluded from the transformation, irrespective of trueness of other filters.
+  
+  You can also specify all the parameters in file using -args-file parameter. File content should follow specific rule. e.g. 
+  -param1
+  value
+  -param2
+  value
+  ...
+  ...""".trim()
 
 		// general error code
 		new Integer(1)
 	}
 
+	@Override
+	protected void processCommandLineArguments(String[] args, ExecContext executionContext) throws Exception {
+		if (args == null)
+			return;
+		for (int i = 0; i < args.length; i++) {
+			// check for args without parameters (i.e., a flag arg)
+			processFlag(args[i], executionContext)
+			// check for args with parameters. If we are at the last argument or
+			// if the next one
+			// has a '-' as the first character, then we can't have an arg with
+			// a param so continue.
+			if (i == args.length - 1 || args[i + 1].startsWith("-")) //$NON-NLS-1$
+				continue
+
+			//check for args file, if supplied then handle it and continue
+			if(args[i] == '-args-file'){
+				processArgumentsFile(args[++i], executionContext)
+				continue;
+			}
+
+
+			int noofValues = getNumberOfValues(args[i])
+			if(noofValues == 1){
+				processParameter(args[i], args[++i] , executionContext)
+			}
+			else{
+				List<String> values = [];
+				//loop through each values.
+				(1..noofValues).each{
+					values.add(args[i+it])
+				}
+				//Call special parameter handling function
+				processSpecialParameter(args[i], values, executionContext)
+				i = i + noofValues;
+			}
+		}
+	}
+
+	private void processArgumentsFile(String value, ExecContext executionContext){
+
+		URI argsFile = fileOrUri(value);
+
+		if (argsFile == null){
+			warn('file path supplied in -args-file is not valid file url: $value');
+			return;
+		}
+
+		File file = new File(argsFile);
+		if (!file.exists()) {
+			warn('file path supplied in -args-file does not exist.');
+			return;
+		}
+
+		// read file line by line.
+		// here consideration: each line is considered as argument
+		List<String> args = []
+		file.eachLine { line -> args << line }
+		//recall processCommandLineArguments function with args file parameter.
+		processCommandLineArguments(args as String[] ,executionContext )
+
+	}
+
+
+	private int getNumberOfValues(String param){
+		switch (param) {
+			case '-filter-on':
+				return 2
+			default:
+				return 1
+		}
+	}
+
+	private void processSpecialParameter(String param, List<String> values,
+			ExecContext executionContext) throws Exception {
+		switch (param) {
+			case '-filter-on':
+				if(values.size()==2){
+					executionContext.filters.addTypeFilter(values[0], values[1])
+				}
+				else {
+					warn('Illegal parameter -filter-on, only allowed with type and filter expression')
+				}
+				break
+			default:
+				break
+		}
+	}
 
 	@Override
 	protected void processParameter(String param, String value,
@@ -229,15 +326,7 @@ $baseCommand
 				break
 
 			case '-filter-on':
-				int typeNameIndex = value.indexOf(':')
-				if(typeNameIndex>0){
-					String typeName = value.take(typeNameIndex)
-					String expression = value.substring(typeNameIndex+1)
-					executionContext.filters.addTypeFilter(typeName, expression)
-				}
-				else {
-					warn("Illegal parameter -filter-on should be applied with Type")
-				}
+				warn('Illegal parameter -filter-on, only allowed with type and filter expression')
 				break
 			case '-exclude-type':
 				executionContext.filters.addExcludedType(value)
@@ -255,7 +344,7 @@ $baseCommand
 					cludeList << value
 				}
 				else {
-					warn("Unexpected parameter $param, only allowed for configuring a source")
+					warn('Unexpected parameter $param, only allowed for configuring a source')
 				}
 
 			default:

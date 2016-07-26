@@ -41,20 +41,65 @@ class ExecuteTest extends GroovyTestCase {
 
 	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
 
+	private static final String ARGS_FILE_PATH = "./projects/arguments/arguments_file.txt"
+
 	private static final String FILTER_EXPRESSION1 = "CQL:name='River Till'";
 	private static final String FILTER_EXPRESSION2 = "CQL:width>'15.0'";
-	private static final String FILTER_EXPRESSION3 = "River:width>'15.0'";
-	private static final String FILTER_EXPRESSION4 = "CQL:width>'15.0' AND name='River Till'";
+	private static final String FILTER_EXPRESSION3Typ = "{eu:esdihumboldt:hale:example}RiverType";
+	private static final String FILTER_EXPRESSION3Exp = "width='10.0'";
+	private static final String FILTER_EXPRESSION4 = "name='River Rede'";
 	private static final String EXCLUDED_TYPE = "River";
-	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 262;
-	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 13;
+	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 60;
+	private static final int TRANSFORMED_DATA_SIZE_ARGSFILE = 60;
+	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 34;
 	private static final int EXCLUDE_TYPE_DATA_SIZE = 0;
 
+
+
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
+	 * Copies the args file to a temporary file.
+	 * 
+	 */
+	private void createArgumentsTempFile(File tempArgsFile) throws IOException {
+		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(ARGS_FILE_PATH)
+		FileOutputStream os = new FileOutputStream(tempArgsFile)
+		os << is;
+		is.close()
+		os.close()
+	}
+
+	/**
+	 *
+	 * Test Args file of an example project.	 
+	 * 
+	 */
+	void testArgsFileTransformXml() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+
+		File tempArgsFile = File.createTempFile('arguments', '.txt')
+		tempArgsFile.deleteOnExit()
+
+		createArgumentsTempFile(tempArgsFile);
+
+		println ">> Arguments will be read from ${tempArgsFile}"
+		println ">> Transformed data will be written to ${targetFile}..."
+		transform(['-args-file', //
+			tempArgsFile.absolutePath, //
+			'-target', //
+			targetFile.absolutePath, //
+			'-providerId', //
+			'eu.esdihumboldt.hale.io.inspiregml.writer' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateArgsFileHydroXml(targetFile)
+
+	}
+	/**
 	 *
 	 * Test typed filter of an example project.	 *
 	 */
@@ -63,23 +108,12 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([
-			'-project',
-			HYDRO_PROJECT,
-			'-source',
-			HYDRO_DATA,
-			'-exclude-type',
-			EXCLUDED_TYPE,
-			'-target',
-			targetFile.absolutePath,
-			// select target provider
-			'-providerId',
-			'eu.esdihumboldt.hale.io.inspiregml.writer',
-			// override a setting
-			'-Sinspire.sds.localId',
-			'1234',
-			'-Sinspire.sds.metadata',
-			METADATA_PATH
+		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-exclude-type', EXCLUDED_TYPE, '-target', targetFile.absolutePath, // select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
+			'-Sinspire.sds.localId', //
+			'1234', //
+			'-Sinspire.sds.metadata', //
+			METADATA_PATH //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -91,10 +125,6 @@ class ExecuteTest extends GroovyTestCase {
 
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
 	 *
 	 * Test typed filter of an example project.	 *
 	 */
@@ -108,8 +138,11 @@ class ExecuteTest extends GroovyTestCase {
 			HYDRO_PROJECT,
 			'-source',
 			HYDRO_DATA,
+			'-filter',
+			FILTER_EXPRESSION4,
 			'-filter-on',
-			FILTER_EXPRESSION3,
+			FILTER_EXPRESSION3Typ,
+			FILTER_EXPRESSION3Exp,
 			'-target',
 			targetFile.absolutePath,
 			// select target provider
@@ -132,10 +165,6 @@ class ExecuteTest extends GroovyTestCase {
 
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
 	 *
 	 * Test unconditional filtered transformation of an example project.	 *
 	 */
@@ -286,6 +315,7 @@ class ExecuteTest extends GroovyTestCase {
 		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private void validateTypedFilteredHydroXml(File targetFile) {
 		// check written file
@@ -294,6 +324,20 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.name() == 'SpatialDataSet'
 		// check transformed feature count
 		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_TYPEDFILTER
+		// check metadata language tag
+		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		// check metadata date tag
+		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateArgsFileHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_ARGSFILE
 		// check metadata language tag
 		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
