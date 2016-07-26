@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.ui.transformation;
 
 import eu.esdihumboldt.hale.common.headless.transform.TransformationSink;
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
+import eu.esdihumboldt.hale.common.headless.transform.validate.TransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -117,6 +118,11 @@ public class TransformationSinkProxy implements TransformationSink {
 	@Override
 	public void dispose() {
 		sink.dispose();
+	}
+
+	@Override
+	public void addValidator(TransformedInstanceValidator validator) {
+		sink.addValidator(validator);
 	}
 
 }
