@@ -124,6 +124,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		println """
 Usage:
 $baseCommand
+	 [-args-file <Path>]
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
@@ -136,7 +137,6 @@ $baseCommand
          [<setting>...]
 	 [-filter <filter-expression>]
 	 [-filter-on <Type> <filter-expression>]
- 	 [-args-file <Path>]
  	 [-exclude-type <Type>]
      [-validate <ID-of-target-validator> [<setting>...]]
      [options...]

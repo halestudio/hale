@@ -41,18 +41,18 @@ class ExecuteTest extends GroovyTestCase {
 
 	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
 
-	private static final String ARGS_FILE_PATH = "./projects/arguments/arguments_file.txt"
+	private static final String ARGS_FILE_PATH = "projects/arguments/arguments_file.txt"
 
 	private static final String FILTER_EXPRESSION1 = "CQL:name='River Till'";
 	private static final String FILTER_EXPRESSION2 = "CQL:width>'15.0'";
 	private static final String FILTER_EXPRESSION3Typ = "{eu:esdihumboldt:hale:example}RiverType";
 	private static final String FILTER_EXPRESSION3Exp = "width='10.0'";
 	private static final String FILTER_EXPRESSION4 = "name='River Rede'";
-	private static final String EXCLUDED_TYPE = "River";
+	private static final String EXCLUDED_TYPE = "River1";
 	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 60;
 	private static final int TRANSFORMED_DATA_SIZE_ARGSFILE = 60;
 	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 34;
-	private static final int EXCLUDE_TYPE_DATA_SIZE = 0;
+	private static final int EXCLUDE_TYPE_DATA_SIZE = 982;
 
 
 
@@ -64,12 +64,7 @@ class ExecuteTest extends GroovyTestCase {
 
 		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(ARGS_FILE_PATH)
 		FileOutputStream os = new FileOutputStream(tempArgsFile)
-		//os << is; // line is getting failed in JIRA build
-		byte[] buffer = new byte[4096];
-		int bytesRead;
-		while ((bytesRead = is.read(buffer)) != -1) {
-			os.write(buffer, 0, bytesRead);
-		}
+		os << is;
 		is.close()
 		os.close()
 	}
@@ -84,29 +79,26 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 
 		File tempArgsFile = File.createTempFile('arguments', '.txt')
-		try{
-			createArgumentsTempFile(tempArgsFile);
 
-			println ">> Arguments will be read from ${tempArgsFile}"
-			println ">> Transformed data will be written to ${targetFile}..."
-			transform(['-args-file', //
-				tempArgsFile.absolutePath, //
-				'-target', //
-				targetFile.absolutePath, //
-				'-providerId', //
-				'eu.esdihumboldt.hale.io.inspiregml.writer' //
-			]) { //
-				File output, int code ->
-				// check exit code
-				assert code == 0
-			}
-			validateArgsFileHydroXml(targetFile)
+		createArgumentsTempFile(tempArgsFile);
 
-			tempArgsFile.delete();
-
-		}catch(Exception ex){
-
+		println ">> Arguments will be read from ${tempArgsFile}"
+		println ">> Transformed data will be written to ${targetFile}..."
+		transform(['-args-file', //
+			tempArgsFile.absolutePath, //
+			'-target', //
+			targetFile.absolutePath, //
+			'-providerId', //
+			'eu.esdihumboldt.hale.io.inspiregml.writer' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
 		}
+		validateArgsFileHydroXml(targetFile)
+
+		tempArgsFile.delete();
+
 	}
 	/**
 	 *

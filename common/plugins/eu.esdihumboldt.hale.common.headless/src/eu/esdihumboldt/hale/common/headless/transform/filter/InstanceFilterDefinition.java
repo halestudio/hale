@@ -162,6 +162,10 @@ public class InstanceFilterDefinition implements Filter {
 		if (applyExcludeFilters(instance))
 			return false;
 
+		// if only exclude filters will be supplied then, it should return true
+		// for other types.
+		if (this.unconditionalFilters.size() == 0 && this.typeFilters.size() == 0)
+			return true;
 		// applying remaining filters one by one (also handling lazy evaluation)
 		return applyTypedFilter(instance) || applyUnconditionalFilter(instance);
 	}
@@ -217,7 +221,7 @@ public class InstanceFilterDefinition implements Filter {
 			if (element.getName().equals(qNameOfGivenType))
 				return true;
 		}
-
+		// does not matched with all the above cases, return false
 		return false;
 	}
 
