@@ -39,7 +39,7 @@ class ExecuteTest extends GroovyTestCase {
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
 	// works, same as absolute path does
 
-	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
+	private static final String METADATA_PATH = "projects/gmdMD_Metadata.xml"
 
 	private static final String ARGS_FILE_PATH = "projects/arguments/arguments_file.txt"
 
@@ -54,33 +54,29 @@ class ExecuteTest extends GroovyTestCase {
 	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 34;
 	private static final int EXCLUDE_TYPE_DATA_SIZE = 982;
 
-
-
 	/**
-	 * Copies the args file to a temporary file.
+	 * Copies the source file to a temporary file.
 	 * 
 	 */
-	private void createArgumentsTempFile(File tempArgsFile) throws IOException {
-
-		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(ARGS_FILE_PATH)
-		FileOutputStream os = new FileOutputStream(tempArgsFile)
+	private void createTempFile(String sourceFilePath, File targetFile) throws IOException {
+		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(sourceFilePath)
+		FileOutputStream os = new FileOutputStream(targetFile)
 		os << is;
 		is.close()
 		os.close()
 	}
 
+
 	/**
-	 *
 	 * Test Args file of an example project.	 
-	 * 
 	 */
 	void testArgsFileTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 
 		File tempArgsFile = File.createTempFile('arguments', '.txt')
-
-		createArgumentsTempFile(tempArgsFile);
+		tempArgsFile.deleteOnExit()
+		createTempFile(ARGS_FILE_PATH, tempArgsFile);
 
 		println ">> Arguments will be read from ${tempArgsFile}"
 		println ">> Transformed data will be written to ${targetFile}..."
@@ -96,25 +92,29 @@ class ExecuteTest extends GroovyTestCase {
 			assert code == 0
 		}
 		validateArgsFileHydroXml(targetFile)
-
-		tempArgsFile.delete();
-
 	}
+
 	/**
-	 *
-	 * Test typed filter of an example project.	 *
+	 * Test exclude-type filter of an example project.	 *
 	 */
 	void testExcludeTypeTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-exclude-type', EXCLUDED_TYPE, '-target', targetFile.absolutePath, // select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
+		transform([//
+			'-project', //
+			HYDRO_PROJECT, //
+			'-source', //
+			HYDRO_DATA, //
+			'-exclude-type', //
+			EXCLUDED_TYPE, //
+			'-target', //
+			targetFile.absolutePath, // select target provider
+			'-providerId', //
+			'eu.esdihumboldt.hale.io.inspiregml.writer', //override a setting
 			'-Sinspire.sds.localId', //
-			'1234', //
-			'-Sinspire.sds.metadata', //
-			METADATA_PATH //
+			'1234' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -126,7 +126,6 @@ class ExecuteTest extends GroovyTestCase {
 
 
 	/**
-	 *
 	 * Test typed filter of an example project.	 *
 	 */
 	void testTypedFilteredTransformXml() {
@@ -136,14 +135,23 @@ class ExecuteTest extends GroovyTestCase {
 
 		transform([
 			'-project',
+			//
 			HYDRO_PROJECT,
+			//
 			'-source',
+			//
 			HYDRO_DATA,
+			//
 			'-filter',
+			//
 			FILTER_EXPRESSION4,
+			//
 			'-filter-on',
+			//
 			FILTER_EXPRESSION3Typ,
+			//
 			FILTER_EXPRESSION3Exp,
+			//
 			'-target',
 			targetFile.absolutePath,
 			// select target provider
@@ -151,9 +159,8 @@ class ExecuteTest extends GroovyTestCase {
 			'eu.esdihumboldt.hale.io.inspiregml.writer',
 			// override a setting
 			'-Sinspire.sds.localId',
-			'1234',
-			'-Sinspire.sds.metadata',
-			METADATA_PATH
+			//
+			'1234'//
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -166,7 +173,6 @@ class ExecuteTest extends GroovyTestCase {
 
 
 	/**
-	 *
 	 * Test unconditional filtered transformation of an example project.	 *
 	 */
 	void testUnconditionalFilteredTransformXml() {
@@ -174,9 +180,22 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-filter', FILTER_EXPRESSION4, '-target', targetFile.absolutePath, // select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', METADATA_PATH]) { //
+		transform([//
+			'-project', //
+			HYDRO_PROJECT, //
+			'-source', //
+			HYDRO_DATA, //
+			'-filter', //
+			FILTER_EXPRESSION4, //
+			'-target', //
+			targetFile.absolutePath, //
+			// select target provider
+			'-providerId', //
+			'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			// override a setting
+			'-Sinspire.sds.localId', //
+			'1234' //
+		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -186,21 +205,21 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
 	 * Test transformation of an example project.	 * 
 	 */
 	void testTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
+
+		File tempMetadataFile = File.createTempFile('gmdMD_Metadata', '.xml')
+		tempMetadataFile.deleteOnExit()
+		createTempFile(METADATA_PATH, tempMetadataFile);
+
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider
 			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', METADATA_PATH]) { //
+			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', tempMetadataFile.absolutePath]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -210,23 +229,23 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
 	 * Test transformation of an example project.
 	 * Try, if the metadata.inline parameter can be set with 
 	 * content read from XML file.
 	 */
-	void ignore_testTransformXmlInline() {
+	void testTransformXmlInline() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
+
+		File tempMetadataFile = File.createTempFile('gmdMD_Metadata', '.xml')
+		tempMetadataFile.deleteOnExit()
+		createTempFile(METADATA_PATH, tempMetadataFile);
+
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider for export
 			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Xinspire.sds.metadata.inline', METADATA_PATH]) { //
+			'-Xinspire.sds.metadata.inline', tempMetadataFile.absolutePath]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -236,15 +255,9 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
 	 * Test transformation of an example project.
-	 *
 	 */
-	void ignore_testTransform() {
+	void testTransform() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
@@ -260,6 +273,48 @@ class ExecuteTest extends GroovyTestCase {
 		validateHydro(targetFile, '1234')
 	}
 
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateExcludeTypeHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == EXCLUDE_TYPE_DATA_SIZE
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateUnconditionalFilteredHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER
+	}
+
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateTypedFilteredHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_TYPEDFILTER
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateArgsFileHydroXml(File targetFile) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_ARGSFILE
+	}
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private void validateHydro(File targetFile, String dataSetId) {
 		// check written file
@@ -272,64 +327,6 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.identifier.Identifier.localId[0].text() == dataSetId
 	}
 
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateExcludeTypeHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == EXCLUDE_TYPE_DATA_SIZE
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateUnconditionalFilteredHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateTypedFilteredHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_TYPEDFILTER
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateArgsFileHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_ARGSFILE
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private void validateHydroXml(File targetFile) {
 		// check written file
@@ -338,10 +335,10 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.name() == 'SpatialDataSet'
 		// check transformed feature count
 		assert root.member.Watercourse.size() == 982
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		//check metadata language tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	/**
