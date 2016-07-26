@@ -112,7 +112,14 @@ public class InstanceValidator {
 		return reporter;
 	}
 
-	private static void validateContext(InstanceValidationContext context,
+	/**
+	 * Validate the information collected in the instance validation context.
+	 * Should be performed after all instances haven been validated.
+	 * 
+	 * @param context the validation context
+	 * @param reporter the validation reporter
+	 */
+	public static void validateContext(InstanceValidationContext context,
 			InstanceValidationReporter reporter) {
 		ConstraintValidatorExtension extension = ConstraintValidatorExtension.getInstance();
 
@@ -221,7 +228,7 @@ public class InstanceValidator {
 	 * @param presentIn the child definition this instance is present in, if
 	 *            applicable
 	 */
-	private static void validateInstance(Instance instance, InstanceValidationReporter reporter,
+	public static void validateInstance(Instance instance, InstanceValidationReporter reporter,
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
 			InstanceReference reference, InstanceValidationContext context,
 			@Nullable ChildDefinition<?> presentIn) {
