@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import eu.esdihumboldt.util.http.client.fluent.FluentProxyUtil;
 import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
@@ -271,7 +272,7 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 
 		Proxy proxy = ProxyUtil.findProxy(uri);
 		// If proxy is configured then set the proxy
-		Executor executor = ProxyUtil.setProxy(request, proxy);
+		Executor executor = FluentProxyUtil.setProxy(request, proxy);
 
 		return executor.execute(request);
 	}

@@ -208,6 +208,7 @@ public class RegistryStrategyNonOSGI extends RegistryStrategy {
 		}
 
 		// MANIFEST.MF founded for the plugin.xml, Parse MANIFEST.MF.
+		@SuppressWarnings("rawtypes")
 		Headers headers = null;
 		try {
 			headers = Headers.parseManifest(manifestURL.openStream());

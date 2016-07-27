@@ -62,6 +62,7 @@ import eu.esdihumboldt.hale.common.instance.io.util.GeoInstanceWriterDecorator;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import eu.esdihumboldt.util.http.client.fluent.FluentProxyUtil;
 
 /**
  * Base class for WFS writers that directly write to the WFS-T.
@@ -70,8 +71,8 @@ import eu.esdihumboldt.util.http.ProxyUtil;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
-		GeoInstanceWriterDecorator<T> implements WFSWriter, WFSConstants {
+public abstract class AbstractWFSWriter<T extends StreamGmlWriter>
+		extends GeoInstanceWriterDecorator<T>implements WFSWriter, WFSConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractWFSWriter.class);
 
@@ -131,8 +132,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 	}
 
 	@Override
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException {
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
 		progress.begin("WFS Transaction", ProgressIndicator.UNKNOWN);
 
 		// configure internal provider
@@ -155,7 +156,7 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 					Proxy proxy = ProxyUtil.findProxy(targetWfs.getLocation());
 					Request request = Request.Post(targetWfs.getLocation()).bodyStream(pIn,
 							ContentType.APPLICATION_XML);
-					Executor executor = ProxyUtil.setProxy(request, proxy);
+					Executor executor = FluentProxyUtil.setProxy(request, proxy);
 
 					try {
 						return executor.execute(request);
@@ -187,8 +188,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 					Document responseDoc = parseResponse(res.getEntity());
 
 					// totalInserted
-					String inserted = xpath.compile("//TransactionSummary/totalInserted").evaluate(
-							responseDoc);
+					String inserted = xpath.compile("//TransactionSummary/totalInserted")
+							.evaluate(responseDoc);
 					// XXX totalUpdated
 					// XXX totalReplaced
 					// XXX totalDeleted
@@ -204,9 +205,10 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 			}
 			else {
 				// failure
-				reporter.error(new IOMessageImpl("Server reported failure with code "
-						+ res.getStatusLine().getStatusCode() + ": "
-						+ res.getStatusLine().getReasonPhrase(), null));
+				reporter.error(new IOMessageImpl(
+						"Server reported failure with code " + res.getStatusLine().getStatusCode()
+								+ ": " + res.getStatusLine().getReasonPhrase(),
+						null));
 				reporter.setSuccess(false);
 
 				try {
@@ -231,8 +233,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 		return reporter;
 	}
 
-	private Document parseResponse(HttpEntity entity) throws IOException,
-			ParserConfigurationException, SAXException {
+	private Document parseResponse(HttpEntity entity)
+			throws IOException, ParserConfigurationException, SAXException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		byte[] data = EntityUtils.toByteArray(entity);
