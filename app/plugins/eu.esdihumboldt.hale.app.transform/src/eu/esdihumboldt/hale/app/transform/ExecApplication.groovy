@@ -205,11 +205,20 @@ $baseCommand
 				List<String> values = [];
 				//loop through each values.
 				(1..noofValues).each{
-					values.add(args[i+it])
+					if(!args[i+it].startsWith("-"))
+						values << args[i+it]
 				}
-				//Call special parameter handling function
-				processSpecialParameter(args[i], values, executionContext)
-				i = i + noofValues;
+				def param = args[i];
+				//check values supplied in arguments match with expected number of values??
+				if(values.size() == noofValues){
+					//call special parameter handling function
+					processSpecialParameter(param, values, executionContext)
+					i += noofValues;
+				}else {
+					// treat this as an error and continue without this parameter
+					error("Illegal parameter $param, only allowed with $noofValues values")
+					i += values.size();
+				}
 			}
 		}
 	}
@@ -219,7 +228,7 @@ $baseCommand
 		URI argsFile = fileOrUri(value);
 
 		if (argsFile == null){
-			warn('file path supplied in -args-file is not valid file url: $value');
+			warn("file path supplied in -args-file is not valid file url: $value");
 			return;
 		}
 
@@ -344,7 +353,7 @@ $baseCommand
 					cludeList << value
 				}
 				else {
-					warn('Unexpected parameter $param, only allowed for configuring a source')
+					warn("Unexpected parameter $param, only allowed for configuring a source")
 				}
 
 			default:
