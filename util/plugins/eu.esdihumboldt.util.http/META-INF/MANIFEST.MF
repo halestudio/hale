@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Http Utilities
+Bundle-SymbolicName: eu.esdihumboldt.util.http
+Bundle-Version: 2.9.5.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.slf4jplus,
+ org.apache.http;version="4.3.0";resolution:=optional,
+ org.apache.http.auth;version="4.3.0";resolution:=optional,
+ org.apache.http.client;version="4.3.0";resolution:=optional,
+ org.apache.http.client.fluent;version="4.3.0";resolution:=optional,
+ org.apache.http.conn;version="4.3.0";resolution:=optional,
+ org.apache.http.impl.client;version="4.3.0";resolution:=optional,
+ org.apache.http.impl.conn;version="4.3.0";resolution:=optional,
+ org.slf4j;version="1.7.0"
+Export-Package: eu.esdihumboldt.util.http,
+ eu.esdihumboldt.util.http.client,
+ eu.esdihumboldt.util.http.client.fluent

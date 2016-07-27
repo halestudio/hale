@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fhg.igd.mapviewer.server.MapServer">
+      <server
+            class="de.fhg.igd.mapviewer.server.openstreetmap.OpenStreetMapServer"
+            enabled="true"
+            name="OpenStreetMap.org"
+            priority="-10">
+      </server>
+   </extension>
+
+</plugin>

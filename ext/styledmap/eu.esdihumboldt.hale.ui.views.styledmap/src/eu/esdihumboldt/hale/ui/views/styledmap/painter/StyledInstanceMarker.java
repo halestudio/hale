@@ -57,7 +57,7 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
-import de.cs3d.common.metamodel.Point3D;
+import de.fhg.igd.mapviewer.geom.Point3D;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.BoxArea;
