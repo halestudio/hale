@@ -124,20 +124,20 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		println """
 Usage:
 $baseCommand
-     [-args-file <Path>]
+     [-args-file <file-with-arguments>]
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
          [-exclude <file-pattern>]
          [-providerId <ID-of-source-reader>]
          [<setting>...]
+     [-filter <filter-expression>]
+     [-filter-on <Type> <filter-expression>]
+     [-exclude-type <Type>]
      -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
          [<setting>...]
-	 [-filter <filter-expression>]
-	 [-filter-on <Type> <filter-expression>]
- 	 [-exclude-type <Type>]
      [-validate <ID-of-target-validator> [<setting>...]]
      [options...]
 
@@ -150,27 +150,36 @@ $baseCommand
      -stacktrace
      -trustGroovy
 
-  You can provide multiple sources for the transformation. If the source is a
-  directory, you can specify multiple -include and -exclude parameters to
-  control which files to load.
-  If you do not specify -include, it defaults to "**", i.e. all files being
-  included, even if they are in sub-directories.
-  Patterns use the glob pattern syntax as defined in Java and should be quoted
-  to not be interpreted by the shell, see
-  http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
-
-  -filter, -filter-on and -exclude-type are different types filter, applied on source data.
-  If you specify more than one filter ( e.g. -filter or -filter-on) will be applied as 'OR' on each instance.   
-  If instance matches any of the filter, will be included for transformation.
-  If instance matches -exclude-type filter, then it will be excluded from the transformation, irrespective of trueness of other filters.
-
-  You can also specify all the parameters in file using -args-file parameter. File content should follow specific rule. e.g. 
-  -param1
-  value
-  -param2
-  value
-  ...
-  ...""".trim()
+  Sources
+    You can provide multiple sources for the transformation. If the source is a
+    directory, you can specify multiple -include and -exclude parameters to
+    control which files to load.
+    If you do not specify -include, it defaults to "**", i.e. all files being
+    included, even if they are in sub-directories.
+    Patterns use the glob pattern syntax as defined in Java and should be
+    quoted to not be interpreted by the shell, see
+    http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
+  
+  Filtering sources
+    The options -filter, -filter-on and -exclude-type serve to filter the
+    source data, before the transformation is performed.
+    If you specify multiple filters with -filter or -filter-on, only one of
+    them must match for an instance to be included.
+    <filter-expressions> by default are interpreted as CQL. You can specify
+    a specific filter language supported by hale by including a corresponding
+    prefix, followed by a colon and the filter expression itself, e.g.:
+    CQL:name <> ''
+  
+  Providing arguments as file
+    You can also specify the arguments in a file using the -args-file
+    parameter. Each line in the file is interpreted as a separate argument.
+    For example:
+    -param1
+    value
+    -param2
+    value
+    ...
+""".trim()
 
 		// general error code
 		new Integer(1)
