@@ -43,7 +43,7 @@ class CellOrModifierComparator implements Comparator<Object> {
 	@Override
 	int compare(Object o1, Object o2) {
 		// handle generic cases
-		if (o1 == o2) {
+		if (o1 == null && o2 == null) {
 			return 0
 		}
 		if (o1 == null) {
@@ -113,7 +113,7 @@ class CellOrModifierComparator implements Comparator<Object> {
 
 	private int compareEntities(List<NamedEntityType> o1, List<NamedEntityType> o2) {
 		// handle generic cases
-		if (o1 == o2) {
+		if (o1 == null && o2 == null) {
 			return 0
 		}
 		if (o1 == null) {
@@ -159,10 +159,10 @@ class CellOrModifierComparator implements Comparator<Object> {
 
 	private int compareEntity(NamedEntityType o1, NamedEntityType o2) {
 		AbstractEntityType e1 = o1?.abstractEntity?.value
-		AbstractEntityType e2 = o1?.abstractEntity?.value
+		AbstractEntityType e2 = o2?.abstractEntity?.value
 
 		// handle generic cases
-		if (e1 == e2) {
+		if (e1 == null && e2 == null) {
 			return 0
 		}
 		if (e1 == null) {
@@ -260,7 +260,7 @@ class CellOrModifierComparator implements Comparator<Object> {
 
 	private int compareBigInt(BigInteger i1, BigInteger i2) {
 		// handle generic cases
-		if (i1 == i2) {
+		if (i1 == null && i2 == null) {
 			return 0
 		}
 		if (i1 == null) {
