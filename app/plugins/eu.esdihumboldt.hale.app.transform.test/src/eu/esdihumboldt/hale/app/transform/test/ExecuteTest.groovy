@@ -36,171 +36,339 @@ class ExecuteTest extends GroovyTestCase {
 	private static final String HYDRO_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-basic.halez"
 	private static final String HYDRO_DATA = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-source.gml.gz"
 
+	private static final String MULTI_TYPE_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/multitype/multi-type.halez"
+	private static final String MULTI_TYPE_DATA = "platform:/plugin/$PLUGIN_NAME/projects/multitype/multi-type-source.xml"
+
+
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
 	// works, same as absolute path does
+	private static final String METADATA_PATH = "projects/gmdMD_Metadata.xml"
 
-	private static final String METADATA_PATH = "./projects/gmdMD_Metadata.xml"
-
-	private static final String ARGS_FILE_PATH = "projects/arguments/arguments_file.txt"
-
-	private static final String FILTER_EXPRESSION1 = "CQL:name='River Till'";
-	private static final String FILTER_EXPRESSION2 = "CQL:width>'15.0'";
-	private static final String FILTER_EXPRESSION3Typ = "{eu:esdihumboldt:hale:example}RiverType";
-	private static final String FILTER_EXPRESSION3Exp = "width='10.0'";
-	private static final String FILTER_EXPRESSION4 = "name='River Rede'";
-	private static final String EXCLUDED_TYPE = "River1";
-	private static final int TRANSFORMED_DATA_SIZE_TYPEDFILTER = 60;
-	private static final int TRANSFORMED_DATA_SIZE_ARGSFILE = 60;
-	private static final int TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER = 34;
-	private static final int EXCLUDE_TYPE_DATA_SIZE = 982;
+	private static final String HYDRO_ARGS_FILE_PATH = "projects/arguments/hydro_arguments_file.txt"
+	private static final String HYDRO_EX1Typ = "{eu:esdihumboldt:hale:example}RiverType"
+	private static final String HYDRO_EXP1Exp = "width='10.0'"
+	private static final String HYDRO_EXP2UNCONDITIONAL = "name='River Rede'"
+	private static final String HYDRO_EXCLUDED_TYPE = "River1"
+	private static final int HYDRO_TDATA_SIZE_TYPEDFILTER = 60
+	private static final int HYDRO_TDATA_SIZE_ARGSFILE = 60
+	private static final int HYDRO_TDATA_SIZE_UNCONDITIONAL_FILTER = 34
+	private static final int HYDRO_TDATA_SIZE_EXCLUDE_TYPE = 982
 
 
+	private static final String MULTITYPE_EX1UNCONDITIONAL = "price>'15'" // shirt = 11 and hat= 12 : total = 23
+	private static final String MULTITYPE_EX1Typ = "shirt"
+	private static final String MULTITYPE_EX1Exp = "name='Polo shirt green'" // shirt = 6 in which (price < 15) = 2
+	private static final String MULTITYPE_EX1EXCLUDETYPE = "hat" // hat = 0 .
+	private static final int MULTITYPE_TDATA_SIZE = 13
+
+	private static final String MULTITYPE_EX2UNCONDITIONAL = "price>'11'" //shirt = 11 and hat = 12 : total = 23
+	private static final String MULTITYPE_EX2Typ = "shirt"
+	private static final String MULTITYPE_EX2Exp = "name='Polo shirt green'" // shirt = 6 in which (price < 11) = 2
+	private static final String MULTITYPE_EX2EXCLUDETYPE = "shirt" // shirt = 0
+	private static final String MULTITYPE_EX2_2Typ = "{http://www.example.org/t1/}HatType"
+	private static final String MULTITYPE_EX2_2Exp = "name='Big hat' or name='HarryPotter hat' or name='Round hat'" // Big hat=1 & HaryPotter hat=5 in which (price<11)=1 & Round hat=3 in which (price<11):2
+	private static final int MULTITYPE_TDATA_SIZE2 = 15
+
+
+	private static final String MULTITYPE_EX3Typ = "{http://www.example.org/t1/}ShirtType"
+	private static final String MULTITYPE_EX3Exp = "price>'15.50' and price<'19.99'" // shirt = 3
+	private static final String MULTITYPE_EX3_2Typ = "{http://www.example.org/t1/}HatType"
+	private static final String MULTITYPE_EX3_2Exp = "name='HarryPotter hat' or (name='Round hat' and price<'10') " // HaryPotter hat=5 & Round hat=2
+	private static final int MULTITYPE_TDATA_SIZE3 = 10
+
+	private static final String MULTITYPE_ARGS_FILE_PATH = "projects/arguments/multitypes_arguments_file.txt"
+
+	private static final String MULTITYPE_ARGS_2_FILE_PATH = "projects/arguments/multitypes_arguments_file2.txt"
+	private static final int MULTITYPE_TDATA_SIZE4 = 30
 
 	/**
-	 * Copies the args file to a temporary file.
+	 * Copies the source file to a temporary file.
 	 * 
 	 */
-	private void createArgumentsTempFile(File tempArgsFile) throws IOException {
-
-		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(ARGS_FILE_PATH)
-		FileOutputStream os = new FileOutputStream(tempArgsFile)
+	private void createTempFile(String sourceFilePath, File targetFile) throws IOException {
+		InputStream is = ExecuteTest.class.getClassLoader().getResourceAsStream(sourceFilePath)
+		FileOutputStream os = new FileOutputStream(targetFile)
 		os << is;
 		is.close()
 		os.close()
 	}
 
+
 	/**
-	 *
-	 * Test Args file of an example project.	 
-	 * 
+	 * Test Args file without filter for multi types source project
 	 */
-	void testArgsFileTransformXml() {
+	void testArgsFileWOFilterForMultiTypesSource() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+
+		File tempArgsFile = File.createTempFile('arguments', '.txt')
+		tempArgsFile.deleteOnExit()
+		createTempFile(MULTITYPE_ARGS_2_FILE_PATH, tempArgsFile);
+
+		println ">> Arguments will be read from ${tempArgsFile}"
+		println ">> Transformed data will be written to ${targetFile}..."
+		transform([//
+			'-args-file', tempArgsFile.absolutePath, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
+			'-Sxml.rootElement.name', 'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+		validateMultipleTypeTransformedDataSize(targetFile, MULTITYPE_TDATA_SIZE4)
+	}
+
+
+
+	/**
+	 * Test Args file of an project in which source contains more types
+	 */
+	void testArgsFileForMultiTypesSource() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+
+		File tempArgsFile = File.createTempFile('arguments', '.txt')
+		tempArgsFile.deleteOnExit()
+		createTempFile(MULTITYPE_ARGS_FILE_PATH, tempArgsFile);
+
+		println ">> Arguments will be read from ${tempArgsFile}"
+		println ">> Transformed data will be written to ${targetFile}..."
+		transform([//
+			'-args-file', tempArgsFile.absolutePath, //
+			'-exclude-type', MULTITYPE_EX2EXCLUDETYPE, //
+			'-filter-on', MULTITYPE_EX2_2Typ, MULTITYPE_EX2_2Exp, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
+			'-Sxml.rootElement.name', 'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+		validateMultipleTypeTransformedDataSize(targetFile, MULTITYPE_TDATA_SIZE2)
+	}
+
+	/**
+	 * Test filters on source consisted Multiple Types, complicated 2
+	 */
+	void testFiltersForMultiType3() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([//
+			'-project', MULTI_TYPE_PROJECT, //
+			'-source', MULTI_TYPE_DATA, //
+			'-filter-on', MULTITYPE_EX3Typ, MULTITYPE_EX3Exp, //
+			'-filter-on', MULTITYPE_EX3_2Typ, MULTITYPE_EX3_2Exp, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
+			'-Sxml.rootElement.name', 'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateMultipleTypeTransformedDataSize(targetFile,MULTITYPE_TDATA_SIZE3)
+	}
+
+
+	/**
+	 * Test filters on source consisted Multiple Types, complicated 1
+	 */
+	void testFiltersForMultiType2() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([//
+			'-project', MULTI_TYPE_PROJECT, //
+			'-source', MULTI_TYPE_DATA, //
+			'-filter', MULTITYPE_EX2UNCONDITIONAL, //
+			'-filter-on', MULTITYPE_EX2Typ, MULTITYPE_EX2Exp, //
+			'-exclude-type', MULTITYPE_EX2EXCLUDETYPE, //
+			'-filter-on', MULTITYPE_EX2_2Typ, MULTITYPE_EX2_2Exp, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
+			'-Sxml.rootElement.name', 'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateMultipleTypeTransformedDataSize(targetFile,MULTITYPE_TDATA_SIZE2)
+	}
+
+
+	/**
+	 * Test filters on source consisted Multiple Types*
+	 */
+	void testFiltersForMultiType() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([//
+			'-project', MULTI_TYPE_PROJECT, //
+			'-source', MULTI_TYPE_DATA, //
+			'-filter', MULTITYPE_EX1UNCONDITIONAL, //
+			'-filter-on', MULTITYPE_EX1Typ, MULTITYPE_EX1Exp, //
+			'-exclude-type', MULTITYPE_EX1EXCLUDETYPE, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
+			'-Sxml.rootElement.name', 'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateMultipleTypeTransformedDataSize(targetFile,MULTITYPE_TDATA_SIZE)
+	}
+
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateMultipleTypeTransformedDataSize(File targetFile, int dataSize) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'collection'
+		// check transformed feature count
+		assert root.item.size() == dataSize
+	}
+
+	/**
+	 * Test Args file of an hydro project.	 
+	 */
+	void testArgsFileForHydro() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 
 		File tempArgsFile = File.createTempFile('arguments', '.txt')
-
-		createArgumentsTempFile(tempArgsFile);
+		tempArgsFile.deleteOnExit()
+		createTempFile(HYDRO_ARGS_FILE_PATH, tempArgsFile);
 
 		println ">> Arguments will be read from ${tempArgsFile}"
 		println ">> Transformed data will be written to ${targetFile}..."
-		transform(['-args-file', //
-			tempArgsFile.absolutePath, //
-			'-target', //
-			targetFile.absolutePath, //
-			'-providerId', //
-			'eu.esdihumboldt.hale.io.inspiregml.writer' //
+		transform([//
+			'-args-file', tempArgsFile.absolutePath, //
+			'-target', targetFile.absolutePath, //
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer' //
 		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
 		}
-		validateArgsFileHydroXml(targetFile)
-
-		tempArgsFile.delete();
-
+		validateTransformedDataSize(targetFile, HYDRO_TDATA_SIZE_ARGSFILE)
 	}
+
 	/**
-	 *
-	 * Test typed filter of an example project.	 *
+	 * Test exclude-type filter of an hydro project.	 *
 	 */
-	void testExcludeTypeTransformXml() {
+	void testExcludeTypeForHydro() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-exclude-type', EXCLUDED_TYPE, '-target', targetFile.absolutePath, // select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Sinspire.sds.localId', //
-			'1234', //
-			'-Sinspire.sds.metadata', //
-			METADATA_PATH //
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-exclude-type', HYDRO_EXCLUDED_TYPE, //
+			'-target', targetFile.absolutePath, //
+			//select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			//override a setting
+			'-Sinspire.sds.localId', '1234' //
 		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
 		}
 
-		validateExcludeTypeHydroXml(targetFile)
+		validateTransformedDataSize(targetFile,HYDRO_TDATA_SIZE_EXCLUDE_TYPE)
 	}
 
 
 	/**
-	 *
-	 * Test typed filter of an example project.	 *
+	 * Test typed filter of an hydro project.	 *
 	 */
-	void testTypedFilteredTransformXml() {
+	void testTypedFilterForHydro() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([
-			'-project',
-			HYDRO_PROJECT,
-			'-source',
-			HYDRO_DATA,
-			'-filter',
-			FILTER_EXPRESSION4,
-			'-filter-on',
-			FILTER_EXPRESSION3Typ,
-			FILTER_EXPRESSION3Exp,
-			'-target',
-			targetFile.absolutePath,
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-filter', HYDRO_EXP2UNCONDITIONAL, //
+			'-filter-on', HYDRO_EX1Typ, HYDRO_EXP1Exp, //
+			'-target', targetFile.absolutePath, //
 			// select target provider
-			'-providerId',
-			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
 			// override a setting
-			'-Sinspire.sds.localId',
-			'1234',
-			'-Sinspire.sds.metadata',
-			METADATA_PATH
+			'-Sinspire.sds.localId', '1234'//
 		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
 		}
 
-		validateTypedFilteredHydroXml(targetFile)
+		validateTransformedDataSize(targetFile,HYDRO_TDATA_SIZE_TYPEDFILTER)
 	}
 
-
-
 	/**
-	 *
-	 * Test unconditional filtered transformation of an example project.	 *
+	 * Test unconditional filtered transformation of an hydro project.	 *
 	 */
-	void testUnconditionalFilteredTransformXml() {
+	void testUnconditionalFilterForHydro() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-filter', FILTER_EXPRESSION4, '-target', targetFile.absolutePath, // select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', METADATA_PATH]) { //
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-filter', HYDRO_EXP2UNCONDITIONAL, //
+			'-target', targetFile.absolutePath, //
+			// select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			// override a setting
+			'-Sinspire.sds.localId', '1234' //
+		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
 		}
 
-		validateUnconditionalFilteredHydroXml(targetFile)
+		validateTransformedDataSize(targetFile,HYDRO_TDATA_SIZE_UNCONDITIONAL_FILTER)
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
-	 * Test transformation of an example project.	 * 
+	 * Test transformation of an hydro project.	 * 
 	 */
 	void testTransformXml() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
+
+		File tempMetadataFile = File.createTempFile('gmdMD_Metadata', '.xml')
+		tempMetadataFile.deleteOnExit()
+		createTempFile(METADATA_PATH, tempMetadataFile);
+
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Sinspire.sds.localId', '1234', '-Sinspire.sds.metadata', METADATA_PATH]) { //
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-target', targetFile.absolutePath, //
+			// select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			// override a setting
+			'-Sinspire.sds.localId', '1234', //
+			'-Sinspire.sds.metadata', tempMetadataFile.absolutePath//
+		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -210,23 +378,28 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
-	 * Test transformation of an example project.
+	 * Test transformation of an hydro project.
 	 * Try, if the metadata.inline parameter can be set with 
 	 * content read from XML file.
 	 */
-	void ignore_testTransformXmlInline() {
+	void testTransformXmlInline() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
+
+		File tempMetadataFile = File.createTempFile('gmdMD_Metadata', '.xml')
+		tempMetadataFile.deleteOnExit()
+		createTempFile(METADATA_PATH, tempMetadataFile);
+
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select target provider for export
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', // override a setting
-			'-Xinspire.sds.metadata.inline', METADATA_PATH]) { //
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-target', targetFile.absolutePath, //
+			//select target provider
+			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			// override a setting
+			'-Xinspire.sds.metadata.inline', tempMetadataFile.absolutePath]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -236,28 +409,38 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
-	 * XXX Disabled because for some reason it breaks the test execution
-	 * part of the build process, even though the test itself is executed w/o problems.
-	 * The problem seems to be the framework shutdown, maybe related to the use of OrientDB
-	 * within the transformation in this test.
-	 * 
-	 * Test transformation of an example project.
-	 *
+	 * Test transformation of an hydro project.
 	 */
-	void ignore_testTransform() {
+	void testTransform() {
 		File targetFile =  File.createTempFile('transform-hydro', '.gml')
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform(['-project', HYDRO_PROJECT, '-source', HYDRO_DATA, '-target', targetFile.absolutePath, // select preset for export
-			'-preset', 'INSPIRE SpatialDataSet', // override a setting
-			'-Sinspire.sds.localId', '1234']) { //
+		transform([//
+			'-project', HYDRO_PROJECT, //
+			'-source', HYDRO_DATA, //
+			'-target', targetFile.absolutePath, //
+			// select preset for export
+			'-preset', 'INSPIRE SpatialDataSet', //
+			// override a setting
+			'-Sinspire.sds.localId', '1234'//
+		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
 		}
 
 		validateHydro(targetFile, '1234')
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void validateTransformedDataSize(File targetFile, int dataSize) {
+		// check written file
+		def root = new XmlSlurper().parse(targetFile)
+		// check container
+		assert root.name() == 'SpatialDataSet'
+		// check transformed feature count
+		assert root.member.Watercourse.size() == dataSize
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
@@ -272,64 +455,6 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.identifier.Identifier.localId[0].text() == dataSetId
 	}
 
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateExcludeTypeHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == EXCLUDE_TYPE_DATA_SIZE
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateUnconditionalFilteredHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_UNCONDITIONAL_FILTER
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateTypedFilteredHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_TYPEDFILTER
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
-	@CompileStatic(TypeCheckingMode.SKIP)
-	private void validateArgsFileHydroXml(File targetFile) {
-		// check written file
-		def root = new XmlSlurper().parse(targetFile)
-		// check container
-		assert root.name() == 'SpatialDataSet'
-		// check transformed feature count
-		assert root.member.Watercourse.size() == TRANSFORMED_DATA_SIZE_ARGSFILE
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
-		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
-	}
-
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private void validateHydroXml(File targetFile) {
 		// check written file
@@ -338,10 +463,10 @@ class ExecuteTest extends GroovyTestCase {
 		assert root.name() == 'SpatialDataSet'
 		// check transformed feature count
 		assert root.member.Watercourse.size() == 982
-		// check metadata language tag
-		//assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
+		//check metadata language tag
+		assert root.metadata.MD_Metadata.language.CharacterString.text() == 'DE'
 		// check metadata date tag
-		//assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
+		assert root.metadata.MD_Metadata.dateStamp.Date.text() == '2014-06-10'
 	}
 
 	/**
