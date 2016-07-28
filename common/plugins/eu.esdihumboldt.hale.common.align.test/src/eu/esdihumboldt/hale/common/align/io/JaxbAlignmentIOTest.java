@@ -53,6 +53,7 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 				}, "addBaseAlignment", true));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void saveAlignment(MutableAlignment align, OutputStream output) throws Exception {
 		JaxbAlignmentIO.save(align, null, output, new PathUpdate(null, null));

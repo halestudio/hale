@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.common.align.io.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.PathUpdate;
@@ -52,9 +53,18 @@ public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
 
 		PathUpdate pathUpdate = new PathUpdate(getProjectLocation(), getTarget().getLocation());
+		AlignmentType alignment;
+		try {
+			alignment = JaxbAlignmentIO.convert(getAlignment(), reporter, pathUpdate);
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl("Error converting alignment to XML model", e));
+			reporter.setSuccess(false);
+			return reporter;
+		}
+
 		OutputStream out = getTarget().getOutput();
 		try {
-			JaxbAlignmentIO.save(getAlignment(), reporter, out, pathUpdate);
+			JaxbAlignmentIO.save(alignment, reporter, out);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
