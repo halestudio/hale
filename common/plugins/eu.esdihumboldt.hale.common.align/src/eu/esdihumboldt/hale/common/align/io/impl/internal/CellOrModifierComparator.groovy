@@ -132,10 +132,12 @@ class CellOrModifierComparator implements Comparator<Object> {
 
 		int commonLength = Math.min(list1.size(), list2.size())
 
-		for (i in 0..(commonLength - 1)) {
-			int cmp = compareEntity(list1[i], list2[i])
-			if (cmp != 0) {
-				return cmp
+		if (commonLength > 0) {
+			for (i in 0..(commonLength - 1)) {
+				int cmp = compareEntity(list1[i], list2[i])
+				if (cmp != 0) {
+					return cmp
+				}
 			}
 		}
 
@@ -153,8 +155,8 @@ class CellOrModifierComparator implements Comparator<Object> {
 	}
 
 	private int compareEntity(NamedEntityType o1, NamedEntityType o2) {
-		AbstractEntityType e1 = o1.abstractEntity?.value
-		AbstractEntityType e2 = o1.abstractEntity?.value
+		AbstractEntityType e1 = o1?.abstractEntity?.value
+		AbstractEntityType e2 = o1?.abstractEntity?.value
 
 		// handle generic cases
 		if (e1 == e2) {
@@ -204,10 +206,12 @@ class CellOrModifierComparator implements Comparator<Object> {
 	private int compareProperties(List<ChildContextType> list1, List<ChildContextType> list2) {
 		int commonLength = Math.min(list1.size(), list2.size())
 
-		for (i in 0..(commonLength - 1)) {
-			int cmp = compareChildContext(list1[i], list2[i])
-			if (cmp != 0) {
-				return cmp
+		if (commonLength > 0) {
+			for (i in 0..(commonLength - 1)) {
+				int cmp = compareChildContext(list1[i], list2[i])
+				if (cmp != 0) {
+					return cmp
+				}
 			}
 		}
 
