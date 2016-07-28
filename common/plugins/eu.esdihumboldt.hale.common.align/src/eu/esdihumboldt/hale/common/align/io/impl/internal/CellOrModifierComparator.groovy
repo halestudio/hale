@@ -91,17 +91,20 @@ class CellOrModifierComparator implements Comparator<Object> {
 
 		if (cmp == 0) {
 			/*
-			 * 2. compare used transformation functions
-			 * 
-			 * The reason behind this is that it is most critical to have the
-			 * same position for a cell if the transformation function is not
-			 * changed (to have a proper diff of the changes inside).
+			 * 2. compare source
+			 */
+			cmp = compareEntities(o1.source, o2.source)
+		}
+
+		if (cmp == 0) {
+			/*
+			 * 3. compare used transformation functions
 			 */
 			cmp = o1.relation <=> o2.relation
 		}
 
 		if (cmp == 0) {
-			// 3. compare cell ID -> reproducible order if there are no changes
+			// 4. compare cell ID -> reproducible order if there are no changes
 			cmp = o1.id <=> o2.id
 		}
 
