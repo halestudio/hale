@@ -106,6 +106,9 @@ class AlignmentToJaxb {
 			}
 			addModifier(cell, align);
 		}
+		
+		// sort cells
+		align.cellOrModifier.sort(CellOrModifierComparator.instance)
 
 		return align
 	}
