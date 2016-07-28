@@ -67,7 +67,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
 			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver)
-			throws JAXBException, IOException {
+					throws JAXBException, IOException {
 		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
 		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes, updater,
@@ -90,7 +90,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
 				targetTypes, reporter);
 	}
@@ -104,11 +104,45 @@ public class JaxbAlignmentIO {
 	 * @param out the output stream
 	 * @param pathUpdate to update relative paths in case of a path change
 	 * @throws Exception if converting or writing the alignment fails
+	 * @deprecated use {@link #convert(Alignment, IOReporter, PathUpdate)} and
+	 *             {@link #save(AlignmentType, IOReporter, OutputStream)}
+	 *             instead to prevent an empty file being written on conversion
+	 *             errors
 	 */
+	@Deprecated
 	public static void save(Alignment alignment, IOReporter reporter, OutputStream out,
 			PathUpdate pathUpdate) throws Exception {
-		AlignmentType align = new AlignmentToJaxb(alignment, reporter, pathUpdate).convert();
+		AlignmentType align = convert(alignment, reporter, pathUpdate);
 
+		save(align, reporter, out);
+	}
+
+	/**
+	 * Convert an alignment to its JAXB representation.
+	 * 
+	 * @param alignment the alignment to save
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @param pathUpdate to update relative paths in case of a path change
+	 * @return the converted alignment
+	 * @throws Exception if converting or writing the alignment fails
+	 */
+	public static AlignmentType convert(Alignment alignment, IOReporter reporter,
+			PathUpdate pathUpdate) throws Exception {
+		return new AlignmentToJaxb(alignment, reporter, pathUpdate).convert();
+	}
+
+	/**
+	 * Save a default alignment to an output stream.
+	 * 
+	 * @param alignment the alignment to save
+	 * @param reporter the I/O reporter to report any errors to, may be
+	 *            <code>null</code>
+	 * @param out the output stream
+	 * @throws Exception if converting or writing the alignment fails
+	 */
+	public static void save(AlignmentType alignment, IOReporter reporter, OutputStream out)
+			throws Exception {
 		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT,
 				ObjectFactory.class.getClassLoader());
 		Marshaller m = jc.createMarshaller();
@@ -121,7 +155,7 @@ public class JaxbAlignmentIO {
 
 		ObjectFactory of = new ObjectFactory();
 		try {
-			m.marshal(of.createAlignment(align), out);
+			m.marshal(of.createAlignment(alignment), out);
 		} finally {
 			out.flush();
 			out.close();
