@@ -68,6 +68,11 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 	private final ExecutorService executorService;
 
+	/**
+	 * Controls if multiple threads are used for transformation.
+	 */
+	private final boolean forkedTransformation = false;
+
 	// make metadataworker threadsave
 	private final ThreadLocal<MetadataWorker> metaworkerthread = new ThreadLocal<MetadataWorker>() {
 
@@ -111,34 +116,39 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 		treeHooks = HalePlatform.getService(TransformationTreeHooks.class);
 
-		executorService = new ThreadPoolExecutor(4, 4, // 4 threads
-				0L, TimeUnit.MILLISECONDS,
-				// maximum queue size 1000 (keep 1000 instances/workers in
-				// memory
-				// simultaneously at max)
-				new LinkedBlockingQueue<Runnable>(1000) {
+		if (forkedTransformation) {
+			executorService = new ThreadPoolExecutor(4, 4, // 4 threads
+					0L, TimeUnit.MILLISECONDS,
+					// maximum queue size 1000 (keep 1000 instances/workers in
+					// memory
+					// simultaneously at max)
+					new LinkedBlockingQueue<Runnable>(1000) {
 
-					private static final long serialVersionUID = 1L;
+						private static final long serialVersionUID = 1L;
 
-					@Override
-					public boolean offer(Runnable e) {
-						// wait for space to be free in the queue
-						try {
-							super.put(e);
-						} catch (InterruptedException e1) {
-							// XXX correct to return false?
-							return false;
+						@Override
+						public boolean offer(Runnable e) {
+							// wait for space to be free in the queue
+							try {
+								super.put(e);
+							} catch (InterruptedException e1) {
+								// XXX correct to return false?
+								return false;
+							}
+							// then accept
+							return true;
+
+							/*
+							 * Alternative could be calling offer in a loop with
+							 * a wait until it returns true.
+							 */
 						}
-						// then accept
-						return true;
 
-						/*
-						 * Alternative could be calling offer in a loop with a
-						 * wait until it returns true.
-						 */
-					}
-
-				});
+					});
+		}
+		else {
+			executorService = null;
+		}
 	}
 
 	/**
@@ -148,7 +158,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	@Override
 	public void publish(final FamilyInstance source, final MutableInstance target,
 			final TransformationLog typeLog, final Cell typeCell) {
-		executorService.execute(new Runnable() {
+		Runnable job = new Runnable() {
 
 			@Override
 			public void run() {
@@ -218,15 +228,26 @@ public class TreePropertyTransformer implements PropertyTransformer {
 					 * Catch any error, as exceptions in the executor service
 					 * will only result in a message on the console.
 					 */
-					typeLog.error(typeLog.createMessage(
-							"Error performing property transformations", e));
+					typeLog.error(
+							typeLog.createMessage("Error performing property transformations", e));
 				}
 			}
-		});
+		};
+
+		if (executorService != null) {
+			executorService.execute(job);
+		}
+		else {
+			job.run();
+		}
 	}
 
 	@Override
 	public void join(boolean cancel) {
+		if (executorService == null) {
+			return;
+		}
+
 		if (cancel) {
 			executorService.shutdownNow();
 		}
