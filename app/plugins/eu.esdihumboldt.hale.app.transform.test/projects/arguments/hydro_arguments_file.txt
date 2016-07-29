@@ -1,11 +1,9 @@
 -project
-platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/hydro/hydro-basic.halez
+platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/hydro/project.halex
 -source
 platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/hydro/hydro-source.gml.gz
 -Sinspire.sds.localId
 1234
--Sinspire.sds.metadata
-./projects/gmdMD_Metadata.xml
 -filter
 name='River Rede'
 -filter-on
