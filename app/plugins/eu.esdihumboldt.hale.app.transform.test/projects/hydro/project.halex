@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="2.8.0.201405170520">
+    <name>Basic hydrography example</name>
+    <author>Simon Templer</author>
+    <description>Example of a mapping of a simple hydrography data set to the GML schemas of the corresponding INSPIRE data specification.&#xD;
+&#xD;
+The source data set contains one simple Feature type 'River', with LineString geometries. This is mapped to the 'Watercourse' type in the INSPIRE schemas. In the process, the geometry is expanded to a surface, and the river length is calculated.&#xD;
+&#xD;
+The example data is based on the Ordnance Survey Meridian 2 open data, converted to a GML 2.1.2 profile and enhanced with some fictional information (width and unique feature ID).&#xD;
+&#xD;
+Contains Ordnance Survey data (c) Crown copyright and database right 2011&#xD;
+http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence</description>
+    <created>2012-05-16T17:53:54.315+02:00</created>
+    <modified>2014-05-27T16:06:53.248+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.zip.writer">
+        <setting name="excludedata">true</setting>
+        <setting name="target">file:/C:/Users/sitemple/AppData/Local/Temp/1401199613263-0/project.halex</setting>
+        <setting name="charset">UTF-8</setting>
+        <setting name="includeweb">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.zip</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">hydroEx.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="source">http://inspire.ec.europa.eu/schemas/hy-p/3.0/HydroPhysicalWaters.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <export-config name="INSPIRE SpatialDataSet">
+        <configuration action-id="eu.esdihumboldt.hale.io.instance.write.transformed" provider-id="eu.esdihumboldt.hale.io.inspiregml.writer">
+            <setting name="crs"/>
+            <setting name="inspire.feed.author_name"/>
+            <setting name="inspire.sds.metadata"></setting>
+            <setting name="inspire.feed.subtitle"/>
+            <setting name="inspire.sds.create_feed">false</setting>
+            <setting name="charset">UTF-8</setting>
+            <setting name="meta.description"></setting>
+            <setting name="contentType">eu.esdihumboldt.hale.io.gml</setting>
+            <setting name="inspire.feed.author_mail"/>
+            <setting name="inspire.feed.title"/>
+            <setting name="inspire.sds.namespace">_example</setting>
+            <setting name="inspire.sds.localId">1</setting>
+            <setting name="inspire.feed.selflink"/>
+            <setting name="inspire.feed.gmllink"/>
+            <setting name="inspire.feed.rights"/>
+        </configuration>
+    </export-config>
+    <file name="styles.sld" location="project.halex.styles.sld"/>
+    <file name="alignment.xml" location="project.halex.alignment.xml"/>
+    <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/1">{eu:esdihumboldt:hale:example}geometry</property>
+    <property name="defaultGeometry:{eu:esdihumboldt:hale:example}RiverType/count">1</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}CrossingType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DamOrWeirType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType/2">{http://www.opengis.net/gml/3.2/AbstractSurface}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}DrainageBasinType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FallsType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FluvialPointType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}FordType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}HydroPointOfInterestType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType/2">{http://www.opengis.net/gml/3.2/AbstractCurve}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LandWaterBoundaryType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}LockType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ManMadeObjectType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RapidsType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType/2">{http://www.opengis.net/gml/3.2/AbstractSurface}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}RiverBasinType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}ShorelineConstructionType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SluiceType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}StandingWaterType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType/2">{http://www.opengis.net/gml/3.2/AbstractGeometricPrimitive}choice</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType/count">2</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}geometry</property>
+    <property name="defaultGeometry:{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType/count">1</property>
+    <property name="mappableTargetType/1">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}SurfaceWaterType</property>
+    <property name="mappableTargetType/2">{urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0}WatercourseType</property>
+    <property name="mappableTargetType/count">2</property>
+</hale-project>

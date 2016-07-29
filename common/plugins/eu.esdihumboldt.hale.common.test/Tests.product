@@ -92,7 +92,7 @@
       <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers"/>
-      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
@@ -200,6 +200,7 @@
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
       <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>

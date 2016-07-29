@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C9774e60e-66f2-48e0-b4f5-fe9b0691d4e2" priority="normal">
+        <source>
+            <class>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C8c6aafad-d187-4dd0-8c09-d9d721d63123" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="fid"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="id" ns="http://www.opengis.net/gml/3.2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C5ffac812-eecf-443c-b082-2245bbc75375" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="fid"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="inspireId" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="Identifier" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+                <child name="localId" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="Cbed8b63b-e8c3-4455-939f-f29ae68ffea1" priority="normal">
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="inspireId" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="Identifier" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+                <child name="namespace" ns="urn:x-inspire:specification:gmlas:BaseTypes:3.2"/>
+            </property>
+        </target>
+        <parameter value="_example" name="value"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C3c8ba5e0-2e88-4edc-9343-300688ee6b9a" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="name" ns="http://www.opengis.net/gml">
+                    <condition lang="CQL">value &lt;&gt; ''</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="name" ns="http://www.opengis.net/gml/3.2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C1e6c17d4-d0d2-4ace-aeb9-368c5d7868e5" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="name" ns="http://www.opengis.net/gml">
+                    <condition lang="CQL">value &lt;&gt; ''</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="geographicalName" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="GeographicalName" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="spelling" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="SpellingOfName" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+                <child name="text" ns="urn:x-inspire:specification:gmlas:GeographicalNames:3.0"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C026581a9-e5f7-46d7-9364-8a5d492da5e2" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="description" ns="http://www.opengis.net/gml"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="description" ns="http://www.opengis.net/gml/3.2"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.networkexpansion" id="Cd41c2dc2-3b6c-4c0c-8c9b-dd1013e17679" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="geometry" ns="eu:esdihumboldt:hale:example"/>
+                <child name="LineString" ns="http://www.opengis.net/gml"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="width" ns="eu:esdihumboldt:hale:example"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="geometry" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+            </property>
+        </target>
+        <parameter value="width / 3.28" name="bufferWidth"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.calculatelength" id="C61696d9c-07fe-4485-9352-2982eecbdccb" priority="normal">
+        <source>
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="geometry" ns="eu:esdihumboldt:hale:example"/>
+                <child name="LineString" ns="http://www.opengis.net/gml"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="length" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C6c87f21c-a9c4-4ce7-8d46-f4571ea4353c" priority="normal">
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="length" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="uom"/>
+            </property>
+        </target>
+        <parameter value="m" name="value"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="Cb5d778d9-cac0-451a-855f-ed91652d91a6" priority="normal">
+        <source name="var">
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="width" ns="eu:esdihumboldt:hale:example"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="width" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="WidthRange" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="upper" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+            </property>
+        </target>
+        <parameter value="width / 3.28" name="expression"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C1703ce64-8c21-45fe-9fe5-de03650f0d86" priority="normal">
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="width" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="WidthRange" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="upper" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="uom"/>
+            </property>
+        </target>
+        <parameter value="m" name="value"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.numeric.mathexpression" id="C28aed1b9-2875-47bc-8e6d-b4371440f8b1" priority="normal">
+        <source name="var">
+            <property>
+                <type name="RiverType" ns="eu:esdihumboldt:hale:example"/>
+                <child name="width" ns="eu:esdihumboldt:hale:example"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="width" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="WidthRange" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="lower" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+            </property>
+        </target>
+        <parameter value="width / 3.28" name="expression"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign" id="C7fd6c81e-30a7-4bce-b4b4-732bfec1f69f" priority="normal">
+        <target>
+            <property>
+                <type name="WatercourseType" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="width" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="WidthRange" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="lower" ns="urn:x-inspire:specification:gmlas:HydroPhysicalWaters:3.0"/>
+                <child name="uom"/>
+            </property>
+        </target>
+        <parameter value="m" name="value"/>
+    </cell>
+</alignment>

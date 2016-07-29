@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+  <tns:hat id="1">
+    <name>Top hat</name>
+    <price>15.49</price>
+  </tns:hat>
+  <tns:hat id="2">
+    <name>Round hat</name>
+    <price>29.99</price>
+  </tns:hat>
+  <tns:hat id="3">
+    <name>Neck hat</name>
+    <price>15.49</price>
+  </tns:hat>
+  <tns:hat id="4">
+    <name>Small hat</name>
+    <price>15.49</price>
+  </tns:hat>
+  <tns:hat id="5">
+    <name>Big hat</name>
+    <price>49.99</price>
+  </tns:hat>
+  <tns:hat id="6">
+    <name>HarryPotter hat</name>
+    <price>49.99</price>
+  </tns:hat>
+  <tns:hat id="7">
+    <name>Conical hat</name>
+    <price>19.99</price>
+  </tns:hat>
+  <tns:hat id="8">
+    <name>Top hat</name>
+    <price>19.99</price>
+  </tns:hat>
+  <tns:hat id="9">
+    <name>Top hat</name>
+    <price>49.99</price>
+  </tns:hat>  
+  <tns:hat id="10">
+    <name>HarryPotter hat</name>
+    <price>9.99</price>
+  </tns:hat>
+  <tns:hat id="11">
+    <name>HarryPotter hat</name>
+    <price>15.49</price>
+  </tns:hat>
+  <tns:hat id="12">
+    <name>HarryPotter hat</name>
+    <price>15.49</price>
+  </tns:hat>
+  <tns:hat id="13">
+    <name>HarryPotter hat</name>
+    <price>49.99</price>
+  </tns:hat>
+  <tns:hat id="14">
+    <name>Round hat</name>
+    <price>5.99</price>
+  </tns:hat>
+  <tns:hat id="15">
+    <name>Round hat</name>
+    <price>9.99</price>
+  </tns:hat>
+  <tns:shirt id="16">
+    <name>Polo shirt green</name>
+    <price>19.99</price>
+  </tns:shirt>
+  <tns:shirt id="17">
+    <name>Polo shirt yellow</name>
+    <price>15.49</price>
+  </tns:shirt>  
+  <tns:shirt id="18">
+    <name>Polo shirt Blue</name>
+    <price>15.49</price>
+  </tns:shirt>  
+  <tns:shirt id="19">
+    <name>Polo shirt green</name>
+    <price>15.49</price>
+  </tns:shirt>  
+  <tns:shirt id="20">
+    <name>Polo shirt green</name>
+    <price>9.99</price>
+  </tns:shirt>  
+  <tns:shirt id="21">
+    <name>Polo shirt yellow</name>
+    <price>9.99</price>
+  </tns:shirt>  
+  <tns:shirt id="22">
+    <name>Polo shirt Blue</name>
+    <price>9.99</price>
+  </tns:shirt>  
+  <tns:shirt id="23">
+    <name>Polo shirt green</name>
+    <price>29.99</price>
+  </tns:shirt>  
+  <tns:shirt id="24">
+    <name>Polo shirt yellow</name>
+    <price>19.99</price>
+  </tns:shirt>  
+  <tns:shirt id="25">
+    <name>Polo shirt green</name>
+    <price>15.99</price>
+  </tns:shirt>  
+  <tns:shirt id="26">
+    <name>Polo shirt yellow</name>
+    <price>15.99</price>
+  </tns:shirt>  
+  <tns:shirt id="27">
+    <name>Polo shirt Blue</name>
+    <price>16.99</price>
+  </tns:shirt>  
+  <tns:shirt id="28">
+    <name>Polo shirt Blue</name>
+    <price>29.99</price>
+  </tns:shirt>  
+  <tns:shirt id="29">
+    <name>Polo shirt yellow</name>
+    <price>19.99</price>
+  </tns:shirt>  
+  <tns:shirt id="30">
+    <name>Polo shirt green</name>
+    <price>9.99</price>
+  </tns:shirt>  </tns:collection>
