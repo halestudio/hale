@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="ItemType" abstract="true">
+    	<sequence>
+    		<element name="name" type="string" minOccurs="1" maxOccurs="1"></element>
+    		<element name="price" type="float" minOccurs="0" maxOccurs="1"></element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+    
+    <element name="item" type="tns:ItemType"></element>
+    
+    <complexType name="ShirtType">
+    	<complexContent>
+    		<extension base="tns:ItemType"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <element name="shirt" type="tns:ShirtType" substitutionGroup="tns:item"></element>
+    
+    <complexType name="HatType">
+    	<complexContent>
+    		<extension base="tns:ItemType"></extension>
+    	</complexContent>
+    </complexType>
+    
+    <element name="hat" type="tns:HatType" substitutionGroup="tns:item"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:item" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>
