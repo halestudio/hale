@@ -255,12 +255,21 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 		}
 
-		if (!added.isEmpty()) {
-			notifyCellsAdded(added);
+		if (!added.isEmpty() && addedFunctions) {
+			// only emit one combined event (not to trigger multiple
+			// transformations)
+			notifyAlignmentChanged();
 		}
+		else {
+			// emit individual events
 
-		if (addedFunctions) {
-			notifyCustomFunctionsChanged();
+			if (!added.isEmpty()) {
+				notifyCellsAdded(added);
+			}
+
+			if (addedFunctions) {
+				notifyCustomFunctionsChanged();
+			}
 		}
 	}
 
@@ -302,9 +311,8 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			throw new IllegalArgumentException("Mandatory parameter is null");
 		}
 		Cell cell = getAlignment().getCell(cellId);
-		if (cell instanceof ModifiableCell
-				&& (Cell.PROPERTY_DISABLE_FOR.equals(propertyName) || Cell.PROPERTY_ENABLE_FOR
-						.equals(propertyName))) {
+		if (cell instanceof ModifiableCell && (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
+				|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))) {
 			boolean disable = Cell.PROPERTY_DISABLE_FOR.equals(propertyName);
 			if (property instanceof Cell) {
 				Cell other = (Cell) property;
