@@ -54,8 +54,12 @@ public class CustomTileMapServer extends CustomTileMapServerConfiguration {
 	 */
 	@Override
 	public TileFactory getTileFactory(TileCache cache) {
-		final int max = 18;
-		TileFactoryInfo info = new TileFactoryInfo(0, max - 2, max, 256, true, true, "x", "y",
+
+		final int max = CustomTileMapServer.this.getZoomLevel() - 1;
+
+		final int defaultMax = (max >= 2) ? (max - 2) : (max);
+
+		TileFactoryInfo info = new TileFactoryInfo(0, defaultMax, max, 256, true, true, "x", "y",
 				"z") {
 
 			@Override
@@ -70,7 +74,8 @@ public class CustomTileMapServer extends CustomTileMapServerConfiguration {
 			}
 
 		};
-		info.setDefaultZoomLevel(15);
+		// setting a default Zoom level. which should be depends on 'max'
+		info.setDefaultZoomLevel(defaultMax);
 
 		fact = new CustomTileFactory(
 				new TileFactoryInfoTileProvider(info, GeotoolsConverter.getInstance()), cache);
@@ -107,8 +112,7 @@ public class CustomTileMapServer extends CustomTileMapServerConfiguration {
 
 			@Override
 			protected String getText() {
-				return String.format("Data and imagery provided by "
-						+ CustomTileMapServer.this.getAttributionText());
+				return CustomTileMapServer.this.getAttributionText();
 			}
 		};
 	}
