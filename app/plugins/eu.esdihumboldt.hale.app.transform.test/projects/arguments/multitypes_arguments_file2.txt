@@ -1,4 +1,4 @@
 -project
-platform:/plugin/eu.esdihumboldt.hale.app.transform.test/src/testproject/multitype/project.halex
+platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/multitype/project.halex
 -source
-platform:/plugin/eu.esdihumboldt.hale.app.transform.test/src/testproject/multitype/multi-type-source.xml
+platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/multitype/multi-type-source.xml

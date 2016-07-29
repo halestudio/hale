@@ -33,11 +33,11 @@ class ExecuteTest extends GroovyTestCase {
 
 	private static final String PLUGIN_NAME = 'eu.esdihumboldt.hale.app.transform.test'
 
-	private static final String HYDRO_PROJECT = "/testproject/hydro/project.halex"
-	private static final String HYDRO_DATA = "/testproject/hydro/hydro-source.gml.gz"
+	private static final String HYDRO_PROJECT = "projects/hydro/project.halex"
+	private static final String HYDRO_DATA = "projects/hydro/hydro-source.gml.gz"
 
-	private static final String MULTI_TYPE_PROJECT = "/testproject/multitype/project.halex"
-	private static final String MULTI_TYPE_DATA = "/testproject/multitype/multi-type-source.xml"
+	private static final String MULTI_TYPE_PROJECT = "projects/multitype/project.halex"
+	private static final String MULTI_TYPE_DATA = "projects/multitype/multi-type-source.xml"
 
 
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
