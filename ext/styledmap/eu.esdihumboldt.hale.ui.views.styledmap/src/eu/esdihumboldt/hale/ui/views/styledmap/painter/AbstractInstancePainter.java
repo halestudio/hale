@@ -48,10 +48,10 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import de.cs3d.common.metamodel.Point3D;
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.Refresher;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.mapviewer.geom.Point3D;
 import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;

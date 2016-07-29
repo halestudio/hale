@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OpenStreetMap Map Server
+Bundle-SymbolicName: de.fhg.igd.mapviewer.server.openstreetmap;singleton:=true
+Bundle-Version: 10.0.0
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: de.fhg.igd.mapviewer;version="1.0.0",
+ de.fhg.igd.mapviewer.painter,
+ de.fhg.igd.mapviewer.server;version="1.0.0",
+ org.jdesktop.swingx,
+ org.jdesktop.swingx.mapviewer,
+ org.jdesktop.swingx.painter
+Export-Package: de.fhg.igd.mapviewer.server.openstreetmap;version="1.0.0"

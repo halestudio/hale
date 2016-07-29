@@ -132,8 +132,8 @@ $baseCommand
          [-providerId <ID-of-source-reader>]
          [<setting>...]
      [-filter <filter-expression>]
-     [-filter-on <Type> <filter-expression>]
-     [-exclude-type <Type>]
+     [-filter-on <type> <filter-expression>]
+     [-exclude-type <type>]
      -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
@@ -159,17 +159,18 @@ $baseCommand
     Patterns use the glob pattern syntax as defined in Java and should be
     quoted to not be interpreted by the shell, see
     http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
-  
+
   Filtering sources
     The options -filter, -filter-on and -exclude-type serve to filter the
     source data, before the transformation is performed.
     If you specify multiple filters with -filter or -filter-on, only one of
     them must match for an instance to be included.
+
     <filter-expressions> by default are interpreted as CQL. You can specify
     a specific filter language supported by hale by including a corresponding
     prefix, followed by a colon and the filter expression itself, e.g.:
     CQL:name <> ''
-  
+
   Providing arguments as file
     You can also specify the arguments in a file using the -args-file
     parameter. Each line in the file is interpreted as a separate argument.

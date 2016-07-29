@@ -48,8 +48,13 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.SubstitutionGroupProperty;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFSWriter,
-		WFSConstants {
+public class WFSFeatureCollectionWriter extends GmlInstanceWriter
+		implements WFSWriter, WFSConstants {
+
+	/**
+	 * Parameter to skip counting instances.
+	 */
+	public static final String PARAM_SKIP_COUNT = "skipFeatureCount";
 
 	@Override
 	public void validate() throws IOProviderConfigurationException {
@@ -78,15 +83,14 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 		XmlElement memberElement = null;
 		switch (version) {
 		case V1_1_0:
-			memberElement = targetIndex.getElements().get(
-					new QName(GMLConstants.NS_GML, "_Feature"));
+			memberElement = targetIndex.getElements()
+					.get(new QName(GMLConstants.NS_GML, "_Feature"));
 			break;
 		case V2_0_0:
 		case V2_0_2:
 			for (XmlElement element : targetIndex.getElements().values()) {
-				if (element.getName().getLocalPart().equals("AbstractFeature")
-						&& element.getName().getNamespaceURI()
-								.startsWith(GMLConstants.GML_NAMESPACE_CORE)) {
+				if (element.getName().getLocalPart().equals("AbstractFeature") && element.getName()
+						.getNamespaceURI().startsWith(GMLConstants.GML_NAMESPACE_CORE)) {
 					memberElement = element;
 					break;
 				}
@@ -101,11 +105,11 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 
 		addValidationSchema(version.wfsNamespace, new LocatableURI(version.schemaLocation), "wfs");
 
-		List<XmlElement> memberElements = SubstitutionGroupProperty.collectSubstitutions(
-				memberElement.getName(), memberElement.getType());
+		List<XmlElement> memberElements = SubstitutionGroupProperty
+				.collectSubstitutions(memberElement.getName(), memberElement.getType());
 
-		TypeDefinition fcType = WFSSchemaHelper
-				.createFeatureCollectionType(version, memberElements);
+		TypeDefinition fcType = WFSSchemaHelper.createFeatureCollectionType(version,
+				memberElements);
 
 		return new XmlElement(new QName(wfsNs, "FeatureCollection"), fcType, null);
 	}
@@ -115,32 +119,21 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
 		// write additional needed attributes for WFS 2.0
 
-		boolean countFeatures;
-		WFSVersion version = getWFSVersion();
-		if (version != null) {
-			switch (version) {
-			case V2_0_0:
-			case V2_0_2:
-				countFeatures = true;
-				break;
-			case V1_1_0:
-			default:
-				countFeatures = false;
-				break;
-			}
-		}
-		else {
-			countFeatures = false;
-		}
+		boolean requiresCount = requiresCount();
+		boolean skipCount = getParameter(PARAM_SKIP_COUNT).as(Boolean.class, false);
 
-		if (countFeatures) {
-			// count features
-			int count = 0;
+		if (requiresCount) {
+			String countString = null;
+
 			InstanceCollection source = getInstances();
+
 			if (source.hasSize()) {
-				count = source.size();
+				// no iteration needed
+				countString = String.valueOf(source.size());
 			}
-			else {
+			else if (!skipCount) {
+				// count features
+				int count = 0;
 				// need to iterate collection to determine size
 				try (ResourceIterator<Instance> it = source.iterator()) {
 					while (it.hasNext()) {
@@ -150,15 +143,26 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 						}
 					}
 				}
+
+				countString = String.valueOf(count);
 			}
 
-			String countString = String.valueOf(count);
 			// numberMatched
-			writer.writeAttribute("numberMatched", countString);
-			// or "unknown" ?
+			if (countString != null) {
+				writer.writeAttribute("numberMatched", countString);
+			}
+			else {
+				writer.writeAttribute("numberMatched", "unknown");
+			}
 
 			// numberReturned
-			writer.writeAttribute("numberReturned", countString);
+			if (countString != null) {
+				writer.writeAttribute("numberReturned", countString);
+			}
+			else {
+				writer.writeAttribute("numberReturned", "0");
+			}
+
 			// timestamp
 			XmlDateTime result = XmlDateTime.Factory.newInstance();
 			result.setDateValue(new Date());
@@ -166,6 +170,23 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 		}
 
 		super.writeAdditionalElements(writer, containerDefinition, reporter);
+	}
+
+	private boolean requiresCount() {
+		WFSVersion version = getWFSVersion();
+		if (version != null) {
+			switch (version) {
+			case V2_0_0:
+			case V2_0_2:
+				return true;
+			case V1_1_0:
+			default:
+				return false;
+			}
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -185,22 +206,10 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter implements WFS
 
 	@Override
 	public boolean isPassthrough() {
-		WFSVersion version = getWFSVersion();
-		// WFS 2.0 export does not support pass-through
-		if (version != null) {
-			switch (version) {
-			case V1_1_0:
-				return true;
-			case V2_0_0:
-			case V2_0_2:
-				return false;
-			default:
-				return false;
-			}
-		}
-		else {
-			return false;
-		}
+		boolean requiresCount = requiresCount();
+		boolean skipCount = getParameter(PARAM_SKIP_COUNT).as(Boolean.class, false);
+
+		return !requiresCount || skipCount;
 	}
 
 }

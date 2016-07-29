@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -185,6 +186,10 @@ public class ActionProjectFile implements AdvisorProjectFile {
 
 			// execute the provider
 			executeProvider(provider, advisor);
+		} catch (Exception e) {
+			// project file apply fails currently are one logged (the project
+			// reader is not involved with it)
+			log.error("Error applying loaded project file", e);
 		} finally {
 			if (!applyFile.delete()) {
 				applyFile.deleteOnExit();
@@ -211,7 +216,8 @@ public class ActionProjectFile implements AdvisorProjectFile {
 		}
 	}
 
-	private <P extends IOProvider> void executeProvider(P provider, IOAdvisor<P> advisor) {
+	private <P extends IOProvider> void executeProvider(P provider, IOAdvisor<P> advisor)
+			throws Exception {
 		IOReporter reporter = provider.createReporter();
 		ATransaction trans = log.begin(reporter.getTaskName());
 		try {
@@ -226,8 +232,10 @@ public class ActionProjectFile implements AdvisorProjectFile {
 			if (report.isSuccess()) {
 				advisor.handleResults(provider);
 			}
-		} catch (Exception e) {
-			log.error("Error executing an I/O provider.", e);
+			else {
+				// TODO propagate report errors somehow?
+				throw new IOException("Project file action was not successful");
+			}
 		} finally {
 			trans.end();
 		}
@@ -273,7 +281,8 @@ public class ActionProjectFile implements AdvisorProjectFile {
 		// set target
 		provider.setTarget(target);
 
-		// execute the provider
+		// execute the provider -> error is propagated outside (so project
+		// writer knows of it)
 		executeProvider(provider, advisor);
 	}
 

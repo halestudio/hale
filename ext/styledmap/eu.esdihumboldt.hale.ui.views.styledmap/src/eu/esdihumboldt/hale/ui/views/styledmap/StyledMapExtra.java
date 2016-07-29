@@ -154,6 +154,8 @@ public class StyledMapExtra implements MapViewExtension, IPartListener2 {
 	@Override
 	public void partOpened(IWorkbenchPartReference partRef) {
 		if (partRef.getPart(false) == mapView) {
+			mapView.restoreState();
+
 			// get services
 			ISelectionService selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 					.getSelectionService();

@@ -41,10 +41,10 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import de.cs3d.common.metamodel.Point3D;
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
-import de.cs3d.common.metamodel.shape.Line2D;
-import de.cs3d.common.metamodel.shape.Surface;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.mapviewer.geom.Point3D;
+import de.fhg.igd.mapviewer.geom.shape.Line2D;
+import de.fhg.igd.mapviewer.geom.shape.Surface;
 import de.fhg.igd.mapviewer.marker.AbstractMarker;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.Marker;
@@ -265,7 +265,8 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 					// create bounding box
 					Rectangle geometryPixelBB = new Rectangle(minX, minY, maxX - minX, maxY - minY);
 
-					if (!gBounds.intersects(geometryPixelBB) && !gBounds.contains(geometryPixelBB)) {
+					if (!gBounds.intersects(geometryPixelBB)
+							&& !gBounds.contains(geometryPixelBB)) {
 						// geometry does not lie in tile
 						return null;
 					}
@@ -356,11 +357,12 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 			}
 
 			if (calculateArea) {
-				return new PolygonArea(new java.awt.Polygon(new int[] {
-						x - defaultPointSize / 2 - 1, x + defaultPointSize / 2 + 1,
-						x + defaultPointSize / 2 + 1, x - defaultPointSize / 2 - 1 }, new int[] {
-						y - defaultPointSize / 2 - 1, y - defaultPointSize / 2 - 1,
-						y + defaultPointSize / 2 + 1, y + defaultPointSize / 2 + 1 }, 4));
+				return new PolygonArea(new java.awt.Polygon(
+						new int[] { x - defaultPointSize / 2 - 1, x + defaultPointSize / 2 + 1,
+								x + defaultPointSize / 2 + 1, x - defaultPointSize / 2 - 1 },
+						new int[] { y - defaultPointSize / 2 - 1, y - defaultPointSize / 2 - 1,
+								y + defaultPointSize / 2 + 1, y + defaultPointSize / 2 + 1 },
+						4));
 			}
 			else {
 				return null;
@@ -448,8 +450,8 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	}
 
 	private java.awt.Polygon createPolygon(Coordinate[] coordinates, CRSConverter geoConverter,
-			PixelConverter pixelConverter, int zoom) throws TransformException,
-			IllegalGeoPositionException {
+			PixelConverter pixelConverter, int zoom)
+					throws TransformException, IllegalGeoPositionException {
 		java.awt.Polygon result = new java.awt.Polygon();
 		for (Coordinate coord : coordinates) {
 			// manually convert to map CRS
@@ -562,14 +564,15 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	 * @param distance the buffer size
 	 * @return the buffer polygon(s)
 	 */
-	private static java.awt.Polygon[] createBufferPolygon(List<Point2D> linePoints, double distance) {
+	private static java.awt.Polygon[] createBufferPolygon(List<Point2D> linePoints,
+			double distance) {
 		// create metamodel line
-		de.cs3d.common.metamodel.Point2D[] convertedLinePoints = new de.cs3d.common.metamodel.Point2D[linePoints
+		de.fhg.igd.mapviewer.geom.Point2D[] convertedLinePoints = new de.fhg.igd.mapviewer.geom.Point2D[linePoints
 				.size()];
 
 		int index = 0;
 		for (Point2D point : linePoints) {
-			convertedLinePoints[index] = new de.cs3d.common.metamodel.Point2D(point.getX(),
+			convertedLinePoints[index] = new de.fhg.igd.mapviewer.geom.Point2D(point.getX(),
 					point.getY());
 			index++;
 		}
@@ -577,7 +580,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 		Line2D line = new Line2D(convertedLinePoints);
 
 		Surface buffer = line.computeBuffer(distance);
-		return buffer.toAWTPolygons(1, 1, new de.cs3d.common.metamodel.Point2D(0, 0));
+		return buffer.toAWTPolygons(1, 1, new de.fhg.igd.mapviewer.geom.Point2D(0, 0));
 	}
 
 	/**

@@ -222,7 +222,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
@@ -261,33 +261,44 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 					break;
 				}
 			if (!hasIds) {
-				throw new IOException("At least one base alignment ("
-						+ base.getValue().uri.absoluteURI
-						+ ") has no cell ids. Please load and save it to generate them.");
+				throw new IOException(
+						"At least one base alignment (" + base.getValue().uri.absoluteURI
+								+ ") has no cell ids. Please load and save it to generate them.");
 			}
 		}
 
 		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet()) {
-			Collection<CustomPropertyFunction> baseFunctions = getPropertyFunctions(base.getKey(),
-					sourceTypes, targetTypes);
-			Collection<C> baseCells = getCells(base.getKey());
-			Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
-					baseCells.size());
-			for (C baseCell : baseCells) {
-				// add cells of base alignments
-				MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
-				if (cell != null)
-					createdCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI, base
-							.getValue().prefix));
+			if (alignment.getBaseAlignments().containsValue(base.getValue().uri.usedURI)) {
+				// base alignment already present
+				// can currently happen with base alignments included in base
+				// alignments
+				reporter.warn(new IOMessageImpl("Base alignment at " + base.getValue().uri.usedURI
+						+ " has already been added", null));
 			}
-			alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
-					createdCells, baseFunctions);
+			else {
+				Collection<CustomPropertyFunction> baseFunctions = getPropertyFunctions(
+						base.getKey(), sourceTypes, targetTypes);
+				Collection<C> baseCells = getCells(base.getKey());
+				Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+						baseCells.size());
+				for (C baseCell : baseCells) {
+					// add cells of base alignments
+					MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
+					if (cell != null) {
+						createdCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
+								base.getValue().prefix));
+					}
+				}
+
+				alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
+						createdCells, baseFunctions);
+			}
 		}
 
 		// add modifiers of base alignments
 		for (Entry<A, AlignmentInfo> base : alignmentToInfo.entrySet())
-			applyModifiers(alignment, getModifiers(base.getKey()),
-					prefixMapping.get(base.getKey()), base.getValue().prefix, true, reporter);
+			applyModifiers(alignment, getModifiers(base.getKey()), prefixMapping.get(base.getKey()),
+					base.getValue().prefix, true, reporter);
 	}
 
 	/**
@@ -328,8 +339,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		}
 
 		if (uriToPrefix.containsKey(absoluteAddBaseURI)) {
-			reporter.info(new IOMessageImpl("The base alignment (" + addBase
-					+ ") is already included.", null));
+			reporter.info(new IOMessageImpl(
+					"The base alignment (" + addBase + ") is already included.", null));
 			return false;
 		}
 
@@ -354,15 +365,16 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				baseA = loadAlignment(new DefaultInputSupplier(baseURI.absoluteURI).getInput(),
 						reporter);
 			} catch (IOException e) {
-				reporter.error(new IOMessageImpl("Couldn't load an included base alignment ("
-						+ baseURI.absoluteURI + ").", e));
+				reporter.error(new IOMessageImpl(
+						"Couldn't load an included base alignment (" + baseURI.absoluteURI + ").",
+						e));
 				reporter.setSuccess(false);
 				return false;
 			}
 
 			// add to alignment info map
-			alignmentToInfo.put(baseA, new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI),
-					baseURI));
+			alignmentToInfo.put(baseA,
+					new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI), baseURI));
 			prefixMapping.put(baseA, new HashMap<String, String>());
 
 			// load "missing" base alignments, too, add prefix mapping
@@ -381,7 +393,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				if (!knownURIs.contains(absoluteURI)) {
 					reporter.info(new IOMessageImpl(
 							"A base alignment referenced another base alignment (" + absoluteURI
-									+ ") that was not yet known. It is now included, too.", null));
+									+ ") that was not yet known. It is now included, too.",
+							null));
 					queue.add(new URIPair(absoluteURI, usedURI));
 					knownURIs.add(absoluteURI);
 					String prefix = generatePrefix(existingPrefixes);
@@ -479,7 +492,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
 			Map<A, AlignmentInfo> alignmentToInfo, PathUpdate updater, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		// XXX What if the project file path would change?
 		// Alignment is a project file, so it is in the same directory.
 		URI currentAbsolute = updater.getNewLocation();
@@ -504,16 +517,17 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			URI rawBaseURI = baseEntry.getValue();
 			URI usedBaseURI = updater.findLocation(rawBaseURI, true, false, true);
 			if (usedBaseURI == null) {
-				throw new IOException("Couldn't load an included alignment (" + rawBaseURI
-						+ "). File not found.", null);
+				throw new IOException(
+						"Couldn't load an included alignment (" + rawBaseURI + "). File not found.",
+						null);
 			}
 			URI absoluteBaseURI = usedBaseURI;
 			if (!absoluteBaseURI.isAbsolute())
 				absoluteBaseURI = currentAbsolute.resolve(absoluteBaseURI);
 
 			if (knownURIs.contains(absoluteBaseURI)) {
-				reporter.warn(new IOMessageImpl("The same base alignment (" + rawBaseURI
-						+ ") was included twice.", null));
+				reporter.warn(new IOMessageImpl(
+						"The same base alignment (" + rawBaseURI + ") was included twice.", null));
 				prefixMapping.get(start).put(baseEntry.getKey(), uriToPrefix.get(absoluteBaseURI));
 			}
 			else {
@@ -536,8 +550,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			}
 
 			// add to alignment info map
-			alignmentToInfo.put(baseA, new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI),
-					baseURI));
+			alignmentToInfo.put(baseA,
+					new AlignmentInfo(uriToPrefix.get(baseURI.absoluteURI), baseURI));
 			prefixMapping.put(baseA, new HashMap<String, String>());
 
 			// load "missing" base alignments, too, add prefix mapping
@@ -559,7 +573,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				if (!knownURIs.contains(absoluteURI)) {
 					reporter.info(new IOMessageImpl(
 							"A base alignment referenced another base alignment (" + absoluteURI
-									+ ") that was not yet known. It is now included, too.", null));
+									+ ") that was not yet known. It is now included, too.",
+							null));
 					queue.add(new URIPair(absoluteURI, usedURI));
 					knownURIs.add(absoluteURI);
 					String prefix = generatePrefix(base.keySet());
@@ -667,8 +682,8 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			cellId = prefix + ':' + cellId;
 		Cell cell = alignment.getCell(cellId);
 		if (cell == null)
-			reporter.warn(new IOMessageImpl("A cell referenced by a modifier could not be found",
-					null));
+			reporter.warn(
+					new IOMessageImpl("A cell referenced by a modifier could not be found", null));
 
 		return cell;
 	}
