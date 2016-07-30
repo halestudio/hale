@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="hale.cli"
+         name="HALE generic command line interface"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="any"
+            visible="true">
+         <run
+               class="eu.esdihumboldt.hale.app.cli.CLIApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.cli">
+      <command
+            class="eu.esdihumboldt.hale.app.cli.VersionCommand"
+            id="eu.esdihumboldt.hale.app.cli.version"
+            name="version">
+      </command>
+   </extension>
+
+</plugin>
