@@ -70,7 +70,7 @@ public class GroupCommand extends DelegatingCommand {
 	@Override
 	public String getShortDescription() {
 		if (group != null) {
-			group.getDescription();
+			return group.getDescription();
 		}
 		return null;
 	}
