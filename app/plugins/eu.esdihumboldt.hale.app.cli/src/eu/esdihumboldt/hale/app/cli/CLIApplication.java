@@ -33,7 +33,12 @@ public class CLIApplication implements IApplication {
 
 		Runner runner = new Runner("HALE -nosplash -application hale.cli");
 
-		return runner.run(args);
+		try {
+			return runner.run(args);
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return 1;
+		}
 	}
 
 	@Override
