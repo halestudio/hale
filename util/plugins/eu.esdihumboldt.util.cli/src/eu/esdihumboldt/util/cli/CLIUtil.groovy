@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli
+package eu.esdihumboldt.util.cli
 
 import groovy.transform.CompileStatic
 

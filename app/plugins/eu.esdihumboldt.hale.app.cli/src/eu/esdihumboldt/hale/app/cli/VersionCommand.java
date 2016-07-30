@@ -17,9 +17,9 @@ package eu.esdihumboldt.hale.app.cli;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.cli.Command;
-import eu.esdihumboldt.hale.common.cli.CommandContext;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.util.cli.Command;
+import eu.esdihumboldt.util.cli.CommandContext;
 
 /**
  * Command that prints the hale version.

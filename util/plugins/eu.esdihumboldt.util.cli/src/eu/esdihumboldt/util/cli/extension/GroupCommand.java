@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.extension;
+package eu.esdihumboldt.util.cli.extension;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,12 +22,12 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import eu.esdihumboldt.hale.common.cli.Command;
-import eu.esdihumboldt.hale.common.cli.extension.command.CommandExtension;
-import eu.esdihumboldt.hale.common.cli.extension.command.CommandFactory;
-import eu.esdihumboldt.hale.common.cli.extension.group.Group;
-import eu.esdihumboldt.hale.common.cli.extension.group.GroupExtension;
-import eu.esdihumboldt.hale.common.cli.impl.DelegatingCommand;
+import eu.esdihumboldt.util.cli.Command;
+import eu.esdihumboldt.util.cli.extension.command.CommandExtension;
+import eu.esdihumboldt.util.cli.extension.command.CommandFactory;
+import eu.esdihumboldt.util.cli.extension.group.Group;
+import eu.esdihumboldt.util.cli.extension.group.GroupExtension;
+import eu.esdihumboldt.util.cli.impl.DelegatingCommand;
 
 /**
  * Delegating command based on a registered command group.

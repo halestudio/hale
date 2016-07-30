@@ -13,12 +13,12 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.impl
+package eu.esdihumboldt.util.cli.impl
 
-import eu.esdihumboldt.hale.common.cli.CLIUtil
-import eu.esdihumboldt.hale.common.cli.Command
-import eu.esdihumboldt.hale.common.cli.CommandContext
-import eu.esdihumboldt.hale.common.cli.bash.BashCompletion
+import eu.esdihumboldt.util.cli.CLIUtil
+import eu.esdihumboldt.util.cli.Command
+import eu.esdihumboldt.util.cli.CommandContext
+import eu.esdihumboldt.util.cli.bash.BashCompletion
 import groovy.transform.CompileStatic
 
 /**

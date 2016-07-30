@@ -13,9 +13,9 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.bash;
+package eu.esdihumboldt.util.cli.bash;
 
-import eu.esdihumboldt.hale.common.cli.bash.internal.CompletionCommand;
+import eu.esdihumboldt.util.cli.bash.internal.CompletionCommand;
 
 /**
  * Represents a reply from the program regarding bash completion.

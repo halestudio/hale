@@ -13,13 +13,13 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli;
+package eu.esdihumboldt.util.cli;
 
 import java.util.List;
 
 import javax.annotation.Nullable;
 
-import eu.esdihumboldt.hale.common.cli.bash.BashCompletion;
+import eu.esdihumboldt.util.cli.bash.BashCompletion;
 
 /**
  * Interface for CLI commands.

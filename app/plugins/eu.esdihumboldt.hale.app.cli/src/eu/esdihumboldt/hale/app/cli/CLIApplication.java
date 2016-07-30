@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.app.cli;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
-import eu.esdihumboldt.hale.common.cli.Runner;
+import eu.esdihumboldt.util.cli.Runner;
 
 /**
  * CLI application.

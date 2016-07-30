@@ -1,8 +1,8 @@
-package eu.esdihumboldt.hale.common.cli
+package eu.esdihumboldt.util.cli
 
-import eu.esdihumboldt.hale.common.cli.bash.BashCompletion
-import eu.esdihumboldt.hale.common.cli.extension.GroupCommand
-import eu.esdihumboldt.hale.common.cli.impl.ContextImpl
+import eu.esdihumboldt.util.cli.bash.BashCompletion
+import eu.esdihumboldt.util.cli.extension.GroupCommand
+import eu.esdihumboldt.util.cli.impl.ContextImpl
 import groovy.transform.CompileStatic
 
 @CompileStatic

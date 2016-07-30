@@ -13,28 +13,26 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli;
+package eu.esdihumboldt.util.cli.extension.command;
+
+import javax.annotation.Nullable;
+
+import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
+import eu.esdihumboldt.util.cli.Command;
 
 /**
- * Context of a command execution.
+ * Command factory.
  * 
  * @author Simon Templer
  */
-public interface CommandContext {
+public interface CommandFactory extends ExtensionObjectFactory<Command> {
 
 	/**
-	 * Get the base command line call for use in the command usage. Includes the
-	 * call to the executable up to selecting this command.
+	 * Get the identifier of the command group the command is associated to.
 	 * 
-	 * @return the base command line call
+	 * @return the command group identifier
 	 */
-	String getBaseCommand();
-
-	/**
-	 * Get the command name.
-	 * 
-	 * @return the command name
-	 */
-	String getCommandName();
+	@Nullable
+	String getGroup();
 
 }

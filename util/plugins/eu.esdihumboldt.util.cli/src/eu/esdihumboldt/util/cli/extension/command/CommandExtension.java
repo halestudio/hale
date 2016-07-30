@@ -13,12 +13,12 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.extension.command;
+package eu.esdihumboldt.util.cli.extension.command;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
-import eu.esdihumboldt.hale.common.cli.Command;
+import eu.esdihumboldt.util.cli.Command;
 
 /**
  * Extension for CLI commands.

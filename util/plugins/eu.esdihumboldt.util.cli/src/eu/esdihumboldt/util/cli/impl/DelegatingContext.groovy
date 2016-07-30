@@ -13,9 +13,9 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.impl
+package eu.esdihumboldt.util.cli.impl
 
-import eu.esdihumboldt.hale.common.cli.CommandContext
+import eu.esdihumboldt.util.cli.CommandContext
 import groovy.transform.CompileStatic
 
 /**

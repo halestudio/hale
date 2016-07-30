@@ -13,26 +13,28 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.extension.command;
+package eu.esdihumboldt.util.cli.bash.internal;
 
-import javax.annotation.Nullable;
-
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.cli.Command;
+import eu.esdihumboldt.util.cli.bash.BashCompletion;
 
 /**
- * Command factory.
+ * Bash completion represented by a Unix command.
  * 
  * @author Simon Templer
  */
-public interface CommandFactory extends ExtensionObjectFactory<Command> {
+public class CompletionCommand implements BashCompletion {
 
-	/**
-	 * Get the identifier of the command group the command is associated to.
-	 * 
-	 * @return the command group identifier
-	 */
-	@Nullable
-	String getGroup();
+	private final String command;
+
+	@SuppressWarnings("javadoc")
+	public CompletionCommand(String command) {
+		super();
+		this.command = command;
+	}
+
+	@Override
+	public String getCommand() {
+		return command;
+	}
 
 }

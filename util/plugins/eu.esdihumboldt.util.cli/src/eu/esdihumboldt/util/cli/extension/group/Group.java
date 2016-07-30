@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.extension.group;
+package eu.esdihumboldt.util.cli.extension.group;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;

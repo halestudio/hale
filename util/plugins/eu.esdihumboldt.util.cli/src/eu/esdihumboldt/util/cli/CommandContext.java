@@ -13,28 +13,28 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.cli.bash.internal;
-
-import eu.esdihumboldt.hale.common.cli.bash.BashCompletion;
+package eu.esdihumboldt.util.cli;
 
 /**
- * Bash completion represented by a Unix command.
+ * Context of a command execution.
  * 
  * @author Simon Templer
  */
-public class CompletionCommand implements BashCompletion {
+public interface CommandContext {
 
-	private final String command;
+	/**
+	 * Get the base command line call for use in the command usage. Includes the
+	 * call to the executable up to selecting this command.
+	 * 
+	 * @return the base command line call
+	 */
+	String getBaseCommand();
 
-	@SuppressWarnings("javadoc")
-	public CompletionCommand(String command) {
-		super();
-		this.command = command;
-	}
-
-	@Override
-	public String getCommand() {
-		return command;
-	}
+	/**
+	 * Get the command name.
+	 * 
+	 * @return the command name
+	 */
+	String getCommandName();
 
 }
