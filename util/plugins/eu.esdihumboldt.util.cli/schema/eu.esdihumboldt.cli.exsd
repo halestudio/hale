@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="eu.esdihumboldt.hale.common.cli" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="eu.esdihumboldt.util.cli" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="eu.esdihumboldt.hale.common.cli" id="eu.esdihumboldt.hale.cli" name="hale CLI"/>
+         <meta.schema plugin="eu.esdihumboldt.util.cli" id="eu.esdihumboldt.cli" name="CLI extension"/>
       </appinfo>
       <documentation>
          Extension point for CLI commands.
@@ -70,7 +70,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.cli.Command"/>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.util.cli.Command"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -80,7 +80,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.cli/group/@id"/>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.cli/group/@id"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -102,7 +102,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.cli/group/@id"/>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.cli/group/@id"/>
                </appinfo>
             </annotation>
          </attribute>

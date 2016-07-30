@@ -45,7 +45,7 @@ public class CommandExtension extends AbstractExtension<Command, CommandFactory>
 	/**
 	 * Extension point identifier.
 	 */
-	public static final String EXTENSION_ID = "eu.esdihumboldt.hale.cli";
+	public static final String EXTENSION_ID = "eu.esdihumboldt.cli";
 
 	/**
 	 * Default constructor.

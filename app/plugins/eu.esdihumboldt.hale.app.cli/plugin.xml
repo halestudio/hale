@@ -15,7 +15,7 @@
       </application>
    </extension>
    <extension
-         point="eu.esdihumboldt.hale.cli">
+         point="eu.esdihumboldt.cli">
       <command
             class="eu.esdihumboldt.hale.app.cli.VersionCommand"
             id="eu.esdihumboldt.hale.app.cli.version"

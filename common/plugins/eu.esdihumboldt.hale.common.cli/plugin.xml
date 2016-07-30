@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="eu.esdihumboldt.hale.cli">
+         point="eu.esdihumboldt.cli">
       <group
             description="Various utility commands working on hale projects"
             id="project"
