@@ -76,8 +76,7 @@ public class CustomTileMapServerFactory implements MapServerFactoryCollection {
 		 */
 		@Override
 		public void dispose(MapServer instance) {
-			// TODO Auto-generated method stub
-
+			instance.cleanup();
 		}
 
 		/**
@@ -179,11 +178,44 @@ public class CustomTileMapServerFactory implements MapServerFactoryCollection {
 	public List<MapServerFactory> getFactories() {
 		List<MapServerFactory> results = new LinkedList<MapServerFactory>();
 
-		for (String name : CustomTileMapServer.getConfigurationNames()) {
-			results.add(new CustomTileFactory(name));
+		// check if any Map Server is configured?
+		if (CustomTileMapServer.getConfigurationNames().length > 0) {
+			for (String name : CustomTileMapServer.getConfigurationNames()) {
+				results.add(new CustomTileFactory(name));
+			}
 		}
-
+		else {
+			// no, then add default one.
+			results.add(addDefault());
+		}
 		return results;
+	}
+
+	private MapServerFactory addDefault() {
+		MapServer server = addDefaultServer();
+		if (server != null) {
+			return new CustomTileFactory(server.getName());
+		}
+		return null;
+	}
+
+	/**
+	 * Creates a default Custom Tile map server from stamen tiles. url :
+	 * http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg
+	 * 
+	 * @return the map server or <code>null</code>
+	 */
+	private MapServer addDefaultServer() {
+		CustomTileMapServer server = new CustomTileMapServer();
+
+		server.setName("Stamen Terrain");
+		server.setUrlPattern("http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg");
+		server.setZoomLevel(16);
+		server.setAttributionText(
+				"Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.");
+
+		server.save();
+		return server;
 	}
 
 	/**
