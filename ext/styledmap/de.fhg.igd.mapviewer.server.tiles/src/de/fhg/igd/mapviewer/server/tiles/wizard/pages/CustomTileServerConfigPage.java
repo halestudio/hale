@@ -121,7 +121,7 @@ public class CustomTileServerConfigPage extends CustomTileWizardPage
 		url.fillIntoGrid(page, 3);
 		url.setEmptyStringAllowed(false);
 		url.setStringValue(getConfiguration().getUrlPattern());
-		url.setLabelText(Messages.BasicConfigurationPage_4);
+		url.setLabelText(Messages.BasicConfigurationPage_5);
 		url.getTextControl(page).setToolTipText(Messages.BasicConfigurationPage_5);
 		url.setPage(this);
 		url.setPropertyChangeListener(new IPropertyChangeListener() {
