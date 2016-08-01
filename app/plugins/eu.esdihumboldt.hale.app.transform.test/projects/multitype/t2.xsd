@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">	
+	 <complexType name="ItemType">
+    	<sequence>
+    		<element name="name" type="string" minOccurs="1" maxOccurs="1"></element>
+    		<element name="price" type="float" minOccurs="0" maxOccurs="1"></element>
+    		<element name="type" minOccurs="1" maxOccurs="1">
+    			<simpleType>
+    				<restriction base="string">
+    					<enumeration value="shirt" />
+    					<enumeration value="hat" />
+    				</restriction>
+    			</simpleType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="string"></attribute>
+    </complexType>
+
+    <element name="item" type="tns:ItemType"></element>
+    
+    <element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:item" maxOccurs="unbounded" minOccurs="0"></element>
+    	</sequence>
+    </complexType>
+</schema>

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hale CLI application
+Bundle-SymbolicName: eu.esdihumboldt.hale.app.cli;singleton:=true
+Bundle-Version: 2.9.5.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: eu.esdihumboldt.hale.common.core,
+ eu.esdihumboldt.util.cli,
+ eu.esdihumboldt.util.cli.extension,
+ eu.esdihumboldt.util.cli.impl,
+ org.eclipse.equinox.app;version="1.1.0",
+ org.osgi.framework;version="1.8.0"

@@ -253,6 +253,18 @@
                   sample="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Skip counting features to allow direct streaming"
+               label="Skip counting features"
+               name="skipFeatureCount"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
