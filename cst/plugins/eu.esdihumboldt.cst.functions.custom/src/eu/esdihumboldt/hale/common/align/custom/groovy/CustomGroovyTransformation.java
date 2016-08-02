@@ -102,6 +102,8 @@ public class CustomGroovyTransformation
 			// evaluate the script
 			result = GroovyTransformation.evaluate(groovyScript, builder,
 					resultProperty.getDefinition().getPropertyType(), service);
+		} catch (TransformationException | NoResultException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the custom function script", e);
 		}

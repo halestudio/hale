@@ -53,7 +53,7 @@ import groovy.lang.Script;
  * @author Kai Schwierczek
  */
 public class GroovyGreedyTransformation extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine>implements GroovyConstants {
 
 	/**
 	 * The function/transformation ID.
@@ -79,9 +79,9 @@ public class GroovyGreedyTransformation extends
 		InstanceBuilder builder = GroovyTransformation.createBuilder(resultProperty);
 
 		// create the script binding
-		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder, useInstanceVariables,
-				log, getExecutionContext());
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE),
+				getCell().getSource().get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder,
+				useInstanceVariables, log, getExecutionContext());
 
 		Object result;
 		try {
@@ -89,8 +89,10 @@ public class GroovyGreedyTransformation extends
 			Script groovyScript = GroovyUtil.getScript(this, binding, service);
 
 			// evaluate the script
-			result = GroovyTransformation.evaluate(groovyScript, builder, resultProperty
-					.getDefinition().getPropertyType(), service);
+			result = GroovyTransformation.evaluate(groovyScript, builder,
+					resultProperty.getDefinition().getPropertyType(), service);
+		} catch (NoResultException | TransformationException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
