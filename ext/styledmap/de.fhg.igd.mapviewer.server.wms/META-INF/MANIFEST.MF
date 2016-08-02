@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WMS Map Server
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.wms;singleton:=true
-Bundle-Version: 10.0.0
+Bundle-Version: 2.9.5.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,

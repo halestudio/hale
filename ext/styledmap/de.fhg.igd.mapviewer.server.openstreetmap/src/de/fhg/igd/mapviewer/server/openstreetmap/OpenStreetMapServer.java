@@ -32,11 +32,11 @@ import de.fhg.igd.mapviewer.server.MapServer;
 /**
  * OpenStreetMapServer
  *
- * @author <a href="mailto:simon.templer@igd.fhg.de">Simon Templer</a>
- *
- * @version $Id$
+ * @author Simon Templer
+ * @deprecated The Mapquest OSM tiles are no longer available, use the
+ *             configurable custom tile maps instead.
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public class OpenStreetMapServer extends AbstractMapServer {
 
 	private CustomTileFactory fact;

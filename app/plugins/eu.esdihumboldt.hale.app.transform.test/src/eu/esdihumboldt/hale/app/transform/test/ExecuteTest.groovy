@@ -33,11 +33,11 @@ class ExecuteTest extends GroovyTestCase {
 
 	private static final String PLUGIN_NAME = 'eu.esdihumboldt.hale.app.transform.test'
 
-	private static final String HYDRO_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-basic.halez"
-	private static final String HYDRO_DATA = "platform:/plugin/$PLUGIN_NAME/projects/hydro/hydro-source.gml.gz"
+	private static final String HYDRO_PROJECT = "projects/hydro/project.halex"
+	private static final String HYDRO_DATA = "projects/hydro/hydro-source.gml.gz"
 
-	private static final String MULTI_TYPE_PROJECT = "platform:/plugin/$PLUGIN_NAME/projects/multitype/multi-type.halez"
-	private static final String MULTI_TYPE_DATA = "platform:/plugin/$PLUGIN_NAME/projects/multitype/multi-type-source.xml"
+	private static final String MULTI_TYPE_PROJECT = "projects/multitype/project.halex"
+	private static final String MULTI_TYPE_DATA = "projects/multitype/multi-type-source.xml"
 
 
 	// XXX Doesn't work -> private static final String METADATA_PATH = "platform:/plugin/$PLUGIN_NAME/projects/gmdMD_Metadata.xml"
@@ -73,7 +73,7 @@ class ExecuteTest extends GroovyTestCase {
 	private static final String MULTITYPE_EX3Typ = "{http://www.example.org/t1/}ShirtType"
 	private static final String MULTITYPE_EX3Exp = "price>'15.50' and price<'19.99'" // shirt = 3
 	private static final String MULTITYPE_EX3_2Typ = "{http://www.example.org/t1/}HatType"
-	private static final String MULTITYPE_EX3_2Exp = "name='HarryPotter hat' or (name='Round hat' and price<'10') " // HaryPotter hat=5 & Round hat=2
+	private static final String MULTITYPE_EX3_2Exp = "name='HarryPotter hat' or (name='Round hat' and price<'10')" // HaryPotter hat=5 & Round hat=2
 	private static final int MULTITYPE_TDATA_SIZE3 = 10
 
 	private static final String MULTITYPE_ARGS_FILE_PATH = "projects/arguments/multitypes_arguments_file.txt"
@@ -91,6 +91,17 @@ class ExecuteTest extends GroovyTestCase {
 		os << is;
 		is.close()
 		os.close()
+	}
+
+	/**
+	 * getting URI of project file
+	 */
+	private URI getProjectURI(String path){
+		URL url = ExecuteTest.class.getClassLoader().getResource(path)
+		if(!url)
+			throw new IllegalStateException("Could not find " + path)
+
+		return url.toURI()
 	}
 
 
@@ -159,8 +170,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', MULTI_TYPE_PROJECT, //
-			'-source', MULTI_TYPE_DATA, //
+			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString() , //
+			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
 			'-filter-on', MULTITYPE_EX3Typ, MULTITYPE_EX3Exp, //
 			'-filter-on', MULTITYPE_EX3_2Typ, MULTITYPE_EX3_2Exp, //
 			'-target', targetFile.absolutePath, //
@@ -185,8 +196,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', MULTI_TYPE_PROJECT, //
-			'-source', MULTI_TYPE_DATA, //
+			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString(), //
+			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
 			'-filter', MULTITYPE_EX2UNCONDITIONAL, //
 			'-filter-on', MULTITYPE_EX2Typ, MULTITYPE_EX2Exp, //
 			'-exclude-type', MULTITYPE_EX2EXCLUDETYPE, //
@@ -213,8 +224,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', MULTI_TYPE_PROJECT, //
-			'-source', MULTI_TYPE_DATA, //
+			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString() , //
+			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
 			'-filter', MULTITYPE_EX1UNCONDITIONAL, //
 			'-filter-on', MULTITYPE_EX1Typ, MULTITYPE_EX1Exp, //
 			'-exclude-type', MULTITYPE_EX1EXCLUDETYPE, //
@@ -275,8 +286,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-exclude-type', HYDRO_EXCLUDED_TYPE, //
 			'-target', targetFile.absolutePath, //
 			//select target provider
@@ -302,8 +313,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-filter', HYDRO_EXP2UNCONDITIONAL, //
 			'-filter-on', HYDRO_EX1Typ, HYDRO_EXP1Exp, //
 			'-target', targetFile.absolutePath, //
@@ -329,8 +340,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-filter', HYDRO_EXP2UNCONDITIONAL, //
 			'-target', targetFile.absolutePath, //
 			// select target provider
@@ -360,8 +371,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-target', targetFile.absolutePath, //
 			// select target provider
 			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
@@ -393,8 +404,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-target', targetFile.absolutePath, //
 			//select target provider
 			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
@@ -417,8 +428,8 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 
 		transform([//
-			'-project', HYDRO_PROJECT, //
-			'-source', HYDRO_DATA, //
+			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
+			'-source', getProjectURI(HYDRO_DATA).toString(), //
 			'-target', targetFile.absolutePath, //
 			// select preset for export
 			'-preset', 'INSPIRE SpatialDataSet', //

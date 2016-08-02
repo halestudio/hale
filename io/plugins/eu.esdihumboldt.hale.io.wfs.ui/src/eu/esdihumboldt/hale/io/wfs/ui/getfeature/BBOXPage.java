@@ -35,7 +35,7 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 
 import de.fhg.igd.mapviewer.BasicMapKit;
 import de.fhg.igd.mapviewer.server.MapServer;
-import de.fhg.igd.mapviewer.server.openstreetmap.OpenStreetMapServer;
+import de.fhg.igd.mapviewer.server.tiles.CustomTileMapServer;
 import de.fhg.igd.mapviewer.view.MapToolAction;
 import eu.esdihumboldt.hale.io.wfs.capabilities.BBox;
 import eu.esdihumboldt.hale.io.wfs.capabilities.FeatureTypeInfo;
@@ -139,7 +139,16 @@ public class BBOXPage extends ConfigurationWizardPage<WFSGetFeatureConfig> {
 	 * @param caps the WFS capabilities
 	 */
 	private void updateMap(WFSCapabilities caps) {
-		MapServer server = new OpenStreetMapServer();
+		CustomTileMapServer tileServer = new CustomTileMapServer();
+
+		// use Stamen Terrain as default map here
+		tileServer.setUrlPattern("http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg");
+		tileServer.setAttributionText(
+				"Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.");
+		tileServer.setZoomLevel(16);
+
+		MapServer server = tileServer;
+
 		Set<GeoPosition> positions = null;
 		if (caps != null) {
 			/*
@@ -182,8 +191,8 @@ public class BBOXPage extends ConfigurationWizardPage<WFSGetFeatureConfig> {
 					GeoPosition bottomRight = new GeoPosition(maxX, minY, 4326);
 
 					Color back = mapKit.getBackground();
-					server = new ClippingMapServer(server, topLeft, bottomRight, new Color(
-							back.getRed(), back.getGreen(), back.getBlue(), 170));
+					server = new ClippingMapServer(server, topLeft, bottomRight,
+							new Color(back.getRed(), back.getGreen(), back.getBlue(), 170));
 
 					positions = new HashSet<>();
 					positions.add(topLeft);

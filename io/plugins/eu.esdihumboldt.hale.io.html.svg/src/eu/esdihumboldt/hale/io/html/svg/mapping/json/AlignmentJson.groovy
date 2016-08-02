@@ -325,7 +325,11 @@ class AlignmentJson {
 				Extensions.AUTOLINKS |
 				Extensions.SUPPRESS_ALL_HTML |
 				Extensions.HARDWRAPS |
-				Extensions.SMARTYPANTS).
+				Extensions.SMARTYPANTS |
+				Extensions.TABLES |
+				Extensions.FENCED_CODE_BLOCKS |
+				Extensions.STRIKETHROUGH |
+				Extensions.DEFINITIONS).
 				markdownToHtml(text);
 	}
 
