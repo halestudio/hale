@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TileMapKit
 Bundle-SymbolicName: org.jdesktop.swingx.mapviewer;singleton:=true
-Bundle-Version: 10.0.0
+Bundle-Version: 2.9.5.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .
 Export-Package: org.jdesktop.swingx.mapviewer;version="1.0.0";

@@ -13,10 +13,10 @@ Require-Bundle: eu.esdihumboldt.hale.ui,
  org.eclipse.jface.text;bundle-version="3.9.1",
  org.geotools;bundle-version="12.2.0",
  org.opengis;bundle-version="12.2.0",
- de.fhg.igd.mapviewer;bundle-version="6.0.1",
- de.fhg.igd.mapviewer.server.openstreetmap;bundle-version="6.0.0",
+ de.fhg.igd.mapviewer;bundle-version="2.9.5",
  org.jdesktop.swingx;bundle-version="1.0.0",
- org.jdesktop.swingx.mapviewer;bundle-version="6.0.0"
+ org.jdesktop.swingx.mapviewer;bundle-version="2.9.5",
+ de.fhg.igd.mapviewer.server.tiles;bundle-version="2.9.5"
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
  com.vividsolutions.jts.geom;version="1.13.0",
