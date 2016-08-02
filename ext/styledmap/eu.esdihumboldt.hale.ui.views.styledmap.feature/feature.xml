@@ -28,13 +28,6 @@
          unpack="false"/>
 
    <plugin
-         id="de.fhg.igd.mapviewer.server.openstreetmap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="de.fhg.igd.mapviewer.tools.boxzoom"
          download-size="0"
          install-size="0"
