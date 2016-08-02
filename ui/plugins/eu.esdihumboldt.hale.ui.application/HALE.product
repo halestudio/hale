@@ -36,7 +36,6 @@ http://www.wetransform.to/services/support
 --launcher.defaultAction openFile
       </programArgs>
       <vmArgs>-Xmx800m
--XX:MaxPermSize=128m
 -Dsun.net.client.defaultConnectTimeout=10000
 -Dsun.net.client.defaultReadTimeout=20000
 -Dcache.level1.enabled=false
