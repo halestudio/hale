@@ -56,6 +56,7 @@ public class WMSConfigurationWizard<T extends WMSConfiguration> extends Wizard {
 		this.configuration = configuration;
 		this.allowBasicEdit = allowBasicEdit;
 		this.allowSrsEdit = allowSrsEdit;
+		setWindowTitle("Web Map Service Configuration");
 	}
 
 	/**

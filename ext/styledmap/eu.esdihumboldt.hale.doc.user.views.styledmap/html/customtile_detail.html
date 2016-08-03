@@ -7,96 +7,94 @@
 <body>
 	<h1>Custom Tile Server Configuration</h1>
 	<p>
-		The <i>Custom Tile Maps</i> provides functionality to add map that uses web tiling scheme.
+		By configuring custom tile map servers, you can use any map based on
+		the web tiling scheme in <i>HALE</i>'s map view.
 	</p>
 	<p>
-		Here is the explanation of how to add, configure and remove <i>Custom Tile</i> 
-		map in <i>Hale</i> studio. To work with <i>Custom Tile</i> maps, first open Map perspective 
-		using Open Perspective tool menu reside in the right corner of the studio.
-    </p>
-    
-    <div>
-		<img src="../images/map_perspective_toolbar.png"
-			title="Map perspective tool menu" class="fit">
-		<img src="../images/map_perspective_open.png"
-			title="Map perspective tool menu" class="fit" style="margin-left:20px" >
-	</div>
-    
-    <p>
-		Custom tile map is a default map in <i>HALE</i>. By default you will see,
-		<i>Stamen Terrain</i> map [Map tiles by Stamen Design, under CC BY 3.0. 
-		Data by OpenStreetMap, under CC BY SA.]
-    </p>
-    
-    <div>
-		<img src="../images/custom_default.png"
-			title="Custom Tile map(Stamen Terrain) as a default in HALE" class="fit">
-		<img src="../images/custom_default_menu.png"
-			title="Stamen Terrain in view menu of map" class="fit" style="margin-left:20px" >
-	</div>
- 
-    
-    <p>
-    	To add the <i>Custom Tile</i> maps in to Map perspective, click on the <i>View Menu</i> 
-    	button and then heads to <i>Custom Tile Maps</i>&#8594;<i>Add</i>. 
+		To work with <i>Custom Tile</i> maps, first open the Map view, go to
+		the Window menu, select <i>Show View</i> and pick <i>Map</i>.
 	</p>
-	
+
+	<div>
+		<img src="../images/map_perspective_toolbar.png"
+			title="Map perspective tool menu" class="fit"> <img
+			src="../images/map_perspective_open.png"
+			title="Map perspective tool menu" class="fit"
+			style="margin-left: 20px">
+	</div>
+
+	<p>By default, hale studio uses the Stamen Terrain map in the Map
+		view. The Stamen Terrain map is created by Stamen Design and provided
+		under CC BY 3.0. It contains data by OpenStreetMap, licensed under CC
+		BY SA.</p>
+
+	<div>
+		<img src="../images/custom_default.png"
+			title="Custom Tile map(Stamen Terrain) as a default in HALE"
+			class="fit"> <img src="../images/custom_default_menu.png"
+			title="Stamen Terrain in view menu of map" class="fit"
+			style="margin-left: 20px">
+	</div>
+
+
+	<p>
+		To add the <i>Custom Tile</i> map in to Map view, click on the <i>View
+			Menu</i> button and then head to <i>Custom Tile Maps</i>&#8594;<i>Add</i>.
+	</p>
+
 	<div>
 		<img src="../images/custom_add.png"
 			title="Add Custom Tile map to Map perspective" class="fit">
 	</div>
-	
-	
+
+
+	<p>Click on the Add button, then provide a unique name for the
+		service and enter the URL pattern.</p>
 	<p>
-		By clicking on <i>Add</i> button, a dialog will be appeared, which asks 
-		for the <i>Name</i> and <i>URL Pattern</i>. You have to insert a unique 
-		name and URL pattern from where tiles will be fetched. 
-	</p>
-	<p>
-		Please note, here name must be unique from any other <i>Custom Tile</i> 
-		map configurations and URL pattern must include {z}, {x} and {y} 
-		literals which will be replaced by the HALE as Zoom level, x-coordinate 
-		and y-coordinate respectively while fetching the tiles. To go to the 
-		next configuration page, click on <i>Next</i> button in the dialog or 
-		click <i>Finish</i> directly to skip next configuration pages.
+		Please note, name should be unique in <i>Custom Tile</i> maps. The URL
+		Pattern has to include {z}, {x} and {y} literals which will be
+		replaced by the HALE as Zoom level, x-coordinate and y-coordinate
+		respectively while fetching the tiles. To go to the next configuration
+		page, click on <i>Next</i> button in the dialog or click <i>Finish</i>
+		directly to skip next configuration pages.
 	</p>
 	<div>
 		<img src="../images/custom_basic.png"
 			title="Basic configuration of Custom Tile maps" class="fit">
 	</div>
-	
+
 	<p>
-		On this page, You have to define the maximum <i>zoom level</i> for the 
-		map (default is 16) and attribution text of the map server.	Click 
+		On this page, You have to provide the maximum <i>zoom level</i> for
+		the map (default is 16) and attribution text of the map server. Click
 		<i>Finish</i> to complete the configuration.
-		
-		Please note, before using a map you should make sure that you doing so 
-		is in compliance with the respective terms of use.
 	</p>
 	<div>
 		<img src="../images/custom_extension.png"
-			title="Zoom level and Attribuition configuration of Custom Tile maps" class="fit">
+			title="Zoom level and Attribuition configuration of Custom Tile maps"
+			class="fit">
 	</div>
-	
-	
+
 	<p>
-		After finishing configuration, <i>Custom Tile maps</i> will be loaded to <i>Map</i>
-		perspective and also added in to the <i>view menu</i>. 
+		<b><i>Before using a map you should make sure that you doing so is in
+			compliance with the respective terms of use.</i></b>
+	</p>
+
+	<p>
+		After finishing configuration, your <i>Custom Tile</i> map is loaded
+		in to <i>Map</i> view.
 	</p>
 	<div>
 		<img src="../images/custom_view.png"
 			title="Custom Tile map loaded in to Map perspective" class="fit">
 	</div>
-	
-	<p>
-		You can again reconfigure the map added by you, by clicking on the name you
-		configured before. It will reopen the same dialogs as per above in same order.
-		You can change the configurations in those dialogs. 
-	</p>
+
+	<p>To change the configuration for a custom tile map, click on the
+		name you set before. Change any of the settings by stepping through
+		the dialog again.</p>
 
 	<div>
-			<img src="../images/custom_configure.png"
-			title="Custom Tile reconfiguration" class="fit" >
+		<img src="../images/custom_configure.png"
+			title="Custom Tile reconfiguration" class="fit">
 	</div>
 	<br>
 </body>
