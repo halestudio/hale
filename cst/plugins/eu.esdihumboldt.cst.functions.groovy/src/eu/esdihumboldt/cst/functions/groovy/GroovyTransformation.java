@@ -58,7 +58,7 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 public class GroovyTransformation extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine>implements GroovyConstants {
 
 	/**
 	 * Name of the parameter specifying if instances should be used as variables
@@ -92,8 +92,10 @@ public class GroovyTransformation extends
 			Script groovyScript = GroovyUtil.getScript(this, binding, service);
 
 			// evaluate the script
-			result = evaluate(groovyScript, builder, resultProperty.getDefinition()
-					.getPropertyType(), service);
+			result = evaluate(groovyScript, builder,
+					resultProperty.getDefinition().getPropertyType(), service);
+		} catch (TransformationException | NoResultException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
@@ -113,9 +115,11 @@ public class GroovyTransformation extends
 	 * @param service the Groovy service
 	 * @return the result property value or instance
 	 * @throws TransformationException if the evaluation fails
+	 * @throws NoResultException if no result returned from the evaluation
 	 */
 	public static Object evaluate(Script groovyScript, final InstanceBuilder builder,
-			final TypeDefinition targetType, GroovyService service) throws TransformationException {
+			final TypeDefinition targetType, GroovyService service)
+					throws TransformationException, NoResultException {
 		try {
 			return service.evaluate(groovyScript, new ResultProcessor<Object>() {
 
@@ -173,7 +177,7 @@ public class GroovyTransformation extends
 					return result;
 				}
 			});
-		} catch (RuntimeException | TransformationException e) {
+		} catch (RuntimeException | TransformationException | NoResultException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
