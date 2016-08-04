@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.cst.functions.geometric
 
-import org.geotools.referencing.CRS
-
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.SpecBuilder
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition
@@ -64,11 +62,10 @@ class CRSHelperFunctions {
 		}
 
 		if (longitudeFirst) {
-			def crs = CRS.decode(codeString, true) // not cached!
-			new CodeDefinition(codeString, crs)
+			new CodeDefinition(codeString, true)
 		}
 		else {
-			new CodeDefinition(codeString, null)
+			new CodeDefinition(codeString)
 		}
 	}
 

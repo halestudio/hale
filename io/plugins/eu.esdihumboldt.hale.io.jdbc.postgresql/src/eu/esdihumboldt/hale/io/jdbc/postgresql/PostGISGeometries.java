@@ -28,9 +28,6 @@ import org.opengis.referencing.operation.MathTransform;
 import org.postgis.PGgeometry;
 import org.postgresql.PGConnection;
 
-import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
-
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
@@ -48,6 +45,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.ColumnDataType;
 
 /**
  * Geometry advisor for PostGIS.
@@ -76,8 +75,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		try {
 			Statement stmt = con.createStatement();
 			// Get the srid, dimension and geometry type
-			ResultSet rs = stmt
-					.executeQuery("SELECT srid,type,coord_dimension FROM geometry_columns WHERE f_table_name = "
+			ResultSet rs = stmt.executeQuery(
+					"SELECT srid,type,coord_dimension FROM geometry_columns WHERE f_table_name = "
 							+ "'" + columnValueName + "'");
 			if (rs.next()) {
 				geometryType = rs.getString("type");
@@ -85,8 +84,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 				// Get the epsg code for the srid
 				String srid = rs.getString("srid");
-				ResultSet r = stmt
-						.executeQuery("SELECT auth_srid, auth_name, srtext FROM spatial_ref_sys WHERE srid = "
+				ResultSet r = stmt.executeQuery(
+						"SELECT auth_srid, auth_name, srtext FROM spatial_ref_sys WHERE srid = "
 								+ srid);
 				if (r.next()) {
 					// Create Constraint to save the informations
@@ -199,9 +198,8 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			CRSDefinition crsDef = null;
 			String authName = columnTypeMetadata.getAuthName();
 			if (authName != null && authName.equals("EPSG")) {
-				// FIXME PostGIS assumes lon/lat order, but this representation
-				// results in a CRS with lat/lon order
-				crsDef = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), null);
+				// PostGIS assumes lon/lat order
+				crsDef = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), true);
 			}
 			else {
 				String wkt = columnTypeMetadata.getSrsText();
