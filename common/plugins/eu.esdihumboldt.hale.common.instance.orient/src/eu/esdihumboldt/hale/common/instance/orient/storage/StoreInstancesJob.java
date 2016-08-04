@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.instance.orient.storage;
 import java.text.MessageFormat;
 import java.util.Date;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,6 +44,9 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import gnu.trove.TObjectIntHashMap;
+import gnu.trove.TObjectIntProcedure;
 
 /**
  * Store instances in a database
@@ -95,10 +100,11 @@ public abstract class StoreInstancesJob extends Job {
 	@Override
 	public IStatus run(IProgressMonitor monitor) {
 		boolean exactProgress = instances.hasSize();
-		monitor.beginTask("Store instances in database", (exactProgress) ? (instances.size())
-				: (IProgressMonitor.UNKNOWN));
+		monitor.beginTask("Store instances in database",
+				(exactProgress) ? (instances.size()) : (IProgressMonitor.UNKNOWN));
 
 		int count = 0;
+		TObjectIntHashMap<QName> typeCount = new TObjectIntHashMap<>();
 
 		if (report != null) {
 			// set the correct start time
@@ -143,6 +149,11 @@ public abstract class StoreInstancesJob extends Job {
 
 					count++;
 
+					TypeDefinition type = instance.getDefinition();
+					if (type != null) {
+						typeCount.adjustOrPutValue(type.getName(), 1, 1);
+					}
+
 					if (exactProgress) {
 						monitor.worked(1);
 					}
@@ -161,6 +172,7 @@ public abstract class StoreInstancesJob extends Job {
 			db.declareIntent(null);
 		} catch (RuntimeException e) {
 			if (report != null) {
+				reportTypeCount(report, typeCount);
 				report.error(new MessageImpl("Error storing instances in database", e));
 				report.setSuccess(false);
 				reportHandler.publishReport(report);
@@ -205,6 +217,7 @@ public abstract class StoreInstancesJob extends Job {
 		}
 
 		if (report != null) {
+			reportTypeCount(report, typeCount);
 			report.setSuccess(true);
 			report.setSummary(message);
 			reportHandler.publishReport(report);
@@ -217,6 +230,29 @@ public abstract class StoreInstancesJob extends Job {
 
 		return new Status((monitor.isCanceled()) ? (IStatus.CANCEL) : (IStatus.OK),
 				"eu.esdihumboldt.hale.common.instance.orient", message);
+	}
+
+	private void reportTypeCount(Reporter<Message> report, TObjectIntHashMap<QName> typeCount) {
+		typeCount.forEachEntry(new TObjectIntProcedure<QName>() {
+
+			@Override
+			public boolean execute(QName typeName, int count) {
+				StringBuilder msg = new StringBuilder("Stored ");
+				msg.append(count);
+				msg.append(" instances of type ");
+				msg.append(typeName.getLocalPart());
+				String ns = typeName.getNamespaceURI();
+				if (ns != null && !ns.isEmpty()) {
+					msg.append(" (");
+					msg.append(ns);
+					msg.append(")");
+				}
+
+				report.info(new MessageImpl(msg.toString(), null));
+
+				return true;
+			}
+		});
 	}
 
 	/**
