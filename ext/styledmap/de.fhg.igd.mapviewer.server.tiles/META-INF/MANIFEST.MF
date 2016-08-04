@@ -6,7 +6,7 @@ Bundle-Version: 2.9.5.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: de.fhg.igd.mapviewer,
- org.eclipse.ui;bundle-version="3.107.0"
+ org.eclipse.ui;bundle-version="3.5.0"
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.mapviewer.server,
  org.apache.commons.logging;version="1.1.1",
