@@ -40,6 +40,7 @@ public class CodeDefinition implements CRSDefinition {
 	private static final long serialVersionUID = -7637649402983702957L;
 
 	private final String code;
+	private final boolean longitudeFirst;
 	private CoordinateReferenceSystem crs;
 
 	private static final LoadingCache<String, CoordinateReferenceSystem> CRS_CACHE = CacheBuilder
@@ -53,6 +54,17 @@ public class CodeDefinition implements CRSDefinition {
 
 			});
 
+	private static final LoadingCache<String, CoordinateReferenceSystem> LONGITUDE_FIRST_CRS_CACHE = CacheBuilder
+			.newBuilder().maximumSize(100).expireAfterAccess(1, TimeUnit.HOURS)
+			.build(new CacheLoader<String, CoordinateReferenceSystem>() {
+
+				@Override
+				public CoordinateReferenceSystem load(String code) throws Exception {
+					return CRS.decode(code, true);
+				}
+
+			});
+
 	/**
 	 * Constructor
 	 * 
@@ -62,6 +74,29 @@ public class CodeDefinition implements CRSDefinition {
 	public CodeDefinition(String code, CoordinateReferenceSystem crs) {
 		this.code = code;
 		this.crs = crs;
+		this.longitudeFirst = false;
+	}
+
+	/**
+	 * Create a code definition with only a code.
+	 * 
+	 * @param code the code
+	 */
+	public CodeDefinition(String code) {
+		this(code, false);
+	}
+
+	/**
+	 * Create a code definition with only a code.
+	 * 
+	 * @param code the code
+	 * @param longitudeFirst if the axis order should be assumed as longitude
+	 *            first
+	 */
+	public CodeDefinition(String code, boolean longitudeFirst) {
+		this.code = code;
+		this.crs = null;
+		this.longitudeFirst = longitudeFirst;
 	}
 
 	/**
@@ -71,7 +106,12 @@ public class CodeDefinition implements CRSDefinition {
 	public CoordinateReferenceSystem getCRS() {
 		if (crs == null) {
 			try {
-				crs = CRS_CACHE.get(code);
+				if (longitudeFirst) {
+					crs = LONGITUDE_FIRST_CRS_CACHE.get(code);
+				}
+				else {
+					crs = CRS_CACHE.get(code);
+				}
 			} catch (Exception e) {
 				throw new IllegalStateException("Invalid CRS code", e);
 			}
@@ -89,9 +129,6 @@ public class CodeDefinition implements CRSDefinition {
 		return code;
 	}
 
-	/**
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -100,9 +137,6 @@ public class CodeDefinition implements CRSDefinition {
 		return result;
 	}
 
-	/**
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
