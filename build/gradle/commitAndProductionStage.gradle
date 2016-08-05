@@ -425,8 +425,13 @@ def packageClient(productOutputPath) {
 			try {
 		        // get path to Windows Installer XML Kit
 		        if (!project.ext.properties.containsKey("wixDir")) {
-		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
-		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+					//Getting unrequired directory so need to provide Program files directories 
+//		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
+//		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+					
+					def dirs = fileTree(dir: 'C:\\Program Files\\', includes: [ 'Windows Installer XML v3*\\bin\\candle.exe',
+						'WiX Toolset v3*\\bin\\candle.exe' ]) + fileTree(dir: 'C:\\Program Files (x86)\\', includes: [ 'Windows Installer XML v3*\\bin\\candle.exe',
+						'WiX Toolset v3*\\bin\\candle.exe' ])
 
 		            if (dirs.isEmpty()) {
 		                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
