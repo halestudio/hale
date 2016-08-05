@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.Dupli
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.InstanceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
@@ -48,6 +50,8 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import gnu.trove.TObjectIntHashMap;
+import gnu.trove.TObjectIntProcedure;
 
 /**
  * Property transformer based on a {@link TransformationTree}.
@@ -84,6 +88,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 	private final TransformationTreeHooks treeHooks;
 
+	private final TObjectIntHashMap<Cell> instanceCounter = new TObjectIntHashMap<>();
+
+	private final TransformationReporter reporter;
+
 	/**
 	 * Create a simple property transformer
 	 * 
@@ -96,7 +104,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	 */
 	public TreePropertyTransformer(Alignment alignment, TransformationReporter reporter,
 			InstanceSink sink, EngineManager engines, TransformationContext context) {
-//		this.reporter = reporter;
+		this.reporter = reporter;
 		this.sink = sink;
 
 		// XXX how to determine matcher?
@@ -158,6 +166,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	@Override
 	public void publish(final FamilyInstance source, final MutableInstance target,
 			final TransformationLog typeLog, final Cell typeCell) {
+		instanceCounter.adjustOrPutValue(typeCell, 1, 1);
 		Runnable job = new Runnable() {
 
 			@Override
@@ -244,28 +253,39 @@ public class TreePropertyTransformer implements PropertyTransformer {
 
 	@Override
 	public void join(boolean cancel) {
-		if (executorService == null) {
-			return;
-		}
-
-		if (cancel) {
-			executorService.shutdownNow();
-		}
-		else {
-			executorService.shutdown();
-		}
-
-		if (executorService.isTerminated()) {
-			return;
-		}
-		try {
-			// TODO make configurable?
-			if (!executorService.awaitTermination(15, TimeUnit.MINUTES)) {
-				// TODO error message
+		if (executorService != null) {
+			if (cancel) {
+				executorService.shutdownNow();
 			}
-		} catch (InterruptedException e) {
-			// ignore
+			else {
+				executorService.shutdown();
+			}
+
+			if (executorService.isTerminated()) {
+				return;
+			}
+			try {
+				// TODO make configurable?
+				if (!executorService.awaitTermination(15, TimeUnit.MINUTES)) {
+					// TODO error message
+				}
+			} catch (InterruptedException e) {
+				// ignore
+			}
 		}
+
+		// report instance counts
+		instanceCounter.forEachEntry(new TObjectIntProcedure<Cell>() {
+
+			@Override
+			public boolean execute(Cell cell, int count) {
+				reporter.info(new TransformationMessageImpl(cell,
+						MessageFormat.format("Created {0} instances during transformation", count),
+						null));
+
+				return true;
+			}
+		});
 	}
 
 }

@@ -73,6 +73,8 @@ public class MapServerService extends PreferencesExclusiveExtension<MapServer, M
 	public MapServerService() {
 		super(new MapServerExtension(), MapviewerPlugin.getDefault().getPreferenceStore(),
 				MapPreferenceConstants.CURRENT_MAP_SERVER);
+		// Loading map again with new changes
+		setAllowReactivation(true);
 	}
 
 	/**
