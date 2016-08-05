@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc.extension;
 
+import java.net.URI;
 import java.sql.Driver;
 import java.sql.SQLException;
 
@@ -42,6 +43,8 @@ public class DriverConfiguration implements Identifiable {
 	private final String testURI;
 	private final Class<? extends URIBuilder> builderClass;
 	private URIBuilder builder = null;
+	private final String className;
+	private final IConfigurationElement[] prefixes;
 
 	/**
 	 * Create a connection configuration from a corresponding configuration
@@ -57,6 +60,8 @@ public class DriverConfiguration implements Identifiable {
 		name = element.getAttribute("name");
 		testURI = element.getAttribute("testUri");
 		builderClass = (Class<? extends URIBuilder>) ExtensionUtil.loadClass(element, "uriBuilder");
+		className = element.getAttribute("class");
+		prefixes = element.getChildren("prefix");
 	}
 
 	@Override
@@ -100,6 +105,37 @@ public class DriverConfiguration implements Identifiable {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * match if configuration's any prefix match URI.
+	 * 
+	 * @param jdbcUri JDBCuri
+	 * @return true if matches any of the prefix, otherwise false
+	 */
+	public boolean matchURIPrefix(URI jdbcUri) {
+		String uri = jdbcUri.toString();
+		for (IConfigurationElement prefix : prefixes)
+			if (uri.startsWith(prefix.getAttribute("value")))
+				return true;
+		return false;
+	}
+
+	/**
+	 * Loading a driver
+	 * 
+	 * @return Driver the {@link Driver} implements instance
+	 * 
+	 * @throws ClassNotFoundException throws a Class not found exception
+	 */
+	public Driver loadDriver() throws ClassNotFoundException {
+		try {
+			return (Driver) Class.forName(className).newInstance();
+		} catch (InstantiationException e) {
+			return null;
+		} catch (IllegalAccessException e) {
+			return null;
+		}
 	}
 
 }

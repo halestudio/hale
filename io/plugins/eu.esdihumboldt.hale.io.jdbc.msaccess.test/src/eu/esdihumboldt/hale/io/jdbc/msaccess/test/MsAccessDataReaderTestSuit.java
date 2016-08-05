@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader;
@@ -214,6 +215,8 @@ public abstract class MsAccessDataReaderTestSuit {
 		MsAccessInstanceReader instanceReader = new MsAccessInstanceReader();
 		instanceReader.setSource(new FileIOSupplier(sourceFile));
 		instanceReader.setSourceSchema(sourceSchema);
+		instanceReader.setParameter(JDBCInstanceReader.PARAM_USER, Value.of(USER_NAME));
+		instanceReader.setParameter(JDBCInstanceReader.PARAM_PASSWORD, Value.of(PASSWORD));
 
 		// Test instances
 		IOReport report = instanceReader.execute(new LogProgressIndicator());

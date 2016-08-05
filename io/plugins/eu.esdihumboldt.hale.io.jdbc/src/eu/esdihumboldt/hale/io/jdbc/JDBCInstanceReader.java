@@ -105,7 +105,6 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Configure database connection", ProgressIndicator.UNKNOWN);
 		try {
-
 			testConnection();
 
 			String user = getParameter(PARAM_USER).as(String.class);

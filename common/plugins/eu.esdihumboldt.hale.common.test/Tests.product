@@ -194,6 +194,7 @@
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
+      <plugin id="eu.esdihumboldt.util.cli"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
