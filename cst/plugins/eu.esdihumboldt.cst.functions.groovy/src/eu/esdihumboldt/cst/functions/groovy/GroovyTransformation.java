@@ -84,7 +84,8 @@ public class GroovyTransformation extends
 			varDefs = getCell().getSource().get(ENTITY_VARIABLE);
 		}
 		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), varDefs, getCell(),
-				getTypeCell(), builder, useInstanceVariables, log, getExecutionContext());
+				getTypeCell(), builder, useInstanceVariables, log, getExecutionContext(),
+				resultProperty.getDefinition().getPropertyType());
 
 		Object result;
 		try {
@@ -217,12 +218,15 @@ public class GroovyTransformation extends
 	 *            the binding instead of extracting the instance values
 	 * @param log the transformation log
 	 * @param context the execution context
+	 * @param targetInstanceType the type of the target instance
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
 			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
-			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
-		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
+			boolean useInstanceVariables, TransformationLog log, ExecutionContext context,
+			TypeDefinition targetInstanceType) {
+		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context,
+				targetInstanceType);
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();
