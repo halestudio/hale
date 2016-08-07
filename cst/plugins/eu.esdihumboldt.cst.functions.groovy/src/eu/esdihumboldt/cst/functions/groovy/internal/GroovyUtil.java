@@ -242,7 +242,6 @@ public class GroovyUtil implements GroovyConstants {
 	public static Binding createBinding(InstanceBuilder builder, Cell cell, Cell typeCell,
 			TransformationLog log, ExecutionContext executionContext) {
 		Binding binding = new Binding();
-		binding.setVariable(BINDING_TARGET, new TargetCollector());
 		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
@@ -270,6 +269,9 @@ public class GroovyUtil implements GroovyConstants {
 		}
 		binding.setVariable(BINDING_SOURCE_TYPES, sourceTypes);
 		binding.setVariable(BINDING_TARGET_TYPE, targetType);
+
+		binding.setVariable(BINDING_TARGET,
+				new TargetCollector(builder, targetType.getDefinition()));
 
 		binding.setVariable(BINDING_PROJECT, new ProjectAccessor(
 				executionContext.getService(ProjectInfoService.class), cellLog, executionContext));
