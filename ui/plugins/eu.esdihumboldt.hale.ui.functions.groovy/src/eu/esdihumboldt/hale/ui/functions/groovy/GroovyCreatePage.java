@@ -108,7 +108,8 @@ public class GroovyCreatePage extends GroovyScriptPage<AbstractGenericFunctionWi
 		Cell cell = getWizard().getUnfinishedCell();
 		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, context);
+		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, context,
+				typeEntity.getDefinition().getDefinition());
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
