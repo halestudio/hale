@@ -72,14 +72,13 @@ public class DriverConfigurationExtension extends IdentifiableExtension<DriverCo
 	 * To find driver using driver configuration
 	 * 
 	 * @param jdbcUri uri of JDBC connection
-	 * @return {@link DriverConfiguration}
+	 * @return {@link DriverConfiguration} or <code>null</code>
 	 */
 	public DriverConfiguration findDriver(URI jdbcUri) {
 		for (DriverConfiguration config : getElements()) {
 			if (config.matchURIPrefix(jdbcUri))
 				return config;
 		}
-
 		return null;
 	}
 

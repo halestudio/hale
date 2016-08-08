@@ -267,7 +267,7 @@
          <attribute name="value" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  prefix used to load JDBC driver by ensuring jdbc uri prefix matching
                </documentation>
             </annotation>
          </attribute>

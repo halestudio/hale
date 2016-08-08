@@ -124,7 +124,8 @@ public class DriverConfiguration implements Identifiable {
 	/**
 	 * Loading a driver
 	 * 
-	 * @return Driver the {@link Driver} implements instance
+	 * @return Driver the {@link Driver} implements instance or
+	 *         <code>null</code>
 	 * 
 	 * @throws ClassNotFoundException throws a Class not found exception
 	 */
@@ -132,8 +133,10 @@ public class DriverConfiguration implements Identifiable {
 		try {
 			return (Driver) Class.forName(className).newInstance();
 		} catch (InstantiationException e) {
+			log.error(e.getMessage(), e);
 			return null;
 		} catch (IllegalAccessException e) {
+			log.error(e.getMessage(), e);
 			return null;
 		}
 	}

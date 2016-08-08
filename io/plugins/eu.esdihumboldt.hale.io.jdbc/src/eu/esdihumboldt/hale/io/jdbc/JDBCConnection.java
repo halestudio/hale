@@ -24,6 +24,8 @@ import java.sql.SQLException;
 
 import com.google.common.base.Preconditions;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
@@ -38,6 +40,8 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.ConnectionConfigurerExten
  * @author Simon Templer
  */
 public abstract class JDBCConnection implements JDBCConstants {
+
+	private static final ALogger log = ALoggerFactory.getLogger(JDBCConnection.class);
 
 	/**
 	 * Get a connection to a database.
@@ -58,9 +62,12 @@ public abstract class JDBCConnection implements JDBCConstants {
 			// using prefix attribute in extension
 			try {
 				driver = findDriver(jdbcUri);
-				DriverManager.registerDriver(driver);
+				if (driver != null)
+					DriverManager.registerDriver(driver);
+				else
+					log.warn("could not load driver manually. JDBC URI: " + jdbcUri.toString());
 			} catch (ClassNotFoundException classNotFoundEx) {
-				// TODO:: handle it
+				log.error(classNotFoundEx.getMessage(), classNotFoundEx);
 			}
 		}
 
@@ -109,6 +116,9 @@ public abstract class JDBCConnection implements JDBCConstants {
 	private static Driver findDriver(URI jdbcUri) throws ClassNotFoundException {
 		DriverConfiguration driverConfiguration = DriverConfigurationExtension.getInstance()
 				.findDriver(jdbcUri);
-		return driverConfiguration.loadDriver();
+		if (driverConfiguration != null)
+			return driverConfiguration.loadDriver();
+		else
+			return null;
 	}
 }
