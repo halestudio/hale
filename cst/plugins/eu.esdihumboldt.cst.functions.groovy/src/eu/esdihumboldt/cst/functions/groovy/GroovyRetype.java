@@ -38,20 +38,21 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyRetype extends AbstractTypeTransformation<TransformationEngine> implements
-		GroovyConstants {
+public class GroovyRetype extends AbstractTypeTransformation<TransformationEngine>
+		implements GroovyConstants {
 
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log, Cell cell)
-			throws TransformationException {
+					throws TransformationException {
 		// for each source instance create a target instance
 		TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 				.getDefinition();
 
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = createBinding(getSource(), cell, builder, log, getExecutionContext());
+		Binding binding = createBinding(getSource(), cell, builder, log, getExecutionContext(),
+				targetType);
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
@@ -65,10 +66,9 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 		} catch (TransformationException e) {
 			throw e;
 		} catch (NoResultException e) {
-			log.info(log
-					.createMessage(
-							"Skipping target instance because received NoResultException from script",
-							null));
+			log.info(log.createMessage(
+					"Skipping target instance because received NoResultException from script",
+					null));
 		} catch (Exception e) {
 			throw new TransformationException(e.getMessage(), e);
 		}
@@ -82,11 +82,14 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 	 * @param builder the instance builder
 	 * @param log the transformation log
 	 * @param context the execution context
+	 * @param targetInstanceType type of the target instance
 	 * @return the binding
 	 */
 	public static Binding createBinding(FamilyInstance source, Cell typeCell,
-			InstanceBuilder builder, TransformationLog log, ExecutionContext context) {
-		Binding binding = GroovyUtil.createBinding(builder, typeCell, typeCell, log, context);
+			InstanceBuilder builder, TransformationLog log, ExecutionContext context,
+			TypeDefinition targetInstanceType) {
+		Binding binding = GroovyUtil.createBinding(builder, typeCell, typeCell, log, context,
+				targetInstanceType);
 		binding.setVariable(BINDING_SOURCE, source);
 		return binding;
 	}

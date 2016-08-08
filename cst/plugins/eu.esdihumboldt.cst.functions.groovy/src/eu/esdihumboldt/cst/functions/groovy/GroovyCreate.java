@@ -57,7 +57,8 @@ public class GroovyCreate extends AbstractTypeTransformation<TransformationEngin
 			Cell cell) throws TransformationException {
 		InstanceBuilder builder = new InstanceBuilder(false);
 
-		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, getExecutionContext());
+		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, getExecutionContext(),
+				type);
 
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
