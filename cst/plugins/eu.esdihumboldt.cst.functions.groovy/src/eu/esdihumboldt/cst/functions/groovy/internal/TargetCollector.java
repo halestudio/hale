@@ -38,17 +38,38 @@ public class TargetCollector {
 	private class TargetData {
 
 		private final Object value;
-		private final Closure<?> closure;
+		private final Instance instance;
 
 		private TargetData(Object value, Closure<?> closure) {
 			this.value = value;
-			this.closure = closure;
+
+			if (closure != null) {
+				// the closure must be evaluated in the moment of the call
+				// otherwise the bindings may have changed
+				instance = builder.createInstance(typeDef, closure);
+			}
+			else {
+				instance = null;
+			}
 		}
 	}
 
 	private final ArrayList<TargetData> targetData = new ArrayList<>();
 	private boolean containsValues = false;
 	private boolean containsClosures = false;
+	private final InstanceBuilder builder;
+	private final TypeDefinition typeDef;
+
+	/**
+	 * Create a new target collector.
+	 * 
+	 * @param builder the builder used to create target instances
+	 * @param typeDef the target type definition
+	 */
+	public TargetCollector(InstanceBuilder builder, TypeDefinition typeDef) {
+		this.builder = builder;
+		this.typeDef = typeDef;
+	}
 
 	/**
 	 * Call method for easy access from Groovy.
@@ -57,6 +78,7 @@ public class TargetCollector {
 	 */
 	public void call(Closure<?> targetClosure) {
 		targetData.add(new TargetData(null, targetClosure));
+
 		containsClosures = true;
 	}
 
@@ -110,9 +132,9 @@ public class TargetCollector {
 
 		for (TargetData data : targetData) {
 			Object value;
-			if (data.closure != null) {
-				// create instance and treat value as instance value
-				Instance instance = builder.createInstance(type, data.closure);
+			if (data.instance != null) {
+				Instance instance = data.instance;
+				// value as instance value
 				if (data.value != null && instance instanceof MutableInstance) {
 					((MutableInstance) instance).setValue(data.value);
 				}
