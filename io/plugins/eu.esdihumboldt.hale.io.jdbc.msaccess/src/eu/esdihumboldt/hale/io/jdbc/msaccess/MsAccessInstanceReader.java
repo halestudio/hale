@@ -17,13 +17,10 @@ package eu.esdihumboldt.hale.io.jdbc.msaccess;
 
 import java.io.File;
 import java.io.InputStream;
-import java.net.URI;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
-import net.ucanaccess.jdbc.UcanaccessConnection;
 
 /**
  * Reads instances from MsAccess Database
@@ -31,9 +28,6 @@ import net.ucanaccess.jdbc.UcanaccessConnection;
  * @author Arun
  */
 public class MsAccessInstanceReader extends JDBCInstanceReader {
-
-	private LocatableInputSupplier<? extends InputStream> source;
-	private URI uri;
 
 	/**
 	 * Default Constructor
@@ -43,30 +37,10 @@ public class MsAccessInstanceReader extends JDBCInstanceReader {
 	}
 
 	@Override
-	public LocatableInputSupplier<? extends InputStream> getSource() {
-		return source;
-	}
-
-	@Override
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
-		this.source = source;
 		MsAccessJdbcIOSupplier inputSource = new MsAccessJdbcIOSupplier(
 				new File(source.getLocation()));
-		uri = inputSource.getLocation();
 		super.setSource(inputSource);
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader#getConnection()
-	 */
-	@Override
-	protected UcanaccessConnection getConnection() throws SQLException {
-		String user = getParameter(PARAM_USER).as(String.class);
-		String password = getParameter(PARAM_PASSWORD).as(String.class);
-
-		// return specific UCanAccessConnection
-		return (UcanaccessConnection) DriverManager.getConnection(this.uri.toString(), user,
-				password);
 	}
 
 	/**

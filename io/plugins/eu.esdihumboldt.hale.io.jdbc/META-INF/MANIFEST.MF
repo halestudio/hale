@@ -26,6 +26,7 @@ Import-Package: com.google.common.base;version="1.0.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.constraints,
+ eu.esdihumboldt.hale.io.jdbc.constraints.factory,
  eu.esdihumboldt.hale.io.jdbc.constraints.internal;x-internal:=true,
  eu.esdihumboldt.hale.io.jdbc.extension,
  eu.esdihumboldt.hale.io.jdbc.extension.internal;x-internal:=true
