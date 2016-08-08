@@ -92,8 +92,8 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 
 			@Override
 			protected TypeDefinition getTargetType() {
-				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type typeEntity = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (typeEntity != null) {
 					return typeEntity.getDefinition().getDefinition();
 				}
@@ -101,8 +101,8 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 			}
 		};
 
-		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
-				.getServiceProvider().getService(HelperFunctionsService.class));
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(
+				HaleUI.getServiceProvider().getService(HelperFunctionsService.class));
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager,
 				ImmutableList.of(BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET,
@@ -116,10 +116,10 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 	protected boolean validate(String document) {
 		super.validate(document);
 
-		Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getTarget());
-		Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getSource());
+		Type targetType = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
+		Type sourceType = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getSource());
 		if (sourceType == null || targetType == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -137,7 +137,8 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 		Cell cell = getWizard().getUnfinishedCell();
 		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context);
+		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context,
+				targetType.getDefinition().getDefinition());
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
@@ -163,8 +164,8 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getSource());
+				Type sourceType = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getSource());
 				if (sourceType != null) {
 					return Collections.singleton(sourceType.getDefinition().getDefinition());
 				}
@@ -176,8 +177,8 @@ public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWi
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type targetType = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetType != null) {
 					return Collections.singleton(targetType.getDefinition().getDefinition());
 				}

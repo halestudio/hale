@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultEx
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -92,7 +93,7 @@ public class CustomGroovyTransformation
 
 		// create the script binding
 		Binding binding = createGroovyBinding(variables, getCell(), getTypeCell(), builder, log,
-				getExecutionContext());
+				getExecutionContext(), resultProperty.getDefinition().getPropertyType());
 
 		Object result;
 		try {
@@ -102,6 +103,8 @@ public class CustomGroovyTransformation
 			// evaluate the script
 			result = GroovyTransformation.evaluate(groovyScript, builder,
 					resultProperty.getDefinition().getPropertyType(), service);
+		} catch (TransformationException | NoResultException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the custom function script", e);
 		}
@@ -114,8 +117,9 @@ public class CustomGroovyTransformation
 
 	private Binding createGroovyBinding(ListMultimap<String, PropertyValue> variables, Cell cell,
 			Cell typeCell, InstanceBuilder builder, TransformationLog log,
-			ExecutionContext executionContext) {
-		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, executionContext);
+			ExecutionContext executionContext, TypeDefinition targetInstanceType) {
+		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, executionContext,
+				targetInstanceType);
 
 		// create bindings for inputs
 		for (DefaultCustomPropertyFunctionEntity source : customFunction.getSources()) {

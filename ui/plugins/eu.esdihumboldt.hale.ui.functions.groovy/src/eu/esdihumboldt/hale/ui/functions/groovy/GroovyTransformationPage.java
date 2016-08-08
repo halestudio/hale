@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
@@ -78,7 +79,8 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
+public class GroovyTransformationPage
+		extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	private final TestValues testValues;
 
@@ -172,16 +174,20 @@ public class GroovyTransformationPage extends GroovyScriptPage<AbstractGenericFu
 			groovy.lang.Binding binding;
 			if (cell.getTransformationIdentifier().equals(GroovyGreedyTransformation.ID)) {
 				binding = GroovyGreedyTransformation.createGroovyBinding(values, null, cell,
-						typeCell, builder, useInstanceValues, log, context);
+						typeCell, builder, useInstanceValues, log, context,
+						targetProperty.getDefinition().getDefinition().getPropertyType());
 			}
 			else {
 				binding = GroovyTransformation.createGroovyBinding(values, null, cell, typeCell,
-						builder, useInstanceValues, log, context);
+						builder, useInstanceValues, log, context,
+						targetProperty.getDefinition().getDefinition().getPropertyType());
 			}
 			script = gs.parseScript(document, binding);
 
 			GroovyTransformation.evaluate(script, builder,
 					targetProperty.getDefinition().getDefinition().getPropertyType(), gs);
+		} catch (NoResultException e) {
+			// continue
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

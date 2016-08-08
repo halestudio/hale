@@ -78,6 +78,24 @@
                   sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="User name to use for basic authentication"
+               label="User name"
+               name="credentials.user"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Password for basic authentication"
+               label="Password"
+               name="credentials.password"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS2FCWriter"
@@ -456,6 +474,24 @@
                   sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
             </valueDescriptor>
          </providerParameter>
+                <providerParameter
+                      description="User name to use for basic authentication"
+                      label="User name"
+                      name="credentials.user"
+                      optional="true">
+                   <parameterBinding
+                         class="java.lang.String">
+                   </parameterBinding>
+                </providerParameter>
+                <providerParameter
+                      description="Password for basic authentication"
+                      label="Password"
+                      name="credentials.password"
+                      optional="true">
+                   <parameterBinding
+                         class="java.lang.String">
+                   </parameterBinding>
+                </providerParameter>
          
       </provider>
    </extension>
