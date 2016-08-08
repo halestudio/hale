@@ -61,6 +61,16 @@
                ref="eu.esdihumboldt.hale.io.wfs.fc.write-2.0">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.wfs.ui.config.CredentialsPage"
+            order="10">
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.write.partitioned">
+         </provider>
+      </configPage>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.io.source">

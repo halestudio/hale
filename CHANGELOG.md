@@ -21,6 +21,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - *Interior Point* transformation function that determines a point that us guaranteed to lie inside a geometry
 - Support for 1-dimensional arrays as multi-valued properties for JDBC schema and data sources (only tested with PostgreSQL)
 - `XmlSchemaReader` can be configured with specific content for anyType elements (to be able to map them properly; not configurable via the UI)
+- WFS-T writers now can be configured for services protected with HTTP Basic Authentication
 
 ### Changed
 - New default base map is [Stamen Terrain](http://maps.stamen.com/terrain/#3/42.62/15.29)
@@ -51,8 +52,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Concatenating a Ring geometry to a LinearRing will no longer result in duplicate coordinates
 - Concurrent access to the same source instances could result in exceptions and invalid objects being transformed (see #96)
 - Drastically reduced threads created by `FinalizableReferenceQueue`s for internal database handle cleanup
-- PostgreSQL: classify columns with type `geometry` as geometry columns, even if there is no corresponding entry in the `geometry_columns` table
+- PostGIS: classify columns with type `geometry` as geometry columns, even if there is no corresponding entry in the `geometry_columns` table
+- PostGIS: assume lon/lat axis order instead of lat/lon for geographic coordinate reference systems
 - Correctly use cursors in JDBC connections (loading tables in batches, not completely)
+- Returning muliple instances from Groovy functions now always uses the correct bindings
 
 ## 2.9.4 - 2015-11-01
 

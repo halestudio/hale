@@ -9,10 +9,14 @@
             type="net.ucanaccess.jdbc.UcanaccessConnection">
       </connection>
       <driver
+            class="net.ucanaccess.jdbc.UcanaccessDriver"
             id="eu.esdihumboldt.hale.io.jdbc.msaccess.driver"
             name="MS Access Driver"
             testUri="jdbc:ucanaccess:///msaccess-test.mdb"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessURIBuilder">
+         <prefix
+               value="jdbc:ucanaccess">
+         </prefix>
       </driver>
       <readSchemaAdvisor
             class="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReaderAdvisor"

@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.jdbc.extension;
 
+import java.net.URI;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension;
@@ -62,6 +64,20 @@ public class DriverConfigurationExtension extends IdentifiableExtension<DriverCo
 	protected DriverConfiguration create(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("driver")) {
 			return new DriverConfiguration(elementId, element);
+		}
+		return null;
+	}
+
+	/**
+	 * To find driver using driver configuration
+	 * 
+	 * @param jdbcUri uri of JDBC connection
+	 * @return {@link DriverConfiguration} or <code>null</code>
+	 */
+	public DriverConfiguration findDriver(URI jdbcUri) {
+		for (DriverConfiguration config : getElements()) {
+			if (config.matchURIPrefix(jdbcUri))
+				return config;
 		}
 		return null;
 	}

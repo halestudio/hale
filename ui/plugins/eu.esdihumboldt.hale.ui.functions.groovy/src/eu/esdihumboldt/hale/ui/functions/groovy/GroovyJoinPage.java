@@ -66,7 +66,8 @@ public class GroovyJoinPage extends GroovyRetypePage {
 	public GroovyJoinPage() {
 		super();
 
-		setDescription("Specify a Groovy script to build a target instance from joined source instances");
+		setDescription(
+				"Specify a Groovy script to build a target instance from joined source instances");
 	}
 
 	@Override
@@ -88,8 +89,8 @@ public class GroovyJoinPage extends GroovyRetypePage {
 		}
 
 		// target type
-		Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getTarget());
+		Type targetType = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 		if (targetType == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -115,7 +116,8 @@ public class GroovyJoinPage extends GroovyRetypePage {
 		Cell cell = getWizard().getUnfinishedCell();
 		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context);
+		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context,
+				targetType.getDefinition().getDefinition());
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
@@ -142,8 +144,8 @@ public class GroovyJoinPage extends GroovyRetypePage {
 
 					@Override
 					public Collection<? extends TypeDefinition> getTypes() {
-						ParameterValue param = CellUtil.getFirstParameter(getWizard()
-								.getUnfinishedCell(), JoinFunction.PARAMETER_JOIN);
+						ParameterValue param = CellUtil.getFirstParameter(
+								getWizard().getUnfinishedCell(), JoinFunction.PARAMETER_JOIN);
 						JoinParameter joinParameter = param.as(JoinParameter.class);
 						if (joinParameter != null && joinParameter.types != null
 								&& !joinParameter.types.isEmpty()) {
@@ -158,8 +160,8 @@ public class GroovyJoinPage extends GroovyRetypePage {
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type targetType = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetType != null) {
 					return Collections.singleton(targetType.getDefinition().getDefinition());
 				}
