@@ -16,6 +16,13 @@
                ref="eu.esdihumboldt.hale.io.jdbc.instance.reader">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.jdbc.ui.SchemasRetrievalPage"
+            order="1">
+         <provider
+               ref="eu.esdihumboldt.hale.io.jdbc.schema.reader">
+         </provider>
+      </configPage>
       <!--<configPage
             class="eu.esdihumboldt.hale.io.jdbc.ui.SchemasRetrievalPage"
             order="1">

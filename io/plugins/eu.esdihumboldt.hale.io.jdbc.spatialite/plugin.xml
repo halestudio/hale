@@ -53,6 +53,8 @@
       <driver
             class="org.sqlite.JDBC"
             id="eu.esdihumboldt.hale.io.jdbc.spatialite.driver"
+            isSchemaSelectionEnable="false"
+            multipleSchemaSelection="false"
             name="SpatiaLite"
             testUri="jdbc:sqlite:spatialite-test.sqlite"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.spatialite.SpatiaLiteURIBuilder">

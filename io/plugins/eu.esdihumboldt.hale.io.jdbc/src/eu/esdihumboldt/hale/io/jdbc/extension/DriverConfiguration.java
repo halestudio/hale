@@ -45,6 +45,10 @@ public class DriverConfiguration implements Identifiable {
 	private URIBuilder builder = null;
 	private final String className;
 	private final IConfigurationElement[] prefixes;
+	private final boolean isSchemaSelectionEnable;
+	private final boolean multipleSchemaSelection;
+	private Class<? extends SchemaSelector> getSchemaClass;
+	private SchemaSelector selector = null;
 
 	/**
 	 * Create a connection configuration from a corresponding configuration
@@ -62,6 +66,14 @@ public class DriverConfiguration implements Identifiable {
 		builderClass = (Class<? extends URIBuilder>) ExtensionUtil.loadClass(element, "uriBuilder");
 		className = element.getAttribute("class");
 		prefixes = element.getChildren("prefix");
+		isSchemaSelectionEnable = Boolean.valueOf(element.getAttribute("isSchemaSelectionEnable"));
+		multipleSchemaSelection = Boolean.valueOf(element.getAttribute("multipleSchemaSelection"));
+		try {
+			getSchemaClass = (Class<? extends SchemaSelector>) ExtensionUtil.loadClass(element,
+					"getSchemaClass");
+		} catch (NullPointerException ex) {
+			// Schema Selector class is optional in driver configuration
+		}
 	}
 
 	@Override
@@ -139,6 +151,34 @@ public class DriverConfiguration implements Identifiable {
 			log.error(e.getMessage(), e);
 			return null;
 		}
+	}
+
+	/**
+	 * @return the isSchemaSelectionEnable
+	 */
+	public boolean isSchemaSelectionEnable() {
+		return isSchemaSelectionEnable;
+	}
+
+	/**
+	 * @return the multipleSchemaSelection
+	 */
+	public boolean isMultipleSchemaSelection() {
+		return multipleSchemaSelection;
+	}
+
+	/**
+	 * @return the getSchemaClass
+	 */
+	public SchemaSelector getGetSchemaSelector() {
+		if (getSchemaClass != null) {
+			try {
+				selector = getSchemaClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				Throwables.propagate(e);
+			}
+		}
+		return selector;
 	}
 
 }
