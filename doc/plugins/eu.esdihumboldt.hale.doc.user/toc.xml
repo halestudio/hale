@@ -118,9 +118,6 @@
          <topic href="html/tasks/alignment/remove_cell.html" label="Deleting a relation">
          </topic>
       </topic>
-      <topic label="Map">
-         <anchor id="maptasks"/>
-      </topic>
       <anchor id="tasks"/>
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
