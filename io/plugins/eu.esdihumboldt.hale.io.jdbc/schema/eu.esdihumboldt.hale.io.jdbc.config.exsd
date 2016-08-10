@@ -129,10 +129,10 @@
 
    <element name="driver">
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
-            <element ref="prefix"/>
+         <sequence>
+            <element ref="prefix" minOccurs="1" maxOccurs="unbounded"/>
             <element ref="schema-selection"/>
-         </choice>
+         </sequence>
          <attribute name="uriBuilder" type="string" use="required">
             <annotation>
                <documentation>
