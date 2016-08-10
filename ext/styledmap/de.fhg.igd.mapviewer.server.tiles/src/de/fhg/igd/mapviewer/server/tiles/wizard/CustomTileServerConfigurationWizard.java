@@ -39,6 +39,7 @@ public class CustomTileServerConfigurationWizard extends Wizard {
 	 */
 	public CustomTileServerConfigurationWizard(CustomTileMapServerConfiguration configuration) {
 		this.configuration = configuration;
+		setWindowTitle("Custom Tile Map Configuration");
 	}
 
 	/**

@@ -4,5 +4,7 @@
       <description>The map displays the geo-referenced default geometries of source and transformed instances.</description>
       <topic href="html/map_view.html" label="Map view"/>
       <topic href="html/styling_data.html" label="Styling of your Data"/>
+      <topic href="html/customtile_detail.html" label="Custom Tile Map configuration"/>
+      <topic href="html/wms_detail.html" label="Web Map Service configuration"/>
    </context>
 </contexts>

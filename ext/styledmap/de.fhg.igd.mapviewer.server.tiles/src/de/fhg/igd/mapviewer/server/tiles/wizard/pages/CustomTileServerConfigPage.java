@@ -72,6 +72,8 @@ public class CustomTileServerConfigPage extends CustomTileWizardPage
 		createComponent();
 
 		setControl(page);
+
+		update();
 	}
 
 	/**
