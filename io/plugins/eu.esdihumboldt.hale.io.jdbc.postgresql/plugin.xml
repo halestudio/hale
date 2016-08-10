@@ -25,7 +25,7 @@
          </prefix>
          <schema-selection
                enabled="true"
-               multiple="false"
+               multiple="true"
                selector="eu.esdihumboldt.hale.io.jdbc.postgresql.PostSchemaSelector">
          </schema-selection>
       </driver>

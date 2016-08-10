@@ -22,10 +22,10 @@ import java.util.List;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -97,17 +97,19 @@ public class SchemasRetrievalPage
 	 */
 	@Override
 	public boolean updateConfiguration(ImportProvider provider) {
-		Object[] values = schemaTable.getCheckedElements();
-		StringBuilder selSchemas = new StringBuilder();
-		if (values.length > 0) {
-			for (int i = 0; i < values.length; i++) {
-				selSchemas.append("," + (String) values[i]);
+		if (isEnable) {
+			Object[] values = schemaTable.getCheckedElements();
+			StringBuilder selSchemas = new StringBuilder();
+			if (values.length > 0) {
+				for (int i = 0; i < values.length; i++) {
+					selSchemas.append("," + (String) values[i]);
+				}
+				provider.setParameter(SCHEMAS, Value.of(selSchemas));
+				return true;
 			}
-			provider.setParameter(SCHEMAS, Value.of(selSchemas));
-			return true;
+			return false;
 		}
-
-		return false;
+		return true;
 	}
 
 	/**
@@ -133,7 +135,9 @@ public class SchemasRetrievalPage
 				disposeControl();
 				// message
 				Label label = new Label(page, SWT.WRAP);
-				label.setText("Schema selection is not enabled for selected driver.");
+				label.setText(
+						"Restricting the tables to load from specific database schemas, is not "
+								+ "supported for this database driver. All database tables will be loaded.");
 				label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 				page.layout(true, true);
 				setMessage("");
@@ -178,7 +182,7 @@ public class SchemasRetrievalPage
 					SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 		else
 			schemaTable = CheckboxTableViewer.newCheckList(page,
-					SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.BORDER);
+					SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 
 		schemaTable.setLabelProvider(new LabelProvider() {
 
@@ -193,13 +197,19 @@ public class SchemasRetrievalPage
 		layoutData.widthHint = SWT.DEFAULT;
 		layoutData.heightHint = 8 * schemaTable.getTable().getItemHeight();
 		schemaTable.getControl().setLayoutData(layoutData);
-		schemaTable.addSelectionChangedListener(new ISelectionChangedListener() {
+
+		schemaTable.addCheckStateListener(new ICheckStateListener() {
 
 			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				if (event.getChecked() && (!multipleSelection)) {
+					schemaTable.setAllChecked(false);
+					schemaTable.setCheckedElements(new Object[] { event.getElement() });
+				}
 				setPageComplete(validate());
 			}
 		});
+
 		setPageComplete(false);
 		page.layout(true, true);
 	}
