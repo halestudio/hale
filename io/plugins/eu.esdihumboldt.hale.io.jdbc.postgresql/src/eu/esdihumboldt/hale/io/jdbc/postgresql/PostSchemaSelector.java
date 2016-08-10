@@ -51,7 +51,10 @@ public class PostSchemaSelector implements SchemaSelector {
 			while (rs.next()) {
 				schemas.add(rs.getString("schema_name"));
 			}
-			return schemas;
+
+			// return after apply filteration
+			return applyFilter(schemas);
+
 		} finally {
 			if (statemnt != null) {
 				try {
@@ -71,4 +74,17 @@ public class PostSchemaSelector implements SchemaSelector {
 
 	}
 
+	private List<String> applyFilter(List<String> list) {
+
+		List<String> filteredList = new ArrayList<String>();
+
+		for (String value : list) {
+			if (!(value.equalsIgnoreCase("information_schema") || value.startsWith("pg_"))) {
+				filteredList.add(value);
+			}
+		}
+
+		return filteredList;
+
+	}
 }

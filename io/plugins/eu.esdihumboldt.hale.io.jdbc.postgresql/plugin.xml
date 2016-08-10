@@ -16,16 +16,18 @@
       </geometrytype>
       <driver
             class="org.postgresql.Driver"
-            getSchemaClass="eu.esdihumboldt.hale.io.jdbc.postgresql.PostSchemaSelector"
             id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis.driver"
-            isSchemaSelectionEnable="true"
-            multipleSchemaSelection="true"
             name="PostgreSQL/PostGIS"
             testUri="jdbc:postgresql://localhost/db"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.postgresql.PostURIBuilder">
          <prefix
                value="jdbc:postgresql">
          </prefix>
+         <schema-selection
+               enabled="true"
+               multiple="false"
+               selector="eu.esdihumboldt.hale.io.jdbc.postgresql.PostSchemaSelector">
+         </schema-selection>
       </driver>
       <customtype
             binding="java.math.BigDecimal"

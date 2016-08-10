@@ -131,6 +131,7 @@
       <complexType>
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="prefix"/>
+            <element ref="schema-selection"/>
          </choice>
          <attribute name="uriBuilder" type="string" use="required">
             <annotation>
@@ -173,30 +174,6 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":java.sql.Driver"/>
-               </appinfo>
-            </annotation>
-         </attribute>
-         <attribute name="isSchemaSelectionEnable" type="boolean" use="required">
-            <annotation>
-               <documentation>
-                  If page content should be enabled or disabled?
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="multipleSchemaSelection" type="boolean" use="required">
-            <annotation>
-               <documentation>
-                  Multiple schema selection property after loading all schemas
-               </documentation>
-            </annotation>
-         </attribute>
-         <attribute name="getSchemaClass" type="string">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appinfo>
-                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.SchemaSelector"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -293,6 +270,35 @@
                <documentation>
                   prefix used to load JDBC driver by ensuring jdbc uri prefix matching
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="schema-selection">
+      <complexType>
+         <attribute name="enabled" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  Schema selection is enabled or not
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="multiple" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  One can select one or more schema or not?
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="selector" type="string">
+            <annotation>
+               <documentation>
+                  Schema selector class
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.SchemaSelector"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>

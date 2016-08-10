@@ -45,9 +45,10 @@ public class DriverConfiguration implements Identifiable {
 	private URIBuilder builder = null;
 	private final String className;
 	private final IConfigurationElement[] prefixes;
-	private final boolean isSchemaSelectionEnable;
-	private final boolean multipleSchemaSelection;
-	private Class<? extends SchemaSelector> getSchemaClass;
+	private final IConfigurationElement[] schemaSelection;
+	private boolean isSchemaSelectionEnable;
+	private boolean multipleSchemaSelection;
+	private Class<? extends SchemaSelector> schemaSelectorClass;
 	private SchemaSelector selector = null;
 
 	/**
@@ -66,14 +67,8 @@ public class DriverConfiguration implements Identifiable {
 		builderClass = (Class<? extends URIBuilder>) ExtensionUtil.loadClass(element, "uriBuilder");
 		className = element.getAttribute("class");
 		prefixes = element.getChildren("prefix");
-		isSchemaSelectionEnable = Boolean.valueOf(element.getAttribute("isSchemaSelectionEnable"));
-		multipleSchemaSelection = Boolean.valueOf(element.getAttribute("multipleSchemaSelection"));
-		try {
-			getSchemaClass = (Class<? extends SchemaSelector>) ExtensionUtil.loadClass(element,
-					"getSchemaClass");
-		} catch (NullPointerException ex) {
-			// Schema Selector class is optional in driver configuration
-		}
+		schemaSelection = element.getChildren("schema-selection");
+		setSchemaSelectionVariables();
 	}
 
 	@Override
@@ -171,14 +166,34 @@ public class DriverConfiguration implements Identifiable {
 	 * @return the getSchemaClass
 	 */
 	public SchemaSelector getGetSchemaSelector() {
-		if (getSchemaClass != null) {
+		if (schemaSelectorClass != null) {
 			try {
-				selector = getSchemaClass.newInstance();
+				selector = schemaSelectorClass.newInstance();
 			} catch (InstantiationException | IllegalAccessException e) {
 				Throwables.propagate(e);
 			}
 		}
 		return selector;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setSchemaSelectionVariables() {
+		if (schemaSelection != null && schemaSelection.length > 0) {
+			// getting only first element
+			isSchemaSelectionEnable = Boolean.valueOf(schemaSelection[0].getAttribute("enabled"));
+			multipleSchemaSelection = Boolean.valueOf(schemaSelection[0].getAttribute("multiple"));
+			try {
+				schemaSelectorClass = (Class<? extends SchemaSelector>) ExtensionUtil
+						.loadClass(schemaSelection[0], "selector");
+			} catch (NullPointerException ex) {
+				// Schema Selector class is optional in driver configuration
+			}
+		}
+		else {
+			isSchemaSelectionEnable = false;
+			multipleSchemaSelection = false;
+			schemaSelectorClass = null;
+		}
 	}
 
 }

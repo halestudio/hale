@@ -26,8 +26,6 @@ import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -135,7 +133,7 @@ public class SchemasRetrievalPage
 				disposeControl();
 				// message
 				Label label = new Label(page, SWT.WRAP);
-				label.setText("Schema retrieval is not enabled for selected driver.");
+				label.setText("Schema selection is not enabled for selected driver.");
 				label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 				page.layout(true, true);
 				setMessage("");
@@ -195,25 +193,11 @@ public class SchemasRetrievalPage
 		layoutData.widthHint = SWT.DEFAULT;
 		layoutData.heightHint = 8 * schemaTable.getTable().getItemHeight();
 		schemaTable.getControl().setLayoutData(layoutData);
-
 		schemaTable.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				setPageComplete(validate());
-			}
-		});
-
-		schemaTable.addFilter(new ViewerFilter() {
-
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				String value = (String) element;
-
-				if (value.equalsIgnoreCase("information_schema") || value.startsWith("pg_"))
-					return false;
-
-				return true;
 			}
 		});
 		setPageComplete(false);
