@@ -59,6 +59,10 @@
          <prefix
                value="jdbc:sqlite">
          </prefix>
+         <schema-selection
+               enabled="false"
+               multiple="false">
+         </schema-selection>
       </driver>
       <readSchemaAdvisor
             class="eu.esdihumboldt.hale.io.jdbc.spatialite.SpatialLiteSchemaReaderAdvisor"

@@ -23,6 +23,11 @@
          <prefix
                value="jdbc:postgresql">
          </prefix>
+         <schema-selection
+               enabled="true"
+               multiple="true"
+               selector="eu.esdihumboldt.hale.io.jdbc.postgresql.PostSchemaSelector">
+         </schema-selection>
       </driver>
       <customtype
             binding="java.math.BigDecimal"
