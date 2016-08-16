@@ -710,13 +710,19 @@ def packageServer(productOutputPath) {
             """.trim().stripMargin()
 
             // build docker image
-            def buildProcess = ([
+			def buildCommand = [
                 'docker',
                 'build',
                 '-t',
-                "${project.ext.dockerImageName}:${project.version}",
-                dockerDir.absolutePath as String
-            ]).execute()
+                "${project.ext.dockerImageName}:${project.version}"
+            ]
+			if (project.ext.dockerTagLatest == true) {
+				// also create tag :latest
+				buildCommand << '-t'
+				buildCommand << "${project.ext.dockerImageName}:latest"
+			}
+			buildCommand << dockerDir.absolutePath as String
+            def buildProcess = buildCommand.execute()
             buildProcess.waitForProcessOutput(System.out, System.err)
             if (buildProcess.exitValue() != 0) {
                 throw new IllegalStateException("Building docker image failed with exit code ${buildProcess.exitValue()}")
@@ -733,6 +739,19 @@ def packageServer(productOutputPath) {
                 if (pushProcess.exitValue() != 0) {
                     throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
                 }
+				
+				if (project.ext.dockerTagLatest == true) {
+					// also push :latest tag
+					def pushLatest = ([
+						'docker',
+						'push',
+						"${project.ext.dockerImageName}:latest",
+					]).execute()
+					pushLatest.waitForProcessOutput(System.out, System.err)
+					if (pushLatest.exitValue() != 0) {
+						throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
+					}
+				}
             }
         }
     }
