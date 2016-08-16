@@ -277,7 +277,7 @@ def filterPlatformSpecificFragments(productFile) {
 }
 
 /**
- * Replaces the paths to win32 icons in the given product file
+ * Replaces the paths to icons in the given product file
  * by absolute ones. Assumes that the paths are specified using the
  * symbolic name of the bundle containing the icon and that they start with
  * a slash. For example, if the path is '/de.cs3d.admintool/icons/cs3d.ico'
@@ -285,24 +285,63 @@ def filterPlatformSpecificFragments(productFile) {
  * path to the bundle 'de.cs3d.admintool'.
  */
 def replaceIconPaths(productFile) {
-    def pathsToReplace = [:]
+    def replacements = [:]
 
     def productFileContents = productFile.text
-    def dlcdoc = new XmlSlurper().parseText(productFileContents)
-    dlcdoc.launcher.win.ico.each { i ->
+    def product = new XmlSlurper().parseText(productFileContents)
+	
+	// .ico file
+    product.launcher.win.ico.each { i ->
         def path = i.@path.toString()
         if (path.startsWith('/')) {
             def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
             def pb = new BundleParser(project).getParsedBundles()[symbolicName]
             if (pb != null) {
-                pathsToReplace[symbolicName] = pb.path.path.replace('\\', '/')
+                replacements[/<ico(.*)path="\/${symbolicName}\/([^>]+)>/] = '<ico$1path="' + pb.path.path.replace('\\', '/') + '/$2>'
             }
         }
     }
+	// .bmp icon files
+	product.launcher.win.bmp.each {
+		it.attributes().each { name, value ->
+			def path = value as String
+			if (path.startsWith('/')) {
+				def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+				def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+				if (pb != null) {
+					replacements[/${name}="\/${symbolicName}\/([^"]+)"/] = name + '="' + pb.path.path.replace('\\', '/') + '/$1"'
+				}
+			}
+		}
+	}
+	
+	// Linux icon
+	product.launcher.linux.each { i ->
+		def path = i.@icon.toString()
+		if (path.startsWith('/')) {
+			def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+			def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+			if (pb != null) {
+				replacements[/<linux(.*)icon="\/${symbolicName}\/([^>]+)>/] = '<linux$1icon="' + pb.path.path.replace('\\', '/') + '/$2>'
+			}
+		}
+	}
+	
+	// Mac OS X icon
+	product.launcher.macosx.each { i ->
+		def path = i.@icon.toString()
+		if (path.startsWith('/')) {
+			def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+			def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+			if (pb != null) {
+				replacements[/<macosx(.*)icon="\/${symbolicName}\/([^>]+)>/] = '<macosx$1icon="' + pb.path.path.replace('\\', '/') + '/$2>'
+			}
+		}
+	}
 
     // replace icon paths
-    pathsToReplace.each {
-        productFileContents = productFileContents.replaceAll(/<ico(.*)path="\/${it.key}\/([^>]+)>/, '<ico$1path="' + it.value + '/$2>')
+    replacements.each { org, replacement ->
+        productFileContents = productFileContents.replaceAll(org, replacement)
     }
 
     // overwrite product file
