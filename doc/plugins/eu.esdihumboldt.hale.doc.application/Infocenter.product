@@ -33,12 +33,16 @@
       <plugin id="com.ibm.icu"/>
       <plugin id="com.vividsolutions.jts"/>
       <plugin id="de.fhg.igd.hale.fme.doc"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
       <plugin id="eu.esdihumboldt.hale.doc.appschema"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
+      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="javax.el"/>
       <plugin id="javax.servlet"/>
