@@ -444,10 +444,22 @@ void updateAboutInfo(productOutputPath) {
 	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
 	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
 	ant.replace(file: pluginXml, token: '___version___', value: bundleVersion, summary: true)
-
+	
 	// update original jar with updated plugin.xml
 	ant.jar(update: 'true', destfile: productBundleJar) {
 		fileset(dir: tmpDir, includes: 'plugin.xml')
+	}
+	
+	// special case handling: replace information in help banner
+	File bannerFile = new File(new File(tmpDir, 'html'), 'banner.html')
+	if (bannerFile.exists()) {
+		println "Replacing placeholders in help banner..."
+		ant.replace(file: bannerFile, token: '___version___', value: bundleVersion, summary: true)
+		
+		// update original jar with updated banner.html
+		ant.jar(update: 'true', destfile: productBundleJar) {
+			fileset(dir: tmpDir, includes: 'html/banner.html')
+		}
 	}
 
 	tmpDir.deleteDir()
@@ -698,13 +710,19 @@ def packageServer(productOutputPath) {
             """.trim().stripMargin()
 
             // build docker image
-            def buildProcess = ([
+			def buildCommand = [
                 'docker',
                 'build',
                 '-t',
-                "${project.ext.dockerImageName}:${project.version}",
-                dockerDir.absolutePath as String
-            ]).execute()
+                "${project.ext.dockerImageName}:${project.version}"
+            ]
+			if (project.ext.dockerTagLatest == true) {
+				// also create tag :latest
+				buildCommand << '-t'
+				buildCommand << "${project.ext.dockerImageName}:latest"
+			}
+			buildCommand << dockerDir.absolutePath as String
+            def buildProcess = buildCommand.execute()
             buildProcess.waitForProcessOutput(System.out, System.err)
             if (buildProcess.exitValue() != 0) {
                 throw new IllegalStateException("Building docker image failed with exit code ${buildProcess.exitValue()}")
@@ -721,6 +739,19 @@ def packageServer(productOutputPath) {
                 if (pushProcess.exitValue() != 0) {
                     throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
                 }
+				
+				if (project.ext.dockerTagLatest == true) {
+					// also push :latest tag
+					def pushLatest = ([
+						'docker',
+						'push',
+						"${project.ext.dockerImageName}:latest",
+					]).execute()
+					pushLatest.waitForProcessOutput(System.out, System.err)
+					if (pushLatest.exitValue() != 0) {
+						throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
+					}
+				}
             }
         }
     }

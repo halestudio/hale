@@ -1,0 +1,32 @@
+body#banner {
+	background-color: #3e78b3;
+	font-family: 'Roboto',"Helvetica Neue",Helvetica,Arial,sans-serif;
+	line-height: 1;
+}
+
+.pull-right {
+	float: right !important;
+}
+
+.clearfix:before {
+	content: " ";
+    display: table;
+}
+
+.clearfix:after {
+	content: " ";
+    display: table;
+    clear: both;
+}
+
+#banner h1 {
+	color: #fff;
+    text-align: right;
+    padding: 10px 20px;
+    font-style: italic;
+}
+
+#banner h1 span {
+    font-size: 13px;
+    font-weight: normal;
+}

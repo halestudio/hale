@@ -194,6 +194,9 @@ class CommandLineBuilder {
 
         @Parameter(names = [ '--publish' ], description = 'For Docker builds publish the Docker image, only applicable for Linux server products')
         boolean publish = false;
+		
+		@Parameter(names = [ '--latest' ], description = 'For Docker builds tags the Docker image also with the tag latest, only applicable for Linux server products')
+		boolean latest = false;
 
         abstract String getType()
 
@@ -250,6 +253,8 @@ class CommandLineBuilder {
             }
             // publish flag
             project.ext.publishProduct = publish
+			// latest flag
+			project.ext.dockerTagLatest = latest
 
             project.tasks['cli'].dependsOn(project.tasks['packageProduct'])
         }
