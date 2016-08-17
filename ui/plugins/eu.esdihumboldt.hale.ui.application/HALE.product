@@ -52,19 +52,19 @@ http://www.wetransform.to/services/support
    <splash
       location="eu.esdihumboldt.hale.ui.application" />
    <launcher name="HALE">
-      <linux icon="/eu.esdihumboldt.hale.ui.application/images/linux_icon.xpm"/>
+      <linux icon="/eu.esdihumboldt.hale.ui.application/images/hale.xpm"/>
       <macosx icon="/eu.esdihumboldt.hale.ui.application/images/hale.icns"/>
       <solaris/>
       <win useIco="false">
-         <ico path="/eu.esdihumboldt.hale.ui.application/images/windows_icons.ico"/>
+         <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
          <bmp
-            winSmallHigh="/eu.esdihumboldt.hale.ui.application/images/16_32bit.bmp"
+            winSmallHigh="/eu.esdihumboldt.hale.ui.application/images/16.bmp"
             winSmallLow="/eu.esdihumboldt.hale.ui.application/images/16_8bit.bmp"
-            winMediumHigh="/eu.esdihumboldt.hale.ui.application/images/32_32bit.bmp"
+            winMediumHigh="/eu.esdihumboldt.hale.ui.application/images/32.bmp"
             winMediumLow="/eu.esdihumboldt.hale.ui.application/images/32_8bit.bmp"
-            winLargeHigh="/eu.esdihumboldt.hale.ui.application/images/48_32bit.bmp"
+            winLargeHigh="/eu.esdihumboldt.hale.ui.application/images/48.bmp"
             winLargeLow="/eu.esdihumboldt.hale.ui.application/images/48_8bit.bmp"
-            winExtraLargeHigh="/eu.esdihumboldt.hale.ui.application/images/256_32bit.bmp"/>
+            winExtraLargeHigh="/eu.esdihumboldt.hale.ui.application/images/256.bmp"/>
       </win>
    </launcher>
 
