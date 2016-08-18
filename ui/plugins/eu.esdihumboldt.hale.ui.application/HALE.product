@@ -56,7 +56,6 @@ http://www.wetransform.to/services/support
       <macosx icon="/eu.esdihumboldt.hale.ui.application/images/hale.icns"/>
       <solaris/>
       <win useIco="false">
-         <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
          <bmp
             winSmallHigh="/eu.esdihumboldt.hale.ui.application/images/16.bmp"
             winSmallLow="/eu.esdihumboldt.hale.ui.application/images/16_8bit.bmp"
