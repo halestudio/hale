@@ -4,7 +4,7 @@ Bundle-Name: XLS/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls;singleton:=true
 Bundle-Version: 2.9.5.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1",
+Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";resolution:=optional,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.io.impl,
@@ -18,7 +18,7 @@ Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1",
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
- eu.esdihumboldt.hale.common.instance.orient,
+ eu.esdihumboldt.hale.common.instance.orient;resolution:=optional,
  eu.esdihumboldt.hale.common.lookup,
  eu.esdihumboldt.hale.common.lookup.impl,
  eu.esdihumboldt.hale.common.schema,
