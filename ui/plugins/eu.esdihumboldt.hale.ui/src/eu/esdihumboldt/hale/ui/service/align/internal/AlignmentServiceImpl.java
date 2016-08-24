@@ -211,6 +211,8 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 //			_log.warn("Adding alignments currently does not support merging of base alignments. Import base alignments independently.");
 //		}
 
+		boolean addedBaseCells = false;
+
 		// add cells
 		synchronized (this) {
 
@@ -219,9 +221,13 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 					this.alignment.addCell((MutableCell) cell);
 					added.add(cell);
 				}
-				else if (!(cell instanceof BaseAlignmentCell))
+				else if (!(cell instanceof BaseAlignmentCell)) {
 					throw new IllegalStateException(
 							"The given alignment contained a cell which is neither mutable nor from a base alignment.");
+				}
+				else {
+					addedBaseCells = true;
+				}
 			}
 		}
 
@@ -255,7 +261,7 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			}
 		}
 
-		if (!added.isEmpty() && addedFunctions) {
+		if (addedBaseCells || (!added.isEmpty() && addedFunctions)) {
 			// only emit one combined event (not to trigger multiple
 			// transformations)
 			notifyAlignmentChanged();
