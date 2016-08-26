@@ -2,6 +2,7 @@ body#banner {
 	background-color: #3e78b3;
 	font-family: 'Roboto',"Helvetica Neue",Helvetica,Arial,sans-serif;
 	line-height: 1;
+	margin: 0px;
 }
 
 .pull-right {
@@ -22,7 +23,8 @@ body#banner {
 #banner h1 {
 	color: #fff;
     text-align: right;
-    padding: 10px 20px;
+    padding: 0px;
+    margin: 0px;
     font-style: italic;
 }
 
