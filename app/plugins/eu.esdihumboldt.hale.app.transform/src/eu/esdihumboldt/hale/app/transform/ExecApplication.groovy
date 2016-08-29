@@ -124,7 +124,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		println """
 Usage:
 $baseCommand
-     [-args-file <file-with-arguments>]
+     [-argsFile <file-with-arguments>]
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
@@ -132,8 +132,8 @@ $baseCommand
          [-providerId <ID-of-source-reader>]
          [<setting>...]
      [-filter <filter-expression>]
-     [-filter-on <type> <filter-expression>]
-     [-exclude-type <type>]
+     [-filterOn <type> <filter-expression>]
+     [-excludeType <type>]
      -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
@@ -149,6 +149,7 @@ $baseCommand
      -reportsOut <reports-file>
      -stacktrace
      -trustGroovy
+     -overallFilterContext
 
   Sources
     You can provide multiple sources for the transformation. If the source is a
@@ -161,9 +162,9 @@ $baseCommand
     http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 
   Filtering sources
-    The options -filter, -filter-on and -exclude-type serve to filter the
+    The options -filter, -filterOn and -excludeType serve to filter the
     source data, before the transformation is performed.
-    If you specify multiple filters with -filter or -filter-on, only one of
+    If you specify multiple filters with -filter or -filterOn, only one of
     them must match for an instance to be included.
 
     <filter-expressions> by default are interpreted as CQL. You can specify
@@ -171,8 +172,12 @@ $baseCommand
     prefix, followed by a colon and the filter expression itself, e.g.:
     CQL:name <> ''
 
+    The option -overallFilterContext ensures that the context available for
+    filters is shared for all sources. The filter context can for instance be
+    used in groovy: filters.
+
   Providing arguments as file
-    You can also specify the arguments in a file using the -args-file
+    You can also specify the arguments in a file using the -argsFile
     parameter. Each line in the file is interpreted as a separate argument.
     For example:
     -param1
@@ -201,7 +206,7 @@ $baseCommand
 				continue
 
 			//check for args file, if supplied then handle it and continue
-			if(args[i] == '-args-file'){
+			if(args[i] == '-args-file' || args[i] == '-argsFile'){
 				processArgumentsFile(args[++i], executionContext)
 				continue;
 			}
@@ -238,13 +243,13 @@ $baseCommand
 		URI argsFile = fileOrUri(value);
 
 		if (argsFile == null){
-			warn("file path supplied in -args-file is not valid file url: $value");
+			warn("file path supplied in -argsFile is not valid file url: $value");
 			return;
 		}
 
 		File file = new File(argsFile);
 		if (!file.exists()) {
-			warn('file path supplied in -args-file does not exist.');
+			warn('file path supplied in -argsFile does not exist.');
 			return;
 		}
 
@@ -261,6 +266,7 @@ $baseCommand
 	private int getNumberOfValues(String param){
 		switch (param) {
 			case '-filter-on':
+			case '-filterOn':
 				return 2
 			default:
 				return 1
@@ -271,6 +277,7 @@ $baseCommand
 			ExecContext executionContext) throws Exception {
 		switch (param) {
 			case '-filter-on':
+			case '-filterOn':
 				if(values.size()==2){
 					executionContext.filters.addTypeFilter(values[0], values[1])
 				}
@@ -345,9 +352,11 @@ $baseCommand
 				break
 
 			case '-filter-on':
+			case '-filterOn':
 				warn('Illegal parameter -filter-on, only allowed with type and filter expression')
 				break
 			case '-exclude-type':
+			case '-excludeType':
 				executionContext.filters.addExcludedType(value)
 				break
 			case '-exclude': // fall through
@@ -479,6 +488,9 @@ $baseCommand
 				break
 			case '-trustGroovy':
 				executionContext.restrictGroovy = false
+				break
+			case '-overallFilterContext':
+				executionContext.filters.globalContext = true
 				break
 		}
 	}

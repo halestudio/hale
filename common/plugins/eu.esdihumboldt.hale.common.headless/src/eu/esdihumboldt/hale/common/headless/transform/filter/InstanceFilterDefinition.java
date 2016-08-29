@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.headless.transform.filter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -26,6 +27,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
+import eu.esdihumboldt.hale.common.instance.model.ContextAwareFilter;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -38,7 +40,9 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
  * 
  * @author Arun
  */
-public class InstanceFilterDefinition implements Filter {
+public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
+
+	private boolean globalContext = false;
 
 	/**
 	 * filters for specific types of source
@@ -130,6 +134,20 @@ public class InstanceFilterDefinition implements Filter {
 	}
 
 	/**
+	 * @return the globalContext
+	 */
+	public boolean isGlobalContext() {
+		return globalContext;
+	}
+
+	/**
+	 * @param globalContext the globalContext to set
+	 */
+	public void setGlobalContext(boolean globalContext) {
+		this.globalContext = globalContext;
+	}
+
+	/**
 	 * Create a filter from the given test.
 	 * 
 	 * @param expression the filter expression
@@ -142,65 +160,131 @@ public class InstanceFilterDefinition implements Filter {
 		return filter;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.Filter#match(eu.esdihumboldt.hale.common.instance.model.Instance)
-	 */
 	@Override
 	public boolean match(Instance instance) {
-		return applyFilters(instance);
+		return applyFilters(instance, null);
+	}
+
+	@Override
+	public boolean match(Instance instance, Map<Object, Object> context) {
+		return applyFilters(instance, context);
 	}
 
 	// Filtration using unconditional filters and Typed filters. Instance should
 	// match any of the filter if supplied.
-	private boolean applyFilters(Instance instance) {
-
+	private boolean applyFilters(Instance instance, Map<Object, Object> context) {
 		if (this.unconditionalFilters.size() == 0 && this.typeFilters.size() == 0
 				&& this.excludedTypes.size() == 0)
 			return true;
 
+		Boolean result = null;
+
 		// applying exclude filter first
-		if (applyExcludeFilters(instance))
-			return false;
+		if (applyExcludeFilters(instance)) {
+			if (context == null) {
+				// if there is no context we can do an early exit
+				return false;
+			}
+			result = false;
+		}
 
 		// if only exclude filters will be supplied then, it should return true
 		// for other types.
-		if (this.unconditionalFilters.size() == 0 && this.typeFilters.size() == 0)
+		if (result == null && this.unconditionalFilters.size() == 0
+				&& this.typeFilters.size() == 0) {
 			return true;
+		}
+
 		// applying remaining filters one by one (also handling lazy evaluation)
-		return applyTypedFilter(instance) || applyUnconditionalFilter(instance);
+		if (context == null) {
+			// if there is no context we can do an early exit
+			return applyTypedFilter(instance, context)
+					|| applyUnconditionalFilter(instance, context);
+		}
+		else {
+			// otherwise we need to make sure that every filter may be called
+			if (applyTypedFilter(instance, context)) {
+				if (result == null) { // only set to true if not excluded
+					result = true;
+				}
+			}
+			if (applyUnconditionalFilter(instance, context)) {
+				if (result == null) { // only set to true if not excluded
+					result = true;
+				}
+			}
+			if (result == null) {
+				result = false;
+			}
+
+			return result;
+		}
 	}
 
-	private boolean applyUnconditionalFilter(Instance instance) {
-		for (Filter filter : this.unconditionalFilters)
-			if (filter.match(instance))
-				return true;
-		// Instance does not match any of the unconditional filter
-		return false;
+	private boolean applyUnconditionalFilter(Instance instance, Map<Object, Object> context) {
+		boolean result = false;
+
+		for (Filter filter : this.unconditionalFilters) {
+			if (filter instanceof ContextAwareFilter) {
+				if (((ContextAwareFilter) filter).match(instance, context)) {
+					if (context == null) { // no side effects possible
+						return true;
+					}
+					result = true;
+				}
+			}
+			else if (!result && filter.match(instance)) {
+				if (context == null) { // no side effects possible
+					return true;
+				}
+				result = true;
+			}
+		}
+
+		return result;
 	}
 
-	private boolean applyTypedFilter(Instance instance) {
+	private boolean applyTypedFilter(Instance instance, Map<Object, Object> context) {
+		boolean result = false;
+
 		// Loop through all the type filters
 		for (String type : this.typeFilters.keySet()) {
 			if (checkType(instance.getDefinition(), type)) {
 				// instance equals type name
-				for (Filter innerFilter : this.typeFilters.get(type)) {
-					if (innerFilter.match(instance))
-						return true;
+				for (Filter filter : this.typeFilters.get(type)) {
+					if (filter instanceof ContextAwareFilter) {
+						if (((ContextAwareFilter) filter).match(instance, context)) {
+							if (context == null) {
+								return true; // no side effects possible
+							}
+							result = true;
+						}
+					}
+					else if (!result && filter.match(instance)) {
+						if (context == null) {
+							return true; // no side effects possible
+						}
+						result = true;
+					}
 				}
-				// So, instance matches type and but does not match filter
-				return false;
+				if (context == null) { // no side effects possible
+					// So, instance matches type and but does not match filter
+					return false;
+				}
 			}
 		}
 		// it reaches here that means Instance does not match any type of
 		// type filters. Method should return false for lazy evaluation.
-		return false;
+		return result;
 	}
 
 	private boolean applyExcludeFilters(Instance instance) {
 		// for excluded Types
-		for (String excludedType : this.excludedTypes)
-			if (checkType(instance.getDefinition(), excludedType))
+		for (String excludedType : this.excludedTypes) {
+			if (checkType(instance.getDefinition(), excludedType)) {
 				return true;
+			}
+		}
 		// instance does not match any excluded types.
 		return false;
 	}

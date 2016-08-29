@@ -340,6 +340,10 @@
             allowAll="true"
             class="eu.esdihumboldt.cst.functions.groovy.internal.GroovyProjectVariables">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.cst.functions.groovy.filter.LogWrapper">
+      </allow>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
@@ -370,6 +374,13 @@
                interface="eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService">
          </service>
       </services>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.instance.filter">
+      <filterDefinition
+            class="eu.esdihumboldt.cst.functions.groovy.filter.GroovyFilterDefinition"
+            id="groovy">
+      </filterDefinition>
    </extension>
 
 </plugin>

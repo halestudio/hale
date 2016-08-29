@@ -191,7 +191,7 @@ public class Transformation {
 				});
 
 		// Apply Filter
-		MultiInstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
+		InstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
 
 		final TransformationSink targetSink;
 		try {
@@ -504,17 +504,29 @@ public class Transformation {
 		result.set(false);
 	}
 
-	private static MultiInstanceCollection applyFilter(List<InstanceCollection> sourceData,
+	private static InstanceCollection applyFilter(List<InstanceCollection> sourceData,
 			InstanceFilterDefinition filterDefinition) {
-
 		List<InstanceCollection> filteredData = new ArrayList<InstanceCollection>();
 
 		for (int i = 0; i < sourceData.size(); i++) {
 			InstanceCollection collection = sourceData.get(i);
-			filteredData.add(collection.select(filterDefinition));
+			if (filterDefinition.isGlobalContext()) {
+				// add unfiltered, later apply to whole collection
+				filteredData.add(collection);
+			}
+			else {
+				// filter individually
+				filteredData.add(collection.select(filterDefinition));
+			}
 		}
 
-		MultiInstanceCollection filteredCollection = new MultiInstanceCollection(filteredData);
+		InstanceCollection filteredCollection = new MultiInstanceCollection(filteredData);
+
+		if (filterDefinition.isGlobalContext()) {
+			// apply filter to combined instance collection
+			filteredCollection = FilteredInstanceCollection.applyFilter(filteredCollection,
+					filterDefinition);
+		}
 
 		return filteredCollection;
 	}

@@ -14,5 +14,6 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.util.groovy.sandbox,
  junit.framework;version="3.8.2",
  org.osgi.framework;version="1.6.0"

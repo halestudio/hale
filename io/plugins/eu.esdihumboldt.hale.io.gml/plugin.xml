@@ -775,5 +775,12 @@
             class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToTimestamp">
       </converter>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance">
+      </allow>
+   </extension>
 
 </plugin>
