@@ -48,6 +48,7 @@ class ExecuteTest extends GroovyTestCase {
 	private static final String HYDRO_EX1Typ = "{eu:esdihumboldt:hale:example}RiverType"
 	private static final String HYDRO_EXP1Exp = "width='10.0'"
 	private static final String HYDRO_EXP2UNCONDITIONAL = "name='River Rede'"
+	private static final String HYDRO_EXP2GROOVY = "groovy:instance.p.name.value() == 'River Rede'"
 	private static final String HYDRO_EXCLUDED_TYPE = "River1"
 	private static final int HYDRO_TDATA_SIZE_TYPEDFILTER = 60
 	private static final int HYDRO_TDATA_SIZE_ARGSFILE = 60
@@ -118,11 +119,19 @@ class ExecuteTest extends GroovyTestCase {
 
 		println ">> Arguments will be read from ${tempArgsFile}"
 		println ">> Transformed data will be written to ${targetFile}..."
-		transform([//
-			'-args-file', tempArgsFile.absolutePath, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
-			'-Sxml.rootElement.name', 'collection' //
+		transform([
+			//
+			'-args-file',
+			tempArgsFile.absolutePath,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -146,13 +155,26 @@ class ExecuteTest extends GroovyTestCase {
 
 		println ">> Arguments will be read from ${tempArgsFile}"
 		println ">> Transformed data will be written to ${targetFile}..."
-		transform([//
-			'-args-file', tempArgsFile.absolutePath, //
-			'-exclude-type', MULTITYPE_EX2EXCLUDETYPE, //
-			'-filter-on', MULTITYPE_EX2_2Typ, MULTITYPE_EX2_2Exp, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
-			'-Sxml.rootElement.name', 'collection' //
+		transform([
+			//
+			'-args-file',
+			tempArgsFile.absolutePath,
+			//
+			'-exclude-type',
+			MULTITYPE_EX2EXCLUDETYPE,
+			//
+			'-filter-on',
+			MULTITYPE_EX2_2Typ,
+			MULTITYPE_EX2_2Exp,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -169,14 +191,30 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString() , //
-			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
-			'-filter-on', MULTITYPE_EX3Typ, MULTITYPE_EX3Exp, //
-			'-filter-on', MULTITYPE_EX3_2Typ, MULTITYPE_EX3_2Exp, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
-			'-Sxml.rootElement.name', 'collection' //
+		transform([
+			//
+			'-project',
+			getProjectURI(MULTI_TYPE_PROJECT).toString() ,
+			//
+			'-source',
+			getProjectURI(MULTI_TYPE_DATA).toString(),
+			//
+			'-filter-on',
+			MULTITYPE_EX3Typ,
+			MULTITYPE_EX3Exp,
+			//
+			'-filter-on',
+			MULTITYPE_EX3_2Typ,
+			MULTITYPE_EX3_2Exp,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -195,16 +233,36 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString(), //
-			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
-			'-filter', MULTITYPE_EX2UNCONDITIONAL, //
-			'-filter-on', MULTITYPE_EX2Typ, MULTITYPE_EX2Exp, //
-			'-exclude-type', MULTITYPE_EX2EXCLUDETYPE, //
-			'-filter-on', MULTITYPE_EX2_2Typ, MULTITYPE_EX2_2Exp, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
-			'-Sxml.rootElement.name', 'collection' //
+		transform([
+			//
+			'-project',
+			getProjectURI(MULTI_TYPE_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(MULTI_TYPE_DATA).toString(),
+			//
+			'-filter',
+			MULTITYPE_EX2UNCONDITIONAL,
+			//
+			'-filter-on',
+			MULTITYPE_EX2Typ,
+			MULTITYPE_EX2Exp,
+			//
+			'-exclude-type',
+			MULTITYPE_EX2EXCLUDETYPE,
+			//
+			'-filter-on',
+			MULTITYPE_EX2_2Typ,
+			MULTITYPE_EX2_2Exp,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -223,15 +281,32 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(MULTI_TYPE_PROJECT).toString() , //
-			'-source', getProjectURI(MULTI_TYPE_DATA).toString(), //
-			'-filter', MULTITYPE_EX1UNCONDITIONAL, //
-			'-filter-on', MULTITYPE_EX1Typ, MULTITYPE_EX1Exp, //
-			'-exclude-type', MULTITYPE_EX1EXCLUDETYPE, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.xml.writer', //
-			'-Sxml.rootElement.name', 'collection' //
+		transform([
+			//
+			'-project',
+			getProjectURI(MULTI_TYPE_PROJECT).toString() ,
+			//
+			'-source',
+			getProjectURI(MULTI_TYPE_DATA).toString(),
+			//
+			'-filter',
+			MULTITYPE_EX1UNCONDITIONAL,
+			//
+			'-filter-on',
+			MULTITYPE_EX1Typ,
+			MULTITYPE_EX1Exp,
+			//
+			'-exclude-type',
+			MULTITYPE_EX1EXCLUDETYPE,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -265,10 +340,16 @@ class ExecuteTest extends GroovyTestCase {
 
 		println ">> Arguments will be read from ${tempArgsFile}"
 		println ">> Transformed data will be written to ${targetFile}..."
-		transform([//
-			'-args-file', tempArgsFile.absolutePath, //
-			'-target', targetFile.absolutePath, //
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer' //
+		transform([
+			//
+			'-args-file',
+			tempArgsFile.absolutePath,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -285,15 +366,27 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-exclude-type', HYDRO_EXCLUDED_TYPE, //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-exclude-type',
+			HYDRO_EXCLUDED_TYPE,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			//select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
 			//override a setting
-			'-Sinspire.sds.localId', '1234' //
+			'-Sinspire.sds.localId',
+			'1234' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -312,16 +405,31 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-filter', HYDRO_EXP2UNCONDITIONAL, //
-			'-filter-on', HYDRO_EX1Typ, HYDRO_EXP1Exp, //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-filter',
+			HYDRO_EXP2UNCONDITIONAL,
+			//
+			'-filter-on',
+			HYDRO_EX1Typ,
+			HYDRO_EXP1Exp,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			// select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
 			// override a setting
-			'-Sinspire.sds.localId', '1234'//
+			'-Sinspire.sds.localId',
+			'1234'//
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -339,15 +447,65 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-filter', HYDRO_EXP2UNCONDITIONAL, //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-filter',
+			HYDRO_EXP2UNCONDITIONAL,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			// select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
 			// override a setting
-			'-Sinspire.sds.localId', '1234' //
+			'-Sinspire.sds.localId',
+			'1234' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateTransformedDataSize(targetFile,HYDRO_TDATA_SIZE_UNCONDITIONAL_FILTER)
+	}
+
+	/**
+	 * Test unconditional filtered transformation of an hydro project.	 *
+	 */
+	void testGroovyFilterForHydro() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-filter',
+			HYDRO_EXP2GROOVY,
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			// select target provider
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234' //
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -370,15 +528,27 @@ class ExecuteTest extends GroovyTestCase {
 
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			// select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
 			// override a setting
-			'-Sinspire.sds.localId', '1234', //
-			'-Sinspire.sds.metadata', tempMetadataFile.absolutePath//
+			'-Sinspire.sds.localId',
+			'1234',
+			//
+			'-Sinspire.sds.metadata',
+			tempMetadataFile.absolutePath//
 		]) { //
 			File output, int code ->
 			// check exit code
@@ -403,14 +573,25 @@ class ExecuteTest extends GroovyTestCase {
 
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			//select target provider
-			'-providerId', 'eu.esdihumboldt.hale.io.inspiregml.writer', //
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			//
 			// override a setting
-			'-Xinspire.sds.metadata.inline', tempMetadataFile.absolutePath]) { //
+			'-Xinspire.sds.metadata.inline',
+			tempMetadataFile.absolutePath
+		]) { //
 			File output, int code ->
 			// check exit code
 			assert code == 0
@@ -427,14 +608,24 @@ class ExecuteTest extends GroovyTestCase {
 		targetFile.deleteOnExit()
 		println ">> Transformed data will be written to ${targetFile}..."
 
-		transform([//
-			'-project', getProjectURI(HYDRO_PROJECT).toString(), //
-			'-source', getProjectURI(HYDRO_DATA).toString(), //
-			'-target', targetFile.absolutePath, //
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
 			// select preset for export
-			'-preset', 'INSPIRE SpatialDataSet', //
+			'-preset',
+			'INSPIRE SpatialDataSet',
+			//
 			// override a setting
-			'-Sinspire.sds.localId', '1234'//
+			'-Sinspire.sds.localId',
+			'1234'//
 		]) { //
 			File output, int code ->
 			// check exit code

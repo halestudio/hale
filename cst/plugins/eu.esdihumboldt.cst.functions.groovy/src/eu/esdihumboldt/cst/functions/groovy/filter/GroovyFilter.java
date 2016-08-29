@@ -25,6 +25,7 @@ import eu.esdihumboldt.cst.functions.groovy.internal.SynchronizedContextProvider
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.model.ContextAwareFilter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.util.groovy.sandbox.DefaultGroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService.ResultProcessor;
 import groovy.lang.Binding;
@@ -42,6 +43,8 @@ public class GroovyFilter implements ContextAwareFilter {
 	private final String script;
 
 	private final ThreadLocal<Script> localScript = new ThreadLocal<Script>();
+
+	private GroovyService groovyService;
 
 	/**
 	 * Constructor.
@@ -82,7 +85,7 @@ public class GroovyFilter implements ContextAwareFilter {
 
 	@Override
 	public boolean match(Instance instance, Map<Object, Object> context) {
-		GroovyService service = HalePlatform.getService(GroovyService.class);
+		GroovyService service = getGroovyService();
 
 		Binding binding = new Binding();
 
@@ -111,6 +114,36 @@ public class GroovyFilter implements ContextAwareFilter {
 			});
 		} catch (Exception e) {
 			throw new IllegalStateException("Error evaluating Groovy filter", e);
+		}
+	}
+
+	/**
+	 * @return the Groovy service to use for building and evaluating the filter
+	 *         script.
+	 */
+	protected GroovyService getGroovyService() {
+		synchronized (this) {
+			if (groovyService != null) {
+				return groovyService;
+			}
+
+			GroovyService result = HalePlatform.getService(GroovyService.class);
+
+			// TODO where may the Groovy service come from?
+			// here there is no access to a dedicated service provider
+
+			// fall back to restrictive Groovy service
+			if (result == null) {
+				DefaultGroovyService def = new DefaultGroovyService();
+				def.setRestrictionActive(true);
+				result = def;
+
+				log.warn("No GroovyService found, using restricted execution for filter");
+			}
+
+			groovyService = result;
+
+			return result;
 		}
 	}
 
