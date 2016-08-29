@@ -109,7 +109,7 @@ public class StreamGmlWriterTest {
 	/**
 	 * The geometry factory
 	 */
-	private final GeometryFactory geomFactory = new GeometryFactory();
+	private static final GeometryFactory geomFactory = new GeometryFactory();
 
 //	/**
 //	 * Test writing a simple feature from a simple schema (Watercourses VA)
@@ -432,7 +432,7 @@ public class StreamGmlWriterTest {
 	 * 
 	 * @return the line string
 	 */
-	private LineString createLineString(double offset) {
+	public static LineString createLineString(double offset) {
 		return geomFactory.createLineString(new Coordinate[] { new Coordinate(0.0, offset),
 				new Coordinate(1.0, 1.0 + offset), new Coordinate(2.0, 2.0 + offset),
 				new Coordinate(3.0, 1.0 + offset), new Coordinate(4.0, offset) });
@@ -443,7 +443,7 @@ public class StreamGmlWriterTest {
 	 * 
 	 * @return the line string
 	 */
-	private MultiLineString createCurve() {
+	public static MultiLineString createCurve() {
 		LineString ls1 = geomFactory.createLineString(new Coordinate[] { new Coordinate(0.0, 0.0),
 				new Coordinate(1.0, 1.0), new Coordinate(2.0, 2.0), new Coordinate(3.0, 3.0),
 				new Coordinate(4.0, 4.0) });
@@ -973,7 +973,7 @@ public class StreamGmlWriterTest {
 	 * @param expected the expected geometry
 	 * @param value the geometry value
 	 */
-	private void matchGeometries(Geometry expected, Geometry value) {
+	public static void matchGeometries(Geometry expected, Geometry value) {
 		if (expected.toString().equals(value.toString())) {
 			// direct match
 			return;
@@ -1003,7 +1003,7 @@ public class StreamGmlWriterTest {
 	 * @throws IOProviderConfigurationException if the instance reader is not
 	 *             configured correctly
 	 */
-	private InstanceCollection loadGML(URI sourceData, Schema schema)
+	public static InstanceCollection loadGML(URI sourceData, Schema schema)
 			throws IOException, IOProviderConfigurationException {
 		InstanceReader instanceReader = new GmlInstanceReader();
 
@@ -1026,7 +1026,7 @@ public class StreamGmlWriterTest {
 	 *             configured correctly
 	 * @throws IOException if I/O operations fail
 	 */
-	private IOReport validate(URI xmlLocation, List<? extends Locatable> validationSchemas)
+	public static IOReport validate(URI xmlLocation, List<? extends Locatable> validationSchemas)
 			throws IOProviderConfigurationException, IOException {
 		XmlInstanceValidator validator = new XmlInstanceValidator();
 		validator.setSchemas(validationSchemas.toArray(new Locatable[validationSchemas.size()]));
