@@ -157,13 +157,13 @@ class ExecuteTest extends GroovyTestCase {
 		println ">> Transformed data will be written to ${targetFile}..."
 		transform([
 			//
-			'-args-file',
+			'-argsFile',
 			tempArgsFile.absolutePath,
 			//
-			'-exclude-type',
+			'-excludeType',
 			MULTITYPE_EX2EXCLUDETYPE,
 			//
-			'-filter-on',
+			'-filterOn',
 			MULTITYPE_EX2_2Typ,
 			MULTITYPE_EX2_2Exp,
 			//
@@ -244,14 +244,14 @@ class ExecuteTest extends GroovyTestCase {
 			'-filter',
 			MULTITYPE_EX2UNCONDITIONAL,
 			//
-			'-filter-on',
+			'-filterOn',
 			MULTITYPE_EX2Typ,
 			MULTITYPE_EX2Exp,
 			//
-			'-exclude-type',
+			'-excludeType',
 			MULTITYPE_EX2EXCLUDETYPE,
 			//
-			'-filter-on',
+			'-filterOn',
 			MULTITYPE_EX2_2Typ,
 			MULTITYPE_EX2_2Exp,
 			//
