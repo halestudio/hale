@@ -35,6 +35,6 @@ public interface ContextAwareFilter extends Filter {
 	 * @return <code>true</code> if the given instance matches the filter,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean match(Instance instance, Map<String, Object> context);
+	public boolean match(Instance instance, Map<Object, Object> context);
 
 }

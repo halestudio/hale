@@ -371,5 +371,12 @@
          </service>
       </services>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.instance.filter">
+      <filterDefinition
+            class="eu.esdihumboldt.cst.functions.groovy.filter.GroovyFilterDefinition"
+            id="groovy">
+      </filterDefinition>
+   </extension>
 
 </plugin>

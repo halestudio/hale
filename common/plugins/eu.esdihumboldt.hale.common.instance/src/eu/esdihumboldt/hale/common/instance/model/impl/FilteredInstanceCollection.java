@@ -98,7 +98,7 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 		/**
 		 * Iteration context for filters.
 		 */
-		private final Map<String, Object> context;
+		private final Map<Object, Object> context;
 
 		/**
 		 * Create a filtered resource iterator.
@@ -171,7 +171,7 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException(
-					"Removing instances not supported oin filtered collections");
+					"Removing instances not supported on filtered collections");
 		}
 
 		@Override
@@ -179,7 +179,9 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 			decoratee.close();
 
 			// in case the iterator is kept around, clear the context
-			context.clear();
+			if (context != null) {
+				context.clear();
+			}
 		}
 
 	}
