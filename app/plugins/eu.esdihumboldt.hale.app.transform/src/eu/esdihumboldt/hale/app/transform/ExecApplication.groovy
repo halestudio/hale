@@ -149,6 +149,7 @@ $baseCommand
      -reportsOut <reports-file>
      -stacktrace
      -trustGroovy
+     -overallFilterContext
 
   Sources
     You can provide multiple sources for the transformation. If the source is a
@@ -170,6 +171,10 @@ $baseCommand
     a specific filter language supported by hale by including a corresponding
     prefix, followed by a colon and the filter expression itself, e.g.:
     CQL:name <> ''
+
+    The option -overallFilterContext ensures that the context available for
+    filters is shared for all sources. The filter context can for instance be
+    used in groovy: filters.
 
   Providing arguments as file
     You can also specify the arguments in a file using the -args-file
@@ -479,6 +484,9 @@ $baseCommand
 				break
 			case '-trustGroovy':
 				executionContext.restrictGroovy = false
+				break
+			case '-overallFilterContext':
+				executionContext.filters.globalContext = true
 				break
 		}
 	}

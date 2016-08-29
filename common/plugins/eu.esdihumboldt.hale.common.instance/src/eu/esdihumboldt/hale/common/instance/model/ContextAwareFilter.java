@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.common.instance.model;
 
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /**
  * Filter extension interface.
  * 
@@ -35,6 +37,6 @@ public interface ContextAwareFilter extends Filter {
 	 * @return <code>true</code> if the given instance matches the filter,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean match(Instance instance, Map<Object, Object> context);
+	public boolean match(Instance instance, @Nullable Map<Object, Object> context);
 
 }

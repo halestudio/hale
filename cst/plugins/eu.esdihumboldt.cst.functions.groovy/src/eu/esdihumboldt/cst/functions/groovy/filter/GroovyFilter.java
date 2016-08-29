@@ -97,7 +97,7 @@ public class GroovyFilter implements ContextAwareFilter {
 		// context
 		binding.setVariable("withContext", SynchronizedContextProvider.getContextClosure(context));
 		// log
-		binding.setVariable(GroovyConstants.BINDING_LOG, log);
+		binding.setVariable(GroovyConstants.BINDING_LOG, new LogWrapper("Groovy filter", log));
 
 		Script script = getScript(service, binding);
 
