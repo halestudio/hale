@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.writer.internal.GmlWriterUtil;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverterRegistry.ConversionLadder;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CompositeSurfaceWriter;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveSingleSegmentWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.CurveWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.EnvelopeWriter;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers.LegacyMultiPolygonWriter;
@@ -85,6 +86,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		// TODO configure via extension?
 		sgm.registerGeometryWriter(new CurveWriter());
+		sgm.registerGeometryWriter(new CurveSingleSegmentWriter());
 		sgm.registerGeometryWriter(new MultiCurveWriter());
 		sgm.registerGeometryWriter(new PointWriter());
 		sgm.registerGeometryWriter(new PolygonWriter());
@@ -183,7 +185,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		Class<? extends Geometry> geomType = geometry.getClass();
 
 		// remember if we already found a solution to this problem
-		List<DefinitionPath> preferredPaths = restoreCandidate(property.getPropertyType(), geomType);
+		List<DefinitionPath> preferredPaths = restoreCandidate(property.getPropertyType(),
+				geomType);
 
 		if (preferredPaths == null) {
 			// find candidates
@@ -236,7 +239,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			}
 
 			for (DefinitionPath candidate : candidates) {
-				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " + candidate); //$NON-NLS-1$ //$NON-NLS-2$
+				log.info("Geometry structure match: " + geomType.getSimpleName() + " - " //$NON-NLS-1$ //$NON-NLS-2$
+						+ candidate);
 			}
 
 			if (candidates.isEmpty()) {
@@ -438,10 +442,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				if (att.asProperty() != null
 						// if we write an attribute, it must be an attribute ;)
 						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()
-						&& att.getName().getLocalPart().equals("srsName") //TODO improve condition? //$NON-NLS-1$
+						&& att.getName().getLocalPart().equals("srsName") // TODO //$NON-NLS-1$
+																			// improve
+																			// condition?
 						&& (att.getName().getNamespaceURI() == null
-								|| att.getName().getNamespaceURI().equals(gmlNs) || att.getName()
-								.getNamespaceURI().isEmpty())) {
+								|| att.getName().getNamespaceURI().equals(gmlNs)
+								|| att.getName().getNamespaceURI().isEmpty())) {
 					srsAtt = att.asProperty();
 					break;
 				}
@@ -475,8 +481,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 						&& att.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()
 						&& att.getName().getLocalPart().equals("srsDimension") //$NON-NLS-1$
 						&& (att.getName().getNamespaceURI() == null
-								|| att.getName().getNamespaceURI().equals(gmlNs) || att.getName()
-								.getNamespaceURI().isEmpty())) {
+								|| att.getName().getNamespaceURI().equals(gmlNs)
+								|| att.getName().getNamespaceURI().isEmpty())) {
 					dimensionAtt = att.asProperty();
 					break;
 				}
