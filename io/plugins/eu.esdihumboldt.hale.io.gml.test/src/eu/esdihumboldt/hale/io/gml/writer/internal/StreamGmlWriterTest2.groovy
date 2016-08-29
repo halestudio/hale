@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
+import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
@@ -208,7 +209,7 @@ class StreamGmlWriterTest2 {
 		// write to file
 		InstanceWriter writer = new GmlInstanceWriter()
 		writer.setParameter(GmlInstanceWriter.PARAM_PRETTY_PRINT, Value.of((Boolean)true))
-		writer.setParameter(GmlInstanceWriter.PARAM_UNIFY_WINDING_ORDER, Value.simple('noChanges'))
+		writer.setParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER, Value.simple('noChanges'))
 		writer.setInstances(new DefaultInstanceCollection([instance]))
 		DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace()
 		schemaSpace.addSchema(schema)
