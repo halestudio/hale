@@ -16,12 +16,15 @@
 
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 
+import eu.esdihumboldt.hale.common.instance.model.ContextAwareFilter;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -93,12 +96,24 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 		private boolean updatePreview = true;
 
 		/**
+		 * Iteration context for filters.
+		 */
+		private final Map<String, Object> context;
+
+		/**
 		 * Create a filtered resource iterator.
 		 * 
 		 * @param decoratee the original iterator
 		 */
 		public FilteredIterator(ResourceIterator<Instance> decoratee) {
 			this.decoratee = decoratee;
+
+			if (filter instanceof ContextAwareFilter) {
+				context = Collections.synchronizedMap(new HashMap<>());
+			}
+			else {
+				context = null;
+			}
 		}
 
 		@Override
@@ -132,7 +147,14 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 				// find first instance matching the filter
 				while (!previewPresent && decoratee.hasNext()) {
 					Instance instance = decoratee.next();
-					if (filter.match(instance)) {
+					boolean match;
+					if (context != null) {
+						match = ((ContextAwareFilter) filter).match(instance, context);
+					}
+					else {
+						match = filter.match(instance);
+					}
+					if (match) {
 						previewPresent = true;
 						preview = instance;
 					}
@@ -155,6 +177,9 @@ public class FilteredInstanceCollection extends InstanceCollectionDecorator {
 		@Override
 		public void close() {
 			decoratee.close();
+
+			// in case the iterator is kept around, clear the context
+			context.clear();
 		}
 
 	}
