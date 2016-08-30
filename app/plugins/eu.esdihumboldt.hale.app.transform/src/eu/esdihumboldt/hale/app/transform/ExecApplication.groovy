@@ -163,7 +163,7 @@ $baseCommand
     http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 
   Filtering sources
-    The options -filter, -filterOn -excludeType and -exclude serve to filter
+    The options -filter, -filterOn, -excludeType and -exclude serve to filter
     the source data, before the transformation is performed.
     If you specify multiple filters with -filter or -filterOn, only one of
     them must match for an instance to be included. Exclusion prevents any
