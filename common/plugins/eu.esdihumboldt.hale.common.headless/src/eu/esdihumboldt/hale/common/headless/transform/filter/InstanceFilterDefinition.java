@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.headless.transform.filter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,12 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 	 * filters without types(generalized to all types) per source
 	 */
 	private final List<Filter> unconditionalFilters;
+
+	/**
+	 * Filters applicable for any instance that can mark instances to be
+	 * excluded.
+	 */
+	private final List<Filter> excludeFilters = new ArrayList<>();
 
 	/**
 	 * Excluded types for
@@ -98,6 +105,15 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 	}
 
 	/**
+	 * Add an exclude filter.
+	 * 
+	 * @param expression the filter expression
+	 */
+	public void addExcludeFilter(String expression) {
+		excludeFilters.add(createFilter(expression));
+	}
+
+	/**
 	 * To add simple filters
 	 * 
 	 * @param expression filter expression
@@ -121,7 +137,16 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 	 * @return List of {@link Filter}
 	 */
 	public List<Filter> getUnconditionalFilters() {
-		return this.unconditionalFilters;
+		return Collections.unmodifiableList(unconditionalFilters);
+	}
+
+	/**
+	 * Get the defined exclude filters.
+	 * 
+	 * @return the list of exclude filters
+	 */
+	public List<Filter> getExcludeFilters() {
+		return Collections.unmodifiableList(excludeFilters);
 	}
 
 	/**
@@ -180,7 +205,7 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 		Boolean result = null;
 
 		// applying exclude filter first
-		if (applyExcludeFilters(instance)) {
+		if (applyExcludeFilters(instance, context)) {
 			if (context == null) {
 				// if there is no context we can do an early exit
 				return false;
@@ -278,7 +303,30 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 		return result;
 	}
 
-	private boolean applyExcludeFilters(Instance instance) {
+	private boolean applyExcludeFilters(Instance instance, Map<Object, Object> context) {
+		Boolean rejected = false;
+
+		for (Filter filter : excludeFilters) {
+			if (filter instanceof ContextAwareFilter) {
+				if (((ContextAwareFilter) filter).match(instance, context)) {
+					if (context == null) {
+						return true; // no side effects possible
+					}
+					rejected = true;
+				}
+			}
+			else if (!rejected && filter.match(instance)) {
+				if (context == null) {
+					return true; // no side effects possible
+				}
+				rejected = true;
+			}
+		}
+
+		if (rejected) {
+			return true;
+		}
+
 		// for excluded Types
 		for (String excludedType : this.excludedTypes) {
 			if (checkType(instance.getDefinition(), excludedType)) {

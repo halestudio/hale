@@ -573,6 +573,66 @@ class ExecuteTest extends GroovyTestCase {
 	}
 
 	/**
+	 * Test Groovy context filter on hydro project.
+	 */
+	void testGroovyContextFilterExclusionForHydro() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			// transformation project
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			// source file (added twice)
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			// filter checking for duplicate IDs
+			'-exclude',
+			'''groovy:
+                def id = instance.p.fid.value()
+				boolean reject = false
+				if (id) {
+					withContext {
+						def collect = _.context.collector(it)
+						if (collect.ids.values().contains(id)) {
+							_log.warn("Rejecting feature with duplicate id $id")
+							reject = true
+						}
+						else {
+							collect.ids << id
+						}
+					}
+				}
+
+				reject
+			''',
+			// enable global filter context
+			'-overallFilterContext',
+			// additional unconditional filter
+			'-filter',
+			HYDRO_EXP2UNCONDITIONAL,
+			// target file
+			'-target',
+			targetFile.absolutePath,
+			// select target provider
+			'-providerId',
+			'eu.esdihumboldt.hale.io.inspiregml.writer',
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateTransformedDataSize(targetFile, HYDRO_TDATA_SIZE_UNCONDITIONAL_FILTER)
+	}
+
+	/**
 	 * Test transformation of an hydro project.	 * 
 	 */
 	void testTransformXml() {
