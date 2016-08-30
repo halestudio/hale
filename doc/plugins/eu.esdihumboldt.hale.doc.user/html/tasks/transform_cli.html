@@ -96,6 +96,15 @@
 		is an <b>application argument</b>.
 	</p>
 	<p class="Note">
+		<b>Note:</b> As an alternative to using the HALE studio application to
+		launch the CLI, you can use the dedicated <a
+			href="https://github.com/halestudio/hale-cli" target="_blank">hale-cli</a>.
+		With <i>hale-cli</i> a transformation is called like this:<br>
+		<code>hale transform &lt;arguments...&gt;</code>
+		<br> <i>hale-cli</i> also offers other kinds of commands and can
+		be extended with custom functionality via an extension point.
+	</p>
+	<p class="Note">
 		<b>Note:</b>
 		If using the HALE executable on Windows you will probably want to add the <code>-console</code> launcher argument as well:
 		<code>HALE -nosplash -console -application hale.transform</code><br>
@@ -114,12 +123,17 @@
 	<h3>Configuration parameters</h3>
 	<p>The following is the usage information provided by the transformation application:</p>
 	<pre><code>HALE -nosplash -application hale.transform
+     [-argsFile &lt;file-with-arguments&gt;]
      -project &lt;file-or-URI-to-HALE-project&gt;
      -source &lt;file-or-URI-to-source-data&gt;
          [-include &lt;file-pattern&gt;]
          [-exclude &lt;file-pattern&gt;]
          [-providerId &lt;ID-of-source-reader&gt;]
          [&lt;setting&gt;...]
+     [-filter &lt;filter-expression&gt;]
+     [-filterOn &lt;type&gt; &lt;filter-expression&gt;]
+     [-excludeType &lt;type&gt;]
+     [-exclude &lt;filter-expression&gt;]
      -target &lt;target-file-or-URI&gt;
          [-preset &lt;name-of-export-preset&gt;]
          [-providerId &lt;ID-of-target-writer&gt;]
@@ -134,7 +148,8 @@
   and options are
      -reportsOut &lt;reports-file&gt;
      -stacktrace
-     -trustGroovy</code></pre>
+     -trustGroovy
+     -overallFilterContext</code></pre>
 	<h4>HALE project file</h4>
 	<pre class="cli"><code>-project &lt;file-or-URI-to-HALE-project&gt;</code></pre>
 	<p>
@@ -198,6 +213,69 @@
 			in your local HALE installation (including eventual additional
 			plugins and custom implementations), so it is <b>only available in the
 			local HALE help and not in the online version on the web</b>.</i>
+	</p>
+	<h4>Filtering source data</h4>
+	<p>By default HALE uses all data passed in as sources for the
+		transformation. The filter options allow you to filter the source data
+		before it is passed to the transformation. This can be helpful for
+		selecting only objects actually needed for the transformation (e.g. to
+		reduce processing time and temporary storage used), or to exclude
+		objects that would falsify the result.</p>
+	<p>
+		With
+		<code>-filter</code>
+		you can specify a filter expression that is checked against all
+		objects read from the source. The filter language can be specified at
+		the beginning of the filter expression, followed by a colon. If no
+		language is provided explicitly, the expression is assumed to be CQL.
+		Following a simple example filter only accepting instances with the
+		value 'Berlin' for the property
+		<code>name</code>:
+	</p>
+	<pre class="cli"><code>-filter "CQL:name = 'Berlin'"</code></pre>
+	<p>
+		To apply a filter only to objects of a certain type use
+		<code>-filterOn</code>
+		. The first argument to
+		<code>-filterOn</code>
+		is the type. You can specify it's name with or without namespace. If
+		you want to specify the namespace, wrap it in curly braces and prepend
+		it to the type name (for example:
+		<code>{namespace}name</code>
+		). The second argument is the filter expression that is to be applied
+		to that type.
+	</p>
+	<p>
+		If filters are defined, generally, any object needs to be accepted by
+		at least one of the filters defined with
+		<code>-filter</code>
+		or
+		<code>-filterOn</code>
+		. If there are only filters for specific types (
+		<code>-filterOn</code>
+		), and no general filters defined, objects of other types pass without
+		check.<br>Exception to that are only the exclusion filters.
+		<code>-excludeType</code>
+		and
+		<code>-exclude</code>
+		prevent an instance to be passed to the transformation even if they
+		were accepted by a different filter.
+	</p>
+	<p>
+		<code>-excludeType</code>
+		will prevent any instance of a specific type from being passed to the
+		transformation.
+		<code>-exclude</code>
+		on the other hand allows specifying a filter. Only instances that
+		don't match the filter pass on to the transformation.
+	</p>
+	<p>
+		The argument
+		<code>-overallFilterContext</code>
+		is another filter related option. If you pass this flag to the call,
+		it is ensured that any context aware filters share a context across
+		loading all of the defined sources. Context aware filters can right
+		now only be supplied in Groovy.
 	</p>
 	<h4>Transformation result</h4>
 	<pre class="cli"><code>-target &lt;target-file-or-URI&gt; [-preset &lt;name-of-export-preset&gt;] [-providerId &lt;ID-of-target-writer&gt;] [&lt;setting&gt;...]</code></pre>
