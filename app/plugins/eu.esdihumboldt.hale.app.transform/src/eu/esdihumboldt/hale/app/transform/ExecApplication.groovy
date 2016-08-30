@@ -134,6 +134,7 @@ $baseCommand
      [-filter <filter-expression>]
      [-filterOn <type> <filter-expression>]
      [-excludeType <type>]
+     [-exclude <filter-expression>]
      -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
@@ -162,10 +163,11 @@ $baseCommand
     http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
 
   Filtering sources
-    The options -filter, -filterOn and -excludeType serve to filter the
-    source data, before the transformation is performed.
+    The options -filter, -filterOn, -excludeType and -exclude serve to filter
+    the source data, before the transformation is performed.
     If you specify multiple filters with -filter or -filterOn, only one of
-    them must match for an instance to be included.
+    them must match for an instance to be included. Exclusion prevents any
+    object from being transformed.
 
     <filter-expressions> by default are interpreted as CQL. You can specify
     a specific filter language supported by hale by including a corresponding
@@ -349,6 +351,10 @@ $baseCommand
 
 			case '-filter':
 				executionContext.filters.addUnconditionalFilter(value);
+				break
+
+			case '-exclude':
+				executionContext.filters.addExcludeFilter(value);
 				break
 
 			case '-filter-on':
