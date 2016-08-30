@@ -16,24 +16,22 @@
 package eu.esdihumboldt.cst.functions.groovy.filter;
 
 import org.slf4j.Logger;
-import org.slf4j.helpers.SubstituteLogger;
+import org.slf4j.ext.LoggerWrapper;
 
 /**
  * Simple log delegating class.
  * 
  * @author Simon Templer
  */
-public class LogWrapper extends SubstituteLogger {
+public class LogWrapper extends LoggerWrapper {
 
 	/**
 	 * Create a new logger wrapper.
 	 * 
-	 * @param name the wrapper name
 	 * @param logger the logger to wrap
 	 */
-	public LogWrapper(String name, Logger logger) {
-		super(name);
-		setDelegate(logger);
+	public LogWrapper(Logger logger) {
+		super(logger, LogWrapper.class.getName());
 	}
 
 }
