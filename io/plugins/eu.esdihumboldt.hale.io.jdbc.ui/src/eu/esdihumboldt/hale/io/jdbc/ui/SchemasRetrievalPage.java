@@ -119,6 +119,9 @@ public class SchemasRetrievalPage
 	protected void createContent(Composite page) {
 		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).create());
 		this.page = page;
+		// For oracle, by default no schema is selected, so need to set
+		// pageComplete false when it created..
+		setPageComplete(false);
 	}
 
 	/**
