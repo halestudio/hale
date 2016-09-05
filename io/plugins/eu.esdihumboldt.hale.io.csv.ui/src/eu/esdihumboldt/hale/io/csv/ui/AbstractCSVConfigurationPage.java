@@ -39,14 +39,17 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * Sets the separator, quote and escape string in the provider
  * 
  * @author Kevin Mais
- * @param <P> the provider type
+ * @param
+ * 			<P>
+ *            the provider type
  */
-public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
-		AbstractConfigurationPage<P, IOWizard<P>> implements ModifyListener {
+public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
+		extends AbstractConfigurationPage<P, IOWizard<P>>implements ModifyListener {
 
 	private Combo separator;
 	private Combo quote;
 	private Combo escape;
+	private Combo decimal;
 
 	private final HashBiMap<String, String> bmap;
 
@@ -60,7 +63,7 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 	protected AbstractCSVConfigurationPage(String pageName) {
 		super(pageName);
 		setTitle("CSV Settings");
-		setDescription("Set the Separating, Quote and Escape characters");
+		setDescription("Set the Separating, Quote, Escape characters with decimal divisor");
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");
@@ -80,9 +83,9 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
 				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty() || qu.contains("/")
-				|| qu.contains(":") || qu.contains(".")
-				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty() || esc.contains("/")
-				|| esc.contains(":") || (bmap.get(esc) == null && esc.length() > 1)) {
+				|| qu.contains(":") || qu.contains(".") || (bmap.get(qu) == null && qu.length() > 1)
+				|| esc.isEmpty() || esc.contains("/") || esc.contains(":")
+				|| (bmap.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
 			setErrorMessage("You have not entered valid characters!");
 		}
@@ -124,6 +127,7 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 		String sep = separator.getText();
 		String qu = quote.getText();
 		String esc = escape.getText();
+		String dec = decimal.getText();
 
 		if (bmap.get(sep) != null) {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(bmap.get(sep)));
@@ -143,6 +147,12 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 		else {
 			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(esc));
 		}
+		if (bmap.get(dec) != null) {
+			provider.setParameter(CSVConstants.PARAM_DECIMAL, Value.of(bmap.get(dec)));
+		}
+		else {
+			provider.setParameter(CSVConstants.PARAM_DECIMAL, Value.of(dec));
+		}
 		return true;
 	}
 
@@ -156,8 +166,8 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 
 		GridDataFactory labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
 				.grab(false, false);
-		GridDataFactory comboLayout = GridDataFactory.swtDefaults()
-				.align(SWT.BEGINNING, SWT.CENTER).grab(false, false);
+		GridDataFactory comboLayout = GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.CENTER)
+				.grab(false, false);
 
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
@@ -193,6 +203,18 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 		escape.addModifyListener(this);
 		comboLayout.applyTo(escape);
 
+		// column 1, row 4
+		Label decimalLabel = new Label(page, SWT.NONE);
+		decimalLabel.setText("Select Decimal Divisor");
+		labelLayout.applyTo(decimalLabel);
+
+		// column 2, row 4
+		decimal = new Combo(page, SWT.NONE);
+		decimal.setItems(new String[] { ".", "," });
+		decimal.select(0);
+		decimal.addModifyListener(this);
+		comboLayout.applyTo(decimal);
+
 		// select first item
 		separator.select(0);
 
@@ -221,6 +243,13 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 	public Combo getEscape() {
 		return escape;
 	}
+
+	/**
+	 * @return the escape
+	 */
+//	public Combo getDecimal() {
+//		return decimal;
+//	}
 
 	/**
 	 * @return the last_name

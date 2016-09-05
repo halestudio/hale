@@ -69,19 +69,22 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
-				Boolean.class, false);
+		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE)
+				.as(Boolean.class, false);
 		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
 		int line = 0;
 
 		CSVReader reader = CSVUtil.readFirst(this);
 
+		// Decimal Character
+		char dec = CSVUtil.getDecimal(this);
+
 		// build instances
 		TypeDefinition type = getSourceSchema().getType(
 				QName.valueOf(getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
 
-		PropertyDefinition[] propAr = type.getChildren().toArray(
-				new PropertyDefinition[type.getChildren().size()]);
+		PropertyDefinition[] propAr = type.getChildren()
+				.toArray(new PropertyDefinition[type.getChildren().size()]);
 		String[] nextLine;
 
 		if (skipFirst) {
@@ -116,6 +119,11 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 					Binding binding = property.getPropertyType().getConstraint(Binding.class);
 					try {
 						if (!binding.getBinding().equals(String.class)) {
+
+							if (property.getPropertyType().getConstraint(Binding.class).getBinding()
+									.equals(Float.class) && dec == ',' && part != null)
+								part = part.replace(dec, '.');
+
 							ConversionService conversionService = HalePlatform
 									.getService(ConversionService.class);
 							if (conversionService.canConvert(String.class, binding.getBinding())) {
