@@ -53,8 +53,8 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractDataView extends PropertiesViewPart implements
-		InstanceSelectionListener {
+public abstract class AbstractDataView extends PropertiesViewPart
+		implements InstanceSelectionListener {
 
 	/**
 	 * Action for toggling if an instance selection is provided by the view.
@@ -87,7 +87,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		 * Update the action text
 		 */
 		private void updateText() {
-			setToolTipText((isProvideInstanceSelection()) ? ("Disable providing an application instance selection (e.g. for the map)")
+			setToolTipText((isProvideInstanceSelection())
+					? ("Disable providing an application instance selection (e.g. for the map)")
 					: ("Enable providing an instance selection for the application, e.g. for display in the map"));
 		}
 
@@ -134,8 +135,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 
 		this.defaultInstanceSelector = instanceSelector;
 		this.schemaSpace = schemaSpace;
-		this.controller = new InstanceViewController(DataViewPlugin.getDefault()
-				.getPreferenceStore(), controllerPreferenceKey);
+		this.controller = new InstanceViewController(
+				DataViewPlugin.getDefault().getPreferenceStore(), controllerPreferenceKey);
 	}
 
 	/**
@@ -326,9 +327,14 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		// add listener
 		instanceSelector.addSelectionListener(this);
 
+		// if want to disable Controls on implemented Class prior to create
+		// Selctor Control
+		enableControls(false);
 		// create new control
 		selectorControl = instanceSelector.createControl(selectorComposite);
 		selectorControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		// enable control if disable it before
+		enableControls(true);
 
 		updateSelectionProvider();
 
@@ -379,6 +385,16 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		this.provideInstanceSelection = provideInstanceSelection;
 
 		updateSelectionProvider();
+	}
+
+	/**
+	 * Override this to enable/disable controls while creating Selector controls
+	 * in {@link #setInstanceSelector(InstanceSelector)}
+	 * 
+	 * @param enable false, to disable controls and true, to enable controls
+	 */
+	protected void enableControls(boolean enable) {
+		// do nothing
 	}
 
 }
