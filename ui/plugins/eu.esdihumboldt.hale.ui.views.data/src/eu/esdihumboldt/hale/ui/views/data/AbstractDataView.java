@@ -342,6 +342,15 @@ public abstract class AbstractDataView extends PropertiesViewPart
 		selectorComposite.getParent().getParent().layout(true, true);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener#preSelectionChange()
+	 */
+	@Override
+	public void preSelectionChange() {
+		// disable controls
+		enableControls(false);
+	}
+
 	@Override
 	public void selectionChanged(TypeDefinition type, Iterable<Instance> selection) {
 		if (viewer != null) {
@@ -350,6 +359,15 @@ public abstract class AbstractDataView extends PropertiesViewPart
 		lastType = type;
 		lastSelection = selection;
 		onSelectionChange(selection);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener#postSelectionChange()
+	 */
+	@Override
+	public void postSelectionChange() {
+		// enable controls again
+		enableControls(true);
 	}
 
 	/**

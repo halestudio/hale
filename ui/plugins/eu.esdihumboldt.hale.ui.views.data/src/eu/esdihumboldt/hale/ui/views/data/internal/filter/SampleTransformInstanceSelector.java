@@ -171,7 +171,9 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 		private void updateInDisplayThread() {
 			if (Display.getCurrent() != null) {
+				preSelectionChanged();
 				updateFeatureTypesSelection();
+				postSelectionChanged();
 			}
 			else {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -179,7 +181,9 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 					@Override
 					public void run() {
+						preSelectionChanged();
 						updateFeatureTypesSelection();
+						postSelectionChanged();
 					}
 				});
 			}
@@ -313,6 +317,30 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 			for (InstanceSelectionListener listener : listeners) {
 				listener.selectionChanged(selectedType, getSelection());
+			}
+		}
+
+		/**
+		 * calling pre selection change in listener
+		 */
+		public void preSelectionChanged() {
+			// disable types combo box before any changes apply to transformed
+			// data view,
+			// enable it again after selection change completed and if combo box
+			// has entries
+			typesCombo.getControl().setEnabled(false);
+
+			for (InstanceSelectionListener listener : listeners) {
+				listener.preSelectionChange();
+			}
+		}
+
+		/**
+		 * calling post selection change in listener
+		 */
+		public void postSelectionChanged() {
+			for (InstanceSelectionListener listener : listeners) {
+				listener.postSelectionChange();
 			}
 		}
 
