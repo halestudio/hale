@@ -35,4 +35,14 @@ public interface InstanceSelectionListener {
 	 */
 	public void selectionChanged(TypeDefinition type, Iterable<Instance> selection);
 
+	/**
+	 * Called before {@link #selectionChanged(TypeDefinition, Iterable)}
+	 */
+	public void preSelectionChange();
+
+	/**
+	 * Called after {@link #selectionChanged(TypeDefinition, Iterable)}
+	 */
+	public void postSelectionChange();
+
 }
