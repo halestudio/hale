@@ -148,6 +148,24 @@ public class SchemasRetrievalPage
 				return;
 			}
 
+			Connection conn = getConnection();
+
+			if (conn == null) {
+				disposeControl();
+				// message
+				Label label = new Label(page, SWT.WRAP);
+				label.setText(
+						"Could not established connection with database. Please check the settings.");
+				label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+				page.layout(true, true);
+				setErrorMessage("Connection error!");
+				setPageComplete(false);
+				return;
+			}
+			else {
+				setErrorMessage(null);
+			}
+
 			if (firstShow) {
 				// when first time loaded
 				createComponent();
@@ -160,7 +178,7 @@ public class SchemasRetrievalPage
 			}
 
 			// Get schemas using selected database driver
-			getSchemas();
+			getSchemas(conn);
 			schemaTable.setInput(schemas);
 
 			if (multipleSelection) {
@@ -176,7 +194,6 @@ public class SchemasRetrievalPage
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 		}
-
 	}
 
 	private void createComponent() {
@@ -217,20 +234,25 @@ public class SchemasRetrievalPage
 		page.layout(true, true);
 	}
 
-	private void getSchemas() throws SQLException {
-		Connection conn = null;
+	private void getSchemas(Connection conn) throws SQLException {
 		try {
-			conn = JDBCConnection.getConnection(getWizard().getProvider());
 			if (customSelector != null)
 				schemas.addAll(customSelector.getSchemas(conn));
-		} catch (SQLException e) {
-			throw e;
 		} finally {
 			if (conn != null) {
 				conn.close();
 			}
 		}
+	}
 
+	private Connection getConnection() {
+		Connection conn = null;
+		try {
+			conn = JDBCConnection.getConnection(getWizard().getProvider());
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+		}
+		return conn;
 	}
 
 	private void loadConfiguration() {
