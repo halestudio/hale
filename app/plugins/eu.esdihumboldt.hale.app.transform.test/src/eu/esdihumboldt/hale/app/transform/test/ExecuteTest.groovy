@@ -224,6 +224,43 @@ class ExecuteTest extends GroovyTestCase {
 		validateMultipleTypeTransformedDataSize(targetFile,MULTITYPE_TDATA_SIZE3)
 	}
 
+	/**
+	 * Test applying a type filter on a single type, while
+	 * not specifying a filter for other types.
+	 */
+	void testFiltersForMultiType4() {
+		File targetFile =  File.createTempFile('transform-multitype', '.xml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		transform([
+			//
+			'-project',
+			getProjectURI(MULTI_TYPE_PROJECT).toString() ,
+			//
+			'-source',
+			getProjectURI(MULTI_TYPE_DATA).toString(),
+			//
+			'-filter-on',
+			'shirt',
+			'price < 10',
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			'-providerId',
+			'eu.esdihumboldt.hale.io.xml.writer',
+			//
+			'-Sxml.rootElement.name',
+			'collection' //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		validateMultipleTypeTransformedDataSize(targetFile, 19)
+	}
 
 	/**
 	 * Test filters on source consisted Multiple Types, complicated 1
