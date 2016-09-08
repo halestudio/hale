@@ -105,6 +105,17 @@
                   default="\">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Divisor is used to identify float value"
+               label="Decimal divisor"
+               name="decimal"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="."></valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVLookupReader"
