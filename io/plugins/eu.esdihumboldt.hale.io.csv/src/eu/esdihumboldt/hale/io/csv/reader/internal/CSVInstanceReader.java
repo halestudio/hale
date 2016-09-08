@@ -115,13 +115,13 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 
 				Object value = part;
 
-				if (value != null) {
+				if (part != null) {
 					Binding binding = property.getPropertyType().getConstraint(Binding.class);
 					try {
 						if (!binding.getBinding().equals(String.class)) {
 
 							if (property.getPropertyType().getConstraint(Binding.class).getBinding()
-									.equals(Float.class) && dec == ',' && part != null)
+									.equals(Float.class) && dec != '.')
 								part = part.replace(dec, '.');
 
 							ConversionService conversionService = HalePlatform
