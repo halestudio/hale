@@ -220,6 +220,28 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 			return true;
 		}
 
+		if (unconditionalFilters.isEmpty()) {
+			// only type filters - anything isn't rejected may pass
+			if (context == null) {
+				// if there is no context we can do a direct exit
+				return applyTypedFilter(instance, context, true);
+			}
+			else {
+				// otherwise we need to make sure that every filter may be
+				// called (and respect previous exclusion)
+				if (applyTypedFilter(instance, context, true)) {
+					if (result == null) { // only set to true if not excluded
+						result = true;
+					}
+				}
+				if (result == null) {
+					result = false;
+				}
+
+				return result;
+			}
+		}
+
 		// applying remaining filters one by one (also handling lazy evaluation)
 		if (context == null) {
 			// if there is no context we can do an early exit
@@ -228,6 +250,7 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 		}
 		else {
 			// otherwise we need to make sure that every filter may be called
+			// (and respect previous exclusion)
 			if (applyTypedFilter(instance, context)) {
 				if (result == null) { // only set to true if not excluded
 					result = true;
@@ -270,7 +293,12 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 	}
 
 	private boolean applyTypedFilter(Instance instance, Map<Object, Object> context) {
-		boolean result = false;
+		return applyTypedFilter(instance, context, false);
+	}
+
+	private boolean applyTypedFilter(Instance instance, Map<Object, Object> context,
+			boolean acceptIfNoTypeMatch) {
+		Boolean result = null;
 
 		// Loop through all the type filters
 		for (String type : this.typeFilters.keySet()) {
@@ -285,7 +313,7 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 							result = true;
 						}
 					}
-					else if (!result && filter.match(instance)) {
+					else if (result == null && filter.match(instance)) {
 						if (context == null) {
 							return true; // no side effects possible
 						}
@@ -296,10 +324,18 @@ public class InstanceFilterDefinition implements Filter, ContextAwareFilter {
 					// So, instance matches type and but does not match filter
 					return false;
 				}
+				if (result == null) {
+					result = false;
+				}
 			}
 		}
 		// it reaches here that means Instance does not match any type of
 		// type filters. Method should return false for lazy evaluation.
+
+		if (result == null) {
+			result = acceptIfNoTypeMatch;
+		}
+
 		return result;
 	}
 

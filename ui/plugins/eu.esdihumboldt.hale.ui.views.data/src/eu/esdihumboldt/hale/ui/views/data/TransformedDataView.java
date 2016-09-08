@@ -106,7 +106,7 @@ public class TransformedDataView extends AbstractDataView {
 			instanceImage = DataViewPlugin.getImageDescriptor("icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText(Messages.TransformedTableView_0); //$NON-NLS-1$
+		instanceButton.setToolTipText(Messages.TransformedTableView_0); // $NON-NLS-1$
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -141,7 +141,7 @@ public class TransformedDataView extends AbstractDataView {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/synced.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
+		mapButton.setToolTipText(Messages.TransformedTableView_1); // $NON-NLS-1$
 		mapButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -183,4 +183,13 @@ public class TransformedDataView extends AbstractDataView {
 		super.dispose();
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.AbstractDataView#enableControls(boolean)
+	 */
+	@Override
+	protected void enableControls(boolean enable) {
+		// disable/ enable button controls
+		for (Button b : selectorButtons)
+			b.setEnabled(enable);
+	}
 }

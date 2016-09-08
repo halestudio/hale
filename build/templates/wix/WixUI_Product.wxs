@@ -25,7 +25,7 @@ First-time install dialog sequence:      Maintenance dialog sequence:
         <WixVariable Id="WixUIBannerBmp" Value="Bitmaps\bannrbmp.bmp" />
         <WixVariable Id="WixUIDialogBmp" Value="Bitmaps\dlgbmp.bmp" />
         
-        <Icon Id="uninstall.ico" SourceFile="Icons\dhp.ico"/>
+        <Icon Id="uninstall.ico" SourceFile="Icons\hale.ico"/>
         <Property Id="ARPPRODUCTICON" Value="uninstall.ico" />
         <!-- Property Id='ARPHELPLINK'>URL for technical support</Property -->
         <Property Id='ARPURLINFOABOUT'>http://www.wetransform.to/products/hale</Property>
