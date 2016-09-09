@@ -162,7 +162,12 @@ public abstract class AbstractDataView extends PropertiesViewPart
 		// bar composite
 		Composite bar = new Composite(page, SWT.NONE);
 		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		GridLayout gridLayout = new GridLayout(2, false);
+
+		GridLayout gridLayout;
+		// if (showBackgroundProcess())
+		gridLayout = new GridLayout(3, false);
+		// else
+		// gridLayout = new GridLayout(2, false);
 		gridLayout.marginWidth = 3;
 		gridLayout.marginHeight = 2;
 		gridLayout.verticalSpacing = 0;
@@ -183,6 +188,12 @@ public abstract class AbstractDataView extends PropertiesViewPart
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		selectorComposite.setLayout(gridLayout);
+
+		// Background process progressbar
+		Composite backgroundProcessComposite = new Composite(bar, SWT.NONE);
+		backgroundProcessComposite
+				.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		provideBackgroundProcessControl(backgroundProcessComposite);
 
 		// tree composite
 		viewerComposite = new Composite(page, SWT.NONE);
@@ -413,6 +424,28 @@ public abstract class AbstractDataView extends PropertiesViewPart
 	 */
 	protected void enableControls(boolean enable) {
 		// do nothing
+	}
+
+//	/**
+//	 * Override this to show background process progress bar in bar control.
+//	 * 
+//	 * @return boolean if true, then progress bar will be added to view. if
+//	 *         false, then progress bar will not be added to view.
+//	 */
+//	protected boolean showBackgroundProcess() {
+//		return false;
+//	}
+
+	/**
+	 * Override this method to provide background process controls.
+	 * 
+	 * @param parent the parent composite
+	 */
+	protected void provideBackgroundProcessControl(Composite parent) {
+		GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+		// empty composite trick: exclude
+		gd.exclude = true;
+		parent.setLayoutData(gd);
 	}
 
 }
