@@ -106,8 +106,8 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Divisor is used to identify float value"
-               label="Decimal divisor"
+               description="Separator is used to identify float value"
+               label="Decimal separator"
                name="decimal"
                optional="true">
             <parameterBinding
