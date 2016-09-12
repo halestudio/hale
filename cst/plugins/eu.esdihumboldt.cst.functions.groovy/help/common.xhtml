@@ -451,5 +451,100 @@
 			setting <a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/cell_priority.html">cell priorities</a> on type relations.
 		</p>
 	</div>
+
+	<div id="collectors">
+		<h2>Collectors</h2>
+		<p>A collector is a helper object that allows you to easily collect information.</p>
+		<p>To create a new collector instantiate one like this:</p>
+		<pre><code><b>def</b> c = <b>new</b> <a target="_blank" href="https://github.com/halestudio/hale/blob/master/cst/plugins/eu.esdihumboldt.cst.functions.groovy.helpers/src/eu/esdihumboldt/cst/functions/groovy/helpers/util/Collector.java">Collector</a>()</code></pre>
+		<p>A collector often is useful for collecting (shared) information in a
+			transformation run. Thus a helper method is provided as part of the
+			helper functions, that retrieves or creates a collector associated to
+			a context map. For example:</p>
+		<pre><code><b>withTransformationContext</b> {
+  <b>def</b> c = _.context.collector(it)
+}</code></pre>
+		<h3>Store information</h3>
+		<p>In a collector, information is stored based on keys. Most often
+			a key is a string, but you can also use other objects as keys.</p>
+		<p>
+			The following statement adds a value to the key named
+			<code>identifiers</code>
+			:
+		</p>
+		<pre><code>c.identifiers &lt;&lt; 'ID1'</code></pre>
+		<p>Keys can be used with an arbitrary number of levels:</p>
+		<pre><code>c.hydro.rivers.identifiers &lt;&lt; 'ID1'</code></pre>
+		<p>Non-string keys (for example numbers or lists) or variables can
+			be used as keys by using the squared brackets notation:</p>
+		<pre><code>def key = ['foo', 12]
+c[key] &lt;&lt; 'bar'
+c.hydro.rivers.source[12] &lt;&lt; 'ID1'</code></pre>
+		<p>When you know that you deal with a single value instead of
+			accumulating values, you can use the assign operator:</p>
+		<pre><code>def key = 'identifier'
+c[key] = 'ID1'</code></pre>
+		<p>There is no need to create keys, the corresponding child
+			collectors are created automatically when a key is accessed.</p>
+		<h3>Retrieve information</h3>
+		<p>To retrieve information from a collector, access is also done
+			using the respective keys. By just specifying the keys you get the
+			respective child collector. To retrieve values from a collector you can
+			call the following methods:</p>
+		<ul>
+			<li>c.<b>value()</b> retrieves the first value associated to the
+				collector, or <code>null</code></li>
+			<li>c.<b>values()</b> provides you with the list of objects
+				associated to the collector, in the order they were added
+			</li>
+		</ul>
+		<p>Both of the above mentioned methods ignore any child collectors
+			and only return the values of the addressed level.</p>
+		<p>
+			Additionally a collector provides methods to iterate over its values
+			and child collectors. To iterate over a collector's values use
+			<code>each</code>
+			or
+			<code>consume</code>
+			with one argument:
+		</p>
+		<pre><code>c.identifiers.each { value ->
+  ...
+}</code></pre>
+		<p>
+			The difference between
+			<code>each</code>
+			and
+			<code>consume</code>
+			is that when using
+			<code>consume</code>
+			, the corresponding list of values is reset.
+		</p>
+		<p>
+			When using variable keys it may be desired to be able to iterate over
+			all keys (or child collectors) in a collector. For this the
+			<code>eachCollector</code>
+			method can be used. If only one argument is provided, the child
+			collector is passed in, if two arguments are provided the key and the
+			respective child collector are passed in:
+		</p>
+		<pre><code>c.eachCollector { key, child ->
+  ...
+}</code></pre>
+		<p>
+			If you are interested in the keys and corresponding child values of a
+			collector, you can use
+			<code>each</code>
+			or
+			<code>consume</code>
+			with two arguments to iterate over all present keys and the
+			respective value lists. For example:
+		</p>
+		<pre><code>c.each { key, values ->
+  values.each { value ->
+    ...
+  }
+}</code></pre>
+	</div>
 </body>
 </html>
