@@ -210,6 +210,67 @@
 }</code></pre>
 	</div>
 	
+	<!-- Extended information on creating results for type relations -->
+	<div id ="type-results">
+		<h3>Multiple results</h3>
+		<p>
+			You can create multiple result instances by simply calling <b>_target</b>
+			multiple times. For each call a result instance is created, and you
+			can even integrate this with programming logic like loops. For
+			example:
+		</p>
+		<pre><code><b>for</b> (num in 1..3) {
+  <b>_target</b> {
+    id ( "Feature_$num" )
+  }
+}</code></pre>
+		<h3>Skip instance creation</h3>
+		<p>
+			If you want to skip creating a result instance for certain reasons,
+			you can do so by simply not calling <b>_target</b> in that case.
+		</p>
+		<p>Alternatively you can also throw a <code>NoResultException</code>, for example:</p>
+		<pre><code>if (condition) {
+  <b>throw new</b> NoResultException('reason')
+}
+
+<b>_target {</b>
+  ...
+}</code></pre>
+	</div>
+
+	<!-- Extended information on creating results for property relations -->
+	<div id ="property-results">
+		<h3>Multiple results</h3>
+		<p>If the target property can occur multiple times, you can return
+			multiple results, that will each be represented as an individual
+			instance of the target property.</p>
+		<p>
+			If the result is created as complex instance, you can create multiple
+			results by simply calling <b>_target</b> multiple times. For each
+			call a result is created, and you can even integrate this with
+			programming logic like loops. For example:
+		</p>
+		<pre><code><b>for</b> (num in 1..3) {
+  <b>_target</b> {
+    id ( "Feature_$num" )
+  }
+}</code></pre>
+		<p>
+			If the results are not instances, but values, multiple results can be
+			created by multiple calls to <b>_target</b> as well:
+		</p>
+		<pre><code><b>for</b> (num in 1..3) {
+  <b>_target</b>("Value $num")
+}</code></pre>
+		<p>
+			Alternatively, if you have an array or collection where each entry
+			should be a result value, you can convert it to a <code>MultiValue</code>
+			and return it:
+		</p>
+		<pre><code><b>return</b> ['Value 1', 'Value 2', 'Value 3'] <b>as</b> MultiValue</code></pre>
+	</div>
+
 	<!-- Builder accessor combination -->
 	<div id="builder-accessor">
 		<h3>Putting both together</h3>
