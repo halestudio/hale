@@ -166,8 +166,9 @@ $baseCommand
     The options -filter, -filterOn, -excludeType and -exclude serve to filter
     the source data, before the transformation is performed.
     If you specify multiple filters with -filter or -filterOn, only one of
-    them must match for an instance to be included. Exclusion prevents any
-    object from being transformed.
+    them must match for an instance to be included. If only -filterOn
+    statements are provided, objects not matching the respective types are
+    included. Exclusion prevents any object from being transformed.
 
     <filter-expressions> by default are interpreted as CQL. You can specify
     a specific filter language supported by hale by including a corresponding
