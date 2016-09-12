@@ -399,6 +399,40 @@
 			</li>
 			<li>
 				<p>
+					<code>
+						<b>_project</b>
+					</code>
+					provides access to project information and variables. The following
+					information is available:
+				</p>
+				<ul>
+					<li>The project name: <code><b>_project</b>.name</code></li>
+					<li>The project author: <code><b>_project</b>.author</code></li>
+					<li>The project description: <code><b>_project</b>.description</code></li>
+					<li>Project variables serve to customize a project's behavior. They can be accessed in a number of different ways:
+						<ul>
+							<li><code>
+									<b>_project</b>.vars.NAME
+								</code> gets the value of the project variable with the name <code>NAME</code>
+								and reports a warning if the variable does not exist.</li>
+							<li><code>
+									<b>_project</b>.vars['NAME']
+								</code> gets the value of the project variable with the name <code>NAME</code>
+								and reports a warning if the variable does not exist.</li>
+							<li><code>
+									<b>_project</b>.vars.get('NAME', 'default')
+								</code> gets the value of the project variable with the name <code>NAME</code>
+								if it exists, otherwise yields the default value provided as second argument.</li>
+							<li><code>
+									<b>_project</b>.vars.getOrFail('NAME')
+								</code> gets the value of the project variable with the name <code>NAME</code>
+								if it exists, otherwise fails with an exception.</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+			<li>
+				<p>
 					<code><b>withCellContext</b></code> provides access to a map unique to each 
 					cell. For synchronization you should only access the map inside the 
 					closure like shown in this example:
