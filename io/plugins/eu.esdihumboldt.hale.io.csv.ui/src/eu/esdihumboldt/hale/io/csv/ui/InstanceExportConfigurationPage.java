@@ -132,28 +132,29 @@ public class InstanceExportConfigurationPage
 
 	@Override
 	protected void onShowPage(boolean firstShow) {
+		if (firstShow) {
+			ViewerFilter[] filters = { validTypesToSelect };
 
-		ViewerFilter[] filters = { validTypesToSelect };
+			typeSelector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
+					getWizard().getProvider().getTargetSchema(), filters);
 
-		typeSelector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
-				getWizard().getProvider().getTargetSchema(), filters);
+			typeSelector.getControl().setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
+			typeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
-		typeSelector.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
-		typeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				setPageComplete(!(event.getSelection().isEmpty()));
-				if (typeSelector.getSelectedObject() != null) {
-					// TypeDefinition type = typeSelector.getSelectedObject();
-					// label.getParent().layout();
-					page.layout();
-					page.pack();
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					setPageComplete(!(event.getSelection().isEmpty()));
+					if (typeSelector.getSelectedObject() != null) {
+						// TypeDefinition type =
+						// typeSelector.getSelectedObject();
+						// label.getParent().layout();
+						page.layout();
+						page.pack();
+					}
 				}
-			}
-		});
-
+			});
+		}
 		page.layout();
 		page.pack();
 	}
