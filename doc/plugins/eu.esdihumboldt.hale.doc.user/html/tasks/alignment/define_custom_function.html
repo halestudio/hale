@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Define a custom function</title>
+</head>
+<body>
+	<h1>Define a custom function</h1>
+	<p>HALE comes with a set of pre-defined transformation functions
+		that cover most basic mapping cases. If you need other functionality
+		the easiest way is to define a custom function directly in HALE. In a
+		custom function you can use Groovy to determine the output, based on
+		input and parameters, similar to the Groovy script function. The main
+		difference to the Groovy script function is, that with a custom
+		function you create something that is reusable, reducing the effort in
+		creating and maintaining mappings that require a common functionality
+		not covered by the standard functions.</p>
+
+	<p>Custom functions are stored in the alignment, and thus in your
+		mapping project. This means that when you share your project, the
+		custom functions you defined are included. In the future we plan to
+		support sharing your functions easily for others to use, and easily
+		discovering functions that may be useful for your mapping.</p>
+
+	<p>Right now custom functions are only supported for property
+		relations, and the only way to define them is via Groovy. We are keen
+		to hear your ideas and needs regarding custom functions and their use,
+		and where you see possibilities for improvement.</p>
+
+	<h2>Create a new function</h2>
+	<p>
+		To create a custom function, you need to access the <i>Transformation</i>
+		menu as follows:
+	</p>
+	<div>
+		<img src="images/custom_function_menu.png" class="fit" />
+	</div>
+	<p>You need to specify an identifier and a name for your function.
+		The name will later be shown when selecting the function for a
+		mapping. The identifier serves as a unique identifier for referencing
+		your function in the alignment.</p>
+	<div>
+		<img src="images/custom_function_name.png" class="fit" />
+	</div>
+
+	<h3>Define input and output</h3>
+	<p>The input for your function will come from source schema
+		elements that are associated to the function with a mapping cell.
+		Similarly the output will be placed in a target property that is the
+		target of the mapping cell.</p>
+	<p>Before defining how your function is executed you need to define
+		what kind of inputs you expect and what kind of output you will
+		produce.</p>
+	<div>
+		<img src="images/custom_function_inout.png" class="fit" />
+	</div>
+		
+	<h4>Inputs</h4>
+	<p>For every input you define you need to specify a name, that
+		allows you to reference the input in the script. Each input can be
+		configured with the type of value you expect to handle, either a
+		simple type like String, or a complex type from the schema.</p>
+	<p>
+		The <i>Min</i>, <i>Max</i> and <i>unbounded</i> settings control if an
+		input can be connected to several different schema elements. Enabling
+		the input to be <i>eager</i> on the other hand allows the function to
+		consume all instances of an individual source property associated to
+		that input (e.g. for aggregation).
+	</p>
+
+	<h4>Output</h4>
+	<p>A function may have only one output. Specify the type of result
+		that you want to produce, either a simple value like a String or a
+		complex object based on a type defined in the target schema.</p>
+
+	<h3>Define function parameters</h3>
+	<p>Defining function parameters is not yet supported via the user
+		interface. We plan to add this functionality in one of the next
+		releases. Advanced users may define parameters by adapting a
+		function's XML definition.</p>
+
+	<h3>Specify function behavior</h3>
+	<p>The next step is to define the behavior of the function with a
+		Groovy script. The inputs you defined are available as variables here,
+		and the result of the script is used as output.</p>
+	<div>
+		<img src="images/custom_function_script.png" class="fit" />
+	</div>
+	<p>
+		To learn more on how to use Groovy for defining a custom function,
+		please take a look at the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.cst.doc.functions/functions/eu.esdihumboldt.cst.functions.groovy.html">Groovy script function documentation</a>.
+	</p>
+	
+	<h3>Function explanation</h3>
+	<p>HALE generates an explanation for mapping cells that reference specific
+		transformation functions. As a last step you have the opportunity to
+		specify how this explanation is created for your custom function.</p>
+	<p>The explanation can be a fixed text, or it can be a template
+		that creates different output depending on source, target and
+		parameters defined in the mapping cell.</p>
+	<div>
+		<img src="images/custom_function_explanation.png" class="fit" />
+	</div>
+	<p>
+		To support both text and HTML explanations with a single template,
+		HALE provides Markdown support using the <a
+			href="https://github.com/sirthias/pegdown" target="_blank">pegdown</a>
+		Markdown processor.
+	</p>
+	<p>
+		To render the template HALE uses the <a
+			href="http://docs.groovy-lang.org/latest/html/documentation/template-engines.html#_gstringtemplateengine"
+			target="_blank">GStringTemplateEngine</a>. The variables available to
+		you in the template are the following:
+	</p>
+	<ul>
+		<li><p>
+				<b>_params</b> provides an accessor to function parameters.
+			</p>
+			<p>
+				A parameter named
+				<code>NAME</code>
+				can be accessed with
+				<code>
+					<b>_params</b>.NAME
+				</code>
+				. If the parameter may occur more than once, the value yielded is a
+				list (which may be empty). Otherwise the value is the configured
+				parameter value, the default value for the parameter, or
+				<code>null</code>
+				.
+			</p>
+		</li>
+		<li><b>_target</b> names the target property of the cell.</li>
+		<li><b>_source</b> names the source property of the cell, if
+			there is only a single input, or an input is unnamed. All named
+			inputs are available with their name (e.g. <code>positions</code> in
+			the example above). Associated inputs are retrieved as a list if the
+			input can occur more than once.</li>
+	</ul>
+	
+	<br />
+	<!-- related concepts: alignment -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png" />
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_alignment.html">What is an Alignment?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/functions.html">Functions</a>
+		</p>
+	</div>
+	
+	<!-- related tasks: create relation -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png" />
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/mapping_schema_elem.html">Mapping schema elements</a>
+		</p>
+	</div>
+</body>
+</html>
