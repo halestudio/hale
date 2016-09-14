@@ -40,6 +40,8 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
+import eu.esdihumboldt.hale.common.schema.model.Schema
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
 import eu.esdihumboldt.util.xml.XmlUtil
@@ -89,7 +91,7 @@ class AlignmentJson {
 	@CompileStatic(TypeCheckingMode.SKIP)
 	static Set<Locale> alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
 		ServiceProvider services, ProjectInfo project, CellJsonExtension ext,
-		ValueRepresentation valueRep, Locale locale) {
+		ValueRepresentation valueRep, Locale locale, SchemaSpace sourceSchemas, SchemaSpace targetSchemas) {
 		
 		Set<Locale> collectedLocales = new HashSet<>()
 		
@@ -120,6 +122,20 @@ class AlignmentJson {
 					}
 				}
 			}
+			if (sourceSchemas) {
+				sourceSchemas.schemas.each { Schema schema ->
+					'sourceSchemas[]' {
+						AlignmentJson.schemaInfoJson(schema, json)
+					}
+				}
+			}
+			if (targetSchemas) {
+				targetSchemas.schemas.each { Schema schema ->
+					'targetSchemas[]' {
+						AlignmentJson.schemaInfoJson(schema, json)
+					}
+				}
+			}
 			alignment.cells.each { Cell cell ->
 				'cells[]' {
 					def cellLocales = AlignmentJson.cellInfoJSON(cell, json, services, ext, valueRep, locale)
@@ -131,6 +147,15 @@ class AlignmentJson {
 		}
 		
 		collectedLocales
+	}
+
+	public static void schemaInfoJson(Schema schema, JsonStreamBuilder json) {
+		json {
+			json 'namespace', schema.namespace
+			if (schema.location) {
+				json 'location', schema.location.toString()
+			}
+		}
 	}
 
 	/**
