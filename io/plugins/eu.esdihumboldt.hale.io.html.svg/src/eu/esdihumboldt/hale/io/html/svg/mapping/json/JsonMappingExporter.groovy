@@ -51,7 +51,7 @@ class JsonMappingExporter extends AbstractAlignmentWriter {
 			new OutputStreamWriter(getTarget().getOutput(), StandardCharsets.UTF_8).withWriter { out ->
 				JsonStreamBuilder json = new JsonStreamBuilder(out, true)
 				AlignmentJson.alignmentInfoJSON(alignment, json, serviceProvider,
-						projectInfo, ext, rep, Locale.getDefault())
+						projectInfo, ext, rep, Locale.getDefault(), getSourceSchema(), getTargetSchema())
 
 				reporter.setSuccess(true)
 			}
