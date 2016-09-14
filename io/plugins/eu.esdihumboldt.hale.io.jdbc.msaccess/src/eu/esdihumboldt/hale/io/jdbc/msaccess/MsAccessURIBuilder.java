@@ -1,7 +1,12 @@
 package eu.esdihumboldt.hale.io.jdbc.msaccess;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
 
 /**
@@ -11,6 +16,8 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
  */
 public class MsAccessURIBuilder implements URIBuilder {
 
+	private static final ALogger log = ALoggerFactory.getLogger(MsAccessURIBuilder.class);
+	private static final String ENC = "UTF-8";
 	// UCanAccess Driver;
 	private static final String DRIVER = "jdbc:ucanaccess://";
 
@@ -19,10 +26,11 @@ public class MsAccessURIBuilder implements URIBuilder {
 	private static final String PARAM = ";showschema=true;sysschema=false;singleconnection=true";
 
 	@Override
-	public URI createJdbcUri(String host, String databaseFile) {
-		if (databaseFile == null || databaseFile.isEmpty())
+	public URI createJdbcUri(String host, String database) {
+		if (database == null || database.isEmpty())
 			throw new IllegalArgumentException("A database file must be provided");
-		return URI.create(DRIVER + databaseFile + PARAM);
+		String rawDatabasePath = getEncodedPath(new File(database).toURI().getPath());
+		return URI.create(DRIVER + rawDatabasePath + PARAM);
 	}
 
 	/**
@@ -35,6 +43,15 @@ public class MsAccessURIBuilder implements URIBuilder {
 		}
 
 		return jdbcUri.toString().substring(DRIVER.length());
+	}
+
+	private String getEncodedPath(String path) {
+		try {
+			return URLEncoder.encode(path, ENC);
+		} catch (UnsupportedEncodingException e) {
+			log.error(ENC + "! that's supposed to be an encoding", e);
+			return path;
+		}
 	}
 
 }

@@ -38,7 +38,7 @@ public class MsAccessJdbcIOSupplier extends FileIOSupplier {
 	public MsAccessJdbcIOSupplier(File file) {
 		super(file);
 		if (file != null) {
-			jdbcUri = new MsAccessURIBuilder().createJdbcUri(null, file.toURI().getPath());
+			jdbcUri = new MsAccessURIBuilder().createJdbcUri(null, file.getAbsolutePath());
 		}
 	}
 

@@ -17,9 +17,17 @@ package eu.esdihumboldt.hale.io.jdbc.msaccess;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import net.ucanaccess.jdbc.UcanaccessConnection;
 
 /**
  * Reads a schema from a MSAccess DB. extended {@link JDBCSchemaReader}.
@@ -27,6 +35,10 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
  * @author Arun
  */
 public class MsAccessSchemaReader extends JDBCSchemaReader {
+
+	private static final ALogger log = ALoggerFactory.getLogger(MsAccessSchemaReader.class);
+	private static final String ENC = "UTF-8";
+	private URI uri;
 
 	/**
 	 * Default Constructor
@@ -39,7 +51,26 @@ public class MsAccessSchemaReader extends JDBCSchemaReader {
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
 		MsAccessJdbcIOSupplier inputSource = new MsAccessJdbcIOSupplier(
 				new File(source.getLocation()));
+		uri = inputSource.getLocation();
 		super.setSource(inputSource);
+	}
+
+	@Override
+	protected UcanaccessConnection getConnection() throws SQLException {
+
+		String user = getParameter(PARAM_USER).as(String.class);
+		String password = getParameter(PARAM_PASSWORD).as(String.class);
+
+		return (UcanaccessConnection) DriverManager.getConnection(getDecodedURI(), user, password);
+	}
+
+	private String getDecodedURI() {
+		try {
+			return URLDecoder.decode(this.uri.toString(), ENC);
+		} catch (UnsupportedEncodingException e) {
+			log.error(ENC + "! that's supposed to be an encoding!!", e);
+			return this.uri.toString();
+		}
 	}
 
 }
