@@ -8,6 +8,8 @@
 <body>
 	<h1>Cell priority</h1>
 
+	<h2>Priority on property relations</h2>
+
 	<p>There are several situations in which, as shown in the image
 		below, it is necessary to map two different relations to a target
 		entity. A simple example is the one in which a default value needs to
@@ -34,7 +36,18 @@
 		that one is executed and its result is applied to the target entity.
 	</p>
 
-	<h2>Set the Cell's priority</h2>
+	<h2>Priority on type relations</h2>
+
+	<p>Priority on type relations works differently to priority on
+		property relations. Instead of the decision between result
+		alternatives it controls the execution order for the transformation.</p>
+	<p>The execution order only is relevant if you use the
+		transformation contexts to share data between invocations of
+		transformation functions. By setting a high priority on a type cell,
+		you ensure that it is executed before all type transformations with a
+		lower priority.</p>
+
+	<h2>Set a cell's priority</h2>
 
 	<p>
 		To set a cell's priority right-click on the cell in the <a
