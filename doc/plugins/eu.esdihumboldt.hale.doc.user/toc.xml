@@ -51,8 +51,6 @@
          <topic href="html/concepts/contexts.html" label="Contexts">
          </topic>
       </topic>
-      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
-      </topic>
       <topic label="Alignment">
          <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?">
          </topic>
@@ -62,6 +60,10 @@
          </topic>
          <topic href="html/concepts/cell_priority.html" label="Cell priority">
          </topic>
+      </topic>
+      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
+      </topic>
+      <topic href="html/concepts/project_vars.html" label="Project variables">
       </topic>
       <anchor id="concepts"/>
    </topic>
