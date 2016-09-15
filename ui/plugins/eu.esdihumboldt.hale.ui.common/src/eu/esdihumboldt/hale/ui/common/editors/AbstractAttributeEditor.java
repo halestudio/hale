@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Abstract base class for editors for events.
@@ -27,8 +28,22 @@ import eu.esdihumboldt.hale.ui.common.AttributeEditor;
  * @author Kai Schwierczek
  * @param <T> the attribute value type/binding
  */
-public abstract class AbstractAttributeEditor<T> extends AbstractEditor<T> implements
-		AttributeEditor<T> {
+public abstract class AbstractAttributeEditor<T> extends AbstractEditor<T>
+		implements AttributeEditor<T> {
+
+	private VariableReplacer variableReplacer = null;
+
+	/**
+	 * @return the variableReplacer
+	 */
+	public VariableReplacer getVariableReplacer() {
+		return variableReplacer;
+	}
+
+	@Override
+	public void setVariableReplacer(VariableReplacer variableReplacer) {
+		this.variableReplacer = variableReplacer;
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setVariables(java.util.Collection)

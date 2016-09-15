@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Editor for math scripts.
@@ -83,16 +84,16 @@ public class MathEditor extends AbstractAttributeEditor<String> {
 
 		// input field
 		textField = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).indent(7, 0)
-				.create());
+		textField.setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, false).indent(7, 0).create());
 
 		// control decoration
 		decorator = new ControlDecoration(textField, SWT.LEFT | SWT.TOP, composite);
 		// set initial status
 		decorator.hide();
 		// set image
-		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-				FieldDecorationRegistry.DEC_ERROR);
+		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		decorator.setImage(fieldDecoration.getImage());
 
 		textField.addModifyListener(new ModifyListener() {
@@ -166,8 +167,21 @@ public class MathEditor extends AbstractAttributeEditor<String> {
 	 * Validates the current input against the currently available variables.
 	 */
 	private void validate() {
-		String result = MathEditor.this.script.validate(currentValue, createPropertyValues(),
-				HaleUI.getServiceProvider());
+		String scriptStr = currentValue;
+		String result = null;
+
+		// replace variables
+		try {
+			scriptStr = new TransformationVariableReplacer().replaceVariables(scriptStr);
+		} catch (Exception e) {
+			result = e.getLocalizedMessage();
+		}
+
+		if (result == null) {
+			result = MathEditor.this.script.validate(scriptStr, createPropertyValues(),
+					HaleUI.getServiceProvider());
+		}
+
 		boolean oldValid = valid;
 		valid = result == null;
 		if (result == null)
@@ -176,8 +190,9 @@ public class MathEditor extends AbstractAttributeEditor<String> {
 			decorator.setDescriptionText(result);
 			decorator.show();
 		}
-		if (valid != oldValid)
+		if (valid != oldValid) {
 			fireStateChanged(IS_VALID, oldValid, valid);
+		}
 	}
 
 	/**

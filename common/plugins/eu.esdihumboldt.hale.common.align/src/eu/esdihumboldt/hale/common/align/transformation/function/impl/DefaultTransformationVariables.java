@@ -64,7 +64,7 @@ public class DefaultTransformationVariables implements TransformationVariables {
 	}
 
 	@Override
-	public String replaceVariables(String input) {
+	public String replaceVariables(String input, boolean failUnresolved) {
 		if (input == null) {
 			return null;
 		}
@@ -104,12 +104,24 @@ public class DefaultTransformationVariables implements TransformationVariables {
 							String rx = "\\{\\{" + Pattern.quote(reference) + "\\}\\}";
 							result = result.replaceAll(rx, strValue);
 						}
+						else if (failUnresolved) {
+							throw new IllegalStateException(
+									"Cannot resolve variable reference " + reference);
+						}
+					} catch (IllegalStateException e) {
+						throw e;
 					} catch (Exception e) {
+						if (failUnresolved) {
+							throw new IllegalStateException(
+									"Cannot resolve variable reference " + reference);
+						}
 						log.warn("Cannot resolve variable reference " + reference);
 					}
 				}
 
 			}
+		} catch (IllegalStateException e) {
+			throw e;
 		} catch (Exception e) {
 			log.error("Error replacing transformation variables", e);
 		}
