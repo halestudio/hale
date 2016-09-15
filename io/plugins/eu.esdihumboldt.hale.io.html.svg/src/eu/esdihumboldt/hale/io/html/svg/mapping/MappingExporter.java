@@ -75,7 +75,8 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		StringWriter jsonWriter = new StringWriter();
 		JsonStreamBuilder json = new JsonStreamBuilder(jsonWriter, true);
 		Set<Locale> locales = AlignmentJson.alignmentInfoJSON(getAlignment(), json,
-				getServiceProvider(), getProjectInfo(), ext, rep, Locale.getDefault());
+				getServiceProvider(), getProjectInfo(), ext, rep, Locale.getDefault(),
+				getSourceSchema(), getTargetSchema());
 
 		// create language binding
 		String languageJson = getLanguageJson(locales);
