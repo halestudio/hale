@@ -129,38 +129,55 @@ public class SchemasRetrievalPage
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
+
+		// load configuration
+		loadConfiguration();
+
+		// if page is enable for driver
+		if (!isEnable) {
+			disposeControl();
+			// message
+			Label label = new Label(page, SWT.WRAP);
+			label.setText("Restricting the tables to load from specific database schemas, is not "
+					+ "supported for this database driver. All database tables will be loaded.");
+			label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+			page.layout(true, true);
+			setMessage("");
+			setPageComplete(true);
+			return;
+		}
+
+		Connection conn = null;
 		try {
-			// load configuration
-			loadConfiguration();
+			conn = getConnection();
+		} catch (SQLException e) {
+			// Exception occurred in database connection
+			// So remove all controls and showing an error with exception
+			log.error(e.getMessage(), e);
+			disposeControl();
+			Label label = new Label(page, SWT.WRAP);
+			label.setText("Could not establish connection with database: " + e.getMessage());
+			label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+			page.layout(true, true);
+			setErrorMessage("Connection error!");
+			setPageComplete(false);
+			return;
+		}
 
-			// if page is enable for driver
-			if (!isEnable) {
-				disposeControl();
-				// message
-				Label label = new Label(page, SWT.WRAP);
-				label.setText(
-						"Restricting the tables to load from specific database schemas, is not "
-								+ "supported for this database driver. All database tables will be loaded.");
-				label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-				page.layout(true, true);
-				setMessage("");
-				setPageComplete(true);
-				return;
-			}
-
-			if (firstShow) {
-				// when first time loaded
-				createComponent();
-			}
-			else {
-				// When user come to page again
-				disposeControl();
-				schemas.clear();
-				createComponent();
-			}
-
+		setErrorMessage(null);
+		if (firstShow) {
+			// when first time loaded
+			createComponent();
+		}
+		else {
+			// When user come to page again
+			disposeControl();
+			schemas.clear();
+			createComponent();
+		}
+		try {
 			// Get schemas using selected database driver
-			getSchemas();
+			getSchemas(conn);
 			schemaTable.setInput(schemas);
 
 			if (multipleSelection) {
@@ -176,7 +193,6 @@ public class SchemasRetrievalPage
 		} catch (SQLException e) {
 			log.error(e.getMessage(), e);
 		}
-
 	}
 
 	private void createComponent() {
@@ -217,20 +233,19 @@ public class SchemasRetrievalPage
 		page.layout(true, true);
 	}
 
-	private void getSchemas() throws SQLException {
-		Connection conn = null;
+	private void getSchemas(Connection conn) throws SQLException {
 		try {
-			conn = JDBCConnection.getConnection(getWizard().getProvider());
 			if (customSelector != null)
 				schemas.addAll(customSelector.getSchemas(conn));
-		} catch (SQLException e) {
-			throw e;
 		} finally {
 			if (conn != null) {
 				conn.close();
 			}
 		}
+	}
 
+	private Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(getWizard().getProvider());
 	}
 
 	private void loadConfiguration() {
