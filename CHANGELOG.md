@@ -22,6 +22,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Support for 1-dimensional arrays as multi-valued properties for JDBC schema and data sources (only tested with PostgreSQL)
 - `XmlSchemaReader` can be configured with specific content for anyType elements (to be able to map them properly; not configurable via the UI)
 - WFS-T writers now can be configured for services protected with HTTP Basic Authentication
+- New `decimal` parameter added to identify the float value in CSV file with specified separator
 
 ### Changed
 - New default base map is [Stamen Terrain](http://maps.stamen.com/terrain/#3/42.62/15.29)

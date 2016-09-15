@@ -22,6 +22,8 @@ import java.io.InputStreamReader;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.swt.widgets.Composite;
+
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -77,6 +79,16 @@ public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportPr
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	protected void createContent(Composite page) {
+		super.createContent(page);
+		page.pack();
+		setPageComplete(true);
+	}
+
+	/**
 	 * @see HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
@@ -87,8 +99,8 @@ public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportPr
 		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
 
 		try {
-			BufferedReader streamReader = new BufferedReader(new InputStreamReader(getWizard()
-					.getProvider().getSource().getInput(), p.getCharset()));
+			BufferedReader streamReader = new BufferedReader(new InputStreamReader(
+					getWizard().getProvider().getSource().getInput(), p.getCharset()));
 			String line = streamReader.readLine();
 			int tab = 0, comma = 0, pipe = 0, semicolon = 0;
 			if (line != null) {
@@ -132,8 +144,8 @@ public class ReadConfigurationPage extends AbstractCSVConfigurationPage<ImportPr
 		}
 
 		if (p instanceof InstanceReader) {
-			QName name = QName.valueOf(p.getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(
-					String.class));
+			QName name = QName
+					.valueOf(p.getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class));
 
 			if (getLast_name() == null || !(getLast_name().equals(name))) {
 				TypeDefinition type = ((InstanceReader) p).getSourceSchema().getType(name);

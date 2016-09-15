@@ -49,11 +49,13 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 	private Combo separator;
 	private Combo quote;
 	private Combo escape;
-	private Combo decimal;
 
 	private final HashBiMap<String, String> bmap;
 
 	private QName last_name;
+
+	private final GridDataFactory labelLayout;
+	private final GridDataFactory comboLayout;
 
 	/**
 	 * Default Constructor
@@ -67,6 +69,11 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");
+
+		labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).grab(false, false);
+		comboLayout = GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.CENTER).grab(false,
+				false);
+
 	}
 
 	/**
@@ -127,7 +134,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 		String sep = separator.getText();
 		String qu = quote.getText();
 		String esc = escape.getText();
-		String dec = decimal.getText();
 
 		if (bmap.get(sep) != null) {
 			provider.setParameter(CSVConstants.PARAM_SEPARATOR, Value.of(bmap.get(sep)));
@@ -147,12 +153,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 		else {
 			provider.setParameter(CSVConstants.PARAM_ESCAPE, Value.of(esc));
 		}
-		if (bmap.get(dec) != null) {
-			provider.setParameter(CSVConstants.PARAM_DECIMAL, Value.of(bmap.get(dec)));
-		}
-		else {
-			provider.setParameter(CSVConstants.PARAM_DECIMAL, Value.of(dec));
-		}
 		return true;
 	}
 
@@ -163,11 +163,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(2, true));
 		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
-
-		GridDataFactory labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
-				.grab(false, false);
-		GridDataFactory comboLayout = GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.CENTER)
-				.grab(false, false);
 
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
@@ -203,24 +198,8 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 		escape.addModifyListener(this);
 		comboLayout.applyTo(escape);
 
-		// column 1, row 4
-		Label decimalLabel = new Label(page, SWT.NONE);
-		decimalLabel.setText("Select Decimal Divisor");
-		labelLayout.applyTo(decimalLabel);
-
-		// column 2, row 4
-		decimal = new Combo(page, SWT.NONE);
-		decimal.setItems(new String[] { ".", "," });
-		decimal.select(0);
-		decimal.addModifyListener(this);
-		comboLayout.applyTo(decimal);
-
 		// select first item
 		separator.select(0);
-
-		page.pack();
-
-		setPageComplete(true);
 	}
 
 	/**
@@ -245,13 +224,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 	}
 
 	/**
-	 * @return the escape
-	 */
-//	public Combo getDecimal() {
-//		return decimal;
-//	}
-
-	/**
 	 * @return the last_name
 	 */
 	public QName getLast_name() {
@@ -271,4 +243,19 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
 	public HashBiMap<String, String> getBmap() {
 		return bmap;
 	}
+
+	/**
+	 * @return the labelLayout
+	 */
+	protected GridDataFactory getLabelLayout() {
+		return labelLayout;
+	}
+
+	/**
+	 * @return the comboLayout
+	 */
+	protected GridDataFactory getComboLayout() {
+		return comboLayout;
+	}
+
 }
