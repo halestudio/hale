@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.common.definition;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -33,6 +35,7 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Attribute input dialog
@@ -56,6 +59,8 @@ public class AttributeInputDialog extends Dialog {
 
 	private final EntityDefinition entity;
 
+	private final VariableReplacer replacer;
+
 	/**
 	 * Create a new attribute input dialog
 	 * 
@@ -65,15 +70,17 @@ public class AttributeInputDialog extends Dialog {
 	 * @param parentShell the parent shell
 	 * @param title the dialog title
 	 * @param message the dialog message
+	 * @param replacer the variable replacer or <code>null</code>
 	 */
 	public AttributeInputDialog(PropertyDefinition definition, EntityDefinition entity,
-			Shell parentShell, String title, String message) {
+			Shell parentShell, String title, String message, @Nullable VariableReplacer replacer) {
 		super(parentShell);
 
 		this.title = title;
 		this.message = message;
 		this.definition = definition;
 		this.entity = entity;
+		this.replacer = replacer;
 	}
 
 	/**
@@ -112,6 +119,7 @@ public class AttributeInputDialog extends Dialog {
 		AttributeEditorFactory aef = PlatformUI.getWorkbench()
 				.getService(AttributeEditorFactory.class);
 		editor = aef.createEditor(composite, definition, entity, false);
+		editor.setVariableReplacer(replacer);
 		editor.getControl().setLayoutData(
 				new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		editor.setPropertyChangeListener(new IPropertyChangeListener() {

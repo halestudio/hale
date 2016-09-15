@@ -104,6 +104,7 @@ import eu.esdihumboldt.hale.ui.lookup.LookupTableLoadWizard;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesListener;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -637,7 +638,8 @@ public class ClassificationMappingParameterPage
 	private Value selectValue(PropertyDefinition property, EntityDefinition entity, String title,
 			String message, String initialValue) {
 		AttributeInputDialog dialog = new AttributeInputDialog(property, entity,
-				Display.getCurrent().getActiveShell(), title, message);
+				Display.getCurrent().getActiveShell(), title, message,
+				new TransformationVariableReplacer());
 		dialog.create();
 		if (initialValue != null)
 			dialog.getEditor().setAsText(initialValue);
@@ -791,7 +793,8 @@ public class ClassificationMappingParameterPage
 			public void widgetSelected(SelectionEvent e) {
 				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, targetEntity,
 						Display.getCurrent().getActiveShell(), "Set default value",
-						"This value will be assigned to targets when the source value is not mapped");
+						"This value will be assigned to targets when the source value is not mapped",
+						new TransformationVariableReplacer());
 				if (initialValue != null) {
 					AttributeEditor<?> editor = dialog.getEditor();
 					if (editor != null) {

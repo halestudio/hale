@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.function.extension.impl.ParameterEditorFactoryImpl;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * {@link ParameterEditorFactory} extension.
@@ -120,7 +121,12 @@ public class ParameterEditorExtension
 		// default editor
 		AttributeEditorFactory aef = PlatformUI.getWorkbench()
 				.getService(AttributeEditorFactory.class);
-		return aef.createEditor(parent, parameter, initialValue);
+
+		// set variable replacer
+		AttributeEditor<?> editor = aef.createEditor(parent, parameter, initialValue);
+		editor.setVariableReplacer(new TransformationVariableReplacer());
+
+		return editor;
 	}
 
 }

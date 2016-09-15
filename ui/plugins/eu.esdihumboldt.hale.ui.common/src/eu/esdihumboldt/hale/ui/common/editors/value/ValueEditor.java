@@ -24,6 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Wraps an existing editor as a {@link Value} editor.
@@ -126,6 +127,11 @@ public abstract class ValueEditor<T> implements AttributeEditor<Value> {
 	@Override
 	public String getValueType() {
 		return editor.getValueType();
+	}
+
+	@Override
+	public void setVariableReplacer(VariableReplacer variableReplacer) {
+		editor.setVariableReplacer(variableReplacer);
 	}
 
 }

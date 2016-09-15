@@ -40,7 +40,23 @@ public interface TransformationVariables {
 	 * @return the input string w/ variable references replaced by values, if
 	 *         present
 	 */
-	public String replaceVariables(String input);
+	default public String replaceVariables(String input) {
+		return replaceVariables(input, false);
+	}
+
+	/**
+	 * Replace variable references in a String by variable values.
+	 * 
+	 * @param input the input string
+	 * @param failUnresolved <code>true</code> if the replacement should fail
+	 *            with an exception if a variable was identifier but cannot be
+	 *            resolved
+	 * @return the input string w/ variable references replaced by values
+	 * @throws IllegalStateException if a variable cannot be resolved and
+	 *             failUnresolved was passed as <code>true</code>
+	 */
+	public String replaceVariables(String input, boolean failUnresolved)
+			throws IllegalStateException;
 
 	/**
 	 * Replace variable references in a string-represented value by variable

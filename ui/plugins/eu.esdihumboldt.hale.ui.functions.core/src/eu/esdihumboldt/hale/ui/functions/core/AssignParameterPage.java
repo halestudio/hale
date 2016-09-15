@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.common.definition.editors.EditorChooserEditor;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Parameter page for assign function.
@@ -146,6 +147,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 
 			editor = PlatformUI.getWorkbench().getService(AttributeEditorFactory.class)
 					.createEditor(page, propDef, entityDef, false);
+			editor.setVariableReplacer(new TransformationVariableReplacer());
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 
