@@ -44,5 +44,19 @@
          </provider>
       </configPage>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="eu.esdihumboldt.hale.io.xsd.ui.configureAnyType"
+            name="Configure type content">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eu.esdihumboldt.hale.io.xsd.ui.anytype.ConfigureTypeHandler"
+            commandId="eu.esdihumboldt.hale.io.xsd.ui.configureAnyType">
+      </handler>
+   </extension>
 
 </plugin>

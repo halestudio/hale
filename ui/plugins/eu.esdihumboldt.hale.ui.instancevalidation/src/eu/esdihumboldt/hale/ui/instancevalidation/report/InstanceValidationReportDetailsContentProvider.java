@@ -33,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -77,8 +77,7 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 		messages.clear();
 		limitedPaths.clear();
 		if (newInput instanceof Collection<?>) {
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 			TreePath emptyPath = new TreePath(new Object[0]);
 			for (Object o : (Collection<?>) newInput) {
 				if (o instanceof InstanceValidationMessage) {
@@ -89,10 +88,14 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						childCache.put(emptyPath, baseTypes);
 					}
 					// XXX maybe expand messages with SSID?
-					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(
-							message.getType());
+					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET)
+							.getType(message.getType());
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
+					if (use == null) {
+						// fall-back to generic category
+						use = "General";
+					}
 					baseTypes.add(use);
 					messages.put(new TreePath(new Object[] { use }), message);
 				}
@@ -132,8 +135,8 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						Object child = name;
 						Object parent = parentPath.getLastSegment();
 						if (parent instanceof Definition<?>) {
-							ChildDefinition<?> childDef = DefinitionUtil.getChild(
-									(Definition<?>) parent, name);
+							ChildDefinition<?> childDef = DefinitionUtil
+									.getChild((Definition<?>) parent, name);
 							if (childDef != null)
 								child = childDef;
 						}

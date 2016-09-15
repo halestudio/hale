@@ -28,7 +28,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.MultiValue;
-import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -40,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.CellNodeValidator;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
@@ -67,7 +67,7 @@ import eu.esdihumboldt.util.Pair;
 public class FunctionExecutor extends CellNodeValidator {
 
 	private final EngineManager engines;
-	private final PropertyTransformationExtension transformations;
+	private final TransformationFunctionService transformations;
 	private final TransformationContext context;
 	private final Priority functionPriority;
 	private final ThreadLocal<Cell> typeCell = new ThreadLocal<>();
@@ -82,12 +82,13 @@ public class FunctionExecutor extends CellNodeValidator {
 	 */
 	public FunctionExecutor(TransformationReporter reporter, EngineManager engines,
 			TransformationContext context, Priority functionPriority) {
-		super(reporter);
+		super(reporter, context.getServiceProvider());
 		this.engines = engines;
 		this.context = context;
 		this.functionPriority = functionPriority;
 
-		this.transformations = PropertyTransformationExtension.getInstance();
+		this.transformations = context.getServiceProvider().getService(
+				TransformationFunctionService.class);
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class FunctionExecutor extends CellNodeValidator {
 		String functionId = cell.getTransformationIdentifier();
 
 		List<PropertyTransformationFactory> transformations = this.transformations
-				.getTransformations(functionId);
+				.getPropertyTransformations(functionId);
 
 		if (transformations == null || transformations.isEmpty()) {
 			reporter.error(new TransformationMessageImpl(cell, MessageFormat.format(
@@ -182,7 +183,8 @@ public class FunctionExecutor extends CellNodeValidator {
 		for (Entry<String, Pair<SourceNode, Entity>> sourceEntry : sources.entries()) {
 			EntityDefinition def = sourceEntry.getValue().getSecond().getDefinition();
 			SourceNode sourceNode = sourceEntry.getValue().getFirst();
-			if (TransformationTreeUtil.isEager(cell, sourceNode, cellLog)) {
+			if (TransformationTreeUtil.isEager(cell, sourceNode, cellLog,
+					context.getServiceProvider())) {
 				// eager source - all values
 				Object[] values = sourceNode.getAllValues();
 				if (values != null) {

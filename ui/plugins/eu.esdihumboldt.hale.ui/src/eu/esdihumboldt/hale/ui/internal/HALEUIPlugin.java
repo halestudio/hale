@@ -36,8 +36,8 @@ public class HALEUIPlugin extends AbstractUIPlugin {
 	// The shared instance
 	private static HALEUIPlugin plugin;
 
-	private ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-			ReportService.class);
+	private final ReportService repService = PlatformUI.getWorkbench()
+			.getService(ReportService.class);
 
 	/**
 	 * Default constructor

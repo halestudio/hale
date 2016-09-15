@@ -5,7 +5,7 @@
 project = {
 	// version
 	// major.minor.micro-SNAPSHOT - remove -SNAPSHOT for releases
-	version = '2.9.4'
+	version = '3.0.0-SNAPSHOT'
 
 	// when increasing the version number, at least the version of the .application bundles
 	// should be increased so they state an updated application version
@@ -37,6 +37,11 @@ project = {
 			Infocenter: '../doc/plugins/eu.esdihumboldt.hale.doc.application/Infocenter.product',
 			Server: '../server/plugins/eu.esdihumboldt.hale.server.application/Server.product',
 			Templates: '../server/plugins/eu.esdihumboldt.hale.server.application/Templates.product'
+		]
+
+		// Docker image settings
+		productImages = [
+			Infocenter: 'wetransform/hale-infocenter'
 		]
 	}
 }

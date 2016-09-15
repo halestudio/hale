@@ -17,7 +17,7 @@
 package eu.esdihumboldt.hale.ui.function.extension;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
 
 /**
@@ -46,5 +46,5 @@ public interface ParameterEditorFactory extends ExtensionObjectFactory<EditorFac
 	 * 
 	 * @return the associated parameter
 	 */
-	public FunctionParameter getAssociatedParameter();
+	public FunctionParameterDefinition getAssociatedParameter();
 }

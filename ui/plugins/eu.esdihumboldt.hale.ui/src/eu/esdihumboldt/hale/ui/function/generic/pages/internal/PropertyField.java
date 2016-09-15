@@ -20,8 +20,8 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.ui.function.common.PropertyEntitySelector;
  * 
  * @author Simon Templer
  */
-public class PropertyField extends Field<PropertyParameter, PropertyEntitySelector> {
+public class PropertyField extends Field<PropertyParameterDefinition, PropertyEntitySelector> {
 
 	private TypeEntityDefinition parentType;
 
@@ -48,8 +48,9 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	 * @param initialCell the initial cell
 	 * @param parentType the parent type of the properties
 	 */
-	public PropertyField(PropertyParameter definition, SchemaSpaceID ssid, Composite parent,
-			Set<EntityDefinition> candidates, Cell initialCell, TypeEntityDefinition parentType) {
+	public PropertyField(PropertyParameterDefinition definition, SchemaSpaceID ssid,
+			Composite parent, Set<EntityDefinition> candidates, Cell initialCell,
+			TypeEntityDefinition parentType) {
 		super(definition, ssid, parent, candidates, initialCell);
 
 		// set the parent type on all added selectors
@@ -71,12 +72,12 @@ public class PropertyField extends Field<PropertyParameter, PropertyEntitySelect
 	}
 
 	/**
-	 * @see Field#createEntitySelector(SchemaSpaceID, AbstractParameter,
+	 * @see Field#createEntitySelector(SchemaSpaceID, ParameterDefinition,
 	 *      Composite)
 	 */
 	@Override
 	protected PropertyEntitySelector createEntitySelector(SchemaSpaceID ssid,
-			PropertyParameter field, Composite parent) {
+			PropertyParameterDefinition field, Composite parent) {
 		return new PropertyEntitySelector(ssid, field, parent, parentType);
 	}
 

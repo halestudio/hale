@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.ui.instancevalidation.status;
 import org.eclipse.core.commands.State;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationListener;
 import eu.esdihumboldt.hale.ui.service.instance.validation.InstanceValidationService;
 
@@ -37,7 +37,7 @@ public class ToggleInstanceValidationState extends State {
 	 * Constructor.
 	 */
 	public ToggleInstanceValidationState() {
-		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		final InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 
 		listener = new InstanceValidationListener() {
@@ -59,7 +59,7 @@ public class ToggleInstanceValidationState extends State {
 
 	@Override
 	public void dispose() {
-		InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 		ivs.removeListener(listener);
 		super.dispose();

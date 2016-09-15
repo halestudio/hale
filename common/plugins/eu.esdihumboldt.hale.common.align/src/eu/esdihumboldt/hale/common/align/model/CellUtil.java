@@ -19,14 +19,16 @@ package eu.esdihumboldt.hale.common.align.model;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Cell related utility methods.
@@ -100,14 +102,22 @@ public abstract class CellUtil {
 	 * Get a short description of a cell.
 	 * 
 	 * @param cell the cell
+	 * @param serviceProvider the service provider for retrieving the function
+	 *            service, may be <code>null</code>
 	 * @return the cell description
 	 */
-	public static String getCellDescription(Cell cell) {
+	public static String getCellDescription(Cell cell, @Nullable ServiceProvider serviceProvider) {
 		StringBuffer result = new StringBuffer();
 
 		// include function name if possible
 		String functionId = cell.getTransformationIdentifier();
-		AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+		eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition<?> function = null;
+		if (serviceProvider != null) {
+			FunctionService fs = serviceProvider.getService(FunctionService.class);
+			if (fs != null) {
+				function = fs.getFunction(functionId);
+			}
+		}
 		if (function != null) {
 			result.append(function.getDisplayName());
 			result.append(": ");

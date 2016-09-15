@@ -31,7 +31,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * @author Simon Templer
  */
 @Immutable
-public final class PropertyFunction extends AbstractFunction<PropertyParameter> {
+public final class PropertyFunction extends AbstractFunction<PropertyParameterDefinition> implements
+		PropertyFunctionDefinition {
 
 	private final Set<PropertyParameter> source;
 	private final Set<PropertyParameter> target;

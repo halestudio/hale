@@ -35,9 +35,13 @@ import com.google.common.base.Objects;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.hale.common.align.custom.CustomPropertyFunctionType;
+import eu.esdihumboldt.hale.common.align.custom.DefaultCustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.Text;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.scripting.scripts.groovy.GroovyScript;
 import eu.esdihumboldt.hale.ui.internal.HALEUIPlugin;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -78,7 +82,8 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	 * @param alignmentService the alignment service, needed to get Groovy
 	 *            scripts from cells
 	 */
-	public PreferencesGroovyService(ProjectService projectService, AlignmentService alignmentService) {
+	public PreferencesGroovyService(ProjectService projectService,
+			AlignmentService alignmentService) {
 		this.projectService = projectService;
 		this.alignmentService = alignmentService;
 		projectService.addListener(new ProjectServiceAdapter() {
@@ -132,6 +137,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				PreferencesGroovyService.this.alignmentChanged();
+			}
+
+			@Override
 			public void alignmentChanged() {
 				PreferencesGroovyService.this.alignmentChanged();
 			}
@@ -174,8 +184,9 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 						}
 					}
 					message += "\n\nWARNING: The Groovy script can then do \"anything\", so be sure to trust your source!";
-					boolean result = MessageDialog.openQuestion(Display.getCurrent()
-							.getActiveShell(), "Groovy script restriction", message);
+					boolean result = MessageDialog.openQuestion(
+							Display.getCurrent().getActiveShell(), "Groovy script restriction",
+							message);
 					disableRestriction.set(result);
 				}
 			});
@@ -241,16 +252,35 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 					List<ParameterValue> val = parameters.get(GroovyConstants.PARAMETER_SCRIPT);
 					if (!val.isEmpty()) {
 						String script = getScriptString(val.get(0));
-						if (script != null)
+						if (script != null) {
 							scripts.add(script);
+						}
 					}
 				}
 				// GroovyScript function parameters
 				for (ParameterValue value : parameters.values()) {
 					if (GroovyScript.GROOVY_SCRIPT_ID.equals(value.getType())) {
 						String script = getScriptString(value);
-						if (script != null)
+						if (script != null) {
 							scripts.add(script);
+						}
+					}
+				}
+			}
+
+			// Groovy scripts of custom property functions
+			for (CustomPropertyFunction customFunction : alignmentService.getAlignment()
+					.getAllCustomPropertyFunctions().values()) {
+				if (customFunction instanceof DefaultCustomPropertyFunction) {
+					DefaultCustomPropertyFunction cf = (DefaultCustomPropertyFunction) customFunction;
+					if (CustomPropertyFunctionType.GROOVY.equals(cf.getFunctionType())) {
+						Value functionDef = cf.getFunctionDefinition();
+						if (functionDef != null && !functionDef.isEmpty()) {
+							String script = getScriptString(functionDef);
+							if (script != null) {
+								scripts.add(script);
+							}
+						}
 					}
 				}
 			}
@@ -325,7 +355,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 		}
 	}
 
-	private String getScriptString(ParameterValue value) {
+	private String getScriptString(Value value) {
 		Text text = value.as(Text.class);
 		if (text != null) {
 			return text.getText();

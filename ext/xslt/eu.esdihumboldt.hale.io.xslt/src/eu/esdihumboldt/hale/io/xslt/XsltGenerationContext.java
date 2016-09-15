@@ -15,15 +15,12 @@
 
 package eu.esdihumboldt.hale.io.xslt;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import javax.xml.namespace.NamespaceContext;
 
 import org.apache.velocity.Template;
 
-import com.google.common.io.InputSupplier;
-import com.google.common.io.OutputSupplier;
+import com.google.common.io.ByteSink;
+import com.google.common.io.ByteSource;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -87,8 +84,8 @@ public interface XsltGenerationContext extends XsltConstants {
 	 * @return the loaded template
 	 * @throws Exception if loading the template failed
 	 */
-	public Template loadTemplate(Class<?> transformation,
-			InputSupplier<? extends InputStream> resource, String id) throws Exception;
+	public Template loadTemplate(Class<?> transformation, ByteSource resource, String id)
+			throws Exception;
 
 	/**
 	 * Load a velocity template associated to a XSL transformation or function
@@ -115,7 +112,7 @@ public interface XsltGenerationContext extends XsltConstants {
 	 * @return the output supplier to be used to write the XSL fragment to
 	 *         include
 	 */
-	public OutputSupplier<? extends OutputStream> addInclude();
+	public ByteSink addInclude();
 
 	/**
 	 * Reserve a name for an XSL template if possible.

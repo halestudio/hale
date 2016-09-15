@@ -16,14 +16,15 @@
 
 package eu.esdihumboldt.hale.ui.function.extension;
 
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 
 /**
  * TODO Type description
  * 
  * @author Simon Templer
  */
-public interface TypeFunctionWizardDescriptor extends FunctionWizardDescriptor<TypeFunction> {
+public interface TypeFunctionWizardDescriptor extends
+		FunctionWizardDescriptor<TypeFunctionDefinition> {
 
 	// concrete typed interface
 

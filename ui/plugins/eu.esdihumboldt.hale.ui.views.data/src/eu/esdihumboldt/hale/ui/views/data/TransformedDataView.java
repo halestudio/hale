@@ -23,9 +23,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.ui.part.WorkbenchPart;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
@@ -65,6 +67,8 @@ public class TransformedDataView extends AbstractDataView {
 
 	private Button mapButton;
 	private List<Button> selectorButtons;
+
+	private ProgressBar pbar;
 
 	/**
 	 * Default constructor
@@ -106,7 +110,7 @@ public class TransformedDataView extends AbstractDataView {
 			instanceImage = DataViewPlugin.getImageDescriptor("icons/random.gif").createImage(); //$NON-NLS-1$
 		}
 		instanceButton.setImage(instanceImage);
-		instanceButton.setToolTipText(Messages.TransformedTableView_0); //$NON-NLS-1$
+		instanceButton.setToolTipText(Messages.TransformedTableView_0); // $NON-NLS-1$
 		instanceButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -141,7 +145,7 @@ public class TransformedDataView extends AbstractDataView {
 			mapImage = DataViewPlugin.getImageDescriptor("icons/synced.gif").createImage(); //$NON-NLS-1$
 		}
 		mapButton.setImage(mapImage);
-		mapButton.setToolTipText(Messages.TransformedTableView_1); //$NON-NLS-1$
+		mapButton.setToolTipText(Messages.TransformedTableView_1); // $NON-NLS-1$
 		mapButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -183,4 +187,33 @@ public class TransformedDataView extends AbstractDataView {
 		super.dispose();
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.AbstractDataView#enableControls(boolean)
+	 */
+	@Override
+	protected void enableControls(boolean enable) {
+		pbar.setVisible(!enable);
+		// disable/ enable button controls
+		for (Button b : selectorButtons)
+			b.setEnabled(enable);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.AbstractDataView#provideBackgroundProcessControl(org.eclipse.swt.widgets.Composite)
+	 */
+	@Override
+	protected void provideBackgroundProcessControl(Composite parent) {
+		GridLayout layout = new GridLayout(1, true);
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		parent.setLayout(layout);
+
+		GridData pData = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+		pData.widthHint = 40;
+		pbar = new ProgressBar(parent, SWT.HORIZONTAL | SWT.INDETERMINATE);
+		pbar.setLayoutData(pData);
+		pbar.setVisible(false);
+	}
 }

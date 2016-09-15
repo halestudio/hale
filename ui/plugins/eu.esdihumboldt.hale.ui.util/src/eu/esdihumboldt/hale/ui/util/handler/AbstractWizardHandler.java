@@ -29,21 +29,33 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 /**
  * Shows a wizard
  * 
+ * @param <W> the wizard type
  * @author Simon Templer
  */
-public abstract class AbstractWizardHandler extends AbstractHandler {
+public abstract class AbstractWizardHandler<W extends IWizard> extends AbstractHandler {
 
 	/**
 	 * @see IHandler#execute(ExecutionEvent)
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWizard wizard = createWizard();
+		W wizard = createWizard();
 		Shell shell = Display.getCurrent().getActiveShell();
 		HaleWizardDialog dialog = new HaleWizardDialog(shell, wizard);
-		dialog.open();
+		if (dialog.open() == HaleWizardDialog.OK) {
+			onComplete(wizard);
+		}
 
 		return null;
+	}
+
+	/**
+	 * Called when the wizard was successfully completed.
+	 * 
+	 * @param wizard the wizard
+	 */
+	protected void onComplete(W wizard) {
+		// override me
 	}
 
 	/**
@@ -51,6 +63,6 @@ public abstract class AbstractWizardHandler extends AbstractHandler {
 	 * 
 	 * @return the wizard instance
 	 */
-	protected abstract IWizard createWizard();
+	protected abstract W createWizard();
 
 }

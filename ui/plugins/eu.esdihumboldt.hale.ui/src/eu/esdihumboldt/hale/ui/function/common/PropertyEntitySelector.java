@@ -26,8 +26,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import com.google.common.base.Objects;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
  * 
  * @author Simon Templer
  */
-public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
+public class PropertyEntitySelector extends EntitySelector<PropertyParameterDefinition> {
 
 	private TypeEntityDefinition parentType;
 
@@ -53,10 +53,10 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 	 * @param ssid the schema space
 	 * @param field the field definition, may be <code>null</code>
 	 * @param parent the parent composite
-	 * @param parentType the parent type
+	 * @param parentType the parent type, may be <code>null</code>
 	 */
-	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameter field, Composite parent,
-			TypeEntityDefinition parentType) {
+	public PropertyEntitySelector(SchemaSpaceID ssid, PropertyParameterDefinition field,
+			Composite parent, TypeEntityDefinition parentType) {
 		super(ssid, field, parent, createFilters(field));
 
 		this.parentType = parentType;
@@ -85,11 +85,11 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 
 	/**
 	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID,
-	 *      AbstractParameter)
+	 *      ParameterDefinition)
 	 */
 	@Override
 	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,
-			PropertyParameter field) {
+			PropertyParameterDefinition field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -117,7 +117,7 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameter> {
 		throw new IllegalArgumentException("Entity must be a property");
 	}
 
-	private static ViewerFilter[] createFilters(PropertyParameter field) {
+	private static ViewerFilter[] createFilters(PropertyParameterDefinition field) {
 		// if no condition is present add a filter that allows all properties
 		ViewerFilter propertyFilter = new ViewerFilter() {
 

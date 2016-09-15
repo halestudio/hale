@@ -321,10 +321,9 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 		// determine if external data should be used
 		boolean useExternalData = false;
 		if (dataSet.equals(DataSet.SOURCE)) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
-			useExternalData = InstanceViewPreferences.occurringValuesUseExternalData(ps
-					.getConfigurationService());
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
+			useExternalData = InstanceViewPreferences
+					.occurringValuesUseExternalData(ps.getConfigurationService());
 		}
 
 		InstanceCollection collection;
@@ -338,10 +337,9 @@ public class OccurringValuesServiceImpl extends AbstractOccurringValuesService {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-							ProjectService.class);
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
+					ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 					List<InstanceCollection> sources = new ArrayList<>();
 					for (Resource resource : ps.getResources()) {

@@ -16,6 +16,10 @@
 
 package eu.esdihumboldt.hale.common.align.model;
 
+import java.util.Locale;
+
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -33,7 +37,9 @@ public interface CellExplanation {
 	 *            explanation, may be <code>null</code>
 	 * @return the cell explanation, <code>null</code> if none is available
 	 */
-	public String getExplanation(Cell cell, ServiceProvider provider);
+	default String getExplanation(Cell cell, ServiceProvider provider) {
+		return getExplanation(cell, provider, Locale.getDefault());
+	}
 
 	/**
 	 * Get the explanation in html format for the given cell
@@ -44,6 +50,41 @@ public interface CellExplanation {
 	 * @return the cell explanation in html format, <code>null</code> if none is
 	 *         available
 	 */
-	public String getExplanationAsHtml(Cell cell, ServiceProvider provider);
+	default String getExplanationAsHtml(Cell cell, ServiceProvider provider) {
+		return getExplanationAsHtml(cell, provider, Locale.getDefault());
+	}
+
+	/**
+	 * Get the explanation for the given cell.
+	 * 
+	 * @param cell the cell
+	 * @param provider provider for eventual services needed to create the
+	 *            explanation, may be <code>null</code>
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
+	 * @return the cell explanation, <code>null</code> if none is available
+	 */
+	public String getExplanation(Cell cell, ServiceProvider provider, Locale locale);
+
+	/**
+	 * Get the explanation in html format for the given cell
+	 * 
+	 * @param cell the cell
+	 * @param provider provider for eventual services needed to create the
+	 *            explanation, my be <code>null</code>
+	 * @param locale the locale for the explanation, to be matched if content is
+	 *            available
+	 * @return the cell explanation in html format, <code>null</code> if none is
+	 *         available
+	 */
+	public String getExplanationAsHtml(Cell cell, ServiceProvider provider, Locale locale);
+
+	/**
+	 * Get the locales supported for explanations.
+	 * 
+	 * @return the supported locales or <code>null</code> if unknown
+	 */
+	@Nullable
+	public Iterable<Locale> getSupportedLocales();
 
 }

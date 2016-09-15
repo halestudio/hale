@@ -32,8 +32,7 @@ public class TransformedInstancePainter extends AbstractInstancePainter {
 	 * Default constructor
 	 */
 	public TransformedInstancePainter() {
-		super((InstanceService) PlatformUI.getWorkbench().getService(InstanceService.class),
-				DataSet.TRANSFORMED);
+		super(PlatformUI.getWorkbench().getService(InstanceService.class), DataSet.TRANSFORMED);
 	}
 
 }

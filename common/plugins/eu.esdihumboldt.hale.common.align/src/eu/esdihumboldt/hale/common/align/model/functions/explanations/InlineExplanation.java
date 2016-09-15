@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import javax.annotation.Nullable;
 
@@ -25,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -36,11 +38,9 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class InlineExplanation extends AbstractCellExplanation {
 
-	/**
-	 * @see AbstractCellExplanation#getExplanation(Cell, boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		TypeEntityDefinition sourceType = getPropertyType(source);
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
@@ -48,11 +48,11 @@ public class InlineExplanation extends AbstractCellExplanation {
 
 		if (sourceType != null && targetType != null) {
 			String retypeName = (html) ? ("<i>Retype</i>") : ("Retype");
-			String text = "To transform the data contained in {0} to {1}, any {4} transformations defined between the corresponding property types are used.\n"
-					+ "Thus a {4} type transformation must be defined between the types {2} (source) and {3} (target), which is utilised for this property transformation.";
-			return MessageFormat.format(text, formatEntity(source, html, true),
-					formatEntity(target, html, true), formatEntity(sourceType, html, true),
-					formatEntity(targetType, html, true), retypeName);
+			String text = getMessage("main", locale);
+			return MessageFormat.format(text, formatEntity(source, html, true, locale),
+					formatEntity(target, html, true, locale),
+					formatEntity(sourceType, html, true, locale),
+					formatEntity(targetType, html, true, locale), retypeName);
 		}
 
 		return null;

@@ -29,6 +29,7 @@ import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -37,12 +38,11 @@ import org.eclipse.swt.widgets.ToolBar;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.util.source.CompilingSourceViewer;
 import eu.esdihumboldt.hale.ui.util.source.SourceCompiler;
@@ -55,11 +55,11 @@ import eu.esdihumboldt.hale.ui.util.source.ValidatingSourceViewer;
  * Generic parameter page based on a source viewer panel.
  * 
  * @param <C> the type of the compilation result, if applicable
- * 
+ * @param <W> the wizard type
  * @author Simon Templer
  */
-public class SourceViewerPage<C> extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
-		implements ParameterPage {
+public class SourceViewerPage<C, W extends Wizard> extends HaleWizardPage<W> implements
+		ParameterPage {
 
 	private CompilingSourceViewer<C> viewer;
 	private final String parameterName;
@@ -86,7 +86,7 @@ public class SourceViewerPage<C> extends HaleWizardPage<AbstractGenericFunctionW
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
 			List<ParameterValue> val = initialValues.get(parameterName);

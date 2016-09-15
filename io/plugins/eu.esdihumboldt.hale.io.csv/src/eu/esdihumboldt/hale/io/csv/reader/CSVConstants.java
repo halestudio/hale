@@ -39,8 +39,13 @@ public interface CSVConstants {
 	public static final String PARAM_ESCAPE = "escape";
 
 	/**
-	 * The separating sign for the CSV file to be read (can be '\t' or ',' or
-	 * ' ')
+	 * Name of the parameter specifying the decimal divisor
+	 */
+	public static final String PARAM_DECIMAL = "decimal";
+
+	/**
+	 * The separating sign for the CSV file to be read (can be '\t' or ',' or '
+	 * ')
 	 */
 	public static final char DEFAULT_SEPARATOR = '\t';
 
@@ -53,5 +58,10 @@ public interface CSVConstants {
 	 * The escape sign for the CSV file to be read
 	 */
 	public static final char DEFAULT_ESCAPE = '\\';
+
+	/**
+	 * The decimal sign for the CSV file to be read
+	 */
+	public static final char DEFAULT_DECIMAL = '.';
 
 }

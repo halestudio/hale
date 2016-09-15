@@ -31,19 +31,20 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.common.definition.editors.EditorChooserEditor;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Parameter page for assign function.
@@ -54,7 +55,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 		implements ParameterPage, AssignFunction {
 
 	private ParameterValue initialValue;
-	private Editor<?> editor;
+	private AttributeEditor<?> editor;
 	private Composite page;
 	private Composite title;
 	private PropertyDefinition target = null;
@@ -97,7 +98,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter value, ignore params
 		if (initialValues == null)
@@ -138,20 +139,21 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 			title = new Composite(page, SWT.NONE);
 			title.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 //			title.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.END).create());
-			DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench()
+			DefinitionLabelFactory dlf = PlatformUI.getWorkbench()
 					.getService(DefinitionLabelFactory.class);
 			dlf.createLabel(title, propDef, false);
 			Label label = new Label(title, SWT.NONE);
 			label.setText(" = ");
 
-			editor = ((AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-					AttributeEditorFactory.class)).createEditor(page, propDef, entityDef, false);
+			editor = PlatformUI.getWorkbench().getService(AttributeEditorFactory.class)
+					.createEditor(page, propDef, entityDef, false);
+			editor.setVariableReplacer(new TransformationVariableReplacer());
 			editor.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 			editor.setPropertyChangeListener(new IPropertyChangeListener() {
 
 				@Override
 				public void propertyChange(PropertyChangeEvent event) {
-					if (event.getProperty().equals(Editor.IS_VALID))
+					if (event.getProperty().equals(AttributeEditor.IS_VALID))
 						setPageComplete((Boolean) event.getNewValue());
 				}
 			});

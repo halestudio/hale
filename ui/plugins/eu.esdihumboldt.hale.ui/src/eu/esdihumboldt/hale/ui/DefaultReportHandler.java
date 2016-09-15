@@ -15,13 +15,12 @@
 
 package eu.esdihumboldt.hale.ui;
 
-import net.jcip.annotations.Immutable;
-
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.ui.service.report.ReportService;
+import net.jcip.annotations.Immutable;
 
 /**
  * Report handler publishing reports to the {@link ReportService}.
@@ -52,8 +51,7 @@ public class DefaultReportHandler implements ReportHandler {
 	 */
 	@Override
 	public void publishReport(Report<?> report) {
-		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-				ReportService.class);
+		ReportService repService = PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.addReport(report);
 	}
 

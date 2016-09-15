@@ -62,7 +62,7 @@ public class AddConditionAction extends Action {
 	 */
 	@Override
 	public void run() {
-		EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+		EntityDefinitionService eds = PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
 
 		// create filter

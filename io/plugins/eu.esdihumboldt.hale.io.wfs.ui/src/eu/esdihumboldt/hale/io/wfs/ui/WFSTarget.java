@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -41,6 +40,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.io.wfs.WFSConstants;
 import eu.esdihumboldt.hale.io.wfs.WFSVersion;
@@ -166,7 +166,7 @@ public class WFSTarget extends AbstractTarget<WFSWriter> implements WFSConstants
 		});
 
 		// fixed content type
-		setContentType(Platform.getContentTypeManager().getContentType(CONTENT_TYPE_ID_WFST));
+		setContentType(HalePlatform.getContentTypeManager().getContentType(CONTENT_TYPE_ID_WFST));
 
 		// initial state update
 		updateState();

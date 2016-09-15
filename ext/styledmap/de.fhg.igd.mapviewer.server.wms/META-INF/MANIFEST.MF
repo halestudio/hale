@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WMS Map Server
+Bundle-SymbolicName: de.fhg.igd.mapviewer.server.wms;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: de.fhg.igd.eclipse.ui.util.extension,
+ de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.mapviewer,
+ de.fhg.igd.mapviewer.concurrency,
+ de.fhg.igd.mapviewer.geom,
+ de.fhg.igd.mapviewer.server;version="1.0.0",
+ de.fhg.igd.mapviewer.view.overlay;version="1.0.0",
+ de.fhg.igd.osgi.util;version="1.0.0",
+ edu.umd.cs.findbugs.annotations,
+ eu.esdihumboldt.util.http,
+ org.apache.commons.logging,
+ org.geotools.referencing,
+ org.jdesktop.swingx.graphics,
+ org.jdesktop.swingx.mapviewer;version="1.0.0",
+ org.jdesktop.swingx.mapviewer.empty;version="1.0.0",
+ org.jdesktop.swingx.painter,
+ org.opengis.referencing,
+ org.opengis.referencing.crs
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
+ org.eclipse.ui;bundle-version="3.5.0"
+Export-Package: de.fhg.igd.mapviewer.server.wms,
+ de.fhg.igd.mapviewer.server.wms.capabilities,
+ de.fhg.igd.mapviewer.server.wms.overlay,
+ de.fhg.igd.mapviewer.server.wms.wizard

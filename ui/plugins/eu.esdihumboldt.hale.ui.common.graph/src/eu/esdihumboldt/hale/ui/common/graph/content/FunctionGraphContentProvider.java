@@ -22,22 +22,22 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.util.Pair;
 
 /**
- * Graph content provider to model the source and target of a {@link Function}
+ * Graph content provider to model the source and target of a
+ * {@link FunctionDefinition}
  * 
  * @author Patrick Lieb
  */
-public class FunctionGraphContentProvider extends ArrayContentProvider implements
-		IGraphEntityContentProvider {
+public class FunctionGraphContentProvider extends ArrayContentProvider
+		implements IGraphEntityContentProvider {
 
 	/**
 	 * @see IGraphEntityContentProvider#getConnectedTo(Object)
@@ -45,8 +45,8 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 	@Override
 	public Object[] getConnectedTo(Object entity) {
 		Collection<Object> result = new ArrayList<Object>();
-		if (entity instanceof Function) {
-			return ((Function) entity).getTarget().toArray();
+		if (entity instanceof FunctionDefinition) {
+			return ((FunctionDefinition<?>) entity).getTarget().toArray();
 		}
 		if (entity instanceof Pair<?, ?>) {
 			Pair<?, ?> pair = (Pair<?, ?>) entity;
@@ -64,24 +64,28 @@ public class FunctionGraphContentProvider extends ArrayContentProvider implement
 	@Override
 	public Object[] getElements(Object inputElement) {
 		Collection<Object> collection = new ArrayList<Object>();
-		if (inputElement instanceof AbstractFunction<?>) {
-			AbstractFunction<?> function = (AbstractFunction<?>) inputElement;
+		if (inputElement instanceof FunctionDefinition<?>) {
+			FunctionDefinition<?> function = (FunctionDefinition<?>) inputElement;
 			collection.add(function);
 
-			if (inputElement instanceof TypeFunction) {
-				for (TypeParameter type : ((TypeFunction) function).getSource()) {
+			if (inputElement instanceof TypeFunctionDefinition) {
+				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function)
+						.getSource()) {
 					collection.add(new Pair<Object, Object>(type, function));
 				}
-				for (TypeParameter type : ((TypeFunction) function).getTarget()) {
+				for (TypeParameterDefinition type : ((TypeFunctionDefinition) function)
+						.getTarget()) {
 					collection.add(type);
 				}
 			}
 
-			if (inputElement instanceof PropertyFunction) {
-				for (PropertyParameter prop : ((PropertyFunction) function).getSource()) {
+			if (inputElement instanceof PropertyFunctionDefinition) {
+				for (PropertyParameterDefinition prop : ((PropertyFunctionDefinition) function)
+						.getSource()) {
 					collection.add(new Pair<Object, Object>(prop, function));
 				}
-				for (PropertyParameter prop : ((PropertyFunction) function).getTarget()) {
+				for (PropertyParameterDefinition prop : ((PropertyFunctionDefinition) function)
+						.getTarget()) {
 					collection.add(prop);
 				}
 			}

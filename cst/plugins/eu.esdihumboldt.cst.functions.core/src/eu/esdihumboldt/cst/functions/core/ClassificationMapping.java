@@ -38,9 +38,9 @@ import eu.esdihumboldt.hale.common.lookup.LookupTable;
  * 
  * @author Kai Schwierczek
  */
-public class ClassificationMapping extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		ClassificationMappingFunction {
+public class ClassificationMapping
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements ClassificationMappingFunction {
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -59,19 +59,26 @@ public class ClassificationMapping extends
 		else {
 			Value target = lookup.lookup(Value.of(source));
 			if (target != null) {
-				return target.getValue();
+				// return value w/ transformation variables replaced
+				return getExecutionContext().getVariables().replaceVariables(target);
 			}
 		}
 
 		String notClassifiedAction = getOptionalParameter(PARAMETER_NOT_CLASSIFIED_ACTION,
 				Value.of(USE_NULL_ACTION)).as(String.class);
 
-		if (USE_SOURCE_ACTION.equals(notClassifiedAction))
+		if (USE_SOURCE_ACTION.equals(notClassifiedAction)) {
 			return source;
-		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX))
-			return notClassifiedAction.substring(notClassifiedAction.indexOf(':') + 1);
-		else
+		}
+		else if (notClassifiedAction.startsWith(USE_FIXED_VALUE_ACTION_PREFIX)) {
+			String notClassified = notClassifiedAction
+					.substring(notClassifiedAction.indexOf(':') + 1);
+			// return w/ transformation variables replaced
+			return getExecutionContext().getVariables().replaceVariables(notClassified);
+		}
+		else {
 			// USE_NULL_ACTION or null or something unknown
 			throw new NoResultException(); // return null;
+		}
 	}
 }

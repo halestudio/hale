@@ -18,8 +18,7 @@ package eu.esdihumboldt.util.validator;
 
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
-
-import de.fhg.igd.osgi.util.OsgiUtils;
+import org.springframework.core.convert.support.DefaultConversionService;
 
 /**
  * Abstract validator implementation containing helper methods for conversion.
@@ -47,7 +46,7 @@ public abstract class AbstractValidator implements Validator {
 			return (T) o;
 		}
 
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = new DefaultConversionService();
 		return cs.convert(o, type);
 	}
 

@@ -23,9 +23,8 @@ import java.net.URISyntaxException;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**

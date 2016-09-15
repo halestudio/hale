@@ -64,7 +64,7 @@
             name="App-Schema Mapping File"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="{http://www.geotools.org/app-schema}AppSchemaDataAccess">

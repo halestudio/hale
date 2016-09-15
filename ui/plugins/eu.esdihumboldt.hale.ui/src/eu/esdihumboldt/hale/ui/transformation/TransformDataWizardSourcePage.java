@@ -93,7 +93,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 		this.useProjectData = useProjectData;
 		if (useProjectData) {
 			setTitle("Source data");
-			setDescription("The data sources that are imported into the project and will be transformed");
+			setDescription(
+					"The data sources that are imported into the project and will be transformed");
 		}
 		else {
 			setTitle("Source instance selection");
@@ -118,14 +119,14 @@ public class TransformDataWizardSourcePage extends WizardPage {
 		Composite content = new Composite(parent, SWT.NONE);
 		content.setLayout(GridLayoutFactory.swtDefaults().create());
 		final ListViewer listViewer = new ListViewer(content);
-		listViewer.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, true).create());
+		listViewer.getControl()
+				.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 
 		if (!useProjectData) {
 			Button addButton = new Button(content, SWT.PUSH);
 			addButton.setText("Add source file");
-			addButton.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
-					.create());
+			addButton.setLayoutData(
+					GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
 			addButton.addSelectionListener(new SelectionAdapter() {
 
 				@Override
@@ -152,12 +153,11 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			IRunnableWithProgress op = new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
 					monitor.beginTask("Prepare data sources", IProgressMonitor.UNKNOWN);
 
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-							ProjectService.class);
+					ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 					final List<URI> locations = new ArrayList<>();
 					for (Resource resource : ps.getResources()) {
@@ -257,8 +257,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 				// init sink
 				try {
 					targetSink.init(!writer.isPassthrough());
-					SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-							SchemaService.class);
+					SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 					targetSink.setTypes(ss.getSchemas(SchemaSpaceID.TARGET));
 				} catch (Exception e) {
 					throw new IllegalStateException("Failed to initialize target sink", e);
@@ -270,7 +269,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			}
 			else if (validationJob == null) {
 				final InstanceValidator validator = (InstanceValidator) provider;
-				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance()) {
+				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance(),
+						null) {
 
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="de.fhg.igd.mapviewer.server.MapServer" name="MapServer" schema="schema/de.fhg.igd.mapviewer.server.MapServer.exsd"/>
+   <extension-point id="de.fhg.igd.mapviewer.MapPainter" name="MapPainter" schema="schema/de.fhg.igd.mapviewer.MapPainter.exsd"/>
+   <extension-point id="de.fhg.igd.mapviewer.MapTool" name="MapTool" schema="schema/de.fhg.igd.mapviewer.MapTool.exsd"/>
+   <extension-point id="de.fhg.igd.mapviewer.view.MapViewExtension" name="MapViewExtension" schema="schema/de.fhg.igd.mapviewer.view.MapViewExtension.exsd"/>
+   <extension-point id="de.fhg.igd.mapviewer.TileOverlayPainter" name="TileOverlayPainter" schema="schema/de.fhg.igd.mapviewer.TileOverlayPainter.exsd"/>
+   <extension-point id="de.fhg.igd.mapviewer.TileCache" name="TileCache" schema="schema/de.fhg.igd.mapviewer.TileCache.exsd"/>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            class="de.fhg.igd.mapviewer.view.MapView"
+            icon="images/world.gif"
+            id="de.fhg.igd.mapviewer.view.MapView"
+            name="%view.name"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="de.fhg.igd.mapviewer.view.preferences.MapPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="de.fhg.igd.mapviewer.view.MapServiceFactory">
+         <service
+               serviceClass="de.fhg.igd.mapviewer.view.overlay.IMapPainterService">
+         </service>
+         <service
+               serviceClass="de.fhg.igd.mapviewer.view.overlay.ITileOverlayService">
+         </service>
+         <service
+               serviceClass="de.fhg.igd.mapviewer.view.server.IMapServerService">
+         </service>
+         <service
+               serviceClass="de.fhg.igd.mapviewer.view.cache.ITileCacheService">
+         </service>
+      </serviceFactory>
+   </extension>
+   <extension
+         point="de.fhg.igd.mapviewer.TileCache">
+      <cache
+            class="org.jdesktop.swingx.mapviewer.DefaultTileCache"
+            id="de.fhg.igd.mapviewer.memory"
+            name="%cache.name"
+            order="-1">
+      </cache>
+      <cache
+            class="de.fhg.igd.mapviewer.view.cache.WorkspaceFileTileCache"
+            id="de.fhg.igd.mapviewer.cache2"
+            name="%cache.name.0"
+            order="0">
+      </cache>
+   </extension>
+
+</plugin>

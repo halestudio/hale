@@ -38,9 +38,10 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.ui.HALEContextProvider;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -97,8 +98,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 	protected Pair<StructuredViewer, Control> createViewer(Composite parent) {
 		PatternFilter filter = new PatternFilter();
 		filter.setIncludeLeadingWildcard(true);
-		FilteredTree tree = new FilteredTree(parent, SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL
-				| SWT.V_SCROLL, filter, true);
+		FilteredTree tree = new FilteredTree(parent,
+				SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
 
 		viewer = tree.getViewer();
 		viewer.setContentProvider(new FunctionWizardNodeContentProvider(getContainer(),
@@ -160,8 +161,7 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 		// load page configuration
 		// XXX would be better if called from outside
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		restore(ps.getConfigurationService());
 
 		return new Pair<StructuredViewer, Control>(viewer, tree);
@@ -246,7 +246,8 @@ public class NewRelationPage extends ViewerWizardSelectionPage {
 
 			if (functionId != null) {
 				// create function wizard node and select it
-				AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+				FunctionDefinition<?> function = FunctionUtil.getFunction(functionId,
+						HaleUI.getServiceProvider());
 				if (function != null) {
 					FunctionWizardNode node = new FunctionWizardNode(function, getContainer(),
 							initialSelection);

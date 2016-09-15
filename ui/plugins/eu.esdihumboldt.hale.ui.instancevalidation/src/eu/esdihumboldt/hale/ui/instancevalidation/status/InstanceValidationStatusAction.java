@@ -26,8 +26,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instancevalidator.report.InstanceValidationReport;
 import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
@@ -94,20 +94,21 @@ public class InstanceValidationStatusAction extends Action {
 		reportOkDescriptor = new DecorationOverlayIcon(noReportBaseImage,
 				InstanceValidationUIPlugin.getImageDescriptor("icons/signed_yes_ovr.gif"),
 				IDecoration.BOTTOM_LEFT);
-		reportWarningsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI
-				.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_WARNING), IDecoration.BOTTOM_LEFT);
-		reportErrorsDescriptor = new DecorationOverlayIcon(noReportBaseImage, PlatformUI
-				.getWorkbench().getSharedImages()
-				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR), IDecoration.BOTTOM_LEFT);
+		reportWarningsDescriptor = new DecorationOverlayIcon(noReportBaseImage,
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+						ISharedImages.IMG_DEC_FIELD_WARNING),
+				IDecoration.BOTTOM_LEFT);
+		reportErrorsDescriptor = new DecorationOverlayIcon(noReportBaseImage,
+				PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(
+						ISharedImages.IMG_DEC_FIELD_ERROR),
+				IDecoration.BOTTOM_LEFT);
 	}
 
 	/**
 	 * Registers needed listeners.
 	 */
 	private void createListeners() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.addListener(new InstanceServiceAdapter() {
 
 			@Override
@@ -123,7 +124,7 @@ public class InstanceValidationStatusAction extends Action {
 			}
 		});
 
-		final InstanceValidationService ivs = (InstanceValidationService) PlatformUI.getWorkbench()
+		final InstanceValidationService ivs = PlatformUI.getWorkbench()
 				.getService(InstanceValidationService.class);
 		ivs.addListener(new InstanceValidationListener() {
 

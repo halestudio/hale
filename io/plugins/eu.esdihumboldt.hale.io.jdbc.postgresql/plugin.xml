@@ -15,10 +15,19 @@
             name="geometry">
       </geometrytype>
       <driver
+            class="org.postgresql.Driver"
             id="eu.esdihumboldt.hale.io.jdbc.postgresql.postgis.driver"
             name="PostgreSQL/PostGIS"
             testUri="jdbc:postgresql://localhost/db"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.postgresql.PostURIBuilder">
+         <prefix
+               value="jdbc:postgresql">
+         </prefix>
+         <schema-selection
+               enabled="true"
+               multiple="true"
+               selector="eu.esdihumboldt.hale.io.jdbc.postgresql.PostSchemaSelector">
+         </schema-selection>
       </driver>
       <customtype
             binding="java.math.BigDecimal"

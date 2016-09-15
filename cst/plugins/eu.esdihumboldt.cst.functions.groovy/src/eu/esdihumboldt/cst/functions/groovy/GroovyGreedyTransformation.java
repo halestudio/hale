@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultEx
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
@@ -53,7 +54,7 @@ import groovy.lang.Script;
  * @author Kai Schwierczek
  */
 public class GroovyGreedyTransformation extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements GroovyConstants {
+		AbstractSingleTargetPropertyTransformation<TransformationEngine>implements GroovyConstants {
 
 	/**
 	 * The function/transformation ID.
@@ -79,9 +80,10 @@ public class GroovyGreedyTransformation extends
 		InstanceBuilder builder = GroovyTransformation.createBuilder(resultProperty);
 
 		// create the script binding
-		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE), getCell().getSource()
-				.get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder, useInstanceVariables,
-				log, getExecutionContext());
+		Binding binding = createGroovyBinding(variables.get(ENTITY_VARIABLE),
+				getCell().getSource().get(ENTITY_VARIABLE), getCell(), getTypeCell(), builder,
+				useInstanceVariables, log, getExecutionContext(),
+				resultProperty.getDefinition().getPropertyType());
 
 		Object result;
 		try {
@@ -89,8 +91,10 @@ public class GroovyGreedyTransformation extends
 			Script groovyScript = GroovyUtil.getScript(this, binding, service);
 
 			// evaluate the script
-			result = GroovyTransformation.evaluate(groovyScript, builder, resultProperty
-					.getDefinition().getPropertyType(), service);
+			result = GroovyTransformation.evaluate(groovyScript, builder,
+					resultProperty.getDefinition().getPropertyType(), service);
+		} catch (NoResultException | TransformationException e) {
+			throw e;
 		} catch (Throwable e) {
 			throw new TransformationException("Error evaluating the cell script", e);
 		}
@@ -116,12 +120,15 @@ public class GroovyGreedyTransformation extends
 	 *            the binding instead of extracting the instance values
 	 * @param log the transformation log
 	 * @param context the execution context
+	 * @param targetInstanceType the type of the target instance
 	 * @return the binding for use with {@link GroovyShell}
 	 */
 	public static Binding createGroovyBinding(List<PropertyValue> vars,
 			List<? extends Entity> varDefs, Cell cell, Cell typeCell, InstanceBuilder builder,
-			boolean useInstanceVariables, TransformationLog log, ExecutionContext context) {
-		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context);
+			boolean useInstanceVariables, TransformationLog log, ExecutionContext context,
+			TypeDefinition targetInstanceType) {
+		Binding binding = GroovyUtil.createBinding(builder, cell, typeCell, log, context,
+				targetInstanceType);
 
 		// collect definitions to check if all were provided
 		Set<EntityDefinition> notDefined = new HashSet<>();

@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.Conte
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.TargetContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
@@ -42,7 +43,7 @@ public class AsDeepAsPossible implements ContextMatcher {
 	 * transformation tree, assigning the last candidate to source nodes as a
 	 * transformation context.
 	 */
-	private static class ContextVisitor extends AbstractTargetToSourceVisitor {
+	private class ContextVisitor extends AbstractTargetToSourceVisitor {
 
 		private final Stack<TargetNode> candidates = new Stack<TargetNode>();
 
@@ -69,7 +70,7 @@ public class AsDeepAsPossible implements ContextMatcher {
 				// candidates.
 				TransformationContext context = source.getContext();
 				if (context == null) {
-					TargetContext newContext = new TargetContext();
+					TargetContext newContext = new TargetContext(serviceProvider);
 					source.setContext(newContext);
 					newContext.addContextTargets(candidates);
 				}
@@ -111,6 +112,13 @@ public class AsDeepAsPossible implements ContextMatcher {
 			return true;
 		}
 
+	}
+
+	private final ServiceProvider serviceProvider;
+
+	@SuppressWarnings("javadoc")
+	public AsDeepAsPossible(ServiceProvider serviceProvider) {
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**

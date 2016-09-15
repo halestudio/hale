@@ -50,8 +50,8 @@ public abstract class DefaultGeometryUtil {
 	 * @return the default geometries or an empty collection if there is none
 	 */
 	public static Collection<GeometryProperty<?>> getDefaultGeometries(Instance instance) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 
 		if (gss == null) {
 			throw new IllegalStateException("No geometry schema service available");
@@ -69,8 +69,8 @@ public abstract class DefaultGeometryUtil {
 	 * @return if the entity definition represents a default geometry property
 	 */
 	public static boolean isDefaultGeometry(EntityDefinition entityDef) {
-		GeometrySchemaService gss = (GeometrySchemaService) PlatformUI.getWorkbench().getService(
-				GeometrySchemaService.class);
+		GeometrySchemaService gss = PlatformUI.getWorkbench()
+				.getService(GeometrySchemaService.class);
 
 		if (gss == null) {
 			log.error("No geometry schema service available");

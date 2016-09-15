@@ -177,6 +177,10 @@
             allowChildren="true"
             name="eu.esdihumboldt.hale.common.schema.model">
       </allowPackage>
+      <allow
+            allowAll="false"
+            class="javax.xml.namespace.QName">
+      </allow>
    </extension>
 
 </plugin>

@@ -46,7 +46,7 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -63,11 +63,11 @@ import eu.esdihumboldt.util.groovy.paths.Path;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class SpatialDataSetConfigurationPage extends
-		AbstractConfigurationPage<InspireInstanceWriter, IOWizard<InspireInstanceWriter>> {
+public class SpatialDataSetConfigurationPage
+		extends AbstractConfigurationPage<InspireInstanceWriter, IOWizard<InspireInstanceWriter>> {
 
-	private Editor<?> localIdEditor;
-	private Editor<?> namespaceEditor;
+	private AttributeEditor<?> localIdEditor;
+	private AttributeEditor<?> namespaceEditor;
 	private OpenFileFieldEditor metadataFile;
 
 	/**
@@ -77,7 +77,8 @@ public class SpatialDataSetConfigurationPage extends
 		super("inspire.sds");
 
 		setTitle("SpatialDataSet configuration");
-		setDescription("Please configure the data set INSPIRE identifier and optionally included metadata");
+		setDescription(
+				"Please configure the data set INSPIRE identifier and optionally included metadata");
 		setPageComplete(false);
 	}
 
@@ -113,8 +114,7 @@ public class SpatialDataSetConfigurationPage extends
 
 		// Get the property definitions of localId and namespace.
 		String action = getWizard().getActionId();
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		SchemaSpaceID ssid = SchemaSpaceID.TARGET;
 		if (InstanceIO.ACTION_SAVE_SOURCE_DATA.equals(action)) {
 			ssid = SchemaSpaceID.SOURCE;
@@ -133,9 +133,8 @@ public class SpatialDataSetConfigurationPage extends
 			return;
 
 		// find localId and namespace definitions
-		Path<Definition<?>> localIdPath = new DefinitionAccessor(sdsType)
-				.findChildren("identifier").findChildren("Identifier").findChildren("localId")
-				.eval(false);
+		Path<Definition<?>> localIdPath = new DefinitionAccessor(sdsType).findChildren("identifier")
+				.findChildren("Identifier").findChildren("localId").eval(false);
 		List<Definition<?>> localIdDefs = localIdPath.getElements();
 		PropertyDefinition localIdDef = (PropertyDefinition) localIdDefs
 				.get(localIdDefs.size() - 1);
@@ -150,7 +149,7 @@ public class SpatialDataSetConfigurationPage extends
 
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				if (event.getProperty().equals(Editor.IS_VALID)
+				if (event.getProperty().equals(AttributeEditor.IS_VALID)
 						|| event.getProperty().equals(FileFieldEditor.IS_VALID))
 					updateState();
 			}
@@ -158,18 +157,18 @@ public class SpatialDataSetConfigurationPage extends
 
 		// inspire identifier
 		Label inspireId = new Label(page, SWT.NONE);
-		inspireId
-				.setText("Please specify the local ID and the namespace as part of the INSPIRE identifier of the Spatial Data Set:");
+		inspireId.setText(
+				"Please specify the local ID and the namespace as part of the INSPIRE identifier of the Spatial Data Set:");
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(inspireId);
 
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-				AttributeEditorFactory.class);
+		AttributeEditorFactory aef = PlatformUI.getWorkbench()
+				.getService(AttributeEditorFactory.class);
 
 		Composite localIdtitle = new Composite(page, SWT.NONE);
 		localIdtitle
 				.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(
-				DefinitionLabelFactory.class);
+		DefinitionLabelFactory dlf = PlatformUI.getWorkbench()
+				.getService(DefinitionLabelFactory.class);
 		dlf.createLabel(localIdtitle, localIdDef, false);
 		Label label = new Label(localIdtitle, SWT.NONE);
 		label.setText(" = ");
@@ -180,15 +179,15 @@ public class SpatialDataSetConfigurationPage extends
 		localIdEditor.setPropertyChangeListener(changeListener);
 
 		Composite namespacetitle = new Composite(page, SWT.NONE);
-		namespacetitle.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0)
-				.create());
+		namespacetitle
+				.setLayout(GridLayoutFactory.swtDefaults().numColumns(2).margins(0, 0).create());
 		dlf.createLabel(namespacetitle, nsDef, false);
 		label = new Label(namespacetitle, SWT.NONE);
 		label.setText(" = ");
 
 		namespaceEditor = aef.createEditor(page, nsDef, null, false);
-		namespaceEditor.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+		namespaceEditor.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 		namespaceEditor.setPropertyChangeListener(changeListener);
 
 		// spacer
@@ -197,8 +196,8 @@ public class SpatialDataSetConfigurationPage extends
 
 		// metadata file
 		Label metadataLabel = new Label(page, SWT.NONE);
-		metadataLabel
-				.setText("You can include metadata in the Spatial Data Set from a XML file with a MD_Metadata element:");
+		metadataLabel.setText(
+				"You can include metadata in the Spatial Data Set from a XML file with a MD_Metadata element:");
 		GridDataFactory.fillDefaults().span(2, 1).applyTo(metadataLabel);
 
 		// source file
@@ -220,8 +219,8 @@ public class SpatialDataSetConfigurationPage extends
 	}
 
 	private void updateState() {
-		setPageComplete(localIdEditor.isValid() && namespaceEditor.isValid()
-				&& metadataFile.isValid());
+		setPageComplete(
+				localIdEditor.isValid() && namespaceEditor.isValid() && metadataFile.isValid());
 	}
 
 	/**
@@ -257,12 +256,12 @@ public class SpatialDataSetConfigurationPage extends
 	 */
 	@Override
 	public void loadPreSelection(IOConfiguration conf) {
-		Value localId = conf.getProviderConfiguration().get(
-				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_LOCALID);
-		Value namespace = conf.getProviderConfiguration().get(
-				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_NAMESPACE);
-		Value metadata = conf.getProviderConfiguration().get(
-				InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA_FILE);
+		Value localId = conf.getProviderConfiguration()
+				.get(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_LOCALID);
+		Value namespace = conf.getProviderConfiguration()
+				.get(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_NAMESPACE);
+		Value metadata = conf.getProviderConfiguration()
+				.get(InspireInstanceWriter.PARAM_SPATIAL_DATA_SET_METADATA_FILE);
 		if (localId != null)
 			localIdEditor.setAsText(localId.getStringRepresentation());
 		if (namespace != null)

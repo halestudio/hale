@@ -29,12 +29,18 @@ import com.google.common.base.Strings;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
+import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.project.FixedProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.model.ExportConfigurationMap;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -107,7 +113,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	public ProjectTransformationEnvironment(String id,
 			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler)
-			throws IOException {
+					throws IOException {
 		this(id, input, reportHandler, null);
 	}
 
@@ -146,6 +152,9 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			targetSchema = advisor.getTargetSchema();
 			alignment = advisor.getAlignment();
 
+			addService(FunctionService.class, new AlignmentFunctionService(alignment));
+			addService(TransformationFunctionService.class,
+					new AlignmentTransformationFunctionService(alignment));
 			// make TransformationSchemas service available
 			addService(TransformationSchemas.class, new TransformationSchemas() {
 
@@ -161,6 +170,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 					}
 				}
 			});
+			// make project information available
+			addService(ProjectInfoService.class, new FixedProjectInfoService(project));
 
 			init(project);
 		}

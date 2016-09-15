@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.ui;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.2.0",
@@ -27,6 +27,7 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.util.io,
  eu.esdihumboldt.util.groovy.paths,
+ eu.esdihumboldt.util.io,
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.common.definition.editors;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.core.parameter.Validator;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Chooser editor for function parameters.
@@ -49,7 +49,7 @@ public class FunctionParameterEditorChooserEditor extends EditorChooserEditor<Ob
 	 * @see eu.esdihumboldt.hale.ui.common.definition.editors.EditorChooserEditor#createDefaultEditor(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
-	protected Editor<Object> createDefaultEditor(Composite parent) {
+	protected AttributeEditor<Object> createDefaultEditor(Composite parent) {
 		return new DefaultFunctionParameterEditor(parent, binding, validator);
 	}
 }

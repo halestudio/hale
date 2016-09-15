@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.scripting;
 import org.eclipse.swt.widgets.Composite;
 
 import eu.esdihumboldt.hale.common.scripting.Script;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Interface for script input UIs / editors.
@@ -50,7 +50,7 @@ public interface ScriptUI {
 	 * @return an editor for the script this UI is for, for the given binding if
 	 *         supported
 	 */
-	public Editor<String> createEditor(Composite parent, Class<?> binding);
+	public AttributeEditor<String> createEditor(Composite parent, Class<?> binding);
 
 // How to set variables? Add them to editor interface or add them here?
 }

@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 
@@ -45,10 +46,11 @@ public class TGraphFactory implements TGraphConstants {
 	 * Create a transformation graph from a transformation tree.
 	 * 
 	 * @param ttree the transformation tree
+	 * @param functionService the function service
 	 * @return an in-memory graph created from the transformation tree
 	 */
-	public static Graph create(TransformationTree ttree) {
-		TreeToGraphVisitor graphVisitor = new TreeToGraphVisitor();
+	public static Graph create(TransformationTree ttree, FunctionService functionService) {
+		TreeToGraphVisitor graphVisitor = new TreeToGraphVisitor(functionService);
 		ttree.accept(graphVisitor);
 
 		SetMultimap<String, String> connections = graphVisitor.getAllConnections();

@@ -53,7 +53,6 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  * @author Kevin Mais
  */
 @SuppressWarnings("null")
-@edu.umd.cs.findbugs.annotations.SuppressWarnings("NP_NULL_ON_SOME_PATH")
 @Ignore
 public class OMLReaderTest {
 
@@ -72,15 +71,15 @@ public class OMLReaderTest {
 	 */
 	@BeforeClass
 	public static void load() throws Exception {
-		alignment = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd")
-				.toURI(), OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(),
+		alignment = loadAlignment(
+				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(),
+				OMLReaderTest.class.getResource("/testdata/testOML/t2.xsd").toURI(),
 				OMLReaderTest.class.getResource("/testdata/testOML/testOMLmapping.goml").toURI());
 
 		alignment2 = loadAlignment(
 				OMLReaderTest.class.getResource("/testdata/sample_wva/wfs_va.xsd").toURI(),
-				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource("/testdata/sample_wva/watercourse_va.xml.goml")
-						.toURI());
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"), OMLReaderTest.class
+						.getResource("/testdata/sample_wva/watercourse_va.xml.goml").toURI());
 
 		alignment3 = loadAlignment(URI.create("http://hale-test/NAS_6.0.1/schema/aaa.xsd"),
 				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"), OMLReaderTest.class
@@ -88,23 +87,24 @@ public class OMLReaderTest {
 
 		alignment4 = loadAlignment(
 				OMLReaderTest.class.getResource("/testdata/watrcrsl/ERM_Watercourse_FME.xsd")
-						.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
-				OMLReaderTest.class.getResource("/testdata/watrcrsl/_watrcrsl_inspire.xml.goml")
-						.toURI());
+						.toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"), OMLReaderTest.class
+						.getResource("/testdata/watrcrsl/_watrcrsl_inspire.xml.goml").toURI());
 
 		alignment5 = loadAlignment(
 				OMLReaderTest.class.getResource("/testdata/dkm_inspire/KA_14168_EPSG25833.xsd")
 						.toURI(),
-				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"),
-				OMLReaderTest.class.getResource(
-						"/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml").toURI());
+				URI.create("http://hale-test/inspire3/CadastralParcels.xsd"), OMLReaderTest.class
+						.getResource("/testdata/dkm_inspire/mapping_dkm_inspire.xml.goml").toURI());
 
-		alignment6 = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd")
-				.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+		alignment6 = loadAlignment(
+				OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
 				OMLReaderTest.class.getResource("/testdata/testOML/test3.xml.goml").toURI());
 
-		alignment7 = loadAlignment(OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd")
-				.toURI(), URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
+		alignment7 = loadAlignment(
+				OMLReaderTest.class.getResource("/testdata/testOML/hydroEx.xsd").toURI(),
+				URI.create("http://hale-test/inspire3/HydroPhysicalWaters.xsd"),
 				OMLReaderTest.class.getResource("/testdata/testOML/test.xml.goml").toURI());
 	}
 
@@ -159,8 +159,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.formattedstring")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.hale.align.formattedstring")) {
 				cell = temp;
 				break;
 			}
@@ -189,8 +189,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.formattedstring")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.hale.align.formattedstring")) {
 				cell = temp;
 				break;
 			}
@@ -221,8 +221,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.formattedstring")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.hale.align.formattedstring")) {
 				cell = temp;
 				break;
 			}
@@ -251,8 +251,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.classification")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.hale.align.classification")) {
 				cell = temp;
 				break;
 			}
@@ -294,8 +294,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.hale.align.classification")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.hale.align.classification")) {
 				classMapCells.add(temp);
 			}
 		}
@@ -362,8 +362,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
 				cell = temp;
 				break;
 			}
@@ -394,8 +394,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.networkexpansion")) {
 				networkCells.add(temp);
 			}
 		}
@@ -618,8 +618,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.geometric.ordinates_to_point")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.ordinates_to_point")) {
 				cell = temp;
 				break;
 			}
@@ -653,8 +653,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.geometric.centroid")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.geometric.centroid")) {
 				cell = temp;
 				break;
 			}
@@ -687,8 +687,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.string.dateextraction")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.string.dateextraction")) {
 				cell = temp;
 				break;
 			}
@@ -717,8 +717,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.numeric.mathexpression")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.numeric.mathexpression")) {
 				cell = temp;
 				break;
 			}
@@ -769,8 +769,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.inspire.identifier")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.inspire.identifier")) {
 				cell = temp;
 				break;
 			}
@@ -794,7 +794,8 @@ public class OMLReaderTest {
 		// now test if they have correct values
 		assertEquals("at", country.get(0).getValue());
 		assertEquals("BEV", provider.get(0).getValue());
-		assertEquals("humboldt-sample-transformed-data-CadastralParcels", product.get(0).getValue());
+		assertEquals("humboldt-sample-transformed-data-CadastralParcels",
+				product.get(0).getValue());
 		assertEquals("", version.get(0).getValue());
 		assertEquals("unknown", versionNilReason.get(0).getValue());
 
@@ -815,8 +816,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
 				cell = temp;
 				break;
 			}
@@ -881,8 +882,8 @@ public class OMLReaderTest {
 		while (it.hasNext()) {
 			Cell temp = it.next();
 
-			if (temp.getTransformationIdentifier().equals(
-					"eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
+			if (temp.getTransformationIdentifier()
+					.equals("eu.esdihumboldt.cst.functions.inspire.geographicalname")) {
 				cell = temp;
 				break;
 			}

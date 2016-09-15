@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Label;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
 import eu.esdihumboldt.hale.ui.schema.presets.internal.SchemaPresetSelector;
 
 /**

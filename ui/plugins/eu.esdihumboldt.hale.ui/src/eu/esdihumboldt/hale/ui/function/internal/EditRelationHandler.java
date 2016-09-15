@@ -33,11 +33,12 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardExtension;
@@ -69,15 +70,15 @@ public class EditRelationHandler extends AbstractHandler {
 				final Cell originalCell = (Cell) selected;
 
 				FunctionWizard wizard = null;
-				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension
-						.getInstance()
+				List<FunctionWizardDescriptor<?>> factories = FunctionWizardExtension.getInstance()
 						.getFactories(
 								new FactoryFilter<FunctionWizardFactory, FunctionWizardDescriptor<?>>() {
 
 									@Override
-									public boolean acceptFactory(FunctionWizardDescriptor<?> factory) {
-										return factory.getFunctionId().equals(
-												originalCell.getTransformationIdentifier());
+									public boolean acceptFactory(
+											FunctionWizardDescriptor<?> factory) {
+										return factory.getFunctionId()
+												.equals(originalCell.getTransformationIdentifier());
 									}
 
 									@Override
@@ -94,12 +95,13 @@ public class EditRelationHandler extends AbstractHandler {
 				}
 
 				if (wizard == null) {
-					AbstractFunction<?> function = FunctionUtil.getFunction(originalCell
-							.getTransformationIdentifier());
+					FunctionDefinition<?> function = FunctionUtil.getFunction(
+							originalCell.getTransformationIdentifier(),
+							HaleUI.getServiceProvider());
 					if (function == null) {
-						log.userError(MessageFormat.format(
-								"Function with identifier ''{0}'' is unknown.",
-								originalCell.getTransformationIdentifier()));
+						log.userError(
+								MessageFormat.format("Function with identifier ''{0}'' is unknown.",
+										originalCell.getTransformationIdentifier()));
 						return null;
 					}
 					// create generic wizard
@@ -120,8 +122,8 @@ public class EditRelationHandler extends AbstractHandler {
 				if (dialog.open() == WizardDialog.OK) {
 					MutableCell cell = wizard.getResult();
 
-					AlignmentService alignmentService = (AlignmentService) PlatformUI
-							.getWorkbench().getService(AlignmentService.class);
+					AlignmentService alignmentService = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
 					// remove the original cell
 					// and add the new cell
 					alignmentService.replaceCell(originalCell, cell);

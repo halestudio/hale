@@ -40,8 +40,7 @@ public class ToggleTransformationHandler extends AbstractHandler implements IEle
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.setTransformationEnabled(!is.isTransformationEnabled());
 
 		return null;

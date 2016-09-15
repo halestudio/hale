@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.condition.TypeCondition;
  * 
  * @author Simon Templer
  */
-public final class TypeParameter extends AbstractParameter {
+public final class TypeParameter extends AbstractParameter implements TypeParameterDefinition {
 
 	private static final ALogger log = ALoggerFactory.getLogger(TypeParameter.class);
 
@@ -74,10 +74,9 @@ public final class TypeParameter extends AbstractParameter {
 	}
 
 	/**
-	 * Get the property conditions. All conditions have to match.
-	 * 
-	 * @return the property conditions
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition#getConditions()
 	 */
+	@Override
 	public List<TypeCondition> getConditions() {
 		return Collections.unmodifiableList(conditions);
 	}

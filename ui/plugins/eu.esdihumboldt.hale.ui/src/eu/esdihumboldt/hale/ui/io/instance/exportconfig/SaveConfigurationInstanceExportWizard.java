@@ -73,15 +73,14 @@ public class SaveConfigurationInstanceExportWizard extends InstanceExportWizard 
 		configuration.setProviderId(getProviderFactory().getIdentifier());
 		getProvider().storeConfiguration(configuration.getProviderConfiguration());
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		// target is not set here and also not needed for the configuration
 		configuration.getProviderConfiguration().remove(ExportProvider.PARAM_TARGET);
 		// add the new configuration to the export configurations of the project
 		ps.addExportConfiguration(configurationName, configuration);
 
-		log.userInfo(MessageFormat
-				.format("Created export configuration ''{0}''", configurationName));
+		log.userInfo(
+				MessageFormat.format("Created export configuration ''{0}''", configurationName));
 
 		return true;
 	}

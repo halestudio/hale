@@ -20,17 +20,19 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.util.CustomIdentifiers;
 
 /**
@@ -60,11 +62,17 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 	private final SetMultimap<String, String> dotMap;
 	private final CustomIdentifiers<TransformationNode> ids;
 
+	private final FunctionService functionService;
+
 	/**
 	 * standard constructor
+	 * 
+	 * @param functionService the service to resolve functions, may be
+	 *            <code>null</code>
 	 */
-	public TreeToGraphVisitor() {
+	public TreeToGraphVisitor(@Nullable FunctionService functionService) {
 		super();
+		this.functionService = functionService;
 		visited = new LinkedList<String>();
 		dotMap = HashMultimap.create();
 		ids = new CustomIdentifiers<TransformationNode>("node", false);
@@ -112,8 +120,10 @@ public class TreeToGraphVisitor extends AbstractTargetToSourceVisitor {
 		}
 
 		String functionName;
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getCell()
-				.getTransformationIdentifier());
+		FunctionDefinition<?> function = null;
+		if (functionService != null) {
+			function = functionService.getFunction(cell.getCell().getTransformationIdentifier());
+		}
 		if (function != null) {
 			functionName = function.getDisplayName();
 		}

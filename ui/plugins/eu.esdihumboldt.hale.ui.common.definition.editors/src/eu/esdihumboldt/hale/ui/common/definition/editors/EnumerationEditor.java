@@ -26,14 +26,14 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 
 /**
  * Editor for function parameters with an enumeration.
  * 
  * @author Kai Schwierczek
  */
-public class EnumerationEditor extends AbstractEditor<String> {
+public class EnumerationEditor extends AbstractAttributeEditor<String> {
 
 	private final Collection<String> enumerationValues;
 	private final ComboViewer viewer;
@@ -53,7 +53,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -61,7 +61,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(String value) {
@@ -69,7 +69,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 */
 	@Override
 	public String getValue() {
@@ -77,7 +77,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -88,7 +88,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -100,7 +100,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -110,7 +110,7 @@ public class EnumerationEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

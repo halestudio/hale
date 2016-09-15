@@ -20,9 +20,9 @@ import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -34,7 +34,8 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * 
  * @author Simon Templer
  */
-public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeParameter, TypeField> {
+public class TypeEntitiesPage extends
+		EntitiesPage<TypeFunctionDefinition, TypeParameterDefinition, TypeField> {
 
 	/**
 	 * @see EntitiesPage#EntitiesPage(SchemaSelection, Cell)
@@ -44,12 +45,12 @@ public class TypeEntitiesPage extends EntitiesPage<TypeFunction, TypeParameter, 
 	}
 
 	/**
-	 * @see EntitiesPage#createField(AbstractParameter, SchemaSpaceID,
+	 * @see EntitiesPage#createField(ParameterDefinition, SchemaSpaceID,
 	 *      Composite, Set, Cell)
 	 */
 	@Override
-	protected TypeField createField(TypeParameter field, SchemaSpaceID ssid, Composite parent,
-			Set<EntityDefinition> candidates, Cell initialCell) {
+	protected TypeField createField(TypeParameterDefinition field, SchemaSpaceID ssid,
+			Composite parent, Set<EntityDefinition> candidates, Cell initialCell) {
 		return new TypeField(field, ssid, parent, candidates, initialCell);
 	}
 

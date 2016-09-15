@@ -95,6 +95,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
+import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentConfiguration;
+import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentHelper;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
@@ -174,6 +176,11 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * that have an associated global element definition.
 	 */
 	public static final String PARAM_ONLY_ELEMENTS_MAPPABLE = "onlyElementsMappable";
+
+	/**
+	 * Name of the parameter specifying custom type content configuration.
+	 */
+	public static final String PARAM_CUSTOM_TYPE_CONTENT = "customTypeContent";
 
 	/**
 	 * The display name constraint for choices
@@ -334,9 +341,23 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		// post processing
 		applyRelevantElements(index);
+		applyCustomTypeContent(index);
 
 		reporter.setSuccess(true);
 		return reporter;
+	}
+
+	/**
+	 * Apply custom type content configuration.
+	 * 
+	 * @param index the XML index
+	 */
+	private void applyCustomTypeContent(XmlIndex index) {
+		CustomTypeContentConfiguration config = getParameter(PARAM_CUSTOM_TYPE_CONTENT).as(
+				CustomTypeContentConfiguration.class);
+		if (config != null) {
+			CustomTypeContentHelper.applyConfigurations(index, config);
+		}
 	}
 
 	/**
@@ -504,7 +525,15 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined
 					// on the spot if it is mappable
-					elementType.setConstraint(MappingRelevantFlag.get(mainSchema));
+					if (mainSchema) {
+						elementType.setConstraint(MappingRelevantFlag.get(true));
+					}
+					else {
+						// do not override with false, e.g. when a schema is
+						// loaded multiple times (e.g. because of different
+						// import locations)
+						elementType.setConstraintIfNotSet(MappingRelevantFlag.get(false));
+					}
 					// XXX needed? may result in conflicts when defining
 					// mappable types manually XXX the element is also marked
 					// with the Mappable constraint, to help with cases where

@@ -19,8 +19,6 @@ package eu.esdihumboldt.cst.functions.core;
 import java.util.List;
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
-
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -32,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.scripting.transformation.AbstractSingleTargetScriptedPropertyTransformation;
+import net.jcip.annotations.Immutable;
 
 /**
  * Property value assignment function.
@@ -39,9 +38,8 @@ import eu.esdihumboldt.hale.common.scripting.transformation.AbstractSingleTarget
  * @author Simon Templer
  */
 @Immutable
-public class Assign extends
-		AbstractSingleTargetScriptedPropertyTransformation<TransformationEngine> implements
-		AssignFunction {
+public class Assign extends AbstractSingleTargetScriptedPropertyTransformation<TransformationEngine>
+		implements AssignFunction {
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,

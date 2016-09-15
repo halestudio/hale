@@ -58,8 +58,8 @@ import eu.esdihumboldt.hale.io.xslt.functions.impl.XslVariableImpl;
  * 
  * @author Simon Templer
  */
-public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, GMLConstants,
-		XsltConstants {
+public class CityGMLXsltExport extends XsltExport
+		implements CityGMLConstants, GMLConstants, XsltConstants {
 
 	private SourceContextProvider sourceContext;
 
@@ -80,8 +80,8 @@ public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, G
 			setParameter(PARAM_ROOT_ELEMENT_NAME, new ParameterValue(name.getLocalPart()));
 		}
 		else {
-			throw new IOProviderConfigurationException(MessageFormat.format(
-					"Element {0} not found in the target schema.", CITY_MODEL_ELEMENT));
+			throw new IOProviderConfigurationException(MessageFormat
+					.format("Element {0} not found in the target schema.", CITY_MODEL_ELEMENT));
 		}
 
 		// scan source schema for CityModel
@@ -122,8 +122,7 @@ public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, G
 			// find source property
 			PropertyDefinition sourceBB = null;
 			for (ChildDefinition<?> child : sourceCityModel.getType().getChildren()) {
-				if (child.asProperty() != null
-						&& child.getName().getLocalPart().equals("boundedBy")
+				if (child.asProperty() != null && child.getName().getLocalPart().equals("boundedBy")
 						&& child.getName().getNamespaceURI().startsWith(GML_NAMESPACE_CORE)) {
 					sourceBB = child.asProperty();
 					break;
@@ -133,8 +132,7 @@ public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, G
 			// find target property
 			PropertyDefinition targetBB = null;
 			for (ChildDefinition<?> child : targetCityModel.getType().getChildren()) {
-				if (child.asProperty() != null
-						&& child.getName().getLocalPart().equals("boundedBy")
+				if (child.asProperty() != null && child.getName().getLocalPart().equals("boundedBy")
 						&& child.getName().getNamespaceURI().startsWith(GML_NAMESPACE_CORE)) {
 					targetBB = child.asProperty();
 					break;
@@ -143,15 +141,15 @@ public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, G
 
 			if (sourceBB != null && targetBB != null) {
 				// create templated
-				OutputStreamWriter out = new OutputStreamWriter(context.addInclude().getOutput(),
-						getCharset());
+				OutputStreamWriter out = new OutputStreamWriter(
+						context.addInclude().openBufferedStream(), getCharset());
 				try {
 					out.write("<xsl:template name=\"" + template + "\">");
 
 					StringBuilder selectSource = new StringBuilder();
 					selectSource.append('/');
-					selectSource.append(GroovyXslHelpers.asPrefixedName(sourceCityModel.getName(),
-							context));
+					selectSource.append(
+							GroovyXslHelpers.asPrefixedName(sourceCityModel.getName(), context));
 					selectSource.append('/');
 					selectSource
 							.append(GroovyXslHelpers.asPrefixedName(sourceBB.getName(), context));
@@ -186,10 +184,10 @@ public class CityGMLXsltExport extends XsltExport implements CityGMLConstants, G
 
 					// parameters
 					ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
-					parameters.put(RenameFunction.PARAMETER_STRUCTURAL_RENAME, new ParameterValue(
-							"true"));
-					parameters.put(RenameFunction.PARAMETER_IGNORE_NAMESPACES, new ParameterValue(
-							"true"));
+					parameters.put(RenameFunction.PARAMETER_STRUCTURAL_RENAME,
+							new ParameterValue("true"));
+					parameters.put(RenameFunction.PARAMETER_IGNORE_NAMESPACES,
+							new ParameterValue("true"));
 					cell.setTransformationParameters(parameters);
 
 					// variables

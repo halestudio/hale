@@ -19,12 +19,12 @@ package eu.esdihumboldt.hale.common.align.transformation.function.impl;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimaps;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
 
@@ -81,7 +81,7 @@ public abstract class AbstractTypeTransformation<E extends TransformationEngine>
 	 * @return the instance factory
 	 */
 	protected InstanceFactory getInstanceFactory() {
-		return OsgiUtils.getService(InstanceFactory.class);
+		return HalePlatform.getService(InstanceFactory.class);
 	}
 
 	/**

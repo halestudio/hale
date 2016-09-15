@@ -26,14 +26,15 @@ import com.iabcinc.jmep.hooks.Constant;
 import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.ui.functions.core.TextSourceListParameterPage;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Parameter page for mathematical expression function.
  * 
  * @author Kai Schwierczek
  */
-public class MathExpressionParameterPage extends TextSourceListParameterPage implements
-		MathematicalExpressionFunction {
+public class MathExpressionParameterPage extends TextSourceListParameterPage
+		implements MathematicalExpressionFunction {
 
 	private Environment environment = new Environment();
 	private Text textField;
@@ -73,12 +74,15 @@ public class MathExpressionParameterPage extends TextSourceListParameterPage imp
 	protected void configure(final Text textField) {
 		super.configure(textField);
 		this.textField = textField;
+		final TransformationVariableReplacer replacer = new TransformationVariableReplacer();
 		textField.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				try {
-					Expression ex = new Expression(textField.getText(), environment);
+					String exprStr = textField.getText();
+					exprStr = replacer.replaceVariables(exprStr);
+					Expression ex = new Expression(exprStr, environment);
 					ex.evaluate();
 					setErrorMessage(null);
 					setPageComplete(true);
@@ -103,8 +107,9 @@ public class MathExpressionParameterPage extends TextSourceListParameterPage imp
 
 		// update environment
 		environment = new Environment();
-		for (EntityDefinition variable : variables)
+		for (EntityDefinition variable : variables) {
 			environment.addVariable(getVariableName(variable), new Constant(new Double(1)));
+		}
 
 		// re set text to get modify event
 		textField.setText(textField.getText());

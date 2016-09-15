@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.common.align.io;
 
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Provides support for reading an alignment

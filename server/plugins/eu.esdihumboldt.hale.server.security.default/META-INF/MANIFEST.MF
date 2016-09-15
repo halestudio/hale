@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Default Security Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.security.default
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.server.security.extender
 Bundle-Vendor: Data Harmonisation Panel
 Import-Package: eu.esdihumboldt.hale.server.security.extender,

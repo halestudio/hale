@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -44,6 +45,34 @@ public interface Alignment {
 	 * @return all cells belonging to the given base alignment
 	 */
 	public Iterable<BaseAlignmentCell> getBaseAlignmentCells(URI baseAlignment);
+
+	/**
+	 * Yield defined custom property functions.
+	 * 
+	 * @return function identifiers mapped to function descriptors
+	 */
+	public Map<String, CustomPropertyFunction> getAllCustomPropertyFunctions();
+
+	/**
+	 * Yield custom property functions defined directly in the alignment.
+	 * 
+	 * @return function identifiers mapped to function descriptors
+	 */
+	public Map<String, CustomPropertyFunction> getCustomPropertyFunctions();
+
+	/**
+	 * Yield defined custom property functions from base alignments.
+	 * 
+	 * @return function identifiers mapped to function descriptors
+	 */
+	public Map<String, CustomPropertyFunction> getBasePropertyFunctions();
+
+	/**
+	 * Add a custom property function that is saved as part of the alignment.
+	 * 
+	 * @param function the custom function
+	 */
+	public void addCustomPropertyFunction(CustomPropertyFunction function);
 
 	/**
 	 * Get the collection of cells contained in the alignment.

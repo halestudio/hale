@@ -67,15 +67,15 @@ public class ArchiveProjectReader extends AbstractProjectReader implements Tempo
 			log.debug("Default project file not found, looking for other candidates.");
 			String candidate = ProjectIO.findProjectFile(tempDir);
 			if (candidate != null) {
-				log.info(MessageFormat
-						.format("Loading {0} as project file from archive", candidate));
+				log.info(MessageFormat.format("Loading {0} as project file from archive",
+						candidate));
 				baseFile = new File(tempDir, candidate);
 			}
 			reader = HaleIO.findIOProvider(ProjectReader.class, new FileIOSupplier(baseFile),
 					candidate);
 			if (reader == null) {
-				reporter.error(new IOMessageImpl("Could not find reader for project file "
-						+ candidate, null));
+				reporter.error(new IOMessageImpl(
+						"Could not find reader for project file " + candidate, null));
 				reporter.setSuccess(false);
 				return reporter;
 			}
@@ -112,14 +112,14 @@ public class ArchiveProjectReader extends AbstractProjectReader implements Tempo
 		// set the real source
 		setSource(oldSource);
 		// set the read project
-		setProject(readProject);
+		setProjectChecked(readProject, reporter);
 
 		return report;
 	}
 
 	@Override
 	public Iterable<File> getTemporaryFiles() {
-		return (tempDir == null) ? (Collections.<File> emptyList()) : (Collections
-				.singleton(tempDir));
+		return (tempDir == null) ? (Collections.<File> emptyList())
+				: (Collections.singleton(tempDir));
 	}
 }

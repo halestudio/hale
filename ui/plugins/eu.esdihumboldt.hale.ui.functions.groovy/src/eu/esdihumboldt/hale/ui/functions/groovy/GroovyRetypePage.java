@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.HelperFunctionsCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageFunctions;
@@ -62,7 +63,7 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class GroovyRetypePage extends GroovyScriptPage {
+public class GroovyRetypePage extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	private final TestValues testValues;
 
@@ -91,8 +92,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 
 			@Override
 			protected TypeDefinition getTargetType() {
-				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type typeEntity = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (typeEntity != null) {
 					return typeEntity.getDefinition().getDefinition();
 				}
@@ -100,8 +101,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 			}
 		};
 
-		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
-				.getServiceProvider().getService(HelperFunctionsService.class));
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(
+				HaleUI.getServiceProvider().getService(HelperFunctionsService.class));
 
 		return new SimpleGroovySourceViewerConfiguration(colorManager,
 				ImmutableList.of(BINDING_BUILDER, BINDING_SOURCE, BINDING_TARGET,
@@ -115,10 +116,10 @@ public class GroovyRetypePage extends GroovyScriptPage {
 	protected boolean validate(String document) {
 		super.validate(document);
 
-		Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getTarget());
-		Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getSource());
+		Type targetType = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
+		Type sourceType = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getSource());
 		if (sourceType == null || targetType == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -136,14 +137,15 @@ public class GroovyRetypePage extends GroovyScriptPage {
 		Cell cell = getWizard().getUnfinishedCell();
 		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context);
+		Binding binding = GroovyRetype.createBinding(source, cell, builder, log, context,
+				targetType.getDefinition().getDefinition());
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
 			script = service.parseScript(document, binding);
 
-			GroovyUtil.evaluate(script, builder, targetType.getDefinition().getDefinition(),
+			GroovyUtil.evaluateAll(script, builder, targetType.getDefinition().getDefinition(),
 					service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
@@ -162,8 +164,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type sourceType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getSource());
+				Type sourceType = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getSource());
 				if (sourceType != null) {
 					return Collections.singleton(sourceType.getDefinition().getDefinition());
 				}
@@ -175,8 +177,8 @@ public class GroovyRetypePage extends GroovyScriptPage {
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type targetType = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type targetType = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetType != null) {
 					return Collections.singleton(targetType.getDefinition().getDefinition());
 				}

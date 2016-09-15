@@ -2,15 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Function Reference
 Bundle-SymbolicName: eu.esdihumboldt.cst.doc.functions.dynamic;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Fragment-Host: eu.esdihumboldt.cst.doc.functions
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
- org.eclipse.ui;bundle-version="3.7.0",
+ org.eclipse.ui;bundle-version="3.7.0";resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.zest.core;bundle-version="2.0.0",
- org.eclipse.zest.jface;bundle-version="2.0.0",
- org.eclipse.zest.layouts;bundle-version="2.0.0"
+ org.eclipse.zest.core;bundle-version="2.0.0";resolution:=optional,
+ org.eclipse.zest.jface;bundle-version="2.0.0";resolution:=optional,
+ org.eclipse.zest.layouts;bundle-version="2.0.0";resolution:=optional
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="9.0.0",
@@ -20,26 +20,26 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.core.parameter,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.instance.model.impl,
- eu.esdihumboldt.hale.common.instance.orient,
  eu.esdihumboldt.hale.doc.util.content,
  eu.esdihumboldt.hale.doc.util.context,
  eu.esdihumboldt.hale.doc.util.toc,
- eu.esdihumboldt.hale.ui.common.graph.content,
- eu.esdihumboldt.hale.ui.common.graph.labels,
- eu.esdihumboldt.hale.ui.common.graph.layout,
- eu.esdihumboldt.hale.ui.util,
- eu.esdihumboldt.hale.ui.util.graph,
+ eu.esdihumboldt.hale.ui.common.graph.content;resolution:=optional,
+ eu.esdihumboldt.hale.ui.common.graph.labels;resolution:=optional,
+ eu.esdihumboldt.hale.ui.common.graph.layout;resolution:=optional,
+ eu.esdihumboldt.hale.ui.util;resolution:=optional,
+ eu.esdihumboldt.hale.ui.util.graph;resolution:=optional,
  eu.esdihumboldt.util.xml,
  org.apache.commons.codec;version="1.3.0",
+ org.apache.commons.codec.net;version="1.6.0",
  org.apache.commons.io;version="1.4.0",
  org.apache.commons.lang;version="2.6.0",
  org.apache.velocity;version="1.6.2",
  org.apache.velocity.app;version="1.6.2",
  org.apache.velocity.context;version="1.6.2",
  org.apache.velocity.exception;version="1.6.2",
- org.eclipse.draw2d,
- org.eclipse.draw2d.geometry,
- org.eclipse.zest.core.viewers,
+ org.eclipse.draw2d;resolution:=optional,
+ org.eclipse.draw2d.geometry;resolution:=optional,
+ org.eclipse.zest.core.viewers;resolution:=optional,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.cst.doc.functions,
  eu.esdihumboldt.cst.doc.functions.internal.content;x-internal:=true,

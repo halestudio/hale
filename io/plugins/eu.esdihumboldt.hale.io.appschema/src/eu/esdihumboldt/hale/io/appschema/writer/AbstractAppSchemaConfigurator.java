@@ -20,12 +20,12 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFileFilter;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -280,7 +280,7 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 					Value ct = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 					IContentType contentType = null;
 					if (ct != null) {
-						contentType = Platform.getContentTypeManager().getContentType(
+						contentType = HalePlatform.getContentTypeManager().getContentType(
 								ct.as(String.class));
 					}
 					ResourceAdvisor ra = ResourceAdvisorExtension.getInstance().getAdvisor(

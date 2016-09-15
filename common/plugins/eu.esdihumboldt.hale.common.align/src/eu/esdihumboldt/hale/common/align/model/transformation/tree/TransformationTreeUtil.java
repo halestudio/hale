@@ -20,12 +20,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.util.IdentityWrapper;
 
 /**
@@ -69,15 +70,17 @@ public abstract class TransformationTreeUtil {
 	 * @param cell the cell
 	 * @param source the source node
 	 * @param log the transformation log, may be <code>null</code>
+	 * @param serviceProvider the service provider
 	 * @return if the cell has eager source parameters connected to the source
 	 *         node
 	 */
-	public static boolean isEager(Cell cell, SourceNode source, TransformationLog log) {
+	public static boolean isEager(Cell cell, SourceNode source, TransformationLog log,
+			ServiceProvider serviceProvider) {
 		// find the corresponding cell node
 		Collection<CellNode> cells = source.getRelations(true);
 		for (CellNode cellNode : cells) {
 			if (cell.equals(cellNode.getCell())) {
-				return isEager(cellNode, source, log);
+				return isEager(cellNode, source, log, serviceProvider);
 			}
 		}
 
@@ -92,19 +95,21 @@ public abstract class TransformationTreeUtil {
 	 * @param cell the cell node
 	 * @param source the source node
 	 * @param log the transformation log, may be <code>null</code>
+	 * @param serviceProvider the service provider
 	 * @return if the cell contained in the cell node has eager source
 	 *         parameters connected to the source node
 	 */
-	public static boolean isEager(CellNode cell, SourceNode source, TransformationLog log) {
+	public static boolean isEager(CellNode cell, SourceNode source, TransformationLog log,
+			ServiceProvider serviceProvider) {
 		// get all entity names the cell is associated to the source node with
 		Set<String> names = cell.getSourceNames(source);
 
-		PropertyFunction function = PropertyFunctionExtension.getInstance().get(
-				cell.getCell().getTransformationIdentifier());
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(cell.getCell()
+				.getTransformationIdentifier(), serviceProvider);
 		if (function != null) {
-			Set<PropertyParameter> defSources = function.getSource();
+			Set<? extends PropertyParameterDefinition> defSources = function.getSource();
 			Set<String> eager = new HashSet<String>();
-			for (PropertyParameter sourceDef : defSources) {
+			for (PropertyParameterDefinition sourceDef : defSources) {
 				String name = sourceDef.getName();
 				if (sourceDef.isEager() && names.contains(name)) {
 					eager.add(name);

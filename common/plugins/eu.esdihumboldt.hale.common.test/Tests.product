@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="2.9.4.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -46,11 +46,13 @@
       <plugin id="com.github.jnr.enxio"/>
       <plugin id="com.github.jnr.ffi"/>
       <plugin id="com.github.jnr.jffi"/>
+      <plugin id="com.github.jnr.jffi.native" fragment="true"/>
       <plugin id="com.github.jnr.posix"/>
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.healthmarketscience.jackcess"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
       <plugin id="com.orientechnologies.common"/>
@@ -77,15 +79,20 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
       <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.test"/>
       <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
@@ -147,6 +154,8 @@
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql.test"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite"/>
@@ -181,15 +190,18 @@
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
+      <plugin id="eu.esdihumboldt.util.cli"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
       <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
@@ -226,6 +238,7 @@
       <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
+      <plugin id="net.sf.ucanaccess"/>
       <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
@@ -269,8 +282,10 @@
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
       <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.annotations"/>
       <plugin id="org.eclipse.e4.core.di.extensions"/>
       <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.emf.xpath"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
       <plugin id="org.eclipse.e4.ui.css.core"/>
       <plugin id="org.eclipse.e4.ui.css.swt"/>
@@ -344,10 +359,10 @@
       <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm-4"/>
-      <plugin id="org.objectweb.asm.analysis-4"/>
-      <plugin id="org.objectweb.asm.tree-4"/>
-      <plugin id="org.objectweb.asm.util-4"/>
+      <plugin id="org.objectweb.asm-5"/>
+      <plugin id="org.objectweb.asm.analysis-5"/>
+      <plugin id="org.objectweb.asm.tree-5"/>
+      <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.parboiled.core"/>
       <plugin id="org.parboiled.java" fragment="true"/>

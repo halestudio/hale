@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI for CST Groovy functions
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.groovy;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui,
  com.google.guava,
@@ -60,4 +60,5 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util.groovy.paths,
  eu.esdihumboldt.util.groovy.sandbox,
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.ui.functions.groovy
+Export-Package: eu.esdihumboldt.hale.ui.functions.groovy,
+ eu.esdihumboldt.hale.ui.functions.groovy.internal;x-internal:=true

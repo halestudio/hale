@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.core.internal;
 
 import java.util.Hashtable;
 
+import javax.annotation.Nullable;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -34,6 +36,10 @@ import eu.esdihumboldt.hale.common.core.service.cleanup.impl.CleanupServiceImpl;
  */
 public class CoreBundle implements BundleActivator {
 
+	private static boolean activated = false;
+
+	private static CoreBundle instance;
+
 	private BundleContext context;
 
 	private CleanupServiceImpl cleanupService;
@@ -45,11 +51,16 @@ public class CoreBundle implements BundleActivator {
 	 */
 	@Override
 	public void start(BundleContext context) throws Exception {
+		CoreBundle.activated = true;
 		this.context = context;
 
+		// TODO register clean up service in a way that it is also available
+		// in a non-OSGi context?
 		cleanupService = new CleanupServiceImpl();
 		cleanupServiceRef = context.registerService(CleanupService.class, cleanupService,
 				new Hashtable<String, Object>());
+
+		CoreBundle.instance = this;
 	}
 
 	/**
@@ -62,6 +73,8 @@ public class CoreBundle implements BundleActivator {
 		cleanupService = null;
 
 		this.context = null;
+		CoreBundle.activated = false;
+		CoreBundle.instance = null;
 	}
 
 	/**
@@ -69,6 +82,21 @@ public class CoreBundle implements BundleActivator {
 	 */
 	public BundleContext getContext() {
 		return context;
+	}
+
+	/**
+	 * @return the instance
+	 */
+	@Nullable
+	public static CoreBundle getInstance() {
+		return instance;
+	}
+
+	/**
+	 * @return if the application is running in an OSGi context
+	 */
+	public static boolean isOsgi() {
+		return activated;
 	}
 
 }

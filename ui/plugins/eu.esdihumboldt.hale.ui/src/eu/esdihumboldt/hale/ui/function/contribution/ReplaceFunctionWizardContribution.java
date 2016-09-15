@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.ToolBar;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -53,7 +53,7 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 		super(new SchemaSelectionFunctionMatcher() {
 
 			@Override
-			protected boolean checkCount(int count, Set<? extends AbstractParameter> entities,
+			protected boolean checkCount(int count, Set<? extends ParameterDefinition> entities,
 					boolean isTarget) {
 				// ignore the count
 				return true;
@@ -61,7 +61,7 @@ public class ReplaceFunctionWizardContribution extends SchemaSelectionFunctionCo
 
 			@Override
 			protected boolean checkMandatoryConditions(Set<EntityDefinition> schemaEntities,
-					Iterable<? extends AbstractParameter> functionEntities) {
+					Iterable<? extends ParameterDefinition> functionEntities) {
 				// ignore conditions
 				return true;
 			}

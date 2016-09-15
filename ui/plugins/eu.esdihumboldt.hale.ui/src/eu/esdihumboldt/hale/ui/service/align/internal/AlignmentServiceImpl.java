@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -103,6 +104,11 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 				projectService.setChanged();
 			}
 
+			@Override
+			public void customFunctionsChanged() {
+				projectService.setChanged();
+			}
+
 		});
 	}
 
@@ -115,6 +121,20 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			alignment.addCell(cell);
 		}
 		notifyCellsAdded(Collections.singletonList((Cell) cell));
+	}
+
+	@Override
+	public void addCustomPropertyFunction(CustomPropertyFunction function) {
+		alignment.addCustomPropertyFunction(function);
+
+		notifyCustomFunctionsChanged();
+	}
+
+	@Override
+	public void removeCustomPropertyFunction(String id) {
+		alignment.removeCustomPropertyFunction(id);
+
+		notifyCustomFunctionsChanged();
 	}
 
 	/**
@@ -191,6 +211,8 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 //			_log.warn("Adding alignments currently does not support merging of base alignments. Import base alignments independently.");
 //		}
 
+		boolean addedBaseCells = false;
+
 		// add cells
 		synchronized (this) {
 
@@ -199,21 +221,61 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 					this.alignment.addCell((MutableCell) cell);
 					added.add(cell);
 				}
-				else if (!(cell instanceof BaseAlignmentCell))
+				else if (!(cell instanceof BaseAlignmentCell)) {
 					throw new IllegalStateException(
 							"The given alignment contained a cell which is neither mutable nor from a base alignment.");
+				}
+				else {
+					addedBaseCells = true;
+				}
 			}
 		}
 
 		synchronized (this) {
 			// XXX this needs merging, see above
-			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet())
+			boolean first = true;
+			for (Entry<String, URI> baseAlignment : alignment.getBaseAlignments().entrySet()) {
+				Collection<CustomPropertyFunction> baseFunctions;
+				if (first) {
+					// XXX hack - insert all base functions with the first base
+					// alignment
+					baseFunctions = alignment.getBasePropertyFunctions().values();
+				}
+				else {
+					// base functions should only be added once
+					baseFunctions = Collections.<CustomPropertyFunction> emptyList();
+				}
+
 				this.alignment.addBaseAlignment(baseAlignment.getKey(), baseAlignment.getValue(),
-						alignment.getBaseAlignmentCells(baseAlignment.getValue()));
+						alignment.getBaseAlignmentCells(baseAlignment.getValue()), //
+						baseFunctions);
+			}
 		}
 
-		if (!added.isEmpty()) {
-			notifyCellsAdded(added);
+		// add custom functions
+		boolean addedFunctions = false;
+		synchronized (this) {
+			for (CustomPropertyFunction cf : alignment.getCustomPropertyFunctions().values()) {
+				this.alignment.addCustomPropertyFunction(cf);
+				addedFunctions = true;
+			}
+		}
+
+		if (addedBaseCells || (!added.isEmpty() && addedFunctions)) {
+			// only emit one combined event (not to trigger multiple
+			// transformations)
+			notifyAlignmentChanged();
+		}
+		else {
+			// emit individual events
+
+			if (!added.isEmpty()) {
+				notifyCellsAdded(added);
+			}
+
+			if (addedFunctions) {
+				notifyCustomFunctionsChanged();
+			}
 		}
 	}
 
@@ -255,9 +317,8 @@ public class AlignmentServiceImpl extends AbstractAlignmentService {
 			throw new IllegalArgumentException("Mandatory parameter is null");
 		}
 		Cell cell = getAlignment().getCell(cellId);
-		if (cell instanceof ModifiableCell
-				&& (Cell.PROPERTY_DISABLE_FOR.equals(propertyName) || Cell.PROPERTY_ENABLE_FOR
-						.equals(propertyName))) {
+		if (cell instanceof ModifiableCell && (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
+				|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))) {
 			boolean disable = Cell.PROPERTY_DISABLE_FOR.equals(propertyName);
 			if (property instanceof Cell) {
 				Cell other = (Cell) property;

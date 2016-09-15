@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2Fua_help_setup_help_data.htm -->
+<extensions>
+	<tocOrder>
+		<!-- display user guide first -->
+		<toc id="/eu.esdihumboldt.hale.doc.user/toc.xml"></toc>
+	</tocOrder>
+</extensions>

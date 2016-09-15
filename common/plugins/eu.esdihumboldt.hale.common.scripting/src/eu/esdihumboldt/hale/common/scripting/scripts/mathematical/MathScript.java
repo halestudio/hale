@@ -104,15 +104,14 @@ public class MathScript implements Script {
 	 */
 	@Override
 	public String getVariableName(PropertyEntityDefinition entityDefinition) {
-		return Joiner.on('.').join(
-				Lists.transform(entityDefinition.getPropertyPath(),
-						new Function<ChildContext, String>() {
+		return Joiner.on('.').join(Lists.transform(entityDefinition.getPropertyPath(),
+				new Function<ChildContext, String>() {
 
-							@Override
-							public String apply(ChildContext input) {
-								return input.getChild().getName().getLocalPart();
-							}
-						}));
+					@Override
+					public String apply(ChildContext input) {
+						return input.getChild().getName().getLocalPart();
+					}
+				}));
 	}
 
 	/**
@@ -142,4 +141,10 @@ public class MathScript implements Script {
 	public String getId() {
 		return "eu.esdihumboldt.hale.common.scripting.math";
 	}
+
+	@Override
+	public boolean requiresReplacedTransformationVariables() {
+		return true;
+	}
+
 }

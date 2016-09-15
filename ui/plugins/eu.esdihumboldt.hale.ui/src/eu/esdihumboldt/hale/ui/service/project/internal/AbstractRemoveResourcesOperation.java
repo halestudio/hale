@@ -52,8 +52,7 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 
 	@Override
 	public IStatus execute(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		removedResources = ps.removeResources(actionId);
 		return Status.OK_STATUS;
 	}
@@ -71,8 +70,7 @@ public abstract class AbstractRemoveResourcesOperation extends AbstractOperation
 
 	@Override
 	public IStatus undo(IProgressMonitor monitor, IAdaptable info) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		for (Resource res : removedResources) {
 			ps.executeAndRemember(res.copyConfiguration(false));
 		}

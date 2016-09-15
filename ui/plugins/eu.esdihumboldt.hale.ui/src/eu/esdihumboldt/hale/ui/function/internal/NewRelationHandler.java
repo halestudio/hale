@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
  * 
  * @author Simon Templer
  */
-public class NewRelationHandler extends AbstractWizardHandler {
+public class NewRelationHandler extends AbstractWizardHandler<IWizard> {
 
 	/**
 	 * @see AbstractWizardHandler#createWizard()

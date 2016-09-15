@@ -42,9 +42,10 @@ import eu.esdihumboldt.hale.ui.util.viewer.ObjectContentProvider;
  * Abstract selector control based on a {@link TableViewer}.
  * 
  * @param <T> the type of the object to be selected
+ * @param <E> the type of object selected in the dialog
  * @author Simon Templer
  */
-public abstract class AbstractSelector<T> implements ISelectionProvider {
+public abstract class AbstractSelector<T, E> implements ISelectionProvider {
 
 	private static enum NoObject {
 		NONE;
@@ -111,11 +112,11 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 					return;
 				}
 
-				AbstractViewerSelectionDialog<T, ?> dialog = createSelectionDialog(Display
+				AbstractViewerSelectionDialog<E, ?> dialog = createSelectionDialog(Display
 						.getCurrent().getActiveShell());
 				dialog.setFilters(AbstractSelector.this.filters);
 				if (dialog.open() == AbstractViewerSelectionDialog.OK) {
-					T selected = dialog.getObject();
+					T selected = convertFrom(dialog.getObject());
 					if ((selected == null && currentInput == null)
 							|| (selected != null && selected.equals(currentInput)))
 						return;
@@ -142,6 +143,14 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 
 		});
 	}
+
+	/**
+	 * Convert from an object selected in the dialog to a selector object.
+	 * 
+	 * @param object the dialog selected object, may be <code>null</code>
+	 * @return the converted object
+	 */
+	protected abstract T convertFrom(E object);
 
 	/**
 	 * Determines if the given object matches the selector's filters.
@@ -244,7 +253,7 @@ public abstract class AbstractSelector<T> implements ISelectionProvider {
 	 * @param parentShell the parent shell for the dialog
 	 * @return the entity dialog
 	 */
-	protected abstract AbstractViewerSelectionDialog<T, ?> createSelectionDialog(Shell parentShell);
+	protected abstract AbstractViewerSelectionDialog<E, ?> createSelectionDialog(Shell parentShell);
 
 	/**
 	 * Get the main selector control

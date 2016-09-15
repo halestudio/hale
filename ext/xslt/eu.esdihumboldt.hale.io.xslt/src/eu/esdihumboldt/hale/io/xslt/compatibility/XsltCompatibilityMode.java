@@ -19,6 +19,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.io.xslt.extension.XslPropertyTransformationExtension;
 import eu.esdihumboldt.hale.io.xslt.extension.XslTypeTransformationExtension;
 
@@ -31,11 +32,8 @@ public class XsltCompatibilityMode implements CompatibilityMode {
 
 	private static ALogger _log = ALoggerFactory.getLogger(XsltCompatibilityMode.class);
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsFunction(java.lang.String)
-	 */
 	@Override
-	public boolean supportsFunction(String id) {
+	public boolean supportsFunction(String id, ServiceProvider serviceProvider) {
 		return (checkPropertyFunc(id) || checkTypeFunc(id));
 	}
 

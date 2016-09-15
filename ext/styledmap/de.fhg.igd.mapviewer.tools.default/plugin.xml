@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fhg.igd.mapviewer.MapTool">
+      <tool
+            class="de.fhg.igd.mapviewer.tools.pointer.PointerTool"
+            description="%tool.description"
+            icon="images/pointer.png"
+            name="%tool.name"
+            priority="5">
+      </tool>
+   </extension>
+
+</plugin>

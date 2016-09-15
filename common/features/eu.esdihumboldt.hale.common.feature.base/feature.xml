@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.common.feature.base"
       label="Equinox base feature"
-      version="2.9.0.qualifier">
+      version="3.0.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
@@ -172,6 +172,13 @@
 
    <plugin
          id="aopalliance"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.tukaani.xz"
          download-size="0"
          install-size="0"
          version="0.0.0"

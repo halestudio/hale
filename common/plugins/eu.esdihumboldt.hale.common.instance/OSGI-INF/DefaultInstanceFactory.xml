@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="false" name="DefaultInstanceFactory">
-	<implementation class="eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceFactory"/>
- <service>
-    <provide interface="eu.esdihumboldt.hale.common.instance.model.InstanceFactory"/>
- </service>
-</scr:component>

@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for the Create function.
@@ -32,25 +34,24 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class CreateExplanation extends AbstractCellExplanation implements CreateFunction {
 
-	private static final String EXPLANATION_PATTERN = "Creates {0} of type {1}.";
-
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
-		int number = CellUtil.getOptionalParameter(cell, PARAM_NUMBER, Value.of(1)).as(
-				Integer.class);
+		int number = CellUtil.getOptionalParameter(cell, PARAM_NUMBER, Value.of(1))
+				.as(Integer.class);
 		String instancesString;
 		if (number == 1) {
-			instancesString = "one instance";
+			instancesString = getMessage("one", locale);
 		}
 		else {
-			instancesString = number + " instances";
+			instancesString = MessageFormat.format(getMessage("many", locale), number);
 		}
 
 		if (target != null)
-			return MessageFormat.format(EXPLANATION_PATTERN, instancesString,
-					formatEntity(target, html, true));
+			return MessageFormat.format(getMessage("main", locale), instancesString,
+					formatEntity(target, html, true, locale));
 
 		return null;
 	}

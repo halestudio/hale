@@ -10,4 +10,6 @@ import eu.esdihumboldt.cst.functions.core.Retype;
  */
 public class RetypeHandler extends SingleSourceToTargetHandler {
 
+	// no functionality added
+
 }

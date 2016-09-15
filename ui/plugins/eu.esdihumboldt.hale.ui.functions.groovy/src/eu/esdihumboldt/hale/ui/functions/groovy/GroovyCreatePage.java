@@ -23,7 +23,6 @@ import org.eclipse.swt.widgets.ToolBar;
 
 import com.google.common.collect.ImmutableList;
 
-import eu.esdihumboldt.cst.functions.groovy.GroovyCreate;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 import eu.esdihumboldt.cst.functions.groovy.internal.GroovyUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -36,6 +35,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.HelperFunctionsCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageFunctions;
@@ -55,7 +55,7 @@ import groovy.lang.Script;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class GroovyCreatePage extends GroovyScriptPage {
+public class GroovyCreatePage extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	/**
 	 * Default constructor.
@@ -73,8 +73,8 @@ public class GroovyCreatePage extends GroovyScriptPage {
 
 			@Override
 			protected TypeDefinition getTargetType() {
-				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type typeEntity = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (typeEntity != null) {
 					return typeEntity.getDefinition().getDefinition();
 				}
@@ -82,22 +82,23 @@ public class GroovyCreatePage extends GroovyScriptPage {
 			}
 		};
 
-		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
-				.getServiceProvider().getService(HelperFunctionsService.class));
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(
+				HaleUI.getServiceProvider().getService(HelperFunctionsService.class));
 
-		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET, BINDING_TARGET_TYPE, BINDING_CELL,
-				BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-				BINDING_TRANSFORMATION_CONTEXT, BINDING_HELPER_FUNCTIONS), ImmutableList.of(
-				targetCompletions, functionCompletions));
+		return new SimpleGroovySourceViewerConfiguration(colorManager,
+				ImmutableList.of(BINDING_BUILDER, BINDING_INDEX, BINDING_TARGET,
+						BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+						BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT,
+						BINDING_HELPER_FUNCTIONS),
+				ImmutableList.of(targetCompletions, functionCompletions));
 	}
 
 	@Override
 	protected boolean validate(String document) {
 		super.validate(document);
 
-		Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-				.getTarget());
+		Type typeEntity = (Type) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 		if (typeEntity == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -107,14 +108,15 @@ public class GroovyCreatePage extends GroovyScriptPage {
 		Cell cell = getWizard().getUnfinishedCell();
 		CellLog log = new CellLog(new DefaultTransformationReporter("dummy", false), cell);
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
-		Binding binding = GroovyCreate.createBinding(0, cell, builder, log, context);
+		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, context,
+				typeEntity.getDefinition().getDefinition());
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
 			script = service.parseScript(document, binding);
 
-			GroovyUtil.evaluate(script, builder, typeEntity.getDefinition().getDefinition(),
+			GroovyUtil.evaluateAll(script, builder, typeEntity.getDefinition().getDefinition(),
 					service);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
@@ -133,8 +135,8 @@ public class GroovyCreatePage extends GroovyScriptPage {
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Type typeEntity = (Type) CellUtil.getFirstEntity(getWizard().getUnfinishedCell()
-						.getTarget());
+				Type typeEntity = (Type) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (typeEntity != null) {
 					return Collections.singleton(typeEntity.getDefinition().getDefinition());
 				}

@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.ui.views.styledmap.clip.layout.PainterLayout;
  * 
  * @author Simon Templer
  */
-public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer> implements MapPainter {
+public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer>implements MapPainter {
 
 	/**
 	 * The current layout augmentation
@@ -82,8 +82,7 @@ public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer> impl
 			return;
 		}
 
-		PainterLayoutService pls = (PainterLayoutService) PlatformUI.getWorkbench().getService(
-				PainterLayoutService.class);
+		PainterLayoutService pls = PlatformUI.getWorkbench().getService(PainterLayoutService.class);
 
 		// get current configuration
 		if (pls.getCurrentDefinition() != null) {
@@ -95,25 +94,27 @@ public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer> impl
 			augmentation = null;
 		}
 
-		pls.addListener(layoutListener = new ExclusiveExtensionListener<PainterLayout, PainterLayoutFactory>() {
+		pls.addListener(
+				layoutListener = new ExclusiveExtensionListener<PainterLayout, PainterLayoutFactory>() {
 
-			@Override
-			public void currentObjectChanged(PainterLayout current, PainterLayoutFactory definition) {
-				if (definition != null) {
-					painters = definition.getPaintersToLayout();
-					augmentation = current.getAugmentation(painters.size());
-				}
-				else {
-					painters = null;
-					augmentation = null;
-				}
-				clearCache();
-				if (mapKit != null) {
-					mapKit.refresh();
-				}
+					@Override
+					public void currentObjectChanged(PainterLayout current,
+							PainterLayoutFactory definition) {
+						if (definition != null) {
+							painters = definition.getPaintersToLayout();
+							augmentation = current.getAugmentation(painters.size());
+						}
+						else {
+							painters = null;
+							augmentation = null;
+						}
+						clearCache();
+						if (mapKit != null) {
+							mapKit.refresh();
+						}
 
-			}
-		});
+					}
+				});
 
 		initialized = true;
 		clearCache();
@@ -141,8 +142,8 @@ public class LayoutAugmentationPainter extends AbstractPainter<JXMapViewer> impl
 	@Override
 	public void dispose() {
 		if (layoutListener != null) {
-			PainterLayoutService pls = (PainterLayoutService) PlatformUI.getWorkbench().getService(
-					PainterLayoutService.class);
+			PainterLayoutService pls = PlatformUI.getWorkbench()
+					.getService(PainterLayoutService.class);
 			pls.removeListener(layoutListener);
 		}
 	}

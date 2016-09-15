@@ -80,16 +80,15 @@ public class ProjectResourcesUtil {
 			boolean publishReport, CacheCallback cacheCallback) {
 		// get provider ...
 		IOProvider provider = null;
-		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-				conf.getProviderId());
+		IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
+				.getFactory(conf.getProviderId());
 		if (descriptor != null) {
 			try {
 				provider = descriptor.createExtensionObject();
 			} catch (Exception e) {
-				log.error(
-						MessageFormat
-								.format("Could not execute I/O configuration, provider with ID {0} could not be created.",
-										conf.getProviderId()), e);
+				log.error(MessageFormat.format(
+						"Could not execute I/O configuration, provider with ID {0} could not be created.",
+						conf.getProviderId()), e);
 				return;
 			}
 
@@ -97,8 +96,8 @@ public class ProjectResourcesUtil {
 			final String actionId = conf.getActionId();
 			IOAdvisor<?> advisor = customAdvisor;
 			if (advisor == null) {
-				List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance().getFactories(
-						new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+				List<IOAdvisorFactory> advisors = IOAdvisorExtension.getInstance()
+						.getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
 
 							@Override
 							public boolean acceptFactory(IOAdvisorFactory factory) {
@@ -115,10 +114,9 @@ public class ProjectResourcesUtil {
 					try {
 						advisor = advisors.get(0).createAdvisor(HaleUI.getServiceProvider());
 					} catch (Exception e) {
-						log.error(
-								MessageFormat
-										.format("Could not execute I/O configuration, advisor with ID {0} could not be created.",
-												advisors.get(0).getIdentifier()), e);
+						log.error(MessageFormat.format(
+								"Could not execute I/O configuration, advisor with ID {0} could not be created.",
+								advisors.get(0).getIdentifier()), e);
 						return;
 					}
 				}
@@ -155,7 +153,8 @@ public class ProjectResourcesUtil {
 	 *            I/O provider, may be <code>null</code>
 	 */
 	public static void executeProvider(final IOProvider provider,
-			@SuppressWarnings("rawtypes") final IOAdvisor advisor, final CacheCallback cacheCallback) {
+			@SuppressWarnings("rawtypes") final IOAdvisor advisor,
+			final CacheCallback cacheCallback) {
 		executeProvider(provider, advisor, true, cacheCallback);
 	}
 
@@ -177,8 +176,8 @@ public class ProjectResourcesUtil {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				if (cacheCallback != null && provider instanceof CachingImportProvider) {
 					// enable cache generation
 					((CachingImportProvider) provider).setProvideCache();
@@ -196,8 +195,8 @@ public class ProjectResourcesUtil {
 
 					if (publishReport) {
 						// publish report
-						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
-								ReportService.class);
+						ReportService rs = PlatformUI.getWorkbench()
+								.getService(ReportService.class);
 						rs.addReport(report);
 					}
 

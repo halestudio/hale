@@ -20,14 +20,14 @@ import java.util.List;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 
@@ -40,7 +40,7 @@ import eu.esdihumboldt.hale.ui.common.editors.BooleanEditor;
 public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 
 	@Override
-	public Editor<?> createEditor(Composite parent, PropertyDefinition property,
+	public AttributeEditor<?> createEditor(Composite parent, PropertyDefinition property,
 			EntityDefinition entityDef, boolean allowScripts) {
 		TypeDefinition type = property.getPropertyType();
 
@@ -71,7 +71,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 	}
 
 	@Override
-	public Editor<?> createEditor(Composite parent, FunctionParameter parameter,
+	public AttributeEditor<?> createEditor(Composite parent, FunctionParameterDefinition parameter,
 			ParameterValue initialValue) {
 		Class<?> binding = parameter.getBinding();
 		// assume String as default binding for parameters
@@ -98,7 +98,7 @@ public class DefaultAttributeEditorFactory implements AttributeEditorFactory {
 				return result;
 			}
 			else {
-				Editor<?> resultEditor;
+				AttributeEditor<?> resultEditor;
 				if (Boolean.class.equals(binding))
 					resultEditor = new BooleanEditor(parent);
 				else

@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.functions.groovy.internal;
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.dialogs.DialogTray;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -50,7 +52,6 @@ import eu.esdihumboldt.cst.functions.groovy.helper.Category;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.Argument;
-import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
@@ -121,8 +122,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 		// tree viwever
 		PatternFilter patternFilter = new TreePathPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		final FilteredTree filteredTree = new TreePathFilteredTree(comp, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		final FilteredTree filteredTree = new TreePathFilteredTree(comp,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 
 		TreeViewer tree = filteredTree.getViewer();
 		tree.setUseHashlookup(true);
@@ -130,8 +131,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 		tree.setLabelProvider(labelProvider);
 		IContentProvider contentProvider;
 
-		HelperFunctionsService functions = HaleUI.getServiceProvider().getService(
-				HelperFunctionsService.class);
+		HelperFunctionsService functions = HaleUI.getServiceProvider()
+				.getService(HelperFunctionsService.class);
 
 		contentProvider = new TreePathProviderAdapter(new HelperFunctionContentProvider(functions));
 
@@ -148,8 +149,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 		try {
 			browser = new Browser(comp, SWT.WRAP | SWT.BORDER);
-			browser.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(300, 250)
-					.create());
+			browser.setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, true).hint(300, 250).create());
 		} catch (Throwable e) {
 
 			if (BROWSER_ERROR_REPORTED.compareAndSet(false, true)) {
@@ -157,8 +158,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 			}
 
 			textField = new Text(comp, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-			textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(300, 250)
-					.create());
+			textField.setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, true).hint(300, 250).create());
 
 		}
 
@@ -191,8 +192,8 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 										.getSegment(i));
 
 								try {
-									hfs = (HelperFunctionSpecification) hfoc.asFunction().getSpec(
-											hfoc.getName());
+									hfs = (HelperFunctionSpecification) hfoc.asFunction()
+											.getSpec(hfoc.getName());
 								} catch (Exception e) {
 									log.error(
 											"There is a problem in retrieving the specification for a helper function.",
@@ -237,20 +238,15 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 		example.append(spec.getDescription());
 		example.append(" \n\nParameters: ");
 		for (Argument arg : spec.getArguments()) {
-			HelperFunctionArgument helperArg = null;
-			if (arg instanceof HelperFunctionArgument) {
-				helperArg = (HelperFunctionArgument) arg;
-			}
-
 			example.append("\n \t");
 			example.append(arg.getName());
 			example.append(": ");
 			example.append(arg.getDescription());
-			if (helperArg != null && helperArg.getDefaultValueDisplay() != null) {
+			if (getDefaultValueToDisplay(arg) != null) {
 				example.append(" - ");
 				example.append("default value: ");
-				example.append(helperArg.getDefaultValueDisplay() + " ("
-						+ helperArg.getDefaultValue().getClass().getSimpleName() + ")");
+				example.append(getDefaultValueToDisplay(arg) + " ("
+						+ arg.getDefaultValue().getClass().getSimpleName() + ")");
 			}
 		}
 		example.append("\n\nReturns: \n");
@@ -278,18 +274,14 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 
 		for (Argument arg : hfs.getArguments()) {
 
-			HelperFunctionArgument helperArg = null;
-			if (arg instanceof HelperFunctionArgument) {
-				helperArg = (HelperFunctionArgument) arg;
-			}
 			example.append("<b>");
 			example.append(TAB_SPACE + arg.getName());
 			example.append("</b>");
 			example.append(": ");
 			example.append(arg.getDescription());
-			if (helperArg != null && helperArg.getDefaultValue() != null)
-				example.append(" - default value: " + helperArg.getDefaultValueDisplay() + " ("
-						+ helperArg.getDefaultValue().getClass().getSimpleName() + ")");
+			if (getDefaultValueToDisplay(arg) != null)
+				example.append(" - default value: " + getDefaultValueToDisplay(arg) + " ("
+						+ arg.getDefaultValue().getClass().getSimpleName() + ")");
 			example.append("<br>");
 
 		}
@@ -299,6 +291,18 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 		example.append("</div>");
 
 		return example.toString();
+	}
+
+	@Nullable
+	private static String getDefaultValueToDisplay(Argument arg) {
+		Object defaultValue = arg.getDefaultValue();
+		if (defaultValue instanceof Number || defaultValue instanceof Boolean) {
+			return String.valueOf(defaultValue);
+		}
+		else if (defaultValue instanceof String) {
+			return "'" + defaultValue + "'";
+		}
+		return null;
 	}
 
 	/**
@@ -315,34 +319,26 @@ public class PageFunctions extends DialogTray implements GroovyConstants {
 		s.append("(", StyledString.DECORATIONS_STYLER);
 
 		Iterator<Argument> x = hfs.getArguments().iterator();
-		HelperFunctionArgument helperArg = null;
 		if (x.hasNext()) {
 			Argument arg = x.next();
-			if (arg instanceof HelperFunctionArgument) {
-				helperArg = (HelperFunctionArgument) arg;
-			}
 
 			s.append(arg.getName(), StyledString.DECORATIONS_STYLER);
 
 			if (argSize > 1) {
 				s.append(": ", StyledString.DECORATIONS_STYLER);
-				if (helperArg != null && helperArg.getDefaultValueDisplay() != null) {
-					s.append(helperArg.getDefaultValueDisplay(), StyledString.COUNTER_STYLER);
+				if (getDefaultValueToDisplay(arg) != null) {
+					s.append(getDefaultValueToDisplay(arg), StyledString.COUNTER_STYLER);
 				}
 				else {
 					s.append("?", StyledString.COUNTER_STYLER);
 				}
 			}
 			while (x.hasNext()) {
-				helperArg = null;
 				Argument arg1 = x.next();
-				if (arg1 instanceof HelperFunctionArgument) {
-					helperArg = (HelperFunctionArgument) arg1;
-				}
 				s.append(", " + arg1.getName(), StyledString.DECORATIONS_STYLER);
 				s.append(": ", StyledString.DECORATIONS_STYLER);
-				if (helperArg != null && helperArg.getDefaultValueDisplay() != null) {
-					s.append(helperArg.getDefaultValueDisplay(), StyledString.COUNTER_STYLER);
+				if (getDefaultValueToDisplay(arg1) != null) {
+					s.append(getDefaultValueToDisplay(arg1), StyledString.COUNTER_STYLER);
 				}
 				else {
 					s.append("?", StyledString.COUNTER_STYLER);

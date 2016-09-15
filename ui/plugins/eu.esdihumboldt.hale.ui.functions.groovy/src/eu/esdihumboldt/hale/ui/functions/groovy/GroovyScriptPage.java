@@ -41,6 +41,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.LineNumberRulerColumn;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.VerifyKeyListener;
 import org.eclipse.swt.events.VerifyEvent;
@@ -68,9 +69,11 @@ import groovy.lang.Script;
 /**
  * Base page for editing a Groovy script for type relations.
  * 
+ * @param <W> the wizard type
  * @author Simon Templer
  */
-public class GroovyScriptPage extends SourceViewerPage<GroovyAST> implements GroovyConstants {
+public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyAST, W> implements
+		GroovyConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GroovyScriptPage.class);
 

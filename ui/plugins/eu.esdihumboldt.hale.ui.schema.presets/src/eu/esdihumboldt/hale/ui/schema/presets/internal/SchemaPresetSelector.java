@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.ui.schema.presets.internal;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
-import eu.esdihumboldt.hale.ui.util.selector.AbstractSelector;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.ui.util.selector.AbstractUniformSelector;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -27,7 +27,7 @@ import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
  * 
  * @author Simon Templer
  */
-public class SchemaPresetSelector extends AbstractSelector<SchemaPreset> {
+public class SchemaPresetSelector extends AbstractUniformSelector<SchemaPreset> {
 
 	/**
 	 * Create a selector for {@link SchemaPreset}s.
@@ -39,8 +39,7 @@ public class SchemaPresetSelector extends AbstractSelector<SchemaPreset> {
 	}
 
 	@Override
-	protected AbstractViewerSelectionDialog<SchemaPreset, ?> createSelectionDialog(
-			Shell parentShell) {
+	protected AbstractViewerSelectionDialog<SchemaPreset, ?> createSelectionDialog(Shell parentShell) {
 		return new SchemaPresetSelectionDialog(parentShell, getSelectedObject());
 	}
 

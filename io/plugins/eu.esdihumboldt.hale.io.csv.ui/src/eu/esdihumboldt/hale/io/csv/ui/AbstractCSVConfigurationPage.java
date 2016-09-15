@@ -39,10 +39,12 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * Sets the separator, quote and escape string in the provider
  * 
  * @author Kevin Mais
- * @param <P> the provider type
+ * @param
+ * 			<P>
+ *            the provider type
  */
-public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
-		AbstractConfigurationPage<P, IOWizard<P>> implements ModifyListener {
+public abstract class AbstractCSVConfigurationPage<P extends IOProvider>
+		extends AbstractConfigurationPage<P, IOWizard<P>>implements ModifyListener {
 
 	private Combo separator;
 	private Combo quote;
@@ -52,6 +54,9 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 
 	private QName last_name;
 
+	private final GridDataFactory labelLayout;
+	private final GridDataFactory comboLayout;
+
 	/**
 	 * Default Constructor
 	 * 
@@ -60,10 +65,15 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 	protected AbstractCSVConfigurationPage(String pageName) {
 		super(pageName);
 		setTitle("CSV Settings");
-		setDescription("Set the Separating, Quote and Escape characters");
+		setDescription("Set the Separating, Quote, Escape characters with decimal divisor");
 
 		bmap = HashBiMap.create();
 		bmap.put("TAB", "\t");
+
+		labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).grab(false, false);
+		comboLayout = GridDataFactory.swtDefaults().align(SWT.BEGINNING, SWT.CENTER).grab(false,
+				false);
+
 	}
 
 	/**
@@ -80,9 +90,9 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 
 		if (sep.isEmpty() || sep.contains("/") || sep.contains(":")
 				|| (bmap.get(sep) == null && sep.length() > 1) || qu.isEmpty() || qu.contains("/")
-				|| qu.contains(":") || qu.contains(".")
-				|| (bmap.get(qu) == null && qu.length() > 1) || esc.isEmpty() || esc.contains("/")
-				|| esc.contains(":") || (bmap.get(esc) == null && esc.length() > 1)) {
+				|| qu.contains(":") || qu.contains(".") || (bmap.get(qu) == null && qu.length() > 1)
+				|| esc.isEmpty() || esc.contains("/") || esc.contains(":")
+				|| (bmap.get(esc) == null && esc.length() > 1)) {
 			setPageComplete(false);
 			setErrorMessage("You have not entered valid characters!");
 		}
@@ -154,11 +164,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 		page.setLayout(new GridLayout(2, true));
 		String[] separatorSelection = new String[] { "TAB", ",", "|", ".", ";" };
 
-		GridDataFactory labelLayout = GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER)
-				.grab(false, false);
-		GridDataFactory comboLayout = GridDataFactory.swtDefaults()
-				.align(SWT.BEGINNING, SWT.CENTER).grab(false, false);
-
 		// column 1, row 1
 		Label separatorLabel = new Label(page, SWT.NONE);
 		separatorLabel.setText("Select Separating Sign");
@@ -195,10 +200,6 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 
 		// select first item
 		separator.select(0);
-
-		page.pack();
-
-		setPageComplete(true);
 	}
 
 	/**
@@ -242,4 +243,19 @@ public abstract class AbstractCSVConfigurationPage<P extends IOProvider> extends
 	public HashBiMap<String, String> getBmap() {
 		return bmap;
 	}
+
+	/**
+	 * @return the labelLayout
+	 */
+	protected GridDataFactory getLabelLayout() {
+		return labelLayout;
+	}
+
+	/**
+	 * @return the comboLayout
+	 */
+	protected GridDataFactory getComboLayout() {
+		return comboLayout;
+	}
+
 }

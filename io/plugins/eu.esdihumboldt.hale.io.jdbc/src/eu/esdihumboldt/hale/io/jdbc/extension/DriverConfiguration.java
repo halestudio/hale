@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc.extension;
 
+import java.net.URI;
 import java.sql.Driver;
 import java.sql.SQLException;
 
@@ -42,6 +43,13 @@ public class DriverConfiguration implements Identifiable {
 	private final String testURI;
 	private final Class<? extends URIBuilder> builderClass;
 	private URIBuilder builder = null;
+	private final String className;
+	private final IConfigurationElement[] prefixes;
+	private final IConfigurationElement[] schemaSelection;
+	private boolean isSchemaSelectionEnable;
+	private boolean multipleSchemaSelection;
+	private Class<? extends SchemaSelector> schemaSelectorClass;
+	private SchemaSelector selector = null;
 
 	/**
 	 * Create a connection configuration from a corresponding configuration
@@ -57,6 +65,10 @@ public class DriverConfiguration implements Identifiable {
 		name = element.getAttribute("name");
 		testURI = element.getAttribute("testUri");
 		builderClass = (Class<? extends URIBuilder>) ExtensionUtil.loadClass(element, "uriBuilder");
+		className = element.getAttribute("class");
+		prefixes = element.getChildren("prefix");
+		schemaSelection = element.getChildren("schema-selection");
+		setSchemaSelectionVariables();
 	}
 
 	@Override
@@ -100,6 +112,88 @@ public class DriverConfiguration implements Identifiable {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * match if configuration's any prefix match URI.
+	 * 
+	 * @param jdbcUri JDBCuri
+	 * @return true if matches any of the prefix, otherwise false
+	 */
+	public boolean matchURIPrefix(URI jdbcUri) {
+		String uri = jdbcUri.toString();
+		for (IConfigurationElement prefix : prefixes)
+			if (uri.startsWith(prefix.getAttribute("value")))
+				return true;
+		return false;
+	}
+
+	/**
+	 * Loading a driver
+	 * 
+	 * @return Driver the {@link Driver} implements instance or
+	 *         <code>null</code>
+	 * 
+	 * @throws ClassNotFoundException throws a Class not found exception
+	 */
+	public Driver loadDriver() throws ClassNotFoundException {
+		try {
+			return (Driver) Class.forName(className).newInstance();
+		} catch (InstantiationException e) {
+			log.error(e.getMessage(), e);
+			return null;
+		} catch (IllegalAccessException e) {
+			log.error(e.getMessage(), e);
+			return null;
+		}
+	}
+
+	/**
+	 * @return the isSchemaSelectionEnable
+	 */
+	public boolean isSchemaSelectionEnable() {
+		return isSchemaSelectionEnable;
+	}
+
+	/**
+	 * @return the multipleSchemaSelection
+	 */
+	public boolean isMultipleSchemaSelection() {
+		return multipleSchemaSelection;
+	}
+
+	/**
+	 * @return the getSchemaClass
+	 */
+	public SchemaSelector getGetSchemaSelector() {
+		if (schemaSelectorClass != null) {
+			try {
+				selector = schemaSelectorClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				Throwables.propagate(e);
+			}
+		}
+		return selector;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setSchemaSelectionVariables() {
+		if (schemaSelection != null && schemaSelection.length > 0) {
+			// getting only first element
+			isSchemaSelectionEnable = Boolean.valueOf(schemaSelection[0].getAttribute("enabled"));
+			multipleSchemaSelection = Boolean.valueOf(schemaSelection[0].getAttribute("multiple"));
+			try {
+				schemaSelectorClass = (Class<? extends SchemaSelector>) ExtensionUtil
+						.loadClass(schemaSelection[0], "selector");
+			} catch (NullPointerException ex) {
+				// Schema Selector class is optional in driver configuration
+			}
+		}
+		else {
+			isSchemaSelectionEnable = false;
+			multipleSchemaSelection = false;
+			schemaSelectorClass = null;
+		}
 	}
 
 }

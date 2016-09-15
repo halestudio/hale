@@ -52,11 +52,11 @@ import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.ListenableFuture;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.AbstractDefaultConfigurationService;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
@@ -132,8 +132,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			super.updateConfiguration(provider);
 
 			// set project files
-			Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
-					.getServiceProvider());
+			Map<String, ProjectFile> projectFiles = ProjectIO
+					.createDefaultProjectFiles(HaleUI.getServiceProvider());
 			provider.setProjectFiles(projectFiles);
 		}
 
@@ -146,10 +146,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			// check if project reader requires clean-up
 			if (provider instanceof TemporaryFiles || provider instanceof Cleanup) {
-				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				CleanupService cs = HalePlatform.getService(CleanupService.class);
 				if (provider instanceof TemporaryFiles) {
-					cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables.toArray(
-							((TemporaryFiles) provider).getTemporaryFiles(), File.class));
+					cs.addTemporaryFiles(CleanupContext.PROJECT, Iterables
+							.toArray(((TemporaryFiles) provider).getTemporaryFiles(), File.class));
 				}
 				if (provider instanceof Cleanup) {
 					cs.addCleaner(CleanupContext.PROJECT, ((Cleanup) provider));
@@ -177,7 +177,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				}
 
 				changed = false;
-				RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
+				RecentProjectsService rfs = PlatformUI.getWorkbench()
 						.getService(RecentProjectsService.class);
 				if (projectFile != null) {
 					rfs.add(projectFile.getAbsolutePath(), main.getName());
@@ -192,7 +192,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// store the content type the project was loaded with
 				IContentType ct = provider.getContentType();
 				if (ct == null && provider.getSource() != null) {
-					log.warn("Project content type was not determined during load, trying auto-detection");
+					log.warn(
+							"Project content type was not determined during load, trying auto-detection");
 					try {
 						URI loc = provider.getSource().getLocation();
 						String filename = null;
@@ -276,8 +277,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	/**
 	 * Configuration service backed by the internal {@link Project}
 	 */
-	private class ProjectConfigurationService extends AbstractDefaultConfigurationService implements
-			ComplexConfigurationService {
+	private class ProjectConfigurationService extends AbstractDefaultConfigurationService
+			implements ComplexConfigurationService {
 
 		/**
 		 * Default constructor
@@ -378,7 +379,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	 * Default constructor
 	 */
 	public ProjectServiceImpl() {
-		haleVersion = Version.parseVersion(Display.getAppVersion());
+		haleVersion = HalePlatform.getCoreVersion(); // Version.parseVersion(Display.getAppVersion());
 		synchronized (this) {
 			main = createDefaultProject();
 		}
@@ -399,8 +400,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			public void updateConfiguration(ProjectWriter provider) {
 				provider.getProject().setModified(new Date());
 				provider.getProject().setHaleVersion(haleVersion);
-				Map<String, ProjectFile> projectFiles = ProjectIO.createDefaultProjectFiles(HaleUI
-						.getServiceProvider());
+				Map<String, ProjectFile> projectFiles = ProjectIO
+						.createDefaultProjectFiles(HaleUI.getServiceProvider());
 				provider.setProjectFiles(projectFiles);
 				if (projectLocation != null) {
 					provider.setPreviousTarget(projectLocation);
@@ -413,7 +414,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					projectFile = new File(provider.getTarget().getLocation());
 					projectLocation = provider.getTarget().getLocation();
 					changed = false;
-					RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench()
+					RecentProjectsService rfs = PlatformUI.getWorkbench()
 							.getService(RecentProjectsService.class);
 					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 
@@ -487,19 +488,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		}
 
 		// reset current session descriptor
-		ReportService repService = (ReportService) PlatformUI.getWorkbench().getService(
-				ReportService.class);
+		ReportService repService = PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.updateCurrentSessionDescription();
 
 		// clean
 		final IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				ATransaction trans = log.begin("Clean project");
 
-				CleanupService cs = OsgiUtils.getService(CleanupService.class);
+				CleanupService cs = HalePlatform.getService(CleanupService.class);
 				if (cs != null) {
 					cs.triggerProjectCleanup();
 				}
@@ -562,8 +562,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 		// use I/O provider and content type mechanisms to enable loading of a
 		// project file
-		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, new DefaultInputSupplier(
-				uri), uri.getPath());
+		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class,
+				new DefaultInputSupplier(uri), uri.getPath());
 		if (reader != null) {
 			// configure reader
 			reader.setSource(new DefaultInputSupplier(uri));
@@ -595,11 +595,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// init appTitle
 				if (appTitle == null) {
 					if (PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {
-						appTitle = PlatformUI.getWorkbench()./*
-															 * getWorkbenchWindows(
-															 * )[0]
-															 */getActiveWorkbenchWindow()
-								.getShell().getText();
+						appTitle = PlatformUI.getWorkbench()
+								./*
+									 * getWorkbenchWindows( )[0]
+									 */getActiveWorkbenchWindow().getShell().getText();
 					}
 					else {
 						return;
@@ -660,10 +659,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						 * project file loaded.
 						 */
 						if (projectLoadContentType != null) {
-							if (factory.getSupportedTypes() == null
-									|| !factory.getSupportedTypes()
-											.contains(projectLoadContentType)) {
-								log.warn("Project cannot be saved with the same settings it was originally saved with, as the content type has changed.");
+							if (factory.getSupportedTypes() == null || !factory.getSupportedTypes()
+									.contains(projectLoadContentType)) {
+								log.warn(
+										"Project cannot be saved with the same settings it was originally saved with, as the content type has changed.");
 								break;
 							}
 						}
@@ -686,7 +685,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor, null);
 				}
 				else {
-					log.info("The project cannot be saved because the format the project was saved with is not available or has changed.");
+					log.info(
+							"The project cannot be saved because the format the project was saved with is not available or has changed.");
 					// use save as instead
 					saveAs();
 				}
@@ -729,9 +729,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void run() {
 				SaveProjectWizard wizard;
-				if (projectLoadContentType != null
-						&& projectLoadContentType.getId().equals(
-								ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
+				if (projectLoadContentType != null && projectLoadContentType.getId()
+						.equals(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
 					/*
 					 * For project archives, saving the project has to be
 					 * restricted to project archives again, as the files only
@@ -839,8 +838,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			@Override
 			public void run() {
-				MessageBox mb = new MessageBox(display.getActiveShell(), SWT.YES | SWT.NO
-						| SWT.CANCEL | SWT.ICON_QUESTION);
+				MessageBox mb = new MessageBox(display.getActiveShell(),
+						SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
 				mb.setMessage("Save changes to the current project?"); //$NON-NLS-1$
 				mb.setText("Unsaved changes"); //$NON-NLS-1$
 				int result = mb.open();
@@ -957,8 +956,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			Iterator<IOConfiguration> iter = main.getResources().iterator();
 			while (iter.hasNext()) {
 				IOConfiguration conf = iter.next();
-				Value idValue = conf.getProviderConfiguration().get(
-						ImportProvider.PARAM_RESOURCE_ID);
+				Value idValue = conf.getProviderConfiguration()
+						.get(ImportProvider.PARAM_RESOURCE_ID);
 				if (idValue != null) {
 					String id = idValue.as(String.class);
 					if (resourceId.equals(id)) {
@@ -1009,15 +1008,14 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				monitor.beginTask("Reload source data", IProgressMonitor.UNKNOWN);
 
 				monitor.subTask("Clear loaded instances");
 
 				// drop the existing instances
-				InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-						InstanceService.class);
+				InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 				is.dropInstances();
 
 				// reload the instances
@@ -1088,7 +1086,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	}
 
 	@Override
-	public Collection<String> getExportConfigurationNames(Class<? extends IOProvider> providerClass) {
+	public Collection<String> getExportConfigurationNames(
+			Class<? extends IOProvider> providerClass) {
 		Set<String> result = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 		for (Entry<String, IOConfiguration> entry : main.getExportConfigurations().entrySet()) {
 			IOConfiguration conf = entry.getValue();
@@ -1105,4 +1104,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 	public URI getLoadLocation() {
 		return projectLocation;
 	}
+
+	@Override
+	public Value getProperty(String name) {
+		return getConfigurationService().getProperty(name);
+	}
+
 }

@@ -36,8 +36,7 @@ public class ToggleInstanceSamplingHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		boolean enabled = ps.getConfigurationService().getBoolean(
 				InstanceViewPreferences.KEY_ENABLED, InstanceViewPreferences.ENABLED_DEFAULT);

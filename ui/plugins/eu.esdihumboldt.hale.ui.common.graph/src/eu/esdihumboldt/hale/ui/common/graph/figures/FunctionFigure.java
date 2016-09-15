@@ -30,15 +30,15 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.ui.util.ResourceManager;
 import eu.esdihumboldt.hale.ui.util.ResourceManager.Resource;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
 /**
- * The shape figure for {@link Function}(s)
+ * The shape figure for {@link FunctionDefinition}(s)
  * 
  * @author Patrick Lieb
  */
@@ -74,7 +74,7 @@ public class FunctionFigure extends CustomShapeFigure {
 	 * @param showToolTip if the ToolTip should be shown
 	 */
 	public FunctionFigure(ResourceManager resourceManager,
-			Collection<FunctionParameter> parameters, boolean showToolTip) {
+			Collection<FunctionParameterDefinition> parameters, boolean showToolTip) {
 		super(new StretchedHexagon(10));
 
 		setAntialias(SWT.ON);
@@ -109,9 +109,9 @@ public class FunctionFigure extends CustomShapeFigure {
 			}
 			add(name, nameGrid);
 
-			Iterator<FunctionParameter> iter = parameters.iterator();
+			Iterator<FunctionParameterDefinition> iter = parameters.iterator();
 			while (iter.hasNext()) {
-				FunctionParameter para = iter.next();
+				FunctionParameterDefinition para = iter.next();
 
 				// tip
 				Label descriptionlabel = new Label();
@@ -148,7 +148,7 @@ public class FunctionFigure extends CustomShapeFigure {
 		}
 	}
 
-	private String getOccurence(FunctionParameter parameter) {
+	private String getOccurence(FunctionParameterDefinition parameter) {
 		String result = "";
 		if (parameter.getMinOccurrence() == -1) {
 			result += "n";

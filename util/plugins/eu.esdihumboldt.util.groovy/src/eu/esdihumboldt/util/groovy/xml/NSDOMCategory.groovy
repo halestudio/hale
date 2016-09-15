@@ -31,6 +31,22 @@ import org.w3c.dom.NodeList
 public class NSDOMCategory extends DOMCategory {
 
 	/**
+	 * Get the attribute with the given name. If the attribute is not present, yield <code>null</code>.
+	 * @param element the element which is inspected for the attribute
+	 * @param name the attribute name
+	 * @return the attribute value or <code>null</code>
+	 */
+	public static String getAttributeOrNull(Element element, String name) {
+		Node attribute = element.getAttributes().getNamedItem(name)
+		if (attribute == null) {
+			return null
+		}
+		else {
+			return attribute.nodeValue
+		}
+	}
+
+	/**
 	 * Get the first child element.
 	 * @param parent the parent element
 	 * @return the first child element or <code>null</code> if none exists

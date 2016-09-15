@@ -1,55 +1,46 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="259">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="285">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-equinox-test/4/updatesite/"/>
+<unit id="org.eclipse.sdk.ide" version="4.5.2.M20160212-1500"/>
+<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.5.1.v20160129-0959"/>
+<repository location="http://download.eclipse.org/eclipse/updates/4.5"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/job/site-eclipse-util/1/updatesite"/>
+<unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
+<repository location="http://build-artifacts.wetransform.to/p2/eclipse-util/import"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.scala-ide.sdt.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<unit id="org.scala-ide.sdt.source.feature.feature.group" version="3.0.3.v-2_10-201403271605-8d2c756"/>
-<repository location="http://download.scala-ide.org/sdk/helium/e38/scala210/stable/site"/>
+<unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
+<repository location="http://build-artifacts.wetransform.to/p2/sqlite/build_7"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20160810"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/04273b13cffc2d5e6589fbcc24634afda07ae8c2/updatesites/platform"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.1.0.201503301812"/>
+<repository location="http://build-artifacts.wetransform.to/p2/equinox-test/import"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
 <unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/view/Libraries/job/slf4jplus/10/updatesite"/>
+<repository location="http://build-artifacts.wetransform.to/p2/slf4jplus/import"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="0.14.0.v20140806-0758"/>
-<unit id="org.eclipse.e4.core.tools.feature.feature.group" version="0.14.0.v20140806-0758"/>
-<repository location="http://download.eclipse.org/e4/downloads/drops/S-0.16-201408072200/repository"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
-<repository location="http://hale.igd.fraunhofer.de/jenkins/view/p2/job/site-sqlite-osgi/2/updatesite"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.4.2.M20150204-1700"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.7.0.v201409021051"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.7.0.v201409021027"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.7.3.v201411190455"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.8.1.201408201453"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.10.2.v20150204-1316"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.10.2.v20150123-0452"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.101.201408150207"/>
-<repository location="http://download.eclipse.org/releases/luna/"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.8.3.v201512160556"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.9.0.201506060219"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.2.v20160202-2102"/>
+<repository location="http://download.eclipse.org/releases/mars/"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.18.v20150929"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20151101"/>
-<repository location="http://hale.igd.fraunhofer.de/build-support/a0201398e6f82efaabd3f4aa80c35bef0b47e2b7/updatesites/platform"/>
 </location>
 </locations>
 </target>

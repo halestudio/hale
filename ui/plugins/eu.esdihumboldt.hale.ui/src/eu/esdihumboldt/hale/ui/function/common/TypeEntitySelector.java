@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
  * 
  * @author Simon Templer
  */
-public class TypeEntitySelector extends EntitySelector<TypeParameter> {
+public class TypeEntitySelector extends EntitySelector<TypeParameterDefinition> {
 
 	private final boolean onlyMappingRelevant;
 
@@ -50,7 +50,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 	 * @param parent the parent composite
 	 * @param onlyMappingRelevant whether to only show mapping relevant types
 	 */
-	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameter field, Composite parent,
+	public TypeEntitySelector(SchemaSpaceID ssid, TypeParameterDefinition field, Composite parent,
 			boolean onlyMappingRelevant) {
 		super(ssid, field, parent, createFilters(field));
 		this.onlyMappingRelevant = onlyMappingRelevant;
@@ -58,11 +58,11 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 
 	/**
 	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID,
-	 *      AbstractParameter)
+	 *      ParameterDefinition)
 	 */
 	@Override
 	protected EntityDialog createEntityDialog(Shell parentShell, SchemaSpaceID ssid,
-			TypeParameter field) {
+			TypeParameterDefinition field) {
 		String title;
 		switch (ssid) {
 		case SOURCE:
@@ -91,7 +91,7 @@ public class TypeEntitySelector extends EntitySelector<TypeParameter> {
 		throw new IllegalArgumentException("Entity must be a type");
 	}
 
-	private static ViewerFilter[] createFilters(TypeParameter field) {
+	private static ViewerFilter[] createFilters(TypeParameterDefinition field) {
 		if (field == null) {
 			return null;
 		}

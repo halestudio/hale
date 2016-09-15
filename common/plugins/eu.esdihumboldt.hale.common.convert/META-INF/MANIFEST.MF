@@ -1,13 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Conversion Service
-Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert
-Bundle-Version: 2.9.0.qualifier
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert;singleton:=true
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.springframework.core;bundle-version="3.0.0";visibility:=reexport,
- org.eclipse.gemini.blueprint.core;bundle-version="1.0.0"
-Import-Package: de.fhg.igd.slf4jplus,
+ org.eclipse.core.runtime;bundle-version="3.10.0"
+Import-Package: de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
+ eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.util.reflection,
  org.slf4j;version="1.5.11",
  org.springframework.beans.factory;version="3.0.0.RELEASE",

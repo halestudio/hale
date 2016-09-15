@@ -16,18 +16,13 @@
 
 package eu.esdihumboldt.cst.doc.functions.internal.content;
 
-import java.awt.Dimension;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -37,14 +32,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.VelocityContext;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.help.IHelpContentProducer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.zest.core.viewers.GraphViewer;
-import org.eclipse.zest.core.widgets.Graph;
-import org.eclipse.zest.core.widgets.GraphNode;
-import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.w3c.dom.Element;
 
 import com.google.common.io.Files;
@@ -54,16 +42,11 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.doc.util.content.AbstractVelocityContent;
-import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
-import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
-import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
-import eu.esdihumboldt.hale.ui.util.DisplayThread;
-import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 import eu.esdihumboldt.util.xml.XmlUtil;
 
 /**
@@ -71,8 +54,8 @@ import eu.esdihumboldt.util.xml.XmlUtil;
  * 
  * @author Simon Templer
  */
-public class FunctionReferenceContent extends AbstractVelocityContent implements
-		FunctionReferenceConstants {
+public class FunctionReferenceContent extends AbstractVelocityContent
+		implements FunctionReferenceConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(FunctionReferenceContent.class);
 
@@ -80,6 +63,22 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 	 * Directory for storing the generated images.
 	 */
 	private File tempDir;
+
+	private static final Method imageContentMethod = loadImageContentMethod();
+
+	private static Method loadImageContentMethod() {
+		try {
+			FunctionReferenceContent.class.getClassLoader()
+					.loadClass("eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph");
+
+			Class<?> clazz = FunctionReferenceContent.class.getClassLoader().loadClass(
+					"eu.esdihumboldt.cst.doc.functions.internal.content.image.ImageContent");
+			return clazz.getMethod("getImageContent", String.class, File.class);
+		} catch (Throwable e) {
+			log.warn("Could not load image content method for function help", e);
+			return null;
+		}
+	}
 
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
@@ -128,6 +127,25 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 		return null;
 	}
 
+	private InputStream getImageContent(String func_id) {
+		if (imageContentMethod == null) {
+			return null;
+		}
+
+		if (tempDir == null) {
+			tempDir = Files.createTempDir();
+			tempDir.deleteOnExit();
+		}
+
+		try {
+			return (InputStream) imageContentMethod.invoke(null, func_id, tempDir);
+		} catch (Exception e) {
+			log.error("Error getting image content for function " + func_id);
+		}
+
+		return null;
+	}
+
 	/**
 	 * @see AbstractVelocityContent#getTemplate(String)
 	 */
@@ -138,7 +156,7 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 
 	private InputStream getFunctionContent(String func_id) throws Exception {
 		// maps "function" to the real function ID (used by the template)
-		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+		final FunctionDefinition<?> function = FunctionUtil.getFunction(func_id, null);
 
 		if (function == null) {
 			log.warn("Unknown function " + func_id);
@@ -151,11 +169,13 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			public VelocityContext call() throws Exception {
 				VelocityContext context = new VelocityContext();
 
+				context.put("showImage", imageContentMethod != null);
+
 				context.put("function", function);
 
 				// Map<paramDisplayName, sampleDataStringRepresentation>
 				Map<String, String> parameterDocu = new HashMap<String, String>();
-				for (FunctionParameter param : function.getDefinedParameters()) {
+				for (FunctionParameterDefinition param : function.getDefinedParameters()) {
 					if (param.getValueDescriptor() != null
 							&& param.getValueDescriptor().getSampleData() != null) {
 						Value sample = param.getValueDescriptor().getSampleData();
@@ -214,97 +234,8 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 		return getContentFromTemplate(func_id, "function", contextFactory);
 	}
 
-	private InputStream getImageContent(String func_id) throws Exception {
-
-		final AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
-
-		if (function == null) {
-			log.warn("Unknown function " + func_id);
-			return null;
-		}
-
-		if (tempDir == null) {
-			tempDir = Files.createTempDir();
-			tempDir.deleteOnExit();
-		}
-
-		final File _functionFile = new File(tempDir, func_id + ".png");
-		if (!_functionFile.exists()) {
-			Display display;
-			if (Display.getCurrent() != null) {
-				// use the current display if available
-				display = Display.getCurrent();
-			}
-			else {
-				try {
-					// use workbench display if available
-					display = PlatformUI.getWorkbench().getDisplay();
-				} catch (Throwable e) {
-					// use a dedicated display thread if no workbench is
-					// available
-					display = DisplayThread.getInstance().getDisplay();
-				}
-			}
-			display.syncExec(new Runnable() {
-
-				@Override
-				public void run() {
-
-					// create an initial off-screen graph with fixed values;
-					// resize the graph after computing the figures width and
-					// height
-					OffscreenGraph off_graph = new OffscreenGraph(300, 200) {
-
-						@Override
-						protected void configureViewer(GraphViewer viewer) {
-							LayoutAlgorithm algo = new FunctionTreeLayoutAlgorithm();
-
-							FunctionGraphContentProvider stcp = new FunctionGraphContentProvider();
-							// XXX no service provider given
-							FunctionGraphLabelProvider fglp = new FunctionGraphLabelProvider(null,
-									false);
-							viewer.setContentProvider(stcp);
-							viewer.setLabelProvider(fglp);
-							viewer.setInput(function);
-							viewer.setLayoutAlgorithm(algo);
-						}
-
-					};
-
-					Graph graph = off_graph.getGraph();
-					Dimension dim = computeSize(graph);
-					int width;
-					if (dim.width > 450) {
-						width = dim.width;
-					}
-					else {
-						// minimum width = 450
-						width = 450;
-					}
-					int height = dim.height;
-					off_graph.resize(width, height);
-
-					try {
-						off_graph.saveImage(new BufferedOutputStream(new FileOutputStream(
-								_functionFile)), null);
-					} catch (IOException e) {
-						log.warn("Conversion from Graph to Image failed!");
-					} finally {
-						off_graph.dispose();
-					}
-				}
-			});
-		}
-
-		if (_functionFile.exists()) {
-			return new FileInputStream(_functionFile);
-		}
-
-		return null;
-	}
-
 	private InputStream getIconContent(String func_id) {
-		AbstractFunction<?> function = FunctionUtil.getFunction(func_id);
+		FunctionDefinition<?> function = FunctionUtil.getFunction(func_id, null);
 
 		URL url = function.getIconURL();
 
@@ -315,75 +246,6 @@ public class FunctionReferenceContent extends AbstractVelocityContent implements
 			e.printStackTrace();
 		}
 		return null;
-	}
-
-	private Dimension computeSize(Graph graph) {
-		@SuppressWarnings("unchecked")
-		List<GraphNode> list = graph.getNodes();
-		int height = 0;
-		int width = 0;
-		List<GraphNode> tempSourceList = new ArrayList<GraphNode>();
-		List<GraphNode> tempTargetList = new ArrayList<GraphNode>();
-		for (GraphNode gn : list) {
-			int sourceCons = gn.getSourceConnections().size();
-			int targetCons = gn.getTargetConnections().size();
-			if (sourceCons == 0 && targetCons == 1) {
-				tempSourceList.add(gn);
-			}
-			else if (sourceCons >= 1 && targetCons >= 1) {
-				width = width + gn.getFigure().getBounds().width + 10;
-				height = height + gn.getFigure().getBounds().height;
-			}
-			else {
-				tempTargetList.add(gn);
-			}
-		}
-		int accuSourceWidth = 0;
-		int accuSourceHeight = 0;
-		int accuHeight = 0;
-		for (GraphNode node : tempSourceList) {
-			Rectangle rec = node.getFigure().getBounds();
-			int sourceWidth = rec.width;
-			int sourceHeight = rec.height;
-
-			accuSourceHeight = accuSourceHeight + sourceHeight;
-
-			if (accuSourceWidth < sourceWidth) {
-				accuSourceWidth = sourceWidth;
-			}
-			if (accuHeight < accuSourceHeight) {
-				accuHeight = accuSourceHeight;
-			}
-
-		}
-
-		int accuTargetWidth = 0;
-		int accuTargetHeight = 0;
-		for (GraphNode node : tempTargetList) {
-			Rectangle rec = node.getFigure().getBounds();
-			int targetWidth = rec.width;
-			int targetHeight = rec.height;
-
-			accuTargetHeight = accuTargetHeight + targetHeight;
-
-			if (accuTargetWidth < targetWidth) {
-				accuTargetWidth = targetWidth;
-			}
-			if (accuHeight < accuTargetHeight) {
-				accuHeight = accuTargetHeight;
-			}
-		}
-		width = width + accuSourceWidth + accuTargetWidth + 30;
-
-		if (height < accuHeight) {
-			height = accuHeight + 35;
-		}
-		height += 20;
-
-		Dimension d = new Dimension();
-		d.setSize(width, height);
-
-		return d;
 	}
 
 }

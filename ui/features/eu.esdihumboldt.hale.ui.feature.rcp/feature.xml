@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.rcp"
       label="RCP base feature"
-      version="2.9.0.qualifier">
+      version="3.0.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
@@ -125,13 +125,6 @@
 
    <plugin
          id="org.eclipse.ui.views.log"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="javax.servlet3"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -293,6 +286,13 @@
 
    <plugin
          id="org.eclipse.update.configurator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -51,8 +51,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	public AlignmentServiceSource() {
 		super();
 
-		final AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		final AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -81,6 +80,11 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				// custom functions don't affect source currently
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				// no properties that affect source
 			}
@@ -93,8 +97,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public void dispose() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.removeListener(alignmentListener);
 	}
 
@@ -103,8 +106,7 @@ public class AlignmentServiceSource extends AbstractSourceProvider {
 	 */
 	@Override
 	public Map<String, Object> getCurrentState() {
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		result.put(HAS_CELLS, hasCells(as));

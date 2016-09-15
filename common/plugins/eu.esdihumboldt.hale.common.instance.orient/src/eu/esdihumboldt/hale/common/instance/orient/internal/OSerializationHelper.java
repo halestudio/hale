@@ -26,7 +26,6 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,6 +45,7 @@ import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBWriter;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -225,6 +225,7 @@ public abstract class OSerializationHelper {
 	 * String conversion white list
 	 */
 	private static final Set<Class<?>> CONV_WHITE_LIST = new HashSet<Class<?>>();
+
 	static {
 		CONV_WHITE_LIST.add(BigInteger.class);
 		CONV_WHITE_LIST.add(URI.class);
@@ -253,9 +254,13 @@ public abstract class OSerializationHelper {
 			return true;
 		}
 		// date
-		else if (Date.class.isAssignableFrom(type)) {
-			return true;
-		}
+		/*
+		 * XXX OrientDB strips time information from dates. To avoid information
+		 * loss, we serialize dates and derivatives manually instead
+		 */
+//		else if (Date.class.isAssignableFrom(type)) {
+//			return true;
+//		}
 		// collections
 		else if (Collection.class.isAssignableFrom(type)) {
 			/*
@@ -314,7 +319,7 @@ public abstract class OSerializationHelper {
 		ODocument doc = new ODocument();
 
 		// try conversion to string first
-		final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		final ConversionService cs = HalePlatform.getService(ConversionService.class);
 		if (cs != null) {
 			// check if conversion allowed and possible
 			if (CONV_WHITE_LIST.contains(value.getClass())
@@ -404,8 +409,8 @@ public abstract class OSerializationHelper {
 				ObjectOutputStream out = new ObjectOutputStream(bytes);
 				out.writeObject(value);
 			} catch (IOException e) {
-				throw new IllegalStateException("Could not serialize field value of type "
-						+ value.getClass().getName());
+				throw new IllegalStateException(
+						"Could not serialize field value of type " + value.getClass().getName());
 			}
 			record.fromStream(bytes.toByteArray());
 		}
@@ -468,8 +473,8 @@ public abstract class OSerializationHelper {
 				ObjectInputStream in = new ObjectInputStream(bytes) {
 
 					@Override
-					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-							ClassNotFoundException {
+					protected Class<?> resolveClass(ObjectStreamClass desc)
+							throws IOException, ClassNotFoundException {
 						Class<?> result = resolved.get(desc.getName());
 						if (result == null) {
 							result = OsgiUtils.loadClass(desc.getName(), null);
@@ -560,8 +565,8 @@ public abstract class OSerializationHelper {
 				ObjectInputStream in = new ObjectInputStream(bytes) {
 
 					@Override
-					protected Class<?> resolveClass(ObjectStreamClass desc) throws IOException,
-							ClassNotFoundException {
+					protected Class<?> resolveClass(ObjectStreamClass desc)
+							throws IOException, ClassNotFoundException {
 						Class<?> result = resolved.get(desc.getName());
 						if (result == null) {
 							result = OsgiUtils.loadClass(desc.getName(), null);
@@ -573,8 +578,8 @@ public abstract class OSerializationHelper {
 							resolved.put(desc.getName(), result);
 						}
 						if (result == null) {
-							throw new IllegalStateException("Class " + desc.getName()
-									+ " not found");
+							throw new IllegalStateException(
+									"Class " + desc.getName() + " not found");
 						}
 						return result;
 					}

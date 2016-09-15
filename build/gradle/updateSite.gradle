@@ -92,7 +92,12 @@ task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition
 	            // add workspace plugins
 	            bundleParser.getParsedBundles().each {
 	                plugin('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
+	                // source bundle
+	                if (it.value.isJavaProject || it.value.needsGroovy || it.value.needsScala) {
+	                    plugin('id': it.key + '.source', 'version': '0.0.0')
+	                }
 	            }
+
 				// include features
 				bundleParser.getParsedFeatures().each {
 					includes('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
@@ -165,8 +170,5 @@ task packageUpdateSite(dependsOn: buildUpdateSite) << {
 		}
 		into 'target/'
 		includeEmptyDirs = false
-		rename { filename ->
-			filename.replace '-SNAPSHOT', ".${project.buildId}"
-		}
 	}
 }

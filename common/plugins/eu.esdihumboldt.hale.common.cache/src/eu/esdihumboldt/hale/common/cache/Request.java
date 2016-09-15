@@ -30,10 +30,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
@@ -53,9 +49,14 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import eu.esdihumboldt.util.http.client.ClientUtil;
+import eu.esdihumboldt.util.http.client.ClientProxyUtil;
 import eu.esdihumboldt.util.io.InputStreamDecorator;
 import groovy.text.SimpleTemplateEngine;
 import groovy.text.Template;
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.Element;
+import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 /**
  * This class manages requests and caching for remote files.
@@ -86,6 +87,7 @@ public class Request {
 	 * Constructor.
 	 */
 	private Request() {
+		// FIXME right way to aquire configuration service?
 		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
 		if (org == null) {
 			// if no configuration service is present, fall back to new instance
@@ -96,8 +98,8 @@ public class Request {
 			org = new JavaPreferencesConfigurationService(false, null, true);
 		}
 
-		configService = new NamespaceConfigurationServiceDecorator(org, Request.class.getPackage()
-				.getName().replace(".", DELIMITER), //$NON-NLS-1$
+		configService = new NamespaceConfigurationServiceDecorator(org,
+				Request.class.getPackage().getName().replace(".", DELIMITER), //$NON-NLS-1$
 				DELIMITER);
 
 		// get saved seeting
@@ -133,8 +135,8 @@ public class Request {
 				}
 
 				// initialize the cache manager
-				if (HaleCacheManager.create(new ByteArrayInputStream(data.toByteArray())).getCache(
-						CACHE_NAME) != null) {
+				if (HaleCacheManager.create(new ByteArrayInputStream(data.toByteArray()))
+						.getCache(CACHE_NAME) != null) {
 					return;
 				}
 
@@ -283,7 +285,7 @@ public class Request {
 
 		if (client == null) {
 			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
-			builder = ProxyUtil.applyProxy(builder, proxy);
+			builder = ClientProxyUtil.applyProxy(builder, proxy);
 
 			// set timeouts
 

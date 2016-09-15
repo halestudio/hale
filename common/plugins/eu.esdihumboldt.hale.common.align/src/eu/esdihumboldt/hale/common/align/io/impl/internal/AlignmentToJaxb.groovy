@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentTyp
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CustomFunctionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
@@ -43,8 +44,9 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue
 import eu.esdihumboldt.hale.common.align.model.Property
 import eu.esdihumboldt.hale.common.align.model.TransformationMode
 import eu.esdihumboldt.hale.common.align.model.Type
+import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.PathUpdate
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
-import eu.esdihumboldt.util.io.PathUpdate
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -87,6 +89,15 @@ class AlignmentToJaxb {
 		alignment.baseAlignments.collect(align.base) {
 			new Base(prefix: it.key, location: pathUpdate.findLocation(it.value, true, false, true))
 		}
+		
+		alignment.customPropertyFunctions.collect(align.customFunction) {
+			def cft = new CustomFunctionType()
+			
+			def element = HaleIO.getComplexElement(it.value)
+			cft.setAny(element)
+			
+			cft
+		}
 
 		// convert cells
 		for (Cell cell in alignment.cells) {
@@ -95,6 +106,9 @@ class AlignmentToJaxb {
 			}
 			addModifier(cell, align);
 		}
+		
+		// sort cells
+		align.cellOrModifier.sort(CellOrModifierComparator.instance)
 
 		return align
 	}

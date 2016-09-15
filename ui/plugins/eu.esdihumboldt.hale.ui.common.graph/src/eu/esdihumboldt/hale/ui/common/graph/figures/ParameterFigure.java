@@ -27,11 +27,11 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 
 /**
- * The shape figure for the defined parameters in {@link Function}(s)
+ * The shape figure for the defined parameters in {@link FunctionDefinition}(s)
  * 
  * @author Patrick Lieb
  */

@@ -77,8 +77,7 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 	public OccurringValuesSection() {
 		super();
 
-		service = (OccurringValuesService) PlatformUI.getWorkbench().getService(
-				OccurringValuesService.class);
+		service = PlatformUI.getWorkbench().getService(OccurringValuesService.class);
 	}
 
 	@Override
@@ -177,8 +176,8 @@ public class OccurringValuesSection extends AbstractEntityDefSection {
 
 		// copy button
 		copy = getWidgetFactory().createButton(page, null, SWT.PUSH);
-		copy.setImage(PlatformUI.getWorkbench().getSharedImages()
-				.getImage(ISharedImages.IMG_TOOL_COPY));
+		copy.setImage(
+				PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_COPY));
 		copy.setToolTipText("Copy values to the clipboard");
 		copy.addSelectionListener(new SelectionAdapter() {
 

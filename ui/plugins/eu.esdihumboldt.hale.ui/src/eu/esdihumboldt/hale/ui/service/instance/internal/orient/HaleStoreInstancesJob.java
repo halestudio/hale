@@ -45,10 +45,11 @@ public abstract class HaleStoreInstancesJob extends StoreInstancesJob {
 	 * @param instances the instances to store in the database
 	 * @param database the database
 	 */
-	public HaleStoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances) {
+	public HaleStoreInstancesJob(String name, LocalOrientDB database,
+			InstanceCollection instances) {
 		super(name, database, instances, DefaultReportHandler.getInstance());
 
-		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 		metaworker = new MetadataWorker();
 	}
 

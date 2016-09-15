@@ -22,7 +22,6 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import java.util.Map;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
@@ -38,20 +36,18 @@ import de.fhg.igd.osgi.util.OsgiUtilsActivator;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
-import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Some static helper methods for tests.
@@ -152,40 +148,21 @@ public class TestUtil {
 	 * Starts the conversion service.
 	 */
 	public static void startConversionService() {
-		List<String> bundlesToStart = new ArrayList<String>();
-		// for osgi extensions in application context
-		bundlesToStart.add("org.eclipse.gemini.blueprint.core");
-		// activate the extender
-		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
-		// activate the conversion service
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert");
-		// add core converters
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert.core");
-		bundlesToStart.add("eu.esdihumboldt.hale.common.convert.wkt");
-
-		startService(bundlesToStart, ConversionService.class);
+		// no longer any action needed
 	}
 
 	/**
 	 * Starts the instance factory.
 	 */
 	public static void startInstanceFactory() {
-		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.eclipse.equinox.ds");
-		bundlesToStart.add("eu.esdihumboldt.hale.common.instance");
-
-		startService(bundlesToStart, InstanceFactory.class);
+		// no longer any action needed
 	}
 
 	/**
 	 * Starts the instance factory.
 	 */
 	public static void startTransformationService() {
-		List<String> bundlesToStart = new ArrayList<String>();
-		bundlesToStart.add("org.eclipse.equinox.ds");
-		bundlesToStart.add("eu.esdihumboldt.cst");
-
-		startService(bundlesToStart, TransformationService.class);
+		// no longer any action needed
 	}
 
 	/**

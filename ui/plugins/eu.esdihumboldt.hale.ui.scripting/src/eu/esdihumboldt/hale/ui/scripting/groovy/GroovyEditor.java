@@ -57,7 +57,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyVa
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
@@ -69,7 +69,7 @@ import eu.esdihumboldt.hale.ui.util.source.SourceViewerKeyBindings;
  * 
  * @author Kai Schwierczek
  */
-public class GroovyEditor extends AbstractEditor<String> {
+public class GroovyEditor extends AbstractAttributeEditor<String> {
 
 	private final Composite composite;
 	private final Script script;
@@ -258,7 +258,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -266,7 +266,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(String value) {
@@ -275,7 +275,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 */
 	@Override
 	public String getValue() {
@@ -283,7 +283,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -291,7 +291,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -299,7 +299,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -307,7 +307,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractEditor#setVariables(java.util.Collection)
+	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor#setVariables(java.util.Collection)
 	 */
 	@Override
 	public void setVariables(Collection<PropertyEntityDefinition> properties) {
@@ -317,7 +317,7 @@ public class GroovyEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

@@ -28,13 +28,8 @@ import eu.esdihumboldt.hale.common.core.parameter.AbstractCommonParameter;
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractParameter extends AbstractCommonParameter {
-
-	/**
-	 * Value for {@link #maxOccurrence} that represents an unbounded maximum
-	 * occurrence
-	 */
-	public static final int UNBOUNDED = -1;
+public abstract class AbstractParameter extends AbstractCommonParameter implements
+		ParameterDefinition {
 
 	private final int minOccurrence;
 	private final int maxOccurrence;
@@ -91,15 +86,17 @@ public abstract class AbstractParameter extends AbstractCommonParameter {
 	}
 
 	/**
-	 * @return the minimum occurrence of the parameter
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition#getMinOccurrence()
 	 */
+	@Override
 	public final int getMinOccurrence() {
 		return minOccurrence;
 	}
 
 	/**
-	 * @return the maximum occurrence of the parameter
+	 * @see eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition#getMaxOccurrence()
 	 */
+	@Override
 	public final int getMaxOccurrence() {
 		return maxOccurrence;
 	}

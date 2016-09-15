@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.views.properties.function;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
 
 /**
@@ -25,7 +25,8 @@ import eu.esdihumboldt.hale.ui.views.properties.AbstractTextSection;
  * @author Patrick Lieb
  * @param <F> the function
  */
-public abstract class AbstractFunctionSection<F extends Function> extends AbstractTextSection {
+public abstract class AbstractFunctionSection<F extends FunctionDefinition<?>> extends
+		AbstractTextSection {
 
 	/**
 	 * the Function for this section

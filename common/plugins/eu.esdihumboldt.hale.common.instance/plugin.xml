@@ -44,5 +44,26 @@
             name="eu.esdihumboldt.hale.common.instance.model">
       </allowPackage>
    </extension>
-
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.hale.common.instance.InstanceServiceFactory"
+            id="eu.esdihumboldt.hale.common.instance"
+            scope="global">
+         <service
+               interface="eu.esdihumboldt.hale.common.instance.model.InstanceFactory">
+         </service>
+      </services>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.report">
+      <messageDefinition
+            class="eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.InstanceValidationMessageDefinition"
+            id="eu.esdihumboldt.hale.common.instancevalidator">
+      </messageDefinition>
+      <reportDefinition
+            class="eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.InstanceValidationReportDefinition"
+            id="eu.esdihumboldt.hale.common.instancevalidator">
+      </reportDefinition>
+   </extension>
 </plugin>

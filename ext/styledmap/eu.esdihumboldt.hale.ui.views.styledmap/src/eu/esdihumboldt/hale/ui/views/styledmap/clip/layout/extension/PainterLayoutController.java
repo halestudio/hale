@@ -48,13 +48,13 @@ public class PainterLayoutController {
 
 		this.mapKit = mapKit;
 
-		pls = (PainterLayoutService) PlatformUI.getWorkbench().getService(
-				PainterLayoutService.class);
+		pls = PlatformUI.getWorkbench().getService(PainterLayoutService.class);
 
 		layoutListener = new ExclusiveExtensionListener<PainterLayout, PainterLayoutFactory>() {
 
 			@Override
-			public void currentObjectChanged(PainterLayout current, PainterLayoutFactory definition) {
+			public void currentObjectChanged(PainterLayout current,
+					PainterLayoutFactory definition) {
 				applyLayout(definition, current);
 			}
 		};

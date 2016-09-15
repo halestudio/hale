@@ -25,6 +25,7 @@ import java.util.Set;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -108,7 +109,8 @@ public class SchemasView extends PropertiesViewPart {
 	 * Selection provider combining selections from source and target schema
 	 * explorers
 	 */
-	private class SchemasSelectionProvider implements ISelectionProvider, ISelectionChangedListener {
+	private class SchemasSelectionProvider
+			implements ISelectionProvider, ISelectionChangedListener {
 
 		/**
 		 * The selection listeners
@@ -160,10 +162,10 @@ public class SchemasView extends PropertiesViewPart {
 
 			if (selection instanceof SchemaSelection) {
 				SchemaSelection ss = (SchemaSelection) selection;
-				sourceExplorer.getTreeViewer().setSelection(
-						new StructuredSelection(ss.getSourceItems().toArray()));
-				targetExplorer.getTreeViewer().setSelection(
-						new StructuredSelection(ss.getTargetItems().toArray()));
+				sourceExplorer.getTreeViewer()
+						.setSelection(new StructuredSelection(ss.getSourceItems().toArray()));
+				targetExplorer.getTreeViewer()
+						.setSelection(new StructuredSelection(ss.getTargetItems().toArray()));
 			}
 		}
 
@@ -256,12 +258,14 @@ public class SchemasView extends PropertiesViewPart {
 								propertyPath, schemaSpace, null));
 					}
 					else {
-						log.error("No parent type definition for property path found, skipping object for selection.");
+						log.error(
+								"No parent type definition for property path found, skipping object for selection.");
 					}
 				}
 				else {
 					// XXX include GroupPropertyDefinitions also in selection?
-					log.debug("Could determine entity definition for object, skipping object for selection.");
+					log.debug(
+							"Could determine entity definition for object, skipping object for selection.");
 				}
 			}
 
@@ -346,7 +350,8 @@ public class SchemasView extends PropertiesViewPart {
 		// source schema toolbar, filter and explorer
 //		sourceExplorer = new SchemaExplorer(modelComposite, "Source");
 		sourceExplorer = new EntitySchemaExplorer(modelComposite, "Source", SchemaSpaceID.SOURCE);
-		sourceExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().grab(true, true).hint(400, 10)
+				.applyTo(sourceExplorer.getControl());
 		sourceExplorerManager = new ServiceSchemaExplorer(sourceExplorer, SchemaSpaceID.SOURCE);
 
 		// function button
@@ -383,7 +388,8 @@ public class SchemasView extends PropertiesViewPart {
 
 		// target schema toolbar, filter and explorer
 		targetExplorer = new EntitySchemaExplorer(modelComposite, "Target", SchemaSpaceID.TARGET);
-		targetExplorer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().grab(true, true).hint(400, 10)
+				.applyTo(targetExplorer.getControl());
 		targetExplorerManager = new ServiceSchemaExplorer(targetExplorer, SchemaSpaceID.TARGET);
 
 		// source context menu
@@ -417,11 +423,10 @@ public class SchemasView extends PropertiesViewPart {
 		});
 
 		// view toolbar
-		getViewSite()
-				.getActionBars()
-				.getToolBarManager()
-				.add(cellSyncAction = new CellSyncAction(getSite().getPage().getWorkbenchWindow()
-						.getSelectionService(), sourceExplorer, targetExplorer));
+		getViewSite().getActionBars().getToolBarManager()
+				.add(cellSyncAction = new CellSyncAction(
+						getSite().getPage().getWorkbenchWindow().getSelectionService(),
+						sourceExplorer, targetExplorer));
 	}
 
 	/**

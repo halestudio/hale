@@ -63,8 +63,7 @@ public abstract class AbstractTargetAction extends Action implements ICheatSheet
 		}
 
 		// retrieve the target schema
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		SchemaSpace targetSchema = ss.getSchemas(SchemaSpaceID.TARGET);
 
 		// find type
@@ -103,21 +102,17 @@ public abstract class AbstractTargetAction extends Action implements ICheatSheet
 				run(entity, manager);
 			}
 			else {
-				MessageDialog
-						.openError(
-								Display.getCurrent().getActiveShell(),
-								"Schema element not found",
-								"The schema element was not found in the target schema, please make sure the correct schema is loaded.");
+				MessageDialog.openError(Display.getCurrent().getActiveShell(),
+						"Schema element not found",
+						"The schema element was not found in the target schema, please make sure the correct schema is loaded.");
 			}
 		}
 		else {
-			MessageDialog
-					.openError(
-							Display.getCurrent().getActiveShell(),
-							"Schema element not found",
-							MessageFormat
-									.format("The type {0} was not found in the target schema, please make sure the correct schema is loaded.",
-											typeName.getLocalPart()));
+			MessageDialog.openError(Display.getCurrent().getActiveShell(),
+					"Schema element not found",
+					MessageFormat.format(
+							"The type {0} was not found in the target schema, please make sure the correct schema is loaded.",
+							typeName.getLocalPart()));
 		}
 	}
 

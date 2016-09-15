@@ -42,8 +42,8 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 public class BrowseClassIterateTest {
 
 	private static final String TEST_DB = "local:"
-			+ new File(new File(System.getProperty("java.io.tmpdir")), "testDB_"
-					+ UUID.randomUUID().toString()).getAbsolutePath();
+			+ new File(new File(System.getProperty("java.io.tmpdir")),
+					"testDB_" + UUID.randomUUID().toString()).getAbsolutePath();
 
 	private ODatabaseDocumentTx db;
 
@@ -126,7 +126,8 @@ public class BrowseClassIterateTest {
 		ODocument docMia = new ODocument("Person");
 		docMia.field("name", "Mia");
 		docMia.field("surname", "Serenade");
-		docMia.field("city", new ODocument("City").field("name", "Tokio").field("country", "Japan"));
+		docMia.field("city",
+				new ODocument("City").field("name", "Tokio").field("country", "Japan"));
 		docMia.save();
 
 		ODocument docTim = new ODocument("Person");
@@ -187,6 +188,7 @@ public class BrowseClassIterateTest {
 	/**
 	 * Create the test database
 	 */
+	@SuppressWarnings("resource")
 	@Before
 	public void init() {
 //		assertNotNull(server);

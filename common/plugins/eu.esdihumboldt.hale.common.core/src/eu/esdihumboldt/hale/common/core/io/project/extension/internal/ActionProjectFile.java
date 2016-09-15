@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkState;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
@@ -35,12 +36,14 @@ import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAction;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.IOAdvisorRegister;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOActionExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOAdvisorExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.model.AdvisorProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -54,7 +57,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * 
  * @author Simon Templer
  */
-public class ActionProjectFile implements ProjectFile {
+public class ActionProjectFile implements AdvisorProjectFile {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ActionProjectFile.class);
 
@@ -68,6 +71,8 @@ public class ActionProjectFile implements ProjectFile {
 	private File applyFile;
 
 	private final ServiceProvider serviceProvider;
+
+	private IOAdvisorRegister advisorRegister;
 
 	/**
 	 * Create a project file based on an I/O action
@@ -94,6 +99,12 @@ public class ActionProjectFile implements ProjectFile {
 		this.saveProviderId = saveProviderId;
 		this.saveParameters = saveParameters;
 		this.serviceProvider = serviceProvider;
+		this.advisorRegister = IOAdvisorExtension.getInstance();
+	}
+
+	@Override
+	public void setAdvisorRegister(IOAdvisorRegister register) {
+		this.advisorRegister = register;
 	}
 
 	/**
@@ -157,7 +168,9 @@ public class ActionProjectFile implements ProjectFile {
 			}
 
 			if (provider == null) {
-				throw new IllegalStateException("No provider for loading project file found");
+				throw new IllegalStateException(
+						"No provider for loading project file found (Action ID " + action.getId()
+								+ ")");
 			}
 
 			// find advisor
@@ -173,6 +186,10 @@ public class ActionProjectFile implements ProjectFile {
 
 			// execute the provider
 			executeProvider(provider, advisor);
+		} catch (Exception e) {
+			// project file apply fails currently are one logged (the project
+			// reader is not involved with it)
+			log.error("Error applying loaded project file", e);
 		} finally {
 			if (!applyFile.delete()) {
 				applyFile.deleteOnExit();
@@ -190,7 +207,7 @@ public class ActionProjectFile implements ProjectFile {
 	 * @return the advisor
 	 */
 	protected IOAdvisor<?> getLoadAdvisor(String loadActionId, ServiceProvider serviceProvider) {
-		return IOAdvisorExtension.getInstance().findAdvisor(loadActionId, serviceProvider);
+		return advisorRegister.findAdvisor(loadActionId, serviceProvider);
 	}
 
 	private void setParameters(IOProvider provider, Map<String, Value> parameters) {
@@ -199,7 +216,8 @@ public class ActionProjectFile implements ProjectFile {
 		}
 	}
 
-	private <P extends IOProvider> void executeProvider(P provider, IOAdvisor<P> advisor) {
+	private <P extends IOProvider> void executeProvider(P provider, IOAdvisor<P> advisor)
+			throws Exception {
 		IOReporter reporter = provider.createReporter();
 		ATransaction trans = log.begin(reporter.getTaskName());
 		try {
@@ -214,8 +232,10 @@ public class ActionProjectFile implements ProjectFile {
 			if (report.isSuccess()) {
 				advisor.handleResults(provider);
 			}
-		} catch (Exception e) {
-			log.error("Error executing an I/O provider.", e);
+			else {
+				// TODO propagate report errors somehow?
+				throw new IOException("Project file action was not successful");
+			}
 		} finally {
 			trans.end();
 		}
@@ -243,8 +263,8 @@ public class ActionProjectFile implements ProjectFile {
 		checkState(ExportProvider.class.isAssignableFrom(action.getProviderType()),
 				"Save action not compatible to ExportProvider");
 		// get specified provider
-		ExportProvider provider = (ExportProvider) HaleIO.createIOProvider(
-				action.getProviderType(), null, saveProviderId);
+		ExportProvider provider = (ExportProvider) HaleIO.createIOProvider(action.getProviderType(),
+				null, saveProviderId);
 
 		if (provider == null) {
 			throw new IllegalStateException("No provider for saving project file found");
@@ -252,8 +272,7 @@ public class ActionProjectFile implements ProjectFile {
 
 		// find advisor
 		@SuppressWarnings("rawtypes")
-		IOAdvisor advisor = IOAdvisorExtension.getInstance().findAdvisor(saveActionId,
-				serviceProvider);
+		IOAdvisor advisor = advisorRegister.findAdvisor(saveActionId, serviceProvider);
 		checkState(advisor != null, "No advisor for saving project file found");
 
 		// configure provider
@@ -262,7 +281,8 @@ public class ActionProjectFile implements ProjectFile {
 		// set target
 		provider.setTarget(target);
 
-		// execute the provider
+		// execute the provider -> error is propagated outside (so project
+		// writer knows of it)
 		executeProvider(provider, advisor);
 	}
 

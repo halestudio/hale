@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HALE Templates" uid="eu.esdihumboldt.hale.templates" id="eu.esdihumboldt.hale.server.application.Templates" application="eu.esdihumboldt.hale.server.application" version="2.9.4.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="HALE Templates" uid="eu.esdihumboldt.hale.templates" id="eu.esdihumboldt.hale.server.application.Templates" application="eu.esdihumboldt.hale.server.application" version="3.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-nl en_US -clean -console -consoleLog</programArgs>
+      <programArgs>-nl en_US -clean -console -consoleLog
+      </programArgs>
       <vmArgs>-Declipse.ignoreApp=true
 -Dosgi.noShutdown=true
 -Djetty.home.bundle=org.eclipse.jetty.osgi.boot
@@ -22,8 +23,10 @@
 -Djetty.port=8080
 -Dhale.webapp.loginpage=openid
 -Drecaptcha.private=
--Drecaptcha.public=</vmArgs>
-      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+-Drecaptcha.public=
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
@@ -140,6 +143,7 @@
       <plugin id="eu.esdihumboldt.hale.server.webapp.war"/>
       <plugin id="eu.esdihumboldt.hale.server.webjars" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.server.webtransform.war"/>
+      <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
@@ -198,6 +202,7 @@
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.wicket.core"/>
@@ -255,14 +260,14 @@
       <plugin id="org.jdom"/>
       <plugin id="org.json"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
-      <plugin id="org.objectweb.asm-4"/>
-      <plugin id="org.objectweb.asm.analysis-4"/>
-      <plugin id="org.objectweb.asm.tree-4"/>
-      <plugin id="org.objectweb.asm.util-4"/>
+      <plugin id="org.objectweb.asm-5"/>
+      <plugin id="org.objectweb.asm.analysis-5"/>
+      <plugin id="org.objectweb.asm.tree-5"/>
+      <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.openid4java"/>
       <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
+      <plugin id="org.parboiled.java"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.quartz-scheduler.quartz"/>
       <plugin id="org.reflections"/>

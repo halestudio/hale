@@ -17,15 +17,17 @@ package eu.esdihumboldt.cst.internal;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.base.Predicate;
 
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityModeUtil;
-import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationExtension;
 import eu.esdihumboldt.hale.common.align.extension.transformation.PropertyTransformationFactory;
-import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationExtension;
+import eu.esdihumboldt.hale.common.align.extension.transformation.TransformationFunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 
@@ -42,21 +44,13 @@ public class CSTCompatibilityMode implements CompatibilityMode {
 	 */
 	public static final String ID = "eu.esdihumboldt.cst.compatibility";
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsFunction(java.lang.String)
-	 */
 	@Override
-	public boolean supportsFunction(String id) {
-		TypeTransformationExtension typesTransformations = TypeTransformationExtension
-				.getInstance();
-		PropertyTransformationExtension propertyTransformations = PropertyTransformationExtension
-				.getInstance();
+	public boolean supportsFunction(String id, @Nullable ServiceProvider serviceProvider) {
+		List<TypeTransformationFactory> transformations = TransformationFunctionUtil
+				.getTypeTransformations(id, serviceProvider);
 
-		List<TypeTransformationFactory> transformations = typesTransformations
-				.getTransformations(id);
-
-		List<PropertyTransformationFactory> ptransformations = propertyTransformations
-				.getTransformations(id);
+		List<PropertyTransformationFactory> ptransformations = TransformationFunctionUtil
+				.getPropertyTransformations(id, serviceProvider);
 
 		if ((transformations == null || transformations.isEmpty())
 				&& (ptransformations == null || ptransformations.isEmpty())) {

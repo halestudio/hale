@@ -60,7 +60,7 @@
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
-            icon="images/hale_icon.png"
+            icon="images/16.png"
             thread="main"
             visible="true">
          <run
@@ -80,31 +80,27 @@
          </property>
          <property
                name="windowImages"
-               value="images/hale_icon.png">
+               value="images/16.png,images/32.png,images/48.png,images/64.png,images/128.png,images/256.png">
          </property>
          <property
                name="aboutText"
-               value="HUMBOLDT Alignment Editor (HALE)&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.wetransform.to/products/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://www.wetransform.to/news&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/services/support">
+               value="halestudio&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.wetransform.to/products/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://www.wetransform.to/news&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/services/support">
          </property>
          <property
                name="introTitle"
-               value="HUMBOLDT Alignment Editor">
+               value="halestudio">
          </property>
          <property
                name="introBrandingImage"
-               value="images/hale_icon.png">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
+               value="images/16.png">
          </property>
          <property
                name="splashFontColor"
-               value="dddddd">
+               value="eeeeee">
          </property>
          <property
                name="splashCopyrightNotice"
-               value="© 2015 wetransform GmbH » www.wetransform.to">
+               value="© 2016 wetransform GmbH » www.wetransform.to">
          </property>
          <property
                name="build"
@@ -128,7 +124,7 @@
          </property>
          <property
                name="aboutImage"
-               value="images/hale_about.gif">
+               value="images/hale_about.png">
          </property>
       </product>
    </extension>
@@ -368,6 +364,28 @@
                   name="transformation.separator0"
                   visible="true">
             </separator>
+            <menu
+                  label="Custom transformation functions">
+               <command
+                     commandId="eu.esdihumboldt.hale.ui.function.custom.create"
+                     label="Define..."
+                     style="push">
+               </command>
+               <menu
+                     label="Edit">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.functions.custom.EditCustomFunctionContribution"
+                        id="transformation.custom.edit">
+                  </dynamic>
+               </menu>
+               <menu
+                     label="Remove">
+                  <dynamic
+                        class="eu.esdihumboldt.hale.ui.functions.custom.RemoveCustomFunctionContribution"
+                        id="transformation.custom.remove">
+                  </dynamic>
+               </menu>
+            </menu>
             <command
                   commandId="eu.esdihumboldt.hale.ui.groovy.toggle_restriction"
                   style="toggle">

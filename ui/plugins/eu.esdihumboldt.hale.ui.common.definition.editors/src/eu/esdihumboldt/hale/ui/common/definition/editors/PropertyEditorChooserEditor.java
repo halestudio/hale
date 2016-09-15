@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Chooser editor for property definitions.
@@ -48,7 +48,7 @@ public class PropertyEditorChooserEditor extends EditorChooserEditor<Object> {
 	}
 
 	@Override
-	protected Editor<Object> createDefaultEditor(Composite parent) {
+	protected AttributeEditor<Object> createDefaultEditor(Composite parent) {
 		return new DefaultPropertyEditor(parent, property, entityDef);
 	}
 }

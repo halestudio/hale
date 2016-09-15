@@ -20,7 +20,7 @@ import java.util.List;
 
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
@@ -96,8 +96,8 @@ public class CellInfo implements ICellInfo {
 	private String getExplanationInternal(boolean asHtml) {
 		if (cellExpl == null) {
 			// determine cell explanation
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			FunctionDefinition<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), null);
 			if (function != null) {
 				cellExpl = function.getExplanation();
 				if (cellExpl == null) {

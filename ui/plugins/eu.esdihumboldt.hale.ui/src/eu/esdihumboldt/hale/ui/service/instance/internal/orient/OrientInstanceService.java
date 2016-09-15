@@ -298,8 +298,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 			ThreadProgressMonitor.runWithProgressDialog(new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
 					storeInstances.run(monitor);
 				}
 			}, true);
@@ -379,7 +379,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
 		LocalOrientDB lodb = (ref.getDataSet().equals(DataSet.SOURCE)) ? (source) : (transformed);
 
-		return ref.load(lodb);
+		return ref.load(lodb, this);
 	}
 
 	/**
@@ -396,8 +396,7 @@ public class OrientInstanceService extends AbstractInstanceService {
 		 * StoreInstancesJob/OrientInstanceSink and not to events, we have to
 		 * clear the transformed population at this point.
 		 */
-		PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-				PopulationService.class);
+		PopulationService ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 		if (ps != null) {
 			ps.resetPopulation(DataSet.TRANSFORMED);
 		}
@@ -409,7 +408,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 			// canceled transformation
 			// disable transformation (will clear transformed instances)
 			setTransformationEnabled(false);
-			log.userInfo("Live transformation has been disabled.\nYou can again enable it in the main toolbar or in the File menu.");
+			log.userInfo(
+					"Live transformation has been disabled.\nYou can again enable it in the main toolbar or in the File menu.");
 		}
 		else {
 			// notify about transformed instances
@@ -434,8 +434,8 @@ public class OrientInstanceService extends AbstractInstanceService {
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				try {
 					Alignment alignment = getAlignmentService().getAlignment();
 					if (alignment.getActiveTypeCells().isEmpty()) {
@@ -461,12 +461,12 @@ public class OrientInstanceService extends AbstractInstanceService {
 					TransformationReport report;
 					ATransaction trans = log.begin("Instance transformation");
 					try {
-						report = ts.transform(alignment, sources, sink,
-								HaleUI.getServiceProvider(), new ProgressMonitorIndicator(monitor));
+						report = ts.transform(alignment, sources, sink, HaleUI.getServiceProvider(),
+								new ProgressMonitorIndicator(monitor));
 
 						// publish report
-						ReportService rs = (ReportService) PlatformUI.getWorkbench().getService(
-								ReportService.class);
+						ReportService rs = PlatformUI.getWorkbench()
+								.getService(ReportService.class);
 						rs.addReport(report);
 					} finally {
 						try {

@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.model.impl;
 
 import java.net.URI;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,9 @@ import java.util.UUID;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
@@ -53,6 +57,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public class DefaultAlignment implements Alignment, MutableAlignment {
+
+	private static final ALogger log = ALoggerFactory.getLogger(DefaultAlignment.class);
 
 	/**
 	 * List with all cells contained in the alignment. XXX use a LinkedHashSet
@@ -87,6 +93,16 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	private final Map<String, Cell> idToCell = new HashMap<String, Cell>();
 
 	/**
+	 * Custom functions defined in this alignment.
+	 */
+	private final Map<String, CustomPropertyFunction> idToPropertyFunction = new HashMap<>();
+
+	/**
+	 * Custom functions defined in base alignments.
+	 */
+	private final Map<String, CustomPropertyFunction> idToBaseFunction = new HashMap<>();
+
+	/**
 	 * Default constructor.
 	 */
 	public DefaultAlignment() {
@@ -105,9 +121,40 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 			 * But copy the cell as it is not immutable (things like
 			 * transformation mode and priority may change)
 			 */
-			internalAdd(new DefaultCell(cell));
+			internalAdd(new DefaultCell(cell)); // XXX is this working properly
+												// for BaseAlignmentCells?
 		}
 		baseAlignments.putAll(alignment.getBaseAlignments());
+		idToPropertyFunction.putAll(alignment.getCustomPropertyFunctions());
+		idToBaseFunction.putAll(alignment.getBasePropertyFunctions());
+	}
+
+	@Override
+	public Map<String, CustomPropertyFunction> getBasePropertyFunctions() {
+		return Collections.unmodifiableMap(idToBaseFunction);
+	}
+
+	@Override
+	public Map<String, CustomPropertyFunction> getCustomPropertyFunctions() {
+		return Collections.unmodifiableMap(idToPropertyFunction);
+	}
+
+	@Override
+	public Map<String, CustomPropertyFunction> getAllCustomPropertyFunctions() {
+		Map<String, CustomPropertyFunction> result = new HashMap<>(idToBaseFunction);
+		result.putAll(idToPropertyFunction);
+		return Collections.unmodifiableMap(result);
+	}
+
+	@Override
+	public void addCustomPropertyFunction(CustomPropertyFunction function) {
+		// FIXME prevent overriding base alignment functions?
+		idToPropertyFunction.put(function.getDescriptor().getId(), function);
+	}
+
+	@Override
+	public boolean removeCustomPropertyFunction(String id) {
+		return idToPropertyFunction.remove(id) != null;
 	}
 
 	/**
@@ -455,18 +502,24 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		return result;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.MutableAlignment#addBaseAlignment(java.lang.String,java.net.URI,java.lang.Iterable)
-	 */
 	@Override
-	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells) {
+	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells,
+			Iterable<CustomPropertyFunction> baseFunctions) {
 		if (baseAlignments.containsValue(alignment))
 			throw new IllegalArgumentException("base alignment " + alignment + " already included");
 		if (baseAlignments.containsKey(prefix))
 			throw new IllegalArgumentException("prefix " + prefix + " already in use.");
 		baseAlignments.put(prefix, alignment);
-		for (BaseAlignmentCell cell : cells)
+		for (BaseAlignmentCell cell : cells) {
 			internalAdd(cell);
+		}
+		for (CustomPropertyFunction function : baseFunctions) {
+			if (idToBaseFunction.put(function.getDescriptor().getId(), function) != null) {
+				log.error(MessageFormat.format(
+						"Function with identifier {0} defined multiple times in base alignments",
+						function.getDescriptor().getId()));
+			}
+		}
 	}
 
 	/**

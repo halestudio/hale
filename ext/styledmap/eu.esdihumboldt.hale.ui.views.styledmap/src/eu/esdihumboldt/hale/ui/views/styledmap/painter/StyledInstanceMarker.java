@@ -57,7 +57,7 @@ import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.MultiPoint;
 import com.vividsolutions.jts.geom.Point;
 
-import de.cs3d.common.metamodel.Point3D;
+import de.fhg.igd.mapviewer.geom.Point3D;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.BoxArea;
@@ -153,8 +153,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 
 		// if rule exists
 		InstanceReference ir = context.getValue();
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		boolean instanceInitialized = false;
 		Instance inst = null; // instance variable - only initialize if needed
 
@@ -408,7 +407,7 @@ public class StyledInstanceMarker extends InstanceMarker {
 	 * @return the style
 	 */
 	private Style getStyle(InstanceWaypoint context) {
-		StyleService ss = (StyleService) PlatformUI.getWorkbench().getService(StyleService.class);
+		StyleService ss = PlatformUI.getWorkbench().getService(StyleService.class);
 		InstanceReference ref = context.getValue();
 		return ss.getStyle(context.getInstanceType(), ref.getDataSet());
 	}
@@ -440,9 +439,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 					return false;
 				}
 
-				if (geom.getGeometry() instanceof Point
-						|| (geom.getGeometry() instanceof MultiPoint && geom.getGeometry()
-								.getNumGeometries() == 1)) {
+				if (geom.getGeometry() instanceof Point || (geom.getGeometry() instanceof MultiPoint
+						&& geom.getGeometry().getNumGeometries() == 1)) {
 					// a single point found
 					pointFound = true;
 				}
@@ -467,9 +465,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 		initStyle(context);
 		Area area = null;
 		try {
-			if (pointSymbolizer == null
-					|| (SLD.mark(pointSymbolizer) == null && pointSymbolizer.getGraphic()
-							.graphicalSymbols().isEmpty())) {
+			if (pointSymbolizer == null || (SLD.mark(pointSymbolizer) == null
+					&& pointSymbolizer.getGraphic().graphicalSymbols().isEmpty())) {
 				// only marks supported for now
 				// if there is no specialized PointSymbolizer, fall back to a
 				// generic
@@ -531,8 +528,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 				applyFill(g, context);
 				applyStroke(g, context);
 				// draw the selection rectangle
-				g.drawRect(minX - 1, minY - 1, gs2d.getImage().getWidth() + 1, gs2d.getImage()
-						.getHeight() + 1);
+				g.drawRect(minX - 1, minY - 1, gs2d.getImage().getWidth() + 1,
+						gs2d.getImage().getHeight() + 1);
 
 			}
 		} catch (Exception e) {
@@ -554,14 +551,15 @@ public class StyledInstanceMarker extends InstanceMarker {
 		// XXX only works with marks and external graphics right now
 		Mark mark = SLD.mark(symbolizer);
 		if (mark != null) {
-			Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(), styleBuilder
-					.createFill(StylePreferences.getSelectionColor(),
-							StyleHelper.DEFAULT_FILL_OPACITY), styleBuilder.createStroke(
-					StylePreferences.getSelectionColor(), StylePreferences.getSelectionWidth()));
+			Mark mutiMark = styleBuilder.createMark(mark.getWellKnownName(),
+					styleBuilder.createFill(StylePreferences.getSelectionColor(),
+							StyleHelper.DEFAULT_FILL_OPACITY),
+					styleBuilder.createStroke(StylePreferences.getSelectionColor(),
+							StylePreferences.getSelectionWidth()));
 
 			// create new symbolizer
-			return styleBuilder.createPointSymbolizer(styleBuilder.createGraphic(null, mutiMark,
-					null));
+			return styleBuilder
+					.createPointSymbolizer(styleBuilder.createGraphic(null, mutiMark, null));
 		}
 
 		else {
@@ -593,8 +591,8 @@ public class StyledInstanceMarker extends InstanceMarker {
 				if (transformedShape != null) {
 					java.awt.geom.Area areatemp = new java.awt.geom.Area(transformedShape);
 					Rectangle rec = areatemp.getBounds();
-					AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x, rec.y, rec.x
-							+ rec.width, rec.y + rec.height);
+					AdvancedBoxArea area = new AdvancedBoxArea(areatemp, rec.x, rec.y,
+							rec.x + rec.width, rec.y + rec.height);
 
 					return area;
 				}

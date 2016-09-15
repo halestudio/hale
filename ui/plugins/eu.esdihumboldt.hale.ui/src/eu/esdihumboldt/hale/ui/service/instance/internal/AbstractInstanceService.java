@@ -19,9 +19,11 @@ package eu.esdihumboldt.hale.ui.service.instance.internal;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
@@ -57,8 +59,8 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * @param alignmentService the alignment service
 	 * @param groovyService the groovy service
 	 */
-	public AbstractInstanceService(ProjectService projectService,
-			AlignmentService alignmentService, GroovyService groovyService) {
+	public AbstractInstanceService(ProjectService projectService, AlignmentService alignmentService,
+			GroovyService groovyService) {
 		super();
 
 		this.alignmentService = alignmentService;
@@ -69,6 +71,14 @@ public abstract class AbstractInstanceService implements InstanceService {
 			@Override
 			public void onClean() {
 				clearInstances();
+			}
+
+			@Override
+			public void projectSettingChanged(String name, Value value) {
+				if (ProjectVariables.PROJECT_PROPERTY_VARIABLES.equals(name)) {
+					// project variables changed
+					retransform();
+				}
 			}
 
 		});
@@ -106,6 +116,11 @@ public abstract class AbstractInstanceService implements InstanceService {
 				 * TODO only retransform with relevant cells (i.e. create a view
 				 * on the alignment)
 				 */
+				retransform();
+			}
+
+			@Override
+			public void customFunctionsChanged() {
 				retransform();
 			}
 
@@ -183,7 +198,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * @return the transformationService
 	 */
 	protected TransformationService getTransformationService() {
-		return OsgiUtils.getService(TransformationService.class);
+		return HalePlatform.getService(TransformationService.class);
 	}
 
 	/**

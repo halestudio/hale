@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OML Alignment I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.oml;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.io;version="9.0.0",
@@ -27,6 +27,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.prefixmapper,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.io,
  org.apache.log4j,
  org.opengis.feature;version="8.0.0",

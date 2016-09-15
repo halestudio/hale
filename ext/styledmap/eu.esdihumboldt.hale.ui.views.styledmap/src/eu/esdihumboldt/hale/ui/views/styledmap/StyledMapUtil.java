@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.fhg.igd.mapviewer.BasicMapKit;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -64,10 +64,10 @@ public abstract class StyledMapUtil {
 
 		if (bb != null) {
 			Set<GeoPosition> positions = new HashSet<GeoPosition>();
-			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(),
-					SelectableWaypoint.COMMON_EPSG));
-			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(),
-					SelectableWaypoint.COMMON_EPSG));
+			positions.add(
+					new GeoPosition(bb.getMinX(), bb.getMinY(), SelectableWaypoint.COMMON_EPSG));
+			positions.add(
+					new GeoPosition(bb.getMaxX(), bb.getMaxY(), SelectableWaypoint.COMMON_EPSG));
 			mapKit.zoomToPositions(positions);
 		}
 	}
@@ -106,10 +106,10 @@ public abstract class StyledMapUtil {
 
 		if (bb != null) {
 			Set<GeoPosition> positions = new HashSet<GeoPosition>();
-			positions.add(new GeoPosition(bb.getMinX(), bb.getMinY(),
-					SelectableWaypoint.COMMON_EPSG));
-			positions.add(new GeoPosition(bb.getMaxX(), bb.getMaxY(),
-					SelectableWaypoint.COMMON_EPSG));
+			positions.add(
+					new GeoPosition(bb.getMinX(), bb.getMinY(), SelectableWaypoint.COMMON_EPSG));
+			positions.add(
+					new GeoPosition(bb.getMaxX(), bb.getMaxY(), SelectableWaypoint.COMMON_EPSG));
 			mapKit.zoomToPositions(positions);
 		}
 	}
@@ -119,8 +119,7 @@ public abstract class StyledMapUtil {
 			return (InstanceReference) element;
 		}
 		if (element instanceof Instance) {
-			InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 			is.getReference((Instance) element);
 		}
 		return null;

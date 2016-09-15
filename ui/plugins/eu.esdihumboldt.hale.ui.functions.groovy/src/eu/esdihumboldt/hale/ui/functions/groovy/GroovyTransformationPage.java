@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.CellLog;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.DefaultTransformationReporter;
@@ -57,6 +58,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.HelperFunctionsCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.InstanceBuilderCompletions;
 import eu.esdihumboldt.hale.ui.functions.groovy.internal.PageFunctions;
@@ -77,7 +79,8 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class GroovyTransformationPage extends GroovyScriptPage {
+public class GroovyTransformationPage
+		extends GroovyScriptPage<AbstractGenericFunctionWizard<?, ?>> {
 
 	private final TestValues testValues;
 
@@ -99,8 +102,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 
 			@Override
 			protected TypeDefinition getTargetType() {
-				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-						.getUnfinishedCell().getTarget());
+				Property targetProperty = (Property) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetProperty != null) {
 					return targetProperty.getDefinition().getDefinition().getPropertyType();
 				}
@@ -108,14 +111,15 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			}
 		};
 
-		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(HaleUI
-				.getServiceProvider().getService(HelperFunctionsService.class));
+		HelperFunctionsCompletions functionCompletions = new HelperFunctionsCompletions(
+				HaleUI.getServiceProvider().getService(HelperFunctionsService.class));
 
-		return new SimpleGroovySourceViewerConfiguration(colorManager, ImmutableList.of(
-				BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE,
-				BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-				BINDING_TRANSFORMATION_CONTEXT, BINDING_HELPER_FUNCTIONS), ImmutableList.of(
-				targetCompletions, functionCompletions));
+		return new SimpleGroovySourceViewerConfiguration(colorManager,
+				ImmutableList.of(BINDING_BUILDER, BINDING_TARGET, BINDING_SOURCE_TYPES,
+						BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG, BINDING_CELL_CONTEXT,
+						BINDING_FUNCTION_CONTEXT, BINDING_TRANSFORMATION_CONTEXT,
+						BINDING_HELPER_FUNCTIONS),
+				ImmutableList.of(targetCompletions, functionCompletions));
 	}
 
 	@Override
@@ -138,8 +142,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			}
 		}
 
-		Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-				.getUnfinishedCell().getTarget());
+		Property targetProperty = (Property) CellUtil
+				.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 		if (targetProperty == null) {
 			// not yet selected (NewRelationWizard)
 			return false;
@@ -153,8 +157,7 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 		boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
 				GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(Boolean.class);
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		GroovyService gs = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;
 		try {
@@ -171,16 +174,20 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 			groovy.lang.Binding binding;
 			if (cell.getTransformationIdentifier().equals(GroovyGreedyTransformation.ID)) {
 				binding = GroovyGreedyTransformation.createGroovyBinding(values, null, cell,
-						typeCell, builder, useInstanceValues, log, context);
+						typeCell, builder, useInstanceValues, log, context,
+						targetProperty.getDefinition().getDefinition().getPropertyType());
 			}
 			else {
 				binding = GroovyTransformation.createGroovyBinding(values, null, cell, typeCell,
-						builder, useInstanceValues, log, context);
+						builder, useInstanceValues, log, context,
+						targetProperty.getDefinition().getDefinition().getPropertyType());
 			}
 			script = gs.parseScript(document, binding);
 
-			GroovyTransformation.evaluate(script, builder, targetProperty.getDefinition()
-					.getDefinition().getPropertyType(), gs);
+			GroovyTransformation.evaluate(script, builder,
+					targetProperty.getDefinition().getDefinition().getPropertyType(), gs);
+		} catch (NoResultException e) {
+			// continue
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}
@@ -241,8 +248,8 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 				Cell cell = getWizard().getUnfinishedCell();
 
 				boolean useInstanceValues = CellUtil.getOptionalParameter(cell,
-						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false)).as(
-						Boolean.class);
+						GroovyTransformation.PARAM_INSTANCE_VARIABLES, Value.of(false))
+						.as(Boolean.class);
 
 				for (EntityDefinition variable : getVariables()) {
 					if (variable.getDefinition() instanceof PropertyDefinition) {
@@ -256,12 +263,12 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 						else {
 							// use dummy type with only the
 							// binding/HasValueFlag copied
-							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(prop
-									.getPropertyType().getName());
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									Binding.class));
-							crippledType.setConstraint(prop.getPropertyType().getConstraint(
-									HasValueFlag.class));
+							DefaultTypeDefinition crippledType = new DefaultTypeDefinition(
+									prop.getPropertyType().getName());
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(Binding.class));
+							crippledType.setConstraint(
+									prop.getPropertyType().getConstraint(HasValueFlag.class));
 							propertyType = crippledType;
 						}
 
@@ -284,11 +291,11 @@ public class GroovyTransformationPage extends GroovyScriptPage {
 
 			@Override
 			public Collection<? extends TypeDefinition> getTypes() {
-				Property targetProperty = (Property) CellUtil.getFirstEntity(getWizard()
-						.getUnfinishedCell().getTarget());
+				Property targetProperty = (Property) CellUtil
+						.getFirstEntity(getWizard().getUnfinishedCell().getTarget());
 				if (targetProperty != null) {
-					return Collections.singleton(targetProperty.getDefinition().getDefinition()
-							.getPropertyType());
+					return Collections.singleton(
+							targetProperty.getDefinition().getDefinition().getPropertyType());
 				}
 				return Collections.emptyList();
 			}

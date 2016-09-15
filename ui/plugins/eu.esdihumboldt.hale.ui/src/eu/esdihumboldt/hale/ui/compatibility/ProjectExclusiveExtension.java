@@ -36,8 +36,8 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
  * 
  * @author Sebastian Reinhardt
  */
-public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFactory<T>> extends
-		AbstractExclusiveExtension<T, F> {
+public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFactory<T>>
+		extends AbstractExclusiveExtension<T, F> {
 
 	/**
 	 * The preference key
@@ -55,8 +55,7 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 
 		this.preferenceKey = preferenceKey;
 
-		final ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		final ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		addListener(new ExclusiveExtensionListener<T, F>() {
 
@@ -123,8 +122,8 @@ public abstract class ProjectExclusiveExtension<T, F extends ExtensionObjectFact
 	 */
 	@Override
 	protected F getInitialFactory() {
-		String identifier = ((ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class)).getConfigurationService().get(preferenceKey);
+		String identifier = PlatformUI.getWorkbench().getService(ProjectService.class)
+				.getConfigurationService().get(preferenceKey);
 
 		List<F> factories = getFactories();
 

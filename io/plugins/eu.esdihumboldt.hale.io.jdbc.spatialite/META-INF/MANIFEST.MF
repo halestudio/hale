@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE SpatiaLite Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.spatialite;singleton:=true
-Bundle-Version: 2.9.3.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.spatialite.internal.Activator
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.cache;version="17.0.0",
- com.google.common.io;version="9.0.0",
  com.vividsolutions.jts.geom,
  com.vividsolutions.jts.io,
  de.fhg.igd.slf4jplus,
@@ -15,6 +14,7 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
  eu.esdihumboldt.hale.common.schema.persist,
+ eu.esdihumboldt.util.io,
  org.geotools.geometry.jts;version="8.0.0",
  org.geotools.referencing;version="8.0.0",
  org.opengis.referencing.crs;version="8.0.0",

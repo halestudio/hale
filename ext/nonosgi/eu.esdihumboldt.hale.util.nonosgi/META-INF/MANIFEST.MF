@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Utilities for usage in Non-OSGi environment
+Bundle-SymbolicName: eu.esdihumboldt.hale.util.nonosgi
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0"
+Export-Package: eu.esdihumboldt.hale.util.nonosgi,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype.describer
+Import-Package: org.slf4j;version="1.7.10"

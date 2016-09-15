@@ -81,18 +81,18 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
-				.getWorkbench().getService(EntityDefinitionService.class);
+		EntityDefinitionService entityDefinitionService = PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
 
-		flatRelevantProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
-				entityDefinitionService, ssid, true, true));
+		flatRelevantProvider = new TreePathProviderAdapter(
+				new EntityTypeIndexContentProvider(entityDefinitionService, ssid, true, true));
 		if (!onlyMappingRelevant) {
 			hierarchicalRelevantProvider = new TreePathProviderAdapter(
 					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, true, true));
-			flatAllProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
-					entityDefinitionService, ssid, false, true));
-			hierarchicalAllProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
-					entityDefinitionService, ssid, false, true));
+			flatAllProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexContentProvider(entityDefinitionService, ssid, false, true));
+			hierarchicalAllProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, false, true));
 
 			viewer.setContentProvider(flatAllProvider);
 		}
@@ -100,8 +100,7 @@ public class TypeEntityDialog extends EntityDialog {
 			viewer.setContentProvider(flatRelevantProvider);
 		}
 
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 
 		viewer.setInput(ss.getSchemas(ssid));
 
@@ -142,36 +141,39 @@ public class TypeEntityDialog extends EntityDialog {
 	@Override
 	protected void addToolBarActions(ToolBarManager manager) {
 		// filter to only show mapped types
-		manager.add(new FilterAction("Hide unmapped types", "Show unmapped types", HALEUIPlugin
-				.getImageDescriptor("icons/empty.gif"), getViewer(), new ViewerFilter() {
+		manager.add(new FilterAction("Hide unmapped types", "Show unmapped types",
+				HALEUIPlugin.getImageDescriptor("icons/empty.gif"), getViewer(),
+				new ViewerFilter() {
 
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-						AlignmentService.class);
-				Alignment alignment = as.getAlignment();
-				if (element instanceof TreePath)
-					element = ((TreePath) element).getLastSegment();
-				return isMapped((ITreeContentProvider) ((TreeViewer) viewer).getContentProvider(),
-						element, alignment);
-			}
+					@Override
+					public boolean select(Viewer viewer, Object parentElement, Object element) {
+						AlignmentService as = PlatformUI.getWorkbench()
+								.getService(AlignmentService.class);
+						Alignment alignment = as.getAlignment();
+						if (element instanceof TreePath)
+							element = ((TreePath) element).getLastSegment();
+						return isMapped(
+								(ITreeContentProvider) ((TreeViewer) viewer).getContentProvider(),
+								element, alignment);
+					}
 
-			private boolean isMapped(ITreeContentProvider cp, Object element, Alignment align) {
-				if (element instanceof EntityDefinition) {
-					boolean mapped = AlignmentUtil.entityOrChildMapped((EntityDefinition) element,
-							align);
-					if (mapped)
-						return true;
-				}
-				// recursively check children
-				Object[] children = cp.getChildren(element);
-				if (children != null)
-					for (Object child : children)
-						if (isMapped(cp, child, align))
-							return true;
-				return false;
-			}
-		}, true, true));
+					private boolean isMapped(ITreeContentProvider cp, Object element,
+							Alignment align) {
+						if (element instanceof EntityDefinition) {
+							boolean mapped = AlignmentUtil
+									.entityOrChildMapped((EntityDefinition) element, align);
+							if (mapped)
+								return true;
+						}
+						// recursively check children
+						Object[] children = cp.getChildren(element);
+						if (children != null)
+							for (Object child : children)
+								if (isMapped(cp, child, align))
+									return true;
+						return false;
+					}
+				}, true, true));
 
 		// do not add choice if only mapping relevant types should be selected
 		if (onlyMappingRelevant)
@@ -180,19 +182,20 @@ public class TypeEntityDialog extends EntityDialog {
 		manager.add(new Separator());
 
 		// MappingRelevant types only, flat
-		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
-				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), flatRelevantProvider,
-				false));
+		manager.add(new ContentProviderAction("Mapping relevant types as list",
+				HALEUIPlugin.getImageDescriptor("icons/flat_relevant.png"), getViewer(),
+				flatRelevantProvider, false));
 		// MappingRelevant types only, hierarchical
-		manager.add(new ContentProviderAction("Mapping relevant types hierarchical", HALEUIPlugin
-				.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
+		manager.add(new ContentProviderAction("Mapping relevant types hierarchical",
+				HALEUIPlugin.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
 				hierarchicalRelevantProvider, false));
 		// Mappable types, flat
-		manager.add(new ContentProviderAction("All types as list", HALEUIPlugin
-				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, true));
+		manager.add(new ContentProviderAction("All types as list",
+				HALEUIPlugin.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider,
+				true));
 		// Mappable types, hierarchical
-		manager.add(new ContentProviderAction("All types hierarchical", HALEUIPlugin
-				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
+		manager.add(new ContentProviderAction("All types hierarchical",
+				HALEUIPlugin.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
 				hierarchicalAllProvider, false));
 	}
 }

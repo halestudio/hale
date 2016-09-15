@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Inspire Transformation Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.inspire;singleton:=true
-Bundle-Version: 2.9.3.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
 Import-Package: com.google.common.base;version="9.0.0",
@@ -12,6 +12,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core.parameter,
  eu.esdihumboldt.hale.common.core.report,
+ eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.instance.helper,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,

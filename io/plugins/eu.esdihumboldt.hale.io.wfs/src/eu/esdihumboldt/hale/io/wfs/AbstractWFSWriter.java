@@ -39,7 +39,10 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.Credentials;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
@@ -53,6 +56,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.config.UserPasswordCredentials;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -62,6 +66,8 @@ import eu.esdihumboldt.hale.common.instance.io.util.GeoInstanceWriterDecorator;
 import eu.esdihumboldt.hale.io.gml.writer.XmlWrapper;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import eu.esdihumboldt.util.http.client.ClientProxyUtil;
+import eu.esdihumboldt.util.http.client.fluent.FluentProxyUtil;
 
 /**
  * Base class for WFS writers that directly write to the WFS-T.
@@ -71,7 +77,7 @@ import eu.esdihumboldt.util.http.ProxyUtil;
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
-		GeoInstanceWriterDecorator<T> implements WFSWriter, WFSConstants {
+		GeoInstanceWriterDecorator<T>implements WFSWriter, WFSConstants, UserPasswordCredentials {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractWFSWriter.class);
 
@@ -131,8 +137,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 	}
 
 	@Override
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException {
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
 		progress.begin("WFS Transaction", ProgressIndicator.UNKNOWN);
 
 		// configure internal provider
@@ -155,7 +161,24 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 					Proxy proxy = ProxyUtil.findProxy(targetWfs.getLocation());
 					Request request = Request.Post(targetWfs.getLocation()).bodyStream(pIn,
 							ContentType.APPLICATION_XML);
-					Executor executor = ProxyUtil.setProxy(request, proxy);
+					Executor executor = FluentProxyUtil.setProxy(request, proxy);
+
+					// authentication
+					String user = getParameter(PARAM_USER).as(String.class);
+					String password = getParameter(PARAM_PASSWORD).as(String.class);
+
+					if (user != null) {
+						// target host
+						int port = targetWfs.getLocation().getPort();
+						String hostName = targetWfs.getLocation().getHost();
+						String scheme = targetWfs.getLocation().getScheme();
+						HttpHost host = new HttpHost(hostName, port, scheme);
+
+						// add credentials
+						Credentials cred = ClientProxyUtil.createCredentials(user, password);
+						executor.auth(new AuthScope(host), cred);
+						executor.authPreemptive(host);
+					}
 
 					try {
 						return executor.execute(request);
@@ -187,8 +210,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 					Document responseDoc = parseResponse(res.getEntity());
 
 					// totalInserted
-					String inserted = xpath.compile("//TransactionSummary/totalInserted").evaluate(
-							responseDoc);
+					String inserted = xpath.compile("//TransactionSummary/totalInserted")
+							.evaluate(responseDoc);
 					// XXX totalUpdated
 					// XXX totalReplaced
 					// XXX totalDeleted
@@ -204,9 +227,10 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 			}
 			else {
 				// failure
-				reporter.error(new IOMessageImpl("Server reported failure with code "
-						+ res.getStatusLine().getStatusCode() + ": "
-						+ res.getStatusLine().getReasonPhrase(), null));
+				reporter.error(new IOMessageImpl(
+						"Server reported failure with code " + res.getStatusLine().getStatusCode()
+								+ ": " + res.getStatusLine().getReasonPhrase(),
+						null));
 				reporter.setSuccess(false);
 
 				try {
@@ -231,8 +255,8 @@ public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
 		return reporter;
 	}
 
-	private Document parseResponse(HttpEntity entity) throws IOException,
-			ParserConfigurationException, SAXException {
+	private Document parseResponse(HttpEntity entity)
+			throws IOException, ParserConfigurationException, SAXException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		byte[] data = EntityUtils.toByteArray(entity);

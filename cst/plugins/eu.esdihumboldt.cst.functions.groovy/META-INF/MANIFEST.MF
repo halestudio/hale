@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Groovy transformation function
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
@@ -15,19 +15,24 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.cst.functions.core.join,
  eu.esdihumboldt.cst.functions.core.merge,
  eu.esdihumboldt.hale.common.convert,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.project,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.service,
+ eu.esdihumboldt.hale.common.instance.extension.filter,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
- eu.esdihumboldt.hale.common.instance.orient,
+ eu.esdihumboldt.hale.common.instance.orient;resolution:=optional,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
+ eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.sandbox,
  javax.annotation,
  org.slf4j;version="1.7.2",
+ org.slf4j.ext;version="1.7.10",
  org.springframework.core.convert;version="3.0.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
@@ -42,5 +47,4 @@ Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.internal;x-internal:=true
 Bundle-ClassPath: .
 Bundle-Vendor: data harmonisation panel
-Bundle-Activator: eu.esdihumboldt.cst.functions.groovy.internal.Activator
 Bundle-ActivationPolicy: lazy

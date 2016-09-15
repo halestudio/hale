@@ -84,21 +84,9 @@ defined in the build configuration (e.g. `HALE`) or the path to the product
 file. The path to this file must be relative.
 For example:
 
-	./build.sh product HALE
+    ./build.sh product HALE
 
     ./build.sh product ../ui/plugins/eu.esdihumboldt.hale.ui.application/HALE.product
-
-Alternatively you can use the following command to build from a product
-configuration defined in a yaml file
-(though the HALE yaml definition is currently not maintained):
-
-    ./build.sh <type> <name>
-
-`<type>` must be `client` or `server`. The `name` is one of the product
-names declared in `templates/products/client.yaml` or `templates/products/server.yaml`
-depending on which type you chose. For example:
-
-    ./build.sh client HALE
     
 ### Building update sites / p2 repositories
 
@@ -111,6 +99,23 @@ to build an Eclipse Update Site including all bundles and features.
 If you want only specific content included contained in an Update Site, you can specify a specific feature to include:
 
     ./build.sh site <featureId>
+
+
+### Building Maven artifacts
+
+Use
+
+    ./build.sh installArtifacts
+
+to create and install Maven artifacts to your local Maven repository.
+
+With
+
+    ./build.sh deployArtifacts
+
+build the artifacts and upoad them to the wetransform artifactory (given you have corresponding credentials)
+or configure a different repository.
+
 
 Build properties
 ----------------

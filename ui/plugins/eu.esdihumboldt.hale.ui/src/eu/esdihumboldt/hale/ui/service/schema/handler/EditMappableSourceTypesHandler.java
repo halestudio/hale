@@ -36,8 +36,7 @@ public class EditMappableSourceTypesHandler extends AbstractHandler {
 	 */
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
-				SchemaService.class);
+		SchemaService schemaService = PlatformUI.getWorkbench().getService(SchemaService.class);
 		schemaService.editMappableTypes(SchemaSpaceID.SOURCE);
 		return null;
 	}

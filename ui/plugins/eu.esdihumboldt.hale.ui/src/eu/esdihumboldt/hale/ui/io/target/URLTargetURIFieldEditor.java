@@ -83,18 +83,17 @@ public class URLTargetURIFieldEditor extends URIFieldEditor {
 		// ensure resource control is added before the text control
 		historyButton = new Button(parent, SWT.PUSH | SWT.FLAT);
 		historyButton.setToolTipText("Choose from recent URLs");
-		historyButton.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_HISTORY));
+		historyButton.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_HISTORY));
 		historyButton.setEnabled(false);
 
 		historyButton.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-						ProjectService.class);
-				final List<String> locations = ps.getConfigurationService().getList(
-						SETTING_URL_HISTORY);
+				ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
+				final List<String> locations = ps.getConfigurationService()
+						.getList(SETTING_URL_HISTORY);
 				if (locations != null && !locations.isEmpty()) {
 					Menu filesMenu = new Menu(historyButton);
 					for (String locationString : locations) {
@@ -132,8 +131,7 @@ public class URLTargetURIFieldEditor extends URIFieldEditor {
 	 * Update the URL history (project specific).
 	 */
 	public void updateHistory() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		final List<String> locations = ps.getConfigurationService().getList(SETTING_URL_HISTORY);
 
 		if (locations != null && !locations.isEmpty()) {
@@ -170,8 +168,7 @@ public class URLTargetURIFieldEditor extends URIFieldEditor {
 		if (uri != null && store) {
 			String value = uri.toString();
 			// store the URI in the history list
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			List<String> history = ps.getConfigurationService().getList(SETTING_URL_HISTORY);
 			if (history != null) {
 				List<String> newHistory = new ArrayList<>(history);

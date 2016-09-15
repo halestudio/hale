@@ -10,7 +10,7 @@
             name="HALE project (up to 2.1.x)"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="HaleProject">

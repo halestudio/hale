@@ -83,8 +83,8 @@ public class StyledMapView extends MapView {
 
 			setText(MessageFormat.format("{0} {1} instance(s)", instances.size(), instanceName));
 			setDescription(MessageFormat.format("Select only the {0} instances", instanceName));
-			setImageDescriptor(StyledMapBundle.imageDescriptorFromPlugin(StyledMapBundle.PLUGIN_ID,
-					iconPath));
+			setImageDescriptor(
+					StyledMapBundle.imageDescriptorFromPlugin(StyledMapBundle.PLUGIN_ID, iconPath));
 		}
 
 		/**
@@ -232,6 +232,7 @@ public class StyledMapView extends MapView {
 	/**
 	 * @see WorkbenchPart#getAdapter(Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
 		if (adapter.equals(IContextProvider.class)) {

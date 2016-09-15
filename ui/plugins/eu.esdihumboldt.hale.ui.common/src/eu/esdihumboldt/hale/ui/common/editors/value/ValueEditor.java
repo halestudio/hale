@@ -23,7 +23,8 @@ import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
+import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Wraps an existing editor as a {@link Value} editor.
@@ -31,9 +32,9 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @param <T> the object type of the internal editor
  * @author Simon Templer
  */
-public abstract class ValueEditor<T> implements Editor<Value> {
+public abstract class ValueEditor<T> implements AttributeEditor<Value> {
 
-	private final Editor<T> editor;
+	private final AttributeEditor<T> editor;
 	private volatile IPropertyChangeListener listener;
 	private final IPropertyChangeListener listenerDelegate = new IPropertyChangeListener() {
 
@@ -60,7 +61,7 @@ public abstract class ValueEditor<T> implements Editor<Value> {
 	 * 
 	 * @param editor the editor to wrap
 	 */
-	public ValueEditor(Editor<T> editor) {
+	public ValueEditor(AttributeEditor<T> editor) {
 		super();
 		this.editor = editor;
 
@@ -126,6 +127,11 @@ public abstract class ValueEditor<T> implements Editor<Value> {
 	@Override
 	public String getValueType() {
 		return editor.getValueType();
+	}
+
+	@Override
+	public void setVariableReplacer(VariableReplacer variableReplacer) {
+		editor.setVariableReplacer(variableReplacer);
 	}
 
 }

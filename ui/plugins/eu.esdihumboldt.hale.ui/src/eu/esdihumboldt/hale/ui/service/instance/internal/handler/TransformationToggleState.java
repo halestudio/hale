@@ -39,8 +39,7 @@ public class TransformationToggleState extends State {
 	public TransformationToggleState() {
 		super();
 
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.addListener(instanceListener = new InstanceServiceAdapter() {
 
 			@Override
@@ -59,8 +58,7 @@ public class TransformationToggleState extends State {
 	 */
 	@Override
 	public void dispose() {
-		InstanceService is = (InstanceService) PlatformUI.getWorkbench().getService(
-				InstanceService.class);
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 		is.removeListener(instanceListener);
 	}
 

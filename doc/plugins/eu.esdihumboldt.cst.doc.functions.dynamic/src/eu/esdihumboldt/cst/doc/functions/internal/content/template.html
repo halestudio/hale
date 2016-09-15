@@ -14,8 +14,10 @@ $function.description<br />
 #if($function.categoryId)
 <b>Category:</b> $!category.Name <br />
 #end
+#if($showImage)
 <br />
 <img src="${function.id}.png" />
+#end
 <br />
 #if( $function.definedParameters.size() > 0 )
 <b>Parameter:</b> <br />

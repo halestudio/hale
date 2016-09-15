@@ -23,17 +23,18 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TargetNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReporter;
 import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -50,13 +51,17 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 	 */
 	protected final TransformationReporter reporter;
 
+	private final ServiceProvider serviceProvider;
+
 	/**
 	 * Constructor
 	 * 
 	 * @param reporter the transformation reporter
+	 * @param serviceProvider the service provider
 	 */
-	public CellNodeValidator(TransformationReporter reporter) {
+	public CellNodeValidator(TransformationReporter reporter, ServiceProvider serviceProvider) {
 		this.reporter = reporter;
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -123,10 +128,11 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 			ListMultimap<String, Pair<SourceNode, Entity>> sources,
 			ListMultimap<String, Pair<TargetNode, Entity>> targets) {
 		String functionId = node.getCell().getTransformationIdentifier();
-		AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+		FunctionDefinition<?> function = serviceProvider.getService(FunctionService.class)
+				.getFunction(functionId);
 		if (function != null) {
 			// check source node occurrence for mandatory source entities
-			for (AbstractParameter sourceParam : function.getSource()) {
+			for (ParameterDefinition sourceParam : function.getSource()) {
 				int min = sourceParam.getMinOccurrence();
 				if (sources.get(sourceParam.getName()).size() < min) {
 					return false;

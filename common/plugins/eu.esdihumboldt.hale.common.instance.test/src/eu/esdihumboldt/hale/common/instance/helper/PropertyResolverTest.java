@@ -33,6 +33,7 @@ import org.springframework.core.convert.ConversionService;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -68,7 +69,7 @@ public class PropertyResolverTest {
 
 			@Override
 			public boolean evaluate() {
-				return OsgiUtils.getService(ConversionService.class) != null;
+				return HalePlatform.getService(ConversionService.class) != null;
 			}
 		}, 30));
 	}

@@ -15,12 +15,15 @@
 
 package eu.esdihumboldt.hale.ui.common.definition.editors;
 
+import java.util.Objects;
+
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.hale.ui.common.VariableReplacer;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 
 /**
  * Abstract editor that is based on a binding and a validator. Expects the input
@@ -29,14 +32,15 @@ import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
  * @author Kai Schwierczek
  * @param <T> the attribute value type/binding
  */
-public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<T> {
+public abstract class AbstractBindingValidatingEditor<T> extends AbstractAttributeEditor<T> {
 
-	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+	private final ConversionService cs = HalePlatform.getService(ConversionService.class);
 	private final Class<? extends T> binding;
 	private String stringValue;
 	private T objectValue;
 	private boolean validated = false;
 	private String validationResult;
+	private boolean inaccurateConversion = false;
 
 	/**
 	 * Constructor with the binding class.
@@ -67,8 +71,9 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 		// fire events
 		// XXX currently fire events with object value
 		fireValueChanged(VALUE, oldObjectValue, objectValue);
-		if (oldValid != isValid())
+		if (oldValid != isValid()) {
 			fireStateChanged(IS_VALID, oldValid, newValid);
+		}
 
 		return validationResult;
 	}
@@ -81,21 +86,49 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 		validationResult = null;
 		validated = true;
 
+		String strValue = stringValue;
+
+		// replace variable in string before passing it to validation
+		VariableReplacer variableReplacer = getVariableReplacer();
+		if (variableReplacer != null) {
+			try {
+				strValue = variableReplacer.replaceVariables(strValue);
+			} catch (Exception e) {
+				validationResult = e.getLocalizedMessage();
+				objectValue = null;
+				inaccurateConversion = true;
+				return;
+			}
+		}
+
 		// check binding first
+		T objValue = null;
 		try {
 			// for example boolean converter returns null for empty string...
-			objectValue = cs.convert(stringValue, binding);
-			if (objectValue == null)
-				validationResult = stringValue + " cannot be converted to "
-						+ binding.getSimpleName();
+			objValue = cs.convert(strValue, binding);
+			if (objValue == null) {
+				validationResult = strValue + " cannot be converted to " + binding.getSimpleName();
+			}
 		} catch (ConversionException ce) {
-			objectValue = null;
-			validationResult = stringValue + " cannot be converted to " + binding.getSimpleName();
+			objValue = null;
+			validationResult = strValue + " cannot be converted to " + binding.getSimpleName();
+		}
+
+		if (Objects.equals(stringValue, strValue)) {
+			// accurate conversion
+			objectValue = objValue;
+			inaccurateConversion = false;
+		}
+		else {
+			// conversion features replacement
+			objectValue = objValue;
+			inaccurateConversion = true;
 		}
 
 		// validators
-		if (validationResult == null)
-			validationResult = additionalValidate(stringValue, objectValue);
+		if (validationResult == null) {
+			validationResult = additionalValidate(strValue, objValue);
+		}
 	}
 
 	/**
@@ -112,16 +145,13 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 		return null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
-	 */
 	@Override
 	public void setValue(T value) {
 		setAsText(cs.convert(value, String.class));
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 * 
 	 * @throws IllegalStateException if the current input is not valid
 	 */
@@ -133,23 +163,24 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 			throw new IllegalStateException();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
-	 */
 	@Override
 	public String getAsText() {
 		if (isValid()) {
-			// return converted value, as that SHOULD be XML conform
-			// in contrast to input value where the converter maybe allows more.
-			return cs.convert(objectValue, String.class);
+			if (!inaccurateConversion) {
+				// return converted value, as that SHOULD be XML conform
+				// in contrast to input value where the converter maybe allows
+				// more.
+				return cs.convert(objectValue, String.class);
+			}
+			else {
+				// return value including variables to be replaced
+				return stringValue;
+			}
 		}
 		else
 			return stringValue;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
-	 */
 	@Override
 	public boolean isValid() {
 		if (!validated)
@@ -157,9 +188,6 @@ public abstract class AbstractBindingValidatingEditor<T> extends AbstractEditor<
 		return validationResult == null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
-	 */
 	@Override
 	public String getValueType() {
 		return ParameterValue.DEFAULT_TYPE;

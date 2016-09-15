@@ -48,10 +48,10 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import de.cs3d.common.metamodel.Point3D;
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.Refresher;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.mapviewer.geom.Point3D;
 import de.fhg.igd.mapviewer.marker.Marker;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypointPainter;
@@ -91,9 +91,9 @@ import eu.esdihumboldt.hale.ui.views.styledmap.util.CRSDecode;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractInstancePainter extends
-		GenericWaypointPainter<InstanceReference, InstanceWaypoint> implements
-		InstanceServiceListener, ISelectionListener, ClipPainter {
+public abstract class AbstractInstancePainter
+		extends GenericWaypointPainter<InstanceReference, InstanceWaypoint>
+		implements InstanceServiceListener, ISelectionListener, ClipPainter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractInstancePainter.class);
 
@@ -158,8 +158,7 @@ public abstract class AbstractInstancePainter extends
 
 			@Override
 			public void defaultGeometryChanged(TypeDefinition type) {
-				SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-						SchemaService.class);
+				SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 				SchemaSpaceID spaceID;
 				switch (getDataSet()) {
 				case TRANSFORMED:
@@ -246,8 +245,8 @@ public abstract class AbstractInstancePainter extends
 		IRunnableWithProgress op = new IRunnableWithProgress() {
 
 			@Override
-			public void run(IProgressMonitor monitor) throws InvocationTargetException,
-					InterruptedException {
+			public void run(IProgressMonitor monitor)
+					throws InvocationTargetException, InterruptedException {
 				String taskName;
 				switch (getDataSet()) {
 				case SOURCE:
@@ -318,8 +317,8 @@ public abstract class AbstractInstancePainter extends
 			GeometryProperty<?> prop = it.next();
 
 			// check if geometry is valid for display in map
-			CoordinateReferenceSystem crs = (prop.getCRSDefinition() == null) ? (null) : (prop
-					.getCRSDefinition().getCRS());
+			CoordinateReferenceSystem crs = (prop.getCRSDefinition() == null) ? (null)
+					: (prop.getCRSDefinition().getCRS());
 
 			if (crs == null) {
 				// no CRS, can't display in map
@@ -353,8 +352,7 @@ public abstract class AbstractInstancePainter extends
 							bb.add(geometryBB);
 						}
 					} catch (Exception e) {
-						log.error(
-								"Error converting instance bounding box to waypoint bounding box",
+						log.error("Error converting instance bounding box to waypoint bounding box",
 								e);
 						// ignore geometry
 						it.remove();
@@ -370,7 +368,8 @@ public abstract class AbstractInstancePainter extends
 
 		// use bounding box center as GEO position
 		Point3D center = bb.getCenter();
-		GeoPosition pos = new GeoPosition(center.getX(), center.getY(), GenericWaypoint.COMMON_EPSG);
+		GeoPosition pos = new GeoPosition(center.getX(), center.getY(),
+				GenericWaypoint.COMMON_EPSG);
 
 		// buffer bounding box if x or y dimension empty
 		if (bb.getMinX() == bb.getMaxX()) {
@@ -457,7 +456,8 @@ public abstract class AbstractInstancePainter extends
 			Point point = (Point) envelope;
 			if (!point.isEmpty()) { // not an empty geometry
 				// a bounding box representing the point
-				return new BoundingBox(point.getX(), point.getY(), 0, point.getX(), point.getY(), 0);
+				return new BoundingBox(point.getX(), point.getY(), 0, point.getX(), point.getY(),
+						0);
 			}
 		}
 		else if (envelope instanceof Polygon) {
@@ -542,7 +542,8 @@ public abstract class AbstractInstancePainter extends
 		else if (oldSelection == null)
 			return newSelection;
 
-		if (oldSelection instanceof InstanceSelection && newSelection instanceof InstanceSelection) {
+		if (oldSelection instanceof InstanceSelection
+				&& newSelection instanceof InstanceSelection) {
 			// combine scene selections
 			Set<Object> values = new LinkedHashSet<Object>();
 

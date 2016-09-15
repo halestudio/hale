@@ -53,15 +53,10 @@ class PomGenerator {
 		def relativePath = relativeRoot.toString()
 		
 		// determine context qualifier to use
-		// default is buildId
-		def contextQualifier = project.buildId
-		// use the RELEASE contextQualifier for application bundles only
-		// that have the same version as the product
-		if (version.startsWith(project.version) && symbolicName.endsWith('.application')) {
-			contextQualifier = project.contextQualifier 
-		}
+		// it is important that versions are up-to-date!
+		def contextQualifier = project.contextQualifier
 		
-        new File(path, 'pom.xml').withWriter { w ->
+		new File(path, 'pom.xml').withWriter { w ->
             def template = new GStringTemplateEngine().createTemplate(resolveTemplate(templateName))
             def result = template.make([
                 'groupId': project.group,

@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hale CLI Default Commands
+Bundle-SymbolicName: eu.esdihumboldt.hale.app.cli.commands;singleton:=true
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.util.cli;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.common.cli;bundle-version="2.9.5",
+ groovy;bundle-version="2.3.7",
+ eu.esdihumboldt.hale.common.align;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.io.html.svg;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.io.xls;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.common.headless;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.9.5",
+ org.eclipse.core.runtime;bundle-version="3.11.1",
+ eu.esdihumboldt.hale.io.csv;bundle-version="2.9.5"
+Import-Package: de.fhg.igd.slf4jplus,
+ org.apache.commons.cli;version="1.3.1",
+ org.slf4j;version="1.7.10"

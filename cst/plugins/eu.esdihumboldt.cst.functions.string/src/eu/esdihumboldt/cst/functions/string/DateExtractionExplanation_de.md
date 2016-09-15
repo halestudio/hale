@@ -1,0 +1,1 @@
+Anhand des Formats `${_params.dateFormat}` wird der Wert des Attributs $_source als Datum-/Zeit-Angabe interpretiert und in das Ziel-Attribut $_target überführt.

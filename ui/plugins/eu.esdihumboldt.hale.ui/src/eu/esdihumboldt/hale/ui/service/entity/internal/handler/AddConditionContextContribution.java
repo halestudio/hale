@@ -77,8 +77,8 @@ public class AddConditionContextContribution extends ContributionItem {
 			this.dialogMessage = dialogMessage;
 			this.entityDef = entityDef;
 
-			setImageDescriptor(CommonSharedImages.getImageRegistry().getDescriptor(
-					CommonSharedImages.IMG_ADD));
+			setImageDescriptor(CommonSharedImages.getImageRegistry()
+					.getDescriptor(CommonSharedImages.IMG_ADD));
 		}
 
 		@Override
@@ -90,10 +90,11 @@ public class AddConditionContextContribution extends ContributionItem {
 				log.userError("Failed to create editor for filter", e);
 				return;
 			}
-			Filter filter = factory.openDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getShell(), entityDef, dialogTitle, dialogMessage);
+			Filter filter = factory.openDialog(
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), entityDef,
+					dialogTitle, dialogMessage);
 			if (filter != null) {
-				EntityDefinitionService eds = (EntityDefinitionService) PlatformUI.getWorkbench()
+				EntityDefinitionService eds = PlatformUI.getWorkbench()
 						.getService(EntityDefinitionService.class);
 				eds.addConditionContext(entityDef, filter);
 			}
@@ -117,7 +118,8 @@ public class AddConditionContextContribution extends ContributionItem {
 	public void fill(Menu menu, int index) {
 		ISelection selection = getSelection();
 
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 
 			if (element instanceof EntityDefinition) {
@@ -127,15 +129,15 @@ public class AddConditionContextContribution extends ContributionItem {
 				 */
 
 				// get all filters supported by the compatibility mode
-				CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench()
+				CompatibilityService cs = PlatformUI.getWorkbench()
 						.getService(CompatibilityService.class);
 				Set<String> supportedFilters = cs.getCurrentDefinition().getSupportedFilters();
 
 				// get filter dialog definitions for those filters
 				Map<String, FilterDialogDefinition> definitions = new HashMap<>();
 				for (String filterId : supportedFilters) {
-					FilterDialogDefinition def = FilterUIExtension.getInstance().getFactory(
-							filterId);
+					FilterDialogDefinition def = FilterUIExtension.getInstance()
+							.getFactory(filterId);
 					if (def != null) {
 						definitions.put(filterId, def);
 					}

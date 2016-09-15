@@ -39,9 +39,9 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -66,7 +66,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.TitleImageWizard;
  * @param <P> the field definition type
  * @author Simon Templer
  */
-public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter, T extends AbstractFunction<P>>
+public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinition, T extends FunctionDefinition<P>>
 		extends AbstractFunctionWizard implements TitleImageWizard {
 
 	private static final ALogger log = ALoggerFactory
@@ -171,8 +171,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 	protected List<ParameterPage> createParameterPages(Cell initialCell) {
 		LinkedList<ParameterPage> parameterPages = new LinkedList<ParameterPage>();
 		// create copy of function parameter set
-		Set<FunctionParameter> functionParameters = new LinkedHashSet<FunctionParameter>();
-		for (FunctionParameter param : getFunction().getDefinedParameters())
+		Set<FunctionParameterDefinition> functionParameters = new LinkedHashSet<>();
+		for (FunctionParameterDefinition param : getFunction().getDefinedParameters())
 			functionParameters.add(param);
 		// get initial values
 		ListMultimap<String, ParameterValue> initialValues = initialCell == null ? null
@@ -196,8 +196,8 @@ public abstract class AbstractGenericFunctionWizard<P extends AbstractParameter,
 				});
 		// use available parameter pages (first come first serve)
 		for (ParameterPageFactory paramPageFactory : paramPageFactories) {
-			Set<FunctionParameter> pageFunctionParameters = new HashSet<FunctionParameter>();
-			for (FunctionParameter fp : paramPageFactory.getAssociatedParameters())
+			Set<FunctionParameterDefinition> pageFunctionParameters = new HashSet<>();
+			for (FunctionParameterDefinition fp : paramPageFactory.getAssociatedParameters())
 				if (functionParameters.contains(fp))
 					pageFunctionParameters.add(fp);
 			if (!pageFunctionParameters.isEmpty()) {

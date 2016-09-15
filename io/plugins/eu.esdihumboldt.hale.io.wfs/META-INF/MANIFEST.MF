@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Support for WFS-T
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.wfs;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.io.gml;bundle-version="2.9.0",
@@ -14,6 +14,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.config,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.io.report,
  eu.esdihumboldt.hale.common.core.io.report.impl,
@@ -36,7 +37,10 @@ Import-Package: com.google.common.base;version="15.0.0",
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.http,
+ eu.esdihumboldt.util.http.client,
+ eu.esdihumboldt.util.http.client.fluent,
  org.apache.http;version="4.3.2",
+ org.apache.http.auth;version="4.3.6",
  org.apache.http.client;version="4.3.3",
  org.apache.http.client.fluent;version="4.3.6",
  org.apache.http.entity;version="4.3.3",

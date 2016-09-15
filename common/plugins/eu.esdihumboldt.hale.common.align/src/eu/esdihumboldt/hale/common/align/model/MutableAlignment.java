@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.net.URI;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+
 /**
  * Mutable {@link Alignment} which is used where changes to the alignment are
  * allowed.
@@ -43,12 +45,22 @@ public interface MutableAlignment extends Alignment {
 	public boolean removeCell(Cell cell);
 
 	/**
+	 * Remove the custom function with the given identifier.
+	 * 
+	 * @param id the function identifier
+	 * @return if the function was present and removed
+	 */
+	public boolean removeCustomPropertyFunction(String id);
+
+	/**
 	 * Adds a base alignment.
 	 * 
 	 * @param prefix the alignment prefix
 	 * @param alignment the new base alignment
 	 * @param cells the cells to be added from the alignment
+	 * @param baseFunctions functions defined in the base alignment
 	 */
-	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells);
+	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells,
+			Iterable<CustomPropertyFunction> baseFunctions);
 
 }

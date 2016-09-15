@@ -18,15 +18,15 @@
 // You should have received a copy of the GNU General Public License
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
-apply plugin: 'download-task'
+apply plugin: 'de.undercouch.download'
 apply plugin: 'java'
 apply from: 'gradle/tycho.gradle'
 apply from: 'gradle/updateSite.gradle'
 apply from: 'gradle/commitAndProductionStage.gradle'
+apply from: 'gradle/deployArtifacts.gradle'
 // apply from: 'gradle/checkDependencies.gradle'
-// apply from: 'gradle/deployArtifacts.gradle'
 
-import org.eclipse.core.runtime.internal.adaptor.EclipseEnvironmentInfo
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -46,10 +46,11 @@ gradle.taskGraph.whenReady {
 	// determine context qualifier
 	if (project.version.endsWith("-SNAPSHOT")) {
 		// buildID as qualifier
-		project.ext.contextQualifier = buildID
+//		project.ext.contextQualifier = buildID
+		project.ext.contextQualifier = 'SNAPSHOT'
 	}
 	else {
-		// mark as release (used for product, application bundles only)
+		// mark as release
 		project.ext.contextQualifier = 'release'
 	}
 }
@@ -108,7 +109,8 @@ ext {
 		file('../ext/styledmap'),
 		file('../ext/xslt'),
 		file('../ext/ageobw'),
-		file('../ext/fme')
+		file('../ext/fme'),
+		file('../ext/nonosgi')
     ]
 
 	// bundles to exclude for the build (symbolic names)
@@ -143,29 +145,37 @@ ext {
 		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
 		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
+	
+	/*
+	 * List of bundles that are not platform specific, even if they are detected as such.
+	 */
+	notPlatformSpecificBundles = [
+		'com.github.jnr.x86asm'
+	]
 
-    // URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-    artifactsMirrorUrl = 'http://hale.igd.fraunhofer.de/build-support/1a7ed39df3f250142be386c172ddf5a1166aa887'
+	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
+	artifactsCommit = '18b78a2e5b480f152c0b7792463713d28bccde30'
+	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
         'win32': [
             'win32': [
-                'x86': 'jre-7u51-windows-i586.tar.gz',
-                'x86_64': 'jre-7u51-windows-x64.tar.gz'
+                'x86': 'jre-8u91-windows-i586.tar.gz',
+                'x86_64': 'jre-8u91-windows-x64.tar.gz'
             ]
         ],
         'linux': [
             'gtk': [
-                'x86': 'jre-7u51-linux-i586.tar.gz',
-                'x86_64': 'jre-7u51-linux-x64.tar.gz'
+                'x86': 'jre-8u91-linux-i586.tar.gz',
+                'x86_64': 'jre-8u91-linux-x64.tar.gz'
             ]
-        ],
+        ]/*, -- not available right now
         'macosx': [
             'cocoa': [
-                'x86_64': 'jdk-min-7u60-macosx-x64.tar.gz'
+                'x86_64': 'jdk-min-8u91-macosx-x64.tar.gz'
             ]
-        ]
+        ]*/
     ]
 
     // Names of zip files containing mongodb instances (sorted by their respective platform)
@@ -226,20 +236,35 @@ def applyExternalConfiguration(File configFile) {
 configureEnvironment()
 
 def configureEnvironment() {
-    def eei = EclipseEnvironmentInfo.getDefault()
+	def wsMap = [win32: 'win32', linux: 'gtk', macosx: 'cocoa']
+	
+	def current_os = System.getProperty('os.name')
+	if (current_os.substring(0, 5).equalsIgnoreCase('linux'))
+	  current_os = 'linux'
+	else if (current_os.substring(0, 7).equalsIgnoreCase('windows'))
+	  current_os = 'win32'
+	else if (current_os.equalsIgnoreCase('Mac OS X'))
+	  current_os = 'macosx'
+
+	def current_arch = System.getProperty('os.arch')
+	if(current_arch == 'x86' || current_arch == 'i386')
+	  current_arch = 'x86'
+	else if(current_arch == 'amd64')
+	  current_arch = 'x86_64'
+	
     if (!ext.properties.containsKey('osgiOS')) {
-        ext.osgiOS = eei.getOS()
+        ext.osgiOS = current_os
     }
     if (!ext.properties.containsKey('osgiWS')) {
-        ext.osgiWS = eei.getWS()
+        ext.osgiWS = wsMap[current_os]
     }
     if (!ext.properties.containsKey('osgiArch')) {
-        ext.osgiArch = eei.getOSArch()
+        ext.osgiArch = current_arch
     }
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.9'
+    gradleVersion = '2.10'
 }
 
 task cli {

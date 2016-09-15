@@ -53,8 +53,8 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractDataView extends PropertiesViewPart implements
-		InstanceSelectionListener {
+public abstract class AbstractDataView extends PropertiesViewPart
+		implements InstanceSelectionListener {
 
 	/**
 	 * Action for toggling if an instance selection is provided by the view.
@@ -87,7 +87,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		 * Update the action text
 		 */
 		private void updateText() {
-			setToolTipText((isProvideInstanceSelection()) ? ("Disable providing an application instance selection (e.g. for the map)")
+			setToolTipText((isProvideInstanceSelection())
+					? ("Disable providing an application instance selection (e.g. for the map)")
 					: ("Enable providing an instance selection for the application, e.g. for display in the map"));
 		}
 
@@ -134,8 +135,8 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 
 		this.defaultInstanceSelector = instanceSelector;
 		this.schemaSpace = schemaSpace;
-		this.controller = new InstanceViewController(DataViewPlugin.getDefault()
-				.getPreferenceStore(), controllerPreferenceKey);
+		this.controller = new InstanceViewController(
+				DataViewPlugin.getDefault().getPreferenceStore(), controllerPreferenceKey);
 	}
 
 	/**
@@ -161,7 +162,12 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		// bar composite
 		Composite bar = new Composite(page, SWT.NONE);
 		bar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		GridLayout gridLayout = new GridLayout(2, false);
+
+		GridLayout gridLayout;
+		// if (showBackgroundProcess())
+		gridLayout = new GridLayout(3, false);
+		// else
+		// gridLayout = new GridLayout(2, false);
 		gridLayout.marginWidth = 3;
 		gridLayout.marginHeight = 2;
 		gridLayout.verticalSpacing = 0;
@@ -182,6 +188,12 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		selectorComposite.setLayout(gridLayout);
+
+		// Background process progressbar
+		Composite backgroundProcessComposite = new Composite(bar, SWT.NONE);
+		backgroundProcessComposite
+				.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
+		provideBackgroundProcessControl(backgroundProcessComposite);
 
 		// tree composite
 		viewerComposite = new Composite(page, SWT.NONE);
@@ -326,14 +338,28 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		// add listener
 		instanceSelector.addSelectionListener(this);
 
+		// if want to disable Controls on implemented Class prior to create
+		// Selctor Control
+		enableControls(false);
 		// create new control
 		selectorControl = instanceSelector.createControl(selectorComposite);
 		selectorControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		// enable control if disable it before
+		enableControls(true);
 
 		updateSelectionProvider();
 
 		// re-layout
 		selectorComposite.getParent().getParent().layout(true, true);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener#preSelectionChange()
+	 */
+	@Override
+	public void preSelectionChange() {
+		// disable controls
+		enableControls(false);
 	}
 
 	@Override
@@ -344,6 +370,15 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		lastType = type;
 		lastSelection = selection;
 		onSelectionChange(selection);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.views.data.internal.filter.InstanceSelectionListener#postSelectionChange()
+	 */
+	@Override
+	public void postSelectionChange() {
+		// enable controls again
+		enableControls(true);
 	}
 
 	/**
@@ -379,6 +414,38 @@ public abstract class AbstractDataView extends PropertiesViewPart implements
 		this.provideInstanceSelection = provideInstanceSelection;
 
 		updateSelectionProvider();
+	}
+
+	/**
+	 * Override this to enable/disable controls while creating Selector controls
+	 * in {@link #setInstanceSelector(InstanceSelector)}
+	 * 
+	 * @param enable false, to disable controls and true, to enable controls
+	 */
+	protected void enableControls(boolean enable) {
+		// do nothing
+	}
+
+//	/**
+//	 * Override this to show background process progress bar in bar control.
+//	 * 
+//	 * @return boolean if true, then progress bar will be added to view. if
+//	 *         false, then progress bar will not be added to view.
+//	 */
+//	protected boolean showBackgroundProcess() {
+//		return false;
+//	}
+
+	/**
+	 * Override this method to provide background process controls.
+	 * 
+	 * @param parent the parent composite
+	 */
+	protected void provideBackgroundProcessControl(Composite parent) {
+		GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false);
+		// empty composite trick: exclude
+		gd.exclude = true;
+		parent.setLayoutData(gd);
 	}
 
 }

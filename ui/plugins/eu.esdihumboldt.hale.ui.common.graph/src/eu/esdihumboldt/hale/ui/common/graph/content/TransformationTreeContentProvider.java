@@ -142,9 +142,8 @@ public class TransformationTreeContentProvider extends ArrayContentProvider impl
 		TransformationLog log = new CellLog(reporter, typeCell);
 
 		// context matching
-		ContextMatcher matcher = new AsDeepAsPossible(); // XXX instead through
-															// service/extension
-															// point?
+		// XXX instead through service/extension point?
+		ContextMatcher matcher = new AsDeepAsPossible(null);
 		matcher.findMatches(tree);
 
 		// process and annotate the tree

@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Numeric Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.numeric;singleton:=true
-Bundle-Version: 2.9.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
@@ -11,6 +11,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  com.iabcinc.jmep.hooks,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  net.jcip.annotations,

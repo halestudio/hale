@@ -50,8 +50,7 @@ public class TypeEntityDefinitionTester extends PropertyTester {
 
 		if (property.equals(PROPERTY_TYPE_ALLOW_MARK_UNMAPPABLE)
 				&& receiver instanceof TypeEntityDefinition) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			TypeEntityDefinition entityDef = (TypeEntityDefinition) receiver;
 			return as.getAlignment().getCells(entityDef.getType(), entityDef.getSchemaSpace())
 					.isEmpty();

@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 
 /**
  * Simple attribute editor for string values.
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.ui.common.Editor;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class StringEditor extends AbstractEditor<String> {
+public class StringEditor extends AbstractAttributeEditor<String> {
 
 	private final Text text;
 
@@ -55,7 +55,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#getAsText()
+	 * @see AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -63,7 +63,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#getControl()
+	 * @see AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -71,7 +71,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#getValue()
+	 * @see AttributeEditor#getValue()
 	 */
 	@Override
 	public String getValue() {
@@ -79,7 +79,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#setAsText(String)
+	 * @see AttributeEditor#setAsText(String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -87,7 +87,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#setValue(Object)
+	 * @see AttributeEditor#setValue(Object)
 	 */
 	@Override
 	public void setValue(String value) {
@@ -99,7 +99,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see Editor#isValid()
+	 * @see AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -107,7 +107,7 @@ public class StringEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

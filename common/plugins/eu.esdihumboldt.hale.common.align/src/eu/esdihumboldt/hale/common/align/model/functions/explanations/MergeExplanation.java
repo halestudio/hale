@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -25,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for merge function cells.
@@ -33,12 +36,9 @@ import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
  */
 public class MergeExplanation extends AbstractCellExplanation implements MergeFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 
 		Entity source = CellUtil.getFirstEntity(cell.getSource());
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
@@ -46,25 +46,25 @@ public class MergeExplanation extends AbstractCellExplanation implements MergeFu
 		List<ParameterValue> properties = (cell.getTransformationParameters() == null) ? (null)
 				: (cell.getTransformationParameters().get(PARAMETER_PROPERTY));
 
-		if (source != null && target != null && properties != null && !properties.isEmpty()) {
-			StringBuffer propertiesString = new StringBuffer();
-			for (int i = 0; i < properties.size(); i++) {
-				propertiesString.append(quoteText(properties.get(i).as(String.class), html));
+		if (source != null && target != null) {
+			if (properties != null && !properties.isEmpty()) {
+				List<String> props = properties.stream()
+						.map(prop -> quoteText(prop.as(String.class), html))
+						.collect(Collectors.toList());
 
-				if (i == properties.size() - 2) {
-					propertiesString.append(" and ");
-				}
-				else if (i < properties.size() - 2) {
-					propertiesString.append(", ");
-				}
+				String propertiesString = enumerateJoin(props, locale);
+
+				// XXX additional properties and auto detect of equal properties
+
+				return MessageFormat.format(getMessage("main", locale),
+						formatEntity(source, html, true, locale),
+						formatEntity(target, html, true, locale), propertiesString);
 			}
-
-			// XXX additional properties and auto detect of equal properties
-
-			return MessageFormat
-					.format("Merges different instances of the type {0} based on its properties {2} being equal. The values of these properties are merged into one, while the values of the other properties will be available in the target instance of type {1} as separate values for each source instance.",
-							formatEntity(source, html, true), formatEntity(target, html, true),
-							propertiesString);
+			else {
+				return MessageFormat.format(getMessage("all", locale),
+						formatEntity(source, html, true, locale),
+						formatEntity(target, html, true, locale));
+			}
 		}
 
 		return null;

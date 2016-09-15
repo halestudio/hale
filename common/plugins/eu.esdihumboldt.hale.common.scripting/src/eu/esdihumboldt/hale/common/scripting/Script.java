@@ -70,4 +70,17 @@ public interface Script {
 	 * @return the script id
 	 */
 	public String getId();
+
+	/**
+	 * States if transformation variables should be replaced in the script
+	 * string, before it is passed to evaluation.
+	 * 
+	 * @return <code>true</code> if the script expects transformation variables
+	 *         to be already replaced when evaluating it, <code>false</code> if
+	 *         transformation variables are handled by the script or not
+	 *         supported at all
+	 */
+	default boolean requiresReplacedTransformationVariables() {
+		return false;
+	}
 }

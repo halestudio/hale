@@ -81,7 +81,8 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	 * @see WorkbenchAdvisor#createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer)
 	 */
 	@Override
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
+	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+			IWorkbenchWindowConfigurer configurer) {
 		return new ApplicationWorkbenchWindowAdvisor(configurer, action);
 	}
 
@@ -144,13 +145,13 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 		// ask for save if there are changes
 		// TODO use a workbench hook for this
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps.isChanged()) {
 			Shell shell = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getShell();
-			MessageBox mb = new MessageBox(shell, SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
-			mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); //$NON-NLS-1$
-			mb.setText(Messages.ApplicationWorkbenchAdvisor_2); //$NON-NLS-1$
+			MessageBox mb = new MessageBox(shell,
+					SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
+			mb.setMessage(Messages.ApplicationWorkbenchAdvisor_1); // $NON-NLS-1$
+			mb.setText(Messages.ApplicationWorkbenchAdvisor_2); // $NON-NLS-1$
 			int result = mb.open();
 			if (result == SWT.CANCEL) {
 				return false;

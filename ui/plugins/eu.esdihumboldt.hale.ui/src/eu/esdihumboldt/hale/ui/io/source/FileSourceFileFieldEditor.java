@@ -77,7 +77,8 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 	 * @see #FileSourceFileFieldEditor(URI)
 	 */
 	@SuppressWarnings("javadoc")
-	public FileSourceFileFieldEditor(String name, String labelText, Composite parent, URI projectURI) {
+	public FileSourceFileFieldEditor(String name, String labelText, Composite parent,
+			URI projectURI) {
 		super(name, labelText, parent);
 		this.projectURI = projectURI;
 	}
@@ -226,8 +227,8 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 		// ensure resource control is added before the text control
 		historyButton = new Button(parent, SWT.PUSH | SWT.FLAT);
 		historyButton.setToolTipText("Choose from recent files");
-		historyButton.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_HISTORY));
+		historyButton.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_HISTORY));
 		historyButton.setEnabled(false);
 
 		return super.getTextControl(parent);
@@ -237,8 +238,7 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 	public void setContentTypes(Set<IContentType> types) {
 		super.setContentTypes(types);
 
-		RecentResources rr = (RecentResources) PlatformUI.getWorkbench().getService(
-				RecentResources.class);
+		RecentResources rr = PlatformUI.getWorkbench().getService(RecentResources.class);
 		if (rr != null) {
 			final List<Pair<URI, IContentType>> files = rr.getRecent(types, true);
 
@@ -276,8 +276,8 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 							}
 						}
 
-						Point histLoc = historyButton.getParent().toDisplay(
-								historyButton.getLocation());
+						Point histLoc = historyButton.getParent()
+								.toDisplay(historyButton.getLocation());
 						filesMenu.setLocation(histLoc.x, histLoc.y + historyButton.getSize().y);
 						filesMenu.setVisible(true);
 					}

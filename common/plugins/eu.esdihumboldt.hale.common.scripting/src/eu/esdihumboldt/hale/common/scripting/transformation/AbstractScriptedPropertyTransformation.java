@@ -50,22 +50,28 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 	private ListMultimap<String, Value> transformedParameters;
 
 	@Override
-	protected final ListMultimap<String, Object> evaluate(String transformationIdentifier,
-			E engine, ListMultimap<String, PropertyValue> variables,
+	protected final ListMultimap<String, Object> evaluate(String transformationIdentifier, E engine,
+			ListMultimap<String, PropertyValue> variables,
 			ListMultimap<String, PropertyEntityDefinition> resultNames,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 		ListMultimap<String, ParameterValue> originalParameters = getParameters();
 		ListMultimap<String, Value> transformedParameters = ArrayListMultimap.create();
 
 		if (originalParameters != null) {
 			for (Map.Entry<String, ParameterValue> entry : originalParameters.entries()) {
-				if (!entry.getValue().needsProcessing())
-					transformedParameters.put(entry.getKey(), entry.getValue().intern());
+				if (!entry.getValue().needsProcessing()) {
+					Value value = entry.getValue().intern();
+					if (!value.isRepresentedAsDOM()) {
+						value = Value.simple(getExecutionContext().getVariables()
+								.replaceVariables(value.getStringRepresentation()));
+					}
+					transformedParameters.put(entry.getKey(), value);
+				}
 				else {
 					// type is a script
-					ScriptFactory factory = ScriptExtension.getInstance().getFactory(
-							entry.getValue().getType());
+					ScriptFactory factory = ScriptExtension.getInstance()
+							.getFactory(entry.getValue().getType());
 					if (factory == null)
 						throw new TransformationException("Couldn't find factory for script id "
 								+ entry.getValue().getType());
@@ -77,8 +83,14 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 					}
 					Object result;
 					try {
-						result = script.evaluate(entry.getValue().as(String.class),
-								variables.values(), getExecutionContext());
+						String scriptStr = entry.getValue().as(String.class);
+						if (script.requiresReplacedTransformationVariables()) {
+							// replace transformation variables
+							scriptStr = getExecutionContext().getVariables()
+									.replaceVariables(scriptStr);
+						}
+						result = script.evaluate(scriptStr, variables.values(),
+								getExecutionContext());
 					} catch (ScriptException e) {
 						throw new TransformationException(
 								"Couldn't evaluate a transformation parameter", e);
@@ -117,7 +129,7 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 			E engine, ListMultimap<String, PropertyValue> variables,
 			ListMultimap<String, PropertyEntityDefinition> resultNames,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException;
+					throws TransformationException;
 
 	/**
 	 * Returns the transformed parameters.
@@ -142,8 +154,8 @@ public abstract class AbstractScriptedPropertyTransformation<E extends Transform
 			throws TransformationException {
 		if (transformedParameters == null || transformedParameters.get(parameterName) == null
 				|| transformedParameters.get(parameterName).isEmpty()) {
-			throw new TransformationException(MessageFormat.format(
-					"Mandatory parameter {0} not defined", parameterName));
+			throw new TransformationException(
+					MessageFormat.format("Mandatory parameter {0} not defined", parameterName));
 		}
 
 		return transformedParameters.get(parameterName).get(0);

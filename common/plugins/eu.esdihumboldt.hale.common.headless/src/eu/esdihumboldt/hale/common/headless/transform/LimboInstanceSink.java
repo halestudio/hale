@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Kai Schwierczek
  */
-public class LimboInstanceSink implements TransformationSink {
+public class LimboInstanceSink extends AbstractTransformationSink {
 
 	private static final Instance END = new DefaultInstance(null, null);
 
@@ -47,7 +47,7 @@ public class LimboInstanceSink implements TransformationSink {
 	private final BlockingDeque<Instance> queue = new LinkedBlockingDeque<Instance>(50);
 
 	@Override
-	public synchronized void addInstance(Instance instance) {
+	protected synchronized void internalAddInstance(Instance instance) {
 		// ignore incoming instances if we are cancelled
 		if (cancelled)
 			return;
@@ -59,7 +59,7 @@ public class LimboInstanceSink implements TransformationSink {
 	}
 
 	@Override
-	public void done(boolean cancel) {
+	protected void internalDone(boolean cancel) {
 		try {
 			if (cancel) {
 				cancelled = true;
@@ -89,6 +89,8 @@ public class LimboInstanceSink implements TransformationSink {
 	@Override
 	public void dispose() {
 		queue.clear();
+
+		super.dispose();
 	}
 
 	private class TargetResourceIterator implements ResourceIterator<Instance> {

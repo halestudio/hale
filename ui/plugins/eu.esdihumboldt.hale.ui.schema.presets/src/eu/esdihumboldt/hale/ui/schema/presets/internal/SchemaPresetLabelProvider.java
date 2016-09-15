@@ -29,9 +29,9 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategoryExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 
 /**
  * Label provider for {@link SchemaPreset}s.

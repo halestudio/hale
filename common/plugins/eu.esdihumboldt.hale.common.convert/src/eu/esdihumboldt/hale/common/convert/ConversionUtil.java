@@ -23,7 +23,7 @@ import java.util.List;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * Conversion utilities.
@@ -50,7 +50,7 @@ public abstract class ConversionUtil {
 			return (T) value;
 		}
 
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = HalePlatform.getService(ConversionService.class);
 		if (cs == null) {
 			throw new ConversionServiceNotAvailableException();
 		}

@@ -2,14 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Simple Transformation Web Interface
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webtransform.war
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Web-ContextPath: /webtransform
 Webapp-Name: Transformations
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="11.0.1",
- com.google.common.io;version="11.0.1",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
@@ -24,6 +23,7 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.server.projects,
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
+ eu.esdihumboldt.util.io,
  javax.servlet;version="2.5.0",
  javax.servlet.http;version="2.5.0",
  org.eclipse.jetty.servlet;version="7.6.0",

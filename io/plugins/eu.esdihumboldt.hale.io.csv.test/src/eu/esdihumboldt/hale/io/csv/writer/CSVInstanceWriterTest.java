@@ -23,7 +23,6 @@ import java.io.FileReader;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -33,6 +32,7 @@ import org.junit.rules.TemporaryFolder;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -232,7 +232,7 @@ public class CSVInstanceWriterTest {
 			Value esc, InstanceCollection instances) throws Exception {
 		// set instances to xls instance writer
 		InstanceWriter writer = new CSVInstanceWriter();
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				"eu.esdihumboldt.hale.io.csv");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
 				Value.of(skipFirstLine));

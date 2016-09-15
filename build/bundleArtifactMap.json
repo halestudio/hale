@@ -1,0 +1,1560 @@
+{
+    "java3d.vecmath": {
+        "group": "java3d",
+        "name": "vecmath",
+        "versions": {
+            "1.3.2.i20150413": "1.3.2"
+        }
+    },
+    "org.springframework.beans": {
+        "group": "org.springframework",
+        "name": "spring-beans",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "com.jcraft.jsch": {
+        "group": "com.jcraft",
+        "name": "jsch",
+        "versions": {
+            "0.1.51.v201410302000": "0.1.51"
+        }
+    },
+    "javax.annotation": {
+        "group": "javax.annotation",
+        "name": "javax.annotation-api",
+        "versions": {
+            "1.2.0.v201401042248": "1.2"
+        }
+    },
+    "com.iabcinc.jmep": {
+        "group": "com.iabcinc",
+        "name": "jmep",
+        "versions": {
+            "0.1.0.i20150413": "0.1.0"
+        }
+    },
+    "org.pegdown": {
+        "group": "org.pegdown",
+        "name": "pegdown",
+        "versions": {
+            "1.4.2.i20150413": "1.4.2"
+        }
+    },
+    "net.tanesha.recaptcha4j": {
+        "group": "net.tanesha.recaptcha4j",
+        "name": "recaptcha4j",
+        "versions": {
+            "0.0.8.i20150413": "0.0.8"
+        }
+    },
+    "findbugsAnnotations": {
+        "group": "com.google.code.findbugs",
+        "name": "annotations",
+        "versions": {
+            "2.0.3.i20150413": "2.0.3"
+        }
+    },
+    "eu.esdihumboldt.hale.prefixmapper": {
+        "group": "eu.esdihumboldt.hale",
+        "name": "prefixmapper",
+        "versions": {
+            "1.0.1.i20150413": "1.0.1"
+        }
+    },
+    "org.springframework.security.openid": {
+        "group": "org.springframework.security",
+        "name": "spring-security-openid",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.jaitools.jt-zonalstats": {
+        "group": "org.jaitools",
+        "name": "jt-zonalstats",
+        "versions": {
+            "1.3.1.i20150413": "1.3.1"
+        }
+    },
+    "org.objectweb.asm-4": {
+        "group": "org.ow2.asm",
+        "name": "asm",
+        "versions": {
+            "4.1.0.i20150413": "4.1"
+        }
+    },
+    "com.fasterxml.jackson.datatype.jackson-datatype-json-org": {
+        "group": "com.fasterxml.jackson.datatype",
+        "name": "jackson-datatype-json-org",
+        "versions": {
+            "2.1.2.i20150413": "2.1.2"
+        }
+    },
+    "org.apache.ws.commons.schema.XmlSchema": {
+        "group": "org.apache.ws.commons.schema",
+        "name": "XmlSchema",
+        "versions": {
+            "1.4.7.i20150413": "1.4.7"
+        }
+    },
+    "org.springframework.expression": {
+        "group": "org.springframework",
+        "name": "spring-expression",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "com.orientechnologies.orientdb-enterprise": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-enterprise",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "slf4j.api": {
+        "group": "org.slf4j",
+        "name": "slf4j-api",
+        "versions": {
+            "1.7.10.i20150413": "1.7.10"
+        }
+    },
+    "bcpkix": {
+        "group": "org.bouncycastle",
+        "name": "bcpkix-jdk15on",
+        "versions": {
+            "1.51.0.i20150413": "1.51"
+        }
+    },
+    "org.apache.xmlbeans": {
+        "group": "org.apache.xmlbeans",
+        "name": "xmlbeans",
+        "versions": {
+            "2.4.0.i20150413": "2.4.0"
+        }
+    },
+    "commons-digester": {
+        "group": "commons-digester",
+        "name": "commons-digester",
+        "versions": {
+            "1.8.0.i20150413": "1.8"
+        }
+    },
+    "org.jdesktop.swingx": {
+        "group": "org.swinglabs",
+        "name": "swingx",
+        "versions": {
+            "1.0.0.i20150413": "1.0"
+        }
+    },
+    "org.apache.commons.codec": {
+        "group": "commons-codec",
+        "name": "commons-codec",
+        "versions": {
+            "1.6.0.i20150413": "1.6"
+        }
+    },
+    "org.apache.commons.configuration": {
+        "group": "commons-configuration",
+        "name": "commons-configuration",
+        "versions": {
+            "1.6.0.i20150413": "1.6"
+        }
+    },
+    "org.apache.commons.dbcp": {
+        "group": "commons-dbcp",
+        "name": "commons-dbcp",
+        "versions": {
+            "1.4.0.i20150610": "1.4"
+        }
+    },
+    "org.apache.commons.jxpath": {
+        "group": "commons-jxpath",
+        "name": "commons-jxpath",
+        "versions": {
+            "1.3.0.i20150413": "1.3"
+        }
+    },
+    "eu.esdihumboldt.util.resource.schemas.test": {
+        "group": "eu.esdihumboldt.util.resource",
+        "name": "schemas.test",
+        "versions": {
+            "1.0.0.201205101531-i20150413": "1.0.0.201205101531"
+        }
+    },
+    "picocontainer": {
+        "group": "picocontainer",
+        "name": "picocontainer",
+        "versions": {
+            "1.2.0.i20150413": "1.2"
+        }
+    },
+    "xml-resolver": {
+        "group": "xml-resolver",
+        "name": "xml-resolver",
+        "versions": {
+            "1.2.0.i20150413": "1.2"
+        }
+    },
+    "aopalliance": {
+        "group": "aopalliance",
+        "name": "aopalliance",
+        "versions": {
+            "1.0.0.i20150413": "1.0"
+        }
+    },
+    "jgridshift": {
+        "group": "jgridshift",
+        "name": "jgridshift",
+        "versions": {
+            "1.0.0.i20150413": "1.0"
+        }
+    },
+    "javax.media.jai_codec": {
+        "group": "javax.media",
+        "name": "jai_codec",
+        "versions": {
+            "1.1.3.i20150413": "1.1.3"
+        }
+    },
+    "org.openid4java": {
+        "group": "org.openid4java",
+        "name": "openid4java",
+        "versions": {
+            "0.9.8.i20151027": "0.9.8"
+        }
+    },
+    "org.eclipse.jetty.security-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-security",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "stax.stax-api": {
+        "group": "stax",
+        "name": "stax-api",
+        "versions": {
+            "1.0.1.i20150413": "1.0.1"
+        }
+    },
+    "org.apache.httpcomponents.fluent-hc": {
+        "group": "org.apache.httpcomponents",
+        "name": "fluent-hc",
+        "versions": {
+            "4.3.6.i20151027": "4.3.6"
+        }
+    },
+    "org.springframework.asm": {
+        "group": "org.springframework",
+        "name": "spring-asm",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "com.tinkerpop.gremlin.groovy": {
+        "group": "com.tinkerpop.gremlin",
+        "name": "gremlin-groovy",
+        "versions": {
+            "2.5.0.orientDB151-i20151027": "2.5.0-orientDB151"
+        }
+    },
+    "javax.ws.rs-api": {
+        "group": "javax.ws.rs",
+        "name": "javax.ws.rs-api",
+        "versions": {
+            "2.0.1.i20150413": "2.0.1"
+        }
+    },
+    "log4j.over.slf4j": {
+        "group": "org.slf4j",
+        "name": "log4j-over-slf4j",
+        "versions": {
+            "1.7.10.i20150413": "1.7.10"
+        }
+    },
+    "com.fasterxml.jackson.core.jackson-core": {
+        "group": "com.fasterxml.jackson.core",
+        "name": "jackson-core",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "org.jasig.cas.client.cas-client-core": {
+        "group": "org.jasig.cas.client",
+        "name": "cas-client-core",
+        "versions": {
+            "3.1.12.i20150413": "3.1.12"
+        }
+    },
+    "org.springframework.aop": {
+        "group": "org.springframework",
+        "name": "spring-aop",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.eclipse.jetty.io-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-io",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "org.eclipse.jetty.server-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-server",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "net.sf.json-lib": {
+        "group": "net.sf.json-lib",
+        "name": "json-lib",
+        "versions": {
+            "2.3.0.i20151027": "2.3"
+        }
+    },
+    "org.jaitools.jt-utils": {
+        "group": "org.jaitools",
+        "name": "jt-utils",
+        "versions": {
+            "1.3.1.i20150413": "1.3.1"
+        }
+    },
+    "asm.asm-analysis": {
+        "group": "asm",
+        "name": "asm-analysis",
+        "versions": {
+            "3.3.1.i20150413": "3.3.1"
+        }
+    },
+    "org.codehaus.castor.core": {
+        "group": "org.codehaus.castor",
+        "name": "castor-core",
+        "versions": {
+            "1.3.2.i20151027": "1.3.2"
+        }
+    },
+    "org.apache.commons.lang": {
+        "group": "commons-lang",
+        "name": "commons-lang",
+        "versions": {
+            "2.6.0.i20150413": "2.6",
+            "2.6.0.v201404270220": "2.6"
+        },
+        "mapping-v3": {
+            "group": "org.apache.commons",
+            "name": "commons-lang3",
+            "versions": {
+                "3.1.0": "3.1"
+            }
+        }
+    },
+    "org.junit": {
+        "group": "junit",
+        "name": "junit",
+        "versions": {
+            "4.11.0.v201303080030": "4.11",
+            "4.12.0.v201504281640": "4.12"
+        }
+    },
+    "com.tinkerpop.blueprints.core": {
+        "group": "com.tinkerpop.blueprints",
+        "name": "blueprints-core",
+        "versions": {
+            "2.5.0.orientDB151-i20151027": "2.5.0-orientDB151"
+        }
+    },
+    "org.apache.commons.io": {
+        "group": "commons-io",
+        "name": "commons-io",
+        "versions": {
+            "2.4.0.i20150413": "2.4"
+        }
+    },
+    "joda-time": {
+        "group": "joda-time",
+        "name": "joda-time",
+        "versions": {
+            "2.3.0.i20150413": "2.3"
+        }
+    },
+    "net.sf.ezmorph": {
+        "group": "net.sf.ezmorph",
+        "name": "ezmorph",
+        "versions": {
+            "1.0.6.i20150413": "1.0.6"
+        }
+    },
+    "ch.qos.logback.core": {
+        "group": "ch.qos.logback",
+        "name": "logback-core",
+        "versions": {
+            "1.0.13.i20150413": "1.0.13"
+        }
+    },
+    "org.springframework.transaction": {
+        "group": "org.springframework",
+        "name": "spring-tx",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.apache.wicket.extensions": {
+        "group": "org.apache.wicket",
+        "name": "wicket-extensions",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "com.fasterxml.jackson.core.jackson-databind": {
+        "group": "com.fasterxml.jackson.core",
+        "name": "jackson-databind",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "org.springframework.security.core": {
+        "group": "org.springframework.security",
+        "name": "spring-security-core",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.eclipse.jetty.webapp-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-webapp",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "com.github.jnr.jffi": {
+        "group": "com.github.jnr",
+        "name": "jffi",
+        "versions": {
+            "1.2.7.i20150413": "1.2.7"
+        }
+    },
+    "org.springframework.context": {
+        "group": "org.springframework",
+        "name": "spring-context",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "bcprov": {
+        "group": "org.bouncycastle",
+        "name": "bcprov-jdk15on",
+        "versions": {
+            "1.51.0.i20150413": "1.51"
+        }
+    },
+    "xstream": {
+        "group": "com.thoughtworks.xstream",
+        "name": "xstream",
+        "versions": {
+            "1.4.5.i20150413": "1.4.5"
+        }
+    },
+    "wicket-bootstrap-extensions": {
+        "group": "de.agilecoders.wicket",
+        "name": "wicket-bootstrap-extensions",
+        "versions": {
+            "0.8.4.i20150413": "0.8.4"
+        }
+    },
+    "org.ow2.asm.commons-4": {
+        "group": "org.ow2.asm",
+        "name": "asm-commons",
+        "versions": {
+            "4.0.0.i20150413": "4.0"
+        }
+    },
+    "com.fasterxml.jackson.module.jackson-module-jaxb-annotations": {
+        "group": "com.fasterxml.jackson.module",
+        "name": "jackson-module-jaxb-annotations",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "commons-httpclient": {
+        "group": "commons-httpclient",
+        "name": "commons-httpclient",
+        "versions": {
+            "3.1.0.i20150413": "3.1"
+        }
+    },
+    "org.apache.commons.compress": {
+        "group": "org.apache.commons",
+        "name": "commons-compress",
+        "versions": {
+            "1.8.1.i20150413": "1.8.1"
+        }
+    },
+    "jul.to.slf4j": {
+        "group": "org.slf4j",
+        "name": "jul-to-slf4j",
+        "versions": {
+            "1.7.10.i20150413": "1.7.10"
+        }
+    },
+    "org.objectweb.asm.analysis-4": {
+        "group": "org.ow2.asm",
+        "name": "asm-analysis",
+        "versions": {
+            "4.1.0.i20150413": "4.1"
+        }
+    },
+    "com.sun.xml.bind.jaxb-core": {
+        "group": "com.sun.xml.bind",
+        "name": "jaxb-core",
+        "versions": {
+            "2.2.7.i20150413": "2.2.7"
+        }
+    },
+    "org.apache.wicket.spring": {
+        "group": "org.apache.wicket",
+        "name": "wicket-spring",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "org.glassfish.jersey.core.jersey-client": {
+        "group": "org.glassfish.jersey.core",
+        "name": "jersey-client",
+        "versions": {
+            "2.13.0.i20150413": "2.13"
+        }
+    },
+    "org.eclipse.jetty.servlet-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-servlet",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "oro": {
+        "group": "oro",
+        "name": "oro",
+        "versions": {
+            "2.0.8.i20150413": "2.0.8"
+        }
+    },
+    "org.eclipse.jetty.deploy-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-deploy",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "stax": {
+        "group": "stax",
+        "name": "stax",
+        "versions": {
+            "1.2.0.i20150413": "1.2.0"
+        }
+    },
+    "colt": {
+        "group": "colt",
+        "name": "colt",
+        "versions": {
+            "1.2.0.i20150413": "1.2.0"
+        }
+    },
+    "jcl.over.slf4j": {
+        "group": "org.slf4j",
+        "name": "jcl-over-slf4j",
+        "versions": {
+            "1.7.10.i20150413": "1.7.10"
+        }
+    },
+    "org.swinglabs.swing-worker": {
+        "group": "org.swinglabs",
+        "name": "swing-worker",
+        "versions": {
+            "1.1.0.i20150413": "1.1"
+        }
+    },
+    "org.eclipse.jetty.util-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-util",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "com.google.guava": {
+        "group": "com.google.guava",
+        "name": "guava",
+        "versions": {
+            "17.0.0.i20150413": "17.0"
+        }
+    },
+    "org.codehaus.jettison.jettison": {
+        "group": "org.codehaus.jettison",
+        "name": "jettison",
+        "versions": {
+            "1.3.3.i20150413": "1.3.3"
+        }
+    },
+    "org.apache.wicket.util": {
+        "group": "org.apache.wicket",
+        "name": "wicket-util",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "org.eclipse.jetty.http-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-http",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "org.springframework.security.web": {
+        "group": "org.springframework.security",
+        "name": "spring-security-web",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "com.tinkerpop.blueprints.orient-graph": {
+        "group": "com.tinkerpop.blueprints",
+        "name": "blueprints-orient-graph",
+        "versions": {
+            "2.5.0.orientDB151-i20151027": "2.5.0-orientDB151"
+        }
+    },
+    "org.iq80.snappy": {
+        "group": "org.iq80.snappy",
+        "name": "snappy",
+        "versions": {
+            "0.3.0.i20150413": "0.3"
+        }
+    },
+    "org.opengis": {
+        "group": "org.geotools",
+        "name": "gt-opengis",
+        "versions": {
+            "12.2.0.i20151027": "12.2"
+        }
+    },
+    "org.springframework.context.support": {
+        "group": "org.springframework",
+        "name": "spring-context-support",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.springframework.core": {
+        "group": "org.springframework",
+        "name": "spring-core",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "cglib": {
+        "group": "cglib",
+        "name": "cglib",
+        "versions": {
+            "2.2.2.i20150413": "2.2.2"
+        }
+    },
+    "org.glassfish.hk2.external.aopalliance-repackaged": {
+        "group": "org.glassfish.hk2.external",
+        "name": "aopalliance-repackaged",
+        "versions": {
+            "2.3.0.b10-i20150413": "2.3.0-b10"
+        }
+    },
+    "org.eclipse.gemini.blueprint.io": {
+        "group": "org.eclipse.gemini.blueprint",
+        "name": "gemini-blueprint-io",
+        "versions": {
+            "1.0.0.RELEASE-i20150413": "1.0.0.RELEASE"
+        }
+    },
+    "xmlpull": {
+        "group": "xmlpull",
+        "name": "xmlpull",
+        "versions": {
+            "1.1.3.1-i20150413": "1.1.3.1"
+        }
+    },
+    "org.apache.wicket.core": {
+        "group": "org.apache.wicket",
+        "name": "wicket-core",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "org.fusesource.jansi": {
+        "group": "org.fusesource.jansi",
+        "name": "jansi",
+        "versions": {
+            "1.5.0.i20150413": "1.5"
+        }
+    },
+    "groovy": {
+        "group": "org.codehaus.groovy",
+        "name": "groovy-all",
+        "versions": {
+            "2.3.7.i20150413": "2.3.7"
+        }
+    },
+    "com.fasterxml.jackson.datatype.jackson-datatype-guava": {
+        "group": "com.fasterxml.jackson.datatype",
+        "name": "jackson-datatype-guava",
+        "versions": {
+            "2.2.3.i20151027": "2.2.3"
+        }
+    },
+    "javassist": {
+        "group": "org.javassist",
+        "name": "javassist",
+        "versions": {
+            "3.18.1.GA-i201504131601": "3.18.1-GA"
+        }
+    },
+    "org.springframework.web": {
+        "group": "org.springframework",
+        "name": "spring-web",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "com.typesafe.config": {
+        "group": "com.typesafe",
+        "name": "config",
+        "versions": {
+            "1.2.1.i20150413": "1.2.1"
+        }
+    },
+    "com.jhlabs.filters": {
+        "group": "com.jhlabs",
+        "name": "filters",
+        "versions": {
+            "2.0.235.i20150413": "2.0.235"
+        }
+    },
+    "org.apache.commons.fileupload": {
+        "group": "commons-fileupload",
+        "name": "commons-fileupload",
+        "versions": {
+            "1.3.1.i20150413": "1.3.1"
+        }
+    },
+    "org.apache.wicket.request": {
+        "group": "org.apache.wicket",
+        "name": "wicket-request",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "org.antlr.ST4": {
+        "group": "org.antlr",
+        "name": "ST4",
+        "versions": {
+            "4.0.4.i20150413": "4.0.4"
+        }
+    },
+    "com.google.javascript.closure-compiler": {
+        "group": "com.google.javascript",
+        "name": "closure-compiler",
+        "versions": {
+            "20130603.0.0.i20151027": "v20130603"
+        }
+    },
+    "com.orientechnologies.orientdb-tools": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-tools",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "com.github.jnr.ffi": {
+        "group": "com.github.jnr",
+        "name": "jnr-ffi",
+        "versions": {
+            "2.0.0.i20151027": "2.0.0"
+        }
+    },
+    "org.hibernate.javax.persistence.hibernate-jpa-2.0-api": {
+        "group": "org.hibernate.javax.persistence",
+        "name": "hibernate-jpa-2.0-api",
+        "versions": {
+            "1.0.0.Final-i20150413": "1.0.0.Final"
+        }
+    },
+    "org.parboiled.java": {
+        "group": "org.parboiled",
+        "name": "parboiled-java",
+        "versions": {
+            "1.1.6.i20150413": "1.1.6"
+        }
+    },
+    "org.codehaus.jackson": {
+        "group": "org.codehaus.jackson",
+        "name": "jackson-core-asl",
+        "versions": {
+            "1.9.13.i20150413": "1.9.13"
+        }
+    },
+    "org.quartz-scheduler.quartz": {
+        "group": "org.quartz-scheduler",
+        "name": "quartz",
+        "versions": {
+            "1.7.3.i20150413": "1.7.3"
+        }
+    },
+    "org.json": {
+        "group": "org.json",
+        "name": "json",
+        "versions": {
+            "20090211.0.0.i20150413": "20090211"
+        }
+    },
+    "eu.esdihumboldt.util.resource.schemas.citygml": {
+        "group": "eu.esdihumboldt.util.resource",
+        "name": "schemas.citygml",
+        "versions": {
+            "1.0.0.20120927-i20150413": "1.0.0.20120927"
+        }
+    },
+    "org.glassfish.jersey.media.jersey-media-json-jackson": {
+        "group": "org.glassfish.jersey.media",
+        "name": "jersey-media-json-jackson",
+        "versions": {
+            "2.13.0.i20150413": "2.13"
+        }
+    },
+    "org.glassfish.hk2.api": {
+        "group": "org.glassfish.hk2",
+        "name": "hk2-api",
+        "versions": {
+            "2.3.0.b10-i20150413": "2.3.0-b10"
+        }
+    },
+    "org.apache.ivy": {
+        "group": "org.apache.ivy",
+        "name": "ivy",
+        "versions": {
+            "2.4.0.final_20141213170938-i20150616": "2.4.0"
+        }
+    },
+    "com.orientechnologies.orientdb-core": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-core",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "org.objectweb.asm.tree-4": {
+        "group": "org.ow2.asm",
+        "name": "asm-tree",
+        "versions": {
+            "4.1.0.i20150413": "4.1"
+        }
+    },
+    "org.eclipse.gemini.blueprint.extender": {
+        "group": "org.eclipse.gemini.blueprint",
+        "name": "gemini-blueprint-extender",
+        "versions": {
+            "1.0.0.RELEASE-i20150413": "1.0.0.RELEASE"
+        }
+    },
+    "org.springframework.security.cas": {
+        "group": "org.springframework.security",
+        "name": "spring-security-cas",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.eclipse.jetty.continuation-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-continuation",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "org.codehaus.castor.xml": {
+        "group": "org.codehaus.castor",
+        "name": "castor-xml",
+        "versions": {
+            "1.3.2.i20151027": "1.3.2"
+        }
+    },
+    "org.webjars.locator": {
+        "group": "org.webjars",
+        "name": "webjars-locator",
+        "versions": {
+            "0.1.0.i20150413": "0.1"
+        }
+    },
+    "com.orientechnologies.orientdb-graphdb": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-graphdb",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "com.github.jnr.posix": {
+        "group": "com.github.jnr",
+        "name": "jnr-posix",
+        "versions": {
+            "3.0.8.i20151027": "3.0.8"
+        }
+    },
+    "com.fasterxml.jackson.dataformat.jackson-dataformat-yaml": {
+        "group": "com.fasterxml.jackson.dataformat",
+        "name": "jackson-dataformat-yaml",
+        "versions": {
+            "2.2.3.i20150413": "2.2.3"
+        }
+    },
+    "com.github.jnr.constants": {
+        "group": "com.github.jnr",
+        "name": "jnr-constants",
+        "versions": {
+            "0.8.6.i20150413": "0.8.6"
+        }
+    },
+    "javax.inject.javax.inject": {
+        "group": "javax.inject",
+        "name": "javax.inject",
+        "versions": {
+            "1.0.0.i20150413": "1"
+        }
+    },
+    "com.tinkerpop.pipes": {
+        "group": "com.tinkerpop",
+        "name": "pipes",
+        "versions": {
+            "2.5.0.orientDB151-i20150413": "2.5.0-orientDB151"
+        }
+    },
+    "wicket-bootstrap-core": {
+        "group": "de.agilecoders.wicket",
+        "name": "wicket-bootstrap-core",
+        "versions": {
+            "0.8.4.i20150413": "0.8.4"
+        }
+    },
+    "org.glassfish.jersey.bundles.repackaged.jersey-guava": {
+        "group": "org.glassfish.jersey.bundles.repackaged",
+        "name": "jersey-guava",
+        "versions": {
+            "2.13.0.i20150413": "2.13"
+        }
+    },
+    "org.codehaus.groovy.modules.http-builder": {
+        "group": "org.codehaus.groovy.modules.http-builder",
+        "name": "http-builder",
+        "versions": {
+            "0.6.0.i20151027": "0.6"
+        }
+    },
+    "xml-apis": {
+        "group": "xml-apis",
+        "name": "xml-apis",
+        "versions": {
+            "1.0.0.b2-i20150413": "1.0.b2"
+        }
+    },
+    "org.eclipse.jetty.xml-9": {
+        "group": "org.eclipse.jetty",
+        "name": "jetty-xml",
+        "versions": {
+            "9.2.1.v20140609-i20150413": "9.2.1.v20140609"
+        }
+    },
+    "org.apache.xml.commons-resolver": {
+        "group": "org.apache.xml",
+        "name": "xml-commons-resolver",
+        "versions": {
+            "1.2.0.i20150413": "1.2"
+        }
+    },
+    "net.java.dev.jna.platform": {
+        "group": "net.java.dev.jna",
+        "name": "platform",
+        "versions": {
+            "3.5.2.i20150413": "3.5.2"
+        }
+    },
+    "com.fasterxml.jackson.core.jackson-annotations": {
+        "group": "com.fasterxml.jackson.core",
+        "name": "jackson-annotations",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "de.fhg.igd.osgi.util": {
+        "group": "de.fhg.igd",
+        "name": "osgi-util",
+        "versions": {
+            "1.0.0.i20150413": "1.0"
+        }
+    },
+    "de.fhg.igd.hale.fme.doc": {
+        "group": "de.fhg.igd.hale",
+        "name": "fme-doc",
+        "versions": {
+            "1.1.0.i20150413": "1.1.0"
+        }
+    },
+    "gnu.trove": {
+        "group": "net.sf.trove4j",
+        "name": "trove4j",
+        "versions": {
+            "2.0.4.i20150413": "2.0.4"
+        }
+    },
+    "dom4j": {
+        "group": "dom4j",
+        "name": "dom4j",
+        "versions": {
+            "1.6.1.i20150413": "1.6.1"
+        }
+    },
+    "org.glassfish.hk2.utils": {
+        "group": "org.glassfish.hk2",
+        "name": "hk2-utils",
+        "versions": {
+            "2.3.0.b10-i20150413": "2.3.0-b10"
+        }
+    },
+    "wicket-bootstrap-less": {
+        "group": "de.agilecoders.wicket",
+        "name": "wicket-bootstrap-less",
+        "versions": {
+            "0.8.4.i20150413": "0.8.4"
+        }
+    },
+    "com.fasterxml.jackson.jaxrs.jackson-jaxrs-base": {
+        "group": "com.fasterxml.jackson.jaxrs",
+        "name": "jackson-jaxrs-base",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "cal10n.api": {
+        "group": "ch.qos.cal10n",
+        "name": "cal10n-api",
+        "versions": {
+            "0.8.1.i20150413": "0.8.1"
+        }
+    },
+    "org.apache.commons.collections": {
+        "group": "commons-collections",
+        "name": "commons-collections",
+        "versions": {
+            "3.2.1.i20150413": "3.2.1"
+        }
+    },
+    "ch.qos.logback.classic": {
+        "group": "ch.qos.logback",
+        "name": "logback-classic",
+        "versions": {
+            "1.0.13.i20150413": "1.0.13"
+        }
+    },
+    "org.objectweb.asm.util-4": {
+        "group": "org.ow2.asm",
+        "name": "asm-util",
+        "versions": {
+            "4.1.0.i20150413": "4.1"
+        }
+    },
+    "org.antlr.stringtemplate": {
+        "group": "org.antlr",
+        "name": "stringtemplate",
+        "versions": {
+            "3.2.1.i20150413": "3.2.1"
+        }
+    },
+    "com.github.jnr.unixsocket": {
+        "group": "com.github.jnr",
+        "name": "jnr-unixsocket",
+        "versions": {
+            "0.4.0.i20151027": "0.4"
+        }
+    },
+    "asm.asm-util": {
+        "group": "asm",
+        "name": "asm-util",
+        "versions": {
+            "3.3.1.i20150413": "3.3.1"
+        }
+    },
+    "org.antlr": {
+        "group": "org.antlr",
+        "name": "antlr",
+        "versions": {
+            "3.4.0.i20150413": "3.4"
+        }
+    },
+    "asm.asm-tree": {
+        "group": "asm",
+        "name": "asm-tree",
+        "versions": {
+            "3.3.1.i20150413": "3.3.1"
+        }
+    },
+    "org.apache.commons.pool": {
+        "group": "commons-pool",
+        "name": "commons-pool",
+        "versions": {
+            "1.5.4.i20150413": "1.5.4"
+        }
+    },
+    "it.geosolutions.imageio-ext.utilities": {
+        "group": "it.geosolutions.imageio-ext",
+        "name": "imageio-ext-utilities",
+        "versions": {
+            "1.1.10.i20151027": "1.1.10"
+        }
+    },
+    "de.fhg.igd.hale.fme": {
+        "group": "de.fhg.igd.hale",
+        "name": "fme-exec",
+        "versions": {
+            "1.1.0.i20150413": "1.1.0"
+        }
+    },
+    "com.sun.jna": {
+        "group": "net.java.dev.jna",
+        "name": "jna",
+        "versions": {
+            "3.5.2.i20150413": "3.5.2"
+        }
+    },
+    "org.glassfish.hk2.locator": {
+        "group": "org.glassfish.hk2",
+        "name": "hk2-locator",
+        "versions": {
+            "2.3.0.b10-i20150413": "2.3.0-b10"
+        }
+    },
+    "org.apache.wicket.ioc": {
+        "group": "org.apache.wicket",
+        "name": "wicket-ioc",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "org.apache.velocity": {
+        "group": "org.apache.velocity",
+        "name": "velocity",
+        "versions": {
+            "1.6.2.i20150413": "1.6.2"
+        }
+    },
+    "org.springframework.osgi.web.mini": {
+        "group": "de.cs3d.thirdparty",
+        "name": "springframework-osgi-web-mini",
+        "versions": {
+            "2.0.0.M1-i20150413": "2.0.0.M1"
+        }
+    },
+    "xerces.xercesImpl": {
+        "group": "xerces",
+        "name": "xercesImpl",
+        "versions": {
+            "2.9.1.i20150413": "2.9.1"
+        }
+    },
+    "net.sourceforge.schemacrawler": {
+        "group": "us.fatehi",
+        "name": "schemacrawler",
+        "versions": {
+            "12.4.2.i20150612": "12.04.02"
+        }
+    },
+    "org.wicketstuff.html5": {
+        "group": "org.wicketstuff",
+        "name": "wicketstuff-html5",
+        "versions": {
+            "6.10.0.i20150413": "6.10.0"
+        }
+    },
+    "jline": {
+        "group": "jline",
+        "name": "jline",
+        "versions": {
+            "0.9.94.i20150413": "0.9.94"
+        }
+    },
+    "com.orientechnologies.orientdb-object": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-object",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "org.glassfish.jersey.core.jersey-common": {
+        "group": "org.glassfish.jersey.core",
+        "name": "jersey-common",
+        "versions": {
+            "2.13.0.i20150413": "2.13"
+        }
+    },
+    "com.spotify.docker-client": {
+        "group": "com.spotify",
+        "name": "docker-client",
+        "versions": {
+            "2.7.7.i20151027": "2.7.7"
+        }
+    },
+    "args4j": {
+        "group": "args4j",
+        "name": "args4j",
+        "versions": {
+            "2.0.16.i20150413": "2.0.16"
+        }
+    },
+    "xpp3.xpp3_min": {
+        "group": "xpp3",
+        "name": "xpp3_min",
+        "versions": {
+            "1.1.4.c-i20150413": "1.1.4c"
+        }
+    },
+    "org.eclipse.xsd": {
+        "group": "org.eclipse.xsd",
+        "name": "xsd",
+        "versions": {
+            "2.6.0.v20100914-1218-i20150413": "2.6.0"
+        }
+    },
+    "concurrent": {
+        "group": "concurrent",
+        "name": "concurrent",
+        "versions": {
+            "1.3.4.i20150413": "1.3.4"
+        }
+    },
+    "org.apache.ant.launcher": {
+        "group": "org.apache.ant",
+        "name": "ant-launcher",
+        "versions": {
+            "1.8.3.i20150413": "1.8.3"
+        }
+    },
+    "org.parboiled.core": {
+        "group": "org.parboiled",
+        "name": "parboiled-core",
+        "versions": {
+            "1.1.6.i20150413": "1.1.6"
+        }
+    },
+    "javax.mail": {
+        "group": "javax.mail",
+        "name": "mail",
+        "versions": {
+            "1.4.0.i20150413": "1.4"
+        }
+    },
+    "org.glassfish.hk2.osgi-resource-locator": {
+        "group": "org.glassfish.hk2",
+        "name": "osgi-resource-locator",
+        "versions": {
+            "1.0.1.i20150413": "1.0.1"
+        }
+    },
+    "org.springframework.security.ldap": {
+        "group": "org.springframework.security",
+        "name": "spring-security-ldap",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.eclipse.gemini.blueprint.core": {
+        "group": "org.eclipse.gemini.blueprint",
+        "name": "gemini-blueprint-core",
+        "versions": {
+            "1.0.0.RELEASE-i20150413": "1.0.0.RELEASE"
+        }
+    },
+    "org.jdom": {
+        "group": "org.jdom",
+        "name": "jdom",
+        "versions": {
+            "1.1.3.i20150413": "1.1.3"
+        }
+    },
+    "javax.servlet": {
+        "group": "javax.servlet",
+        "name": "javax.servlet-api",
+        "versions": {
+            "3.1.0.i20150413": "3.1.0"
+        }
+    },
+    "net.sf.opencsv": {
+        "group": "net.sf.opencsv",
+        "name": "opencsv",
+        "versions": {
+            "2.3.0.i20150413": "2.3"
+        }
+    },
+    "net.sourceforge.nekohtml": {
+        "group": "net.sourceforge.nekohtml",
+        "name": "nekohtml",
+        "versions": {
+            "1.9.16.i20150413": "1.9.16"
+        }
+    },
+    "org.springframework.ldap.spring-ldap-core": {
+        "group": "org.springframework.ldap",
+        "name": "spring-ldap-core",
+        "versions": {
+            "1.3.1.RELEASE-i20151027": "1.3.1.RELEASE"
+        }
+    },
+    "com.github.jnr.x86asm": {
+        "group": "com.github.jnr",
+        "name": "jnr-x86asm",
+        "versions": {
+            "1.0.2.i20150413": "1.0.2"
+        }
+    },
+    "com.sun.istack.commons-runtime": {
+        "group": "com.sun.istack",
+        "name": "istack-commons-runtime",
+        "versions": {
+            "2.16.0.i20150413": "2.16"
+        }
+    },
+    "com.orientechnologies.orientdb-client": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-client",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "com.github.jnr.enxio": {
+        "group": "com.github.jnr",
+        "name": "jnr-enxio",
+        "versions": {
+            "0.5.0.i20151027": "0.5"
+        }
+    },
+    "org.springframework.security.config": {
+        "group": "org.springframework.security",
+        "name": "spring-security-config",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.apache.httpcomponents.httpcore": {
+        "group": "org.apache.httpcomponents",
+        "name": "httpcore",
+        "versions": {
+            "4.3.3.i20150413": "4.3.3",
+            "4.3.3.v201411290715": "4.3.3"
+        }
+    },
+    "com.github.sommeri.less4j": {
+        "group": "com.github.sommeri",
+        "name": "less4j",
+        "versions": {
+            "1.0.4.i20151027": "1.0.4"
+        }
+    },
+    "org.springframework.jdbc": {
+        "group": "org.springframework",
+        "name": "spring-jdbc",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "org.apache.httpcomponents.httpclient": {
+        "group": "org.apache.httpcomponents",
+        "name": "httpclient",
+        "versions": {
+            "4.3.6.i20151027": "4.3.6",
+            "4.3.6.v201411290715": "4.3.6"
+        }
+    },
+    "org.glassfish.jersey.connectors.jersey-apache-connector": {
+        "group": "org.glassfish.jersey.connectors",
+        "name": "jersey-apache-connector",
+        "versions": {
+            "2.13.0.i20151027": "2.13"
+        }
+    },
+    "wicket-bootstrap-themes": {
+        "group": "de.agilecoders.wicket",
+        "name": "wicket-bootstrap-themes",
+        "versions": {
+            "0.8.4.i20150413": "0.8.4"
+        }
+    },
+    "net.sf.ehcache.core": {
+        "group": "net.sf.ehcache",
+        "name": "ehcache-core",
+        "versions": {
+            "2.6.6.i20150413": "2.6.6"
+        }
+    },
+    "commons-beanutils.commons-beanutils-core": {
+        "group": "commons-beanutils",
+        "name": "commons-beanutils-core",
+        "versions": {
+            "1.8.0.i20150413": "1.8.0"
+        }
+    },
+    "org.hsqldb.hsqldb": {
+        "group": "org.hsqldb",
+        "name": "hsqldb",
+        "versions": {
+            "2.2.8.i20150413": "2.2.8"
+        }
+    },
+    "org.springframework.web.servlet": {
+        "group": "org.springframework",
+        "name": "spring-webmvc",
+        "versions": {
+            "3.1.1.RELEASE-i20150413": "3.1.1.RELEASE"
+        }
+    },
+    "net.java.dev.jsr-275": {
+        "group": "net.java.dev.jsr-275",
+        "name": "jsr-275",
+        "versions": {
+            "1.0.0.beta-2-i20150413": "1.0-beta-2"
+        }
+    },
+    "javax.media.jai_core": {
+        "group": "javax.media",
+        "name": "jai_core",
+        "versions": {
+            "1.1.3.i20150413": "1.1.3"
+        }
+    },
+    "com.google.protobuf.java": {
+        "group": "com.google.protobuf",
+        "name": "protobuf-java",
+        "versions": {
+            "2.4.1.i20150413": "2.4.1"
+        }
+    },
+    "com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider": {
+        "group": "com.fasterxml.jackson.jaxrs",
+        "name": "jackson-jaxrs-json-provider",
+        "versions": {
+            "2.3.2.i20150413": "2.3.2"
+        }
+    },
+    "javax.media.jai_imageio": {
+        "group": "javax.media",
+        "name": "jai_imageio",
+        "versions": {
+            "1.1.0.i20150413": "1.1"
+        }
+    },
+    "com.orientechnologies.orientdb-server": {
+        "group": "com.orientechnologies",
+        "name": "orientdb-server",
+        "versions": {
+            "1.5.1.i20150413": "1.5.1"
+        }
+    },
+    "com.vividsolutions.jts": {
+        "group": "com.vividsolutions",
+        "name": "jts",
+        "versions": {
+            "1.13.0.i20150413": "1.13"
+        }
+    },
+    "com.tinkerpop.gremlin.java": {
+        "group": "com.tinkerpop.gremlin",
+        "name": "gremlin-java",
+        "versions": {
+            "2.5.0.orientDB151-i20150413": "2.5.0-orientDB151"
+        }
+    },
+    "com.google.inject": {
+        "group": "com.google.inject",
+        "name": "guice",
+        "versions": {
+            "2.0.0.i20150413": "2.0"
+        }
+    },
+    "antlr": {
+        "group": "antlr",
+        "name": "antlr",
+        "versions": {
+            "2.7.7.i20150413": "2.7.7"
+        }
+    },
+    "org.antlr.runtime": {
+        "group": "org.antlr",
+        "name": "antlr-runtime",
+        "versions": {
+            "3.4.0.i20150413": "3.4"
+        }
+    },
+    "com.googlecode.json-simple": {
+        "group": "com.googlecode.json-simple",
+        "name": "json-simple",
+        "versions": {
+            "1.1.0.i20150413": "1.1"
+        }
+    },
+    "org.glassfish.hk2.external.javax.inject": {
+        "group": "org.glassfish.hk2.external",
+        "name": "javax.inject",
+        "versions": {
+            "2.3.0.b10-i20150413": "2.3.0-b10"
+        }
+    },
+    "org.codehaus.jackson.mapper": {
+        "group": "org.codehaus.jackson",
+        "name": "jackson-mapper-asl",
+        "versions": {
+            "1.9.13.i20150413": "1.9.13"
+        }
+    },
+    "org.apache.commons.beanutils": {
+        "group": "commons-beanutils",
+        "name": "commons-beanutils",
+        "versions": {
+            "1.8.3.i20150413": "1.8.3"
+        }
+    },
+    "de.fhg.igd.hale.fme.ui": {
+        "group": "de.fhg.igd.hale",
+        "name": "fme-ui",
+        "versions": {
+            "1.3.0.i20150413": "1.3.0"
+        }
+    },
+    "slf4j.ext": {
+        "group": "org.slf4j",
+        "name": "slf4j-ext",
+        "versions": {
+            "1.7.10.i20150413": "1.7.10"
+        }
+    },
+    "it.geosolutions.imageio-ext.tiff": {
+        "group": "it.geosolutions.imageio-ext",
+        "name": "imageio-ext-tiff",
+        "versions": {
+            "1.1.10.i20151027": "1.1.10"
+        }
+    },
+    "asm": {
+        "group": "asm",
+        "name": "asm",
+        "versions": {
+            "3.3.1.i20150413": "3.3.1"
+        }
+    },
+    "org.reflections": {
+        "group": "org.reflections",
+        "name": "reflections",
+        "versions": {
+            "0.9.8.i20151027": "0.9.8"
+        }
+    }
+}

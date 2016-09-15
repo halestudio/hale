@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Docker
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.test.docker
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.test.docker.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.fasterxml.jackson.annotation;version="2.3.2",

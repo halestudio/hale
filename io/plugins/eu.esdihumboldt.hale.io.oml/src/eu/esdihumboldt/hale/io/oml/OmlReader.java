@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.PropertyBean;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.TypeBean;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -74,7 +75,6 @@ import eu.esdihumboldt.hale.io.oml.internal.model.align.ext.IParameter;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * This class reads the OML Document into Java Object.

@@ -320,6 +320,30 @@
             </parameterBinding>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            cellExplanation="eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPointExplanation"
+            description="Computes an interior point of a geometry (up to 2D). An interior point is guaranteed to lie in the interior of the geometry, if it is possible to calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry (e.g. if the geometry is a line)."
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.interiorPoint"
+            name="Interior Point">
+         <targetProperties>
+            <property
+                  description="The property the centroid is assigned to"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  description="The geometry used to calculate the centroid"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+               <geometryOrParentCondition></geometryOrParentCondition>
+            </property>
+         </sourceProperties>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -371,6 +395,12 @@
             function="eu.esdihumboldt.cst.functions.geometric.reproject_geometry"
             id="eu.esdihumboldt.cst.functions.geometric.reproject_geometry">
       </propertyTransformation>
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.interiorPoint"
+            id="eu.esdihumboldt.cst.functions.geometric.interiorPoint">
+      </propertyTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.cst.functions.groovy.helper">
@@ -384,6 +414,13 @@
       <helper
             category="geom"
             class="eu.esdihumboldt.cst.functions.geometric.GeometryHelperFunctions">
+      </helper>
+      <category
+            path="crs">
+      </category>
+      <helper
+            category="crs"
+            class="eu.esdihumboldt.cst.functions.geometric.CRSHelperFunctions">
       </helper>
    </extension>
 

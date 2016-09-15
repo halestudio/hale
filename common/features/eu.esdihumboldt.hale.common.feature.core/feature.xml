@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.common.feature.core"
       label="HALE core logic and models"
-      version="2.9.4.qualifier"
+      version="3.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -648,6 +648,20 @@
 
    <plugin
          id="eu.esdihumboldt.hale.common.style"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.util.nonosgi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.nonosgi.registry"
          download-size="0"
          install-size="0"
          version="0.0.0"

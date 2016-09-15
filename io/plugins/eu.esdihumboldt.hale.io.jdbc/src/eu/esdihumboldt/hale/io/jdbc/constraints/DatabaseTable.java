@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.io.jdbc.constraints;
 
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.JDBCUtil;
 
 /**
@@ -32,14 +31,22 @@ public class DatabaseTable implements TypeConstraint {
 
 	private final String tableName;
 
+	// for usage quotation in {@link #getFullTableName}. Added for MsAccess
+	// Database support.
+	private final boolean useQuote;
+
+	private final boolean isTable;
+
 	/**
-	 * Create a default constraint. The default table name is the given type
-	 * local name.
+	 * Create a default constraint.
 	 * 
-	 * @param type the type definition the table is associated to
 	 */
-	public DatabaseTable(TypeDefinition type) {
-		this(null, type.getName().getLocalPart());
+	public DatabaseTable() {
+		super();
+		this.schemaName = null;
+		this.tableName = null;
+		this.useQuote = false;
+		this.isTable = false;
 	}
 
 	/**
@@ -49,9 +56,24 @@ public class DatabaseTable implements TypeConstraint {
 	 * @param tableName the table name
 	 */
 	public DatabaseTable(String schemaName, String tableName) {
+		this(schemaName, tableName, false);
+	}
+
+	/**
+	 * Create a constraint with the given schema and table names and quotation
+	 * usage decision as boolean value
+	 * 
+	 * @param schemaName the schema name, may be <code>null</code>
+	 * @param tableName the table name
+	 * @param useQuote true if quotation needed in {@link #getFullTableName},
+	 *            else false
+	 */
+	public DatabaseTable(String schemaName, String tableName, boolean useQuote) {
 		super();
 		this.schemaName = schemaName;
 		this.tableName = tableName;
+		this.useQuote = useQuote;
+		this.isTable = true;
 	}
 
 	/**
@@ -75,17 +97,47 @@ public class DatabaseTable implements TypeConstraint {
 	 * @return the full table name
 	 */
 	public String getFullTableName() {
+		if (!isTable)
+			return null;
 		if (schemaName == null || schemaName.isEmpty()) {
-			return JDBCUtil.quote(tableName);
+			return getQuotedValue(tableName);
 		}
 		else {
-			return JDBCUtil.quote(schemaName) + '.' + JDBCUtil.quote(tableName);
+			return getQuotedValue(schemaName) + '.' + getQuotedValue(tableName);
 		}
+	}
+
+	/**
+	 * Get quoted value by deciding on {@link #useQuote} parameter.
+	 * 
+	 * @param value String
+	 * @return quoted or unquoted string
+	 */
+	private String getQuotedValue(String value) {
+		if (useQuote) {
+			value = JDBCUtil.quote(value);
+		}
+		return value;
 	}
 
 	@Override
 	public boolean isInheritable() {
 		return false;
+	}
+
+	/**
+	 * @return the boolean value stating if constraint is database table or not.
+	 */
+	public boolean isTable() {
+		return isTable;
+	}
+
+	/**
+	 * @return the boolean value for quotation usage in
+	 *         {@link #getFullTableName}.
+	 */
+	public boolean useQuote() {
+		return useQuote;
 	}
 
 }

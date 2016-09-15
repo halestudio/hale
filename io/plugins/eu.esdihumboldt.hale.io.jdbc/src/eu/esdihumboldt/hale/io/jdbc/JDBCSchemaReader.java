@@ -25,26 +25,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.xml.namespace.QName;
-
-import schemacrawler.schema.Catalog;
-import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
-//import schemacrawler.schema.Database;
-import schemacrawler.schema.IndexColumn;
-import schemacrawler.schema.PrimaryKey;
-import schemacrawler.schema.ResultsColumn;
-import schemacrawler.schema.ResultsColumns;
-import schemacrawler.schema.Table;
-import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
-import schemacrawler.schemacrawler.SchemaCrawlerException;
-import schemacrawler.schemacrawler.SchemaCrawlerOptions;
-import schemacrawler.schemacrawler.SchemaInfoLevel;
-import schemacrawler.utility.SchemaCrawlerUtility;
 
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -75,6 +61,7 @@ import eu.esdihumboldt.hale.common.schema.persist.AbstractCachedSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
@@ -82,6 +69,20 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
+import schemacrawler.schema.Catalog;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.ColumnDataType;
+//import schemacrawler.schema.Database;
+import schemacrawler.schema.IndexColumn;
+import schemacrawler.schema.PrimaryKey;
+import schemacrawler.schema.ResultsColumn;
+import schemacrawler.schema.ResultsColumns;
+import schemacrawler.schema.Table;
+import schemacrawler.schemacrawler.RegularExpressionInclusionRule;
+import schemacrawler.schemacrawler.SchemaCrawlerException;
+import schemacrawler.schemacrawler.SchemaCrawlerOptions;
+import schemacrawler.schemacrawler.SchemaInfoLevel;
+import schemacrawler.utility.SchemaCrawlerUtility;
 
 /**
  * Reads a database schema through JDBC.
@@ -92,6 +93,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 //	public static final String PARAM_SCHEMAS = "schemas";
 
+	private boolean useQuote;
+
 	/**
 	 * Default constructor
 	 */
@@ -100,6 +103,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 		addSupportedParameter(PARAM_USER);
 		addSupportedParameter(PARAM_PASSWORD);
+
+		useQuote = true;
 	}
 
 	@Override
@@ -115,6 +120,25 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		}
 	}
 
+	/**
+	 * To set useQuote parameter
+	 * 
+	 * @param useQuote true or false value
+	 */
+	public void setUseQuotes(boolean useQuote) {
+		this.useQuote = useQuote;
+	}
+
+	/**
+	 * To get Connection. Override this to load the customized connection
+	 * 
+	 * @return Connection object after loading driver.
+	 * @throws SQLException if connection could not be made.
+	 */
+	protected Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(this);
+	}
+
 	@Override
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -125,7 +149,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		try {
 			// connect to the database
 			try {
-				connection = JDBCConnection.getConnection(this);
+				connection = getConnection();
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
@@ -262,7 +286,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 					// get the type definition
 					TypeDefinition type = getOrCreateTableType(schema, table, overallNamespace,
-							namespace, typeIndex, connection, reporter);
+							namespace, typeIndex, connection, reporter, database);
 
 					// get ResultSetMetaData for extra info about columns (e. g.
 					// auto increment)
@@ -270,12 +294,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					Statement stmt = null;
 					try {
 						stmt = connection.createStatement();
-						String fullTableName = quote(table.getName());
+						// get if in table name, quotation required or not.
+						String fullTableName = getQuotedValue(table.getName());
 						if (schema.getName() != null) {
-							fullTableName = quote(schema.getName()) + "." + fullTableName;
+							fullTableName = getQuotedValue(schema.getName()) + "." + fullTableName;
 						}
-						ResultSet rs = stmt.executeQuery("SELECT * FROM " + fullTableName
-								+ " WHERE 1 = 0");
+						ResultSet rs = stmt
+								.executeQuery("SELECT * FROM " + fullTableName + " WHERE 1 = 0");
 						additionalInfo = SchemaCrawlerUtility.getResultColumns(rs);
 					} catch (SQLException sqle) {
 						reporter.warn(new IOMessageImpl(
@@ -293,7 +318,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 					for (final Column column : table.getColumns()) {
 						DefaultPropertyDefinition property = getOrCreateProperty(schema, type,
 								column, overallNamespace, namespace, typeIndex, connection,
-								reporter);
+								reporter, database);
 
 						// Set auto increment flag if meta data says so.
 						// Not sure, whether that covers every case of
@@ -331,6 +356,19 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	}
 
 	/**
+	 * Get quoted value by deciding on isSchemaNameQuoted parameter.
+	 * 
+	 * @param value String
+	 * @return quoted unqoted string
+	 */
+	private String getQuotedValue(String value) {
+		if (useQuote) {
+			value = quote(value);
+		}
+		return value;
+	}
+
+	/**
 	 * Gets or creates a property definition for the given column. Its type
 	 * definition is created, too, if necessary.
 	 * 
@@ -343,11 +381,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @param typeIndex the type index
 	 * @param connection the database connection
 	 * @param reporter the reporter
+	 * @param catalog the catalog for access to other column types
 	 * @return the property definition for the given column
 	 */
 	private DefaultPropertyDefinition getOrCreateProperty(schemacrawler.schema.Schema schema,
 			TypeDefinition tableType, Column column, String overallNamespace, String namespace,
-			DefaultSchema typeIndex, Connection connection, IOReporter reporter) {
+			DefaultSchema typeIndex, Connection connection, IOReporter reporter, Catalog catalog) {
 		QName name = new QName(unquote(column.getName()));
 
 		// check for existing property definition
@@ -358,7 +397,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// create new one
 		// determine the column type
 		TypeDefinition columnType = getOrCreateColumnType(column, overallNamespace, typeIndex,
-				connection, tableType, reporter);
+				connection, tableType, reporter, catalog);
+
+		SQLArray arrayInfo = columnType.getConstraint(SQLArray.class);
 
 		// create the property
 		DefaultPropertyDefinition property = new DefaultPropertyDefinition(name, tableType,
@@ -374,14 +415,26 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// XXX In particular the default value can be a function call like for
 		// example GETDATE().
 		String defaultValue = column.getDefaultValue();
-		if (defaultValue != null) {
+		if (arrayInfo.isArray() && arrayInfo.getDimension() <= 1) {
+			// XXX for now, use multiple occurrence representation also if
+			// dimension is not known (0)
+			if (!arrayInfo.hasSize(0)) {
+				property.setConstraint(Cardinality.CC_ANY_NUMBER);
+			}
+			else {
+				long min = 0; // XXX what is appropriate as minimum?
+				long max = arrayInfo.getSize(0);
+				property.setConstraint(Cardinality.get(min, max));
+			}
+		}
+		else if (defaultValue != null) {
 			property.setConstraint(new DefaultValue(defaultValue));
 			property.setConstraint(Cardinality.CC_OPTIONAL);
 		}
 		else
 			property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
 
-		// set auto incremneted contraint which denotes if ids are auto
+		// set auto incremented constraint which denotes if IDs are auto
 		// incremented or not
 		if (column.isAutoIncremented()) {
 			property.setConstraint(AutoGenerated.get(true));
@@ -397,9 +450,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// since they can have multiple columns
 		if (column.isPartOfForeignKey()) {
 			Column referenced = column.getReferencedColumn();
-			property.setConstraint(new Reference(getOrCreateTableType(schema,
-					referenced.getParent(), overallNamespace, namespace, typeIndex, connection,
-					reporter)));
+			property.setConstraint(new Reference(
+					getOrCreateTableType(schema, referenced.getParent(), overallNamespace,
+							namespace, typeIndex, connection, reporter, catalog)));
 		}
 
 		return property;
@@ -414,11 +467,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @param connection the database connection
 	 * @param tableType the type definition of the table the column is part of
 	 * @param reporter the reporter
+	 * @param catalog the catalog for access to other column types
 	 * @return the type definition for the column type
 	 */
 	private TypeDefinition getOrCreateColumnType(Column column, final String overallNamespace,
 			DefaultSchema types, Connection connection, TypeDefinition tableType,
-			IOReporter reporter) {
+			IOReporter reporter, Catalog catalog) {
 		// XXX what about shared types?
 		// TODO the size/width info (VARCHAR(_30_)) is in column, the
 		// columntype/-name is not sufficient
@@ -429,8 +483,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		QName typeName = new QName(overallNamespace, localName);
 
 		// check for geometry type
-		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance().getTypeInfo(
-				columnType.getName(), connection);
+		GeometryTypeInfo geomType = GeometryTypeExtension.getInstance()
+				.getTypeInfo(columnType.getName(), connection);
 		@SuppressWarnings("rawtypes")
 		GeometryAdvisor geomAdvisor = null;
 		if (geomType != null) {
@@ -474,8 +528,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		if (geomType != null && geomAdvisor != null) {
 			// configure geometry type
 			@SuppressWarnings("unchecked")
-			Class<? extends Geometry> geomClass = geomAdvisor.configureGeometryColumnType(
-					connection, column, type);
+			Class<? extends Geometry> geomClass = geomAdvisor
+					.configureGeometryColumnType(connection, column, type);
 			type.setConstraint(GeometryType.get(geomClass));
 			// always a single geometry
 			type.setConstraint(Binding.get(GeometryProperty.class));
@@ -490,7 +544,76 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 				binding = cust.getBinding();
 			}
 			else {
-				binding = column.getColumnDataType().getTypeMappedClass();
+				if (column.getColumnDataType().getJavaSqlType().getJavaSqlType() == Types.ARRAY) {
+					// TODO let this be handled by a possible advisor?
+
+					/*
+					 * Special handling for arrays.
+					 * 
+					 * Challenges:
+					 * 
+					 * - find the type of contained items
+					 * 
+					 * - determine dimensions and size
+					 */
+					Class<?> elementBinding;
+
+					// determine type/binding of contained items
+					ColumnDataType cdt = column.getColumnDataType();
+					ColumnDataType itemType = null;
+					String dbTypeName = cdt.getDatabaseSpecificTypeName();
+					// XXX special approach for Postgres - strip underscore
+					// prefix and look up type
+					if (dbTypeName.startsWith("_")) {
+						String testName = dbTypeName.substring(1);
+						itemType = catalog.getSystemColumnDataType(testName);
+					}
+
+					if (itemType == null) {
+						// generic binding
+						elementBinding = Object.class;
+						reporter.error(new IOMessageImpl(
+								"Could not determine element type for array column", null));
+					}
+					else {
+						elementBinding = itemType.getTypeMappedClass();
+						// TODO support custom bindings?
+						// XXX probably needed for Oracle?
+					}
+
+					// dimensions and size cannot be determined from schema
+					// crawler it seems - would need database specific queries
+					// (if the info is available at all)
+
+					/*
+					 * Postgres:
+					 * 
+					 * Dimensions and size are not part of the schema, they can
+					 * only be determined for a value.
+					 */
+
+					// XXX for now, stick to what we can determine
+					int dimension = SQLArray.UNKNOWN_DIMENSION;
+					String specificTypeName = (itemType != null)
+							? (itemType.getDatabaseSpecificTypeName()) : (null);
+					type.setConstraint(
+							new SQLArray(elementBinding, specificTypeName, dimension, null));
+
+					// set binding
+					if (dimension <= 1) {
+						// XXX for now, use this representation also if
+						// dimension is not known
+						// 1-dimensional -> as multiple occurrences
+						binding = elementBinding;
+					}
+					else {
+						// XXX use collection or something similar instead?
+						binding = Object.class;
+					}
+				}
+				else {
+					binding = column.getColumnDataType().getTypeMappedClass();
+				}
 			}
 
 			type.setConstraint(Binding.get(binding));
@@ -534,11 +657,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @param types the type index
 	 * @param connection the database connection
 	 * @param reporter the reporter
+	 * @param catalog the catalog for access to other column types
 	 * @return the type definition for the given table
 	 */
 	private TypeDefinition getOrCreateTableType(schemacrawler.schema.Schema schema, Table table,
 			String overallNamespace, String namespace, DefaultSchema types, Connection connection,
-			IOReporter reporter) {
+			IOReporter reporter, Catalog catalog) {
 		QName typeName = new QName(namespace, unquote(table.getName()));
 
 		// check for existing type
@@ -559,15 +683,16 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(HasValueFlag.DISABLED);
 
 		// set schema and table name
-		type.setConstraint(new DatabaseTable(unquote(schema.getName()), unquote(table.getName())));
+		type.setConstraint(
+				new DatabaseTable(unquote(schema.getName()), unquote(table.getName()), useQuote));
 
 		// set primary key if possible
 		PrimaryKey key = null;
 		try {
 			key = table.getPrimaryKey();
 		} catch (Exception e) {
-			reporter.warn(new IOMessageImpl("Could not read primary key metadata for table: "
-					+ table.getFullName(), e));
+			reporter.warn(new IOMessageImpl(
+					"Could not read primary key metadata for table: " + table.getFullName(), e));
 		}
 
 		if (key != null) {
@@ -579,10 +704,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			else if (columns.size() == 1) {
 				// create constraint, get property definition for original table
 				// column (maybe could use index column, too)
-				type.setConstraint(new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
-						Collections.<QName> singletonList(getOrCreateProperty(schema, type,
-								table.getColumn(columns.get(0).getName()), overallNamespace,
-								namespace, types, connection, reporter).getName())));
+				type.setConstraint(
+						new eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey(
+								Collections.<QName> singletonList(getOrCreateProperty(schema, type,
+										table.getColumn(columns.get(0).getName()), overallNamespace,
+										namespace, types, connection, reporter, catalog)
+												.getName())));
 			}
 		}
 

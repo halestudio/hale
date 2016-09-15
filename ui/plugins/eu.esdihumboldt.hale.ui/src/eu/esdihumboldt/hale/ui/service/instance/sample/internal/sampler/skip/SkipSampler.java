@@ -21,7 +21,7 @@ import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.editors.IntegerEditor;
 import eu.esdihumboldt.hale.ui.common.editors.value.IntegerValueEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
@@ -76,7 +76,7 @@ public class SkipSampler implements Sampler {
 	}
 
 	@Override
-	public Editor<Value> createEditor(Composite parent) {
+	public AttributeEditor<Value> createEditor(Composite parent) {
 		return new IntegerValueEditor(new IntegerEditor(parent, 1000, 2, 1, 10));
 	}
 

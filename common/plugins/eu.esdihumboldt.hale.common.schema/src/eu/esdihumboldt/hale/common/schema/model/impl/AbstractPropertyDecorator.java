@@ -195,4 +195,11 @@ public abstract class AbstractPropertyDecorator implements PropertyDefinition {
 	public int hashCode() {
 		return getName().hashCode();
 	}
+
+	/**
+	 * @return the original property decorated by this decorator
+	 */
+	public PropertyDefinition getDecoratedProperty() {
+		return property;
+	}
 }

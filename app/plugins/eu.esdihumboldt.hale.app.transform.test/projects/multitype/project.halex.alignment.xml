@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C62821a59-b55e-4c00-8c0d-37aafd95574c" priority="normal">
+        <source>
+            <class>
+                <type name="HatType" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C3a1d5276-7fb1-4c03-9c3e-126129702337" priority="normal">
+        <source>
+            <class>
+                <type name="ShirtType" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cdaf28a46-b791-404f-af1c-85a2511f0646" priority="normal">
+        <source>
+            <property>
+                <type name="HatType" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cd2ccc16b-a4f8-4321-a07c-3cf9dade54b4" priority="normal">
+        <source>
+            <property>
+                <type name="ShirtType" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C819fe63d-7614-4b7d-b99d-0ffc1b14b7c1" priority="normal">
+        <source>
+            <property>
+                <type name="HatType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cfaf0ab36-82c3-4e8e-8c65-83e17a73582d" priority="normal">
+        <source>
+            <property>
+                <type name="ShirtType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C8a845e83-59f9-4595-aaf2-8deeff744a9f" priority="normal">
+        <source>
+            <property>
+                <type name="HatType" ns="http://www.example.org/t1/"/>
+                <child name="price"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="price"/>
+            </property>
+        </target>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C5820472e-14b2-4fe5-9fde-0069a73772df" priority="normal">
+        <source>
+            <property>
+                <type name="ShirtType" ns="http://www.example.org/t1/"/>
+                <child name="price"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="price"/>
+            </property>
+        </target>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Cb76b9bbe-8348-4740-94f1-4858c4ef234e" priority="normal">
+        <source name="var">
+            <property>
+                <type name="HatType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="type"/>
+            </property>
+        </target>
+        <parameter value="'hat'" name="pattern"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="C5a372cdf-dc3d-472e-a0ef-94dc5c99a059" priority="normal">
+        <source name="var">
+            <property>
+                <type name="ShirtType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="ItemType" ns="http://www.example.org/t2/"/>
+                <child name="type"/>
+            </property>
+        </target>
+        <parameter value="'shirt'" name="pattern"/>
+    </cell>
+</alignment>

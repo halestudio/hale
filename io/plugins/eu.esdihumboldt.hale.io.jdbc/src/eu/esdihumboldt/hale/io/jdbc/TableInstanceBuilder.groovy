@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc
 
+import java.lang.reflect.Array
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
@@ -26,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint
 import groovy.transform.CompileStatic
 
@@ -75,6 +77,29 @@ class TableInstanceBuilder {
 						value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection)
 					}
 
+					// handling arrays
+					if (value instanceof java.sql.Array) {
+						Object intern = ((java.sql.Array) value).getArray()
+
+						// SQLArray arrayInfo = property.propertyType.getConstraint(SQLArray)
+
+						if (property.getConstraint(Cardinality).mayOccurMultipleTimes()) {
+							// split the array into several property instances
+							List<Object> list = arrayToList(intern)
+
+							// add property for each entry
+							for (Object element : list) {
+								builder.createProperty(property.name.localPart, element)
+							}
+
+							value = null // don't add another property
+						}
+						else {
+							// use array as property value
+							value = intern
+						}
+					}
+
 					// create property
 					if (value != null) {
 						builder.createProperty(property.name.localPart, value)
@@ -85,5 +110,36 @@ class TableInstanceBuilder {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Converts an array to a list.
+	 * @param array the array
+	 * @return the array as list or a list with the object as single element if it actually is no array
+	 */
+	protected List<Object> arrayToList(Object array) {
+		List<Object> result = new ArrayList<>()
+
+		if (array.getClass().isArray()) {
+			Class<?> ofArray = array.getClass().getComponentType()
+
+			if (ofArray.isPrimitive()) {
+				// primitive array
+				int length = Array.getLength(array);
+				for (int i = 0; i < length; i++) {
+					result.add(Array.get(array, i));
+				}
+			}
+			else {
+				// object array
+				result.addAll(Arrays.asList((Object[]) array))
+			}
+		}
+		else {
+			// not an array -> treat as single value
+			result.add(array)
+		}
+
+		result
 	}
 }

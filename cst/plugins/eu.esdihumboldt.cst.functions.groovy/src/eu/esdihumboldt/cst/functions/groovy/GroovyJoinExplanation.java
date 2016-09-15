@@ -15,8 +15,11 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
+import java.util.Locale;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for {@link GroovyJoin}
@@ -26,16 +29,22 @@ import eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplan
 public class GroovyJoinExplanation extends JoinExplanation {
 
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		String superExplanation = super.getExplanation(cell, html);
+	protected Class<?> getDefaultMessageClass() {
+		return JoinExplanation.class;
+	}
+
+	@Override
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
+		String superExplanation = super.getExplanation(cell, html, services, locale);
 
 		String script = GroovyExplanation.getScript(cell);
 		if (script != null) {
-			String explanation = "Before the property transformations are run, the target instance is populated by executing the following Groovy script:\n\n";
+			String explanation = getMessage("main", locale, GroovyJoinExplanation.class) + "\n\n";
 
 			if (html) {
 				explanation = explanation.replaceAll("\n", "<br />");
-				script = "<pre>" + script + "</pre>";
+				script = "<pre><code class=\"language-groovy\">" + script + "</code></pre>";
 			}
 
 			explanation = explanation + script;

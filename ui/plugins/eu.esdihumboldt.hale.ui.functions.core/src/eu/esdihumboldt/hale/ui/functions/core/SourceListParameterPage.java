@@ -46,7 +46,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -147,9 +147,9 @@ public abstract class SourceListParameterPage<T> extends
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
-		for (FunctionParameter param : params) {
+		for (FunctionParameterDefinition param : params) {
 			if (param.getName().equals(getParameterName())) {
 				String description = param.getDescription();
 				if (description != null) {

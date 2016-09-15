@@ -27,6 +27,7 @@ import org.apache.http.entity.ContentType;
  * 
  * @author stefano
  */
+@SuppressWarnings("javadoc")
 public class ResourceBuilder {
 
 	private final Resource resource;
@@ -61,8 +62,8 @@ public class ResourceBuilder {
 
 			return new ResourceBuilder(constructor.newInstance(name));
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot instantiate DataStore type: "
-					+ dataStoreType.getName());
+			throw new RuntimeException(
+					"Cannot instantiate DataStore type: " + dataStoreType.getName());
 		}
 	}
 
@@ -83,6 +84,7 @@ public class ResourceBuilder {
 		return this;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends Resource> T build() {
 		return (T) this.resource;
 	}

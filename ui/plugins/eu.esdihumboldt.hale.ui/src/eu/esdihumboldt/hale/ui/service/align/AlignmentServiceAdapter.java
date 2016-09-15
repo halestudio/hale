@@ -77,4 +77,12 @@ public abstract class AlignmentServiceAdapter implements AlignmentServiceListene
 		// override me
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#customFunctionsChanged()
+	 */
+	@Override
+	public void customFunctionsChanged() {
+		// override me
+	}
+
 }

@@ -43,8 +43,8 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  * 
  * @author Patrick Lieb
  */
-public class InstanceExportConfigurationPage extends
-		AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
+public class InstanceExportConfigurationPage
+		extends AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
 
 	private Button solveNestedProperties;
 	private TypeDefinitionSelector typeSelector;
@@ -56,8 +56,7 @@ public class InstanceExportConfigurationPage extends
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (!(element instanceof TypeDefinition))
 				return false;
-			InstanceService ins = (InstanceService) PlatformUI.getWorkbench().getService(
-					InstanceService.class);
+			InstanceService ins = PlatformUI.getWorkbench().getService(InstanceService.class);
 			// select all source type which has at least one instance
 			if (!ins.getInstances(DataSet.SOURCE).select(new TypeFilter((TypeDefinition) element))
 					.isEmpty()) {
@@ -133,28 +132,29 @@ public class InstanceExportConfigurationPage extends
 
 	@Override
 	protected void onShowPage(boolean firstShow) {
+		if (firstShow) {
+			ViewerFilter[] filters = { validTypesToSelect };
 
-		ViewerFilter[] filters = { validTypesToSelect };
+			typeSelector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
+					getWizard().getProvider().getTargetSchema(), filters);
 
-		typeSelector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
-				getWizard().getProvider().getTargetSchema(), filters);
+			typeSelector.getControl().setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
+			typeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
-		typeSelector.getControl().setLayoutData(
-				GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
-		typeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(SelectionChangedEvent event) {
-				setPageComplete(!(event.getSelection().isEmpty()));
-				if (typeSelector.getSelectedObject() != null) {
-					// TypeDefinition type = typeSelector.getSelectedObject();
-					// label.getParent().layout();
-					page.layout();
-					page.pack();
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					setPageComplete(!(event.getSelection().isEmpty()));
+					if (typeSelector.getSelectedObject() != null) {
+						// TypeDefinition type =
+						// typeSelector.getSelectedObject();
+						// label.getParent().layout();
+						page.layout();
+						page.pack();
+					}
 				}
-			}
-		});
-
+			});
+		}
 		page.layout();
 		page.pack();
 	}

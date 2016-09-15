@@ -26,7 +26,7 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
  * 
  * @author Simon Templer
  */
-public class TransformProjectDataHandler extends AbstractWizardHandler {
+public class TransformProjectDataHandler extends AbstractWizardHandler<IWizard> {
 
 	/**
 	 * @see AbstractWizardHandler#createWizard()

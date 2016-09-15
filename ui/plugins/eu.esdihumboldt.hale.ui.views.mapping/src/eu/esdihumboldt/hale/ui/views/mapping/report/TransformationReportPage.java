@@ -47,15 +47,14 @@ public class TransformationReportPage extends DefaultReportDetailsPage {
 		if (m instanceof TransformationMessage) {
 			TransformationMessage tm = (TransformationMessage) m;
 
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			if (as != null && as.getAlignment().getCell(tm.getCellId()) != null) {
 				IWorkbenchWindow activeWindow = PlatformUI.getWorkbench()
 						.getActiveWorkbenchWindow();
 
 				// pin the property sheet if possible
-				IViewReference ref = activeWindow.getActivePage().findViewReference(
-						IPageLayout.ID_PROP_SHEET);
+				IViewReference ref = activeWindow.getActivePage()
+						.findViewReference(IPageLayout.ID_PROP_SHEET);
 				if (ref != null) {
 					IViewPart part = ref.getView(false);
 					if (part instanceof PropertySheet) {

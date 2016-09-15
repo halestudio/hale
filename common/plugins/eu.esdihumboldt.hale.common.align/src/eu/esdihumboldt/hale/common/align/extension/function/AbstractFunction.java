@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.jcip.annotations.Immutable;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
@@ -34,15 +32,19 @@ import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiab
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
+import net.jcip.annotations.Immutable;
 
 /**
  * {@link IConfigurationElement} based function base class
  * 
- * @param <P> the parameter type
+ * @param
+ * 			<P>
+ *            the parameter type
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction<P extends AbstractParameter> implements Function {
+public abstract class AbstractFunction<P extends ParameterDefinition> implements
+		FunctionDefinition<P> {
 
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
@@ -51,7 +53,10 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	 */
 	protected final IConfigurationElement conf;
 
-	private final Map<String, FunctionParameter> parameters;
+	private final Map<String, FunctionParameterDefinition> parameters;
+
+	private boolean explanationInitialized = false;
+	private CellExplanation explanation;
 
 	/**
 	 * Create a function definition based on the given configuration element
@@ -65,8 +70,9 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 		this.parameters = createParameters(conf);
 	}
 
-	private static Map<String, FunctionParameter> createParameters(IConfigurationElement conf) {
-		Map<String, FunctionParameter> parameters = new LinkedHashMap<String, FunctionParameter>();
+	private static Map<String, FunctionParameterDefinition> createParameters(
+			IConfigurationElement conf) {
+		Map<String, FunctionParameterDefinition> parameters = new LinkedHashMap<String, FunctionParameterDefinition>();
 
 		IConfigurationElement[] pars = conf.getChildren("functionParameter");
 		if (pars != null) {
@@ -80,20 +86,27 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getExplanation()
+	 * @see FunctionDefinition#getExplanation()
 	 */
 	@Override
 	public CellExplanation getExplanation() {
+		if (explanationInitialized) {
+			return explanation;
+		}
+
 		if (conf.getAttribute("cellExplanation") == null
 				|| conf.getAttribute("cellExplanation").isEmpty()) {
+			explanationInitialized = true;
 			return null;
 		}
 		try {
-			return (CellExplanation) conf.createExecutableExtension("cellExplanation");
+			explanation = (CellExplanation) conf.createExecutableExtension("cellExplanation");
 		} catch (CoreException e) {
+			explanationInitialized = true;
 			log.error("Could not create cell explanation for function", e);
-			return null;
 		}
+		explanationInitialized = true;
+		return explanation;
 	}
 
 	/**
@@ -112,12 +125,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	@Override
 	public abstract Set<? extends P> getTarget();
 
-	/**
-	 * States if the function represents an augmentation of a target instance
-	 * instead of a transformation.
-	 * 
-	 * @return if the function is an augmentation
-	 */
+	@Override
 	public boolean isAugmentation() {
 		return getSource().isEmpty();
 	}
@@ -131,7 +139,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getDefiningBundle()
+	 * @see FunctionDefinition#getDefiningBundle()
 	 */
 	@Override
 	public String getDefiningBundle() {
@@ -139,7 +147,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getDisplayName()
+	 * @see FunctionDefinition#getDisplayName()
 	 */
 	@Override
 	public final String getDisplayName() {
@@ -147,7 +155,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getDescription()
+	 * @see FunctionDefinition#getDescription()
 	 */
 	@Override
 	public final String getDescription() {
@@ -155,7 +163,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getCategoryId()
+	 * @see FunctionDefinition#getCategoryId()
 	 */
 	@Override
 	public final String getCategoryId() {
@@ -163,25 +171,20 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getDefinedParameters()
+	 * @see FunctionDefinition#getDefinedParameters()
 	 */
 	@Override
-	public final Collection<FunctionParameter> getDefinedParameters() {
+	public final Collection<FunctionParameterDefinition> getDefinedParameters() {
 		return Collections.unmodifiableCollection(parameters.values());
 	}
 
-	/**
-	 * Get the function parameter with the given name.
-	 * 
-	 * @param paramName the parameter name
-	 * @return the parameter or <code>null</code> if it doesn't exist
-	 */
-	public FunctionParameter getParameter(String paramName) {
+	@Override
+	public FunctionParameterDefinition getParameter(String paramName) {
 		return parameters.get(paramName);
 	}
 
 	/**
-	 * @see Function#getIconURL()
+	 * @see FunctionDefinition#getIconURL()
 	 */
 	@Override
 	public URL getIconURL() {
@@ -203,7 +206,7 @@ public abstract class AbstractFunction<P extends AbstractParameter> implements F
 	}
 
 	/**
-	 * @see Function#getHelpURL
+	 * @see FunctionDefinition#getHelpURL
 	 */
 	@Override
 	public URL getHelpURL() {

@@ -53,7 +53,7 @@ public class RecentProjectsMenu extends ContributionItem {
 		/**
 		 * The data source to open when the menu item has been selected
 		 */
-		private File file;
+		private final File file;
 
 		/**
 		 * Default constructor
@@ -70,8 +70,7 @@ public class RecentProjectsMenu extends ContributionItem {
 		 */
 		@Override
 		public void widgetSelected(SelectionEvent e) {
-			ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-					ProjectService.class);
+			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			ps.load(file.toURI());
 		}
 	}
@@ -89,8 +88,8 @@ public class RecentProjectsMenu extends ContributionItem {
 	 */
 	@Override
 	public void fill(final Menu menu, int index) {
-		RecentProjectsService rfs = (RecentProjectsService) PlatformUI.getWorkbench().getService(
-				RecentProjectsService.class);
+		RecentProjectsService rfs = PlatformUI.getWorkbench()
+				.getService(RecentProjectsService.class);
 		RecentProjectsService.Entry[] entries = rfs.getRecentFiles();
 		if (entries == null || entries.length == 0) {
 			return;

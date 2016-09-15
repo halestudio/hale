@@ -18,38 +18,289 @@
 // You should have received a copy of the GNU General Public License
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
-import org.apache.maven.cli.MavenCli
+import org.akhikhl.unpuzzle.UnpuzzlePlugin
 
-/**
- * Deploy artifacts for all bundles
- */
-task deployBundleArtifacts << {
-    project.ext.generateArtifacts = true
+if (!project.plugins.findPlugin(UnpuzzlePlugin)) {
+	project.apply(plugin: UnpuzzlePlugin)
+}
 
-    // generate pom files for all bundles
-    def pg = new PomGenerator(project)
-    pg.generatePomFiles()
-    pg.generateParentPomFile()
-
-    println('Generating artifacts ...')
-    def res = new MavenCli().doMain([ 'deploy' ] as String[], project.ext.rootDir.path, System.out, System.err)
-    if (res != 0) {
-        throw new RuntimeException("Maven failed with exit code ${res}")
-    }
+project.afterEvaluate {
+	// make sure unpuzzle tasks are only executed after update site was built
+	
+	// can only be done in afterEvaluate because unpuzzle for some reason adds the
+	// tasks only then
+	
+	project.tasks['downloadEclipse'].dependsOn('purgeEclipse', 'buildUpdateSite')
+	project.tasks['installEclipse'].dependsOn('downloadEclipse')
+	project.tasks['uploadEclipse'].dependsOn('downloadEclipse')
 }
 
 /**
- * Build and deploy snapshot artifacts for all bundles
+ * Determine artifact replacement from bnd-platform information.
  */
-task deployArtifacts(dependsOn: buildUpdateSite) {
-    finalizedBy deployBundleArtifacts
-} << {
-    project.ext.versionSuffix = '-SNAPSHOT'
+def findBndPlatformArtifactMapping(java.util.jar.Manifest manifest) {
+	 def group, name, version
+
+	 if (manifest?.attr?.getValue('BndPlatform-MergedArtifacts')) {
+		// use first artifact of merged artifacts
+		group = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Group')
+		name = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Name')
+		version = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Version')
+	}
+	else {
+		// use single original artifacts
+		group = manifest?.attr?.getValue('BndPlatform-ArtifactGroup')
+		name = manifest?.attr?.getValue('BndPlatform-ArtifactName')
+		version = manifest?.attr?.getValue('BndPlatform-ArtifactVersion')
+	}
+
+	if (name && group && version) {
+		[name: name, group: group, version: version]
+	}
+	else {
+		null
+	}
 }
 
 /**
- * Build and deploy release artifacts for all bundles
+ * Determine additional parts for a bundle originally merged with bnd-platform from
+ * multiple Maven artifacts.
  */
-task deployReleaseArtifacts(dependsOn: buildUpdateSite) {
-    finalizedBy deployBundleArtifacts
+def findOtherMergedParts(java.util.jar.Manifest manifest) {
+	def result = []
+
+	def artifacts = manifest?.attr?.getValue('BndPlatform-MergedArtifacts')
+	if (artifacts) {
+		def number = artifacts as int
+		for (int i = 1; i < number; i++) {
+			// iterate over all save the first
+		  
+			int index = i+1
+		  
+			def group = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Group")
+			def name = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Name")
+			def version = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Version")
+		  
+			if (name && group && version) {
+				  result << [name: name, group: group, version: version]
+			}
+		}
+	}
+
+	result
+}
+
+/**
+ * Find the artifact version to use from a version mapping part of
+ * the bundle artifact map.
+ */
+def findArtifactVersion(String version, Object versions) {
+	// is there a direct mapping?
+	String result = versions[version]
+	  
+	String stripped = stripBndQualifier(version)
+	if (!result) {
+		// is there a mapping with the bnd qualifier excluded?
+		result = versions.findResult { bundleVersion, pomVersion ->
+			String bundleStripped = stripBndQualifier(bundleVersion)
+			if (stripped == bundleStripped) {
+				pomVersion
+			}
+			else {
+				null
+			}
+		}
+	}
+
+	if (!result) {
+		// fall-back to the stripped version
+		result = stripped
+	}
+
+	result
+}
+
+String stripBndQualifier(String version) {
+	def v = new org.osgi.framework.Version(version)
+	def qualifier = v.qualifier
+
+	['i20', 'bnd-', 'v20'].any { prefix ->
+		if (qualifier.startsWith(prefix)) {
+			qualifier = null
+			return true
+		}
+		
+		def inset = '-' + prefix
+		def pos = qualifier.indexOf(inset)
+		if (pos > 0) {
+			qualifier = qualifier.substring(0, pos)
+			return true
+		}
+		
+		return false
+	}
+
+	def v2 = new org.osgi.framework.Version(v.major, v.minor, v.micro, qualifier)
+	v2.toString()
+}
+
+String stripQualifier(String version) {
+	def v = new org.osgi.framework.Version(version)
+	def noQualifier = new org.osgi.framework.Version(v.major, v.minor, v.micro)
+	noQualifier.toString()
+}
+
+String findMajorVersion(String version) {
+	try {
+		def v = new org.osgi.framework.Version(version)
+		v.major as String
+	} catch (e) {
+		// invalid version encountered
+		null
+	}
+}
+
+/**
+ * Adapt version numbers of HALE bundles for publishing to Maven.
+ */
+String adaptHaleBundleVersion(String version) {
+	def v
+	try {
+		v = new org.osgi.framework.Version(version)
+	} catch (e) {
+		// invalid version encountered
+		return version
+	}
+	def qualifier = v.qualifier
+
+	if (qualifier == 'SNAPSHOT') {
+		// SNAPSHOT version
+		"${v.major}.${v.minor}.${v.micro}-SNAPSHOT"
+	}
+	else if (qualifier == 'release') {
+		// release version -> omit qualifier
+		"${v.major}.${v.minor}.${v.micro}"
+	}
+	else {
+		// leave version as-is
+		version
+	}
+}
+  
+/**
+ * Repositories for verifying third party artifacts
+ */
+repositories {
+	maven { // HALE artifactory
+		url 'http://artifactory.esdi-humboldt.eu/artifactory/libs-release/'
+	}
+	jcenter()
+	maven {
+		url 'http://download.osgeo.org/webdav/geotools/'
+	}
+	maven {
+		url 'http://download.java.net/maven/2'
+	}
+	maven {
+		url 'http://repo.opengeo.org'
+	}
+}
+
+unpuzzle {
+	
+	// deploy to default repository if installing locally 
+	localMavenRepositoryDir = new File(new File(System.getProperty('user.home'), '.m2'), 'repository')
+
+	unpuzzleDir = file('build/unpuzzle')
+
+	selectedEclipseVersion = 'hale'
+	  
+	eclipseVersion('hale') {
+		eclipseMavenGroup = 'eu.esdihumboldt.unpuzzled' // default group
+		
+		sources {
+			def targetDir = new File(project.buildDir, 'gen.site/target')
+			def siteFile = new File(targetDir, "eu.esdihumboldt.hale.all.feature.site-${project.version}.zip")
+			source siteFile.toURI().toString()
+
+			//TODO add delta pack?
+		}
+	}
+
+	artifacts {
+		
+		//--- duplicates ---
+		
+		bundle('javax.inject') {
+			// instead use javax.inject.javax.inject
+			replaceWith 'javax.inject.javax.inject'
+		}
+		
+		bundle('org.slf4j.api') {
+			// instead use slf4j.api
+			replaceWith 'slf4j.api'
+		}
+		
+		// turn on verifying all artifacts that are not deployed
+		// (they should be resolvable through the configured repositories)
+		verifyIfNoDeploy = true
+		
+		// artifact configuration applied to all artifacts
+		all {
+			// put HALE bundles in a separate group
+			if (name.startsWith('eu.esdihumboldt')) {
+				group = 'eu.esdihumboldt.hale'
+			}
+		  
+			// replace some bundles with already available Maven artifacts
+			def mapping
+		  
+			// determine Maven Artifact based on bnd-platform information in bundle
+			mapping = findBndPlatformArtifactMapping(pom.manifest)
+		  
+			// use bundleArtifactMap as fall-back
+			if (!mapping) {
+				def bundleArtifactMap = new groovy.json.JsonSlurper().parse(file('bundleArtifactMap.json'))
+				mapping = bundleArtifactMap[name]
+			}
+		  
+			if (mapping) {
+				// check if there is a variant of the mapping to be applied
+				// -> determine major version
+				def majorVersion = findMajorVersion(version)
+				// use mapping specific for major version, if it is defined
+				if (majorVersion && mapping["mapping-v$majorVersion"]) {
+					mapping = mapping["mapping-v$majorVersion"]
+				}
+				
+				// apply artifact mapping
+				group = mapping.group
+				name = mapping.name
+				if (mapping.version) {
+					version = mapping.version
+				}
+				else {
+					def newVersion = findArtifactVersion(version, mapping.versions)
+					version = newVersion
+				}
+				deploy = false
+			
+				// add "other parts" if bundle was merged with bnd-platform
+				otherParts.addAll(findOtherMergedParts(pom.manifest));
+			}
+			else {
+				// Eclipse-provided or HALE-built bundle
+			
+				// for HALE-built bundles, adapt version number as SNAPSHOT/release
+				version = adaptHaleBundleVersion(version)
+			}
+		}
+	}
+
+	uploadEclipse = [
+		url: 'https://artifactory.wetransform.to/artifactory/libs-release-local',
+		snapshotUrl: 'https://artifactory.wetransform.to/artifactory/libs-snapshot-local',
+		user: project.hasProperty('wetfArtifactoryUser') ? project.getProperty('wetfArtifactoryUser') : '',
+		password: project.hasProperty('wetfArtifactoryPassword') ? project.getProperty('wetfArtifactoryPassword') : ''
+	]
 }

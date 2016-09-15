@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.jdbc.ui.UserPasswordPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessSchemaReader">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessInstanceReader">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>

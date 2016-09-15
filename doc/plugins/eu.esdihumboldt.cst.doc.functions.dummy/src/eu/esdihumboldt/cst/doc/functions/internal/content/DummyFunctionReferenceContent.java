@@ -22,7 +22,6 @@ import java.util.Locale;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.help.IHelpContentProducer;
 
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
 
 /**
@@ -30,14 +29,13 @@ import eu.esdihumboldt.cst.doc.functions.FunctionReferenceConstants;
  * 
  * @author Simon Templer
  */
-public class DummyFunctionReferenceContent implements IHelpContentProducer,
-		FunctionReferenceConstants {
+public class DummyFunctionReferenceContent
+		implements IHelpContentProducer, FunctionReferenceConstants {
 
 	/**
 	 * @see IHelpContentProducer#getInputStream(String, String, Locale)
 	 */
 	@Override
-	@SuppressWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
 	public InputStream getInputStream(String pluginID, String href, Locale locale) {
 		if (href.startsWith(FUNCTION_TOPIC_PATH)) {
 			// it's a function

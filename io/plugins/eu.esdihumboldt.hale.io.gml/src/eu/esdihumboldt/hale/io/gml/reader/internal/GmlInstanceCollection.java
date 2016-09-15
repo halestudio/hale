@@ -22,8 +22,10 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,10 +52,15 @@ import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.IndexInstanceReference;
 import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlHelper;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
@@ -77,7 +84,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		/**
 		 * Element names associated with type definitions
 		 */
-		private Map<QName, TypeDefinition> allowedTypes;
+		private Map<QName, TypeDefinition> allElements;
 
 		private TypeDefinition nextType;
 
@@ -91,6 +98,14 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 * States if the root element has been encountered yet.
 		 */
 		private boolean rootEncountered = false;
+
+		/**
+		 * Variable for tracking current type to be able to determine types
+		 * based on internal nested elements.
+		 * 
+		 * Uses a linked list to allow null items.
+		 */
+		private final Deque<TypeDefinition> typeStack = new LinkedList<>();
 
 		/**
 		 * Default constructor
@@ -140,25 +155,13 @@ public class GmlInstanceCollection implements InstanceCollection {
 				return;
 			}
 
-			if (allowedTypes == null) {
+			if (allElements == null) {
 				initAllowedTypes();
 			}
 
 			while (nextType == null && reader.hasNext()) {
 				int event = reader.next();
 				if (event == XMLStreamConstants.START_ELEMENT) {
-					if (!rootEncountered) {
-						rootEncountered = true;
-
-						processExceptionReport();
-
-						if (ignoreRoot) {
-							// skip to next element, don't create a root
-							// instance
-							continue;
-						}
-					}
-
 					// check element and try to determine associated type
 					QName elementName = new QName(reader.getNamespaceURI(), reader.getLocalName());
 					TypeDefinition def = findType(elementName);
@@ -168,8 +171,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 						String xsiType = null;
 						for (int i = 0; i < reader.getAttributeCount() && xsiType == null; i++) {
 							String ns = reader.getAttributeNamespace(i);
-							if (ns != null
-									&& ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
+							if (ns != null && ns.equals(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI)
 									&& reader.getAttributeLocalName(i).equals("type")) {
 								// found xsi:type
 								xsiType = reader.getAttributeValue(i);
@@ -186,20 +188,73 @@ public class GmlInstanceCollection implements InstanceCollection {
 								String ns = reader.getNamespaceURI(prefix);
 
 								// override with xsi:type
-								/*
-								 * FIXME will this always find the right type?
-								 * initAllowedTypes only adds type names if no
-								 * element names are available
-								 */
-								def = findType(new QName(ns, type));
+								def = findTypeByName(new QName(ns, type));
 							}
 						}
 					}
 
-					if (def != null) {
+					if (def == null) {
+						// try to determine based on current type stack parent
+						// type
+						TypeDefinition parentType = typeStack.peek();
+						if (parentType != null) {
+							def = findType(parentType, elementName);
+						}
+					}
+					typeStack.push(def);
+
+					if (!rootEncountered) {
+						rootEncountered = true;
+
+						processExceptionReport();
+
+						if (ignoreRoot) {
+							// skip to next element, never create a root
+							// instance
+							continue;
+						}
+					}
+
+					if (def != null && isAllowedType(def)) {
 						nextType = def;
 					}
 				}
+				else if (event == XMLStreamConstants.END_ELEMENT) {
+					typeStack.pop();
+				}
+			}
+		}
+
+		/**
+		 * Determine if the given type is a type allowed to be used for parsing
+		 * instances.
+		 * 
+		 * @param def the type definition
+		 * @return if the type is allowed for parsing instances
+		 */
+		private boolean isAllowedType(TypeDefinition def) {
+			boolean accept;
+			if (restrictToFeatures) {
+				// accept only feature types
+				Classification clazz = Classification.getClassification(def);
+				switch (clazz) {
+				case CONCRETE_FT:
+					accept = true;
+					break;
+				default:
+					accept = false;
+				}
+			}
+			else {
+				// accept all mappable types
+				accept = true;
+			}
+
+			if (accept) {
+				return def.getConstraint(MappingRelevantFlag.class).isEnabled();
+			}
+			else {
+				return false;
 			}
 		}
 
@@ -210,11 +265,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 		 * @return the found type or <code>null</code>
 		 */
 		private TypeDefinition findType(QName name) {
-			TypeDefinition result = allowedTypes.get(name);
+			TypeDefinition result = allElements.get(name);
 
 			if (result == null && ignoreNamespaces) {
 				// also allow a local name match
-				for (Entry<QName, TypeDefinition> entry : allowedTypes.entrySet()) {
+				for (Entry<QName, TypeDefinition> entry : allElements.entrySet()) {
 					TypeDefinition type = entry.getValue();
 					if (entry.getKey().getLocalPart().equals(name.getLocalPart())
 							|| type.getName().getLocalPart().equals(name.getLocalPart())) {
@@ -228,6 +283,83 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			return result;
+		}
+
+		/**
+		 * Find type by its type name.
+		 * 
+		 * @param name the type name
+		 * @return the type definition or <code>null</code>
+		 */
+		private TypeDefinition findTypeByName(QName name) {
+			TypeDefinition result = sourceSchema.getType(name);
+
+			if (result == null && ignoreNamespaces) {
+				// also allow a local name match
+
+				// first try mapping relevant types
+				for (TypeDefinition type : sourceSchema.getMappingRelevantTypes()) {
+					if (type.getName().getLocalPart().equals(name.getLocalPart())) {
+						result = type;
+						log.info(MessageFormat.format(
+								"Using type with differing namespace - {0} replaced with {1}",
+								name.toString(), type.getName().toString()));
+						break;
+					}
+				}
+
+				// then try all types
+				if (result == null) {
+					for (TypeDefinition type : sourceSchema.getTypes()) {
+						if (type.getName().getLocalPart().equals(name.getLocalPart())) {
+							result = type;
+							log.info(MessageFormat.format(
+									"Using type with differing namespace - {0} replaced with {1}",
+									name.toString(), type.getName().toString()));
+							break;
+						}
+					}
+				}
+			}
+
+			return result;
+		}
+
+		private TypeDefinition findType(TypeDefinition parentType, QName elementName) {
+			if (parentType == null) {
+				return null;
+			}
+
+			// try direct property
+			ChildDefinition<?> child = parentType.getChild(elementName);
+			if (child != null && child.asProperty() != null) {
+				return child.asProperty().getPropertyType();
+			}
+
+			// try children nested in groups
+			Collection<? extends PropertyDefinition> allProperties = DefinitionUtil
+					.getAllProperties(parentType);
+			for (PropertyDefinition property : allProperties) {
+				if (!property.getConstraint(XmlAttributeFlag.class).isEnabled()
+						&& property.getName().equals(elementName)) {
+					return property.getPropertyType();
+				}
+			}
+
+			if (ignoreNamespaces) {
+				// also allow a local name match
+				for (PropertyDefinition property : allProperties) {
+					if (!property.getConstraint(XmlAttributeFlag.class).isEnabled() && property
+							.getName().getLocalPart().equals(elementName.getLocalPart())) {
+						log.debug(MessageFormat.format(
+								"Descending property with differing namespace - {0} replaced with {1}",
+								elementName.toString(), property.getName().toString()));
+						return property.getPropertyType();
+					}
+				}
+			}
+
+			return null;
 		}
 
 		/**
@@ -378,7 +510,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 		}
 
-		private String buildErrorString(String text, @Nullable String code, @Nullable String locator) {
+		private String buildErrorString(String text, @Nullable String code,
+				@Nullable String locator) {
 			StringBuilder error = new StringBuilder(text);
 			if (code != null || locator != null) {
 				error.append(" [");
@@ -398,38 +531,16 @@ public class GmlInstanceCollection implements InstanceCollection {
 		}
 
 		private void initAllowedTypes() {
-			allowedTypes = new HashMap<QName, TypeDefinition>();
+			allElements = new HashMap<QName, TypeDefinition>();
 
-			for (TypeDefinition def : sourceSchema.getMappingRelevantTypes()) {
-				boolean accept;
-				if (restrictToFeatures) {
-					// accept only feature types
-					Classification clazz = Classification.getClassification(def);
-					switch (clazz) {
-					case CONCRETE_FT:
-						accept = true;
-						break;
-					default:
-						accept = false;
-					}
-				}
-				else {
-					// accept all mappable types
-					accept = true;
-				}
-
-				if (accept) {
-					Collection<? extends XmlElement> elements = def
-							.getConstraint(XmlElements.class).getElements();
-					if (!elements.isEmpty()) {
-						// use element name
-						// XXX MappableFlag also for elements?
-						for (XmlElement element : elements) {
-							allowedTypes.put(element.getName(), def);
-						}
-					}
-					else {
-						allowedTypes.put(def.getName(), def);
+			for (TypeDefinition def : sourceSchema.getTypes()) {
+				Collection<? extends XmlElement> elements = def.getConstraint(XmlElements.class)
+						.getElements();
+				if (!elements.isEmpty()) {
+					// use element name
+					// XXX MappableFlag also for elements?
+					for (XmlElement element : elements) {
+						allElements.put(element.getName(), def);
 					}
 				}
 			}
@@ -453,12 +564,13 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			try {
-				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict,
-						null, crsProvider, nextType, null, false, ignoreNamespaces);
+				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict, null,
+						crsProvider, nextType, null, false, ignoreNamespaces);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
 				nextType = null;
+				typeStack.pop(); // parseInstance consumes END_ELEMENT
 			}
 		}
 
@@ -538,7 +650,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	}
 
-	protected final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
+	private final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
 
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;

@@ -46,7 +46,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -66,7 +66,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 	private Button enabled;
 
-	private Editor<Value> currentEditor;
+	private AttributeEditor<Value> currentEditor;
 
 	private Sampler currentSampler;
 
@@ -84,7 +84,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 		@Override
 		public void propertyChange(PropertyChangeEvent event) {
-			if (Editor.VALUE.equals(event.getProperty())) {
+			if (AttributeEditor.VALUE.equals(event.getProperty())) {
 				changed = true;
 			}
 		}
@@ -92,8 +92,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 	@Override
 	protected Control createContents(Composite parent) {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		Composite page = new Composite(parent, SWT.NONE);
 
@@ -103,8 +102,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 		// current sampler settings
 		samplerSettings.clear();
 		for (Entry<String, Sampler> entry : InstanceViewPreferences.SAMPLERS.entrySet()) {
-			Value settings = ps.getConfigurationService().getProperty(
-					InstanceViewPreferences.KEY_SETTINGS_PREFIX + entry.getKey());
+			Value settings = ps.getConfigurationService()
+					.getProperty(InstanceViewPreferences.KEY_SETTINGS_PREFIX + entry.getKey());
 			if (settings.isEmpty()) {
 				settings = entry.getValue().getDefaultSettings();
 			}
@@ -158,7 +157,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 				}
 				else {
 					if (selection instanceof IStructuredSelection) {
-						updateEditor((Sampler) ((IStructuredSelection) selection).getFirstElement());
+						updateEditor(
+								(Sampler) ((IStructuredSelection) selection).getFirstElement());
 					}
 				}
 				changed = true;
@@ -183,8 +183,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 		// occurring values button
 		occurringValuesComplete = new Button(ovGroup, SWT.CHECK);
-		occurringValuesComplete
-				.setText("Always use complete source data to determine occurring values (ignore sampling)");
+		occurringValuesComplete.setText(
+				"Always use complete source data to determine occurring values (ignore sampling)");
 		occurringValuesComplete.setSelection(ps.getConfigurationService().getBoolean(
 				InstanceViewPreferences.KEY_OCCURRING_VALUES_USE_EXTERNAL,
 				InstanceViewPreferences.OCCURRING_VALUES_EXTERNAL_DEFAULT));
@@ -221,8 +221,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 			currentEditor = newSampler.createEditor(samplerGroup);
 			if (currentEditor != null) {
 				// set the editor value
-				currentEditor.setValue(samplerSettings.get(InstanceViewPreferences.SAMPLERS
-						.inverse().get(newSampler)));
+				currentEditor.setValue(samplerSettings
+						.get(InstanceViewPreferences.SAMPLERS.inverse().get(newSampler)));
 				currentEditor.setPropertyChangeListener(editorListener);
 			}
 		}
@@ -251,8 +251,8 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 		// update the current editor
 		if (currentEditor != null) {
 			// set the editor value
-			currentEditor.setValue(samplerSettings.get(InstanceViewPreferences.SAMPLERS.inverse()
-					.get(currentSampler)));
+			currentEditor.setValue(samplerSettings
+					.get(InstanceViewPreferences.SAMPLERS.inverse().get(currentSampler)));
 		}
 
 		// select the default sampler
@@ -276,8 +276,7 @@ public class InstanceViewPreferencePage extends PreferencePage implements IWorkb
 
 	@Override
 	public boolean performOk() {
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 
 		if (changed) {
 			if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),

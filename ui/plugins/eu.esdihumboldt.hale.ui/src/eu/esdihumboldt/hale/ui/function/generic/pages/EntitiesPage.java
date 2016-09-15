@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Group;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameter;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -57,7 +57,7 @@ import eu.esdihumboldt.hale.ui.util.components.DynamicScrolledComposite;
  * @param <D> the field definition
  * @author Simon Templer
  */
-public abstract class EntitiesPage<T extends AbstractFunction<D>, D extends AbstractParameter, F extends Field<D, ?>>
+public abstract class EntitiesPage<T extends FunctionDefinition<D>, D extends ParameterDefinition, F extends Field<D, ?>>
 		extends HaleWizardPage<AbstractGenericFunctionWizard<D, T>> implements FunctionWizardPage {
 
 	private final Cell initialCell;

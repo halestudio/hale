@@ -35,6 +35,16 @@ public class LocalOrientDB {
 	private class ReadReference implements DatabaseReference<ODatabaseDocumentTx> {
 
 		private ODatabaseDocumentTx database;
+		private final boolean createLock;
+
+		/**
+		 * Create a new read reference.
+		 * 
+		 * @param lock if a lock should be created for the reference
+		 */
+		public ReadReference(boolean lock) {
+			this.createLock = lock;
+		}
 
 		/**
 		 * @see DatabaseReference#getDatabase()
@@ -42,7 +52,9 @@ public class LocalOrientDB {
 		@Override
 		public ODatabaseDocumentTx getDatabase() {
 			if (database == null) {
-				dbLock.readLock().lock();
+				if (createLock) {
+					dbLock.readLock().lock();
+				}
 //				database = pool.acquire(dbURI, "reader", "reader");
 				database = new ODatabaseDocumentTx(dbURI).open("reader", "reader");
 			}
@@ -59,7 +71,9 @@ public class LocalOrientDB {
 //					pool.release(database)
 					database.close();
 				}
-				dbLock.readLock().unlock();
+				if (createLock) {
+					dbLock.readLock().unlock();
+				}
 			}
 		}
 
@@ -165,7 +179,19 @@ public class LocalOrientDB {
 	 * @return the database reference
 	 */
 	public DatabaseReference<ODatabaseDocumentTx> openRead() {
-		return new ReadReference();
+		return new ReadReference(true);
+	}
+
+	/**
+	 * Get a database reference with read access.<br>
+	 * 
+	 * @param lock if a read lock should be created,
+	 *            {@link DatabaseReference#dispose()} must be called when the
+	 *            database reference isn't needed any more
+	 * @return the database reference
+	 */
+	public DatabaseReference<ODatabaseDocumentTx> openRead(boolean lock) {
+		return new ReadReference(lock);
 	}
 
 	/**
@@ -187,6 +213,7 @@ public class LocalOrientDB {
 	public void clear() {
 		dbLock.writeLock().lock();
 		try {
+			@SuppressWarnings("resource")
 			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
 			db.drop();
@@ -204,6 +231,7 @@ public class LocalOrientDB {
 	public void delete() {
 		dbLock.writeLock().lock();
 		try {
+			@SuppressWarnings("resource")
 			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
 			// delete the database if it already exists
 			db.drop();

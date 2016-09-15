@@ -53,7 +53,9 @@ import eu.esdihumboldt.util.io.IOUtils;
 /**
  * File import source
  * 
- * @param <P> the supported {@link IOProvider} type
+ * @param
+ * 			<P>
+ *            the supported {@link IOProvider} type
  * 
  * @author Simon Templer
  * @since 2.5
@@ -79,8 +81,7 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	public void createControls(Composite parent) {
 		parent.setLayout(new GridLayout(4, false));
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		projectLocation = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
 		boolean projectLocAvailable = projectLocation != null
 				&& "file".equals(projectLocation.getScheme());
@@ -120,8 +121,8 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 
 		// create provider combo
 		ComboViewer providers = createProviders(parent);
-		providers.getControl().setLayoutData(
-				new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
+		providers.getControl()
+				.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
 
 		final Button relativeCheck = new Button(parent, SWT.CHECK);
 		String text = "Use relative paths if possible.";

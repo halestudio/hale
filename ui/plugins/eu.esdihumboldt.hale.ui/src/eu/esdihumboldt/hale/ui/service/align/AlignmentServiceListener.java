@@ -63,6 +63,12 @@ public interface AlignmentServiceListener {
 	public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName);
 
 	/**
+	 * Called when the custom function definitions have changed
+	 * (added/removed/replaced).
+	 */
+	public void customFunctionsChanged();
+
+	/**
 	 * Called when the alignment had some unspecified update.
 	 */
 	public void alignmentChanged();

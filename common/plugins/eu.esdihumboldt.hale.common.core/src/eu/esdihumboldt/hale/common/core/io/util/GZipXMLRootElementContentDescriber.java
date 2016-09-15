@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.util;
 
-import org.eclipse.core.runtime.content.XMLRootElementContentDescriber2;
+import eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2;
 
 /**
  * GZip content describer with an internal

@@ -24,8 +24,8 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 
+import com.google.common.io.ByteSource;
 import com.google.common.io.Files;
-import com.google.common.io.InputSupplier;
 
 /**
  * The main XSLT templates.
@@ -59,14 +59,14 @@ public class Templates extends ResourceLoader {
 	 */
 	private static void copyTemplate(final File targetFolder, final String templateFileName)
 			throws IOException {
-		Files.copy(new InputSupplier<InputStream>() {
+		new ByteSource() {
 
 			@Override
-			public InputStream getInput() throws IOException {
+			public InputStream openStream() throws IOException {
 				return Templates.class.getResourceAsStream(templateFileName);
 			}
 
-		}, new File(targetFolder, templateFileName));
+		}.copyTo(Files.asByteSink(new File(targetFolder, templateFileName)));
 	}
 
 	@Override

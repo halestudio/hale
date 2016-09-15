@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Project variables</title>
+</head>
+
+<body>
+	<h1>Project variables</h1>
+
+	<p>Project variables serve to customize the behavior of your
+		transformation project. In the project settings you can define
+		variables that can be used in parameters for transformation functions
+		or scripts. Variables defined there will be saved with the project,
+		but can also be overridden by setting specific environment variables
+		or providing Java system properties.</p>
+	
+	<h2>Define variables</h2>
+
+	<p>
+		Go to <i>Window</i>&rarr;<i>Settings</i> and then to <i>Project</i>&rarr;<i>Variables</i>
+		to define project variables from within halestudio. Any variable you
+		add here is stored in the project when you next save it.
+	</p>
+	<div>
+		<img class="fit" src="images/project_vars_settings.png">
+	</div>
+	
+	<h3>Overriding variable values</h3>
+	<p>
+		When looking up a project variable, hale first looks for a
+		corresponding <b>Java system property</b> with the prefix
+		<code>hale.project.</code>
+		this means to override the variable with the name
+		<code>NAME</code>
+		, you can specify a system property named
+		<code>hale.project.NAME</code>
+		.
+	</p>
+	<p>
+		If no system property is found, hale looks for a corresponding
+		<b>environment variable</b>. In that case the expected prefix is
+		<code>HALE_PROJECT_</code>
+		. Thus to override the variable with the name
+		<code>NAME</code>
+		, you can specify an environment variable named
+		<code>hale.project.NAME</code>
+		.
+	</p>
+	<p>The variable value stored in the project is used when neither a
+		system property nor an environment variable are defined. If the
+		variable is also not defined in the project, it is not resolved.</p>
+
+	<h2>Using variables in transformation functions</h2>
+	<p>Most transformation functions support variable replacement in
+		their parameters. If you want to have a variable value inserted into a
+		parameter, specify it with the following notation:</p>
+	<pre><code>{{project:&lt;variable name&gt;}}</code></pre>
+	<p>See the image below for an example using a variable in the Assign function:</p>
+	<div>
+		<img class="fit" src="images/project_vars_parameter.png">
+	</div>
+	<p>Specific support for using project variables is also provided in
+		Groovy script based functions. Please take a look at the respective
+		function documentation on how to use project variables there.</p>
+
+</body>
+</html>

@@ -99,8 +99,8 @@ public class TransformationView extends AbstractMappingView {
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);
 		IActionBars bars = getViewSite().getActionBars();
-		bars.getToolBarManager().add(
-				instanceAction = new Action("Apply sample instances", IAction.AS_CHECK_BOX) {
+		bars.getToolBarManager()
+				.add(instanceAction = new Action("Apply sample instances", IAction.AS_CHECK_BOX) {
 
 					@Override
 					public void run() {
@@ -108,14 +108,13 @@ public class TransformationView extends AbstractMappingView {
 					}
 
 				});
-		instanceAction.setImageDescriptor(TransformationViewPlugin
-				.getImageDescriptor("icons/samples.gif"));
+		instanceAction.setImageDescriptor(
+				TransformationViewPlugin.getImageDescriptor("icons/samples.gif"));
 		instanceAction.setChecked(initInstanceAction);
 
 		update();
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 			@Override
@@ -144,6 +143,11 @@ public class TransformationView extends AbstractMappingView {
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				update();
+			}
+
+			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				if (Cell.PROPERTY_DISABLE_FOR.equals(propertyName)
 						|| Cell.PROPERTY_ENABLE_FOR.equals(propertyName))
@@ -163,7 +167,7 @@ public class TransformationView extends AbstractMappingView {
 
 		});
 
-		final InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+		final InstanceSampleService iss = PlatformUI.getWorkbench()
 				.getService(InstanceSampleService.class);
 		iss.addObserver(instanceSampleObserver = new Observer() {
 
@@ -216,11 +220,10 @@ public class TransformationView extends AbstractMappingView {
 
 			@Override
 			public void run() {
-				AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-						AlignmentService.class);
+				AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 				Alignment alignment = as.getAlignment();
 
-				InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+				InstanceSampleService iss = PlatformUI.getWorkbench()
 						.getService(InstanceSampleService.class);
 				Collection<Instance> instances = iss.getReferenceInstances();
 				if (instanceAction.isChecked()) {
@@ -249,13 +252,12 @@ public class TransformationView extends AbstractMappingView {
 	@Override
 	public void dispose() {
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
 		}
 
 		if (instanceSampleObserver != null) {
-			InstanceSampleService iss = (InstanceSampleService) PlatformUI.getWorkbench()
+			InstanceSampleService iss = PlatformUI.getWorkbench()
 					.getService(InstanceSampleService.class);
 			iss.deleteObserver(instanceSampleObserver);
 		}

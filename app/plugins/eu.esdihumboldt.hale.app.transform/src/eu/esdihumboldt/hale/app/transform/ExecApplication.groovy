@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
+
 /**
  * Application that executes a transformation based on a project file.
  * 
@@ -115,16 +116,25 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 		true
 	}
 
+	protected String getBaseCommand() {
+		'HALE -nosplash -application hale.transform'
+	}
+
 	protected int usage() {
 		println """
 Usage:
-HALE -nosplash -application hale.transform
+$baseCommand
+     [-argsFile <file-with-arguments>]
      -project <file-or-URI-to-HALE-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
          [-exclude <file-pattern>]
          [-providerId <ID-of-source-reader>]
          [<setting>...]
+     [-filter <filter-expression>]
+     [-filterOn <type> <filter-expression>]
+     [-excludeType <type>]
+     [-exclude <filter-expression>]
      -target <target-file-or-URI>
          [-preset <name-of-export-preset>]
          [-providerId <ID-of-target-writer>]
@@ -140,19 +150,147 @@ HALE -nosplash -application hale.transform
      -reportsOut <reports-file>
      -stacktrace
      -trustGroovy
+     -overallFilterContext
 
-  You can provide multiple sources for the transformation. If the source is a
-  directory, you can specify multiple -include and -exclude parameters to
-  control which files to load.
-  If you do not specify -include, it defaults to "**", i.e. all files being
-  included, even if they are in sub-directories.
-  Patterns use the glob pattern syntax as defined in Java and should be quoted
-  to not be interpreted by the shell, see
-  http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
-		""".trim()
+  Sources
+    You can provide multiple sources for the transformation. If the source is a
+    directory, you can specify multiple -include and -exclude parameters to
+    control which files to load.
+    If you do not specify -include, it defaults to "**", i.e. all files being
+    included, even if they are in sub-directories.
+    Patterns use the glob pattern syntax as defined in Java and should be
+    quoted to not be interpreted by the shell, see
+    http://docs.oracle.com/javase/8/docs/api/java/nio/file/FileSystem.html#getPathMatcher-java.lang.String-
+
+  Filtering sources
+    The options -filter, -filterOn, -excludeType and -exclude serve to filter
+    the source data, before the transformation is performed.
+    If you specify multiple filters with -filter or -filterOn, only one of
+    them must match for an instance to be included. If only -filterOn
+    statements are provided, objects not matching the respective types are
+    included. Exclusion prevents any object from being transformed.
+
+    <filter-expressions> by default are interpreted as CQL. You can specify
+    a specific filter language supported by hale by including a corresponding
+    prefix, followed by a colon and the filter expression itself, e.g.:
+    CQL:name <> ''
+
+    The option -overallFilterContext ensures that the context available for
+    filters is shared for all sources. The filter context can for instance be
+    used in groovy: filters.
+
+  Providing arguments as file
+    You can also specify the arguments in a file using the -argsFile
+    parameter. Each line in the file is interpreted as a separate argument.
+    For example:
+    -param1
+    value
+    -param2
+    value
+    ...
+""".trim()
 
 		// general error code
 		new Integer(1)
+	}
+
+	@Override
+	protected void processCommandLineArguments(String[] args, ExecContext executionContext) throws Exception {
+		if (args == null)
+			return;
+		for (int i = 0; i < args.length; i++) {
+			// check for args without parameters (i.e., a flag arg)
+			processFlag(args[i], executionContext)
+			// check for args with parameters. If we are at the last argument or
+			// if the next one
+			// has a '-' as the first character, then we can't have an arg with
+			// a param so continue.
+			if (i == args.length - 1 || args[i + 1].startsWith("-")) //$NON-NLS-1$
+				continue
+
+			//check for args file, if supplied then handle it and continue
+			if(args[i] == '-args-file' || args[i] == '-argsFile'){
+				processArgumentsFile(args[++i], executionContext)
+				continue;
+			}
+
+
+			int noofValues = getNumberOfValues(args[i])
+			if(noofValues == 1){
+				processParameter(args[i], args[++i] , executionContext)
+			}
+			else{
+				List<String> values = [];
+				//loop through each values.
+				(1..noofValues).each{
+					if(!args[i+it].startsWith("-"))
+						values << args[i+it]
+				}
+				def param = args[i];
+				//check values supplied in arguments match with expected number of values??
+				if(values.size() == noofValues){
+					//call special parameter handling function
+					processSpecialParameter(param, values, executionContext)
+					i += noofValues;
+				}else {
+					// treat this as an error and continue without this parameter
+					error("Illegal parameter $param, only allowed with $noofValues values")
+					i += values.size();
+				}
+			}
+		}
+	}
+
+	private void processArgumentsFile(String value, ExecContext executionContext){
+
+		URI argsFile = fileOrUri(value);
+
+		if (argsFile == null){
+			warn("file path supplied in -argsFile is not valid file url: $value");
+			return;
+		}
+
+		File file = new File(argsFile);
+		if (!file.exists()) {
+			warn('file path supplied in -argsFile does not exist.');
+			return;
+		}
+
+		// read file line by line.
+		// here consideration: each line is considered as argument
+		List<String> args = []
+		file.eachLine { line -> args << line }
+		//recall processCommandLineArguments function with args file parameter.
+		processCommandLineArguments(args as String[] ,executionContext )
+
+	}
+
+
+	private int getNumberOfValues(String param){
+		switch (param) {
+			case '-filter-on':
+			case '-filterOn':
+				return 2
+			default:
+				return 1
+		}
+	}
+
+	private void processSpecialParameter(String param, List<String> values,
+			ExecContext executionContext) throws Exception {
+		switch (param) {
+			case '-filter-on':
+			case '-filterOn':
+				if(values.size()==2){
+					executionContext.filters.addTypeFilter(values[0], values[1])
+				}
+				else {
+					warn('Illegal parameter -filter-on, only allowed with type and filter expression')
+				}
+				break
+			default:
+				break
+		}
 	}
 
 	@Override
@@ -211,6 +349,23 @@ HALE -nosplash -application hale.transform
 					warn('Unexpected parameter -providerId')
 				}
 				break
+
+			case '-filter':
+				executionContext.filters.addUnconditionalFilter(value);
+				break
+
+			case '-exclude':
+				executionContext.filters.addExcludeFilter(value);
+				break
+
+			case '-filter-on':
+			case '-filterOn':
+				warn('Illegal parameter -filter-on, only allowed with type and filter expression')
+				break
+			case '-exclude-type':
+			case '-excludeType':
+				executionContext.filters.addExcludedType(value)
+				break
 			case '-exclude': // fall through
 			case '-include':
 				if (lastConfigurable == Configurable.source) {
@@ -226,6 +381,7 @@ HALE -nosplash -application hale.transform
 				else {
 					warn("Unexpected parameter $param, only allowed for configuring a source")
 				}
+
 			default:
 				if (param.startsWith(SETTING_PREFIX) && param.length() > SETTING_PREFIX.length()) {
 					// setting
@@ -339,6 +495,9 @@ HALE -nosplash -application hale.transform
 				break
 			case '-trustGroovy':
 				executionContext.restrictGroovy = false
+				break
+			case '-overallFilterContext':
+				executionContext.filters.globalContext = true
 				break
 		}
 	}

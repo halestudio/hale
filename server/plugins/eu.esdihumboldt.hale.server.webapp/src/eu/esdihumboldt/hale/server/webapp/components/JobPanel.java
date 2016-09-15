@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 import org.wicketstuff.html5.markup.html.Progress;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.server.progress.ProgressService;
 
 /**
@@ -100,7 +100,7 @@ public class JobPanel extends Panel {
 
 					@Override
 					protected eu.esdihumboldt.hale.server.progress.Progress load() {
-						ProgressService ps = OsgiUtils.getService(ProgressService.class);
+						ProgressService ps = HalePlatform.getService(ProgressService.class);
 						if (ps == null) {
 							return null;
 						}

@@ -1,0 +1,52 @@
+/*
+ * Copyright (c) 2016 wetransform GmbH
+ * 
+ * All rights reserved. This program and the accompanying materials are made
+ * available under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contributors:
+ *     wetransform GmbH <http://www.wetransform.to>
+ */
+
+package eu.esdihumboldt.cst.functions.groovy.filter;
+
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
+
+/**
+ * Groovy script filter definition.
+ * 
+ * @author Simon Templer
+ */
+public class GroovyFilterDefinition implements FilterDefinition<GroovyFilter> {
+
+	/**
+	 * The filter definition ID.
+	 */
+	public static final String ID = "groovy";
+
+	@Override
+	public String getIdentifier() {
+		return ID;
+	}
+
+	@Override
+	public Class<GroovyFilter> getObjectClass() {
+		return GroovyFilter.class;
+	}
+
+	@Override
+	public GroovyFilter parse(String value) {
+		return new GroovyFilter(value);
+	}
+
+	@Override
+	public String asString(GroovyFilter object) {
+		return object.getScript();
+	}
+
+}

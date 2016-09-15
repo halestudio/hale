@@ -2,13 +2,17 @@
 <feature
       id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
       label="Style Map View Feature"
-      version="2.9.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="data harmonisation panel, Fraunhofer IGD"
       plugin="eu.esdihumboldt.hale.ui.views.styledmap">
 
    <license>
       GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
    </license>
+
+   <includes
+         id="de.fhg.igd.mapviewer.feature.core"
+         version="0.0.0"/>
 
    <plugin
          id="eu.esdihumboldt.hale.doc.user.views.styledmap"
@@ -24,20 +28,6 @@
          unpack="false"/>
 
    <plugin
-         id="de.fhg.igd.mapviewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.mapviewer.server.openstreetmap"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="de.fhg.igd.mapviewer.tools.boxzoom"
          download-size="0"
          install-size="0"
@@ -45,77 +35,14 @@
          unpack="false"/>
 
    <plugin
-         id="de.fhg.igd.swingrcp"
+         id="de.fhg.igd.mapviewer.server.wms"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.jdesktop.swingx"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdesktop.swingx.mapviewer"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdesktop.swingx.mapviewer.source"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.swinglabs.swing-worker"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.common.metamodel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.ui.bookmarks"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.eclipse.ui.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.fhg.igd.eclipse.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="de.cs3d.util.helper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="gnu.trove"
+         id="de.fhg.igd.mapviewer.server.tiles"
          download-size="0"
          install-size="0"
          version="0.0.0"

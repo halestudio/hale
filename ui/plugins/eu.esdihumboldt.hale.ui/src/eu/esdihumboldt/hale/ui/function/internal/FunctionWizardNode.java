@@ -22,7 +22,7 @@ import org.eclipse.jface.wizard.IWizardContainer;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.ui.util.wizard.ExtendedWizardNode;
  */
 public class FunctionWizardNode extends AbstractWizardNode {
 
-	private final AbstractFunction<?> function;
+	private final FunctionDefinition<?> function;
 
 	private final SchemaSelection initialSelection;
 
@@ -51,7 +51,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 * @param function the function
 	 * @param container the wizard container
 	 */
-	public FunctionWizardNode(AbstractFunction<?> function, IWizardContainer container) {
+	public FunctionWizardNode(FunctionDefinition<?> function, IWizardContainer container) {
 		this(function, container, null);
 	}
 
@@ -64,7 +64,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	 *            with, may be <code>null</code> to start with an empty
 	 *            configuration
 	 */
-	public FunctionWizardNode(AbstractFunction<?> function, IWizardContainer container,
+	public FunctionWizardNode(FunctionDefinition<?> function, IWizardContainer container,
 			SchemaSelection initialSelection) {
 		super(container);
 
@@ -135,7 +135,7 @@ public class FunctionWizardNode extends AbstractWizardNode {
 	/**
 	 * @return the function
 	 */
-	public AbstractFunction<?> getFunction() {
+	public FunctionDefinition<?> getFunction() {
 		return function;
 	}
 

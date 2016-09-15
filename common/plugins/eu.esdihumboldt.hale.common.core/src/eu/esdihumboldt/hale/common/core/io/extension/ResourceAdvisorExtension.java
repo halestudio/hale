@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
@@ -31,6 +30,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.ResourceAdvisor;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultResourceAdvisor;
 
@@ -90,7 +90,7 @@ public class ResourceAdvisorExtension extends
 
 				for (IConfigurationElement child : children) {
 					String id = child.getAttribute("ref");
-					IContentType ct = Platform.getContentTypeManager().getContentType(id);
+					IContentType ct = HalePlatform.getContentTypeManager().getContentType(id);
 					if (ct != null) {
 						result.add(ct);
 					}

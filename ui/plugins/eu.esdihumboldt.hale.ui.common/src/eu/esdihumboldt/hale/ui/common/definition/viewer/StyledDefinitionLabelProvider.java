@@ -45,8 +45,8 @@ import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
  * 
  * @author Simon Templer
  */
-public class StyledDefinitionLabelProvider extends StyledCellLabelProvider implements
-		ILabelProvider, IColorProvider {
+public class StyledDefinitionLabelProvider extends StyledCellLabelProvider
+		implements ILabelProvider, IColorProvider {
 
 	private final ILabelProvider defaultLabels;
 	private final boolean suppressCardinality;
@@ -112,8 +112,7 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 		String contextText = null;
 		String countText = null;
 		if (element instanceof EntityDefinition) {
-			PopulationService ps = (PopulationService) PlatformUI.getWorkbench().getService(
-					PopulationService.class);
+			PopulationService ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 			if (ps != null) {
 				Population pop = ps.getPopulation((EntityDefinition) element);
 				int count = pop.getOverallCount();
@@ -140,25 +139,23 @@ public class StyledDefinitionLabelProvider extends StyledCellLabelProvider imple
 		if (!suppressCardinality && element instanceof ChildDefinition<?>) {
 			Cardinality cardinality = null;
 			if (((ChildDefinition<?>) element).asGroup() != null) {
-				cardinality = ((ChildDefinition<?>) element).asGroup().getConstraint(
-						Cardinality.class);
+				cardinality = ((ChildDefinition<?>) element).asGroup()
+						.getConstraint(Cardinality.class);
 			}
 			else if (((ChildDefinition<?>) element).asProperty() != null) {
-				cardinality = ((ChildDefinition<?>) element).asProperty().getConstraint(
-						Cardinality.class);
+				cardinality = ((ChildDefinition<?>) element).asProperty()
+						.getConstraint(Cardinality.class);
 			}
 
 			if (cardinality != null) {
 				// only append cardinality if it isn't 1/1
 				if (cardinality.getMinOccurs() != 1 || cardinality.getMaxOccurs() != 1) {
 					String card = " "
-							+ MessageFormat
-									.format("({0}..{1})",
-											new Object[] {
-													Long.valueOf(cardinality.getMinOccurs()),
-													(cardinality.getMaxOccurs() == Cardinality.UNBOUNDED) ? ("n")
-															: (Long.valueOf(cardinality
-																	.getMaxOccurs())) });
+							+ MessageFormat.format("({0}..{1})",
+									new Object[] { Long.valueOf(cardinality.getMinOccurs()),
+											(cardinality.getMaxOccurs() == Cardinality.UNBOUNDED)
+													? ("n")
+													: (Long.valueOf(cardinality.getMaxOccurs())) });
 					text.append(card, StyledString.COUNTER_STYLER);
 				}
 			}

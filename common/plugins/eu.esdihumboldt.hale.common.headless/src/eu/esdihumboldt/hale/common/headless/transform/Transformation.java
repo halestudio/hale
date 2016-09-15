@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.headless.transform;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -34,13 +35,13 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
@@ -51,6 +52,8 @@ import eu.esdihumboldt.hale.common.headless.HeadlessIO;
 import eu.esdihumboldt.hale.common.headless.TransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
+import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
+import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -86,6 +89,29 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param validator the instance validator, may be <code>null</code>
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 */
+	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
+
+		return transform(sources, target, environment, reportHandler, processId, validator, null);
+	}
+
+	/**
+	 * Transform the instances provided through the given instance readers and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the instance readers
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -108,13 +134,16 @@ public class Transformation {
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
 	 * @param validator the instance validator, may be <code>null</code>
+	 * @param filterDefinition {@link InstanceFilterDefinition} object as a
+	 *            filter may be <code>null</code>
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
+			final ReportHandler reportHandler, Object processId, InstanceValidator validator,
+			InstanceFilterDefinition filterDefinition) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -161,13 +190,21 @@ public class Transformation {
 					}
 				});
 
-		MultiInstanceCollection sourceCollection = new MultiInstanceCollection(sourceList);
+		// Apply Filter
+		InstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
 
 		final TransformationSink targetSink;
 		try {
-			targetSink = TransformationSinkExtension.getInstance().createSink(
-					!target.isPassthrough());
+			targetSink = TransformationSinkExtension.getInstance()
+					.createSink(!target.isPassthrough());
 			targetSink.setTypes(environment.getTargetSchema());
+
+			// add validation to sink
+			// XXX for now default validation if env variable is set
+			String env = System.getenv("HALE_TRANSFORMATION_INTERNAL_VALIDATION");
+			if (env != null && env.equalsIgnoreCase("true")) {
+				targetSink.addValidator(new DefaultTransformedInstanceValidator(reportHandler));
+			}
 		} catch (Exception e) {
 			throw new IllegalStateException("Error creating target sink", e);
 		}
@@ -196,7 +233,7 @@ public class Transformation {
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		if (validator != null) {
-			validationJob = new ValidationJob(validator, reportHandler);
+			validationJob = new ValidationJob(validator, reportHandler, target);
 		}
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
@@ -281,28 +318,33 @@ public class Transformation {
 			 */
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				TransformationService transformationService = OsgiUtils
+				TransformationService transformationService = HalePlatform
 						.getService(TransformationService.class);
 
 				TransformationReport report = transformationService.transform(alignment,
-						sourceToUse, targetSink, serviceProvider, new ProgressMonitorIndicator(
-								monitor));
+						sourceToUse, targetSink, serviceProvider,
+						new ProgressMonitorIndicator(monitor));
 
-				if (monitor.isCanceled()) {
-					targetSink.done(true);
-					return Status.CANCEL_STATUS;
-				}
-				else
-					targetSink.done(false);
+				try {
+					// publish report
+					reportHandler.publishReport(report);
 
-				// publish report
-				reportHandler.publishReport(report);
-
-				if (report.isSuccess()) {
-					return Status.OK_STATUS;
-				}
-				else {
-					return ERROR_STATUS;
+					if (report.isSuccess()) {
+						return Status.OK_STATUS;
+					}
+					else {
+						return ERROR_STATUS;
+					}
+				} finally {
+					// only close target sink after publishing the report
+					// as this will terminate the transformation process
+					// and may lead to the transformation report being lost
+					if (monitor.isCanceled()) {
+						targetSink.done(true);
+						return Status.CANCEL_STATUS;
+					}
+					else
+						targetSink.done(false);
 				}
 			}
 		};
@@ -461,4 +503,32 @@ public class Transformation {
 		// execution was not successful
 		result.set(false);
 	}
+
+	private static InstanceCollection applyFilter(List<InstanceCollection> sourceData,
+			InstanceFilterDefinition filterDefinition) {
+		List<InstanceCollection> filteredData = new ArrayList<InstanceCollection>();
+
+		for (int i = 0; i < sourceData.size(); i++) {
+			InstanceCollection collection = sourceData.get(i);
+			if (filterDefinition.isGlobalContext()) {
+				// add unfiltered, later apply to whole collection
+				filteredData.add(collection);
+			}
+			else {
+				// filter individually
+				filteredData.add(collection.select(filterDefinition));
+			}
+		}
+
+		InstanceCollection filteredCollection = new MultiInstanceCollection(filteredData);
+
+		if (filterDefinition.isGlobalContext()) {
+			// apply filter to combined instance collection
+			filteredCollection = FilteredInstanceCollection.applyFilter(filteredCollection,
+					filterDefinition);
+		}
+
+		return filteredCollection;
+	}
+
 }

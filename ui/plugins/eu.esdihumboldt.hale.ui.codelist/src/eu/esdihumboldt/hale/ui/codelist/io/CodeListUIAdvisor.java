@@ -40,8 +40,7 @@ public class CodeListUIAdvisor extends AbstractActionUIAdvisor<CodeList> {
 
 	@Override
 	public boolean removeResource(String resourceId) {
-		CodeListService cs = (CodeListService) PlatformUI.getWorkbench().getService(
-				CodeListService.class);
+		CodeListService cs = PlatformUI.getWorkbench().getService(CodeListService.class);
 		return cs.removeCodeList(resourceId);
 	}
 
@@ -52,8 +51,7 @@ public class CodeListUIAdvisor extends AbstractActionUIAdvisor<CodeList> {
 
 	@Override
 	public CodeList retrieveResource(String resourceId) {
-		CodeListService cs = (CodeListService) PlatformUI.getWorkbench().getService(
-				CodeListService.class);
+		CodeListService cs = PlatformUI.getWorkbench().getService(CodeListService.class);
 		return cs.getCodeList(resourceId);
 	}
 

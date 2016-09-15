@@ -1,232 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Mapping Documentation</title>
-
-    <script type="text/javascript" src="http://snapsvg.io/assets/js/snap.svg-min.js"></script>
-    
-    <style>
-
-        .functionName {
-            stroke: #000000;
-            fill: #f4d887;
-        }
-
-        .propertyPathName {
-            stroke: #000000;
-            fill: #a8d0f4;
-            fill-opacity: 0.4;
-        }
-
-        .propertyPathNameActive {
-            stroke: #000000;
-            fill: #FFFFFF;
-            fill-opacity: 0.8;
-        }
-
-        .infoCircle {
-            fill: #254969;
-            stroke: #ffffff;
-            stroke-width: 67px;
-            stroke-opacity: 0.65;
-            font-size: 16px;
-        }
-
-        .infoCircleFunction {
-            fill: #933f29;
-            stroke: #ffffff;
-            stroke-width: 67px;
-            stroke-opacity: 0.65;
-            font-size: 16px;
-        }
-
-        .infoCircleFunction:hover {
-            cursor: pointer;
-            fill: #9f735c;
-        }
-
-        .infoCircleInactive {
-            fill: #eeeeee;
-            stroke: #333333;
-            stroke-width: 67px;
-            stroke-opacity: 0.75;
-            opacity: 0.6;
-        }
-
-        .infoCircle:hover {
-            cursor: pointer;
-            fill: #3e7ab1;
-        }
-
-        .mappingContainer {
-            width: 820px;
-            margin: 10px;
-        }
-
-        .svgContainer {
-            border: 1px solid black;
-            width: 100%;
-        }
-
-        .propertyContainer {
-            position: relative;
-            width: 100%;
-            margin-top: -6px;
-        }
-
-        .closeButton {
-            color: #f4d887;
-            font-weight: bold;
-            font-size: 18px;
-            position: absolute;
-            right: 0px;
-            height: 100%;
-            padding: 5px 10px;
-            background-color: #4a4a4a;
-            border-bottom-right-radius: 10px;
-        }
-
-        .closeButton:hover {
-            cursor: pointer;
-            color: #fcf0c3;
-            text-decoration: underline;
-        }
-
-        .propertyTable {
-            width: 98%;
-            border-bottom-right-radius: 10px;
-        }
-
-        tr {
-            background-color: #e0edf4;
-            border: 1px solid #4a4a4a;
-            width: 100%
-        }
-
-        .functionRow {
-            background-color: #fcf0c3;
-        }
-
-        tr:nth-child(even) {
-            background-color: #a8d0f4;
-            border: 1px solid #4a4a4a;
-        }
-
-        .functionRow:nth-child(even) {
-            background-color: #f4d887;
-        }
-
-        tr:last-child {
-            border-bottom-left-radius: 10px;
-        }
-
-        td {
-            padding: 5px;
-            font-size: 14px;
-        }
-
-        .keyCell {
-            font-style: italic;
-        }
-
-        .headCell {
-            font-weight: bold;
-        }
-
-
-    </style>
-
-    <!-- js for drawing the mapping tree -->
-    <script type="text/javascript">
-		$javascript
-    </script>
-    </head>
-<body>
-
-	<!-- Project info -->
-	<% if (project) { %>
-	<div>
-		<h1>$project.name</h1>
-		<h3>$project.author</h3> 
-		<% if (project.description) { %>
-			<div>$project.description</div>
-		<% } %>
-	</div>
-	<% } %>
-
-	<!-- Overview? -->
+	<meta charset="utf-8">
+	<title>$title</title>
 	
-	<!-- Cells per type cell -->
-	<%
-		// map that store which cell to paint for which ID
-		def idmap = [:]
-		// generated ID counter
-		int id = 0
-		// explanation
-		def expl = null
-		
-		alignment.typeCells.each {
-	%>
-	<div class="mappingContainer">
-		<!-- Type cell -->
-		<h2>${it.id}:</h2>
-		<%
-			idmap[++id] = it.id
-		%>
-        <svg id="mapping_${id}" class="svgContainer"></svg>
-        <div id="mapping_${id}_properties" class="propertyContainer"></div>
-        <%
-        	expl = alignment.explanations[it.id]
-        	if (expl) {
-        %>
-        	<div>$expl</div>
-        <%
-        	}
-        %>
-        <div style="margin-left: 16px;">
-	        <!-- Property cells -->
-	        <%
-	        	it.cells.each {
-	        		idmap[++id] = it 
-	        %>
-	        	<h4>${it}:</h4>
-	        	<svg id="mapping_${id}" class="svgContainer"></svg>
-	        	<div id="mapping_${id}_properties" class="propertyContainer"></div>
-	        	<%
-		        	expl = alignment.explanations[it]
-		        	if (expl) {
-		        %>
-		        	<div>$expl</div>
-		        <%
-		        	}
-		        %>
-	        <%
-	        	} 
-	        %>
-        </div>
+	<link rel="stylesheet"
+		href="http://build-artifacts.wetransform.to/halejs/${halejsVersion}/halejs.full.min.css">
+	<script type="text/javascript"
+		src="http://build-artifacts.wetransform.to/halejs/${halejsVersion}/halejs.full.min.js"></script>
+	
+	<script type="text/javascript">
+		angular.module('halejs').value('LANGUAGES', ${languages});
+		angular.module('hale', ['halejs']).controller('alignmentCtrl', function(\$scope) {
+			\$scope.alignment = ${json};
+		});
+	</script>
+</head>
+<body ng-app="hale">
+	<div class="container" ng-controller="alignmentCtrl">
+		<hale-documentation alignment="alignment"></hale-documentation>
 	</div>
-	<%
-		}
-	%>
-
-    <script>
-        window.onload = function() {
-       	<%
-       		idmap.each {
-       			def element_id, def ref_id ->
-       	%>
-	        drawMapping("#mapping_${element_id}", ${alignment.cells[ref_id]}, {
-	            width: 800,
-	            lineHeight: 24,
-	            padding: 5,
-	            charLength: 6
-	        });
-        <%
-        	}
-       	%>
-        }
-    </script>
-
 </body>
 </html>

@@ -2,36 +2,32 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Utilities Bundle
 Bundle-SymbolicName: eu.esdihumboldt.util
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="11.0.1",
+ com.vividsolutions.jts.algorithm;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.12.0",
  de.fhg.igd.osgi.util,
  de.fhg.igd.slf4jplus,
- eu.esdihumboldt.util.resource,
  net.jcip.annotations,
  org.apache.commons.io,
  org.apache.commons.lang;version="2.4.0",
- org.apache.http,
- org.apache.http.auth,
- org.apache.http.client,
- org.apache.http.client.fluent;version="4.3.6",
- org.apache.http.conn.params,
- org.apache.http.impl.client,
- org.apache.http.params,
  org.apache.xmlbeans.impl.regex,
+ org.opengis.referencing.crs;version="12.2.0",
+ org.opengis.referencing.cs;version="12.2.0",
+ org.opengis.util;version="12.2.0",
  org.osgi.framework;version="1.5.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert,
+ org.springframework.core.convert.support;version="3.1.1.RELEASE",
  org.springframework.util
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.util.internal.Activator
 Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.geometry,
- eu.esdihumboldt.util.http,
  eu.esdihumboldt.util.internal;x-internal:=true,
  eu.esdihumboldt.util.io,
  eu.esdihumboldt.util.reflection,

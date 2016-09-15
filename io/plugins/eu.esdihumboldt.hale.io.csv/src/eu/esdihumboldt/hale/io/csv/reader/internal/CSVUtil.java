@@ -41,8 +41,8 @@ public class CSVUtil implements CSVConstants {
 	 * @throws IOException if an I/O operation fails
 	 */
 	public static CSVReader readFirst(ImportProvider provider) throws IOException {
-		Reader streamReader = new BufferedReader(new InputStreamReader(provider.getSource()
-				.getInput(), provider.getCharset()));
+		Reader streamReader = new BufferedReader(
+				new InputStreamReader(provider.getSource().getInput(), provider.getCharset()));
 		CSVReader reader = new CSVReader(streamReader, getSep(provider), getQuote(provider),
 				getEscape(provider));
 
@@ -58,8 +58,8 @@ public class CSVUtil implements CSVConstants {
 	 */
 	public static char getSep(IOProvider provider) {
 		String separator = provider.getParameter(PARAM_SEPARATOR).as(String.class);
-		char sep = ((separator == null || separator.isEmpty()) ? (DEFAULT_SEPARATOR) : (separator
-				.charAt(0)));
+		char sep = ((separator == null || separator.isEmpty()) ? (DEFAULT_SEPARATOR)
+				: (separator.charAt(0)));
 
 		return sep;
 	}
@@ -88,5 +88,18 @@ public class CSVUtil implements CSVConstants {
 		char esc = (escape == null || escape.isEmpty()) ? (DEFAULT_ESCAPE) : (escape.charAt(0));
 
 		return esc;
+	}
+
+	/**
+	 * Getter for the decimal divisor
+	 * 
+	 * @param provider the provider given to the method
+	 * @return the decimal char
+	 */
+	public static char getDecimal(IOProvider provider) {
+		String decimal = provider.getParameter(PARAM_DECIMAL).as(String.class);
+		char dec = (decimal == null || decimal.isEmpty()) ? (DEFAULT_DECIMAL) : (decimal.charAt(0));
+
+		return dec;
 	}
 }

@@ -38,8 +38,8 @@ public class StyleServiceFactory extends AbstractServiceFactory {
 	public Object create(@SuppressWarnings("rawtypes") Class serviceInterface,
 			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(StyleService.class)) {
-			return new StyleServiceImpl((ProjectService) locator.getService(ProjectService.class),
-					(SchemaService) locator.getService(SchemaService.class));
+			return new StyleServiceImpl(locator.getService(ProjectService.class),
+					locator.getService(SchemaService.class));
 		}
 
 		return null;

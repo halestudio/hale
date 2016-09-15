@@ -2,5 +2,5 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE FME Plug-In Connector
 Bundle-SymbolicName: de.fhg.igd.hale.fme.branding
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Fraunhofer IGD

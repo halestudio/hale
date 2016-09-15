@@ -26,7 +26,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
@@ -37,9 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.io.InputStreamDecorator;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Reads a project file
@@ -113,7 +113,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 
 					if (name.equals(ProjectIO.PROJECT_FILE)) {
 						try {
-							setProject(Project.load(new EntryInputStream(zip)));
+							setProjectChecked(Project.load(new EntryInputStream(zip)), reporter);
 						} catch (Exception e) {
 							// fail if main project file cannot be loaded
 							throw new IOProviderConfigurationException(
@@ -143,7 +143,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 		else {
 			// read from XML
 			try {
-				setProject(Project.load(in));
+				setProjectChecked(Project.load(in), reporter);
 			} catch (Exception e) {
 				// fail if main project file cannot be loaded
 				throw new IOProviderConfigurationException("Source is no valid project file", e);
@@ -163,8 +163,9 @@ public class DefaultProjectReader extends AbstractProjectReader {
 				if (projectFile != null) {
 					URI location = fileInfo.getLocation();
 					location = update.findLocation(location, false,
-							DefaultInputSupplier.SCHEME_LOCAL.equals(getSource().getLocation()
-									.getScheme()), false);
+							DefaultInputSupplier.SCHEME_LOCAL
+									.equals(getSource().getLocation().getScheme()),
+							false);
 					if (location == null && getSource().getLocation() != null) {
 						// not able to resolve location, try defaults instead
 
@@ -172,7 +173,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 						try {
 							URI candidate = new URI(getSource().getLocation().toString() + "."
 									+ fileInfo.getName());
-							if (IOUtils.testStream(candidate, true)) {
+							if (HaleIO.testStream(candidate, true)) {
 								location = candidate;
 							}
 						} catch (URISyntaxException e) {
@@ -187,7 +188,7 @@ public class DefaultProjectReader extends AbstractProjectReader {
 								if (index > 0) {
 									URI candidate = new URI(projectLoc.substring(0, index + 1)
 											+ fileInfo.getName());
-									if (IOUtils.testStream(candidate, true)) {
+									if (HaleIO.testStream(candidate, true)) {
 										location = candidate;
 									}
 								}
@@ -219,9 +220,9 @@ public class DefaultProjectReader extends AbstractProjectReader {
 					}
 				}
 				else {
-					reporter.info(new IOMessageImpl(
-							"No handler for external project file {0} found.", null, -1, -1,
-							fileInfo.getName()));
+					reporter.info(
+							new IOMessageImpl("No handler for external project file {0} found.",
+									null, -1, -1, fileInfo.getName()));
 				}
 			}
 		}

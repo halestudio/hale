@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.core.io.impl;
 import org.springframework.core.convert.ConversionService;
 import org.w3c.dom.Element;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
@@ -57,7 +57,7 @@ public class StringValue extends Value {
 		}
 		else {
 			String tmpValue = null;
-			ConversionService cs = OsgiUtils.getService(ConversionService.class);
+			ConversionService cs = HalePlatform.getService(ConversionService.class);
 			if (cs != null) {
 				try {
 					tmpValue = cs.convert(value, String.class);
@@ -88,7 +88,7 @@ public class StringValue extends Value {
 		// TODO handle primitive wrappers even w/o conversion service?
 
 		// conversion using service
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = HalePlatform.getService(ConversionService.class);
 		if (cs != null) {
 			try {
 				return cs.convert(value, expectedType);

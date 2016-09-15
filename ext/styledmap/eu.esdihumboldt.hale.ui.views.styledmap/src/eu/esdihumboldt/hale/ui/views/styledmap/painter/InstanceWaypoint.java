@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
 import de.fhg.igd.mapviewer.waypoints.GenericWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;

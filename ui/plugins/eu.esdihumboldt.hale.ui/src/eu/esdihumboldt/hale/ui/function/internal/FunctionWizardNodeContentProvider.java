@@ -22,6 +22,8 @@ import java.util.List;
 import org.eclipse.jface.wizard.IWizardContainer;
 
 import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionContentProvider;
 import eu.esdihumboldt.hale.ui.function.contribution.SchemaSelectionFunctionMatcher;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -53,7 +55,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 	 */
 	public FunctionWizardNodeContentProvider(IWizardContainer container,
 			SchemaSelection initialSelection, SchemaSelectionFunctionMatcher selectionMatcher) {
-		super();
+		super(HaleUI.getServiceProvider());
 		this.container = container;
 		this.initialSelection = initialSelection;
 		this.selectionMatcher = selectionMatcher;
@@ -88,7 +90,7 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 	}
 
 	@Override
-	public boolean apply(AbstractFunction<?> function) {
+	public boolean apply(FunctionDefinition<?> function) {
 		if (initialSelection != null && selectionMatcher != null) {
 			// use selection matcher to determine if function should be
 			// displayed
@@ -108,8 +110,8 @@ public class FunctionWizardNodeContentProvider extends FunctionContentProvider {
 		List<Object> result = new ArrayList<Object>(children.length);
 
 		for (Object child : children) {
-			if (child instanceof AbstractFunction<?>) {
-				child = new FunctionWizardNode((AbstractFunction<?>) child, container,
+			if (child instanceof FunctionDefinition<?>) {
+				child = new FunctionWizardNode((FunctionDefinition<?>) child, container,
 						initialSelection);
 			}
 

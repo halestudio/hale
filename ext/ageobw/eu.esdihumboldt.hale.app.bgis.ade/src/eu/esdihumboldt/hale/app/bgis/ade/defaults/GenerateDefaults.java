@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import eu.esdihumboldt.hale.app.bgis.ade.common.BGISAppConstants;
@@ -32,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
@@ -147,7 +147,7 @@ public class GenerateDefaults implements BGISAppConstants {
 		System.out.println("Writing alignment to " + context.getOut().getAbsolutePath());
 
 		// create alignment writer
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				ALIGNMENT_CONTENT_TYPE);
 		IOProviderDescriptor factory = HaleIO.findIOProviderFactory(AlignmentWriter.class,
 				contentType, null);

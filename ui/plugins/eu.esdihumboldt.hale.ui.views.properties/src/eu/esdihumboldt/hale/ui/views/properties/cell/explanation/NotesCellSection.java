@@ -48,7 +48,8 @@ public class NotesCellSection extends AbstractCellSection {
 		page.setLayout(GridLayoutFactory.fillDefaults().margins(8, 8).create());
 
 		textField = new Text(page, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
-		textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		textField.setLayoutData(
+				GridDataFactory.fillDefaults().hint(17, 17).grab(true, true).create());
 		textField.addModifyListener(new ModifyListener() {
 
 			@Override
@@ -62,8 +63,8 @@ public class NotesCellSection extends AbstractCellSection {
 					String notes = textField.getText();
 					if (!notes.equals(cellNotes)) {
 						CellUtil.setNotes(cell, notes);
-						ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-								ProjectService.class);
+						ProjectService ps = PlatformUI.getWorkbench()
+								.getService(ProjectService.class);
 						if (ps != null) {
 							ps.setChanged();
 						}

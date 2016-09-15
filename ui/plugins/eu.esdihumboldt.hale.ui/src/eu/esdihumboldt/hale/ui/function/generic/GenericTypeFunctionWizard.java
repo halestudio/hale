@@ -16,10 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -30,7 +31,7 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * @author Simon Templer
  */
 public class GenericTypeFunctionWizard extends
-		AbstractGenericFunctionWizard<TypeParameter, TypeFunction> {
+		AbstractGenericFunctionWizard<TypeParameterDefinition, TypeFunctionDefinition> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -51,9 +52,8 @@ public class GenericTypeFunctionWizard extends
 	 * @see AbstractGenericFunctionWizard#getFunction()
 	 */
 	@Override
-	public TypeFunction getFunction() {
-		TypeFunctionExtension tfe = TypeFunctionExtension.getInstance();
-		return tfe.get(getFunctionId());
+	public TypeFunctionDefinition getFunction() {
+		return FunctionUtil.getTypeFunction(getFunctionId(), HaleUI.getServiceProvider());
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class GenericTypeFunctionWizard extends
 	 *      Cell)
 	 */
 	@Override
-	protected EntitiesPage<TypeFunction, TypeParameter, ?> createEntitiesPage(
+	protected EntitiesPage<TypeFunctionDefinition, TypeParameterDefinition, ?> createEntitiesPage(
 			SchemaSelection initSelection, Cell initCell) {
 		return new TypeEntitiesPage(initSelection, initCell);
 	}

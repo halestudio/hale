@@ -10,7 +10,7 @@
             name="GML file"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="FeatureCollection">
@@ -24,7 +24,7 @@
             name="CityGML file"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="CityModel">
@@ -38,7 +38,7 @@
             name="GML (INSPIRE SpatialDataSet)"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="SpatialDataSet">
@@ -247,6 +247,29 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="XML ID to specify for the container element, if possible"
                label="Container ID"
                name="xml.containerId"
@@ -254,6 +277,20 @@
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -337,6 +374,29 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="XML ID to specify for the container element, if possible"
                label="Container ID"
                name="xml.containerId"
@@ -344,6 +404,20 @@
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -406,6 +480,43 @@
                   defaultDescription="By default the CRS code is not modified."
                   sample="http://www.opengis.net/def/crs/EPSG/0/"
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -583,7 +694,93 @@
                   sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.converters">
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlDateTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DateToXmlTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlDateTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.StringToXmlTime">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateTimeToTimestamp">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToSQLDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDateToTimestamp">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToDate">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToTimestamp">
+      </converter>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance">
+      </allow>
    </extension>
 
 </plugin>

@@ -114,8 +114,7 @@ public class WFSGetFeatureWizard extends ConfigurationWizard<WFSGetFeatureConfig
 				// by default display only types that are represent as mapping
 				// relevant types
 				if (schemaSpaceID != null) {
-					SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-							SchemaService.class);
+					SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 					if (ss != null) {
 						Set<QName> relevantElements = new HashSet<>();
 						SchemaSpace schemas = ss.getSchemas(schemaSpaceID);

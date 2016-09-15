@@ -24,9 +24,8 @@ import org.apache.ws.commons.schema.resolver.CollectionURIResolver;
 import org.apache.ws.commons.schema.resolver.URIResolver;
 import org.xml.sax.InputSource;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -50,24 +49,35 @@ public class HumboldtURIResolver implements CollectionURIResolver {
 		final String stringLoc;
 		if (baseUri != null) {
 			try {
-				if (baseUri.startsWith("file:/")) { //$NON-NLS-1$
-					baseUri = new URI(baseUri).getPath();
+				if (baseUri.startsWith("jar:file:")) {
+					// scheme definition w/ colon seems to break resolving
+					// -> resolve against file URI and add Jar part later
+					baseUri = baseUri.substring(4);
+					uriLoc = new URI(baseUri).resolve(new URI(schemaLocation));
+					stringLoc = "jar:" + uriLoc.toString();
 				}
+				else {
+					// XXX don't really understand what this File/URI juggling
+					// is supposed to to
 
-				File baseFile = new File(baseUri);
-				if (baseFile.exists()) {
-					baseUri = baseFile.toURI().toString();
-				}
-				else if (collectionBaseURI != null) {
-					baseFile = new File(collectionBaseURI);
+					if (baseUri.startsWith("file:/")) { //$NON-NLS-1$
+						baseUri = new URI(baseUri).getPath();
+					}
+
+					File baseFile = new File(baseUri);
 					if (baseFile.exists()) {
 						baseUri = baseFile.toURI().toString();
 					}
+					else if (collectionBaseURI != null) {
+						baseFile = new File(collectionBaseURI);
+						if (baseFile.exists()) {
+							baseUri = baseFile.toURI().toString();
+						}
+					}
+
+					uriLoc = new URI(baseUri).resolve(new URI(schemaLocation));
+					stringLoc = uriLoc.toString();
 				}
-
-				uriLoc = new URI(baseUri).resolve(new URI(schemaLocation));
-				stringLoc = uriLoc.toString();
-
 			} catch (URISyntaxException e1) {
 				throw new RuntimeException(e1);
 			}

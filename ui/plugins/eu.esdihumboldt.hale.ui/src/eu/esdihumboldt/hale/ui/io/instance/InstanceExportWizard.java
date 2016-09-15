@@ -135,8 +135,8 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
 			if (exportTarget instanceof FileTarget) {
 				String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
-				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(new File(
-						fileName));
+				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
+						new File(fileName));
 				validator.setSource(source);
 				validator.setContentType(getContentType());
 
@@ -152,7 +152,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 
 					if (report != null) {
 						// add report to report server
-						ReportService repService = (ReportService) PlatformUI.getWorkbench()
+						ReportService repService = PlatformUI.getWorkbench()
 								.getService(ReportService.class);
 						repService.addReport(report);
 						// show message to user

@@ -47,8 +47,7 @@ public class SourceViewerUndoSupport {
 	 * @param viewer the source viewer
 	 */
 	public static void install(final SourceViewer viewer) {
-		IBindingService bs = (IBindingService) PlatformUI.getWorkbench().getService(
-				IBindingService.class);
+		IBindingService bs = PlatformUI.getWorkbench().getService(IBindingService.class);
 		TriggerSequence undo = null;
 		TriggerSequence redo = null;
 		if (bs != null) {
@@ -76,8 +75,8 @@ public class SourceViewerUndoSupport {
 				@Override
 				public void keyPressed(KeyEvent e) {
 					int accelerator = SWTKeySupport.convertEventToUnmodifiedAccelerator(e);
-					KeySequence sequence = KeySequence.getInstance(SWTKeySupport
-							.convertAcceleratorToKeyStroke(accelerator));
+					KeySequence sequence = KeySequence
+							.getInstance(SWTKeySupport.convertAcceleratorToKeyStroke(accelerator));
 					if (sequence.equals(undoSeq)) {
 						IUndoManager um = viewer.getUndoManager();
 						if (um.undoable()) {

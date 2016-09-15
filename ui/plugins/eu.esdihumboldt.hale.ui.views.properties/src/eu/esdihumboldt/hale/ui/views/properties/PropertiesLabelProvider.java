@@ -20,8 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -30,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTreeUtil;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 
@@ -66,14 +66,14 @@ public class PropertiesLabelProvider extends LabelProvider {
 
 		if (element instanceof Cell) {
 			Cell cell = (Cell) element;
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			FunctionDefinition<?> function = FunctionUtil.getFunction(
+					cell.getTransformationIdentifier(), HaleUI.getServiceProvider());
 			if (function != null) {
 				element = function;
 			}
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getImage(element);
 		}
 
@@ -110,12 +110,12 @@ public class PropertiesLabelProvider extends LabelProvider {
 			return definitionLabels.getText(element);
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getText(element);
 		}
 
 		if (element instanceof Cell) {
-			return CellUtil.getCellDescription((Cell) element);
+			return CellUtil.getCellDescription((Cell) element, HaleUI.getServiceProvider());
 		}
 
 		return super.getText(element);

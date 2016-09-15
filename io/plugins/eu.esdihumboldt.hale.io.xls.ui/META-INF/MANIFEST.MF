@@ -2,13 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.ui;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  eu.esdihumboldt.hale.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.google.common.io;version="15.0.0",
- de.fhg.igd.eclipse.util.extension,
+Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.project.model,
@@ -19,6 +18,7 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.io.csv.ui,
  eu.esdihumboldt.hale.io.xls,
  eu.esdihumboldt.hale.io.xls.writer,
+ eu.esdihumboldt.util.io,
  org.apache.poi.hssf;version="3.9.0",
  org.apache.poi.ss.usermodel;version="3.9.0",
  org.slf4j;version="1.5.11"

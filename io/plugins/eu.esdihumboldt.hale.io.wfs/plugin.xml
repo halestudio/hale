@@ -55,6 +55,47 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for WFS-T instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="User name to use for basic authentication"
+               label="User name"
+               name="credentials.user"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Password for basic authentication"
+               label="Password"
+               name="credentials.password"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS2FCWriter"
@@ -92,6 +133,29 @@
                   defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
                   sample="code:EPSG:4326"
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -193,6 +257,32 @@
                   class="java.lang.String">
             </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Skip counting features to allow direct streaming"
+               label="Skip counting features"
+               name="skipFeatureCount"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
@@ -232,6 +322,30 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+         
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
          <providerParameter
                description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
                label="Simplify geometries"
@@ -244,7 +358,7 @@
                   default="true">
             </valueDescriptor>
          </providerParameter>
-         <providerParameter
+		<providerParameter
                description="If the output should be pretty printed (indented)"
                label="Pretty print"
                name="xml.pretty"
@@ -254,6 +368,20 @@
             </parameterBinding>
             <valueDescriptor
                   default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -281,7 +409,7 @@
                   sample="2.0.0">
             </valueDescriptor>
          </providerParameter>
-         <providerParameter
+           <providerParameter
                description="Guiding value for instances per request. The number will be exceeded only in cases where there are too many interelated instances that cannot be separated."
                label="Instances per request"
                name="instancesPerRequest"
@@ -323,6 +451,48 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+                <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for WFS-T instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+                <providerParameter
+                      description="User name to use for basic authentication"
+                      label="User name"
+                      name="credentials.user"
+                      optional="true">
+                   <parameterBinding
+                         class="java.lang.String">
+                   </parameterBinding>
+                </providerParameter>
+                <providerParameter
+                      description="Password for basic authentication"
+                      label="Password"
+                      name="credentials.password"
+                      optional="true">
+                   <parameterBinding
+                         class="java.lang.String">
+                   </parameterBinding>
+                </providerParameter>
+         
       </provider>
    </extension>
    <extension

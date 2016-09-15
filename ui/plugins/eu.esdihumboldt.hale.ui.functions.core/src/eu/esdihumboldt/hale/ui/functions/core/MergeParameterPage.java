@@ -45,7 +45,7 @@ import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -76,7 +76,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	private static final String PARAMETER_PROPERTY = "property";
 	private static final String PARAMETER_ADDITIONAL_PROPERTY = "additional_property";
 
-	private FunctionParameter parameter;
+	private FunctionParameterDefinition parameter;
 	private List<String> initialSelection;
 	private CheckboxTreeViewer viewer;
 	private TypeDefinition sourceType;
@@ -133,7 +133,7 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (params.size() > 1)
 			throw new IllegalArgumentException("MergeParameterPage is only for one parameter");

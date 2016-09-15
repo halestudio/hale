@@ -56,8 +56,7 @@ public class ToggleRestrictionHandler extends AbstractHandler implements IElemen
 		}
 		else {
 			// make sure toggle button reverts
-			ICommandService cs = (ICommandService) PlatformUI.getWorkbench().getService(
-					ICommandService.class);
+			ICommandService cs = PlatformUI.getWorkbench().getService(ICommandService.class);
 			cs.refreshElements(event.getCommand().getId(), null);
 		}
 		return null;

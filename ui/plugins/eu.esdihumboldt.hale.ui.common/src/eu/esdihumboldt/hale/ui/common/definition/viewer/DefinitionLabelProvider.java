@@ -133,8 +133,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 
 			};
 
-			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(
-					StyleService.class);
+			StyleService styles = PlatformUI.getWorkbench().getService(StyleService.class);
 			styles.addListener(styleListener);
 		}
 	}
@@ -213,8 +212,7 @@ public class DefinitionLabelProvider extends LabelProvider {
 	@Override
 	public void dispose() {
 		if (styleListener != null) {
-			StyleService styles = (StyleService) PlatformUI.getWorkbench().getService(
-					StyleService.class);
+			StyleService styles = PlatformUI.getWorkbench().getService(StyleService.class);
 			styles.removeListener(styleListener);
 		}
 

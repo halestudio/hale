@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Core API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect,
- com.google.common.io;version="1.6.0",
+ com.google.common.io;version="17.0.0",
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -18,6 +18,8 @@ Import-Package: com.google.common.base;version="1.6.0",
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.hale.common.cache,
  eu.esdihumboldt.hale.common.core.io.project.model.internal.generated;version="2.9.0",
+ eu.esdihumboldt.hale.util.nonosgi,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.groovy.json,
@@ -36,8 +38,10 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.1.1.RELEASE",
  org.springframework.util;version="3.0.0.RELEASE"
-Export-Package: eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
+Export-Package: eu.esdihumboldt.hale.common.core,
+ eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.config,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.io.internal;x-internal:=true,
@@ -59,6 +63,7 @@ Export-Package: eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.report.writer,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.core.service.cleanup,
+ eu.esdihumboldt.hale.common.core.service.cleanup.impl,
  eu.esdihumboldt.hale.common.core.service.internal;x-internal:=true
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  groovy;bundle-version="2.1.5",

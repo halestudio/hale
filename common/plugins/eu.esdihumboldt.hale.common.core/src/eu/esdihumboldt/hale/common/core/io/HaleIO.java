@@ -16,8 +16,10 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,24 +28,25 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.content.IContentTypeManager;
 import org.w3c.dom.Element;
 
 import com.google.common.base.Preconditions;
-import com.google.common.io.InputSupplier;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.supplier.LookupStreamResource;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.io.InputSupplier;
+import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Hale I/O utilities
@@ -60,6 +63,38 @@ public abstract class HaleIO {
 	 * Namespace for HALE core complex value type elements.
 	 */
 	public static final String NS_HALE_CORE = "http://www.esdi-humboldt.eu/hale/core";
+
+	/**
+	 * Tests whether a InputStream to the given URI can be opened. <br>
+	 * In case of a file it instead tests File.isFile and File.canRead() because
+	 * it is a lot faster.
+	 * 
+	 * @param uri the URI to test
+	 * @param allowResource allow resolving through {@link Resources}
+	 * @return true, if a InputStream to the URI could be opened.
+	 */
+	public static boolean testStream(URI uri, boolean allowResource) {
+		if ("file".equalsIgnoreCase(uri.getScheme())) {
+			File file = new File(uri);
+			if (file.isFile() && file.canRead())
+				return true;
+			return false;
+		}
+
+		// try resolving through local resources
+		if (allowResource && Resources.tryResolve(uri, null) != null) {
+			return true;
+		}
+
+		// could be further enhanced to check for example for http response
+		// codes like 404.
+		try {
+			uri.toURL().openConnection().getInputStream().close();
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
 
 	/**
 	 * Filter I/O provider factories by content type
@@ -133,7 +168,7 @@ public abstract class HaleIO {
 			// clear results because only an ambiguous result was found
 			results.clear();
 			// use input stream to make a better test
-			IContentTypeManager ctm = Platform.getContentTypeManager();
+			IContentTypeManager ctm = HalePlatform.getContentTypeManager();
 			try {
 				InputStream is = in.getInput();
 
@@ -200,8 +235,8 @@ public abstract class HaleIO {
 	 */
 	public static <P extends IOProvider> Collection<IOProviderDescriptor> getProviderFactories(
 			final Class<P> providerType) {
-		return IOProviderExtension.getInstance().getFactories(
-				new FactoryFilter<IOProvider, IOProviderDescriptor>() {
+		return IOProviderExtension.getInstance()
+				.getFactories(new FactoryFilter<IOProvider, IOProviderDescriptor>() {
 
 					@Override
 					public boolean acceptFactory(IOProviderDescriptor descriptor) {
@@ -220,7 +255,9 @@ public abstract class HaleIO {
 	/**
 	 * Find an I/O provider factory
 	 * 
-	 * @param <P> the provider interface type
+	 * @param
+	 * 			<P>
+	 *            the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param contentType the content type the provider must match, may be
@@ -262,7 +299,9 @@ public abstract class HaleIO {
 	/**
 	 * Creates an I/O provider instance
 	 * 
-	 * @param <P> the provider interface type
+	 * @param
+	 * 			<P>
+	 *            the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param contentType the content type the provider must match, may be
@@ -293,7 +332,9 @@ public abstract class HaleIO {
 	/**
 	 * Find the content type for the given input
 	 * 
-	 * @param <P> the provider interface type
+	 * @param
+	 * 			<P>
+	 *            the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>
@@ -327,7 +368,9 @@ public abstract class HaleIO {
 	/**
 	 * Find an I/O provider instance for the given input
 	 * 
-	 * @param <P> the provider interface type
+	 * @param
+	 * 			<P>
+	 *            the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>
@@ -469,8 +512,8 @@ public abstract class HaleIO {
 		Object value = null;
 		if (cvt != null) {
 			try {
-				value = cvt.fromDOM(element, cvt.getContextType().isInstance(context) ? context
-						: null);
+				value = cvt.fromDOM(element,
+						cvt.getContextType().isInstance(context) ? context : null);
 			} catch (Exception e) {
 				throw new IllegalStateException("Failed to load complex value from DOM", e);
 			}
@@ -508,8 +551,8 @@ public abstract class HaleIO {
 			return (Element) value;
 		}
 
-		ComplexValueDefinition cvd = ComplexValueExtension.getInstance().getDefinition(
-				value.getClass());
+		ComplexValueDefinition cvd = ComplexValueExtension.getInstance()
+				.getDefinition(value.getClass());
 		if (cvd != null) {
 			return cvd.toDOM(value);
 		}
@@ -529,7 +572,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		String[] typeExts = cts.getFileExtensions(contentType);
 //		if (typeExts != null) {
 //			for (String typeExt : typeExts) {
@@ -562,7 +605,7 @@ public abstract class HaleIO {
 //			String prefix) {
 //		SortedSet<String> exts = new TreeSet<String>();
 //		
-//		ContentTypeService cts = OsgiUtils.getService(ContentTypeService.class);
+//		ContentTypeService cts = HalePlatform.getService(ContentTypeService.class);
 //		for (ContentType contentType : contentTypes) {
 //			String[] typeExts = cts.getFileExtensions(contentType);
 //			if (typeExts != null) {

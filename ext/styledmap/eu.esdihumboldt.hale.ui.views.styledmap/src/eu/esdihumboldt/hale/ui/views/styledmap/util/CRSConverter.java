@@ -28,8 +28,8 @@ import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import de.cs3d.common.metamodel.Point3D;
-import de.cs3d.common.metamodel.helperGeometry.BoundingBox;
+import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.mapviewer.geom.Point3D;
 
 /**
  * Geotools based CRS converter.
@@ -143,11 +143,11 @@ public class CRSConverter {
 		targetCorners[0] = convert(bb.getMinX(), bb.getMinY(), bb.getMinZ());
 		targetCorners[1] = convert(bb.getMaxX(), bb.getMaxY(), bb.getMaxZ());
 		return new BoundingBox(//
-				targetCorners[0].getX(),//
-				targetCorners[0].getY(),//
-				targetCorners[0].getZ(),//
-				targetCorners[1].getX(),//
-				targetCorners[1].getY(),//
+				targetCorners[0].getX(), //
+				targetCorners[0].getY(), //
+				targetCorners[0].getZ(), //
+				targetCorners[1].getX(), //
+				targetCorners[1].getY(), //
 				targetCorners[1].getZ());
 	}
 
@@ -158,6 +158,7 @@ public class CRSConverter {
 	 * @param crs The CRS to be checked.
 	 * @return True, if we have to flip the coordinates
 	 */
+	@SuppressWarnings("unused")
 	private boolean flipCRS(CoordinateReferenceSystem crs) {
 		if (crs.getCoordinateSystem().getDimension() == 2) {
 			AxisDirection direction = crs.getCoordinateSystem().getAxis(0).getDirection();

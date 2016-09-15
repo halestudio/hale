@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.service.align.internal;
 
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -127,4 +128,15 @@ public abstract class AlignmentServiceDecorator implements AlignmentService {
 	public boolean addBaseAlignment(BaseAlignmentLoader loader) {
 		return alignmentService.addBaseAlignment(loader);
 	}
+
+	@Override
+	public void addCustomPropertyFunction(CustomPropertyFunction function) {
+		alignmentService.addCustomPropertyFunction(function);
+	}
+
+	@Override
+	public void removeCustomPropertyFunction(String id) {
+		alignmentService.removeCustomPropertyFunction(id);
+	}
+
 }

@@ -39,7 +39,9 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 /**
  * Abstract export wizard
  * 
- * @param <P> the {@link IOProvider} type used in the wizard
+ * @param
+ * 			<P>
+ *            the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -85,11 +87,10 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 
 		setWindowTitle("Export wizard");
 
-		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(
-				HALEUIPlugin.PLUGIN_ID, "/icons/banner/export_wiz.png"));
+		setDefaultPageImageDescriptor(HALEUIPlugin.imageDescriptorFromPlugin(HALEUIPlugin.PLUGIN_ID,
+				"/icons/banner/export_wiz.png"));
 
-		projectService = (ProjectService) PlatformUI.getWorkbench()
-				.getService(ProjectService.class);
+		projectService = PlatformUI.getWorkbench().getService(ProjectService.class);
 	}
 
 	/**
@@ -108,8 +109,8 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	public boolean setPreset(String preset) {
 		IOConfiguration config = projectService.getExportConfiguration(preset);
 		if (config != null) {
-			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-					config.getProviderId());
+			IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
+					.getFactory(config.getProviderId());
 			if (descriptor != null) {
 				descriptor = new PresetDescriptor(descriptor, preset);
 				setProviderFactory(descriptor);
@@ -125,8 +126,7 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 
 	@Override
 	protected List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> getConfigurationPages() {
-		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = super
-				.getConfigurationPages();
+		List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> pages = super.getConfigurationPages();
 		if (pages == null) {
 			return null;
 		}
@@ -168,8 +168,8 @@ public abstract class ExportWizard<P extends ExportProvider> extends IOWizard<P>
 	@Override
 	protected ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> createConfigurationPages(
 			Collection<IOProviderDescriptor> factories) {
-		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages = super
-				.createConfigurationPages(factories);
+		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages = super.createConfigurationPages(
+				factories);
 
 		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = ArrayListMultimap
 				.create();

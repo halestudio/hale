@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Templates
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.templates;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="11.0.1",
@@ -12,6 +12,7 @@ Import-Package: com.google.common.io;version="11.0.1",
  eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.hale.ui.util.selector,
  eu.esdihumboldt.util.http,
+ eu.esdihumboldt.util.io,
  org.apache.commons.logging,
  org.apache.http.auth;version="4.3.6",
  org.apache.http.client,

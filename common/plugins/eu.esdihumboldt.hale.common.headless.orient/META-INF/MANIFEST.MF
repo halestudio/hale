@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OrientDB transformation sink
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.headless.orient;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.instance.orient;bundle-version="2.9.0",

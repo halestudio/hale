@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.core.io.supplier;
 
 import java.net.URI;
 
-import com.google.common.io.InputSupplier;
+import eu.esdihumboldt.util.io.InputSupplier;
 
 /**
  * Locatable {@link InputSupplier} providing an URI as location

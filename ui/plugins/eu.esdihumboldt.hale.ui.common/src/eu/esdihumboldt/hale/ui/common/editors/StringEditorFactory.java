@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.common.editors;
 
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.EditorFactory;
 
 /**
@@ -32,7 +32,7 @@ public class StringEditorFactory implements EditorFactory {
 	 * @see EditorFactory#createEditor(Composite)
 	 */
 	@Override
-	public Editor<?> createEditor(Composite parent) {
+	public AttributeEditor<?> createEditor(Composite parent) {
 		return new StringEditor(parent);
 	}
 

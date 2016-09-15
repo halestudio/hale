@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.html"
       label="HTML Export Feature"
-      version="2.9.0.qualifier"
+      version="3.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -32,6 +32,34 @@
          unpack="false"/>
 
    <plugin
+         id="org.objectweb.asm-5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.analysis-5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.tree-5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectweb.asm.util-5"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="org.parboiled.java"
          download-size="0"
          install-size="0"
@@ -40,28 +68,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.objectweb.asm-4"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.analysis-4"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.tree-4"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.util-4"
+         id="de.odysseus.staxon"
          download-size="0"
          install-size="0"
          version="0.0.0"

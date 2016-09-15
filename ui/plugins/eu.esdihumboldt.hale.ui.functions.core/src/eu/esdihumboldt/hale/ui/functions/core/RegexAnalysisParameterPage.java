@@ -38,7 +38,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.string.RegexAnalysis;
 import eu.esdihumboldt.cst.functions.string.RegexAnalysisFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -120,7 +120,7 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 	 *      com.google.common.collect.ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter value, ignore params
 		if (initialValues == null)

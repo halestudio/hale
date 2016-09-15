@@ -36,7 +36,7 @@
   </distributionManagement -->
 
   <properties>
-    <tycho-version>0.21.0</tycho-version>
+    <tycho-version>0.25.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.10.4</scala.version>
   </properties>
@@ -87,6 +87,20 @@
         <artifactId>tycho-maven-plugin</artifactId>
         <version>\${tycho-version}</version>
         <extensions>true</extensions>
+      </plugin>
+      <!-- Generate source bundles -->
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>\${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <% } %>
     </plugins>

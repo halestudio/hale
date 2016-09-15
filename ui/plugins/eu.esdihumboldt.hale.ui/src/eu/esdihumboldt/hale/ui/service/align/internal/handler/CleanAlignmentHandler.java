@@ -39,8 +39,7 @@ public class CleanAlignmentHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		if (MessageDialog.openQuestion(HandlerUtil.getActiveShell(event), "Delete cells",
 				"Do you really want to delete all cells?")) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.clean();
 		}
 

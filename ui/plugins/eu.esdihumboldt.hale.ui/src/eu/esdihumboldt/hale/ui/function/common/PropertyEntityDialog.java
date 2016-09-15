@@ -84,8 +84,8 @@ public class PropertyEntityDialog extends EntityDialog {
 	@Override
 	protected void setupViewer(TreeViewer viewer, EntityDefinition initialSelection) {
 		viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
-		EntityDefinitionService entityDefinitionService = (EntityDefinitionService) PlatformUI
-				.getWorkbench().getService(EntityDefinitionService.class);
+		EntityDefinitionService entityDefinitionService = PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
 
 		if (parentType != null) {
 			viewer.setContentProvider(new TreePathProviderAdapter(
@@ -93,18 +93,17 @@ public class PropertyEntityDialog extends EntityDialog {
 			viewer.setInput(parentType);
 		}
 		else {
-			flatRelevantProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
-					entityDefinitionService, ssid, true, false));
+			flatRelevantProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexContentProvider(entityDefinitionService, ssid, true, false));
 			hierarchicalRelevantProvider = new TreePathProviderAdapter(
 					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, true, false));
 			flatAllProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(
 					entityDefinitionService, ssid, false, false));
-			hierarchicalAllProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(
-					entityDefinitionService, ssid, false, false));
+			hierarchicalAllProvider = new TreePathProviderAdapter(
+					new EntityTypeIndexHierarchy(entityDefinitionService, ssid, false, false));
 			viewer.setContentProvider(flatRelevantProvider);
 
-			SchemaService ss = (SchemaService) PlatformUI.getWorkbench().getService(
-					SchemaService.class);
+			SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 			viewer.setInput(ss.getSchemas(ssid));
 		}
 
@@ -153,19 +152,20 @@ public class PropertyEntityDialog extends EntityDialog {
 			return;
 
 		// MappingRelevant types only, flat
-		manager.add(new ContentProviderAction("Mapping relevant types as list", HALEUIPlugin
-				.getImageDescriptor("icons/flat_relevant.png"), getViewer(), flatRelevantProvider,
-				true));
+		manager.add(new ContentProviderAction("Mapping relevant types as list",
+				HALEUIPlugin.getImageDescriptor("icons/flat_relevant.png"), getViewer(),
+				flatRelevantProvider, true));
 		// MappingRelevant types only, hierarchical
-		manager.add(new ContentProviderAction("Mapping relevant types hierarchical", HALEUIPlugin
-				.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
+		manager.add(new ContentProviderAction("Mapping relevant types hierarchical",
+				HALEUIPlugin.getImageDescriptor("icons/hierarchical_relevant.png"), getViewer(),
 				hierarchicalRelevantProvider, false));
 		// Mappable types, flat
-		manager.add(new ContentProviderAction("All types as list", HALEUIPlugin
-				.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider, false));
+		manager.add(new ContentProviderAction("All types as list",
+				HALEUIPlugin.getImageDescriptor("icons/flat_all.png"), getViewer(), flatAllProvider,
+				false));
 		// Mappable types, hierarchical
-		manager.add(new ContentProviderAction("All types hierarchical", HALEUIPlugin
-				.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
+		manager.add(new ContentProviderAction("All types hierarchical",
+				HALEUIPlugin.getImageDescriptor("icons/hierarchical_all.png"), getViewer(),
 				hierarchicalAllProvider, false));
 	}
 

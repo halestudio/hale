@@ -35,5 +35,16 @@
             class="eu.esdihumboldt.cst.MultiValue">
       </import>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.cst.CSTServiceFactory"
+            id="eu.esdihumboldt.cst"
+            scope="global">
+         <service
+               interface="eu.esdihumboldt.hale.common.align.transformation.service.TransformationService">
+         </service>
+      </services>
+   </extension>
 
 </plugin>

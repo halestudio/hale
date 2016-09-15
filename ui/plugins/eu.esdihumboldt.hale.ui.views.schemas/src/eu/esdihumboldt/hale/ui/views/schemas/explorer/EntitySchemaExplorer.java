@@ -67,13 +67,13 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	 */
 	@Override
 	protected IContentProvider createContentProvider(TreeViewer tree) {
-		EntityDefinitionService service = (EntityDefinitionService) PlatformUI.getWorkbench()
+		EntityDefinitionService service = PlatformUI.getWorkbench()
 				.getService(EntityDefinitionService.class);
 
-		hierarchyProvider = new TreePathProviderAdapter(new EntityTypeIndexHierarchy(service,
-				getSchemaSpace()));
-		listProvider = new TreePathProviderAdapter(new EntityTypeIndexContentProvider(service,
-				getSchemaSpace()));
+		hierarchyProvider = new TreePathProviderAdapter(
+				new EntityTypeIndexHierarchy(service, getSchemaSpace()));
+		listProvider = new TreePathProviderAdapter(
+				new EntityTypeIndexContentProvider(service, getSchemaSpace()));
 
 		return listProvider;
 	}
@@ -85,13 +85,13 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 	protected void prependToolbarActions(ToolBarManager manager) {
 		// structure
 
-		manager.add(new ContentProviderAction("Types as list", SchemasViewPlugin
-				.getImageDescriptor("icons/flat_hierarchy.png"), getTreeViewer(), listProvider,
-				true));
+		manager.add(new ContentProviderAction("Types as list",
+				SchemasViewPlugin.getImageDescriptor("icons/flat_hierarchy.png"), getTreeViewer(),
+				listProvider, true));
 
-		manager.add(new ContentProviderAction("Type hierarchy", SchemasViewPlugin
-				.getImageDescriptor("icons/inheritance_hierarchy.png"), getTreeViewer(),
-				hierarchyProvider, false));
+		manager.add(new ContentProviderAction("Type hierarchy",
+				SchemasViewPlugin.getImageDescriptor("icons/inheritance_hierarchy.png"),
+				getTreeViewer(), hierarchyProvider, false));
 
 		manager.add(new Separator());
 

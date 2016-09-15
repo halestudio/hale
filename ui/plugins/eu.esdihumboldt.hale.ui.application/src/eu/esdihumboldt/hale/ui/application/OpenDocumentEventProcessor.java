@@ -54,8 +54,7 @@ public class OpenDocumentEventProcessor implements Listener {
 	 */
 	public void openFiles() {
 		// project service is needed
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		if (ps == null) {
 			return;
 		}

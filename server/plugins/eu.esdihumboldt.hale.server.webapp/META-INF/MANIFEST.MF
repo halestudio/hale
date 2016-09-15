@@ -2,11 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Web Application Core Components
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.fhg.igd.slf4jplus,
- de.fhg.igd.osgi.util;version="1.0.0",
+Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.server.db.orient,
  eu.esdihumboldt.hale.server.progress,
  eu.esdihumboldt.hale.server.security,

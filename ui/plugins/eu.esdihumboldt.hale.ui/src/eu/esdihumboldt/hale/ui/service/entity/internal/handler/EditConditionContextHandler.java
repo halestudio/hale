@@ -48,7 +48,8 @@ public class EditConditionContextHandler extends AbstractHandler {
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection != null && !selection.isEmpty() && selection instanceof IStructuredSelection) {
+		if (selection != null && !selection.isEmpty()
+				&& selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 
 			if (element instanceof EntityDefinition) {
@@ -62,14 +63,14 @@ public class EditConditionContextHandler extends AbstractHandler {
 
 				Condition condition = AlignmentUtil.getContextCondition(entityDef);
 				if (condition != null && condition.getFilter() != null) {
-					Pair<String, String> filterDef = FilterDefinitionManager.getInstance().asPair(
-							condition.getFilter());
+					Pair<String, String> filterDef = FilterDefinitionManager.getInstance()
+							.asPair(condition.getFilter());
 					if (filterDef != null && filterDef.getFirst() != null) {
 						String filterId = filterDef.getFirst();
 
 						// retrieve filter UI from extension point
-						FilterDialogDefinition def = FilterUIExtension.getInstance().getFactory(
-								filterId);
+						FilterDialogDefinition def = FilterUIExtension.getInstance()
+								.getFactory(filterId);
 						if (def != null) {
 							Filter filter = null;
 							try {
@@ -80,8 +81,8 @@ public class EditConditionContextHandler extends AbstractHandler {
 								log.userError("Failed to create editor for filter", e);
 							}
 							if (filter != null) {
-								EntityDefinitionService eds = (EntityDefinitionService) PlatformUI
-										.getWorkbench().getService(EntityDefinitionService.class);
+								EntityDefinitionService eds = PlatformUI.getWorkbench()
+										.getService(EntityDefinitionService.class);
 								eds.editConditionContext((EntityDefinition) element, filter);
 							}
 						}
@@ -90,7 +91,8 @@ public class EditConditionContextHandler extends AbstractHandler {
 						}
 					}
 					else {
-						log.error("No filter definition for filter found, definition ID could not be determined");
+						log.error(
+								"No filter definition for filter found, definition ID could not be determined");
 					}
 				}
 			}

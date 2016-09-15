@@ -29,11 +29,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.configuration.IConfigurationService;
 import de.fhg.igd.osgi.util.configuration.JavaPreferencesConfigurationService;
 import de.fhg.igd.osgi.util.configuration.NamespaceConfigurationServiceDecorator;
 import eu.esdihumboldt.hale.common.cache.Request;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * The preference page for cache settings.
@@ -55,7 +55,7 @@ public class CachePreferencePage extends FieldEditorPreferencePage implements
 	public CachePreferencePage() {
 		super(GRID);
 
-		IConfigurationService org = OsgiUtils.getService(IConfigurationService.class);
+		IConfigurationService org = HalePlatform.getService(IConfigurationService.class);
 		if (org == null) {
 			// if no configuration service is present, fall back to new instance
 

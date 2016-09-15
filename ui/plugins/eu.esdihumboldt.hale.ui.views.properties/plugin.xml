@@ -258,7 +258,7 @@
                id="eu.esdihumboldt.hale.ui.views.properties.function.name"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
-                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+                  type="eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition">
             </input>
          </propertySection>
          <propertySection
@@ -268,7 +268,7 @@
                id="eu.esdihumboldt.hale.ui.views.properties.function.id"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
-                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+                  type="eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition">
             </input>
          </propertySection>
          <propertySection
@@ -278,7 +278,7 @@
                id="eu.esdihumboldt.hale.ui.views.properties.function.description"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.general">
             <input
-                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+                  type="eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition">
             </input>
          </propertySection>
          <propertySection
@@ -289,7 +289,7 @@
                id="eu.esdihumboldt.hale.ui.views.properties.function.parameters.abstractfunction"
                tab="eu.esdihumboldt.hale.ui.views.properties.definition.parameters">
             <input
-                  type="eu.esdihumboldt.hale.common.align.extension.function.Function">
+                  type="eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition">
             </input>
          </propertySection>
          <propertySection

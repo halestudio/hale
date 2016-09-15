@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandlerFactory;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandlerFactory;
@@ -34,11 +35,8 @@ import eu.esdihumboldt.hale.io.appschema.writer.internal.UnsupportedTransformati
  */
 public class GeoServerCompatibilityMode implements CompatibilityMode {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode#supportsFunction(java.lang.String)
-	 */
 	@Override
-	public boolean supportsFunction(String id) {
+	public boolean supportsFunction(String id, ServiceProvider serviceProvider) {
 		return (checkTypeFunction(id) || checkPropertyFunction(id));
 	}
 

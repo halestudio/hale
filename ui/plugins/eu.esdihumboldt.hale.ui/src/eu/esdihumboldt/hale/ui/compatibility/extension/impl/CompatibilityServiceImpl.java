@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.compatibility.CompatibilityMode;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.filter.definition.CQLFilterDefinition;
 import eu.esdihumboldt.hale.common.filter.definition.ECQLFilterDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityModeFactory;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityServiceListener;
@@ -51,9 +52,9 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  * @author Sebastian Reinhardt
  */
 @SuppressWarnings("restriction")
-public class CompatibilityServiceImpl extends
-		ProjectExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> implements
-		CompatibilityService {
+public class CompatibilityServiceImpl
+		extends ProjectExclusiveExtension<CompatibilityMode, CompatibilityModeFactory>
+		implements CompatibilityService {
 
 	// stored listeners of the service
 	private final CopyOnWriteArraySet<CompatibilityServiceListener> listeners = new CopyOnWriteArraySet<CompatibilityServiceListener>();
@@ -64,7 +65,7 @@ public class CompatibilityServiceImpl extends
 	 * Default factory based on a configuration element.
 	 */
 	private static class CompatibilityModeFactoryImpl extends
-			AbstractConfigurationFactory<CompatibilityMode> implements CompatibilityModeFactory {
+			AbstractConfigurationFactory<CompatibilityMode>implements CompatibilityModeFactory {
 
 		/**
 		 * Create an instance view factory based on a configuration element.
@@ -109,8 +110,8 @@ public class CompatibilityServiceImpl extends
 	/**
 	 * Default fallback factory
 	 */
-	private static class CompatibilityDefaultFactory extends
-			AbstractObjectFactory<CompatibilityMode> implements CompatibilityModeFactory {
+	private static class CompatibilityDefaultFactory
+			extends AbstractObjectFactory<CompatibilityMode>implements CompatibilityModeFactory {
 
 		@Override
 		public CompatibilityMode createExtensionObject() throws Exception {
@@ -156,18 +157,18 @@ public class CompatibilityServiceImpl extends
 	public CompatibilityServiceImpl() {
 		super(new CompatibilityModeExtension(), "compatibilityMode");
 		cal = new CompatibilityAlignmentListener();
-		((AlignmentService) PlatformUI.getWorkbench().getService(AlignmentService.class))
-				.addListener(cal);
+		PlatformUI.getWorkbench().getService(AlignmentService.class).addListener(cal);
 
-		this.addListener(new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+		this.addListener(
+				new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
 
-			@Override
-			public void currentObjectChanged(final CompatibilityMode arg0,
-					final CompatibilityModeFactory arg1) {
-				compatibilityModeChanged();
-			}
+					@Override
+					public void currentObjectChanged(final CompatibilityMode arg0,
+							final CompatibilityModeFactory arg1) {
+						compatibilityModeChanged();
+					}
 
-		});
+				});
 	}
 
 	/**
@@ -178,9 +179,9 @@ public class CompatibilityServiceImpl extends
 	/**
 	 * {@link CompatibilityMode} extension
 	 */
-	public static class CompatibilityModeExtension extends
-			AbstractExtension<CompatibilityMode, CompatibilityModeFactory> implements
-			ObjectExtension<CompatibilityMode, CompatibilityModeFactory> {
+	public static class CompatibilityModeExtension
+			extends AbstractExtension<CompatibilityMode, CompatibilityModeFactory>
+			implements ObjectExtension<CompatibilityMode, CompatibilityModeFactory> {
 
 		/**
 		 * Default constructor
@@ -249,8 +250,8 @@ public class CompatibilityServiceImpl extends
 			Iterator<Cell> cit = cells.iterator();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
-						&& mode.supportsCell(cell);
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier(),
+						HaleUI.getServiceProvider()) && mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);
@@ -272,7 +273,8 @@ public class CompatibilityServiceImpl extends
 					incompatibleCells.remove(e.getKey());
 				}
 
-				if (!mode.supportsFunction(e.getValue().getTransformationIdentifier())
+				if (!mode.supportsFunction(e.getValue().getTransformationIdentifier(),
+						HaleUI.getServiceProvider())
 						|| !mode.supportsCell(e.getValue())) {
 					incompatibleCells.add(e.getValue());
 				}
@@ -323,20 +325,26 @@ public class CompatibilityServiceImpl extends
 				}
 		}
 
+		@Override
+		public void customFunctionsChanged() {
+			// re-evaluate all cells
+			alignmentChanged();
+		}
+
 		/**
 		 * @see eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener#alignmentChanged()
 		 */
 		@Override
 		public void alignmentChanged() {
 			incompatibleCells.clear();
-			Collection<? extends Cell> cells = ((AlignmentService) PlatformUI.getWorkbench()
-					.getService(AlignmentService.class)).getAlignment().getCells();
+			Collection<? extends Cell> cells = PlatformUI.getWorkbench()
+					.getService(AlignmentService.class).getAlignment().getCells();
 			Iterator<? extends Cell> cit = cells.iterator();
 			CompatibilityMode mode = getCurrent();
 			while (cit.hasNext()) {
 				Cell cell = cit.next();
-				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier())
-						&& mode.supportsCell(cell);
+				boolean isCompatibleNow = mode.supportsFunction(cell.getTransformationIdentifier(),
+						HaleUI.getServiceProvider()) && mode.supportsCell(cell);
 
 				if (!isCompatibleNow) {
 					incompatibleCells.add(cell);

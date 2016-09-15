@@ -29,8 +29,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.google.common.io.InputSupplier;
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
@@ -41,6 +39,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.util.http.ProxyUtil;
+import eu.esdihumboldt.util.http.client.fluent.FluentProxyUtil;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.Resources;
 
 /**
@@ -78,7 +78,8 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 		try {
 			Document doc;
 			URI loc = getSource().getLocation();
-			if (loc != null && (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
+			if (loc != null
+					&& (loc.getScheme().equals("http") || loc.getScheme().equals("https"))) {
 				// load with HTTP client
 				// and provide headers to retrieve correct format and language
 				try {
@@ -132,13 +133,13 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 		return response.handleResponse(new ResponseHandler<Document>() {
 
 			@Override
-			public Document handleResponse(HttpResponse response) throws ClientProtocolException,
-					IOException {
+			public Document handleResponse(HttpResponse response)
+					throws ClientProtocolException, IOException {
 				StatusLine statusLine = response.getStatusLine();
 				HttpEntity entity = response.getEntity();
 				if (statusLine.getStatusCode() >= 300) {
-					throw new HttpResponseException(statusLine.getStatusCode(), statusLine
-							.getReasonPhrase());
+					throw new HttpResponseException(statusLine.getStatusCode(),
+							statusLine.getReasonPhrase());
 				}
 				if (entity == null) {
 					throw new ClientProtocolException("Response contains no content");
@@ -231,8 +232,8 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 					null));
 			name = identifier;
 		}
-		NodeList definitions = (NodeList) xpath
-				.evaluate("definition", item, XPathConstants.NODESET);
+		NodeList definitions = (NodeList) xpath.evaluate("definition", item,
+				XPathConstants.NODESET);
 		if (definitions.getLength() > 0)
 			description = definitions.item(0).getTextContent();
 		// in schema no description, but in data; anyways, ignore it for now
@@ -271,7 +272,7 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 
 		Proxy proxy = ProxyUtil.findProxy(uri);
 		// If proxy is configured then set the proxy
-		Executor executor = ProxyUtil.setProxy(request, proxy);
+		Executor executor = FluentProxyUtil.setProxy(request, proxy);
 
 		return executor.execute(request);
 	}

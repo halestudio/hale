@@ -73,8 +73,8 @@ public class CSVInstanceReaderTest {
 		TypeDefinition schemaType = schema.getType(QName.valueOf(typeName));
 		// Check every property for their existence
 		for (String propertyName : properties) {
-			assertEquals(propertyName, schemaType.getChild(QName.valueOf(propertyName))
-					.getDisplayName());
+			assertEquals(propertyName,
+					schemaType.getChild(QName.valueOf(propertyName)).getDisplayName());
 		}
 
 		// read Instances ###
@@ -104,18 +104,128 @@ public class CSVInstanceReaderTest {
 
 	}
 
+	/**
+	 * Test - read a sample csv schema and data with point as a decimal divisor
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testReadWithPointDecimal() throws Exception {
+
+		String typeName = "Random";
+		String[] properties = { "A", "B", "C", "D", "E" };
+		Object[] dataFirstColumn = { new Integer(1), "A", new Float(32647968.61),
+				new Float(5649088.376), "Linderbacher Straße" };
+		int numberOfInstances = 5;
+		// read Schema ###
+		Schema schema = readCSVSchema("/data/test3-pointdecimal.csv", typeName,
+				"java.lang.Integer,java.lang.String,java.lang.Float,java.lang.Float,java.lang.String",
+				"A,B,C,D,E", ";", null, null, ".");
+		// Test properties
+		TypeDefinition schemaType = schema.getType(QName.valueOf(typeName));
+		// Check every property for their existence
+		for (String propertyName : properties) {
+			assertEquals(propertyName,
+					schemaType.getChild(QName.valueOf(propertyName)).getDisplayName());
+		}
+
+		// read Instances ###
+		InstanceCollection instances = readCSVInstances("/data/test3-pointdecimal.csv", typeName,
+				true, schema, ";", null, null, ".");
+		assertTrue(instances.hasSize());
+		assertEquals(numberOfInstances, instances.size());
+
+		// get Type to check property definition (schema and instance
+		// combination)
+		TypeDefinition type = instances.iterator().next().getDefinition();
+		ChildDefinition<?> child = null;
+		assertEquals(typeName, type.getDisplayName());
+		for (int i = 0; i < properties.length; i++) {
+			child = type.getChild(QName.valueOf(properties[i]));
+			assertEquals(properties[i], child.getDisplayName());
+		}
+
+		// Check the values of the first (type) instance
+		Instance instance = instances.iterator().next();
+		Object[] value;
+		for (int i = 0; i < dataFirstColumn.length; i++) {
+			value = instance.getProperty(QName.valueOf(properties[i]));
+			assertEquals(dataFirstColumn[i], value[0]);
+		}
+
+	}
+
+	/**
+	 * Test - read a sample csv schema and data with comma as a decimal divisor
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testReadWithCommaDecimal() throws Exception {
+
+		String typeName = "Random";
+		String[] properties = { "A", "B", "C", "D", "E" };
+		Object[] dataFirstColumn = { new Integer(1), "A", new Float(32647968.61),
+				new Float(5649088.376), "Linderbacher Straße" };
+		int numberOfInstances = 5;
+		// read Schema ###
+		Schema schema = readCSVSchema("/data/test4-commadecimal.csv", typeName,
+				"java.lang.Integer,java.lang.String,java.lang.Float,java.lang.Float,java.lang.String",
+				"A,B,C,D,E", ";", null, null, ",");
+		// Test properties
+		TypeDefinition schemaType = schema.getType(QName.valueOf(typeName));
+		// Check every property for their existence
+		for (String propertyName : properties) {
+			assertEquals(propertyName,
+					schemaType.getChild(QName.valueOf(propertyName)).getDisplayName());
+		}
+
+		// read Instances ###
+		InstanceCollection instances = readCSVInstances("/data/test4-commadecimal.csv", typeName,
+				true, schema, ";", null, null, ",");
+		assertTrue(instances.hasSize());
+		assertEquals(numberOfInstances, instances.size());
+
+		// get Type to check property definition (schema and instance
+		// combination)
+		TypeDefinition type = instances.iterator().next().getDefinition();
+		ChildDefinition<?> child = null;
+		assertEquals(typeName, type.getDisplayName());
+		for (int i = 0; i < properties.length; i++) {
+			child = type.getChild(QName.valueOf(properties[i]));
+			assertEquals(properties[i], child.getDisplayName());
+		}
+
+		// Check the values of the first (type) instance
+		Instance instance = instances.iterator().next();
+		Object[] value;
+		for (int i = 0; i < dataFirstColumn.length; i++) {
+			value = instance.getProperty(QName.valueOf(properties[i]));
+			assertEquals(dataFirstColumn[i], value[0]);
+		}
+
+	}
+
 	private Schema readCSVSchema(String sourceLocation, String typeName, String paramPropertyType,
 			String propertyNames, String seperator, String quote, String escape) throws Exception {
+		return readCSVSchema(sourceLocation, typeName, paramPropertyType, propertyNames, seperator,
+				quote, escape, null);
+	}
+
+	private Schema readCSVSchema(String sourceLocation, String typeName, String paramPropertyType,
+			String propertyNames, String seperator, String quote, String escape, String decimal)
+					throws Exception {
 
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(sourceLocation)
-				.toURI()));
+		schemaReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, Value.of(propertyNames));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, Value.of(paramPropertyType));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, Value.of(seperator));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_DECIMAL, Value.of(decimal));
 
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 		assertTrue(report.isSuccess());
@@ -125,17 +235,26 @@ public class CSVInstanceReaderTest {
 
 	private InstanceCollection readCSVInstances(String sourceLocation, String typeName,
 			boolean skipFirst, Schema sourceSchema, String seperator, String quote, String escape)
-			throws Exception {
+					throws Exception {
+		return readCSVInstances(sourceLocation, typeName, skipFirst, sourceSchema, seperator, quote,
+				escape, null);
+	}
+
+	private InstanceCollection readCSVInstances(String sourceLocation, String typeName,
+			boolean skipFirst, Schema sourceSchema, String seperator, String quote, String escape,
+			String decimal) throws Exception {
 
 		InstanceReader instanceReader = new CSVInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(sourceLocation)
-				.toURI()));
+		instanceReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
 				Value.of(skipFirst));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, Value.of(seperator));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));
+		instanceReader.setParameter(CSVSchemaReader.PARAM_DECIMAL, Value.of(decimal));
+
 		instanceReader.setSourceSchema(sourceSchema);
 
 		// Test instances

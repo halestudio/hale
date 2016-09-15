@@ -129,6 +129,10 @@
 
    <element name="driver">
       <complexType>
+         <sequence>
+            <element ref="prefix" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="schema-selection"/>
+         </sequence>
          <attribute name="uriBuilder" type="string" use="required">
             <annotation>
                <documentation>
@@ -160,6 +164,16 @@
                </documentation>
                <appinfo>
                   <meta.attribute translatable="true"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="class" type="string">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":java.sql.Driver"/>
                </appinfo>
             </annotation>
          </attribute>
@@ -243,6 +257,47 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="prefix">
+      <complexType>
+         <attribute name="value" type="string" use="required">
+            <annotation>
+               <documentation>
+                  prefix used to load JDBC driver by ensuring jdbc uri prefix matching
+               </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="schema-selection">
+      <complexType>
+         <attribute name="enabled" type="boolean" use="default" value="true">
+            <annotation>
+               <documentation>
+                  Schema selection is enabled or not
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="multiple" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  One can select one or more schema or not?
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="selector" type="string">
+            <annotation>
+               <documentation>
+                  Schema selector class
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.SchemaSelector"/>
                </appinfo>
             </annotation>
          </attribute>

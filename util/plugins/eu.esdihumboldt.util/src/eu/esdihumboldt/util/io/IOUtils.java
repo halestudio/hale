@@ -37,7 +37,6 @@ import com.google.common.io.Files;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.util.resource.Resources;
 
 /**
  * Helper class for IO
@@ -52,38 +51,6 @@ public final class IOUtils {
 	 * Static class, constructor private.
 	 */
 	private IOUtils() {
-	}
-
-	/**
-	 * Tests whether a InputStream to the given URI can be opened. <br>
-	 * In case of a file it instead tests File.isFile and File.canRead() because
-	 * it is a lot faster.
-	 * 
-	 * @param uri the URI to test
-	 * @param allowResource allow resolving through {@link Resources}
-	 * @return true, if a InputStream to the URI could be opened.
-	 */
-	public static boolean testStream(URI uri, boolean allowResource) {
-		if ("file".equalsIgnoreCase(uri.getScheme())) {
-			File file = new File(uri);
-			if (file.isFile() && file.canRead())
-				return true;
-			return false;
-		}
-
-		// try resolving through local resources
-		if (allowResource && Resources.tryResolve(uri, null) != null) {
-			return true;
-		}
-
-		// could be further enhanced to check for example for http response
-		// codes like 404.
-		try {
-			uri.toURL().openConnection().getInputStream().close();
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -114,7 +81,8 @@ public final class IOUtils {
 
 					File fileObj = file.toFile();
 					Files.createParentDirs(fileObj);
-					try (OutputStream out = new BufferedOutputStream(new FileOutputStream(fileObj))) {
+					try (OutputStream out = new BufferedOutputStream(
+							new FileOutputStream(fileObj))) {
 						ByteStreams.copy(zis, out);
 					}
 					collect.add(fileObj);

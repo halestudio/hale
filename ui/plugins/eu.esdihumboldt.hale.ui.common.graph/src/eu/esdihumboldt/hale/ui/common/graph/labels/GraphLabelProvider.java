@@ -44,8 +44,7 @@ import org.eclipse.zest.core.viewers.IEntityStyleProvider;
 import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.ZestStyles;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -57,6 +56,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
@@ -74,8 +74,8 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
  * 
  * @author Simon Templer
  */
-public class GraphLabelProvider extends LabelProvider implements IEntityStyleProvider,
-		IEntityConnectionStyleProvider, IFigureProvider {
+public class GraphLabelProvider extends LabelProvider
+		implements IEntityStyleProvider, IEntityConnectionStyleProvider, IFigureProvider {
 
 	/**
 	 * The maximum figure width
@@ -108,8 +108,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	private final Map<String, Image> baseAlignmentFunctionImages = new HashMap<String, Image>();
 
-	private final Image baseAlignmentFunctionOverlay = GraphUIPlugin.getImageDescriptor(
-			"icons/base_align_cell_overlay.gif").createImage(); //$NON-NLS-1$
+	private final Image baseAlignmentFunctionOverlay = GraphUIPlugin
+			.getImageDescriptor("icons/base_align_cell_overlay.gif").createImage(); //$NON-NLS-1$
 
 	/**
 	 * Local resource manager.
@@ -166,8 +166,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 		incompatibleCells = new ArrayList<Cell>();
 
 		// initiate compatibility mode checkups and changes
-		final CompatibilityService cs = ((CompatibilityService) PlatformUI.getWorkbench()
-				.getService(CompatibilityService.class));
+		final CompatibilityService cs = PlatformUI.getWorkbench()
+				.getService(CompatibilityService.class);
 
 		lastCompatibilityMode = cs.getCurrentDefinition().getDisplayName();
 
@@ -224,8 +224,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	 */
 	protected Font createFigureFont() {
 		FontData[] defFontData = JFaceResources.getDefaultFont().getFontData();
-		return resources.createFont(FontDescriptor.createFrom(defFontData[0].getName(), 9,
-				SWT.NORMAL));
+		return resources
+				.createFont(FontDescriptor.createFrom(defFontData[0].getName(), 9, SWT.NORMAL));
 	}
 
 	/**
@@ -246,9 +246,14 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function image if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
 			if (function != null) {
 				Image image = functionLabels.getImage(function);
+				if (image == null) {
+					// use a default image if none is available
+					image = CommonSharedImages.getImageRegistry()
+							.get(CommonSharedImages.IMG_FUNCTION);
+				}
 				if (cell.isBaseCell()) {
 					Image baseAlignmentImage = baseAlignmentFunctionImages.get(functionId);
 					if (baseAlignmentImage == null) {
@@ -269,7 +274,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return null;
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getImage(element);
 		}
 
@@ -299,7 +304,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			// use function name if possible
 			Cell cell = (Cell) element;
 			String functionId = cell.getTransformationIdentifier();
-			AbstractFunction<?> function = FunctionUtil.getFunction(functionId);
+			FunctionDefinition<?> function = FunctionUtil.getFunction(functionId, serviceProvider);
 
 			if (function != null) {
 				return functionLabels.getText(function);
@@ -307,7 +312,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return functionId;
 		}
 
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			return functionLabels.getText(element);
 		}
 
@@ -335,7 +340,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 //		cellBorderHighlightColor.dispose();
 
 		resources.dispose();
-		((CompatibilityService) PlatformUI.getWorkbench().getService(CompatibilityService.class))
+		PlatformUI.getWorkbench().getService(CompatibilityService.class)
 				.removeCompatibilityListener(csl);
 
 		super.dispose();
@@ -351,7 +356,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityHighlightColor;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellHighlightColor;
 		}
 
@@ -368,7 +373,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderColor;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellBorderColor;
 		}
 
@@ -385,7 +390,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderHighlightColor;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellBorderHighlightColor;
 		}
 
@@ -402,7 +407,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityBorderWidth;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellBorderWidth;
 		}
 
@@ -423,7 +428,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return propertyBackgroundColor;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellBackgroundColor;
 		}
 
@@ -440,7 +445,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			return entityForegorundColor;
 		}
 
-		if (entity instanceof Cell || entity instanceof Function) {
+		if (entity instanceof Cell || entity instanceof FunctionDefinition) {
 			return cellForegroundColor;
 		}
 
@@ -454,8 +459,8 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 	public IFigure getTooltip(Object entity) {
 		if (entity instanceof Cell) {
 			Cell cell = (Cell) entity;
-			AbstractFunction<?> function = FunctionUtil.getFunction(cell
-					.getTransformationIdentifier());
+			FunctionDefinition<?> function = FunctionUtil
+					.getFunction(cell.getTransformationIdentifier(), serviceProvider);
 			if (function != null) {
 				CellExplanation explanation = function.getExplanation();
 				if (explanation != null) {
@@ -553,7 +558,7 @@ public class GraphLabelProvider extends LabelProvider implements IEntityStylePro
 			}
 
 		}
-		if (element instanceof Function) {
+		if (element instanceof FunctionDefinition) {
 			figure = new FunctionFigure(getCustomFigureFont());
 		}
 

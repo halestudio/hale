@@ -207,8 +207,8 @@ public class ExecTransformation implements ConsoleConstants {
 			if (path != null && java.nio.file.Files.isDirectory(path)) {
 				// directory handling
 				List<Path> files = getIncludedFiles(path, index);
-				info(MessageFormat
-						.format("{0} files identified for source {1}", files.size(), path));
+				info(MessageFormat.format("{0} files identified for source {1}", files.size(),
+						path));
 				for (Path file : files) {
 					setupReader(file.toUri(), index);
 				}
@@ -293,8 +293,8 @@ public class ExecTransformation implements ConsoleConstants {
 	private void loadProject() throws IOException {
 		status("Loading HALE project...");
 
-		env = new ProjectTransformationEnvironment(id, new DefaultInputSupplier(
-				context.getProject()), reportHandler);
+		env = new ProjectTransformationEnvironment(id,
+				new DefaultInputSupplier(context.getProject()), reportHandler);
 	}
 
 	private void setupReader(URI uri, int index) {
@@ -441,13 +441,20 @@ public class ExecTransformation implements ConsoleConstants {
 
 		// run transformation
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
-				reportHandler, id, validator);
+				reportHandler, id, validator, context.getFilters());
 
 		if (res.get()) {
 			info("Transformation completed. Please check the reports for more details.");
 		}
 		else {
 			fail("Transformation failed, please check the reports for details.");
+			// Job threads might still be active, wait a moment to allow them to
+			// complete and file their report (otherwise error may get lost)
+			try {
+				Thread.sleep(3000);
+			} catch (Throwable e) {
+				// ignore
+			}
 		}
 	}
 

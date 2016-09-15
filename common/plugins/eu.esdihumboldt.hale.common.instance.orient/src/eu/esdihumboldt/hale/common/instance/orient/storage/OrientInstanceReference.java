@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
-import net.jcip.annotations.Immutable;
-
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.ODatabaseException;
 import com.orientechnologies.orient.core.id.ORID;
@@ -28,8 +26,10 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import net.jcip.annotations.Immutable;
 
 /**
  * Instance reference for an instance stored in a {@link LocalOrientDB}.
@@ -125,6 +125,10 @@ public class OrientInstanceReference implements InstanceReference {
 					"Instance data set may not be null for retrieving reference");
 		}
 
+		while (instance instanceof InstanceDecorator) {
+			instance = ((InstanceDecorator) instance).getOriginalInstance();
+		}
+
 		OInstance inst = (OInstance) instance;
 		ORID id = inst.getDocument().getIdentity();
 
@@ -135,29 +139,20 @@ public class OrientInstanceReference implements InstanceReference {
 	 * Load the instance specified by the reference from the given database.
 	 * 
 	 * @param lodb the database
+	 * @param owner the instance collection owning the reference
 	 * @return the instance or <code>null</code> if no instance matching the
 	 *         reference is present
 	 */
-	public Instance load(LocalOrientDB lodb) {
-		DatabaseReference<ODatabaseDocumentTx> db = lodb.openRead();
-		DatabaseHandle handle = new DatabaseHandle(db.getDatabase());
+	public Instance load(LocalOrientDB lodb, Object owner) {
+		SharedDatabaseConnection connection = SharedDatabaseConnection.openRead(lodb, owner);
+		DatabaseReference<ODatabaseDocumentTx> db = connection.getDb();
+		DatabaseHandle handle = connection.getHandle();
 		try {
 			ODocument document = db.getDatabase().load(getId());
 			if (document != null) {
 				OInstance instance = new OInstance(document, getTypeDefinition(), db.getDatabase(),
 						getDataSet());
-				handle.addReference(instance);
-				return instance;
-				/*
-				 * Alternative: Returning a copy of the instance.
-				 * 
-				 * But this can be very expensive if dealing with an instance
-				 * with deep sub-structures. Example: A Merge on ~150 GML
-				 * features took ~200 times longer (over 6 minutes instead of 2
-				 * seconds) when copying instances that were retrieved through
-				 * instance references.
-				 */
-//				return new DefaultInstance(instance);
+				return handle.addInstance(instance);
 			}
 			else
 				return null;

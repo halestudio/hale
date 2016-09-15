@@ -50,10 +50,10 @@ import org.eclipse.ui.PlatformUI;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.CodeList.CodeEntry;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
@@ -87,7 +87,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	private ControlDecoration decoration;
 
 	private Class<?> binding;
-	private final ConversionService cs = OsgiUtils.getService(ConversionService.class);
+	private final ConversionService cs = HalePlatform.getService(ConversionService.class);
 
 	private CodeList codeList;
 	private final String codeListNamespace;
@@ -122,7 +122,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		this.codeListNamespace = codeListNamespace;
 		String propertyName = property.getName().getLocalPart();
 		codeListName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1)
-				+ "Value"; //$NON-NLS-1$	
+				+ "Value"; //$NON-NLS-1$
 
 		// add enumeration info
 		if (enumeration.getValues() != null) {
@@ -146,11 +146,11 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 
 		composite = new Composite(parent, SWT.NONE);
 		int numColumns = (entity == null) ? (1) : (2);
-		composite.setLayout(GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(numColumns)
-				.create());
+		composite.setLayout(
+				GridLayoutFactory.swtDefaults().margins(0, 0).numColumns(numColumns).create());
 
-		viewer = new ComboViewer(composite, (otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY)
-				| SWT.BORDER);
+		viewer = new ComboViewer(composite,
+				(otherValuesAllowed ? SWT.NONE : SWT.READ_ONLY) | SWT.BORDER);
 		viewer.getControl().setLayoutData(
 				GridDataFactory.fillDefaults().indent(7, 0).grab(true, false).create());
 		viewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -178,8 +178,8 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 					Object selected = ((IStructuredSelection) selection).getFirstElement();
 					if (selected instanceof CodeEntry) {
 						CodeEntry entry = (CodeEntry) selected;
-						viewer.getCombo().setToolTipText(
-								entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
+						viewer.getCombo()
+								.setToolTipText(entry.getName() + ":\n\n" + entry.getDescription()); //$NON-NLS-1$
 						return;
 					}
 				}
@@ -193,8 +193,8 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 
 		// create decoration
 		decoration = new ControlDecoration(viewer.getControl(), SWT.LEFT | SWT.TOP, composite);
-		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-				FieldDecorationRegistry.DEC_ERROR);
+		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		decoration.setImage(fieldDecoration.getImage());
 		decoration.hide();
 
@@ -227,8 +227,8 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 			viewer.setSelection(new StructuredSelection(values.iterator().next()));
 
 		// add code list selection button
-		final Image assignImage = CodeListUIPlugin
-				.getImageDescriptor("icons/assign_codelist.gif").createImage(); //$NON-NLS-1$
+		final Image assignImage = CodeListUIPlugin.getImageDescriptor("icons/assign_codelist.gif") //$NON-NLS-1$
+				.createImage();
 
 		if (entity != null) {
 			Button assign = new Button(composite, SWT.PUSH);
@@ -239,14 +239,14 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					final Display display = Display.getCurrent();
-					CodeListSelectionDialog dialog = new CodeListSelectionDialog(display
-							.getActiveShell(), codeList, MessageFormat.format(
-							"Please select a code list to assign to {0}",
-							DefaultPropertyEditor.this.property.getDisplayName()));
+					CodeListSelectionDialog dialog = new CodeListSelectionDialog(
+							display.getActiveShell(), codeList,
+							MessageFormat.format("Please select a code list to assign to {0}",
+									DefaultPropertyEditor.this.property.getDisplayName()));
 					if (dialog.open() == CodeListSelectionDialog.OK) {
 						CodeList newCodeList = dialog.getCodeList();
-						CodeListService codeListService = (CodeListService) PlatformUI
-								.getWorkbench().getService(CodeListService.class);
+						CodeListService codeListService = PlatformUI.getWorkbench()
+								.getService(CodeListService.class);
 
 						codeListService.assignEntityCodeList(DefaultPropertyEditor.this.entity,
 								newCodeList);
@@ -293,8 +293,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		if (enumerationValues != null)
 			values.addAll(enumerationValues);
 
-		CodeListService clService = (CodeListService) PlatformUI.getWorkbench().getService(
-				CodeListService.class);
+		CodeListService clService = PlatformUI.getWorkbench().getService(CodeListService.class);
 		if (entity != null) {
 			codeList = clService.findCodeListByEntity(entity);
 		}
@@ -316,7 +315,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -324,7 +323,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {

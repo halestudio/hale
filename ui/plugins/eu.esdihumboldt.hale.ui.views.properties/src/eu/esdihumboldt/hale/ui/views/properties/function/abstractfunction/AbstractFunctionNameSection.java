@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
 
 /**
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.ui.views.properties.function.DefaultFunctionSection;
  * 
  * @author Patrick Lieb
  */
-public class AbstractFunctionNameSection extends DefaultFunctionSection<AbstractFunction<?>> {
+public class AbstractFunctionNameSection extends DefaultFunctionSection<FunctionDefinition<?>> {
 
 	private Text name;
 

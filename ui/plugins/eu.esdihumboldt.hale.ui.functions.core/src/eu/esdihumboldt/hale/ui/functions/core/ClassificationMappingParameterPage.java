@@ -73,13 +73,13 @@ import org.springframework.core.convert.ConversionService;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.lookup.LookupService;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
@@ -93,8 +93,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.io.csv.ui.LookupTableExportWizard;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
-import eu.esdihumboldt.hale.ui.common.Editor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeInputDialog;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -104,6 +104,7 @@ import eu.esdihumboldt.hale.ui.lookup.LookupTableLoadWizard;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValues;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesListener;
 import eu.esdihumboldt.hale.ui.service.values.OccurringValuesService;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
@@ -112,9 +113,9 @@ import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
  * @author Kai Schwierczek, Dominik Reuter
  */
 @SuppressWarnings("restriction")
-public class ClassificationMappingParameterPage extends
-		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage,
-		ClassificationMappingFunction {
+public class ClassificationMappingParameterPage
+		extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage, ClassificationMappingFunction {
 
 	private TabFolder tabs;
 	private TabItem manualItem;
@@ -127,6 +128,7 @@ public class ClassificationMappingParameterPage extends
 	private Text fixedValueText;
 	private Button fixedValueInputButton;
 	private static final List<String> notClassifiedActionOptions = new ArrayList<String>(3);
+
 	static {
 		notClassifiedActionOptions.add("assign null");
 		notClassifiedActionOptions.add("assign the source value");
@@ -138,8 +140,8 @@ public class ClassificationMappingParameterPage extends
 	private final OccurringValuesListener ovsListener;
 	private final Map<Value, Value> lookupTable = new LinkedHashMap<>();
 	private TableViewer tableViewer;
-	private final Image fillValuesIcon = CoreFunctionsUIPlugin.getImageDescriptor(
-			"icons/fill_values.png").createImage();
+	private final Image fillValuesIcon = CoreFunctionsUIPlugin
+			.getImageDescriptor("icons/fill_values.png").createImage();
 
 	// from file tab fields
 	private ComboViewer lookupTableComboViewer;
@@ -160,8 +162,7 @@ public class ClassificationMappingParameterPage extends
 		super("classificationmapping", "Classification", null);
 		setPageComplete(false);
 
-		ovs = (OccurringValuesService) PlatformUI.getWorkbench().getService(
-				OccurringValuesService.class);
+		ovs = PlatformUI.getWorkbench().getService(OccurringValuesService.class);
 		ovs.addListener(ovsListener = new OccurringValuesListener() {
 
 			@Override
@@ -193,7 +194,7 @@ public class ClassificationMappingParameterPage extends
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		// this page is only for parameter classificationMapping, ignore params
 		if (initialValues == null)
@@ -246,8 +247,8 @@ public class ClassificationMappingParameterPage extends
 				// Set the selected lookupTable
 				IStructuredSelection selection = (IStructuredSelection) lookupTableComboViewer
 						.getSelection();
-				configuration.put(PARAMETER_LOOKUPTABLE_ID, new ParameterValue(selection
-						.getFirstElement().toString()));
+				configuration.put(PARAMETER_LOOKUPTABLE_ID,
+						new ParameterValue(selection.getFirstElement().toString()));
 			}
 			else {
 				if (tabItem.equals(manualItem)) {
@@ -283,19 +284,19 @@ public class ClassificationMappingParameterPage extends
 		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).create());
 		// not classified action
 		notClassifiedActionComposite = new Composite(page, SWT.NONE);
-		notClassifiedActionComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true,
-				false, 4, 1));
-		notClassifiedActionComposite.setLayout(GridLayoutFactory.swtDefaults().numColumns(4)
-				.margins(0, 0).create());
+		notClassifiedActionComposite
+				.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 4, 1));
+		notClassifiedActionComposite
+				.setLayout(GridLayoutFactory.swtDefaults().numColumns(4).margins(0, 0).create());
 
 		Label notClassifiedActionLabel = new Label(notClassifiedActionComposite, SWT.NONE);
 		notClassifiedActionLabel.setText("For unmapped source values");
 		notClassifiedActionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
-		notClassifiedActionViewer = new ComboViewer(notClassifiedActionComposite, SWT.DROP_DOWN
-				| SWT.READ_ONLY);
-		notClassifiedActionViewer.getControl().setLayoutData(
-				new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+		notClassifiedActionViewer = new ComboViewer(notClassifiedActionComposite,
+				SWT.DROP_DOWN | SWT.READ_ONLY);
+		notClassifiedActionViewer.getControl()
+				.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		notClassifiedActionViewer.setContentProvider(ArrayContentProvider.getInstance());
 
 		notClassifiedActionViewer.setInput(notClassifiedActionOptions);
@@ -303,23 +304,23 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				if (notClassifiedActionOptions.indexOf(((IStructuredSelection) event.getSelection())
-						.getFirstElement()) == 2)
+				if (notClassifiedActionOptions.indexOf(
+						((IStructuredSelection) event.getSelection()).getFirstElement()) == 2)
 					createFixedValueInputButton(null);
 				else
 					removeFixedValueInputButton();
 			}
 		});
 
-		notClassifiedActionViewer.setSelection(new StructuredSelection(notClassifiedActionOptions
-				.get(0)));
+		notClassifiedActionViewer
+				.setSelection(new StructuredSelection(notClassifiedActionOptions.get(0)));
 		if (notClassifiedAction != null) {
 			if (notClassifiedAction.equals("source"))
-				notClassifiedActionViewer.setSelection(new StructuredSelection(
-						notClassifiedActionOptions.get(1)));
+				notClassifiedActionViewer
+						.setSelection(new StructuredSelection(notClassifiedActionOptions.get(1)));
 			else if (notClassifiedAction.startsWith("fixed:")) {
-				notClassifiedActionViewer.setSelection(new StructuredSelection(
-						notClassifiedActionOptions.get(2)));
+				notClassifiedActionViewer
+						.setSelection(new StructuredSelection(notClassifiedActionOptions.get(2)));
 				createFixedValueInputButton(notClassifiedAction.substring(6));
 			}
 		}
@@ -417,8 +418,8 @@ public class ClassificationMappingParameterPage extends
 					}
 					else {
 						oldValue = entry.getValue();
-						String initialValue = oldValue == null ? null : oldValue
-								.getStringRepresentation();
+						String initialValue = oldValue == null ? null
+								: oldValue.getStringRepresentation();
 						newValue = selectValue(targetProperty, targetEntity, "Edit target value",
 								"Enter a target value", initialValue);
 					}
@@ -495,15 +496,15 @@ public class ClassificationMappingParameterPage extends
 		});
 
 		fillValues.setImage(fillValuesIcon);
-		fillValues
-				.setToolTipText("Attempt to fill source values with enumerations and occurring values.");
+		fillValues.setToolTipText(
+				"Attempt to fill source values with enumerations and occurring values.");
 		fillValues.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				// first try enumeration
-				Enumeration<?> enumeration = sourceProperty.getPropertyType().getConstraint(
-						Enumeration.class);
+				Enumeration<?> enumeration = sourceProperty.getPropertyType()
+						.getConstraint(Enumeration.class);
 				if (enumeration.getValues() != null) {
 					addSourceValuesIfNew(enumeration.getValues());
 				}
@@ -538,8 +539,8 @@ public class ClassificationMappingParameterPage extends
 			}
 		});
 
-		valueRemove.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_REMOVE));
+		valueRemove
+				.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_REMOVE));
 		valueRemove.setToolTipText("Remove classification entry");
 		valueRemove.setEnabled(false);
 		tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -568,8 +569,8 @@ public class ClassificationMappingParameterPage extends
 			}
 		});
 
-		removeAllButton.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_TRASH));
+		removeAllButton
+				.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_TRASH));
 		removeAllButton.setEnabled(false);
 		removeAllButton.setToolTipText("Remove complete classification");
 		removeAllButton.addSelectionListener(new SelectionAdapter() {
@@ -614,7 +615,7 @@ public class ClassificationMappingParameterPage extends
 	 * @param values the values to add
 	 */
 	private void addSourceValuesIfNew(Iterable<?> values) {
-		ConversionService cs = OsgiUtils.getService(ConversionService.class);
+		ConversionService cs = HalePlatform.getService(ConversionService.class);
 		for (Object value : values) {
 			Value sourceValue = Value.of(cs.convert(value, String.class));
 			if (!lookupTable.containsKey(sourceValue))
@@ -636,8 +637,9 @@ public class ClassificationMappingParameterPage extends
 
 	private Value selectValue(PropertyDefinition property, EntityDefinition entity, String title,
 			String message, String initialValue) {
-		AttributeInputDialog dialog = new AttributeInputDialog(property, entity, Display
-				.getCurrent().getActiveShell(), title, message);
+		AttributeInputDialog dialog = new AttributeInputDialog(property, entity,
+				Display.getCurrent().getActiveShell(), title, message,
+				new TransformationVariableReplacer());
 		dialog.create();
 		if (initialValue != null)
 			dialog.getEditor().setAsText(initialValue);
@@ -655,11 +657,12 @@ public class ClassificationMappingParameterPage extends
 
 		// Label to descripe what the user should do
 		Label l = new Label(item2Content, SWT.NONE);
-		l.setText("Select the project lookup table resource you want to use for the classification:");
+		l.setText(
+				"Select the project lookup table resource you want to use for the classification:");
 
 		// Get the Lookuptable Service
-		final LookupService lookupService = HaleUI.getServiceProvider().getService(
-				LookupService.class);
+		final LookupService lookupService = HaleUI.getServiceProvider()
+				.getService(LookupService.class);
 
 		// Composite for comboViewerComposite and Button
 		Composite parent = new Composite(item2Content, SWT.NONE);
@@ -683,8 +686,9 @@ public class ClassificationMappingParameterPage extends
 		GridDataFactory.swtDefaults().align(SWT.CENTER, SWT.BEGINNING).applyTo(warnImage);
 
 		Label warn = new Label(warnComp, SWT.WRAP);
-		warn.setText("Classifications from a file resource will not function in another project where the alignment with the classification is imported or used as a base alignment.\n"
-				+ "If unsure, use the 'Explicit' mode instead and use the option to load the classification from a file.");
+		warn.setText(
+				"Classifications from a file resource will not function in another project where the alignment with the classification is imported or used as a base alignment.\n"
+						+ "If unsure, use the 'Explicit' mode instead and use the option to load the classification from a file.");
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).grab(true, false)
 				.hint(300, SWT.DEFAULT).applyTo(warn);
 
@@ -787,11 +791,12 @@ public class ClassificationMappingParameterPage extends
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty,
-						targetEntity, Display.getCurrent().getActiveShell(), "Set default value",
-						"This value will be assigned to targets when the source value is not mapped");
+				AttributeInputDialog dialog = new AttributeInputDialog(targetProperty, targetEntity,
+						Display.getCurrent().getActiveShell(), "Set default value",
+						"This value will be assigned to targets when the source value is not mapped",
+						new TransformationVariableReplacer());
 				if (initialValue != null) {
-					Editor<?> editor = dialog.getEditor();
+					AttributeEditor<?> editor = dialog.getEditor();
 					if (editor != null) {
 						editor.setAsText(initialValue);
 					}
@@ -799,8 +804,8 @@ public class ClassificationMappingParameterPage extends
 
 				if (dialog.open() == Dialog.OK) {
 					if (fixedValueText == null) {
-						fixedValueText = new Text(notClassifiedActionComposite, SWT.READ_ONLY
-								| SWT.BORDER);
+						fixedValueText = new Text(notClassifiedActionComposite,
+								SWT.READ_ONLY | SWT.BORDER);
 						fixedValueText
 								.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 						notClassifiedActionComposite.layout();

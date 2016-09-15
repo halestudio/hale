@@ -30,12 +30,15 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
+import org.w3c.dom.Element;
+
 import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
@@ -46,6 +49,7 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentTyp
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CustomFunctionType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
@@ -59,13 +63,14 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -73,8 +78,8 @@ import eu.esdihumboldt.util.io.PathUpdate;
  * 
  * @author Simon Templer
  */
-public class JaxbToAlignment extends
-		AbstractBaseAlignmentLoader<AlignmentType, CellType, ModifierType> {
+public class JaxbToAlignment
+		extends AbstractBaseAlignmentLoader<AlignmentType, CellType, ModifierType> {
 
 	private final TypeIndex targetTypes;
 	private final TypeIndex sourceTypes;
@@ -169,7 +174,7 @@ public class JaxbToAlignment extends
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, projectLocation,
 				sourceTypes, targetTypes, reporter);
 	}
@@ -203,8 +208,8 @@ public class JaxbToAlignment extends
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
 					ComplexParameterType cpt = (ComplexParameterType) apt;
-					parameters.put(cpt.getName(), new ParameterValue(new ElementValue(cpt.getAny(),
-							context)));
+					parameters.put(cpt.getName(),
+							new ParameterValue(new ElementValue(cpt.getAny(), context)));
 				}
 				else
 					throw new IllegalStateException("Illegal parameter type");
@@ -235,8 +240,8 @@ public class JaxbToAlignment extends
 				AnnotationType annot = (AnnotationType) element;
 
 				// but first load it from the DOM
-				AnnotationDescriptor<?> desc = AnnotationExtension.getInstance().get(
-						annot.getType());
+				AnnotationDescriptor<?> desc = AnnotationExtension.getInstance()
+						.get(annot.getType());
 				if (desc != null) {
 					try {
 						Object value = desc.fromDOM(annot.getAny(), null);
@@ -358,6 +363,30 @@ public class JaxbToAlignment extends
 		context.setSourceTypes(sourceTypes);
 		context.setTargetTypes(targetTypes);
 		return convert(cell, context, reporter, resolver);
+	}
+
+	@Override
+	protected Collection<CustomPropertyFunction> getPropertyFunctions(AlignmentType source,
+			TypeIndex sourceTypes, TypeIndex targetTypes) {
+		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
+		context.setSourceTypes(sourceTypes);
+		context.setTargetTypes(targetTypes);
+
+		Collection<CustomPropertyFunction> result = new ArrayList<>();
+		List<CustomFunctionType> functions = source.getCustomFunction();
+		if (functions != null) {
+			for (CustomFunctionType function : functions) {
+				Element elem = function.getAny();
+				if (elem != null) {
+					CustomPropertyFunction cf = HaleIO.getComplexValue(elem,
+							CustomPropertyFunction.class, context);
+					if (cf != null) {
+						result.add(cf);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	/**

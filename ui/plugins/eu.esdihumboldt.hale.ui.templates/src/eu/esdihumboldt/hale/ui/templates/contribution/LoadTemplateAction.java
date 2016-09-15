@@ -58,8 +58,7 @@ public class LoadTemplateAction extends Action {
 	public void run() {
 		super.run();
 
-		ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-				ProjectService.class);
+		ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 		try {
 			ps.load(template.getLocation().getLocation());
 		} catch (URISyntaxException e) {

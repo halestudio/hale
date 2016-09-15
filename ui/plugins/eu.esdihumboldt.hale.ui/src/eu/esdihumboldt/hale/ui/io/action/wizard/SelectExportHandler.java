@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.ui.util.handler.AbstractWizardHandler;
  * 
  * @author Simon Templer
  */
-public class SelectExportHandler extends AbstractWizardHandler {
+public class SelectExportHandler extends AbstractWizardHandler<IWizard> {
 
 	/**
 	 * @see AbstractWizardHandler#createWizard()

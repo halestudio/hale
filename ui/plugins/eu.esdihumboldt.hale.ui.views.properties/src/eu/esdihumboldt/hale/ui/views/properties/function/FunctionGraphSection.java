@@ -26,7 +26,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.zest.core.viewers.GraphViewer;
 
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
@@ -38,7 +38,8 @@ import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
  * @author Patrick Lieb
  * @param <F> the function for the section
  */
-public class FunctionGraphSection<F extends Function> extends DefaultFunctionSection<F> {
+public class FunctionGraphSection<F extends FunctionDefinition<?>> extends
+		DefaultFunctionSection<F> {
 
 	private GraphViewer viewer;
 

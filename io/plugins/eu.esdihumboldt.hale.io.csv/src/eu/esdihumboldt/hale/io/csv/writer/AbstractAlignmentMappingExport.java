@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -329,7 +329,8 @@ public abstract class AbstractAlignmentMappingExport extends AbstractAlignmentWr
 			}
 		}
 
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell.getTransformationIdentifier());
+		FunctionDefinition<?> function = FunctionUtil.getFunction(
+				cell.getTransformationIdentifier(), getServiceProvider());
 
 		if (function != null) {
 			// column relation name

@@ -182,7 +182,7 @@
 			</configuration>
 		</plugin>
 		<% } %>
-		<% if(needsTwirl) { %>
+		<% if(hasProperty('needsTwirl') && needsTwirl) { %>
 		<plugin>
 			<groupId>com.jakewharton.twirl</groupId>
 			<artifactId>twirl-maven-plugin</artifactId>

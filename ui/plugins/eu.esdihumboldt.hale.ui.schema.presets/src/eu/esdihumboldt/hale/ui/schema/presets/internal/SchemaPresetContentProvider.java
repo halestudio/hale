@@ -24,9 +24,9 @@ import org.eclipse.jface.viewers.Viewer;
 
 import com.google.common.collect.Iterables;
 
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategory;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaCategoryExtension;
-import eu.esdihumboldt.hale.ui.schema.presets.extension.SchemaPreset;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategory;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaCategoryExtension;
+import eu.esdihumboldt.hale.common.schema.presets.extension.SchemaPreset;
 
 /**
  * Content provider for the categorized schema presets.

@@ -52,6 +52,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TargetNo
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractSourceToTargetVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.AbstractTargetToSourceVisitor;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.util.IdentityWrapper;
 import eu.esdihumboldt.util.Pair;
 
@@ -177,8 +178,8 @@ public class TargetContext implements TransformationContext {
 		 *         node it was duplicated from
 		 */
 		public Collection<Pair<TargetNodeImpl, TargetNode>> getIncompleteTargetNodes() {
-			return new ArrayList<Pair<TargetNodeImpl, TargetNode>>(Collections2.filter(
-					targetNodePairs, new Predicate<Pair<TargetNodeImpl, TargetNode>>() {
+			return new ArrayList<Pair<TargetNodeImpl, TargetNode>>(Collections2
+					.filter(targetNodePairs, new Predicate<Pair<TargetNodeImpl, TargetNode>>() {
 
 						@Override
 						public boolean apply(Pair<TargetNodeImpl, TargetNode> input) {
@@ -187,8 +188,8 @@ public class TargetContext implements TransformationContext {
 
 							return original.getChildren(true).size() > duplicate.getChildren(true)
 									.size()
-									|| original.getAssignments().size() > duplicate
-											.getAssignments().size();
+									|| original.getAssignments().size() > duplicate.getAssignments()
+											.size();
 						}
 					}));
 		}
@@ -390,14 +391,18 @@ public class TargetContext implements TransformationContext {
 	}
 
 	private final Set<TargetNode> contextTargets;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Create a transformation context that duplicates subgraphs leading to
 	 * given target nodes.
+	 * 
+	 * @param serviceProvider the service provider
 	 */
-	public TargetContext() {
+	public TargetContext(ServiceProvider serviceProvider) {
 		super();
 		this.contextTargets = new HashSet<TargetNode>();
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -472,7 +477,7 @@ public class TargetContext implements TransformationContext {
 			collectExistingNodes(originalSource,
 					Collections.<EntityDefinition, SourceNode> emptyMap(), info, true);
 
-			duplicateTree(originalSource, duplicate, info, log);
+			duplicateTree(originalSource, duplicate, info, log, serviceProvider);
 		}
 		else
 			throw new IllegalStateException(
@@ -512,14 +517,15 @@ public class TargetContext implements TransformationContext {
 	 * @param duplicate the duplication target
 	 * @param info the duplication info object
 	 * @param log the transformation log
+	 * @param serviceProvider service provider for resolving functions
 	 */
 	private static void duplicateTree(SourceNode source, SourceNode duplicate,
-			DuplicationInformation info, TransformationLog log) {
+			DuplicationInformation info, TransformationLog log, ServiceProvider serviceProvider) {
 		// Duplicate relations.
 		for (CellNode cell : source.getRelations(false)) {
 
 			// check whether the cell is eager for the source node
-			if (TransformationTreeUtil.isEager(cell, source, log))
+			if (TransformationTreeUtil.isEager(cell, source, log, serviceProvider))
 				continue;
 
 			// Check whether the cell is ignored.
@@ -571,7 +577,7 @@ public class TargetContext implements TransformationContext {
 			SourceNode duplicatedChild = new SourceNodeImpl(child.getEntityDefinition(), duplicate,
 					true);
 			duplicatedChild.setContext(child.getContext());
-			duplicateTree(child, duplicatedChild, info, log);
+			duplicateTree(child, duplicatedChild, info, log, serviceProvider);
 		}
 	}
 
@@ -592,14 +598,16 @@ public class TargetContext implements TransformationContext {
 					source.getEntityDefinition())) {
 				// This source node does not belong to the duplicated tree, add
 				// an existing fitting source node!
-				Collection<SourceNode> possibleSources = info.getOldSourceNodes(source
-						.getEntityDefinition());
-				// Only add the node here if there is exactly one possible
-				// source.
-				// For zero there is nothing to add, for more they are
-				// duplicates
-				// which should add themselves to this cell when they are
-				// handled.
+				Collection<SourceNode> possibleSources = info
+						.getOldSourceNodes(source.getEntityDefinition());
+						// Only add the node here if there is exactly one
+						// possible
+						// source.
+						// For zero there is nothing to add, for more they are
+						// duplicates
+						// which should add themselves to this cell when they
+						// are
+						// handled.
 
 				// False?
 				// In case of zero there may be something to add, not duplicated
@@ -611,8 +619,8 @@ public class TargetContext implements TransformationContext {
 				// checked for leftovers?
 
 				if (possibleSources.size() == 1)
-					duplicatedCell.addSource(cell.getSourceNames(source), possibleSources
-							.iterator().next());
+					duplicatedCell.addSource(cell.getSourceNames(source),
+							possibleSources.iterator().next());
 			}
 		}
 	}
@@ -652,8 +660,9 @@ public class TargetContext implements TransformationContext {
 		GroupNode parent = null;
 		// Check if the parent node exists in the given context already.
 		if (target.getParent() instanceof TargetNode) {
-			Iterator<TargetNode> possibleParents = info.getAllTargetNodes(
-					((TargetNode) target.getParent()).getEntityDefinition()).iterator();
+			Iterator<TargetNode> possibleParents = info
+					.getAllTargetNodes(((TargetNode) target.getParent()).getEntityDefinition())
+					.iterator();
 
 			while (possibleParents.hasNext()) {
 				TargetNode possibleParent = possibleParents.next();
@@ -811,16 +820,16 @@ public class TargetContext implements TransformationContext {
 				// due to an
 				// augmentation.
 
-				TargetNode originalTarget = targetNodesWithAugmentations.get(target
-						.getEntityDefinition());
+				TargetNode originalTarget = targetNodesWithAugmentations
+						.get(target.getEntityDefinition());
 				// Only have to do something if the node is present in the map.
 				if (originalTarget != null && originalTarget != target) {
 					// Check for missing relations (all relations without
 					// sources are missing).
 					for (CellNode originalAssignment : originalTarget.getAssignments()) {
 						if (originalAssignment.getSources().isEmpty()) {
-							CellNodeImpl duplicatedAssignment = new CellNodeImpl(originalAssignment
-									.getCell());
+							CellNodeImpl duplicatedAssignment = new CellNodeImpl(
+									originalAssignment.getCell());
 							duplicatedAssignment.addTarget(target);
 							((TargetNodeImpl) target).addAssignment(
 									originalTarget.getAssignmentNames(originalAssignment),
@@ -833,8 +842,8 @@ public class TargetContext implements TransformationContext {
 						// Only add missing children that need an augmentation.
 						if (targetNodesWithAugmentations.containsKey(child.getEntityDefinition())
 								&& !target.getChildren(false).contains(child)) {
-							TargetNodeImpl duplicatedChild = new TargetNodeImpl(child
-									.getEntityDefinition(), target);
+							TargetNodeImpl duplicatedChild = new TargetNodeImpl(
+									child.getEntityDefinition(), target);
 							((TargetNodeImpl) target).addChild(duplicatedChild);
 							// The child will be handled by this visior later.
 						}
@@ -883,8 +892,8 @@ public class TargetContext implements TransformationContext {
 			@Override
 			public boolean visit(TargetNode target) {
 				// TargetNodes can be found more than once...
-				Collection<IdentityWrapper<TargetNode>> targetNodes = info.getOldTargetNodes(target
-						.getEntityDefinition());
+				Collection<IdentityWrapper<TargetNode>> targetNodes = info
+						.getOldTargetNodes(target.getEntityDefinition());
 				if (targetNodes.contains(new IdentityWrapper<>(target))) {
 					return false; // already found & followed...
 				}
@@ -898,8 +907,8 @@ public class TargetContext implements TransformationContext {
 			@Override
 			public boolean visit(CellNode cell) {
 				// CellNodes can be found more than once...
-				Collection<IdentityWrapper<CellNode>> cellNodes = info.getOldCellNodes(cell
-						.getCell());
+				Collection<IdentityWrapper<CellNode>> cellNodes = info
+						.getOldCellNodes(cell.getCell());
 				if (cellNodes.contains(new IdentityWrapper<>(cell))) {
 					return false; // already found & followed...
 				}
@@ -1046,7 +1055,8 @@ public class TargetContext implements TransformationContext {
 	private SourceNode duplicateSource(SourceNode source, SourceNode parent, boolean addToParent,
 			DuplicationContext duplicationContext) {
 		// create duplicate
-		SourceNode duplicate = new SourceNodeImpl(source.getEntityDefinition(), parent, addToParent);
+		SourceNode duplicate = new SourceNodeImpl(source.getEntityDefinition(), parent,
+				addToParent);
 		duplicate.setContext(source.getContext());
 
 		return configureSourceDuplicate(source, duplicate, parent, duplicationContext, addToParent);
@@ -1067,8 +1077,8 @@ public class TargetContext implements TransformationContext {
 	private SourceNode configureSourceDuplicate(SourceNode originalSource, SourceNode duplicate,
 			SourceNode parent, DuplicationContext duplicationContext, boolean addToParent) {
 		// duplicate relations
-		List<CellNode> relations = new ArrayList<CellNode>(originalSource.getRelations(false)
-				.size());
+		List<CellNode> relations = new ArrayList<CellNode>(
+				originalSource.getRelations(false).size());
 		// though each cell node is only duplicated once per duplication context
 		for (CellNode relation : originalSource.getRelations(false)) { // XXX
 																		// should
@@ -1084,8 +1094,8 @@ public class TargetContext implements TransformationContext {
 		}
 
 		// duplicate children
-		List<SourceNode> children = new ArrayList<SourceNode>(originalSource.getChildren(false)
-				.size());
+		List<SourceNode> children = new ArrayList<SourceNode>(
+				originalSource.getChildren(false).size());
 		for (SourceNode child : originalSource.getChildren(false)) { // XXX
 																		// should
 																		// the
@@ -1093,7 +1103,8 @@ public class TargetContext implements TransformationContext {
 																		// children
 																		// be
 																		// included?
-			SourceNode duplicatedChild = duplicateSource(child, duplicate, true, duplicationContext);
+			SourceNode duplicatedChild = duplicateSource(child, duplicate, true,
+					duplicationContext);
 			if (duplicatedChild != null) {
 				children.add(duplicatedChild);
 			}
@@ -1150,7 +1161,8 @@ public class TargetContext implements TransformationContext {
 			// duplicate the target nodes as necessary
 			List<TargetNode> targets = new ArrayList<TargetNode>(relation.getTargets().size());
 			for (TargetNode target : relation.getTargets()) {
-				TargetNode duplicatedTarget = duplicateTarget(target, duplicate, duplicationContext);
+				TargetNode duplicatedTarget = duplicateTarget(target, duplicate,
+						duplicationContext);
 				if (duplicatedTarget != null) {
 					targets.add(duplicatedTarget);
 				}

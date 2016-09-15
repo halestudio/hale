@@ -69,9 +69,9 @@ public class TypeStyleHandler extends AbstractHandler {
 		}
 		else if (!types.isEmpty()) {
 			// choose through dialog
-			DataSetTypeSelectionDialog dialog = new DataSetTypeSelectionDialog(Display.getCurrent()
-					.getActiveShell(), "Multiple types: select which to change the style for",
-					null, types);
+			DataSetTypeSelectionDialog dialog = new DataSetTypeSelectionDialog(
+					Display.getCurrent().getActiveShell(),
+					"Multiple types: select which to change the style for", null, types);
 			if (dialog.open() == DataSetTypeSelectionDialog.OK) {
 				typeInfo = dialog.getObject();
 			}
@@ -97,8 +97,7 @@ public class TypeStyleHandler extends AbstractHandler {
 	 * @return the data set
 	 */
 	private static DataSet findDataSet(TypeDefinition type) {
-		SchemaService ss = (SchemaService) PlatformUI.getWorkbench()
-				.getService(SchemaService.class);
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		if (ss.getSchemas(SchemaSpaceID.SOURCE).getMappingRelevantTypes().contains(type)) {
 			return DataSet.SOURCE;
 		}
@@ -134,14 +133,13 @@ public class TypeStyleHandler extends AbstractHandler {
 				if (object instanceof EntityDefinition) {
 					EntityDefinition entityDef = (EntityDefinition) object;
 					if (entityDef.getPropertyPath().isEmpty()) {
-						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE) ? (DataSet.SOURCE)
-								: (DataSet.TRANSFORMED);
+						DataSet dataSet = (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE)
+								? (DataSet.SOURCE) : (DataSet.TRANSFORMED);
 						types.put(dataSet, entityDef.getType());
 					}
 				}
 				if (object instanceof InstanceReference) {
-					InstanceService is = (InstanceService) HandlerUtil
-							.getActiveWorkbenchWindow(event).getWorkbench()
+					InstanceService is = HandlerUtil.getActiveWorkbenchWindow(event).getWorkbench()
 							.getService(InstanceService.class);
 					object = is.getInstance((InstanceReference) object);
 				}

@@ -50,14 +50,15 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.scripting.Script;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
-import eu.esdihumboldt.hale.ui.common.editors.AbstractEditor;
+import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Editor for math scripts.
  * 
  * @author Kai Schwierczek
  */
-public class MathEditor extends AbstractEditor<String> {
+public class MathEditor extends AbstractAttributeEditor<String> {
 
 	private final Composite composite;
 	private Text textField;
@@ -83,16 +84,16 @@ public class MathEditor extends AbstractEditor<String> {
 
 		// input field
 		textField = new Text(composite, SWT.SINGLE | SWT.BORDER);
-		textField.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).indent(7, 0)
-				.create());
+		textField.setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, false).indent(7, 0).create());
 
 		// control decoration
 		decorator = new ControlDecoration(textField, SWT.LEFT | SWT.TOP, composite);
 		// set initial status
 		decorator.hide();
 		// set image
-		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault().getFieldDecoration(
-				FieldDecorationRegistry.DEC_ERROR);
+		FieldDecoration fieldDecoration = FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
 		decorator.setImage(fieldDecoration.getImage());
 
 		textField.addModifyListener(new ModifyListener() {
@@ -166,8 +167,21 @@ public class MathEditor extends AbstractEditor<String> {
 	 * Validates the current input against the currently available variables.
 	 */
 	private void validate() {
-		String result = MathEditor.this.script.validate(currentValue, createPropertyValues(),
-				HaleUI.getServiceProvider());
+		String scriptStr = currentValue;
+		String result = null;
+
+		// replace variables
+		try {
+			scriptStr = new TransformationVariableReplacer().replaceVariables(scriptStr);
+		} catch (Exception e) {
+			result = e.getLocalizedMessage();
+		}
+
+		if (result == null) {
+			result = MathEditor.this.script.validate(scriptStr, createPropertyValues(),
+					HaleUI.getServiceProvider());
+		}
+
 		boolean oldValid = valid;
 		valid = result == null;
 		if (result == null)
@@ -176,8 +190,9 @@ public class MathEditor extends AbstractEditor<String> {
 			decorator.setDescriptionText(result);
 			decorator.show();
 		}
-		if (valid != oldValid)
+		if (valid != oldValid) {
 			fireStateChanged(IS_VALID, oldValid, valid);
+		}
 	}
 
 	/**
@@ -198,7 +213,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getControl()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getControl()
 	 */
 	@Override
 	public Control getControl() {
@@ -206,7 +221,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setValue(java.lang.Object)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(String value) {
@@ -215,7 +230,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValue()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValue()
 	 */
 	@Override
 	public String getValue() {
@@ -223,7 +238,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#setAsText(java.lang.String)
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#setAsText(java.lang.String)
 	 */
 	@Override
 	public void setAsText(String text) {
@@ -231,7 +246,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getAsText()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getAsText()
 	 */
 	@Override
 	public String getAsText() {
@@ -239,7 +254,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#isValid()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#isValid()
 	 */
 	@Override
 	public boolean isValid() {
@@ -247,7 +262,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractEditor#setVariables(java.util.Collection)
+	 * @see eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor#setVariables(java.util.Collection)
 	 */
 	@Override
 	public void setVariables(Collection<PropertyEntityDefinition> properties) {
@@ -257,7 +272,7 @@ public class MathEditor extends AbstractEditor<String> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.common.Editor#getValueType()
+	 * @see eu.esdihumboldt.hale.ui.common.AttributeEditor#getValueType()
 	 */
 	@Override
 	public String getValueType() {

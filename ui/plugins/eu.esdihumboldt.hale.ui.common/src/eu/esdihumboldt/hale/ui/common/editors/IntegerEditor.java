@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.common.align.model.ParameterValue;
  * 
  * @author Simon Templer
  */
-public class IntegerEditor extends AbstractEditor<Integer> {
+public class IntegerEditor extends AbstractAttributeEditor<Integer> {
 
 	private Integer value;
 	private final Spinner spinner;

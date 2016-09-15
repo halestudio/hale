@@ -41,7 +41,7 @@ public class UnpopulatedTypesFilter extends ViewerFilter {
 	public UnpopulatedTypesFilter() {
 		super();
 
-		ps = (PopulationService) PlatformUI.getWorkbench().getService(PopulationService.class);
+		ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class UnpopulatedTypesFilter extends ViewerFilter {
 				EntityDefinition entityDef = (EntityDefinition) element;
 
 				if (entityDef.getPropertyPath().isEmpty()
-				// only filter types
+						// only filter types
 						&& ps.hasPopulation(entityDef.getSchemaSpace())) {
 					// only filter if there is a population
 					Population pop = ps.getPopulation(entityDef);

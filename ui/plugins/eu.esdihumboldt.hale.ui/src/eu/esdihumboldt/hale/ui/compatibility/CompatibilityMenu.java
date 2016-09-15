@@ -28,8 +28,8 @@ import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService
  * 
  * @author Sebastian Reinhardt
  */
-public class CompatibilityMenu extends
-		ExclusiveExtensionContribution<CompatibilityMode, CompatibilityModeFactory> {
+public class CompatibilityMenu
+		extends ExclusiveExtensionContribution<CompatibilityMode, CompatibilityModeFactory> {
 
 	/**
 	 * @see de.fhg.igd.eclipse.ui.util.extension.AbstractExtensionContribution#initExtension()
@@ -37,8 +37,7 @@ public class CompatibilityMenu extends
 	@Override
 	protected ExclusiveExtension<CompatibilityMode, CompatibilityModeFactory> initExtension() {
 
-		return (CompatibilityService) PlatformUI.getWorkbench().getService(
-				CompatibilityService.class);
+		return PlatformUI.getWorkbench().getService(CompatibilityService.class);
 	}
 
 }

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Conceptual Schema Transformer
 Bundle-SymbolicName: eu.esdihumboldt.cst;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="9.0.0",
@@ -21,6 +21,7 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.common.align.model.transformation.tree.context.impl.matcher,
  eu.esdihumboldt.hale.common.align.model.transformation.tree.impl,
  eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor,
+ eu.esdihumboldt.hale.common.align.service,
  eu.esdihumboldt.hale.common.align.transformation.engine,
  eu.esdihumboldt.hale.common.align.transformation.function,
  eu.esdihumboldt.hale.common.align.transformation.function.impl,
@@ -28,6 +29,7 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.common.align.transformation.report.impl,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.convert,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.report,
@@ -41,10 +43,10 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.hale.common.schema.model.constraint.property,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.util,
+ gnu.trove,
  net.jcip.annotations,
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="3.0.0.RELEASE"
-Service-Component: OSGI-INF/CST.xml
 Export-Package: eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.extension.hooks,
  eu.esdihumboldt.cst.extension.hooks.internal;x-internal:=true,

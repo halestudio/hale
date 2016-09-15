@@ -19,12 +19,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,25 +76,34 @@ public abstract class AbstractDBTest {
 	private URI jdbcUri;
 
 	/**
-	 * @param imageParams
-	 *            the config parameters required while creating and starting the
-	 *            container.
+	 * @param imageParams the config parameters required while creating and
+	 *            starting the container.
 	 * 
 	 */
 	public AbstractDBTest(DBImageParameters imageParams) {
 		this.dbi = imageParams;
+	}
 
+	/**
+	 * Create a new database test class.
+	 * 
+	 * @param configName the name of the docker configuration to use for ramping
+	 *            up the database
+	 * @param contextClass the class in which context (class loader) the
+	 *            configuration is defined
+	 */
+	public AbstractDBTest(String configName, Class<?> contextClass) {
+		this(new DBConfigInstance(configName, contextClass.getClassLoader()));
 	}
 
 	/**
 	 * Setup host and database.
 	 * 
-	 * @throws InterruptedException
-	 *             thrown while creating, starting or inspecting a container.
-	 * @throws DockerException
-	 *             ImageNotFoundException if the image is not found while
-	 *             creating a container. ContainerNotFoundException if container
-	 *             is not found while starting/inspecting a container.
+	 * @throws InterruptedException thrown while creating, starting or
+	 *             inspecting a container.
+	 * @throws DockerException ImageNotFoundException if the image is not found
+	 *             while creating a container. ContainerNotFoundException if
+	 *             container is not found while starting/inspecting a container.
 	 */
 	@Before
 	public void setupDB() throws DockerException, InterruptedException {
@@ -102,8 +113,7 @@ public abstract class AbstractDBTest {
 		try {
 			// set context class loaded to this class' class loader to be able
 			// to find hale-docker.conf
-			Thread.currentThread().setContextClassLoader(
-					getClass().getClassLoader());
+			Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 			client = new HaleDockerClient(dbi);
 			client.createContainer();
 			client.startContainer();
@@ -112,8 +122,14 @@ public abstract class AbstractDBTest {
 			Thread.currentThread().setContextClassLoader(cl);
 		}
 
-		jdbcUri = URI.create(dbi.getJDBCURL(
-				client.getHostPort(dbi.getDBPort()), client.getHostName()));
+		String host = client.getHostName();
+		if (host == null) {
+			// using docker container directly (probably unix socket connection)
+			jdbcUri = URI.create(dbi.getJDBCURL(dbi.getDBPort(), client.getContainerIp()));
+		}
+		else {
+			jdbcUri = URI.create(dbi.getJDBCURL(client.getHostPort(dbi.getDBPort()), host));
+		}
 
 		TestUtil.startConversionService();
 
@@ -122,8 +138,7 @@ public abstract class AbstractDBTest {
 	/**
 	 * Wait for the database to be ready.
 	 * 
-	 * @throws SQLException
-	 *             if connecting to the database fails
+	 * @throws SQLException if connecting to the database fails
 	 */
 	protected void waitForDatabase() throws SQLException {
 		waitForConnection().close();
@@ -134,8 +149,7 @@ public abstract class AbstractDBTest {
 	 * 
 	 * @return the connection to the database once it is set up, the caller is
 	 *         responsible to close it
-	 * @throws SQLException
-	 *             if connecting to the database fails
+	 * @throws SQLException if connecting to the database fails
 	 */
 	protected Connection waitForConnection() throws SQLException {
 		int num = 0;
@@ -145,10 +159,11 @@ public abstract class AbstractDBTest {
 
 		waitTime = dbi.getStartUPTime();
 
+		System.out.print("Waiting for database to start");
+
 		while (num < waitTime) {
 			try {
-				result = JDBCConnection.getConnection(jdbcUri, dbi.getUser(),
-						dbi.getPassword());
+				result = JDBCConnection.getConnection(jdbcUri, dbi.getUser(), dbi.getPassword());
 				break;
 			} catch (SQLException e) {
 				// if (!e.getMessage().toLowerCase().contains("database")) {
@@ -158,7 +173,12 @@ public abstract class AbstractDBTest {
 			}
 
 			num++;
-			System.out.print(num + " ");
+			if (num % 10 == 0) {
+				System.out.print(num);
+			}
+			else {
+				System.out.print('.');
+			}
 
 			try {
 				Thread.sleep(1000);
@@ -167,9 +187,7 @@ public abstract class AbstractDBTest {
 			}
 		}
 
-		if (num > 0) {
-			System.out.println();
-		}
+		System.out.println("...complete");
 
 		if (result != null) {
 			return result;
@@ -184,18 +202,14 @@ public abstract class AbstractDBTest {
 	 * Load the database schema.
 	 * 
 	 * @return the schema
-	 * @throws Exception
-	 *             if reading the schema fails
+	 * @throws Exception if reading the schema fails
 	 */
 	protected Schema readSchema() throws Exception {
-
 		JDBCSchemaReader schemaReader = new JDBCSchemaReader();
 
 		schemaReader.setSource(new NoStreamInputSupplier(jdbcUri));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER,
-				Value.of(dbi.getUser()));
-		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(dbi.getUser()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 
 		// This is set for setting inclusion rule for reading schema
 		if (dbi.getDatabase().equalsIgnoreCase("ORCL")) {
@@ -215,18 +229,15 @@ public abstract class AbstractDBTest {
 	 * It checks if the binding of a data type read from schema and the expected
 	 * binding are equal.
 	 * 
-	 * @param map
-	 *            It maps a data type with a binding class to be expected. e.g.
+	 * @param map It maps a data type with a binding class to be expected. e.g.
 	 *            for postgresql db, for data type VARCHAR, the expected binding
 	 *            class is String.class
-	 * @param schema
-	 *            the schema read.
-	 * @throws Exception
-	 *             exception may thrown while getting the value of a static or
-	 *             instance field of type int.
+	 * @param schema the schema read.
+	 * @throws Exception exception may thrown while getting the value of a
+	 *             static or instance field of type int.
 	 */
-	protected void checkBindingAndSqlType(Schema schema,
-			Map<String, Class<?>> map) throws Exception {
+	protected void checkBindingAndSqlType(Schema schema, Map<String, Class<?>> map)
+			throws Exception {
 
 		final Map<String, Integer> sqlTypeMap = new HashMap<>();
 		// all types fields
@@ -238,20 +249,20 @@ public abstract class AbstractDBTest {
 			for (ChildDefinition<?> cd : td.getChildren()) {
 
 				PropertyDefinition property = cd.asProperty();
-				String name = property.getPropertyType().getName()
-						.getLocalPart().toUpperCase();
-				SQLType t = property.getPropertyType().getConstraint(
-						SQLType.class);
+				String name = property.getPropertyType().getName().getLocalPart().toUpperCase();
+				SQLType t = property.getPropertyType().getConstraint(SQLType.class);
 
 				assertTrue(sqlTypeMap.containsValue(new Integer(t.getType())));
 
-				Binding k = property.getPropertyType().getConstraint(
-						Binding.class);
+				Binding k = property.getPropertyType().getConstraint(Binding.class);
 				// check bindings for those data type for which expected binding
 				// is mapped.
 				if (map.containsKey(name))
 					assertEquals(map.get(name), k.getBinding());
-
+				else
+					fail(MessageFormat.format(
+							"No expected binding specified for type {0} (SQL type {1}) - binding is {2}",
+							name, t.getType(), k.getBinding()));
 			}
 		}
 
@@ -260,21 +271,15 @@ public abstract class AbstractDBTest {
 	/**
 	 * Write instances to the database.
 	 * 
-	 * @param instances
-	 *            the collection of instances
-	 * @param schema
-	 *            the target schema
-	 * @throws Exception
-	 *             if writing the instances fails
+	 * @param instances the collection of instances
+	 * @param schema the target schema
+	 * @throws Exception if writing the instances fails
 	 */
-	protected void writeInstances(InstanceCollection instances, Schema schema)
-			throws Exception {
+	protected void writeInstances(InstanceCollection instances, Schema schema) throws Exception {
 		JDBCInstanceWriter writer = new JDBCInstanceWriter();
 		writer.setTarget(new NoStreamOutputSupplier(jdbcUri));
-		writer.setParameter(JDBCInstanceWriter.PARAM_USER,
-				Value.of(dbi.getUser()));
-		writer.setParameter(JDBCInstanceWriter.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		writer.setParameter(JDBCInstanceWriter.PARAM_USER, Value.of(dbi.getUser()));
+		writer.setParameter(JDBCInstanceWriter.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 		writer.setInstances(instances);
 		DefaultSchemaSpace targetSchema = new DefaultSchemaSpace();
 		targetSchema.addSchema(schema);
@@ -287,20 +292,16 @@ public abstract class AbstractDBTest {
 	/**
 	 * Read instances from the database.
 	 * 
-	 * @param schema
-	 *            the source schema
+	 * @param schema the source schema
 	 * @return the database instances
 	 * 
-	 * @throws Exception
-	 *             if reading the instances fails
+	 * @throws Exception if reading the instances fails
 	 */
 	protected InstanceCollection readInstances(Schema schema) throws Exception {
 		JDBCInstanceReader reader = new JDBCInstanceReader();
 		reader.setSource(new NoStreamInputSupplier(jdbcUri));
-		reader.setParameter(JDBCInstanceWriter.PARAM_USER,
-				Value.of(dbi.getUser()));
-		reader.setParameter(JDBCInstanceWriter.PARAM_PASSWORD,
-				Value.of(dbi.getPassword()));
+		reader.setParameter(JDBCInstanceWriter.PARAM_USER, Value.of(dbi.getUser()));
+		reader.setParameter(JDBCInstanceWriter.PARAM_PASSWORD, Value.of(dbi.getPassword()));
 		DefaultSchemaSpace sourceSchema = new DefaultSchemaSpace();
 		sourceSchema.addSchema(schema);
 		reader.setSourceSchema(sourceSchema);
@@ -314,24 +315,18 @@ public abstract class AbstractDBTest {
 	 * Read the instances from the db, check if it is same as instances written
 	 * to the db.
 	 * 
-	 * @param originalInstances
-	 *            instance created and written to db
-	 * @param schema
-	 *            schema read
-	 * @param gType
-	 *            the geometry type definition.
+	 * @param originalInstances instance created and written to db
+	 * @param schema schema read
+	 * @param gType the geometry type definition.
 	 * @return The count of instances which are equal to the original instances
-	 * @throws Exception
-	 *             if reading the instances fails.
+	 * @throws Exception if reading the instances fails.
 	 */
 
-	protected int readAndCountInstances(InstanceCollection originalInstances,
-			Schema schema, TypeDefinition gType) throws Exception {
+	protected int readAndCountInstances(InstanceCollection originalInstances, Schema schema,
+			TypeDefinition gType) throws Exception {
 
-		InstanceCollection instancesRead = readInstances(schema).select(
-				new TypeFilter(gType));
-		List<Instance> originals = new DefaultInstanceCollection(
-				originalInstances).toList();
+		InstanceCollection instancesRead = readInstances(schema).select(new TypeFilter(gType));
+		List<Instance> originals = new DefaultInstanceCollection(originalInstances).toList();
 
 		ResourceIterator<Instance> ri = instancesRead.iterator();
 		int count = 0;
@@ -354,8 +349,7 @@ public abstract class AbstractDBTest {
 	/**
 	 * stop and remove the container.
 	 * 
-	 * @throws Exception
-	 *             if killing and removing the container fail.
+	 * @throws Exception if killing and removing the container fail.
 	 */
 	@After
 	public void tearDownDocker() throws Exception {

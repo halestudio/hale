@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toc label="Tasks" link_to="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/toc.xml#tasks">
+  
+   <topic label="Map">
+      <topic href="html/customtile_detail.html" label="Custom Tile Map configuration">
+   </topic>
+   <topic href="html/wms_detail.html" label="Web Map Service Configuration">
+   </topic>
+   </topic>
+</toc>

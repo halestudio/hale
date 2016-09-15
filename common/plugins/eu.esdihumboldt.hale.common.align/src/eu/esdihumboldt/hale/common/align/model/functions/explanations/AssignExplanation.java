@@ -16,35 +16,27 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
-import java.text.MessageFormat;
+import java.util.Map;
 
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
-import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
+import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 
 /**
  * Explanation for the assign function.
  * 
  * @author Simon Templer
  */
-public class AssignExplanation extends AbstractCellExplanation implements AssignFunction {
+public class AssignExplanation extends MarkdownCellExplanation implements AssignFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		Entity target = CellUtil.getFirstEntity(cell.getTarget());
-		String value = CellUtil.getFirstParameter(cell, PARAMETER_VALUE).as(String.class);
+	protected void customizeBinding(Map<String, Object> binding) {
+		super.customizeBinding(binding);
 
-		if (target != null && value != null) {
-			return MessageFormat.format("Assigns the value {1} to the {0} property.",
-					formatEntity(target, html, true), quoteText(value, html));
+		// to work with Assign and Bound assign both, add empty _source for
+		// Assign
+		if (!binding.containsKey("_source")) {
+			binding.put("_source", null);
 		}
-		return null;
 	}
 
 }

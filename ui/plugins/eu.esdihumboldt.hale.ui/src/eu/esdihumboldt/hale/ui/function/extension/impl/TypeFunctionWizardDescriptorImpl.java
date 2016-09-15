@@ -18,8 +18,9 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.function.extension.TypeFunctionWizardDescriptor;
@@ -31,7 +32,8 @@ import eu.esdihumboldt.hale.ui.function.generic.GenericTypeFunctionWizardFactory
  * @author Simon Templer
  */
 public class TypeFunctionWizardDescriptorImpl extends
-		AbstractFunctionWizardDescriptor<TypeFunction> implements TypeFunctionWizardDescriptor {
+		AbstractFunctionWizardDescriptor<TypeFunctionDefinition> implements
+		TypeFunctionWizardDescriptor {
 
 	/**
 	 * @see AbstractFunctionWizardDescriptor#AbstractFunctionWizardDescriptor(IConfigurationElement)
@@ -44,9 +46,8 @@ public class TypeFunctionWizardDescriptorImpl extends
 	 * @see FunctionWizardDescriptor#getFunction()
 	 */
 	@Override
-	public TypeFunction getFunction() {
-		TypeFunctionExtension tfe = TypeFunctionExtension.getInstance();
-		return tfe.get(getFunctionId());
+	public TypeFunctionDefinition getFunction() {
+		return FunctionUtil.getTypeFunction(getFunctionId(), HaleUI.getServiceProvider());
 	}
 
 	/**

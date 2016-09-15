@@ -1,0 +1,1 @@
+Populates the $_target property with a date created by parsing the $_source property using the format `${_params.dateFormat}`.

@@ -16,12 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.common;
 
-import java.util.Collection;
-
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.swt.widgets.Control;
-
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 
 /**
  * Attribute editor interface
@@ -29,8 +25,6 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
  * @param <T> the attribute value type/binding
  * 
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public interface Editor<T> {
 
@@ -68,20 +62,6 @@ public interface Editor<T> {
 	public T getValue();
 
 	/**
-	 * Set the editor value as text
-	 * 
-	 * @param text the value to set as text
-	 */
-	public void setAsText(String text);
-
-	/**
-	 * Get the editor value as text
-	 * 
-	 * @return the text representation of the editor value
-	 */
-	public String getAsText();
-
-	/**
 	 * Determines if the user has entered a valid value
 	 * 
 	 * @return if the value is valid
@@ -99,17 +79,4 @@ public interface Editor<T> {
 	 */
 	public void setPropertyChangeListener(IPropertyChangeListener listener);
 
-	/**
-	 * Sets available variables. Editors may ignore this.
-	 * 
-	 * @param properties the property variables
-	 */
-	public void setVariables(Collection<PropertyEntityDefinition> properties);
-
-	/**
-	 * Returns the type of the value edited in this editor.
-	 * 
-	 * @return the type of the value edited in this editor
-	 */
-	public String getValueType();
 }

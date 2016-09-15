@@ -22,10 +22,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.extension.impl.FactoryWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.impl.PropertyFunctionWizardDescriptorImpl;
 import eu.esdihumboldt.hale.ui.function.extension.impl.TypeFunctionWizardDescriptorImpl;
@@ -116,16 +116,18 @@ public class FunctionWizardExtension extends
 		// try to create descriptor for generic wizard
 
 		// check if type function
-		TypeFunction typeFunction = TypeFunctionExtension.getInstance().get(functionId);
+		TypeFunctionDefinition typeFunction = FunctionUtil.getTypeFunction(functionId,
+				HaleUI.getServiceProvider());
 		if (typeFunction != null) {
-			return new FactoryWizardDescriptor<TypeFunction>(new GenericTypeFunctionWizardFactory(
-					functionId), typeFunction);
+			return new FactoryWizardDescriptor<TypeFunctionDefinition>(
+					new GenericTypeFunctionWizardFactory(functionId), typeFunction);
 		}
 
 		// check if property function
-		PropertyFunction propertyFunction = PropertyFunctionExtension.getInstance().get(functionId);
+		PropertyFunctionDefinition propertyFunction = FunctionUtil.getPropertyFunction(functionId,
+				HaleUI.getServiceProvider());
 		if (propertyFunction != null) {
-			return new FactoryWizardDescriptor<PropertyFunction>(
+			return new FactoryWizardDescriptor<PropertyFunctionDefinition>(
 					new GenericPropertyFunctionWizardFactory(functionId), propertyFunction);
 		}
 

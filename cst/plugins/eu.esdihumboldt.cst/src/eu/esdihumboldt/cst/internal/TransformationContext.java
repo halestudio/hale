@@ -64,6 +64,13 @@ public class TransformationContext {
 	}
 
 	/**
+	 * @return the serviceProvider
+	 */
+	public ServiceProvider getServiceProvider() {
+		return serviceProvider;
+	}
+
+	/**
 	 * Get the execution context for the given cell.
 	 * 
 	 * @param cell the cell

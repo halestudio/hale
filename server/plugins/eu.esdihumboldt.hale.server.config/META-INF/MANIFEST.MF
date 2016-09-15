@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server Configuration Service
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.config
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.osgi.util.configuration;version="1.0.0",
  de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.util,
  org.quartz.simpl;version="1.6.2",
  org.slf4j;version="1.5.11",

@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xslt.internal
 
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellExplanation
@@ -54,7 +54,7 @@ public class CellXslInfo {
 		}
 
 		// function
-		AbstractFunction<?> function = FunctionUtil.getFunction(cell.transformationIdentifier);
+		FunctionDefinition<?> function = FunctionUtil.getFunction(cell.transformationIdentifier, null);
 		if (function) {
 			result << "<!-- Relation: $function.displayName -->"
 

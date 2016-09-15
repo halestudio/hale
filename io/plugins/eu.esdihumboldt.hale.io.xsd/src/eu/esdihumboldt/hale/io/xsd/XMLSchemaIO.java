@@ -36,6 +36,11 @@ public abstract class XMLSchemaIO {
 //	public static final ContentType XSD_CT = ContentType.getContentType("XSD");
 
 	/**
+	 * Namespace for HALE complex value type elements related to XML Schema.
+	 */
+	public static final String NS_HALE_XSD = "http://www.esdi-humboldt.eu/hale/io/xsd";
+
+	/**
 	 * Get the documentation from an annotated XML object
 	 * 
 	 * @param element the annotated element

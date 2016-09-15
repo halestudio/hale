@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.converters">
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.CalendarToDateConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToJodaDateTimeConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToSqlDateConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToSqlTimeConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToSqlTimestampConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.JodaDateTimeToDateConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.JodaDateTimeToSqlDateConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.JodaDateTimeToSqlTimestampConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.SqlDateToJodaDateTimeConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.SqlTimestampToJodaDateTimeConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.SqlTimestampToSqlDateConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.StringToJodaDateTimeConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.StringToSqlTimestampConverter"></converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.CalendarToJodaDateTimeConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.GStringImplToURIConverter">
+      </converter>
+   </extension>
+
+</plugin>

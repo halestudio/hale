@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -29,9 +31,9 @@ import com.google.common.collect.Collections2;
 
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
 import eu.esdihumboldt.hale.common.align.extension.category.CategoryExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
-import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.common.internal.Messages;
 
 /**
@@ -41,10 +43,24 @@ import eu.esdihumboldt.hale.ui.common.internal.Messages;
  * @author Simon Templer
  */
 public class FunctionContentProvider implements ITreeContentProvider,
-		Predicate<AbstractFunction<?>> {
+		Predicate<FunctionDefinition<?>> {
 
 	private static final Category CAT_OTHER = new Category(null,
 			Messages.FunctionContentProvider_others, Messages.FunctionContentProvider_description);
+
+	@Nullable
+	private final ServiceProvider serviceProvider;
+
+	/**
+	 * Create a new function content provider.
+	 * 
+	 * @param serviceProvider the service provider, may be <code>null</code> if
+	 *            none is accessible
+	 */
+	public FunctionContentProvider(@Nullable ServiceProvider serviceProvider) {
+		super();
+		this.serviceProvider = serviceProvider;
+	}
 
 	/**
 	 * @see IContentProvider#dispose()
@@ -82,7 +98,7 @@ public class FunctionContentProvider implements ITreeContentProvider,
 	}
 
 	@Override
-	public boolean apply(AbstractFunction<?> function) {
+	public boolean apply(FunctionDefinition<?> function) {
 		return true;
 	}
 
@@ -94,11 +110,11 @@ public class FunctionContentProvider implements ITreeContentProvider,
 		if (parentElement instanceof Category) {
 			Category category = (Category) parentElement;
 
-			List<AbstractFunction<?>> functions = new ArrayList<AbstractFunction<?>>();
+			List<FunctionDefinition<?>> functions = new ArrayList<>();
 			functions.addAll(Collections2.filter(
-					TypeFunctionExtension.getInstance().getFunctions(category.getId()), this));
-			functions.addAll(Collections2.filter(PropertyFunctionExtension.getInstance()
-					.getFunctions(category.getId()), this));
+					FunctionUtil.getTypeFunctions(category.getId(), serviceProvider), this));
+			functions.addAll(Collections2.filter(
+					FunctionUtil.getPropertyFunctions(category.getId(), serviceProvider), this));
 
 			return functions.toArray();
 		}
@@ -111,8 +127,8 @@ public class FunctionContentProvider implements ITreeContentProvider,
 	 */
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof AbstractFunction<?>) {
-			String catId = ((AbstractFunction<?>) element).getCategoryId();
+		if (element instanceof FunctionDefinition<?>) {
+			String catId = ((FunctionDefinition<?>) element).getCategoryId();
 
 			Category cat = (catId == null) ? (null) : (CategoryExtension.getInstance().get(catId));
 			if (cat == null) {

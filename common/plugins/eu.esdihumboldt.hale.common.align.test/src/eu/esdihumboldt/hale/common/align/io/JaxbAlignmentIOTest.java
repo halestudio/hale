@@ -21,10 +21,10 @@ import java.net.URI;
 
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Alignment I/O tests based on {@link JaxbAlignmentIO}.
@@ -53,6 +53,7 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 				}, "addBaseAlignment", true));
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void saveAlignment(MutableAlignment align, OutputStream output) throws Exception {
 		JaxbAlignmentIO.save(align, null, output, new PathUpdate(null, null));

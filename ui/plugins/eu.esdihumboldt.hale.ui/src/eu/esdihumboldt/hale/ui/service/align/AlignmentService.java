@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.service.align;
 
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -39,6 +40,20 @@ public interface AlignmentService {
 	 *         Alignment Model.
 	 */
 	public Alignment getAlignment();
+
+	/**
+	 * Add a custom function.
+	 * 
+	 * @param function the custom function to add
+	 */
+	public void addCustomPropertyFunction(CustomPropertyFunction function);
+
+	/**
+	 * Remove the custom function with the given identifier.
+	 * 
+	 * @param id the function identifier
+	 */
+	public void removeCustomPropertyFunction(String id);
 
 	/**
 	 * Adds the cells contained in the given alignment to the current alignment.<br>

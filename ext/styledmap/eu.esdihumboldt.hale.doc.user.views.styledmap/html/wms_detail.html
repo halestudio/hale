@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Map configuration via Web Map Service (WMS)</title>
+</head>
+<body>
+	<h1>WMS Configuration</h1>
+	<p>
+		A Web Map Service (WMS) is a standard protocol for serving georeferenced 
+		map images which a map server generates using data from a GIS database. 
+		You can set up hale studio's Map view to use such a WMS. 
+	</p>
+	<p>
+		To work with <i>WMS</i> map, first open the Map view, go to
+		the Window menu, select <i>Show View</i> and pick <i>Map</i>.
+    </p>
+    
+    <div>
+		<img src="../images/map_perspective_toolbar.png"
+			title="Map perspective tool menu" class="fit">
+		<img src="../images/map_perspective_open.png"
+			title="Map perspective tool menu" class="fit" style="margin-left:20px" >
+	</div>
+    
+    <p>
+		To add the WMS maps in the Map view, click on the <i>View Menu</i>
+		and then pick <i>WMS maps</i>&#8594;<i>Add</i>. 
+	</p>
+	
+	<div>
+		<img src="../images/wms_add.png"
+			title="Add WMS map to Map perspective" class="fit">
+	</div>
+	
+	
+	<p>
+		Click on the Add button, then provide a unique name for the service and 
+		enter the Web service URL. 
+	</p>
+	<p>
+		Please note here name must be unique from any other <i>WMS</i> map configurations 
+		and URL should be valid to fetch capabilities. To go to the next configuration 
+		page, click on <i>Next</i> button in the dialog or click <i>Finish</i> directly 
+		to skip next configuration pages.
+	</p>
+	<div>
+		<img src="../images/wms_basic.png"
+			title="Basic configuration of WMS maps" class="fit">
+	</div>
+	<p>
+		On the next page, select the <i>Spatial reference system</i> supported by the
+		<i>WMS</i> from the drop down list. To go to the next configuration page, 
+		click on <i>Next</i> button in the dialog or click <i>Finish</i> to skip 
+		next configuration pages and complete configuration.
+	</p>
+	<div>
+		<img src="../images/wms_srs.png"
+			title="SRS configuration of WMS maps" class="fit">
+	</div>
+
+	<p>
+		On this page, select <i>Layers</i> supported by the <i>WMS</i> that you 
+		want to display in the Map view. To go to the next configuration page, 
+		click on <i>Next</i> button in the dialog or click <i>Finish</i> to skip 
+		next configuration pages and complete configuration.
+	</p>
+	<div>
+		<img src="../images/wms_layers.png"
+			title="Layers configuration of WMS maps" class="fit">
+	</div>
+	
+	<p>
+		On this page, configure map <i>Tiles</i>. You have to provide the number 
+		of <i>zoom level</i> for the map, minimum <i>tile size(px)</i> as width or 
+		height and minimum <i>map size(px)</i> as width or height. Please note, 
+		you have to define values between 1 to 100 for <i>zoom levels</i>,
+		between 64 to 1024 for <i>tile size</i> and between 64 to 65,536 for 
+		<i>map size</i> otherwise you can not proceed to finish. 
+		
+		Click <i>Finish</i> to complete the configuration.
+	</p>
+	<div>
+		<img src="../images/wms_tiles.png"
+			title="tiles configuration of WMS maps" class="fit">
+	</div>
+	
+	
+	<p>
+		After finishing configuration, hale studio displays the <i>WMS map</i> 
+		in the <i>Map</i> view. 
+	</p>
+	<div>
+		<img src="../images/wms_view.png"
+			title="WMS loaded in to Map perspective" class="fit">
+	</div>
+	
+	<p>
+		To change the configuration for a <i>WMS</i> map, click on the name 
+		you set before. Change any of the settings by stepping through the 
+		dialog again.  
+	</p>
+
+	<div>
+			<img src="../images/wms_configure.png"
+			title="WMS reconfiguration" class="fit" >
+	</div>
+	<br>
+</body>
+</html>

@@ -25,7 +25,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -45,15 +45,14 @@ public abstract class HaleUI {
 		/**
 		 * Project scope services
 		 */
-		private final ServiceManager projectScope = new ServiceManager(ServiceManager.SCOPE_PROJECT);
+		private final ServiceManager projectScope = new ServiceManager(
+				ServiceManager.SCOPE_PROJECT);
 
-		@SuppressWarnings("unchecked")
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {
 			synchronized (this) {
 				if (!initialized) {
-					ProjectService ps = (ProjectService) PlatformUI.getWorkbench().getService(
-							ProjectService.class);
+					ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 					ps.addListener(new ProjectServiceAdapter() {
 
 						@Override
@@ -69,14 +68,14 @@ public abstract class HaleUI {
 			// first try project scope
 			T service = projectScope.getService(serviceInterface);
 
-			// then workbench
+			// then platform services
 			if (service == null) {
-				service = (T) PlatformUI.getWorkbench().getService(serviceInterface);
+				service = HalePlatform.getService(serviceInterface);
 			}
 
-			// then OSGi
+			// then workbench
 			if (service == null) {
-				service = OsgiUtils.getService(serviceInterface);
+				service = PlatformUI.getWorkbench().getService(serviceInterface);
 			}
 
 			return service;

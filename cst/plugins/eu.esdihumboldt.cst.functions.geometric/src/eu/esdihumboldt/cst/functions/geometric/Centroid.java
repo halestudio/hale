@@ -96,6 +96,7 @@ public class Centroid extends AbstractSingleTargetPropertyTransformation<Transfo
 
 		if (geoms.size() > 1) {
 			// multiple geometries -> create a multi point
+			// XXX is this the desired behavior?
 			Point[] centroids = new Point[geoms.size()];
 
 			GeometryFactory geomFactory = new GeometryFactory();

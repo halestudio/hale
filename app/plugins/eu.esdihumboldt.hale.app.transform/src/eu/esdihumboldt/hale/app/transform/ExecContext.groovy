@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.app.transform
 
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -100,4 +101,9 @@ class ExecContext {
 	 * If Groovy based transformation functions should be restricted.
 	 */
 	boolean restrictGroovy = true
+
+	/**
+	 * Filters apply on all sources commonly
+	 */
+	final InstanceFilterDefinition filters = new InstanceFilterDefinition()
 }

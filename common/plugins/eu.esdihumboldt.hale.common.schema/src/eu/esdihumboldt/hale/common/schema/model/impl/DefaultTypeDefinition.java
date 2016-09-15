@@ -19,14 +19,19 @@ package eu.esdihumboldt.hale.common.schema.model.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.xml.namespace.QName;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
 
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -64,14 +69,44 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	private LinkedHashMap<QName, ChildDefinition<?>> inheritedChildren;
 
 	/**
+	 * The map of children that are overridden for some reason.
+	 */
+	private Map<QName, ChildDefinition<?>> overriddenChildren;
+
+	private final Function<ChildDefinition<?>, ChildDefinition<?>> overriddenChildrenTransformer = new Function<ChildDefinition<?>, ChildDefinition<?>>() {
+
+		@Override
+		public ChildDefinition<?> apply(ChildDefinition<?> input) {
+			if (overriddenChildren != null) {
+				ChildDefinition<?> overridden = overriddenChildren.get(input.getName());
+				if (overridden != null) {
+					return overridden;
+				}
+			}
+
+			return input;
+		}
+	};
+
+	/**
 	 * Create a type definition with the given name
 	 * 
 	 * @param name the type name
 	 */
 	public DefaultTypeDefinition(QName name) {
+		this(name, true);
+	}
+
+	/**
+	 * Create a type definition with the given name
+	 * 
+	 * @param name the type name
+	 * @param flattenAllowed if flattening of declared groups is allowed
+	 */
+	public DefaultTypeDefinition(QName name, boolean flattenAllowed) {
 		super(name);
 
-		declaredChildren = new DefaultGroup(getIdentifier() + "/declaredChildren", true);
+		declaredChildren = new DefaultGroup(getIdentifier() + "/declaredChildren", flattenAllowed);
 	}
 
 	/**
@@ -87,7 +122,13 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 */
 	@Override
 	public Collection<? extends ChildDefinition<?>> getDeclaredChildren() {
-		return declaredChildren.getDeclaredChildren();
+		if (overriddenChildren == null || overriddenChildren.isEmpty()) {
+			return declaredChildren.getDeclaredChildren();
+		}
+		else {
+			return Collections2.transform(declaredChildren.getDeclaredChildren(),
+					overriddenChildrenTransformer);
+		}
 	}
 
 	/**
@@ -106,7 +147,21 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	protected Map<QName, ChildDefinition<?>> getInheritedChildren() {
 		initInheritedChildren();
 
-		return Collections.unmodifiableMap(inheritedChildren);
+		if (overriddenChildren == null || overriddenChildren.isEmpty()) {
+			return Collections.unmodifiableMap(inheritedChildren);
+		}
+		else {
+			Map<QName, ChildDefinition<?>> result = new LinkedHashMap<>();
+			for (Entry<QName, ChildDefinition<?>> entry : inheritedChildren.entrySet()) {
+				QName name = entry.getKey();
+				ChildDefinition<?> child = overriddenChildren.get(name);
+				if (child == null) {
+					child = entry.getValue();
+				}
+				result.put(name, child);
+			}
+			return result;
+		}
 	}
 
 	/**
@@ -122,7 +177,13 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 		initInheritedChildren();
 
 		// add inherited children
-		children.addAll(inheritedChildren.values());
+		if (overriddenChildren == null || overriddenChildren.isEmpty()) {
+			children.addAll(inheritedChildren.values());
+		}
+		else {
+			children.addAll(Collections2.transform(inheritedChildren.values(),
+					overriddenChildrenTransformer));
+		}
 
 		// add declared children afterwards - correct order for output
 		children.addAll(getDeclaredChildren());
@@ -257,7 +318,15 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	 */
 	@Override
 	public ChildDefinition<?> getChild(QName name) {
-		ChildDefinition<?> result = declaredChildren.getChild(name);
+		ChildDefinition<?> result = null;
+
+		if (overriddenChildren != null) {
+			result = overriddenChildren.get(name);
+		}
+
+		if (result == null) {
+			result = declaredChildren.getChild(name);
+		}
 
 		if (result == null) {
 			initInheritedChildren();
@@ -274,6 +343,18 @@ public class DefaultTypeDefinition extends AbstractDefinition<TypeConstraint> im
 	@Override
 	public String toString() {
 		return "[type] " + super.toString();
+	}
+
+	/**
+	 * Override the child with the same name.
+	 * 
+	 * @param child the child to replace the original child
+	 */
+	public void overrideChild(ChildDefinition<?> child) {
+		if (overriddenChildren == null) {
+			overriddenChildren = new HashMap<>();
+		}
+		overriddenChildren.put(child.getName(), child);
 	}
 
 }

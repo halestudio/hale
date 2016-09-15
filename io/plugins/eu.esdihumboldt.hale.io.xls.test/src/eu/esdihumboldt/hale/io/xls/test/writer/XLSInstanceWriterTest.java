@@ -27,7 +27,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -36,6 +35,7 @@ import org.junit.rules.TemporaryFolder;
 
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
@@ -84,7 +84,7 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				"eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
 
@@ -126,7 +126,7 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = Platform.getContentTypeManager().getContentType(
+		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
 				"eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 

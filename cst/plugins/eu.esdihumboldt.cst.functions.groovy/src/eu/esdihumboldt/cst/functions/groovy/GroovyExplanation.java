@@ -17,6 +17,7 @@
 package eu.esdihumboldt.cst.functions.groovy;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for groovy cells.
@@ -32,41 +34,31 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 public class GroovyExplanation extends AbstractCellExplanation implements GroovyConstants {
 
-	private static final String EXPLANATION_PATTERN = "Populates the {0} property with the result of the following groovy script:\n\n"
-			+ "{1}\n\nSource property names are bound to the corresponding value, if the context condition/index matches, otherwise the value isn''t set.";
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
 		Entity target = CellUtil.getFirstEntity(cell.getTarget());
 
 		String script = getScript(cell);
 
-//		List<? extends Entity> sources = (cell.getSource() == null) ? (null) : (cell.getSource()
-//				.get(ENTITY_VARIABLE));
-
 		if (target != null && script != null) {
 			if (html)
-				script = "<pre>" + script + "</pre>";
-			String explanation = MessageFormat.format(EXPLANATION_PATTERN,
-					formatEntity(target, html, true), script);
-			if (html)
-				explanation = explanation.replaceAll("\n", "<br />");
-//			if (html && sources != null) {
-//				StringBuilder sb = new StringBuilder();
-//				sb.append("<br /><br />Replacement table:<br />");
-//				sb.append("<table border=\"1\"><tr><th>Variable name</th><th>Value of the following property</th></tr>");
-//				for (Entity entity : sources)
-//					sb.append(String.format("<tr><td>%s</td><td>%s</td></tr>",
-//							getEntityNameWithoutCondition(entity).replace('.', '_'),
-//							formatEntity(entity, true, false)));
-//				sb.append("</table>");
-//				explanation += sb.toString();
-//			}
-			return explanation;
+				script = "<pre><code class=\"language-groovy\">" + script + "</code></pre>";
+			String pre = MessageFormat.format(getMessage("pre", locale),
+					formatEntity(target, html, true, locale));
+			String post = MessageFormat.format(getMessage("post", locale),
+					formatEntity(target, html, true, locale));
+			if (html) {
+				pre = pre.replaceAll("\n", "<br />");
+				pre = pre + "<br /><br />";
+				post = post.replaceAll("\n", "<br />");
+				post = "<br />" + post;
+			}
+			else {
+				pre = pre + "\n\n";
+				post = "\n\n" + post;
+			}
+			return pre + script + post;
 		}
 
 		return null;

@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Instance Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=true
-Bundle-Version: 2.9.1.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,
  eu.esdihumboldt.hale.common.instance.extension.validation,
+ eu.esdihumboldt.hale.common.instance.extension.validation.report,
+ eu.esdihumboldt.hale.common.instance.extension.validation.report.impl,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.schema.model,
@@ -18,7 +20,6 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util.validator,
  org.osgi.framework;version="1.6.0",
  org.slf4j;version="1.5.11"
-Export-Package: eu.esdihumboldt.hale.common.instancevalidator,
- eu.esdihumboldt.hale.common.instancevalidator.report
+Export-Package: eu.esdihumboldt.hale.common.instancevalidator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-Vendor: data harmonisation panel

@@ -1,7 +1,3 @@
-
-
-
-
 /*
  * Copyright (c) 2015 Data Harmonisation Panel
  * 
@@ -34,10 +30,10 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest
-import eu.esdihumboldt.hale.io.jdbc.test.DBConfigInstance
 import groovy.sql.Sql
 
 
@@ -64,8 +60,9 @@ public class PostDataTypesIT extends AbstractDBTest {
     ,  CONSTRAINT lines_pkey PRIMARY KEY (EMPLOYEE_ID)
     ) ;'''
 	private final Map<String, Class<?>> map = createMap();
-	public PostDataTypesIT(){
-		super(new DBConfigInstance("postgis", PostDataTypesIT.class.getClassLoader()))
+
+	PostDataTypesIT(){
+		super("postgis", PostDataTypesIT.class)
 	}
 	/**
 	 * Test for checking sql type and binding
@@ -96,7 +93,9 @@ public class PostDataTypesIT extends AbstractDBTest {
 					dec_test       i
 					salary         new BigDecimal("$i")
 					b_array 	   ([0, 1, i, 1, 0] as byte[])
-					geometry_test  new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([new Coordinate(0, 0), new Coordinate(i, i)] as Coordinate[]))
+					geometry_test  new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([
+						new Coordinate(0, 0),
+						new Coordinate(i, i)] as Coordinate[]))
 					hire_date      Date.valueOf("2015-04-$i")
 					last_login     new Timestamp(c.getTimeInMillis())
 					share_price    new Double(i)
@@ -118,6 +117,7 @@ public class PostDataTypesIT extends AbstractDBTest {
 	private static Map<String, Class<?>> createMap() {
 		Map<String, Class<?>> m = new HashMap<String, Class<?>>();
 		m.put("INT", Integer.class);
+		m.put("SERIAL", Integer.class);
 		m.put("MONEY", BigDecimal.class);
 		m.put("FLOAT", Float.class);
 		m.put("INT4", Integer.class);
@@ -125,12 +125,15 @@ public class PostDataTypesIT extends AbstractDBTest {
 		m.put("INT8", Long.class);
 		m.put("FLOAT8", Double.class);
 		m.put("BYTEA", byte[].class);
-		m.put("BOOLEAN", Boolean.class);
+		m.put("BOOL", Boolean.class);
+		// m.put("BOOLEAN", Boolean.class);
 		m.put("TIMESTAMP", java.sql.Timestamp.class);
 		m.put("DATE", java.sql.Date.class);
 		m.put("VARCHAR", java.lang.String.class);
+		m.put("TEXT", java.lang.String.class);
 		m.put("NUMERIC", BigDecimal.class);
 		m.put("DECIMAL", BigDecimal.class);
+		m.put("GEOMETRY", GeometryProperty.class);
 		return Collections.unmodifiableMap(m);
 
 	}

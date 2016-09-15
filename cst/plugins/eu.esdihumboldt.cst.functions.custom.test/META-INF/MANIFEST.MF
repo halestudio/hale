@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Custom Functions Tests
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.custom.test
+Bundle-Version: 3.0.0.qualifier
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.cst.functions.custom;bundle-version="2.9.3",
+ eu.esdihumboldt.hale.common.core;bundle-version="2.9.1"
+Import-Package: eu.esdihumboldt.hale.common.align.extension.function,
+ groovy.xml;version="2.3.7",
+ org.junit;version="4.11.0"

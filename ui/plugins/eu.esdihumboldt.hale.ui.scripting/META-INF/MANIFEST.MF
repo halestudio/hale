@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scripting UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.scripting;singleton:=true
-Bundle-Version: 2.9.3.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui,
  eu.esdihumboldt.hale.common.scripting,
@@ -25,6 +25,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.ui.common.definition.viewer,
  eu.esdihumboldt.hale.ui.common.editors,
  eu.esdihumboldt.hale.ui.service.instance,
+ eu.esdihumboldt.hale.ui.transformation,
  eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.groovy,
  eu.esdihumboldt.hale.ui.util.source,

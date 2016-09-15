@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WFS I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.wfs.ui;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.ui,
@@ -13,16 +13,16 @@ Require-Bundle: eu.esdihumboldt.hale.ui,
  org.eclipse.jface.text;bundle-version="3.9.1",
  org.geotools;bundle-version="12.2.0",
  org.opengis;bundle-version="12.2.0",
- de.fhg.igd.mapviewer;bundle-version="6.0.1",
- de.fhg.igd.mapviewer.server.openstreetmap;bundle-version="6.0.0",
+ de.fhg.igd.mapviewer;bundle-version="2.9.5",
  org.jdesktop.swingx;bundle-version="1.0.0",
- org.jdesktop.swingx.mapviewer;bundle-version="6.0.0"
+ org.jdesktop.swingx.mapviewer;bundle-version="2.9.5",
+ de.fhg.igd.mapviewer.server.tiles;bundle-version="2.9.5"
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
- com.google.common.io;version="15.0.0",
  com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.transformation.service,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.impl,
@@ -45,6 +45,7 @@ Import-Package: com.google.common.base;version="15.0.0",
  eu.esdihumboldt.hale.ui.util.swing,
  eu.esdihumboldt.hale.ui.util.viewer,
  eu.esdihumboldt.hale.ui.util.wizard,
+ eu.esdihumboldt.util.io,
  org.apache.http;version="4.2.5",
  org.apache.http.client.utils;version="4.2.6",
  org.slf4j;version="1.7.2"

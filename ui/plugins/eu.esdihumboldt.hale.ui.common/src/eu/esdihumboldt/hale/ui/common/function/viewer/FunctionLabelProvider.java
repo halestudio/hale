@@ -28,7 +28,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.extension.category.Category;
-import eu.esdihumboldt.hale.common.align.extension.function.AbstractFunction;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 
 /**
  * Function label provider
@@ -47,8 +47,8 @@ public class FunctionLabelProvider extends LabelProvider {
 		if (element instanceof Category) {
 			return ((Category) element).getName();
 		}
-		if (element instanceof AbstractFunction) {
-			return ((AbstractFunction<?>) element).getDisplayName();
+		if (element instanceof FunctionDefinition<?>) {
+			return ((FunctionDefinition<?>) element).getDisplayName();
 		}
 
 		return super.getText(element);
@@ -65,24 +65,26 @@ public class FunctionLabelProvider extends LabelProvider {
 		}
 
 		// get image based on getIconURL in AbstractFunction (and cache them)
-		if (element instanceof AbstractFunction) {
-			URL iconUrl = ((AbstractFunction<?>) element).getIconURL();
-			String iconString = iconUrl.toString();
+		if (element instanceof FunctionDefinition<?>) {
+			URL iconUrl = ((FunctionDefinition<?>) element).getIconURL();
+			if (iconUrl != null) {
+				String iconString = iconUrl.toString();
 
-			Image image = urlImages.get(iconString);
+				Image image = urlImages.get(iconString);
 
-			if (image == null) {
-				try {
-					image = ImageDescriptor.createFromURL(iconUrl).createImage();
-					if (image != null) {
-						urlImages.put(iconString, image);
+				if (image == null) {
+					try {
+						image = ImageDescriptor.createFromURL(iconUrl).createImage();
+						if (image != null) {
+							urlImages.put(iconString, image);
+						}
+					} catch (Throwable e) {
+						// ignore
 					}
-				} catch (Throwable e) {
-					// ignore
 				}
-			}
 
-			return image;
+				return image;
+			}
 		}
 
 		return super.getImage(element);

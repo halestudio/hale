@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GeoTools app-schema I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.appschema;singleton:=true
-Bundle-Version: 2.9.4.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: data harmonisation panel
 Require-Bundle: eu.esdihumboldt.hale.common.instance,
@@ -25,6 +25,7 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.functions,
  eu.esdihumboldt.hale.common.align.model.impl,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.extension,
  eu.esdihumboldt.hale.common.core.io.impl,
@@ -47,8 +48,10 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.hale.common.schema.model.impl.internal,
  eu.esdihumboldt.hale.common.schema.persist,
  eu.esdihumboldt.hale.io.xsd.constraint,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.groovy.paths,
+ eu.esdihumboldt.util.io,
  org.apache.commons.io;version="2.4.0",
  org.apache.commons.io.filefilter;version="2.4.0",
  org.apache.http;version="4.3.2",

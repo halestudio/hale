@@ -10,7 +10,7 @@
             name="XML schema"
             priority="normal">
          <describer
-               class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
             <parameter
                   name="element"
                   value="{http://www.w3.org/2001/XMLSchema}schema">
@@ -89,6 +89,38 @@
             allowChildren="true"
             name="eu.esdihumboldt.hale.io.xsd.model">
       </allowPackage>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.io.xsd.anytype.valuetypes.CustomTypeContentType"
+            id="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContent"
+            name="typeContent"
+            namespace="http://www.esdi-humboldt.eu/hale/io/xsd"
+            type="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContent">
+      </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.io.xsd.anytype.valuetypes.CustomTypeContentAssociationType"
+            id="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentAssociation"
+            name="association"
+            namespace="http://www.esdi-humboldt.eu/hale/io/xsd"
+            type="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentAssociation">
+      </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.io.xsd.anytype.valuetypes.CustomTypeContentConfigurationType"
+            id="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentConfiguration"
+            name="typeContentConfig"
+            namespace="http://www.esdi-humboldt.eu/hale/io/xsd"
+            type="eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentConfiguration">
+      </complexValue>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.instance.validation">
+      <propertyConstraintValidator
+            constraint="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference"
+            id="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.validator.XLinkReferenceValidator"
+            validator="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.validator.XLinkReferenceValidator">
+      </propertyConstraintValidator>
    </extension>
 
 </plugin>

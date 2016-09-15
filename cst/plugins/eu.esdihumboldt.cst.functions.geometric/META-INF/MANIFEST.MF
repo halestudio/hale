@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric;singleton:=true
-Bundle-Version: 2.9.4.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  org.opengis,
  org.geotools,
@@ -12,6 +12,7 @@ Import-Package: com.google.common.base;version="17.0.0",
  com.google.common.collect;version="9.0.0",
  com.iabcinc.jmep,
  com.vividsolutions.jts.geom,
+ com.vividsolutions.jts.io;version="1.13.0",
  com.vividsolutions.jts.operation.buffer,
  eu.esdihumboldt.cst.functions.groovy.helper,
  eu.esdihumboldt.cst.functions.groovy.helper.spec,
@@ -41,5 +42,6 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.opengis.referencing.crs,
  org.springframework.core.convert
 Export-Package: eu.esdihumboldt.cst.functions.geometric,
- eu.esdihumboldt.cst.functions.geometric.extent
+ eu.esdihumboldt.cst.functions.geometric.extent,
+ eu.esdihumboldt.cst.functions.geometric.interiorpoint
 Bundle-Vendor: data harmonisation panel

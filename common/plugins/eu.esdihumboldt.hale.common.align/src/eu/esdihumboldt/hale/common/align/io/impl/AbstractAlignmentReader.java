@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
@@ -34,7 +35,6 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.util.io.PathUpdate;
 
 /**
  * Abstract alignment reader implementation
@@ -156,7 +156,7 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider imp
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.align.io.AlignmentReader#setPathUpdater(eu.esdihumboldt.util.io.PathUpdate)
+	 * @see eu.esdihumboldt.hale.common.align.io.AlignmentReader#setPathUpdater(eu.esdihumboldt.hale.common.core.io.PathUpdate)
 	 */
 	@Override
 	public void setPathUpdater(PathUpdate updater) {

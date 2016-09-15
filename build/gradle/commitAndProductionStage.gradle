@@ -256,10 +256,14 @@ def filterPlatformSpecificFragments(productFile) {
 		}
 	}
 
+	def notPlatformBundles = new HashSet(project.ext.notPlatformSpecificBundles ?: [])
+	
     // remove bundles from product file
     bundlesToRemove.each { p ->
-        productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
-		println "Removed platform specific bundle $p from product configuration"
+		if (!notPlatformBundles.contains(p)) {
+			productFileContents = productFileContents.replaceAll(/<plugin.*id="${p}".+\r?\n\s+/, '')
+			println "Removed platform specific bundle $p from product configuration"
+		}
     }
 
 	// remove features from product file
@@ -273,7 +277,7 @@ def filterPlatformSpecificFragments(productFile) {
 }
 
 /**
- * Replaces the paths to win32 icons in the given product file
+ * Replaces the paths to icons in the given product file
  * by absolute ones. Assumes that the paths are specified using the
  * symbolic name of the bundle containing the icon and that they start with
  * a slash. For example, if the path is '/de.cs3d.admintool/icons/cs3d.ico'
@@ -281,24 +285,63 @@ def filterPlatformSpecificFragments(productFile) {
  * path to the bundle 'de.cs3d.admintool'.
  */
 def replaceIconPaths(productFile) {
-    def pathsToReplace = [:]
+    def replacements = [:]
 
     def productFileContents = productFile.text
-    def dlcdoc = new XmlSlurper().parseText(productFileContents)
-    dlcdoc.launcher.win.ico.each { i ->
+    def product = new XmlSlurper().parseText(productFileContents)
+	
+	// .ico file
+    product.launcher.win.ico.each { i ->
         def path = i.@path.toString()
         if (path.startsWith('/')) {
             def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
             def pb = new BundleParser(project).getParsedBundles()[symbolicName]
             if (pb != null) {
-                pathsToReplace[symbolicName] = pb.path.path.replace('\\', '/')
+                replacements[/<ico(.*)path="\/${symbolicName}\/([^>]+)>/] = '<ico$1path="' + pb.path.path.replace('\\', '/') + '/$2>'
             }
         }
     }
+	// .bmp icon files
+	product.launcher.win.bmp.each {
+		it.attributes().each { name, value ->
+			def path = value as String
+			if (path.startsWith('/')) {
+				def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+				def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+				if (pb != null) {
+					replacements[/${name}="\/${symbolicName}\/([^"]+)"/] = name + '="' + pb.path.path.replace('\\', '/') + '/$1"'
+				}
+			}
+		}
+	}
+	
+	// Linux icon
+	product.launcher.linux.each { i ->
+		def path = i.@icon.toString()
+		if (path.startsWith('/')) {
+			def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+			def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+			if (pb != null) {
+				replacements[/<linux(.*)icon="\/${symbolicName}\/([^>]+)>/] = '<linux$1icon="' + pb.path.path.replace('\\', '/') + '/$2>'
+			}
+		}
+	}
+	
+	// Mac OS X icon
+	product.launcher.macosx.each { i ->
+		def path = i.@icon.toString()
+		if (path.startsWith('/')) {
+			def symbolicName = path.replaceAll(/^\/([^\/]+)\/.*/, '$1')
+			def pb = new BundleParser(project).getParsedBundles()[symbolicName]
+			if (pb != null) {
+				replacements[/<macosx(.*)icon="\/${symbolicName}\/([^>]+)>/] = '<macosx$1icon="' + pb.path.path.replace('\\', '/') + '/$2>'
+			}
+		}
+	}
 
     // replace icon paths
-    pathsToReplace.each {
-        productFileContents = productFileContents.replaceAll(/<ico(.*)path="\/${it.key}\/([^>]+)>/, '<ico$1path="' + it.value + '/$2>')
+    replacements.each { org, replacement ->
+        productFileContents = productFileContents.replaceAll(org, replacement)
     }
 
     // overwrite product file
@@ -365,7 +408,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 void updateAboutInfo(productOutputPath) {
 	def productBundle = getProductDefiningBundleName()
 
-	def jars = fileTree(dir: productOutputPath, includes: [ "plugins/${productBundle}_*.jar" ])
+	def jars = fileTree(dir: productOutputPath, includes: [ "**/plugins/${productBundle}_*.jar" ])
 	if (jars.isEmpty()) {
 		println "Could not find product defining bundle $productBundle"
 		return
@@ -401,10 +444,22 @@ void updateAboutInfo(productOutputPath) {
 	ant.replace(file: pluginXml, token: '___build___', value: project.ext.buildId, summary: true)
 	ant.replace(file: pluginXml, token: '___revision___', value: revision, summary: true)
 	ant.replace(file: pluginXml, token: '___version___', value: bundleVersion, summary: true)
-
+	
 	// update original jar with updated plugin.xml
 	ant.jar(update: 'true', destfile: productBundleJar) {
 		fileset(dir: tmpDir, includes: 'plugin.xml')
+	}
+	
+	// special case handling: replace information in help banner
+	File bannerFile = new File(new File(tmpDir, 'html'), 'banner.html')
+	if (bannerFile.exists()) {
+		println "Replacing placeholders in help banner..."
+		ant.replace(file: bannerFile, token: '___version___', value: bundleVersion, summary: true)
+		
+		// update original jar with updated banner.html
+		ant.jar(update: 'true', destfile: productBundleJar) {
+			fileset(dir: tmpDir, includes: 'html/banner.html')
+		}
 	}
 
 	tmpDir.deleteDir()
@@ -421,8 +476,13 @@ def packageClient(productOutputPath) {
 			try {
 		        // get path to Windows Installer XML Kit
 		        if (!project.ext.properties.containsKey("wixDir")) {
-		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
-		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+					//Getting unrequired directory so need to provide Program files directories 
+//		            def dirs = fileTree(dir: 'C:\\', includes: [ 'Program Files*\\Windows Installer XML v3*\\bin\\candle.exe',
+//		                    'Program Files*\\WiX Toolset v3*\\bin\\candle.exe' ])
+					
+					def dirs = fileTree(dir: 'C:\\Program Files\\', includes: [ 'Windows Installer XML v3*\\bin\\candle.exe',
+						'WiX Toolset v3*\\bin\\candle.exe' ]) + fileTree(dir: 'C:\\Program Files (x86)\\', includes: [ 'Windows Installer XML v3*\\bin\\candle.exe',
+						'WiX Toolset v3*\\bin\\candle.exe' ])
 
 		            if (dirs.isEmpty()) {
 		                throw new IllegalStateException("Could not guess WIX installation directory. Please specify it " +
@@ -512,8 +572,15 @@ def packageClient(productOutputPath) {
 		def packageName = getPackageName()
 		def launcherName = getProductLauncher()
 
+		// rename app
+		def mvCmd = ['mv', 'Eclipse.app', "${launcherName}.app"]
+		def mvProc = mvCmd.execute(null, productOutputPath)
+		def mvBuffer = new StringBuffer()
+		mvProc.consumeProcessErrorStream(mvBuffer)
+		mvProc.waitFor()
+		
 		// Set file permissions
-		def permCmd = ['chmod', '755', launcherName, "${launcherName}.app/Contents/MacOS/${launcherName}"]
+		def permCmd = ['chmod', '755', "${launcherName}.app/Contents/MacOS/${launcherName}"]
 		def permProc = permCmd.execute(null, productOutputPath)
 		def permBuffer = new StringBuffer()
 		permProc.consumeProcessErrorStream(permBuffer)
@@ -617,6 +684,74 @@ def packageServer(productOutputPath) {
                 include(name: '**/jre/bin/*')
 				include(name: launcherName)
 				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+            }
+        }
+
+        // Docker image
+        // right now mainly intended for Infocenter product
+        if (Helper.buildForLinux(project) && project.ext.dockerImageName) {
+            def dockerDir = new File(buildDir, 'docker-build')
+
+            // copy artifact
+            copy {
+                from packageFileName
+                into dockerDir
+            }
+
+            // create Dockerfile
+            new File(dockerDir, 'Dockerfile').text = """
+                |FROM ubuntu:16.04
+                |ADD ${packageName}.tar.gz /opt
+                |RUN sed -i "s/-Dserver_port=.*/-Dserver_port=80/" /opt/${packageName}/${launcherName}.ini && \\
+                |  sed -i "s/-Dserver_host=.*/-Dserver_host=0.0.0.0/" /opt/${packageName}/${launcherName}.ini
+                |EXPOSE 80
+                |WORKDIR /opt/${packageName}
+                |CMD ./${launcherName}
+            """.trim().stripMargin()
+
+            // build docker image
+			def buildCommand = [
+                'docker',
+                'build',
+                '-t',
+                "${project.ext.dockerImageName}:${project.version}"
+            ]
+			if (project.ext.dockerTagLatest == true) {
+				// also create tag :latest
+				buildCommand << '-t'
+				buildCommand << "${project.ext.dockerImageName}:latest"
+			}
+			buildCommand << dockerDir.absolutePath as String
+            def buildProcess = buildCommand.execute()
+            buildProcess.waitForProcessOutput(System.out, System.err)
+            if (buildProcess.exitValue() != 0) {
+                throw new IllegalStateException("Building docker image failed with exit code ${buildProcess.exitValue()}")
+            }
+
+            // push docker image
+            if (project.ext.publishProduct == true) {
+                def pushProcess = ([
+                    'docker',
+                    'push',
+                    "${project.ext.dockerImageName}:${project.version}",
+                ]).execute()
+                pushProcess.waitForProcessOutput(System.out, System.err)
+                if (pushProcess.exitValue() != 0) {
+                    throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
+                }
+				
+				if (project.ext.dockerTagLatest == true) {
+					// also push :latest tag
+					def pushLatest = ([
+						'docker',
+						'push',
+						"${project.ext.dockerImageName}:latest",
+					]).execute()
+					pushLatest.waitForProcessOutput(System.out, System.err)
+					if (pushLatest.exitValue() != 0) {
+						throw new IllegalStateException("Pushing docker image failed with exit code ${pushProcess.exitValue()}")
+					}
+				}
             }
         }
     }
@@ -829,6 +964,11 @@ def runTests(args = []) {
 	File errFile = new File(testReportDir, "${launcherName}.err")
 	File reportFile = new File(testReportDir, "${launcherName}.xml")
 	File launcherFile = new File(productOutputPath, launcherName)
+	
+	// remove files to be sure to have up-to-date files
+	outFile.delete()
+	errFile.delete()
+	reportFile.delete()
 
 	// make launcher executable
 	ant.chmod(file: launcherFile, perm:'a+x')
@@ -854,15 +994,10 @@ def runTests(args = []) {
 	// evaluate test report
 	def root = new groovy.util.XmlSlurper().parse(reportFile)
 	def failures = root.@failures as String
-	println "> ${root.@tests} tests"
-	println "> ${root.@errors} errors"
-	println "> ${failures} failed"
-	println "> ${root.@skip} skipped"
-	println "in ${root.@time} seconds"
-
+	
 	// print failures
 	if (failures && failures != '0') {
-		println 'Failures: '
+		println '>>> Test failures: '
 		root.testcase.each { test ->
 			if (test.failure.size() > 0) {
 				def testClass = test.@classname as String
@@ -873,6 +1008,17 @@ def runTests(args = []) {
 				println()
 			}
 		}
+	}
+
+	println '>>> Test summary'
+	println "> ${root.@tests} tests"
+	println "> ${root.@errors} errors"
+	println "> ${failures} failed"
+	println "> ${root.@skip} skipped"
+	println "in ${root.@time} seconds"
+	
+	if (failures && failures != '0') {
+		throw new RuntimeException("$failures tests failed")
 	}
 }
 

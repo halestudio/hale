@@ -20,7 +20,10 @@ import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
+import eu.esdihumboldt.hale.common.align.service.FunctionService;
+import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
@@ -77,17 +80,15 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (InstanceService.class.equals(serviceInterface)) {
-			return OrientInstanceService.getInstance(
-					(SchemaService) locator.getService(SchemaService.class),
-					(ProjectService) locator.getService(ProjectService.class),
-					(AlignmentService) locator.getService(AlignmentService.class),
-					(GroovyService) locator.getService(GroovyService.class));
+			return OrientInstanceService.getInstance(locator.getService(SchemaService.class),
+					locator.getService(ProjectService.class),
+					locator.getService(AlignmentService.class),
+					locator.getService(GroovyService.class));
 		}
 
 		if (OccurringValuesService.class.equals(serviceInterface)) {
-			return new OccurringValuesServiceImpl(
-					(InstanceService) locator.getService(InstanceService.class),
-					(ProjectService) locator.getService(ProjectService.class));
+			return new OccurringValuesServiceImpl(locator.getService(InstanceService.class),
+					locator.getService(ProjectService.class));
 		}
 
 		if (CompatibilityService.class.equals(serviceInterface)) {
@@ -96,12 +97,16 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (AlignmentService.class.equals(serviceInterface)) {
-			return new AlignmentServiceUndoSupport(new AlignmentServiceImpl(
-					(ProjectService) locator.getService(ProjectService.class)));
+			return new AlignmentServiceUndoSupport(
+					new AlignmentServiceImpl(locator.getService(ProjectService.class)));
 		}
 
 		if (ProjectService.class.equals(serviceInterface)) {
 			return new ProjectServiceImpl();
+		}
+
+		if (ProjectInfoService.class.equals(serviceInterface)) {
+			return locator.getService(ProjectService.class);
 		}
 
 		if (RecentProjectsService.class.equals(serviceInterface)) {
@@ -109,7 +114,7 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (SchemaService.class.equals(serviceInterface)) {
-			return new SchemaServiceImpl((ProjectService) locator.getService(ProjectService.class));
+			return new SchemaServiceImpl(locator.getService(ProjectService.class));
 		}
 
 		if (TransformationSchemas.class.equals(serviceInterface)) {
@@ -117,9 +122,9 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (EntityDefinitionService.class.equals(serviceInterface)) {
-			return new EntityDefinitionServiceUndoSupport(new EntityDefinitionServiceImpl(
-					(AlignmentService) locator.getService(AlignmentService.class),
-					(ProjectService) locator.getService(ProjectService.class)));
+			return new EntityDefinitionServiceUndoSupport(
+					new EntityDefinitionServiceImpl(locator.getService(AlignmentService.class),
+							locator.getService(ProjectService.class)));
 		}
 
 		if (InstanceSampleService.class.equals(serviceInterface)) {
@@ -127,28 +132,23 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (GeometrySchemaService.class.equals(serviceInterface)) {
-			return new ProjectGeometrySchemaService(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new ProjectGeometrySchemaService(locator.getService(ProjectService.class));
 		}
 
 		if (InstanceValidationService.class.equals(serviceInterface))
-			return new InstanceValidationServiceImpl(
-					(InstanceService) locator.getService(InstanceService.class),
-					(ReportService) locator.getService(ReportService.class));
+			return new InstanceValidationServiceImpl(locator.getService(InstanceService.class),
+					locator.getService(ReportService.class));
 
 		if (PopulationService.class.equals(serviceInterface)) {
-			return new PopulationServiceImpl(
-					(InstanceService) locator.getService(InstanceService.class));
+			return new PopulationServiceImpl(locator.getService(InstanceService.class));
 		}
 
 		if (RecentResources.class.equals(serviceInterface)) {
-			return new RecentResourcesService(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new RecentResourcesService(locator.getService(ProjectService.class));
 		}
 
 		if (InstanceViewService.class.equals(serviceInterface)) {
-			return new InstanceViewServiceImpl(
-					(ProjectService) locator.getService(ProjectService.class));
+			return new InstanceViewServiceImpl(locator.getService(ProjectService.class));
 		}
 
 		if (EntityResolver.class.equals(serviceInterface)) {
@@ -156,9 +156,17 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (GroovyService.class.equals(serviceInterface)) {
-			return new PreferencesGroovyService(
-					(ProjectService) locator.getService(ProjectService.class),
-					(AlignmentService) locator.getService(AlignmentService.class));
+			return new PreferencesGroovyService(locator.getService(ProjectService.class),
+					locator.getService(AlignmentService.class));
+		}
+
+		if (FunctionService.class.equals(serviceInterface)) {
+			return new HaleFunctionService(locator.getService(AlignmentService.class));
+		}
+
+		if (TransformationFunctionService.class.equals(serviceInterface)) {
+			return new HaleTransformationFunctionService(
+					locator.getService(AlignmentService.class));
 		}
 
 		return null;

@@ -147,6 +147,11 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 
 			@Override
+			public void customFunctionsChanged() {
+				// custom functions don't affect entity definitions
+			}
+
+			@Override
 			public void alignmentChanged() {
 				// XXX clear first?
 				addMissingContexts(alignmentService.getAlignment().getCells());
@@ -400,8 +405,7 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 		if (filter != null)
 			newDef = createWithCondition(sibling, new Condition(filter));
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 
 		// Collect cells to replace.
@@ -416,8 +420,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 			}
 		};
 
-		Collection<? extends Cell> affected = new HashSet<Cell>(Collections2.filter(
-				potentiallyAffected, associatedCellPredicate));
+		Collection<? extends Cell> affected = new HashSet<Cell>(
+				Collections2.filter(potentiallyAffected, associatedCellPredicate));
 
 		// Check whether base alignment cells are affected.
 		boolean baseCellsAffected = false;
@@ -437,11 +441,12 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 
 				@Override
 				public void run() {
-					MessageBox mb = new MessageBox(display.getActiveShell(), SWT.YES | SWT.NO
-							| SWT.ICON_QUESTION);
-					mb.setMessage("Some base alignment cells reference the entity definition you wish to change.\n"
-							+ "The change will only affect cells which aren't from any base alignment.\n\n"
-							+ "Do you still wish to continue?");
+					MessageBox mb = new MessageBox(display.getActiveShell(),
+							SWT.YES | SWT.NO | SWT.ICON_QUESTION);
+					mb.setMessage(
+							"Some base alignment cells reference the entity definition you wish to change.\n"
+									+ "The change will only affect cells which aren't from any base alignment.\n\n"
+									+ "Do you still wish to continue?");
 					mb.setText("Continue?");
 					abort.set(mb.open() != SWT.YES);
 				}
@@ -518,9 +523,9 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 						int lastIndexOfChangedDef = newDef.getPropertyPath().size() - 1;
 						newPath.set(lastIndexOfChangedDef,
 								newDef.getPropertyPath().get(lastIndexOfChangedDef));
-						newEntry = new DefaultProperty(new PropertyEntityDefinition(
-								entryDef.getType(), newPath, entryDef.getSchemaSpace(),
-								entryDef.getFilter()));
+						newEntry = new DefaultProperty(
+								new PropertyEntityDefinition(entryDef.getType(), newPath,
+										entryDef.getSchemaSpace(), entryDef.getFilter()));
 					}
 				}
 				else {
@@ -627,7 +632,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * @param addedContexts a collection where newly created contexts must be
 	 *            added
 	 */
-	private void addContexts(EntityDefinition entityDef, Collection<EntityDefinition> addedContexts) {
+	private void addContexts(EntityDefinition entityDef,
+			Collection<EntityDefinition> addedContexts) {
 		// collect the entity definition and all of its parents
 		LinkedList<EntityDefinition> hierarchy = new LinkedList<EntityDefinition>();
 		EntityDefinition parent = entityDef;
@@ -662,8 +668,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 				}
 				else if (contextCondition != null && contextName == null && contextIndex == null) {
 					// add condition context
-					boolean added = conditionContexts.put(
-							AlignmentUtil.getDefaultEntity(candidate), contextCondition);
+					boolean added = conditionContexts.put(AlignmentUtil.getDefaultEntity(candidate),
+							contextCondition);
 					if (added) {
 						addedContexts.add(candidate);
 					}
@@ -811,7 +817,8 @@ public class EntityDefinitionServiceImpl extends AbstractEntityDefinitionService
 	 * @param context the child context
 	 * @return the property path including the child context
 	 */
-	private static List<ChildContext> createPath(List<ChildContext> parentPath, ChildContext context) {
+	private static List<ChildContext> createPath(List<ChildContext> parentPath,
+			ChildContext context) {
 		if (parentPath == null || parentPath.isEmpty()) {
 			return Collections.singletonList(context);
 		}

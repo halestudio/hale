@@ -16,6 +16,9 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
+import java.text.MessageFormat;
+import java.util.Locale;
+
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -25,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for join function cells.
@@ -33,38 +37,37 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
  */
 public class JoinExplanation extends AbstractCellExplanation implements JoinFunction {
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.impl.AbstractCellExplanation#getExplanation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      boolean)
-	 */
 	@Override
-	protected String getExplanation(Cell cell, boolean html) {
-		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN).as(
-				JoinParameter.class);
+	protected String getExplanation(Cell cell, boolean html, ServiceProvider services,
+			Locale locale) {
+		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN)
+				.as(JoinParameter.class);
 
 		if (join != null && join.types != null && !join.types.isEmpty()) {
-			StringBuilder sb = new StringBuilder();
 
 			// types
-			sb.append("Joins the types ");
+			StringBuilder types = new StringBuilder();
 			boolean first = true;
 			for (TypeEntityDefinition type : join.types) {
 				if (first) {
 					first = false;
 				}
 				else {
-					sb.append(", ");
+					types.append(", ");
 				}
-				sb.append(formatEntity(type, html, false));
+				types.append(formatEntity(type, html, false, locale));
 			}
-			sb.append(" based on the following conditions:\n\n");
+
+			StringBuilder sb = new StringBuilder();
+			sb.append(MessageFormat.format(getMessage("main", locale), types.toString()));
+			sb.append("\n\n");
 
 			// conditions
 
 			for (JoinCondition condition : join.conditions) {
-				sb.append(formatFullEntity(condition.baseProperty, html));
+				sb.append(formatFullEntity(condition.baseProperty, html, locale));
 				sb.append(" = ");
-				sb.append(formatFullEntity(condition.joinProperty, html));
+				sb.append(formatFullEntity(condition.joinProperty, html, locale));
 				sb.append('\n');
 			}
 			sb.append('\n');
@@ -82,13 +85,13 @@ public class JoinExplanation extends AbstractCellExplanation implements JoinFunc
 		return null;
 	}
 
-	private String formatFullEntity(EntityDefinition ed, boolean html) {
+	private String formatFullEntity(EntityDefinition ed, boolean html, Locale locale) {
 		String result = "";
 		while (ed != null) {
 			if (!result.isEmpty()) {
 				result = "." + result;
 			}
-			result = formatEntity(ed, html, false) + result;
+			result = formatEntity(ed, html, false, locale) + result;
 			ed = AlignmentUtil.getParent(ed);
 		}
 		return result;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST UI Components
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.cst;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.cst;bundle-version="2.5.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
@@ -11,8 +11,9 @@ Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.selective,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.selective,
- de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
  org.slf4j;version="1.5.11"
 Service-Component: OSGI-INF/ttreehooks.xml
 Bundle-ActivationPolicy: lazy

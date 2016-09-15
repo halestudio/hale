@@ -1,0 +1,11 @@
+-project
+platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/hydro/project.halex
+-source
+platform:/plugin/eu.esdihumboldt.hale.app.transform.test/projects/hydro/hydro-source.gml.gz
+-Sinspire.sds.localId
+1234
+-filter
+name='River Rede'
+-filter-on
+River
+width='10.0'

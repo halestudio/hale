@@ -51,8 +51,6 @@
          <topic href="html/concepts/contexts.html" label="Contexts">
          </topic>
       </topic>
-      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
-      </topic>
       <topic label="Alignment">
          <topic href="html/concepts/what_is_alignment.html" label="What is an Alignment?">
          </topic>
@@ -62,6 +60,10 @@
          </topic>
          <topic href="html/concepts/cell_priority.html" label="Cell priority">
          </topic>
+      </topic>
+      <topic href="html/concepts/what_is_instance.html" label="What is an Instance?">
+      </topic>
+      <topic href="html/concepts/project_vars.html" label="Project variables">
       </topic>
       <anchor id="concepts"/>
    </topic>
@@ -117,12 +119,14 @@
          </topic>
          <topic href="html/tasks/alignment/remove_cell.html" label="Deleting a relation">
          </topic>
+         <topic href="html/tasks/alignment/define_custom_function.html" label="Define a custom function">
+         </topic>
       </topic>
+      <anchor id="tasks"/>
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
       <topic href="html/tasks/transform_cli.html" label="Transformation via the command line">
       </topic>
-      <anchor id="tasks"/>
    </topic>
    <topic label="Reference">
       <topic href="html/reference/schema_elements.html" label="Schema elements">

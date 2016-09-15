@@ -1,4 +1,4 @@
-hale
+hale [![Build Status](https://builds.wetransform.to/buildStatus/icon?job=hale/hale~publish(master))](https://builds.wetransform.to/job/hale/job/hale~publish(master)/)
 ====
 
 (Spatial) data harmonisation with the HUMBOLDT Alignment Editor
@@ -6,6 +6,7 @@ hale
 The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spatial data, with a focus on highly complex data sets. Set up reporting, analysis and data publishing workflows easily by defining schema mappings. Furthermore, HALE documents the data transformation process and its impact on data quality.
 
 [![App](http://www.dhpanel.eu/images/content/hale-screenshot.jpg "HALE's main perspective")] (http://www.dhpanel.eu/humboldt-framework/hale.html)
+
 
 ## Features
 * Real-time, interactive geodata transformation and validation
@@ -15,10 +16,13 @@ The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spat
 * Create INSPIRE DataSets for Download Services, write to Transactional Web Feature Services
 * Built on Java and Eclipse RCP.
 
+
 ## Instructions
 
-1. To contribute: Fork and then clone the repository. Send us pull requests with your contributions. [Read here how to set up the development environment](http://www.esdi-community.eu/projects/hale/wiki/Set_up_your_development_environment). Note that you will need to sign the Contributor License Agreement.
-2. To download: Clone or Download the .zip file to build HALE. To get the last release + nightly builds, visit the [HALE Community Website](http://community.esdi-humboldt.eu/projects/hale/files)
+To start working with HALE, download a [release](https://www.wetransform.to/downloads/) or current [development builds](https://builds.wetransform.to/job/hale/job/hale~publish(master)/).
+
+To contribute please check the [contribution guidelines](CONTRIBUTING.md) and read here [how to set up your development environment](https://github.com/halestudio/hale/wiki/Set-up-your-development-environment).
+
 
 ## System Requirements
 
@@ -30,12 +34,11 @@ The HUMBOLDT Alignment Editor (HALE) enables you to transform and harmonise spat
 ## Resources
 
 * [HALE User Guide](http://hale.igd.fraunhofer.de/)
-* [HALE Community Website with issue tracker, forum, downloads...](http://www.esdi-community.eu/projects/hale)
-* [HALE Community Blog](http://blog.dhpanel.eu/)
-* [Subscribe to dev@esdi-humboldt.eu](mailto:dev-subscribe@esdi-humboldt.eu)
+* [HALE Community Forum](http://www.esdi-community.eu/projects/hale/boards)
+* [HALE Community Blog](https://www.wetransform.to/category/news/)
 
 ## License
 
-* The main HALE components/libaries have been released under the GNU Lesser General Public License (LGPL) v3.0.
-* The HALE continuous delivery build (*hale-build* in **build/**) has been released under the GNU General Public License (GPL) v3.0.
+* The main HALE components/libaries is released under the GNU Lesser General Public License (LGPL) v3.0.
+* The HALE continuous delivery build (*hale-build* in **build/**) is released under the GNU General Public License (GPL) v3.0.
 * Different licenses may apply to the extensions residing in **ext/**, please see the respective subfolders.

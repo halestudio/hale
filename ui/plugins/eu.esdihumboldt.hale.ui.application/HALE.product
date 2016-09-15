@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="2.9.4.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="3.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.gif"/>
+      <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
       <text>
-         HUMBOLDT Alignment Editor (HALE)
+         halestudio
 
 Version ___version___
 
@@ -35,11 +35,7 @@ http://www.wetransform.to/services/support
 -name &quot;HUMBOLDT Alignment Editor&quot;
 --launcher.defaultAction openFile
       </programArgs>
-      <programArgsMac>-vm
-../../../jre/Contents/Home/bin/java
-      </programArgsMac>
-      <vmArgs>-Xmx800m
--XX:MaxPermSize=128m
+      <vmArgs>-Xmx1000m
 -Dsun.net.client.defaultConnectTimeout=10000
 -Dsun.net.client.defaultReadTimeout=20000
 -Dcache.level1.enabled=false
@@ -51,15 +47,16 @@ http://www.wetransform.to/services/support
       </vmArgsMac>
    </launcherArgs>
 
-   <windowImages i32="/eu.esdihumboldt.hale.ui.application/images/hale_icon.png"/>
+   <windowImages i16="/eu.esdihumboldt.hale.ui.application/images/16.png" i32="/eu.esdihumboldt.hale.ui.application/images/32.png" i48="/eu.esdihumboldt.hale.ui.application/images/48.png" i64="/eu.esdihumboldt.hale.ui.application/images/64.png" i128="/eu.esdihumboldt.hale.ui.application/images/128.png" i256="/eu.esdihumboldt.hale.ui.application/images/256.png"/>
 
    <splash
       location="eu.esdihumboldt.hale.ui.application" />
    <launcher name="HALE">
+      <linux icon="/eu.esdihumboldt.hale.ui.application/images/hale.xpm"/>
+      <macosx icon="/eu.esdihumboldt.hale.ui.application/images/hale.icns"/>
       <solaris/>
       <win useIco="true">
          <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
-         <bmp/>
       </win>
    </launcher>
 
@@ -101,6 +98,7 @@ http://www.wetransform.to/services/support
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
       <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
    </features>
 
    <configurations>
@@ -142,5 +140,12 @@ http://www.wetransform.to/services/support
       <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
       <property name="org.eclipse.update.reconcile" value="false" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

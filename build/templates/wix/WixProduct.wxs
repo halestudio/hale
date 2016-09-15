@@ -18,15 +18,15 @@
 		<!-- select UI -->
 		<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
 		<UIRef Id="WixUI_Product" />
-		
+
 		<!-- Install for all users -->
 		<Property Id="ALLUSERS" Value="1" />
-		
+
 		<!-- Always reinstall all files. This will also update
 		     files which have the same version number as before, but
 		     have been altered though -->
 		<Property Id="REINSTALLMODE">amus</Property>
-		
+
 		<!-- Define target directory structure -->
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<Directory Id="@{PROGRAMFILESFOLDER}">
@@ -40,7 +40,7 @@
 				<Directory Id="ApplicationProgramsFolder" Name="@{TITLE}"/>
 			</Directory>
 		</Directory>
-		
+
 		<!-- Add files to installer -->
 		@{COMPONENTS}
 		<DirectoryRef Id="INSTALLDIR">
@@ -50,25 +50,58 @@
 					<fw:FirewallException Id="FW_@{BUILDID}" Name="@{TITLE}" Scope="any" />
 					-->
 				</File>
-				<ProgId Id="HALE.projectfile.archive" Description="HALE project archive">
-					<Extension Id="halez" ContentType="application/hale-archive">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
-					</Extension>
-				</ProgId>
-				<ProgId Id="HALE.projectfile" Description="HALE project file">
-					<Extension Id="hale" ContentType="application/hale">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
-					</Extension>
-				</ProgId>
-				<ProgId Id="HALE.projectfile.xml" Description="HALE XML project file">
-					<Extension Id="halex" ContentType="application/hale-xml">
-						<Verb Id="open" Command="Open" TargetFile="@{BUILDID}.exe" Argument="-data &quot;$(env.APPDATA)\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
-					</Extension>
-				</ProgId>
+			</Component>
+			<!--
+			Before ProgId mechanism was used for file mechanism. but data directory was not being created in APPDATA path. 
+			So need to provide registry manually.
+			-->
+			<Component Id="RegistryEntries" Guid="*">
+				<RegistryKey Root="HKCR" Key=".hale" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale" />
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".halex" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile.xml" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale-xml" />
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".halez" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile.archive" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale-archive" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.hale" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.halex" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile.xml" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale-xml" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\.halez" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="HALE.projectfile.archive" />
+					<RegistryValue Type="string" Name="Content Type" Value="application/hale-archive" />
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="HALE.projectfile\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="HALE.projectfile.archive\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="HALE.projectfile.xml\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\HALE.projectfile\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\HALE.projectfile.archive\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
+				<RegistryKey Root="HKLM" Key="SOFTWARE\Classes\HALE.projectfile.xml\shell\open\command" Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="expandable" Value="[INSTALLDIR]@{BUILDID}.exe -data &quot;%APPDATA%\wetransform\@{BUILDID}&quot; --launcher.openFile &quot;%1&quot;" />
+				</RegistryKey>
 			</Component>
 			@{ROOTCOMPONENTS}
 		</DirectoryRef>
-		
+
 		<!-- Add shortcut -->
 		<DirectoryRef Id="ApplicationProgramsFolder">
 			<Component Id="ApplicationShortcut" Guid="@{GUID.APPLICATIONSHORTCUT}">
@@ -82,14 +115,14 @@
 					Name="Installed" Type="integer" Value="1" KeyPath="yes" />
 			</Component>
 		</DirectoryRef>
-		
+
 		<!-- Install files -->
 		<Feature Id="@{BUILDID}" Title="@{TITLE}" Level="1">
 			@{COMPONENTREFS}
 			<ComponentRef Id="@{BUILDID}.exe" />
+			<ComponentRef Id="RegistryEntries" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
-		
 		<InstallExecuteSequence>
 			<RemoveExistingProducts After="InstallFinalize" />
 		</InstallExecuteSequence>

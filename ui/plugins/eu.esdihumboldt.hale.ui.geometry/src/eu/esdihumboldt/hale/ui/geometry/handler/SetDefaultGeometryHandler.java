@@ -67,8 +67,8 @@ public class SetDefaultGeometryHandler extends AbstractHandler {
 							path.add(child.getChild().getName());
 						}
 
-						GeometrySchemaService gss = (GeometrySchemaService) PlatformUI
-								.getWorkbench().getService(GeometrySchemaService.class);
+						GeometrySchemaService gss = PlatformUI.getWorkbench()
+								.getService(GeometrySchemaService.class);
 						gss.setDefaultGeometry(def.getType(), path);
 					}
 				}

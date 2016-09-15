@@ -58,8 +58,7 @@ public class EditMappableTypesWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		SchemaService schemaService = (SchemaService) PlatformUI.getWorkbench().getService(
-				SchemaService.class);
+		SchemaService schemaService = PlatformUI.getWorkbench().getService(SchemaService.class);
 		schemaService.toggleMappable(spaceID, page.getSelectedTypes());
 		return true;
 	}

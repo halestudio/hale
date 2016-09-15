@@ -25,10 +25,10 @@ import org.eclipse.swt.widgets.MenuItem;
 import de.fhg.igd.eclipse.ui.util.extension.AbstractExtensionContribution;
 import de.fhg.igd.eclipse.ui.util.extension.selective.SelectiveExtensionContribution;
 import de.fhg.igd.eclipse.util.extension.selective.SelectiveExtension;
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHook;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHookFactory;
 import eu.esdihumboldt.cst.extension.hooks.TransformationTreeHooks;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 
 /**
  * Contribution for transformation tree hooks.
@@ -43,7 +43,7 @@ public class TransformationTreeHooksContribution extends
 	 */
 	@Override
 	protected SelectiveExtension<TransformationTreeHook, TransformationTreeHookFactory> initExtension() {
-		return OsgiUtils.getService(TransformationTreeHooks.class);
+		return HalePlatform.getService(TransformationTreeHooks.class);
 	}
 
 	/**

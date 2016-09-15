@@ -26,8 +26,9 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 
@@ -39,7 +40,7 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<ParameterPage> implements
 		ParameterPageFactory {
 
-	private Set<FunctionParameter> associatedFunctionParameters;
+	private Set<FunctionParameterDefinition> associatedFunctionParameters;
 	private static final ALogger _log = ALoggerFactory.getLogger(ParameterPageFactoryImpl.class);
 
 	/**
@@ -102,19 +103,19 @@ public class ParameterPageFactoryImpl extends AbstractConfigurationFactory<Param
 	 * @see eu.esdihumboldt.hale.ui.function.extension.ParameterPageFactory#getAssociatedParameters()
 	 */
 	@Override
-	public Set<FunctionParameter> getAssociatedParameters() {
+	public Set<FunctionParameterDefinition> getAssociatedParameters() {
 		if (associatedFunctionParameters == null) {
-			Set<FunctionParameter> params = new HashSet<FunctionParameter>();
+			Set<FunctionParameterDefinition> params = new HashSet<FunctionParameterDefinition>();
 			// get defined parameters
-			Collection<FunctionParameter> definedParameters = FunctionUtil.getFunction(
-					getFunctionId()).getDefinedParameters();
+			Collection<FunctionParameterDefinition> definedParameters = FunctionUtil.getFunction(
+					getFunctionId(), HaleUI.getServiceProvider()).getDefinedParameters();
 			// walk over conf parameters
 			IConfigurationElement[] parameterElements = conf.getChildren("parameter");
 			for (IConfigurationElement parameterElement : parameterElements) {
 				// search for defined parameter, add it to associated params
 				// XXX throw some exception if param name is not defined?
 				String name = parameterElement.getAttribute("name");
-				for (FunctionParameter definedParameter : definedParameters)
+				for (FunctionParameterDefinition definedParameter : definedParameters)
 					if (definedParameter.getName().equals(name)) {
 						params.add(definedParameter);
 						break;

@@ -62,8 +62,8 @@ import eu.esdihumboldt.hale.ui.views.properties.handler.OpenPropertiesHandler;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class ReportList extends PropertiesViewPart implements
-		ReportListener<Report<Message>, Message> {
+public class ReportList extends PropertiesViewPart
+		implements ReportListener<Report<Message>, Message> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportList.class);
 
@@ -80,7 +80,7 @@ public class ReportList extends PropertiesViewPart implements
 	 */
 	public ReportList() {
 		// get ReportService and add listener
-		repService = (ReportService) PlatformUI.getWorkbench().getService(ReportService.class);
+		repService = PlatformUI.getWorkbench().getService(ReportService.class);
 		repService.addReportListener(this);
 	}
 
@@ -147,8 +147,8 @@ public class ReportList extends PropertiesViewPart implements
 			TreeViewerColumn col2 = new TreeViewerColumn(_treeViewer, SWT.NONE);
 
 			// add the label provider
-			col2.setLabelProvider(new TreeColumnViewerLabelProvider(
-					new ReportListLabelDateProvider()));
+			col2.setLabelProvider(
+					new TreeColumnViewerLabelProvider(new ReportListLabelDateProvider()));
 
 			// create column for reports
 			layout.setColumnData(col2.getColumn(), new ColumnWeightData(1));
@@ -213,8 +213,8 @@ public class ReportList extends PropertiesViewPart implements
 
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-				OpenPropertiesHandler.unpinAndOpenPropertiesView(PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow());
+				OpenPropertiesHandler.unpinAndOpenPropertiesView(
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow());
 			}
 		});
 
@@ -301,8 +301,8 @@ public class ReportList extends PropertiesViewPart implements
 					 * provided, it's a simple reference check, which won't work
 					 * if you've recreated your contents.
 					 */
-					_treeViewer.setExpandedElements(new Object[] { _treeViewer
-							.getExpandedElements() });
+					_treeViewer.setExpandedElements(
+							new Object[] { _treeViewer.getExpandedElements() });
 
 					// select new item
 					_treeViewer.setSelection(new StructuredSelection(report), true);
@@ -375,8 +375,8 @@ public class ReportList extends PropertiesViewPart implements
 					MessageBox messageBox = new MessageBox(_treeViewer.getTree().getShell(),
 							SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 					messageBox.setText("Confirm Delete");
-					messageBox
-							.setMessage("Are you sure you want to permanently delete all logged events?");
+					messageBox.setMessage(
+							"Are you sure you want to permanently delete all logged events?");
 
 					if (messageBox.open() == SWT.YES) {
 						// remove all entries from ReportService

@@ -568,7 +568,16 @@
                serviceClass="eu.esdihumboldt.util.groovy.sandbox.GroovyService">
          </service>
          <service
+               serviceClass="eu.esdihumboldt.hale.common.align.service.FunctionService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.align.service.TransformationFunctionService">
+         </service>
+         <service
                serviceClass="eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService">
          </service>
       </serviceFactory>
       <sourceProvider
@@ -1340,6 +1349,12 @@
             class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectPreferencePage"
             id="eu.esdihumboldt.hale.ui.preferences.project"
             name="Project">
+      </page>
+      <page
+            category="eu.esdihumboldt.hale.ui.preferences.project"
+            class="eu.esdihumboldt.hale.ui.service.project.internal.ProjectVariablesPreferencePage"
+            id="eu.esdihumboldt.hale.ui.preferences.projectvars"
+            name="Variables">
       </page>
    </extension>
    <extension

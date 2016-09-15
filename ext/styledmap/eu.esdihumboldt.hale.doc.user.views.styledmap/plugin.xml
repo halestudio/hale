@@ -16,6 +16,10 @@
             file="toc.tasks_data.xml"
             primary="false">
       </toc>
+      <toc
+            file="toc.mapconfiguration.xml"
+            primary="false">
+      </toc>
    </extension>
    <extension
          point="org.eclipse.help.contexts">

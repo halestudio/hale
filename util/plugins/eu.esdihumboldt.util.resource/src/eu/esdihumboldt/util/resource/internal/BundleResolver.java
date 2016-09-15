@@ -20,12 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Enumeration;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
-import com.google.common.io.InputSupplier;
-
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.resource.ResourceNotFoundException;
 import eu.esdihumboldt.util.resource.ResourceResolver;
 
@@ -39,6 +42,8 @@ public class BundleResolver implements ResourceResolver {
 
 	private final Bundle bundle;
 
+	private final ALogger log = ALoggerFactory.getLogger(BundleResolver.class);
+
 	/**
 	 * Create a bundle resolver.
 	 * 
@@ -46,20 +51,28 @@ public class BundleResolver implements ResourceResolver {
 	 */
 	public BundleResolver(IConfigurationElement conf) {
 		String bundleName = conf.getContributor().getName();
-		Bundle contributor = null;
 
-		for (Bundle bundle : ResourceBundle.getBundleContext().getBundles()) {
-			if (bundle.getSymbolicName().equals(bundleName)) {
-				contributor = bundle;
-				break;
+		BundleContext context = ResourceBundle.getBundleContext();
+		if (context != null) { // OSGi is available
+			Bundle contributor = null;
+
+			for (Bundle bundle : ResourceBundle.getBundleContext().getBundles()) {
+				if (bundle.getSymbolicName().equals(bundleName)) {
+					contributor = bundle;
+					break;
+				}
 			}
-		}
 
-		if (contributor == null) {
-			throw new IllegalStateException("Contributing bundle not found: " + bundleName);
-		}
+			if (contributor == null) {
+				throw new IllegalStateException("Contributing bundle not found: " + bundleName);
+			}
 
-		this.bundle = contributor;
+			this.bundle = contributor;
+		}
+		else {
+			// no OSGi available
+			this.bundle = null;
+		}
 	}
 
 	/**
@@ -67,18 +80,48 @@ public class BundleResolver implements ResourceResolver {
 	 */
 	@Override
 	public InputSupplier<? extends InputStream> resolve(URI uri) throws ResourceNotFoundException {
-		final URL entry = bundle.getEntry(uri.getPath());
-		if (entry == null) {
-			throw new ResourceNotFoundException("Resource with path " + uri.getPath()
-					+ " not contained in bundle " + bundle.getSymbolicName());
-		}
-		return new InputSupplier<InputStream>() {
-
-			@Override
-			public InputStream getInput() throws IOException {
-				return entry.openStream();
+		if (bundle != null) {
+			// OSGi
+			final URL entry = bundle.getEntry(uri.getPath());
+			if (entry == null) {
+				throw new ResourceNotFoundException("Resource with path " + uri.getPath()
+						+ " not contained in bundle " + bundle.getSymbolicName());
 			}
-		};
+			return new InputSupplier<InputStream>() {
+
+				@Override
+				public InputStream getInput() throws IOException {
+					return entry.openStream();
+				}
+			};
+		}
+		else {
+			// no OSGi
+			final ClassLoader loader = getClass().getClassLoader(); // ClassLoader.getSystemClassLoader();
+			String pathCandidate = uri.getPath();
+			final String path = (pathCandidate != null && pathCandidate.startsWith("/"))
+					? (pathCandidate.substring(1)) : (pathCandidate);
+			Enumeration<URL> resources;
+			try {
+				resources = loader.getResources(path);
+			} catch (IOException e) {
+				log.error("Error accessing classpath resource", e);
+				throw new ResourceNotFoundException(e);
+			}
+
+			if (resources.hasMoreElements()) {
+				return new InputSupplier<InputStream>() {
+
+					@Override
+					public InputStream getInput() throws IOException {
+						return loader.getResourceAsStream(path);
+					}
+				};
+			}
+			else {
+				throw new ResourceNotFoundException();
+			}
+		}
 	}
 
 }

@@ -36,17 +36,18 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.inspire.IdentifierFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.definition.AttributeEditorFactory;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionLabelFactory;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
@@ -70,7 +71,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 	private Text version = null;
 
-	private Editor<?> nilEditor;
+	private AttributeEditor<?> nilEditor;
 
 	private String initialCountry;
 	private String initialProvider;
@@ -105,7 +106,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	}
 
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null) {
 			initialCountry = initialValues.get(COUNTRY_PARAMETER_NAME).get(0).as(String.class);
@@ -173,7 +174,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			page.dispose();
 		}
 
-		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID,
+				HaleUI.getServiceProvider());
 
 		// create a composite to hold the widgets
 		page = new Composite(parent, SWT.NULL);
@@ -182,10 +184,10 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		GridLayout gl = GridLayoutFactory.fillDefaults().create();
 		page.setLayout(gl);
 
-		AttributeEditorFactory aef = (AttributeEditorFactory) PlatformUI.getWorkbench().getService(
-				AttributeEditorFactory.class);
-		DefinitionLabelFactory dlf = (DefinitionLabelFactory) PlatformUI.getWorkbench().getService(
-				DefinitionLabelFactory.class);
+		AttributeEditorFactory aef = PlatformUI.getWorkbench()
+				.getService(AttributeEditorFactory.class);
+		DefinitionLabelFactory dlf = PlatformUI.getWorkbench()
+				.getService(DefinitionLabelFactory.class);
 
 		// identifier type
 		TypeDefinition identifierType = null;
@@ -194,9 +196,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		if (def instanceof PropertyDefinition) {
 			TypeDefinition typeDef = ((PropertyDefinition) def).getPropertyType();
 			for (ChildDefinition<?> child : typeDef.getChildren()) {
-				if (child.asProperty() != null
-						&& child.asProperty().getPropertyType().getName().getLocalPart()
-								.equals("IdentifierType")) {
+				if (child.asProperty() != null && child.asProperty().getPropertyType().getName()
+						.getLocalPart().equals("IdentifierType")) {
 					identifierType = child.asProperty().getPropertyType();
 				}
 			}
@@ -214,7 +215,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 		// localId
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("namespace")) {
@@ -237,11 +238,11 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		ccLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 		ccLabel.setText(Messages.IdentifierFunctionWizardPage_5);
 
-		FunctionParameter param = function.getParameter(COUNTRY_PARAMETER_NAME);
+		FunctionParameterDefinition param = function.getParameter(COUNTRY_PARAMETER_NAME);
 		configureParameterLabel(ccLabel, param);
 
 		this.countryCode = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.countryCode.setText(initialCountry); //$NON-NLS-1$
+		this.countryCode.setText(initialCountry); // $NON-NLS-1$
 		this.countryCode.setEnabled(true);
 		this.countryCode.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -254,7 +255,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		configureParameterLabel(providerLabel, param);
 
 		this.providerName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.providerName.setText(initialProvider); //$NON-NLS-1$
+		this.providerName.setText(initialProvider); // $NON-NLS-1$
 		this.providerName.setEnabled(true);
 		this.providerName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -267,7 +268,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		configureParameterLabel(productLabel, param);
 
 		this.productName = new Text(nsGroup, SWT.BORDER | SWT.SINGLE);
-		this.productName.setText(initialProduct); //$NON-NLS-1$
+		this.productName.setText(initialProduct); // $NON-NLS-1$
 		this.productName.setEnabled(true);
 		this.productName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
@@ -280,7 +281,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		// localId
 		Control idLabel = null;
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String LocalName = child.getName().getLocalPart();
 				if (LocalName.equals("localId")) {
@@ -298,9 +299,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			((Label) idLabel).setText("localId"); //$NON-NLS-1$
 		}
 		idLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
-		Control localId = dlf.createLabel(idGroup,
-				getWizard().getUnfinishedCell().getSource().get(null).get(0).getDefinition()
-						.getDefinition(), true);
+		Control localId = dlf.createLabel(idGroup, getWizard().getUnfinishedCell().getSource()
+				.get(null).get(0).getDefinition().getDefinition(), true);
 		localId.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// Version group
@@ -312,7 +312,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		// Version
 		Control versionLabel = null;
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("versionId")) {
@@ -332,13 +332,13 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 		versionLabel.setLayoutData(new GridData(SWT.END, SWT.CENTER, false, false));
 
 		this.version = new Text(versGroup, SWT.BORDER | SWT.SINGLE);
-		this.version.setText(initialVersion); //$NON-NLS-1$
+		this.version.setText(initialVersion); // $NON-NLS-1$
 		this.version.setEnabled(true);
 		this.version.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
 		// version nil reason
 		if (identifierType != null) {
-			PropertyDefinition propDef = null; //$NON-NLS-1$
+			PropertyDefinition propDef = null; // $NON-NLS-1$
 			for (ChildDefinition<?> child : identifierType.getChildren()) {
 				String localName = child.getName().getLocalPart();
 				if (localName.equals("versionId")) {
@@ -365,9 +365,10 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 
 				// editor
 				nilEditor = aef.createEditor(versGroup, propDef, null, false);
-				nilEditor.getControl().setLayoutData(
-						new GridData(SWT.FILL, SWT.CENTER, true, false));
-				nilEditor.setAsText(initialVersionNil); // default to unknown //$NON-NLS-1$
+				nilEditor.getControl()
+						.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+				nilEditor.setAsText(initialVersionNil); // default to unknown
+														// //$NON-NLS-1$
 			}
 
 		}
@@ -386,7 +387,7 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 	 * @param paramLabel the parameter label
 	 * @param param the associated function parameter
 	 */
-	private void configureParameterLabel(Label paramLabel, FunctionParameter param) {
+	private void configureParameterLabel(Label paramLabel, FunctionParameterDefinition param) {
 		if (param != null) {
 			String name = param.getDisplayName();
 			if (name != null && !name.isEmpty()) {
@@ -397,8 +398,8 @@ public class IdentifierParameterPage extends HaleWizardPage<AbstractGenericFunct
 			if (descr != null && !descr.isEmpty()) {
 				ControlDecoration dec = new ControlDecoration(paramLabel, SWT.RIGHT);
 				dec.setDescriptionText(descr);
-				FieldDecoration fd = FieldDecorationRegistry.getDefault().getFieldDecoration(
-						FieldDecorationRegistry.DEC_INFORMATION);
+				FieldDecoration fd = FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION);
 				dec.setImage(fd.getImage());
 			}
 		}

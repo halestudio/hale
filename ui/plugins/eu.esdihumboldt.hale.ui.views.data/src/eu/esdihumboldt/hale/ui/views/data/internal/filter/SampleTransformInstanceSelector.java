@@ -47,11 +47,11 @@ import org.eclipse.ui.PlatformUI;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.align.transformation.service.impl.DefaultInstanceSink;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -111,13 +111,13 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 			});
-			typesCombo.getControl().setLayoutData(
-					new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+			typesCombo.getControl()
+					.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 
 			updateFeatureTypesSelection();
 
 			// service listeners
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+			InstanceSampleService rss = PlatformUI.getWorkbench()
 					.getService(InstanceSampleService.class);
 			rss.addObserver(referenceListener = new Observer() {
 
@@ -127,8 +127,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 			});
 
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService alService = PlatformUI.getWorkbench()
+					.getService(AlignmentService.class);
 			alService.addListener(alignmentListener = new AlignmentServiceAdapter() {
 
 				@Override
@@ -157,6 +157,11 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				}
 
 				@Override
+				public void customFunctionsChanged() {
+					updateInDisplayThread();
+				}
+
+				@Override
 				public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 					// property changes may affect transformation result
 					updateInDisplayThread();
@@ -166,7 +171,9 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 		private void updateInDisplayThread() {
 			if (Display.getCurrent() != null) {
+				preSelectionChanged();
 				updateFeatureTypesSelection();
+				postSelectionChanged();
 			}
 			else {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -174,7 +181,9 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 					@Override
 					public void run() {
+						preSelectionChanged();
 						updateFeatureTypesSelection();
+						postSelectionChanged();
 					}
 				});
 			}
@@ -192,11 +201,11 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					try {
-						final InstanceSampleService rss = (InstanceSampleService) PlatformUI
-								.getWorkbench().getService(InstanceSampleService.class);
-						final AlignmentService alService = (AlignmentService) PlatformUI
-								.getWorkbench().getService(AlignmentService.class);
-						final TransformationService cst = OsgiUtils
+						final InstanceSampleService rss = PlatformUI.getWorkbench()
+								.getService(InstanceSampleService.class);
+						final AlignmentService alService = PlatformUI.getWorkbench()
+								.getService(AlignmentService.class);
+						final TransformationService cst = HalePlatform
 								.getService(TransformationService.class);
 
 						// get reference instances
@@ -209,8 +218,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 							DefaultInstanceSink target = new DefaultInstanceSink();
 
 							// transform features
-							TransformationReport report = cst.transform(
-									alService.getAlignment(), // Alignment
+							TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
 									instances, target, HaleUI.getServiceProvider(),
 									new ProgressMonitorIndicator(monitor));
 
@@ -228,8 +236,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 								while (it.hasNext()) {
 									Instance inst = it.next();
 									for (Instance instance : target.getInstances()) {
-										if (InstanceMetadata.getID(inst).equals(
-												InstanceMetadata.getSourceID(instance))) {
+										if (InstanceMetadata.getID(inst)
+												.equals(InstanceMetadata.getSourceID(instance))) {
 											targetSorted.add(instance);
 										}
 									}
@@ -313,6 +321,30 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		}
 
 		/**
+		 * calling pre selection change in listener
+		 */
+		public void preSelectionChanged() {
+			// disable types combo box before any changes apply to transformed
+			// data view,
+			// enable it again after selection change completed and if combo box
+			// has entries
+			typesCombo.getControl().setEnabled(false);
+
+			for (InstanceSelectionListener listener : listeners) {
+				listener.preSelectionChange();
+			}
+		}
+
+		/**
+		 * calling post selection change in listener
+		 */
+		public void postSelectionChanged() {
+			for (InstanceSelectionListener listener : listeners) {
+				listener.postSelectionChange();
+			}
+		}
+
+		/**
 		 * Get the currently selected features
 		 * 
 		 * @return the currently selected features
@@ -331,12 +363,12 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		 */
 		@Override
 		public void dispose() {
-			InstanceSampleService rss = (InstanceSampleService) PlatformUI.getWorkbench()
+			InstanceSampleService rss = PlatformUI.getWorkbench()
 					.getService(InstanceSampleService.class);
 			rss.deleteObserver(referenceListener);
 
-			AlignmentService alService = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService alService = PlatformUI.getWorkbench()
+					.getService(AlignmentService.class);
 			alService.removeListener(alignmentListener);
 
 			listeners.clear();

@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
 import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.ui.common.Editor;
+import eu.esdihumboldt.hale.ui.common.AttributeEditor;
 import eu.esdihumboldt.hale.ui.common.editors.IntegerEditor;
 import eu.esdihumboldt.hale.ui.common.editors.value.IntegerValueEditor;
 import eu.esdihumboldt.hale.ui.service.instance.sample.Sampler;
@@ -88,7 +88,7 @@ public class FirstSampler implements Sampler {
 	}
 
 	@Override
-	public Editor<Value> createEditor(Composite parent) {
+	public AttributeEditor<Value> createEditor(Composite parent) {
 		return new IntegerValueEditor(new IntegerEditor(parent, 100000, 1, 10, 100));
 	}
 

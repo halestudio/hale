@@ -55,13 +55,14 @@ import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalGenderValue;
 import eu.esdihumboldt.cst.functions.inspire.data.GrammaticalNumberValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NameStatusValue;
 import eu.esdihumboldt.cst.functions.inspire.data.NativenessValue;
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameter;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunction;
-import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
@@ -132,7 +133,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 * @see ParameterPage#setParameter(Set, ListMultimap)
 	 */
 	@Override
-	public void setParameter(Set<FunctionParameter> params,
+	public void setParameter(Set<FunctionParameterDefinition> params,
 			ListMultimap<String, ParameterValue> initialValues) {
 		if (initialValues != null && initialValues.size() != 0) {
 			// set the initial values if they exist
@@ -231,7 +232,8 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		composite.setSize(composite.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 		composite.setFont(parent.getFont());
 
-		PropertyFunction function = PropertyFunctionExtension.getInstance().get(ID);
+		PropertyFunctionDefinition function = FunctionUtil.getPropertyFunction(ID,
+				HaleUI.getServiceProvider());
 
 		createSpellingGroup(composite, function);
 		createPronounciationGroup(composite, function);
@@ -241,7 +243,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		super.setControl(composite);
 	}
 
-	private void createOptionalAttributes(Composite parent, PropertyFunction function) {
+	private void createOptionalAttributes(Composite parent, PropertyFunctionDefinition function) {
 		final Composite configurationComposite = new Composite(parent, SWT.NONE);
 		GridData configurationLayoutData = new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.FILL_HORIZONTAL);
@@ -460,7 +462,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createPronounciationGroup(Composite parent, PropertyFunction function) {
+	private void createPronounciationGroup(Composite parent, PropertyFunctionDefinition function) {
 		// define Pronounciatiation Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(PRONOUNCIATION_GRPOUP_TEXT);
@@ -536,7 +538,7 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 		});
 	}
 
-	private void createSpellingGroup(Composite parent, PropertyFunction function) {
+	private void createSpellingGroup(Composite parent, PropertyFunctionDefinition function) {
 		// define Spelling Group composite
 		Group configurationGroup = new Group(parent, SWT.NONE);
 		configurationGroup.setText(SPELLING_GROUP_TEXT);
@@ -770,8 +772,8 @@ public class GeographicalNamePage extends HaleWizardPage<AbstractGenericFunction
 	 * @param function the function
 	 */
 	private void configureParameterLabel(Label paramLabel, String paramName,
-			PropertyFunction function) {
-		FunctionParameter param = function.getParameter(paramName);
+			PropertyFunctionDefinition function) {
+		FunctionParameterDefinition param = function.getParameter(paramName);
 		if (param != null) {
 //			String name = param.getDisplayName();
 //			if (name != null && !name.isEmpty()) {

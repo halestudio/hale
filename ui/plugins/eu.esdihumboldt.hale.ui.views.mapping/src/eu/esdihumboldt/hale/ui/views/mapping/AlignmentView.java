@@ -181,9 +181,8 @@ public class AlignmentView extends AbstractMappingView {
 
 		// create type relation selection control
 		sourceTargetSelector = new SourceTargetTypeSelector(page);
-		sourceTargetSelector.getControl().setLayoutData(
-				GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-						.create());
+		sourceTargetSelector.getControl().setLayoutData(GridDataFactory.swtDefaults()
+				.align(SWT.FILL, SWT.CENTER).grab(true, false).create());
 		sourceTargetSelector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 			@Override
@@ -247,8 +246,7 @@ public class AlignmentView extends AbstractMappingView {
 		super.createViewControl(viewerContainer);
 		updateLayout(false);
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 
 //		update();
 
@@ -302,20 +300,25 @@ public class AlignmentView extends AbstractMappingView {
 				refreshGraph();
 			}
 
+			@Override
+			public void customFunctionsChanged() {
+				refreshGraph();
+			}
+
 		});
 
 		// initialize compatibility checkup and display
-		CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
-				CompatibilityService.class);
+		CompatibilityService cs = PlatformUI.getWorkbench().getService(CompatibilityService.class);
 
-		cs.addListener(compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
+		cs.addListener(
+				compListener = new ExclusiveExtensionListener<CompatibilityMode, CompatibilityModeFactory>() {
 
-			@Override
-			public void currentObjectChanged(final CompatibilityMode arg0,
-					final CompatibilityModeFactory arg1) {
-				refreshGraph();
-			}
-		});
+					@Override
+					public void currentObjectChanged(final CompatibilityMode arg0,
+							final CompatibilityModeFactory arg1) {
+						refreshGraph();
+					}
+				});
 
 		// listen on SchemaSelections
 		getSite().getWorkbenchWindow().getSelectionService()
@@ -393,8 +396,8 @@ public class AlignmentView extends AbstractMappingView {
 				 */
 				@Override
 				public void run() {
-					AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-							AlignmentService.class);
+					AlignmentService as = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
 					as.setCellProperty(selectedCell.getId(), Cell.PROPERTY_DISABLE_FOR, typeCell);
 				}
 			});
@@ -407,8 +410,8 @@ public class AlignmentView extends AbstractMappingView {
 				 */
 				@Override
 				public void run() {
-					AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-							AlignmentService.class);
+					AlignmentService as = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
 					as.setCellProperty(selectedCell.getId(), Cell.PROPERTY_ENABLE_FOR, typeCell);
 				}
 
@@ -421,8 +424,8 @@ public class AlignmentView extends AbstractMappingView {
 					// alignment.
 					// Still show the action for clarity.
 					if (selectedCell instanceof BaseAlignmentCell)
-						return !((BaseAlignmentCell) selectedCell).getBaseDisabledFor().contains(
-								typeCell.getId());
+						return !((BaseAlignmentCell) selectedCell).getBaseDisabledFor()
+								.contains(typeCell.getId());
 					return true;
 				}
 			});
@@ -463,8 +466,9 @@ public class AlignmentView extends AbstractMappingView {
 			private final Color cellDisabledForegroundColor = new Color(Display.getCurrent(), 109,
 					109, 132);
 			private final Color cellDisabledHighlightColor = new Color(Display.getCurrent(),
-					(int) (getCellHighlightColor().getRed() * 0.7), (int) (getCellHighlightColor()
-							.getGreen() * 0.7), (int) (getCellHighlightColor().getBlue() * 0.7));
+					(int) (getCellHighlightColor().getRed() * 0.7),
+					(int) (getCellHighlightColor().getGreen() * 0.7),
+					(int) (getCellHighlightColor().getBlue() * 0.7));
 
 			/**
 			 * @see eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider#getNodeHighlightColor(java.lang.Object)
@@ -535,9 +539,9 @@ public class AlignmentView extends AbstractMappingView {
 		}
 		manager.add(deactivatedCellFilterAction);
 		manager.add(new FilterCellAction("Hide inherited cells", "Show inherited cells",
-				CommonSharedImages.getImageRegistry().getDescriptor(
-						CommonSharedImages.IMG_INHERITED_ARROW), getViewer(), contentProvider,
-				inheritedCellFilter, true, true));
+				CommonSharedImages.getImageRegistry()
+						.getDescriptor(CommonSharedImages.IMG_INHERITED_ARROW),
+				getViewer(), contentProvider, inheritedCellFilter, true, true));
 	}
 
 	@Override
@@ -571,14 +575,13 @@ public class AlignmentView extends AbstractMappingView {
 		Cell typeCell = sourceTargetSelector.getSelectedCell();
 
 		if (typeCell != null
-				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) && associatedWithType(
-						typeCell.getTarget(), selection.getTargetItems()))) {
+				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems())
+						&& associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
 			// type cell is associated with source and target, don't change
 			return;
 		}
 
-		AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-				AlignmentService.class);
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 		Alignment alignment = as.getAlignment();
 
 		// find type cell associated with both source and target
@@ -592,8 +595,8 @@ public class AlignmentView extends AbstractMappingView {
 		}
 
 		if (typeCell != null
-				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems()) || associatedWithType(
-						typeCell.getTarget(), selection.getTargetItems()))) {
+				&& (associatedWithType(typeCell.getSource(), selection.getSourceItems())
+						|| associatedWithType(typeCell.getTarget(), selection.getTargetItems()))) {
 			// type cell is associated with source or target, don't change
 			return;
 		}
@@ -712,14 +715,13 @@ public class AlignmentView extends AbstractMappingView {
 	@Override
 	public void dispose() {
 		if (alignmentListener != null) {
-			AlignmentService as = (AlignmentService) PlatformUI.getWorkbench().getService(
-					AlignmentService.class);
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
 			as.removeListener(alignmentListener);
 		}
 
 		if (compListener != null) {
-			CompatibilityService cs = (CompatibilityService) PlatformUI.getWorkbench().getService(
-					CompatibilityService.class);
+			CompatibilityService cs = PlatformUI.getWorkbench()
+					.getService(CompatibilityService.class);
 			cs.removeListener(compListener);
 		}
 

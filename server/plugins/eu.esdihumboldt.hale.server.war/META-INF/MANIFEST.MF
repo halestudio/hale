@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Server
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.war;singleton:=true
-Bundle-Version: 2.9.0.qualifier
+Bundle-Version: 3.0.0.qualifier
 Web-ContextPath: /hale
 Webapp-Hide: true
 Bundle-Activator: eu.esdihumboldt.hale.server.internal.Activator

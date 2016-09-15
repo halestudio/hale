@@ -97,8 +97,7 @@ public class SQLQueryInstanceCollection implements InstanceCollection {
 					TypeDefinition type = types.getType(typeName);
 					// TODO react in case it is not found?
 					Instance instance = new OInstance(doc, type, ref.getDatabase(), dataSet);
-					handle.addReference(instance);
-					return instance;
+					return handle.addInstance(instance);
 				} catch (DecoderException e) {
 					throw new IllegalStateException("Failed to decode instance type", e);
 				}
@@ -165,7 +164,7 @@ public class SQLQueryInstanceCollection implements InstanceCollection {
 	public Instance getInstance(InstanceReference reference) {
 		OrientInstanceReference ref = (OrientInstanceReference) reference;
 
-		return ref.load(database);
+		return ref.load(database, this);
 	}
 
 	@Override

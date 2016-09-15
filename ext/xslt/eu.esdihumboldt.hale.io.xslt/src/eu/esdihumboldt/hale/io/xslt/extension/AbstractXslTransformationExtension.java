@@ -25,7 +25,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.align.extension.function.Function;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.io.xslt.XslTransformation;
 import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
 
@@ -37,7 +37,7 @@ import eu.esdihumboldt.hale.io.xslt.XslTypeTransformation;
  * @param <X> the concrete function type associated to the XSLT transformation
  *            type
  */
-public abstract class AbstractXslTransformationExtension<T extends XslTransformation, X extends Function>
+public abstract class AbstractXslTransformationExtension<T extends XslTransformation, X extends FunctionDefinition<?>>
 		extends AbstractExtension<T, XslTransformationFactory<T, X>> implements
 		XslExtensionConstants {
 

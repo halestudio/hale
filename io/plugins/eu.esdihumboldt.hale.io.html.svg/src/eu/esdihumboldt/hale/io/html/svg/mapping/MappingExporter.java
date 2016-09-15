@@ -16,15 +16,17 @@
 package eu.esdihumboldt.hale.io.html.svg.mapping;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import com.google.common.io.CharStreams;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -32,16 +34,25 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.AlignmentJson;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.CellJsonExtension;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.ExtendedCellRepresentation;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.JsonValueRepresentation;
+import eu.esdihumboldt.hale.io.html.svg.mapping.json.ValueRepresentation;
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder;
+import groovy.json.JsonOutput;
 import groovy.lang.Writable;
 import groovy.text.GStringTemplateEngine;
 
 /**
  * Exports an alignment as HTML mapping documentation based on
- * {@link MappingDocumentation} and the associated template.
+ * {@link AlignmentJson} and the associated template.
  * 
  * @author Simon Templer
  */
 public class MappingExporter extends AbstractAlignmentWriter {
+
+	private static final String HALEJS_VERSION = "1.1.3"; // "1.2.0-SNAPSHOT";
 
 	@Override
 	public boolean isCancelable() {
@@ -56,23 +67,28 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		// retrieve template URL
 		URL templateUrl = getClass().getResource("mapping.html");
 
-		// create template binding
-		@SuppressWarnings("unchecked")
-		Map<String, Object> binding = MappingDocumentation.createBinding(getProjectInfo(),
-				getAlignment());
+		// generate Json representation
+		CellJsonExtension ext = new ExtendedCellRepresentation(getAlignment(),
+				getServiceProvider());
+		ValueRepresentation rep = new JsonValueRepresentation();
 
-		// read javascript from file and store it in the binding
-		StringBuilder js = new StringBuilder();
-		try (Reader reader = new InputStreamReader(getClass()
-				.getResourceAsStream("snap.svg-min.js"), StandardCharsets.UTF_8)) {
-			js.append(CharStreams.toString(reader));
-		}
-		js.append("\n\n");
-		try (Reader reader = new InputStreamReader(getClass().getResourceAsStream(
-				"render-mapping.js"), StandardCharsets.UTF_8)) {
-			js.append(CharStreams.toString(reader));
-		}
-		binding.put("javascript", js.toString());
+		StringWriter jsonWriter = new StringWriter();
+		JsonStreamBuilder json = new JsonStreamBuilder(jsonWriter, true);
+		Set<Locale> locales = AlignmentJson.alignmentInfoJSON(getAlignment(), json,
+				getServiceProvider(), getProjectInfo(), ext, rep, Locale.getDefault(),
+				getSourceSchema(), getTargetSchema());
+
+		// create language binding
+		String languageJson = getLanguageJson(locales);
+
+		// create template binding
+		Map<String, Object> binding = new HashMap<>();
+		binding.put("json", jsonWriter.toString());
+		String title = (getProjectInfo() != null && getProjectInfo().getName() != null)
+				? getProjectInfo().getName() : "Mapping documentation";
+		binding.put("title", title);
+		binding.put("languages", languageJson);
+		binding.put("halejsVersion", HALEJS_VERSION);
 
 		// initialize template engine
 		GStringTemplateEngine engine = new GStringTemplateEngine();
@@ -91,6 +107,30 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		}
 
 		return reporter;
+	}
+
+	private String getLanguageJson(Set<Locale> locales) {
+		if (locales == null || locales.isEmpty()) {
+			return "[]";
+		}
+
+		Map<String, String> languageNames = new HashMap<>();
+
+		for (Locale locale : locales) {
+			String code = locale.getLanguage();
+			if (code != null && !code.isEmpty()) {
+				languageNames.put(code, locale.getDisplayLanguage(locale));
+			}
+		}
+
+		List<Map<String, String>> locs = languageNames.entrySet().stream().map(entry -> {
+			Map<String, String> languageObj = new HashMap<>();
+			languageObj.put("code", entry.getKey());
+			languageObj.put("name", entry.getValue());
+			return languageObj;
+		}).collect(Collectors.toList());
+
+		return JsonOutput.toJson(locs);
 	}
 
 	@Override
