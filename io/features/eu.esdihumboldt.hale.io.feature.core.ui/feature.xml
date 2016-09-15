@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core.ui"
       label="UI Support for Core I/O Providers"
-      version="2.9.5.qualifier"
+      version="3.0.0.qualifier"
       provider-name="data harmonisation panel">
 
    <license>

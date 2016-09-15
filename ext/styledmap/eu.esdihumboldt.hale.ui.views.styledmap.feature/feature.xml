@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.views.styledmap.feature"
       label="Style Map View Feature"
-      version="2.9.5.qualifier"
+      version="3.0.0.qualifier"
       provider-name="data harmonisation panel, Fraunhofer IGD"
       plugin="eu.esdihumboldt.hale.ui.views.styledmap">
 

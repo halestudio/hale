@@ -2,7 +2,7 @@
 <feature
       id="de.fhg.igd.mapviewer.feature.core"
       label="Mapviewer Core"
-      version="2.9.5.qualifier">
+      version="3.0.0.qualifier">
 
    <license>
       GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).

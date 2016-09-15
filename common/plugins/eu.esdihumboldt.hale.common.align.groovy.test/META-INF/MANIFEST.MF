@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment Groovy API and Utilities Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.groovy.test
-Bundle-Version: 2.9.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.6.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0",

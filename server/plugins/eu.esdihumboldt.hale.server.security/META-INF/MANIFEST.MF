@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server Security Core
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.security
-Bundle-Version: 2.9.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.server.security,
  eu.esdihumboldt.hale.server.security.util,

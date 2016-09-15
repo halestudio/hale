@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Codelist UI Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.codelist.test
-Bundle-Version: 2.9.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.ui.codelist;bundle-version="2.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

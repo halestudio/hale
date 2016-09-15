@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Http Utilities
 Bundle-SymbolicName: eu.esdihumboldt.util.http
-Bundle-Version: 2.9.5.qualifier
+Bundle-Version: 3.0.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.slf4jplus,

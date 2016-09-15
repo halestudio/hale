@@ -9,7 +9,7 @@ Steps for a HALE release
 
 On release branch:
  
-1. Merge origin/master into release  
+1. Merge origin/master into release
 2. Set the release version for application bundles and build
    `./updateversionnumbers.groovy --release <RELEASE-VERSION>`
 3. Create a commit

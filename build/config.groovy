@@ -5,7 +5,7 @@
 project = {
 	// version
 	// major.minor.micro-SNAPSHOT - remove -SNAPSHOT for releases
-	version = '2.9.5-SNAPSHOT'
+	version = '3.0.0-SNAPSHOT'
 
 	// when increasing the version number, at least the version of the .application bundles
 	// should be increased so they state an updated application version

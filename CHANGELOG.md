@@ -4,6 +4,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.0.0]
+
 ### Added
 - Users can now configure custom maps based on a Tile URL pattern or a Web Map Service
 - Generic command line interface with commands that can be added via an extension point, added commands for documentation generation
@@ -62,4 +64,5 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/2.9.4...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/halestudio/hale/compare/2.9.4...3.0.0
