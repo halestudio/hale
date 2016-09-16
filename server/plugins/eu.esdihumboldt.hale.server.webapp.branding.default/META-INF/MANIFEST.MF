@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Default Webapp Branding
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp.branding.default
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.server.webapp;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
