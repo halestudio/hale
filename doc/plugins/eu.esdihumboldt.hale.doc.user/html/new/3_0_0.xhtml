@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.0?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.0?</h1>
+	<p>
+		It's time for a new major release, and it does come packed with many
+		new features and improvements. First, you might notice the new name
+		and the new logo. <em>HALE</em> by itself was always hard to find with
+		search engines and there is lots of other software called hale. Also,
+		we've started to build a full data design and integration platform,
+		and needed to diversify naming. HALE is thus now officially hale
+		studio - but otherwise it remains the same!
+	</p>
+
+	<p>So, which major changes does this new release bring?</p>
+	
+	<ol>
+		<li>Create Custom transformation functions and use them across projects</li>
+		<li>Write more powerful Groovy/Custom Functions with Collectors, new helper functions and multiple target support</li>
+		<li>Define Priorities for type cells</li>
+		<li>Define Project variables</li>
+		<li>Automate processes with a much improved Command Line Interface</li>
+		<li>Read MS Access (*.mdb) databases</li>
+		<li>Validate XLinks</li>
+		<li>Control Polygon Winding Order for GML output</li>
+		<li>Use Project Generators</li>
+		<li>Use Documentation Generators</li>
+		<li>Improved Transactional WFS support</li>
+		<li>Use any reference map</li>
+		<li>... and many more...</li>
+	</ol>
+	
+	<p>The majority of these new features were made possible through our contracts with more than 20 customers. We'd like to thank you all for your support!</p>
+
+	<p class="Note">As this is a major release, projects created with
+		hale studio 3.0 may be incompatible with previous versions of HALE.</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_0_0">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_0_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="custom-transformation">
+				<td class="title">Custom transformation functions</td>
+				<td class="content">HALE has had support for Groovy scripts for
+					type and property transformation, but individual scripts couldn't
+					be re-used. With custom transformation functions, you can define
+					your own functions using Java or Groovy and re-use them throughout
+					multiple mappings or even multiple projects.
+					<p>
+						<img src="3_0_0_images/custom-functions.png" />
+					</p>
+					<p>
+						The current implementation of Custom Functions allows you to
+						define input parameters and input/output data structures. In the
+						function editor, you can use lots of helper functions to quickly
+						get results. Please see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/alignment/define_custom_function.html">help
+							on custom transformation functions</a> for more information on how to
+						define and use custom transformation functions.
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="new-groovy-features">
+				<td class="title">New Groovy Function Features</td>
+				<td class="content">Groovy Functions help when the functions we
+					ship with hale studio don't match specific requirements. To make
+					them more powerful, we have added several new capabilities. The
+					first of these is to output multiple features from a single Groovy
+					Retype, Groovy Merge or Groovy Join function. You can use this
+					functionality to create multiple partial feature from one large
+					feature, or to create copies of a feature in the target data set.
+					<p>
+						The second improvement we've added are <strong>Collectors</strong>.
+						When you declare a collector, you tell hale that it should create
+						a list of all objects it creates during transformation, for later
+						access in this or another Groovy function. You can use this for
+						post-processing of objects, or to easily create references from a
+						large object, such as as
+						<code>TransportNetwork</code>
+						, to small objects, such as
+						<code>TransportLinks</code>
+						.
+					</p>
+					<p>
+						<img src="3_0_0_images/new-groovy-features.png" />
+					</p>
+					<p>We have also added several new helper functions, in
+						particular for working with geometries. These helper functions
+						allow you to create, find, split or combine geometries.</p>
+				</td>
+			</tr>
+
+			<tr id="project-variables">
+				<td class="title">Project Variables</td>
+				<td class="content">Sometimes you need to use a value in
+					multiple functions that is a constant during one execution of the
+					alignment, but might need to be changed later on, such as a dataset
+					identifier. So far you'd have to modify all functions that use the
+					constant value. Now, you can just define a global project variable
+					and use that in many functions, such as <code>Formatted String</code>
+					and in all Groovy Functions.
+					<p>
+						<img src="3_0_0_images/project-variables.png" />
+					</p>
+					<p>
+						You can also set Project variables through the updated hale
+						command line interface. Please see the <a
+							href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/project_vars.html">project
+							variables help</a> for more information.
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="powerful-map-view">
+				<td class="title">Use any Basemap you want</td>
+				<td class="content">When MapQuest stopped providing access to
+					their nice tile services, that came as a surprise. We decided to
+					not just drop in a new basemap like OSM Tiles, but insted improved
+					the Map View. While we've set the new Stamen Terrain map as the
+					defualt basemap, you are now free to configure any WMS-based or
+					Tile-based map. Check the <a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.views.styledmap/html/map_view.html">Map View help</a> for
+					more instructions on how to configure basemaps.
+					<p>
+						<img src="3_0_0_images/map-view.png" />
+					</p>
+					<p>
+						A big thanks to <a href="http://www.igd.fraunhofer.de/">Fraunhofer
+							IGD's Competence Center GEO</a>, who contributed the CityServer3D Map
+						View to make these improvements possible.
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="ms-access-reader">
+				<td class="title">Read MS Access Databases</td>
+				<td class="content">MS Access databases are one of the most
+					common formats used in reporting and statistics. In hale studio,
+					you can now use MS Access databases to load source schemas and
+					source data.
+					<p>Thanks to the European Environmental Agency for funding this
+						work.</p>
+				</td>
+			</tr>
+			
+			<tr id="inspire-compliance-improvements">
+				<td class="title">Improved Compliance with INSPIRE guidance</td>
+				<td class="content">All GML writers now have an option to
+					control and unify the winding order of any closed rings. You can
+					either leave rings as they are, or unify them to clockwise or
+					counter-clockwise winding order, with the latter being required for
+					GML 3.2 and 3.3. The algorithm we employ takes into account axis
+					order and direction, and reverses order for each level of inner
+					rings. Furthermore, we have added an Xlink validator to make sure
+					all <code>href</code> properties with local references point to
+					valid resources.
+					<p>Thanks to the European Environmental Agency for funding this
+						work.</p>
+				</td>
+			</tr>
+			
+			<tr id="interactive-documentation">
+				<td class="title">Much improved Interactive Documentation</td>
+				<td class="content">The interactive alignment documentation is
+					really helpful to get input from domain experts on an alignment.
+					During several major projects this year, we've seen it being used a
+					lot and have improved it according to the feedback. In particular,
+					even very large alignments with hundreds of cells can now be
+					displayed, they can be searched and filtered, and much more.
+					<p>
+						<img src="3_0_0_images/interactive-documentation.png" />
+					</p>
+					<p>
+						Thanks to the <a href="http://www.adv-online.de/" target="_blank">Arbeitsgemeinschaft
+							der deutschen Vermessungsverwaltungen</a> for funding part of this
+						work.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="fixes_3_0_0">
+				<td class="title">Minor tweaks &amp; bug fixes</td>
+				<td class="content">For a full list of changes, please check
+					out the <a
+					href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#300"
+					target="_blank">changelog on GitHub</a>.
+				</td>
+			</tr>
+			
+		</tbody>
+	</table>
+
+</body>
+</html>
