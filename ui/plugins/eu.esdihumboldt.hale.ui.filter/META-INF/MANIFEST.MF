@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Filter UI Components
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.filter;singleton:=true
-Bundle-Version: 3.0.0.qualifier
+Bundle-Version: 3.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.common.align.model,
