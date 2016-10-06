@@ -63,7 +63,9 @@ public class DriverConfigurationExtension extends IdentifiableExtension<DriverCo
 	@Override
 	protected DriverConfiguration create(String elementId, IConfigurationElement element) {
 		if (element.getName().equals("driver")) {
-			return new DriverConfiguration(elementId, element);
+			DriverConfiguration driverConfiguration = new DriverConfiguration(elementId, element);
+			if (!driverConfiguration.isFileBased())
+				return driverConfiguration;
 		}
 		return null;
 	}

@@ -177,6 +177,13 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="isFileBased" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Is databse connection file based?
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
