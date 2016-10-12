@@ -72,6 +72,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 
 	private final Map<EntityDefinition, PopulationImpl> targetPopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
+	private final ConditionContextEntityPopulation ccEntityPopulation = new ConditionContextEntityPopulation();
+
 	/**
 	 * Create a population service instance.
 	 * 
@@ -118,6 +120,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 							sourcePopulation.clear();
 						}
 					}
+					ccEntityPopulation.resetPopulation(ssid);
 				}
 
 				firePopulationChanged(ssid);
@@ -151,7 +154,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			if (AlignmentUtil.isDefaultEntity(entity)) {
 				return NO_POPULATION;
 			}
-			return UNKNOWN_POPULATION;
+			return ccEntityPopulation.getPopulation(entity);
 		}
 		return population;
 	}
@@ -162,8 +165,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	@Override
 	public boolean hasPopulation(SchemaSpaceID schemaSpace) {
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET)
+					? (targetPopulation) : (sourcePopulation);
 			return !population.isEmpty();
 		}
 	}
@@ -197,7 +200,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		}
 
 		// count type
-		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace, null);
+		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace,
+				null);
 		increase(def, 1);
 
 		addToPopulation(instance, def);
@@ -219,11 +223,12 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		}
 
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET)
+					? (targetPopulation) : (sourcePopulation);
 			population.clear();
 		}
 
+		ccEntityPopulation.resetPopulation(schemaSpace);
 		// XXX rely on dataSetChanged events for update
 	}
 
@@ -234,7 +239,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * @param groupDef the group entity definition
 	 */
 	private void addToPopulation(Group group, EntityDefinition groupDef) {
-		for (QName propertyName : group.getPropertyNames()) {
+		Iterable<QName> propertyNames = group.getPropertyNames();
+		for (QName propertyName : propertyNames) {
 			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
 
 			if (propertyDef != null) {
@@ -259,8 +265,9 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 */
 	private void increase(EntityDefinition entity, int values) {
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (entity.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (entity
+					.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+							: (sourcePopulation);
 
 			PopulationImpl pop = population.get(entity);
 			if (pop == null) {
