@@ -205,6 +205,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		increase(def, 1);
 
 		addToPopulation(instance, def);
+
+		ccEntityPopulation.addToPopulation(instance, schemaSpace);
 	}
 
 	/**

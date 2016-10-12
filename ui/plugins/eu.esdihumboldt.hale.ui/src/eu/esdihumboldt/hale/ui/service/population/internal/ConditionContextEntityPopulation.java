@@ -20,14 +20,11 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -66,113 +63,17 @@ public class ConditionContextEntityPopulation {
 	private final Map<EntityDefinition, PopulationImpl> targetCCEntitiesPopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
 	/**
-	 * Job determining the occurring values for a specific property entity.
+	 * @return the isUpdated
 	 */
-	private class PopulationCountJob extends Job {
+	public boolean isUpdated() {
+		return isUpdated;
+	}
 
-		private final EntityDefinition ccEntityDefinition;
-		private final InstanceCollection instances;
-
-		/**
-		 * Create a Job to get the population of given {@link EntityDefinition}
-		 * 
-		 * @param ccEntityDefinition the condition context entity definition
-		 * @param instances the instances to test
-		 */
-		public PopulationCountJob(EntityDefinition ccEntityDefinition,
-				InstanceCollection instances) {
-			super("Determinining counts for ConditionContext values");
-			this.ccEntityDefinition = ccEntityDefinition;
-			this.instances = instances;
-
-			setUser(true);
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-
-			String taskName = "Check instances for condition";
-
-			// only select instances of the correct type
-			InstanceCollection instances = this.instances
-					.select(new TypeFilter(ccEntityDefinition.getType()));
-			// and apply an eventual filter
-			if (ccEntityDefinition.getFilter() != null) {
-				instances = instances.select(ccEntityDefinition.getFilter());
-			}
-
-			boolean isKnownSize = instances.hasSize();
-
-			if (isKnownSize) {
-				monitor.beginTask(taskName, instances.size());
-			}
-			else {
-				monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
-				// count instances
-				ResourceIterator<Instance> it = instances.iterator();
-				try {
-					while (it.hasNext()) {
-						increase(ccEntityDefinition, 1);
-						addToPopulation(it.next(), ccEntityDefinition);
-					}
-				} finally {
-					it.close();
-				}
-			}
-
-			monitor.done();
-
-			return Status.OK_STATUS;
-		}
-
-		/**
-		 * Count the population for the properties of the given group.
-		 * 
-		 * @param group the group
-		 * @param groupDef the group entity definition
-		 */
-		private void addToPopulation(Group group, EntityDefinition groupDef) {
-			for (QName propertyName : group.getPropertyNames()) {
-				EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
-
-				if (propertyDef != null) {
-					Object[] values = group.getProperty(propertyName);
-
-					increase(propertyDef, values.length);
-
-					for (Object value : values) {
-						if (value instanceof Group) {
-							addToPopulation((Group) value, propertyDef);
-						}
-					}
-				}
-			}
-		}
-
-		/**
-		 * Increase the counter for the given entity per parent.
-		 * 
-		 * @param entity the entity
-		 * @param values number of values
-		 */
-		private void increase(EntityDefinition entity, int values) {
-			synchronized (this) {
-				Map<EntityDefinition, PopulationImpl> population = (entity
-						.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetCCEntitiesPopulation)
-								: (sourceCCEntitiesPopulation);
-
-				PopulationImpl pop = population.get(entity);
-				if (pop == null) {
-					pop = new PopulationImpl(1, values);
-					population.put(entity, pop);
-				}
-				else {
-					pop.increaseParents();
-					pop.increaseOverall(values);
-				}
-			}
-		}
-
+	/**
+	 * @param isUpdated the isUpdated to set
+	 */
+	public void setUpdated(boolean isUpdated) {
+		this.isUpdated = isUpdated;
 	}
 
 	/**
@@ -215,19 +116,10 @@ public class ConditionContextEntityPopulation {
 			InstanceCollection instances = instanceService.getInstances(dataSet);
 			if (!instances.isEmpty()) {
 				// go through instances to determine occurring values
-				Job job = new PopulationCountJob(entity, instances);
-				job.schedule();
-				try {
-					job.join();
-				} catch (InterruptedException e) {
-					//
-				}
+				return updateAndGetPopulation(entity, instances);
 			}
-
-			population = getPopulationFromMap(entity);
-			return population != null ? population : UNKNOWN_POPULATION;
 		}
-		return population;
+		return population != null ? population : UNKNOWN_POPULATION;
 	}
 
 	private Population getPopulationFromMap(EntityDefinition entity) {
@@ -242,22 +134,110 @@ public class ConditionContextEntityPopulation {
 		}
 	}
 
-	public void inValidate() {
+	/**
+	 * Add an instance to the population, explicitly specifying the associated
+	 * SchemaSpace
+	 * 
+	 * @param instance the instance
+	 * @param schemaSpace the schemaSpace the instance belong to
+	 */
+	public void addToPopulation(Instance instance, SchemaSpaceID schemaSpace) {
+		// loop to each condition context entity and check newly added instance
+		// is match to any filter or not?
+		synchronized (this) {
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET)
+					? (targetCCEntitiesPopulation) : (sourceCCEntitiesPopulation);
+
+			if (population.isEmpty())
+				return;
+
+			for (EntityDefinition def : population.keySet()) {
+				if (def instanceof TypeEntityDefinition
+						&& def.getDefinition().getDisplayName()
+								.equals(instance.getDefinition().getDisplayName())
+						&& def.getFilter().match(instance)) {
+					increase(def, 1);
+					addToPopulation(instance, def);
+				}
+			}
+		}
+	}
+
+	private Population updateAndGetPopulation(EntityDefinition ccEntityDefinition,
+			InstanceCollection instanceCollection) {
+
+		// only select instances of the correct type
+		InstanceCollection instances = instanceCollection
+				.select(new TypeFilter(ccEntityDefinition.getType()));
+		// and apply an eventual filter
+		if (ccEntityDefinition.getFilter() != null) {
+			instances = instances.select(ccEntityDefinition.getFilter());
+		}
+		if (!instances.isEmpty()) {
+			// count instances
+			ResourceIterator<Instance> it = instances.iterator();
+			try {
+				while (it.hasNext()) {
+					increase(ccEntityDefinition, 1);
+					addToPopulation(it.next(), ccEntityDefinition);
+				}
+			} finally {
+				it.close();
+			}
+
+			Population pop = getPopulationFromMap(ccEntityDefinition);
+			return pop;
+		}
+
+		return UNKNOWN_POPULATION;
 
 	}
 
 	/**
-	 * @return the isUpdated
+	 * Count the population for the properties of the given group.
+	 * 
+	 * @param group the group
+	 * @param groupDef the group entity definition
 	 */
-	public boolean isUpdated() {
-		return isUpdated;
+	private void addToPopulation(Group group, EntityDefinition groupDef) {
+		for (QName propertyName : group.getPropertyNames()) {
+			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
+
+			if (propertyDef != null) {
+				Object[] values = group.getProperty(propertyName);
+
+				increase(propertyDef, values.length);
+
+				for (Object value : values) {
+					if (value instanceof Group) {
+						addToPopulation((Group) value, propertyDef);
+					}
+				}
+			}
+		}
 	}
 
 	/**
-	 * @param isUpdated the isUpdated to set
+	 * Increase the counter for the given entity per parent.
+	 * 
+	 * @param entity the entity
+	 * @param values number of values
 	 */
-	public void setUpdated(boolean isUpdated) {
-		this.isUpdated = isUpdated;
-	}
+	private void increase(EntityDefinition entity, int values) {
+		synchronized (this) {
+			Map<EntityDefinition, PopulationImpl> population = (entity
+					.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetCCEntitiesPopulation)
+							: (sourceCCEntitiesPopulation);
 
+			PopulationImpl pop = population.get(entity);
+			if (pop == null) {
+				pop = new PopulationImpl(1, values);
+				population.put(entity, pop);
+			}
+			else {
+				pop.increaseParents();
+				pop.increaseOverall(values);
+			}
+		}
+	}
 }
