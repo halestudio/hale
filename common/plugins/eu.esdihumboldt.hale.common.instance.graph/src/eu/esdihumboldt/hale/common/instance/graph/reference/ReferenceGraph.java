@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -161,9 +163,9 @@ public class ReferenceGraph<T> {
 					part.size());
 
 			if (!hasNext()) {
-				log.info(MessageFormat
-						.format("Completed partitioning of {1} instances in {0} parts, biggest inseparable set of instances was of size {2}.",
-								partCount, partSum, biggestAtom));
+				log.info(MessageFormat.format(
+						"Completed partitioning of {1} instances in {0} parts, biggest inseparable set of instances was of size {2}.",
+						partCount, partSum, biggestAtom));
 			}
 
 			return new ReferencesInstanceCollection(part, originalCollection);
@@ -211,8 +213,25 @@ public class ReferenceGraph<T> {
 						result.add(ref);
 					}
 					else {
-						log.warn("Encountered referenced object w/o associated instance: "
-								+ associated.getProperty(P_IDENT).toString());
+						Iterable<Vertex> referers = associated.getVertices(Direction.IN);
+						Set<String> ids = new HashSet<>();
+						if (referers != null) {
+							for (Vertex referer : referers) {
+								Object ident = referer.getId();
+								if (ident != null) {
+									ids.add(ident.toString());
+								}
+							}
+						}
+						if (ids.isEmpty()) {
+							log.warn("Encountered referenced object w/o associated instance: "
+									+ associated.getId());
+						}
+						else {
+							String enumIds = ids.stream().collect(Collectors.joining(", "));
+							log.warn("Encountered referenced object w/o associated instance: "
+									+ associated.getId() + " - referenced from " + enumIds);
+						}
 					}
 				}
 
@@ -238,8 +257,6 @@ public class ReferenceGraph<T> {
 	private static final String P_INSTANCE_REFERENCE = "instanceRef";
 
 	private static final String E_REFERENCE = "refs";
-
-	private static final String P_IDENT = "id";
 
 	private final CustomTinkerGraph graph;
 
