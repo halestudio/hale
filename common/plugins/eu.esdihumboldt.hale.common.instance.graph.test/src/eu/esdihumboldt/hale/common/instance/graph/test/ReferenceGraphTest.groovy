@@ -98,6 +98,38 @@ class ReferenceGraphTest {
 	}
 
 	/**
+	 * Test the reference graph partitioning with dependent GML instances.
+	 */
+	@Test
+	void testGmlUnresolvableReferences() {
+		InstanceCollection instances = new InstanceBuilder(types: INSPIRE_ADDRESSES_SCHEMA).createCollection {
+			AdministrativeBoundaryType {
+				id "AB_1"
+				for (i in 1..20) {
+					admUnit { href URI.create("#AB_1_$i") }
+				}
+			}
+
+			for (i in 1..15) {
+				AdministrativeUnitType {
+					id "AB_1_$i"
+					boundary { href URI.create("#AB_1") }
+				}
+			}
+		}
+
+		assertEquals('Incorrect number of instances in the original instance collection', 16, instances.size())
+
+		ReferenceGraph<String> rg = new ReferenceGraph<String>(new XMLInspector(), instances)
+		List<InstanceCollection> collections = rg.partition(5).toList()
+
+		assertEquals('Unexpected number of parts', 1, collections.size())
+		for (InstanceCollection collection : collections) {
+			assertEquals('Unexpected number of instances in part', 16, collection.size())
+		}
+	}
+
+	/**
 	 * Test the reference graph partitioning with dependent GML instances and an object w/o identifier.
 	 */
 	@Test
