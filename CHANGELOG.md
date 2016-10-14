@@ -4,6 +4,11 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
+- Fixed instance partitioning for WFS-T upload producing too many small parts
+
 ## [3.0.0]
 
 ### Added
