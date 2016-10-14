@@ -126,6 +126,8 @@ public class ReferenceGraph<T> {
 				part = new ArrayList<>(maxObjects);
 			}
 
+			Queue<List<InstanceReference>> nextCandidates = new LinkedList<>();
+
 			while (verticesLeft() && part.size() < maxObjects) {
 				// add to part
 				List<InstanceReference> instances = getNextAtomicPart();
@@ -133,7 +135,7 @@ public class ReferenceGraph<T> {
 
 				if (part.size() + instances.size() > maxObjects) {
 					// add to part candidates for later use
-					candidates.add(instances);
+					nextCandidates.add(instances);
 					if (!verticesLeft()) {
 						// we added everything to candidates and need to
 						// terminate the loop
@@ -146,10 +148,28 @@ public class ReferenceGraph<T> {
 				}
 			}
 
+			// try to add parts from previous candidates
+			while (!candidates.isEmpty() && part.size() < maxObjects) {
+				List<InstanceReference> instances = candidates.poll();
+
+				if (part.size() + instances.size() > maxObjects) {
+					// add to part candidates for later use
+					nextCandidates.add(instances);
+				}
+				else {
+					// add to current part
+					part.addAll(instances);
+				}
+			}
+
+			// collected candidates for next attempt
+			candidates.addAll(nextCandidates);
+
 			if (part.isEmpty()) {
 				// no vertices left
 				if (!candidates.isEmpty()) {
 					// yield a previously stored candidate that was to big
+					// to fit into a request
 					part = candidates.poll();
 				}
 				else {
