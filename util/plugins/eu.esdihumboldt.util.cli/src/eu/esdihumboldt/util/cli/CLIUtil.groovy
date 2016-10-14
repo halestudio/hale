@@ -50,19 +50,40 @@ class CLIUtil {
 
 		String maxEntry = commands.keySet().max { it.length() }
 
+		boolean hasExperimental = commands.values().any { it.experimental }
+
 		if (maxEntry) {
 			print '  help'
-			print(' - '.padLeft(maxEntry.length() - 1))
+			int pad = hasExperimental ? (maxEntry.length() + 3) : (maxEntry.length() - 1)
+			print(' - '.padLeft(pad))
 			print 'Show this help'
 			println()
 
 			commands.sort().each { name, command ->
 				print "  $name"
+				if (hasExperimental) {
+					if (command.experimental) {
+						print ' (*)'.padLeft(maxEntry.length() - name.length() + 4)
+					}
+					else {
+						print '    '
+					}
+				}
 				if (command.shortDescription) {
-					print(' - '.padLeft(maxEntry.length() - name.length() + 3))
+					if (command.experimental) {
+						print ' - '
+					}
+					else {
+						print(' - '.padLeft(maxEntry.length() - name.length() + 3))
+					}
 					print command.shortDescription
 				}
 				println()
+			}
+
+			if (hasExperimental) {
+				println()
+				println '(*) Command is experimental and the usage may be subject to breaking changes'
 			}
 		}
 	}
