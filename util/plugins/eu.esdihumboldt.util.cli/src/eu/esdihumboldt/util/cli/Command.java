@@ -57,4 +57,14 @@ public interface Command {
 		return null;
 	}
 
+	/**
+	 * States if this is an experimental command. Experimental commands cannot
+	 * be expected to be backwards compatible.
+	 * 
+	 * @return if the command is experimental
+	 */
+	default boolean isExperimental() {
+		return false;
+	}
+
 }
