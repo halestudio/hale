@@ -4,6 +4,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Added
+
+- CLI commands can now be marked experimental
+
 ### Fixed
 
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
