@@ -16,22 +16,34 @@
 
 package eu.esdihumboldt.hale.ui.service.population.internal;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.common.service.population.impl.AbstractPopulationService;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 
@@ -67,12 +79,11 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			return Population.UNKNOWN;
 		}
 	};
-
 	private final Map<EntityDefinition, PopulationImpl> sourcePopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
 	private final Map<EntityDefinition, PopulationImpl> targetPopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
-	private final ConditionContextEntityPopulation ccEntityPopulation = new ConditionContextEntityPopulation();
+	private final EntityDefinitionService entityDefinitionService;
 
 	/**
 	 * Create a population service instance.
@@ -80,6 +91,41 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * @param instanceService the instance service
 	 */
 	public PopulationServiceImpl(final InstanceService instanceService) {
+
+		entityDefinitionService = PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
+
+		entityDefinitionService.addListener(new EntityDefinitionServiceListener() {
+
+			@Override
+			public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
+
+				for (EntityDefinition ed : contextEntities) {
+					contextAdded(ed);
+				}
+
+			}
+
+			@Override
+			public void contextRemoved(EntityDefinition contextEntity) {
+				// Not needed
+			}
+
+			@Override
+			public void contextAdded(EntityDefinition contextEntity) {
+				// go through instances to determine occurring values
+				// if population is already counted before for given Entity,
+				// then no need to count it again
+				Map<EntityDefinition, PopulationImpl> population = (contextEntity
+						.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+								: (sourcePopulation);
+				if (population.get(contextEntity) == null) {
+					Job job = new PopulationCountJob(contextEntity);
+					job.schedule();
+				}
+			}
+		});
+
 		instanceService.addListener(new InstanceServiceAdapter() {
 
 			@Override
@@ -120,13 +166,13 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 							sourcePopulation.clear();
 						}
 					}
-					ccEntityPopulation.resetPopulation(ssid);
 				}
 
 				firePopulationChanged(ssid);
 			}
 
 		});
+
 	}
 
 	/**
@@ -138,7 +184,6 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			// can't determine population
 			return UNKNOWN_POPULATION;
 		}
-
 		Population population;
 		synchronized (this) {
 			switch (entity.getSchemaSpace()) {
@@ -154,7 +199,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			if (AlignmentUtil.isDefaultEntity(entity)) {
 				return NO_POPULATION;
 			}
-			return ccEntityPopulation.getPopulation(entity);
+			return UNKNOWN_POPULATION;
 		}
 		return population;
 	}
@@ -199,14 +244,16 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			throw new IllegalArgumentException("Invalid data set specified.");
 		}
 
-		// count type
-		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace,
-				null);
-		increase(def, 1);
+		// count for each Type definitions of instance type
+		Collection<? extends TypeEntityDefinition> typeDefinitions = entityDefinitionService
+				.getTypeEntities(instance.getDefinition(), schemaSpace);
 
-		addToPopulation(instance, def);
-
-		ccEntityPopulation.addToPopulation(instance, schemaSpace);
+		for (TypeEntityDefinition def : typeDefinitions) {
+			if (def.getFilter() == null || def.getFilter().match(instance)) {
+				increase(def, 1);
+				addToPopulation(instance, def, def.getPropertyPath());
+			}
+		}
 	}
 
 	/**
@@ -230,7 +277,6 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			population.clear();
 		}
 
-		ccEntityPopulation.resetPopulation(schemaSpace);
 		// XXX rely on dataSetChanged events for update
 	}
 
@@ -239,23 +285,103 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * 
 	 * @param group the group
 	 * @param groupDef the group entity definition
+	 * @param path A Child Context path
 	 */
-	private void addToPopulation(Group group, EntityDefinition groupDef) {
-		Iterable<QName> propertyNames = group.getPropertyNames();
-		for (QName propertyName : propertyNames) {
-			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
+	private void addToPopulation(Group group, EntityDefinition groupDef, List<ChildContext> path) {
+		Iterable<? extends EntityDefinition> children = entityDefinitionService
+				.getChildren(groupDef);
+		if (children != null && children.iterator().hasNext()) {
+			for (EntityDefinition def : children) {
+				if (groupDef instanceof TypeEntityDefinition)
+					path = def.getPropertyPath();
+				evaluateContext(group, def, path);
+			}
+		}
+		else {
+			evaluateContext(group, groupDef, path);
+		}
+	}
 
-			if (propertyDef != null) {
-				Object[] values = group.getProperty(propertyName);
+	private void evaluateContext(Group group, EntityDefinition groupDef, List<ChildContext> path) {
 
-				increase(propertyDef, values.length);
+		if (path == null || path.isEmpty()) {
+			// group or instance at end of path
+			increase(groupDef, 1);
+		}
+		else {
+			ChildContext context = path.get(0);
+			List<ChildContext> subPath = null;
+			if (path.size() > 0) {
+				subPath = path.subList(1, path.size());
+			}
+			Object[] values = group.getProperty(context.getChild().getName());
+			if (values != null) {
+				// apply the possible source contexts
+				if (context.getIndex() != null) {
+					// select only the item at the index
+					int index = context.getIndex();
+					if (index < values.length) {
+						values = new Object[] { values[index] };
+					}
+					else {
+						values = new Object[] {};
+					}
+				}
+				if (context.getCondition() != null) {
+					// select only values that match the condition
+					List<Object> matchedValues = new ArrayList<Object>();
+					for (Object value : values) {
+						if (AlignmentUtil.matchCondition(context.getCondition(), value, group)) {
+							matchedValues.add(value);
+						}
+					}
+					values = matchedValues.toArray();
+				}
+
+				if (context.getChild().getName().equals(groupDef.getDefinition().getName())) {
+					increase(groupDef, values.length);
+				}
 
 				for (Object value : values) {
 					if (value instanceof Group) {
-						addToPopulation((Group) value, propertyDef);
+						addToPopulation((Group) value, groupDef, subPath);
 					}
 				}
 			}
+			else {
+				increase(groupDef, 0);
+			}
+
+		}
+
+	}
+
+	private void addNoneToPopulation(EntityDefinition groupDef, List<ChildContext> path) {
+		Iterable<? extends EntityDefinition> children = entityDefinitionService
+				.getChildren(groupDef);
+		if (children != null && children.iterator().hasNext()) {
+			for (EntityDefinition def : children) {
+				if (groupDef instanceof TypeEntityDefinition)
+					path = def.getPropertyPath();
+				addNoneToChildren(def, path);
+			}
+		}
+		else {
+			addNoneToChildren(groupDef, path);
+		}
+	}
+
+	private void addNoneToChildren(EntityDefinition groupDef, List<ChildContext> path) {
+		if (path == null || path.isEmpty()) {
+			increase(groupDef, 0);
+		}
+		else {
+			List<ChildContext> subPath = null;
+			if (path.size() > 0) {
+				subPath = path.subList(1, path.size());
+			}
+			increase(groupDef, 0);
+			addNoneToPopulation(groupDef, subPath);
 		}
 	}
 
@@ -273,15 +399,116 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 
 			PopulationImpl pop = population.get(entity);
 			if (pop == null) {
-				pop = new PopulationImpl(1, values);
+				pop = new PopulationImpl(values != 0 ? 1 : 0, values);
 				population.put(entity, pop);
 			}
 			else {
-				pop.increaseParents();
+				if (values != 0)
+					pop.increaseParents();
 				pop.increaseOverall(values);
 			}
 
 		}
 	}
 
+	/**
+	 * Job determining the occurring values for a specific property entity.
+	 */
+	private class PopulationCountJob extends Job {
+
+		private final EntityDefinition ccEntityDefinition;
+		private InstanceCollection instanceCollection;
+
+		/**
+		 * Create a Job to get the population of given {@link EntityDefinition}
+		 * 
+		 * @param ccEntityDefinition the condition context entity definition
+		 */
+		public PopulationCountJob(EntityDefinition ccEntityDefinition) {
+			this(ccEntityDefinition, null);
+		}
+
+		/**
+		 * Create a Job to get the population of given {@link EntityDefinition}
+		 * 
+		 * @param ccEntityDefinition the condition context entity definition
+		 * @param instanceCollection an instance collection
+		 */
+		public PopulationCountJob(EntityDefinition ccEntityDefinition,
+				InstanceCollection instanceCollection) {
+			super("Determinining count for contexts");
+			this.ccEntityDefinition = ccEntityDefinition;
+			this.instanceCollection = instanceCollection;
+
+			setUser(false);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+
+			String taskName = "Check instances for condition";
+
+			monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+
+			if (this.instanceCollection == null) {
+				InstanceService instanceService = PlatformUI.getWorkbench()
+						.getService(InstanceService.class);
+
+				// determine data set
+				DataSet dataSet = DataSet.forSchemaSpace(ccEntityDefinition.getSchemaSpace());
+
+				this.instanceCollection = instanceService.getInstances(dataSet);
+			}
+
+			if (!instanceCollection.isEmpty()) {
+				// only select instances of the correct type
+				InstanceCollection instances = instanceCollection
+						.select(new TypeFilter(ccEntityDefinition.getType()));
+				// and apply an eventual filter
+				if (ccEntityDefinition.getFilter() != null) {
+					instances = instances.select(ccEntityDefinition.getFilter());
+				}
+
+				if (instances.isEmpty()) {
+					Map<EntityDefinition, PopulationImpl> population = (ccEntityDefinition
+							.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+									: (sourcePopulation);
+
+					PopulationImpl pop = population.get(ccEntityDefinition);
+					if (pop == null) {
+						population.put(ccEntityDefinition, new PopulationImpl(0, 0));
+					}
+					addNoneToPopulation(ccEntityDefinition, ccEntityDefinition.getPropertyPath());
+				}
+				else {
+					// count instances
+					ResourceIterator<Instance> it = instances.iterator();
+					try {
+						while (it.hasNext()) {
+							List<ChildContext> path = ccEntityDefinition.getPropertyPath();
+							Instance instance = it.next();
+							if (path == null || path.isEmpty()) {
+								if (ccEntityDefinition.getFilter() == null
+										|| ccEntityDefinition.getFilter().match(instance)) {
+									PopulationServiceImpl.this.increase(ccEntityDefinition, 1);
+									PopulationServiceImpl.this.addToPopulation(instance,
+											ccEntityDefinition, path);
+								}
+							}
+							else {
+								PopulationServiceImpl.this.evaluateContext(instance,
+										ccEntityDefinition, path);
+							}
+						}
+					} finally {
+						it.close();
+					}
+				}
+			}
+			monitor.done();
+			firePopulationChanged(ccEntityDefinition.getSchemaSpace());
+			return Status.OK_STATUS;
+		}
+
+	}
 }
