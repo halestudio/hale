@@ -73,6 +73,9 @@ public class JDBCComponents {
 		List<Pair<DriverConfiguration, Driver>> drivers = new ArrayList<>();
 		for (DriverConfiguration dc : DriverConfigurationExtension.getInstance().getElements()) {
 
+			if (dc.isFileBased())
+				continue;
+
 			// determine associated driver
 			Driver jdbcDriver = null;
 			Enumeration<Driver> enDrivers = DriverManager.getDrivers();
@@ -117,8 +120,8 @@ public class JDBCComponents {
 				Pair<DriverConfiguration, Driver> driverInfo = (Pair<DriverConfiguration, Driver>) ((IStructuredSelection) sel)
 						.getFirstElement();
 				try {
-					URI uri = driverInfo.getFirst().getURIBuilder()
-							.createJdbcUri(host.getText(), database.getText());
+					URI uri = driverInfo.getFirst().getURIBuilder().createJdbcUri(host.getText(),
+							database.getText());
 					if (driverInfo.getSecond() == null
 							|| driverInfo.getSecond().acceptsURL(uri.toString())) {
 						return uri;
