@@ -11,6 +11,7 @@
       <driver
             class="net.ucanaccess.jdbc.UcanaccessDriver"
             id="eu.esdihumboldt.hale.io.jdbc.msaccess.driver"
+            isFileBased="true"
             name="MS Access Driver"
             testUri="jdbc:ucanaccess:///msaccess-test.mdb"
             uriBuilder="eu.esdihumboldt.hale.io.jdbc.msaccess.MsAccessURIBuilder">
