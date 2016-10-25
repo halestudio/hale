@@ -52,6 +52,7 @@ public class DriverConfiguration implements Identifiable {
 	private SchemaSelector selector = null;
 	private Class<? extends ConnectionHelper> helperClass;
 	private ConnectionHelper helper = null;
+	private final boolean isFileBased;
 
 	/**
 	 * Create a connection configuration from a corresponding configuration
@@ -78,6 +79,7 @@ public class DriverConfiguration implements Identifiable {
 			// connectionHelper element is optional in driver configuration
 			helperClass = null;
 		}
+		isFileBased = Boolean.valueOf(element.getAttribute("isFileBased"));
 	}
 
 	@Override
@@ -199,6 +201,10 @@ public class DriverConfiguration implements Identifiable {
 			}
 		}
 		return helper;
+	}
+
+	public boolean isFileBased() {
+		return isFileBased;
 	}
 
 	@SuppressWarnings("unchecked")
