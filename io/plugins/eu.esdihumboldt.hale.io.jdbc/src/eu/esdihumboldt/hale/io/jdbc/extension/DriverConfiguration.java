@@ -50,6 +50,7 @@ public class DriverConfiguration implements Identifiable {
 	private boolean multipleSchemaSelection;
 	private Class<? extends SchemaSelector> schemaSelectorClass;
 	private SchemaSelector selector = null;
+	private final boolean isFileBased;
 
 	/**
 	 * Create a connection configuration from a corresponding configuration
@@ -69,6 +70,7 @@ public class DriverConfiguration implements Identifiable {
 		prefixes = element.getChildren("prefix");
 		schemaSelection = element.getChildren("schema-selection");
 		setSchemaSelectionVariables();
+		isFileBased = Boolean.valueOf(element.getAttribute("isFileBased"));
 	}
 
 	@Override
@@ -174,6 +176,13 @@ public class DriverConfiguration implements Identifiable {
 			}
 		}
 		return selector;
+	}
+
+	/**
+	 * @return isFileBased
+	 */
+	public boolean isFileBased() {
+		return isFileBased;
 	}
 
 	@SuppressWarnings("unchecked")
