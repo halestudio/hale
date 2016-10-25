@@ -177,6 +177,16 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="connectionHelper" type="string">
+            <annotation>
+               <documentation>
+                  manipulate connection string prior to establish Connection to database.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.ConnectionHelper"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
