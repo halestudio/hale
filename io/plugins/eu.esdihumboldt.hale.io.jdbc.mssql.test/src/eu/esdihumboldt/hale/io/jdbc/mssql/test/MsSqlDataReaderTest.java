@@ -1,9 +1,9 @@
 package eu.esdihumboldt.hale.io.jdbc.mssql.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.io.jdbc.mssql.MsSqlURIBuilder;
  * @author Arun
  *
  */
-public class MsSqlDataReader {
+public class MsSqlDataReaderTest {
 	/**
 	 * Source Database name
 	 */
@@ -72,6 +72,9 @@ public class MsSqlDataReader {
 	private Object[] PROPERTY_ID_VALUES;
 	private Object[] PROPERTY_GEO_VALUES;
 
+	/**
+	 * Configuration of Junit tests
+	 */
 	@Before
 	public void init() {
 		HOST = "WETF-PC001\\SQLEXPRESS";
@@ -165,17 +168,15 @@ public class MsSqlDataReader {
 	/**
 	 * Reads a schema from a MS SQL database.
 	 * 
-	 * @param sourceFile
-	 *            the file of the source database.
 	 * @return the schema
 	 * @throws Exception
-	 *             any exception thrown by {@link MsAccessSchemaReader}
+	 *             any exception thrown by {@link JDBCSchemaReader}
 	 */
 
 	private Schema readSchema() throws Exception {
 
-		MsSqlSchemaReader schemaReader = new MsSqlSchemaReader();
-
+		JDBCSchemaReader schemaReader = new JDBCSchemaReader();
+		
 		JDBCURI = new MsSqlURIBuilder().createJdbcUri(HOST, DATABASE);
 
 		schemaReader.setSource(new NoStreamInputSupplier(JDBCURI));
@@ -200,16 +201,14 @@ public class MsSqlDataReader {
 	 * 
 	 * @param sourceSchema
 	 *            the schema of the source database
-	 * @param sourceFile
-	 *            the file of the source database.
 	 * @return the read instances
 	 * @throws Exception
-	 *             any exception thrown by {@link MsAccessInstanceReader}
+	 *             any exception thrown by {@link JDBCInstanceReader}
 	 */
 	private InstanceCollection readInstances(Schema sourceSchema) throws Exception {
 
-		MsSqlInstanceReader instanceReader = new MsSqlInstanceReader();
-
+		JDBCInstanceReader instanceReader = new JDBCInstanceReader();
+		
 		JDBCURI = new MsSqlURIBuilder().createJdbcUri(HOST, DATABASE);
 
 		instanceReader.setSource(new NoStreamInputSupplier(JDBCURI));

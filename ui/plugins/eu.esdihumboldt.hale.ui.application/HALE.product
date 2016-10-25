@@ -100,7 +100,7 @@ http://www.wetransform.to/services/support
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
-      <feature id="eu.esdihumboldt.hale.io.feature.mssql" version="3.1.0.qualifier"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
    </features>
 
    <configurations>
