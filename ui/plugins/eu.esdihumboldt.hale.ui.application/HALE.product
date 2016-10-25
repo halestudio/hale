@@ -57,9 +57,9 @@ http://www.wetransform.to/services/support
       <solaris/>
       <win useIco="true">
          <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
+         <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -99,6 +99,7 @@ http://www.wetransform.to/services/support
       <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.mssql" version="3.1.0.qualifier"/>
    </features>
 
    <configurations>
