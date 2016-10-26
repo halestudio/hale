@@ -11,14 +11,14 @@
    </license>
 
    <plugin
-         id="com.microsoft.sqlserver.sqljdbc42"
+         id="eu.esdihumboldt.hale.io.jdbc.mssql"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.jdbc.mssql"
+         id="com.microsoft.sqlserver.jdbc.SQLServerDriver"
          download-size="0"
          install-size="0"
          version="0.0.0"
