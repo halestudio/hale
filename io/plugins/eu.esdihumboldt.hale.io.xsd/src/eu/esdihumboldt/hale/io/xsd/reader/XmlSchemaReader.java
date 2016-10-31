@@ -206,8 +206,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * Values for the virtual INSPIRE NilReason type.
 	 */
-	private static final Collection<? extends String> INSPIRE_NILREASON_VALUES = ImmutableSet.of(
-			"unknown", "unpopulated", "withheld");
+	private static final Collection<? extends String> INSPIRE_NILREASON_VALUES = ImmutableSet
+			.of("unknown", "other:unpopulated", "withheld");
 
 	/**
 	 * The XML definition index
@@ -277,18 +277,18 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		// Check if the file is located on web
 		URI location = getSource().getLocation();
 		if (location.getHost() == null) {
-			schemaCol
-					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setSchemaResolver(
+					new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location));
 		}
 		else if (location.getScheme().equals("bundleresource")) { //$NON-NLS-1$
-			schemaCol
-					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setSchemaResolver(
+					new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 		else {
-			schemaCol
-					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setSchemaResolver(
+					new ProgressURIResolver(new HumboldtURIResolver(), progress));
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 
@@ -318,11 +318,11 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		try {
 			is = XmlSchemaReader.class.getResourceAsStream("/schemas/XMLSchema.xsd");
 			ss = new StreamSource(is);
-			schemaCol
-					.setSchemaResolver(new ProgressURIResolver(new HumboldtURIResolver(), progress));
-			schemaCol.setBaseUri(findBaseUri(XmlSchemaReader.class.getResource(
-					"/schemas/XMLSchema.xsd").toURI())
-					+ "/");
+			schemaCol.setSchemaResolver(
+					new ProgressURIResolver(new HumboldtURIResolver(), progress));
+			schemaCol.setBaseUri(
+					findBaseUri(XmlSchemaReader.class.getResource("/schemas/XMLSchema.xsd").toURI())
+							+ "/");
 			XmlSchema xsSchema = schemaCol.read(ss, null);
 			is.close();
 			xsSchema.setSourceURI("http://www.w3.org/2001/XMLSchema.xsd");
@@ -353,8 +353,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * @param index the XML index
 	 */
 	private void applyCustomTypeContent(XmlIndex index) {
-		CustomTypeContentConfiguration config = getParameter(PARAM_CUSTOM_TYPE_CONTENT).as(
-				CustomTypeContentConfiguration.class);
+		CustomTypeContentConfiguration config = getParameter(PARAM_CUSTOM_TYPE_CONTENT)
+				.as(CustomTypeContentConfiguration.class);
 		if (config != null) {
 			CustomTypeContentHelper.applyConfigurations(index, config);
 		}
@@ -490,8 +490,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				else if (element.getSchemaType() != null) {
 					// element has internal type definition, generate anonymous
 					// type name
-					QName typeName = new QName(element.getQName().getNamespaceURI(), element
-							.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
+					QName typeName = new QName(element.getQName().getNamespaceURI(),
+							element.getQName().getLocalPart() + "_AnonymousType"); //$NON-NLS-1$
 					// create type
 					elementType = createType(element.getSchemaType(), typeName, schemaLocation,
 							namespace, mainSchema);
@@ -544,9 +544,10 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					index.getElements().put(elementName, schemaElement);
 				}
 				else {
-					reporter.error(new IOMessageImpl(MessageFormat.format(
-							"No type for element {0} found.", element.getName()), null, element
-							.getLineNumber(), element.getLinePosition()));
+					reporter.error(new IOMessageImpl(
+							MessageFormat.format("No type for element {0} found.",
+									element.getName()),
+							null, element.getLineNumber(), element.getLinePosition()));
 				}
 			}
 			else if (item instanceof XmlSchemaType) {
@@ -561,8 +562,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					if (type == null) {
 						// XXX if this occurs we might need a attribute
 						// referencing attribute
-						reporter.error(new IOMessageImpl("Could not determine attribute type",
-								null, att.getLineNumber(), att.getLinePosition()));
+						reporter.error(new IOMessageImpl("Could not determine attribute type", null,
+								att.getLineNumber(), att.getLinePosition()));
 					}
 					else {
 						XmlAttribute attribute = new XmlAttribute(att.getQName(), type);
@@ -571,9 +572,10 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					}
 				}
 				else {
-					reporter.warn(new IOMessageImpl(MessageFormat.format(
-							"Attribute could not be processed: {0}", att.getName()), null, att
-							.getLineNumber(), att.getLinePosition()));
+					reporter.warn(new IOMessageImpl(
+							MessageFormat.format("Attribute could not be processed: {0}",
+									att.getName()),
+							null, att.getLineNumber(), att.getLinePosition()));
 				}
 			}
 			else if (item instanceof XmlSchemaAttributeGroup) {
@@ -614,9 +616,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// notations are ignored
 			}
 			else {
-				reporter.error(new IOMessageImpl("Unrecognized global definition: "
-						+ item.getClass().getSimpleName(), null, item.getLineNumber(), item
-						.getLinePosition()));
+				reporter.error(new IOMessageImpl(
+						"Unrecognized global definition: " + item.getClass().getSimpleName(), null,
+						item.getLineNumber(), item.getLinePosition()));
 			}
 		}
 
@@ -640,23 +642,23 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					imports.add(location); // place a marker in the map to
 											// prevent loading the location in
 											// the call to loadSchema
-					loadSchema(location, importedSchema, imports, progress, mainSchema
-							&& imp instanceof XmlSchemaInclude);
+					loadSchema(location, importedSchema, imports, progress,
+							mainSchema && imp instanceof XmlSchemaInclude);
 					// is part of main schema if it's a main schema include
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
 				}
 			} catch (Throwable e) {
-				reporter.error(new IOMessageImpl("Error adding imported schema from "
-						+ schemaLocation, e)); //$NON-NLS-1$
+				reporter.error(new IOMessageImpl(
+						"Error adding imported schema from " + schemaLocation, e)); // $NON-NLS-1$
 			}
 		}
 
 		_log.info("Creating types for schema at " + schemaLocation); //$NON-NLS-1$
 
-		progress.setCurrentTask(MessageFormat.format(
-				Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
+		progress.setCurrentTask(
+				MessageFormat.format(Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
 	}
 
 	/**
@@ -746,8 +748,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 			// determine if the super type relation is a restriction
 			boolean isRestriction = isRestriction(complexType);
-			type.setConstraint((isRestriction) ? (RestrictionFlag.ENABLED)
-					: (RestrictionFlag.DISABLED));
+			type.setConstraint(
+					(isRestriction) ? (RestrictionFlag.ENABLED) : (RestrictionFlag.DISABLED));
 
 			if (superTypeName != null) {
 				// get super type from index
@@ -777,9 +779,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			createProperties(type, complexType, schemaLocation, schemaNamespace);
 		}
 		else {
-			reporter.error(new IOMessageImpl("Unrecognized schema type: "
-					+ schemaType.getClass().getSimpleName(), null, schemaType.getLineNumber(),
-					schemaType.getLinePosition()));
+			reporter.error(new IOMessageImpl(
+					"Unrecognized schema type: " + schemaType.getClass().getSimpleName(), null,
+					schemaType.getLineNumber(), schemaType.getLinePosition()));
 		}
 
 		return type;
@@ -944,9 +946,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					null, particle.getLineNumber(), particle.getLinePosition()));
 		}
 		else {
-			reporter.error(new IOMessageImpl("Unrecognized particle: "
-					+ particle.getClass().getSimpleName(), null, particle.getLineNumber(), particle
-					.getLinePosition()));
+			reporter.error(new IOMessageImpl(
+					"Unrecognized particle: " + particle.getClass().getSimpleName(), null,
+					particle.getLineNumber(), particle.getLinePosition()));
 		}
 	}
 
@@ -974,17 +976,18 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * @param schemaLocation the schema location
 	 * @param schemaNamespace the schema namespace
 	 */
-	private void createPropertyFromElement(XmlSchemaElement element,
-			DefinitionGroup declaringGroup, String schemaLocation, String schemaNamespace) {
+	private void createPropertyFromElement(XmlSchemaElement element, DefinitionGroup declaringGroup,
+			String schemaLocation, String schemaNamespace) {
 		if (element.getSchemaTypeName() != null) {
 			// element referencing a type
 			// <element name="ELEMENT_NAME" type="SCHEMA_TYPE_NAME" />
 			QName elementName = element.getQName();
 
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
-					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
-																									// improve
-																									// naming?
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(),
+							"choice"), // TODO
+										// improve
+										// naming?
 					declaringGroup);
 
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(elementName,
@@ -1000,10 +1003,11 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			// <element ref="REF_NAME" />
 			QName elementName = element.getRefName();
 
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
-					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
-																									// improve
-																									// naming?
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(),
+							"choice"), // TODO
+										// improve
+										// naming?
 					declaringGroup);
 
 			XmlElementReferenceProperty property = new XmlElementReferenceProperty(elementName,
@@ -1050,8 +1054,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 							// create an anonymous type that extends the super
 							// type
-							QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
-									+ element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
+							QName anonymousName = new QName(
+									getTypeIdentifier(declaringGroup) + "/" + element.getName(),
+									superTypeName.getLocalPart() + nameExt); // $NON-NLS-1$
 
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 							anonymousType.setSuperType(superType);
@@ -1101,8 +1106,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 							// create an anonymous type that extends the super
 							// type
-							QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
-									+ element.getName(), superTypeName.getLocalPart() + nameExt); //$NON-NLS-1$
+							QName anonymousName = new QName(
+									getTypeIdentifier(declaringGroup) + "/" + element.getName(),
+									superTypeName.getLocalPart() + nameExt); // $NON-NLS-1$
 
 							AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 							anonymousType.setSuperType(superType);
@@ -1138,8 +1144,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// this where we get when there is an anonymous complex type
 					// as property type
 					// create an anonymous type
-					QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
-							+ element.getName(), "AnonymousType");
+					QName anonymousName = new QName(
+							getTypeIdentifier(declaringGroup) + "/" + element.getName(),
+							"AnonymousType");
 
 					// create anonymous type with no super type
 					AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
@@ -1165,8 +1172,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) element.getSchemaType();
 
 				// create an anonymous type
-				QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
-						+ element.getName(), "AnonymousType"); //$NON-NLS-1$
+				QName anonymousName = new QName(
+						getTypeIdentifier(declaringGroup) + "/" + element.getName(),
+						"AnonymousType"); //$NON-NLS-1$
 
 				AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 
@@ -1190,10 +1198,11 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			// assuming xsd:anyType as default type
 			QName elementName = element.getQName();
 
-			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(new QName(
-					elementName.getNamespaceURI() + "/" + elementName.getLocalPart(), "choice"), // TODO
-																									// improve
-																									// naming?
+			SubstitutionGroupProperty substitutionGroup = new SubstitutionGroupProperty(
+					new QName(elementName.getNamespaceURI() + "/" + elementName.getLocalPart(),
+							"choice"), // TODO
+										// improve
+										// naming?
 					declaringGroup);
 
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(elementName,
@@ -1234,8 +1243,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * @param complexType the complex type definition
 	 * @param schemaLocation the schema location
 	 */
-	private void setMetadataAndConstraints(XmlTypeDefinition type,
-			XmlSchemaComplexType complexType, String schemaLocation) {
+	private void setMetadataAndConstraints(XmlTypeDefinition type, XmlSchemaComplexType complexType,
+			String schemaLocation) {
 		type.setConstraint(AbstractFlag.get(complexType.isAbstract()));
 
 		/*
@@ -1304,8 +1313,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		// set constraints
 		property.setConstraint(NillableFlag.get(element.isNillable()));
-		long max = (element.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED) : (element
-				.getMaxOccurs());
+		long max = (element.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+				: (element.getMaxOccurs());
 		property.setConstraint(Cardinality.get(element.getMinOccurs(), max));
 
 		// set metadata
@@ -1385,8 +1394,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// particle (e.g. sequence)
 				if (extension.getParticle() != null) {
 					XmlSchemaParticle particle = extension.getParticle();
-					createPropertiesFromParticle(typeDef, particle, schemaLocation,
-							schemaNamespace, false);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation, schemaNamespace,
+							false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = extension.getAttributes();
@@ -1407,8 +1416,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				// particle (e.g. sequence)
 				if (restriction.getParticle() != null) {
 					XmlSchemaParticle particle = restriction.getParticle();
-					createPropertiesFromParticle(typeDef, particle, schemaLocation,
-							schemaNamespace, false);
+					createPropertiesFromParticle(typeDef, particle, schemaLocation, schemaNamespace,
+							false);
 				}
 				// attributes
 				XmlSchemaObjectCollection attributeCollection = restriction.getAttributes();
@@ -1498,14 +1507,14 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// XXX extend group name with namespace?
 					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
 							groupName, declaringType, this.index, groupName, true);
-					// TODO add constraints?
+							// TODO add constraints?
 
 					// set metadata
 					setMetadata(property, groupRef, schemaLocation);
 				}
 				else {
-					reporter.error(new IOMessageImpl("Unrecognized attribute group reference",
-							null, object.getLineNumber(), object.getLinePosition()));
+					reporter.error(new IOMessageImpl("Unrecognized attribute group reference", null,
+							object.getLineNumber(), object.getLinePosition()));
 				}
 			}
 		}
@@ -1513,8 +1522,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 	private void createAttributes(XmlSchemaAttributeGroup group, DefinitionGroup declaringType,
 			String index, String schemaLocation, String schemaNamespace) {
-		createAttributesFromCollection(group.getAttributes(), declaringType,
-				index + "_", schemaLocation, schemaNamespace); //$NON-NLS-1$
+		createAttributesFromCollection(group.getAttributes(), declaringType, index + "_", //$NON-NLS-1$
+				schemaLocation, schemaNamespace);
 	}
 
 	private void createAttribute(XmlSchemaAttribute attribute, DefinitionGroup declaringGroup,
@@ -1538,8 +1547,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
 
 			// create an anonymous type
-			QName anonymousName = new QName(getTypeIdentifier(declaringGroup) + "/"
-					+ attribute.getName(), "AnonymousType"); //$NON-NLS-1$
+			QName anonymousName = new QName(
+					getTypeIdentifier(declaringGroup) + "/" + attribute.getName(), "AnonymousType"); //$NON-NLS-2$
 
 			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 
@@ -1570,8 +1579,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			 * "http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#cAttribute_Declarations"
 			 */
 			// resolve type by name
-			XmlTypeDefinition type = index.getOrCreateType(new QName(
-					XMLConstants.W3C_XML_SCHEMA_NS_URI, "anySimpleType"));
+			XmlTypeDefinition type = index.getOrCreateType(
+					new QName(XMLConstants.W3C_XML_SCHEMA_NS_URI, "anySimpleType"));
 
 			// create property
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(
@@ -1602,9 +1611,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				&& declaringGroup instanceof Definition<?>) {
 			Definition<?> parentDef = (Definition<?>) declaringGroup;
 			// determine if parent is defined in INSPIRE
-			if (parentDef.getName().getNamespaceURI() != null
-					&& parentDef.getName().getNamespaceURI()
-							.startsWith("http://inspire.ec.europa.eu/schemas")) {
+			if (parentDef.getName().getNamespaceURI() != null && parentDef.getName()
+					.getNamespaceURI().startsWith("http://inspire.ec.europa.eu/schemas")) {
 				// get or create custom INSPIRE NilReason type
 				XmlTypeDefinition customType = (XmlTypeDefinition) this.index
 						.getType(INSPIRE_NILREASON_TYPENAME);
@@ -1616,8 +1624,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					customType.setSuperType(this.index.getOrCreateType(typeName));
 
 					// description with documentation of the values
-					customType
-							.setDescription("Virtual type representing the GML NilReasonType adapted for the valid values specified by INSPIRE:\n\n"
+					customType.setDescription(
+							"Virtual type representing the GML NilReasonType adapted for the valid values specified by INSPIRE:\n\n"
 									+ "unknown:\nThe correct value for the specific spatial object is not known to, and not computable by, the data provider. However, a correct value may exist.\n"
 									+ "NOTE 'unknown' is applied on an object-by-object basis in a spatial data set.\n\n"
 									+ "unpopulated:\nThe characteristic is not part of the dataset maintained by the data provider. However, the characteristic may exist in the real world.\n"
@@ -1679,8 +1687,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			XmlSchemaSimpleType simpleType = attribute.getSchemaType();
 
 			// create an anonymous type
-			QName anonymousName = new QName(attribute.getQName().getNamespaceURI()
-					+ "/" + attribute.getName(), "AnonymousType"); //$NON-NLS-1$
+			QName anonymousName = new QName(
+					attribute.getQName().getNamespaceURI() + "/" + attribute.getName(), //$NON-NLS-1$
+					"AnonymousType");
 
 			AnonymousXmlType anonymousType = new AnonymousXmlType(anonymousName);
 
