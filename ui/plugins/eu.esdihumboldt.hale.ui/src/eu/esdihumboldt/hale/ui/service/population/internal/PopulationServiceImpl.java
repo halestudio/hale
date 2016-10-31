@@ -251,7 +251,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		for (TypeEntityDefinition def : typeDefinitions) {
 			if (def.getFilter() == null || def.getFilter().match(instance)) {
 				increase(def, 1);
-				addToPopulation(instance, def, def.getPropertyPath());
+				addToPopulation(instance, def);
 			}
 		}
 	}
@@ -285,35 +285,30 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * 
 	 * @param group the group
 	 * @param groupDef the group entity definition
-	 * @param path A Child Context path
 	 */
-	private void addToPopulation(Group group, EntityDefinition groupDef, List<ChildContext> path) {
+	private void addToPopulation(Group group, EntityDefinition groupDef) {
 		Iterable<? extends EntityDefinition> children = entityDefinitionService
 				.getChildren(groupDef);
 		if (children != null && children.iterator().hasNext()) {
 			for (EntityDefinition def : children) {
-				if (groupDef instanceof TypeEntityDefinition)
-					path = def.getPropertyPath();
-				evaluateContext(group, def, path);
+				evaluateContext(group, def);
 			}
 		}
 		else {
-			evaluateContext(group, groupDef, path);
+			evaluateContext(group, groupDef);
 		}
 	}
 
-	private void evaluateContext(Group group, EntityDefinition groupDef, List<ChildContext> path) {
+	private void evaluateContext(Group group, EntityDefinition groupDef) {
 
+		List<ChildContext> path = groupDef.getPropertyPath();
 		if (path == null || path.isEmpty()) {
 			// group or instance at end of path
 			increase(groupDef, 1);
 		}
 		else {
-			ChildContext context = path.get(0);
-			List<ChildContext> subPath = null;
-			if (path.size() > 0) {
-				subPath = path.subList(1, path.size());
-			}
+
+			ChildContext context = path.get(path.size() - 1);
 			Object[] values = group.getProperty(context.getChild().getName());
 			if (values != null) {
 				// apply the possible source contexts
@@ -344,7 +339,7 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 
 				for (Object value : values) {
 					if (value instanceof Group) {
-						addToPopulation((Group) value, groupDef, subPath);
+						addToPopulation((Group) value, groupDef);
 					}
 				}
 			}
@@ -492,12 +487,12 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 										|| ccEntityDefinition.getFilter().match(instance)) {
 									PopulationServiceImpl.this.increase(ccEntityDefinition, 1);
 									PopulationServiceImpl.this.addToPopulation(instance,
-											ccEntityDefinition, path);
+											ccEntityDefinition);
 								}
 							}
 							else {
 								PopulationServiceImpl.this.evaluateContext(instance,
-										ccEntityDefinition, path);
+										ccEntityDefinition);
 							}
 						}
 					} finally {
