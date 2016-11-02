@@ -200,6 +200,10 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 				}
 			}
 
+			if (crsDef == null)
+				log.warn(
+						"Could not find spatial reference system id " + srId + " in MS sql server");
+
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
 		} finally {
 			if (rs != null)
