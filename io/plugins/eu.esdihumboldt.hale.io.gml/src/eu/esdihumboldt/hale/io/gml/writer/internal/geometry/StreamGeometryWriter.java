@@ -630,7 +630,9 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 				&& Geometry.class.isAssignableFrom(geomAlt.getSuperclass())) {
 			geomAlt = geomAlt.getSuperclass();
 			Set<GeometryWriter<?>> moreWriters = geometryWriters.get(geomAlt);
-			writers.addAll(moreWriters);
+			if (moreWriters != null) {
+				writers.addAll(moreWriters);
+			}
 		}
 
 		return writers;
