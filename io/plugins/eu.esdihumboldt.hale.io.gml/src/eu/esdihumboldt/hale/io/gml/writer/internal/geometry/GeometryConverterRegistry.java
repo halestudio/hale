@@ -30,8 +30,9 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiLineStringToLineString;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiPointToPoint;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiPolygonToMultiLineString;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiPolygonToPolygon;
-import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.PolygonToMultiLineString;
+import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.PolygonToLineString;
 
 /**
  * Registry for {@link GeometryConverter}s
@@ -206,7 +207,8 @@ public class GeometryConverterRegistry {
 	 */
 	private void init() {
 		// built-in converters
-		registerConverter(new PolygonToMultiLineString());
+		registerConverter(new MultiPolygonToMultiLineString());
+		registerConverter(new PolygonToLineString());
 		registerConverter(new MultiPolygonToPolygon());
 		registerConverter(new MultiLineStringToLineString());
 		registerConverter(new MultiPointToPoint());

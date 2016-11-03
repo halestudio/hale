@@ -31,10 +31,9 @@ import com.vividsolutions.jts.geom.Polygon;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 @SuppressWarnings("restriction")
-public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest {
+public class PolygonToLineStringTest extends AbstractGeometryConverterTest {
 
 	/**
 	 * Test conversion with a simple box
@@ -49,18 +48,15 @@ public class PolygonToMultiLineStringTest extends AbstractGeometryConverterTest 
 		LinearRing shell = geomFactory.createLinearRing(coordinates);
 		Polygon poly = geomFactory.createPolygon(shell, null);
 
-		PolygonToMultiLineString converter = new PolygonToMultiLineString();
+		PolygonToLineString converter = new PolygonToLineString();
 
-		MultiLineString mls = converter.convert(poly);
-		assertEquals("Expecting 4 lines", 4, mls.getNumGeometries()); //$NON-NLS-1$
-		for (int i = 0; i < mls.getNumGeometries(); i++) {
-			LineString segment = (LineString) mls.getGeometryN(i);
-			assertEquals("Each line should have 2 points", 2, segment.getNumPoints()); //$NON-NLS-1$
-			// first point
-			assertEquals(coordinates[i], segment.getCoordinateN(0));
-			// second point
-			assertEquals(coordinates[i + 1], segment.getCoordinateN(1));
-		}
+		LineString mls = converter.convert(poly);
+		assertEquals("Expecting 1 lines", 1, mls.getNumGeometries()); //$NON-NLS-1$
+		assertEquals("Should have 5 points", 5, mls.getNumPoints()); //$NON-NLS-1$
+		// first point
+		assertEquals(coordinates[0], mls.getCoordinateN(0));
+		// second point
+		assertEquals(coordinates[0], mls.getCoordinateN(4));
 	}
 
 }
