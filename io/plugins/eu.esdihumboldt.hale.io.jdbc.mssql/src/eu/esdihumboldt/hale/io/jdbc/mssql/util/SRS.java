@@ -22,11 +22,11 @@ package eu.esdihumboldt.hale.io.jdbc.mssql.util;
  */
 public class SRS {
 
-	private final String authorizedSrId;
+	private String authorizedSrId;
 
-	private final String authorityName;
+	private String authorityName;
 
-	private final String srsText;
+	private String srsText;
 
 	/**
 	 * A default constructor
@@ -72,6 +72,27 @@ public class SRS {
 	 */
 	protected String getSrsText() {
 		return srsText;
+	}
+
+	/**
+	 * @param authorizedSrId the authorizedSrId to set
+	 */
+	protected void setAuthorizedSrId(String authorizedSrId) {
+		this.authorizedSrId = authorizedSrId;
+	}
+
+	/**
+	 * @param authorityName the authorityName to set
+	 */
+	protected void setAuthorityName(String authorityName) {
+		this.authorityName = authorityName;
+	}
+
+	/**
+	 * @param srsText the srsText to set
+	 */
+	protected void setSrsText(String srsText) {
+		this.srsText = srsText;
 	}
 
 }

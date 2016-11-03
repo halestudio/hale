@@ -61,7 +61,7 @@ public abstract class SRSUtil {
 	 * @return String value of authority name or <code>null</code> if absent in
 	 *         cache and fail to load from database
 	 */
-	public static String getAuthorizedName(int srId, SQLServerConnection con) {
+	public static String getAuthorityName(int srId, SQLServerConnection con) {
 		if (cache.get(srId) == null) {
 			if (!getFromDatabase(srId, con))
 				return null;
@@ -114,6 +114,75 @@ public abstract class SRSUtil {
 			log.error("Could not get SRS from database for spatial reference id " + srId, ex);
 			return false;
 		}
+	}
+
+	/**
+	 * set SRS text in cache for given SRS id.
+	 * 
+	 * @param srId a spatial reference id
+	 * @param wkt SRS text
+	 */
+	public static void setSRSText(int srId, String wkt) {
+		SRS srs = null;
+		if (cache.get(srId) == null) {
+			srs = new SRS();
+			srs.setSrsText(wkt);
+		}
+		else {
+			srs = cache.get(srId);
+			srs.setSrsText(wkt);
+		}
+	}
+
+	/**
+	 * set authority name in cache for given SRS id.
+	 * 
+	 * @param srId a spatial reference id
+	 * @param authorityName An authority name
+	 */
+	public static void setSRSAuthorityName(int srId, String authorityName) {
+		SRS srs = null;
+		if (cache.get(srId) == null) {
+			srs = new SRS();
+			srs.setAuthorityName(authorityName);
+		}
+		else {
+			srs = cache.get(srId);
+			srs.setAuthorityName(authorityName);
+		}
+		cache.put(srId, srs);
+	}
+
+	/**
+	 * set authorized in cache for given SRS id.
+	 * 
+	 * @param srId a spatial reference id
+	 * @param id SRS authorized id
+	 */
+	public static void setAuthorizedId(int srId, String id) {
+		SRS srs = null;
+		if (cache.get(srId) == null) {
+			srs = new SRS();
+			srs.setAuthorizedSrId(id);
+		}
+		else {
+			srs = cache.get(srId);
+			srs.setAuthorizedSrId(id);
+		}
+		cache.put(srId, srs);
+	}
+
+	/**
+	 * Add SRS information in cache
+	 * 
+	 * @param srId key value of cache
+	 * @param authorityName authority name
+	 * @param authorizedId authorized id
+	 * @param wkt SRS wkt text
+	 */
+	public static void addSRSinCache(int srId, String authorityName, String authorizedId,
+			String wkt) {
+		cache.put(srId, new SRS(authorizedId, authorityName, wkt));
 	}
 
 }

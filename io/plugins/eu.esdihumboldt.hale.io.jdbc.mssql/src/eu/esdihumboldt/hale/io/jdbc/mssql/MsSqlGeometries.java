@@ -17,7 +17,10 @@ package eu.esdihumboldt.hale.io.jdbc.mssql;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.concurrent.atomic.AtomicReference;
 
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.geotools.geometry.jts.CurvedGeometryFactory;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
@@ -43,6 +46,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
+import eu.esdihumboldt.hale.io.jdbc.mssql.ui.SelectCRSDialog;
 import eu.esdihumboldt.hale.io.jdbc.mssql.util.SRSUtil;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
@@ -183,7 +187,7 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 
 			CRSDefinition crsDef = null;
 
-			String authName = SRSUtil.getAuthorizedName(srId, connection);
+			String authName = SRSUtil.getAuthorityName(srId, connection);
 			if (authName != null && authName.equals("EPSG")) {
 				// For geography/geometry data type, SQL server assumes lon/lat
 				// axis order, if we read using SQL function
@@ -200,10 +204,40 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 				}
 			}
 
-			if (crsDef == null)
+			if (crsDef == null) {
 				log.warn(
 						"Could not find spatial reference system id " + srId + " in MS sql server");
 
+				final String instanceSRId = Integer.toString(srId);
+
+				Display display = PlatformUI.getWorkbench().getDisplay();
+				final AtomicReference<CRSDefinition> result = new AtomicReference<CRSDefinition>();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						SelectCRSDialog dialog = new SelectCRSDialog(
+								Display.getCurrent().getActiveShell(), instanceSRId);
+
+						dialog.open();
+						result.set(dialog.getValue());
+					}
+				});
+				crsDef = result.get();
+			}
+			// SRS Code
+			String srsName = CRS.toSRS(crsDef.getCRS());
+			if (srsName != null) {
+				final int index = srsName.lastIndexOf(':');
+				String authorityName = null;
+				String authorizedId = null;
+				if (index > 0) {
+					authorityName = srsName.substring(0, index);
+					authorizedId = srsName.substring(index + 1).trim();
+				}
+				String wkt = crsDef.getCRS().toWKT();
+				SRSUtil.addSRSinCache(srId, authorityName, authorizedId, wkt);
+			}
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
 		} finally {
 			if (rs != null)
