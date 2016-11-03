@@ -360,7 +360,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 */
 	public List<DefinitionPath> findCandidates(PropertyDefinition property,
 			Class<? extends Geometry> geomType) {
-		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		Set<GeometryWriter<?>> writers = findWriters(geomType);
 		if (writers == null || writers.isEmpty()) {
 			// if no writer is present, we can cancel right here
 			return new ArrayList<DefinitionPath>();
@@ -559,7 +559,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			DefinitionPath path) {
 
 		// check compatibility list
-		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		Set<GeometryWriter<?>> writers = findWriters(geomType);
+
 		if (writers != null) {
 			for (GeometryWriter<?> writer : writers) {
 				boolean compatible = false;
@@ -612,6 +613,27 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		}
 
 		return null;
+	}
+
+	private Set<GeometryWriter<?>> findWriters(Class<? extends Geometry> geomType) {
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers == null) {
+			writers = new HashSet<>();
+		}
+		else {
+			writers = new HashSet<>(writers);
+		}
+
+		// also handle super class writers, e.g. LineString for LinearRing
+		Class<?> geomAlt = geomType;
+		while (geomAlt.getSuperclass() != null && !Geometry.class.equals(geomAlt.getSuperclass())
+				&& Geometry.class.isAssignableFrom(geomAlt.getSuperclass())) {
+			geomAlt = geomAlt.getSuperclass();
+			Set<GeometryWriter<?>> moreWriters = geometryWriters.get(geomAlt);
+			writers.addAll(moreWriters);
+		}
+
+		return writers;
 	}
 
 }
