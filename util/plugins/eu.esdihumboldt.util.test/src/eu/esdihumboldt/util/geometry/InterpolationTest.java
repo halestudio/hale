@@ -59,6 +59,8 @@ public class InterpolationTest {
 
 	private static final int MAX_SIZE = 200;
 
+	private static final boolean DRAW_IMAGE = false;
+
 	/**
 	 * Constructor for parameterized test
 	 * 
@@ -90,6 +92,15 @@ public class InterpolationTest {
 						LineString.class }, //
 				{ new Coordinate[] { new Coordinate(240, 280), new Coordinate(210, 150),
 						new Coordinate(300, 100) }, //
+						LineString.class }, //
+				{ new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 16),
+						new Coordinate(16, 8) }, //
+						LineString.class }, //
+				{ new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 6.5),
+						new Coordinate(16, 8) }, //
+						LineString.class }, //
+				{ new Coordinate[] { new Coordinate(3, 10.5), new Coordinate(4, 7.75),
+						new Coordinate(8, 8) }, //
 						LineString.class } //
 		});
 	}
@@ -104,10 +115,12 @@ public class InterpolationTest {
 
 		Assert.assertEquals(generatedGeometry.getClass(), generatedGeometryType);
 
+		System.out.println(generatedGeometry.getCoordinates().length);
 		System.out.println(generatedGeometry);
 		assertNotNull(generatedGeometry);
 
-		createImage((LineString) generatedGeometry, arcCoordinates);
+		if (DRAW_IMAGE)
+			createImage((LineString) generatedGeometry, arcCoordinates);
 
 	}
 

@@ -35,7 +35,7 @@ public class Interpolation {
 
 	private static final ALogger log = ALoggerFactory.getLogger(Interpolation.class);
 
-	private static double GRID_SCALE = 0.25;
+	private static double GRID_SCALE = 0.1;
 
 	/**
 	 * Interpolate the arc
@@ -53,13 +53,13 @@ public class Interpolation {
 		// Calculate center of Arc
 		CustomCoordinate centerOfArc = calculateCenterPoint(arcGeometryCoordinates);
 
-		System.out.println("Center: " + centerOfArc);
+		// System.out.println("Center: " + centerOfArc);
 
 		// Calculate radius of Arc
 		double radius = Math.sqrt(Math.pow((arcGeometryCoordinates[0].x - centerOfArc.x), 2)
 				+ Math.pow((arcGeometryCoordinates[0].y - centerOfArc.y), 2));
 
-		System.out.println("radius: " + radius);
+		// System.out.println("radius: " + radius);
 		// set Quadrant of Coordinates
 
 		CustomCoordinate[] arcCoordinates = new CustomCoordinate[3];
@@ -67,7 +67,7 @@ public class Interpolation {
 		for (int i = 0; i <= 2; i++) {
 			arcCoordinates[i] = createCoordinateWithQuadrant(arcGeometryCoordinates[i],
 					centerOfArc);
-			System.out.println("Arc Coordinates: " + arcCoordinates[i]);
+			// System.out.println("Arc Coordinates: " + arcCoordinates[i]);
 		}
 
 		// return Line String Geometry
@@ -149,7 +149,7 @@ public class Interpolation {
 		generatedCoordinates.addAll(generateLineStringCoordinates(arcCoordinates[1],
 				arcCoordinates[2], center, radius, angle, e, GRID_SCALE));
 
-		System.out.println(generatedCoordinates.size());
+		// System.out.println(generatedCoordinates.size());
 
 		Coordinate[] generatedLineStringCoordinates = new Coordinate[generatedCoordinates.size()];
 		int i = 0;
@@ -213,7 +213,7 @@ public class Interpolation {
 		deservedNeighour.setQuadrant(
 				extractQuadrant(deservedNeighour.x, deservedNeighour.y, center.x, center.y));
 
-		System.out.println(deservedNeighour);
+		// System.out.println(deservedNeighour);
 
 		tempList.add(deservedNeighour);
 
