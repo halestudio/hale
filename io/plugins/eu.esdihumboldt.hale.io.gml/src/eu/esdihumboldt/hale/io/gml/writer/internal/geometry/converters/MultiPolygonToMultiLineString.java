@@ -16,10 +16,13 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
@@ -32,58 +35,42 @@ import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
-public class PolygonToMultiLineString extends AbstractGeometryConverter<Polygon, MultiLineString> {
+public class MultiPolygonToMultiLineString
+		extends AbstractGeometryConverter<MultiPolygon, MultiLineString> {
+
+	private final PolygonToLineString polygonConverter = new PolygonToLineString();
 
 	/**
 	 * Default constructor
 	 */
-	public PolygonToMultiLineString() {
-		super(Polygon.class, MultiLineString.class);
+	public MultiPolygonToMultiLineString() {
+		super(MultiPolygon.class, MultiLineString.class);
 	}
 
 	/**
 	 * @see GeometryConverter#convert(Geometry)
 	 */
 	@Override
-	public MultiLineString convert(Polygon polygon) {
-		LineString exterior = polygon.getExteriorRing();
+	public MultiLineString convert(MultiPolygon polygon) {
+		List<LineString> lineStrings = new ArrayList<>();
 
-		// the line string is no ring in itself, therefore we create multiple
-		// line strings that form up a curve
-
-		Coordinate[] coordinates = exterior.getCoordinates();
-		int length = coordinates.length;
-		if (length > 1) {
-			// test if first equals last
-			if (coordinates[0].equals(coordinates[length - 1])) {
-				// first and last match -> we reduce the virtual size by 1
-				length--;
+		for (int i = 0; i < polygon.getNumGeometries(); i++) {
+			Geometry g = polygon.getGeometryN(i);
+			if (g instanceof Polygon) {
+				lineStrings.add(polygonConverter.convert((Polygon) g));
 			}
 		}
 
-		if (length <= 2) {
-			return geomFactory.createMultiLineString(new LineString[] { exterior });
-		}
-		else {
-			LineString[] segments = new LineString[length];
-			for (int i = 0; i < length; i++) {
-				Coordinate[] segmentCoords = new Coordinate[2];
-				segmentCoords[0] = coordinates[i];
-				segmentCoords[1] = coordinates[(i + 1 < length) ? (i + 1) : (0)];
-				segments[i] = geomFactory.createLineString(segmentCoords);
-			}
-
-			return geomFactory.createMultiLineString(segments);
-		}
+		return geomFactory
+				.createMultiLineString(lineStrings.toArray(new LineString[lineStrings.size()]));
 	}
 
 	/**
 	 * @see GeometryConverter#lossOnConversion(Geometry)
 	 */
 	@Override
-	public boolean lossOnConversion(Polygon geometry) {
+	public boolean lossOnConversion(MultiPolygon geometry) {
 		// we classify the conversion as a loss because it's a change from a
 		// surface to a curve and the interior is lost
 		return true;
