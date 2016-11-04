@@ -46,7 +46,7 @@ public abstract class SRSUtil {
 	 */
 	public static String getSRS(int srId, SQLServerConnection con) {
 		if (cache.get(srId) == null) {
-			if (!getFromDatabase(srId, con))
+			if (con == null || (!getFromDatabase(srId, con)))
 				return null;
 		}
 		return cache.get(srId).getAuthorizedSrId();
@@ -63,7 +63,7 @@ public abstract class SRSUtil {
 	 */
 	public static String getAuthorityName(int srId, SQLServerConnection con) {
 		if (cache.get(srId) == null) {
-			if (!getFromDatabase(srId, con))
+			if (con == null || (!getFromDatabase(srId, con)))
 				return null;
 		}
 		return cache.get(srId).getAuthorityName();
@@ -80,7 +80,7 @@ public abstract class SRSUtil {
 	 */
 	public static String getSRSText(int srId, SQLServerConnection con) {
 		if (cache.get(srId) == null) {
-			if (!getFromDatabase(srId, con))
+			if (con == null || (!getFromDatabase(srId, con)))
 				return null;
 		}
 		return cache.get(srId).getSrsText();

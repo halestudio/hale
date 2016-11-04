@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MsSQL Server Export</title>
+</head>
+<body>
+	<h1>MsSQL Server Export</h1>
+	<p>
+		Support for MsSQL Server in HALE is based on the generic <a
+			href="jdbc.html">Database export</a> based on JDBC, and thus has the
+		same limitations. For instance HALE needs the database schema to
+		already exist in SQL server, thus you can only write to database that have 
+		already been prepared and loaded as target schema.
+	</p>
+	
+	<p>
+		HALE supports writing both geometry and geography <a href="https://msdn.microsoft.com/en-us/library/bb933790(v=sql.110).aspx">spatial data types</a> 
+		of MsSQL Server but if any objects does not contain spatial reference system then 
+		<b>(EPSG:4326)</b> will be used as a default reference system. 
+		However, within this limit it is functional and may be useful to you.
+	</p>
+
+	<br />
+	
+	<!-- related concepts -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png"></img>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png"></img>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">How to customize the mapping relevant types</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a>
+		</p>
+	</div>
+</body>
+</html>

@@ -74,25 +74,22 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 		try {
 			int srId = 4326;
 
-			if (columnDataType.equals("geography") && geom.getCRSDefinition() != null) {
+			if (geom.getCRSDefinition() != null) {
 
 				// SRS Code
 				String srsName = CRS.toSRS(geom.getCRSDefinition().getCRS());
 
-				// Todo:: Do we really need transformation for 'geometry'
-				// columnDataType instances? because this type represents
-				// data in a Euclidean (flat) coordinate system.
-
-				// getting Axis order of geometry CRS
-				CRS.AxisOrder axisOrder = CRS.getAxisOrder(geom.getCRSDefinition().getCRS());
-				// if axis order is not x/y ordering then will need to
-				// transform geometry to target crs with longiture first
-				if (axisOrder != CRS.AxisOrder.EAST_NORTH) {
-					if (srsName != null && srsName.startsWith("EPSG")) {
-						targetCRS = CRS.decode(srsName, true);
+				if (columnDataType.equals("geography")) {
+					// getting Axis order of geometry CRS
+					CRS.AxisOrder axisOrder = CRS.getAxisOrder(geom.getCRSDefinition().getCRS());
+					// if axis order is not x/y ordering then will need to
+					// transform geometry to target crs with longiture first
+					if (axisOrder != CRS.AxisOrder.EAST_NORTH) {
+						if (srsName != null && srsName.startsWith("EPSG")) {
+							targetCRS = CRS.decode(srsName, true);
+						}
 					}
 				}
-
 				try {
 					if (srsName != null) {
 						final int index = srsName.lastIndexOf(':');
