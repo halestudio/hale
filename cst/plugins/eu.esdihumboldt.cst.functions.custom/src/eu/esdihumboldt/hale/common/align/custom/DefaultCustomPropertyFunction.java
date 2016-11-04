@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDef
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyTransformation;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -93,6 +95,11 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 		@Override
 		public CellExplanation getExplanation() {
 			return explanation;
+		}
+
+		@Override
+		public Optional<CellMigrator> getCustomMigrator() {
+			return Optional.empty();
 		}
 
 		@Override

@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.common.align.migrate.impl;
 
+import javax.annotation.Nullable;
+
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
@@ -24,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Default implementation of migrator for a complete alignment.
@@ -33,6 +37,16 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 public class DefaultAlignmentMigrator implements AlignmentMigrator {
 
 	private final CellMigrator defaultMigrator = new DefaultCellMigrator();
+
+	private final ServiceProvider serviceProvider;
+
+	/**
+	 * @param serviceProvider the service provider if available
+	 */
+	public DefaultAlignmentMigrator(@Nullable ServiceProvider serviceProvider) {
+		super();
+		this.serviceProvider = serviceProvider;
+	}
 
 	@Override
 	public MutableAlignment updateAligmment(Alignment originalAlignment,
@@ -61,8 +75,8 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 	}
 
 	private CellMigrator getCellMigrator(String transformationIdentifier) {
-		// TODO Auto-generated method stub
-		return defaultMigrator;
+		return FunctionUtil.getFunction(transformationIdentifier, serviceProvider)
+				.getCustomMigrator().orElse(defaultMigrator);
 	}
 
 }
