@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * A list where the entries are sorted by dependencies, the dependencies to an
@@ -30,7 +30,6 @@ import java.util.Map.Entry;
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
 public class DependencyOrderedList<T> {
 
@@ -38,6 +37,9 @@ public class DependencyOrderedList<T> {
 
 	/**
 	 * Create a new list
+	 * 
+	 * <b>Attention:</b> Due to the use of recursion a huge dependency set may
+	 * result in a StackOverflowError.
 	 * 
 	 * @param dependencies the dependency map
 	 */
