@@ -50,6 +50,8 @@ public class DriverConfiguration implements Identifiable {
 	private boolean multipleSchemaSelection;
 	private Class<? extends SchemaSelector> schemaSelectorClass;
 	private SchemaSelector selector = null;
+	private Class<? extends ConnectionHelper> helperClass;
+	private ConnectionHelper helper = null;
 	private final boolean isFileBased;
 
 	/**
@@ -70,6 +72,13 @@ public class DriverConfiguration implements Identifiable {
 		prefixes = element.getChildren("prefix");
 		schemaSelection = element.getChildren("schema-selection");
 		setSchemaSelectionVariables();
+		try {
+			helperClass = (Class<? extends ConnectionHelper>) ExtensionUtil.loadClass(element,
+					"connectionHelper");
+		} catch (NullPointerException ex) {
+			// connectionHelper element is optional in driver configuration
+			helperClass = null;
+		}
 		isFileBased = Boolean.valueOf(element.getAttribute("isFileBased"));
 	}
 
@@ -179,8 +188,21 @@ public class DriverConfiguration implements Identifiable {
 	}
 
 	/**
-	 * @return isFileBased
+	 * Get the Connection Helper associated with the driver configuration.
+	 * 
+	 * @return the Connection Helper
 	 */
+	public ConnectionHelper getConnectionHelper() {
+		if (helperClass != null) {
+			try {
+				helper = helperClass.newInstance();
+			} catch (InstantiationException | IllegalAccessException e) {
+				Throwables.propagate(e);
+			}
+		}
+		return helper;
+	}
+
 	public boolean isFileBased() {
 		return isFileBased;
 	}

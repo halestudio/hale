@@ -29,6 +29,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionHelper;
 import eu.esdihumboldt.hale.io.jdbc.extension.DriverConfiguration;
 import eu.esdihumboldt.hale.io.jdbc.extension.DriverConfigurationExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.ConnectionConfigurerExtension;
@@ -37,7 +38,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.ConnectionConfigurerExten
  * Helper class that should be used to create JDBC connections, as it includes
  * database specific configuration provided through extensions.
  * 
- * @author Simon Templer
+ * @author Simon Templer, Arun
  */
 public abstract class JDBCConnection implements JDBCConstants {
 
@@ -54,9 +55,11 @@ public abstract class JDBCConnection implements JDBCConstants {
 	 */
 	public static Connection getConnection(URI jdbcUri, String user, String password)
 			throws SQLException {
+
+		String connectionString = getConnectionString(jdbcUri);
 		Driver driver = null;
 		try {
-			driver = DriverManager.getDriver(jdbcUri.toString());
+			driver = DriverManager.getDriver(connectionString);
 		} catch (Exception ex) {
 			// Expected driver is not been loaded, so need to load it manually
 			// using prefix attribute in extension
@@ -71,7 +74,7 @@ public abstract class JDBCConnection implements JDBCConstants {
 			}
 		}
 
-		Connection connection = DriverManager.getConnection(jdbcUri.toString(), user, password);
+		Connection connection = DriverManager.getConnection(connectionString, user, password);
 		// do database specific configuration
 		ConnectionConfigurerExtension.getInstance().applyAll(connection);
 		return connection;
@@ -121,4 +124,17 @@ public abstract class JDBCConnection implements JDBCConstants {
 		else
 			return null;
 	}
+
+	private static String getConnectionString(URI jdbcUri) {
+		DriverConfiguration dc = DriverConfigurationExtension.getInstance().findDriver(jdbcUri);
+
+		if (dc != null) {
+			ConnectionHelper helper = dc.getConnectionHelper();
+			if (helper != null)
+				return helper.getConnectionString(jdbcUri);
+		}
+
+		return jdbcUri.toString();
+	}
+
 }

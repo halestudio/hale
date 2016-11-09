@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.io.feature.mssql"
+      label="HALE MS-SQL Support"
+      version="3.1.0.qualifier"
+      provider-name="wetransform GmbH"
+      plugin="eu.esdihumboldt.hale.ui.application">
+
+   <license url="">
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.jdbc.mssql"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
