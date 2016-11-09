@@ -156,6 +156,8 @@
             </topic>
             <topic href="html/reference/import/sqlite.html" label="SQLite and SpatiaLite">
             </topic>
+            <topic href="html/reference/import/mssql.html" label="MsSQL Server">
+            </topic>
             <topic href="html/reference/import/xls.html" label="XLS">
             </topic>
             <anchor id="import"/>
@@ -175,6 +177,8 @@
             <topic href="html/reference/export/jdbc.html" label="Database">
             </topic>
             <topic href="html/reference/export/sqlite.html" label="SQLite and SpatiaLite">
+            </topic>
+            <topic href="html/reference/export/mssql.html" label="MsSQL Server">
             </topic>
             <topic href="html/reference/export/xls_data.html" label="XLS">
             </topic>

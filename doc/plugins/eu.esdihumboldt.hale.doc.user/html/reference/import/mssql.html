@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MsSQL Server Import</title>
+</head>
+<body>
+	<h1>MsSQL Server Import</h1>
+	<p>
+		HALE supports MsSQL Server database (tested version 2012 and 2014) import like generic 
+		<a href="jdbc.html">Database import</a> based on JDBC. Thus has the same limitations.
+	</p>
+	
+	<p>
+		HALE supports both geometry and geography <a href="https://msdn.microsoft.com/en-us/library/bb933790(v=sql.110).aspx">spatial data types</a> 
+		of MsSQL Server but there are some limitations on curved <a href="https://msdn.microsoft.com/en-us/library/bb964711(v=sql.110).aspx#Anchor_1"> spatial data objects</a>. 
+	</p>
+	<p>
+		All the curved spatial data objects like <b>CurvePolygon</b>, <b>CircularString</b>, 
+		<b>CompoundCurve</b> are first interpolate to the <b>Polygon</b>, <b>LineString</b> 
+		and <b>LineString</b> respectively. We want to provide all the spatial data types 
+		support. However, within its limits to curved spatial data objects it is functional 
+		and may be useful to you.
+	</p>
+
+	<br />
+	
+	<!-- related concepts -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelc.png"></img>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_schema.html">What is a Schema?</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/what_is_instance.html">What is an Instance?</a>
+		</p>
+	</div>
+	
+	<!-- related tasks -->
+	<div>
+		<br /> <img
+			src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/images/ngrelt.png"></img>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/load_browse_schema.html">Loading and browsing schemas</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/schema/mapping_relevant.html">How to customize the mapping relevant types</a>
+		</p>
+		<p>
+			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/tasks/data/working_source_data.html">Working with a source data set</a>
+		</p>
+	</div>
+</body>
+</html>
