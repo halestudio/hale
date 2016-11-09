@@ -450,9 +450,21 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		// since they can have multiple columns
 		if (column.isPartOfForeignKey()) {
 			Column referenced = column.getReferencedColumn();
-			property.setConstraint(new Reference(
-					getOrCreateTableType(schema, referenced.getParent(), overallNamespace,
-							namespace, typeIndex, connection, reporter, catalog)));
+			// got this case in MSSQL, foreign key on the same column of the
+			// same table because of that it goes in to loop and throws
+			// StackOverFlow exception.
+			if (!(referenced.getParent().equals(column.getParent()) && referenced.equals(column))) {
+				// Referenced table can be in different schema.
+				// creation of referenced column's table should not be with same
+				// Schema or Namespace. It should be with referenced table's
+				// Schema and namespace.
+				String referencedNameSpace = getReferencedTableNamespace(referenced.getParent(),
+						overallNamespace);
+				property.setConstraint(
+						new Reference(getOrCreateTableType(referenced.getParent().getSchema(),
+								referenced.getParent(), overallNamespace, referencedNameSpace,
+								typeIndex, connection, reporter, catalog)));
+			}
 		}
 
 		return property;
@@ -726,5 +738,27 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	@Override
 	protected String getDefaultTypeName() {
 		return "Database";
+	}
+
+	/**
+	 * Get namespace of the referenced table
+	 * 
+	 * @param referencedTable a {@link Table}
+	 * @param overallNamespace the database namespace
+	 * @return Namespace of referenced table
+	 */
+	private String getReferencedTableNamespace(Table referencedTable, String overallNamespace) {
+		String namespace;
+		if (overallNamespace.isEmpty()) {
+			namespace = unquote(referencedTable.getSchema().getName());
+		}
+		else {
+			namespace = overallNamespace;
+			if (referencedTable.getSchema().getName() != null) {
+				namespace += ":" + unquote(referencedTable.getSchema().getName());
+			}
+		}
+
+		return namespace;
 	}
 }
