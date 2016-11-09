@@ -57,7 +57,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	// XXX support for curve types is not optimal (different number of feature
 	// members needed)
 
-	private static final String ARC_TYPE = "ArcType";
+	// private static final String ARC_TYPE = "ArcType";
 
 	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
 
@@ -261,8 +261,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		types.add(new QName(NS_GML, LINE_STRING_SEGMENT_TYPE));
 		types.add(new QName(NS_GML_32, LINE_STRING_SEGMENT_TYPE));
 
-		types.add(new QName(NS_GML, ARC_TYPE));
-		types.add(new QName(NS_GML_32, ARC_TYPE));
+//		types.add(new QName(NS_GML, ARC_TYPE));
+//		types.add(new QName(NS_GML_32, ARC_TYPE));
 
 		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));

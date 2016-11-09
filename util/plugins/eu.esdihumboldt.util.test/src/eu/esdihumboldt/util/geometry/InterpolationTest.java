@@ -24,7 +24,6 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,6 +42,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
+import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
 /**
@@ -53,22 +53,26 @@ import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 @RunWith(Parameterized.class)
 public class InterpolationTest {
 
+	private final int testIndex;
 	private final Coordinate[] arcCoordinates;
 	@SuppressWarnings("rawtypes")
 	private final Class generatedGeometryType;
 
 	private static final int MAX_SIZE = 200;
+	private static final double e = 0.025;
 
-	private static final boolean DRAW_IMAGE = false;
+	private static final boolean DRAW_IMAGE = true;
 
 	/**
 	 * Constructor for parameterized test
 	 * 
+	 * @param testIndex Index of test parameters
 	 * @param coordinates input arc coordinates
 	 * @param geometry type of output geometry
 	 */
 	@SuppressWarnings("rawtypes")
-	public InterpolationTest(Coordinate[] coordinates, Class geometry) {
+	public InterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry) {
+		this.testIndex = testIndex;
 		this.arcCoordinates = coordinates;
 		this.generatedGeometryType = geometry;
 	}
@@ -78,28 +82,29 @@ public class InterpolationTest {
 	 * 
 	 * @return Collection of arc coordinates and type of generated geometry
 	 */
+
 	@SuppressWarnings("rawtypes")
 	@Parameters
 	public static Collection addCoordiantes() {
 		return Arrays.asList(new Object[][] { //
-				{ new Coordinate[] { new Coordinate(577869.169, 5917253.678),
+				{ 0, new Coordinate[] { new Coordinate(577869.169, 5917253.678),
 						new Coordinate(577871.772, 5917250.386),
 						new Coordinate(577874.884, 5917253.202) }, //
 						LineString.class }, //
-				{ new Coordinate[] { new Coordinate(577738.2, 5917351.786),
+				{ 1, new Coordinate[] { new Coordinate(577738.2, 5917351.786),
 						new Coordinate(577740.608, 5917347.876),
 						new Coordinate(577745.185, 5917348.135) }, //
 						LineString.class }, //
-				{ new Coordinate[] { new Coordinate(240, 280), new Coordinate(210, 150),
+				{ 2, new Coordinate[] { new Coordinate(240, 280), new Coordinate(210, 150),
 						new Coordinate(300, 100) }, //
 						LineString.class }, //
-				{ new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 16),
+				{ 3, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 16),
 						new Coordinate(16, 8) }, //
 						LineString.class }, //
-				{ new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 6.5),
+				{ 4, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 6.5),
 						new Coordinate(16, 8) }, //
 						LineString.class }, //
-				{ new Coordinate[] { new Coordinate(3, 10.5), new Coordinate(4, 7.75),
+				{ 5, new Coordinate[] { new Coordinate(3, 10.5), new Coordinate(4, 7.75),
 						new Coordinate(8, 8) }, //
 						LineString.class } //
 		});
@@ -110,21 +115,21 @@ public class InterpolationTest {
 	 */
 	@Test
 	public void testInterpolation() {
-		System.out.println("-- Test begin --");
-		Geometry generatedGeometry = Interpolation.interpolateArc(arcCoordinates, 0.025);
+		System.out.println("-- Test-" + testIndex + " begin --");
 
-		Assert.assertEquals(generatedGeometry.getClass(), generatedGeometryType);
+		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e);
+		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
-		System.out.println(generatedGeometry.getCoordinates().length);
-		System.out.println(generatedGeometry);
-		assertNotNull(generatedGeometry);
-
+		assertNotNull(interpolatedArc);
+		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
+		System.out.println(interpolatedArc.getCoordinates().length);
+		System.out.println(interpolatedArc);
 		if (DRAW_IMAGE)
-			createImage((LineString) generatedGeometry, arcCoordinates);
+			createImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 
 	}
 
-	private void createImage(LineString geometry, Coordinate[] arcCoordinates) {
+	private void createImage(LineString geometry, Coordinate[] arcCoordinates, int imageIndex) {
 
 		Envelope envelope = geometry.getEnvelopeInternal();
 		int height;
@@ -162,8 +167,8 @@ public class InterpolationTest {
 
 		try {
 			// Write the BufferedImage object to a file
-			Path file = File.createTempFile("LineStringWithArc", ".png").toPath();
-			ImageIO.write(bim, "PNG", file.toFile());
+			File image = File.createTempFile("test" + imageIndex + "-", ".png");
+			ImageIO.write(bim, "PNG", image);
 		} catch (IOException e) {
 			//
 		}
