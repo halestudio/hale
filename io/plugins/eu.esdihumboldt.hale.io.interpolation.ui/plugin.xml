@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.interpolation.ui.InterpolationSettingPage"
+            order="11">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.reader">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.reader">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>
