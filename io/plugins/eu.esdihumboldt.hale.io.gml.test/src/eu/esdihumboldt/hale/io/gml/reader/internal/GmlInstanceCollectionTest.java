@@ -71,8 +71,8 @@ public class GmlInstanceCollectionTest {
 	@Test
 	public void testLoadMixed() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
-				getClass().getResource("/data/mixed/shiporder.xsd").toURI(), getClass()
-						.getResource("/data/mixed/shiporder.xml").toURI(), false);
+				getClass().getResource("/data/mixed/shiporder.xsd").toURI(),
+				getClass().getResource("/data/mixed/shiporder.xml").toURI(), false);
 
 		String ns = "http://www.example.com";
 
@@ -148,8 +148,8 @@ public class GmlInstanceCollectionTest {
 	@Test
 	public void testLoadShiporder() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
-				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(), getClass()
-						.getResource("/data/shiporder/shiporder.xml").toURI(), false);
+				getClass().getResource("/data/shiporder/shiporder.xsd").toURI(),
+				getClass().getResource("/data/shiporder/shiporder.xml").toURI(), false);
 
 		String ns = "http://www.example.com";
 
@@ -252,7 +252,8 @@ public class GmlInstanceCollectionTest {
 			assertNotNull(choice_1);
 			assertEquals(5, choice_1.length);
 
-			String[] expectedProperties = new String[] { "shirt", "hat", "shirt", "umbrella", "hat" };
+			String[] expectedProperties = new String[] { "shirt", "hat", "shirt", "umbrella",
+					"hat" };
 			for (int i = 0; i < choice_1.length; i++) {
 				assertTrue(choice_1[i] instanceof Group);
 				Group choice = (Group) choice_1[i];
@@ -314,8 +315,8 @@ public class GmlInstanceCollectionTest {
 	@Test
 	public void testLoadWVA() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
-				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), getClass()
-						.getResource("/data/sample_wva/wfs_va_sample.gml").toURI(), true);
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
+				getClass().getResource("/data/sample_wva/wfs_va_sample.gml").toURI(), true);
 
 		testWVAInstances(instances);
 	}
@@ -332,9 +333,9 @@ public class GmlInstanceCollectionTest {
 	@Test
 	public void testLoadWVAIgnoreNamespace() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
-				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(), getClass()
-						.getResource("/data/sample_wva/wfs_va_sample_namespace.gml").toURI(), true,
-				true);
+				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
+				getClass().getResource("/data/sample_wva/wfs_va_sample_namespace.gml").toURI(),
+				true, true);
 
 		testWVAInstances(instances);
 	}
@@ -375,8 +376,8 @@ public class GmlInstanceCollectionTest {
 			assertTrue(the_geom[0] instanceof Instance);
 
 			// MultiLineString
-			Object[] multiLineString = ((Instance) the_geom[0]).getProperty(new QName(gmlNs,
-					"MultiLineString"));
+			Object[] multiLineString = ((Instance) the_geom[0])
+					.getProperty(new QName(gmlNs, "MultiLineString"));
 			assertNotNull(multiLineString);
 			assertEquals(1, multiLineString.length);
 			assertTrue(multiLineString[0] instanceof Instance);
@@ -392,15 +393,15 @@ public class GmlInstanceCollectionTest {
 			assertEquals("EPSG:31251", srsName[0].toString());
 
 			// lineStringMember
-			Object[] lineStringMember = ((Instance) multiLineString[0]).getProperty(new QName(
-					gmlNs, "lineStringMember"));
+			Object[] lineStringMember = ((Instance) multiLineString[0])
+					.getProperty(new QName(gmlNs, "lineStringMember"));
 			assertNotNull(lineStringMember);
 			assertEquals(1, lineStringMember.length);
 			assertTrue(lineStringMember[0] instanceof Instance);
 
 			// LineString
-			Object[] lineString = ((Instance) lineStringMember[0]).getProperty(new QName(gmlNs,
-					"LineString"));
+			Object[] lineString = ((Instance) lineStringMember[0])
+					.getProperty(new QName(gmlNs, "LineString"));
 			assertNotNull(lineString);
 			assertEquals(1, lineString.length);
 			assertTrue(lineString[0] instanceof Instance);
@@ -410,8 +411,8 @@ public class GmlInstanceCollectionTest {
 			// ...getValue()
 
 			// choice
-			Object[] choice_1 = ((Instance) lineString[0]).getProperty(new QName(gmlNs
-					+ "/LineStringType", "choice_1"));
+			Object[] choice_1 = ((Instance) lineString[0])
+					.getProperty(new QName(gmlNs + "/LineStringType", "choice_1"));
 			assertNotNull(choice_1);
 			assertEquals(1, choice_1.length);
 			assertTrue(choice_1[0] instanceof Group);
@@ -422,8 +423,8 @@ public class GmlInstanceCollectionTest {
 			assertNotNull(coordinates);
 			assertEquals(1, coordinates.length);
 			assertTrue(coordinates[0] instanceof Instance);
-			assertTrue(((Instance) coordinates[0]).getValue().toString()
-					.contains("-39799.68820381"));
+			assertTrue(
+					((Instance) coordinates[0]).getValue().toString().contains("-39799.68820381"));
 
 			// only one instance should be present
 			assertFalse(it.hasNext());
@@ -441,8 +442,9 @@ public class GmlInstanceCollectionTest {
 	@Test
 	public void testLoadImgeo_Scheiding() throws Exception {
 		GmlInstanceCollection instances = loadInstances(
-				getClass().getResource("/data/sample_imgeo/IMGEO.xsd").toURI(), getClass()
-						.getResource("/data/sample_imgeo/sample_scheiding_nofc.gml").toURI(), true);
+				getClass().getResource("/data/sample_imgeo/IMGEO.xsd").toURI(),
+				getClass().getResource("/data/sample_imgeo/sample_scheiding_nofc.gml").toURI(),
+				true);
 
 //		String ns = "http://www.geonovum.nl/IMGEO";
 //		String gmlNs = "http://www.opengis.net/gml";
@@ -469,8 +471,8 @@ public class GmlInstanceCollectionTest {
 	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation,
-			boolean restrictToFeatures, boolean ignoreNamespace) throws IOException,
-			IOProviderConfigurationException {
+			boolean restrictToFeatures, boolean ignoreNamespace)
+					throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
@@ -479,7 +481,7 @@ public class GmlInstanceCollectionTest {
 		Schema sourceSchema = reader.getSchema();
 
 		return new GmlInstanceCollection(new DefaultInputSupplier(xmlLocation), sourceSchema,
-				restrictToFeatures, false, true, ignoreNamespace, null);
+				restrictToFeatures, false, true, ignoreNamespace, null, reader);
 	}
 
 }

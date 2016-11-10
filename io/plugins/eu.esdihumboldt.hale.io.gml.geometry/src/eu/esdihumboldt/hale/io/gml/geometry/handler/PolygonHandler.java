@@ -30,6 +30,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -64,11 +65,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	private static final String TRIANGLE_TYPE = "TriangleType";
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int, IOProvider)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
 
 		LinearRing[] holes = null;

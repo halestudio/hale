@@ -22,10 +22,11 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
@@ -45,6 +46,9 @@ public class ArcHandler extends LineStringHandler {
 
 	private static final String ARC_TYPE = "ArcType";
 
+	// private static final String INTERPOL_MAX_POSITION_ERROR =
+	// "interpolation.maxerror";
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#initSupportedTypes()
 	 */
@@ -60,23 +64,24 @@ public class ArcHandler extends LineStringHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int)
+	 *      int, IOProvider)
 	 */
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
 		@SuppressWarnings("unchecked")
 		DefaultGeometryProperty<LineString> lineStringGeomProperty = (DefaultGeometryProperty<LineString>) super.createGeometry(
-				instance, srsDimension);
+				instance, srsDimension, reader);
 		// TODO:: add support to ask maximum positional error from user..
-		double maxPositionalError = 0.5;
+		double maxPositionalError = reader
+				.getParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR).as(Double.class);
 
 		Interpolation<LineString> interpolation = new ArcInterpolation(
 				lineStringGeomProperty.getGeometry().getCoordinates(), maxPositionalError);
-		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
-		if (interpolatedArc != null && interpolatedArc instanceof LineString)
-			return new DefaultGeometryProperty<Geometry>(lineStringGeomProperty.getCRSDefinition(),
-					interpolatedArc);
+		LineString interpolatedArc = interpolation.interpolateRawGeometry();
+		if (interpolatedArc != null)
+			return new DefaultGeometryProperty<LineString>(
+					lineStringGeomProperty.getCRSDefinition(), interpolatedArc);
 
 		return null;
 	}
