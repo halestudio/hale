@@ -1,7 +1,7 @@
-package eu.esdihumboldt.hale.io.interpolation.ui;
+package eu.esdihumboldt.hale.common.instance.geometry.curve;
 
 /**
- * Constants related to I/O providers
+ * Constants related to curve geometry interpolation
  * 
  * @author Arun
  *
