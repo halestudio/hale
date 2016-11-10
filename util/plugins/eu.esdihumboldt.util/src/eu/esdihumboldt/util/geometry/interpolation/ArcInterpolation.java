@@ -195,8 +195,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		return tempList;
 	}
 
-	private static boolean isArcCoordinateNeighbour(Coordinate current,
-			Coordinate nextArcCoordinate, double e) {
+	private boolean isArcCoordinateNeighbour(Coordinate current, Coordinate nextArcCoordinate,
+			double e) {
 
 		double distance = Math.sqrt(Math.pow((current.x - nextArcCoordinate.x), 2)
 				+ Math.pow((current.y - nextArcCoordinate.y), 2));
@@ -206,7 +206,7 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		return false;
 	}
 
-	private static List<Coordinate> getNeighbouringCoordinates(Coordinate current,
+	private List<Coordinate> getNeighbouringCoordinates(Coordinate current,
 			double nextPointDistance) {
 
 		// need to check direction of increment decrement of x and y

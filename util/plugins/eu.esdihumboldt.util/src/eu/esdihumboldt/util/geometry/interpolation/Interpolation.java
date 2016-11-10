@@ -38,7 +38,7 @@ public abstract class Interpolation<T extends Geometry> {
 	 */
 	protected final double NEXT_COORDINATE_DISTANCE_FACTOR = 4;
 	/**
-	 * Minimum distance of next coordinate from current coordinate
+	 * Distance of next coordinate from current coordinate
 	 */
 	protected final double NEXT_COORDINATE_DISTANCE;
 
