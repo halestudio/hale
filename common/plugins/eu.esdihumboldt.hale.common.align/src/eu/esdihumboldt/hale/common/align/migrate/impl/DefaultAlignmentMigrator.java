@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.common.align.migrate.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.annotation.Nullable;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -56,7 +59,8 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 		// XXX TODO adapt custom functions?!
 //		result.getCustomPropertyFunctions();
 
-		for (Cell cell : result.getCells()) {
+		Collection<? extends Cell> cellList = new ArrayList<>(result.getCells());
+		for (Cell cell : cellList) {
 			// XXX
 			if (cell instanceof MutableCell) {
 				CellMigrator cm = getCellMigrator(cell.getTransformationIdentifier());
