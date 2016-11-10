@@ -250,8 +250,9 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 							e.getPropertyPath(), e.getSchemaSpace(), null)));
 				}
 				TypeDefinition superType = e.getType().getSuperType();
-				e = superType == null ? null : AlignmentUtil.createEntity(superType,
-						e.getPropertyPath(), e.getSchemaSpace(), e.getFilter());
+				e = superType == null ? null
+						: AlignmentUtil.createEntity(superType, e.getPropertyPath(),
+								e.getSchemaSpace(), e.getFilter());
 			} while (e != null);
 			return cells;
 		}
@@ -405,8 +406,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		}
 
 		Entity targetEntity = CellUtil.getFirstEntity(queryCell.getTarget());
-		TypeDefinition target = targetEntity == null ? null : targetEntity.getDefinition()
-				.getType();
+		TypeDefinition target = targetEntity == null ? null
+				: targetEntity.getDefinition().getType();
 
 		if (sources.isEmpty() && target == null)
 			return getTypeCells();
@@ -460,7 +461,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 	 * @param entities the cell entities (usually either source or target)
 	 * @param cell the cell to remove
 	 */
-	private void internalRemoveFromMaps(ListMultimap<String, ? extends Entity> entities, Cell cell) {
+	private void internalRemoveFromMaps(ListMultimap<String, ? extends Entity> entities,
+			Cell cell) {
 		if (entities == null) {
 			return;
 		}
@@ -522,25 +524,16 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignments()
-	 */
 	@Override
 	public Map<String, URI> getBaseAlignments() {
 		return Collections.unmodifiableMap(baseAlignments);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getCell(java.lang.String)
-	 */
 	@Override
 	public Cell getCell(String cellId) {
 		return idToCell.get(cellId);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.align.model.Alignment#getBaseAlignmentCells(java.net.URI)
-	 */
 	@Override
 	public Iterable<BaseAlignmentCell> getBaseAlignmentCells(URI baseAlignment) {
 		// expect this operation to not be needed regularly and thus do not
@@ -554,6 +547,21 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 			}
 		}
 		return baseCells;
+	}
+
+	@Override
+	public void clearBaseAlignments() {
+		// clear base function related information
+		baseAlignments.clear();
+		idToBaseFunction.clear();
+
+		// clear any base alignment cells
+		cells.removeIf(cell -> cell instanceof BaseAlignmentCell);
+		cellsPerEntity.values().removeIf(cell -> cell instanceof BaseAlignmentCell);
+		cellsPerSourceType.values().removeIf(cell -> cell instanceof BaseAlignmentCell);
+		cellsPerTargetType.values().removeIf(cell -> cell instanceof BaseAlignmentCell);
+		idToCell.values().removeIf(cell -> cell instanceof BaseAlignmentCell);
+		typeCells.removeIf(cell -> cell instanceof BaseAlignmentCell);
 	}
 
 }
