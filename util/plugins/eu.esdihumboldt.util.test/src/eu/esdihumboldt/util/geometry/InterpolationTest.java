@@ -61,7 +61,7 @@ public class InterpolationTest {
 	private static final int MAX_SIZE = 200;
 	private static final double e = 0.025;
 
-	private static final boolean DRAW_IMAGE = true;
+	private static final boolean DRAW_IMAGE = false;
 
 	/**
 	 * Constructor for parameterized test
@@ -122,8 +122,8 @@ public class InterpolationTest {
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
-		System.out.println(interpolatedArc.getCoordinates().length);
-		System.out.println(interpolatedArc);
+		// System.out.println(interpolatedArc.getCoordinates().length);
+		// System.out.println(interpolatedArc);
 		if (DRAW_IMAGE)
 			createImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 
