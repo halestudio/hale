@@ -32,4 +32,10 @@ public interface MigrationOptions {
 	 */
 	boolean updateTarget();
 
+	/**
+	 * @return if base aligment content should be transfered to the updated
+	 *         alignment
+	 */
+	boolean transferBase();
+
 }

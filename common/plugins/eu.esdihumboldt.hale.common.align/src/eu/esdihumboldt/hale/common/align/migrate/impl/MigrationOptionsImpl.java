@@ -26,17 +26,21 @@ public class MigrationOptionsImpl implements MigrationOptions {
 
 	private final boolean updateSource;
 	private final boolean updateTarget;
+	private final boolean transferBase;
 
 	/**
 	 * Create a migration options object specifying all settings.
 	 * 
 	 * @param updateSource if the migration should update source entities
 	 * @param updateTarget if the migration should update target entities
+	 * @param transferBase if the migration should transfer base alignment
+	 *            content to the updated alignment
 	 */
-	public MigrationOptionsImpl(boolean updateSource, boolean updateTarget) {
+	public MigrationOptionsImpl(boolean updateSource, boolean updateTarget, boolean transferBase) {
 		super();
 		this.updateSource = updateSource;
 		this.updateTarget = updateTarget;
+		this.transferBase = transferBase;
 	}
 
 	@Override
@@ -47,6 +51,11 @@ public class MigrationOptionsImpl implements MigrationOptions {
 	@Override
 	public boolean updateTarget() {
 		return updateTarget;
+	}
+
+	@Override
+	public boolean transferBase() {
+		return transferBase;
 	}
 
 }
