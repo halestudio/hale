@@ -1,7 +1,5 @@
 package eu.esdihumboldt.hale.io.interpolation.ui;
 
-import java.util.Map;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -11,7 +9,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
+import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -50,6 +48,17 @@ public class InterpolationSettingPage
 
 	@Override
 	public boolean updateConfiguration(IOProvider provider) {
+
+		String value = error.getText();
+		if (value == null || value.equals(""))
+			return false;
+
+		try {
+			@SuppressWarnings("unused")
+			double test = Double.parseDouble(value);
+		} catch (NumberFormatException nfEx) {
+			return false;
+		}
 		provider.setParameter(INTERPOL_MAX_POSITION_ERROR, Value.of(error.getText()));
 		return true;
 	}
@@ -60,7 +69,7 @@ public class InterpolationSettingPage
 
 		// label error
 		Label labelError = new Label(page, SWT.NONE);
-		labelError.setText("User:");
+		labelError.setText("Maximum Position Error: ");
 		labelError.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
 
 		error = new Text(page, SWT.BORDER | SWT.SINGLE);
@@ -86,14 +95,21 @@ public class InterpolationSettingPage
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
+			loadPreValue(getWizard().getProvider());
 			setPageComplete(true);
 		}
 	}
 
-	@Override
-	public void loadPreSelection(IOConfiguration conf) {
-		Map<String, Value> configs = conf.getProviderConfiguration();
-		error.setText(String.valueOf(configs.get(INTERPOL_MAX_POSITION_ERROR).getValue()));
+	/**
+	 * Load max position error value
+	 * 
+	 * @param provider the I/O provider to get
+	 */
+	public void loadPreValue(IOProvider provider) {
+		Double value = provider.getParameter(INTERPOL_MAX_POSITION_ERROR).as(Double.class);
+		if (value != null)
+			error.setText(Double.toString(value.doubleValue()));
+		else
+			error.setText(Double.toString(DEFAULT_INTERPOL_MAX_POSITION_ERROR));
 	}
-
 }
