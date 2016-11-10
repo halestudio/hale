@@ -177,6 +177,23 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="connectionHelper" type="string">
+            <annotation>
+               <documentation>
+                  manipulate connection string prior to establish Connection to database.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.ConnectionHelper"/>
+               </appinfo>
+	    </annotation>
+	 </attribute>
+         <attribute name="isFileBased" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  Is databse connection file based?
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 

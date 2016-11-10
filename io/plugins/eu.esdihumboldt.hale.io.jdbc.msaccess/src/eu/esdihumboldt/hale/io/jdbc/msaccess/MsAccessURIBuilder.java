@@ -35,7 +35,7 @@ public class MsAccessURIBuilder implements URIBuilder {
 
 	/**
 	 * @param jdbcUri the JDBC URI
-	 * @return the file system path to the SpatiaLite database
+	 * @return the file system path to the MsAccess database
 	 */
 	public static String getDatabase(URI jdbcUri) {
 		if (jdbcUri == null) {
@@ -53,5 +53,4 @@ public class MsAccessURIBuilder implements URIBuilder {
 			return path;
 		}
 	}
-
 }

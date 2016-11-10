@@ -957,7 +957,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 					if (values != null && values.length > 0) {
 						boolean allowWrite = true;
 
-						// special case handling: nilReason
+						// special case handling: omit nilReason
 						if (getParameter(PARAM_OMIT_NIL_REASON).as(Boolean.class, true)) {
 							Cardinality propCard = propDef.getConstraint(Cardinality.class);
 							if ("nilReason".equals(propDef.getName().getLocalPart())
@@ -968,7 +968,19 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 						// write attribute
 						if (allowWrite) {
-							writeAttribute(values[0], propDef);
+							// special case handling: replace incorrect
+							// nilReason "unpopulated"
+							if ("nilReason".equals(propDef.getName().getLocalPart())
+									&& "unpopulated".equals(values[0])) {
+								// TODO more strict check to ensure that this is
+								// a GML nilReason? (check property type and
+								// parent types)
+								writeAttribute("other:unpopulated", propDef);
+							}
+							else {
+								// default
+								writeAttribute(values[0], propDef);
+							}
 						}
 
 						if (values.length > 1) {
