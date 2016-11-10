@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
@@ -44,8 +47,9 @@ public class JoinMigrator extends DefaultCellMigrator {
 		MutableCell result = super.updateCell(originalCell, migration, options);
 
 		if (options.updateSource()) {
-			List<ParameterValue> joinParams = result.getTransformationParameters()
-					.get(JoinFunction.PARAMETER_JOIN);
+			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
+					.create(result.getTransformationParameters());
+			List<ParameterValue> joinParams = modParams.get(JoinFunction.PARAMETER_JOIN);
 			if (!joinParams.isEmpty()) {
 				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
 				if (joinParam != null) {
@@ -54,6 +58,7 @@ public class JoinMigrator extends DefaultCellMigrator {
 							Value.complex(convertJoinParameter(joinParam, migration, options))));
 				}
 			}
+			result.setTransformationParameters(modParams);
 		}
 
 		return result;
