@@ -302,12 +302,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	private void evaluateContext(Group group, EntityDefinition groupDef) {
 
 		List<ChildContext> path = groupDef.getPropertyPath();
-		if (path == null || path.isEmpty()) {
-			// group or instance at end of path
-			increase(groupDef, 1);
-		}
-		else {
 
+		if (path != null && !path.isEmpty()) {
 			ChildContext context = path.get(path.size() - 1);
 			Object[] values = group.getProperty(context.getChild().getName());
 			if (values != null) {
@@ -346,9 +342,29 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			else {
 				increase(groupDef, 0);
 			}
-
 		}
+	}
 
+	private void evaluateChildEntityDefinition(Group group, EntityDefinition groupDef,
+			List<ChildContext> path) {
+		if (path.size() == 1) {
+			evaluateContext(group, groupDef);
+		}
+		else {
+			ChildContext context = path.get(0);
+			List<ChildContext> subPath = path.subList(1, path.size());
+			Object[] values = group.getProperty(context.getChild().getName());
+			if (values != null) {
+				for (Object value : values) {
+					if (value instanceof Group) {
+						evaluateChildEntityDefinition((Group) value, groupDef, subPath);
+					}
+				}
+			}
+			else {
+				evaluateChildEntityDefinition(group, groupDef, subPath);
+			}
+		}
 	}
 
 	private void addNoneToPopulation(EntityDefinition groupDef, List<ChildContext> path) {
@@ -403,6 +419,25 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 				pop.increaseOverall(values);
 			}
 
+		}
+	}
+
+	/**
+	 * Count population of {@link EntityDefinition}
+	 * 
+	 * @param entityDef a entity definition
+	 * @param instance an instance
+	 */
+	public void countPopulation(EntityDefinition entityDef, Instance instance) {
+		List<ChildContext> path = entityDef.getPropertyPath();
+		if (path == null || path.isEmpty()) {
+			if (entityDef.getFilter() == null || entityDef.getFilter().match(instance)) {
+				PopulationServiceImpl.this.increase(entityDef, 1);
+				PopulationServiceImpl.this.addToPopulation(instance, entityDef);
+			}
+		}
+		else {
+			PopulationServiceImpl.this.evaluateChildEntityDefinition(instance, entityDef, path);
 		}
 	}
 
@@ -480,20 +515,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 					ResourceIterator<Instance> it = instances.iterator();
 					try {
 						while (it.hasNext()) {
-							List<ChildContext> path = ccEntityDefinition.getPropertyPath();
-							Instance instance = it.next();
-							if (path == null || path.isEmpty()) {
-								if (ccEntityDefinition.getFilter() == null
-										|| ccEntityDefinition.getFilter().match(instance)) {
-									PopulationServiceImpl.this.increase(ccEntityDefinition, 1);
-									PopulationServiceImpl.this.addToPopulation(instance,
-											ccEntityDefinition);
-								}
-							}
-							else {
-								PopulationServiceImpl.this.evaluateContext(instance,
-										ccEntityDefinition);
-							}
+							PopulationServiceImpl.this.countPopulation(ccEntityDefinition,
+									it.next());
 						}
 					} finally {
 						it.close();
