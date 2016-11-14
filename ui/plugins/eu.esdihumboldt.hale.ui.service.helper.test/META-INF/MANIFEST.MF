@@ -12,4 +12,5 @@ Import-Package: eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema,
- eu.esdihumboldt.hale.common.schema.groovy
+ eu.esdihumboldt.hale.common.schema.groovy,
+ eu.esdihumboldt.util.groovy.paths
