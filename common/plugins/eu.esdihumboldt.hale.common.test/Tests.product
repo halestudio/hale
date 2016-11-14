@@ -186,6 +186,8 @@
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.service.helper"/>
+      <plugin id="eu.esdihumboldt.hale.ui.service.helper.test"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
