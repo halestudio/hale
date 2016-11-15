@@ -446,6 +446,8 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		if (removed) {
 			typeCells.remove(cell);
 
+			idToCell.remove(cell.getId());
+
 			// remove from maps
 			internalRemoveFromMaps(cell.getSource(), cell);
 			internalRemoveFromMaps(cell.getTarget(), cell);
