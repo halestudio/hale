@@ -138,6 +138,8 @@
       <plugin id="eu.esdihumboldt.hale.common.schema.persist.test"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
@@ -186,8 +188,6 @@
       <plugin id="eu.esdihumboldt.hale.ui.filter"/>
       <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
       <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.ui.service.helper"/>
-      <plugin id="eu.esdihumboldt.hale.ui.service.helper.test"/>
       <plugin id="eu.esdihumboldt.hale.ui.util"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
       <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>

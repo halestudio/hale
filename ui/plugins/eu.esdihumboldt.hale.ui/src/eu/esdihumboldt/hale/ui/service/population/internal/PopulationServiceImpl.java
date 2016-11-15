@@ -37,13 +37,13 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.service.helper.population.EntityPopulationCount;
+import eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater;
 import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.common.service.population.impl.AbstractPopulationService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
-import eu.esdihumboldt.hale.ui.service.helper.population.IPopulationUpdater;
-import eu.esdihumboldt.hale.ui.service.helper.population.EntityPopulationCount;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 
@@ -284,7 +284,7 @@ public class PopulationServiceImpl extends AbstractPopulationService implements 
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.helper.population.IPopulationUpdater#increaseForEntity(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 * @see eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater#increaseForEntity(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
 	 *      int)
 	 */
 	@Override
@@ -294,7 +294,7 @@ public class PopulationServiceImpl extends AbstractPopulationService implements 
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.service.helper.population.IPopulationUpdater#getChildren(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+	 * @see eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater#getChildren(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
 	 */
 	@Override
 	public Collection<? extends EntityDefinition> getChildren(EntityDefinition entityDef) {

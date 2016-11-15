@@ -500,7 +500,7 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.ui.service.helper"
+         id="eu.esdihumboldt.hale.common.service.helper"
          download-size="0"
          install-size="0"
          version="0.0.0"
