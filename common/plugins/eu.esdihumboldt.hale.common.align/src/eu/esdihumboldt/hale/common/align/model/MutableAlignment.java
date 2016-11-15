@@ -68,4 +68,10 @@ public interface MutableAlignment extends Alignment {
 	 */
 	public void clearBaseAlignments();
 
+	/**
+	 * Remove all cells except cells included via base alignments from the
+	 * alignment.
+	 */
+	public void clearCells();
+
 }

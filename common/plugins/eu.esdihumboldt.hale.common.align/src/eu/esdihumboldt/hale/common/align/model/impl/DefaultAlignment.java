@@ -566,4 +566,15 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 		typeCells.removeIf(cell -> cell instanceof BaseAlignmentCell);
 	}
 
+	@Override
+	public void clearCells() {
+		// clear all cells except base alignment cells
+		cells.removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+		cellsPerEntity.values().removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+		cellsPerSourceType.values().removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+		cellsPerTargetType.values().removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+		idToCell.values().removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+		typeCells.removeIf(cell -> !(cell instanceof BaseAlignmentCell));
+	}
+
 }
