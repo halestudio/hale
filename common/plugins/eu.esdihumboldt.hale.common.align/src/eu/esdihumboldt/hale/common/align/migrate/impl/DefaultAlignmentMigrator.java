@@ -17,17 +17,15 @@ package eu.esdihumboldt.hale.common.align.migrate.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.annotation.Nullable;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
-import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
+import eu.esdihumboldt.hale.common.align.migrate.util.MigrationUtil;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -88,17 +86,7 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 		}
 
 		if (options.transferBase()) {
-			// collect custom functions defined in base alignments
-			Map<String, CustomPropertyFunction> baseFunctions = new HashMap<>(
-					result.getAllCustomPropertyFunctions());
-			result.getCustomPropertyFunctions().forEach((id, func) -> {
-				baseFunctions.remove(id);
-			});
-
-			result.clearBaseAlignments();
-
-			// add functions previously defined in base alignments
-			baseFunctions.values().forEach(function -> result.addCustomPropertyFunction(function));
+			MigrationUtil.removeBaseCells(result);
 		}
 		else {
 			// does something need to be done to correctly retain base
