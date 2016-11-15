@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 
 import com.vividsolutions.jts.geom.LineString;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
@@ -46,8 +48,7 @@ public class ArcHandler extends LineStringHandler {
 
 	private static final String ARC_TYPE = "ArcType";
 
-	// private static final String INTERPOL_MAX_POSITION_ERROR =
-	// "interpolation.maxerror";
+	private static final ALogger log = ALoggerFactory.getLogger(ArcHandler.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#initSupportedTypes()
@@ -72,12 +73,19 @@ public class ArcHandler extends LineStringHandler {
 		@SuppressWarnings("unchecked")
 		DefaultGeometryProperty<LineString> lineStringGeomProperty = (DefaultGeometryProperty<LineString>) super.createGeometry(
 				instance, srsDimension, reader);
-		// TODO:: add support to ask maximum positional error from user..
-		double maxPositionalError = reader
+
+		Double maxPositionalError = reader
 				.getParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR).as(Double.class);
 
+		if (maxPositionalError == null || maxPositionalError.doubleValue() <= 0) {
+			log.warn(
+					"Value of Max positional error parameter, for interpolation operation, is not valid. Default value has been taken.");
+			maxPositionalError = InterpolationConstant.DEFAULT_INTERPOL_MAX_POSITION_ERROR;
+		}
+
 		Interpolation<LineString> interpolation = new ArcInterpolation(
-				lineStringGeomProperty.getGeometry().getCoordinates(), maxPositionalError);
+				lineStringGeomProperty.getGeometry().getCoordinates(),
+				maxPositionalError.doubleValue());
 		LineString interpolatedArc = interpolation.interpolateRawGeometry();
 		if (interpolatedArc != null)
 			return new DefaultGeometryProperty<LineString>(
