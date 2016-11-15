@@ -48,17 +48,11 @@ public class InterpolationSettingPage
 
 	@Override
 	public boolean updateConfiguration(IOProvider provider) {
-
-		String value = error.getText();
-		if (value == null || value.equals(""))
-			return false;
-
-		try {
-			@SuppressWarnings("unused")
-			double test = Double.parseDouble(value);
-		} catch (NumberFormatException nfEx) {
+		if (!validate()) {
+			setErrorMessage("value is not valid!");
 			return false;
 		}
+		setErrorMessage("");
 		provider.setParameter(INTERPOL_MAX_POSITION_ERROR, Value.of(error.getText()));
 		return true;
 	}
@@ -100,12 +94,28 @@ public class InterpolationSettingPage
 		}
 	}
 
+	private boolean validate() {
+		String txt = error.getText();
+		if (txt == null || txt.equals("")) {
+			return false;
+		}
+		else {
+			try {
+				@SuppressWarnings("unused")
+				double val = Double.parseDouble(txt);
+				return true;
+			} catch (NumberFormatException ex) {
+				return false;
+			}
+		}
+	}
+
 	/**
 	 * Load max position error value
 	 * 
 	 * @param provider the I/O provider to get
 	 */
-	public void loadPreValue(IOProvider provider) {
+	private void loadPreValue(IOProvider provider) {
 		Double value = provider.getParameter(INTERPOL_MAX_POSITION_ERROR).as(Double.class);
 		if (value != null)
 			error.setText(Double.toString(value.doubleValue()));
