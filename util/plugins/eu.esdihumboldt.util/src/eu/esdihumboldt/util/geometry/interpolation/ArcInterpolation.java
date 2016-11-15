@@ -34,6 +34,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcInterpolation.class);
 
+	private static Coordinate lastGridCoordinateOfArc = null;
+
 	/**
 	 * Constructor
 	 * 
@@ -50,7 +52,7 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	@Override
 	protected boolean validateRawCoordinates() {
 		if (rawGeometryCoordinates.length != 3) {
-			log.error("Invalid arc geometry. Arc must be represented by 3 points in GML.");
+			log.error("Invalid arc geometry. Arc must be represented by 3 points.");
 			return false;
 		}
 		return true;
@@ -70,6 +72,14 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 		// return Line String Geometry
 		return interpolateToLineString(rawGeometryCoordinates, centerOfArc, radius);
+	}
+
+	private boolean isSameAsLastGridCoordinate(Coordinate currentArcCoordinate) {
+		Coordinate gridCoordinate = pointToGrid(currentArcCoordinate);
+		if (lastGridCoordinateOfArc != null && gridCoordinate.equals(lastGridCoordinateOfArc))
+			return true;
+		lastGridCoordinateOfArc = gridCoordinate;
+		return false;
 	}
 
 	private Coordinate calculateCenterPoint(Coordinate[] arcCoordinates) {
@@ -115,7 +125,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 				arcCoordinates[1], center, radius, angle, NEXT_COORDINATE_DISTANCE));
 
 		// Add second Arc coordinate
-		generatedCoordinates.add(pointToGrid(arcCoordinates[1]));
+		if (!isSameAsLastGridCoordinate(arcCoordinates[1]))
+			generatedCoordinates.add(lastGridCoordinateOfArc);
 
 		angle = getAngleBetweenTwoPoints(arcCoordinates[1], arcCoordinates[2], radius);
 
@@ -124,7 +135,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 				arcCoordinates[2], center, radius, angle, NEXT_COORDINATE_DISTANCE));
 
 		// Add third Arc coordinate
-		generatedCoordinates.add(pointToGrid(arcCoordinates[2]));
+		if (!isSameAsLastGridCoordinate(arcCoordinates[2]))
+			generatedCoordinates.add(lastGridCoordinateOfArc);
 
 		// now, we have all coordinates of line string. So then just create it.
 		LineString lineString = null;
@@ -183,7 +195,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 		// we found neighbor coordinate, we add nearest grid point of that arc
 		// point
-		tempList.add(pointToGrid(deservedNeighour));
+		if (!isSameAsLastGridCoordinate(deservedNeighour))
+			tempList.add(lastGridCoordinateOfArc);
 
 		// if we reached to the Arc coordinate then just return list, else call
 		// this method again

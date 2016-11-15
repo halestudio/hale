@@ -13,8 +13,9 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry;
+package eu.esdihumboldt.util.geometry.interpolation;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.awt.BasicStroke;
@@ -41,9 +42,6 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-
-import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
-import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
 /**
  * Test for the Interpolation of arc algorithm
@@ -82,7 +80,6 @@ public class InterpolationTest {
 	 * 
 	 * @return Collection of arc coordinates and type of generated geometry
 	 */
-
 	@SuppressWarnings("rawtypes")
 	@Parameters
 	public static Collection addCoordiantes() {
@@ -122,6 +119,12 @@ public class InterpolationTest {
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
+
+		Coordinate[] coordinates = interpolatedArc.getCoordinates();
+		for (int i = 1; i < coordinates.length; i++) {
+			assertNotEquals("should not match neighbour coordinates", coordinates[i],
+					coordinates[i - 1]);
+		}
 		// System.out.println(interpolatedArc.getCoordinates().length);
 		// System.out.println(interpolatedArc);
 		if (DRAW_IMAGE)

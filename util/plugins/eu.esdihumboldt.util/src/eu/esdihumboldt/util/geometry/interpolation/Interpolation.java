@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,6 +54,11 @@ public abstract class Interpolation<T extends Geometry> {
 	protected final Coordinate[] rawGeometryCoordinates;
 
 	/**
+	 * Rounding scale for grid cell double value
+	 */
+	private static final int ROUNDING_SCALE = 6;
+
+	/**
 	 * Constructor
 	 * 
 	 * @param coordinates Coordinates of geometry that need to be interpolated
@@ -85,7 +91,7 @@ public abstract class Interpolation<T extends Geometry> {
 	protected abstract boolean validateRawCoordinates();
 
 	/**
-	 * get interpolate raw geometry in to
+	 * get interpolated raw geometry
 	 * 
 	 * @return interpolated Geometry
 	 * 
@@ -104,8 +110,10 @@ public abstract class Interpolation<T extends Geometry> {
 		long gridMinXMultiplier = (long) (coordinate.x / (GRID_FACTOR * MAX_POSITIONAL_ERROR));
 		long gridMinYMultiplier = (long) (coordinate.y / (GRID_FACTOR * MAX_POSITIONAL_ERROR));
 
-		double gridMinXNearPoint = gridMinXMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR);
-		double gridMinYNearPoint = gridMinYMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR);
+		double gridMinXNearPoint = round(gridMinXMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR),
+				ROUNDING_SCALE);
+		double gridMinYNearPoint = round(gridMinYMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR),
+				ROUNDING_SCALE);
 
 		while ((gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR)) < coordinate.x) {
 			gridMinXNearPoint = gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR);
@@ -132,7 +140,6 @@ public abstract class Interpolation<T extends Geometry> {
 				}
 			}
 		}
-
 		return minDistGridPoint;
 	}
 
@@ -145,22 +152,44 @@ public abstract class Interpolation<T extends Geometry> {
 		coordinates.add(new Coordinate(gridMinXNearPoint, gridMinYNearPoint));
 
 		// up right corner of the grid cell
-		coordinates.add(new Coordinate(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR),
+		coordinates.add(new Coordinate(
+				gridMinXNearPoint + round((GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
 				gridMinYNearPoint));
 		// bottom left corner of the grid cell
 		coordinates.add(new Coordinate(gridMinXNearPoint,
-				gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR)));
+				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
 
 		// bottom right corner of the grid cell
-		coordinates.add(new Coordinate(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR),
-				gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR)));
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
 
 		// center of the grid cell
-		coordinates
-				.add(new Coordinate(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR)));
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE),
+				round(gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE)));
 
 		return coordinates;
+	}
+
+	private static double round(double x, int scale) {
+		return round(x, scale, BigDecimal.ROUND_HALF_UP);
+	}
+
+	private static double round(double x, int scale, int roundingMethod) {
+		try {
+			return (new BigDecimal(Double.toString(x)).setScale(scale, roundingMethod))
+					.doubleValue();
+		} catch (NumberFormatException ex) {
+			if (Double.isInfinite(x)) {
+				return x;
+			}
+			else {
+				return Double.NaN;
+			}
+		}
 	}
 
 }
