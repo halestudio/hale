@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.util.geometry;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
 /**
  * Format the number in required representation
  * 
@@ -22,8 +25,19 @@ package eu.esdihumboldt.util.geometry;
  */
 public class NumberFormatter {
 
+	/**
+	 * Format number to specified format
+	 * 
+	 * @param value double value
+	 * @param format a pattern
+	 * @return String presentation of a formatted number
+	 */
 	public static String formatTo(double value, String format) {
-
-		return new String("");
+		if (format == null)
+			return String.valueOf(value);
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		DecimalFormat formatter = new DecimalFormat(format, symbols);
+		return formatter.format(value);
 	}
 }
