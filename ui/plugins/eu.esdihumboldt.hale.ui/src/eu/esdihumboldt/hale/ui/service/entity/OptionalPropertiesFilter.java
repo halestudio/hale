@@ -13,11 +13,14 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.common.definition.viewer;
+package eu.esdihumboldt.hale.ui.service.entity;
+
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -32,6 +35,15 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
  * @author Arun
  */
 public class OptionalPropertiesFilter extends ViewerFilter {
+
+	private final EntityDefinitionService eds;
+
+	/**
+	 * Constructor
+	 */
+	public OptionalPropertiesFilter() {
+		eds = PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
+	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
@@ -50,10 +62,38 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 			if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				return !(cardinality.getMinOccurs() == 0 && ((PropertyDefinition) def)
-						.getConstraint(NillableFlag.class).isEnabled());
+				if (cardinality.getMinOccurs() == 0)
+					return false;
+
+				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+					return !areChildrenOptional(entityDef);
+				}
 			}
 		}
+		return true;
+	}
+
+	private boolean areChildrenOptional(EntityDefinition entityDef) {
+
+		Collection<? extends EntityDefinition> children = eds.getChildren(entityDef);
+
+		if (children == null || children.isEmpty())
+			return true;
+
+		for (EntityDefinition child : children) {
+			Definition<?> def = child.getDefinition();
+
+			if (def instanceof PropertyDefinition) {
+				Cardinality cardinality = ((PropertyDefinition) def)
+						.getConstraint(Cardinality.class);
+				if (cardinality.getMinOccurs() != 0)
+					return false;
+			}
+
+			if (!areChildrenOptional(child))
+				return false;
+		}
+
 		return true;
 	}
 
