@@ -134,6 +134,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
 
 	/**
+	 * The parameter name for the flag specifying if the output of geometry
+	 * coordinates should be formatted.
+	 */
+	public static final String PARAM_GEOMETRY_FORMAT = "geometry.format";
+
+	/**
 	 * The XML stream writer
 	 */
 	private XMLStreamWriter writer;
