@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
+import java.text.DecimalFormat;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -76,10 +77,13 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @param elementType the last type definition in the matching path
 	 * @param elementName the corresponding element name
 	 * @param gmlNs the GML namespace
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, T geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException;
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException;
 
 	/**
 	 * Determines if a geometry is valid to be written with the writer.

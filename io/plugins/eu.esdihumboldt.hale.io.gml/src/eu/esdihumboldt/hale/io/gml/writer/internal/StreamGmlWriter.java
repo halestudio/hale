@@ -92,6 +92,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.geometry.NumberFormatter;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -132,6 +133,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * be omitted if an element is not nil.
 	 */
 	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
+
+	/**
+	 * The parameter name for the flag specifying if the output of geometry
+	 * coordinates should be formatted.
+	 */
+	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.decimalFormat";
 
 	/**
 	 * The XML stream writer
@@ -482,6 +489,22 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	public void setPrettyPrint(boolean prettyPrint) {
 		setParameter(PARAM_PRETTY_PRINT, Value.of(prettyPrint));
+	}
+
+	/**
+	 * @return geometry write format
+	 */
+	public String getGeometryWriteFormat() {
+		return getParameter(PARAM_GEOMETRY_FORMAT).as(String.class);
+	}
+
+	/**
+	 * Set geometry write format
+	 * 
+	 * @param format pattern in which geometry coordinates would be formatted
+	 */
+	public void setGeometryWriteFormat(String format) {
+		setParameter(PARAM_GEOMETRY_FORMAT, Value.of(format));
 	}
 
 	/**
@@ -1241,8 +1264,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
 			IOReporter report) throws XMLStreamException {
+
 		// write geometries
-		getGeometryWriter().write(writer, geometry, property, srsName, report);
+		getGeometryWriter().write(writer, geometry, property, srsName, report,
+				NumberFormatter.getFormatter(getGeometryWriteFormat()));
 	}
 
 	/**
