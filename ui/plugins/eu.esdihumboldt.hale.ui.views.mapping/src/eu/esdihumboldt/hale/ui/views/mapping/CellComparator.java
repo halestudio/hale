@@ -19,6 +19,7 @@ import java.util.Comparator;
 
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.align.helper.EntityDefinitionComparator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 

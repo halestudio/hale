@@ -20,6 +20,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 
+import eu.esdihumboldt.hale.common.align.helper.EntityDefinitionComparator
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext
 import eu.esdihumboldt.hale.common.align.io.impl.DOMEntityDefinitionHelper
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition
@@ -35,6 +36,9 @@ import groovy.xml.dom.DOMCategory
  * @author Kai Schwierczek
  */
 public class JoinParameterType implements ComplexValueType<JoinParameter, LoadAlignmentContext> {
+
+	private final EntityDefinitionComparator comparator = new EntityDefinitionComparator()
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.ComplexValueType#fromDOM(org.w3c.dom.Element)
 	 */
@@ -83,7 +87,13 @@ public class JoinParameterType implements ComplexValueType<JoinParameter, LoadAl
 			result.appendChild(
 					result.ownerDocument.adoptNode(typeDom)?:result.ownerDocument.importNode(typeDom, true))
 		}
-		value.conditions.each{ condition ->
+		value.conditions.sort(false) { JoinCondition c1, JoinCondition c2 ->
+			int compared = comparator.compare(c1.baseProperty, c2.baseProperty)
+			if (!compared) {
+				compared = comparator.compare(c1.joinProperty, c2.joinProperty)
+			}
+			compared
+		}.each{ condition ->
 			def conditionNode = doc.createElementNS("http://www.esdi-humboldt.eu/hale/join", "jp:condition")
 			result.appendChild(conditionNode)
 
