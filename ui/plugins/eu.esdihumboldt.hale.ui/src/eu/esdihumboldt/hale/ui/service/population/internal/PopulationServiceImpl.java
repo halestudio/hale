@@ -16,22 +16,34 @@
 
 package eu.esdihumboldt.hale.ui.service.population.internal;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.xml.namespace.QName;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.service.helper.population.EntityPopulationCount;
+import eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater;
 import eu.esdihumboldt.hale.ui.common.service.population.Population;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.common.service.population.impl.AbstractPopulationService;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionServiceListener;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 
@@ -40,7 +52,7 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
  * 
  * @author Simon Templer
  */
-public class PopulationServiceImpl extends AbstractPopulationService {
+public class PopulationServiceImpl extends AbstractPopulationService implements IPopulationUpdater {
 
 	private static final Population NO_POPULATION = new Population() {
 
@@ -67,10 +79,13 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			return Population.UNKNOWN;
 		}
 	};
-
 	private final Map<EntityDefinition, PopulationImpl> sourcePopulation = new HashMap<EntityDefinition, PopulationImpl>();
 
 	private final Map<EntityDefinition, PopulationImpl> targetPopulation = new HashMap<EntityDefinition, PopulationImpl>();
+
+	private final EntityDefinitionService entityDefinitionService;
+
+	private static EntityPopulationCount populationCount;
 
 	/**
 	 * Create a population service instance.
@@ -78,6 +93,41 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 * @param instanceService the instance service
 	 */
 	public PopulationServiceImpl(final InstanceService instanceService) {
+
+		entityDefinitionService = PlatformUI.getWorkbench()
+				.getService(EntityDefinitionService.class);
+
+		entityDefinitionService.addListener(new EntityDefinitionServiceListener() {
+
+			@Override
+			public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
+
+				for (EntityDefinition ed : contextEntities) {
+					contextAdded(ed);
+				}
+
+			}
+
+			@Override
+			public void contextRemoved(EntityDefinition contextEntity) {
+				// Not needed
+			}
+
+			@Override
+			public void contextAdded(EntityDefinition contextEntity) {
+				// go through instances to determine occurring values
+				// if population is already counted before for given Entity,
+				// then no need to count it again
+				Map<EntityDefinition, PopulationImpl> population = (contextEntity
+						.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+								: (sourcePopulation);
+				if (population.get(contextEntity) == null) {
+					Job job = new PopulationCountJob(contextEntity);
+					job.schedule();
+				}
+			}
+		});
+
 		instanceService.addListener(new InstanceServiceAdapter() {
 
 			@Override
@@ -124,6 +174,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			}
 
 		});
+
+		populationCount = new EntityPopulationCount(this);
 	}
 
 	/**
@@ -135,7 +187,6 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			// can't determine population
 			return UNKNOWN_POPULATION;
 		}
-
 		Population population;
 		synchronized (this) {
 			switch (entity.getSchemaSpace()) {
@@ -162,8 +213,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	@Override
 	public boolean hasPopulation(SchemaSpaceID schemaSpace) {
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET)
+					? (targetPopulation) : (sourcePopulation);
 			return !population.isEmpty();
 		}
 	}
@@ -196,11 +247,16 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 			throw new IllegalArgumentException("Invalid data set specified.");
 		}
 
-		// count type
-		EntityDefinition def = new TypeEntityDefinition(instance.getDefinition(), schemaSpace, null);
-		increase(def, 1);
+		// count for each Type definitions of instance type
+		Collection<? extends TypeEntityDefinition> typeDefinitions = entityDefinitionService
+				.getTypeEntities(instance.getDefinition(), schemaSpace);
 
-		addToPopulation(instance, def);
+		for (TypeEntityDefinition def : typeDefinitions) {
+			if (def.getFilter() == null || def.getFilter().match(instance)) {
+				increase(def, 1);
+				populationCount.addToPopulation(instance, def);
+			}
+		}
 	}
 
 	/**
@@ -219,8 +275,8 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 		}
 
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (schemaSpace == SchemaSpaceID.TARGET)
+					? (targetPopulation) : (sourcePopulation);
 			population.clear();
 		}
 
@@ -228,26 +284,49 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	}
 
 	/**
-	 * Count the population for the properties of the given group.
-	 * 
-	 * @param group the group
-	 * @param groupDef the group entity definition
+	 * @see eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater#increaseForEntity(eu.esdihumboldt.hale.common.align.model.EntityDefinition,
+	 *      int)
 	 */
-	private void addToPopulation(Group group, EntityDefinition groupDef) {
-		for (QName propertyName : group.getPropertyNames()) {
-			EntityDefinition propertyDef = AlignmentUtil.getChild(groupDef, propertyName);
+	@Override
+	public void increaseForEntity(EntityDefinition def, int count) {
+		increase(def, count);
 
-			if (propertyDef != null) {
-				Object[] values = group.getProperty(propertyName);
+	}
 
-				increase(propertyDef, values.length);
+	/**
+	 * @see eu.esdihumboldt.hale.common.service.helper.population.IPopulationUpdater#getChildren(eu.esdihumboldt.hale.common.align.model.EntityDefinition)
+	 */
+	@Override
+	public Collection<? extends EntityDefinition> getChildren(EntityDefinition entityDef) {
+		return entityDefinitionService.getChildren(entityDef);
+	}
 
-				for (Object value : values) {
-					if (value instanceof Group) {
-						addToPopulation((Group) value, propertyDef);
-					}
-				}
+	private void addNoneToPopulation(EntityDefinition groupDef, List<ChildContext> path) {
+		Iterable<? extends EntityDefinition> children = entityDefinitionService
+				.getChildren(groupDef);
+		if (children != null && children.iterator().hasNext()) {
+			for (EntityDefinition def : children) {
+				if (groupDef instanceof TypeEntityDefinition)
+					path = def.getPropertyPath();
+				addNoneToChildren(def, path);
 			}
+		}
+		else {
+			addNoneToChildren(groupDef, path);
+		}
+	}
+
+	private void addNoneToChildren(EntityDefinition groupDef, List<ChildContext> path) {
+		if (path == null || path.isEmpty()) {
+			increase(groupDef, 0);
+		}
+		else {
+			List<ChildContext> subPath = null;
+			if (path.size() > 0) {
+				subPath = path.subList(1, path.size());
+			}
+			increase(groupDef, 0);
+			addNoneToPopulation(groupDef, subPath);
 		}
 	}
 
@@ -259,20 +338,111 @@ public class PopulationServiceImpl extends AbstractPopulationService {
 	 */
 	private void increase(EntityDefinition entity, int values) {
 		synchronized (this) {
-			Map<EntityDefinition, PopulationImpl> population = (entity.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
-					: (sourcePopulation);
+			Map<EntityDefinition, PopulationImpl> population = (entity
+					.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+							: (sourcePopulation);
 
 			PopulationImpl pop = population.get(entity);
 			if (pop == null) {
-				pop = new PopulationImpl(1, values);
+				pop = new PopulationImpl(values != 0 ? 1 : 0, values);
 				population.put(entity, pop);
 			}
 			else {
-				pop.increaseParents();
+				if (values != 0)
+					pop.increaseParents();
 				pop.increaseOverall(values);
 			}
 
 		}
+	}
+
+	/**
+	 * Job determining the occurring values for a specific property entity.
+	 */
+	private class PopulationCountJob extends Job {
+
+		private final EntityDefinition ccEntityDefinition;
+		private InstanceCollection instanceCollection;
+
+		/**
+		 * Create a Job to get the population of given {@link EntityDefinition}
+		 * 
+		 * @param ccEntityDefinition the condition context entity definition
+		 */
+		public PopulationCountJob(EntityDefinition ccEntityDefinition) {
+			this(ccEntityDefinition, null);
+		}
+
+		/**
+		 * Create a Job to get the population of given {@link EntityDefinition}
+		 * 
+		 * @param ccEntityDefinition the condition context entity definition
+		 * @param instanceCollection an instance collection
+		 */
+		public PopulationCountJob(EntityDefinition ccEntityDefinition,
+				InstanceCollection instanceCollection) {
+			super("Determinining count for contexts");
+			this.ccEntityDefinition = ccEntityDefinition;
+			this.instanceCollection = instanceCollection;
+
+			setUser(false);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+
+			String taskName = "Check instances for condition";
+
+			monitor.beginTask(taskName, IProgressMonitor.UNKNOWN);
+
+			if (this.instanceCollection == null) {
+				InstanceService instanceService = PlatformUI.getWorkbench()
+						.getService(InstanceService.class);
+
+				// determine data set
+				DataSet dataSet = DataSet.forSchemaSpace(ccEntityDefinition.getSchemaSpace());
+
+				this.instanceCollection = instanceService.getInstances(dataSet);
+			}
+
+			if (!instanceCollection.isEmpty()) {
+				// only select instances of the correct type
+				InstanceCollection instances = instanceCollection
+						.select(new TypeFilter(ccEntityDefinition.getType()));
+				// and apply an eventual filter
+				if (ccEntityDefinition.getFilter() != null) {
+					instances = instances.select(ccEntityDefinition.getFilter());
+				}
+
+				if (instances.isEmpty()) {
+					Map<EntityDefinition, PopulationImpl> population = (ccEntityDefinition
+							.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
+									: (sourcePopulation);
+
+					PopulationImpl pop = population.get(ccEntityDefinition);
+					if (pop == null) {
+						population.put(ccEntityDefinition, new PopulationImpl(0, 0));
+					}
+					addNoneToPopulation(ccEntityDefinition, ccEntityDefinition.getPropertyPath());
+				}
+				else {
+					// count instances
+					ResourceIterator<Instance> it = instances.iterator();
+					try {
+						while (it.hasNext()) {
+							PopulationServiceImpl.populationCount
+									.countPopulation(ccEntityDefinition, it.next());
+						}
+					} finally {
+						it.close();
+					}
+				}
+			}
+			monitor.done();
+			firePopulationChanged(ccEntityDefinition.getSchemaSpace());
+			return Status.OK_STATUS;
+		}
+
 	}
 
 }
