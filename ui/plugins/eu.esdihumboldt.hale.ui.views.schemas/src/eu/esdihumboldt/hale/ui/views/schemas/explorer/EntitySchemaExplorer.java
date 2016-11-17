@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.InheritedPropertiesFilter;
+import eu.esdihumboldt.hale.ui.common.definition.viewer.OptionalPropertiesFilter;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
 import eu.esdihumboldt.hale.ui.service.entity.util.ContentProviderAction;
 import eu.esdihumboldt.hale.ui.service.entity.util.EntityTypeIndexContentProvider;
@@ -115,6 +116,11 @@ public class EntitySchemaExplorer extends SchemaExplorer {
 		manager.add(new FilterAction("Hide inherited properties", "Show inherited properties",
 				SchemasViewPlugin.getImageDescriptor("icons/inherited.gif"), getTreeViewer(),
 				inherited, true, true));
+
+		ViewerFilter optional = new OptionalPropertiesFilter();
+		manager.add(new FilterAction("Hide optional properties", "Show optional properties",
+				SchemasViewPlugin.getImageDescriptor("icons/mandatory.gif"), getTreeViewer(),
+				optional, true, true));
 
 		manager.add(new Separator());
 	}
