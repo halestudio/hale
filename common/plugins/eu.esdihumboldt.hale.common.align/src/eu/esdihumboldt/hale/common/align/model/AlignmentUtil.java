@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.align.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -212,8 +213,8 @@ public abstract class AlignmentUtil {
 	 * @param filter the entity filter on the type, may be <code>null</code>
 	 * @return the created entity definition
 	 */
-	public static EntityDefinition createEntity(Path<Definition<?>> path,
-			SchemaSpaceID schemaSpace, Filter filter) {
+	public static EntityDefinition createEntity(Path<Definition<?>> path, SchemaSpaceID schemaSpace,
+			Filter filter) {
 		List<Definition<?>> defs = path.getElements();
 
 		// create entity definition
@@ -644,9 +645,8 @@ public abstract class AlignmentUtil {
 					}
 					else if (child.asGroup() != null) {
 						// should be a CED
-						return new ChildEntityDefinition(entity.getType(),
-								entity.getPropertyPath(), entity.getSchemaSpace(),
-								entity.getFilter());
+						return new ChildEntityDefinition(entity.getType(), entity.getPropertyPath(),
+								entity.getSchemaSpace(), entity.getFilter());
 					}
 					else {
 						throw new IllegalArgumentException("Illegal entity definition");
@@ -719,9 +719,9 @@ public abstract class AlignmentUtil {
 				else if (DefinitionUtil.isSuperType(typeCellTargetType, propertyCellTargetType)) {
 					PropertyEntityDefinition oldDef = (PropertyEntityDefinition) target.getValue()
 							.getDefinition();
-					targets.put(target.getKey(), new DefaultProperty(new PropertyEntityDefinition(
-							typeCellTargetType, oldDef.getPropertyPath(), SchemaSpaceID.TARGET,
-							null)));
+					targets.put(target.getKey(),
+							new DefaultProperty(new PropertyEntityDefinition(typeCellTargetType,
+									oldDef.getPropertyPath(), SchemaSpaceID.TARGET, null)));
 					updateNecessary = true;
 				}
 				else {
@@ -745,8 +745,8 @@ public abstract class AlignmentUtil {
 					typeCellSourceTypes.add((TypeEntityDefinition) entity.getDefinition());
 
 				for (Entry<String, ? extends Entity> source : propertyCell.getSource().entries()) {
-					TypeEntityDefinition propertyCellSourceType = getTypeEntity(source.getValue()
-							.getDefinition());
+					TypeEntityDefinition propertyCellSourceType = getTypeEntity(
+							source.getValue().getDefinition());
 					if (typeCellSourceTypes.contains(propertyCellSourceType))
 						sources.put(source.getKey(), source.getValue());
 					else {
@@ -758,18 +758,19 @@ public abstract class AlignmentUtil {
 						for (TypeEntityDefinition typeCellSourceType : typeCellSourceTypes) {
 							if (DefinitionUtil.isSuperType(typeCellSourceType.getDefinition(),
 									propertyCellSourceType.getDefinition())
-									&& (propertyCellSourceType.getFilter() == null || propertyCellSourceType
-											.getFilter().equals(typeCellSourceType.getFilter()))) {
+									&& (propertyCellSourceType.getFilter() == null
+											|| propertyCellSourceType.getFilter()
+													.equals(typeCellSourceType.getFilter()))) {
 								if (matchFound)
-									log.warn("Inherited property cell source matches multiple sources of type cell.");
+									log.warn(
+											"Inherited property cell source matches multiple sources of type cell.");
 								matchFound = true;
 								PropertyEntityDefinition oldDef = (PropertyEntityDefinition) source
 										.getValue().getDefinition();
-								sources.put(
-										source.getKey(),
+								sources.put(source.getKey(),
 										new DefaultProperty(new PropertyEntityDefinition(
-												typeCellSourceType.getDefinition(), oldDef
-														.getPropertyPath(), SchemaSpaceID.SOURCE,
+												typeCellSourceType.getDefinition(),
+												oldDef.getPropertyPath(), SchemaSpaceID.SOURCE,
 												typeCellSourceType.getFilter())));
 								updateNecessary = true;
 								// XXX break; if only one match should be added
@@ -818,9 +819,10 @@ public abstract class AlignmentUtil {
 					|| property.getFilter() != null)
 				modified.put(oEntity.getKey(), oEntity.getValue());
 			else if (childDef.getDeclaringGroup() instanceof TypeDefinition) {
-				modified.put(oEntity.getKey(), new DefaultProperty(new PropertyEntityDefinition(
-						(TypeDefinition) childDef.getDeclaringGroup(), property.getPropertyPath(),
-						property.getSchemaSpace(), null)));
+				modified.put(oEntity.getKey(),
+						new DefaultProperty(new PropertyEntityDefinition(
+								(TypeDefinition) childDef.getDeclaringGroup(),
+								property.getPropertyPath(), property.getSchemaSpace(), null)));
 				changed = true;
 			}
 			else {
@@ -865,7 +867,8 @@ public abstract class AlignmentUtil {
 			EntityDefinition def = e.getDefinition();
 			if (allowInheritance) {
 				if (DefinitionUtil.isSuperType(entity.getType(), def.getType())
-						&& (def.getFilter() == null || def.getFilter().equals(entity.getFilter()))) {
+						&& (def.getFilter() == null
+								|| def.getFilter().equals(entity.getFilter()))) {
 					// type is a match according to inheritance, make sure to
 					// have common type
 					def = createEntity(entity.getType(), def.getPropertyPath(),
@@ -889,8 +892,8 @@ public abstract class AlignmentUtil {
 	 *            can be found (including groups/instances)
 	 * @return all values of the given property
 	 */
-	public static Multiset<Object> getValues(Instance instance,
-			PropertyEntityDefinition definition, boolean onlyValues) {
+	public static Multiset<Object> getValues(Instance instance, PropertyEntityDefinition definition,
+			boolean onlyValues) {
 		Multiset<Object> result = HashMultiset.create();
 		addValues(instance, definition.getPropertyPath(), result, onlyValues);
 		return result;
@@ -969,4 +972,63 @@ public abstract class AlignmentUtil {
 			}
 		}
 	}
+
+	/**
+	 * Get children of an {@link EntityDefinition} without context conditions
+	 * 
+	 * @param entityDef the entity definition
+	 * @return Collection of entity definitions
+	 */
+	public static Collection<? extends EntityDefinition> getChildrenWithoutContexts(
+			EntityDefinition entityDef) {
+		List<ChildContext> path = entityDef.getPropertyPath();
+		Collection<? extends ChildDefinition<?>> children;
+
+		if (path == null || path.isEmpty()) {
+			// entity is a type, children are the type children
+			children = entityDef.getType().getChildren();
+		}
+		else {
+			// get parent context
+			ChildContext parentContext = path.get(path.size() - 1);
+			if (parentContext.getChild().asGroup() != null) {
+				children = parentContext.getChild().asGroup().getDeclaredChildren();
+			}
+			else if (parentContext.getChild().asProperty() != null) {
+				children = parentContext.getChild().asProperty().getPropertyType().getChildren();
+			}
+			else {
+				throw new IllegalStateException("Illegal child definition type encountered");
+			}
+		}
+
+		if (children == null || children.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		Collection<EntityDefinition> result = new ArrayList<EntityDefinition>(children.size());
+		for (ChildDefinition<?> child : children) {
+			// add default child entity definition to result
+			ChildContext context = new ChildContext(child);
+			EntityDefinition defaultEntity = AlignmentUtil.createEntity(entityDef.getType(),
+					createPath(entityDef.getPropertyPath(), context), entityDef.getSchemaSpace(),
+					entityDef.getFilter());
+			result.add(defaultEntity);
+		}
+
+		return result;
+	}
+
+	private static List<ChildContext> createPath(List<ChildContext> parentPath,
+			ChildContext context) {
+		if (parentPath == null || parentPath.isEmpty()) {
+			return Collections.singletonList(context);
+		}
+		else {
+			List<ChildContext> result = new ArrayList<ChildContext>(parentPath);
+			result.add(context);
+			return result;
+		}
+	}
+
 }
