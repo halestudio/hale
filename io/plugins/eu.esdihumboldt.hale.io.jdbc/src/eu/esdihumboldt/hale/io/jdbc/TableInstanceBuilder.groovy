@@ -28,7 +28,10 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstraint
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension
+import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo
 import groovy.transform.CompileStatic
 
 
@@ -72,9 +75,22 @@ class TableInstanceBuilder {
 					Object value = row.getObject(property.name.localPart)
 
 					// geometry conversion
-					GeometryAdvisorConstraint gac = property.propertyType.getConstraint(GeometryAdvisorConstraint)
-					if (value != null && gac.advisor != null) {
-						value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection)
+					if (value != null) {
+						GeometryAdvisorConstraint gac = property.propertyType.getConstraint(GeometryAdvisorConstraint)
+						GeometryType gType = property.propertyType.getConstraint(GeometryType)
+						if (gac.advisor == null && gType.isGeometry()) {
+							// geometry but no advisor present -> get advisor via extension
+							// this can happen for instance if the schema was saved as HSD
+							// as the advisor constraint is not persisted
+							GeometryTypeInfo gTypeInfo = GeometryTypeExtension.getInstance()
+									.getTypeInfo(property.propertyType.name.localPart, connection)
+							if (gTypeInfo) {
+								gac = gTypeInfo.constraint
+							}
+						}
+						if (gac.advisor != null) {
+							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection)
+						}
 					}
 
 					// handling arrays

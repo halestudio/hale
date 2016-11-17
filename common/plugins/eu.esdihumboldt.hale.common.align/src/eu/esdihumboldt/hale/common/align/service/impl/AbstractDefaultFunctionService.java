@@ -19,6 +19,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import com.google.common.base.Objects;
@@ -29,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefi
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
@@ -38,8 +40,8 @@ import eu.esdihumboldt.hale.common.align.model.CellExplanation;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractDefaultFunctionService extends StaticFunctionService implements
-		CustomFunctionIdentifiers {
+public abstract class AbstractDefaultFunctionService extends StaticFunctionService
+		implements CustomFunctionIdentifiers {
 
 	private static class AlignmentFunctionDescriptor implements PropertyFunctionDefinition {
 
@@ -112,6 +114,11 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 		@Override
 		public Set<? extends PropertyParameterDefinition> getTarget() {
 			return descriptor.getTarget();
+		}
+
+		@Override
+		public Optional<CellMigrator> getCustomMigrator() {
+			return descriptor.getCustomMigrator();
 		}
 
 	}
@@ -191,9 +198,10 @@ public abstract class AbstractDefaultFunctionService extends StaticFunctionServi
 	}
 
 	@Override
-	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(String categoryId) {
-		Collection<? extends PropertyFunctionDefinition> functions = super
-				.getPropertyFunctions(categoryId);
+	public Collection<? extends PropertyFunctionDefinition> getPropertyFunctions(
+			String categoryId) {
+		Collection<? extends PropertyFunctionDefinition> functions = super.getPropertyFunctions(
+				categoryId);
 
 		Alignment al = getCurrentAlignment();
 		if (al != null) {
