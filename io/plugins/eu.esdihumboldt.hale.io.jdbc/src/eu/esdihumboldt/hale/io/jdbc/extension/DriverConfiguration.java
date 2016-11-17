@@ -203,6 +203,10 @@ public class DriverConfiguration implements Identifiable {
 		return helper;
 	}
 
+	/**
+	 * @return if the database is file based, i.e. database connections are
+	 *         established by loading a file / files
+	 */
 	public boolean isFileBased() {
 		return isFileBased;
 	}

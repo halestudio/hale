@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
@@ -31,6 +32,7 @@ import org.osgi.framework.Bundle;
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 import net.jcip.annotations.Immutable;
 
@@ -43,8 +45,8 @@ import net.jcip.annotations.Immutable;
  * @author Simon Templer
  */
 @Immutable
-public abstract class AbstractFunction<P extends ParameterDefinition> implements
-		FunctionDefinition<P> {
+public abstract class AbstractFunction<P extends ParameterDefinition>
+		implements FunctionDefinition<P> {
 
 	private final ALogger log = ALoggerFactory.getLogger(AbstractFunction.class);
 
@@ -57,6 +59,8 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 
 	private boolean explanationInitialized = false;
 	private CellExplanation explanation;
+
+	private Optional<CellMigrator> customMigrator;
 
 	/**
 	 * Create a function definition based on the given configuration element
@@ -107,6 +111,27 @@ public abstract class AbstractFunction<P extends ParameterDefinition> implements
 		}
 		explanationInitialized = true;
 		return explanation;
+	}
+
+	@Override
+	public Optional<CellMigrator> getCustomMigrator() {
+		if (customMigrator != null) {
+			return customMigrator;
+		}
+
+		if (conf.getAttribute("cellMigrator") == null
+				|| conf.getAttribute("cellMigrator").isEmpty()) {
+			customMigrator = Optional.empty();
+			return customMigrator;
+		}
+		try {
+			CellMigrator migrator = (CellMigrator) conf.createExecutableExtension("cellMigrator");
+			customMigrator = Optional.ofNullable(migrator);
+		} catch (CoreException e) {
+			customMigrator = Optional.empty();
+			log.error("Could not create custom cell migrator for function", e);
+		}
+		return customMigrator;
 	}
 
 	/**

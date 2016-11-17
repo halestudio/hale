@@ -18,15 +18,19 @@ package eu.esdihumboldt.hale.common.align.extension.function;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 
 import de.fhg.igd.eclipse.util.extension.simple.IdentifiableExtension.Identifiable;
+import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.model.CellExplanation;
 
 /**
  * Basic interface for function definitions
  * 
- * @param <P> entity parameter definition type
+ * @param
+ * 			<P>
+ *            entity parameter definition type
  * @author Simon Templer
  */
 public interface FunctionDefinition<P extends ParameterDefinition> extends Identifiable {
@@ -103,6 +107,13 @@ public interface FunctionDefinition<P extends ParameterDefinition> extends Ident
 	 *         for this function
 	 */
 	public CellExplanation getExplanation();
+
+	/**
+	 * Get the custom cell migrator to use for this function.
+	 * 
+	 * @return the custom migrator if any is defined
+	 */
+	public Optional<CellMigrator> getCustomMigrator();
 
 	/**
 	 * Get the source entities
