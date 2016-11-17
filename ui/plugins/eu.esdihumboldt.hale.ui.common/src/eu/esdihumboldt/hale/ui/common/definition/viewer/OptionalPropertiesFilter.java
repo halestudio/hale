@@ -13,18 +13,26 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.service.entity;
+package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.ui.PlatformUI;
 
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 
@@ -35,15 +43,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
  * @author Arun
  */
 public class OptionalPropertiesFilter extends ViewerFilter {
-
-	private final EntityDefinitionService eds;
-
-	/**
-	 * Constructor
-	 */
-	public OptionalPropertiesFilter() {
-		eds = PlatformUI.getWorkbench().getService(EntityDefinitionService.class);
-	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
@@ -75,12 +74,13 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 
 	private boolean areChildrenOptional(EntityDefinition entityDef) {
 
-		Collection<? extends EntityDefinition> children = eds.getChildren(entityDef);
+		Collection<? extends EntityDefinition> children = getChildren(entityDef);
 
 		if (children == null || children.isEmpty())
 			return true;
 
 		for (EntityDefinition child : children) {
+
 			Definition<?> def = child.getDefinition();
 
 			if (def instanceof PropertyDefinition) {
@@ -95,6 +95,63 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 		}
 
 		return true;
+	}
+
+	private Collection<? extends EntityDefinition> getChildren(EntityDefinition entityDef) {
+		List<ChildContext> path = entityDef.getPropertyPath();
+		Collection<? extends ChildDefinition<?>> children;
+
+		if (path == null || path.isEmpty()) {
+			// entity is a type, children are the type children
+			children = entityDef.getType().getChildren();
+		}
+		else {
+			// get parent context
+			ChildContext parentContext = path.get(path.size() - 1);
+			if (parentContext.getChild().asGroup() != null) {
+				children = parentContext.getChild().asGroup().getDeclaredChildren();
+			}
+			else if (parentContext.getChild().asProperty() != null) {
+				children = parentContext.getChild().asProperty().getPropertyType().getChildren();
+			}
+			else {
+				throw new IllegalStateException("Illegal child definition type encountered");
+			}
+		}
+
+		if (children == null || children.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		Collection<EntityDefinition> result = new ArrayList<EntityDefinition>(children.size());
+		for (ChildDefinition<?> child : children) {
+			// add default child entity definition to result
+			ChildContext context = new ChildContext(child);
+			EntityDefinition defaultEntity = createEntity(entityDef.getType(),
+					createPath(entityDef.getPropertyPath(), context), entityDef.getSchemaSpace(),
+					entityDef.getFilter());
+			result.add(defaultEntity);
+		}
+
+		// As we don't need contexts, we return children without them
+		return result;
+	}
+
+	private EntityDefinition createEntity(TypeDefinition type, List<ChildContext> path,
+			SchemaSpaceID schemaSpace, Filter filter) {
+		return AlignmentUtil.createEntity(type, path, schemaSpace, filter);
+	}
+
+	private static List<ChildContext> createPath(List<ChildContext> parentPath,
+			ChildContext context) {
+		if (parentPath == null || parentPath.isEmpty()) {
+			return Collections.singletonList(context);
+		}
+		else {
+			List<ChildContext> result = new ArrayList<ChildContext>(parentPath);
+			result.add(context);
+			return result;
+		}
 	}
 
 }
