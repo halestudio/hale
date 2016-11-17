@@ -328,6 +328,7 @@
       <typeFunction
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.JoinExplanation"
+            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.join.JoinMigrator"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
             help="help/join.xhtml"
             icon="icons/merge.gif"

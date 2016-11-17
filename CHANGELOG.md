@@ -18,6 +18,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Fixed
 
+- Using a previously as Hale Schema Definition file exported database schema as source schema when loading data from the database now properly supports loading the geometries
 - Using the value `unpopulated` for GML *nilReason* attributes does not conform to the GML specification. The proposal to use this value has been changed to `other:unpopulated` to conform with the specification. Also, when encoding GML, `unpopulated` will be replaced by `other:unpopulated` where encountered in *nilReason* attributes to support mappings created in previous versions
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
 - Fixed instance partitioning for WFS-T upload producing too many small parts
