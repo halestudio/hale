@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.views.mapping;
+package eu.esdihumboldt.hale.common.align.helper;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 /**
  * Comparator for entity definitions.
  */
-class EntityDefinitionComparator implements Comparator<EntityDefinition> {
+public class EntityDefinitionComparator implements Comparator<EntityDefinition> {
 
 	@Override
 	public int compare(EntityDefinition o1, EntityDefinition o2) {
@@ -141,10 +141,10 @@ class EntityDefinitionComparator implements Comparator<EntityDefinition> {
 		// compare condition
 		if (o1c.getCondition() != null && o2c.getCondition() != null) {
 			if (o1c.getCondition().getFilter() != null && o2c.getCondition().getFilter() != null) {
-				String f1 = Strings.nullToEmpty(FilterDefinitionManager.getInstance().asString(
-						o1c.getCondition().getFilter()));
-				String f2 = Strings.nullToEmpty(FilterDefinitionManager.getInstance().asString(
-						o2c.getCondition().getFilter()));
+				String f1 = Strings.nullToEmpty(FilterDefinitionManager.getInstance()
+						.asString(o1c.getCondition().getFilter()));
+				String f2 = Strings.nullToEmpty(FilterDefinitionManager.getInstance()
+						.asString(o2c.getCondition().getFilter()));
 
 				return f1.compareTo(f2);
 			}
