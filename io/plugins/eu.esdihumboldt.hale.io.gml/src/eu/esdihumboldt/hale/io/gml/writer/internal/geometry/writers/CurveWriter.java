@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,11 +57,12 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String, String)
+	 *      QName, String, DecimalFormat)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, MultiLineString geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		// reorder segments
 		geometry = CurveHelper.combineCurve(geometry, geometry.getFactory(), false);
 
@@ -69,7 +72,7 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 			}
 
 			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs, geometryWriteFormat);
+			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs, decimalFormatter);
 
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();

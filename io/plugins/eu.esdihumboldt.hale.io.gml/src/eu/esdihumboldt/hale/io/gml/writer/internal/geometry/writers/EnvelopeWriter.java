@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -49,7 +51,8 @@ public class EnvelopeWriter extends AbstractGeometryWriter<Geometry> {
 		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "EnvelopeType")); //$NON-NLS-1$
 
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
+		addBasePattern("*"); // matches any compatible type //$NON-NLS-1$
+								// element
 
 		// verification patterns
 		// none yet - this one commented out as example
@@ -58,16 +61,17 @@ public class EnvelopeWriter extends AbstractGeometryWriter<Geometry> {
 
 	@Override
 	public void write(XMLStreamWriter writer, Geometry geom, TypeDefinition elementType,
-			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		// write envelope
 		Envelope envelope = geom.getEnvelopeInternal();
 		if (!envelope.isNull()) {
 			writePos(writer,
 					new Coordinate[] { new Coordinate(envelope.getMinX(), envelope.getMinY()) },
-					elementType, gmlNs, "lowerCorner", geometryWriteFormat);
+					elementType, gmlNs, "lowerCorner", decimalFormatter);
 			writePos(writer,
 					new Coordinate[] { new Coordinate(envelope.getMaxX(), envelope.getMaxY()) },
-					elementType, gmlNs, "upperCorner", geometryWriteFormat);
+					elementType, gmlNs, "upperCorner", decimalFormatter);
 		}
 		else {
 			log.error("Could not write empty envelope.");

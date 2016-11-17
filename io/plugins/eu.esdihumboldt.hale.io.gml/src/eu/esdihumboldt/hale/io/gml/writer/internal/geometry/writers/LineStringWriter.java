@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -49,13 +51,13 @@ public class LineStringWriter extends AbstractGeometryWriter<LineString> {
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String, String)
+	 *      QName, String, DecimalFormat)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, LineString geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
-		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs,
-				geometryWriteFormat);
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
+		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs, decimalFormatter);
 	}
 
 }

@@ -63,7 +63,8 @@ public class NumberFormatterTest {
 				{ "0000.00", 12.34, "0012.34" }, //
 				{ "000000.000", 6750.3, "006750.300" }, //
 				{ "0000000.00", 454232.3478, "0454232.35" }, //
-				{ "0000.00", 789887.5623, "789887.56" } //
+				{ "0000.00", 789887.5623, "789887.56" }, //
+				{ "0.000", 343452.5623, "343452.562" } //
 		});
 	}
 
@@ -73,7 +74,8 @@ public class NumberFormatterTest {
 	@Test
 	public void testNumbers() {
 
-		String formatted = NumberFormatter.formatTo(this.value, format);
+		String formatted = NumberFormatter.formatTo(this.value,
+				NumberFormatter.getFormatter(format));
 
 		assertEquals(formatted, this.formattedValue);
 

@@ -295,7 +295,7 @@
          <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
-               name="geometry.write.format"
+               name="geometry.write.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -436,7 +436,7 @@
          <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
-               name="geometry.write.format"
+               name="geometry.write.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -550,7 +550,7 @@
          <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
-               name="geometry.write.format"
+               name="geometry.write.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -776,7 +776,7 @@
          <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
-               name="geometry.write.format"
+               name="geometry.write.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">

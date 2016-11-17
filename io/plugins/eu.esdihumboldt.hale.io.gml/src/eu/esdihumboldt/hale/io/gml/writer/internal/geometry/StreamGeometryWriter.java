@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -160,11 +161,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
 	 * @param report the reporter
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry, PropertyDefinition property,
-			String srsName, IOReporter report, String geometryWriteFormat)
+			String srsName, IOReporter report, DecimalFormat decimalFormatter)
 					throws XMLStreamException {
 		// write eventual required id
 		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
@@ -264,7 +266,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		DefinitionPath path = selectValidPath(preferredPaths, geometry);
 		if (path != null) {
 			// write geometry
-			writeGeometry(writer, geometry, path, srsName, geometryWriteFormat);
+			writeGeometry(writer, geometry, path, srsName, decimalFormatter);
 		}
 		else {
 			report.error(new IOMessageImpl(
@@ -381,12 +383,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param path the definition path to use
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter for geometry values
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
 	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry, DefinitionPath path,
-			String srsName, String geometryWriteFormat) throws XMLStreamException {
+			String srsName, DecimalFormat decimalFormatter) throws XMLStreamException {
 		@SuppressWarnings("rawtypes")
 		GeometryWriter geomWriter = path.getGeometryWriter();
 
@@ -394,8 +396,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		if (path.isEmpty()) {
 			// directly write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs,
-					geometryWriteFormat);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs, decimalFormatter);
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
@@ -413,8 +414,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			}
 
 			// write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs,
-					geometryWriteFormat);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs, decimalFormatter);
 
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);

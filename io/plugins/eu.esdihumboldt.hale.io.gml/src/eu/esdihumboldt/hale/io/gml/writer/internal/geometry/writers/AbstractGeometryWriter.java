@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -56,9 +57,9 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 
 	/**
 	 * The attribute type names supported for writing coordinates with
-	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String, String)}
+	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String, DecimalFormat)}
 	 * or
-	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean, String)}
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean, DecimalFormat)}
 	 * .
 	 * 
 	 * Use for validating end-points.
@@ -142,17 +143,18 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param elementName the encompassing element name
 	 * @param gmlNs the GML namespace
 	 * @param unique if the path's start element cannot be repeated
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, Pattern descendPattern,
 			Coordinate[] coordinates, TypeDefinition elementType, QName elementName, String gmlNs,
-			boolean unique, String geometryWriteFormat) throws XMLStreamException {
+			boolean unique, DecimalFormat decimalFormatter) throws XMLStreamException {
 		Descent descent = descend(writer, descendPattern, elementType, elementName, gmlNs, unique);
 
 		// write geometry
 		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs,
-				geometryWriteFormat);
+				decimalFormatter);
 
 		descent.close();
 	}
@@ -164,24 +166,25 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static void writeCoordinates(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs, String geometryWriteFormat)
+			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
 					throws XMLStreamException {
 		if (coordinates.length > 1) {
-			if (writeList(writer, coordinates, elementType, gmlNs, geometryWriteFormat)) {
+			if (writeList(writer, coordinates, elementType, gmlNs, decimalFormatter)) {
 				return;
 			}
 		}
 
-		if (writePos(writer, coordinates, elementType, gmlNs, null, geometryWriteFormat)) {
+		if (writePos(writer, coordinates, elementType, gmlNs, null, decimalFormatter)) {
 			return;
 		}
 
 		if (coordinates.length <= 1) {
-			if (writeList(writer, coordinates, elementType, gmlNs, geometryWriteFormat)) {
+			if (writeList(writer, coordinates, elementType, gmlNs, decimalFormatter)) {
 				return;
 			}
 		}
@@ -199,13 +202,14 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param gmlNs the GML namespace
 	 * @param posName the name of the desired DirectPositionType property, or
 	 *            <code>null</code> if any
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static boolean writePos(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs, String posName, String geometryWriteFormat)
-					throws XMLStreamException {
+			TypeDefinition elementType, String gmlNs, String posName,
+			DecimalFormat decimalFormatter) throws XMLStreamException {
 		PropertyDefinition posAttribute = null;
 
 		// check for DirectPositionType
@@ -231,13 +235,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 			if (coordinates.length > 0) {
 				Coordinate coordinate = coordinates[0];
 
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, geometryWriteFormat));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
 				writer.writeCharacters(" "); //$NON-NLS-1$
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, geometryWriteFormat));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(" "); //$NON-NLS-1$
 					writer.writeCharacters(
-							NumberFormatter.formatTo(coordinate.z, geometryWriteFormat));
+							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
 				}
 			}
 
@@ -256,12 +260,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
-	 * @param geometryWriteFormat write format of geometry values
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	private static boolean writeList(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs, String geometryWriteFormat)
+			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
 					throws XMLStreamException {
 		PropertyDefinition listAttribute = null;
 		String delimiter = " "; //$NON-NLS-1$
@@ -302,13 +307,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 					writer.writeCharacters(setDelimiter);
 				}
 
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, geometryWriteFormat));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
 				writer.writeCharacters(delimiter);
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, geometryWriteFormat));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(delimiter);
 					writer.writeCharacters(
-							NumberFormatter.formatTo(coordinate.z, geometryWriteFormat));
+							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
 				}
 			}
 

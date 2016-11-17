@@ -92,6 +92,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.geometry.NumberFormatter;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -137,7 +138,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * The parameter name for the flag specifying if the output of geometry
 	 * coordinates should be formatted.
 	 */
-	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.format";
+	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.decimalFormat";
 
 	/**
 	 * The XML stream writer
@@ -1263,9 +1264,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
 			IOReporter report) throws XMLStreamException {
+
 		// write geometries
 		getGeometryWriter().write(writer, geometry, property, srsName, report,
-				getGeometryWriteFormat());
+				NumberFormatter.getFormatter(getGeometryWriteFormat()));
 	}
 
 	/**

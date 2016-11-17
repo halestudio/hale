@@ -32,22 +32,37 @@ public class NumberFormatter {
 	private static final ALogger log = ALoggerFactory.getLogger(NumberFormatter.class);
 
 	/**
+	 * Get number formatter
+	 * 
+	 * @param format String representation format of a number
+	 * @return A {@link DecimalFormat} or <code>null</code> if not valid format
+	 *         supplied
+	 */
+	public static DecimalFormat getFormatter(String format) {
+		if (!validateFormat(format)) {
+			return null;
+		}
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+		symbols.setDecimalSeparator('.');
+		return new DecimalFormat(format, symbols);
+	}
+
+	/**
 	 * Format number to specified format
 	 * 
 	 * @param value double value
-	 * @param format a pattern
+	 * @param formatter a number formatter
 	 * @return String presentation of a formatted number
 	 */
-	public static String formatTo(double value, String format) {
-		if (format == null || format.equals("") || (!validateFormat(format)))
+	public static String formatTo(double value, DecimalFormat formatter) {
+		if (formatter == null)
 			return String.valueOf(value);
-		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-		symbols.setDecimalSeparator('.');
-		DecimalFormat formatter = new DecimalFormat(format, symbols);
 		return formatter.format(value);
 	}
 
 	private static boolean validateFormat(String format) {
+		if (format == null || format.equals(""))
+			return false;
 		String regEx = "0{1,13}(\\.0*)?";
 		if (!Pattern.matches(regEx, format)) {
 			log.warn("supplied format for formatted number output is not valid!");
