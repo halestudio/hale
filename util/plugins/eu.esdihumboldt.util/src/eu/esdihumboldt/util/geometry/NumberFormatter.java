@@ -17,6 +17,10 @@ package eu.esdihumboldt.util.geometry;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.regex.Pattern;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
  * Format the number in required representation
@@ -24,6 +28,8 @@ import java.text.DecimalFormatSymbols;
  * @author Arun
  */
 public class NumberFormatter {
+
+	private static final ALogger log = ALoggerFactory.getLogger(NumberFormatter.class);
 
 	/**
 	 * Format number to specified format
@@ -33,11 +39,20 @@ public class NumberFormatter {
 	 * @return String presentation of a formatted number
 	 */
 	public static String formatTo(double value, String format) {
-		if (format == null)
+		if (format == null || format.equals("") || (!validateFormat(format)))
 			return String.valueOf(value);
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols();
 		symbols.setDecimalSeparator('.');
 		DecimalFormat formatter = new DecimalFormat(format, symbols);
 		return formatter.format(value);
+	}
+
+	private static boolean validateFormat(String format) {
+		String regEx = "0{1,13}(\\.0*)?";
+		if (!Pattern.matches(regEx, format)) {
+			log.warn("supplied format for formatted number output is not valid!");
+			return false;
+		}
+		return true;
 	}
 }
