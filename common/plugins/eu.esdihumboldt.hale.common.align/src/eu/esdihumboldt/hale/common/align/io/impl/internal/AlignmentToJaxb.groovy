@@ -19,6 +19,9 @@ import java.util.Map.Entry
 
 import javax.xml.bind.JAXBElement
 
+import com.google.common.collect.ListMultimap
+import com.google.common.collect.MultimapBuilder
+
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
@@ -86,11 +89,11 @@ class AlignmentToJaxb {
 	AlignmentType convert() throws Exception {
 		AlignmentType align = new AlignmentType()
 
-		alignment.baseAlignments.collect(align.base) {
+		alignment.baseAlignments.sort().collect(align.base) {
 			new Base(prefix: it.key, location: pathUpdate.findLocation(it.value, true, false, true))
 		}
 		
-		alignment.customPropertyFunctions.collect(align.customFunction) {
+		alignment.customPropertyFunctions.sort().collect(align.customFunction) {
 			def cft = new CustomFunctionType()
 			
 			def element = HaleIO.getComplexElement(it.value)
@@ -161,29 +164,41 @@ class AlignmentToJaxb {
 		result.priority = priorityType;
 
 		// the transformation parameters
-		cell.transformationParameters?.entries()?.each { Entry<String, ParameterValue> param ->
-			def p = convert(param.key, param.value)
-			if (p) result.abstractParameter << p
+		if (cell.transformationParameters) {
+			ListMultimap<String, ParameterValue> params = MultimapBuilder.treeKeys().arrayListValues().build(cell.transformationParameters)
+			params.entries()?.each { Entry<String, ParameterValue> param ->
+				def p = convert(param.key, param.value)
+				if (p) result.abstractParameter << p
+			}
 		}
 
 		// source entities
-		cell.source?.entries()?.each { Entry<String, ? extends Entity> entity ->
-			result.source << convert(entity.key, entity.value)
+		if (cell.source) {
+			ListMultimap<String, ? extends Entity> sources = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys().arrayListValues().build(cell.source)
+			sources.entries()?.each { Entry<String, ? extends Entity> entity ->
+				result.source << convert(entity.key, entity.value)
+			}
 		}
 
 		// target entities
-		cell.target?.entries()?.each { Entry<String, ? extends Entity> entity ->
-			result.target << convert(entity.key, entity.value)
+		if (cell.target) {
+			ListMultimap<String, ? extends Entity> targets = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys().arrayListValues().build(cell.target)
+			targets.entries()?.each { Entry<String, ? extends Entity> entity ->
+				result.target << convert(entity.key, entity.value)
+			}
 		}
 
 		// documentations
-		cell.documentation.entries().each { Entry<String, String> it ->
-			// create documentation element from each multimap entry
-			result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
+		if (cell.documentation) {
+			ListMultimap<String, String> docs = MultimapBuilder.treeKeys().arrayListValues().build(cell.documentation)
+			docs.entries().each { Entry<String, String> it ->
+				// create documentation element from each multimap entry
+				result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
+			}
 		}
 
 		// annotations
-		for (String type in cell.annotationTypes) {
+		for (String type in cell.annotationTypes.sort()) {
 			def descriptor = AnnotationExtension.instance.get(type)
 			if (descriptor) {
 				for (Object value : cell.getAnnotations(type)) {
