@@ -63,4 +63,15 @@ public interface MutableAlignment extends Alignment {
 	public void addBaseAlignment(String prefix, URI alignment, Iterable<BaseAlignmentCell> cells,
 			Iterable<CustomPropertyFunction> baseFunctions);
 
+	/**
+	 * Remove base alignments from the alignment.
+	 */
+	public void clearBaseAlignments();
+
+	/**
+	 * Remove all cells except cells included via base alignments from the
+	 * alignment.
+	 */
+	public void clearCells();
+
 }
