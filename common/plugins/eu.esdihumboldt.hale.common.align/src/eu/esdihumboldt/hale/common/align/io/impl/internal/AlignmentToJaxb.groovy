@@ -68,6 +68,21 @@ class AlignmentToJaxb {
 	private final IOReporter reporter
 	private final ObjectFactory of = new ObjectFactory()
 	private final PathUpdate pathUpdate
+	
+	private final Comparator<String> nullStringComparator = { String s1, String s2 ->
+		if (s1 == s2) {
+			0
+		}
+		else if (s1 == null) {
+			-1
+		}
+		else if (s2 == null) {
+			1
+		}
+		else {
+			s1 <=> s2
+		}
+	} as Comparator
 
 	/**
 	 * Create a new converter.
@@ -165,7 +180,7 @@ class AlignmentToJaxb {
 
 		// the transformation parameters
 		if (cell.transformationParameters) {
-			ListMultimap<String, ParameterValue> params = MultimapBuilder.treeKeys().arrayListValues().build(cell.transformationParameters)
+			ListMultimap<String, ParameterValue> params = MultimapBuilder.treeKeys(nullStringComparator).arrayListValues().build(cell.transformationParameters)
 			params.entries()?.each { Entry<String, ParameterValue> param ->
 				def p = convert(param.key, param.value)
 				if (p) result.abstractParameter << p
@@ -174,7 +189,7 @@ class AlignmentToJaxb {
 
 		// source entities
 		if (cell.source) {
-			ListMultimap<String, ? extends Entity> sources = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys().arrayListValues().build(cell.source)
+			ListMultimap<String, ? extends Entity> sources = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys(nullStringComparator).arrayListValues().build(cell.source)
 			sources.entries()?.each { Entry<String, ? extends Entity> entity ->
 				result.source << convert(entity.key, entity.value)
 			}
@@ -182,7 +197,7 @@ class AlignmentToJaxb {
 
 		// target entities
 		if (cell.target) {
-			ListMultimap<String, ? extends Entity> targets = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys().arrayListValues().build(cell.target)
+			ListMultimap<String, ? extends Entity> targets = (ListMultimap<String, ? extends Entity>) MultimapBuilder.treeKeys(nullStringComparator).arrayListValues().build(cell.target)
 			targets.entries()?.each { Entry<String, ? extends Entity> entity ->
 				result.target << convert(entity.key, entity.value)
 			}
@@ -190,7 +205,7 @@ class AlignmentToJaxb {
 
 		// documentations
 		if (cell.documentation) {
-			ListMultimap<String, String> docs = MultimapBuilder.treeKeys().arrayListValues().build(cell.documentation)
+			ListMultimap<String, String> docs = MultimapBuilder.treeKeys(nullStringComparator).arrayListValues().build(cell.documentation)
 			docs.entries().each { Entry<String, String> it ->
 				// create documentation element from each multimap entry
 				result.documentationOrAnnotation << new DocumentationType(type: it.key, value: it.value)
