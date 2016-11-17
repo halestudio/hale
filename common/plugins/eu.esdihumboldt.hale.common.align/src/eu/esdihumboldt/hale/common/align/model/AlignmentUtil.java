@@ -295,25 +295,47 @@ public abstract class AlignmentUtil {
 
 	/**
 	 * Get the entity definition based on the given entity definition with the
-	 * default instance context for each path entry.
+	 * default instance context for each path entry and w/o filter.
 	 * 
 	 * @param entity the entity definition
 	 * @return the entity definition with the default context in all path
-	 *         elements
+	 *         elements and w/o type filter, if no contexts and type filter are
+	 *         present the supplied entity is returned directly
 	 */
 	public static EntityDefinition getAllDefaultEntity(EntityDefinition entity) {
 		List<ChildContext> path = entity.getPropertyPath();
 
-		if (path == null || path.isEmpty() || path.get(path.size() - 1).getContextName() == null) {
-			return entity;
+		if (path == null || path.isEmpty()) {
+			// no path
+			if (entity.getFilter() == null) {
+				return entity;
+			}
+			else {
+				return new TypeEntityDefinition(entity.getType(), entity.getSchemaSpace(), null);
+			}
 		}
+
+		boolean contextInPath = false;
 
 		List<ChildContext> newPath = new ArrayList<ChildContext>();
 		for (ChildContext context : path) {
+			if (context.getCondition() != null || context.getIndex() != null
+					|| context.getContextName() != null) {
+				// context found in path
+				contextInPath = true;
+			}
 			ChildContext newcontext = new ChildContext(context.getChild());
 			newPath.add(newcontext);
 		}
-		return createEntity(entity.getType(), newPath, entity.getSchemaSpace(), null);
+
+		if (contextInPath || entity.getFilter() != null) {
+			// contexts or filter found, return default entity
+			return createEntity(entity.getType(), newPath, entity.getSchemaSpace(), null);
+		}
+		else {
+			// no contexts or filter found, yield unchanged
+			return entity;
+		}
 	}
 
 	/**
