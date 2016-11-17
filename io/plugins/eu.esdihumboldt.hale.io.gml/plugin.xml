@@ -292,6 +292,20 @@
                   sample="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.format"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -419,6 +433,20 @@
                   sample="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.format"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -517,6 +545,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.format"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -729,6 +771,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.format"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
       </provider>
