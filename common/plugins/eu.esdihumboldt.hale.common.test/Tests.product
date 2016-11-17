@@ -138,6 +138,8 @@
       <plugin id="eu.esdihumboldt.hale.common.schema.persist.test"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
