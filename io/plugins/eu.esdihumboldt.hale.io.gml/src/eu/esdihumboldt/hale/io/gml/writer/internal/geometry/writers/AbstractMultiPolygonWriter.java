@@ -50,17 +50,25 @@ public abstract class AbstractMultiPolygonWriter extends AbstractGeometryWriter<
 		addBasePattern("**/surfaceMember"); //$NON-NLS-1$
 
 		// verification patterns (from PolygonWriter)
-		addVerificationPattern("*/Polygon/exterior/LinearRing"); // both exterior //$NON-NLS-1$
-		addVerificationPattern("*/Polygon/interior/LinearRing"); // and interior elements must be present for contained polygons //$NON-NLS-1$
+		addVerificationPattern("*/Polygon/exterior/LinearRing"); // both //$NON-NLS-1$
+																	// exterior
+		addVerificationPattern("*/Polygon/interior/LinearRing"); // and //$NON-NLS-1$
+																	// interior
+																	// elements
+																	// must be
+																	// present
+																	// for
+																	// contained
+																	// polygons
 	}
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, MultiPolygon geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
@@ -70,8 +78,8 @@ public abstract class AbstractMultiPolygonWriter extends AbstractGeometryWriter<
 					elementType, elementName, gmlNs, false);
 
 			Polygon poly = (Polygon) geometry.getGeometryN(i);
-			polygonWriter.write(writer, poly, descent.getPath().getLastType(), descent.getPath()
-					.getLastElement().getName(), gmlNs);
+			polygonWriter.write(writer, poly, descent.getPath().getLastType(),
+					descent.getPath().getLastElement().getName(), gmlNs, geometryWriteFormat);
 
 			descent.close();
 

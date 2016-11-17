@@ -49,12 +49,12 @@ public class CurveSingleSegmentWriter extends AbstractGeometryWriter<LineString>
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, LineString geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
-		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
+		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs, geometryWriteFormat);
 	}
 
 }

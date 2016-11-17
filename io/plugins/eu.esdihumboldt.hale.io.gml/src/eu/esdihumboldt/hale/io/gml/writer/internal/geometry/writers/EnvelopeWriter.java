@@ -58,16 +58,16 @@ public class EnvelopeWriter extends AbstractGeometryWriter<Geometry> {
 
 	@Override
 	public void write(XMLStreamWriter writer, Geometry geom, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
 		// write envelope
 		Envelope envelope = geom.getEnvelopeInternal();
 		if (!envelope.isNull()) {
 			writePos(writer,
 					new Coordinate[] { new Coordinate(envelope.getMinX(), envelope.getMinY()) },
-					elementType, gmlNs, "lowerCorner");
+					elementType, gmlNs, "lowerCorner", geometryWriteFormat);
 			writePos(writer,
 					new Coordinate[] { new Coordinate(envelope.getMaxX(), envelope.getMaxY()) },
-					elementType, gmlNs, "upperCorner");
+					elementType, gmlNs, "upperCorner", geometryWriteFormat);
 		}
 		else {
 			log.error("Could not write empty envelope.");

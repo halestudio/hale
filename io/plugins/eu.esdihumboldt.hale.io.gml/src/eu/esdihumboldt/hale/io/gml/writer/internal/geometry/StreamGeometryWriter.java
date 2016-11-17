@@ -160,10 +160,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
 	 * @param report the reporter
+	 * @param geometryWriteFormat write format of geometry values
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry, PropertyDefinition property,
-			String srsName, IOReporter report) throws XMLStreamException {
+			String srsName, IOReporter report, String geometryWriteFormat)
+					throws XMLStreamException {
 		// write eventual required id
 		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
 
@@ -262,7 +264,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		DefinitionPath path = selectValidPath(preferredPaths, geometry);
 		if (path != null) {
 			// write geometry
-			writeGeometry(writer, geometry, path, srsName);
+			writeGeometry(writer, geometry, path, srsName, geometryWriteFormat);
 		}
 		else {
 			report.error(new IOMessageImpl(
@@ -379,11 +381,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param path the definition path to use
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
+	 * @param geometryWriteFormat write format of geometry values
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
 	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry, DefinitionPath path,
-			String srsName) throws XMLStreamException {
+			String srsName, String geometryWriteFormat) throws XMLStreamException {
 		@SuppressWarnings("rawtypes")
 		GeometryWriter geomWriter = path.getGeometryWriter();
 
@@ -391,7 +394,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		if (path.isEmpty()) {
 			// directly write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs,
+					geometryWriteFormat);
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
@@ -409,7 +413,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			}
 
 			// write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs,
+					geometryWriteFormat);
 
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);

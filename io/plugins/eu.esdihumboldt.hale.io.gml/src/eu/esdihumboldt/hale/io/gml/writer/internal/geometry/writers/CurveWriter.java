@@ -55,11 +55,11 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, MultiLineString geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
 		// reorder segments
 		geometry = CurveHelper.combineCurve(geometry, geometry.getFactory(), false);
 
@@ -69,7 +69,7 @@ public class CurveWriter extends AbstractGeometryWriter<MultiLineString> {
 			}
 
 			LineString line = (LineString) geometry.getGeometryN(i);
-			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs);
+			writeCoordinates(writer, line.getCoordinates(), elementType, gmlNs, geometryWriteFormat);
 
 			if (i < geometry.getNumGeometries() - 1) {
 				writer.writeEndElement();

@@ -137,7 +137,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * The parameter name for the flag specifying if the output of geometry
 	 * coordinates should be formatted.
 	 */
-	public static final String PARAM_GEOMETRY_FORMAT = "geometry.format";
+	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.format";
 
 	/**
 	 * The XML stream writer
@@ -488,6 +488,22 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	public void setPrettyPrint(boolean prettyPrint) {
 		setParameter(PARAM_PRETTY_PRINT, Value.of(prettyPrint));
+	}
+
+	/**
+	 * @return geometry write format
+	 */
+	public String getGeometryWriteFormat() {
+		return getParameter(PARAM_GEOMETRY_FORMAT).as(String.class);
+	}
+
+	/**
+	 * Set geometry write format
+	 * 
+	 * @param format pattern in which geometry coordinates would be formatted
+	 */
+	public void setGeometryWriteFormat(String format) {
+		setParameter(PARAM_GEOMETRY_FORMAT, Value.of(format));
 	}
 
 	/**
@@ -1248,7 +1264,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	private void writeGeometry(Geometry geometry, PropertyDefinition property, String srsName,
 			IOReporter report) throws XMLStreamException {
 		// write geometries
-		getGeometryWriter().write(writer, geometry, property, srsName, report);
+		getGeometryWriter().write(writer, geometry, property, srsName, report,
+				getGeometryWriteFormat());
 	}
 
 	/**

@@ -76,10 +76,11 @@ public interface GeometryWriter<T extends Geometry> {
 	 * @param elementType the last type definition in the matching path
 	 * @param elementName the corresponding element name
 	 * @param gmlNs the GML namespace
+	 * @param geometryWriteFormat write format of geometry values
 	 * @throws XMLStreamException if an error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, T geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException;
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException;
 
 	/**
 	 * Determines if a geometry is valid to be written with the writer.

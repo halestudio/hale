@@ -59,11 +59,11 @@ public class LegacyMultiPolygonWriter extends AbstractGeometryWriter<MultiPolygo
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, MultiPolygon geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
 		for (int i = 0; i < geometry.getNumGeometries(); i++) {
 			if (i > 0) {
 				writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
@@ -74,7 +74,7 @@ public class LegacyMultiPolygonWriter extends AbstractGeometryWriter<MultiPolygo
 
 			Polygon poly = (Polygon) geometry.getGeometryN(i);
 			polygonWriter.write(writer, poly, descent.getPath().getLastType(), descent.getPath()
-					.getLastElement().getName(), gmlNs);
+					.getLastElement().getName(), gmlNs, geometryWriteFormat);
 
 			descent.close();
 

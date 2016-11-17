@@ -44,17 +44,19 @@ public class PointWriter extends AbstractGeometryWriter<Point> {
 		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "PointType")); //$NON-NLS-1$
 
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
+		addBasePattern("*"); // matches any compatible type //$NON-NLS-1$
+								// element
 	}
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, String)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, Point geometry, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
-		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs);
+			QName elementName, String gmlNs, String geometryWriteFormat) throws XMLStreamException {
+		writeCoordinates(writer, geometry.getCoordinates(), elementType, gmlNs,
+				geometryWriteFormat);
 	}
 
 }
