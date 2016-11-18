@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
+import eu.esdihumboldt.util.Pair
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
 import groovy.transform.CompileStatic
 
@@ -42,6 +43,21 @@ import groovy.transform.CompileStatic
  */
 @CompileStatic
 class SchemaToXml implements HaleSchemaConstants {
+
+	private static final Comparator<String> nullStringComparator = { String s1, String s2 ->
+		if (s1 == s2) {
+			0
+		}
+		else if (s1 == null) {
+			-1
+		}
+		else if (s2 == null) {
+			1
+		}
+		else {
+			s1 <=> s2
+		}
+	} as Comparator
 
 	/**
 	 * Create a default DOM builder to use with the *toXml methods for creating
@@ -62,7 +78,13 @@ class SchemaToXml implements HaleSchemaConstants {
 	 */
 	static Element schemasToXml(NSDOMBuilder b, Iterable<? extends Schema> schemas) throws Exception {
 		b 'hsd:schemas', {
-			schemas.each { Schema schema ->
+			schemas.sort(false) { Schema s1, Schema s2 ->
+				int compared = nullStringComparator.compare(s1.namespace, s2.namespace)
+				if (!compared) {
+					compared = nullStringComparator.compare(s1.location?.toString(), s2.location?.toString())
+				}
+				compared
+			}.each { Schema schema ->
 				schemaToXml(b, schema)
 			}
 		}
@@ -250,19 +272,30 @@ class SchemaToXml implements HaleSchemaConstants {
 			b 'hsd:description', d.description
 		}
 		// constraints
-		d.explicitConstraints.each { def constraint ->
+		Collection<Pair<String, Value>> constraints = d.explicitConstraints.findResults { def constraint ->
 			// get value constraint factory, if possible
 			ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.getForConstraint(constraint)
 			if (desc != null && desc.factory != null) {
 				// determine value representation of constraint
 				Value value = desc.factory.store(constraint, typeIndex)
 				String id = desc.id
-				if (value != null && value.value != null) {
-					// add constraint definition represented as Value
-					Element element = DOMValueUtil.valueTag(b, 'hsd:constraint', value)
-					// add constraint type/id as attribute
-					element.setAttribute('type', id)
-				}
+				new Pair<String, Value>(id, value)
+			}
+			else {
+				(Pair<String, Value>)null
+			}
+		}
+
+		constraints.sort(false) { Pair<String, Value> p1, Pair<String, Value> p2 ->
+			nullStringComparator.compare(p1.first, p2.first)
+		}.each { Pair<String, Value> pair ->
+			Value value = pair.second
+			String id = pair.first
+			if (value != null && value.value != null) {
+				// add constraint definition represented as Value
+				Element element = DOMValueUtil.valueTag(b, 'hsd:constraint', value)
+				// add constraint type/id as attribute
+				element.setAttribute('type', id)
 			}
 		}
 	}
