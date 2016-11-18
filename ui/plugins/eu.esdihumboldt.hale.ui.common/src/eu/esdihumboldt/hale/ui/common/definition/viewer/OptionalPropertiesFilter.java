@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -50,7 +51,13 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 
 			Definition<?> def = entityDef.getDefinition();
 
-			if (def instanceof PropertyDefinition) {
+			if (def instanceof GroupPropertyDefinition) {
+				Cardinality cardinality = ((GroupPropertyDefinition) def)
+						.getConstraint(Cardinality.class);
+				if (cardinality.getMinOccurs() == 0)
+					return false;
+			}
+			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() == 0)
@@ -77,7 +84,13 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 
 			Definition<?> def = child.getDefinition();
 
-			if (def instanceof PropertyDefinition) {
+			if (def instanceof GroupPropertyDefinition) {
+				Cardinality cardinality = ((GroupPropertyDefinition) def)
+						.getConstraint(Cardinality.class);
+				if (cardinality.getMinOccurs() != 0)
+					return false;
+			}
+			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() != 0)
