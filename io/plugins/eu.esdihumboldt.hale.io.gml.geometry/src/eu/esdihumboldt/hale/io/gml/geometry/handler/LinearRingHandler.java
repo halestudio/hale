@@ -28,6 +28,7 @@ import com.vividsolutions.jts.geom.LinearRing;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -53,12 +54,12 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 	private static final ALogger log = ALoggerFactory.getLogger(LinearRingHandler.class);
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int, IOProvider)
 	 */
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
-		return createGeometry(instance, srsDimension, true);
+		return createGeometry(instance, srsDimension, true, reader);
 	}
 
 	/**
@@ -68,12 +69,14 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 	 * @param srsDimension the SRS dimension
 	 * @param allowTryOtherDimension if trying another dimension is allowed on
 	 *            failure (e.g. 3D instead of 2D)
+	 * @param reader the I/O Provider to get value
 	 * @return the {@link LinearRing} geometry
 	 * @throws GeometryNotSupportedException if the type definition doesn't
 	 *             represent a geometry type supported by the handler
 	 */
 	protected GeometryProperty<LinearRing> createGeometry(Instance instance, int srsDimension,
-			boolean allowTryOtherDimension) throws GeometryNotSupportedException {
+			boolean allowTryOtherDimension, IOProvider reader)
+					throws GeometryNotSupportedException {
 
 		LinearRing ring = null;
 		LineStringHandler handler = new LineStringHandler();
@@ -81,7 +84,7 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 		// for use with GML 2, 3, 3.1, 3.2
 		@SuppressWarnings("unchecked")
 		DefaultGeometryProperty<LineString> linestring = (DefaultGeometryProperty<LineString>) handler
-				.createGeometry(instance, srsDimension);
+				.createGeometry(instance, srsDimension, reader);
 		try {
 			ring = getGeometryFactory().createLinearRing(linestring.getGeometry().getCoordinates());
 		} catch (IllegalArgumentException e) {
@@ -92,7 +95,7 @@ public class LinearRingHandler extends FixedConstraintsGeometryHandler {
 				// we try an alternative, to be sure (e.g. 3D instead of 2D)
 				int alternativeDimension = (srsDimension == 2) ? (3) : (2);
 				GeometryProperty<LinearRing> geom = createGeometry(instance, alternativeDimension,
-						false);
+						false, reader);
 				log.debug("Assuming geometry is " + alternativeDimension + "-dimensional.");
 				return geom;
 			}

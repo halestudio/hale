@@ -136,6 +136,19 @@
                   default="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
+               label="Max Position Error"
+               name="interpolation.maxerror"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -181,6 +194,19 @@
             </parameterBinding>
             <valueDescriptor
                   default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
+               label="Max Position Error"
+               name="interpolation.maxerror"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
             </valueDescriptor>
          </providerParameter>
       </provider>

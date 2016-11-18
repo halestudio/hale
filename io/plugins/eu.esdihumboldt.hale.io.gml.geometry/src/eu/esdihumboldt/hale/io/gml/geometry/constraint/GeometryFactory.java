@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.constraint;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
@@ -65,18 +66,19 @@ public class GeometryFactory implements TypeConstraint {
 	 * 
 	 * @param instance the instance
 	 * @param srsDimension the dimension of the instance
+	 * @param reader the I/O Provider to get value
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding}, may be <code>null</code> if no
 	 *         geometry could be created or if no geometry handler is associated
 	 */
-	public Object createGeometry(Instance instance, int srsDimension) {
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader) {
 		if (handler == null) {
 			return null;
 			// XXX instead fall back to Geometries.getInstance()?
 		}
 
 		try {
-			return handler.createGeometry(instance, srsDimension);
+			return handler.createGeometry(instance, srsDimension, reader);
 		} catch (GeometryNotSupportedException e) {
 			// TODO report error?
 			// TODO try creating the geometry in any other way?

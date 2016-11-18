@@ -30,6 +30,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -57,7 +58,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 	// XXX support for curve types is not optimal (different number of feature
 	// members needed)
 
-	private static final String ARC_TYPE = "ArcType";
+	// private static final String ARC_TYPE = "ArcType";
 
 	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
 
@@ -86,10 +87,10 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int)
+	 *      int, IOProvider)
 	 */
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
 		LineString line = null;
 		PointHandler handler = new PointHandler();
@@ -165,7 +166,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						try {
 							@SuppressWarnings("unchecked")
 							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
-									.createGeometry((Instance) value, srsDimension);
+									.createGeometry((Instance) value, srsDimension, reader);
 							cs.add(point.getGeometry().getCoordinate());
 						} catch (GeometryNotSupportedException e) {
 							throw new GeometryNotSupportedException(
@@ -191,7 +192,7 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						try {
 							@SuppressWarnings("unchecked")
 							DefaultGeometryProperty<Point> point = (DefaultGeometryProperty<Point>) handler
-									.createGeometry((Instance) value, srsDimension);
+									.createGeometry((Instance) value, srsDimension, reader);
 							cs.add(point.getGeometry().getCoordinate());
 						} catch (GeometryNotSupportedException e) {
 							throw new GeometryNotSupportedException(
@@ -261,8 +262,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 		types.add(new QName(NS_GML, LINE_STRING_SEGMENT_TYPE));
 		types.add(new QName(NS_GML_32, LINE_STRING_SEGMENT_TYPE));
 
-		types.add(new QName(NS_GML, ARC_TYPE));
-		types.add(new QName(NS_GML_32, ARC_TYPE));
+//		types.add(new QName(NS_GML, ARC_TYPE));
+//		types.add(new QName(NS_GML_32, ARC_TYPE));
 
 		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));

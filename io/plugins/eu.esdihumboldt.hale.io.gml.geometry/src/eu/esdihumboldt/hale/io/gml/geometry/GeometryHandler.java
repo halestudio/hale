@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
@@ -45,7 +46,8 @@ public interface GeometryHandler {
 	public Set<QName> getSupportedTypes();
 
 	/**
-	 * Get the type constraints to associated with a geometry type definition.<br>
+	 * Get the type constraints to associated with a geometry type definition.
+	 * <br>
 	 * <br>
 	 * This method should at least return the {@link Binding} and
 	 * {@link GeometryType} constraints. Usually the binding should be
@@ -64,13 +66,14 @@ public interface GeometryHandler {
 	 * 
 	 * @param instance the instance
 	 * @param srsDimension the dimension of the instance
+	 * @param reader the I/O provider to get reader value
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
 	 * @throws GeometryNotSupportedException if the type definition doesn't
 	 *             represent a geometry type supported by the handler
 	 */
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException;
 
 }

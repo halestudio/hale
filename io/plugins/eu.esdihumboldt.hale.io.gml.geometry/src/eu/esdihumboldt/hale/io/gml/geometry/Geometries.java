@@ -29,6 +29,7 @@ import com.google.common.collect.Multimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -68,8 +69,8 @@ public class Geometries implements GeometryHandler {
 	private Geometries() {
 		// register default geometry handlers from handler package
 		try {
-			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(getClass().getPackage()
-					.getName() + ".handler", getClass().getClassLoader());
+			List<Class<?>> classes = ReflectionHelper.getClassesFromPackage(
+					getClass().getPackage().getName() + ".handler", getClass().getClassLoader());
 
 			for (Class<?> clazz : classes) {
 				try {
@@ -130,17 +131,17 @@ public class Geometries implements GeometryHandler {
 	}
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int, IOProvider)
 	 */
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
 		// TODO support retrieving handler from a constraint?
 
 		synchronized (handlers) {
 			for (GeometryHandler handler : handlers.get(instance.getDefinition().getName())) {
 				try {
-					return handler.createGeometry(instance, srsDimension);
+					return handler.createGeometry(instance, srsDimension, reader);
 				} catch (Throwable e) {
 					// ignore
 				}

@@ -40,6 +40,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -565,7 +566,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 			try {
 				return StreamGmlHelper.parseInstance(reader, nextType, elementIndex++, strict, null,
-						crsProvider, nextType, null, false, ignoreNamespaces);
+						crsProvider, nextType, null, false, ignoreNamespaces, ioProvider);
 			} catch (XMLStreamException e) {
 				throw new IllegalStateException(e);
 			} finally {
@@ -662,6 +663,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private boolean empty = false;
 	private final CRSProvider crsProvider;
 	private final boolean ignoreNamespaces;
+	private final IOProvider ioProvider;
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
@@ -680,10 +682,11 @@ public class GmlInstanceCollection implements InstanceCollection {
 	 *            defined in the schema
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
+	 * @param provider the I/O provider to get values
 	 */
 	public GmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
 			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
-			boolean ignoreNamespaces, CRSProvider crsProvider) {
+			boolean ignoreNamespaces, CRSProvider crsProvider, IOProvider provider) {
 		this.source = source;
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
@@ -691,6 +694,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 		this.strict = strict;
 		this.ignoreNamespaces = ignoreNamespaces;
 		this.crsProvider = crsProvider;
+		this.ioProvider = provider;
 	}
 
 	/**
