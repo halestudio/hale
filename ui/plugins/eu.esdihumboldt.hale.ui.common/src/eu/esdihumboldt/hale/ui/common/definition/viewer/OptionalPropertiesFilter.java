@@ -89,18 +89,15 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 			if (def instanceof GroupPropertyDefinition) {
 				Cardinality cardinality = ((GroupPropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() != 0)
-					return false;
-				else if (!areChildrenOptional(entityDef))
+				if (cardinality.getMinOccurs() != 0 && !areChildrenOptional(entityDef))
 					return false;
 			}
 			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() != 0)
-					return false;
 
-				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+				if (cardinality.getMinOccurs() != 0 && ((PropertyDefinition) def)
+						.getConstraint(NillableFlag.class).isEnabled()) {
 					if (!areChildrenOptional(child))
 						return false;
 				}
