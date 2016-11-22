@@ -56,6 +56,9 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() == 0)
 					return false;
+				else
+					return !areChildrenOptional(entityDef);
+
 			}
 			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
@@ -63,9 +66,8 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 				if (cardinality.getMinOccurs() == 0)
 					return false;
 
-				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled())
 					return !areChildrenOptional(entityDef);
-				}
 			}
 		}
 		return true;
@@ -89,16 +91,20 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() != 0)
 					return false;
+				else if (!areChildrenOptional(entityDef))
+					return false;
 			}
 			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() != 0)
 					return false;
-			}
 
-			if (!areChildrenOptional(child))
-				return false;
+				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+					if (!areChildrenOptional(child))
+						return false;
+				}
+			}
 		}
 
 		return true;
