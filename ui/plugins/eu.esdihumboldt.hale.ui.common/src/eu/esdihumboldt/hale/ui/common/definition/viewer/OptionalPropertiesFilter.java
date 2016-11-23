@@ -25,11 +25,13 @@ import org.eclipse.jface.viewers.ViewerFilter;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
  * Filters that hides optional properties.(Only works for
@@ -126,7 +128,8 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 	}
 
 	/**
-	 * Determines if all children of the given entity are optional.
+	 * Determines if the given (nillable) entity can be considered optional in
+	 * respect to its children.
 	 * 
 	 * @param entityDef the entity definition which children to check
 	 * @param alreadyChecked the set of definitions that have already been
@@ -146,9 +149,26 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 		for (EntityDefinition child : children) {
 			Set<Definition<?>> checked = new HashSet<>(alreadyChecked);
 			checked.add(entityDef.getDefinition());
-			if (!isOptional(child, checked)) {
-				return false;
+
+			ChildDefinition<?> childDef = (ChildDefinition<?>) child.getDefinition();
+
+			/*
+			 * XML: We only need to check children that are attributes, if they
+			 * are optional.
+			 */
+			if (childDef.asProperty() != null
+					&& childDef.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+				// child is an XML attribute
+				// need to check if it is optional
+				if (!isOptional(child, checked)) {
+					return false;
+				}
 			}
+
+			/*
+			 * XXX does other special handling need to be done for other kinds
+			 * of schemas?
+			 */
 		}
 
 		return true;
