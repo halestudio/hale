@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.ui.common.definition.viewer;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.Viewer;
@@ -37,10 +39,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
  */
 public class OptionalPropertiesFilter extends ViewerFilter {
 
-	/**
-	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer,
-	 *      java.lang.Object, java.lang.Object)
-	 */
 	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if (element instanceof TreePath) {
@@ -49,36 +47,14 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 		if (element instanceof EntityDefinition) {
 			EntityDefinition entityDef = (EntityDefinition) element;
 
-			Definition<?> def = entityDef.getDefinition();
-
-			if (def instanceof GroupPropertyDefinition) {
-				Cardinality cardinality = ((GroupPropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() == 0) {
-					// optional group, don't accept
-					return false;
-				}
-				else {
-					// mandatory group, check if children are optional
-					// accept if there are children that are not optional
-					return !areChildrenOptional(entityDef);
-				}
-
+			if (!entityDef.getPropertyPath().isEmpty()) {
+				// property or group
+				// accept if not optional
+				return !isOptional(entityDef);
 			}
-			else if (def instanceof PropertyDefinition) {
-				Cardinality cardinality = ((PropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() == 0) {
-					// optional property, don't accept
-					return false;
-				}
-
-				// property must occur, but maybe it is nillable
-				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
-					// property is nillable
-					// only accept if there are children that are not optional
-					return !areChildrenOptional(entityDef);
-				}
+			else {
+				// accept type entity allways
+				return true;
 			}
 		}
 		return true;
@@ -88,12 +64,77 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 	 * Determines if all children of the given entity are optional.
 	 * 
 	 * @param entityDef the entity definition which children to check
+	 * @return if the entity is optional
+	 */
+	private boolean isOptional(EntityDefinition entityDef) {
+		return isOptional(entityDef, new HashSet<Definition<?>>());
+	}
+
+	/**
+	 * Determines if an entity definition is optional.
+	 * 
+	 * @param entityDef the entity definition which children to check
+	 * @param alreadyChecked the set of definitions that have already been
+	 *            checked (excluding the given entity)
+	 * @return if the entity is optional
+	 */
+	private boolean isOptional(EntityDefinition entityDef, Set<Definition<?>> alreadyChecked) {
+		Definition<?> def = entityDef.getDefinition();
+
+		if (alreadyChecked.contains(def)) {
+			// could not decide yet if it is optional
+			// means there was no clearly mandatory property
+			// -> treat as optional
+			return true;
+		}
+
+		if (def instanceof GroupPropertyDefinition) {
+			Cardinality cardinality = ((GroupPropertyDefinition) def)
+					.getConstraint(Cardinality.class);
+			if (cardinality.getMinOccurs() != 0
+					&& !areChildrenOptional(entityDef, alreadyChecked)) {
+				// not optional if it must occur at least once and children
+				// are not optional
+				return false;
+			}
+
+			return true;
+		}
+		else if (def instanceof PropertyDefinition) {
+			Cardinality cardinality = ((PropertyDefinition) def).getConstraint(Cardinality.class);
+
+			if (cardinality.getMinOccurs() != 0) {
+				// if the property must occur it could still be nillable
+				if (((PropertyDefinition) def).asProperty().getConstraint(NillableFlag.class)
+						.isEnabled()) {
+					// if the property is nillable it is not optional if any
+					// of the children is not optional
+					if (!areChildrenOptional(entityDef, alreadyChecked)) {
+						return false;
+					}
+				}
+				else {
+					// the property must occur and is not nillable
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Determines if all children of the given entity are optional.
+	 * 
+	 * @param entityDef the entity definition which children to check
+	 * @param alreadyChecked the set of definitions that have already been
+	 *            checked (excluding the given entity)
 	 * @return if all children are optional
 	 */
-	private boolean areChildrenOptional(EntityDefinition entityDef) {
-		// XXX do we have to check which definitions we already visited to be
-		// avoid problems in loops?
-
+	private boolean areChildrenOptional(EntityDefinition entityDef,
+			Set<Definition<?>> alreadyChecked) {
 		// get children without contexts
 		Collection<? extends EntityDefinition> children = AlignmentUtil
 				.getChildrenWithoutContexts(entityDef);
@@ -103,37 +144,10 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 		}
 
 		for (EntityDefinition child : children) {
-
-			Definition<?> def = child.getDefinition();
-
-			if (def instanceof GroupPropertyDefinition) {
-				Cardinality cardinality = ((GroupPropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() != 0 && !areChildrenOptional(entityDef)) {
-					// not optional if it must occur at least once and children
-					// are not optional
-					return false;
-				}
-			}
-			else if (def instanceof PropertyDefinition) {
-				Cardinality cardinality = ((PropertyDefinition) def)
-						.getConstraint(Cardinality.class);
-
-				if (cardinality.getMinOccurs() != 0) {
-					// if the property must occur it could still be nillable
-					if (((PropertyDefinition) def).asProperty().getConstraint(NillableFlag.class)
-							.isEnabled()) {
-						// if the property is nillable it is not optional if any
-						// of the children is not optional
-						if (!areChildrenOptional(child)) {
-							return false;
-						}
-					}
-					else {
-						// the property must occur and is not nillable
-						return false;
-					}
-				}
+			Set<Definition<?>> checked = new HashSet<>(alreadyChecked);
+			checked.add(entityDef.getDefinition());
+			if (!isOptional(child, checked)) {
+				return false;
 			}
 		}
 
