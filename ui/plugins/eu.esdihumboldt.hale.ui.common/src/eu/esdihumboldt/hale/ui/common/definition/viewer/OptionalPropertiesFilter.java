@@ -54,33 +54,53 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 			if (def instanceof GroupPropertyDefinition) {
 				Cardinality cardinality = ((GroupPropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() == 0)
+				if (cardinality.getMinOccurs() == 0) {
+					// optional group, don't accept
 					return false;
-				else
+				}
+				else {
+					// mandatory group, check if children are optional
+					// accept if there are children that are not optional
 					return !areChildrenOptional(entityDef);
+				}
 
 			}
 			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() == 0)
+				if (cardinality.getMinOccurs() == 0) {
+					// optional property, don't accept
 					return false;
+				}
 
-				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled())
+				// property must occur, but maybe it is nillable
+				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+					// property is nillable
+					// only accept if there are children that are not optional
 					return !areChildrenOptional(entityDef);
+				}
 			}
 		}
 		return true;
 	}
 
+	/**
+	 * Determines if all children of the given entity are optional.
+	 * 
+	 * @param entityDef the entity definition which children to check
+	 * @return if all children are optional
+	 */
 	private boolean areChildrenOptional(EntityDefinition entityDef) {
+		// XXX do we have to check which definitions we already visited to be
+		// avoid problems in loops?
 
 		// get children without contexts
 		Collection<? extends EntityDefinition> children = AlignmentUtil
 				.getChildrenWithoutContexts(entityDef);
 
-		if (children == null || children.isEmpty())
+		if (children == null || children.isEmpty()) {
 			return true;
+		}
 
 		for (EntityDefinition child : children) {
 
@@ -89,17 +109,30 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 			if (def instanceof GroupPropertyDefinition) {
 				Cardinality cardinality = ((GroupPropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() != 0 && !areChildrenOptional(entityDef))
+				if (cardinality.getMinOccurs() != 0 && !areChildrenOptional(entityDef)) {
+					// not optional if it must occur at least once and children
+					// are not optional
 					return false;
+				}
 			}
 			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
 
-				if (cardinality.getMinOccurs() != 0 && ((PropertyDefinition) def)
-						.getConstraint(NillableFlag.class).isEnabled()) {
-					if (!areChildrenOptional(child))
+				if (cardinality.getMinOccurs() != 0) {
+					// if the property must occur it could still be nillable
+					if (((PropertyDefinition) def).asProperty().getConstraint(NillableFlag.class)
+							.isEnabled()) {
+						// if the property is nillable it is not optional if any
+						// of the children is not optional
+						if (!areChildrenOptional(child)) {
+							return false;
+						}
+					}
+					else {
+						// the property must occur and is not nillable
 						return false;
+					}
 				}
 			}
 		}
