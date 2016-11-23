@@ -92,7 +92,8 @@ public class StreamGmlReader extends AbstractInstanceReader {
 					false);
 
 			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider());
+					restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
+					this);
 			// TODO any kind of analysis on file? e.g. types and size - would
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);

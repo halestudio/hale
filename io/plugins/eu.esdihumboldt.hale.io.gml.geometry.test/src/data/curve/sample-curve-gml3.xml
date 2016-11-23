@@ -22,7 +22,7 @@
 			<hale:geometry>
 				<gml:segments>
 					<gml:Arc>
-						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+						<gml:coordinates>8,8 12,6.5 16,8</gml:coordinates>
 					</gml:Arc>
 				</gml:segments>
 			</hale:geometry>
