@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -50,15 +51,23 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 
 			Definition<?> def = entityDef.getDefinition();
 
-			if (def instanceof PropertyDefinition) {
+			if (def instanceof GroupPropertyDefinition) {
+				Cardinality cardinality = ((GroupPropertyDefinition) def)
+						.getConstraint(Cardinality.class);
+				if (cardinality.getMinOccurs() == 0)
+					return false;
+				else
+					return !areChildrenOptional(entityDef);
+
+			}
+			else if (def instanceof PropertyDefinition) {
 				Cardinality cardinality = ((PropertyDefinition) def)
 						.getConstraint(Cardinality.class);
 				if (cardinality.getMinOccurs() == 0)
 					return false;
 
-				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled()) {
+				if (((PropertyDefinition) def).getConstraint(NillableFlag.class).isEnabled())
 					return !areChildrenOptional(entityDef);
-				}
 			}
 		}
 		return true;
@@ -77,15 +86,22 @@ public class OptionalPropertiesFilter extends ViewerFilter {
 
 			Definition<?> def = child.getDefinition();
 
-			if (def instanceof PropertyDefinition) {
-				Cardinality cardinality = ((PropertyDefinition) def)
+			if (def instanceof GroupPropertyDefinition) {
+				Cardinality cardinality = ((GroupPropertyDefinition) def)
 						.getConstraint(Cardinality.class);
-				if (cardinality.getMinOccurs() != 0)
+				if (cardinality.getMinOccurs() != 0 && !areChildrenOptional(entityDef))
 					return false;
 			}
+			else if (def instanceof PropertyDefinition) {
+				Cardinality cardinality = ((PropertyDefinition) def)
+						.getConstraint(Cardinality.class);
 
-			if (!areChildrenOptional(child))
-				return false;
+				if (cardinality.getMinOccurs() != 0 && ((PropertyDefinition) def)
+						.getConstraint(NillableFlag.class).isEnabled()) {
+					if (!areChildrenOptional(child))
+						return false;
+				}
+			}
 		}
 
 		return true;
