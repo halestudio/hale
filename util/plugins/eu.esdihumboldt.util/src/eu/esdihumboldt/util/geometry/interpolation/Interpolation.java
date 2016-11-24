@@ -59,15 +59,23 @@ public abstract class Interpolation<T extends Geometry> {
 	private static final int ROUNDING_SCALE = 6;
 
 	/**
+	 * flag to keeps original points in interpolation
+	 */
+	protected final boolean keepOriginal;
+
+	/**
 	 * Constructor
 	 * 
 	 * @param coordinates Coordinates of geometry that need to be interpolated
 	 * @param maxPositionalError maximum positional error for interpolation
+	 * @param keepOriginal keeps original points in interpolation
 	 */
-	public Interpolation(Coordinate[] coordinates, double maxPositionalError) {
+	public Interpolation(Coordinate[] coordinates, double maxPositionalError,
+			boolean keepOriginal) {
 		this.MAX_POSITIONAL_ERROR = maxPositionalError;
 		this.rawGeometryCoordinates = coordinates;
 		this.NEXT_COORDINATE_DISTANCE = NEXT_COORDINATE_DISTANCE_FACTOR * maxPositionalError;
+		this.keepOriginal = keepOriginal;
 	}
 
 	/**
@@ -152,11 +160,11 @@ public abstract class Interpolation<T extends Geometry> {
 
 		// adding all 4 grid cell connecting to the specified points.
 		// this will be helpful for negative coordinates
-		//  _ _ _ _ _ _ _ _ 
-		// |   3   |   2   |
-		// |_ _ _ _|_ _ _ _|
-		// |   4   |   1   |
-		// |_ _ _ _|_ _ _ _|
+		// '_ _ _ _
+		// | 3 | 2 |
+		// |_ _|_ _|
+		// | 4 | 1 |
+		// |_ _|_ _|
 		//
 
 		// adding cell 1

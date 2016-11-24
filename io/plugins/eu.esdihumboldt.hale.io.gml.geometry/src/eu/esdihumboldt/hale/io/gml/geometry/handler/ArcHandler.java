@@ -80,6 +80,10 @@ public class ArcHandler extends LineStringHandler {
 		Double maxPositionalError = reader
 				.getParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR).as(Double.class);
 
+		boolean keepOriginal = reader
+				.getParameter(InterpolationConstant.INTERPOL_GEOMETRY_KEEP_ORIGINAL)
+				.as(Boolean.class, true);
+
 		if (maxPositionalError == null || maxPositionalError.doubleValue() <= 0) {
 			if (reportedWarning.compareAndSet(false, true)) {
 				log.warn(
@@ -90,7 +94,7 @@ public class ArcHandler extends LineStringHandler {
 
 		Interpolation<LineString> interpolation = new ArcInterpolation(
 				lineStringGeomProperty.getGeometry().getCoordinates(),
-				maxPositionalError.doubleValue());
+				maxPositionalError.doubleValue(), keepOriginal);
 		LineString interpolatedArc = interpolation.interpolateRawGeometry();
 		if (interpolatedArc == null) {
 			log.error("Arc could be not interpolated to Linestring");

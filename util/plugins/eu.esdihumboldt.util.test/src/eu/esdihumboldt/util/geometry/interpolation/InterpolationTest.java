@@ -62,7 +62,9 @@ public class InterpolationTest {
 
 	private static final boolean SKIP_TEST = false;
 
-	private static final boolean DRAW_IMAGE = false;
+	private static final boolean DRAW_IMAGE = true;
+
+	private static final boolean DEFAULT_KEEP_ORIGINAL = true;
 
 	/**
 	 * Constructor for parameterized test
@@ -148,7 +150,8 @@ public class InterpolationTest {
 			System.out.println("Test is configured to skip");
 			return;
 		}
-		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e);
+		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e,
+				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
 		assertNotNull(interpolatedArc);
@@ -159,8 +162,6 @@ public class InterpolationTest {
 			assertNotEquals("should not match neighbour coordinates", coordinates[i],
 					coordinates[i - 1]);
 		}
-		// System.out.println(interpolatedArc.getCoordinates().length);
-		// System.out.println(interpolatedArc);
 		if (DRAW_IMAGE)
 			createImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 

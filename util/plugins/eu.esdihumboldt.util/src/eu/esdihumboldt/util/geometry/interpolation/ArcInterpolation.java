@@ -41,9 +41,11 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	 * 
 	 * @param coordinates raw geometry coordinates
 	 * @param maxPositionalError maximum positional error
+	 * @param keepOriginal keeps original points in interpolation
 	 */
-	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError) {
-		super(coordinates, maxPositionalError);
+	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
+			boolean keepOriginal) {
+		super(coordinates, maxPositionalError, keepOriginal);
 	}
 
 	/**
@@ -157,7 +159,8 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		List<Coordinate> generatedCoordinates = new ArrayList<Coordinate>();
 
 		// Add first Arc coordinate
-		generatedCoordinates.add(pointToGrid(arcCoordinates[0]));
+
+		generatedCoordinates.add(keepOriginal ? arcCoordinates[0] : pointToGrid(arcCoordinates[0]));
 
 		double angle = getAngleBetweenTwoPoints(arcCoordinates[0], arcCoordinates[1], radius);
 
@@ -166,8 +169,15 @@ public class ArcInterpolation extends Interpolation<LineString> {
 				arcCoordinates[1], center, radius, angle, NEXT_COORDINATE_DISTANCE));
 
 		// Add second Arc coordinate
-		if (!isSameAsLastGridCoordinate(arcCoordinates[1]))
-			generatedCoordinates.add(lastGridCoordinateOfArc);
+		if (!keepOriginal) {
+			if (!isSameAsLastGridCoordinate(arcCoordinates[1]))
+				generatedCoordinates.add(lastGridCoordinateOfArc);
+		}
+		else {
+			if (lastGridCoordinateOfArc == null
+					|| !arcCoordinates[1].equals(lastGridCoordinateOfArc))
+				generatedCoordinates.add(arcCoordinates[1]);
+		}
 
 		angle = getAngleBetweenTwoPoints(arcCoordinates[1], arcCoordinates[2], radius);
 
@@ -176,8 +186,15 @@ public class ArcInterpolation extends Interpolation<LineString> {
 				arcCoordinates[2], center, radius, angle, NEXT_COORDINATE_DISTANCE));
 
 		// Add third Arc coordinate
-		if (!isSameAsLastGridCoordinate(arcCoordinates[2]))
-			generatedCoordinates.add(lastGridCoordinateOfArc);
+		if (!keepOriginal) {
+			if (!isSameAsLastGridCoordinate(arcCoordinates[2]))
+				generatedCoordinates.add(lastGridCoordinateOfArc);
+		}
+		else {
+			if (lastGridCoordinateOfArc == null
+					|| !arcCoordinates[2].equals(lastGridCoordinateOfArc))
+				generatedCoordinates.add(arcCoordinates[2]);
+		}
 
 		// now, we have all coordinates of line string. So then just create it.
 		LineString lineString = null;
