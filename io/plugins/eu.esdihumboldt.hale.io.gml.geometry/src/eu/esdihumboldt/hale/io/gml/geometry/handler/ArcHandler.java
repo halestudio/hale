@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
@@ -50,6 +51,8 @@ public class ArcHandler extends LineStringHandler {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcHandler.class);
 
+	private static final AtomicBoolean reportedWarning = new AtomicBoolean(false);
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#initSupportedTypes()
 	 */
@@ -78,8 +81,10 @@ public class ArcHandler extends LineStringHandler {
 				.getParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR).as(Double.class);
 
 		if (maxPositionalError == null || maxPositionalError.doubleValue() <= 0) {
-			log.warn(
-					"Value of Max positional error parameter, for interpolation operation, is not valid. Default value has been taken.");
+			if (reportedWarning.compareAndSet(false, true)) {
+				log.warn(
+						"Value of Max positional error parameter, for interpolation operation, is not valid. Default value has been taken.");
+			}
 			maxPositionalError = InterpolationConstant.DEFAULT_INTERPOL_MAX_POSITION_ERROR;
 		}
 
@@ -90,7 +95,7 @@ public class ArcHandler extends LineStringHandler {
 		if (interpolatedArc != null)
 			return new DefaultGeometryProperty<LineString>(
 					lineStringGeomProperty.getCRSDefinition(), interpolatedArc);
-
+		log.error("Arc could not interpolated to Linestring");
 		return null;
 	}
 
