@@ -39,9 +39,9 @@ public interface JDBCConstants {
 	public static final String PARAM_PASSWORD = "jdbc.password";
 
 	/**
-	 * Parameter name for the schemas selected
+	 * Parameter name for the selected schemas. The value is a comma-separated
+	 * list of schema names.
 	 */
-
 	public static final String SCHEMAS = "schemas";
 
 }

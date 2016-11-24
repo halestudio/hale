@@ -62,12 +62,15 @@ public class EffectiveMapping {
 		for (Cell typeCell : alignment.getTypeCells()) {
 			// transfer type cell unchanged
 			MutableCell typeCellNew = new DefaultCell(typeCell);
+			MigrationUtil.removeIdPrefix(typeCellNew, true, true);
 			result.addCell(typeCellNew);
 			usedAsIs.add(typeCell);
 
 			Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell, true,
 					false);
 			for (Cell propertyCell : propertyCells) {
+				// FIXME what does this do in case of a join where there are
+				// potentially multiple cells to be handled?
 				Cell reparented = AlignmentUtil.reparentCell(propertyCell, typeCell, true);
 				if (reparented == propertyCell) {
 					// use as is
@@ -75,6 +78,7 @@ public class EffectiveMapping {
 						// only add if not done yet
 						// transfer unchanged
 						MutableCell newCell = new DefaultCell(propertyCell);
+						MigrationUtil.removeIdPrefix(newCell, true, true);
 						result.addCell(newCell);
 						usedAsIs.add(propertyCell);
 					}
@@ -84,7 +88,15 @@ public class EffectiveMapping {
 
 					// add the reparented cell
 					// TODO check if similar cell has been added already?
-					result.addCell((MutableCell) reparented);
+					MutableCell rCell = (MutableCell) reparented;
+					MigrationUtil.removeIdPrefix(rCell, true, true);
+
+					// avoid ID collision
+					// no updates needed in other places because it's a property
+					// cell
+					rCell.setId(rCell.getId() + '_' + typeCellNew.getId());
+
+					result.addCell(rCell);
 				}
 			}
 		}

@@ -240,11 +240,11 @@ public class DefaultCell implements Cell, MutableCell {
 	 *      boolean)
 	 */
 	@Override
-	public void setDisabledFor(Cell cell, boolean disabled) {
+	public void setDisabledFor(String cellId, boolean disabled) {
 		if (disabled)
-			disabledFor.add(cell.getId());
+			disabledFor.add(cellId);
 		else
-			disabledFor.remove(cell.getId());
+			disabledFor.remove(cellId);
 	}
 
 	/**

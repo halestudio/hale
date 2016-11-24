@@ -66,6 +66,8 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 			if (cell instanceof MutableCell) {
 				CellMigrator cm = getCellMigrator(cell.getTransformationIdentifier());
 				MutableCell newCell = cm.updateCell(cell, migration, options);
+				MigrationUtil.removeIdPrefix(newCell, options.transferBase(),
+						options.transferBase());
 				result.removeCell(cell);
 				if (newCell != null) {
 					result.addCell(newCell);
@@ -77,6 +79,7 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 					// include base alignment cell as mutable mapping cell
 					CellMigrator cm = getCellMigrator(cell.getTransformationIdentifier());
 					MutableCell newCell = cm.updateCell(cell, migration, options);
+					MigrationUtil.removeIdPrefix(newCell, true, true);
 					result.removeCell(cell);
 					if (newCell != null) {
 						result.addCell(newCell);

@@ -16,10 +16,13 @@
 package eu.esdihumboldt.hale.common.align.migrate.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
 
 /**
  * Migration utility methods.
@@ -47,6 +50,47 @@ public class MigrationUtil {
 
 		// add functions previously defined in base alignments
 		baseFunctions.values().forEach(function -> alignment.addCustomPropertyFunction(function));
+	}
+
+	/**
+	 * Update a cell to remove ID prefixes originating from base alignment IDs.
+	 * 
+	 * @param cell the cell to update
+	 * @param updateId if the cell's own ID should be updated
+	 * @param updateDisabledFor if the IDs of the cells the cell is disabled for
+	 *            should be updated
+	 */
+	public static void removeIdPrefix(MutableCell cell, boolean updateId,
+			boolean updateDisabledFor) {
+		// update cell ID
+		if (updateId) {
+			String cellId = stripPrefix(cell.getId());
+			cell.setId(cellId);
+		}
+
+		// update disabled for
+		if (updateDisabledFor) {
+			Set<String> disabledFor = new HashSet<>(cell.getDisabledFor());
+			disabledFor.forEach(disabledId -> {
+				String strippedId = stripPrefix(disabledId);
+				if (!strippedId.equals(disabledId)) {
+					cell.setDisabledFor(disabledId, false);
+					cell.setDisabledFor(strippedId, true);
+				}
+			});
+		}
+	}
+
+	private static String stripPrefix(String id) {
+		if (id == null) {
+			return null;
+		}
+
+		int sepIndex = id.indexOf(':');
+		if (sepIndex >= 0 && id.length() > sepIndex + 1) {
+			return id.substring(sepIndex + 1);
+		}
+		return id;
 	}
 
 }
