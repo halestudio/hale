@@ -221,19 +221,20 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 					}
 				});
 				crsDef = result.get();
-			}
-			// SRS Code
-			String srsName = CRS.toSRS(crsDef.getCRS());
-			if (srsName != null) {
-				final int index = srsName.lastIndexOf(':');
-				String authorityName = null;
-				String authorizedId = null;
-				if (index > 0) {
-					authorityName = srsName.substring(0, index);
-					authorizedId = srsName.substring(index + 1).trim();
+
+				// saving in cache
+				String srsName = CRS.toSRS(crsDef.getCRS());
+				if (srsName != null) {
+					final int index = srsName.lastIndexOf(':');
+					String authorityName = null;
+					String authorizedId = null;
+					if (index > 0) {
+						authorityName = srsName.substring(0, index);
+						authorizedId = srsName.substring(index + 1).trim();
+					}
+					// we don't need wkt.
+					SRSUtil.addSRSinCache(srId, authorityName, authorizedId, null);
 				}
-				String wkt = crsDef.getCRS().toWKT();
-				SRSUtil.addSRSinCache(srId, authorityName, authorizedId, wkt);
 			}
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
 		} finally {
