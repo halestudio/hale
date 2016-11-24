@@ -60,9 +60,9 @@ public class InterpolationTest {
 	private static final int MAX_SIZE = 200;
 	private static final double e = 0.025;
 
-	private static final boolean SKIP_TEST = true;
+	private static final boolean SKIP_TEST = false;
 
-	private static final boolean DRAW_IMAGE = true;
+	private static final boolean DRAW_IMAGE = false;
 
 	/**
 	 * Constructor for parameterized test
@@ -132,7 +132,7 @@ public class InterpolationTest {
 				{ 11, new Coordinate[] { new Coordinate(353297.973, 5531361.379),
 						new Coordinate(353298.192, 5531360.429),
 						new Coordinate(353298.503, 5531359.504) }, //
-						LineString.class, false } //
+						LineString.class, SKIP_TEST } //
 
 		});
 	}
