@@ -96,8 +96,8 @@ public class BaseAlignmentCell implements ModifiableCell {
 	 */
 	@Override
 	public Set<String> getDisabledFor() {
-		return Collections.unmodifiableSet(new HashSet<String>(Sets.union(disabledFor,
-				base.getDisabledFor())));
+		return Collections.unmodifiableSet(
+				new HashSet<String>(Sets.union(disabledFor, base.getDisabledFor())));
 	}
 
 	/**
@@ -138,15 +138,15 @@ public class BaseAlignmentCell implements ModifiableCell {
 	}
 
 	@Override
-	public void setDisabledFor(Cell cell, boolean disabled) {
-		if (disabled && !base.getDisabledFor().contains(cell.getId()))
-			disabledFor.add(cell.getId());
+	public void setDisabledFor(String cellId, boolean disabled) {
+		if (disabled && !base.getDisabledFor().contains(cellId))
+			disabledFor.add(cellId);
 		if (!disabled) {
-			if (base.getDisabledFor().contains(cell.getId()))
+			if (base.getDisabledFor().contains(cellId))
 				throw new IllegalArgumentException(
 						"Can not re-enable a cell disabled in the base alignment.");
 			else
-				disabledFor.remove(cell.getId());
+				disabledFor.remove(cellId);
 		}
 
 	}
