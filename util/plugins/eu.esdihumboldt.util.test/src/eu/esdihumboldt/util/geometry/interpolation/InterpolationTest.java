@@ -55,9 +55,12 @@ public class InterpolationTest {
 	private final Coordinate[] arcCoordinates;
 	@SuppressWarnings("rawtypes")
 	private final Class generatedGeometryType;
+	private final boolean skipTest;
 
 	private static final int MAX_SIZE = 200;
 	private static final double e = 0.025;
+
+	private static final boolean SKIP_TEST = false;
 
 	private static final boolean DRAW_IMAGE = false;
 
@@ -67,12 +70,15 @@ public class InterpolationTest {
 	 * @param testIndex Index of test parameters
 	 * @param coordinates input arc coordinates
 	 * @param geometry type of output geometry
+	 * @param skipTest if wants to skip test
 	 */
 	@SuppressWarnings("rawtypes")
-	public InterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry) {
+	public InterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry,
+			boolean skipTest) {
 		this.testIndex = testIndex;
 		this.arcCoordinates = coordinates;
 		this.generatedGeometryType = geometry;
+		this.skipTest = skipTest;
 	}
 
 	/**
@@ -87,33 +93,61 @@ public class InterpolationTest {
 				{ 0, new Coordinate[] { new Coordinate(577869.169, 5917253.678),
 						new Coordinate(577871.772, 5917250.386),
 						new Coordinate(577874.884, 5917253.202) }, //
-						LineString.class }, //
+						LineString.class, SKIP_TEST }, //
 				{ 1, new Coordinate[] { new Coordinate(577738.2, 5917351.786),
 						new Coordinate(577740.608, 5917347.876),
 						new Coordinate(577745.185, 5917348.135) }, //
-						LineString.class }, //
+						LineString.class, SKIP_TEST }, //
 				{ 2, new Coordinate[] { new Coordinate(240, 280), new Coordinate(210, 150),
 						new Coordinate(300, 100) }, //
-						LineString.class }, //
+						LineString.class, SKIP_TEST }, //
 				{ 3, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 16),
 						new Coordinate(16, 8) }, //
-						LineString.class }, //
+						LineString.class, SKIP_TEST }, //
 				{ 4, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 6.5),
 						new Coordinate(16, 8) }, //
-						LineString.class }, //
+						LineString.class, SKIP_TEST }, //
 				{ 5, new Coordinate[] { new Coordinate(3, 10.5), new Coordinate(4, 7.75),
 						new Coordinate(8, 8) }, //
-						LineString.class } //
+						LineString.class, SKIP_TEST }, //
+				{ 6, new Coordinate[] { new Coordinate(353248.457, 5531386.407),
+						new Coordinate(353249.438, 5531386.407),
+						new Coordinate(353250.399, 5531386.217) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 7, new Coordinate[] { new Coordinate(351141.396, 5532140.355),
+						new Coordinate(351110.659, 5532137.542),
+						new Coordinate(351080.17, 5532132.742) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 8, new Coordinate[] { new Coordinate(350925.682, 5532108.264),
+						new Coordinate(350848.556, 5532095.285),
+						new Coordinate(350771.515, 5532081.814) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 9, new Coordinate[] { new Coordinate(351080.17, 5532132.742),
+						new Coordinate(351002.887, 5532120.75),
+						new Coordinate(350925.682, 5532108.264) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 10, new Coordinate[] { new Coordinate(0, 5), new Coordinate(-5, 0),
+						new Coordinate(0, -5) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 11, new Coordinate[] { new Coordinate(353297.973, 5531361.379),
+						new Coordinate(353298.192, 5531360.429),
+						new Coordinate(353298.503, 5531359.504) }, //
+						LineString.class, SKIP_TEST } //
+
 		});
 	}
 
+//353297.973 5531361.379 353298.192 5531360.429 353298.503 5531359.504
 	/**
 	 * test algorithm
 	 */
 	@Test
 	public void testInterpolation() {
 		System.out.println("-- Test-" + testIndex + " begin --");
-
+		if (skipTest) {
+			System.out.println("Test is configured to skip");
+			return;
+		}
 		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 

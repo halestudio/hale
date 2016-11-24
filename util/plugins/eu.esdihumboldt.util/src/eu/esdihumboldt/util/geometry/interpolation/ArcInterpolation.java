@@ -84,6 +84,11 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 	private Coordinate calculateCenterPoint(Coordinate[] arcCoordinates) {
 
+		double yDelta_a = arcCoordinates[1].y - arcCoordinates[0].y;
+		double xDelta_a = arcCoordinates[1].x - arcCoordinates[0].x;
+		double yDelta_b = arcCoordinates[2].y - arcCoordinates[1].y;
+		double xDelta_b = arcCoordinates[2].x - arcCoordinates[1].x;
+
 		double aSlope = (arcCoordinates[1].y - arcCoordinates[0].y)
 				/ (arcCoordinates[1].x - arcCoordinates[0].x);
 
@@ -102,11 +107,47 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		// perpendicular to and passing through the midpoints of the lines p1p2
 		// and p2p3.
 
-		double centerX = ((aSlope * bSlope * (BC_Mid.y - AB_Mid.y)) + (aSlope * BC_Mid.x)
-				- (bSlope * AB_Mid.x)) / (aSlope - bSlope);
+		double centerX = 0;
+		double centerY = 0;
+		if (yDelta_a == 0) // aSlope == 0
+		{
+			centerX = AB_Mid.x;
+			if (xDelta_b == 0) // bSlope == INFINITY
+			{
+				centerY = BC_Mid.y;
+			}
+			else {
+				centerY = BC_Mid.y + (BC_Mid.x - centerX) / bSlope;
+			}
+		}
+		else if (yDelta_b == 0) // bSlope == 0
+		{
+			centerX = BC_Mid.x;
+			if (xDelta_a == 0) // aSlope == INFINITY
+			{
+				centerY = AB_Mid.y;
+			}
+			else {
+				centerY = AB_Mid.y + (AB_Mid.x - centerX) / aSlope;
+			}
+		}
+		else if (xDelta_a == 0) // aSlope == INFINITY
+		{
+			centerY = AB_Mid.y;
+			centerX = bSlope * (BC_Mid.y - centerY) + BC_Mid.x;
+		}
+		else if (xDelta_b == 0) // bSlope == INFINITY
+		{
+			centerY = BC_Mid.y;
+			centerX = aSlope * (AB_Mid.y - centerY) + AB_Mid.x;
+		}
+		else //
+		{
+			centerX = ((aSlope * bSlope * (BC_Mid.y - AB_Mid.y)) + (aSlope * BC_Mid.x)
+					- (bSlope * AB_Mid.x)) / (aSlope - bSlope);
 
-		double centerY = AB_Mid.y - ((centerX - AB_Mid.x) / aSlope);
-
+			centerY = AB_Mid.y - ((centerX - AB_Mid.x) / aSlope);
+		}
 		return new Coordinate(centerX, centerY);
 	}
 

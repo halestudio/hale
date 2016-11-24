@@ -107,8 +107,10 @@ public abstract class Interpolation<T extends Geometry> {
 	protected Coordinate pointToGrid(Coordinate coordinate) {
 
 		// Start form 0,0 always
-		long gridMinXMultiplier = (long) (coordinate.x / (GRID_FACTOR * MAX_POSITIONAL_ERROR));
-		long gridMinYMultiplier = (long) (coordinate.y / (GRID_FACTOR * MAX_POSITIONAL_ERROR));
+		long gridMinXMultiplier = (long) round(
+				(coordinate.x / (GRID_FACTOR * MAX_POSITIONAL_ERROR)), ROUNDING_SCALE);
+		long gridMinYMultiplier = (long) round(
+				(coordinate.y / (GRID_FACTOR * MAX_POSITIONAL_ERROR)), ROUNDING_SCALE);
 
 		double gridMinXNearPoint = round(gridMinXMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR),
 				ROUNDING_SCALE);
@@ -148,12 +150,22 @@ public abstract class Interpolation<T extends Geometry> {
 
 		List<Coordinate> coordinates = new ArrayList<>();
 
+		// adding all 4 grid cell connecting to the specified points.
+		// this will be helpful for negative coordinates
+		//  _ _ _ _ _ _ _ _ 
+		// |   3   |   2   |
+		// |_ _ _ _|_ _ _ _|
+		// |   4   |   1   |
+		// |_ _ _ _|_ _ _ _|
+		//
+
+		// adding cell 1
 		// up left corner
 		coordinates.add(new Coordinate(gridMinXNearPoint, gridMinYNearPoint));
 
 		// up right corner of the grid cell
 		coordinates.add(new Coordinate(
-				gridMinXNearPoint + round((GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
 				gridMinYNearPoint));
 		// bottom left corner of the grid cell
 		coordinates.add(new Coordinate(gridMinXNearPoint,
@@ -167,6 +179,64 @@ public abstract class Interpolation<T extends Geometry> {
 		// center of the grid cell
 		coordinates.add(new Coordinate(
 				round(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE),
+				round(gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE)));
+
+		// adding cell 2
+		// up left corner
+		coordinates.add(new Coordinate(gridMinXNearPoint,
+				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+
+		// up right corner of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+
+		// center of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE),
+				round(gridMinYNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE)));
+
+		// adding cell 3
+		// up left corner
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+
+		// up right corner of the grid cell(already added in cell 2)
+
+		// bottom left corner of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				gridMinYNearPoint));
+
+		// bottom right corner of the grid cell(already added in 1)
+
+		// center of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE),
+				round(gridMinYNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
+						ROUNDING_SCALE)));
+
+		// adding cell 4
+		// up left corner(already added in 3)
+
+		// up right corner of the grid cell (already added in 1)
+
+		// bottom left corner of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
+				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+
+		// bottom right corner of the grid cell(already added in 1)
+
+		// center of the grid cell
+		coordinates.add(new Coordinate(
+				round(gridMinXNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
 						ROUNDING_SCALE),
 				round(gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
 						ROUNDING_SCALE)));
