@@ -92,11 +92,12 @@ public class ArcHandler extends LineStringHandler {
 				lineStringGeomProperty.getGeometry().getCoordinates(),
 				maxPositionalError.doubleValue());
 		LineString interpolatedArc = interpolation.interpolateRawGeometry();
-		if (interpolatedArc != null)
-			return new DefaultGeometryProperty<LineString>(
-					lineStringGeomProperty.getCRSDefinition(), interpolatedArc);
-		log.error("Arc could not interpolated to Linestring");
-		return null;
+		if (interpolatedArc == null) {
+			log.error("Arc could be not interpolated to Linestring");
+			return null;
+		}
+		return new DefaultGeometryProperty<LineString>(lineStringGeomProperty.getCRSDefinition(),
+				interpolatedArc);
 	}
 
 	/**
