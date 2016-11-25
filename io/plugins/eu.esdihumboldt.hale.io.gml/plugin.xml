@@ -149,6 +149,21 @@
                   defaultDescription="By default 0.1(unit) is supplied">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
+               label="Keep original coordinates"
+               name="interpolation.geometry.keepOriginal"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="Will keep original coordinates intact"
+                  sample="false"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -207,6 +222,21 @@
             <valueDescriptor
                   default="0.1"
                   defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
+               label="Keep original coordinates"
+               name="interpolation.geometry.keepOriginal"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="Will keep original coordinates intact"
+                  sample="false"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
          </providerParameter>
       </provider>
