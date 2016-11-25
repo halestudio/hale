@@ -3,7 +3,10 @@ package eu.esdihumboldt.hale.io.interpolation.ui;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -24,14 +27,15 @@ public class InterpolationSettingPage
 		implements InterpolationConstant {
 
 	private Text error;
+	private Button keepOriginal;
 
 	/**
 	 * Default constructor
 	 */
 	public InterpolationSettingPage() {
-		super("maximumPositionError", "Interpolation", null);
+		super("interpolation.basicSettings", "Interpolation", null);
 
-		setDescription("Please enter maximum position error for interpolation of curve geometries");
+		setDescription("Basic settings for interpolation of curve geometries");
 	}
 
 	@Override
@@ -54,26 +58,56 @@ public class InterpolationSettingPage
 		}
 		setErrorMessage("");
 		provider.setParameter(INTERPOL_MAX_POSITION_ERROR, Value.of(error.getText()));
+		provider.setParameter(INTERPOL_GEOMETRY_KEEP_ORIGINAL,
+				Value.of(keepOriginal.getSelection()));
 		return true;
 	}
 
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(GridLayoutFactory.swtDefaults().numColumns(3).create());
+		// page.setLayout(GridLayoutFactory.swtDefaults().numColumns(3).create());
+		page.setLayout(new GridLayout(1, false));
+
+		Group groupError = new Group(page, SWT.NONE);
+		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(groupError);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(groupError);
+		groupError.setText("Max Positional Error");
+		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(groupError);
 
 		// label error
-		Label labelError = new Label(page, SWT.NONE);
+		Label labelError = new Label(groupError, SWT.NONE);
 		labelError.setText("Maximum Position Error: ");
 		labelError.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
 
-		error = new Text(page, SWT.BORDER | SWT.SINGLE);
+		error = new Text(groupError, SWT.BORDER | SWT.SINGLE);
 		error.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
 				.grab(true, false).create());
 
 		// label unit
-		Label labelUnit = new Label(page, SWT.NONE);
+		Label labelUnit = new Label(groupError, SWT.NONE);
 		labelUnit.setText("(unit)");
 		labelUnit.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
+
+		Label positionErrorDesc = new Label(groupError, SWT.NONE);
+		positionErrorDesc.setText(
+				"Supplied maximum positional error will be used to interpolate the curve geometries");
+		GridDataFactory.fillDefaults().span(3, 1).applyTo(positionErrorDesc);
+
+		Group group = new Group(page, SWT.NONE);
+		group.setLayout(new GridLayout(1, false));
+		group.setText("Keep original");
+		GridDataFactory.fillDefaults().span(3, 1).applyTo(group);
+
+		keepOriginal = new Button(group, SWT.CHECK);
+		keepOriginal.setText("Keep original geometry coordinates");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(keepOriginal);
+		// default
+		keepOriginal.setSelection(true);
+
+		Label desc = new Label(group, SWT.NONE);
+		desc.setText(
+				"Keep original coordinates intact after interpolation or move all geometries' coordinates to the universal grid");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(desc);
 
 		// filler
 		new Label(page, SWT.NONE);
@@ -121,5 +155,8 @@ public class InterpolationSettingPage
 			error.setText(Double.toString(value.doubleValue()));
 		else
 			error.setText(Double.toString(DEFAULT_INTERPOL_MAX_POSITION_ERROR));
+
+		keepOriginal.setSelection(provider.getParameter(INTERPOL_GEOMETRY_KEEP_ORIGINAL)
+				.as(Boolean.class, DEFAULT_INTERPOL_GEOMETRY_KEEP_ORIGINAL));
 	}
 }
