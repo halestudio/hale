@@ -43,6 +43,8 @@ public class InterpolationGridCellTest {
 
 	private final String gridCell;
 
+	private final static boolean KEEP_ORIGINAL = false;
+
 	/**
 	 * Constructor with parameters
 	 * 
@@ -72,14 +74,17 @@ public class InterpolationGridCellTest {
 						{ "Center", new Coordinate(1.4, 1.4), new Coordinate(1.5, 1.5), 0.5 }, // Center
 						{ "UP Left Corner", new Coordinate(1.2, 1.1), new Coordinate(1, 1), 0.5 }, // up-left-corner
 						{ "UP Right Corner", new Coordinate(3.8, 2.1), new Coordinate(4, 2), 0.5 }, // up-right-corner
-						{ "Bottom Left Corner", new Coordinate(5.2, 3.9), new Coordinate(5,
-								4), 0.5 }, // bottom-left-corner
-				{ "Bottom Right Corner", new Coordinate(4.9, 2.9), new Coordinate(5, 3), 0.5 }, // bottom-right-corner
+						{ "Bottom Left Corner", new Coordinate(5.2, 3.9),
+								new Coordinate(5,
+										4),
+								0.5 }, // bottom-left-corner
+						{ "Bottom Right Corner", new Coordinate(4.9, 2.9), new Coordinate(5,
+								3), 0.5 }, // bottom-right-corner
 				{ "Same-Grid-cell", new Coordinate(4.9, 2.9), new Coordinate(4.9, 2.9), 0.1 }, // Same-Grid-cell
 				{ "Bottom Right Corner", new Coordinate(0.098, 0.048), new Coordinate(0.10, 0.05),
 						0.025 }, // bottom-right-corner
 				{ "4 No cell Up left corner", new Coordinate(-5.17, 7), new Coordinate(-5.2, 7),
-					0.1 }// bottom-right-corner
+						0.1 }// bottom-right-corner
 		});
 
 	}
@@ -89,7 +94,7 @@ public class InterpolationGridCellTest {
 	 */
 	@Test
 	public void testGridCellPoint() {
-		TestClass test = new TestClass(null, e);
+		TestClass test = new TestClass(null, e, KEEP_ORIGINAL);
 		Coordinate actualGridPoint = test.pointToGrid(this.testCoordinate);
 		Assert.assertEquals("Test fail for " + this.gridCell
 				+ " grid coordinate. Actual coordinate:(" + actualGridPoint
@@ -108,9 +113,11 @@ public class InterpolationGridCellTest {
 		 * 
 		 * @param coordinates Coordinates
 		 * @param maxPositionalError maximum positional error
+		 * @param keepOriginal keeps original points intact
 		 */
-		public TestClass(Coordinate[] coordinates, double maxPositionalError) {
-			super(coordinates, maxPositionalError);
+		public TestClass(Coordinate[] coordinates, double maxPositionalError,
+				boolean keepOriginal) {
+			super(coordinates, maxPositionalError, keepOriginal);
 
 		}
 
