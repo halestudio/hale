@@ -40,10 +40,10 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
-import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
+import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -51,7 +51,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Patrick Lieb
  */
-public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
+public class EnvelopeHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final String ENVELOPE_TYPE = "EnvelopeType";
 
@@ -120,6 +120,7 @@ public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 		if (!points.isEmpty()) {
 			Coordinate[] coordinates = new Coordinate[] { points.get(0).getCoordinate(),
 					points.get(1).getCoordinate() };
+			coordinates = moveToUniversalGrid(coordinates, reader);
 			envelope = getGeometryFactory().createMultiPoint(coordinates);
 		}
 

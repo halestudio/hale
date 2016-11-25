@@ -25,9 +25,11 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -49,6 +51,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
+import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -56,7 +59,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Simon Templer
  */
-public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
+public class GenericGeometryHandler extends InterpolationSupportedGeometryHandler {
 
 	/**
 	 * Wraps a {@link CRSDefinition}.
@@ -162,7 +165,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
 		traverser.traverse(instance, geoFind);
 
-		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
+		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef, reader);
 	}
 
 	/**
@@ -171,6 +174,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * @param instance the instance
 	 * @param childGeometries the child geometries found in the instance
 	 * @param defaultCrs the definition of the default CRS for this instance
+	 * @param reader the IO provider
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
@@ -179,7 +183,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@SuppressWarnings("unused")
 	protected Collection<GeometryProperty<?>> createGeometry(Instance instance,
-			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
+			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs, IOProvider reader)
 					throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();
@@ -236,7 +240,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				// create a MultiPolygon
 				Polygon[] polygons = new Polygon[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
-					polygons[i] = (Polygon) geomList.get(i);
+					polygons[i] = movePolygonToUniversalGrid((Polygon) geomList.get(i), reader);
 				}
 				geom = getGeometryFactory().createMultiPolygon(polygons);
 			}
@@ -244,7 +248,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				// create a MultiLineString
 				LineString[] lines = new LineString[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
-					lines[i] = (LineString) geomList.get(i);
+					lines[i] = moveLineStringToUniversalGrid((LineString) geomList.get(i), reader);
 				}
 				geom = getGeometryFactory().createMultiLineString(lines);
 			}
@@ -252,7 +256,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				// create a MultiPoint
 				Point[] points = new Point[geomList.size()];
 				for (int i = 0; i < geomList.size(); i++) {
-					points[i] = (Point) geomList.get(i);
+					points[i] = movePointToUniversalGrid((Point) geomList.get(i), reader);
 				}
 				geom = getGeometryFactory().createMultiPoint(points);
 			}
@@ -271,4 +275,68 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		}
 		return childGeometries;
 	}
+
+	private Polygon movePolygonToUniversalGrid(Polygon polygon, IOProvider reader) {
+
+		getInterpolationRequiredParameter(reader);
+		if (!isKeepOriginal()) {
+
+			Polygon newPolygon = null;
+
+			List<LinearRing> outerRing = new ArrayList<LinearRing>(1);
+			outerRing.add((LinearRing) polygon.getExteriorRing());
+
+			outerRing = moveLinerRingsToUniversalGrid(outerRing);
+
+			List<LinearRing> innerRings = null;
+			if (polygon.getNumInteriorRing() > 0) {
+				innerRings = new ArrayList<>(polygon.getNumInteriorRing());
+
+				for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
+					innerRings.add((LinearRing) polygon.getInteriorRingN(i));
+				}
+
+				innerRings = moveLinerRingsToUniversalGrid(innerRings);
+
+				newPolygon = getGeometryFactory().createPolygon(outerRing.get(0),
+						innerRings.toArray(new LinearRing[polygon.getNumInteriorRing()]));
+			}
+			else
+				newPolygon = getGeometryFactory().createPolygon(outerRing.get(0), null);
+			return newPolygon;
+		}
+		return polygon;
+
+	}
+
+	private List<LinearRing> moveLinerRingsToUniversalGrid(List<LinearRing> linearRings) {
+
+		List<LinearRing> newRings = new ArrayList<LinearRing>();
+		for (LinearRing ring : linearRings) {
+			Coordinate[] newCoordinates = moveToUniversalGrid(ring.getCoordinates());
+			LinearRing newRing = getGeometryFactory().createLinearRing(newCoordinates);
+			newRings.add(newRing);
+		}
+		return newRings;
+	}
+
+	private LineString moveLineStringToUniversalGrid(LineString lineString, IOProvider reader) {
+
+		getInterpolationRequiredParameter(reader);
+		if (!isKeepOriginal()) {
+			Coordinate[] newCoordinates = moveToUniversalGrid(lineString.getCoordinates());
+			LineString newLine = getGeometryFactory().createLinearRing(newCoordinates);
+			return newLine;
+		}
+		return lineString;
+	}
+
+	private Point movePointToUniversalGrid(Point point, IOProvider reader) {
+
+		Point newPoint = getGeometryFactory().createPoint(
+				moveToUniversalGrid(new Coordinate[] { point.getCoordinate() }, reader)[0]);
+
+		return newPoint;
+	}
+
 }

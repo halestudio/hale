@@ -33,15 +33,16 @@ public abstract class Interpolation<T extends Geometry> {
 	/**
 	 * Grid step size factor
 	 */
-	protected final int GRID_FACTOR = 2;
+	protected static final int GRID_FACTOR = 2;
 	/**
 	 * Next coordinate distance factor.
 	 */
-	protected final double NEXT_COORDINATE_DISTANCE_FACTOR = 4;
+	protected static final double NEXT_COORDINATE_DISTANCE_FACTOR = 4;
+
 	/**
-	 * Distance of next coordinate from current coordinate
+	 * Rounding scale for grid cell double value
 	 */
-	protected final double NEXT_COORDINATE_DISTANCE;
+	private static final int ROUNDING_SCALE = 6;
 
 	/**
 	 * Maximum positional error
@@ -49,14 +50,14 @@ public abstract class Interpolation<T extends Geometry> {
 	protected final double MAX_POSITIONAL_ERROR;
 
 	/**
+	 * Distance of next coordinate from current coordinate
+	 */
+	protected final double NEXT_COORDINATE_DISTANCE;
+
+	/**
 	 * Coordinates of Geometry, which wanted to be interpolated
 	 */
 	protected final Coordinate[] rawGeometryCoordinates;
-
-	/**
-	 * Rounding scale for grid cell double value
-	 */
-	private static final int ROUNDING_SCALE = 6;
 
 	/**
 	 * flag to keeps original points in interpolation
@@ -92,6 +93,16 @@ public abstract class Interpolation<T extends Geometry> {
 	}
 
 	/**
+	 * relocate relocate geometry coordinate to the nearest universal grid point
+	 * 
+	 * @param coordinate the geometry coordinates
+	 * @return relocates grid coordinate
+	 */
+	protected Coordinate pointToGrid(Coordinate coordinate) {
+		return pointToGrid(coordinate, this.MAX_POSITIONAL_ERROR);
+	}
+
+	/**
 	 * validate raw geometry
 	 * 
 	 * @return true if validation successful else false.
@@ -110,27 +121,28 @@ public abstract class Interpolation<T extends Geometry> {
 	 * relocate geometry coordinate to nearest grid point.
 	 * 
 	 * @param coordinate geometry coordinate
+	 * @param maxPositionalError maximum positional error
 	 * @return relocated grid coordinate
 	 */
-	protected Coordinate pointToGrid(Coordinate coordinate) {
+	public static Coordinate pointToGrid(Coordinate coordinate, final double maxPositionalError) {
 
 		// Start form 0,0 always
-		long gridMinXMultiplier = (long) round(
-				(coordinate.x / (GRID_FACTOR * MAX_POSITIONAL_ERROR)), ROUNDING_SCALE);
-		long gridMinYMultiplier = (long) round(
-				(coordinate.y / (GRID_FACTOR * MAX_POSITIONAL_ERROR)), ROUNDING_SCALE);
-
-		double gridMinXNearPoint = round(gridMinXMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR),
+		long gridMinXMultiplier = (long) round((coordinate.x / (GRID_FACTOR * maxPositionalError)),
 				ROUNDING_SCALE);
-		double gridMinYNearPoint = round(gridMinYMultiplier * (GRID_FACTOR * MAX_POSITIONAL_ERROR),
+		long gridMinYMultiplier = (long) round((coordinate.y / (GRID_FACTOR * maxPositionalError)),
 				ROUNDING_SCALE);
 
-		while ((gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR)) < coordinate.x) {
-			gridMinXNearPoint = gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR);
+		double gridMinXNearPoint = round(gridMinXMultiplier * (GRID_FACTOR * maxPositionalError),
+				ROUNDING_SCALE);
+		double gridMinYNearPoint = round(gridMinYMultiplier * (GRID_FACTOR * maxPositionalError),
+				ROUNDING_SCALE);
+
+		while ((gridMinXNearPoint + (GRID_FACTOR * maxPositionalError)) < coordinate.x) {
+			gridMinXNearPoint = gridMinXNearPoint + (GRID_FACTOR * maxPositionalError);
 		}
 
-		while ((gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR)) < coordinate.y) {
-			gridMinYNearPoint = gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR);
+		while ((gridMinYNearPoint + (GRID_FACTOR * maxPositionalError)) < coordinate.y) {
+			gridMinYNearPoint = gridMinYNearPoint + (GRID_FACTOR * maxPositionalError);
 		}
 
 		// Now we have to evaluate nearest grid point for arc point
@@ -138,9 +150,9 @@ public abstract class Interpolation<T extends Geometry> {
 
 		// for loop on grid cell
 		for (Coordinate cellCoordinate : getGridCellCoordinates(gridMinXNearPoint,
-				gridMinYNearPoint)) {
+				gridMinYNearPoint, coordinate.z, maxPositionalError)) {
 			double distance = coordinate.distance(cellCoordinate);
-			if (distance <= MAX_POSITIONAL_ERROR) {
+			if (distance <= maxPositionalError) {
 				if (minDistGridPoint != null) {
 					if (distance < coordinate.distance(minDistGridPoint))
 						minDistGridPoint = cellCoordinate;
@@ -153,8 +165,17 @@ public abstract class Interpolation<T extends Geometry> {
 		return minDistGridPoint;
 	}
 
-	private List<Coordinate> getGridCellCoordinates(double gridMinXNearPoint,
-			double gridMinYNearPoint) {
+	/**
+	 * Method to find all cells near given grid X and grid Y
+	 * 
+	 * @param gridX grid minimum X value
+	 * @param gridY grid minimum Y value
+	 * @param z coordinate's z value
+	 * @param maxPositionalError maximum positional error
+	 * @return list of 4 cells surrounding minimum X and minimum Y
+	 */
+	private static List<Coordinate> getGridCellCoordinates(double gridX, double gridY, double z,
+			double maxPositionalError) {
 
 		List<Coordinate> coordinates = new ArrayList<>();
 
@@ -169,85 +190,89 @@ public abstract class Interpolation<T extends Geometry> {
 
 		// adding cell 1
 		// up left corner
-		coordinates.add(new Coordinate(gridMinXNearPoint, gridMinYNearPoint));
+		coordinates.add(new Coordinate(gridX, gridY, z));
 
 		// up right corner of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				gridMinYNearPoint));
+		coordinates.add(new Coordinate( //
+				round(gridX + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				gridY, //
+				z));
 		// bottom left corner of the grid cell
-		coordinates.add(new Coordinate(gridMinXNearPoint,
-				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				gridX, //
+				round(gridY + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// bottom right corner of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// center of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE),
-				round(gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX + ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE),
+				round(gridY + ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// adding cell 2
 		// up left corner
-		coordinates.add(new Coordinate(gridMinXNearPoint,
-				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				gridX, //
+				round(gridY - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// up right corner of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE),
+				round(gridY - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// center of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE),
-				round(gridMinYNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX + ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY - ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// adding cell 3
 		// up left corner
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				round(gridMinYNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// up right corner of the grid cell(already added in cell 2)
 
 		// bottom left corner of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				gridMinYNearPoint));
+		coordinates.add(new Coordinate(//
+				round(gridX - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				gridY, //
+				z));
 
 		// bottom right corner of the grid cell(already added in 1)
 
 		// center of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE),
-				round(gridMinYNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE)));
+		coordinates.add(new Coordinate(//
+				round(gridX - ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY - ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// adding cell 4
 		// up left corner(already added in 3)
-
 		// up right corner of the grid cell (already added in 1)
-
 		// bottom left corner of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint - (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE),
-				round(gridMinYNearPoint + (GRID_FACTOR * MAX_POSITIONAL_ERROR), ROUNDING_SCALE)));
+		coordinates.add(new Coordinate(//
+				round(gridX - (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY + (GRID_FACTOR * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		// bottom right corner of the grid cell(already added in 1)
 
 		// center of the grid cell
-		coordinates.add(new Coordinate(
-				round(gridMinXNearPoint - ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE),
-				round(gridMinYNearPoint + ((GRID_FACTOR / 2) * MAX_POSITIONAL_ERROR),
-						ROUNDING_SCALE)));
+		coordinates.add(new Coordinate( //
+				round(gridX - ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				round(gridY + ((GRID_FACTOR / 2) * maxPositionalError), ROUNDING_SCALE), //
+				z));
 
 		return coordinates;
 	}
