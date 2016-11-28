@@ -62,7 +62,7 @@ public class InterpolationTest {
 
 	private static final boolean SKIP_TEST = false;
 
-	private static final boolean DRAW_IMAGE = true;
+	private static final boolean DRAW_IMAGE = false;
 
 	private static final boolean DEFAULT_KEEP_ORIGINAL = true;
 
@@ -139,7 +139,6 @@ public class InterpolationTest {
 		});
 	}
 
-//353297.973 5531361.379 353298.192 5531360.429 353298.503 5531359.504
 	/**
 	 * test algorithm
 	 */
@@ -153,6 +152,13 @@ public class InterpolationTest {
 		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
+
+		// get generated coordinates
+//		System.out.println(interpolatedArc.getCoordinates().length);
+//		System.out.println("");
+//		for (Coordinate coordinate : interpolatedArc.getCoordinates())
+//			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
+//		System.out.println("");
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);

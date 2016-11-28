@@ -37,11 +37,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading polygon patch geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class PolygonPatchGeometryTest extends AbstractHandlerTest {
 
 	private Polygon reference;
+	private Polygon referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -52,16 +53,35 @@ public class PolygonPatchGeometryTest extends AbstractHandlerTest {
 				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) });
 
 		LinearRing[] holes = new LinearRing[2];
-		LinearRing hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 1),
-				new Coordinate(1, 1), new Coordinate(0, -1), new Coordinate(-1, -1),
-				new Coordinate(0, 1) });
-		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 2),
-				new Coordinate(2, 2), new Coordinate(0, -2), new Coordinate(-2, -2),
-				new Coordinate(0, 2) });
+		LinearRing hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		LinearRing hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
 		holes[0] = hole1;
 		holes[1] = hole2;
 
 		reference = geomFactory.createPolygon(shell, holes);
+
+		// grid
+
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
+				new Coordinate(3.3, 3.3), new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2),
+				new Coordinate(0.00, 3.2) });
+
+		holes = new LinearRing[2];
+		hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
+		holes[0] = hole1;
+		holes[1] = hole2;
+
+		referenceOnGrid = geomFactory.createPolygon(shell, holes);
+
 	}
 
 	/**
@@ -73,7 +93,8 @@ public class PolygonPatchGeometryTest extends AbstractHandlerTest {
 	public void testPolygonPatchGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygonpatch-gml32.xml").toURI());
+				getClass().getResource("/data/polygon/sample-polygonpatch-gml32.xml").toURI(),
+				true);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -81,13 +102,38 @@ public class PolygonPatchGeometryTest extends AbstractHandlerTest {
 			// PolygonPatchProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPatchPropertyInstance(instance);
+			checkPolygonPatchPropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkPolygonPatchPropertyInstance(Instance instance) {
+	/**
+	 * Test polygon patch geometries read from a GML 3.2 file. Geometry
+	 * coordinates will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testPolygonPatchGml32_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/polygon/sample-polygonpatch-gml32.xml").toURI(),
+				false);
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolygonPatchProperty with LinearRing defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkPolygonPatchPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkPolygonPatchPropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -96,16 +142,16 @@ public class PolygonPatchGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
 
 		@SuppressWarnings("unchecked")
 		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue()).getGeometry();
 		assertTrue("Read geometry does not match the reference geometry",
-				polygon.equalsExact(reference));
+				polygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
 	}
 
 }

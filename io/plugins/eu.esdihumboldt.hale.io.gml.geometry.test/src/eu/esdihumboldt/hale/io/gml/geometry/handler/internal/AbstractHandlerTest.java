@@ -30,8 +30,10 @@ import org.junit.BeforeClass;
 import com.vividsolutions.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -46,7 +48,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 /**
  * Base class for handler tests.
  * 
- * @author Simon Templer
+ * @author Simon Templer, Arun Varma
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractHandlerTest {
@@ -55,6 +57,11 @@ public abstract class AbstractHandlerTest {
 	 * Test namespace
 	 */
 	public static final String NS_TEST = "eu:esdihumboldt:hale:test";
+
+	/**
+	 * Maximum positional error for curve geometry
+	 */
+	private static final double MAX_POSITION_ERROR = 0.1;
 
 	/**
 	 * The geometry factory instance
@@ -91,6 +98,42 @@ public abstract class AbstractHandlerTest {
 	 */
 	public static InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation)
 			throws IOException, IOProviderConfigurationException {
+		return loadXMLInstances(schemaLocation, xmlLocation, true);
+	}
+
+	/**
+	 * Load an instance collection from a GML file.
+	 * 
+	 * @param schemaLocation the GML application schema location
+	 * @param xmlLocation the GML file location
+	 * @param keepOriginal true to keep original coordinates unchanged else
+	 *            false
+	 * @return the instance collection
+	 * @throws IOException if reading schema or instances failed
+	 * @throws IOProviderConfigurationException if the I/O providers were not
+	 *             configured correctly
+	 */
+	public static InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation,
+			boolean keepOriginal) throws IOException, IOProviderConfigurationException {
+		return loadXMLInstances(schemaLocation, xmlLocation, keepOriginal, MAX_POSITION_ERROR);
+	}
+
+	/**
+	 * Load an instance collection from a GML file.
+	 * 
+	 * @param schemaLocation the GML application schema location
+	 * @param xmlLocation the GML file location
+	 * @param keepOriginal true to keep original coordinates unchanged else
+	 *            false
+	 * @param maxPoisitionError maximum positional error parameter value
+	 * @return the instance collection
+	 * @throws IOException if reading schema or instances failed
+	 * @throws IOProviderConfigurationException if the I/O providers were not
+	 *             configured correctly
+	 */
+	public static InstanceCollection loadXMLInstances(URI schemaLocation, URI xmlLocation,
+			boolean keepOriginal, double maxPoisitionError)
+					throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
@@ -102,6 +145,10 @@ public abstract class AbstractHandlerTest {
 
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);
+		instanceReader.setParameter(InterpolationConstant.INTERPOL_GEOMETRY_KEEP_ORIGINAL,
+				Value.of(keepOriginal));
+		instanceReader.setParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR,
+				Value.of(maxPoisitionError));
 
 		IOReport instanceReport = instanceReader.execute(null);
 		assertTrue(instanceReport.isSuccess());

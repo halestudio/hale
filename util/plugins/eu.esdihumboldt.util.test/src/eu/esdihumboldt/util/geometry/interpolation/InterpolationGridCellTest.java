@@ -69,13 +69,11 @@ public class InterpolationGridCellTest {
 	@SuppressWarnings("rawtypes")
 	@Parameters
 	public static Collection addCoordiantes() {
-		return Arrays
-				.asList(new Object[][] { //
-						{ "Center", new Coordinate(1.4, 1.4), new Coordinate(1.5, 1.5), 0.5 }, // Center
-						{ "UP Left Corner", new Coordinate(1.2, 1.1), new Coordinate(1, 1), 0.5 }, // up-left-corner
-						{ "UP Right Corner", new Coordinate(3.8, 2.1), new Coordinate(4, 2), 0.5 }, // up-right-corner
-						{ "Bottom Left Corner", new Coordinate(5.2, 3.9), new Coordinate(5,
-								4), 0.5 }, // bottom-left-corner
+		return Arrays.asList(new Object[][] { //
+				{ "Center", new Coordinate(1.4, 1.4), new Coordinate(1.5, 1.5), 0.5 }, // Center
+				{ "UP Left Corner", new Coordinate(1.2, 1.1), new Coordinate(1, 1), 0.5 }, // up-left-corner
+				{ "UP Right Corner", new Coordinate(3.8, 2.1), new Coordinate(4, 2), 0.5 }, // up-right-corner
+				{ "Bottom Left Corner", new Coordinate(5.2, 3.9), new Coordinate(5, 4), 0.5 }, // bottom-left-corner
 				{ "Bottom Right Corner", new Coordinate(4.9, 2.9), new Coordinate(5, 3), 0.5 }, // bottom-right-corner
 				{ "Same-Grid-cell", new Coordinate(4.9, 2.9), new Coordinate(4.9, 2.9), 0.1 }, // Same-Grid-cell
 				{ "Bottom Right Corner", new Coordinate(0.098, 0.048), new Coordinate(0.10, 0.05),
@@ -83,6 +81,10 @@ public class InterpolationGridCellTest {
 				{ "4 No cell Up left corner", new Coordinate(-5.17, 7), new Coordinate(-5.2, 7),
 						0.1 }, // bottom-right-corner
 				{ "Same-Grid-cell", new Coordinate(4, 2), new Coordinate(4.0, 2.0), 0.1 }, // Same-Grid-cell
+				{ "test11", new Coordinate(-122.44, 37.80), new Coordinate(-122.44, 37.80), 0.01 }, //
+				{ "test12", new Coordinate(-122.45, 37.80), new Coordinate(-122.46, 37.80), 0.01 }, //
+				{ "test13", new Coordinate(-122.45, 37.78), new Coordinate(-122.46, 37.78), 0.01 }, //
+				{ "test14", new Coordinate(-122.24, 37.60), new Coordinate(-122.24, 37.60), 0.01 } //
 		});
 
 	}
@@ -92,11 +94,10 @@ public class InterpolationGridCellTest {
 	 */
 	@Test
 	public void testGridCellPoint() {
-		TestClass test = new TestClass(null, e, KEEP_ORIGINAL);
+		TestClass test = new TestClass(null, this.e, KEEP_ORIGINAL);
 		Coordinate actualGridPoint = test.pointToGrid(this.testCoordinate);
-		Assert.assertEquals("Test fail for " + this.gridCell
-				+ " grid coordinate. Actual coordinate:(" + actualGridPoint
-				+ ") Expected Coordinate:(" + this.expectedGridCoordinate + ")",
+		Assert.assertEquals(
+				"Test fail for " + this.gridCell + ". Test coordinate:(" + testCoordinate + ") ",
 				this.expectedGridCoordinate, actualGridPoint);
 	}
 
