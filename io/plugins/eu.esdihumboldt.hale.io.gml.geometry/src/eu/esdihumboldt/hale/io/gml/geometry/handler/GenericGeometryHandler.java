@@ -325,7 +325,7 @@ public class GenericGeometryHandler extends InterpolationSupportedGeometryHandle
 		getInterpolationRequiredParameter(reader);
 		if (!isKeepOriginal()) {
 			Coordinate[] newCoordinates = moveToUniversalGrid(lineString.getCoordinates());
-			LineString newLine = getGeometryFactory().createLinearRing(newCoordinates);
+			LineString newLine = getGeometryFactory().createLineString(newCoordinates);
 			return newLine;
 		}
 		return lineString;
