@@ -28,21 +28,21 @@ import com.vividsolutions.jts.geom.Geometry;
  * @author Arun
  * @param <T> the type of interpolated Geometry
  */
-public abstract class Interpolation<T extends Geometry> {
+public abstract class Interpolation<T extends Geometry> implements UniversalGridConstants {
 
 	/**
 	 * Grid step size factor
 	 */
-	protected static final int GRID_FACTOR = 2;
+	private static final int GRID_FACTOR = DEFAULT_GRID_STEP_FACTOR;
 	/**
 	 * Next coordinate distance factor.
 	 */
-	protected static final double NEXT_COORDINATE_DISTANCE_FACTOR = 4;
+	private static final double NEXT_COORDINATE_DISTANCE_FACTOR = DEFAULT_COORDINATE_DISTANCE_FACTOR;
 
 	/**
-	 * Rounding scale for grid cell double value
+	 * Rounding scale for grid cell value
 	 */
-	private static final int ROUNDING_SCALE = 6;
+	private static final int ROUNDING_SCALE = DEFAULT_ROUNDING_SCALE;
 
 	/**
 	 * Maximum positional error
@@ -89,7 +89,7 @@ public abstract class Interpolation<T extends Geometry> {
 			return null;
 		}
 
-		return interpolatedGeometry();
+		return getInterpolatedGeometry();
 	}
 
 	/**
@@ -110,12 +110,12 @@ public abstract class Interpolation<T extends Geometry> {
 	protected abstract boolean validateRawCoordinates();
 
 	/**
-	 * get interpolated raw geometry
+	 * get interpolated geometry
 	 * 
 	 * @return interpolated Geometry
 	 * 
 	 */
-	protected abstract T interpolatedGeometry();
+	protected abstract T getInterpolatedGeometry();
 
 	/**
 	 * relocate geometry coordinate to nearest grid point.

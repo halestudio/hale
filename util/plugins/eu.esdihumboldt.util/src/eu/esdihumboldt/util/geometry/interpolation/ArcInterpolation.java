@@ -61,10 +61,10 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.util.geometry.interpolation.Interpolation#interpolatedGeometry()
+	 * @see eu.esdihumboldt.util.geometry.interpolation.Interpolation#getInterpolatedGeometry()
 	 */
 	@Override
-	protected LineString interpolatedGeometry() {
+	protected LineString getInterpolatedGeometry() {
 		// Calculate center of Arc
 		Coordinate centerOfArc = calculateCenterPoint(rawGeometryCoordinates);
 

@@ -126,7 +126,7 @@ public class InterpolationGridCellTest {
 		}
 
 		@Override
-		protected LineString interpolatedGeometry() {
+		protected LineString getInterpolatedGeometry() {
 			return null;
 		}
 
