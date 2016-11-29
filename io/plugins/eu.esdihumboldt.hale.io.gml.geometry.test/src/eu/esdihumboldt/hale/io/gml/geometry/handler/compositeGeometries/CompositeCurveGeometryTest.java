@@ -37,11 +37,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading composite curve geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 
 	private MultiLineString reference;
+	private MultiLineString referenceOnGrid;
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
@@ -56,6 +57,15 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 
 		LineString[] lines = new LineString[] { linestring1 };
 		reference = geomFactory.createMultiLineString(lines);
+
+		// Grid
+		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
+				new Coordinate(0, -3.2) };
+		linestring1 = geomFactory.createLineString(coordinates);
+
+		lines = new LineString[] { linestring1 };
+		referenceOnGrid = geomFactory.createMultiLineString(lines);
+
 	}
 
 	/**
@@ -67,7 +77,8 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 	public void testCompositeCurveGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI());
+				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI(),
+				true);
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -75,13 +86,38 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 			// segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeCurvePropertyInstance(instance);
+			checkCompositeCurvePropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkCompositeCurvePropertyInstance(Instance instance) {
+	/**
+	 * Test composite curve geometries read from a GML 3.2 file. Geometry
+	 * coordinates will be moved to universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testCompositeCurveGml32_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI(),
+				false);
+
+		// one instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// segments with LineStringSegment defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkCompositeCurvePropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkCompositeCurvePropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -90,16 +126,16 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
 			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
 					.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(reference));
+					multilinestring.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 

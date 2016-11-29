@@ -39,9 +39,9 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
-import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
+import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Patrick Lieb
  */
-public class LineStringHandler extends FixedConstraintsGeometryHandler {
+public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final String LINE_STRING_TYPE = "LineStringType";
 
@@ -107,7 +107,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				try {
 					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
-						line = getGeometryFactory().createLineString(cs);
+						line = getGeometryFactory()
+								.createLineString(moveToUniversalGrid(cs, reader));
 					}
 				} catch (ParseException e) {
 					throw new GeometryNotSupportedException("Could not parse coordinates", e);
@@ -131,7 +132,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
 		}
@@ -146,7 +148,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 				if (value instanceof Instance) {
 					Coordinate[] cs = GMLGeometryUtil.parsePosList((Instance) value, srsDimension);
 					if (cs != null) {
-						line = getGeometryFactory().createLineString(cs);
+						line = getGeometryFactory()
+								.createLineString(moveToUniversalGrid(cs, reader));
 					}
 				}
 			}
@@ -174,7 +177,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
 		}
@@ -200,7 +204,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
 		}
@@ -221,7 +226,8 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = cs.toArray(new Coordinate[cs.size()]);
+				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
 		}
@@ -305,6 +311,23 @@ public class LineStringHandler extends FixedConstraintsGeometryHandler {
 //		types.add(new QName(NS_GML_32, ENVELOPE_WITH_TIME_PERIOD_TYPE));
 
 		return types;
+	}
+
+	@Override
+	protected Coordinate[] moveToUniversalGrid(Coordinate[] coordinates, IOProvider reader) {
+		return isLineStringRelocationRequired() ? super.moveToUniversalGrid(coordinates, reader)
+				: coordinates;
+	}
+
+	/**
+	 * is relocating is required for LineString coordinates
+	 * 
+	 * Override this method to skip the relocation of LineString coordinates;
+	 * 
+	 * @return true if required else false
+	 */
+	protected boolean isLineStringRelocationRequired() {
+		return true;
 	}
 
 }

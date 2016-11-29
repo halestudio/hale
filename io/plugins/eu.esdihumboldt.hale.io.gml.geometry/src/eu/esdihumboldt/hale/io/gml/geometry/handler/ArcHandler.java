@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.namespace.QName;
 
@@ -29,7 +28,6 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
-import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
@@ -50,8 +48,6 @@ public class ArcHandler extends LineStringHandler {
 	private static final String ARC_TYPE = "ArcType";
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcHandler.class);
-
-	private static final AtomicBoolean reportedWarning = new AtomicBoolean(false);
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#initSupportedTypes()
@@ -77,24 +73,12 @@ public class ArcHandler extends LineStringHandler {
 		DefaultGeometryProperty<LineString> lineStringGeomProperty = (DefaultGeometryProperty<LineString>) super.createGeometry(
 				instance, srsDimension, reader);
 
-		Double maxPositionalError = reader
-				.getParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR).as(Double.class);
-
-		boolean keepOriginal = reader
-				.getParameter(InterpolationConstant.INTERPOL_GEOMETRY_KEEP_ORIGINAL)
-				.as(Boolean.class, true);
-
-		if (maxPositionalError == null || maxPositionalError.doubleValue() <= 0) {
-			if (reportedWarning.compareAndSet(false, true)) {
-				log.warn(
-						"Value of Max positional error parameter, for interpolation operation, is not valid. Default value has been taken.");
-			}
-			maxPositionalError = InterpolationConstant.DEFAULT_INTERPOL_MAX_POSITION_ERROR;
-		}
+		// get interpolation required parameter
+		getInterpolationRequiredParameter(reader);
 
 		Interpolation<LineString> interpolation = new ArcInterpolation(
-				lineStringGeomProperty.getGeometry().getCoordinates(),
-				maxPositionalError.doubleValue(), keepOriginal);
+				lineStringGeomProperty.getGeometry().getCoordinates(), getMaxPositionalError(),
+				isKeepOriginal());
 		LineString interpolatedArc = interpolation.interpolateRawGeometry();
 		if (interpolatedArc == null) {
 			log.error("Arc could be not interpolated to Linestring");
@@ -117,6 +101,14 @@ public class ArcHandler extends LineStringHandler {
 		constraints.add(new GeometryFactory(this));
 
 		return constraints;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#isLineStringRelocationRequired()
+	 */
+	@Override
+	protected boolean isLineStringRelocationRequired() {
+		return false;
 	}
 
 }

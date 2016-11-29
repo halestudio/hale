@@ -37,22 +37,31 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading rectangle geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class RectangleGeometryTest extends AbstractHandlerTest {
 
 	private Polygon referencePolygon;
+	private Polygon referencePolygonOnGrid;
 
 	@Override
 	public void init() {
 		super.init();
 
 		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
-				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2),
-				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) };
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2), new Coordinate(-3.33, -3.2),
+				new Coordinate(0.01, 3.2) };
 
 		LinearRing linearRing = geomFactory.createLinearRing(coordinates);
 		referencePolygon = geomFactory.createPolygon(linearRing, null);
+
+		// grid
+		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
+				new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2), new Coordinate(0, 3.2) };
+
+		linearRing = geomFactory.createLinearRing(coordinates);
+		referencePolygonOnGrid = geomFactory.createPolygon(linearRing, null);
+
 	}
 
 	/**
@@ -72,18 +81,47 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRectanglePropertyPolygon(instance);
+			checkRectanglePropertyPolygon(instance, true);
 
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			instance = it.next();
-			checkRectanglePropertyPolygon(instance);
+			checkRectanglePropertyPolygon(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkRectanglePropertyPolygon(Instance instance) {
+	/**
+	 * Test rectangle geometries read from a GML 3.2 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testRectangleGml32_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/sample-rectangle-gml32.xml").toURI(), false);
+
+		// two instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. segments with LineStringSegment defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkRectanglePropertyPolygon(instance, false);
+
+			// 1. segments with LineStringSegment defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			instance = it.next();
+			checkRectanglePropertyPolygon(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkRectanglePropertyPolygon(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -96,7 +134,7 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 		@SuppressWarnings("unchecked")
 		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue()).getGeometry();
 		assertTrue("Read geometry does not match the reference geometry",
-				polygon.equalsExact(referencePolygon));
+				polygon.equalsExact(keepOriginal ? referencePolygon : referencePolygonOnGrid));
 	}
 
 }

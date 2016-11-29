@@ -36,11 +36,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading multi point geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class MultiPointGeometryTest extends AbstractHandlerTest {
 
 	private MultiPoint reference;
+	private MultiPoint referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -51,6 +52,12 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 				new Coordinate(-39841.185, 273182.863), new Coordinate(-39882.89, 273153.86) };
 
 		reference = geomFactory.createMultiPoint(coordinates);
+
+		coordinates = new Coordinate[] { new Coordinate(-39799.7, 273207.5),
+				new Coordinate(-39841.2, 273182.8), new Coordinate(-39882.9, 273153.9) };
+
+		referenceOnGrid = geomFactory.createMultiPoint(coordinates);
+
 	}
 
 	/**
@@ -210,7 +217,172 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 		}
 	}
 
+	/**
+	 * Test multi point geometries read from a GML 2 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMultiPointGml2_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml2.xml").toURI(), false);
+
+		// three instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. MultiPointProperty with MultiPoint defined through pointMember
+			// - coord
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 2. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("Second sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 2. MultiPointProperty with MultiPoint defined through
+			// pointMembers - coordinates
+			assertTrue("Third sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test multi point geometries read from a GML 3 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMultiPointGml3_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml3.xml").toURI(), false);
+
+		// four instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 2. MultiPointProperty with MultiPoint defined through
+			// pointMembers
+			// - coordinates
+			assertTrue("Second sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 3. MultiPointProperty with MultiPoint defined through
+			// pointMembers - coord
+			assertTrue("Third sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 4. MultiPointProperty with MultiPoint defined through
+			// pointMembers - pos
+			assertTrue("Fourth sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test multi point geometries read from a GML 31 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMultiPointGml31_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml31.xml").toURI(), false);
+
+		// four instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 2. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("Second sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 3. MultiPointProperty with MultiPoint defined through
+			// pointMembers - coord
+			assertTrue("Third sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 4. MultiPointProperty with MultiPoint defined through
+			// pointMembers - pos
+			assertTrue("Fourth sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test multi point geometries read from a GML 32 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testMultiPointGml32_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/point/sample-multipoint-gml32.xml").toURI(), false);
+
+		// three instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 2. MultiPointProperty with MultiPoint defined through pointMember
+			// - coordinates
+			assertTrue("Second sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+
+			// 3. MultiPointProperty with MultiPoint defined through
+			// pointMembers - pos
+			assertTrue("Third sample feature missing", it.hasNext());
+			instance = it.next();
+			checkMultiPointPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
 	private void checkMultiPointPropertyInstance(Instance instance) {
+		checkMultiPointPropertyInstance(instance, true);
+	}
+
+	private void checkMultiPointPropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -219,16 +391,15 @@ public class MultiPointGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
-			MultiPoint multipoint = ((GeometryProperty<MultiPoint>) instance).getGeometry();
+			MultiPoint multiPoint = ((GeometryProperty<MultiPoint>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipoint.equalsExact(reference));
+					multiPoint.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
-
 }

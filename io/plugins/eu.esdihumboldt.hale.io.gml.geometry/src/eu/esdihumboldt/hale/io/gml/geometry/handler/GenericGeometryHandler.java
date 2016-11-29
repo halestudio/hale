@@ -162,7 +162,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
 		traverser.traverse(instance, geoFind);
 
-		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
+		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef, reader);
 	}
 
 	/**
@@ -171,6 +171,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * @param instance the instance
 	 * @param childGeometries the child geometries found in the instance
 	 * @param defaultCrs the definition of the default CRS for this instance
+	 * @param reader the IO provider
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
@@ -179,7 +180,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@SuppressWarnings("unused")
 	protected Collection<GeometryProperty<?>> createGeometry(Instance instance,
-			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
+			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs, IOProvider reader)
 					throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();

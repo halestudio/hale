@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("deprecation")
 public abstract class GMLGeometryUtil {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GMLGeometryUtil.class);
