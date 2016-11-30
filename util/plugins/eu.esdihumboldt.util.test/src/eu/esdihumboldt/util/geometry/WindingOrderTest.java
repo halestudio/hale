@@ -199,6 +199,18 @@ public class WindingOrderTest {
 	}
 
 	/**
+	 * Test of winding order for an empty geometry.
+	 */
+	@Test
+	public void testUnifyEmpty() {
+		GeometryFactory fact = new GeometryFactory();
+		Polygon geom = fact.createPolygon(new Coordinate[0]);
+		Geometry result = WindingOrder.unifyWindingOrder(geom, true, null);
+		assertTrue(WindingOrder.isCounterClockwise(result));
+		assertTrue(geom.equalsExact(result));
+	}
+
+	/**
 	 * Test winding order of polygon as clockwise
 	 */
 	@Test
