@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
+import eu.esdihumboldt.util.geometry.NumberFormatter;
 
 /**
  * Abstract geometry writer implementation
@@ -55,9 +57,9 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 
 	/**
 	 * The attribute type names supported for writing coordinates with
-	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String)}
+	 * {@link #writeCoordinates(XMLStreamWriter, Coordinate[], TypeDefinition, String, DecimalFormat)}
 	 * or
-	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean)}
+	 * {@link #descendAndWriteCoordinates(XMLStreamWriter, Pattern, Coordinate[], TypeDefinition, QName, String, boolean, DecimalFormat)}
 	 * .
 	 * 
 	 * Use for validating end-points.
@@ -121,8 +123,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	protected boolean verifyEndPoint(TypeDefinition endPoint) {
 		for (PropertyDefinition attribute : DefinitionUtil.getAllProperties(endPoint)) {
 			// XXX is this enough? or must groups be handled explicitly?
-			if (SUPPORTED_COORDINATES_TYPES.contains(attribute.asProperty().getPropertyType()
-					.getName().getLocalPart())) {
+			if (SUPPORTED_COORDINATES_TYPES
+					.contains(attribute.asProperty().getPropertyType().getName().getLocalPart())) {
 				// a valid property was found
 				return true;
 			}
@@ -141,15 +143,18 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param elementName the encompassing element name
 	 * @param gmlNs the GML namespace
 	 * @param unique if the path's start element cannot be repeated
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
-	protected static void descendAndWriteCoordinates(XMLStreamWriter writer,
-			Pattern descendPattern, Coordinate[] coordinates, TypeDefinition elementType,
-			QName elementName, String gmlNs, boolean unique) throws XMLStreamException {
+	protected static void descendAndWriteCoordinates(XMLStreamWriter writer, Pattern descendPattern,
+			Coordinate[] coordinates, TypeDefinition elementType, QName elementName, String gmlNs,
+			boolean unique, DecimalFormat decimalFormatter) throws XMLStreamException {
 		Descent descent = descend(writer, descendPattern, elementType, elementName, gmlNs, unique);
 
 		// write geometry
-		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs);
+		writeCoordinates(writer, coordinates, descent.getPath().getLastType(), gmlNs,
+				decimalFormatter);
 
 		descent.close();
 	}
@@ -161,22 +166,25 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static void writeCoordinates(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		if (coordinates.length > 1) {
-			if (writeList(writer, coordinates, elementType, gmlNs)) {
+			if (writeList(writer, coordinates, elementType, gmlNs, decimalFormatter)) {
 				return;
 			}
 		}
 
-		if (writePos(writer, coordinates, elementType, gmlNs, null)) {
+		if (writePos(writer, coordinates, elementType, gmlNs, null, decimalFormatter)) {
 			return;
 		}
 
 		if (coordinates.length <= 1) {
-			if (writeList(writer, coordinates, elementType, gmlNs)) {
+			if (writeList(writer, coordinates, elementType, gmlNs, decimalFormatter)) {
 				return;
 			}
 		}
@@ -194,11 +202,14 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param gmlNs the GML namespace
 	 * @param posName the name of the desired DirectPositionType property, or
 	 *            <code>null</code> if any
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	protected static boolean writePos(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs, String posName) throws XMLStreamException {
+			TypeDefinition elementType, String gmlNs, String posName,
+			DecimalFormat decimalFormatter) throws XMLStreamException {
 		PropertyDefinition posAttribute = null;
 
 		// check for DirectPositionType
@@ -217,19 +228,20 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 
 		if (posAttribute != null) {
 			// TODO possibly write repeated positions
-			writer.writeStartElement(posAttribute.getName().getNamespaceURI(), posAttribute
-					.getName().getLocalPart());
+			writer.writeStartElement(posAttribute.getName().getNamespaceURI(),
+					posAttribute.getName().getLocalPart());
 
 			// write coordinates separated by spaces
 			if (coordinates.length > 0) {
 				Coordinate coordinate = coordinates[0];
 
-				writer.writeCharacters(String.valueOf(coordinate.x));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
 				writer.writeCharacters(" "); //$NON-NLS-1$
-				writer.writeCharacters(String.valueOf(coordinate.y));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(" "); //$NON-NLS-1$
-					writer.writeCharacters(String.valueOf(coordinate.z));
+					writer.writeCharacters(
+							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
 				}
 			}
 
@@ -248,11 +260,14 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param coordinates the coordinates to write
 	 * @param elementType the type of the encompassing element
 	 * @param gmlNs the GML namespace
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
 	private static boolean writeList(XMLStreamWriter writer, Coordinate[] coordinates,
-			TypeDefinition elementType, String gmlNs) throws XMLStreamException {
+			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		PropertyDefinition listAttribute = null;
 		String delimiter = " "; //$NON-NLS-1$
 		String setDelimiter = " "; //$NON-NLS-1$
@@ -260,7 +275,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 		// check for DirectPositionListType
 		for (PropertyDefinition att : DefinitionUtil.getAllProperties(elementType)) {
 			// XXX is this enough? or must groups be handled explicitly?
-			if (att.getPropertyType().getName().equals(new QName(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
+			if (att.getPropertyType().getName()
+					.equals(new QName(gmlNs, "DirectPositionListType"))) { //$NON-NLS-1$
 				listAttribute = att;
 				break;
 			}
@@ -278,8 +294,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 		}
 
 		if (listAttribute != null) {
-			writer.writeStartElement(listAttribute.getName().getNamespaceURI(), listAttribute
-					.getName().getLocalPart());
+			writer.writeStartElement(listAttribute.getName().getNamespaceURI(),
+					listAttribute.getName().getLocalPart());
 
 			boolean first = true;
 			// write coordinates separated by spaces
@@ -291,12 +307,13 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 					writer.writeCharacters(setDelimiter);
 				}
 
-				writer.writeCharacters(String.valueOf(coordinate.x));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
 				writer.writeCharacters(delimiter);
-				writer.writeCharacters(String.valueOf(coordinate.y));
+				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(delimiter);
-					writer.writeCharacters(String.valueOf(coordinate.z));
+					writer.writeCharacters(
+							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
 				}
 			}
 

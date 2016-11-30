@@ -37,11 +37,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading orientable curve geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
 	private MultiLineString reference;
+	private MultiLineString referenceOnGrid;
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
@@ -56,6 +57,14 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
 		LineString[] lines = new LineString[] { linestring1 };
 		reference = geomFactory.createMultiLineString(lines);
+
+		// for grid test
+		coordinates = new Coordinate[] { new Coordinate(0.0, 3.2), new Coordinate(3.3, 3.3),
+				new Coordinate(0.0, -3.2) };
+		linestring1 = geomFactory.createLineString(coordinates);
+
+		lines = new LineString[] { linestring1 };
+		referenceOnGrid = geomFactory.createMultiLineString(lines);
 	}
 
 	/**
@@ -75,13 +84,38 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkOrientableCurvePropertyInstance(instance);
+			checkOrientableCurvePropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkOrientableCurvePropertyInstance(Instance instance) {
+	/**
+	 * Test orientable curve geometries read from a GML 3.2 file. Geometry
+	 * coordinates will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testorientableCurveGml32_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/curve/sample-orientablecurve-gml32.xml").toURI(),
+				false);
+
+		// twelve instances expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// 1. segments with LineStringSegment defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkOrientableCurvePropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkOrientableCurvePropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -90,16 +124,16 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
 			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
 					.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(reference));
+					multilinestring.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 

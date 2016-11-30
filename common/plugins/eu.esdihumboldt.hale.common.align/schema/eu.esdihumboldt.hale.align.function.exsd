@@ -127,6 +127,16 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="cellMigrator" type="string">
+            <annotation>
+               <documentation>
+                  Implementation of cell migrator to use when migrating cells of this function. If none is provided the default migrator is used assuming no custom migration is required.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.migrate.CellMigrator"/>
+               </appinfo>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -204,6 +214,16 @@ For references, e.g. to images, use absolute references to plugin and path, led 
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.model.CellExplanation"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="cellMigrator" type="string">
+            <annotation>
+               <documentation>
+                  Implementation of cell migrator to use when migrating cells of this function. If none is provided the default migrator is used assuming no custom migration is required.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.align.migrate.CellMigrator"/>
                </appinfo>
             </annotation>
          </attribute>

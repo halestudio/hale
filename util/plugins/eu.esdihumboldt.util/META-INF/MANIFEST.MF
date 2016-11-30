@@ -28,6 +28,7 @@ Bundle-Activator: eu.esdihumboldt.util.internal.Activator
 Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.geometry,
+ eu.esdihumboldt.util.geometry.interpolation,
  eu.esdihumboldt.util.internal;x-internal:=true,
  eu.esdihumboldt.util.io,
  eu.esdihumboldt.util.reflection,

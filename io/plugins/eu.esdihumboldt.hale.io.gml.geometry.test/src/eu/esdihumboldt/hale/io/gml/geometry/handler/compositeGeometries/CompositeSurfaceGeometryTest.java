@@ -38,11 +38,13 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading composite surface geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private MultiPolygon reference;
+
+	private MultiPolygon referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -53,28 +55,28 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) });
 
 		LinearRing[] holes = new LinearRing[2];
-		LinearRing hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 1),
-				new Coordinate(1, 1), new Coordinate(0, -1), new Coordinate(-1, -1),
-				new Coordinate(0, 1) });
-		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 2),
-				new Coordinate(2, 2), new Coordinate(0, -2), new Coordinate(-2, -2),
-				new Coordinate(0, 2) });
+		LinearRing hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		LinearRing hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
 		holes[0] = hole1;
 		holes[1] = hole2;
 
 		Polygon polygon1 = geomFactory.createPolygon(shell, holes);
 
 		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(6.01, 9.2),
-				new Coordinate(9.33, 9.33), new Coordinate(6.01, -9.2),
-				new Coordinate(-9.33, -9.2), new Coordinate(6.01, 9.2) });
+				new Coordinate(9.33, 9.33), new Coordinate(6.01, -9.2), new Coordinate(-9.33, -9.2),
+				new Coordinate(6.01, 9.2) });
 
 		holes = new LinearRing[2];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(2, 3),
-				new Coordinate(3, 3), new Coordinate(2, -3), new Coordinate(-3, -3),
-				new Coordinate(2, 3) });
-		hole2 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(2, 4),
-				new Coordinate(4, 4), new Coordinate(2, -4), new Coordinate(-4, -4),
-				new Coordinate(2, 4) });
+		hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(2, 3), new Coordinate(3, 3),
+						new Coordinate(2, -3), new Coordinate(-3, -3), new Coordinate(2, 3) });
+		hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(2, 4), new Coordinate(4, 4),
+						new Coordinate(2, -4), new Coordinate(-4, -4), new Coordinate(2, 4) });
 		holes[0] = hole1;
 		holes[1] = hole2;
 
@@ -83,6 +85,44 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 		Polygon[] polygons = new Polygon[] { polygon1, polygon2 };
 
 		reference = geomFactory.createMultiPolygon(polygons);
+
+		// For grid test
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
+				new Coordinate(3.3, 3.3), new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2),
+				new Coordinate(0, 3.2) });
+
+		holes = new LinearRing[2];
+		hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
+		holes[0] = hole1;
+		holes[1] = hole2;
+
+		polygon1 = geomFactory.createPolygon(shell, holes);
+
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(6, 9.2),
+				new Coordinate(9.3, 9.3), new Coordinate(6, -9.2), new Coordinate(-9.4, -9.2),
+				new Coordinate(6, 9.2) });
+
+		holes = new LinearRing[2];
+		hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(2, 3), new Coordinate(3, 3),
+						new Coordinate(2, -3), new Coordinate(-3, -3), new Coordinate(2, 3) });
+		hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(2, 4), new Coordinate(4, 4),
+						new Coordinate(2, -4), new Coordinate(-4, -4), new Coordinate(2, 4) });
+		holes[0] = hole1;
+		holes[1] = hole2;
+
+		polygon2 = geomFactory.createPolygon(shell, holes);
+
+		polygons = new Polygon[] { polygon1, polygon2 };
+
+		referenceOnGrid = geomFactory.createMultiPolygon(polygons);
+
 	}
 
 	/**
@@ -94,7 +134,8 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 	public void testCompositeSurfaceGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-compositesurface-gml32.xml").toURI());
+				getClass().getResource("/data/surface/sample-compositesurface-gml32.xml").toURI(),
+				true);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -103,13 +144,39 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch and Polygon
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeSurfacePropertyInstance(instance);
+			checkCompositeSurfacePropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkCompositeSurfacePropertyInstance(Instance instance) {
+	/**
+	 * Test composite surface geometries read from a GML 3.2 file Geometry
+	 * coordinates will be moved to universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testCompositeSurfaceGml31_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-compositesurface-gml32.xml").toURI(),
+				false);
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// CompositeCurveProperty with surfaceMembers defined through
+			// PolygonPatch and Polygon
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkCompositeSurfacePropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkCompositeSurfacePropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -118,15 +185,15 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
 			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(reference));
+					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 }

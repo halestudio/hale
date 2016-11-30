@@ -136,6 +136,34 @@
                   default="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
+               label="Max Position Error"
+               name="interpolation.maxerror"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
+               label="Keep original coordinates"
+               name="interpolation.geometry.keepOriginal"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="Will keep original coordinates intact"
+                  sample="false"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -181,6 +209,34 @@
             </parameterBinding>
             <valueDescriptor
                   default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
+               label="Max Position Error"
+               name="interpolation.maxerror"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
+               label="Keep original coordinates"
+               name="interpolation.geometry.keepOriginal"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="Will keep original coordinates intact"
+                  sample="false"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -290,6 +346,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -419,6 +489,20 @@
                   sample="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -517,6 +601,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -729,6 +827,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
       </provider>

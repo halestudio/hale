@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -160,10 +161,13 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
 	 * @param report the reporter
+	 * @param decimalFormatter a decimal formatter to format geometry
+	 *            coordinates
 	 * @throws XMLStreamException if any error occurs writing the geometry
 	 */
 	public void write(XMLStreamWriter writer, Geometry geometry, PropertyDefinition property,
-			String srsName, IOReporter report) throws XMLStreamException {
+			String srsName, IOReporter report, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		// write eventual required id
 		GmlWriterUtil.writeRequiredID(writer, property.getPropertyType(), null, false);
 
@@ -262,7 +266,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		DefinitionPath path = selectValidPath(preferredPaths, geometry);
 		if (path != null) {
 			// write geometry
-			writeGeometry(writer, geometry, path, srsName);
+			writeGeometry(writer, geometry, path, srsName, decimalFormatter);
 		}
 		else {
 			report.error(new IOMessageImpl(
@@ -360,7 +364,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 */
 	public List<DefinitionPath> findCandidates(PropertyDefinition property,
 			Class<? extends Geometry> geomType) {
-		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		Set<GeometryWriter<?>> writers = findWriters(geomType);
 		if (writers == null || writers.isEmpty()) {
 			// if no writer is present, we can cancel right here
 			return new ArrayList<DefinitionPath>();
@@ -379,11 +383,12 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 	 * @param path the definition path to use
 	 * @param srsName the SRS name of a common SRS for the whole document, may
 	 *            be <code>null</code>
+	 * @param decimalFormatter a decimal formatter for geometry values
 	 * @throws XMLStreamException if writing the geometry fails
 	 */
 	@SuppressWarnings("unchecked")
 	private void writeGeometry(XMLStreamWriter writer, Geometry geometry, DefinitionPath path,
-			String srsName) throws XMLStreamException {
+			String srsName, DecimalFormat decimalFormatter) throws XMLStreamException {
 		@SuppressWarnings("rawtypes")
 		GeometryWriter geomWriter = path.getGeometryWriter();
 
@@ -391,7 +396,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 
 		if (path.isEmpty()) {
 			// directly write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs, decimalFormatter);
 		}
 		else {
 			for (PathElement step : path.getSteps()) {
@@ -409,7 +414,7 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			}
 
 			// write geometry
-			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs);
+			geomWriter.write(writer, geometry, path.getLastType(), name, gmlNs, decimalFormatter);
 
 			for (int i = 0; i < path.getSteps().size(); i++) {
 				PathElement step = path.getSteps().get(path.getSteps().size() - 1 - i);
@@ -559,7 +564,8 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 			DefinitionPath path) {
 
 		// check compatibility list
-		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		Set<GeometryWriter<?>> writers = findWriters(geomType);
+
 		if (writers != null) {
 			for (GeometryWriter<?> writer : writers) {
 				boolean compatible = false;
@@ -612,6 +618,29 @@ public class StreamGeometryWriter extends AbstractTypeMatcher<Class<? extends Ge
 		}
 
 		return null;
+	}
+
+	private Set<GeometryWriter<?>> findWriters(Class<? extends Geometry> geomType) {
+		Set<GeometryWriter<?>> writers = geometryWriters.get(geomType);
+		if (writers == null) {
+			writers = new HashSet<>();
+		}
+		else {
+			writers = new HashSet<>(writers);
+		}
+
+		// also handle super class writers, e.g. LineString for LinearRing
+		Class<?> geomAlt = geomType;
+		while (geomAlt.getSuperclass() != null && !Geometry.class.equals(geomAlt.getSuperclass())
+				&& Geometry.class.isAssignableFrom(geomAlt.getSuperclass())) {
+			geomAlt = geomAlt.getSuperclass();
+			Set<GeometryWriter<?>> moreWriters = geometryWriters.get(geomAlt);
+			if (moreWriters != null) {
+				writers.addAll(moreWriters);
+			}
+		}
+
+		return writers;
 	}
 
 }

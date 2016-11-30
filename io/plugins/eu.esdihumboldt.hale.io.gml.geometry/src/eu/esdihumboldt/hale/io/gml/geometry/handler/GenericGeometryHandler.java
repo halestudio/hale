@@ -31,6 +31,7 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
@@ -146,11 +147,11 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	}
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int, IOProvider)
 	 */
 	@Override
-	public Collection<GeometryProperty<?>> createGeometry(Instance instance, int srsDimension)
-			throws GeometryNotSupportedException {
+	public Collection<GeometryProperty<?>> createGeometry(Instance instance, int srsDimension,
+			IOProvider reader) throws GeometryNotSupportedException {
 		CRSDefinition defaultCrsDef = GMLGeometryUtil.findCRS(instance);
 
 		// depth first traverser that on cancel continues traversal but w/o the
@@ -161,7 +162,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 
 		traverser.traverse(instance, geoFind);
 
-		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef);
+		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef, reader);
 	}
 
 	/**
@@ -170,6 +171,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * @param instance the instance
 	 * @param childGeometries the child geometries found in the instance
 	 * @param defaultCrs the definition of the default CRS for this instance
+	 * @param reader the IO provider
 	 * @return the geometry value derived from the instance, the return type
 	 *         should match the {@link Binding} created in
 	 *         {@link #getTypeConstraints(TypeDefinition)}.
@@ -178,8 +180,8 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 */
 	@SuppressWarnings("unused")
 	protected Collection<GeometryProperty<?>> createGeometry(Instance instance,
-			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs)
-			throws GeometryNotSupportedException {
+			List<GeometryProperty<?>> childGeometries, CRSDefinition defaultCrs, IOProvider reader)
+					throws GeometryNotSupportedException {
 
 		List<Geometry> geomList = new ArrayList<Geometry>();
 
@@ -257,11 +259,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 			}
 			if (geom != null) {
 				// returned combined property
-				CRSDefinition crs = (commonCrs != null && commonCrs.getCrsDef() != null) ? (commonCrs
-						.getCrsDef()) : (defaultCrs);
-				return Collections
-						.<GeometryProperty<?>> singleton(new DefaultGeometryProperty<Geometry>(crs,
-								geom));
+				CRSDefinition crs = (commonCrs != null && commonCrs.getCrsDef() != null)
+						? (commonCrs.getCrsDef()) : (defaultCrs);
+				return Collections.<GeometryProperty<?>> singleton(
+						new DefaultGeometryProperty<Geometry>(crs, geom));
 			}
 		}
 

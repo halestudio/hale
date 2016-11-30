@@ -25,11 +25,13 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -43,6 +45,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
+import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -51,7 +54,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * @author Patrick Lieb
  * @author Simon Templer
  */
-public class PolygonHandler extends FixedConstraintsGeometryHandler {
+public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final ALogger log = ALoggerFactory.getLogger(PolygonHandler.class);
 
@@ -64,11 +67,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 	private static final String TRIANGLE_TYPE = "TriangleType";
 
 	/**
-	 * @see GeometryHandler#createGeometry(Instance, int)
+	 * @see GeometryHandler#createGeometry(Instance, int, IOProvider)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object createGeometry(Instance instance, int srsDimension)
+	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
 
 		LinearRing[] holes = null;
@@ -82,7 +85,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 				"outerBoundaryIs.LinearRing", false);
 		if (values != null && !values.isEmpty()) {
 			Iterator<Object> iterator = values.iterator();
-			LinearRing outerRing = null;
+			List<LinearRing> outerRing = new ArrayList<>(1);
 			while (iterator.hasNext()) {
 				Object value = iterator.next();
 				if (value instanceof Instance) {
@@ -90,7 +93,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 					// GeometryProperty<LinearRing> instance
 					GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
 							.getValue();
-					outerRing = ring.getGeometry();
+					outerRing.add(ring.getGeometry());
 					crs = checkCommonCrs(crs, ring.getCRSDefinition());
 				}
 			}
@@ -111,10 +114,11 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
+				innerRings = moveLinerRingsToUniversalGrid(innerRings, reader);
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
-
-			polygon = getGeometryFactory().createPolygon(outerRing, holes);
+			outerRing = moveLinerRingsToUniversalGrid(outerRing, reader);
+			polygon = getGeometryFactory().createPolygon(outerRing.get(0), holes);
 		}
 
 		// for use with GML 3, 3.1 and 3.2
@@ -138,6 +142,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
+				innerRings = moveLinerRingsToUniversalGrid(innerRings, reader);
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
 
@@ -145,7 +150,7 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 			values = PropertyResolver.getValues(instance, "exterior.LinearRing", false);
 			ringValues = PropertyResolver.getValues(instance, "exterior.Ring", false);
 			values = combineCollections(values, ringValues);
-			LinearRing outerRing = null;
+			List<LinearRing> outerRing = new ArrayList<>(1);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				while (iterator.hasNext()) {
@@ -155,11 +160,12 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 						// GeometryProperty<LinearRing> instance
 						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
 								.getValue();
-						outerRing = ring.getGeometry();
+						outerRing.add(ring.getGeometry());
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
-				polygon = getGeometryFactory().createPolygon(outerRing, holes);
+				outerRing = moveLinerRingsToUniversalGrid(outerRing, reader);
+				polygon = getGeometryFactory().createPolygon(outerRing.get(0), holes);
 			}
 		}
 
@@ -201,6 +207,22 @@ public class PolygonHandler extends FixedConstraintsGeometryHandler {
 		}
 
 		return commonCrs;
+	}
+
+	private List<LinearRing> moveLinerRingsToUniversalGrid(List<LinearRing> linearRings,
+			IOProvider reader) {
+		getInterpolationRequiredParameter(reader);
+		if (!isKeepOriginal()) {
+			List<LinearRing> newRings = new ArrayList<LinearRing>();
+			for (LinearRing ring : linearRings) {
+				Coordinate[] newCoordinates = moveToUniversalGrid(ring.getCoordinates());
+				LinearRing newRing = getGeometryFactory().createLinearRing(newCoordinates);
+				newRings.add(newRing);
+			}
+			return newRings;
+		}
+		else
+			return linearRings;
 	}
 
 	/**

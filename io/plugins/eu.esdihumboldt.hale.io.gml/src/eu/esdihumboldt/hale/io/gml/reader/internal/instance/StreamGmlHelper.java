@@ -38,6 +38,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -89,6 +90,7 @@ public abstract class StreamGmlHelper {
 	 * @param ignoreNamespaces if parsing of the XML instances should allow
 	 *            types and properties with namespaces that differ from those
 	 *            defined in the schema
+	 * @param ioProvider the I/O Provider to get value
 	 * @return the parsed instance, may be <code>null</code> if allowNull is
 	 *         <code>true</code>
 	 * @throws XMLStreamException if parsing the instance failed
@@ -96,7 +98,7 @@ public abstract class StreamGmlHelper {
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
 			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
-			boolean ignoreNamespaces) throws XMLStreamException {
+			boolean ignoreNamespaces, IOProvider ioProvider) throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
@@ -123,13 +125,13 @@ public abstract class StreamGmlHelper {
 			// mixed types are treated special (see else)
 
 			// check if xsi:nil attribute is there and set to true
-			String nilString = reader.getAttributeValue(
-					XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "nil");
+			String nilString = reader.getAttributeValue(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+					"nil");
 			boolean isNil = nilString != null && "true".equalsIgnoreCase(nilString);
 
 			// instance properties
 			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, false, ignoreNamespaces);
+					propertyPath, false, ignoreNamespaces, ioProvider);
 
 			// nil instance w/o properties
 			if (allowNull && isNil && Iterables.isEmpty(instance.getPropertyNames())) {
@@ -167,7 +169,7 @@ public abstract class StreamGmlHelper {
 
 			// instance properties (attributes only)
 			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, true, ignoreNamespaces);
+					propertyPath, true, ignoreNamespaces, ioProvider);
 
 			// combined text
 			String value = readText(reader);
@@ -187,11 +189,11 @@ public abstract class StreamGmlHelper {
 
 			try {
 				if (srsDimension != null) {
-					geomValue = geomFactory.createGeometry(instance, srsDimension);
+					geomValue = geomFactory.createGeometry(instance, srsDimension, ioProvider);
 				}
 				else {
 					// srsDimension is not set
-					geomValue = geomFactory.createGeometry(instance, defaultValue);
+					geomValue = geomFactory.createGeometry(instance, defaultValue, ioProvider);
 				}
 			} catch (Exception e) {
 				/*
@@ -218,9 +220,8 @@ public abstract class StreamGmlHelper {
 
 				List<Object> resultVals = new ArrayList<Object>();
 				for (Object value : values) {
-					if (value instanceof Geometry
-							|| (value instanceof GeometryProperty<?> && ((GeometryProperty<?>) value)
-									.getCRSDefinition() == null)) {
+					if (value instanceof Geometry || (value instanceof GeometryProperty<?>
+							&& ((GeometryProperty<?>) value).getCRSDefinition() == null)) {
 						CRSDefinition crs = crsProvider.getCRS(parentType, propertyPath);
 						if (crs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
@@ -319,12 +320,13 @@ public abstract class StreamGmlHelper {
 	 * @param ignoreNamespaces if parsing of the XML instances should allow
 	 *            types and properties with namespaces that differ from those
 	 *            defined in the schema
+	 * @param ioProvider the I/O Provider to get value
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
 			Integer srsDimension, CRSProvider crsProvider, TypeDefinition parentType,
-			List<QName> propertyPath, boolean onlyAttributes, boolean ignoreNamespaces)
-			throws XMLStreamException {
+			List<QName> propertyPath, boolean onlyAttributes, boolean ignoreNamespaces,
+			IOProvider ioProvider) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -343,8 +345,8 @@ public abstract class StreamGmlHelper {
 			}
 			else {
 				// suppress warnings for xsi attributes (e.g. xsi:nil)
-				boolean suppress = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI.equals(propertyName
-						.getNamespaceURI());
+				boolean suppress = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI
+						.equals(propertyName.getNamespaceURI());
 
 				if (!suppress) {
 					log.warn(MessageFormat.format(
@@ -382,7 +384,7 @@ public abstract class StreamGmlHelper {
 							// use an instance as value
 							Instance inst = parseInstance(reader, property.getPropertyType(), null,
 									strict, srsDimension, crsProvider, parentType, path, true,
-									ignoreNamespaces);
+									ignoreNamespaces, ioProvider);
 							if (inst != null) {
 								group.addProperty(property.getName(), inst);
 							}
@@ -394,7 +396,7 @@ public abstract class StreamGmlHelper {
 								// an instance value if possible
 								Instance inst = parseInstance(reader, property.getPropertyType(),
 										null, strict, srsDimension, crsProvider, parentType, path,
-										true, ignoreNamespaces);
+										true, ignoreNamespaces, ioProvider);
 								if (inst != null) {
 									group.addProperty(property.getName(), inst);
 								}

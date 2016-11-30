@@ -8,8 +8,18 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 - CLI commands can now be marked experimental
 
+### Changed
+
+- GML encoding: Automatic conversion of polygon geometries to line geometries when there are no possibilities to encode a surface has been changed to produce a *LineString* for a *Polygon* and a *MultiLineString* for a *MultiPolygon*
+
+### Removed
+
+- File based databases can no longer be loaded via *From database* - instead use *From file*
+
 ### Fixed
 
+- Using a previously as Hale Schema Definition file exported database schema as source schema when loading data from the database now properly supports loading the geometries
+- Using the value `unpopulated` for GML *nilReason* attributes does not conform to the GML specification. The proposal to use this value has been changed to `other:unpopulated` to conform with the specification. Also, when encoding GML, `unpopulated` will be replaced by `other:unpopulated` where encountered in *nilReason* attributes to support mappings created in previous versions
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
 - Fixed instance partitioning for WFS-T upload producing too many small parts
 

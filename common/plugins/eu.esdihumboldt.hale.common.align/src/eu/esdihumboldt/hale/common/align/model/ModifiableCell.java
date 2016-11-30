@@ -26,7 +26,15 @@ public interface ModifiableCell extends Cell {
 	 * @param cell the cell to disable/enable this cell for
 	 * @param disabled whether the cell should be disabled or not
 	 */
-	public void setDisabledFor(Cell cell, boolean disabled);
+	public default void setDisabledFor(Cell cell, boolean disabled) {
+		setDisabledFor(cell.getId(), disabled);
+	}
+
+	/**
+	 * @param cellId the ID of the cell to disable/enable this cell for
+	 * @param disabled whether the cell should be disabled or not
+	 */
+	public void setDisabledFor(String cellId, boolean disabled);
 
 	/**
 	 * Set the cell transformation mode. Only applicable for type cells.

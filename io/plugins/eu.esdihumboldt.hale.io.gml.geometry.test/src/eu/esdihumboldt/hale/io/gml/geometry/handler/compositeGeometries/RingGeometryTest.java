@@ -37,11 +37,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading ring geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class RingGeometryTest extends AbstractHandlerTest {
 
 	private LinearRing reference;
+	private LinearRing referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -52,6 +53,14 @@ public class RingGeometryTest extends AbstractHandlerTest {
 		LineString linestring = geomFactory.createLineString(coordinates);
 
 		reference = geomFactory.createLinearRing(linestring.getCoordinates());
+
+		// for grid test
+		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
+				new Coordinate(0, -3.2), new Coordinate(0, 3.2) };
+		linestring = geomFactory.createLineString(coordinates);
+
+		referenceOnGrid = geomFactory.createLinearRing(linestring.getCoordinates());
+
 	}
 
 	/**
@@ -71,13 +80,37 @@ public class RingGeometryTest extends AbstractHandlerTest {
 			// Ring with segments defined through LineStringSegment
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRingPropertyInstance(instance);
+			checkRingPropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkRingPropertyInstance(Instance instance) {
+	/**
+	 * Test ring geometries read from a GML 2 file. Geometry coordinates will be
+	 * moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testRingGml31_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
+				getClass().getResource("/data/sample-ring-gml31.xml").toURI(), false);
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// Ring with segments defined through LineStringSegment
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkRingPropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkRingPropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -86,16 +119,16 @@ public class RingGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
 		@SuppressWarnings("unchecked")
 		LinearRing linearring = ((GeometryProperty<LinearRing>) geomInstance.getValue())
 				.getGeometry();
 		assertTrue("Read geometry does not match the reference geometry",
-				linearring.equalsExact(reference));
+				linearring.equalsExact(keepOriginal ? reference : referenceOnGrid));
 	}
 
 }

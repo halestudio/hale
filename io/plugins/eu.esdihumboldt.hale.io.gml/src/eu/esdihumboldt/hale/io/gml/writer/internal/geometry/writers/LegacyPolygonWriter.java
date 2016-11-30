@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -55,21 +57,21 @@ public class LegacyPolygonWriter extends AbstractGeometryWriter<Polygon> {
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, DecimalFormat )
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, Polygon polygon, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter) throws XMLStreamException {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
 		descendAndWriteCoordinates(writer, Pattern.parse("*/outerBoundaryIs/LinearRing"), //$NON-NLS-1$
-				exterior.getCoordinates(), elementType, elementName, gmlNs, false);
+				exterior.getCoordinates(), elementType, elementName, gmlNs, false, decimalFormatter);
 
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
 			descendAndWriteCoordinates(writer, Pattern.parse("*/innerBoundaryIs/LinearRing"), //$NON-NLS-1$
-					interior.getCoordinates(), elementType, elementName, gmlNs, false);
+					interior.getCoordinates(), elementType, elementName, gmlNs, false, decimalFormatter);
 		}
 	}
 

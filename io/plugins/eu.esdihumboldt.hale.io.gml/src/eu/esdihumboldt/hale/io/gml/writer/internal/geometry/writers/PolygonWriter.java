@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
+import java.text.DecimalFormat;
+
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -45,30 +47,37 @@ public class PolygonWriter extends AbstractGeometryWriter<Polygon> {
 		addCompatibleType(new QName(Pattern.GML_NAMESPACE_PLACEHOLDER, "PolygonType")); //$NON-NLS-1$
 
 		// patterns for matching inside compatible types
-		addBasePattern("*"); // matches any compatible type element //$NON-NLS-1$
+		addBasePattern("*"); // matches any compatible type //$NON-NLS-1$
+								// element
 
 		// verification patterns
-		addVerificationPattern("*/exterior/LinearRing"); // both exterior //$NON-NLS-1$
-		addVerificationPattern("*/interior/LinearRing"); // and interior elements must be present //$NON-NLS-1$
+		addVerificationPattern("*/exterior/LinearRing"); // both //$NON-NLS-1$
+															// exterior
+		addVerificationPattern("*/interior/LinearRing"); // and //$NON-NLS-1$
+															// interior elements
+															// must be present
 	}
 
 	/**
 	 * @see GeometryWriter#write(XMLStreamWriter, Geometry, TypeDefinition,
-	 *      QName, String)
+	 *      QName, String, DecimalFormat)
 	 */
 	@Override
 	public void write(XMLStreamWriter writer, Polygon polygon, TypeDefinition elementType,
-			QName elementName, String gmlNs) throws XMLStreamException {
+			QName elementName, String gmlNs, DecimalFormat decimalFormatter)
+					throws XMLStreamException {
 		// write exterior ring
 		LineString exterior = polygon.getExteriorRing();
 		descendAndWriteCoordinates(writer, Pattern.parse("*/exterior/LinearRing"), //$NON-NLS-1$
-				exterior.getCoordinates(), elementType, elementName, gmlNs, false);
+				exterior.getCoordinates(), elementType, elementName, gmlNs, false,
+				decimalFormatter);
 
 		// write interior rings
 		for (int i = 0; i < polygon.getNumInteriorRing(); i++) {
 			LineString interior = polygon.getInteriorRingN(i);
 			descendAndWriteCoordinates(writer, Pattern.parse("*/interior/LinearRing"), //$NON-NLS-1$
-					interior.getCoordinates(), elementType, elementName, gmlNs, false);
+					interior.getCoordinates(), elementType, elementName, gmlNs, false,
+					decimalFormatter);
 		}
 	}
 

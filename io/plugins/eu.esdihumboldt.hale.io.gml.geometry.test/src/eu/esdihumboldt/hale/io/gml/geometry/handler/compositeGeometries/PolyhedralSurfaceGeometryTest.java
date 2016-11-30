@@ -38,11 +38,12 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
 /**
  * Test for reading polyhedral surface geometries
  * 
- * @author Patrick Lieb
+ * @author Patrick Lieb, Arun Varma
  */
 public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private MultiPolygon reference;
+	private MultiPolygon referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -53,17 +54,35 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 				new Coordinate(-3.33, -3.2), new Coordinate(0.01, 3.2) });
 
 		LinearRing[] holes = new LinearRing[2];
-		LinearRing hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 1),
-				new Coordinate(1, 1), new Coordinate(0, -1), new Coordinate(-1, -1),
-				new Coordinate(0, 1) });
-		LinearRing hole2 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 2),
-				new Coordinate(2, 2), new Coordinate(0, -2), new Coordinate(-2, -2),
-				new Coordinate(0, 2) });
+		LinearRing hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		LinearRing hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
 		holes[0] = hole1;
 		holes[1] = hole2;
 
-		reference = geomFactory.createMultiPolygon(new Polygon[] { geomFactory.createPolygon(shell,
-				holes) });
+		reference = geomFactory
+				.createMultiPolygon(new Polygon[] { geomFactory.createPolygon(shell, holes) });
+
+		// grid
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
+				new Coordinate(3.3, 3.3), new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2),
+				new Coordinate(0, 3.2) });
+
+		holes = new LinearRing[2];
+		hole1 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
+						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
+		hole2 = geomFactory
+				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
+						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
+		holes[0] = hole1;
+		holes[1] = hole2;
+
+		referenceOnGrid = geomFactory
+				.createMultiPolygon(new Polygon[] { geomFactory.createPolygon(shell, holes) });
 	}
 
 	/**
@@ -84,13 +103,39 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 			// coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolyhedralSurfacePropertyInstance(instance);
+			checkPolyhedralSurfacePropertyInstance(instance, true);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkPolyhedralSurfacePropertyInstance(Instance instance) {
+	/**
+	 * Test polygon geometries read from a GML 3.2 file. Geometry coordinates
+	 * will be moved to the universal grid
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testPolygonGml31_Grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-polyhedralsurface-gml32.xml").toURI(),
+				false);
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolyhedralSurfaceProperty with LinearRing defined through
+			// coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkPolyhedralSurfacePropertyInstance(instance, false);
+		} finally {
+			it.close();
+		}
+	}
+
+	private void checkPolyhedralSurfacePropertyInstance(Instance instance, boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -99,15 +144,15 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance);
+		checkGeomInstance(geomInstance, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance) {
+	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
 			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(reference));
+					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 
