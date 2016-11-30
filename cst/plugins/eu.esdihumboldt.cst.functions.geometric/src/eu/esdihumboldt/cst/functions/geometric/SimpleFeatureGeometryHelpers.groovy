@@ -41,7 +41,7 @@ class SimpleFeatureGeometryHelpers {
 	 */
 	public static final eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification _toSimpleGeometries_spec = SpecBuilder.newSpec( //
 	description: 'Convert source geometries to SimpleFeature geometries.',
-	result: 'the list of single geometries (each wrapped in a GeometryProperty)') {
+	result: 'the list of simple geometries (each wrapped in a GeometryProperty)') {
 		//
 		geometries('A single or multiple (as a list/iterable) geometries, geometry properties or instances holding a geometry')
 		collections('if geometry collections like MultiLineString and MultiPolygon are allowed as result', defaultValue: true)
