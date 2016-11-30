@@ -17,6 +17,8 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.ArrayList;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
@@ -34,6 +36,8 @@ import groovy.lang.Closure;
  * @author Kai Schwierczek
  */
 public class TargetCollector {
+
+	private static final ALogger log = ALoggerFactory.getLogger(TargetCollector.class);
 
 	private class TargetData {
 
@@ -127,7 +131,13 @@ public class TargetCollector {
 		// b) values not allowed if the target may not have a value
 		if (containsValues && !type.getConstraint(HasValueFlag.class).isEnabled()
 				&& !type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
-			throw new TransformationException("A value is not applicable for the target.");
+			// throw new TransformationException("A value is not applicable for
+			// the target.");
+
+			// this may be desired, e.g. when producing geometries for GML
+			// so instead of a hard error, we just log a warning
+			log.warn(
+					"Value provided for target that does not allow a value according to the schema");
 		}
 
 		for (TargetData data : targetData) {
