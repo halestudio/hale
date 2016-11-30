@@ -53,11 +53,11 @@ class SimpleFeatureGeometryHelpers {
 
 		List<GeometryProperty<? extends Geometry>> geoms = GeometryHelperFunctions._findAll(args.geometries)
 
-		geoms.collectMany(SimpleFeatureGeometryHelpers.&toSimpleGeometries)
+		geoms.collectMany(SimpleFeatureGeometryHelpers.&toSimpleGeometries.curry(collections))
 	}
 
-	static Collection<GeometryProperty<? extends Geometry>> toSimpleGeometries(
-			GeometryProperty<? extends Geometry> geometry, boolean collections) {
+	static Collection<GeometryProperty<? extends Geometry>> toSimpleGeometries(boolean collections,
+			GeometryProperty<? extends Geometry> geometry) {
 
 		Geometry geom = geometry.getGeometry()
 
