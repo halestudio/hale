@@ -206,7 +206,6 @@ public class WindingOrderTest {
 		GeometryFactory fact = new GeometryFactory();
 		Polygon geom = fact.createPolygon(new Coordinate[0]);
 		Geometry result = WindingOrder.unifyWindingOrder(geom, true, null);
-		assertTrue(WindingOrder.isCounterClockwise(result));
 		assertTrue(geom.equalsExact(result));
 	}
 
