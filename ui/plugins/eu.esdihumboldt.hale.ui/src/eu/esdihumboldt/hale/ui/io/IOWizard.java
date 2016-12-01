@@ -68,9 +68,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 /**
  * Abstract I/O wizard based on {@link IOProvider} descriptors
  * 
- * @param
- * 			<P>
- *            the {@link IOProvider} type used in the wizard
+ * @param <P> the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -344,9 +342,9 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 						return null;
 					}
 					else {
-					// return last main page
-					return mainPages.get(mainPages.size() - 1);
-				}
+						// return last main page
+						return mainPages.get(mainPages.size() - 1);
+					}
 				}
 				// return the previous configuration page
 				for (int i = 1; i < confPages.size(); ++i) {
