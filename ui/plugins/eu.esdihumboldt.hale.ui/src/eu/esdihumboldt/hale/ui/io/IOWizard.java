@@ -340,8 +340,13 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			List<AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> confPages = getConfigurationPages();
 			if (confPages != null) {
 				if (confPages.size() > 0 && confPages.get(0) == page) {
+					if (mainPages.isEmpty()) {
+						return null;
+					}
+					else {
 					// return last main page
 					return mainPages.get(mainPages.size() - 1);
+				}
 				}
 				// return the previous configuration page
 				for (int i = 1; i < confPages.size(); ++i) {
