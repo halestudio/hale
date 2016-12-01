@@ -239,7 +239,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					polygons[i] = (Polygon) geomList.get(i);
 				}
-				geom = getGeometryFactory().createMultiPolygon(polygons);
+				geom = combine(polygons);
 			}
 			else if (commonGeomType.equals(LineString.class)) {
 				// create a MultiLineString
@@ -247,7 +247,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					lines[i] = (LineString) geomList.get(i);
 				}
-				geom = getGeometryFactory().createMultiLineString(lines);
+				geom = combine(lines);
 			}
 			else if (commonGeomType.equals(Point.class)) {
 				// create a MultiPoint
@@ -255,7 +255,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					points[i] = (Point) geomList.get(i);
 				}
-				geom = getGeometryFactory().createMultiPoint(points);
+				geom = combine(points);
 			}
 			if (geom != null) {
 				// returned combined property
@@ -271,5 +271,35 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 			return null;
 		}
 		return childGeometries;
+	}
+
+	/**
+	 * Combine points to a geometry.
+	 * 
+	 * @param points the points to combine
+	 * @return the combined geometry
+	 */
+	protected Geometry combine(Point[] points) {
+		return getGeometryFactory().createMultiPoint(points);
+	}
+
+	/**
+	 * Combine lines to a geometry.
+	 * 
+	 * @param lines the lines to combine
+	 * @return the combined geometry
+	 */
+	protected Geometry combine(LineString[] lines) {
+		return getGeometryFactory().createMultiLineString(lines);
+	}
+
+	/**
+	 * Combine polygons to a geometry.
+	 * 
+	 * @param polygons the polygons to combine
+	 * @return the combined geometry
+	 */
+	protected Geometry combine(Polygon[] polygons) {
+		return getGeometryFactory().createMultiPolygon(polygons);
 	}
 }
