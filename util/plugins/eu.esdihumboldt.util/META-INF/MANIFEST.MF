@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Utilities Bundle
 Bundle-SymbolicName: eu.esdihumboldt.util
 Bundle-Version: 3.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="11.0.1",
@@ -36,3 +36,4 @@ Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.validator,
  eu.esdihumboldt.util.xml
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
+Bundle-Vendor: wetransform GmbH

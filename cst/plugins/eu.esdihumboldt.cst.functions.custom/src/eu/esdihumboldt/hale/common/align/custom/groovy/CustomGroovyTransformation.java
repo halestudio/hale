@@ -167,7 +167,14 @@ public class CustomGroovyTransformation
 	 * @return if instance values should be used
 	 */
 	public static boolean useInstanceVariableForSource(DefaultCustomPropertyFunctionEntity source) {
-		return source.getBindingType() != null && !source.getBindingType().getChildren().isEmpty();
+		if (source.getBindingClass() == null && source.getBindingType() == null) {
+			// no setting for source at all -> can be anything -> use instance
+			return true;
+		}
+
+		boolean sourceHasChildren = source.getBindingType() != null
+				&& !source.getBindingType().getChildren().isEmpty();
+		return sourceHasChildren;
 	}
 
 }

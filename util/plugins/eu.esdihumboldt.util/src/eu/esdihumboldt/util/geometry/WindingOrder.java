@@ -82,11 +82,16 @@ public class WindingOrder {
 	 *         order is clockwise.
 	 */
 	public static boolean isCounterClockwise(Geometry geometry) {
-		if (geometry == null)
+		if (geometry == null || geometry.isEmpty())
 			return false;
 
 		// Get coordinates of geometry
 		Coordinate[] coordinates = geometry.getCoordinates();
+		if (coordinates.length < 3) {
+			// orientation cannot be determined
+			// but this should also not happen for linear rings
+			return false;
+		}
 
 		// Get order of geometry using algorithm
 		boolean orientation = false;
@@ -110,6 +115,11 @@ public class WindingOrder {
 		if (geometry == null) {
 			return null;
 		}
+
+		if (geometry.isEmpty()) {
+			return geometry;
+		}
+
 		// Getting isCRS flip? if yes, then reverse the winding order of input
 		if (crs != null && isCRSFlip(crs))
 			counterClockWise = !counterClockWise;
