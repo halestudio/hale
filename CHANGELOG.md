@@ -22,6 +22,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Using the value `unpopulated` for GML *nilReason* attributes does not conform to the GML specification. The proposal to use this value has been changed to `other:unpopulated` to conform with the specification. Also, when encoding GML, `unpopulated` will be replaced by `other:unpopulated` where encountered in *nilReason* attributes to support mappings created in previous versions
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
 - Fixed instance partitioning for WFS-T upload producing too many small parts
+- Resolving local resources via bundles can no longer yield streams to directories/packages
 
 ## [3.0.0]
 

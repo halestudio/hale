@@ -87,6 +87,9 @@ public class BundleResolver implements ResourceResolver {
 				throw new ResourceNotFoundException("Resource with path " + uri.getPath()
 						+ " not contained in bundle " + bundle.getSymbolicName());
 			}
+
+			preventDirectoryMatch(uri, entry);
+
 			return new InputSupplier<InputStream>() {
 
 				@Override
@@ -110,6 +113,11 @@ public class BundleResolver implements ResourceResolver {
 			}
 
 			if (resources.hasMoreElements()) {
+				URL entry = resources.nextElement();
+
+				// XXX not sure if this is needed here
+				preventDirectoryMatch(uri, entry);
+
 				return new InputSupplier<InputStream>() {
 
 					@Override
@@ -120,6 +128,16 @@ public class BundleResolver implements ResourceResolver {
 			}
 			else {
 				throw new ResourceNotFoundException();
+			}
+		}
+	}
+
+	private void preventDirectoryMatch(URI uri, URL candidate) throws ResourceNotFoundException {
+		if (uri != null && candidate != null) {
+			String path1 = uri.getPath();
+			String path2 = candidate.getPath();
+			if (path2.endsWith("/") && !path1.endsWith("/")) {
+				throw new ResourceNotFoundException("Found only directory match for resource");
 			}
 		}
 	}

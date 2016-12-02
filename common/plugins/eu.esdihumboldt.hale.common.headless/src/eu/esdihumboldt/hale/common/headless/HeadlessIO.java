@@ -88,8 +88,8 @@ public abstract class HeadlessIO {
 		IOAdvisor<?> advisor = advisors.get(actionId);
 		if (advisor == null) {
 			// try to find registered advisor for action (e.g. lookup)
-			List<IOAdvisorFactory> regAdvisors = IOAdvisorExtension.getInstance().getFactories(
-					new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
+			List<IOAdvisorFactory> regAdvisors = IOAdvisorExtension.getInstance()
+					.getFactories(new FactoryFilter<IOAdvisor<?>, IOAdvisorFactory>() {
 
 						@Override
 						public boolean acceptFactory(IOAdvisorFactory factory) {
@@ -105,12 +105,16 @@ public abstract class HeadlessIO {
 			if (regAdvisors != null && !regAdvisors.isEmpty()) {
 				try {
 					advisor = regAdvisors.get(0).createAdvisor(serviceProvider);
-					log.info(MessageFormat
-							.format("No advisor for action {0} given, using advisor registered through extension point.",
-									actionId));
+					log.info(MessageFormat.format(
+							"No advisor for action {0} given, using advisor registered through extension point.",
+							actionId));
 				} catch (Exception e) {
-					log.error(MessageFormat.format(
-							"Failed to load registered advisor for action {0}.", actionId));
+					log.error(MessageFormat
+							.format("Failed to load registered advisor for action {0}.", actionId));
+					if (advisor != null) {
+						// shouldn't happen, but seems to happen anyway
+						log.error("Advisor is set in spite of error", e);
+					}
 				}
 			}
 		}
@@ -145,8 +149,8 @@ public abstract class HeadlessIO {
 	 */
 	public static IOProvider loadProvider(IOConfiguration conf) {
 		IOProvider provider = null;
-		IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-				conf.getProviderId());
+		IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
+				.getFactory(conf.getProviderId());
 		if (descriptor != null) {
 			try {
 				provider = descriptor.createExtensionObject();
@@ -195,8 +199,8 @@ public abstract class HeadlessIO {
 				advisor.handleResults(provider);
 			}
 			else {
-				throw new IOException("Executing I/O provider not successful: "
-						+ report.getSummary());
+				throw new IOException(
+						"Executing I/O provider not successful: " + report.getSummary());
 			}
 		} catch (Exception e) {
 			throw new IOException("Error executing an I/O provider.", e);
