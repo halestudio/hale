@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.schematron.validator.SchematronInstanceValidator"
+            description="Validates XML files against ISO schematron rules"
+            id="eu.esdihumboldt.hale.io.schematron.validator"
+            name="Schematron validator">
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xml.gzip">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="eu.esdihumboldt.hale.common.core.gzip"
+            file-extensions="xml.gz,gz"
+            id="eu.esdihumboldt.hale.io.xml.gzip"
+            name="GZiped XML file"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLContentDescriber">
+         </describer>
+      </content-type>
+   </extension>
+
+</plugin>
