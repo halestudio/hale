@@ -115,6 +115,9 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 			oldResources.add(getProject().getResources().get(i).clone());
 		}
 		IOConfiguration config = getProject().getSaveConfiguration();
+		if (config == null) {
+			config = new IOConfiguration();
+		}
 		IOConfiguration oldSaveConfig = config.clone();
 
 		// copy resources to the temp directory and update xml schemas
