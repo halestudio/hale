@@ -180,6 +180,41 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	}
 
 	/**
+	 * Test surface geometry consisting of multiple patches (including holes)
+	 * read from a GML 3.2 file.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testSurfaceGml32_patches_hole() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+						getClass()
+								.getResource("/data/surface/sample-surface-gml32_patches_hole.xml")
+								.toURI());
+
+		LinearRing shell = geomFactory.createLinearRing(
+				new Coordinate[] { new Coordinate(-4.5, 3), new Coordinate(0.5, 4.5),
+						new Coordinate(5, 3), new Coordinate(8.5, 2), new Coordinate(3, -4.5),
+						new Coordinate(1, 1), new Coordinate(-3, -1), new Coordinate(-4.5, 3) });
+		LinearRing[] holes = new LinearRing[] { geomFactory.createLinearRing(new Coordinate[] {
+				new Coordinate(3, 0.5), new Coordinate(4, -2), new Coordinate(6.5, 1.5),
+				new Coordinate(4.5, 2), new Coordinate(3, 0.5) }) };
+		Polygon composedPolygon = geomFactory.createPolygon(shell, holes);
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolygonPatch with LinearRings defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkSurfacePropertyInstance(instance, composedPolygon);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
 	 * Test surface geometries read from a GML 3 file. Geometry coordinates will
 	 * be moved to the universal grid
 	 * 
