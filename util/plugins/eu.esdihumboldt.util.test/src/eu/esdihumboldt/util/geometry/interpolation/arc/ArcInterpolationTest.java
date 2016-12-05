@@ -163,13 +163,6 @@ public class ArcInterpolationTest {
 				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
-// get generated coordinates
-//		System.out.println(interpolatedArc.getCoordinates().length);
-//		System.out.println("");
-//		for (Coordinate coordinate : interpolatedArc.getCoordinates())
-//			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
-//		System.out.println("");
-
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
 

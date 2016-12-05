@@ -93,7 +93,7 @@ public class CircleInterpolationTest {
 				{ 0, new Coordinate[] { new Coordinate(569884.075, 5936816.054),
 						new Coordinate(569883.230, 5936814.518),
 						new Coordinate(569884.919, 5936814.518) }, //
-						LineString.class, true }, //
+						LineString.class, SKIP_TEST }, //
 				{ 1, new Coordinate[] { new Coordinate(568420.259, 5936349.171),
 						new Coordinate(568419.414, 5936347.635),
 						new Coordinate(568421.103, 5936347.635) }, //
@@ -132,12 +132,6 @@ public class CircleInterpolationTest {
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
-
-//		System.out.println(interpolatedArc.getCoordinates().length);
-//		System.out.println("");
-//		for (Coordinate coordinate : interpolatedArc.getCoordinates())
-//			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
-//		System.out.println("");
 
 		Coordinate[] coordinates = interpolatedArc.getCoordinates();
 		for (int i = 1; i < coordinates.length; i++) {
