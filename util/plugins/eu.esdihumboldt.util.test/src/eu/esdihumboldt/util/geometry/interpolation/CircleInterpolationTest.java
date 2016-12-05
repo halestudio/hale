@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -72,6 +74,14 @@ public class CircleInterpolationTest {
 	}
 
 	/**
+	 * Before method to skip test
+	 */
+	@Before
+	public void beforeMethod() {
+		Assume.assumeFalse(this.skipTest);
+	}
+
+	/**
 	 * Passing circle geometries
 	 * 
 	 * @return Collection of arc coordinates and type of generated geometry
@@ -83,7 +93,7 @@ public class CircleInterpolationTest {
 				{ 0, new Coordinate[] { new Coordinate(569884.075, 5936816.054),
 						new Coordinate(569883.230, 5936814.518),
 						new Coordinate(569884.919, 5936814.518) }, //
-						LineString.class, SKIP_TEST }, //
+						LineString.class, true }, //
 				{ 1, new Coordinate[] { new Coordinate(568420.259, 5936349.171),
 						new Coordinate(568419.414, 5936347.635),
 						new Coordinate(568421.103, 5936347.635) }, //
@@ -110,17 +120,12 @@ public class CircleInterpolationTest {
 		});
 	}
 
-//0.01,3.2 3.33,3.33 0.01,-3.2
 	/**
 	 * test algorithm
 	 */
 	@Test
 	public void testInterpolation() {
 		System.out.println("-- Test-" + testIndex + " begin --");
-		if (skipTest) {
-			System.out.println("-- -- Test is configured to skip");
-			return;
-		}
 		Interpolation<LineString> interpolation = new CircleInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();

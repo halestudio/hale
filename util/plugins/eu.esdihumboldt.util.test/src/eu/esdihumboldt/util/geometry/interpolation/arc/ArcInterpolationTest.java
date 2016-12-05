@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -71,6 +73,14 @@ public class ArcInterpolationTest {
 		this.arcCoordinates = coordinates;
 		this.generatedGeometryType = geometry;
 		this.skipTest = skipTest;
+	}
+
+	/**
+	 * Before method to skip test
+	 */
+	@Before
+	public void beforeMethod() {
+		Assume.assumeFalse(this.skipTest);
 	}
 
 	/**
@@ -148,21 +158,17 @@ public class ArcInterpolationTest {
 	 */
 	@Test
 	public void testInterpolation() {
-		System.out.println("-- Test-" + testIndex + " begin --");
-		if (skipTest) {
-			System.out.println("-- -- Test is configured to skip");
-			return;
-		}
+		System.out.println("Test-" + testIndex);
 		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
-		// get generated coordinates
-		System.out.println(interpolatedArc.getCoordinates().length);
-		System.out.println("");
-		for (Coordinate coordinate : interpolatedArc.getCoordinates())
-			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
-		System.out.println("");
+// get generated coordinates
+//		System.out.println(interpolatedArc.getCoordinates().length);
+//		System.out.println("");
+//		for (Coordinate coordinate : interpolatedArc.getCoordinates())
+//			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
+//		System.out.println("");
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
