@@ -13,24 +13,13 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation;
+package eu.esdihumboldt.util.geometry.interpolation.arc;
 
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-
-import javax.imageio.ImageIO;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,9 +28,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
+
+import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
+import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import eu.esdihumboldt.util.geometry.interpolation.util.DrawGeometry;
 
 /**
  * Test for the Interpolation of arc algorithm
@@ -49,16 +41,14 @@ import com.vividsolutions.jts.geom.LineString;
  * @author Arun
  */
 @RunWith(Parameterized.class)
-public class InterpolationTest {
+public class ArcInterpolationTest {
 
 	private final int testIndex;
 	private final Coordinate[] arcCoordinates;
 	@SuppressWarnings("rawtypes")
 	private final Class generatedGeometryType;
 	private final boolean skipTest;
-
-	private static final int MAX_SIZE = 200;
-	private static final double e = 0.025;
+	private static final double e = 0.1;
 
 	private static final boolean SKIP_TEST = false;
 
@@ -75,7 +65,7 @@ public class InterpolationTest {
 	 * @param skipTest if wants to skip test
 	 */
 	@SuppressWarnings("rawtypes")
-	public InterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry,
+	public ArcInterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry,
 			boolean skipTest) {
 		this.testIndex = testIndex;
 		this.arcCoordinates = coordinates;
@@ -134,8 +124,22 @@ public class InterpolationTest {
 				{ 11, new Coordinate[] { new Coordinate(353297.973, 5531361.379),
 						new Coordinate(353298.192, 5531360.429),
 						new Coordinate(353298.503, 5531359.504) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 12, new Coordinate[] { new Coordinate(563066.454, 5934020.581),
+						new Coordinate(563061.303, 5934032.092),
+						new Coordinate(563062.253, 5934019.517) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 13, new Coordinate[] { new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
+						new Coordinate(0.01, -3.2) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 14, new Coordinate[] { new Coordinate(563196.992, 5935163.384),
+						new Coordinate(563189.534, 5935166.129),
+						new Coordinate(563182.076, 5935168.874) }, //
+						LineString.class, SKIP_TEST }, //
+				{ 15, new Coordinate[] { new Coordinate(563073.474, 5934958.319),
+						new Coordinate(563091.634, 5934958.353),
+						new Coordinate(563109.794, 5934958.387) }, //
 						LineString.class, SKIP_TEST } //
-
 		});
 	}
 
@@ -146,7 +150,7 @@ public class InterpolationTest {
 	public void testInterpolation() {
 		System.out.println("-- Test-" + testIndex + " begin --");
 		if (skipTest) {
-			System.out.println("Test is configured to skip");
+			System.out.println("-- -- Test is configured to skip");
 			return;
 		}
 		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e,
@@ -154,11 +158,11 @@ public class InterpolationTest {
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
 		// get generated coordinates
-//		System.out.println(interpolatedArc.getCoordinates().length);
-//		System.out.println("");
-//		for (Coordinate coordinate : interpolatedArc.getCoordinates())
-//			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
-//		System.out.println("");
+		System.out.println(interpolatedArc.getCoordinates().length);
+		System.out.println("");
+		for (Coordinate coordinate : interpolatedArc.getCoordinates())
+			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
+		System.out.println("");
 
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
@@ -169,85 +173,6 @@ public class InterpolationTest {
 					coordinates[i - 1]);
 		}
 		if (DRAW_IMAGE)
-			createImage((LineString) interpolatedArc, arcCoordinates, testIndex);
-
+			DrawGeometry.drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 	}
-
-	private void createImage(LineString geometry, Coordinate[] arcCoordinates, int imageIndex) {
-
-		Envelope envelope = geometry.getEnvelopeInternal();
-		int height;
-		int width;
-		double factor;
-		if (envelope.getHeight() > envelope.getWidth()) {
-			height = MAX_SIZE;
-			width = (int) Math.ceil(height * envelope.getWidth() / envelope.getHeight());
-			factor = height / envelope.getHeight();
-		}
-		else {
-			width = MAX_SIZE;
-			height = (int) Math.ceil(width * envelope.getHeight() / envelope.getWidth());
-			factor = width / envelope.getWidth();
-		}
-		double minX = envelope.getMinX();
-		double minY = envelope.getMinY();
-
-		// create Graphics
-		BufferedImage bim = new BufferedImage(width + 100, height + 100,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = bim.createGraphics();
-
-		// draw LineString
-		g.setColor(Color.BLACK);
-		g.setStroke(new BasicStroke(2.0f));
-		drawLineString(g, geometry, minX, minY, factor);
-
-		// draw arc Coordinates
-		g.setColor(Color.RED);
-		drawPoints(g, arcCoordinates, minX, minY, factor);
-
-		// Dispose the Graphics2D object
-		g.dispose();
-
-		try {
-			// Write the BufferedImage object to a file
-			File image = File.createTempFile("test" + imageIndex + "-", ".png");
-			ImageIO.write(bim, "PNG", image);
-		} catch (IOException e) {
-			//
-		}
-	}
-
-	private void drawLineString(Graphics2D g, LineString geometry, double minX, double minY,
-			double factor) {
-		Coordinate[] coordinates = geometry.getCoordinates();
-		List<java.awt.geom.Line2D> lines = createLineString(coordinates, minX, minY, factor);
-
-		for (java.awt.geom.Line2D line : lines) {
-			g.draw(line);
-		}
-	}
-
-	private List<java.awt.geom.Line2D> createLineString(Coordinate[] coordinates, double minX,
-			double minY, double factor) {
-		List<java.awt.geom.Line2D> results = new ArrayList<>();
-		for (int i = 0; i < coordinates.length - 1; i++) {
-			results.add(new Line2D.Double((coordinates[i].x - minX) * factor,
-					(coordinates[i].y - minY) * factor, (coordinates[i + 1].x - minX) * factor,
-					(coordinates[i + 1].y - minY) * factor));
-		}
-
-		return results;
-	}
-
-	private void drawPoints(Graphics2D g, Coordinate[] coordinates, double minX, double minY,
-			double factor) {
-		for (int i = 0; i < coordinates.length; i++) {
-			Line2D point = new Line2D.Double((coordinates[i].x - minX) * factor,
-					(coordinates[i].y - minY) * factor, (coordinates[i].x - minX) * factor,
-					(coordinates[i].y - minY) * factor);
-			g.draw(point);
-		}
-	}
-
 }
