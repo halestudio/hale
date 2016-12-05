@@ -422,6 +422,10 @@
             category="crs"
             class="eu.esdihumboldt.cst.functions.geometric.CRSHelperFunctions">
       </helper>
+      <helper
+            category="geom"
+            class="eu.esdihumboldt.cst.functions.geometric.SimpleFeatureGeometryHelpers">
+      </helper>
    </extension>
 
 </plugin>
