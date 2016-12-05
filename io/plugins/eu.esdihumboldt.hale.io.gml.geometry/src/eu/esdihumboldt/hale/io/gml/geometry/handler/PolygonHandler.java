@@ -151,7 +151,9 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 			ringValues = PropertyResolver.getValues(instance, "exterior.Ring", false);
 			values = combineCollections(values, ringValues);
 			List<LinearRing> outerRing = new ArrayList<>(1);
+
 			if (values != null && !values.isEmpty()) {
+				LinearRing outer = null;
 				Iterator<Object> iterator = values.iterator();
 				while (iterator.hasNext()) {
 					Object value = iterator.next();
@@ -160,10 +162,11 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 						// GeometryProperty<LinearRing> instance
 						GeometryProperty<LinearRing> ring = (GeometryProperty<LinearRing>) ((Instance) value)
 								.getValue();
-						outerRing.add(ring.getGeometry());
+						outer = ring.getGeometry();
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
+				outerRing.add(outer);
 				outerRing = moveLinerRingsToUniversalGrid(outerRing, reader);
 				polygon = getGeometryFactory().createPolygon(outerRing.get(0), holes);
 			}
