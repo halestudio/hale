@@ -136,7 +136,9 @@ public class Project implements ProjectInfo, Cloneable {
 		this.created = project.getCreated();
 		this.modified = project.getModified();
 		this.description = project.getDescription();
-		this.saveConfiguration = project.getSaveConfiguration().clone();
+		if (project.getSaveConfiguration() != null) {
+			this.saveConfiguration = project.getSaveConfiguration().clone();
+		}
 		for (IOConfiguration resource : project.getResources()) {
 			this.resources.add(resource.clone());
 		}

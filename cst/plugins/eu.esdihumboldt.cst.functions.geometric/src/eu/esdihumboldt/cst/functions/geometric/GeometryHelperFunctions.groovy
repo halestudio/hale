@@ -71,6 +71,10 @@ class GeometryHelperFunctions {
 	@CompileStatic
 	@Nullable
 	static GeometryProperty<? extends Geometry> _centroid(def geometryHolder) {
+		if (geometryHolder == null) {
+			return null
+		}
+
 		GeometryProperty<?> result;
 		try {
 			result = Centroid.calculateCentroid(geometryHolder);
@@ -155,6 +159,10 @@ class GeometryHelperFunctions {
 
 	@CompileStatic
 	static GeometryProperty<? extends Geometry> _find(def geometryHolder) {
+		if (geometryHolder == null) {
+			return null
+		}
+
 		// depth first traverser that on cancel stops further traversal
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(false)
 		GeometryFinder geoFind = new GeometryFinder(null)
@@ -188,6 +196,10 @@ class GeometryHelperFunctions {
 
 	@CompileStatic
 	static List<GeometryProperty<? extends Geometry>> _findAll(def geometryHolder) {
+		if (geometryHolder == null) {
+			return []
+		}
+
 		// depth first traverser that on cancel continues traversal but w/o the
 		// children of the current object
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(false)
