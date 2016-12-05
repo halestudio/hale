@@ -99,9 +99,9 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 
 		Polygon polygon3 = geomFactory.createPolygon(shell, holes);
 
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0.01, 3.21),
-				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.21),
-				new Coordinate(-3.34, -3.2), new Coordinate(0.01, 3.21) });
+		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0, -3.2), new Coordinate(-3.34, -3.2),
+				new Coordinate(0, 3.2) });
 
 		holes = new LinearRing[2];
 		hole1 = geomFactory
