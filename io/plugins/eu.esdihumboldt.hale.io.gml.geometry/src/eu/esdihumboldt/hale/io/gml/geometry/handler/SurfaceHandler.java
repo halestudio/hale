@@ -23,6 +23,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -95,29 +96,58 @@ public class SurfaceHandler extends GenericGeometryHandler {
 			return polygons[0];
 		}
 
-		try {
-			GeometryProperty<?> prop = ExtentTransformation.calculateExtent(Arrays.asList(polygons),
-					ExtentType.UNION);
-			if (prop != null) {
-				Geometry geom = prop.getGeometry();
-				if (geom instanceof Polygon) {
-					return geom;
+		if (is2D(polygons)) {
+			/*
+			 * It was found that the UNION calculation as below seems to ignore
+			 * the third dimension. So only handle 2D polygons.
+			 */
+
+			try {
+				GeometryProperty<?> prop = ExtentTransformation
+						.calculateExtent(Arrays.asList(polygons), ExtentType.UNION);
+				if (prop != null) {
+					Geometry geom = prop.getGeometry();
+					if (geom instanceof Polygon) {
+						return geom;
+					}
+					else {
+						/*
+						 * Probably a MultiPolygon, for instance for polygons
+						 * that only touch each other in one point or for 3D
+						 * polygons.
+						 */
+						log.debug("Could not combine surface to single polygon");
+					}
 				}
-				else {
-					/*
-					 * Probably a MultiPolygon, for instance for polygons that
-					 * only touch each other in one point or for 3D polygons.
-					 */
-					log.debug("Could not combine surface to single polygon");
-				}
+			} catch (NoResultException | TransformationException e) {
+				// ignore
+				log.debug("Could not combine surface to single polygon");
 			}
-		} catch (NoResultException | TransformationException e) {
-			// ignore
-			log.debug("Could not combine surface to single polygon");
 		}
 
 		// fall-back
 		return super.combine(polygons);
+	}
+
+	private boolean is2D(Polygon[] polygons) {
+		for (Polygon polygon : polygons) {
+			if (!is2D(polygon.getCoordinates())) {
+				return false;
+			}
+		}
+
+		// all polygons were 2D
+		return true;
+	}
+
+	private boolean is2D(Coordinate[] coordinates) {
+		for (Coordinate coord : coordinates) {
+			if (!Double.isNaN(coord.z)) {
+				return false;
+			}
+		}
+		// all coordinates are 2D
+		return true;
 	}
 
 }

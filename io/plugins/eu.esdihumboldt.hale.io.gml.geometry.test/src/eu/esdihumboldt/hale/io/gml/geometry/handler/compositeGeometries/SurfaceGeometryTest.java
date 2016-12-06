@@ -216,6 +216,75 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	}
 
 	/**
+	 * Test surface geometry consisting of multiple 3D patches read from a GML
+	 * 3.2 file.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testSurfaceGml32_patches_3d() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(), getClass()
+						.getResource("/data/surface/sample-surface-gml32_patches_3d.xml").toURI());
+
+		Polygon polygon1 = geomFactory.createPolygon(new Coordinate[] { new Coordinate(-4.5, 3, 0),
+				new Coordinate(0.5, 4.5, 0), new Coordinate(5, 3, 1), new Coordinate(-3, -1, 1),
+				new Coordinate(-4.5, 3, 0) });
+		Polygon polygon2 = geomFactory.createPolygon(new Coordinate[] { new Coordinate(1, 1, 1),
+				new Coordinate(5, 3, 1), new Coordinate(8.5, 2, 0), new Coordinate(3, -4.5, 0),
+				new Coordinate(1, 1, 1) });
+		MultiPolygon composed = geomFactory
+				.createMultiPolygon(new Polygon[] { polygon1, polygon2 });
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolygonPatch with LinearRings defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkSurfacePropertyInstance(instance, composed);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test surface geometry consisting of multiple 3D patches read from a GML
+	 * 3.2 file. The patches cannot be combined to a single polygon.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testSurfaceGml32_patches_3d_mismatch() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+						getClass()
+								.getResource(
+										"/data/surface/sample-surface-gml32_patches_3d_mismatch.xml")
+								.toURI());
+
+		Polygon polygon1 = geomFactory.createPolygon(new Coordinate[] { new Coordinate(-4.5, 3, 0),
+				new Coordinate(0.5, 4.5, 0), new Coordinate(5, 3, 1), new Coordinate(-3, -1, 0),
+				new Coordinate(-4.5, 3, 0) });
+		Polygon polygon2 = geomFactory.createPolygon(new Coordinate[] { new Coordinate(1, 1, 1),
+				new Coordinate(5, 3, 1), new Coordinate(8.5, 2, 0), new Coordinate(3, -4.5, 0),
+				new Coordinate(1, 1, 1) });
+		MultiPolygon composed = geomFactory
+				.createMultiPolygon(new Polygon[] { polygon1, polygon2 });
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolygonPatch with LinearRings defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkSurfacePropertyInstance(instance, composed);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
 	 * Test surface geometry consisting of multiple patches (including holes)
 	 * read from a GML 3.2 file.
 	 * 
