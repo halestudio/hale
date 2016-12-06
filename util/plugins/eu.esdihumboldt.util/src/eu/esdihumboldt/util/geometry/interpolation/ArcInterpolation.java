@@ -26,7 +26,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 
 /**
- * Interpolation of a geometry. Specifically for Arc
+ * Interpolation of a arc geometry
  * 
  * @author Arun
  */
@@ -34,7 +34,15 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcInterpolation.class);
 
-	private static Coordinate lastGridCoordinateOfArc = null;
+	private Coordinate lastGridCoordinateOfArc = null;
+
+	private boolean isArcClockWise;
+
+	private final boolean isCircle;
+
+	private Coordinate nextArcCoordinate = null;
+
+	private double lastDeservedNeighbourAngle;
 
 	/**
 	 * Constructor
@@ -45,7 +53,21 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	 */
 	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
 			boolean keepOriginal) {
+		this(coordinates, maxPositionalError, keepOriginal, false);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param coordinates raw geometry coordinates
+	 * @param maxPositionalError maximum positional error
+	 * @param keepOriginal keeps original points in interpolation
+	 * @param isCircle true, if coordinates are of circle type
+	 */
+	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
+			boolean keepOriginal, boolean isCircle) {
 		super(coordinates, maxPositionalError, keepOriginal);
+		this.isCircle = isCircle;
 	}
 
 	/**
@@ -65,8 +87,32 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	 */
 	@Override
 	protected LineString getInterpolatedGeometry() {
+
+		if (areOnStraightLine(rawGeometryCoordinates)) {
+			// this is only happen when slopes are getting equal
+			Coordinate[] generatedCoordinates = new Coordinate[rawGeometryCoordinates.length];
+
+			LineString lineString = null;
+			try {
+
+				for (int i = 0; i < rawGeometryCoordinates.length; i++) {
+					if (!keepOriginal)
+						generatedCoordinates[i] = pointToGrid(rawGeometryCoordinates[i]);
+					else
+						generatedCoordinates[i] = rawGeometryCoordinates[i];
+				}
+				lineString = new GeometryFactory().createLineString(generatedCoordinates);
+			} catch (Exception ex) {
+				log.error("Error in interpolation of arc", ex);
+			}
+			return lineString;
+		}
+
 		// Calculate center of Arc
 		Coordinate centerOfArc = calculateCenterPoint(rawGeometryCoordinates);
+
+		// is Arc clockwise?
+		isArcClockWise = getOrderOfArc(centerOfArc, rawGeometryCoordinates);
 
 		// Calculate radius of Arc
 		double radius = Math.sqrt(Math.pow((rawGeometryCoordinates[0].x - centerOfArc.x), 2)
@@ -76,26 +122,169 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		return interpolateToLineString(rawGeometryCoordinates, centerOfArc, radius);
 	}
 
-	private boolean isSameAsLastGridCoordinate(Coordinate currentArcCoordinate) {
-		Coordinate gridCoordinate = pointToGrid(currentArcCoordinate);
-		if (lastGridCoordinateOfArc != null && gridCoordinate.equals(lastGridCoordinateOfArc))
-			return true;
-		lastGridCoordinateOfArc = gridCoordinate;
-		return false;
+	private LineString interpolateToLineString(Coordinate[] arcCoordinates, Coordinate center,
+			double radius) {
+
+		List<Coordinate> generatedCoordinates = new ArrayList<Coordinate>();
+
+		// Add first Arc coordinate
+		generatedCoordinates.add(keepOriginal ? arcCoordinates[0] : pointToGrid(arcCoordinates[0]));
+
+		int coordinatesCount;
+		if (isCircle)
+			coordinatesCount = arcCoordinates.length;
+		else
+			coordinatesCount = arcCoordinates.length - 1;
+
+		int current;
+		int next;
+		for (current = 0; current < coordinatesCount; current++) {
+			next = current + 1;
+			if (isCircle && next == coordinatesCount)
+				next = 0;
+
+			nextArcCoordinate = arcCoordinates[next];
+
+			// Add coordinates up to next arc coordinates
+			try {
+				generatedCoordinates.addAll(generateLineStringCoordinates(arcCoordinates[current],
+						arcCoordinates[next], center, radius));
+			} catch (Exception ex) {
+				StringBuilder builder = new StringBuilder();
+				for (Coordinate c : arcCoordinates) {
+					builder.append(c.toString() + ",");
+				}
+				throw new RuntimeException(ex.toString() + " for " + (isCircle ? "circle" : "arc")
+						+ " with coordinates " + builder.toString());
+			}
+
+			// Add next Arc coordinate
+			if (!keepOriginal) {
+				if (!isDuplicateCoordinate(arcCoordinates[next]))
+					generatedCoordinates.add(lastGridCoordinateOfArc);
+			}
+			else {
+				if (lastGridCoordinateOfArc == null
+						|| !arcCoordinates[next].equals(lastGridCoordinateOfArc))
+					generatedCoordinates.add(arcCoordinates[next]);
+			}
+		}
+
+		// now, we have all coordinates of line string. So then just create it.
+		LineString lineString = null;
+		try {
+			lineString = new GeometryFactory().createLineString(
+					generatedCoordinates.toArray(new Coordinate[generatedCoordinates.size()]));
+		} catch (Exception ex) {
+			log.error("Error in interpolation of arc", ex);
+			if (!isCircle) {
+				lineString = new GeometryFactory().createLineString(rawGeometryCoordinates);
+			}
+		}
+
+		return lineString;
 	}
 
-	private Coordinate calculateCenterPoint(Coordinate[] arcCoordinates) {
+	private List<Coordinate> generateLineStringCoordinates(Coordinate c1, Coordinate c2,
+			Coordinate center, double radius) throws Exception {
+
+		List<Coordinate> list = new ArrayList<>();
+
+		// calculate angle between given two coordinates
+		double angle = getAngleBetweenTwoPoints(c1, c2, center);
+		Coordinate deservedNeighbour = c1;
+		lastDeservedNeighbourAngle = angle;
+
+		while (!isNextArcCoordinateNeighbour(deservedNeighbour)) {
+			deservedNeighbour = generateNextLineStringCoordinate(deservedNeighbour,
+					nextArcCoordinate, center, radius, lastDeservedNeighbourAngle,
+					NEXT_COORDINATE_DISTANCE);
+			if (!isDuplicateCoordinate(deservedNeighbour))
+				list.add(lastGridCoordinateOfArc);
+
+		}
+		return list;
+	}
+
+	private Coordinate generateNextLineStringCoordinate(Coordinate current,
+			Coordinate nextArcCoordinate, Coordinate center, double radius, double maxAngle,
+			double nextPointDistance) {
+		double deservedNeighbourAngle = 0;
+
+		Coordinate mostDeservedNeighour = null;
+
+		while (mostDeservedNeighour == null) {
+
+			if (round(nextPointDistance, ROUNDING_SCALE) == 0)
+				throw new RuntimeException("Arc interpolation tends to infinite loop!!");
+
+			// all possible neighbor
+			List<Coordinate> allNeighbours = getNeighbouringCoordinates(current, nextPointDistance);
+
+			// will find deserved neighbor
+			for (Coordinate c : allNeighbours) {
+				double distance = c.distance(center);
+
+				if (Math.abs(distance - radius) <= MAX_POSITIONAL_ERROR) {
+
+					double neighbourAngle = getAngleBetweenTwoPoints(c, nextArcCoordinate, center);
+					if (neighbourAngle < maxAngle) {
+						if (mostDeservedNeighour == null) {
+							mostDeservedNeighour = c;
+							deservedNeighbourAngle = neighbourAngle;
+						}
+						else {
+							if (Math.abs(mostDeservedNeighour.distance(center) - radius) > Math
+									.abs(distance - radius)) {
+								mostDeservedNeighour = c;
+								deservedNeighbourAngle = neighbourAngle;
+							}
+						}
+						// break;
+					}
+				}
+			}
+			// half the next point distance
+			nextPointDistance /= 2;
+		}
+
+		lastDeservedNeighbourAngle = deservedNeighbourAngle;
+
+		// most deserved neighbor coordinate found, now will add nearest grid
+		// point of that neighbor coordinate
+		return mostDeservedNeighour;
+	}
+
+	private List<Coordinate> getNeighbouringCoordinates(Coordinate current,
+			double nextPointDistance) {
+
+		List<Coordinate> neighbours = new ArrayList<Coordinate>();
+
+		double sliceDegree = 10;
+		int points = (int) (360 / sliceDegree);
+
+		for (int i = 0; i < points; i++) {
+			double angle = sliceDegree * i;
+
+			double x = current.x + (nextPointDistance * Math.cos(Math.toRadians(angle)));
+			double y = current.y + (nextPointDistance * Math.sin(Math.toRadians(angle)));
+
+			neighbours.add(new Coordinate(x, y));
+		}
+
+		return neighbours;
+	}
+
+	private static Coordinate calculateCenterPoint(Coordinate[] arcCoordinates) {
 
 		double yDelta_a = arcCoordinates[1].y - arcCoordinates[0].y;
 		double xDelta_a = arcCoordinates[1].x - arcCoordinates[0].x;
 		double yDelta_b = arcCoordinates[2].y - arcCoordinates[1].y;
 		double xDelta_b = arcCoordinates[2].x - arcCoordinates[1].x;
 
-		double aSlope = (arcCoordinates[1].y - arcCoordinates[0].y)
-				/ (arcCoordinates[1].x - arcCoordinates[0].x);
+		double aSlope = yDelta_a / xDelta_a;
 
-		double bSlope = (arcCoordinates[2].y - arcCoordinates[1].y)
-				/ (arcCoordinates[2].x - arcCoordinates[1].x);
+		double bSlope = yDelta_b / xDelta_b;
 
 		// we can get two lines using above slope let's say p1p2: (ya =
 		// m_a(x1-x0) + y0) and p2p3: (yb = m_a(x2-x1) + y1)
@@ -145,180 +334,215 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		}
 		else //
 		{
-			centerX = ((aSlope * bSlope * (BC_Mid.y - AB_Mid.y)) + (aSlope * BC_Mid.x)
-					- (bSlope * AB_Mid.x)) / (aSlope - bSlope);
+			if (round(aSlope, 4) != round(bSlope, 4)) {
+				centerX = ((aSlope * bSlope * (BC_Mid.y - AB_Mid.y)) + (aSlope * BC_Mid.x)
+						- (bSlope * AB_Mid.x)) / (aSlope - bSlope);
+				centerY = AB_Mid.y - ((centerX - AB_Mid.x) / aSlope);
+			}
+			else {
+				centerX = Double.POSITIVE_INFINITY;
+				centerY = Double.POSITIVE_INFINITY;
+			}
 
-			centerY = AB_Mid.y - ((centerX - AB_Mid.x) / aSlope);
 		}
 		return new Coordinate(centerX, centerY);
 	}
 
-	private LineString interpolateToLineString(Coordinate[] arcCoordinates, Coordinate center,
-			double radius) {
+	private boolean areOnStraightLine(Coordinate[] arcCoordinates) {
+		double yDelta_a = arcCoordinates[1].y - arcCoordinates[0].y;
+		double xDelta_a = arcCoordinates[1].x - arcCoordinates[0].x;
+		double yDelta_b = arcCoordinates[2].y - arcCoordinates[1].y;
+		double xDelta_b = arcCoordinates[2].x - arcCoordinates[1].x;
 
-		List<Coordinate> generatedCoordinates = new ArrayList<Coordinate>();
+		double aSlope = yDelta_a / xDelta_a;
+		double bSlope = yDelta_b / xDelta_b;
 
-		// Add first Arc coordinate
-
-		generatedCoordinates.add(keepOriginal ? arcCoordinates[0] : pointToGrid(arcCoordinates[0]));
-
-		double angle = getAngleBetweenTwoPoints(arcCoordinates[0], arcCoordinates[1], radius);
-
-		// Add coordinates up to next arc coordinates
-		generatedCoordinates.addAll(generateLineStringCoordinates(arcCoordinates[0],
-				arcCoordinates[1], center, radius, angle, NEXT_COORDINATE_DISTANCE));
-
-		// Add second Arc coordinate
-		if (!keepOriginal) {
-			if (!isSameAsLastGridCoordinate(arcCoordinates[1]))
-				generatedCoordinates.add(lastGridCoordinateOfArc);
-		}
-		else {
-			if (lastGridCoordinateOfArc == null
-					|| !arcCoordinates[1].equals(lastGridCoordinateOfArc))
-				generatedCoordinates.add(arcCoordinates[1]);
-		}
-
-		angle = getAngleBetweenTwoPoints(arcCoordinates[1], arcCoordinates[2], radius);
-
-		// Add coordinates up to next arc coordinates
-		generatedCoordinates.addAll(generateLineStringCoordinates(arcCoordinates[1],
-				arcCoordinates[2], center, radius, angle, NEXT_COORDINATE_DISTANCE));
-
-		// Add third Arc coordinate
-		if (!keepOriginal) {
-			if (!isSameAsLastGridCoordinate(arcCoordinates[2]))
-				generatedCoordinates.add(lastGridCoordinateOfArc);
-		}
-		else {
-			if (lastGridCoordinateOfArc == null
-					|| !arcCoordinates[2].equals(lastGridCoordinateOfArc))
-				generatedCoordinates.add(arcCoordinates[2]);
-		}
-
-		// now, we have all coordinates of line string. So then just create it.
-		LineString lineString = null;
-		try {
-			lineString = new GeometryFactory()
-					.createLineString(generatedCoordinates.toArray(new Coordinate[0]));
-		} catch (Exception ex) {
-			log.error("Error in interpolation of arc", ex);
-		}
-
-		return lineString;
-	}
-
-	private double getAngleBetweenTwoPoints(Coordinate c1, Coordinate c2, double radius) {
-		double dx = c1.x - c2.x;
-		double dy = c1.y - c2.y;
-		double distance = Math.sqrt(dx * dx + dy * dy);
-
-		double angle = Math
-				.toDegrees(Math.acos(1 - (Math.pow(distance, 2) / (2 * Math.pow(radius, 2)))));
-
-		return angle;
-	}
-
-	private List<Coordinate> generateLineStringCoordinates(Coordinate current,
-			Coordinate nextArcCoordinate, Coordinate center, double radius, double maxAngle,
-			double nextPointDistance) {
-
-		List<Coordinate> tempList = new ArrayList<>();
-
-		double deservedNeighbourAngle = 0;
-		Coordinate deservedNeighour = null;
-
-		while (deservedNeighour == null) {
-			// all possible neighbor
-			List<Coordinate> allNeighbours = getNeighbouringCoordinates(current, nextPointDistance);
-
-			// will find deserved neighbor
-			for (Coordinate c : allNeighbours) {
-				double distance = Math
-						.sqrt(Math.pow((c.x - center.x), 2) + Math.pow((c.y - center.y), 2));
-
-				if (Math.abs(distance - radius) <= MAX_POSITIONAL_ERROR) {
-
-					deservedNeighbourAngle = getAngleBetweenTwoPoints(c, nextArcCoordinate, radius);
-
-					if (deservedNeighbourAngle < maxAngle) {
-						deservedNeighour = c;
-						break;
-					}
-				}
-			}
-			// half the next point distance
-			nextPointDistance /= 2;
-		}
-
-		// we found neighbor coordinate, we add nearest grid point of that arc
-		// point
-		if (!isSameAsLastGridCoordinate(deservedNeighour))
-			tempList.add(lastGridCoordinateOfArc);
-
-		// if we reached to the Arc coordinate then just return list, else call
-		// this method again
-		if (!isArcCoordinateNeighbour(deservedNeighour, nextArcCoordinate, MAX_POSITIONAL_ERROR)) {
-			tempList.addAll(generateLineStringCoordinates(deservedNeighour, nextArcCoordinate,
-					center, radius, deservedNeighbourAngle, NEXT_COORDINATE_DISTANCE));
-		}
-
-		return tempList;
-	}
-
-	private boolean isArcCoordinateNeighbour(Coordinate current, Coordinate nextArcCoordinate,
-			double e) {
-
-		double distance = Math.sqrt(Math.pow((current.x - nextArcCoordinate.x), 2)
-				+ Math.pow((current.y - nextArcCoordinate.y), 2));
-		if (distance <= e)
+		if (round(aSlope, 4) == round(bSlope, 4)) {
 			return true;
-
+		}
 		return false;
 	}
 
-	private List<Coordinate> getNeighbouringCoordinates(Coordinate current,
-			double nextPointDistance) {
+	private double getAngleBetweenTwoPoints(Coordinate c1, Coordinate c2, Coordinate center) {
+		double c1Angle = Math.atan2(c1.y - center.y, c1.x - center.x);
+		c1Angle = c1Angle * 360 / (2 * Math.PI);
+		double c2Angle = Math.atan2(c2.y - center.y, c2.x - center.x);
+		c2Angle = c2Angle * 360 / (2 * Math.PI);
 
-		// need to check direction of increment decrement of x and y
-		boolean xIncrement = true;
-		boolean yIncrement = true;
-		boolean xDecrement = true;
-		boolean yDecrement = true;
+		double angle = c2Angle - c1Angle;
 
-		List<Coordinate> neighbours = new ArrayList<Coordinate>();
-
-		if (xIncrement) {
-			neighbours.add(new Coordinate(current.x + nextPointDistance, current.y));
-			if (yDecrement) {
-				neighbours.add(new Coordinate(current.x + nextPointDistance,
-						current.y - nextPointDistance));
+		if (c1Angle > 0) {
+			if (c2Angle > 0) {
+				if (c2Angle > c1Angle) {
+					if (isArcClockWise) {
+						angle = 360 - (c2Angle - c1Angle);
+					}
+				}
+				else { // c2Angle < c1Angle
+					if (isArcClockWise) {
+						angle = c1Angle - c2Angle;
+					}
+					else {
+						angle = 360 - (c1Angle - c2Angle);
+					}
+				}
 			}
-			if (yIncrement) {
-				neighbours.add(new Coordinate(current.x + nextPointDistance,
-						current.y + nextPointDistance));
+			else { // c2Angle <0
+				if (isArcClockWise) {
+					angle = c1Angle - c2Angle;
+				}
+				else {
+					angle = 360 - (c1Angle - c2Angle);
+				}
 			}
 		}
+		else { // c1Angle <0
+			if (c2Angle > 0) {
+				if (isArcClockWise) {
+					angle = 360 - (c2Angle - c1Angle);
+				}
+				else {
+					angle = c2Angle - c1Angle;
+				}
 
-		if (xDecrement) {
-			neighbours.add(new Coordinate(current.x - nextPointDistance, current.y));
-			if (yDecrement) {
-				neighbours.add(new Coordinate(current.x - nextPointDistance,
-						current.y - nextPointDistance));
 			}
-			if (yIncrement) {
-				neighbours.add(new Coordinate(current.x - nextPointDistance,
-						current.y + nextPointDistance));
+			else { // c2Angle <0
+				if (c2Angle > c1Angle) {
+					if (isArcClockWise) {
+						angle = 360 - (c2Angle - c1Angle);
+					}
+					else {
+						angle = c2Angle - c1Angle;
+					}
+				}
+				else { // c2Angle <= c1Angle
+					if (isArcClockWise) {
+						angle = c1Angle - c2Angle;
+					}
+					else {
+						angle = 360 - (c1Angle - c2Angle);
+					}
+				}
 			}
+
 		}
-
-		if (yDecrement)
-			neighbours.add(new Coordinate(current.x, current.y - nextPointDistance));
-
-		if (yIncrement)
-			neighbours.add(new Coordinate(current.x, current.y + nextPointDistance));
-
-		return neighbours;
+		return angle;
 	}
 
+	/**
+	 * Is duplicate coordinate to last deserved coordinate
+	 * 
+	 * @param currentArcCoordinate current generated arc coordinate
+	 * @return true if current coordinate matching the last one
+	 */
+	private boolean isDuplicateCoordinate(Coordinate currentArcCoordinate) {
+		Coordinate gridCoordinate = pointToGrid(currentArcCoordinate);
+		if (lastGridCoordinateOfArc != null && gridCoordinate.equals(lastGridCoordinateOfArc))
+			return true;
+		lastGridCoordinateOfArc = gridCoordinate;
+		return false;
+	}
+
+	private boolean isNextArcCoordinateNeighbour(Coordinate current) {
+
+		if (current.distance(nextArcCoordinate) <= MAX_POSITIONAL_ERROR)
+			return true;
+		// || round(lastDeservedNeighbourAngle, 4) <= 0
+		return false;
+	}
+
+	/**
+	 * Calculate Center of the Arc coordinates
+	 * 
+	 * @param coordinates Arc coordinates
+	 * @return true, if order is clockwise else false
+	 */
+	public static boolean getOrderOfArc(Coordinate[] coordinates) {
+		Coordinate centerOfArc = calculateCenterPoint(coordinates);
+		return getOrderOfArc(centerOfArc, coordinates);
+	}
+
+	/**
+	 * get order of arc
+	 * 
+	 * @param center center coordinate of arc
+	 * @param coordinates arc coordinates
+	 * @return true, if arc is clockwise else false
+	 */
+	private static boolean getOrderOfArc(Coordinate center, Coordinate[] coordinates) {
+		boolean cw = true;
+
+		double c1Angle = Math.atan2(coordinates[0].y - center.y, coordinates[0].x - center.x);
+		c1Angle = c1Angle * 360 / (2 * Math.PI);
+		double c2Angle = Math.atan2(coordinates[1].y - center.y, coordinates[1].x - center.x);
+		c2Angle = c2Angle * 360 / (2 * Math.PI);
+		double c3Angle = Math.atan2(coordinates[2].y - center.y, coordinates[2].x - center.x);
+		c3Angle = c3Angle * 360 / (2 * Math.PI);
+
+		if (c1Angle > 0) {
+			if (c2Angle > 0) {
+				if (c3Angle > 0) {
+					if (c3Angle > c2Angle && c2Angle > c1Angle) {
+						cw = false;
+					}
+				}
+				else { // c3Angle <0
+					if (c2Angle > c1Angle) {
+						cw = false;
+					}
+				}
+			}
+			else { // c2Angle<0
+				if (c3Angle > 0) {
+					if (c3Angle < c1Angle) {
+						cw = false;
+					}
+				}
+				else { // c3Angle <0
+					if (c2Angle < c3Angle) {
+						cw = false;
+					}
+				}
+			}
+		}
+		else { // c1Angle <0
+			if (c2Angle > 0) {
+				if (c3Angle > 0) {
+					if (c3Angle > c2Angle) {
+						cw = false;
+					}
+				}
+				else { // c3Angle <0
+					if (c3Angle < c1Angle) {
+						cw = false;
+					}
+				}
+			}
+			else { // c2Angle<0
+				if (c3Angle > 0) {
+					if (c2Angle > c1Angle) {
+						cw = false;
+					}
+				}
+				else { // c3Angle <0
+					if (c2Angle > c1Angle) {
+						if (c3Angle > c2Angle) {
+							cw = false;
+						}
+						else if (c3Angle < c1Angle) {
+							cw = false;
+						}
+					}
+					else { // c2Angle < C1Angle
+						if (c3Angle > c2Angle) {
+							cw = false;
+						}
+					}
+				}
+			}
+
+		}
+
+		return cw;
+	}
 }
