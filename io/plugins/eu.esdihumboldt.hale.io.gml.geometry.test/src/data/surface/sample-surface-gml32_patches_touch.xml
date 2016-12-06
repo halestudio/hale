@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:SurfaceProperty gml:id="surface1">
+			<hale:geometry gml:id="geometry">
+				<gml:patches>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:posList>-4.5 3 0.5 4.5 5 3 -3 -1 -4.5 3</gml:posList>
+							</gml:LinearRing>
+						</gml:exterior>
+					</gml:PolygonPatch>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:LinearRing>
+								<gml:posList>5 3 10 5 8.5 2 3 -4.5 5 3</gml:posList>
+							</gml:LinearRing>
+						</gml:exterior>
+					</gml:PolygonPatch>
+				</gml:patches>
+			</hale:geometry>
+		</hale:SurfaceProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

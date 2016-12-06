@@ -27,6 +27,7 @@ import org.junit.Test;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -180,6 +181,41 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	}
 
 	/**
+	 * Test surface geometry consisting of multiple patches (only touching each
+	 * other at one point) read from a GML 3.2 file.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testSurfaceGml32_patches_touch() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest
+				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+						getClass()
+								.getResource("/data/surface/sample-surface-gml32_patches_touch.xml")
+								.toURI());
+
+		Polygon polygon1 = geomFactory
+				.createPolygon(new Coordinate[] { new Coordinate(-4.5, 3), new Coordinate(0.5, 4.5),
+						new Coordinate(5, 3), new Coordinate(-3, -1), new Coordinate(-4.5, 3) });
+		Polygon polygon2 = geomFactory
+				.createPolygon(new Coordinate[] { new Coordinate(5, 3), new Coordinate(10, 5),
+						new Coordinate(8.5, 2), new Coordinate(3, -4.5), new Coordinate(5, 3) });
+		MultiPolygon composed = geomFactory
+				.createMultiPolygon(new Polygon[] { polygon1, polygon2 });
+
+		// one instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			// PolygonPatch with LinearRings defined through coordinates
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance = it.next();
+			checkSurfacePropertyInstance(instance, composed);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
 	 * Test surface geometry consisting of multiple patches (including holes)
 	 * read from a GML 3.2 file.
 	 * 
@@ -303,8 +339,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 
 	private void checkGeomInstance(Instance geomInstance, Geometry referenceGeometry) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			Polygon geometry = ((GeometryProperty<Polygon>) instance).getGeometry();
+			Geometry geometry = instance.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
 					geometry.equalsExact(referenceGeometry));
 		}

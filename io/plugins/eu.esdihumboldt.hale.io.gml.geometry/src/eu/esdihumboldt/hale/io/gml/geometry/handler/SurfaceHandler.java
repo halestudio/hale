@@ -104,12 +104,16 @@ public class SurfaceHandler extends GenericGeometryHandler {
 					return geom;
 				}
 				else {
-					log.error("Could not combine surface to single polygon");
+					/*
+					 * Probably a MultiPolygon, for instance for polygons that
+					 * only touch each other in one point or for 3D polygons.
+					 */
+					log.debug("Could not combine surface to single polygon");
 				}
 			}
 		} catch (NoResultException | TransformationException e) {
 			// ignore
-			log.error("Could not combine surface to single polygon");
+			log.debug("Could not combine surface to single polygon");
 		}
 
 		// fall-back
