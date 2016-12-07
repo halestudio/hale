@@ -28,6 +28,12 @@ import eu.esdihumboldt.hale.common.codelist.CodeList;
  */
 public class CodeListAssociations {
 
+	/**
+	 * Name of the property key in the project configuration holding the code
+	 * list association configuration.
+	 */
+	public static final String KEY_ASSOCIATIONS = "codelists";
+
 	private final Map<DummyEntityKey, CodeListReference> associations = new HashMap<>();
 
 	/**
@@ -60,8 +66,8 @@ public class CodeListAssociations {
 	 */
 	public void assignCodeList(EntityDefinition entity, String codeListNamespace,
 			String codeListIdentifier) {
-		associations.put(new DummyEntityKey(entity, true), new CodeListReference(codeListNamespace,
-				codeListIdentifier));
+		associations.put(new DummyEntityKey(entity, true),
+				new CodeListReference(codeListNamespace, codeListIdentifier));
 	}
 
 	/**

@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instancevalidator;
 import javax.annotation.Nullable;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidationException;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ValidatorBase;
@@ -32,6 +33,13 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
  * @author Simon Templer
  */
 public interface InstanceModelValidator extends ValidatorBase {
+
+	/**
+	 * Set the context service provider if available.
+	 * 
+	 * @param services the service provider
+	 */
+	public void setServiceProvider(ServiceProvider services);
 
 	/**
 	 * Validate a property value that is not an instance.

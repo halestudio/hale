@@ -101,7 +101,14 @@ public class InstanceValidator {
 
 		// TODO validators via service or other configuration?
 
-		return new InstanceValidator(null);
+		// inject service provider
+		if (services != null) {
+			for (InstanceModelValidator validator : validators) {
+				validator.setServiceProvider(services);
+			}
+		}
+
+		return new InstanceValidator(validators);
 	}
 
 	// XXX Data views show only warnings, if something will be changed to errors

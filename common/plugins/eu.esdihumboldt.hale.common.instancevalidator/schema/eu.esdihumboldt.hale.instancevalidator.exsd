@@ -6,7 +6,7 @@
          <meta.schema plugin="eu.esdihumboldt.hale.common.instancevalidator" id="eu.esdihumboldt.hale.instancevalidator" name="Instance Validator Extension"/>
       </appinfo>
       <documentation>
-         
+         Extension point for custom validators to be included in pre-encoding validation.
       </documentation>
    </annotation>
 

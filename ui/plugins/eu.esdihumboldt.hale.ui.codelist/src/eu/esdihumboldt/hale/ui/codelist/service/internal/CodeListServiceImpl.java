@@ -43,12 +43,6 @@ import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
 public class CodeListServiceImpl implements CodeListService {
 
 	/**
-	 * Name of the property key in the project configuration holding the code
-	 * list association configuration.
-	 */
-	private static final String KEY_ASSOCIATIONS = "codelists";
-
-	/**
 	 * The associated project service.
 	 */
 	protected final ProjectService projectService;
@@ -91,7 +85,8 @@ public class CodeListServiceImpl implements CodeListService {
 			public void afterLoad(ProjectService projectService) {
 				// update associations from configuration
 				CodeListAssociations projectAssociations = complexConfigService
-						.getProperty(KEY_ASSOCIATIONS).as(CodeListAssociations.class);
+						.getProperty(CodeListAssociations.KEY_ASSOCIATIONS)
+						.as(CodeListAssociations.class);
 				if (projectAssociations != null) {
 					associations = projectAssociations;
 				}
@@ -156,7 +151,8 @@ public class CodeListServiceImpl implements CodeListService {
 		associations.assignCodeList(entity, code);
 
 		// update the project configuration
-		complexConfigService.setProperty(KEY_ASSOCIATIONS, Value.complex(associations));
+		complexConfigService.setProperty(CodeListAssociations.KEY_ASSOCIATIONS,
+				Value.complex(associations));
 	}
 
 //	public void assignAttributeCodeList(String attributeIdentifier, CodeList code) {
