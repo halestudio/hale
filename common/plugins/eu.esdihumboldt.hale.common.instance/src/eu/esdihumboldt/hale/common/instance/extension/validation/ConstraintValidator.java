@@ -16,27 +16,13 @@
 
 package eu.esdihumboldt.hale.common.instance.extension.validation;
 
-import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
-
 /**
  * Marker interface for constraint validators.
  * 
  * @author Kai Schwierczek
  */
-public interface ConstraintValidator {
+public interface ConstraintValidator extends ValidatorBase {
 
-	/**
-	 * Check the validation context after all instances have been validated.
-	 * 
-	 * @param context the validation context
-	 * @param reporter the instance validation reporter
-	 * @throws ValidationException if the instances are invalid and the reporter
-	 *             is not used to report the problems
-	 */
-	@SuppressWarnings("unused")
-	default void validateContext(InstanceValidationContext context,
-			InstanceValidationReporter reporter) throws ValidationException {
-		// override me
-	}
+	// marker interface
 
 }

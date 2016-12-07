@@ -32,6 +32,7 @@ import de.fhg.igd.slf4jplus.ATransaction;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidator;
 import eu.esdihumboldt.hale.common.instance.extension.validation.ConstraintValidatorExtension;
 import eu.esdihumboldt.hale.common.instance.extension.validation.GroupPropertyConstraintValidator;
@@ -77,8 +78,36 @@ public class InstanceValidator {
 
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceValidator.class);
 
+	/**
+	 * Create a default validator instance.
+	 * 
+	 * @param services the service provider, if available
+	 * @return the validator instance
+	 */
+	public static InstanceValidator createDefaultValidator(@Nullable ServiceProvider services) {
+		// TODO validators via extension?
+		// TODO validators via service or other configuration?
+
+		return new InstanceValidator(null);
+	}
+
 	// XXX Data views show only warnings, if something will be changed to errors
 	// they need an update, too.
+
+	private final List<InstanceModelValidator> additionalValidators = new ArrayList<>();
+
+	/**
+	 * Create a new instance validator.
+	 * 
+	 * @param validators any validators to be used in addition to constraint
+	 *            validators
+	 */
+	public InstanceValidator(@Nullable List<InstanceModelValidator> validators) {
+		super();
+		if (validators != null) {
+			this.additionalValidators.addAll(validators);
+		}
+	}
 
 	/**
 	 * Validates the given instances using all constraints that are validatable.
@@ -87,7 +116,7 @@ public class InstanceValidator {
 	 * @param monitor the progress monitor
 	 * @return a report of the validation
 	 */
-	public static InstanceValidationReport validateInstances(InstanceCollection instances,
+	public InstanceValidationReport validateInstances(InstanceCollection instances,
 			IProgressMonitor monitor) {
 		monitor.beginTask("Instance validation",
 				instances.hasSize() ? instances.size() : IProgressMonitor.UNKNOWN);
@@ -123,7 +152,7 @@ public class InstanceValidator {
 	 * @param context the validation context
 	 * @param reporter the validation reporter
 	 */
-	public static void validateContext(InstanceValidationContext context,
+	public void validateContext(InstanceValidationContext context,
 			InstanceValidationReporter reporter) {
 		ConstraintValidatorExtension extension = ConstraintValidatorExtension.getInstance();
 
@@ -143,9 +172,8 @@ public class InstanceValidator {
 		}
 	}
 
-	private static void validateContext(InstanceValidationContext context,
-			ConstraintValidator validator, Class<?> constraintClass,
-			InstanceValidationReporter reporter) {
+	private void validateContext(InstanceValidationContext context, ConstraintValidator validator,
+			Class<?> constraintClass, InstanceValidationReporter reporter) {
 		try {
 			validator.validateContext(context, reporter);
 		} catch (ValidationException e) {
@@ -166,7 +194,7 @@ public class InstanceValidator {
 	 * @param childDef the child definition of the given object
 	 * @return a report of the validation
 	 */
-	public static InstanceValidationReporter validate(Object object, ChildDefinition<?> childDef) {
+	public InstanceValidationReporter validate(Object object, ChildDefinition<?> childDef) {
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
 		InstanceValidationContext context = new InstanceValidationContext();
@@ -205,7 +233,7 @@ public class InstanceValidator {
 	 * @param instance the instance to validate
 	 * @return a report of the validation
 	 */
-	public static InstanceValidationReporter validate(Instance instance) {
+	public InstanceValidationReporter validate(Instance instance) {
 		InstanceValidationReporter reporter = new DefaultInstanceValidationReporter(false);
 		reporter.setSuccess(false);
 		InstanceValidationContext context = new InstanceValidationContext();
@@ -233,10 +261,10 @@ public class InstanceValidator {
 	 *            applicable
 	 * @param entity the instance entity definition or <code>null</code>
 	 */
-	public static void validateInstance(Instance instance, InstanceValidationReporter reporter,
-			QName type, List<QName> path, boolean onlyCheckExistingChildren,
-			InstanceReference reference, InstanceValidationContext context,
-			@Nullable ChildDefinition<?> presentIn, @Nullable EntityDefinition entity) {
+	public void validateInstance(Instance instance, InstanceValidationReporter reporter, QName type,
+			List<QName> path, boolean onlyCheckExistingChildren, InstanceReference reference,
+			InstanceValidationContext context, @Nullable ChildDefinition<?> presentIn,
+			@Nullable EntityDefinition entity) {
 		TypeDefinition typeDef = instance.getDefinition();
 		if (entity == null) {
 			// if no entity is provided, use the instance type as entity
@@ -247,18 +275,28 @@ public class InstanceValidator {
 			return;
 		}
 
+		// type constraint validators
 		for (Entry<Class<TypeConstraint>, TypeConstraintValidator> entry : ConstraintValidatorExtension
-				.getInstance().getTypeConstraintValidators().entrySet())
+				.getInstance().getTypeConstraintValidators().entrySet()) {
 			try {
 				entry.getValue().validateTypeConstraint(instance,
 						typeDef.getConstraint(entry.getKey()), context);
-
-				// TODO other instance validators?
 			} catch (ValidationException vE) {
 				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
 						new ArrayList<QName>(path), entry.getKey().getSimpleName(),
 						vE.getMessage()));
 			}
+		}
+
+		// generic instance validators
+		for (InstanceModelValidator validator : additionalValidators) {
+			try {
+				validator.validateInstance(instance, entity, context);
+			} catch (ValidationException vE) {
+				reporter.warn(new DefaultInstanceValidationMessage(reference, type,
+						new ArrayList<QName>(path), validator.getCategory(), vE.getMessage()));
+			}
+		}
 
 		validateGroupChildren(instance, reporter, type, path, onlyCheckExistingChildren, reference,
 				context, presentIn, entity);
@@ -272,7 +310,7 @@ public class InstanceValidator {
 	 * @param value the property value
 	 * @return if validation should be skipped for the property and its children
 	 */
-	protected static boolean skipValidation(TypeDefinition typeDef, Object value) {
+	protected boolean skipValidation(TypeDefinition typeDef, Object value) {
 		SkipValidation skip = typeDef.getConstraint(SkipValidation.class);
 		return skip.skipValidation(value);
 	}
@@ -293,10 +331,10 @@ public class InstanceValidator {
 	 *            applicable
 	 * @param groupEntity the group's entity definition or <code>null</code>
 	 */
-	private static void validateGroupChildren(Group group, InstanceValidationReporter reporter,
-			QName type, List<QName> path, boolean onlyCheckExistingChildren,
-			InstanceReference reference, InstanceValidationContext context,
-			@Nullable ChildDefinition<?> presentIn, EntityDefinition groupEntity) {
+	private void validateGroupChildren(Group group, InstanceValidationReporter reporter, QName type,
+			List<QName> path, boolean onlyCheckExistingChildren, InstanceReference reference,
+			InstanceValidationContext context, @Nullable ChildDefinition<?> presentIn,
+			EntityDefinition groupEntity) {
 		Collection<? extends ChildDefinition<?>> childDefs = DefinitionUtil
 				.getAllChildren(group.getDefinition());
 
@@ -349,7 +387,7 @@ public class InstanceValidator {
 	 * @param context the instance validation context
 	 * @param parent the parent group's entity definition or <code>null</code>
 	 */
-	private static void validateGroupChildren(Group group,
+	private void validateGroupChildren(Group group,
 			Collection<? extends ChildDefinition<?>> childDefs, InstanceValidationReporter reporter,
 			QName type, List<QName> path, boolean onlyCheckExistingChildren,
 			InstanceReference reference, InstanceValidationContext context,
@@ -396,14 +434,16 @@ public class InstanceValidator {
 	 * @param entity the property's entity definition or <code>null</code>
 	 */
 	@SuppressWarnings("unchecked")
-	private static void validateProperty(Object[] properties, PropertyDefinition propertyDef,
+	private void validateProperty(Object[] properties, PropertyDefinition propertyDef,
 			InstanceValidationReporter reporter, QName type, List<QName> path,
 			InstanceReference reference, InstanceValidationContext context,
 			@Nullable EntityDefinition entity) {
 		ValidationLocation loc = new ValidationLocation(reference, type,
 				new ArrayList<QName>(path));
+
+		// property constraint validators
 		for (Entry<Class<PropertyConstraint>, PropertyConstraintValidator> entry : ConstraintValidatorExtension
-				.getInstance().getPropertyConstraintValidators().entrySet())
+				.getInstance().getPropertyConstraintValidators().entrySet()) {
 			try {
 				entry.getValue().validatePropertyConstraint(properties,
 						propertyDef
@@ -414,6 +454,34 @@ public class InstanceValidator {
 				reporter.warn(new DefaultInstanceValidationMessage(loc,
 						entry.getKey().getSimpleName(), vE.getMessage()));
 			}
+		}
+
+		if (properties != null) {
+			// generic validators
+			for (InstanceModelValidator validator : additionalValidators) {
+				for (Object value : properties) {
+					// visit each value
+					if (value instanceof Instance) {
+						try {
+							validator.validateInstance((Instance) value, entity, context);
+						} catch (ValidationException vE) {
+							reporter.warn(new DefaultInstanceValidationMessage(reference, type,
+									new ArrayList<QName>(path), validator.getCategory(),
+									vE.getMessage()));
+						}
+					}
+					else {
+						try {
+							validator.validateProperty(value, propertyDef, entity, context);
+						} catch (ValidationException vE) {
+							reporter.warn(new DefaultInstanceValidationMessage(reference, type,
+									new ArrayList<QName>(path), validator.getCategory(),
+									vE.getMessage()));
+						}
+					}
+				}
+			}
+		}
 
 		validateChildren(properties, propertyDef, reporter, type, path, false, reference, context,
 				entity);
@@ -435,12 +503,13 @@ public class InstanceValidator {
 	 * @param context the instance validation context
 	 * @param groupEntity the group's entity definition
 	 */
-	private static void validateGroup(Object[] properties, GroupPropertyDefinition groupDef,
+	private void validateGroup(Object[] properties, GroupPropertyDefinition groupDef,
 			InstanceValidationReporter reporter, QName type, List<QName> path,
 			InstanceReference reference, InstanceValidationContext context,
 			EntityDefinition groupEntity) {
+		// group property constraints
 		for (Entry<Class<GroupPropertyConstraint>, GroupPropertyConstraintValidator> entry : ConstraintValidatorExtension
-				.getInstance().getGroupPropertyConstraintValidators().entrySet())
+				.getInstance().getGroupPropertyConstraintValidators().entrySet()) {
 			try {
 				entry.getValue().validateGroupPropertyConstraint(properties,
 						groupDef.getConstraint(entry.getKey()), groupDef, context);
@@ -449,6 +518,28 @@ public class InstanceValidator {
 						new ArrayList<QName>(path), entry.getKey().getSimpleName(),
 						vE.getMessage()));
 			}
+		}
+
+		if (properties != null) {
+			// generic validators
+			for (InstanceModelValidator validator : additionalValidators) {
+				for (Object value : properties) {
+					// visit each value
+					if (value instanceof Group) {
+						try {
+							validator.validateGroup((Group) value, groupDef, groupEntity, context);
+						} catch (ValidationException vE) {
+							reporter.warn(new DefaultInstanceValidationMessage(reference, type,
+									new ArrayList<QName>(path), validator.getCategory(),
+									vE.getMessage()));
+						}
+					}
+					else {
+						log.error("Invalid value for group property, should be Group object");
+					}
+				}
+			}
+		}
 
 		// In case of enabled choice flag only check existing children.
 		// That only one child exists should get checked above in a validator
@@ -474,7 +565,7 @@ public class InstanceValidator {
 	 * @param entity the entity definition related to the property values or
 	 *            <code>null</code>
 	 */
-	private static void validateChildren(Object[] properties, ChildDefinition<?> childDef,
+	private void validateChildren(Object[] properties, ChildDefinition<?> childDef,
 			InstanceValidationReporter reporter, QName type, List<QName> path,
 			boolean onlyCheckExistingChildren, InstanceReference reference,
 			InstanceValidationContext context, @Nullable EntityDefinition entity) {

@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.instance.extension.validation.report.Instance
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
@@ -41,8 +42,8 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
  * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationServiceImpl extends InstanceServiceAdapter implements
-		InstanceValidationService {
+public class InstanceValidationServiceImpl extends InstanceServiceAdapter
+		implements InstanceValidationService {
 
 	private final InstanceService instanceService;
 	private final ReportService reportService;
@@ -105,7 +106,9 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 	 */
 	private class InstanceValidationJob extends Job {
 
-		InstanceCollection instances;
+		private InstanceCollection instances;
+
+		private final InstanceValidator validator;
 
 		/**
 		 * Default constructor.
@@ -115,6 +118,7 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 		public InstanceValidationJob(InstanceCollection instances) {
 			super("Instance validation");
 			this.instances = instances;
+			this.validator = InstanceValidator.createDefaultValidator(HaleUI.getServiceProvider());
 		}
 
 		/**
@@ -122,15 +126,17 @@ public class InstanceValidationServiceImpl extends InstanceServiceAdapter implem
 		 */
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			InstanceValidationReport report = InstanceValidator.validateInstances(instances,
-					monitor);
+			InstanceValidationReport report = validator.validateInstances(instances, monitor);
 			if (!monitor.isCanceled()) {
 				reportService.addReport(report);
-				for (InstanceValidationListener listener : listeners)
+				for (InstanceValidationListener listener : listeners) {
 					listener.instancesValidated(report);
+				}
 			}
-			else
+			else {
 				return Status.CANCEL_STATUS;
+			}
+			instances = null;
 			monitor.done();
 
 			return Status.OK_STATUS;
