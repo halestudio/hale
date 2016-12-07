@@ -25,6 +25,8 @@ import java.util.Map;
 import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.AlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
+import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -123,6 +125,8 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	 */
 	private final ReportHandler reportHandler;
 
+	private final CodeListAdvisor codeListRegistry;
+
 	/**
 	 * Default constructor
 	 * 
@@ -161,6 +165,9 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 
 		targetSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
 		advisors.put(SchemaIO.ACTION_LOAD_TARGET_SCHEMA, targetSchemaAdvisor);
+
+		codeListRegistry = new CodeListAdvisor();
+		advisors.put(CodeListReader.ACTION_ID, codeListRegistry);
 	}
 
 	@Override
@@ -171,13 +178,14 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 
 		Map<String, ProjectFile> projectFiles = new HashMap<String, ProjectFile>();
 		// create only alignment project file
-		projectFiles.put(AlignmentIO.PROJECT_FILE_ALIGNMENT, new ActionProjectFile(
-				AlignmentIO.ACTION_LOAD_ALIGNMENT, //
-				null, // auto-detect provider for loading
-				new HashMap<String, Value>(), // no parameters givens
-				null, null, null, this) // give null for save related parts
-										// (should not be called)
-				{
+		projectFiles.put(AlignmentIO.PROJECT_FILE_ALIGNMENT,
+				new ActionProjectFile(AlignmentIO.ACTION_LOAD_ALIGNMENT, //
+						null, // auto-detect provider for loading
+						new HashMap<String, Value>(), // no parameters givens
+						null, null, null, this) // give null for save related
+												// parts
+												// (should not be called)
+		{
 
 					@Override
 					protected IOAdvisor<?> getLoadAdvisor(String loadActionId,
@@ -263,4 +271,12 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		return targetSchemaAdvisor.getSchema();
 	}
 
+	/**
+	 * Get the registry of code lists loaded in the project.
+	 * 
+	 * @return the code list registry
+	 */
+	public CodeListRegistry getCodeListRegistry() {
+		return codeListRegistry;
+	}
 }
