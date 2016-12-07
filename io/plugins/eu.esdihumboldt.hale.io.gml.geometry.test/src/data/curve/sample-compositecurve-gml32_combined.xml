@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:CompositeCurveProperty gml:id="compositecurve1">
+			<hale:geometry gml:id="geom1">
+				<gml:curveMember>
+					<gml:Curve gml:id="curve1">
+						<gml:segments>
+							<gml:LineStringSegment>
+								<gml:posList>0 0 1 1</gml:posList>
+							</gml:LineStringSegment>
+							<gml:LineStringSegment>
+								<gml:posList>1 1 2 2</gml:posList>
+							</gml:LineStringSegment>
+						</gml:segments>
+					</gml:Curve>
+				</gml:curveMember>
+				<gml:curveMember>
+					<gml:LineString gml:id="curve2">
+						<gml:posList>2 2 3 1 4 0</gml:posList>
+					</gml:LineString>
+				</gml:curveMember>
+				<gml:curveMember>
+					<gml:LineString gml:id="curve3">
+						<gml:posList>4 0 5 -1 6 0 7 2 8 4</gml:posList>
+					</gml:LineString>
+				</gml:curveMember>
+			</hale:geometry>
+		</hale:CompositeCurveProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>
