@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -42,8 +42,8 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 
-	private MultiPolygon reference;
-	private MultiPolygon referenceOnGrid;
+	private Polygon reference;
+	private Polygon referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -63,8 +63,7 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 		holes[0] = hole1;
 		holes[1] = hole2;
 
-		reference = geomFactory
-				.createMultiPolygon(new Polygon[] { geomFactory.createPolygon(shell, holes) });
+		reference = geomFactory.createPolygon(shell, holes);
 
 		// grid
 		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
@@ -81,8 +80,7 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 		holes[0] = hole1;
 		holes[1] = hole2;
 
-		referenceOnGrid = geomFactory
-				.createMultiPolygon(new Polygon[] { geomFactory.createPolygon(shell, holes) });
+		referenceOnGrid = geomFactory.createPolygon(shell, holes);
 	}
 
 	/**
@@ -149,10 +147,9 @@ public class PolyhedralSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
+			Geometry geom = instance.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
+					geom.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 
