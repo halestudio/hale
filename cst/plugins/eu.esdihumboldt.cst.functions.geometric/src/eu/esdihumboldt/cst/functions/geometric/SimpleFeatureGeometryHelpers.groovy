@@ -53,11 +53,13 @@ class SimpleFeatureGeometryHelpers {
 
 		List<GeometryProperty<? extends Geometry>> geoms = GeometryHelperFunctions._findAll(args.geometries)
 
-		geoms.collectMany(SimpleFeatureGeometryHelpers.&toSimpleGeometries.curry(collections))
+		geoms.collectMany { GeometryProperty<? extends Geometry> geom ->
+			SimpleFeatureGeometryHelpers.toSimpleGeometries(geom, collections)
+		}
 	}
 
-	static Collection<GeometryProperty<? extends Geometry>> toSimpleGeometries(boolean collections,
-			GeometryProperty<? extends Geometry> geometry) {
+	static Collection<GeometryProperty<? extends Geometry>> toSimpleGeometries(
+			GeometryProperty<? extends Geometry> geometry, boolean collections) {
 
 		Geometry geom = geometry.getGeometry()
 
@@ -80,7 +82,9 @@ class SimpleFeatureGeometryHelpers {
 			// collections are not allowed or heterogeneous collection -> split and collect
 			List<GeometryProperty<? extends Geometry>> collected = []
 			for (int i = 0; i < geom.numGeometries; i++) {
-				collected.addAll(toSimpleGeometries(new DefaultGeometryProperty(geometry.CRSDefinition, geom.getGeometryN(i))))
+				collected.addAll(toSimpleGeometries(
+						new DefaultGeometryProperty(geometry.CRSDefinition, geom.getGeometryN(i)),
+						collections))
 			}
 			return collected
 		}
