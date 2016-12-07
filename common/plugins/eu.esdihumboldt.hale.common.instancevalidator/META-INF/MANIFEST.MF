@@ -5,6 +5,8 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=tr
 Bundle-Version: 3.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.core.report.impl,
  eu.esdihumboldt.hale.common.instance.extension.validation,
@@ -12,6 +14,7 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.extension.validation.report.impl,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.hale.common.schema.model.constraint.property,

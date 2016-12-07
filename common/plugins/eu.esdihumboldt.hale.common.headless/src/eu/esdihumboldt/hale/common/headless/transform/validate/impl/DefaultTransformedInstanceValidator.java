@@ -49,7 +49,7 @@ public class DefaultTransformedInstanceValidator extends AbstractTransformedInst
 	@Override
 	protected void validateInstance(Instance instance, InstanceValidationReporter reporter) {
 		InstanceValidator.validateInstance(instance, reporter, instance.getDefinition().getName(),
-				new ArrayList<QName>(), false, null, context, null);
+				new ArrayList<QName>(), false, null, context, null, null);
 	}
 
 	@Override
