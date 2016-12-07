@@ -239,7 +239,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					polygons[i] = (Polygon) geomList.get(i);
 				}
-				geom = combine(polygons);
+				geom = combine(polygons, reader);
 			}
 			else if (commonGeomType.equals(LineString.class)) {
 				// create a MultiLineString
@@ -247,7 +247,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					lines[i] = (LineString) geomList.get(i);
 				}
-				geom = combine(lines);
+				geom = combine(lines, reader);
 			}
 			else if (commonGeomType.equals(Point.class)) {
 				// create a MultiPoint
@@ -255,7 +255,7 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 				for (int i = 0; i < geomList.size(); i++) {
 					points[i] = (Point) geomList.get(i);
 				}
-				geom = combine(points);
+				geom = combine(points, reader);
 			}
 			if (geom != null) {
 				// returned combined property
@@ -277,9 +277,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * Combine points to a geometry.
 	 * 
 	 * @param points the points to combine
+	 * @param reader the reader of the related XML file
 	 * @return the combined geometry
 	 */
-	protected Geometry combine(Point[] points) {
+	protected Geometry combine(Point[] points, IOProvider reader) {
 		return getGeometryFactory().createMultiPoint(points);
 	}
 
@@ -287,9 +288,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * Combine lines to a geometry.
 	 * 
 	 * @param lines the lines to combine
+	 * @param reader the reader of the related XML file
 	 * @return the combined geometry
 	 */
-	protected Geometry combine(LineString[] lines) {
+	protected Geometry combine(LineString[] lines, IOProvider reader) {
 		return getGeometryFactory().createMultiLineString(lines);
 	}
 
@@ -297,9 +299,10 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 	 * Combine polygons to a geometry.
 	 * 
 	 * @param polygons the polygons to combine
+	 * @param reader the reader of the related XML file
 	 * @return the combined geometry
 	 */
-	protected Geometry combine(Polygon[] polygons) {
+	protected Geometry combine(Polygon[] polygons, IOProvider reader) {
 		return getGeometryFactory().createMultiPolygon(polygons);
 	}
 }

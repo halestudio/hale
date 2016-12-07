@@ -23,7 +23,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -33,12 +32,14 @@ import eu.esdihumboldt.cst.functions.geometric.extent.ExtentTransformation;
 import eu.esdihumboldt.cst.functions.geometric.extent.ExtentType;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -91,12 +92,12 @@ public class SurfaceHandler extends GenericGeometryHandler {
 	}
 
 	@Override
-	protected Geometry combine(Polygon[] polygons) {
+	protected Geometry combine(Polygon[] polygons, IOProvider reader) {
 		if (polygons != null && polygons.length == 1) {
 			return polygons[0];
 		}
 
-		if (is2D(polygons)) {
+		if (GMLGeometryUtil.isCombineCompositesEnabled(reader) && GMLGeometryUtil.is2D(polygons)) {
 			/*
 			 * It was found that the UNION calculation as below seems to ignore
 			 * the third dimension. So only handle 2D polygons.
@@ -126,28 +127,7 @@ public class SurfaceHandler extends GenericGeometryHandler {
 		}
 
 		// fall-back
-		return super.combine(polygons);
-	}
-
-	private boolean is2D(Polygon[] polygons) {
-		for (Polygon polygon : polygons) {
-			if (!is2D(polygon.getCoordinates())) {
-				return false;
-			}
-		}
-
-		// all polygons were 2D
-		return true;
-	}
-
-	private boolean is2D(Coordinate[] coordinates) {
-		for (Coordinate coord : coordinates) {
-			if (!Double.isNaN(coord.z)) {
-				return false;
-			}
-		}
-		// all coordinates are 2D
-		return true;
+		return super.combine(polygons, reader);
 	}
 
 }
