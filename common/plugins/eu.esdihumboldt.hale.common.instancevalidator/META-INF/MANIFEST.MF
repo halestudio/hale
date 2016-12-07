@@ -4,7 +4,8 @@ Bundle-Name: Instance Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: de.fhg.igd.slf4jplus,
+Import-Package: de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.core.report,

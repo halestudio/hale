@@ -52,6 +52,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.instancevalidator.extension.InstanceModelValidatorExtension;
+import eu.esdihumboldt.hale.common.instancevalidator.extension.InstanceModelValidatorFactory;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -85,7 +87,18 @@ public class InstanceValidator {
 	 * @return the validator instance
 	 */
 	public static InstanceValidator createDefaultValidator(@Nullable ServiceProvider services) {
-		// TODO validators via extension?
+		List<InstanceModelValidator> validators = new ArrayList<>();
+
+		// validators via extension
+		for (InstanceModelValidatorFactory factory : InstanceModelValidatorExtension.getInstance()
+				.getFactories()) {
+			try {
+				validators.add(factory.createExtensionObject());
+			} catch (Exception e) {
+				log.error("Error instantiating instance validator " + factory.getIdentifier(), e);
+			}
+		}
+
 		// TODO validators via service or other configuration?
 
 		return new InstanceValidator(null);
