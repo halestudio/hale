@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -41,13 +41,13 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class CurveGeometryTest extends AbstractHandlerTest {
 
-	private MultiLineString reference;
+	private LineString reference;
 
-	private MultiLineString referenceForArc;
+	private LineString referenceForArc;
 
-	private MultiLineString referenceOnGrid;
+	private LineString referenceOnGrid;
 
-	private MultiLineString referenceForArcOnGrid;
+	private LineString referenceForArcOnGrid;
 
 	// XXX different segments need different count of coordinates
 	// XXX missing Clothoid handler
@@ -61,10 +61,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
 				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
-		LineString linestring1 = geomFactory.createLineString(coordinates);
-
-		LineString[] lines = new LineString[] { linestring1 };
-		reference = geomFactory.createMultiLineString(lines);
+		reference = geomFactory.createLineString(coordinates);
 
 		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.4, 7.6),
 				new Coordinate(8.6, 7.6), new Coordinate(9.0, 7.2), new Coordinate(9.2, 7.2),
@@ -77,19 +74,13 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 				new Coordinate(14.5, 7.1), new Coordinate(14.7, 7.1), new Coordinate(15.1, 7.5),
 				new Coordinate(15.3, 7.5), new Coordinate(15.7, 7.9), new Coordinate(15.9, 7.9),
 				new Coordinate(16.0, 8.0) };
-		linestring1 = geomFactory.createLineString(coordinates);
-
-		lines = new LineString[] { linestring1 };
-		referenceForArc = geomFactory.createMultiLineString(lines);
+		referenceForArc = geomFactory.createLineString(coordinates);
 
 		// Grid test
 
 		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
 				new Coordinate(0, -3.2) };
-		linestring1 = geomFactory.createLineString(coordinates);
-
-		lines = new LineString[] { linestring1 };
-		referenceOnGrid = geomFactory.createMultiLineString(lines);
+		referenceOnGrid = geomFactory.createLineString(coordinates);
 
 		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.4, 7.6),
 				new Coordinate(8.6, 7.6), new Coordinate(9.0, 7.2), new Coordinate(9.2, 7.2),
@@ -102,10 +93,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 				new Coordinate(14.5, 7.1), new Coordinate(14.7, 7.1), new Coordinate(15.1, 7.5),
 				new Coordinate(15.3, 7.5), new Coordinate(15.7, 7.9), new Coordinate(15.9, 7.9),
 				new Coordinate(16.0, 8.0) };
-		linestring1 = geomFactory.createLineString(coordinates);
-
-		lines = new LineString[] { linestring1 };
-		referenceForArcOnGrid = geomFactory.createMultiLineString(lines);
+		referenceForArcOnGrid = geomFactory.createLineString(coordinates);
 	}
 
 	/**
@@ -638,12 +626,10 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 
 	private void checkGeomInstance(Instance geomInstance, boolean isArc, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
-					.getGeometry();
+			Geometry geom = instance.getGeometry();
 
 			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(keepOriginal ? (isArc ? referenceForArc : reference)
+					geom.equalsExact(keepOriginal ? (isArc ? referenceForArc : reference)
 							: (isArc ? referenceForArcOnGrid : referenceOnGrid)));
 		}
 	}

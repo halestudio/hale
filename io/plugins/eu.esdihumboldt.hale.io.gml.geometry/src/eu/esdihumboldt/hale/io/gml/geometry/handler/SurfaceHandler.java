@@ -65,6 +65,7 @@ public class SurfaceHandler extends GenericGeometryHandler {
 		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
 
 		constraints.add(Binding.get(GeometryProperty.class));
+		// FIXME can also be a MultiPolygon - is this a problem?
 		constraints.add(GeometryType.get(Polygon.class));
 
 		constraints.add(new GeometryFactory(this));
