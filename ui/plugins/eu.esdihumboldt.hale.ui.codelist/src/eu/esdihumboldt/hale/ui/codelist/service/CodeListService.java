@@ -20,13 +20,13 @@ import java.util.List;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
+import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
 
 /**
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
-public interface CodeListService {
+public interface CodeListService extends CodeListRegistry {
 
 	/**
 	 * Tries to find the code list with the given namespace and identifier.

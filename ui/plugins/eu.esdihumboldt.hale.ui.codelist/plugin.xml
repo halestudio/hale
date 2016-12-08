@@ -8,6 +8,9 @@
          <service
                serviceClass="eu.esdihumboldt.hale.ui.codelist.service.CodeListService">
          </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry">
+         </service>
       </serviceFactory>
    </extension>
    <extension
