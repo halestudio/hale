@@ -64,7 +64,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
 
-	private static final String ARC_STRING_TYPE = "ArcStringType";
+	// private static final String ARC_STRING_TYPE = "ArcStringType";
 
 	private static final String ARC_STRING_BY_BULGE_TYPE = "ArcStringByBulgeType";
 
@@ -277,8 +277,8 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
 
-		types.add(new QName(NS_GML, ARC_STRING_TYPE));
-		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
+//		types.add(new QName(NS_GML, ARC_STRING_TYPE));
+//		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
 
 		types.add(new QName(NS_GML, ARC_STRING_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_STRING_BY_BULGE_TYPE));
