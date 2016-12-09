@@ -1,0 +1,320 @@
+package eu.esdihumboldt.hale.io.codelist.skos.reader;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+
+import org.semanticweb.skos.SKOSAnnotation;
+import org.semanticweb.skos.SKOSConcept;
+import org.semanticweb.skos.SKOSConceptScheme;
+import org.semanticweb.skos.SKOSDataset;
+import org.semanticweb.skos.SKOSEntity;
+import org.semanticweb.skos.SKOSUntypedLiteral;
+import org.semanticweb.skosapibinding.SKOSManager;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.codelist.CodeList;
+
+/**
+ * Reads a SKOS code list and treat concepts as code entries
+ * 
+ * @author Arun
+ */
+public class SkosCodeList implements CodeList {
+
+	private static final ALogger log = ALoggerFactory.getLogger(SkosCodeList.class);
+
+	private static final String SKOS_URI = "http://www.w3.org/2004/02/skos/core#";
+	private static final String SKOS_PREF_LABEL = SKOS_URI + "prefLabel";
+	private static final String SKOS_DEF_LABEL = SKOS_URI + "definition";
+	private static final String SKOS_TOPCONCEPT_LABEL = SKOS_URI + "topConceptOf";
+	private static final String SKOS_INSCHEME_LABEL = SKOS_URI + "inScheme";
+
+	private static final String USAGENOTE_LABEL = "usageNote";
+
+	private String identifier;
+
+	private String namespace;
+
+	private String description;
+
+	private final URI location;
+
+	private final Map<String, CodeEntry> entriesByName = new LinkedHashMap<String, CodeEntry>();
+
+	private final Map<String, CodeEntry> entriesByIdentifier = new LinkedHashMap<String, CodeEntry>();
+
+	private SKOSDataset dataSet;
+
+	/**
+	 * Create a code list from a RDF file and URL.
+	 * 
+	 * @param location the location from where code list loded
+	 * @throws Exception if something will go wrong
+	 */
+	public SkosCodeList(URI location) throws Exception {
+		this.location = location;
+		this.identifier = null;
+		try {
+
+			SKOSManager manager = new SKOSManager();
+			dataSet = manager.loadDatasetFromPhysicalURI(location);
+
+			// get ConceptSchemes
+			if (!getConceptSchemes())
+				if (!getConcepts())
+					throw new RuntimeException("no concepts found!");
+
+			this.dataSet = null;
+
+		} catch (Exception ex) {
+			log.error("Error reading skos code list", ex);
+			throw ex;
+		}
+	}
+
+	@Override
+	public Collection<CodeEntry> getEntries() {
+		return new ArrayList<CodeEntry>(entriesByIdentifier.values());
+	}
+
+	@Override
+	public String getNamespace() {
+		return namespace;
+	}
+
+	@Override
+	public String getIdentifier() {
+		if (identifier != null)
+			return identifier;
+
+		if (location != null)
+			return location.toString();
+
+		return null;
+	}
+
+	@Override
+	public String getDescription() {
+		return description;
+	}
+
+	@Override
+	public CodeEntry getEntryByName(String name) {
+		return entriesByName.get(name);
+	}
+
+	@Override
+	public CodeEntry getEntryByIdentifier(String identifier) {
+		return entriesByIdentifier.get(identifier);
+	}
+
+	@Override
+	public URI getLocation() {
+		return location;
+	}
+
+	private boolean getConceptSchemes() {
+
+		Set<SKOSConceptScheme> schemes = dataSet.getSKOSConceptSchemes();
+
+		if (schemes.isEmpty())
+			return false;
+
+		// get Scheme from uri
+		SKOSConceptScheme scheme = schemes.iterator().next();
+
+		// get annotation of ConceptScheme
+		getSchemeAnnotations(scheme);
+
+		// i can get all the concepts from this scheme
+		getConcepts(scheme);
+
+		return true;
+
+	}
+
+	private boolean getConcepts() {
+		return getConcepts(null);
+	}
+
+	private boolean getConcepts(SKOSConceptScheme scheme) {
+		Set<SKOSConcept> concepts;
+		if (scheme == null)
+			concepts = dataSet.getSKOSConcepts();
+		else {
+			// get Concepts of Scheme
+			concepts = scheme.getConceptsInScheme(dataSet);
+
+			// If isEmpty, then try to load from dataSet
+			if (concepts.isEmpty())
+				concepts = dataSet.getSKOSConcepts();
+		}
+
+		if (concepts.isEmpty())
+			return false;
+
+		for (SKOSConcept conceptsInScheme : concepts) {
+			// System.err.println("\tConcepts: " + conceptsInScheme.getURI());
+			// get Annotation of Concept
+			getConceptAnnotations(conceptsInScheme);
+		}
+
+		return true;
+	}
+
+	private void getSchemeAnnotations(SKOSEntity entity) {
+		String namespace = null;
+		String description = null;
+		String identifier = null;
+		String usageNote = null;
+
+		for (SKOSAnnotation anno : entity.getSKOSAnnotations(dataSet)) {
+			// System.err.print("\t\tAnnotation: " + anno.getURI() + "-> ");
+			if (anno.isAnnotationByConstant()) {
+				if (!anno.getAnnotationValueAsConstant().isTyped()) {
+					SKOSUntypedLiteral con = anno.getAnnotationValueAsConstant()
+							.getAsSKOSUntypedLiteral();
+
+					if (isDefinition(anno.getURI().toString())) {
+						description = con.getLiteral();
+					}
+					else if (isUsageNote(anno.getURI().toString())) {
+						usageNote = con.getLiteral();
+					}
+				}
+			}
+		}
+		namespace = entity.getURI().toString();
+		identifier = namespace;
+
+		if (description != null && usageNote != null)
+			description += "\n\n" + usageNote;
+
+		this.namespace = namespace;
+		this.description = description;
+		this.identifier = identifier;
+	}
+
+	private void getConceptAnnotations(SKOSEntity entity) {
+
+		String namespace = null;
+		String name = null;
+		String description = null;
+		String usageNote = null;
+		String identifier = null;
+
+		String topConcept = null;
+
+		for (SKOSAnnotation anno : entity.getSKOSAnnotations(dataSet)) {
+			// System.err.print("\t\tAnnotation: " + anno.getURI() + "-> ");
+			if (anno.isAnnotationByConstant()) {
+				if (!anno.getAnnotationValueAsConstant().isTyped()) {
+					SKOSUntypedLiteral con = anno.getAnnotationValueAsConstant()
+							.getAsSKOSUntypedLiteral();
+					if (isPrefLabel(anno.getURI().toString())) {
+						name = con.getLiteral();
+					}
+					else if (isDefinition(anno.getURI().toString())) {
+						description = con.getLiteral();
+					}
+					else if (isTopConcept(anno.getURI().toString())) {
+						topConcept = con.getLiteral();
+					}
+					else if (isUsageNote(anno.getURI().toString())) {
+						usageNote = con.getLiteral();
+					}
+				}
+			}
+		}
+
+		if (this.namespace == null)
+			this.namespace = topConcept;
+
+		namespace = entity.getURI().toString();
+		identifier = entity.getURI().toString();
+
+		if (description != null && usageNote != null)
+			description += "\n\n" + usageNote;
+
+		if (name != null && description != null) {
+			CodeEntry entry = new CodeEntry(name, description, identifier, namespace);
+			this.entriesByName.put(name, entry);
+			this.entriesByIdentifier.put(identifier, entry);
+		}
+	}
+
+	private boolean isPrefLabel(String uri) {
+		return SKOS_PREF_LABEL.equals(uri);
+	}
+
+	private boolean isDefinition(String uri) {
+		return SKOS_DEF_LABEL.equals(uri);
+	}
+
+	private boolean isUsageNote(String uri) {
+		return uri.endsWith(USAGENOTE_LABEL);
+	}
+
+	private boolean isTopConcept(String uri) {
+		return SKOS_TOPCONCEPT_LABEL.equals(uri) || SKOS_INSCHEME_LABEL.equals(uri);
+	}
+
+	@SuppressWarnings("unused")
+	private String extractIdentifier(String uri) {
+		String id;
+		id = uri.substring(uri.lastIndexOf("/") + 1, uri.length());
+		return id;
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((identifier == null) ? 0 : identifier.hashCode());
+		result = prime * result + ((location == null) ? 0 : location.hashCode());
+		result = prime * result + ((namespace == null) ? 0 : namespace.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SkosCodeList other = (SkosCodeList) obj;
+		if (identifier == null) {
+			if (other.identifier != null)
+				return false;
+		}
+		else if (!identifier.equals(other.identifier))
+			return false;
+		if (location == null) {
+			if (other.location != null)
+				return false;
+		}
+		else if (!location.equals(other.location))
+			return false;
+		if (namespace == null) {
+			if (other.namespace != null)
+				return false;
+		}
+		else if (!namespace.equals(other.namespace))
+			return false;
+		return true;
+	}
+
+}
