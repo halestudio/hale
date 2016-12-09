@@ -176,7 +176,7 @@ public class ArcInterpolation extends Interpolation<LineString> {
 			lineString = new GeometryFactory().createLineString(
 					generatedCoordinates.toArray(new Coordinate[generatedCoordinates.size()]));
 		} catch (Exception ex) {
-			log.error("Error in interpolation of arc", ex);
+			log.error("Error creating LineString from interpolated coordinates of arc", ex);
 			if (!isCircle) {
 				lineString = new GeometryFactory().createLineString(rawGeometryCoordinates);
 			}
