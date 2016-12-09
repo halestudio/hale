@@ -27,7 +27,10 @@ import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -65,6 +68,7 @@ public class SchemasRetrievalPage
 	private boolean multipleSelection = true;
 	private SchemaSelector customSelector = null;
 	private DriverConfiguration config = null;
+	private Button selectAll = null;
 
 	/**
 	 * 
@@ -184,6 +188,7 @@ public class SchemasRetrievalPage
 				// if multiple Selection is enabled for driver then by default
 				// select all.
 				schemaTable.setAllChecked(true);
+				selectAll.setSelection(true);
 				setPageComplete(true);
 				setMessage("Please select one or multiple schemas.");
 			}
@@ -196,9 +201,22 @@ public class SchemasRetrievalPage
 	}
 
 	private void createComponent() {
-		if (multipleSelection)
+		if (multipleSelection) {
+			selectAll = new Button(page, SWT.CHECK);
+			selectAll.setText("Select all");
+			selectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+
+			selectAll.addSelectionListener(new SelectionAdapter() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					schemaTable.setAllChecked(((Button) e.getSource()).getSelection());
+				}
+			});
 			schemaTable = CheckboxTableViewer.newCheckList(page,
 					SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
+
+		}
 		else
 			schemaTable = CheckboxTableViewer.newCheckList(page,
 					SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
