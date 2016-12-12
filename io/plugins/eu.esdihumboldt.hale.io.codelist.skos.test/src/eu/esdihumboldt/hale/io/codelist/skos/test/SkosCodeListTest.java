@@ -83,12 +83,12 @@ public class SkosCodeListTest {
 
 	/**
 	 * 
-	 * test url consisting concepts.
+	 * test url 1 consisting concepts.
 	 * 
 	 * @throws Exception throws exception if something wrong occurs
 	 */
 	@Test
-	public void testSKOSFromURL() throws Exception {
+	public void testSKOSFromURL1() throws Exception {
 
 		CodeList codeList = readCodeList(
 				URI.create("http://vocab.ndg.nerc.ac.uk/term/W080/1/CONT0001"));
@@ -107,6 +107,34 @@ public class SkosCodeListTest {
 					"Relevant contact information about the person or organisation that builds or develops a device or system.",
 					entry.getDescription());
 		}
+	}
+
+	/**
+	 * 
+	 * test url 2 consisting concepts (case: fallback).
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromURL2() throws Exception {
+
+		CodeList codeList = readCodeList(
+				URI.create("http://vocab.ices.dk/services/rdf/collection/PARAM"));
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+
+		assertEquals(entries.size(), 1456);
+
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = entries.iterator().next();
+
+		assertEquals(
+				"% DNA in tail (a measure of the proportion of total DNA present in the comet tail)",
+				entry.getName());
+
 	}
 
 	private CodeList readCodeList(URI source) throws Exception {
