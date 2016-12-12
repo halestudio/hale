@@ -312,7 +312,9 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 			throws URISyntaxException {
 
 		URIBuilder uriBuilder = new URIBuilder(url);
-		parameters.forEach((param, value) -> uriBuilder.addParameter(param, value));
+		if (parameters != null) {
+			parameters.forEach((param, value) -> uriBuilder.addParameter(param, value));
+		}
 
 		return uriBuilder.build();
 	}
