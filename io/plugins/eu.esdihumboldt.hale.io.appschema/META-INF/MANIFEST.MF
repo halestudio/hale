@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GeoTools app-schema I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.appschema;singleton:=true
 Bundle-Version: 3.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: data harmonisation panel
 Require-Bundle: eu.esdihumboldt.hale.common.instance,
  org.eclipse.core.runtime;bundle-version="3.6.0",
