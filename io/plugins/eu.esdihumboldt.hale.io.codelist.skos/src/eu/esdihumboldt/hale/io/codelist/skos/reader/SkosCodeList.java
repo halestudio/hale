@@ -1,11 +1,17 @@
 package eu.esdihumboldt.hale.io.codelist.skos.reader;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.semanticweb.skos.SKOSAnnotation;
 import org.semanticweb.skos.SKOSConcept;
@@ -14,6 +20,13 @@ import org.semanticweb.skos.SKOSDataset;
 import org.semanticweb.skos.SKOSEntity;
 import org.semanticweb.skos.SKOSUntypedLiteral;
 import org.semanticweb.skosapibinding.SKOSManager;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -53,10 +66,11 @@ public class SkosCodeList implements CodeList {
 	/**
 	 * Create a code list from a RDF file and URL.
 	 * 
-	 * @param location the location from where code list loded
+	 * @param in input stream of source
+	 * @param location the location from where code list loaded
 	 * @throws Exception if something will go wrong
 	 */
-	public SkosCodeList(URI location) throws Exception {
+	public SkosCodeList(InputStream in, URI location) throws Exception {
 		this.location = location;
 		this.identifier = null;
 		try {
@@ -66,8 +80,11 @@ public class SkosCodeList implements CodeList {
 
 			// get ConceptSchemes
 			if (!getConceptSchemes())
-				if (!getConcepts())
-					throw new RuntimeException("no concepts found!");
+				if (!getConcepts()) {
+					if (!getConceptsAsXML(in)) {
+						throw new RuntimeException("no concept found!");
+					}
+				}
 
 			this.dataSet = null;
 
@@ -314,6 +331,118 @@ public class SkosCodeList implements CodeList {
 		}
 		else if (!namespace.equals(other.namespace))
 			return false;
+		return true;
+	}
+
+	private boolean getConceptsAsXML(InputStream in) throws Exception {
+		String namespace = null;
+		String name = null;
+		String description = null;
+		String identifier = null;
+
+		final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+
+			builder.setEntityResolver(new EntityResolver() {
+
+				@Override
+				public InputSource resolveEntity(String publicId, String systemId)
+						throws SAXException, IOException {
+					return new InputSource(new StringReader("")); //$NON-NLS-1$
+				}
+			});
+
+			Document doc = builder.parse(in);
+
+			// read scheme
+			NodeList listOfConceptScheme = doc.getElementsByTagName("skos:conceptScheme");
+
+			if (listOfConceptScheme != null) {
+				// will read first Concept scheme
+				Node conceptSchemeNode = listOfConceptScheme.item(0);
+				if (conceptSchemeNode != null
+						&& conceptSchemeNode.getNodeType() == Node.ELEMENT_NODE) {
+					Element conceptScheme = (Element) conceptSchemeNode;
+					this.namespace = conceptScheme.getAttribute("rdf:about");
+					this.identifier = namespace;
+
+					NodeList children = conceptScheme.getChildNodes();
+
+					for (int j = 0; j < children.getLength(); j++) {
+
+						Node nd = children.item(j);
+
+						if (nd != null) {
+							String nodeName = nd.getNodeName();
+							if (nodeName.equals("skos:definition")) {
+								this.description = nd.getNodeValue();
+							}
+							else if (this.description == null && nodeName.endsWith("description")) {
+								this.description = nd.getNodeValue();
+							}
+						}
+					}
+				}
+			}
+
+			NodeList listOfConcepts = doc.getElementsByTagName("skos:concept");
+			int totalConcepts = listOfConcepts.getLength();
+
+			if (totalConcepts == 0)
+				return false;
+
+			for (int i = 0; i < listOfConcepts.getLength(); i++) {
+
+				Node conceptNode = listOfConcepts.item(i);
+				if (conceptNode != null && conceptNode.getNodeType() == Node.ELEMENT_NODE) {
+
+					Element concept = (Element) conceptNode;
+					namespace = concept.getAttribute("rdf:about");
+					identifier = namespace;
+
+					NodeList children = concept.getChildNodes();
+
+					for (int j = 0; j < children.getLength(); j++) {
+
+						Node nd = children.item(j);
+
+						if (nd != null) {
+							String nodeName = nd.getNodeName();
+							if (nodeName.equals("skos:prefLabel")) {
+								name = nd.getFirstChild().getNodeValue();
+							}
+							else if (nodeName.equals("skos:definition")) {
+								description = nd.getFirstChild().getNodeValue();
+							}
+							else if (nodeName.equals("skos:topConceptOf")) {
+								this.namespace = nd.getFirstChild().getNodeValue();
+							}
+							else if (description == null && nodeName.endsWith("description")) {
+								if (nd.getChildNodes().getLength() != 0)
+									description = nd.getFirstChild().getNodeValue();
+								else
+									description = "";
+							}
+						}
+					}
+
+					if (name != null) {
+						CodeEntry entry = new CodeEntry(name, description, identifier, namespace);
+						this.entriesByName.put(name, entry);
+						this.entriesByIdentifier.put(identifier, entry);
+					}
+					name = null;
+					description = null;
+					identifier = null;
+					namespace = null;
+				}
+			} // end of for loop
+
+		} catch (Exception e) {
+			log.error("Error reading skos code list as XML", e); //$NON-NLS-1$
+			throw e;
+		}
 		return true;
 	}
 

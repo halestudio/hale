@@ -1,6 +1,7 @@
 package eu.esdihumboldt.hale.io.codelist.skos.reader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 
 import eu.esdihumboldt.hale.common.codelist.CodeList;
@@ -31,8 +32,8 @@ public class SkosCodeListReader extends AbstractImportProvider implements CodeLi
 		progress.begin("Loading SKOS code list", ProgressIndicator.UNKNOWN);
 		try {
 			URI loc = getSource().getLocation();
-
-			codelist = new SkosCodeList(loc);
+			InputStream in = getSource().getInput();
+			codelist = new SkosCodeList(in, loc);
 			progress.setCurrentTask("Code list loaded.");
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
