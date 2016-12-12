@@ -31,6 +31,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -315,12 +316,7 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 * @return the resource list URL
 	 */
 	protected String getResourceListURL() {
-		List<String> urlParts = new ArrayList<String>();
-		urlParts.add(geoserverUrl.toString());
-		urlParts.add(REST_BASE);
-		urlParts.add(getResourceListPath());
-
-		return Joiner.on(".").join(Arrays.asList(Joiner.on('/').join(urlParts), getFormat()));
+		return getRestServiceUrl(getResourceListPath());
 	}
 
 	/**
@@ -329,12 +325,18 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 * @return the resource URL
 	 */
 	protected String getResourceURL() {
+		return getRestServiceUrl(getResourcePath());
+	}
+
+	private String getRestServiceUrl(String resourcePath) {
 		List<String> urlParts = new ArrayList<String>();
 		urlParts.add(geoserverUrl.toString());
 		urlParts.add(REST_BASE);
-		urlParts.add(getResourcePath());
+		urlParts.add(resourcePath);
 
-		return Joiner.on(".").join(Arrays.asList(Joiner.on('/').join(urlParts), getFormat()));
+		urlParts.replaceAll(urlPart -> normalizeUrlPart(urlPart));
+		final String resourceUrl = Joiner.on('/').skipNulls().join(urlParts);
+		return Joiner.on(".").skipNulls().join(Arrays.asList(resourceUrl, getFormat()));
 	}
 
 	private String buildQueryString(Map<String, String> queryParameters) {
@@ -355,6 +357,14 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		}
 
 		return queryBuilder.toString();
+	}
+
+	private String normalizeUrlPart(String urlPart) {
+		// remove slashes at the beginning and end of the URL part
+		// and return null if it empty or contains only whitespace
+		urlPart = StringUtils.stripStart(urlPart, "/");
+		urlPart = StringUtils.stripEnd(urlPart, "/");
+		return StringUtils.defaultIfBlank(urlPart, null);
 	}
 
 	/**
