@@ -190,7 +190,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.semanticweb.skos.api"
+         id="org.semanticweb.owlapi.osgi.skos"
          download-size="0"
          install-size="0"
          version="0.0.0"

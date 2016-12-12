@@ -147,6 +147,8 @@
       <plugin id="eu.esdihumboldt.hale.io.appschema"/>
       <plugin id="eu.esdihumboldt.hale.io.appschema.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.appschema.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.skos"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
@@ -370,6 +372,7 @@
       <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.postgresql.jdbc"/>
+      <plugin id="org.semanticweb.owlapi.osgi.skos"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>
       <plugin id="org.springframework.beans"/>
