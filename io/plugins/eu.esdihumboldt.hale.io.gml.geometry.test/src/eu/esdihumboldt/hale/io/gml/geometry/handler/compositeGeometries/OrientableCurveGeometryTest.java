@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -41,8 +41,8 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
-	private MultiLineString reference;
-	private MultiLineString referenceOnGrid;
+	private LineString reference;
+	private LineString referenceOnGrid;
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
@@ -53,18 +53,12 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
 				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
-		LineString linestring1 = geomFactory.createLineString(coordinates);
-
-		LineString[] lines = new LineString[] { linestring1 };
-		reference = geomFactory.createMultiLineString(lines);
+		reference = geomFactory.createLineString(coordinates);
 
 		// for grid test
 		coordinates = new Coordinate[] { new Coordinate(0.0, 3.2), new Coordinate(3.3, 3.3),
 				new Coordinate(0.0, -3.2) };
-		linestring1 = geomFactory.createLineString(coordinates);
-
-		lines = new LineString[] { linestring1 };
-		referenceOnGrid = geomFactory.createMultiLineString(lines);
+		referenceOnGrid = geomFactory.createLineString(coordinates);
 	}
 
 	/**
@@ -129,11 +123,9 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
 	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
-					.getGeometry();
+			Geometry geom = instance.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(keepOriginal ? reference : referenceOnGrid));
+					geom.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 

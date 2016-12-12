@@ -203,7 +203,8 @@ public class Transformation {
 			// XXX for now default validation if env variable is set
 			String env = System.getenv("HALE_TRANSFORMATION_INTERNAL_VALIDATION");
 			if (env != null && env.equalsIgnoreCase("true")) {
-				targetSink.addValidator(new DefaultTransformedInstanceValidator(reportHandler));
+				targetSink.addValidator(
+						new DefaultTransformedInstanceValidator(reportHandler, environment));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException("Error creating target sink", e);

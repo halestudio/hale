@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -42,8 +42,8 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 
-	private MultiPolygon reference;
-	private MultiPolygon referenceOnGrid;
+	private Polygon reference;
+	private Polygon referenceOnGrid;
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
@@ -64,9 +64,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 						new Coordinate(-122.24, 37.58), new Coordinate(-122.24, 37.60) });
 		holes[0] = hole1;
 
-		Polygon[] polygons = new Polygon[] { geomFactory.createPolygon(shell, holes) };
-
-		reference = geomFactory.createMultiPolygon(polygons);
+		reference = geomFactory.createPolygon(shell, holes);
 
 		// grid
 		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.44, 37.80),
@@ -79,9 +77,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 				new Coordinate(-122.24, 37.58), new Coordinate(-122.24, 37.6) });
 		holes[0] = hole1;
 
-		polygons = new Polygon[] { geomFactory.createPolygon(shell, holes) };
-
-		referenceOnGrid = geomFactory.createMultiPolygon(polygons);
+		referenceOnGrid = geomFactory.createPolygon(shell, holes);
 	}
 
 	/**
@@ -147,10 +143,9 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
+			Geometry geom = instance.getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
+					geom.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 
