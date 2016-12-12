@@ -11,6 +11,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 
 /**
  * Reads a SKOS code list from rdf file or url
@@ -35,10 +36,11 @@ public class SkosCodeListReader extends AbstractImportProvider implements CodeLi
 			InputStream in = getSource().getInput();
 			codelist = new SkosCodeList(in, loc);
 			progress.setCurrentTask("Code list loaded.");
+			reporter.setSuccess(true);
 		} catch (Exception ex) {
-			throw new RuntimeException(ex);
+			reporter.error(new IOMessageImpl("Error in loading skos code list", ex));
+			reporter.setSuccess(false);
 		}
-		reporter.setSuccess(true);
 		return reporter;
 	}
 

@@ -79,9 +79,9 @@ public class SkosCodeList implements CodeList {
 			dataSet = manager.loadDatasetFromPhysicalURI(location);
 
 			// get ConceptSchemes
-			if (!getConceptSchemes())
-				if (!getConcepts()) {
-					if (!getConceptsAsXML(in)) {
+			if (!loadConceptScheme())
+				if (!loadConcepts()) {
+					if (!loadConceptsAsXML(in)) {
 						throw new RuntimeException("no concept found!");
 					}
 				}
@@ -135,7 +135,7 @@ public class SkosCodeList implements CodeList {
 		return location;
 	}
 
-	private boolean getConceptSchemes() {
+	private boolean loadConceptScheme() {
 
 		Set<SKOSConceptScheme> schemes = dataSet.getSKOSConceptSchemes();
 
@@ -146,20 +146,20 @@ public class SkosCodeList implements CodeList {
 		SKOSConceptScheme scheme = schemes.iterator().next();
 
 		// get annotation of ConceptScheme
-		getSchemeAnnotations(scheme);
+		handleConceptSchemeNode(scheme);
 
 		// i can get all the concepts from this scheme
-		getConcepts(scheme);
+		loadConcepts(scheme);
 
 		return true;
 
 	}
 
-	private boolean getConcepts() {
-		return getConcepts(null);
+	private boolean loadConcepts() {
+		return loadConcepts(null);
 	}
 
-	private boolean getConcepts(SKOSConceptScheme scheme) {
+	private boolean loadConcepts(SKOSConceptScheme scheme) {
 		Set<SKOSConcept> concepts;
 		if (scheme == null)
 			concepts = dataSet.getSKOSConcepts();
@@ -178,13 +178,13 @@ public class SkosCodeList implements CodeList {
 		for (SKOSConcept conceptsInScheme : concepts) {
 			// System.err.println("\tConcepts: " + conceptsInScheme.getURI());
 			// get Annotation of Concept
-			getConceptAnnotations(conceptsInScheme);
+			addConcept(conceptsInScheme);
 		}
 
 		return true;
 	}
 
-	private void getSchemeAnnotations(SKOSEntity entity) {
+	private void handleConceptSchemeNode(SKOSEntity entity) {
 		String namespace = null;
 		String description = null;
 		String identifier = null;
@@ -217,7 +217,7 @@ public class SkosCodeList implements CodeList {
 		this.identifier = identifier;
 	}
 
-	private void getConceptAnnotations(SKOSEntity entity) {
+	private void addConcept(SKOSEntity entity) {
 
 		String namespace = null;
 		String name = null;
@@ -334,7 +334,7 @@ public class SkosCodeList implements CodeList {
 		return true;
 	}
 
-	private boolean getConceptsAsXML(InputStream in) throws Exception {
+	private boolean loadConceptsAsXML(InputStream in) throws Exception {
 		String namespace = null;
 		String name = null;
 		String description = null;
@@ -440,7 +440,7 @@ public class SkosCodeList implements CodeList {
 			} // end of for loop
 
 		} catch (Exception e) {
-			log.error("Error reading skos code list as XML", e); //$NON-NLS-1$
+			log.error("Error while reading skos code list as XML", e); //$NON-NLS-1$
 			throw e;
 		}
 		return true;

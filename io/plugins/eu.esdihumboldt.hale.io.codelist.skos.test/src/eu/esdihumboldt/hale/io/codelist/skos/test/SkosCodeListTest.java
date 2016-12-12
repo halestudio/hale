@@ -83,48 +83,19 @@ public class SkosCodeListTest {
 
 	/**
 	 * 
-	 * test url 1 consisting concepts.
+	 * test url saved as xml consisting concepts (case: fallback).
 	 * 
 	 * @throws Exception throws exception if something wrong occurs
 	 */
 	@Test
-	public void testSKOSFromURL1() throws Exception {
+	public void testSKOSFromRDF3() throws Exception {
 
-		CodeList codeList = readCodeList(
-				URI.create("http://vocab.ndg.nerc.ac.uk/term/W080/1/CONT0001"));
-
-		Collection<CodeEntry> entries = codeList.getEntries();
-		assertFalse(entries.isEmpty());
-
-		assertEquals(entries.size(), 1);
-
-		assertNotNull(codeList.getLocation());
-		assertNotNull(codeList.getIdentifier());
-
-		for (CodeEntry entry : entries) {
-			assertEquals("Manufacturer", entry.getName());
-			assertEquals(
-					"Relevant contact information about the person or organisation that builds or develops a device or system.",
-					entry.getDescription());
-		}
-	}
-
-	/**
-	 * 
-	 * test url 2 consisting concepts (case: fallback).
-	 * 
-	 * @throws Exception throws exception if something wrong occurs
-	 */
-	@Test
-	public void testSKOSFromURL2() throws Exception {
-
-		CodeList codeList = readCodeList(
-				URI.create("http://vocab.ices.dk/services/rdf/collection/PARAM"));
+		CodeList codeList = readCodeList(getResourceURI("/data/test3.rdf"));
 
 		Collection<CodeEntry> entries = codeList.getEntries();
 		assertFalse(entries.isEmpty());
 
-		assertEquals(entries.size(), 1456);
+		assertEquals(entries.size(), 4);
 
 		assertNotNull(codeList.getLocation());
 		assertNotNull(codeList.getIdentifier());

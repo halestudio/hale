@@ -4,6 +4,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
+            base-type="org.eclipse.core.runtime.xml"
             file-extensions="rdf"
             id="eu.esdihumboldt.hale.io.codelist.skos"
             name="SKOS code list"
