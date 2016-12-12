@@ -218,7 +218,7 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			URI requestUri = buildRequestUri(getResourceURL(), parameters);
+			URI requestUri = buildRequestUri(getResourceListURL(), parameters);
 
 			ByteArrayEntity entity = new ByteArrayEntity(resource.asByteArray());
 			entity.setContentType(resource.contentType().getMimeType());
