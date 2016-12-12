@@ -127,8 +127,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	@Override
 	public Document list() {
 		try {
-			return executor.execute(Request.Get(getResourceListURL())).handleResponse(
-					new XmlResponseHandler());
+			return executor.execute(Request.Get(getResourceListURL()))
+					.handleResponse(new XmlResponseHandler());
 		} catch (Exception e) {
 			throw new ResourceException(e);
 		}
@@ -150,8 +150,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			return executor.execute(Request.Get(getResourceURL())).handleResponse(
-					new ResponseHandler<Boolean>() {
+			return executor.execute(Request.Get(getResourceURL()))
+					.handleResponse(new ResponseHandler<Boolean>() {
 
 						/**
 						 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
@@ -399,8 +399,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 		 */
 		@Override
-		public Document handleResponse(HttpResponse response) throws ClientProtocolException,
-				IOException {
+		public Document handleResponse(HttpResponse response)
+				throws ClientProtocolException, IOException {
 			StatusLine statusLine = response.getStatusLine();
 			HttpEntity entity = response.getEntity();
 			if (statusLine.getStatusCode() >= 300) {
@@ -453,8 +453,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 		 */
 		@Override
-		public Void handleResponse(HttpResponse response) throws ClientProtocolException,
-				IOException {
+		public Void handleResponse(HttpResponse response)
+				throws ClientProtocolException, IOException {
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() >= 300) {
 				throw new HttpResponseException(statusLine.getStatusCode(),
