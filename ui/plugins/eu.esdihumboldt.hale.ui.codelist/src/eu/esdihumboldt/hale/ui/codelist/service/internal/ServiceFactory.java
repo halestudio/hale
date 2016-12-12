@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.codelist.service.internal;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
+import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
@@ -39,6 +40,9 @@ public class ServiceFactory extends AbstractServiceFactory {
 			IServiceLocator parentLocator, IServiceLocator locator) {
 		if (serviceInterface.equals(CodeListService.class)) {
 			return new CodeListServiceImpl(locator.getService(ProjectService.class));
+		}
+		if (CodeListRegistry.class.equals(serviceInterface)) {
+			return locator.getService(CodeListService.class);
 		}
 		return null;
 	}

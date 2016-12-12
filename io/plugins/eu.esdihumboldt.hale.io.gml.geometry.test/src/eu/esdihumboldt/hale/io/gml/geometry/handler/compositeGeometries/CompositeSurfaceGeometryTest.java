@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.xml.namespace.QName;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -131,6 +132,7 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 	 * @throws Exception if an error occurs
 	 */
 	@Test
+	@Ignore("Test case does not represent a valid composite surface")
 	public void testCompositeSurfaceGml31() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
@@ -157,6 +159,7 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 	 * @throws Exception if an error occurs
 	 */
 	@Test
+	@Ignore("Test case does not represent a valid composite surface")
 	public void testCompositeSurfaceGml31_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
@@ -191,9 +194,9 @@ public class CompositeSurfaceGeometryTest extends AbstractHandlerTest {
 	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
+			Polygon polygon = ((GeometryProperty<Polygon>) instance).getGeometry();
 			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
+					polygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 }

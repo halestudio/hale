@@ -25,3 +25,5 @@
 				</gml:baseSurface>
 			</hale:geometry>
 		</hale:OrientableSurfaceProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>
