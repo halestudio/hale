@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -72,6 +73,25 @@ public class CurveHelper {
 	@Nullable
 	public static MultiLineString combineCurve(List<? extends LineString> lineStrings,
 			GeometryFactory fact, boolean strict) {
+		return combineCurve(lineStrings, strict, geoms -> {
+			return fact.createMultiLineString(geoms.toArray(new LineString[geoms.size()]));
+		});
+	}
+
+	/**
+	 * Combine the given {@link LineString}s using the given builder.
+	 * 
+	 * @param lineStrings the line strings
+	 * @param strict if it should be checked if the geometry fulfills the strict
+	 *            requirements of a curve
+	 * @param builder the builder function creating a combination of the
+	 *            individual {@link LineString}s
+	 * @return the combined {@link MultiLineString} or <code>null</code> if the
+	 *         geometry did not meet the requirements of the strict mode
+	 */
+	@Nullable
+	public static <T> T combineCurve(List<? extends LineString> lineStrings, boolean strict,
+			Function<List<LineString>, T> builder) {
 		// try to order by start/end point (e.g. for composite curves)
 		Map<Coordinate, LineString> endPoints = new HashMap<>();
 
@@ -112,8 +132,59 @@ public class CurveHelper {
 			// "best effort"
 		}
 
-		return fact.createMultiLineString(ordered.getInternalList().toArray(
-				new LineString[ordered.getInternalList().size()]));
+		return builder.apply(ordered.getInternalList());
+	}
+
+	/**
+	 * Combine the given {@link MultiLineString} to a single {@link LineString}
+	 * if possible.
+	 * 
+	 * @param lineStrings the multi line string
+	 * @param fact a geometry factory
+	 * @return the combined {@link LineString} or <code>null</code> if the
+	 *         geometry did not meet the requirements of the strict mode
+	 */
+	@Nullable
+	public static LineString combineCurve(MultiLineString lineStrings, GeometryFactory fact) {
+		List<LineString> list = new ArrayList<>();
+		for (int i = 0; i < lineStrings.getNumGeometries(); i++) {
+			list.add((LineString) lineStrings.getGeometryN(i));
+		}
+		return combineCurve(list, fact);
+	}
+
+	/**
+	 * Combine the given {@link LineString}s to a single {@link LineString} if
+	 * possible.
+	 * 
+	 * @param lineStrings the line strings
+	 * @param fact a geometry factory
+	 * @return the combined {@link LineString} or <code>null</code> if the
+	 *         geometry did not meet the requirements of the strict mode
+	 */
+	@Nullable
+	public static LineString combineCurve(List<? extends LineString> lineStrings,
+			GeometryFactory fact) {
+		return combineCurve(lineStrings, true, geoms -> {
+			List<Coordinate> coordinates = new ArrayList<>();
+
+			boolean skipFirst = false;
+			for (LineString geom : geoms) {
+				int index = 0;
+				if (!skipFirst) {
+					skipFirst = true;
+				}
+				else {
+					index = 1;
+				}
+
+				for (int i = index; i < geom.getNumPoints(); i++) {
+					coordinates.add(geom.getCoordinateN(i));
+				}
+			}
+
+			return fact.createLineString(coordinates.toArray(new Coordinate[coordinates.size()]));
+		});
 	}
 
 }

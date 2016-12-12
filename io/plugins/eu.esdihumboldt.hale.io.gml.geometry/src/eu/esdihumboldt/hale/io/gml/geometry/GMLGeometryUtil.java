@@ -33,10 +33,12 @@ import org.springframework.core.convert.ConversionException;
 
 import com.google.common.base.Splitter;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.helper.BreadthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -51,6 +53,17 @@ import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 public abstract class GMLGeometryUtil {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GMLGeometryUtil.class);
+
+	/**
+	 * Name of reader parameter that specifies if composite geometries should be
+	 * combined to a single geometry object if possible.
+	 */
+	public static final String PARAM_COMBINE_COMPOSITES = "geometry.combineComposites";
+
+	/**
+	 * Default value for the {@code PARAM_COMBINE_COMPOSITES} parameter.
+	 */
+	public static final boolean PARAM_COMBINE_COMPOSITES_DEFAULT = true;
 
 	/**
 	 * Parse coordinates from a GML CoordinatesType instance.
@@ -363,6 +376,46 @@ public abstract class GMLGeometryUtil {
 		traverser.traverse(instance, finder);
 
 		return finder.getDefinition();
+	}
+
+	/**
+	 * Determines if the given geometries are all 2D.
+	 * 
+	 * @param geometries the geometries
+	 * @return if the geometries are 2D
+	 */
+	@SafeVarargs
+	public static <T extends Geometry> boolean is2D(T... geometries) {
+		for (Geometry geom : geometries) {
+			if (!is2D(geom.getCoordinates())) {
+				return false;
+			}
+		}
+
+		// all polygons were 2D
+		return true;
+	}
+
+	private static boolean is2D(Coordinate[] coordinates) {
+		for (Coordinate coord : coordinates) {
+			if (!Double.isNaN(coord.z)) {
+				return false;
+			}
+		}
+		// all coordinates are 2D
+		return true;
+	}
+
+	/**
+	 * Determine if combining composite (2D) geometries is enabled for a given
+	 * reader.
+	 * 
+	 * @param reader the reader
+	 * @return if combining composite geometries is enabled
+	 */
+	public static boolean isCombineCompositesEnabled(IOProvider reader) {
+		return reader.getParameter(PARAM_COMBINE_COMPOSITES).as(Boolean.class,
+				PARAM_COMBINE_COMPOSITES_DEFAULT);
 	}
 
 }

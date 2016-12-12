@@ -17,9 +17,11 @@ package eu.esdihumboldt.hale.common.headless.transform.validate.impl;
 
 import java.util.ArrayList;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.extension.validation.InstanceValidationContext;
 import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationReporter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -37,24 +39,32 @@ public class DefaultTransformedInstanceValidator extends AbstractTransformedInst
 	 */
 	protected final InstanceValidationContext context;
 
+	private final InstanceValidator validator;
+
 	/**
+	 * Constructor.
+	 * 
+	 * @param reportHandler the handler for the validation report
+	 * @param services the service provider, if available
 	 * @see AbstractTransformedInstanceValidator#AbstractTransformedInstanceValidator(ReportHandler)
 	 */
-	public DefaultTransformedInstanceValidator(ReportHandler reportHandler) {
+	public DefaultTransformedInstanceValidator(ReportHandler reportHandler,
+			@Nullable ServiceProvider services) {
 		super(reportHandler);
 
 		this.context = new InstanceValidationContext();
+		this.validator = InstanceValidator.createDefaultValidator(services);
 	}
 
 	@Override
 	protected void validateInstance(Instance instance, InstanceValidationReporter reporter) {
-		InstanceValidator.validateInstance(instance, reporter, instance.getDefinition().getName(),
-				new ArrayList<QName>(), false, null, context, null);
+		validator.validateInstance(instance, reporter, instance.getDefinition().getName(),
+				new ArrayList<QName>(), false, null, context, null, null);
 	}
 
 	@Override
 	protected void validateCompleted(InstanceValidationReporter reporter) {
-		InstanceValidator.validateContext(context, reporter);
+		validator.validateContext(context, reporter);
 	}
 
 }

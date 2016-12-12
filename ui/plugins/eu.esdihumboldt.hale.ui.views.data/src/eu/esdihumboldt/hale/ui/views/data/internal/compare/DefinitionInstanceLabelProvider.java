@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.definition.DefinitionImages;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 
@@ -71,6 +72,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 	private final Map<Object, Integer> chosenMetaPaths = new HashMap<Object, Integer>();
 
+	private final InstanceValidator validator;
+
 	/**
 	 * Create an instance label provider for tree based on a
 	 * {@link TypeDefinition}
@@ -81,6 +84,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		super();
 
 		this.instance = instance;
+		this.validator = InstanceValidator.createDefaultValidator(HaleUI.getServiceProvider());
 	}
 
 	@SuppressWarnings("javadoc")
@@ -230,7 +234,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 		InstanceValidationReport report = null;
 		// If childDef is null we are at the top element.
 		if (entry.definition && entry.childDef == null) {
-			report = InstanceValidator.validate(instance);
+			report = validator.validate(instance);
 		}
 
 		boolean hasValue = false;
@@ -274,9 +278,8 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 
 		// mark cell if there are other values
 		if (entry.valueCount > 1) {
-			String decoration = " "
-					+ MessageFormat.format(MULTIPLE_VALUE_FORMAT, entry.choice + 1,
-							entry.valueCount);
+			String decoration = " " + MessageFormat.format(MULTIPLE_VALUE_FORMAT, entry.choice + 1,
+					entry.valueCount);
 			styledString.append(decoration, StyledString.COUNTER_STYLER);
 		}
 
@@ -336,7 +339,7 @@ public class DefinitionInstanceLabelProvider extends StyledCellLabelProvider {
 	@Override
 	public String getToolTipText(Object element) {
 		if (element instanceof EntityDefinition) {
-			InstanceValidationReport report = InstanceValidator.validate(instance);
+			InstanceValidationReport report = validator.validate(instance);
 
 			Collection<InstanceValidationMessage> warnings = report.getWarnings();
 

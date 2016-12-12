@@ -42,7 +42,7 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 	/**
 	 * Rounding scale for grid cell value
 	 */
-	private static final int ROUNDING_SCALE = DEFAULT_ROUNDING_SCALE;
+	protected static final int ROUNDING_SCALE = DEFAULT_ROUNDING_SCALE;
 
 	/**
 	 * Maximum positional error
@@ -75,7 +75,8 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 			boolean keepOriginal) {
 		this.MAX_POSITIONAL_ERROR = maxPositionalError;
 		this.rawGeometryCoordinates = coordinates;
-		this.NEXT_COORDINATE_DISTANCE = NEXT_COORDINATE_DISTANCE_FACTOR * maxPositionalError;
+		this.NEXT_COORDINATE_DISTANCE = round(NEXT_COORDINATE_DISTANCE_FACTOR * maxPositionalError,
+				ROUNDING_SCALE);
 		this.keepOriginal = keepOriginal;
 	}
 
@@ -151,7 +152,7 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 		// for loop on grid cell
 		for (Coordinate cellCoordinate : getGridCellCoordinates(gridMinXNearPoint,
 				gridMinYNearPoint, coordinate.z, maxPositionalError)) {
-			double distance = coordinate.distance(cellCoordinate);
+			double distance = round(coordinate.distance(cellCoordinate), ROUNDING_SCALE);
 			if (distance <= maxPositionalError) {
 				if (minDistGridPoint != null) {
 					if (distance < coordinate.distance(minDistGridPoint))
@@ -277,7 +278,14 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 		return coordinates;
 	}
 
-	private static double round(double x, int scale) {
+	/**
+	 * rounding the double value
+	 * 
+	 * @param x a double value to be round off
+	 * @param scale location of decimal points in
+	 * @return rounded double value
+	 */
+	protected static double round(double x, int scale) {
 		return round(x, scale, BigDecimal.ROUND_HALF_UP);
 	}
 

@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.util.PropertyChangeEvent;
@@ -173,19 +174,27 @@ public class CompilingSourceViewer<C> extends ValidatingSourceViewer {
 					if (!changed) {
 						return Status.OK_STATUS;
 					}
-					content = getDocument().get();
+					IDocument doc = getDocument();
+					if (doc != null) {
+						content = doc.get();
+					}
+					else {
+						content = null;
+					}
 					changed = false;
 				} finally {
 					changeLock.unlock();
 				}
 
 				C result = null;
-				try {
-					// this is the potentially long running stuff
-					result = compile(content);
-				} catch (Exception e) {
-					// ignore, but log
-					log.warn("Error compiling document content", e);
+				if (content != null) {
+					try {
+						// this is the potentially long running stuff
+						result = compile(content);
+					} catch (Exception e) {
+						// ignore, but log
+						log.warn("Error compiling document content", e);
+					}
 				}
 
 				boolean notify = false;
