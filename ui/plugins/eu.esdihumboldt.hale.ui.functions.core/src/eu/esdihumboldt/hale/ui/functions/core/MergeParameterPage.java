@@ -112,8 +112,8 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		// for additional_property: selected properties can change!
 		if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
 			filtered = new HashSet<EntityDefinition>();
-			List<ParameterValue> properties = unfinishedCell.getTransformationParameters().get(
-					PARAMETER_PROPERTY);
+			List<ParameterValue> properties = unfinishedCell.getTransformationParameters()
+					.get(PARAMETER_PROPERTY);
 			boolean oldSelectionChanged = false;
 			for (ParameterValue propertyPath : properties) {
 				EntityDefinition def = getEntityDefinition(propertyPath.as(String.class),
@@ -122,8 +122,9 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 				if (selection.remove(def))
 					oldSelectionChanged = true;
 			}
-			if (oldSelectionChanged)
+			if (oldSelectionChanged) {
 				viewer.setCheckedElements(selection.toArray());
+			}
 			viewer.refresh();
 		}
 	}
@@ -140,11 +141,13 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		parameter = params.iterator().next();
 		if (parameter.getName().equals(PARAMETER_PROPERTY)) {
 			setTitle("Please select the properties that have to match");
-			setDescription("Instances that have equal values for these properties will be merged into one");
+			setDescription(
+					"Instances that have equal values for these properties will be merged into one");
 		}
 		else if (parameter.getName().equals(PARAMETER_ADDITIONAL_PROPERTY)) {
 			setTitle("Please select other equal properties to merge");
-			setDescription("For these properties only the unique values will be retained in the merged instance");
+			setDescription(
+					"For these properties only the unique values will be retained in the merged instance");
 		}
 		else
 			throw new IllegalArgumentException(
@@ -155,11 +158,15 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			List<ParameterValue> tmp = initialValues.get(parameter.getName());
 			if (tmp != null) {
 				initialSelection = new ArrayList<String>(tmp.size());
-				for (ParameterValue value : tmp)
+				for (ParameterValue value : tmp) {
+					// TODO use MergeUtil helper function instead
+					// XXX needs selection to be QName based
 					initialSelection.add(value.as(String.class));
+				}
 			}
-			else
+			else {
 				initialSelection = Collections.emptyList();
+			}
 			setPageComplete(true);
 		}
 	}
@@ -178,15 +185,15 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			 * If multiple levels are needed, properties should be stored as
 			 * Lists of QNames (Complex values) or EntityDefinitions.
 			 */
-			String propertyPath = Joiner.on('.').join(
-					Collections2.transform(selected.getPropertyPath(),
-							new Function<ChildContext, String>() {
+			// FIXME use MergeUtil helper function instead
+			String propertyPath = Joiner.on('.').join(Collections2
+					.transform(selected.getPropertyPath(), new Function<ChildContext, String>() {
 
-								@Override
-								public String apply(ChildContext input) {
-									return input.getChild().getName().toString();
-								}
-							}));
+						@Override
+						public String apply(ChildContext input) {
+							return input.getChild().getName().toString();
+						}
+					}));
 
 			// add it to configuration
 			configuration.put(parameter.getName(), new ParameterValue(propertyPath));
@@ -195,9 +202,6 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		return configuration;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
-	 */
 	@Override
 	protected void createContent(Composite page) {
 		// set layout of page
@@ -247,9 +251,10 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 			});
 
 		Cell unfinishedCell = getWizard().getUnfinishedCell();
-		if (unfinishedCell.getSource() != null)
+		if (unfinishedCell.getSource() != null) {
 			sourceType = (TypeDefinition) unfinishedCell.getSource().values().iterator().next()
 					.getDefinition().getDefinition();
+		}
 
 		viewer.setInput(sourceType);
 
@@ -292,9 +297,6 @@ public class MergeParameterPage extends HaleWizardPage<AbstractGenericFunctionWi
 		return null;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#dispose()
-	 */
 	@Override
 	public void dispose() {
 		labelProvider.dispose();
