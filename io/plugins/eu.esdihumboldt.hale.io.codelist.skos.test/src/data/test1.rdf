@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:dc="http://purl.org/dc/elements/1.1/">
-	<skos:Concept rdf:about="http://vocab.ndg.nerc.ac.uk/term/W080/1/CONT0006">
+	<skos:Concept rdf:about="http://vocab.to.wetransform/term/W080/1/CONT0006">
 		<skos:externalID>SDN:W080:1:CONT0006</skos:externalID>
 		<skos:prefLabel>Data scientist</skos:prefLabel>
 		<skos:altLabel/>
