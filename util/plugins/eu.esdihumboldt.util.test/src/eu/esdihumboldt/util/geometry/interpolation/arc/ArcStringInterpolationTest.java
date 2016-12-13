@@ -13,15 +13,16 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation;
+package eu.esdihumboldt.util.geometry.interpolation.arc;
 
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,15 +34,18 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
-import eu.esdihumboldt.util.geometry.interpolation.util.DrawGeometry;
+import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
+import eu.esdihumboldt.util.geometry.interpolation.ArcStringInterpolation;
+import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
 /**
- * Test for Circle Type
+ * Arc String interpolation test
  * 
  * @author Arun
  */
+
 @RunWith(Parameterized.class)
-public class CircleInterpolationTest {
+public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 
 	private final int testIndex;
 	private final Coordinate[] arcCoordinates;
@@ -56,6 +60,8 @@ public class CircleInterpolationTest {
 
 	private static final boolean DEFAULT_KEEP_ORIGINAL = true;
 
+	private static final List<Integer> nullTestIndex = Arrays.asList(8);
+
 	/**
 	 * Constructor for parameterized test
 	 * 
@@ -65,7 +71,7 @@ public class CircleInterpolationTest {
 	 * @param skipTest if wants to skip test
 	 */
 	@SuppressWarnings("rawtypes")
-	public CircleInterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry,
+	public ArcStringInterpolationTest(int testIndex, Coordinate[] coordinates, Class geometry,
 			boolean skipTest) {
 		this.testIndex = testIndex;
 		this.arcCoordinates = coordinates;
@@ -97,26 +103,31 @@ public class CircleInterpolationTest {
 				{ 1, new Coordinate[] { new Coordinate(568420.259, 5936349.171),
 						new Coordinate(568419.414, 5936347.635),
 						new Coordinate(568421.103, 5936347.635) }, //
-						LineString.class, SKIP_TEST }, //
+						LineString.class, SKIP_TEST }, // 1 Arc
 				{ 2, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 16),
 						new Coordinate(16, 8) }, //
-						LineString.class, SKIP_TEST }, //
+						LineString.class, SKIP_TEST }, // 1 Arc
 				{ 3, new Coordinate[] { new Coordinate(240, 280), new Coordinate(210, 150),
 						new Coordinate(300, 100) }, //
-						LineString.class, SKIP_TEST }, //
-				{ 4, new Coordinate[] { new Coordinate(8, 8), new Coordinate(12, 6.5),
-						new Coordinate(16, 8) }, //
-						LineString.class, SKIP_TEST }, //
-				{ 5, new Coordinate[] { new Coordinate(3, 10.5), new Coordinate(4, 7.75),
-						new Coordinate(8, 8) }, //
-						LineString.class, SKIP_TEST }, //
-				{ 6, new Coordinate[] { new Coordinate(569675.954, 5937944.689),
-						new Coordinate(569675.109, 5937943.153),
-						new Coordinate(569676.798, 5937943.153) }, //
-						LineString.class, SKIP_TEST }, //
-				{ 7, new Coordinate[] { new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
+						LineString.class, SKIP_TEST }, // 1 Arc
+				{ 4, new Coordinate[] { new Coordinate(0.01, 3.2), new Coordinate(3.33, 3.33),
 						new Coordinate(0.01, -3.2) }, //
-						LineString.class, SKIP_TEST } //
+						LineString.class, SKIP_TEST }, // 1 Arc
+				{ 5, new Coordinate[] { new Coordinate(-8, 0), new Coordinate(0, 8),
+						new Coordinate(8, 0), new Coordinate(0, -8), new Coordinate(-8, 0) }, //
+						LineString.class, SKIP_TEST }, // 2 Arcs
+				{ 6, new Coordinate[] { new Coordinate(-1, 0), new Coordinate(0, 1),
+						new Coordinate(1, 0), new Coordinate(2, -1), new Coordinate(3, 0) }, //
+						LineString.class, SKIP_TEST }, // 2 Arcs
+				{ 7, new Coordinate[] { new Coordinate(-1, 0), new Coordinate(0, 1),
+						new Coordinate(1, 0), new Coordinate(-0.5, 1.5), new Coordinate(-2, 0),
+						new Coordinate(-1.5, -0.5), new Coordinate(-1, 0) }, //
+						LineString.class, SKIP_TEST }, // 3 Arcs
+				{ 8, new Coordinate[] { new Coordinate(-1, 0), new Coordinate(0, 1),
+						new Coordinate(1, 0), new Coordinate(-0.5, 1.5), new Coordinate(-2, 0),
+						new Coordinate(-1.5, -0.5) }, //
+						LineString.class, SKIP_TEST } // not valid coordinates
+														// length, sending 6
 		});
 	}
 
@@ -126,19 +137,25 @@ public class CircleInterpolationTest {
 	@Test
 	public void testInterpolation() {
 		System.out.println("-- Test-" + testIndex + " begin --");
-		Interpolation<LineString> interpolation = new CircleInterpolation(this.arcCoordinates, e,
+		Interpolation<LineString> interpolation = new ArcStringInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
 		Geometry interpolatedArc = interpolation.interpolateRawGeometry();
 
-		assertNotNull(interpolatedArc);
-		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
+		if (!nullTestIndex.contains(testIndex)) {
+			assertNotNull(interpolatedArc);
+			assertEquals(interpolatedArc.getClass(), generatedGeometryType);
 
-		Coordinate[] coordinates = interpolatedArc.getCoordinates();
-		for (int i = 1; i < coordinates.length; i++) {
-			assertNotEquals("should not match neighbour coordinates", coordinates[i],
-					coordinates[i - 1]);
+			checkNeighbourCoordinates(interpolatedArc);
+
+			validateCoordinatesOnGrid(interpolatedArc, this.arcCoordinates.length, e,
+					DEFAULT_KEEP_ORIGINAL);
+
+			if (DRAW_IMAGE)
+				drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 		}
-		if (DRAW_IMAGE)
-			DrawGeometry.drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
+		else {
+			assertNull(interpolatedArc);
+		}
 	}
+
 }

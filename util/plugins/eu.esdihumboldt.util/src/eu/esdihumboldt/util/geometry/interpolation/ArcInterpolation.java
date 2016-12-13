@@ -40,6 +40,9 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 	private final boolean isCircle;
 
+	private final Coordinate center;
+	private final double radius;
+
 	private Coordinate nextArcCoordinate = null;
 
 	private double lastDeservedNeighbourAngle;
@@ -53,7 +56,7 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	 */
 	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
 			boolean keepOriginal) {
-		this(coordinates, maxPositionalError, keepOriginal, false);
+		this(coordinates, maxPositionalError, keepOriginal, false, null, 0);
 	}
 
 	/**
@@ -66,8 +69,25 @@ public class ArcInterpolation extends Interpolation<LineString> {
 	 */
 	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
 			boolean keepOriginal, boolean isCircle) {
+		this(coordinates, maxPositionalError, keepOriginal, isCircle, null, 0);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param coordinates raw geometry coordinates
+	 * @param maxPositionalError maximum positional error
+	 * @param keepOriginal keeps original points in interpolation
+	 * @param isCircle true, if coordinates are of circle type
+	 * @param center center of arc
+	 * @param radius radius of circle
+	 */
+	public ArcInterpolation(Coordinate[] coordinates, double maxPositionalError,
+			boolean keepOriginal, boolean isCircle, Coordinate center, double radius) {
 		super(coordinates, maxPositionalError, keepOriginal);
 		this.isCircle = isCircle;
+		this.center = center;
+		this.radius = radius;
 	}
 
 	/**
@@ -109,17 +129,21 @@ public class ArcInterpolation extends Interpolation<LineString> {
 		}
 
 		// Calculate center of Arc
-		Coordinate centerOfArc = calculateCenterPoint(rawGeometryCoordinates);
+		Coordinate centerOfArc = center;
+		if (centerOfArc == null)
+			centerOfArc = calculateCenterPoint(rawGeometryCoordinates);
 
 		// is Arc clockwise?
 		isArcClockWise = getOrderOfArc(centerOfArc, rawGeometryCoordinates);
 
 		// Calculate radius of Arc
-		double radius = Math.sqrt(Math.pow((rawGeometryCoordinates[0].x - centerOfArc.x), 2)
-				+ Math.pow((rawGeometryCoordinates[0].y - centerOfArc.y), 2));
+		double radiusOfArc = this.radius;
+		if (radiusOfArc == 0)
+			radiusOfArc = Math.sqrt(Math.pow((rawGeometryCoordinates[0].x - centerOfArc.x), 2)
+					+ Math.pow((rawGeometryCoordinates[0].y - centerOfArc.y), 2));
 
 		// return Line String Geometry
-		return interpolateToLineString(rawGeometryCoordinates, centerOfArc, radius);
+		return interpolateToLineString(rawGeometryCoordinates, centerOfArc, radiusOfArc);
 	}
 
 	private LineString interpolateToLineString(Coordinate[] arcCoordinates, Coordinate center,
