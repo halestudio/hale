@@ -306,7 +306,10 @@ public class PopulationServiceImpl extends AbstractPopulationService implements 
 	 */
 	@Override
 	public Collection<? extends EntityDefinition> getChildren(EntityDefinition entityDef) {
-		return entityDefinitionService.getChildren(entityDef);
+		if (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE)
+			return entityDefinitionService.getChildren(entityDef);
+		else
+			return AlignmentUtil.getChildrenWithoutContexts(entityDef);
 	}
 
 	private void addNoneToPopulation(EntityDefinition groupDef, List<ChildContext> path) {
