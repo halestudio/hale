@@ -11,3 +11,7 @@ Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.validator
+Bundle-ClassPath: .,
+ lib/saxon9-9.0.0.8.jar,
+ lib/schema-utils-1.8.jar,
+ lib/xml-resolver-1.2.jar
