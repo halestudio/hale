@@ -33,7 +33,21 @@ public class CircleInterpolation extends ArcInterpolation {
 	 */
 	public CircleInterpolation(Coordinate[] coordinates, double maxPositionalError,
 			boolean keepOriginal) {
-		super(coordinates, maxPositionalError, keepOriginal, true);
+		this(coordinates, maxPositionalError, keepOriginal, null, 0);
+	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param coordinates the circle coordinates
+	 * @param maxPositionalError maximum positional error
+	 * @param keepOriginal keep original coordinates intact
+	 * @param center center coordinate of circle
+	 * @param radius the radius of circle
+	 */
+	public CircleInterpolation(Coordinate[] coordinates, double maxPositionalError,
+			boolean keepOriginal, Coordinate center, double radius) {
+		super(coordinates, maxPositionalError, keepOriginal, true, center, radius);
 	}
 
 }

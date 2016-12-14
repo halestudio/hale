@@ -43,9 +43,12 @@
 		<hale:CurveProperty>
 			<hale:geometry>
 				<gml:segments>
-					<gml:ArcByCenterPoint>
-						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
-					</gml:ArcByCenterPoint>
+					<gml:ArcByCenterPoint numArc="1">
+						<gml:coordinates>0,0</gml:coordinates>
+						<gml:radius uom="">5</gml:radius>
+						<gml:startAngle uom="">30</gml:startAngle>
+						<gml:endAngle uom="">60</gml:endAngle>
+					</gml:ArcByCenterPoint>					
 				</gml:segments>
 			</hale:geometry>
 		</hale:CurveProperty>
@@ -109,8 +112,9 @@
 		<hale:CurveProperty>
 			<hale:geometry>
 				<gml:segments>
-					<gml:CircleByCenterPoint>
-						<gml:coordinates>0.01,3.2 3.33,3.33 0.01,-3.2</gml:coordinates>
+					<gml:CircleByCenterPoint numArc="1">
+						<gml:coordinates>0,0</gml:coordinates>
+						<gml:radius uom="">5</gml:radius>
 					</gml:CircleByCenterPoint>
 				</gml:segments>
 			</hale:geometry>

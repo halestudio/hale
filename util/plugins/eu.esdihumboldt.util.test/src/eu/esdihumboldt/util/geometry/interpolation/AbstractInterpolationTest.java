@@ -13,7 +13,10 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation.util;
+package eu.esdihumboldt.util.geometry.interpolation;
+
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -29,16 +32,77 @@ import javax.imageio.ImageIO;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
 /**
- * Draw interpolated geometry
+ * Abstract interpolation test
  * 
  * @author Arun
  */
-public class DrawGeometry {
+public abstract class AbstractInterpolationTest {
 
-	private static final int MAX_SIZE = 200;
+	private int skipCount = 0;
+	private final int MAX_SIZE = 200;
+
+	/**
+	 * validate neighbor coordinates must not same
+	 * 
+	 * @param geom geometry
+	 */
+	protected void checkNeighbourCoordinates(Geometry geom) {
+		Coordinate[] coordinates = geom.getCoordinates();
+		for (int i = 1; i < coordinates.length; i++) {
+			assertNotEquals("should not match neighbour coordinates", coordinates[i],
+					coordinates[i - 1]);
+		}
+	}
+
+	/**
+	 * print geometry coordinates
+	 * 
+	 * @param geom geometry
+	 */
+	protected void printCoordinates(Geometry geom) {
+		System.out.println(geom.getCoordinates().length);
+		System.out.println("");
+		for (Coordinate coordinate : geom.getCoordinates())
+			System.out.print("new Coordinate(" + coordinate.x + "," + coordinate.y + "), ");
+		System.out.println("");
+	}
+
+	/**
+	 * validate coordinate should be on grid
+	 *
+	 * @param generatedGeom geometry
+	 * @param rawCoordinatesLength no of raw coordinates
+	 * @param maxPosError max positional error
+	 * @param keepOriginal keep original
+	 *
+	 */
+	protected void validateCoordinatesOnGrid(Geometry generatedGeom, int rawCoordinatesLength,
+			double maxPosError, boolean keepOriginal) {
+
+		Coordinate[] coordinates = generatedGeom.getCoordinates();
+
+		for (Coordinate testCoordinate : coordinates) {
+			Coordinate actualGridPoint = Interpolation.pointToGrid(testCoordinate, maxPosError);
+
+			assertTrue(checkOnGrid(testCoordinate, actualGridPoint, rawCoordinatesLength,
+					keepOriginal));
+		}
+	}
+
+	private boolean checkOnGrid(Coordinate expected, Coordinate actual, int noOfSkip,
+			boolean keepOriginal) {
+
+		boolean check = actual.equals(expected);
+		if (!check) {
+			if (keepOriginal)
+				skipCount++;
+		}
+		return (skipCount <= noOfSkip);
+	}
 
 	/**
 	 * Draw image
@@ -47,7 +111,7 @@ public class DrawGeometry {
 	 * @param originalCoordinates original coordinates
 	 * @param imageIndex image index
 	 */
-	public static void drawImage(LineString geometry, Coordinate[] originalCoordinates,
+	protected void drawImage(LineString geometry, Coordinate[] originalCoordinates,
 			int imageIndex) {
 
 		Envelope envelope = geometry.getEnvelopeInternal();
@@ -93,7 +157,7 @@ public class DrawGeometry {
 		}
 	}
 
-	private static void drawLineString(Graphics2D g, LineString geometry, double minX, double minY,
+	private void drawLineString(Graphics2D g, LineString geometry, double minX, double minY,
 			double factor) {
 		Coordinate[] coordinates = geometry.getCoordinates();
 		List<java.awt.geom.Line2D> lines = createLineString(coordinates, minX, minY, factor);
@@ -103,8 +167,8 @@ public class DrawGeometry {
 		}
 	}
 
-	private static List<java.awt.geom.Line2D> createLineString(Coordinate[] coordinates,
-			double minX, double minY, double factor) {
+	private List<java.awt.geom.Line2D> createLineString(Coordinate[] coordinates, double minX,
+			double minY, double factor) {
 		List<java.awt.geom.Line2D> results = new ArrayList<>();
 		for (int i = 0; i < coordinates.length - 1; i++) {
 			results.add(new Line2D.Double((coordinates[i].x - minX) * factor,
@@ -115,7 +179,7 @@ public class DrawGeometry {
 		return results;
 	}
 
-	private static void drawPoints(Graphics2D g, Coordinate[] coordinates, double minX, double minY,
+	private void drawPoints(Graphics2D g, Coordinate[] coordinates, double minX, double minY,
 			double factor) {
 		for (int i = 0; i < coordinates.length; i++) {
 			Line2D point = new Line2D.Double((coordinates[i].x - minX) * factor,
