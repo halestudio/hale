@@ -16,21 +16,21 @@
 package eu.esdihumboldt.hale.io.geoserver.rest;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
@@ -41,6 +41,7 @@ import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.fluent.Executor;
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.w3c.dom.Document;
@@ -54,7 +55,7 @@ import eu.esdihumboldt.hale.io.geoserver.Resource;
  * Base class for classes representing GeoServer resource managers.
  * 
  * <p>
- * The basic idea is that a resource manager can retrieve the list of resourcees
+ * The basic idea is that a resource manager can retrieve the list of resources
  * of type <code>T</code> and can execute the standard CRUD operations on a
  * specific resource instance, called the "managed resource", which must be
  * explicitly set by calling the {@link #setResource(Resource)} method.
@@ -83,7 +84,7 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 */
 	protected T resource;
 
-	private Executor executor;
+	private final Executor executor;
 
 	/**
 	 * Constructor.
@@ -101,8 +102,12 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 * @param geoserverUrl the base GeoServer URL
 	 */
 	public AbstractResourceManager(URL geoserverUrl) {
+		if (geoserverUrl == null || geoserverUrl.getQuery() != null) {
+			throw new IllegalArgumentException(
+					"GeoServer base URL must not be null and must not contain a query part");
+		}
 		this.geoserverUrl = geoserverUrl;
-
+		this.executor = Executor.newInstance();
 	}
 
 	/**
@@ -111,9 +116,6 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 */
 	@Override
 	public void setCredentials(String user, String password) {
-		if (executor == null) {
-			executor = Executor.newInstance();
-		}
 		HttpHost geoserverHost = new HttpHost(geoserverUrl.getHost(), geoserverUrl.getPort(),
 				geoserverUrl.getProtocol());
 		executor.auth(geoserverHost, user, password);
@@ -125,8 +127,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	@Override
 	public Document list() {
 		try {
-			return executor.execute(Request.Get(getResourceListURL())).handleResponse(
-					new XmlResponseHandler());
+			return executor.execute(Request.Get(getResourceListURL()))
+					.handleResponse(new XmlResponseHandler());
 		} catch (Exception e) {
 			throw new ResourceException(e);
 		}
@@ -148,8 +150,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			return executor.execute(Request.Get(getResourceURL())).handleResponse(
-					new ResponseHandler<Boolean>() {
+			return executor.execute(Request.Get(getResourceURL()))
+					.handleResponse(new ResponseHandler<Boolean>() {
 
 						/**
 						 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
@@ -192,10 +194,9 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			String url = getResourceURL();
-			String queryString = buildQueryString(parameters);
-			return executor.execute(Request.Get(url + queryString)).handleResponse(
-					new XmlResponseHandler());
+			URI requestUri = buildRequestUri(getResourceURL(), parameters);
+			return executor.execute(Request.Get(requestUri))
+					.handleResponse(new XmlResponseHandler());
 		} catch (Exception e) {
 			throw new ResourceException(e);
 		}
@@ -217,13 +218,13 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			String url = getResourceListURL();
-			String queryString = buildQueryString(parameters);
+			URI requestUri = buildRequestUri(getResourceListURL(), parameters);
+
 			ByteArrayEntity entity = new ByteArrayEntity(resource.asByteArray());
 			entity.setContentType(resource.contentType().getMimeType());
 
-			return executor.execute(Request.Post(url + queryString).body(entity)).handleResponse(
-					new ResponseHandler<URL>() {
+			return executor.execute(Request.Post(requestUri).body(entity))
+					.handleResponse(new ResponseHandler<URL>() {
 
 						/**
 						 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
@@ -266,13 +267,13 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			String url = getResourceURL();
-			String queryString = buildQueryString(parameters);
+			URI requestUri = buildRequestUri(getResourceURL(), parameters);
+
 			ByteArrayEntity entity = new ByteArrayEntity(resource.asByteArray());
 			entity.setContentType(resource.contentType().getMimeType());
 
-			executor.execute(Request.Put(url + queryString).body(entity)).handleResponse(
-					new EmptyResponseHandler());
+			executor.execute(Request.Put(requestUri).body(entity))
+					.handleResponse(new EmptyResponseHandler());
 		} catch (Exception e) {
 			throw new ResourceException(e);
 		}
@@ -294,10 +295,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		checkResourceSet();
 
 		try {
-			String url = getResourceURL();
-			String queryString = buildQueryString(parameters);
-			executor.execute(Request.Delete(url + queryString)).handleResponse(
-					new EmptyResponseHandler());
+			URI requestUri = buildRequestUri(getResourceURL(), parameters);
+			executor.execute(Request.Delete(requestUri)).handleResponse(new EmptyResponseHandler());
 		} catch (Exception e) {
 			throw new ResourceException(e);
 		}
@@ -309,18 +308,24 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		}
 	}
 
+	private URI buildRequestUri(String url, Map<String, String> parameters)
+			throws URISyntaxException {
+
+		URIBuilder uriBuilder = new URIBuilder(url);
+		if (parameters != null) {
+			parameters.forEach((param, value) -> uriBuilder.addParameter(param, value));
+		}
+
+		return uriBuilder.build();
+	}
+
 	/**
 	 * Construct URL of the list of resources of type <code>T</code>.
 	 * 
 	 * @return the resource list URL
 	 */
 	protected String getResourceListURL() {
-		List<String> urlParts = new ArrayList<String>();
-		urlParts.add(geoserverUrl.toString());
-		urlParts.add(REST_BASE);
-		urlParts.add(getResourceListPath());
-
-		return Joiner.on(".").join(Arrays.asList(Joiner.on('/').join(urlParts), getFormat()));
+		return getRestServiceUrl(getResourceListPath());
 	}
 
 	/**
@@ -329,32 +334,26 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 	 * @return the resource URL
 	 */
 	protected String getResourceURL() {
+		return getRestServiceUrl(getResourcePath());
+	}
+
+	private String getRestServiceUrl(String resourcePath) {
 		List<String> urlParts = new ArrayList<String>();
 		urlParts.add(geoserverUrl.toString());
 		urlParts.add(REST_BASE);
-		urlParts.add(getResourcePath());
+		urlParts.add(resourcePath);
 
-		return Joiner.on(".").join(Arrays.asList(Joiner.on('/').join(urlParts), getFormat()));
+		urlParts.replaceAll(urlPart -> normalizeUrlPart(urlPart));
+		final String resourceUrl = Joiner.on('/').skipNulls().join(urlParts);
+		return Joiner.on(".").skipNulls().join(Arrays.asList(resourceUrl, getFormat()));
 	}
 
-	private String buildQueryString(Map<String, String> queryParameters) {
-		if (queryParameters == null || queryParameters.size() == 0) {
-			return "";
-		}
-
-		StringBuilder queryBuilder = new StringBuilder("?");
-		try {
-			for (Entry<String, String> param : queryParameters.entrySet()) {
-				queryBuilder.append(param.getKey()).append("=")
-						.append(URLEncoder.encode(param.getValue(), "UTF-8"));
-
-			}
-		} catch (UnsupportedEncodingException e) {
-			// should never happen
-			// TODO: log exception?
-		}
-
-		return queryBuilder.toString();
+	private String normalizeUrlPart(String urlPart) {
+		// remove slashes at the beginning and end of the URL part
+		// and return null if it empty or contains only whitespace
+		urlPart = StringUtils.stripStart(urlPart, "/");
+		urlPart = StringUtils.stripEnd(urlPart, "/");
+		return StringUtils.defaultIfBlank(urlPart, null);
 	}
 
 	/**
@@ -402,8 +401,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 		 */
 		@Override
-		public Document handleResponse(HttpResponse response) throws ClientProtocolException,
-				IOException {
+		public Document handleResponse(HttpResponse response)
+				throws ClientProtocolException, IOException {
 			StatusLine statusLine = response.getStatusLine();
 			HttpEntity entity = response.getEntity();
 			if (statusLine.getStatusCode() >= 300) {
@@ -456,8 +455,8 @@ public abstract class AbstractResourceManager<T extends Resource> implements Res
 		 * @see org.apache.http.client.ResponseHandler#handleResponse(org.apache.http.HttpResponse)
 		 */
 		@Override
-		public Void handleResponse(HttpResponse response) throws ClientProtocolException,
-				IOException {
+		public Void handleResponse(HttpResponse response)
+				throws ClientProtocolException, IOException {
 			StatusLine statusLine = response.getStatusLine();
 			if (statusLine.getStatusCode() >= 300) {
 				throw new HttpResponseException(statusLine.getStatusCode(),

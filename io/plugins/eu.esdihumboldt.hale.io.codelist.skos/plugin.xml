@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="rdf"
+            id="eu.esdihumboldt.hale.io.codelist.skos"
+            name="SKOS code list"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.codelist.skos.reader.SkosCodeListReader"
+            id="eu.esdihumboldt.hale.io.codelist.skos.reader"
+            name="SKOS code list">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.codelist.skos">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>

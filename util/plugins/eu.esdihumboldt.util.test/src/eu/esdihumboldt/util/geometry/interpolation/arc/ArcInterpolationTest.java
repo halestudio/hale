@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.arc;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
@@ -33,9 +32,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
+import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
 import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
-import eu.esdihumboldt.util.geometry.interpolation.util.DrawGeometry;
 
 /**
  * Test for the Interpolation of arc algorithm
@@ -43,7 +42,7 @@ import eu.esdihumboldt.util.geometry.interpolation.util.DrawGeometry;
  * @author Arun
  */
 @RunWith(Parameterized.class)
-public class ArcInterpolationTest {
+public class ArcInterpolationTest extends AbstractInterpolationTest {
 
 	private final int testIndex;
 	private final Coordinate[] arcCoordinates;
@@ -166,12 +165,12 @@ public class ArcInterpolationTest {
 		assertNotNull(interpolatedArc);
 		Assert.assertEquals(interpolatedArc.getClass(), generatedGeometryType);
 
-		Coordinate[] coordinates = interpolatedArc.getCoordinates();
-		for (int i = 1; i < coordinates.length; i++) {
-			assertNotEquals("should not match neighbour coordinates", coordinates[i],
-					coordinates[i - 1]);
-		}
+		checkNeighbourCoordinates(interpolatedArc);
+
+		validateCoordinatesOnGrid(interpolatedArc, this.arcCoordinates.length, e,
+				DEFAULT_KEEP_ORIGINAL);
+
 		if (DRAW_IMAGE)
-			DrawGeometry.drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
+			drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 	}
 }

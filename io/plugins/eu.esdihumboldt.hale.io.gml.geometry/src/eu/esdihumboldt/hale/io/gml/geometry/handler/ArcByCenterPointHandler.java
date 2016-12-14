@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2016 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,8 +10,7 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
@@ -30,6 +29,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
@@ -43,60 +45,36 @@ import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
+import eu.esdihumboldt.util.geometry.interpolation.ArcByCenterPointInterpolation;
+import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
 /**
- * Handler for linestring geometries
+ * Handler for Arc by center point geometries
  * 
- * @author Patrick Lieb
+ * @author Arun
  */
-public class LineStringHandler extends InterpolationSupportedGeometryHandler {
+public class ArcByCenterPointHandler extends InterpolationSupportedGeometryHandler {
 
-	private static final String LINE_STRING_TYPE = "LineStringType";
+	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
 
-	private static final String LINE_STRING_SEGMENT_TYPE = "LineStringSegmentType";
-
-	// XXX support for curve types is not optimal (different number of feature
-	// members needed)
-
-	// private static final String ARC_TYPE = "ArcType";
-
-	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
-
-//	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
-
-	// private static final String ARC_STRING_TYPE = "ArcStringType";
-
-	private static final String ARC_STRING_BY_BULGE_TYPE = "ArcStringByBulgeType";
-
-	private static final String BEZIER_TYPE = "BezierType";
-
-	private static final String BSPLINE_TYPE = "BSplineType";
-
-	// private static final String CIRCLE_TYPE = "CircleType";
-
-//	private static final String CIRCLE_BY_CENTER_TYPE = "CircleByCenterType";
-
-	private static final String CUBIC_SPLINE = "CubicSplineType";
-
-	private static final String GEODESIC_TYPE = "Geodesic_Type";
-
-	private static final String GEODESIC_STRING_TYPE = "GeodesicStringType";
-
-	// XXX support for Triangle and Rectangle is not optimal (only exterior and
-	// outerBounderIs needed)
+	private static final ALogger log = ALoggerFactory.getLogger(ArcByCenterPointHandler.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int, IOProvider)
+	 *      int, eu.esdihumboldt.hale.common.core.io.IOProvider)
 	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
-		LineString line = null;
 		PointHandler handler = new PointHandler();
 
 		// XXX support for different types of line strings in one instance (we
 		// support only one type per instance!)
+
+		Coordinate[] controlCoord = null;
+		double radius = 0;
+		double startAngle = 0;
+		double endAngle = 0;
 
 		// to parse coordinates of a line string
 		// for use with GML 2, 3, 3.1, 3.2
@@ -105,11 +83,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 			Object value = values.iterator().next();
 			if (value instanceof Instance) {
 				try {
-					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
-					if (cs != null && cs.length > 0) {
-						line = getGeometryFactory()
-								.createLineString(moveToUniversalGrid(cs, reader));
-					}
+					controlCoord = GMLGeometryUtil.parseCoordinates((Instance) value);
 				} catch (ParseException e) {
 					throw new GeometryNotSupportedException("Could not parse coordinates", e);
 				}
@@ -118,7 +92,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 
 		// to parse several pos of a line string
 		// for use with GML 3, 3.2
-		if (line == null) {
+		if (controlCoord == null || controlCoord.length == 0) {
 			values = PropertyResolver.getValues(instance, "pos", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -132,25 +106,19 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
-						reader);
-				line = getGeometryFactory().createLineString(coords);
+				controlCoord = cs.toArray(new Coordinate[cs.size()]);
 			}
 		}
 
 		// to parse a posList of a line string
 		// for use with GML 3.1, 3.2
-		if (line == null) {
+		if (controlCoord == null || controlCoord.length == 0) {
 			values = PropertyResolver.getValues(instance, "posList", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
 				Object value = iterator.next();
 				if (value instanceof Instance) {
-					Coordinate[] cs = GMLGeometryUtil.parsePosList((Instance) value, srsDimension);
-					if (cs != null) {
-						line = getGeometryFactory()
-								.createLineString(moveToUniversalGrid(cs, reader));
-					}
+					controlCoord = GMLGeometryUtil.parsePosList((Instance) value, srsDimension);
 				}
 			}
 		}
@@ -158,7 +126,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 		// to parse Point Representations of a line string
 		// for use with GML 3, 3.1, 3.2
 
-		if (line == null) {
+		if (controlCoord == null || controlCoord.length == 0) {
 			values = PropertyResolver.getValues(instance, "pointRep.Point", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -177,15 +145,13 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
-						reader);
-				line = getGeometryFactory().createLineString(coords);
+				controlCoord = cs.toArray(new Coordinate[cs.size()]);
 			}
 		}
 
 		// to parse Point Properties of a line string
 		// for use with GML 3.1
-		if (line == null) {
+		if (controlCoord == null || controlCoord.length == 0) {
 			values = PropertyResolver.getValues(instance, "pointProperty.Point", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -204,15 +170,13 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
-						reader);
-				line = getGeometryFactory().createLineString(coords);
+				controlCoord = cs.toArray(new Coordinate[cs.size()]);
 			}
 		}
 
 		// to parse coord of a line string
 		// for use with GML2, 3, 3.1, 3.2
-		if (line == null) {
+		if (controlCoord == null || controlCoord.length == 0) {
 			values = PropertyResolver.getValues(instance, "coord", false);
 			if (values != null && !values.isEmpty()) {
 				Iterator<Object> iterator = values.iterator();
@@ -226,15 +190,60 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
-						reader);
-				line = getGeometryFactory().createLineString(coords);
+				controlCoord = cs.toArray(new Coordinate[cs.size()]);
 			}
 		}
 
-		if (line != null) {
+		values = PropertyResolver.getValues(instance, "radius", false);
+		if (values != null && !values.isEmpty()) {
+			Object value = values.iterator().next();
+			if (value instanceof Instance) {
+				// ##TODO :: need to check with real time data
+				radius = ConversionUtil.getAs(((Instance) value).getValue(), Double.class);
+
+			}
+		}
+
+		values = PropertyResolver.getValues(instance, "startAngle", false);
+		if (values != null && !values.isEmpty()) {
+			Object value = values.iterator().next();
+			if (value != null) {
+				if (value instanceof Instance) {
+					// ##TODO: handle if value comes in degree, minute and
+					// second format. Need to check with real time data
+					startAngle = ConversionUtil.getAs(((Instance) value).getValue(), Double.class);
+
+				}
+			}
+		}
+
+		values = PropertyResolver.getValues(instance, "endAngle", false);
+		if (values != null && !values.isEmpty()) {
+			Object value = values.iterator().next();
+			if (value != null) {
+				if (value instanceof Instance) {
+					// ##TODO: handle if value comes in degree, minute and
+					// second format. Need to check with real time data
+					endAngle = ConversionUtil.getAs(((Instance) value).getValue(), Double.class);
+				}
+			}
+		}
+
+		if (controlCoord != null && controlCoord.length != 0 && radius != 0) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
-			return new DefaultGeometryProperty<LineString>(crsDef, line);
+
+			// get interpolation required parameter
+			getInterpolationRequiredParameter(reader);
+
+			Interpolation<LineString> interpolation = new ArcByCenterPointInterpolation(
+					controlCoord[0], radius, startAngle, endAngle, getMaxPositionalError());
+			LineString interpolatedArc = interpolation.interpolateRawGeometry();
+			if (interpolatedArc == null) {
+				log.error("Arc could be not interpolated to Linestring");
+				return null;
+			}
+			return new DefaultGeometryProperty<LineString>(crsDef, interpolatedArc);
+
 		}
 
 		throw new GeometryNotSupportedException();
@@ -262,72 +271,10 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 	protected Set<? extends QName> initSupportedTypes() {
 		Set<QName> types = new HashSet<QName>();
 
-		types.add(new QName(NS_GML, LINE_STRING_TYPE));
-		types.add(new QName(NS_GML_32, LINE_STRING_TYPE));
-
-		types.add(new QName(NS_GML, LINE_STRING_SEGMENT_TYPE));
-		types.add(new QName(NS_GML_32, LINE_STRING_SEGMENT_TYPE));
-
-//		types.add(new QName(NS_GML, ARC_TYPE));
-//		types.add(new QName(NS_GML_32, ARC_TYPE));
-
-		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
-		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));
-
-//		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
-//		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
-
-//		types.add(new QName(NS_GML, ARC_STRING_TYPE));
-//		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
-
-		types.add(new QName(NS_GML, ARC_STRING_BY_BULGE_TYPE));
-		types.add(new QName(NS_GML_32, ARC_STRING_BY_BULGE_TYPE));
-
-		types.add(new QName(NS_GML, BEZIER_TYPE));
-		types.add(new QName(NS_GML_32, BEZIER_TYPE));
-
-		types.add(new QName(NS_GML, BSPLINE_TYPE));
-		types.add(new QName(NS_GML_32, BSPLINE_TYPE));
-
-//		types.add(new QName(NS_GML, CIRCLE_TYPE));
-//		types.add(new QName(NS_GML_32, CIRCLE_TYPE));
-
-//		types.add(new QName(NS_GML, CIRCLE_BY_CENTER_TYPE));
-//		types.add(new QName(NS_GML_32, CIRCLE_BY_CENTER_TYPE));
-
-		types.add(new QName(NS_GML, CUBIC_SPLINE));
-		types.add(new QName(NS_GML_32, CUBIC_SPLINE));
-
-		types.add(new QName(NS_GML, GEODESIC_TYPE));
-		types.add(new QName(NS_GML_32, GEODESIC_TYPE));
-
-		types.add(new QName(NS_GML, GEODESIC_STRING_TYPE));
-		types.add(new QName(NS_GML_32, GEODESIC_STRING_TYPE));
-
-//		types.add(new QName(NS_GML, ENVELOPE_TYPE));
-//		types.add(new QName(NS_GML_32, ENVELOPE_TYPE));
-//		
-//		types.add(new QName(NS_GML, ENVELOPE_WITH_TIME_PERIOD_TYPE));
-//		types.add(new QName(NS_GML_32, ENVELOPE_WITH_TIME_PERIOD_TYPE));
+		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
+		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
 
 		return types;
-	}
-
-	@Override
-	protected Coordinate[] moveToUniversalGrid(Coordinate[] coordinates, IOProvider reader) {
-		return isLineStringRelocationRequired() ? super.moveToUniversalGrid(coordinates, reader)
-				: coordinates;
-	}
-
-	/**
-	 * is relocating is required for LineString coordinates
-	 * 
-	 * Override this method to skip the relocation of LineString coordinates;
-	 * 
-	 * @return true if required else false
-	 */
-	protected boolean isLineStringRelocationRequired() {
-		return true;
 	}
 
 }
