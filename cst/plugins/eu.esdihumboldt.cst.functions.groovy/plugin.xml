@@ -166,6 +166,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyMergeExplanation"
+            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.merge.MergeMigrator"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             help="help/merge.xhtml"
             icon="icons/star.png"

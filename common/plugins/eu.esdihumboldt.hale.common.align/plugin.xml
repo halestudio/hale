@@ -279,6 +279,7 @@
       <typeFunction
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.MergeExplanation"
+            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.merge.MergeMigrator"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             icon="icons/merge.gif"
             identifier="eu.esdihumboldt.hale.align.merge"
