@@ -32,16 +32,24 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
+import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationDialog;
+import eu.esdihumboldt.hale.ui.io.config.ConfigurationDialogExtension;
+import eu.esdihumboldt.hale.ui.io.config.ConfigurationDialogFactory;
 import eu.esdihumboldt.hale.ui.io.target.FileTarget;
 
 /**
@@ -49,10 +57,14 @@ import eu.esdihumboldt.hale.ui.io.target.FileTarget;
  * 
  * @author Simon Templer
  */
-public class FileValidateTarget extends FileTarget<InstanceWriter> implements
-		IOWizardListener<InstanceWriter, InstanceExportWizard> {
+public class FileValidateTarget extends FileTarget<InstanceWriter>
+		implements IOWizardListener<InstanceWriter, InstanceExportWizard> {
+
+	private static final ALogger log = ALoggerFactory.getLogger(FileValidateTarget.class);
 
 	private ComboViewer validators;
+	private Button configureButton;
+	private SelectionListener configureButtonListener;
 
 	@Override
 	public InstanceExportWizard getWizard() {
@@ -68,8 +80,8 @@ public class FileValidateTarget extends FileTarget<InstanceWriter> implements
 		validatorGroup.setText("Validation");
 		validatorGroup.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING)
 				.grab(true, false).span(3, 1).indent(8, 10).create());
-		validatorGroup.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).margins(10, 8)
-				.create());
+		validatorGroup
+				.setLayout(GridLayoutFactory.swtDefaults().numColumns(1).margins(10, 8).create());
 
 		Label vabel = new Label(validatorGroup, SWT.NONE);
 		vabel.setText("Please select a validator if you want to validate the exported file");
@@ -89,6 +101,11 @@ public class FileValidateTarget extends FileTarget<InstanceWriter> implements
 			}
 
 		});
+
+		configureButton = new Button(validatorGroup, SWT.PUSH);
+		configureButton.setText("Configure validator...");
+		configureButton.setEnabled(false);
+
 		updateInput();
 
 		// process selection changes
@@ -150,8 +167,9 @@ public class FileValidateTarget extends FileTarget<InstanceWriter> implements
 		}
 
 		if (input.isEmpty()) {
-			input.add((contentType == null) ? ("Unrecognized content type") : (MessageFormat
-					.format("No validator available for {0}", contentType.getName())));
+			input.add((contentType == null) ? ("Unrecognized content type")
+					: (MessageFormat.format("No validator available for {0}",
+							contentType.getName())));
 			validators.getControl().setEnabled(false);
 		}
 		else {
@@ -183,18 +201,67 @@ public class FileValidateTarget extends FileTarget<InstanceWriter> implements
 	 * @param selection the current selection
 	 */
 	private void updateWizard(ISelection selection) {
+		configureButton.setEnabled(false);
+		if (this.configureButtonListener != null) {
+			configureButton.removeSelectionListener(configureButtonListener);
+			configureButtonListener = null;
+		}
+		getPage().setErrorMessage(null);
+
 		if (selection.isEmpty()) {
-			getWizard().setValidatorFactory(null);
+			getWizard().setValidator(null);
 		}
 		else if (selection instanceof IStructuredSelection) {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
 			if (element instanceof IOProviderDescriptor) {
-				getWizard().setValidatorFactory((IOProviderDescriptor) element);
+				InstanceValidator validator = null;
+				try {
+					validator = (InstanceValidator) ((IOProviderDescriptor) element)
+							.createExtensionObject();
+				} catch (Exception e) {
+					this.getPage().setErrorMessage("Could not instantiate validator.");
+					log.error(MessageFormat.format("Could not instantiate validator {0}",
+							((IOProviderDescriptor) element).getIdentifier()), e);
+				}
+				getWizard().setValidator(validator);
+
+				final ConfigurationDialogFactory configDialogFactory = ConfigurationDialogExtension
+						.getInstance().getConfigurationDialog((IOProviderDescriptor) element);
+
+				if (configDialogFactory != null) {
+					configureButton.setEnabled(true);
+					configureButtonListener = new SelectionListener() {
+
+						@SuppressWarnings("unchecked")
+						@Override
+						public void widgetSelected(SelectionEvent e) {
+							try {
+								// Find configuration dialog for the selected
+								// validator
+								@SuppressWarnings("rawtypes")
+								AbstractConfigurationDialog configDialog = configDialogFactory
+										.createExtensionObject();
+
+								configDialog.setProvider(getWizard().getValidator());
+								configDialog.create();
+								configDialog.open();
+							} catch (Exception ex) {
+								throw new RuntimeException(ex.getMessage(), ex);
+							}
+						}
+
+						@Override
+						public void widgetDefaultSelected(SelectionEvent e) {
+							widgetSelected(e);
+						}
+					};
+					configureButton.addSelectionListener(configureButtonListener);
+				}
 			}
 			else {
 				// element that disables validating
-				getWizard().setValidatorFactory(null);
+				getWizard().setValidator(null);
 			}
 		}
 	}
