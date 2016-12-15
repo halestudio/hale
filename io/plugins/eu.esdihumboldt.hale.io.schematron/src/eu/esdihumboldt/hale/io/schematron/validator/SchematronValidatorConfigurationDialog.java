@@ -68,14 +68,19 @@ public class SchematronValidatorConfigurationDialog
 
 		schematronRulesFile = new OpenFileFieldEditor("metadataFile", "Schematron rules file", true,
 				FileFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
-//		metadataFile.setPage(this);
 		schematronRulesFile.setEmptyStringAllowed(true);
 		schematronRulesFile.setFileExtensions(new String[] { "*.xml", "*.sch" });
-//		metadataFile.setPropertyChangeListener(changeListener);
-		// isValid starts with false even if emptyStringAllowed is true.
-		// -> force validation hack
-		schematronRulesFile.setStringValue(" ");
-		schematronRulesFile.setStringValue("");
+
+		SchematronInstanceValidator validator = this.getProvider();
+		if (validator != null && validator.getSchematronLocation() != null) {
+			schematronRulesFile.setStringValue(validator.getSchematronLocation().toString());
+		}
+		else {
+			// isValid starts with false even if emptyStringAllowed is true.
+			// -> force validation hack
+			schematronRulesFile.setStringValue(" ");
+			schematronRulesFile.setStringValue("");
+		}
 
 		return composite;
 	}
