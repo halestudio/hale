@@ -108,17 +108,26 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator {
 		return reporter;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
+	@Override
+	protected String getReportLabel() {
+		return "Schematron validation";
+	}
+
+	@Override
+	protected String getDefaultFailSummary() {
+		return "Validating the XML file against the schematron rules failed";
+	}
+
+	@Override
+	protected String getDefaultSuccessSummary() {
+		return "The XML file is valid according to the schematron rules";
+	}
+
 	@Override
 	protected String getDefaultTypeName() {
 		return "XML file";
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
-	 */
 	@Override
 	public boolean isCancelable() {
 		return false;
