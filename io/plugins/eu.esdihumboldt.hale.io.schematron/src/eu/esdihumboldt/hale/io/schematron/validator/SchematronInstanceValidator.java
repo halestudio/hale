@@ -32,7 +32,7 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator {
 	/**
 	 * Name of the parameter specifying the schematron location.
 	 */
-	public static final String PARAM_SCHEMATRON_LOCATION = "schematron";
+	public static final String PARAM_SCHEMATRON_LOCATION = "schematron.location";
 
 	/**
 	 * Set the location of the schematron rules definition to use for

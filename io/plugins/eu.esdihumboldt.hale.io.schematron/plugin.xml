@@ -14,6 +14,14 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.xml.gzip">
          </contentType>
+         <providerParameter
+               label="Schematron validator rules"
+               name="schematron.location"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
    </extension>
    <extension
@@ -28,6 +36,15 @@
                class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLContentDescriber">
          </describer>
       </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configDialog
+            class="eu.esdihumboldt.hale.io.schematron.validator.SchematronValidatorConfigurationDialog">
+         <provider
+               ref="eu.esdihumboldt.hale.io.schematron.validator">
+         </provider>
+      </configDialog>
    </extension>
 
 </plugin>
