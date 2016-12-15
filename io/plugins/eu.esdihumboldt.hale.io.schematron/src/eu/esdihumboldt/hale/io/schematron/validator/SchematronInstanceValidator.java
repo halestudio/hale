@@ -133,4 +133,13 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator {
 		return false;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator#validate()
+	 */
+	@Override
+	public void validate() throws IOProviderConfigurationException {
+		if (this.getSchematronLocation() == null) {
+			throw new IOProviderConfigurationException("No schematron rules file is configured");
+		}
+	}
 }
