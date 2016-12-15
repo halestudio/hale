@@ -26,7 +26,6 @@ import org.eclipse.ui.PlatformUI;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -175,7 +174,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	/**
 	 * @return the validatorFactory
 	 */
-	public IOProvider getValidator() {
+	public InstanceValidator getValidator() {
 		return validator;
 	}
 
