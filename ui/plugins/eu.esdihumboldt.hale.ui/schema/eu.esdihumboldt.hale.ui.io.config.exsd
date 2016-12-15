@@ -18,8 +18,8 @@
       </annotation>
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
-            <element ref="configPage"/>
-            <element ref="configDialog"/>
+            <element ref="configPage" minOccurs="0" maxOccurs="1"/>
+            <element ref="configDialog" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
