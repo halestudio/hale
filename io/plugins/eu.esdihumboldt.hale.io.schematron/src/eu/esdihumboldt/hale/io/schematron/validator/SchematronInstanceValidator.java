@@ -9,19 +9,15 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.swt.widgets.Display;
 import org.opengis.cite.validation.SchematronValidator;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
-import eu.esdihumboldt.hale.common.instance.io.ConfigurableInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 
 /***
@@ -30,8 +26,7 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
  * 
  * @author Florian Esser
  */
-public class SchematronInstanceValidator extends AbstractInstanceValidator
-		implements ConfigurableInstanceValidator {
+public class SchematronInstanceValidator extends AbstractInstanceValidator {
 
 	private Locatable schematronRules;
 
@@ -106,18 +101,4 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.io.ConfigurableInstanceValidator#configure()
-	 */
-	@Override
-	public void configure(IOProviderDescriptor factory) {
-		SchematronValidatorConfigurationDialog dialog = new SchematronValidatorConfigurationDialog(
-				Display.getCurrent().getActiveShell());
-
-		dialog.create();
-		if (dialog.open() == Dialog.OK) {
-//			factory.factory.setParameter("schematron.rules",
-//					Value.of(dialog.getSchematronRulesFile()));
-		}
-	}
 }
