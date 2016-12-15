@@ -3,25 +3,22 @@ package eu.esdihumboldt.hale.io.schematron.validator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.URI;
 
 import javax.xml.bind.ValidationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
-import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.swt.widgets.Display;
 import org.opengis.cite.validation.SchematronValidator;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
-import eu.esdihumboldt.hale.common.instance.io.ConfigurableInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 
 /***
@@ -30,27 +27,46 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
  * 
  * @author Florian Esser
  */
-public class SchematronInstanceValidator extends AbstractInstanceValidator
-		implements ConfigurableInstanceValidator {
-
-	private Locatable schematronRules;
+public class SchematronInstanceValidator extends AbstractInstanceValidator {
 
 	/**
-	 * 
+	 * Name of the parameter specifying the schematron location.
 	 */
-	public SchematronInstanceValidator() {
-		super();
-//
-//		this.schematronRules = new FileIOSupplier(new File("C:/Temp/ProtectedSites2.sch"));
+	public static final String PARAM_SCHEMATRON_LOCATION = "schematron";
+
+	/**
+	 * Set the location of the schematron rules definition to use for
+	 * validation.
+	 * 
+	 * @param location the schematron location
+	 */
+	public void setSchematronLocation(URI location) {
+		if (location == null) {
+			setParameter(PARAM_SCHEMATRON_LOCATION, Value.NULL);
+		}
+		else {
+			setParameter(PARAM_SCHEMATRON_LOCATION, Value.of(location.toString()));
+		}
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 * @return the location of the schematron rules definition
 	 */
+	public URI getSchematronLocation() {
+		String paramString = getParameter(PARAM_SCHEMATRON_LOCATION).as(String.class);
+		if (paramString != null) {
+			return URI.create(paramString);
+		}
+		return null;
+	}
+
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		URI schematronLoc = getSchematronLocation();
+		if (schematronLoc == null) {
+			throw new IOProviderConfigurationException("Providing a schematron file is required");
+		}
 
 		progress.begin("Performing Schematron validation", ProgressIndicator.UNKNOWN);
 
@@ -61,7 +77,7 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 		final Source xmlSource = new StreamSource(sourceInput);
 
 		final DefaultInputSupplier schematronInputSupplier = new DefaultInputSupplier(
-				this.schematronRules.getLocation());
+				schematronLoc);
 		final InputStream schematronInput = schematronInputSupplier.getInput();
 		if (schematronInput == null) {
 			throw new RuntimeException("No rules input for Schematron validator");
@@ -77,11 +93,13 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 
 			reporter.setSuccess(!validator.ruleViolationsDetected());
 			if (validator.ruleViolationsDetected()) {
+				// TODO extract individual messages from XML report
 				reporter.error(new IOMessageImpl(reportWriter.toString(),
 						new ValidationException(reportWriter.toString())));
 			}
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage(), e);
+			reporter.error(new IOMessageImpl("Error running schematron validation", e));
+			reporter.setSuccess(false);
 		} finally {
 			schematronInput.close();
 			progress.end();
@@ -106,18 +124,4 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 		return false;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.io.ConfigurableInstanceValidator#configure()
-	 */
-	@Override
-	public void configure(IOProviderDescriptor factory) {
-		SchematronValidatorConfigurationDialog dialog = new SchematronValidatorConfigurationDialog(
-				Display.getCurrent().getActiveShell());
-
-		dialog.create();
-		if (dialog.open() == Dialog.OK) {
-//			factory.factory.setParameter("schematron.rules",
-//					Value.of(dialog.getSchematronRulesFile()));
-		}
-	}
 }
