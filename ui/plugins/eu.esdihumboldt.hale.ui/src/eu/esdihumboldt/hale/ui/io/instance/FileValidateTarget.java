@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -66,6 +69,7 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 	private ComboViewer validators;
 	private Button configureButton;
 	private SelectionListener configureButtonListener;
+	private ControlDecoration configureButtonDecoration;
 
 	@Override
 	public InstanceExportWizard getWizard() {
@@ -106,6 +110,13 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 		configureButton = new Button(validatorGroup, SWT.PUSH);
 		configureButton.setText("Configure validator...");
 		configureButton.setEnabled(false);
+
+		configureButtonDecoration = new ControlDecoration(configureButton, SWT.RIGHT | SWT.TOP);
+		configureButtonDecoration.setDescriptionText("Please configure the selected validator");
+		FieldDecoration errorDecoration = FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_ERROR);
+		configureButtonDecoration.setImage(errorDecoration.getImage());
+		configureButtonDecoration.hide();
 
 		updateInput();
 
@@ -273,11 +284,22 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 	 * @param validator
 	 */
 	private void checkValidatorConfiguration(InstanceValidator validator) {
+		if (validator == null) {
+			return;
+		}
+
 		try {
 			validator.validate();
 			getPage().setErrorMessage(null);
+			if (configureButtonDecoration != null) {
+				configureButtonDecoration.hide();
+			}
+
 		} catch (IOProviderConfigurationException e) {
 			getPage().setErrorMessage(e.getMessage());
+			if (configureButtonDecoration != null) {
+				configureButtonDecoration.show();
+			}
 		}
 	}
 
