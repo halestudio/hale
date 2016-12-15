@@ -19,6 +19,7 @@
       <complexType>
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="configPage"/>
+            <element ref="configDialog"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -72,6 +73,29 @@
                <documentation>
                   Number used for ordering. Lower numbers appear first. Default value is 0
                </documentation>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="configDialog">
+      <annotation>
+         <documentation>
+            Represents a configuration dialog
+         </documentation>
+      </annotation>
+      <complexType>
+         <sequence minOccurs="1" maxOccurs="unbounded">
+            <element ref="provider"/>
+         </sequence>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Configuration dialog class, must have a no-arg constructor
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn="eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationDialog:"/>
+               </appinfo>
             </annotation>
          </attribute>
       </complexType>
