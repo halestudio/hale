@@ -43,6 +43,7 @@ import org.eclipse.swt.widgets.Label;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -230,6 +231,8 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 						.getInstance().getConfigurationDialog((IOProviderDescriptor) element);
 
 				if (configDialogFactory != null) {
+					checkValidatorConfiguration(validator);
+
 					configureButton.setEnabled(true);
 					configureButtonListener = new SelectionListener() {
 
@@ -237,15 +240,15 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 						@Override
 						public void widgetSelected(SelectionEvent e) {
 							try {
-								// Find configuration dialog for the selected
-								// validator
 								@SuppressWarnings("rawtypes")
 								AbstractConfigurationDialog configDialog = configDialogFactory
 										.createExtensionObject();
 
-								configDialog.setProvider(getWizard().getValidator());
+								InstanceValidator validator = getWizard().getValidator();
+								configDialog.setProvider(validator);
 								configDialog.create();
 								configDialog.open();
+								checkValidatorConfiguration(validator);
 							} catch (Exception ex) {
 								throw new RuntimeException(ex.getMessage(), ex);
 							}
@@ -263,6 +266,18 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 				// element that disables validating
 				getWizard().setValidator(null);
 			}
+		}
+	}
+
+	/**
+	 * @param validator
+	 */
+	private void checkValidatorConfiguration(InstanceValidator validator) {
+		try {
+			validator.validate();
+			getPage().setErrorMessage(null);
+		} catch (IOProviderConfigurationException e) {
+			getPage().setErrorMessage(e.getMessage());
 		}
 	}
 
