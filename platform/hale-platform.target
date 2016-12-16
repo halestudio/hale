@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="292">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="290">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="4.5.2.M20160212-1500"/>
@@ -38,6 +38,9 @@
 <unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
 <repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.18.v20150929"/>
 </location>
-<location path="C:\src\git\halestudio\hale-platform\build\updatesite" type="Directory"/>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20161212"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/eeb0b1c372c88912537f685b8f72c679fc4342df/updatesites/platform"/>
+</location>
 </locations>
 </target>
