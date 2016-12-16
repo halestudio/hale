@@ -23,7 +23,8 @@ import groovy.transform.CompileDynamic
 import groovy.util.slurpersupport.GPathResult
 
 /**
- * TODO Type description
+ * Simple parser for SRVL reports to extract failed assertion messages
+ * 
  * @author Florian Esser
  */
 @CompileDynamic
