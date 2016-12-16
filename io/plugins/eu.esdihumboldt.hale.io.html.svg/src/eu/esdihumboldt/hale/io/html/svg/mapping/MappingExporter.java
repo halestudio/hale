@@ -52,7 +52,7 @@ import groovy.text.GStringTemplateEngine;
  */
 public class MappingExporter extends AbstractAlignmentWriter {
 
-	private static final String HALEJS_VERSION = "1.1.12"; // "1.2.0-SNAPSHOT";
+	private static final String HALEJS_VERSION = "1.1.3"; // "1.2.0-SNAPSHOT";
 
 	@Override
 	public boolean isCancelable() {
