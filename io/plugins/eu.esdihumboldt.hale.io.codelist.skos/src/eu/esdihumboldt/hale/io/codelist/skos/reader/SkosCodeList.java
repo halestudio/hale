@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,8 @@ public class SkosCodeList implements CodeList {
 	private SKOSDataset dataSet;
 
 	private final String language;
+
+	private static final String DEFAULT_LANGUAGE = Locale.US.getLanguage();
 
 	/**
 	 * Create a code list from a RDF file and URL.
@@ -251,6 +254,11 @@ public class SkosCodeList implements CodeList {
 								name = con.getLiteral();
 								prefLanguageNameAvailable = true;
 							}
+							else if (!prefLanguageNameAvailable
+									&& con.getLang().equals(DEFAULT_LANGUAGE)) {
+								name = con.getLiteral();
+								prefLanguageNameAvailable = true;
+							}
 							else if (!prefLanguageNameAvailable) {
 								name = con.getLiteral();
 							}
@@ -262,6 +270,11 @@ public class SkosCodeList implements CodeList {
 					else if (isDefinition(anno.getURI().toString())) {
 						if (con.hasLang()) {
 							if (con.getLang().equals(this.language)) {
+								description = con.getLiteral();
+								prefLanguageDefinitionAvailable = true;
+							}
+							else if (!prefLanguageDefinitionAvailable
+									&& con.getLang().equals(DEFAULT_LANGUAGE)) {
 								description = con.getLiteral();
 								prefLanguageDefinitionAvailable = true;
 							}
@@ -455,6 +468,11 @@ public class SkosCodeList implements CodeList {
 										name = nd.getFirstChild().getNodeValue();
 										prefLanguageNameAvailable = true;
 									}
+									else if (!prefLanguageNameAvailable
+											&& getLanguageAttribute(nd).equals(DEFAULT_LANGUAGE)) {
+										name = nd.getFirstChild().getNodeValue();
+										prefLanguageNameAvailable = true;
+									}
 									else if (!prefLanguageNameAvailable) {
 										name = nd.getFirstChild().getNodeValue();
 									}
@@ -466,6 +484,11 @@ public class SkosCodeList implements CodeList {
 							else if (nodeName.equals("skos:definition")) {
 								if (isLanguageAttributeAvailable(nd)) {
 									if (getLanguageAttribute(nd).equals(this.language)) {
+										description = nd.getFirstChild().getNodeValue();
+										prefLanguageDefinitionAvailable = true;
+									}
+									else if (!prefLanguageDefinitionAvailable
+											&& getLanguageAttribute(nd).equals(DEFAULT_LANGUAGE)) {
 										description = nd.getFirstChild().getNodeValue();
 										prefLanguageDefinitionAvailable = true;
 									}
