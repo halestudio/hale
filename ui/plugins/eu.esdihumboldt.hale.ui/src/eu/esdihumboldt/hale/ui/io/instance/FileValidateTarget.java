@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -227,23 +228,25 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 			IStructuredSelection sel = (IStructuredSelection) selection;
 			Object element = sel.getFirstElement();
 			if (element instanceof IOProviderDescriptor) {
-				InstanceValidator validator = null;
-				try {
-					validator = (InstanceValidator) ((IOProviderDescriptor) element)
-							.createExtensionObject();
-				} catch (Exception e) {
-					this.getPage().setErrorMessage("Could not instantiate validator.");
-					log.error(MessageFormat.format("Could not instantiate validator {0}",
-							((IOProviderDescriptor) element).getIdentifier()), e);
+				InstanceValidator validator = getWizard().getValidator();
+				if (validator == null || !((IOProviderDescriptor) element).getProviderType()
+						.isInstance(validator)) {
+					try {
+						validator = (InstanceValidator) ((IOProviderDescriptor) element)
+								.createExtensionObject();
+					} catch (Exception e) {
+						this.getPage().setErrorMessage("Could not instantiate validator.");
+						log.error(MessageFormat.format("Could not instantiate validator {0}",
+								((IOProviderDescriptor) element).getIdentifier()), e);
+					}
+
+					getWizard().setValidator(validator);
 				}
-				getWizard().setValidator(validator);
 
 				final ConfigurationDialogFactory configDialogFactory = ConfigurationDialogExtension
 						.getInstance().getConfigurationDialog((IOProviderDescriptor) element);
 
 				if (configDialogFactory != null) {
-					checkValidatorConfiguration(validator);
-
 					configureButton.setEnabled(true);
 					configureButtonListener = new SelectionListener() {
 
@@ -259,7 +262,7 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 								configDialog.setProvider(validator);
 								configDialog.create();
 								configDialog.open();
-								checkValidatorConfiguration(validator);
+								updateState();
 							} catch (Exception ex) {
 								throw new RuntimeException(ex.getMessage(), ex);
 							}
@@ -278,29 +281,55 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 				getWizard().setValidator(null);
 			}
 		}
+
+		updateState();
 	}
 
 	/**
-	 * @param validator
+	 * @see eu.esdihumboldt.hale.ui.io.target.FileTarget#updateState()
 	 */
-	private void checkValidatorConfiguration(InstanceValidator validator) {
+	@Override
+	protected void updateState() {
+		checkValidatorConfiguration(getWizard().getValidator());
+		super.updateState();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.target.FileTarget#isValid()
+	 */
+	@Override
+	protected boolean isValid() {
+		return super.isValid() && checkValidatorConfiguration(getWizard().getValidator());
+	}
+
+	/**
+	 * Checks if the given {@link InstanceValidator} is properly configured. If
+	 * not, an error message is displayed and the owning {@link WizardPage} is
+	 * told that is not complete.
+	 * 
+	 * @param validator {@link InstanceValidator} to check
+	 */
+	private boolean checkValidatorConfiguration(InstanceValidator validator) {
+		getPage().setErrorMessage(null);
+		if (configureButtonDecoration != null) {
+			configureButtonDecoration.hide();
+		}
+
 		if (validator == null) {
-			return;
+			return true;
 		}
 
 		try {
 			validator.validate();
-			getPage().setErrorMessage(null);
-			if (configureButtonDecoration != null) {
-				configureButtonDecoration.hide();
-			}
-
 		} catch (IOProviderConfigurationException e) {
 			getPage().setErrorMessage(e.getMessage());
 			if (configureButtonDecoration != null) {
 				configureButtonDecoration.show();
 			}
+			return false;
 		}
+
+		return true;
 	}
 
 }
