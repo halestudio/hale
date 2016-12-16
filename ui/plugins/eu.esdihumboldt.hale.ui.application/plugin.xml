@@ -126,6 +126,10 @@
                name="aboutImage"
                value="images/hale_about.png">
          </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
       </product>
    </extension>
    <extension

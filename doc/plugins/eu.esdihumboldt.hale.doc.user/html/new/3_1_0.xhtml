@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.1?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.1?</h1>
+
+	<p>hale studio 3.1 brings a couple of improvements and fixes. These
+		are the most notable changes:</p>
+
+	<ul>
+		<li>Read and write Microsoft SQL Server databases</li>
+		<li>Read interpolated Arc geometries from GML</li>
+		<li>Use code lists available as SKOS</li>
+		<li>Validate against code lists</li>
+		<li>View instance counts for condition contexts instantly</li>
+		<li>Hide optional properties</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#310"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>The majority of the new features and improvements were made
+		possible through our contracts with more than 20 customers. We'd like
+		to thank you all for your support!</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_1_0">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_1_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="mssql">
+				<td class="title">Microsoft SQL Server</td>
+				<td class="content">hale studio now supports Microsoft SQL
+					Server as an additional type of database out of the box. This also
+					includes support for geography and geometry data types.
+					<p>
+						<img src="3_1_0_images/mssql.png" />
+					</p>
+					<p>Thanks to the <i>Bundesanstalt für Wasserbau</i> for funding this
+						work.</p>
+				</td>
+			</tr>
+
+			<tr id="arcs">
+				<td class="title">Arc geometries</td>
+				<td class="content">
+					<p>
+						Regarding support for geometries in GML there are still some
+						geometry types not supported by hale studio. To reduce that list
+						we added support for interpolating Arc-like geometries. Thus now
+						the following geometry types are supported in addition: <em>Arc</em>,
+						<em>ArcString</em>, <em>ArcByCenterPoint</em>, <em>Circle</em>, <em>CircleByCenterPoint</em>.
+					</p>
+					<p>
+						<img src="3_1_0_images/arcs.png" />
+					</p>
+					<p>
+						Thanks to the <i>Landesamt für Vermessung und
+							Geobasisinformation Rheinland-Pfalz</i> for funding this work.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="skos">
+				<td class="title">SKOS code lists</td>
+
+				<td class="content">Code lists in SKOS format are in wide use -
+					not only for Linked Data. Now you can load SKOS resources as code
+					lists in hale studio, a SKOS concept represents an individual code.
+					<p>
+						<img src="3_1_0_images/skos.png" />
+					</p>
+					<p>Thanks to the <i>Bundesanstalt für Wasserbau</i> for funding this
+						work.</p>
+				</td>
+			</tr>
+			
+			<tr id="codevalidation">
+				<td class="title">Validate code list values</td>
+				<td class="content">Code lists allow for more flexibility than
+					value restrictions in a schema, but also bring less safety in
+					respect to validation. To check the data you create in respect to
+					values from code lists you can now simply associate a code list to
+					a property - hale studio compares your data against the loaded code
+					list and informs you in case different values are used.
+					<p>
+						<img src="3_1_0_images/codevalidation.png" />
+					</p>
+					<p>Thanks to the <i>Bundesanstalt für Wasserbau</i> for funding this
+						work.</p>
+				</td>
+			</tr>
+			
+			<tr id="contextcounts">
+				<td class="title">Context counts</td>
+				<td class="content">On your source schema you can define
+					contexts for the mapping that are specified through a condition on
+					a type or property, or an index of a property. When you have source
+					data loaded in hale studio you can now see directly how many
+					instances and values there are, that match these contexts.
+					<p>
+						<img src="3_1_0_images/contexts.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="hide-optionl">
+				<td class="title">Hide optional properties</td>
+				<td class="content">Sometimes it is necessary to focus on the
+					important things. In relation to a schema mapping that's often the
+					mandatory properties. In the Schema Explorer you can now hide
+					optional properties in source or target, so you can see at one
+					glance what you need to map.</td>
+			</tr>
+			
+		</tbody>
+	</table>
+
+</body>
+</html>
