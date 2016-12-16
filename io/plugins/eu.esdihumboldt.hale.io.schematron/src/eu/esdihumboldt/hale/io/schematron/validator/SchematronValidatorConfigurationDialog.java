@@ -17,7 +17,10 @@ package eu.esdihumboldt.hale.io.schematron.validator;
 
 import java.io.File;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -49,31 +52,37 @@ public class SchematronValidatorConfigurationDialog
 		super(parentShell);
 	}
 
+	/**
+	 * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+	 */
+	@Override
+	protected void configureShell(Shell newShell) {
+		super.configureShell(newShell);
+		newShell.setText("Configure schematron validator");
+	}
+
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		// create composite
 		Composite composite = (Composite) super.createDialogArea(parent);
+		Composite container = new Composite(composite, SWT.NONE);
 
-//		// create message
-//		if (message != null) {
-//			Label label = new Label(composite, SWT.WRAP);
-//			label.setText(message);
-//			GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
-//					| GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-//			data.widthHint = convertHorizontalDLUsToPixels(
-//					IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-//			label.setLayoutData(data);
-//			label.setFont(parent.getFont());
-//		}
+		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
+				| GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+		container.setLayoutData(data);
 
 		schematronRulesFile = new OpenFileFieldEditor("metadataFile", "Schematron rules file", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, composite);
-		schematronRulesFile.setEmptyStringAllowed(true);
-		schematronRulesFile.setFileExtensions(new String[] { "*.xml", "*.sch" });
+				FileFieldEditor.VALIDATE_ON_KEY_STROKE, container);
+		schematronRulesFile.setEmptyStringAllowed(false);
+		schematronRulesFile.setFilterNames(new String[] { "Schematron rules (*.xml, *.sch)" });
+		schematronRulesFile.setFileExtensions(new String[] { "*.xml; *.sch" });
 
 		SchematronInstanceValidator validator = this.getProvider();
-		if (validator != null && validator.getSchematronLocation() != null) {
-			schematronRulesFile.setStringValue(validator.getSchematronLocation().toString());
+		if (validator != null && validator.getSchematronLocation() != null
+				&& validator.getSchematronLocation().getScheme().equals("file")) {
+			File file = new File(validator.getSchematronLocation().getPath());
+			schematronRulesFile.setStringValue(file.getAbsolutePath());
 		}
 		else {
 			// isValid starts with false even if emptyStringAllowed is true.
