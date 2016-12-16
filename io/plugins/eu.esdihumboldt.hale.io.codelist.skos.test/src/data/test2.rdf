@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:dcat="http://www.w3.org/ns/dcat#" xmlns:adms="http://www.w3.org/ns/adms#"
+         xmlns:vcard="http://www.w3.org/2006/vcard/ns#"
+         xmlns:vann="http://purl.org/vocab/vann/"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns:dct="http://purl.org/dc/terms/"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue">
+      <dct:identifier rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">AquiferTypeValue</dct:identifier>
+      <owl:sameAs rdf:resource="http://to.wetransform/codelist/AquiferTypeValue:1"/>
+      <adms:last rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <rdf:type rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Dataset"/>
+      <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#ConceptScheme"/>
+      <dct:title xml:lang="en">Aquifer Type</dct:title>
+      <dct:description xml:lang="en">Types of aquifers.</dct:description>
+      <skos:prefLabel xml:lang="en">Aquifer Type</skos:prefLabel>
+      <skos:definition xml:lang="en">Types of aquifers.</skos:definition>
+      <dct:hasPart rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian"/>
+      <skos:hasTopConcept rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian"/>
+      <dct:hasPart rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian"/>
+      <skos:hasTopConcept rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian"/>
+      <dct:hasPart rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined"/>
+      <skos:hasTopConcept rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined"/>
+      <rdfs:isDefinedBy rdf:resource="http://to.wetransform/applicationschema/ge_hg"/>
+      <dcat:theme rdf:resource="http://to.wetransform/theme/ge"/>
+      <adms:status rdf:resource="http://to.wetransform/registry/status/valid"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue">
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.html"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.csv"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.json"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.xml"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.19135.xml"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.atom"/>
+      <dcat:distribution rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.rdf"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.html">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">HTML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.csv">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">CSV</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/CSV"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.json">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">JSON</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/JSON"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.xml">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.19135.xml">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">ISO 19135</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.atom">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">Atom</rdfs:label>
+      <dct:format rdf:resource="http://www.iana.org/assignments/media-types/application/atom+xml"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/AquiferTypeValue.en.rdf">
+      <rdf:type rdf:resource="http://www.w3.org/ns/dcat#Distribution"/>
+      <rdfs:label xml:lang="en">RDF/XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/RDF_XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian">
+      <dct:identifier rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">confinedSubArtesian</dct:identifier>
+      <owl:sameAs rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian:1"/>
+      <adms:last rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian"/>
+      <rdf:type rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+      <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+      <skos:inScheme rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <skos:topConceptOf rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <dct:title xml:lang="en">confined subartesian</dct:title>
+      <dct:description xml:lang="en">An aquifer containing water between two relatively impermeable boundaries. The water level in a well tapping a confined aquifer stands above the top of the confined aquifer and can be higher or lower than the water table that may be present in the material above it. The water level does not rise above the ground surface.</dct:description>
+      <skos:prefLabel xml:lang="en">confined subartesian</skos:prefLabel>
+      <skos:definition xml:lang="en">An aquifer containing water between two relatively impermeable boundaries. The water level in a well tapping a confined aquifer stands above the top of the confined aquifer and can be higher or lower than the water table that may be present in the material above it. The water level does not rise above the ground surface.</skos:definition>
+      <rdfs:isDefinedBy rdf:resource="http://to.wetransform/applicationschema/ge_hg"/>
+      <dcat:theme rdf:resource="http://to.wetransform/theme/ge"/>
+      <adms:status rdf:resource="http://to.wetransform/registry/status/valid"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian">
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.html"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.csv"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.json"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.19135.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.atom"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.rdf"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.html">
+      <rdfs:label xml:lang="en">HTML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.csv">
+      <rdfs:label xml:lang="en">CSV</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/CSV"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.json">
+      <rdfs:label xml:lang="en">JSON</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/JSON"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.xml">
+      <rdfs:label xml:lang="en">XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.19135.xml">
+      <rdfs:label xml:lang="en">ISO 19135</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.atom">
+      <rdfs:label xml:lang="en">Atom</rdfs:label>
+      <dct:format rdf:resource="http://www.iana.org/assignments/media-types/application/atom+xml"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedSubArtesian/confinedSubArtesian.en.rdf">
+      <rdfs:label xml:lang="en">RDF/XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/RDF_XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian">
+      <dct:identifier rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">confinedArtesian</dct:identifier>
+      <owl:sameAs rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian:1"/>
+      <adms:last rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian"/>
+      <rdf:type rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+      <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+      <skos:inScheme rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <skos:topConceptOf rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <dct:title xml:lang="en">confined artesian</dct:title>
+      <dct:description xml:lang="en">An aquifer containing water between two relatively impermeable boundaries. The water level in a well tapping a confined aquifer stands above the top of the confined aquifer and can be higher or lower than the water table that may be present in the material above. The water level rises above the ground surface, yielding a flowing well.</dct:description>
+      <skos:prefLabel xml:lang="en">confined artesian</skos:prefLabel>
+      <skos:definition xml:lang="en">An aquifer containing water between two relatively impermeable boundaries. The water level in a well tapping a confined aquifer stands above the top of the confined aquifer and can be higher or lower than the water table that may be present in the material above. The water level rises above the ground surface, yielding a flowing well.</skos:definition>
+      <rdfs:isDefinedBy rdf:resource="http://to.wetransform/applicationschema/ge_hg"/>
+      <dcat:theme rdf:resource="http://to.wetransform/theme/ge"/>
+      <adms:status rdf:resource="http://to.wetransform/registry/status/valid"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian">
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.html"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.csv"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.json"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.19135.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.atom"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.rdf"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.html">
+      <rdfs:label xml:lang="en">HTML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.csv">
+      <rdfs:label xml:lang="en">CSV</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/CSV"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.json">
+      <rdfs:label xml:lang="en">JSON</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/JSON"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.xml">
+      <rdfs:label xml:lang="en">XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.19135.xml">
+      <rdfs:label xml:lang="en">ISO 19135</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.atom">
+      <rdfs:label xml:lang="en">Atom</rdfs:label>
+      <dct:format rdf:resource="http://www.iana.org/assignments/media-types/application/atom+xml"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/confinedArtesian/confinedArtesian.en.rdf">
+      <rdfs:label xml:lang="en">RDF/XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/RDF_XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined">
+      <dct:identifier rdf:datatype="http://www.w3.org/2000/01/rdf-schema#Literal">unconfined</dct:identifier>
+      <owl:sameAs rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined:1"/>
+      <adms:last rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined"/>
+      <rdf:type rdf:resource="http://purl.org/net/provenance/ns#DataItem"/>
+      <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+      <skos:inScheme rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <skos:topConceptOf rdf:resource="http://to.wetransform/codelist/AquiferTypeValue"/>
+      <dct:title xml:lang="en">unconfined</dct:title>
+      <dct:description xml:lang="en">An aquifer containing water that is not under pressure. The water level in a well is the same as the water table outside the well.</dct:description>
+      <skos:prefLabel xml:lang="en">unconfined</skos:prefLabel>
+      <skos:definition xml:lang="en">An aquifer containing water that is not under pressure. The water level in a well is the same as the water table outside the well.</skos:definition>
+      <rdfs:isDefinedBy rdf:resource="http://to.wetransform/applicationschema/ge_hg"/>
+      <dcat:theme rdf:resource="http://to.wetransform/theme/ge"/>
+      <adms:status rdf:resource="http://to.wetransform/registry/status/valid"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined">
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.html"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.csv"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.json"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.19135.xml"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.atom"/>
+      <dct:hasFormat rdf:resource="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.rdf"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.html">
+      <rdfs:label xml:lang="en">HTML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/HTML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.csv">
+      <rdfs:label xml:lang="en">CSV</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/CSV"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.json">
+      <rdfs:label xml:lang="en">JSON</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/JSON"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.xml">
+      <rdfs:label xml:lang="en">XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.19135.xml">
+      <rdfs:label xml:lang="en">ISO 19135</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.atom">
+      <rdfs:label xml:lang="en">Atom</rdfs:label>
+      <dct:format rdf:resource="http://www.iana.org/assignments/media-types/application/atom+xml"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+   <rdf:Description rdf:about="http://to.wetransform/codelist/AquiferTypeValue/unconfined/unconfined.en.rdf">
+      <rdfs:label xml:lang="en">RDF/XML</rdfs:label>
+      <dct:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/RDF_XML"/>
+      <dct:language rdf:resource="http://publications.europa.eu/resource/authority/language/ENG"/>
+   </rdf:Description>
+</rdf:RDF>
