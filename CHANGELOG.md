@@ -22,7 +22,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - GML encoding: Automatic conversion of polygon geometries to line geometries when there are no possibilities to encode a surface has been changed to produce a *LineString* for a *Polygon* and a *MultiLineString* for a *MultiPolygon*
 - The contents of XML Alignment files now are sorted where possible, to have a reproducable encoding for the same mapping and a nice diff when used in version control
 - The contents of Hale Schema Definition files now are sorted where possible, to have a reproducable encoding for the same schema and a nice diff when used in version control
-- Performance improvement for big mappings in the HTML and SVG documentation
 - When reading GML geometries composite 2D geometries (e.g. CompositeSurface, Surface with multiple patches, CompositeCurve, etc.) are now by default combined to a single geometry if possible
 
 ### Removed
@@ -40,6 +39,12 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Exporting project archives for new projects now works as expected
 - On export to GeoServer AppSchema via the REST endpoint the provided URL now may end with a slash
 - Mapping cells in the mapping view are now ensured to be updated when edited or deleted
+- When exporting data to XML files include root element schema in schema location attribute
+
+### Deprecated
+
+- Deprecated old style HTML mapping documentation, instead use the new HTML+SVG mapping documentation
+- Deprecated INSPIRE 3.0 specific mapping functions (INSPIRE Identifier and Geographical Name), instead map to sub-properties individually
 
 ## [3.0.0]
 
