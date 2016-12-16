@@ -53,13 +53,14 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport
 	}
 
 	/**
-	 * Additionally fails if there are no schemas set
+	 * Fails if there are no schemas set
 	 * 
 	 * @see AbstractImportProvider#validate()
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
-		super.validate();
+		// Don't call super.validate() here because InstanceValidators
+		// may be called in a context where the source property is unset.
 
 		if (schemas == null || schemas.length == 0) {
 			fail("No schemas provided for validation");

@@ -49,6 +49,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
@@ -234,6 +235,11 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 					try {
 						validator = (InstanceValidator) ((IOProviderDescriptor) element)
 								.createExtensionObject();
+
+						// configure validator
+						List<? extends Locatable> schemas = getWizard().getProvider()
+								.getValidationSchemas();
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 					} catch (Exception e) {
 						this.getPage().setErrorMessage("Could not instantiate validator.");
 						log.error(MessageFormat.format("Could not instantiate validator {0}",
