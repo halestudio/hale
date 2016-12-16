@@ -1,0 +1,56 @@
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:skos="http://www.w3.org/2004/02/skos/core#" xmlns:dc="http://purl.org/dc/terms/" xmlns:owlxml="http://www.w3.org/2002/07/owl#">
+<skos:collection rdf:about="http://vocab.ices.dk/services/rdf/collection/PARAM">
+<dc:created>2006-10-23T12:00:00.00</dc:created>
+<dc:description/>
+<dc:modified>2016-11-28T14:18:51.09</dc:modified>
+<skos:member rdf:resource="http://vocab.ices.dk/services/rdf/collection/PARAM/%25DNAtail"/>
+<skos:member rdf:resource="http://vocab.ices.dk/services/rdf/collection/PARAM/%25FLVBR"/>
+<skos:member rdf:resource="http://vocab.ices.dk/services/rdf/collection/PARAM/%25GRC"/>
+<skos:member rdf:resource="http://vocab.ices.dk/services/rdf/collection/PARAM/%25HCT"/>
+<skos:prefLabel>Parameters</skos:prefLabel>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/Biological%20Effect%20Techniques"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/C-TS"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/C-TS-REV"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/CAS%C2%AE%20Numbers"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/LTREF"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/MPROGinfo"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/MUNIT"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/OSPAR-LT"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/Pargroup"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/TSG-ML"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/UNEP"/>
+<skos:related rdf:resource="http://vocab.ices.dk/services/rdf/collection/UNEP-RLC"/>
+</skos:collection>
+<skos:concept rdf:about="http://vocab.ices.dk/services/rdf/collection/PARAM/%25DNAtail">
+<dc:created>2012-03-07T16:51:56.37</dc:created>
+<dc:description xml:lang="en"/>
+<dc:modified>2012-03-07T17:09:53.19</dc:modified>
+<owlxml:deprecated>false</owlxml:deprecated>
+<skos:prefLabel xml:lang="en">% DNA in tail (a measure of the proportion of total DNA present in the comet tail)</skos:prefLabel>
+</skos:concept>
+<skos:concept rdf:about="http://vocab.ices.dk/services/rdf/collection/PARAM/%25FLVBR">
+<dc:created>2016-05-26T15:04:26.96</dc:created>
+<dc:description xml:lang="en"/>
+<dc:modified>2016-05-27T13:37:22.90</dc:modified>
+<owlxml:deprecated>false</owlxml:deprecated>
+<skos:prefLabel xml:lang="en">% female larvae in brood</skos:prefLabel>
+</skos:concept>
+<skos:concept rdf:about="http://vocab.ices.dk/services/rdf/collection/PARAM/%25GRC">
+<dc:created>2016-04-15T14:47:06.91</dc:created>
+<dc:description xml:lang="en"/>
+<dc:modified>2016-05-09T17:05:23.41</dc:modified>
+<owlxml:deprecated>false</owlxml:deprecated>
+<skos:prefLabel xml:lang="en">
+% granulocytes (basophils, eosinophils plus neutrophils) of total blood cells
+</skos:prefLabel>
+</skos:concept>
+<skos:concept rdf:about="http://vocab.ices.dk/services/rdf/collection/PARAM/%25HCT">
+<dc:created>2016-04-15T14:26:34.30</dc:created>
+<dc:description xml:lang="en">packed cell volume. Erythrocyte volume fraction</dc:description>
+<dc:modified>2016-05-09T17:04:24.25</dc:modified>
+<owlxml:deprecated>false</owlxml:deprecated>
+<skos:prefLabel xml:lang="en">
+hematocrit - volume percentage of red blood cells in blood
+</skos:prefLabel>
+</skos:concept>
+</rdf:RDF>

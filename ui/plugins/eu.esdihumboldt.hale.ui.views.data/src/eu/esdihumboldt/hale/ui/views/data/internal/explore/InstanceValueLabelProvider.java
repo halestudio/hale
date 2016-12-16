@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.instancevalidator.InstanceValidator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -46,6 +47,9 @@ import eu.esdihumboldt.util.Pair;
 public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 
 	private static final int MAX_STRING_LENGTH = 200;
+
+	private final InstanceValidator validator = InstanceValidator
+			.createDefaultValidator(HaleUI.getServiceProvider());
 
 	/**
 	 * @see CellLabelProvider#update(ViewerCell)
@@ -61,11 +65,13 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
 		InstanceValidationReport report = null;
-		if (definition instanceof ChildDefinition<?>)
-			report = InstanceValidator.validate(value,
+		if (definition instanceof ChildDefinition<?>) {
+			report = validator.validate(value,
 					(ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
-		else if (definition instanceof TypeDefinition)
-			report = InstanceValidator.validate((Instance) value);
+		}
+		else if (definition instanceof TypeDefinition) {
+			report = validator.validate((Instance) value);
+		}
 
 		boolean hasValue = false;
 		if (value instanceof Instance) {
@@ -102,9 +108,10 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		cell.setText(styledString.toString());
 		cell.setStyleRanges(styledString.getStyleRanges());
 
-		if (report != null && !report.getWarnings().isEmpty())
+		if (report != null && !report.getWarnings().isEmpty()) {
 			cell.setImage(PlatformUI.getWorkbench().getSharedImages()
 					.getImage(ISharedImages.IMG_OBJS_WARN_TSK));
+		}
 
 		super.update(cell);
 	}
@@ -121,13 +128,16 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 		if (((Pair<?, ?>) element).getFirst() instanceof Definition)
 			definition = (Definition<?>) ((Pair<?, ?>) element).getFirst();
 
-		if (definition instanceof ChildDefinition<?>)
-			report = InstanceValidator.validate(value,
+		if (definition instanceof ChildDefinition<?>) {
+			report = validator.validate(value,
 					(ChildDefinition<?>) ((Pair<?, ?>) element).getFirst());
-		else if (definition instanceof TypeDefinition)
-			report = InstanceValidator.validate((Instance) value);
-		else
+		}
+		else if (definition instanceof TypeDefinition) {
+			report = validator.validate((Instance) value);
+		}
+		else {
 			return null;
+		}
 
 		Collection<InstanceValidationMessage> warnings = report.getWarnings();
 
@@ -135,8 +145,9 @@ public class InstanceValueLabelProvider extends StyledCellLabelProvider {
 			return null;
 
 		StringBuilder toolTip = new StringBuilder();
-		for (Message m : warnings)
+		for (Message m : warnings) {
 			toolTip.append(m.getFormattedMessage()).append('\n');
+		}
 
 		return toolTip.substring(0, toolTip.length() - 1);
 	}

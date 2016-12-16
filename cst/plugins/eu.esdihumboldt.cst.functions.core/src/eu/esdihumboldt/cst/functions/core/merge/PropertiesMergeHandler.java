@@ -32,6 +32,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
@@ -45,8 +46,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class PropertiesMergeHandler extends
-		AbstractMergeHandler<PropertiesMergeHandler.PropertiesMergeConfig, DeepIterableKey>
+public class PropertiesMergeHandler
+		extends AbstractMergeHandler<PropertiesMergeHandler.PropertiesMergeConfig, DeepIterableKey>
 		implements MergeFunction {
 
 	class PropertiesMergeConfig {
@@ -68,38 +69,16 @@ public class PropertiesMergeHandler extends
 	protected PropertiesMergeConfig createMergeConfiguration(String transformationIdentifier,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 		if (transformationParameters == null) {
 			throw new TransformationException("Transformation parameters invalid");
 		}
 
-		List<List<QName>> properties = new ArrayList<List<QName>>();
-		if (transformationParameters.containsKey(PARAMETER_PROPERTY)
-				&& !transformationParameters.get(PARAMETER_PROPERTY).isEmpty()) {
-			for (ParameterValue property : transformationParameters.get(PARAMETER_PROPERTY)) {
-				// XXX removed because it causes problems with dots in property
-				// names
-//				properties.add(PropertyResolver.getQNamesFromPath(property.as(String.class)));
-				// FIXME quick fix that only works because only first level
-				// properties are supported
-				properties.add(Collections.singletonList(QName.valueOf(property.as(String.class))));
-			}
-		}
+		List<List<QName>> properties = MergeUtil.getProperties(transformationParameters,
+				PARAMETER_PROPERTY);
 
-		List<List<QName>> additionalProperties = new ArrayList<List<QName>>();
-		if (transformationParameters.containsKey(PARAMETER_ADDITIONAL_PROPERTY)) {
-			for (ParameterValue property : transformationParameters
-					.get(PARAMETER_ADDITIONAL_PROPERTY)) {
-				// XXX removed because it causes problems with dots in property
-				// names
-//				additionalProperties.add(PropertyResolver.getQNamesFromPath(property
-//						.as(String.class)));
-				// FIXME quick fix that only works because only first level
-				// properties are supported
-				additionalProperties.add(Collections.singletonList(QName.valueOf(property
-						.as(String.class))));
-			}
-		}
+		List<List<QName>> additionalProperties = MergeUtil.getProperties(transformationParameters,
+				PARAMETER_ADDITIONAL_PROPERTY);
 
 		boolean autoDetect;
 		if (transformationParameters.get(PARAMETER_AUTO_DETECT).isEmpty()) {
@@ -107,8 +86,8 @@ public class PropertiesMergeHandler extends
 			autoDetect = false;
 		}
 		else {
-			autoDetect = Boolean.parseBoolean(transformationParameters.get(PARAMETER_AUTO_DETECT)
-					.get(0).as(String.class));
+			autoDetect = Boolean.parseBoolean(
+					transformationParameters.get(PARAMETER_AUTO_DETECT).get(0).as(String.class));
 		}
 
 		return new PropertiesMergeConfig(properties, additionalProperties, autoDetect);

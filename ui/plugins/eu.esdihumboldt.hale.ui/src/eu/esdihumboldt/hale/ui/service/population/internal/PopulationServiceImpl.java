@@ -115,16 +115,24 @@ public class PopulationServiceImpl extends AbstractPopulationService implements 
 
 			@Override
 			public void contextAdded(EntityDefinition contextEntity) {
-				// go through instances to determine occurring values
-				// if population is already counted before for given Entity,
-				// then no need to count it again
-				Map<EntityDefinition, PopulationImpl> population = (contextEntity
-						.getSchemaSpace() == SchemaSpaceID.TARGET) ? (targetPopulation)
-								: (sourcePopulation);
-				if (population.get(contextEntity) == null) {
-					Job job = new PopulationCountJob(contextEntity);
-					job.schedule();
+
+				// Target contexts should have unknown counts, as they cannot be
+				// determined based on the instances alone.
+
+				if (contextEntity.getSchemaSpace() != SchemaSpaceID.TARGET) {
+					// go through instances to determine occurring values
+					// if population is already counted before for given Entity,
+					// then no need to count it again
+					Population population = null;
+					synchronized (PopulationServiceImpl.this) {
+						population = sourcePopulation.get(contextEntity);
+					}
+					if (population == null) {
+						Job job = new PopulationCountJob(contextEntity);
+						job.schedule();
+					}
 				}
+
 			}
 		});
 
@@ -298,7 +306,10 @@ public class PopulationServiceImpl extends AbstractPopulationService implements 
 	 */
 	@Override
 	public Collection<? extends EntityDefinition> getChildren(EntityDefinition entityDef) {
-		return entityDefinitionService.getChildren(entityDef);
+		if (entityDef.getSchemaSpace() == SchemaSpaceID.SOURCE)
+			return entityDefinitionService.getChildren(entityDef);
+		else
+			return AlignmentUtil.getChildrenWithoutContexts(entityDef);
 	}
 
 	private void addNoneToPopulation(EntityDefinition groupDef, List<ChildContext> path) {

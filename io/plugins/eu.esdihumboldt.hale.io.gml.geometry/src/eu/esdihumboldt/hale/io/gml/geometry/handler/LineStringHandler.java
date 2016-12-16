@@ -62,9 +62,9 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final String ARC_BY_BULGE_TYPE = "ArcByBulgeType";
 
-	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
+//	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
 
-	private static final String ARC_STRING_TYPE = "ArcStringType";
+	// private static final String ARC_STRING_TYPE = "ArcStringType";
 
 	private static final String ARC_STRING_BY_BULGE_TYPE = "ArcStringByBulgeType";
 
@@ -72,9 +72,9 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 
 	private static final String BSPLINE_TYPE = "BSplineType";
 
-	private static final String CIRCLE_TYPE = "CircleType";
+	// private static final String CIRCLE_TYPE = "CircleType";
 
-	private static final String CIRCLE_BY_CENTER_TYPE = "CircleByCenterType";
+//	private static final String CIRCLE_BY_CENTER_TYPE = "CircleByCenterType";
 
 	private static final String CUBIC_SPLINE = "CubicSplineType";
 
@@ -274,11 +274,11 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 		types.add(new QName(NS_GML, ARC_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_BY_BULGE_TYPE));
 
-		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
-		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
+//		types.add(new QName(NS_GML, ARC_BY_CENTER_POINT_TYPE));
+//		types.add(new QName(NS_GML_32, ARC_BY_CENTER_POINT_TYPE));
 
-		types.add(new QName(NS_GML, ARC_STRING_TYPE));
-		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
+//		types.add(new QName(NS_GML, ARC_STRING_TYPE));
+//		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
 
 		types.add(new QName(NS_GML, ARC_STRING_BY_BULGE_TYPE));
 		types.add(new QName(NS_GML_32, ARC_STRING_BY_BULGE_TYPE));
@@ -289,11 +289,11 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 		types.add(new QName(NS_GML, BSPLINE_TYPE));
 		types.add(new QName(NS_GML_32, BSPLINE_TYPE));
 
-		types.add(new QName(NS_GML, CIRCLE_TYPE));
-		types.add(new QName(NS_GML_32, CIRCLE_TYPE));
+//		types.add(new QName(NS_GML, CIRCLE_TYPE));
+//		types.add(new QName(NS_GML_32, CIRCLE_TYPE));
 
-		types.add(new QName(NS_GML, CIRCLE_BY_CENTER_TYPE));
-		types.add(new QName(NS_GML_32, CIRCLE_BY_CENTER_TYPE));
+//		types.add(new QName(NS_GML, CIRCLE_BY_CENTER_TYPE));
+//		types.add(new QName(NS_GML_32, CIRCLE_BY_CENTER_TYPE));
 
 		types.add(new QName(NS_GML, CUBIC_SPLINE));
 		types.add(new QName(NS_GML_32, CUBIC_SPLINE));

@@ -25,8 +25,8 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -41,13 +41,24 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  */
 public class CurveGeometryTest extends AbstractHandlerTest {
 
-	private MultiLineString reference;
+	enum GeometryType {
+		Arc, Circle, ArcString, ArcByCenterPoint, CircleByCenterPoint, Others
+	}
 
-	private MultiLineString referenceForArc;
+	private LineString reference;
+	private LineString referenceForArc;
 
-	private MultiLineString referenceOnGrid;
+	private LineString referenceOnGrid;
+	private LineString referenceForArcOnGrid;
 
-	private MultiLineString referenceForArcOnGrid;
+	private LineString referenceForCircle;
+	private LineString referenceForCircleOnGrid;
+
+	private LineString referenceForArcString;
+	private LineString referenceForArcStringOnGrid;
+
+	private LineString referenceForArcByCenterPoint;
+	private LineString referenceForCircleByCenterPoint;
 
 	// XXX different segments need different count of coordinates
 	// XXX missing Clothoid handler
@@ -61,51 +72,154 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 
 		Coordinate[] coordinates = new Coordinate[] { new Coordinate(0.01, 3.2),
 				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
-		LineString linestring1 = geomFactory.createLineString(coordinates);
+		reference = geomFactory.createLineString(coordinates);
 
-		LineString[] lines = new LineString[] { linestring1 };
-		reference = geomFactory.createMultiLineString(lines);
-
-		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.4, 7.6),
-				new Coordinate(8.6, 7.6), new Coordinate(9.0, 7.2), new Coordinate(9.2, 7.2),
-				new Coordinate(9.4, 7.0), new Coordinate(9.8, 7.0), new Coordinate(10.0, 6.8),
-				new Coordinate(10.4, 6.8), new Coordinate(10.6, 6.6), new Coordinate(11.0, 6.6),
-				new Coordinate(11.4, 6.6), new Coordinate(11.8, 6.6), new Coordinate(12.0, 6.6),
-				new Coordinate(12.0, 6.5), new Coordinate(12.4, 6.4), new Coordinate(12.8, 6.4),
-				new Coordinate(13.0, 6.4), new Coordinate(13.2, 6.8), new Coordinate(13.6, 6.8),
-				new Coordinate(13.8, 6.8), new Coordinate(13.9, 6.9), new Coordinate(14.3, 6.9),
-				new Coordinate(14.5, 7.1), new Coordinate(14.7, 7.1), new Coordinate(15.1, 7.5),
-				new Coordinate(15.3, 7.5), new Coordinate(15.7, 7.9), new Coordinate(15.9, 7.9),
-				new Coordinate(16.0, 8.0) };
-		linestring1 = geomFactory.createLineString(coordinates);
-
-		lines = new LineString[] { linestring1 };
-		referenceForArc = geomFactory.createMultiLineString(lines);
+		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.3, 7.7),
+				new Coordinate(8.7, 7.5), new Coordinate(8.9, 7.3), new Coordinate(9.3, 7.1),
+				new Coordinate(9.7, 6.9), new Coordinate(10.0, 6.8), new Coordinate(10.5, 6.7),
+				new Coordinate(10.8, 6.6), new Coordinate(11.2, 6.6), new Coordinate(11.6, 6.6),
+				new Coordinate(11.9, 6.5), new Coordinate(12.0, 6.4), new Coordinate(12.0, 6.5),
+				new Coordinate(12.4, 6.4), new Coordinate(12.8, 6.6), new Coordinate(13.2, 6.6),
+				new Coordinate(13.5, 6.7), new Coordinate(14.0, 6.8), new Coordinate(14.4, 7.0),
+				new Coordinate(14.7, 7.1), new Coordinate(15.1, 7.3), new Coordinate(15.4, 7.6),
+				new Coordinate(15.7, 7.7), new Coordinate(15.9, 7.9), new Coordinate(16.0, 8.0) };
+		referenceForArc = geomFactory.createLineString(coordinates);
 
 		// Grid test
 
 		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
 				new Coordinate(0, -3.2) };
-		linestring1 = geomFactory.createLineString(coordinates);
+		referenceOnGrid = geomFactory.createLineString(coordinates);
 
-		lines = new LineString[] { linestring1 };
-		referenceOnGrid = geomFactory.createMultiLineString(lines);
+		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.3, 7.7),
+				new Coordinate(8.7, 7.5), new Coordinate(8.9, 7.3), new Coordinate(9.3, 7.1),
+				new Coordinate(9.7, 6.9), new Coordinate(10.0, 6.8), new Coordinate(10.5, 6.7),
+				new Coordinate(10.8, 6.6), new Coordinate(11.2, 6.6), new Coordinate(11.6, 6.6),
+				new Coordinate(11.9, 6.5), new Coordinate(12.0, 6.4), new Coordinate(12.4, 6.4),
+				new Coordinate(12.8, 6.6), new Coordinate(13.2, 6.6), new Coordinate(13.5, 6.7),
+				new Coordinate(14.0, 6.8), new Coordinate(14.4, 7.0), new Coordinate(14.7, 7.1),
+				new Coordinate(15.1, 7.3), new Coordinate(15.4, 7.6), new Coordinate(15.7, 7.7),
+				new Coordinate(15.9, 7.9), new Coordinate(16.0, 8.0) };
+		referenceForArcOnGrid = geomFactory.createLineString(coordinates);
 
-		coordinates = new Coordinate[] { new Coordinate(8.0, 8.0), new Coordinate(8.4, 7.6),
-				new Coordinate(8.6, 7.6), new Coordinate(9.0, 7.2), new Coordinate(9.2, 7.2),
-				new Coordinate(9.4, 7.0), new Coordinate(9.8, 7.0), new Coordinate(10.0, 6.8),
-				new Coordinate(10.4, 6.8), new Coordinate(10.6, 6.6), new Coordinate(11.0, 6.6),
-				new Coordinate(11.4, 6.6), new Coordinate(11.8, 6.6), new Coordinate(12.0, 6.6),
-				new Coordinate(12.0, 6.4), new Coordinate(12.4, 6.4), new Coordinate(12.8, 6.4),
-				new Coordinate(13.0, 6.4), new Coordinate(13.2, 6.8), new Coordinate(13.6, 6.8),
-				new Coordinate(13.8, 6.8), new Coordinate(13.9, 6.9), new Coordinate(14.3, 6.9),
-				new Coordinate(14.5, 7.1), new Coordinate(14.7, 7.1), new Coordinate(15.1, 7.5),
-				new Coordinate(15.3, 7.5), new Coordinate(15.7, 7.9), new Coordinate(15.9, 7.9),
-				new Coordinate(16.0, 8.0) };
-		linestring1 = geomFactory.createLineString(coordinates);
+		coordinates = new Coordinate[] { new Coordinate(0.01, 3.2), new Coordinate(0.4, 3.4),
+				new Coordinate(0.7, 3.5), new Coordinate(1.2, 3.6), new Coordinate(1.5, 3.7),
+				new Coordinate(1.9, 3.7), new Coordinate(2.4, 3.6), new Coordinate(2.7, 3.5),
+				new Coordinate(3.0, 3.4), new Coordinate(3.3, 3.3), new Coordinate(3.33, 3.33),
+				new Coordinate(3.7, 3.1), new Coordinate(4.0, 3.0), new Coordinate(4.3, 2.7),
+				new Coordinate(4.6, 2.4), new Coordinate(4.9, 2.1), new Coordinate(5.1, 1.7),
+				new Coordinate(5.2, 1.4), new Coordinate(5.3, 0.9), new Coordinate(5.4, 0.6),
+				new Coordinate(5.4, 0.2), new Coordinate(5.4, -0.2), new Coordinate(5.4, -0.6),
+				new Coordinate(5.4, -1.0), new Coordinate(5.2, -1.4), new Coordinate(5.0, -1.8),
+				new Coordinate(4.8, -2.0), new Coordinate(4.6, -2.4), new Coordinate(4.3, -2.7),
+				new Coordinate(4.0, -3.0), new Coordinate(3.6, -3.2), new Coordinate(3.3, -3.3),
+				new Coordinate(2.9, -3.5), new Coordinate(2.6, -3.6), new Coordinate(2.1, -3.7),
+				new Coordinate(1.7, -3.7), new Coordinate(1.3, -3.7), new Coordinate(1.0, -3.6),
+				new Coordinate(0.6, -3.4), new Coordinate(0.2, -3.4), new Coordinate(0.0, -3.2),
+				new Coordinate(0.01, -3.2), new Coordinate(-0.4, -3.0), new Coordinate(-0.6, -2.8),
+				new Coordinate(-0.9, -2.5), new Coordinate(-1.1, -2.1), new Coordinate(-1.4, -1.8),
+				new Coordinate(-1.6, -1.4), new Coordinate(-1.7, -1.1), new Coordinate(-1.9, -0.7),
+				new Coordinate(-1.9, -0.3), new Coordinate(-1.9, 0.1), new Coordinate(-1.9, 0.5),
+				new Coordinate(-1.7, 0.9), new Coordinate(-1.6, 1.2), new Coordinate(-1.5, 1.7),
+				new Coordinate(-1.2, 2.0), new Coordinate(-1.1, 2.3), new Coordinate(-0.8, 2.6),
+				new Coordinate(-0.5, 2.9), new Coordinate(-0.1, 3.1), new Coordinate(0.0, 3.2),
+				new Coordinate(0.01, 3.2) };
+		referenceForCircle = geomFactory.createLineString(coordinates);
 
-		lines = new LineString[] { linestring1 };
-		referenceForArcOnGrid = geomFactory.createMultiLineString(lines);
+		coordinates = new Coordinate[] { new Coordinate(0.0, 3.2), new Coordinate(0.4, 3.4),
+				new Coordinate(0.7, 3.5), new Coordinate(1.2, 3.6), new Coordinate(1.5, 3.7),
+				new Coordinate(1.9, 3.7), new Coordinate(2.4, 3.6), new Coordinate(2.7, 3.5),
+				new Coordinate(3.0, 3.4), new Coordinate(3.3, 3.3), new Coordinate(3.7, 3.1),
+				new Coordinate(4.0, 3.0), new Coordinate(4.3, 2.7), new Coordinate(4.6, 2.4),
+				new Coordinate(4.9, 2.1), new Coordinate(5.1, 1.7), new Coordinate(5.2, 1.4),
+				new Coordinate(5.3, 0.9), new Coordinate(5.4, 0.6), new Coordinate(5.4, 0.2),
+				new Coordinate(5.4, -0.2), new Coordinate(5.4, -0.6), new Coordinate(5.4, -1.0),
+				new Coordinate(5.2, -1.4), new Coordinate(5.0, -1.8), new Coordinate(4.8, -2.0),
+				new Coordinate(4.6, -2.4), new Coordinate(4.3, -2.7), new Coordinate(4.0, -3.0),
+				new Coordinate(3.6, -3.2), new Coordinate(3.3, -3.3), new Coordinate(2.9, -3.5),
+				new Coordinate(2.6, -3.6), new Coordinate(2.1, -3.7), new Coordinate(1.7, -3.7),
+				new Coordinate(1.3, -3.7), new Coordinate(1.0, -3.6), new Coordinate(0.6, -3.4),
+				new Coordinate(0.2, -3.4), new Coordinate(0.0, -3.2), new Coordinate(-0.4, -3.0),
+				new Coordinate(-0.6, -2.8), new Coordinate(-0.9, -2.5), new Coordinate(-1.1, -2.1),
+				new Coordinate(-1.4, -1.8), new Coordinate(-1.6, -1.4), new Coordinate(-1.7, -1.1),
+				new Coordinate(-1.9, -0.7), new Coordinate(-1.9, -0.3), new Coordinate(-1.9, 0.1),
+				new Coordinate(-1.9, 0.5), new Coordinate(-1.7, 0.9), new Coordinate(-1.6, 1.2),
+				new Coordinate(-1.5, 1.7), new Coordinate(-1.2, 2.0), new Coordinate(-1.1, 2.3),
+				new Coordinate(-0.8, 2.6), new Coordinate(-0.5, 2.9), new Coordinate(-0.1, 3.1),
+				new Coordinate(0.0, 3.2) };
+		referenceForCircleOnGrid = geomFactory.createLineString(coordinates);
+
+		coordinates = new Coordinate[] { new Coordinate(0.01, 3.2), new Coordinate(0.4, 3.4),
+				new Coordinate(0.7, 3.5), new Coordinate(1.2, 3.6), new Coordinate(1.5, 3.7),
+				new Coordinate(1.9, 3.7), new Coordinate(2.4, 3.6), new Coordinate(2.7, 3.5),
+				new Coordinate(3.0, 3.4), new Coordinate(3.3, 3.3), new Coordinate(3.33, 3.33),
+				new Coordinate(3.7, 3.1), new Coordinate(4.0, 3.0), new Coordinate(4.3, 2.7),
+				new Coordinate(4.6, 2.4), new Coordinate(4.9, 2.1), new Coordinate(5.1, 1.7),
+				new Coordinate(5.2, 1.4), new Coordinate(5.3, 0.9), new Coordinate(5.4, 0.6),
+				new Coordinate(5.4, 0.2), new Coordinate(5.4, -0.2), new Coordinate(5.4, -0.6),
+				new Coordinate(5.4, -1.0), new Coordinate(5.2, -1.4), new Coordinate(5.0, -1.8),
+				new Coordinate(4.8, -2.0), new Coordinate(4.6, -2.4), new Coordinate(4.3, -2.7),
+				new Coordinate(4.0, -3.0), new Coordinate(3.6, -3.2), new Coordinate(3.3, -3.3),
+				new Coordinate(2.9, -3.5), new Coordinate(2.6, -3.6), new Coordinate(2.1, -3.7),
+				new Coordinate(1.7, -3.7), new Coordinate(1.3, -3.7), new Coordinate(1.0, -3.6),
+				new Coordinate(0.6, -3.4), new Coordinate(0.2, -3.4), new Coordinate(0.0, -3.2),
+				new Coordinate(0.01, -3.2) };
+		referenceForArcString = geomFactory.createLineString(coordinates);
+
+		coordinates = new Coordinate[] { new Coordinate(0.0, 3.2), new Coordinate(0.4, 3.4),
+				new Coordinate(0.7, 3.5), new Coordinate(1.2, 3.6), new Coordinate(1.5, 3.7),
+				new Coordinate(1.9, 3.7), new Coordinate(2.4, 3.6), new Coordinate(2.7, 3.5),
+				new Coordinate(3.0, 3.4), new Coordinate(3.3, 3.3), new Coordinate(3.7, 3.1),
+				new Coordinate(4.0, 3.0), new Coordinate(4.3, 2.7), new Coordinate(4.6, 2.4),
+				new Coordinate(4.9, 2.1), new Coordinate(5.1, 1.7), new Coordinate(5.2, 1.4),
+				new Coordinate(5.3, 0.9), new Coordinate(5.4, 0.6), new Coordinate(5.4, 0.2),
+				new Coordinate(5.4, -0.2), new Coordinate(5.4, -0.6), new Coordinate(5.4, -1.0),
+				new Coordinate(5.2, -1.4), new Coordinate(5.0, -1.8), new Coordinate(4.8, -2.0),
+				new Coordinate(4.6, -2.4), new Coordinate(4.3, -2.7), new Coordinate(4.0, -3.0),
+				new Coordinate(3.6, -3.2), new Coordinate(3.3, -3.3), new Coordinate(2.9, -3.5),
+				new Coordinate(2.6, -3.6), new Coordinate(2.1, -3.7), new Coordinate(1.7, -3.7),
+				new Coordinate(1.3, -3.7), new Coordinate(1.0, -3.6), new Coordinate(0.6, -3.4),
+				new Coordinate(0.2, -3.4), new Coordinate(0.0, -3.2) };
+		referenceForArcStringOnGrid = geomFactory.createLineString(coordinates);
+
+// Arc by center point
+		coordinates = new Coordinate[] { new Coordinate(2.5, 4.3), new Coordinate(2.9, 4.1),
+				new Coordinate(3.1, 3.9), new Coordinate(3.4, 3.6), new Coordinate(3.5, 3.5),
+				new Coordinate(3.8, 3.2), new Coordinate(4.1, 2.9), new Coordinate(4.2, 2.6),
+				new Coordinate(4.3, 2.5) };
+		referenceForArcByCenterPoint = geomFactory.createLineString(coordinates);
+
+// circle by center point
+		coordinates = new Coordinate[] { new Coordinate(5.0, 0.0), new Coordinate(5.0, 0.4),
+				new Coordinate(5.0, 0.8), new Coordinate(4.8, 1.2), new Coordinate(4.7, 1.5),
+				new Coordinate(4.6, 2.0), new Coordinate(4.5, 2.3), new Coordinate(4.3, 2.7),
+				new Coordinate(4.0, 3.0), new Coordinate(3.7, 3.3), new Coordinate(3.4, 3.6),
+				new Coordinate(3.2, 3.8), new Coordinate(2.9, 4.1), new Coordinate(2.5, 4.3),
+				new Coordinate(2.1, 4.5), new Coordinate(1.8, 4.6), new Coordinate(1.4, 4.8),
+				new Coordinate(1.1, 4.9), new Coordinate(0.6, 5.0), new Coordinate(0.2, 5.0),
+				new Coordinate(0.0, 5.0), new Coordinate(-0.4, 5.0), new Coordinate(-0.8, 5.0),
+				new Coordinate(-1.2, 4.8), new Coordinate(-1.5, 4.7), new Coordinate(-2.0, 4.6),
+				new Coordinate(-2.3, 4.5), new Coordinate(-2.7, 4.3), new Coordinate(-3.0, 4.0),
+				new Coordinate(-3.3, 3.7), new Coordinate(-3.6, 3.4), new Coordinate(-3.8, 3.2),
+				new Coordinate(-4.1, 2.9), new Coordinate(-4.3, 2.5), new Coordinate(-4.5, 2.1),
+				new Coordinate(-4.6, 1.8), new Coordinate(-4.8, 1.4), new Coordinate(-4.9, 1.1),
+				new Coordinate(-5.0, 0.6), new Coordinate(-5.0, 0.2), new Coordinate(-5.0, 0.0),
+				new Coordinate(-5.0, -0.4), new Coordinate(-5.0, -0.8), new Coordinate(-4.8, -1.2),
+				new Coordinate(-4.7, -1.5), new Coordinate(-4.6, -2.0), new Coordinate(-4.5, -2.3),
+				new Coordinate(-4.3, -2.7), new Coordinate(-4.0, -3.0), new Coordinate(-3.7, -3.3),
+				new Coordinate(-3.4, -3.6), new Coordinate(-3.2, -3.8), new Coordinate(-2.9, -4.1),
+				new Coordinate(-2.5, -4.3), new Coordinate(-2.1, -4.5), new Coordinate(-1.8, -4.6),
+				new Coordinate(-1.4, -4.8), new Coordinate(-1.1, -4.9), new Coordinate(-0.6, -5.0),
+				new Coordinate(-0.2, -5.0), new Coordinate(0.2, -5.0), new Coordinate(0.6, -5.0),
+				new Coordinate(0.9, -4.9), new Coordinate(1.3, -4.9), new Coordinate(1.7, -4.7),
+				new Coordinate(2.1, -4.5), new Coordinate(2.4, -4.4), new Coordinate(2.8, -4.2),
+				new Coordinate(3.1, -3.9), new Coordinate(3.4, -3.6), new Coordinate(3.7, -3.3),
+				new Coordinate(3.9, -3.1), new Coordinate(4.1, -2.7), new Coordinate(4.4, -2.4),
+				new Coordinate(4.6, -2.0), new Coordinate(4.7, -1.7), new Coordinate(4.9, -1.3),
+				new Coordinate(4.9, -0.9), new Coordinate(4.9, -0.5), new Coordinate(4.9, -0.1),
+				new Coordinate(5.0, 0.0) };
+		referenceForCircleByCenterPoint = geomFactory.createLineString(coordinates);
+
 	}
 
 	/**
@@ -130,8 +244,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 2. segments with Arc defined through coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, true); // Arc handler
-																// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 3. segments with ArcByBulge defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
@@ -141,12 +255,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 4. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 5. segments with ArcString defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 6. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
@@ -166,12 +280,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 9. segments with Circle defined through coordinates
 			assertTrue("Nineth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 10. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 11. segments with CubicSpline defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
@@ -209,8 +323,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 3. segments with Arc defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, true); // Arc handler
-			// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -220,12 +334,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -245,12 +359,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -298,8 +412,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 3. segments with Arc defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, true); // Arc handler
-			// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -309,12 +423,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -334,12 +448,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -383,8 +497,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 2. segments with Arc defined through coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, false); // Arc handler
-			// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 3. segments with ArcByBulge defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
@@ -394,12 +508,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 4. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 5. segments with ArcString defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 6. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
@@ -419,12 +533,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 9. segments with Circle defined through coordinates
 			assertTrue("Nineth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 10. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 11. segments with CubicSpline defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
@@ -463,8 +577,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 3. segments with Arc defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, false); // Arc handler
-			// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -474,12 +588,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -499,12 +613,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -553,8 +667,8 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 3. segments with Arc defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, true, false); // Arc handler
-			// added
+			// Arc handler added
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -564,12 +678,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -589,12 +703,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-			checkCurvePropertyInstance(instance, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -616,14 +730,14 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 	}
 
 	private void checkCurvePropertyInstance(Instance instance) {
-		checkCurvePropertyInstance(instance, false, true);
+		checkCurvePropertyInstance(instance, GeometryType.Others, true);
 	}
 
 	private void checkCurvePropertyInstance(Instance instance, boolean keepOriginal) {
-		checkCurvePropertyInstance(instance, false, keepOriginal);
+		checkCurvePropertyInstance(instance, GeometryType.Others, keepOriginal);
 	}
 
-	private void checkCurvePropertyInstance(Instance instance, boolean isArc,
+	private void checkCurvePropertyInstance(Instance instance, GeometryType geometryType,
 			boolean keepOriginal) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
@@ -633,18 +747,40 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, isArc, keepOriginal);
+		checkGeomInstance(geomInstance, geometryType, keepOriginal);
 	}
 
-	private void checkGeomInstance(Instance geomInstance, boolean isArc, boolean keepOriginal) {
+	private void checkGeomInstance(Instance geomInstance, GeometryType geometryType,
+			boolean keepOriginal) {
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiLineString multilinestring = ((GeometryProperty<MultiLineString>) instance)
-					.getGeometry();
+			Geometry geom = instance.getGeometry();
+
+			Geometry reference;
+
+			switch (geometryType) {
+
+			case Arc:
+				reference = keepOriginal ? referenceForArc : referenceForArcOnGrid;
+				break;
+			case Circle:
+				reference = keepOriginal ? referenceForCircle : referenceForCircleOnGrid;
+				break;
+			case ArcString:
+				reference = keepOriginal ? referenceForArcString : referenceForArcStringOnGrid;
+				break;
+			case ArcByCenterPoint:
+				reference = referenceForArcByCenterPoint;
+				break;
+			case CircleByCenterPoint:
+				reference = referenceForCircleByCenterPoint;
+				break;
+			default:
+				reference = keepOriginal ? this.reference : referenceOnGrid;
+				break;
+			}
 
 			assertTrue("Read geometry does not match the reference geometry",
-					multilinestring.equalsExact(keepOriginal ? (isArc ? referenceForArc : reference)
-							: (isArc ? referenceForArcOnGrid : referenceOnGrid)));
+					geom.equalsExact(reference));
 		}
 	}
 

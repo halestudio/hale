@@ -57,6 +57,7 @@
       </propertyFunction>
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.numeric"
+            cellExplanation="eu.esdihumboldt.cst.functions.numeric.sequentialid.SequentialIDExplanation"
             description="Generates a sequential numeric identifier"
             icon="icons/id.png"
             identifier="eu.esdihumboldt.cst.functions.numeric.sequentialid"

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.instancevalidator">
+      <validator
+            class="eu.esdihumboldt.hale.common.codelist.validator.CodeListValidator"
+            id="eu.esdihumboldt.hale.common.codelist.validator">
+      </validator>
+   </extension>
+
+</plugin>

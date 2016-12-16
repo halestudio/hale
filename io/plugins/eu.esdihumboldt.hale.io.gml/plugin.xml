@@ -164,6 +164,19 @@
                   sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Combine composite geometries (e.g. CompositeSurface, Surface) to a single (Simple Feature) geometry if possible."
+               label="Combine composite geometries"
+               name="geometry.combineComposites"
+               optional="true">
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default this option is enabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader"
@@ -238,6 +251,19 @@
                   sample="false"
                   sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Combine composite geometries (e.g. CompositeSurface, Surface) to a single (Simple Feature) geometry if possible."
+               label="Combine composite geometries"
+               name="geometry.combineComposites"
+               optional="true">
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default this option is enabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
          </providerParameter>
       </provider>
       <provider

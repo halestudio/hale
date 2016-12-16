@@ -6,11 +6,24 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Added
 
+- Support reading from and writing to MS SQL databases
+- Instance counts are now calculated for condition and index contexts as well
+- You can now hide optional properties in the schema explorer
+- SKOS format code lists can now be loaded
+- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+- To ensure topological consistency in respect to interpolated geometries, other geometries may optionally also be moved to the interpolation grid
+- GML Encoding: It is now possible to specify a number format for geometry ordinates, e.g. if you want a fixed precision after the decimal point
+- During validation in hale also check property values against an assigned code list
 - CLI commands can now be marked experimental
+- Added extension point for custom validators for the hale pre-encoding validation
 
 ### Changed
 
 - GML encoding: Automatic conversion of polygon geometries to line geometries when there are no possibilities to encode a surface has been changed to produce a *LineString* for a *Polygon* and a *MultiLineString* for a *MultiPolygon*
+- The contents of XML Alignment files now are sorted where possible, to have a reproducable encoding for the same mapping and a nice diff when used in version control
+- The contents of Hale Schema Definition files now are sorted where possible, to have a reproducable encoding for the same schema and a nice diff when used in version control
+- Performance improvement for big mappings in the HTML and SVG documentation
+- When reading GML geometries composite 2D geometries (e.g. CompositeSurface, Surface with multiple patches, CompositeCurve, etc.) are now by default combined to a single geometry if possible
 
 ### Removed
 
@@ -23,6 +36,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
 - Fixed instance partitioning for WFS-T upload producing too many small parts
 - Resolving local resources via bundles can no longer yield streams to directories/packages
+- Groovy geometry helper functions don't fail for null input
+- Exporting project archives for new projects now works as expected
+- On export to GeoServer AppSchema via the REST endpoint the provided URL now may end with a slash
+- Mapping cells in the mapping view are now ensured to be updated when edited or deleted
 
 ## [3.0.0]
 

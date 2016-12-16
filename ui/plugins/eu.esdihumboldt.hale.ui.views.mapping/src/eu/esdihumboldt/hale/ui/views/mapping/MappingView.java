@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.action.Action;
@@ -50,6 +51,8 @@ import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelectionHelper;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
 import eu.esdihumboldt.hale.ui.views.mapping.internal.MappingViewPlugin;
 import eu.esdihumboldt.util.Pair;
 
@@ -66,6 +69,7 @@ public class MappingView extends AbstractMappingView {
 	public static final String ID = "eu.esdihumboldt.hale.ui.views.mapping";
 
 	private ISelectionListener selectionListener;
+	private AlignmentServiceListener alignmentListener;
 	private final Action showCellsOnChildren;
 
 	/**
@@ -120,6 +124,44 @@ public class MappingView extends AbstractMappingView {
 					}
 				});
 
+		AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
+
+//		update();
+
+		as.addListener(alignmentListener = new AlignmentServiceAdapter() {
+
+			@Override
+			public void cellsRemoved(Iterable<Cell> cells) {
+				updateViewWithCurrentSelection(cells);
+			}
+
+			@Override
+			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+				List<Cell> changedCells = new ArrayList<Cell>(2);
+				changedCells.addAll(cells.keySet());
+				changedCells.addAll(cells.values());
+				updateViewWithCurrentSelection(changedCells);
+			}
+
+			@Override
+			public void customFunctionsChanged() {
+				SchemaSelection current = SchemaSelectionHelper.getSchemaSelection();
+				if (current != null) {
+					update(current);
+				}
+			}
+
+			@Override
+			public void cellsAdded(Iterable<Cell> cells) {
+				updateViewWithCurrentSelection(cells);
+			}
+
+			@Override
+			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				updateViewWithCurrentSelection(cells);
+			}
+		});
+
 		SchemaSelection current = SchemaSelectionHelper.getSchemaSelection();
 		if (current != null) {
 			update(current);
@@ -169,6 +211,28 @@ public class MappingView extends AbstractMappingView {
 		super.fillToolBar();
 		IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 		manager.add(showCellsOnChildren);
+	}
+
+	private void updateViewWithCurrentSelection(Iterable<Cell> cells) {
+		SchemaSelection current = SchemaSelectionHelper.getSchemaSelection();
+		if (current != null && isUpdateRequired(current, cells)) {
+			update(current);
+		}
+	}
+
+	private boolean isUpdateRequired(SchemaSelection currentSelection, Iterable<Cell> cells) {
+		if (cells == null || !cells.iterator().hasNext())
+			return false;
+
+		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
+				currentSelection);
+		for (Cell cell : cells) {
+			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
+					|| associatedWith(items.getSecond(), cell)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -245,6 +309,11 @@ public class MappingView extends AbstractMappingView {
 	 */
 	@Override
 	public void dispose() {
+		if (alignmentListener != null) {
+			AlignmentService as = PlatformUI.getWorkbench().getService(AlignmentService.class);
+			as.removeListener(alignmentListener);
+		}
+
 		if (selectionListener != null) {
 			getSite().getWorkbenchWindow().getSelectionService()
 					.removePostSelectionListener(selectionListener);
