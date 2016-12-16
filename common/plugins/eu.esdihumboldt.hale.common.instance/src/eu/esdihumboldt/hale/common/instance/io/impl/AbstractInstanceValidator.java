@@ -16,9 +16,12 @@
 
 package eu.esdihumboldt.hale.common.instance.io.impl;
 
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 
@@ -29,8 +32,8 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public abstract class AbstractInstanceValidator extends GZipEnabledImport implements
-		InstanceValidator {
+public abstract class AbstractInstanceValidator extends GZipEnabledImport
+		implements InstanceValidator {
 
 	private Locatable[] schemas;
 
@@ -50,17 +53,53 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport implem
 	}
 
 	/**
-	 * Additionally fails if there are no schemas set
+	 * Fails if there are no schemas set
 	 * 
 	 * @see AbstractImportProvider#validate()
 	 */
 	@Override
 	public void validate() throws IOProviderConfigurationException {
-		super.validate();
+		// Don't call super.validate() here because InstanceValidators
+		// may be called in a context where the source property is unset.
 
 		if (schemas == null || schemas.length == 0) {
 			fail("No schemas provided for validation");
 		}
 	}
+
+	/**
+	 * @see IOProvider#createReporter()
+	 */
+	@Override
+	public IOReporter createReporter() {
+		return new DefaultIOReporter(getSource(), getReportLabel(), false) {
+
+			@Override
+			protected String getFailSummary() {
+				return getDefaultFailSummary();
+			}
+
+			@Override
+			protected String getSuccessSummary() {
+				return getDefaultSuccessSummary();
+			}
+
+		};
+	}
+
+	/**
+	 * @return the label of the validation report
+	 */
+	protected abstract String getReportLabel();
+
+	/**
+	 * @return the name default failure summary for the validation report
+	 */
+	protected abstract String getDefaultFailSummary();
+
+	/**
+	 * @return the name default success summary for the validation report
+	 */
+	protected abstract String getDefaultSuccessSummary();
 
 }

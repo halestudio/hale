@@ -154,10 +154,22 @@ public class FileTarget<P extends ExportProvider> extends AbstractTarget<P> {
 		}
 	}
 
-	private void updateState() {
+	/**
+	 * Update the validity state
+	 */
+	protected void updateState() {
 		updateContentType();
 
-		setValid(targetFile.isValid());
+		setValid(this.isValid());
+	}
+
+	/**
+	 * Check if a valid target file was selected.
+	 * 
+	 * @return true if valid
+	 */
+	protected boolean isValid() {
+		return targetFile.isValid();
 	}
 
 	@Override

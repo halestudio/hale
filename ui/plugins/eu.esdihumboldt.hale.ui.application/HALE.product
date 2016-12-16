@@ -118,6 +118,7 @@ http://www.wetransform.to/services/support
       <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.schematron" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />

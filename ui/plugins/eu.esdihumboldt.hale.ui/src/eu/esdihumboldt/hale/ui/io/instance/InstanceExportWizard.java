@@ -52,7 +52,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
 
-	private IOProviderDescriptor validatorFactory;
+	private InstanceValidator validator;
 
 	private List<IOProviderDescriptor> cachedFactories;
 
@@ -117,17 +117,8 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	public boolean performFinish() {
 		boolean success = super.performFinish();
 
-		if (success && validatorFactory != null) {
+		if (success && validator != null) {
 			// validate the written output
-
-			// create validator
-			InstanceValidator validator;
-			try {
-				validator = (InstanceValidator) validatorFactory.createExtensionObject();
-			} catch (Exception e) {
-				log.userError("The validator could not be instantiated", e);
-				return false;
-			}
 
 			// configure validator
 			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
@@ -183,15 +174,15 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	/**
 	 * @return the validatorFactory
 	 */
-	public IOProviderDescriptor getValidatorFactory() {
-		return validatorFactory;
+	public InstanceValidator getValidator() {
+		return validator;
 	}
 
 	/**
 	 * @param validatorFactory the validatorFactory to set
 	 */
-	public void setValidatorFactory(IOProviderDescriptor validatorFactory) {
-		this.validatorFactory = validatorFactory;
+	public void setValidator(InstanceValidator validator) {
+		this.validator = validator;
 	}
 
 //	/**

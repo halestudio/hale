@@ -19,6 +19,7 @@ Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.hale.ui.io.config,
  eu.esdihumboldt.hale.ui.io.instance,
  eu.esdihumboldt.hale.ui.service.schema,
+ eu.esdihumboldt.hale.ui.util.io,
  eu.esdihumboldt.hale.ui.util.selector,
  eu.esdihumboldt.util
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",

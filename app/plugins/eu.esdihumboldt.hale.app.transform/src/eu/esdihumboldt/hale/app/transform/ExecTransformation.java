@@ -394,6 +394,9 @@ public class ExecTransformation implements ConsoleConstants {
 						+ " not found");
 			}
 
+			// load validator settings
+			validator.loadConfiguration(context.getValidateSettings());
+
 			// set validation schemas
 			List<? extends Locatable> schemas = target.getValidationSchemas();
 			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));

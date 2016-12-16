@@ -170,6 +170,8 @@
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.schematron"/>
+      <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
