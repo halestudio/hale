@@ -90,6 +90,8 @@ public class SkosCodeListTest {
 	@Test
 	public void testSKOSFromRDF3() throws Exception {
 
+		String id = "http://vocab.ices.dk/services/rdf/collection/PARAM/%25DNAtail";
+
 		CodeList codeList = readCodeList(getResourceURI("/data/test3.rdf"));
 
 		Collection<CodeEntry> entries = codeList.getEntries();
@@ -100,7 +102,7 @@ public class SkosCodeListTest {
 		assertNotNull(codeList.getLocation());
 		assertNotNull(codeList.getIdentifier());
 
-		CodeEntry entry = entries.iterator().next();
+		CodeEntry entry = codeList.getEntryByIdentifier(id);
 
 		assertEquals(
 				"% DNA in tail (a measure of the proportion of total DNA present in the comet tail)",
@@ -108,9 +110,203 @@ public class SkosCodeListTest {
 
 	}
 
+	/**
+	 * 
+	 * test read SKOS properties in preferred language.
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF4_language_nl() throws Exception {
+
+		String base_ns = "http://www.locationframework.eu/codelist/";
+
+		CodeList codeList = readCodeList_WithLanguage(getResourceURI("/data/test4_lang.rdf"), "nl");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+		assertEquals(entries.size(), 4);
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList
+				.getEntryByIdentifier(base_ns + "EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Landen, administratieve en overige gebieden", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
+	/**
+	 * 
+	 * test read SKOS properties in preferred language.
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF4_language_en() throws Exception {
+
+		String base_ns = "http://www.locationframework.eu/codelist/";
+
+		CodeList codeList = readCodeList_WithLanguage(getResourceURI("/data/test4_lang.rdf"), "en");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+
+		assertEquals(entries.size(), 4);
+
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList
+				.getEntryByIdentifier(base_ns + "EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Countries, administrative units and other areas", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
+	/**
+	 * 
+	 * test read SKOS properties in preferred language, as "de" not available,
+	 * it will load "en" by default
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF4_language_de() throws Exception {
+
+		String base_ns = "http://www.locationframework.eu/codelist/";
+
+		CodeList codeList = readCodeList_WithLanguage(getResourceURI("/data/test4_lang.rdf"), "de");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+
+		assertEquals(entries.size(), 4);
+
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList
+				.getEntryByIdentifier(base_ns + "EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Countries, administrative units and other areas", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
+	/**
+	 * 
+	 * test read SKOS properties in preferred language (fallback).
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF5_language_nl() throws Exception {
+
+		CodeList codeList = readCodeList_WithLanguage(
+				getResourceURI("/data/test4_lang_fallback.rdf"), "nl");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+		assertEquals(entries.size(), 4);
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList.getEntryByIdentifier("EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Landen, administratieve en overige gebieden", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
+	/**
+	 * 
+	 * test read SKOS properties in preferred language (fallback).
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF5_language_en() throws Exception {
+
+		CodeList codeList = readCodeList_WithLanguage(
+				getResourceURI("/data/test4_lang_fallback.rdf"), "en");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+
+		assertEquals(entries.size(), 4);
+
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList.getEntryByIdentifier("EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Countries, administrative units and other areas", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
+	/**
+	 * 
+	 * test read SKOS properties in preferred language (fallback). As "de" not
+	 * available, it will load "en" by default
+	 * 
+	 * @throws Exception throws exception if something wrong occurs
+	 */
+	@Test
+	public void testSKOSFromRDF5_language_de() throws Exception {
+
+		CodeList codeList = readCodeList_WithLanguage(
+				getResourceURI("/data/test4_lang_fallback.rdf"), "de");
+
+		Collection<CodeEntry> entries = codeList.getEntries();
+		assertFalse(entries.isEmpty());
+
+		assertEquals(entries.size(), 4);
+
+		assertNotNull(codeList.getLocation());
+		assertNotNull(codeList.getIdentifier());
+
+		CodeEntry entry = codeList.getEntryByIdentifier("EuroGeoNamesLocationTypeValue/1");
+
+		assertEquals("Countries, administrative units and other areas", entry.getName());
+		assertEquals(
+				"Country, territorial units of a country for administrative purposes and other manmade areas.",
+				entry.getDescription());
+	}
+
 	private CodeList readCodeList(URI source) throws Exception {
 
 		CodeListReader reader = new SkosCodeListReader();
+
+		reader.setSource(new DefaultInputSupplier(source));
+
+		IOReport report = reader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		return reader.getCodeList();
+
+	}
+
+	private CodeList readCodeList_WithLanguage(URI source, final String language) throws Exception {
+
+		SkosCodeListReader reader = new SkosCodeListReader() {
+
+			/**
+			 * @see eu.esdihumboldt.hale.io.codelist.skos.reader.SkosCodeListReader#getLangauge()
+			 */
+			@Override
+			public String getLangauge() {
+				return language;
+			}
+		};
 
 		reader.setSource(new DefaultInputSupplier(source));
 

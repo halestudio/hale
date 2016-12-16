@@ -1,0 +1,44 @@
+<rdf:RDF
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xml:base="http://www.locationframework.eu/codelist/">
+    <skos:conceptScheme rdf:about="EuroGeoNamesLocationTypeValue">
+        <skos:prefLabel xml:lang="en">EuroGeoNames location type</skos:prefLabel>
+        <dcterms:description xml:lang="en">The supported location types in the ELF GeoLocator service, see also http://www.elfproject.eu/documentation/specification/geolocator/1.0. The definitions are taken from "Proposal of feature type catalogue for EGN project" (http://www.eurogeographics.org/sites/default/files/080211_FEATURE%20TYPES%20EGN%20v.3(Spain.8-Febr-08).pdf).</dcterms:description>
+        <skos:prefLabel xml:lang="nl">EuroGeoNames plaatstype</skos:prefLabel>
+        <dcterms:description xml:lang="nl">De ondersteunde plaatstypes in de ELF GeoLocator-service</dcterms:description>
+        <dcterms:source rdf:resource="http://www.elfproject.eu/documentation/specification/geolocator/1.0" />
+        <dcterms:source rdf:resource="http://www.eurogeographics.org/sites/default/files/080211_FEATURE%20TYPES%20EGN%20v.3(Spain.8-Febr-08).pdf" />
+    </skos:conceptScheme>
+    <skos:concept rdf:about="EuroGeoNamesLocationTypeValue/1">
+        <skos:inScheme rdf:resource="EuroGeoNamesLocationTypeValue" />
+        <skos:topConceptOf rdf:resource="EuroGeoNamesLocationTypeValue" />
+        <skos:prefLabel xml:lang="en">Countries, administrative units and other areas</skos:prefLabel>
+        <skos:definition xml:lang="en">Country, territorial units of a country for administrative purposes and other manmade areas.</skos:definition>
+        <skos:prefLabel xml:lang="nl">Landen, administratieve en overige gebieden</skos:prefLabel>
+    </skos:concept>
+    <skos:concept rdf:about="EuroGeoNamesLocationTypeValue/2">
+        <skos:inScheme rdf:resource="EuroGeoNamesLocationTypeValue" />
+        <skos:prefLabel xml:lang="en">Country</skos:prefLabel>
+        <skos:definition xml:lang="en">Country of Europe</skos:definition>
+        <skos:prefLabel xml:lang="nl">Landen</skos:prefLabel>
+        <skos:broader rdf:resource="EuroGeoNamesLocationTypeValue/1" />
+    </skos:concept>
+    <skos:concept rdf:about="EuroGeoNamesLocationTypeValue/3">
+        <skos:inScheme rdf:resource="EuroGeoNamesLocationTypeValue" />
+        <skos:prefLabel xml:lang="en">Administrative units</skos:prefLabel>
+        <skos:definition xml:lang="en">Territorial units of every country for statistics and administrative purposes.</skos:definition>
+        <skos:scopeNote xml:lang="en">Including Nomenclature of Territorial Units for Statistics in EU (NUTS 1, 2 and 3), Local Administrative Units (LAU 1 and 2) and other administrative units.</skos:scopeNote>
+        <skos:example xml:lang="en">länder (Germany), autonomous region (Spain), province, municipality</skos:example>
+        <skos:prefLabel xml:lang="nl">Administratieve gebieden</skos:prefLabel>
+        <skos:broader rdf:resource="EuroGeoNamesLocationTypeValue/1" />
+    </skos:concept>
+    <skos:concept rdf:about="EuroGeoNamesLocationTypeValue/4">
+        <skos:inScheme rdf:resource="EuroGeoNamesLocationTypeValue" />
+        <skos:prefLabel xml:lang="en">Other non-administrative units</skos:prefLabel>
+        <skos:prefLabel xml:lang="nl">Overige, niet-administratieve gebieden</skos:prefLabel>
+        <skos:definition xml:lang="en">Other type of man-made areas like economic, cultural, linguistic or tourist areas.</skos:definition>
+        <skos:broader rdf:resource="EuroGeoNamesLocationTypeValue/1" />
+    </skos:concept>
+</rdf:RDF>
