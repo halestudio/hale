@@ -24,7 +24,7 @@
             description="(deprecated) Creates an Inspire Identifier structure. For the local ID part a source property is used, while the namespace is derived from information supplied for country, provider and product. For new mappings please map to the individual properties of the INSPIRE identifier (e.g. localId, namespace) directly."
             icon="icons/inspire.gif"
             identifier="eu.esdihumboldt.cst.functions.inspire.identifier"
-            name="Inspire Identifier">
+            name="Inspire Identifier [deprecated]">
          <targetProperties>
             <property
                   maxOccurrence="1"
@@ -94,10 +94,10 @@
       <propertyFunction
             category="inspire"
             cellExplanation="eu.esdihumboldt.cst.functions.inspire.GeographicalNameExplanation"
-            description="Create an Inspire Geographical Name structure, for one or more source properties that are used as spelling."
+            description="(deprecated) Create an Inspire Geographical Name structure, for one or more source properties that are used as spelling."
             icon="icons/inspire.gif"
             identifier="eu.esdihumboldt.cst.functions.inspire.geographicalname"
-            name="Geographical Name">
+            name="Geographical Name [deprecated]">
          <targetProperties>
             <property
                   maxOccurrence="1"

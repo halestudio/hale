@@ -6,7 +6,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.html.HtmlMappingExporter"
             id="eu.esdihumboldt.hale.io.htmlexporter"
-            name="HTML Mapping Documentation">
+            name="HTML Mapping Documentation [deprecated]">
          <contentType
                ref="eu.esdihumboldt.hale.io.html">
          </contentType>
