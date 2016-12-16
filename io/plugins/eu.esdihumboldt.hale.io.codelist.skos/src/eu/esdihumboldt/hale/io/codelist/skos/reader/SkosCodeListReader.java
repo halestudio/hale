@@ -3,6 +3,7 @@ package eu.esdihumboldt.hale.io.codelist.skos.reader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Locale;
 
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
@@ -21,6 +22,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 public class SkosCodeListReader extends AbstractImportProvider implements CodeListReader {
 
 	private CodeList codelist;
+	private String language;
 
 	@Override
 	public boolean isCancelable() {
@@ -32,9 +34,12 @@ public class SkosCodeListReader extends AbstractImportProvider implements CodeLi
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Loading SKOS code list", ProgressIndicator.UNKNOWN);
 		try {
+
+			this.language = getLangauge();
+
 			URI loc = getSource().getLocation();
 			InputStream in = getSource().getInput();
-			codelist = new SkosCodeList(in, loc);
+			codelist = new SkosCodeList(in, loc, this.language);
 			progress.setCurrentTask("Code list loaded.");
 			reporter.setSuccess(true);
 		} catch (Exception ex) {
@@ -52,6 +57,15 @@ public class SkosCodeListReader extends AbstractImportProvider implements CodeLi
 	@Override
 	public CodeList getCodeList() {
 		return codelist;
+	}
+
+	/**
+	 * Get language. By default Locale language is used.
+	 * 
+	 * @return String
+	 */
+	public String getLangauge() {
+		return Locale.getDefault().getLanguage();
 	}
 
 }
