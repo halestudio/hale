@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.io.gml.writer.internal;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -560,6 +561,33 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			throw new IllegalStateException("No root element/container found");
 		}
 
+		/*
+		 * Add schema for container to validation schemas, if the namespace
+		 * differs from the main namespace or additional schemas.
+		 * 
+		 * Needed for validation based on schemaLocation attribute.
+		 */
+		if (!containerName.getNamespaceURI().equals(targetIndex.getNamespace())
+				&& !additionalSchemas.containsKey(containerName.getNamespaceURI())) {
+			try {
+				@SuppressWarnings("null")
+				final URI containerSchemaLoc = stripFragment(container.getLocation());
+				if (containerSchemaLoc != null) {
+					addValidationSchema(containerName.getNamespaceURI(), new Locatable() {
+
+						@Override
+						public URI getLocation() {
+							return containerSchemaLoc;
+						}
+					}, null);
+				}
+			} catch (Exception e) {
+				reporter.error(new IOMessageImpl(
+						"Could not determine location of container definition", e));
+			}
+
+		}
+
 		// additional schema namespace prefixes
 		for (Entry<String, String> schemaNs : additionalSchemaPrefixes.entrySet()) {
 			GmlWriterUtil.addNamespace(writer, schemaNs.getKey(), schemaNs.getValue());
@@ -664,6 +692,19 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		writer.writeEndDocument();
 
 		writer.close();
+	}
+
+	/**
+	 * Strip the fragment from a location (as it usually represents line and
+	 * column numbers)
+	 * 
+	 * @param location the location
+	 * @return the location w/o fragment
+	 * @throws URISyntaxException if the URI cannot be recreated properly
+	 */
+	private URI stripFragment(URI location) throws URISyntaxException {
+		return new URI(location.getScheme(), location.getUserInfo(), location.getHost(),
+				location.getPort(), location.getPath(), location.getQuery(), null);
 	}
 
 	/**
