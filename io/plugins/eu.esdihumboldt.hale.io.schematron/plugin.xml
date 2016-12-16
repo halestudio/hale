@@ -24,18 +24,5 @@
          </providerParameter>
       </provider>
    </extension>
-   <extension
-         point="org.eclipse.core.contenttype.contentTypes">
-      <content-type
-            base-type="eu.esdihumboldt.hale.common.core.gzip"
-            file-extensions="xml.gz,gz"
-            id="eu.esdihumboldt.hale.io.xml.gzip"
-            name="GZiped XML file"
-            priority="normal">
-         <describer
-               class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLContentDescriber">
-         </describer>
-      </content-type>
-   </extension>
 
 </plugin>
