@@ -5,12 +5,9 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.io.schematron;singleton:=true
 Bundle-Version: 3.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="3.1.0",
- org.eclipse.core.contenttype;bundle-version="3.5.0",
- eu.esdihumboldt.hale.ui;bundle-version="3.1.0",
- org.eclipse.ui;bundle-version="3.107.0",
- eu.esdihumboldt.hale.ui.util;bundle-version="3.1.0",
- de.fhg.igd.eclipse.util;bundle-version="1.0.0"
+Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
+ de.fhg.igd.eclipse.util;bundle-version="1.0.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.1.0"
 Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.util.io

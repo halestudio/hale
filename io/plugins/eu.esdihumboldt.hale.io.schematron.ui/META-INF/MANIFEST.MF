@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Schematron Validator UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.schematron.ui;singleton:=true
+Bundle-Version: 3.1.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.ui;bundle-version="3.107.0",
+ eu.esdihumboldt.hale.io.schematron;bundle-version="3.1.0"
+Import-Package: eu.esdihumboldt.hale.common.core.io,
+ eu.esdihumboldt.hale.common.core.io.impl,
+ eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.common.instance.io.impl,
+ eu.esdihumboldt.hale.ui.io.config,
+ eu.esdihumboldt.hale.ui.util.io
+Export-Package: eu.esdihumboldt.hale.io.schematron.ui

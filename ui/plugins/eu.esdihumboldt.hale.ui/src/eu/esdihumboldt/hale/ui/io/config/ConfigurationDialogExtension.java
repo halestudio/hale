@@ -126,7 +126,7 @@ public class ConfigurationDialogExtension
 	}
 
 	/**
-	 * Factory for {@link AbstractConfigurationPage}s based on an
+	 * Factory for {@link AbstractConfigurationDialog}s based on an
 	 * {@link IConfigurationElement}
 	 */
 	private static class ConfigurationDialogFactoryImpl

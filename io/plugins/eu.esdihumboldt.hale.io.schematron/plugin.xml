@@ -37,14 +37,5 @@
          </describer>
       </content-type>
    </extension>
-   <extension
-         point="eu.esdihumboldt.hale.ui.io.config">
-      <configDialog
-            class="eu.esdihumboldt.hale.io.schematron.validator.SchematronValidatorConfigurationDialog">
-         <provider
-               ref="eu.esdihumboldt.hale.io.schematron.validator">
-         </provider>
-      </configDialog>
-   </extension>
 
 </plugin>

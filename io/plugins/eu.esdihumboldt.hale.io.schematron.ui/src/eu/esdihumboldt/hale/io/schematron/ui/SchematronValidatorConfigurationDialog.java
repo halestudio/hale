@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.schematron.validator;
+package eu.esdihumboldt.hale.io.schematron.ui;
 
 import java.io.File;
 
@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+import eu.esdihumboldt.hale.io.schematron.validator.SchematronInstanceValidator;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationDialog;
 import eu.esdihumboldt.hale.ui.util.io.OpenFileFieldEditor;
 
