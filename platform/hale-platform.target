@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="290">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="293">
 <locations>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.5.2.M20160212-1500"/>
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.5.1.v20160129-0959"/>
-<repository location="http://download.eclipse.org/eclipse/updates/4.5"/>
-</location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
 <unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
@@ -25,6 +20,19 @@
 <repository location="http://build-artifacts.wetransform.to/p2/slf4jplus/import"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20161212"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/eeb0b1c372c88912537f685b8f72c679fc4342df/updatesites/platform"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="4.5.2.M20160212-1500"/>
+<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.5.1.v20160129-0959"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/mars-eclipse"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/jetty-8"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.8.3.v201512160556"/>
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
@@ -32,15 +40,7 @@
 <unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.9.0.201506060219"/>
 <unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
 <unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.2.v20160202-2102"/>
-<repository location="http://download.eclipse.org/releases/mars/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
-<repository location="http://download.eclipse.org/jetty/updates/jetty-bundles-8.x/8.1.18.v20150929"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20161212"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/eeb0b1c372c88912537f685b8f72c679fc4342df/updatesites/platform"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/mars-releases"/>
 </location>
 </locations>
 </target>
