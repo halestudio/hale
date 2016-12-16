@@ -39,14 +39,18 @@ public class SchematronValidatorConfigurationDialog
 	private OpenFileFieldEditor schematronRulesFile;
 
 	/**
-	 * Creates a configuration dialog. Uses the active {@link Shell}.
+	 * Creates a configuration dialog instance that uses the currently active
+	 * {@link Shell}.
 	 */
 	public SchematronValidatorConfigurationDialog() {
 		super();
 	}
 
 	/**
-	 * @param parentShell
+	 * Creates a configuration dialog instance.
+	 * 
+	 * @param parentShell the parent shell, or <code>null</code> to create a
+	 *            top-level shell
 	 */
 	public SchematronValidatorConfigurationDialog(Shell parentShell) {
 		super(parentShell);
@@ -94,6 +98,9 @@ public class SchematronValidatorConfigurationDialog
 		return composite;
 	}
 
+	/**
+	 * @return The selected file or null
+	 */
 	public String getSchematronRulesFile() {
 		if (schematronRulesFile == null) {
 			return null;

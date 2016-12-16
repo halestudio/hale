@@ -134,6 +134,9 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator {
 	}
 
 	/**
+	 * Checks if the validator is properly configured. This method does not call
+	 * <code>validate()</code> from {@link AbstractInstanceValidator}.
+	 * 
 	 * @see eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator#validate()
 	 */
 	@Override

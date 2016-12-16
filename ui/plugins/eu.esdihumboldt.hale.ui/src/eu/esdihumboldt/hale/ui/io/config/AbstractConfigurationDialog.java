@@ -23,12 +23,16 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
- * Abstract base class for configuration dialogs.
+ * Abstract base class for {@link IOProvider} configuration dialogs.
  * 
  * Provides a default no-arg constructor that fetches the currently active
  * {@link Shell} via {@link PlatformUI}.
  * 
  * @author Florian Esser
+ * @param
+ * 			<P>
+ *            {@link IOProvider} class for which the dialog provides
+ *            configuration
  */
 public abstract class AbstractConfigurationDialog<P extends IOProvider> extends Dialog {
 
@@ -43,14 +47,15 @@ public abstract class AbstractConfigurationDialog<P extends IOProvider> extends 
 	}
 
 	/**
-	 * @param parentShell
+	 * @param parentShell object that returns the current parent shell
 	 */
 	protected AbstractConfigurationDialog(IShellProvider parentShell) {
 		super(parentShell);
 	}
 
 	/**
-	 * @param parentShell
+	 * @param parentShell the parent shell, or <code>null</code> to create a
+	 *            top-level shell
 	 */
 	protected AbstractConfigurationDialog(Shell parentShell) {
 		super(parentShell);
@@ -76,16 +81,17 @@ public abstract class AbstractConfigurationDialog<P extends IOProvider> extends 
 	protected abstract boolean configureProvider(P provider);
 
 	/**
+	 * Set the provider to be configured by this dialog instance.
 	 * 
-	 * @param provider
+	 * @param provider Provider to be configured
 	 */
 	public void setProvider(P provider) {
 		this.provider = provider;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the provider configured by this dialog or null if none has been
+	 *         set yet
 	 */
 	public P getProvider() {
 		return this.provider;
