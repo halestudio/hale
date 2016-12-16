@@ -30,7 +30,6 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
@@ -61,8 +60,8 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 						"No location for schema, may cause validation to fail.", null));
 			}
 		}
-		Validator val = ValidatorFactory.getInstance().createValidator(
-				schemaLocations.toArray(new URI[schemaLocations.size()]));
+		Validator val = ValidatorFactory.getInstance()
+				.createValidator(schemaLocations.toArray(new URI[schemaLocations.size()]));
 		InputStream in = getSource().getInput();
 		try {
 			Report report = val.validate(in);
@@ -70,16 +69,16 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			// use the report information to populate reporter
 			for (SAXParseException warning : report.getWarnings()) {
 				reporter.warn(new IOMessageImpl(//
-						warning.getLocalizedMessage(),//
-						warning,//
-						warning.getLineNumber(),//
+						warning.getLocalizedMessage(), //
+						warning, //
+						warning.getLineNumber(), //
 						warning.getColumnNumber()));
 			}
 			for (SAXParseException error : report.getErrors()) {
 				reporter.error(new IOMessageImpl(//
-						error.getLocalizedMessage(),//
-						error,//
-						error.getLineNumber(),//
+						error.getLocalizedMessage(), //
+						error, //
+						error.getLineNumber(), //
 						error.getColumnNumber()));
 			}
 
@@ -91,24 +90,19 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 		}
 	}
 
-	/**
-	 * @see IOProvider#createReporter()
-	 */
 	@Override
-	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(), "XML validation", false) {
+	protected String getReportLabel() {
+		return "XML validation";
+	}
 
-			@Override
-			protected String getFailSummary() {
-				return "Validating the XML file failed";
-			}
+	@Override
+	protected String getDefaultFailSummary() {
+		return "Validating the XML file failed";
+	}
 
-			@Override
-			protected String getSuccessSummary() {
-				return "The XML file is valid";
-			}
-
-		};
+	@Override
+	protected String getDefaultSuccessSummary() {
+		return "The XML file is valid";
 	}
 
 	/**

@@ -46,16 +46,16 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class ConfigurationPageExtension extends
-		AbstractExtension<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> {
+public class ConfigurationPageExtension
+		extends AbstractExtension<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> {
 
 	/**
 	 * Factory for {@link AbstractConfigurationPage}s based on an
 	 * {@link IConfigurationElement}
 	 */
-	private static class ConfigurationFactory extends
-			AbstractConfigurationFactory<AbstractConfigurationPage<?, ?>> implements
-			ConfigurationPageFactory {
+	private static class ConfigurationFactory
+			extends AbstractConfigurationFactory<AbstractConfigurationPage<?, ?>>
+			implements ConfigurationPageFactory {
 
 		/**
 		 * Create a factory based on the given configuration
@@ -167,14 +167,21 @@ public class ConfigurationPageExtension extends
 	 */
 	@Override
 	protected ConfigurationPageFactory createFactory(IConfigurationElement conf) throws Exception {
-		return new ConfigurationFactory(conf);
+		if (conf.getName().equals("configPage")) {
+			return new ConfigurationFactory(conf);
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
 	 * Get the configuration pages registered for the given I/O provider
 	 * descriptors
 	 * 
-	 * @param <P> the {@link IOProvider} type used in the wizard
+	 * @param
+	 * 			<P>
+	 *            the {@link IOProvider} type used in the wizard
 	 * 
 	 * @param descriptors the provider descriptors
 	 * @return the configuration pages in a multimap where the corresponding
@@ -191,21 +198,23 @@ public class ConfigurationPageExtension extends
 		}
 
 		// get all factories that support at least one of the providers
-		List<ConfigurationPageFactory> factories = getFactories(new FactoryFilter<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory>() {
+		List<ConfigurationPageFactory> factories = getFactories(
+				new FactoryFilter<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory>() {
 
-			@Override
-			public boolean acceptFactory(ConfigurationPageFactory factory) {
-				Set<String> supported = new HashSet<String>(factory.getSupportedProviderIDs());
-				supported.retainAll(providerIds);
-				return !supported.isEmpty();
-			}
+					@Override
+					public boolean acceptFactory(ConfigurationPageFactory factory) {
+						Set<String> supported = new HashSet<String>(
+								factory.getSupportedProviderIDs());
+						supported.retainAll(providerIds);
+						return !supported.isEmpty();
+					}
 
-			@Override
-			public boolean acceptCollection(
-					ExtensionObjectFactoryCollection<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> collection) {
-				return false;
-			}
-		});
+					@Override
+					public boolean acceptCollection(
+							ExtensionObjectFactoryCollection<AbstractConfigurationPage<?, ?>, ConfigurationPageFactory> collection) {
+						return false;
+					}
+				});
 
 		ListMultimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> result = ArrayListMultimap
 				.create();

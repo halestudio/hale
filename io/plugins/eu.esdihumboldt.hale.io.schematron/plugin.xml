@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.schematron.validator.SchematronInstanceValidator"
+            description="Validates XML files against ISO schematron rules"
+            id="eu.esdihumboldt.hale.io.schematron.validator"
+            name="Schematron validator">
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xml.gzip">
+         </contentType>
+         <providerParameter
+               label="Schematron validator rules"
+               name="schematron.location"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+      </provider>
+   </extension>
+
+</plugin>

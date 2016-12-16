@@ -7,6 +7,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import org.semanticweb.skos.SKOSUntypedLiteral;
 import org.semanticweb.skosapibinding.SKOSManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.EntityResolver;
@@ -49,6 +51,8 @@ public class SkosCodeList implements CodeList {
 
 	private static final String USAGENOTE_LABEL = "usageNote";
 
+	private static final String ATTRIBUTE_LANGUAGE = "xml:lang";
+
 	private String identifier;
 
 	private String namespace;
@@ -63,16 +67,24 @@ public class SkosCodeList implements CodeList {
 
 	private SKOSDataset dataSet;
 
+	private final String language;
+
+	private static final String DEFAULT_LANGUAGE = Locale.US.getLanguage();
+
 	/**
 	 * Create a code list from a RDF file and URL.
 	 * 
 	 * @param in input stream of source
 	 * @param location the location from where code list loaded
+	 * @param language language of the concepts
 	 * @throws Exception if something will go wrong
 	 */
-	public SkosCodeList(InputStream in, URI location) throws Exception {
+	public SkosCodeList(InputStream in, URI location, String language) throws Exception {
 		this.location = location;
 		this.identifier = null;
+
+		this.language = language;
+
 		try {
 
 			SKOSManager manager = new SKOSManager();
@@ -227,6 +239,9 @@ public class SkosCodeList implements CodeList {
 
 		String topConcept = null;
 
+		boolean prefLanguageNameAvailable = false;
+		boolean prefLanguageDefinitionAvailable = false;
+
 		for (SKOSAnnotation anno : entity.getSKOSAnnotations(dataSet)) {
 			// System.err.print("\t\tAnnotation: " + anno.getURI() + "-> ");
 			if (anno.isAnnotationByConstant()) {
@@ -234,10 +249,42 @@ public class SkosCodeList implements CodeList {
 					SKOSUntypedLiteral con = anno.getAnnotationValueAsConstant()
 							.getAsSKOSUntypedLiteral();
 					if (isPrefLabel(anno.getURI().toString())) {
-						name = con.getLiteral();
+						if (con.hasLang()) {
+							if (con.getLang().equals(this.language)) {
+								name = con.getLiteral();
+								prefLanguageNameAvailable = true;
+							}
+							else if (!prefLanguageNameAvailable
+									&& con.getLang().equals(DEFAULT_LANGUAGE)) {
+								name = con.getLiteral();
+								prefLanguageNameAvailable = true;
+							}
+							else if (!prefLanguageNameAvailable) {
+								name = con.getLiteral();
+							}
+						}
+						else if (!prefLanguageNameAvailable) {
+							name = con.getLiteral();
+						}
 					}
 					else if (isDefinition(anno.getURI().toString())) {
-						description = con.getLiteral();
+						if (con.hasLang()) {
+							if (con.getLang().equals(this.language)) {
+								description = con.getLiteral();
+								prefLanguageDefinitionAvailable = true;
+							}
+							else if (!prefLanguageDefinitionAvailable
+									&& con.getLang().equals(DEFAULT_LANGUAGE)) {
+								description = con.getLiteral();
+								prefLanguageDefinitionAvailable = true;
+							}
+							else if (!prefLanguageDefinitionAvailable) {
+								description = con.getLiteral();
+							}
+						}
+						else if (!prefLanguageDefinitionAvailable) {
+							description = con.getLiteral();
+						}
 					}
 					else if (isTopConcept(anno.getURI().toString())) {
 						topConcept = con.getLiteral();
@@ -392,10 +439,16 @@ public class SkosCodeList implements CodeList {
 			if (totalConcepts == 0)
 				return false;
 
+			boolean prefLanguageNameAvailable = false;
+			boolean prefLanguageDefinitionAvailable = false;
+
 			for (int i = 0; i < listOfConcepts.getLength(); i++) {
 
 				Node conceptNode = listOfConcepts.item(i);
 				if (conceptNode != null && conceptNode.getNodeType() == Node.ELEMENT_NODE) {
+
+					prefLanguageNameAvailable = false;
+					prefLanguageDefinitionAvailable = false;
 
 					Element concept = (Element) conceptNode;
 					namespace = concept.getAttribute("rdf:about");
@@ -410,13 +463,47 @@ public class SkosCodeList implements CodeList {
 						if (nd != null) {
 							String nodeName = nd.getNodeName();
 							if (nodeName.equals("skos:prefLabel")) {
-								name = nd.getFirstChild().getNodeValue();
+								if (isLanguageAttributeAvailable(nd)) {
+									if (getLanguageAttribute(nd).equals(this.language)) {
+										name = nd.getFirstChild().getNodeValue();
+										prefLanguageNameAvailable = true;
+									}
+									else if (!prefLanguageNameAvailable
+											&& getLanguageAttribute(nd).equals(DEFAULT_LANGUAGE)) {
+										name = nd.getFirstChild().getNodeValue();
+										prefLanguageNameAvailable = true;
+									}
+									else if (!prefLanguageNameAvailable) {
+										name = nd.getFirstChild().getNodeValue();
+									}
+								}
+								else if (!prefLanguageNameAvailable) {
+									name = nd.getFirstChild().getNodeValue();
+								}
 							}
 							else if (nodeName.equals("skos:definition")) {
-								description = nd.getFirstChild().getNodeValue();
+								if (isLanguageAttributeAvailable(nd)) {
+									if (getLanguageAttribute(nd).equals(this.language)) {
+										description = nd.getFirstChild().getNodeValue();
+										prefLanguageDefinitionAvailable = true;
+									}
+									else if (!prefLanguageDefinitionAvailable
+											&& getLanguageAttribute(nd).equals(DEFAULT_LANGUAGE)) {
+										description = nd.getFirstChild().getNodeValue();
+										prefLanguageDefinitionAvailable = true;
+									}
+									else if (!prefLanguageDefinitionAvailable) {
+										description = nd.getFirstChild().getNodeValue();
+									}
+								}
+								else if (!prefLanguageDefinitionAvailable) {
+									description = nd.getFirstChild().getNodeValue();
+								}
 							}
 							else if (nodeName.equals("skos:topConceptOf")) {
-								this.namespace = nd.getFirstChild().getNodeValue();
+								if (nd.hasChildNodes()) {
+									this.namespace = nd.getFirstChild().getNodeValue();
+								}
 							}
 							else if (description == null && nodeName.endsWith("description")) {
 								if (nd.getChildNodes().getLength() != 0)
@@ -444,6 +531,25 @@ public class SkosCodeList implements CodeList {
 			throw e;
 		}
 		return true;
+	}
+
+	private String getLanguageAttribute(Node node) {
+		NamedNodeMap attrs = node.getAttributes();
+		return attrs.getNamedItem(ATTRIBUTE_LANGUAGE).getNodeValue();
+	}
+
+	private boolean isLanguageAttributeAvailable(Node node) {
+		if (node.hasAttributes()) {
+			NamedNodeMap attrs = node.getAttributes();
+			if (attrs == null)
+				return false;
+			if (attrs.getNamedItem(ATTRIBUTE_LANGUAGE) == null)
+				return false;
+
+			return true;
+		}
+		else
+			return false;
 	}
 
 }

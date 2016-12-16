@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Schematron Validator
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.schematron;singleton:=true
+Bundle-Version: 3.1.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
+ de.fhg.igd.eclipse.util;bundle-version="1.0.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.1.0"
+Import-Package: eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.common.instance.io.impl,
+ eu.esdihumboldt.util.io
+Export-Package: eu.esdihumboldt.hale.io.schematron.validator
+Bundle-ClassPath: .,
+ lib/saxon9-9.0.0.8.jar,
+ lib/schema-utils-1.8.jar,
+ lib/xml-resolver-1.2.jar
