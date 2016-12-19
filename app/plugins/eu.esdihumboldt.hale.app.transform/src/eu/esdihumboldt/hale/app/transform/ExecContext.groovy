@@ -80,7 +80,7 @@ class ExecContext {
 	/**
 	 * Identifier of instance validator to use (if any).
 	 */
-	String validateProviderId
+	List<String> validateProviderIds
 
 	/**
 	 * Settings for writing the target.

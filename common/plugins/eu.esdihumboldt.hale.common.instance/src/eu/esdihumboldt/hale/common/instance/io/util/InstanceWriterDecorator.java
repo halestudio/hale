@@ -30,8 +30,8 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @param <T> the provider type
  * @author Simon Templer
  */
-public abstract class InstanceWriterDecorator<T extends InstanceWriter> extends
-		ExportProviderDecorator<T> implements InstanceWriter {
+public abstract class InstanceWriterDecorator<T extends InstanceWriter>
+		extends ExportProviderDecorator<T>implements InstanceWriter {
 
 	/**
 	 * @see ExportProviderDecorator#ExportProviderDecorator(eu.esdihumboldt.hale.common.core.io.ExportProvider)
@@ -58,6 +58,15 @@ public abstract class InstanceWriterDecorator<T extends InstanceWriter> extends
 	@Override
 	public List<? extends Locatable> getValidationSchemas() {
 		return internalProvider.getValidationSchemas();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider#getValidatorInput()
+	 */
+
+	@Override
+	public List<? extends Locatable> getValidatorInput() {
+		return this.getValidationSchemas();
 	}
 
 	@Override

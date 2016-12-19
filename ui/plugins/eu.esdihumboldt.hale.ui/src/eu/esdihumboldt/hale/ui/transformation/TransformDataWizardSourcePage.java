@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.transformation;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,7 +44,6 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
@@ -269,8 +269,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			}
 			else if (validationJob == null) {
 				final InstanceValidator validator = (InstanceValidator) provider;
-				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance(),
-						null) {
+				validationJob = new ValidationJob(Arrays.asList(validator),
+						DefaultReportHandler.getInstance(), null) {
 
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
@@ -279,8 +279,10 @@ public class TransformDataWizardSourcePage extends WizardPage {
 						 * writer was not executed yet (and the validation
 						 * schemas thus not updated if applicable)
 						 */
-						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
-						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+						// FLO wo Schemata setzen?
+//						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+//						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+						validator.configure(getProvider());
 
 						return super.run(monitor);
 					}

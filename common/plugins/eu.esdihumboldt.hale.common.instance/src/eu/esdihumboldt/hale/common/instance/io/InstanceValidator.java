@@ -16,8 +16,13 @@
 
 package eu.esdihumboldt.hale.common.instance.io;
 
-import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import java.io.InputStream;
+import java.util.Collection;
+
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Provides support for validating instances
@@ -26,13 +31,22 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public interface InstanceValidator extends ImportProvider {
+public interface InstanceValidator extends IOProvider {
 
 	/**
-	 * Set the schemas to be used for validation.
+	 * Set the source that is to be validated
 	 * 
-	 * @param schemas the validation schema locations
+	 * @param source the source input supplier
 	 */
-	public void setSchemas(Locatable... schemas);
+	void setSource(LocatableInputSupplier<? extends InputStream> source);
+
+	/**
+	 * Set the schemas/rules to be used for validation.
+	 * 
+	 * @param validatorInput the validation schema locations
+	 */
+	void setValidatorInput(Collection<? extends Locatable> validatorInput);
+
+	void configure(ValidatorInputProvider provider);
 
 }

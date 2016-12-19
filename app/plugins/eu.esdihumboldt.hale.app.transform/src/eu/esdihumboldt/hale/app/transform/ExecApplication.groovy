@@ -312,7 +312,7 @@ $baseCommand
 				lastConfigurable = Configurable.source
 				break
 			case '-validate':
-				executionContext.validateProviderId = value
+				executionContext.validateProviderIds.add(value)
 				lastConfigurable = Configurable.validate
 				break
 			case '-out':

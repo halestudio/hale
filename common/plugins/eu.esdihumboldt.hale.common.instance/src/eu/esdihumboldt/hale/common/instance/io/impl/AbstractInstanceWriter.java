@@ -68,6 +68,14 @@ public abstract class AbstractInstanceWriter extends GZipEnabledExport implement
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider#getValidatorInput()
+	 */
+	@Override
+	public List<? extends Locatable> getValidatorInput() {
+		return getValidationSchemas();
+	}
+
+	/**
 	 * Returns the target schema; override to return another set of schemas
 	 * 
 	 * @see InstanceWriter#getValidationSchemas()
