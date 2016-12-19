@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions Tests
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric.test
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: data harmonisation panel
 Import-Package: eu.esdihumboldt.cst.functions.geometric,
