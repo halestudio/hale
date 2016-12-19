@@ -279,9 +279,6 @@ public class TransformDataWizardSourcePage extends WizardPage {
 						 * writer was not executed yet (and the validation
 						 * schemas thus not updated if applicable)
 						 */
-						// FLO wo Schemata setzen?
-//						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
-//						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 						validator.configure(getProvider());
 
 						return super.run(monitor);

@@ -78,7 +78,7 @@ class ExecContext {
 	Map<String, Value> targetSettings = [:]
 
 	/**
-	 * Identifier of instance validator to use (if any).
+	 * Identifiers of instance validator to use (if any).
 	 */
 	List<String> validateProviderIds
 

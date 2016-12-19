@@ -20,11 +20,15 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 
 /**
- * TODO Type description
+ * Interface to classes that provide input for validators
  * 
  * @author Florian Esser
  */
 public interface ValidatorInputProvider {
 
+	/**
+	 * @return List of {@link Locatable}s that point to rules/schemas used as
+	 *         validator input
+	 */
 	List<? extends Locatable> getValidatorInput();
 }
