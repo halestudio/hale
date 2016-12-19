@@ -139,7 +139,7 @@
          <providerParameter
                description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
                label="Max Position Error"
-               name="interpolation.maxerror"
+               name="interpolation.maxError"
                optional="true">
             <parameterBinding
                   class="java.lang.Double">
@@ -150,17 +150,17 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
-               label="Keep original coordinates"
-               name="interpolation.geometry.keepOriginal"
+               description="Moves all geometries to the interpolation grid to ensure topological consistency"
+               label="Move all geometries to interpolation gid"
+               name="interpolation.geometries.moveToGrid"
                optional="true">
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
             <valueDescriptor
-                  default="true"
-                  defaultDescription="Will keep original coordinates intact"
-                  sample="false"
+                  default="false"
+                  defaultDescription="Leave non-interpolated geometries untouched"
+                  sample="true"
                   sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
          </providerParameter>
@@ -227,7 +227,7 @@
          <providerParameter
                description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
                label="Max Position Error"
-               name="interpolation.maxerror"
+               name="interpolation.maxError"
                optional="true">
             <parameterBinding
                   class="java.lang.Double">
@@ -238,17 +238,17 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Set to false to move all geometry coordinates to universal grid otherwise original  coordinates will remain intact (will not move them to universal grid) in interpolation operation. "
-               label="Keep original coordinates"
-               name="interpolation.geometry.keepOriginal"
+               description="Moves all geometries to the interpolation grid to ensure topological consistency"
+               label="Move all geometries to interpolation gid"
+               name="interpolation.geometries.moveToGrid"
                optional="true">
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
             <valueDescriptor
-                  default="true"
-                  defaultDescription="Will keep original coordinates intact"
-                  sample="false"
+                  default="false"
+                  defaultDescription="Leave non-interpolated geometries untouched"
+                  sample="true"
                   sampleDescription="will move all coordinates of all geometries to universal grid">
             </valueDescriptor>
          </providerParameter>
