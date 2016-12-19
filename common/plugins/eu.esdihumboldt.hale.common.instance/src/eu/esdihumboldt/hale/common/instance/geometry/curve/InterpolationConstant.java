@@ -11,12 +11,12 @@ public interface InterpolationConstant {
 	/**
 	 * Parameter name for all geometries' coordinates move to grid
 	 */
-	public static final String INTERPOL_GEOMETRY_KEEP_ORIGINAL = "interpolation.geometry.keepOriginal";
+	public static final String INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID = "interpolation.geometries.moveToGrid";
 
 	/**
 	 * Parameter name for the interpolation setting
 	 */
-	public static final String INTERPOL_MAX_POSITION_ERROR = "interpolation.maxerror";
+	public static final String INTERPOL_MAX_POSITION_ERROR = "interpolation.maxError";
 
 	/**
 	 * Default parameter value for the interpolation setting
@@ -26,5 +26,5 @@ public interface InterpolationConstant {
 	/**
 	 * Default parameter value for the all geometry on grid parameter
 	 */
-	public static final boolean DEFAULT_INTERPOL_GEOMETRY_KEEP_ORIGINAL = true;
+	public static final boolean DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID = false;
 }

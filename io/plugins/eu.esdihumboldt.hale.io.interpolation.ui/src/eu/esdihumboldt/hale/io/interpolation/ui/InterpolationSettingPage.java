@@ -27,7 +27,7 @@ public class InterpolationSettingPage
 		implements InterpolationConstant {
 
 	private Text error;
-	private Button keepOriginal;
+	private Button moveToGrid;
 
 	/**
 	 * Default constructor
@@ -58,8 +58,8 @@ public class InterpolationSettingPage
 		}
 		setErrorMessage("");
 		provider.setParameter(INTERPOL_MAX_POSITION_ERROR, Value.of(error.getText()));
-		provider.setParameter(INTERPOL_GEOMETRY_KEEP_ORIGINAL,
-				Value.of(keepOriginal.getSelection()));
+		provider.setParameter(INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID,
+				Value.of(moveToGrid.getSelection()));
 		return true;
 	}
 
@@ -71,7 +71,7 @@ public class InterpolationSettingPage
 		Group groupError = new Group(page, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(groupError);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(groupError);
-		groupError.setText("Max Positional Error");
+		groupError.setText("Interpolated geometries");
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(groupError);
 
 		// label error
@@ -90,23 +90,23 @@ public class InterpolationSettingPage
 
 		Label positionErrorDesc = new Label(groupError, SWT.NONE);
 		positionErrorDesc.setText(
-				"Supplied maximum positional error will be used to interpolate the curve geometries");
+				"Supplied maximum positional error will be used to interpolate Arc and Circle geometries");
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(positionErrorDesc);
 
 		Group group = new Group(page, SWT.NONE);
 		group.setLayout(new GridLayout(1, false));
-		group.setText("Keep original");
+		group.setText("Other geometries");
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(group);
 
-		keepOriginal = new Button(group, SWT.CHECK);
-		keepOriginal.setText("Keep original geometry coordinates");
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(keepOriginal);
+		moveToGrid = new Button(group, SWT.CHECK);
+		moveToGrid.setText("Move all geometries to interpolation grid");
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(moveToGrid);
 		// default
-		keepOriginal.setSelection(true);
+		moveToGrid.setSelection(DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID);
 
 		Label desc = new Label(group, SWT.NONE);
 		desc.setText(
-				"Keep original coordinates intact after interpolation or move all geometries' coordinates to the universal grid");
+				"Moves all geometries coordinates to the interpolation grid to ensure topological consistency with interpolated geometries.");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(desc);
 
 		// filler
@@ -156,7 +156,7 @@ public class InterpolationSettingPage
 		else
 			error.setText(Double.toString(DEFAULT_INTERPOL_MAX_POSITION_ERROR));
 
-		keepOriginal.setSelection(provider.getParameter(INTERPOL_GEOMETRY_KEEP_ORIGINAL)
-				.as(Boolean.class, DEFAULT_INTERPOL_GEOMETRY_KEEP_ORIGINAL));
+		moveToGrid.setSelection(provider.getParameter(INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID)
+				.as(Boolean.class, DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID));
 	}
 }

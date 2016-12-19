@@ -145,8 +145,8 @@ public abstract class AbstractHandlerTest {
 
 		instanceReader.setSource(new DefaultInputSupplier(xmlLocation));
 		instanceReader.setSourceSchema(sourceSchema);
-		instanceReader.setParameter(InterpolationConstant.INTERPOL_GEOMETRY_KEEP_ORIGINAL,
-				Value.of(keepOriginal));
+		instanceReader.setParameter(InterpolationConstant.INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID,
+				Value.of(!keepOriginal));
 		instanceReader.setParameter(InterpolationConstant.INTERPOL_MAX_POSITION_ERROR,
 				Value.of(maxPoisitionError));
 
