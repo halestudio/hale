@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry.handler;
+package eu.esdihumboldt.hale.io.gml.geometry._disabled_handler_;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.PointHandler;
 import eu.esdihumboldt.util.geometry.interpolation.CircleByCenterPointInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
