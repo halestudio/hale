@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -119,8 +120,9 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 		if (success && validator != null) {
 			// validate the written output
 
-			// configure validator
-			validator.configure(getProvider());
+			// set schemas
+			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 
 			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
 			if (exportTarget instanceof FileTarget) {

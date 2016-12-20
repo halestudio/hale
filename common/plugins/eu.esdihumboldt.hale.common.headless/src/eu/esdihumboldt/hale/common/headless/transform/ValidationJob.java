@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -84,7 +85,9 @@ public class ValidationJob extends AbstractTransformationJob {
 					if (writer != null) {
 						// set validation schemas (may have been determined only
 						// during writer execution)
-						validator.configure(writer);
+						// set schemas
+						List<? extends Locatable> schemas = writer.getValidationSchemas();
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 					}
 					IOReport result = validator.execute(new ProgressMonitorIndicator(monitor));
 					if (result != null) {

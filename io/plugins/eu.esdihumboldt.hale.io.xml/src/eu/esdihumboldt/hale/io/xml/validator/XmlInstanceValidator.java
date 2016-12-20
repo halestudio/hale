@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.xml.sax.SAXParseException;
@@ -28,7 +27,6 @@ import org.xml.sax.SAXParseException;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -45,24 +43,6 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 public class XmlInstanceValidator extends AbstractInstanceValidator {
 
 	/**
-	 * Convenience method to set validation schemas
-	 * 
-	 * @param schemas validation schemas
-	 */
-	public void setSchemas(Locatable[] schemas) {
-		super.setValidatorInput(Arrays.asList(schemas));
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceValidator#configure(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
-	@Override
-	public void configure(ValidatorInputProvider provider) {
-		List<? extends Locatable> schemas = provider.getValidatorInput();
-		this.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-	}
-
-	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
@@ -70,7 +50,7 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Validating XML", ProgressIndicator.UNKNOWN);
 		List<URI> schemaLocations = new ArrayList<URI>();
-		for (Locatable schema : getValidatorInput()) {
+		for (Locatable schema : getSchemas()) {
 			URI loc = schema.getLocation();
 			if (loc != null) {
 				schemaLocations.add(loc);

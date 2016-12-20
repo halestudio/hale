@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
@@ -279,7 +280,9 @@ public class TransformDataWizardSourcePage extends WizardPage {
 						 * writer was not executed yet (and the validation
 						 * schemas thus not updated if applicable)
 						 */
-						validator.configure(getProvider());
+						// set schemas
+						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 
 						return super.run(monitor);
 					}

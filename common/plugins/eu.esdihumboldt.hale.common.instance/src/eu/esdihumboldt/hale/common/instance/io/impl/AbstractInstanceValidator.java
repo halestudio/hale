@@ -16,13 +16,8 @@
 
 package eu.esdihumboldt.hale.common.instance.io.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
-import eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -40,27 +35,21 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 public abstract class AbstractInstanceValidator extends GZipEnabledImport
 		implements InstanceValidator {
 
-	private final List<Locatable> validatorInput = new ArrayList<>();
+	private Locatable[] schemas;
 
+	/**
+	 * @see InstanceValidator#setSchemas(Locatable[])
+	 */
 	@Override
-	public void setValidatorInput(Collection<? extends Locatable> validatorInput) {
-		this.validatorInput.clear();
-		this.validatorInput.addAll(validatorInput);
+	public void setSchemas(Locatable... schemas) {
+		this.schemas = schemas;
 	}
 
 	/**
 	 * @return the schemas
 	 */
-	protected List<? extends Locatable> getValidatorInput() {
-		return validatorInput;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceValidator#configure(eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider)
-	 */
-	@Override
-	public void configure(ValidatorInputProvider provider) {
-		this.setValidatorInput(provider.getValidatorInput());
+	protected Locatable[] getSchemas() {
+		return schemas;
 	}
 
 	/**
@@ -73,7 +62,7 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport
 		// Don't call super.validate() here because InstanceValidators
 		// may be called in a context where the source property is unset.
 
-		if (validatorInput == null || validatorInput.isEmpty()) {
+		if (schemas == null || schemas.length == 0) {
 			fail("No schemas provided for validation");
 		}
 	}

@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.report.Report;
@@ -398,7 +399,10 @@ public class ExecTransformation implements ConsoleConstants {
 
 					// load validator settings
 					validator.loadConfiguration(context.getValidateSettings());
-					validator.configure(target);
+
+					// set schemas
+					List<? extends Locatable> schemas = target.getValidationSchemas();
+					validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 
 					// set source
 					validator.setSource(new DefaultInputSupplier(context.getTarget()));
