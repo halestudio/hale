@@ -4,6 +4,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.1.0]
+
 ### Added
 
 - Support reading from and writing to MS SQL databases
@@ -106,5 +108,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.1.0...HEAD
+[3.1.0]: https://github.com/halestudio/hale/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/halestudio/hale/compare/2.9.4...3.0.0
