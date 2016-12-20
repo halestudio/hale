@@ -4,6 +4,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Added
+
+- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+
 ## [3.1.0]
 
 ### Added
@@ -12,7 +16,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Instance counts are now calculated for condition and index contexts as well
 - You can now hide optional properties in the schema explorer
 - SKOS format code lists can now be loaded
-- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+- Validation based on a Schematron file can now be performed on an encoded XML/GML file
 - To ensure topological consistency in respect to interpolated geometries, other geometries may optionally also be moved to the interpolation grid
 - GML Encoding: It is now possible to specify a number format for geometry ordinates, e.g. if you want a fixed precision after the decimal point
 - During validation in hale also check property values against an assigned code list
