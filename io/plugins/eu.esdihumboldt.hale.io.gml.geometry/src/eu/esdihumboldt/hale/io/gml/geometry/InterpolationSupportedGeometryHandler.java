@@ -73,9 +73,10 @@ public abstract class InterpolationSupportedGeometryHandler
 		}
 
 		this.maxPositionalError = maxPositionalError.doubleValue();
-		this.keepOriginal = reader
-				.getParameter(InterpolationConstant.INTERPOL_GEOMETRY_KEEP_ORIGINAL)
-				.as(Boolean.class, InterpolationConstant.DEFAULT_INTERPOL_GEOMETRY_KEEP_ORIGINAL);
+		this.keepOriginal = !reader
+				.getParameter(InterpolationConstant.INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID)
+				.as(Boolean.class,
+						InterpolationConstant.DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID);
 	}
 
 	/**
