@@ -388,7 +388,10 @@ public class ExecTransformation implements ConsoleConstants {
 	private void setupValidators() {
 		if (context.getValidateProviderIds() != null
 				&& !context.getValidateProviderIds().isEmpty()) {
-			for (String validateProviderId : context.getValidateProviderIds()) {
+
+			for (int i = 0; i < context.getValidateProviderIds().size(); i++) {
+				String validateProviderId = context.getValidateProviderIds().get(i);
+
 				if (!validateProviderId.trim().isEmpty()) {
 					final InstanceValidator validator = HaleIO
 							.createIOProvider(InstanceValidator.class, null, validateProviderId);
@@ -398,7 +401,7 @@ public class ExecTransformation implements ConsoleConstants {
 					}
 
 					// load validator settings
-					validator.loadConfiguration(context.getValidateSettings());
+					validator.loadConfiguration(context.getValidateSettings().get(i));
 
 					// set schemas
 					List<? extends Locatable> schemas = target.getValidationSchemas();
