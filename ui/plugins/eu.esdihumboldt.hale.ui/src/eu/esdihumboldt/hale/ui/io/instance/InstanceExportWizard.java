@@ -52,7 +52,7 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceExportWizard.class);
 
-	private InstanceValidator validator;
+	private final List<InstanceValidator> validators = new ArrayList<>();
 
 	private List<IOProviderDescriptor> cachedFactories;
 
@@ -117,54 +117,57 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	public boolean performFinish() {
 		boolean success = super.performFinish();
 
-		if (success && validator != null) {
+		if (success && !validators.isEmpty()) {
 			// validate the written output
 
-			// configure validator
-			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
-			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
-			if (exportTarget instanceof FileTarget) {
-				String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
-				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
-						new File(fileName));
-				validator.setSource(source);
-				validator.setContentType(getContentType());
+			for (InstanceValidator validator : validators) {
+				// set schemas
+				List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+				validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 
-				// XXX configuration pages for validator?
+				ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
+				if (exportTarget instanceof FileTarget) {
+					String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
+					LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
+							new File(fileName));
+					validator.setSource(source);
+					validator.setContentType(getContentType());
 
-				IOReporter defReport = validator.createReporter();
+					// XXX configuration pages for validator?
 
-				// validate and execute provider
-				try {
-					// validate configuration
-					validator.validate();
-					IOReport report = execute(validator, defReport);
+					IOReporter defReport = validator.createReporter();
 
-					if (report != null) {
-						// add report to report server
-						ReportService repService = PlatformUI.getWorkbench()
-								.getService(ReportService.class);
-						repService.addReport(report);
-						// show message to user
-						if (report.isSuccess()) {
-							// info message
-							log.userInfo(report.getSummary());
+					// validate and execute provider
+					try {
+						// validate configuration
+						validator.validate();
+						IOReport report = execute(validator, defReport);
+
+						if (report != null) {
+							// add report to report server
+							ReportService repService = PlatformUI.getWorkbench()
+									.getService(ReportService.class);
+							repService.addReport(report);
+							// show message to user
+							if (report.isSuccess()) {
+								// info message
+								log.userInfo(report.getSummary());
+							}
+							else {
+								// error message
+								log.userError(report.getSummary()
+										+ "\nPlease see the report for more details.");
+							}
 						}
-						else {
-							// error message
-							log.userError(report.getSummary()
-									+ "\nPlease see the report for more details.");
-						}
+					} catch (IOProviderConfigurationException e) {
+						log.userError("The validator could not be executed", e);
+						return false;
 					}
-				} catch (IOProviderConfigurationException e) {
-					log.userError("The validator could not be executed", e);
+				}
+				else {
+					log.error("No input can be provided for validation (no file target)");
 					return false;
 				}
-			}
-			else {
-				log.error("No input can be provided for validation (no file target)");
-				return false;
 			}
 		}
 
@@ -172,17 +175,26 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	}
 
 	/**
-	 * @return the validatorFactory
+	 * @return the list of {@link InstanceValidator}s
 	 */
-	public InstanceValidator getValidator() {
-		return validator;
+	public List<InstanceValidator> getValidators() {
+		return validators;
 	}
 
 	/**
-	 * @param validatorFactory the validatorFactory to set
+	 * @param validator the {@link InstanceValidator} to add
 	 */
-	public void setValidator(InstanceValidator validator) {
-		this.validator = validator;
+	public void addValidator(InstanceValidator validator) {
+		this.validators.add(validator);
+	}
+
+	/**
+	 * Removes a validator
+	 * 
+	 * @param validator {@link InstanceValidator} to remove
+	 */
+	public void removeValidator(InstanceValidator validator) {
+		this.validators.remove(validator);
 	}
 
 //	/**

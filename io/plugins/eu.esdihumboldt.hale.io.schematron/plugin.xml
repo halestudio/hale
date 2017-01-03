@@ -15,12 +15,16 @@
                ref="eu.esdihumboldt.hale.io.xml.gzip">
          </contentType>
          <providerParameter
-               label="Schematron validator rules"
+               label="Schematron validator schema"
                name="schematron.location"
                optional="false">
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+            <valueDescriptor
+                  sample="file:///c:/Schematron/sample-schema.xml | http://www.example.org/schematron/sample-schema.xml"
+                  sampleDescription="You must provide a URL pointing to the schematron schema file.">
+            </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

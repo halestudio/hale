@@ -312,7 +312,8 @@ $baseCommand
 				lastConfigurable = Configurable.source
 				break
 			case '-validate':
-				executionContext.validateProviderId = value
+				executionContext.validateProviderIds.add(value)
+				executionContext.validateSettings << [:]
 				lastConfigurable = Configurable.validate
 				break
 			case '-out':
@@ -447,7 +448,7 @@ $baseCommand
 					ec.targetSettings[key] = val
 					break
 				case Configurable.validate:
-					ec.validateSettings[key] = val
+					ec.validateSettings[ec.validateProviderIds.size() - 1][key] = val
 					break
 			}
 		}
