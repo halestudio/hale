@@ -245,7 +245,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 3. segments with ArcByBulge defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
@@ -255,12 +255,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 4. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 5. segments with ArcString defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 6. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
@@ -280,12 +280,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 9. segments with Circle defined through coordinates
 			assertTrue("Nineth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 10. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 11. segments with CubicSpline defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
@@ -324,7 +324,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -334,12 +334,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -359,12 +359,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -413,7 +413,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, true);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -423,12 +423,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, true);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, true);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -448,12 +448,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, true);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, true);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -498,7 +498,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 3. segments with ArcByBulge defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
@@ -508,12 +508,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 4. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 5. segments with ArcString defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 6. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
@@ -533,12 +533,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 9. segments with Circle defined through coordinates
 			assertTrue("Nineth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 10. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 11. segments with CubicSpline defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
@@ -578,7 +578,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -588,12 +588,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -613,12 +613,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());
@@ -668,7 +668,7 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
 			// Arc handler added
-//			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
+			checkCurvePropertyInstance(instance, GeometryType.Arc, false);
 
 			// 4. segments with ArcByBulge defined through coordinates
 			assertTrue("Fourth sample feature missing", it.hasNext());
@@ -678,12 +678,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 5. segments with ArcByCenterPoint defined through coordinates
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcByCenterPoint, false);
 
 			// 6. segments with ArcString defined through coordinates
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
+			checkCurvePropertyInstance(instance, GeometryType.ArcString, false);
 
 			// 7. segments with ArcStringByBulge defined through coordinates
 			assertTrue("Seventh sample feature missing", it.hasNext());
@@ -703,12 +703,12 @@ public class CurveGeometryTest extends AbstractHandlerTest {
 			// 10. segments with Circle defined through coordinates
 			assertTrue("Tenth sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
+			checkCurvePropertyInstance(instance, GeometryType.Circle, false);
 
 			// 11. segments with CircleByCenterPoint defined through coordinates
 			assertTrue("Eleventh sample feature missing", it.hasNext());
 			instance = it.next();
-//			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
+			checkCurvePropertyInstance(instance, GeometryType.CircleByCenterPoint, false);
 
 			// 12. segments with CubicSpline defined through coordinates
 			assertTrue("Twelveth sample feature missing", it.hasNext());

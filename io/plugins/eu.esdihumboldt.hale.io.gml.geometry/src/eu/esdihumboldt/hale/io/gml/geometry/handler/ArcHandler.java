@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.gml.geometry._disabled_handler_;
+package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,20 +35,19 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
-import eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler;
-import eu.esdihumboldt.util.geometry.interpolation.ArcStringInterpolation;
+import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
 
 /**
- * Handler for ArcString geometries
+ * Handler for Arc geometries
  * 
  * @author Arun
  */
-public class ArcStringHandler extends LineStringHandler {
+public class ArcHandler extends LineStringHandler {
 
-	private static final String ARC_STRING_TYPE = "ArcStringType";
+	private static final String ARC_TYPE = "ArcType";
 
-	private static final ALogger log = ALoggerFactory.getLogger(CircleHandler.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ArcHandler.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#initSupportedTypes()
@@ -57,8 +56,8 @@ public class ArcStringHandler extends LineStringHandler {
 	protected Set<? extends QName> initSupportedTypes() {
 		Set<QName> types = new HashSet<QName>();
 
-		types.add(new QName(NS_GML, ARC_STRING_TYPE));
-		types.add(new QName(NS_GML_32, ARC_STRING_TYPE));
+		types.add(new QName(NS_GML, ARC_TYPE));
+		types.add(new QName(NS_GML_32, ARC_TYPE));
 
 		return types;
 	}
@@ -77,16 +76,16 @@ public class ArcStringHandler extends LineStringHandler {
 		// get interpolation required parameter
 		getInterpolationRequiredParameter(reader);
 
-		Interpolation<LineString> interpolation = new ArcStringInterpolation(
+		Interpolation<LineString> interpolation = new ArcInterpolation(
 				lineStringGeomProperty.getGeometry().getCoordinates(), getMaxPositionalError(),
 				isKeepOriginal());
-		LineString interpolatedArcString = interpolation.interpolateRawGeometry();
-		if (interpolatedArcString == null) {
-			log.error("ArcString could be not interpolated to Linestring");
+		LineString interpolatedArc = interpolation.interpolateRawGeometry();
+		if (interpolatedArc == null) {
+			log.error("Arc could be not interpolated to Linestring");
 			return null;
 		}
 		return new DefaultGeometryProperty<LineString>(lineStringGeomProperty.getCRSDefinition(),
-				interpolatedArcString);
+				interpolatedArc);
 	}
 
 	/**
@@ -111,4 +110,5 @@ public class ArcStringHandler extends LineStringHandler {
 	protected boolean isLineStringRelocationRequired() {
 		return false;
 	}
+
 }
