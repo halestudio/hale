@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            categoryName="Validation rules"
+            id="eu.esdihumboldt.hale.io.validation.read"
+            name="Load validation rule"
+            resourceName="validation rule"
+            type="eu.esdihumboldt.hale.io.validation.ValidationRuleReaderImpl">
+      </action>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.util.resource">
+      <resourceType
+            id="validationRule"
+            name="Validation rule">
+      </resourceType>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.validation.ValidationRuleReaderImpl"
+            id="eu.esdihumboldt.hale.io.validation.reader"
+            name="Validation rule">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.schematron.schema">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>
