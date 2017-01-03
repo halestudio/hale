@@ -8,12 +8,6 @@
             description="Validates XML files against ISO schematron rules"
             id="eu.esdihumboldt.hale.io.schematron.validator"
             name="Schematron validator">
-         <contentType
-               ref="org.eclipse.core.runtime.xml">
-         </contentType>
-         <contentType
-               ref="eu.esdihumboldt.hale.io.xml.gzip">
-         </contentType>
          <providerParameter
                label="Schematron validator schema"
                name="schematron.location"
@@ -26,7 +20,27 @@
                   sampleDescription="You must provide a URL pointing to the schematron schema file.">
             </valueDescriptor>
          </providerParameter>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.schematron.schema">
+         </contentType>
       </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="sch,xml"
+            id="eu.esdihumboldt.hale.io.schematron.schema"
+            name="Schematron schema"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://purl.oclc.org/dsdl/schematron}schema">
+            </parameter>
+         </describer>
+      </content-type>
    </extension>
 
 </plugin>
