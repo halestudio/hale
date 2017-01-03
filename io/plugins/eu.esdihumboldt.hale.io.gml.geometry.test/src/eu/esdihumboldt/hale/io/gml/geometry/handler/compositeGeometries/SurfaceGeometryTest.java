@@ -17,8 +17,14 @@
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.namespace.QName;
 
@@ -145,6 +151,54 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
 			checkSurfacePropertyInstance(instance, reference);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test surface geometries read from a GML 3.2 file
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testSurfaceArcsGml32() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-surface-arcs.xml").toURI());
+
+		// three instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			List<Geometry> geoms = new ArrayList<>();
+
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance1 = it.next();
+			geoms.addAll(checkSurfacePropertyInstance(instance1, x -> {
+				/**/ }));
+
+			assertTrue("Second sample feature missing", it.hasNext());
+			Instance instance2 = it.next();
+			geoms.addAll(checkSurfacePropertyInstance(instance2, x -> {
+				/**/ }));
+
+			assertTrue("Third sample feature missing", it.hasNext());
+			Instance instance3 = it.next();
+			geoms.addAll(checkSurfacePropertyInstance(instance3, x -> {
+				/**/ }));
+
+			assertEquals("Unexpected number of geometries", 3, geoms.size());
+
+			Geometry geom1 = geoms.get(0);
+			Geometry geom2 = geoms.get(1);
+			Geometry geom3 = geoms.get(2);
+
+			// interpolated geometries should not intersect (XXX verify)
+			assertFalse("Geometries intersect", geom1.intersects(geom2));
+			assertFalse("Geometries intersect", geom1.intersects(geom3));
+			assertFalse("Geometries intersect", geom3.intersects(geom2));
+
+			// TODO more checks?
 		} finally {
 			it.close();
 		}
@@ -394,7 +448,15 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 		}
 	}
 
-	private void checkSurfacePropertyInstance(Instance instance, Geometry referenceGeometry) {
+	private Collection<Geometry> checkSurfacePropertyInstance(Instance instance,
+			Geometry referenceGeometry) {
+		return checkSurfacePropertyInstance(instance,
+				geometry -> assertTrue("Read geometry does not match the reference geometry",
+						geometry.equalsExact(referenceGeometry)));
+	}
+
+	private Collection<Geometry> checkSurfacePropertyInstance(Instance instance,
+			Consumer<Geometry> checker) {
 		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
 		assertNotNull(geomVals);
 		assertEquals(1, geomVals.length);
@@ -403,15 +465,20 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 		assertTrue(geom instanceof Instance);
 
 		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, referenceGeometry);
+		return checkGeomInstance(geomInstance, checker);
 	}
 
-	private void checkGeomInstance(Instance geomInstance, Geometry referenceGeometry) {
+	private Collection<Geometry> checkGeomInstance(Instance geomInstance,
+			Consumer<Geometry> checker) {
+		List<Geometry> geoms = new ArrayList<>();
 		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
 			Geometry geometry = instance.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					geometry.equalsExact(referenceGeometry));
+			geoms.add(geometry);
+			if (checker != null) {
+				checker.accept(geometry);
+			}
 		}
+		return geoms;
 	}
 
 }
