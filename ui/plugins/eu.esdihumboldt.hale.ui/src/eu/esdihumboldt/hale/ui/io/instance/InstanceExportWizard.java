@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.io.File;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -148,27 +149,33 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 							ReportService repService = PlatformUI.getWorkbench()
 									.getService(ReportService.class);
 							repService.addReport(report);
-							// show message to user
 							if (report.isSuccess()) {
-								// info message
-								log.userInfo(report.getSummary());
+								log.info(report.getSummary());
 							}
 							else {
-								// error message
-								log.userError(report.getSummary()
-										+ "\nPlease see the report for more details.");
+								log.error(report.getSummary());
+								success = false;
 							}
 						}
 					} catch (IOProviderConfigurationException e) {
-						log.userError("The validator could not be executed", e);
-						return false;
+						log.error(MessageFormat.format("The validator '{0}' could not be executed",
+								validator.getClass().getCanonicalName()), e);
+						success = false;
 					}
 				}
 				else {
 					log.error("No input can be provided for validation (no file target)");
-					return false;
+					success = false;
 				}
 			}
+		}
+
+		if (success) {
+			log.userInfo("All validations completed successfully.");
+		}
+		else {
+			log.userError(
+					"There were validation failures. Please check the report for more details.");
 		}
 
 		return success;
