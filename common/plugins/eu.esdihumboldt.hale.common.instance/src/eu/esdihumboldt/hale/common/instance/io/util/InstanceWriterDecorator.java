@@ -60,15 +60,6 @@ public abstract class InstanceWriterDecorator<T extends InstanceWriter>
 		return internalProvider.getValidationSchemas();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider#getValidatorInput()
-	 */
-
-	@Override
-	public List<? extends Locatable> getValidatorInput() {
-		return this.getValidationSchemas();
-	}
-
 	@Override
 	public void checkCompatibility() throws IOProviderConfigurationException {
 		internalProvider.checkCompatibility();

@@ -21,7 +21,6 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.ValidatorInputProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -33,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public interface InstanceWriter extends ExportProvider, ValidatorInputProvider {
+public interface InstanceWriter extends ExportProvider {
 
 	/**
 	 * Set the instances to write.
