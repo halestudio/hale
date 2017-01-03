@@ -77,10 +77,10 @@ public class SchematronValidatorConfigurationDialog
 		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
 		container.setLayoutData(data);
 
-		schematronRulesFile = new OpenFileFieldEditor("metadataFile", "Schematron rules file", true,
-				FileFieldEditor.VALIDATE_ON_KEY_STROKE, container);
+		schematronRulesFile = new OpenFileFieldEditor("metadataFile", "Schematron schema file",
+				true, FileFieldEditor.VALIDATE_ON_KEY_STROKE, container);
 		schematronRulesFile.setEmptyStringAllowed(false);
-		schematronRulesFile.setFilterNames(new String[] { "Schematron rules (*.xml, *.sch)" });
+		schematronRulesFile.setFilterNames(new String[] { "Schematron schema (*.xml, *.sch)" });
 		schematronRulesFile.setFileExtensions(new String[] { "*.xml; *.sch" });
 
 		SchematronInstanceValidator validator = this.getProvider();
