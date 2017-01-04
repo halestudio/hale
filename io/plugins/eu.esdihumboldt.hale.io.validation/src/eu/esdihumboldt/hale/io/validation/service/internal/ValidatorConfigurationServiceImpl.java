@@ -34,32 +34,32 @@ public class ValidatorConfigurationServiceImpl implements ValidatorConfiguration
 	/**
 	 * Maps resource identifiers to validation rules
 	 */
-	private final Map<String, ValidatorConfiguration> rules = new HashMap<>();
+	private final Map<String, ValidatorConfiguration> configurations = new HashMap<>();
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.validation.ValidatorConfigurationService.ui.service.ValidationRulesService#getRules()
+	 * @see eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService#getConfigurations()
 	 */
 	@Override
-	public List<ValidatorConfiguration> getRules() {
-		return Lists.newArrayList(rules.values());
+	public List<ValidatorConfiguration> getConfigurations() {
+		return Lists.newArrayList(configurations.values());
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.validation.ValidatorConfigurationService.ui.service.ValidationRulesService#addRule(java.lang.String,
-	 *      eu.esdihumboldt.hale.io.ValidatorConfiguration.ValidationRule)
+	 * @see eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService#addConfiguration(java.lang.String,
+	 *      eu.esdihumboldt.hale.io.validation.ValidatorConfiguration)
 	 */
 	@Override
-	public void addRule(String resourceId, ValidatorConfiguration schema) {
-		rules.put(resourceId, schema);
+	public void addConfiguration(String resourceId, ValidatorConfiguration schema) {
+		configurations.put(resourceId, schema);
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.validation.ValidatorConfigurationService.ui.service.ValidationRulesService#removeRule(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService#removeConfiguration(java.lang.String)
 	 */
 	@Override
-	public boolean removeRule(String resourceId) {
-		if (rules.containsKey(resourceId)) {
-			rules.remove(resourceId);
+	public boolean removeConfiguration(String resourceId) {
+		if (configurations.containsKey(resourceId)) {
+			configurations.remove(resourceId);
 			return true;
 		}
 
@@ -67,11 +67,11 @@ public class ValidatorConfigurationServiceImpl implements ValidatorConfiguration
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.validation.ValidatorConfigurationService.ui.service.ValidationRulesService#getRule(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService#getConfiguration(java.lang.String)
 	 */
 	@Override
-	public ValidatorConfiguration getRule(String resourceId) {
-		return rules.get(resourceId);
+	public ValidatorConfiguration getConfiguration(String resourceId) {
+		return configurations.get(resourceId);
 	}
 
 }

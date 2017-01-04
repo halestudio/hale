@@ -22,11 +22,12 @@ import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
 import eu.esdihumboldt.hale.ui.io.action.AbstractActionUIAdvisor;
 
 /**
- * Validation rule import action UI advisor.
+ * Validator configuration import action UI advisor.
  * 
  * @author Florian Esser
  */
-public class ValidatorConfigurationImportUIAdvisor extends AbstractActionUIAdvisor<ValidatorConfiguration> {
+public class ValidatorConfigurationImportUIAdvisor
+		extends AbstractActionUIAdvisor<ValidatorConfiguration> {
 
 	@Override
 	public Class<ValidatorConfiguration> getRepresentationType() {
@@ -42,7 +43,7 @@ public class ValidatorConfigurationImportUIAdvisor extends AbstractActionUIAdvis
 	public boolean removeResource(String resourceId) {
 		ValidatorConfigurationService service = PlatformUI.getWorkbench()
 				.getService(ValidatorConfigurationService.class);
-		return service.removeRule(resourceId);
+		return service.removeConfiguration(resourceId);
 	}
 
 	@Override
@@ -54,7 +55,7 @@ public class ValidatorConfigurationImportUIAdvisor extends AbstractActionUIAdvis
 	public ValidatorConfiguration retrieveResource(String resourceId) {
 		ValidatorConfigurationService service = PlatformUI.getWorkbench()
 				.getService(ValidatorConfigurationService.class);
-		return service.getRule(resourceId);
+		return service.getConfiguration(resourceId);
 	}
 
 }

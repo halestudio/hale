@@ -27,27 +27,27 @@ import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
 public interface ValidatorConfigurationService {
 
 	/**
-	 * @return the validation rules
+	 * @return the validation configurations
 	 */
-	List<ValidatorConfiguration> getRules();
+	List<ValidatorConfiguration> getConfigurations();
 
 	/**
-	 * Adds a validation rule
+	 * Adds a validator configuration
 	 * 
 	 * @param resourceId the resource identifier of the schema
-	 * @param schema schema to add
+	 * @param configuration configuration to add
 	 */
-	void addRule(String resourceId, ValidatorConfiguration schema);
+	void addConfiguration(String resourceId, ValidatorConfiguration configuration);
 
 	/**
-	 * @param resourceId
-	 * @return
+	 * @param resourceId resource ID of the configuration
+	 * @return true if the specified configuration was found and removed
 	 */
-	boolean removeRule(String resourceId);
+	boolean removeConfiguration(String resourceId);
 
 	/**
-	 * @param resourceId
-	 * @return
+	 * @param resourceId resource ID of the configuration
+	 * @return the configuration saved under the given resource ID or null
 	 */
-	ValidatorConfiguration getRule(String resourceId);
+	ValidatorConfiguration getConfiguration(String resourceId);
 }

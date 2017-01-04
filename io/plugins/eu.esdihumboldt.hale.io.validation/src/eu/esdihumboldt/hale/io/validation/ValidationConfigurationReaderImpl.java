@@ -54,7 +54,7 @@ public class ValidationConfigurationReaderImpl extends AbstractImportProvider
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationReader.ValidationRuleReader#getConfiguration()
+	 * @see eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader#getConfiguration()
 	 */
 	@Override
 	public ValidatorConfiguration getConfiguration() {
@@ -78,15 +78,15 @@ public class ValidationConfigurationReaderImpl extends AbstractImportProvider
 		}
 		final DefaultInputSupplier validationRuleInputSupplier = new DefaultInputSupplier(
 				sourceLocation);
-		final InputStream validaionRuleInput = validationRuleInputSupplier.getInput();
-		if (validaionRuleInput == null) {
+		final InputStream validationRuleInput = validationRuleInputSupplier.getInput();
+		if (validationRuleInput == null) {
 			throw new IOProviderConfigurationException("Cannot read validator configuration.");
 		}
 		try {
 			// XXX UTF 8 encoding is assumed here. The actual encoding should be
 			// detected or be configurable
 			configuration = new ValidatorConfiguration(
-					IOUtils.toString(validaionRuleInput, StandardCharsets.UTF_8), sourceLocation);
+					IOUtils.toString(validationRuleInput, StandardCharsets.UTF_8), sourceLocation);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			throw new IOProviderConfigurationException(
@@ -94,7 +94,7 @@ public class ValidationConfigurationReaderImpl extends AbstractImportProvider
 							sourceLocation.toString(), e.getMessage()),
 					e);
 		} finally {
-			IOUtils.closeQuietly(validaionRuleInput);
+			IOUtils.closeQuietly(validationRuleInput);
 		}
 
 		progress.setCurrentTask("Validation rule loaded.");

@@ -33,11 +33,11 @@ public class ValidatorConfigurationImportAdvisor
 	 */
 	@Override
 	public void handleResults(ValidatorConfigurationReader provider) {
-		ValidatorConfiguration rule = provider.getConfiguration();
+		ValidatorConfiguration configuration = provider.getConfiguration();
 
 		ValidatorConfigurationService service = getService(ValidatorConfigurationService.class);
 		if (service != null) {
-			service.addRule(provider.getResourceIdentifier(), rule);
+			service.addConfiguration(provider.getResourceIdentifier(), configuration);
 		}
 
 		super.handleResults(provider);
