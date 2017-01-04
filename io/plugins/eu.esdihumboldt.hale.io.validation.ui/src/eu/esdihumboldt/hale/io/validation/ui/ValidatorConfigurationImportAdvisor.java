@@ -17,10 +17,10 @@ package eu.esdihumboldt.hale.io.validation.ui;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
 import eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader;
 import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 
 /**
  * Import advisor for validator configurations

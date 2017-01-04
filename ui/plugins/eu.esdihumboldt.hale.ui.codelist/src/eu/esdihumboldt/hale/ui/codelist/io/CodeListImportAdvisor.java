@@ -19,8 +19,8 @@ import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 
 /**
  * Import advisor for code lists
