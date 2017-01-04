@@ -21,8 +21,14 @@
             </valueDescriptor>
          </providerParameter>
          <contentType
-               ref="eu.esdihumboldt.hale.io.schematron.schema">
+               ref="eu.esdihumboldt.hale.io.xml.gzip">
          </contentType>
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+         <configurationContentType
+               ref="eu.esdihumboldt.hale.io.schematron.schema">
+         </configurationContentType>
       </provider>
    </extension>
    <extension
