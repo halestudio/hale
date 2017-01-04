@@ -13,21 +13,20 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.validation.ui;
+package eu.esdihumboldt.hale.io.validation;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
-import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
-import eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader;
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
+import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
 
 /**
  * Import advisor for validator configurations
  * 
  * @author Florian Esser
  */
-public class ValidatorConfigurationImportAdvisor extends DefaultIOAdvisor<ValidatorConfigurationReader> {
+public class ValidatorConfigurationImportAdvisor
+		extends DefaultIOAdvisor<ValidatorConfigurationReader> {
 
 	/**
 	 * @see IOAdvisor#handleResults(IOProvider)

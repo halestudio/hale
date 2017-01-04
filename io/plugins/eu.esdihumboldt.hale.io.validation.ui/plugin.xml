@@ -6,27 +6,12 @@
       <action-ui
             action="eu.esdihumboldt.hale.io.validation.read"
             id="eu.esdihumboldt.hale.io.validation.ui"
-            label="Validation rule..."
+            label="Validator configuration/rules..."
             priority="0"
             projectResource="true"
             ui-advisor="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportUIAdvisor"
             wizard="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportWizard">
       </action-ui>
-   </extension>
-   <extension
-         point="eu.esdihumboldt.hale.io.action">
-      <advisor
-            action="eu.esdihumboldt.hale.io.validation.read"
-            class="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportAdvisor"
-            id="eu.esdihumboldt.hale.io.validation.ui.service">
-      </advisor>
-   </extension>
-   <extension
-         point="org.eclipse.ui.services">
-      <serviceFactory
-            factoryClass="eu.esdihumboldt.hale.io.validation.ui.ServiceFactory">
-         <service></service>
-      </serviceFactory>
    </extension>
 
 </plugin>

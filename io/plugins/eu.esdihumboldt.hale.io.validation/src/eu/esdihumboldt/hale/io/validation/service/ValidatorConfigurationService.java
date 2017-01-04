@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.validation.ui.service;
+package eu.esdihumboldt.hale.io.validation.service;
 
 import java.util.List;
 

@@ -13,32 +13,28 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.validation.ui;
+package eu.esdihumboldt.hale.io.validation.service;
 
-import org.eclipse.ui.services.AbstractServiceFactory;
-import org.eclipse.ui.services.IServiceLocator;
-
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
-import eu.esdihumboldt.hale.io.validation.ui.service.internal.ValidatorConfigurationServiceImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceFactory;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.io.validation.service.internal.ValidatorConfigurationServiceImpl;
 
 /**
  * Service factory for {@link ValidatorConfigurationService}.
  * 
  * @author Florian Esser
  */
-public class ServiceFactory extends AbstractServiceFactory {
+public class ValidatorConfigurationServiceFactory implements ServiceFactory {
 
 	/**
-	 * @see org.eclipse.ui.services.AbstractServiceFactory#create(java.lang.Class,
-	 *      org.eclipse.ui.services.IServiceLocator,
-	 *      org.eclipse.ui.services.IServiceLocator)
+	 * @see eu.esdihumboldt.hale.common.core.service.ServiceFactory#createService(java.lang.Class,
+	 *      eu.esdihumboldt.hale.common.core.service.ServiceProvider)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public Object create(Class serviceInterface, IServiceLocator parentLocator,
-			IServiceLocator locator) {
-
+	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator) {
 		if (serviceInterface.equals(ValidatorConfigurationService.class)) {
-			return new ValidatorConfigurationServiceImpl();
+			return (T) new ValidatorConfigurationServiceImpl();
 		}
 
 		return null;

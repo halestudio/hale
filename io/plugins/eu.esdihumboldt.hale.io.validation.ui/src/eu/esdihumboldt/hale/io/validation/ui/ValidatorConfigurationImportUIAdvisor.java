@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.io.validation.ui;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
+import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
 import eu.esdihumboldt.hale.ui.io.action.AbstractActionUIAdvisor;
 
 /**
