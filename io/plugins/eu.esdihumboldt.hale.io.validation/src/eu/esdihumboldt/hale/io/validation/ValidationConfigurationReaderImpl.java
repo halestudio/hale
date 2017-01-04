@@ -31,19 +31,19 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 
 /**
- * Validation rule reader
+ * Simple validation configuration reader
  * 
  * @author Florian Esser
  */
-public class ValidationRuleReaderImpl extends AbstractImportProvider
-		implements ValidationRuleReader {
+public class ValidationConfigurationReaderImpl extends AbstractImportProvider
+		implements ValidatorConfigurationReader {
 
 	/**
 	 * The provider ID.
 	 */
 	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.validation.reader";
 
-	private ValidationRule rule;
+	private ValidatorConfiguration configuration;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
@@ -54,11 +54,11 @@ public class ValidationRuleReaderImpl extends AbstractImportProvider
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.schematron.ValidationRuleReader#getRule()
+	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationReader.ValidationRuleReader#getConfiguration()
 	 */
 	@Override
-	public ValidationRule getRule() {
-		return rule;
+	public ValidatorConfiguration getConfiguration() {
+		return configuration;
 	}
 
 	/**
@@ -69,22 +69,24 @@ public class ValidationRuleReaderImpl extends AbstractImportProvider
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		progress.begin("Loading validation rule.", ProgressIndicator.UNKNOWN);
+		progress.begin("Loading validator configuration.", ProgressIndicator.UNKNOWN);
 
 		final URI sourceLocation = getSource().getLocation();
 		if (sourceLocation == null) {
 			throw new IOProviderConfigurationException(
-					"No source location provided when trying to read validation rule.");
+					"No source location provided when trying to read validator configuration.");
 		}
 		final DefaultInputSupplier validationRuleInputSupplier = new DefaultInputSupplier(
 				sourceLocation);
 		final InputStream validaionRuleInput = validationRuleInputSupplier.getInput();
 		if (validaionRuleInput == null) {
-			throw new IOProviderConfigurationException("No validation rule input.");
+			throw new IOProviderConfigurationException("Cannot read validator configuration.");
 		}
 		try {
-			rule = new ValidationRule(IOUtils.toString(validaionRuleInput, StandardCharsets.UTF_8),
-					sourceLocation);
+			// XXX UTF 8 encoding is assumed here. The actual encoding should be
+			// detected or be configurable
+			configuration = new ValidatorConfiguration(
+					IOUtils.toString(validaionRuleInput, StandardCharsets.UTF_8), sourceLocation);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			throw new IOProviderConfigurationException(
@@ -104,6 +106,6 @@ public class ValidationRuleReaderImpl extends AbstractImportProvider
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "Validation rule";
+		return "Validator configuration";
 	}
 }

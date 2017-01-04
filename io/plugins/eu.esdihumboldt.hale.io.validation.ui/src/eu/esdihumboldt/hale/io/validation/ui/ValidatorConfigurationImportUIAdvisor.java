@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.io.validation.ui;
 
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.io.validation.ValidationRule;
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidationRulesService;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
+import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
 import eu.esdihumboldt.hale.ui.io.action.AbstractActionUIAdvisor;
 
 /**
@@ -26,11 +26,11 @@ import eu.esdihumboldt.hale.ui.io.action.AbstractActionUIAdvisor;
  * 
  * @author Florian Esser
  */
-public class ValidationRuleImportUIAdvisor extends AbstractActionUIAdvisor<ValidationRule> {
+public class ValidatorConfigurationImportUIAdvisor extends AbstractActionUIAdvisor<ValidatorConfiguration> {
 
 	@Override
-	public Class<ValidationRule> getRepresentationType() {
-		return ValidationRule.class;
+	public Class<ValidatorConfiguration> getRepresentationType() {
+		return ValidatorConfiguration.class;
 	}
 
 	@Override
@@ -40,8 +40,8 @@ public class ValidationRuleImportUIAdvisor extends AbstractActionUIAdvisor<Valid
 
 	@Override
 	public boolean removeResource(String resourceId) {
-		ValidationRulesService service = PlatformUI.getWorkbench()
-				.getService(ValidationRulesService.class);
+		ValidatorConfigurationService service = PlatformUI.getWorkbench()
+				.getService(ValidatorConfigurationService.class);
 		return service.removeRule(resourceId);
 	}
 
@@ -51,9 +51,9 @@ public class ValidationRuleImportUIAdvisor extends AbstractActionUIAdvisor<Valid
 	}
 
 	@Override
-	public ValidationRule retrieveResource(String resourceId) {
-		ValidationRulesService service = PlatformUI.getWorkbench()
-				.getService(ValidationRulesService.class);
+	public ValidatorConfiguration retrieveResource(String resourceId) {
+		ValidatorConfigurationService service = PlatformUI.getWorkbench()
+				.getService(ValidatorConfigurationService.class);
 		return service.getRule(resourceId);
 	}
 

@@ -21,40 +21,40 @@ import java.util.Map;
 
 import com.google.common.collect.Lists;
 
-import eu.esdihumboldt.hale.io.validation.ValidationRule;
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidationRulesService;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
+import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
 
 /**
- * Validation rules service
+ * Validator configuration service
  * 
  * @author Florian Esser
  */
-public class ValidationRulesServiceImpl implements ValidationRulesService {
+public class ValidatorConfigurationServiceImpl implements ValidatorConfigurationService {
 
 	/**
 	 * Maps resource identifiers to validation rules
 	 */
-	private final Map<String, ValidationRule> rules = new HashMap<>();
+	private final Map<String, ValidatorConfiguration> rules = new HashMap<>();
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.schematron.ui.service.ValidationRulesService#getRules()
+	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationService.ui.service.ValidationRulesService#getRules()
 	 */
 	@Override
-	public List<ValidationRule> getRules() {
+	public List<ValidatorConfiguration> getRules() {
 		return Lists.newArrayList(rules.values());
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.schematron.ui.service.ValidationRulesService#addRule(java.lang.String,
-	 *      eu.esdihumboldt.hale.io.schematron.ValidationRule)
+	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationService.ui.service.ValidationRulesService#addRule(java.lang.String,
+	 *      eu.esdihumboldt.hale.io.ValidatorConfiguration.ValidationRule)
 	 */
 	@Override
-	public void addRule(String resourceId, ValidationRule schema) {
+	public void addRule(String resourceId, ValidatorConfiguration schema) {
 		rules.put(resourceId, schema);
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.schematron.ui.service.ValidationRulesService#removeRule(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationService.ui.service.ValidationRulesService#removeRule(java.lang.String)
 	 */
 	@Override
 	public boolean removeRule(String resourceId) {
@@ -67,10 +67,10 @@ public class ValidationRulesServiceImpl implements ValidationRulesService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.schematron.ui.service.ValidationRulesService#getRule(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.ValidatorConfigurationService.ui.service.ValidationRulesService#getRule(java.lang.String)
 	 */
 	@Override
-	public ValidationRule getRule(String resourceId) {
+	public ValidatorConfiguration getRule(String resourceId) {
 		return rules.get(resourceId);
 	}
 

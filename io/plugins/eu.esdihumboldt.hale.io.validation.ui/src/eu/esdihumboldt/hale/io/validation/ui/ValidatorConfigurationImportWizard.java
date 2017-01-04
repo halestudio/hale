@@ -13,24 +13,23 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.validation;
+package eu.esdihumboldt.hale.io.validation.ui;
 
-import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader;
+import eu.esdihumboldt.hale.ui.io.ImportWizard;
 
 /**
- * Interface for validation rules readers
+ * Import wizard for validator configurations
  * 
  * @author Florian Esser
  */
-public interface ValidationRuleReader extends ImportProvider {
+public class ValidatorConfigurationImportWizard extends ImportWizard<ValidatorConfigurationReader> {
 
 	/**
-	 * The action identifier.
+	 * Creates a validation configuration import wizard
 	 */
-	public static final String ACTION_ID = "eu.esdihumboldt.hale.io.validation.read";
+	public ValidatorConfigurationImportWizard() {
+		super(ValidatorConfigurationReader.class);
+	}
 
-	/**
-	 * @return the imported rule
-	 */
-	public ValidationRule getRule();
 }

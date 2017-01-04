@@ -17,26 +17,26 @@ package eu.esdihumboldt.hale.io.validation.ui;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.io.validation.ValidationRule;
-import eu.esdihumboldt.hale.io.validation.ValidationRuleReader;
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidationRulesService;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader;
+import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
 import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 
 /**
- * Import advisor for validation rules
+ * Import advisor for validator configurations
  * 
  * @author Florian Esser
  */
-public class ValidationRuleImportAdvisor extends DefaultIOAdvisor<ValidationRuleReader> {
+public class ValidatorConfigurationImportAdvisor extends DefaultIOAdvisor<ValidatorConfigurationReader> {
 
 	/**
 	 * @see IOAdvisor#handleResults(IOProvider)
 	 */
 	@Override
-	public void handleResults(ValidationRuleReader provider) {
-		ValidationRule rule = provider.getRule();
+	public void handleResults(ValidatorConfigurationReader provider) {
+		ValidatorConfiguration rule = provider.getConfiguration();
 
-		ValidationRulesService service = getService(ValidationRulesService.class);
+		ValidatorConfigurationService service = getService(ValidatorConfigurationService.class);
 		if (service != null) {
 			service.addRule(provider.getResourceIdentifier(), rule);
 		}

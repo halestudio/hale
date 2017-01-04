@@ -17,19 +17,19 @@ package eu.esdihumboldt.hale.io.validation.ui.service;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.io.validation.ValidationRule;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
 
 /**
- * Service for managing validation rules
+ * Service for managing validator configuration
  * 
  * @author Florian Esser
  */
-public interface ValidationRulesService {
+public interface ValidatorConfigurationService {
 
 	/**
 	 * @return the validation rules
 	 */
-	List<ValidationRule> getRules();
+	List<ValidatorConfiguration> getRules();
 
 	/**
 	 * Adds a validation rule
@@ -37,7 +37,7 @@ public interface ValidationRulesService {
 	 * @param resourceId the resource identifier of the schema
 	 * @param schema schema to add
 	 */
-	void addRule(String resourceId, ValidationRule schema);
+	void addRule(String resourceId, ValidatorConfiguration schema);
 
 	/**
 	 * @param resourceId
@@ -49,5 +49,5 @@ public interface ValidationRulesService {
 	 * @param resourceId
 	 * @return
 	 */
-	ValidationRule getRule(String resourceId);
+	ValidatorConfiguration getRule(String resourceId);
 }

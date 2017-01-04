@@ -9,15 +9,15 @@
             label="Validation rule..."
             priority="0"
             projectResource="true"
-            ui-advisor="eu.esdihumboldt.hale.io.validation.ui.ValidationRuleImportUIAdvisor"
-            wizard="eu.esdihumboldt.hale.io.validation.ui.ValidationRuleImportWizard">
+            ui-advisor="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportUIAdvisor"
+            wizard="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportWizard">
       </action-ui>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <advisor
             action="eu.esdihumboldt.hale.io.validation.read"
-            class="eu.esdihumboldt.hale.io.validation.ui.ValidationRuleImportAdvisor"
+            class="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportAdvisor"
             id="eu.esdihumboldt.hale.io.validation.ui.service">
       </advisor>
    </extension>

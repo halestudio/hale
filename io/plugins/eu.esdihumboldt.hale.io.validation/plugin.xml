@@ -8,7 +8,7 @@
             id="eu.esdihumboldt.hale.io.validation.read"
             name="Load validation rule"
             resourceName="validation rule"
-            type="eu.esdihumboldt.hale.io.validation.ValidationRuleReaderImpl">
+            type="eu.esdihumboldt.hale.io.validation.ValidationConfigurationReaderImpl">
       </action>
    </extension>
    <extension
@@ -21,7 +21,7 @@
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
-            class="eu.esdihumboldt.hale.io.validation.ValidationRuleReaderImpl"
+            class="eu.esdihumboldt.hale.io.validation.ValidationConfigurationReaderImpl"
             id="eu.esdihumboldt.hale.io.validation.reader"
             name="Validation rule">
          <contentType

@@ -15,45 +15,22 @@
 
 package eu.esdihumboldt.hale.io.validation;
 
-import java.net.URI;
+import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 
 /**
- * Representation of a validation rules file
+ * Interface for validation rules readers
  * 
  * @author Florian Esser
  */
-public class ValidationRule {
-
-	private final String rule;
-
-	private final URI location;
+public interface ValidatorConfigurationReader extends ImportProvider {
 
 	/**
-	 * Creates a validation rule
-	 * 
-	 * @param rule Validation rule
-	 * @param location the schema's location
+	 * The action identifier.
 	 */
-	public ValidationRule(String rule, URI location) {
-		this.rule = rule;
-		this.location = location;
-	}
+	public static final String ACTION_ID = "eu.esdihumboldt.hale.io.validation.read";
 
 	/**
-	 * Get the rule
-	 * 
-	 * @return the validation rule
+	 * @return the imported configuration
 	 */
-	public String getRule() {
-		return rule;
-	}
-
-	/**
-	 * Get the source location of the validation rule
-	 * 
-	 * @return the location
-	 */
-	public URI getLocation() {
-		return location;
-	}
+	public ValidatorConfiguration getConfiguration();
 }

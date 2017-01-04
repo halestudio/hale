@@ -18,11 +18,11 @@ package eu.esdihumboldt.hale.io.validation.ui;
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
-import eu.esdihumboldt.hale.io.validation.ui.service.ValidationRulesService;
-import eu.esdihumboldt.hale.io.validation.ui.service.internal.ValidationRulesServiceImpl;
+import eu.esdihumboldt.hale.io.validation.ui.service.ValidatorConfigurationService;
+import eu.esdihumboldt.hale.io.validation.ui.service.internal.ValidatorConfigurationServiceImpl;
 
 /**
- * Service factory for {@link ValidationRulesService}.
+ * Service factory for {@link ValidatorConfigurationService}.
  * 
  * @author Florian Esser
  */
@@ -37,8 +37,8 @@ public class ServiceFactory extends AbstractServiceFactory {
 	public Object create(Class serviceInterface, IServiceLocator parentLocator,
 			IServiceLocator locator) {
 
-		if (serviceInterface.equals(ValidationRulesService.class)) {
-			return new ValidationRulesServiceImpl();
+		if (serviceInterface.equals(ValidatorConfigurationService.class)) {
+			return new ValidatorConfigurationServiceImpl();
 		}
 
 		return null;
