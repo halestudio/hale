@@ -30,6 +30,7 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
@@ -78,6 +79,59 @@ public class SVGPainter {
 		boolean useCSS = true; // we want to use CSS style attributes
 		try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
 			g.stream(writer, useCSS);
+		}
+	}
+
+	/**
+	 * Draw a geometry.
+	 * 
+	 * @param geometry the geometry to draw
+	 */
+	public void drawGeometry(Geometry geometry) {
+		if (geometry == null || geometry.isEmpty()) {
+			return;
+		}
+		if (geometry.getNumGeometries() > 1) {
+			for (int i = 0; i < geometry.getNumGeometries(); i++) {
+				drawGeometry(geometry.getGeometryN(i));
+			}
+		}
+		else {
+			if (geometry instanceof Polygon) {
+				drawPolygon((Polygon) geometry);
+			}
+			else if (geometry instanceof LineString) {
+				drawLineString((LineString) geometry);
+			}
+			else if (geometry instanceof Point) {
+				drawPoint((Point) geometry);
+			}
+			else {
+				throw new IllegalArgumentException(
+						"Cannot draw geometry of type " + geometry.getClass().getName());
+			}
+		}
+	}
+
+	/**
+	 * Draw a line string.
+	 * 
+	 * @param geometry the line string geometry
+	 */
+	public void drawLineString(LineString geometry) {
+		Coordinate[] coords = geometry.getCoordinates();
+		if (coords.length >= 2) {
+			for (int i = 0; i < coords.length - 1; i++) {
+				g.drawLine(
+						(int) Math.round(
+								(coords[i].x - settings.getMinX()) * settings.getScaleFactor()),
+						(int) Math.round(
+								(coords[i].y - settings.getMinY()) * settings.getScaleFactor()),
+						(int) Math.round(
+								(coords[i + 1].x - settings.getMinX()) * settings.getScaleFactor()),
+						(int) Math.round((coords[i + 1].y - settings.getMinY())
+								* settings.getScaleFactor()));
+			}
 		}
 	}
 
