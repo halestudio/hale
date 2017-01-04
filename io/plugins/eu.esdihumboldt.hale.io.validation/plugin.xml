@@ -36,7 +36,7 @@
             id="eu.esdihumboldt.hale.io.validation.services"
             scope="project">
          <service
-               interface="eu.esdihumboldt.hale.io.validation.service.internal.ValidatorConfigurationServiceImpl">
+               interface="eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService">
          </service>
       </services>
    </extension>

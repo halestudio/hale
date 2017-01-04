@@ -15,10 +15,9 @@
 
 package eu.esdihumboldt.hale.io.validation.ui;
 
-import org.eclipse.ui.PlatformUI;
-
 import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
 import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.action.AbstractActionUIAdvisor;
 
 /**
@@ -41,7 +40,7 @@ public class ValidatorConfigurationImportUIAdvisor
 
 	@Override
 	public boolean removeResource(String resourceId) {
-		ValidatorConfigurationService service = PlatformUI.getWorkbench()
+		ValidatorConfigurationService service = HaleUI.getServiceProvider()
 				.getService(ValidatorConfigurationService.class);
 		return service.removeConfiguration(resourceId);
 	}
@@ -53,7 +52,7 @@ public class ValidatorConfigurationImportUIAdvisor
 
 	@Override
 	public ValidatorConfiguration retrieveResource(String resourceId) {
-		ValidatorConfigurationService service = PlatformUI.getWorkbench()
+		ValidatorConfigurationService service = HaleUI.getServiceProvider()
 				.getService(ValidatorConfigurationService.class);
 		return service.getConfiguration(resourceId);
 	}
