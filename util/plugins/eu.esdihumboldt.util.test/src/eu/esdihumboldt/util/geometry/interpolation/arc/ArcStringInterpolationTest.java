@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -131,11 +132,9 @@ public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 		});
 	}
 
-	/**
-	 * test algorithm
-	 */
+	@SuppressWarnings("javadoc")
 	@Test
-	public void testInterpolation() {
+	public void testInterpolation() throws IOException {
 		System.out.println("-- Test-" + testIndex + " begin --");
 		Interpolation<LineString> interpolation = new ArcStringInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
@@ -150,8 +149,9 @@ public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 			validateCoordinatesOnGrid(interpolatedArc, this.arcCoordinates.length, e,
 					DEFAULT_KEEP_ORIGINAL);
 
-			if (DRAW_IMAGE)
+			if (DRAW_IMAGE) {
 				drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
+			}
 		}
 		else {
 			assertNull(interpolatedArc);

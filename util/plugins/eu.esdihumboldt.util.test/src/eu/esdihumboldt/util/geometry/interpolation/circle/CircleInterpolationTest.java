@@ -17,6 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation.circle;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -121,11 +122,9 @@ public class CircleInterpolationTest extends AbstractInterpolationTest {
 		});
 	}
 
-	/**
-	 * test algorithm
-	 */
+	@SuppressWarnings("javadoc")
 	@Test
-	public void testInterpolation() {
+	public void testInterpolation() throws IOException {
 		System.out.println("-- Test-" + testIndex + " begin --");
 		Interpolation<LineString> interpolation = new CircleInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
@@ -139,7 +138,8 @@ public class CircleInterpolationTest extends AbstractInterpolationTest {
 		validateCoordinatesOnGrid(interpolatedCircle, this.arcCoordinates.length + 1, e,
 				DEFAULT_KEEP_ORIGINAL);
 
-		if (DRAW_IMAGE)
+		if (DRAW_IMAGE) {
 			drawImage((LineString) interpolatedCircle, arcCoordinates, testIndex);
+		}
 	}
 }

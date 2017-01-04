@@ -17,6 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation.circle;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -100,11 +101,9 @@ public class CircleByCenterPointInterpolationTest extends AbstractInterpolationT
 		});
 	}
 
-	/**
-	 * test algorithm
-	 */
+	@SuppressWarnings("javadoc")
 	@Test
-	public void testInterpolation() {
+	public void testInterpolation() throws IOException {
 		System.out.println("Test-" + testIndex);
 		Interpolation<LineString> interpolation = new CircleByCenterPointInterpolation(center,
 				radius, e);
@@ -119,8 +118,9 @@ public class CircleByCenterPointInterpolationTest extends AbstractInterpolationT
 
 		validateCoordinatesOnGrid(interpolatedCircle, 0, e, false);
 
-		if (DRAW_IMAGE)
+		if (DRAW_IMAGE) {
 			drawImage((LineString) interpolatedCircle, new Coordinate[] { center }, testIndex);
+		}
 	}
 
 }

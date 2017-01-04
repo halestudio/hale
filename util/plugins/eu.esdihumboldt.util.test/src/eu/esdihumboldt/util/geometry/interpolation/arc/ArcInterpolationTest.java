@@ -17,6 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation.arc;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -152,11 +153,9 @@ public class ArcInterpolationTest extends AbstractInterpolationTest {
 		});
 	}
 
-	/**
-	 * test algorithm
-	 */
+	@SuppressWarnings("javadoc")
 	@Test
-	public void testInterpolation() {
+	public void testInterpolation() throws IOException {
 		System.out.println("Test-" + testIndex);
 		Interpolation<LineString> interpolation = new ArcInterpolation(this.arcCoordinates, e,
 				DEFAULT_KEEP_ORIGINAL);
@@ -170,7 +169,8 @@ public class ArcInterpolationTest extends AbstractInterpolationTest {
 		validateCoordinatesOnGrid(interpolatedArc, this.arcCoordinates.length, e,
 				DEFAULT_KEEP_ORIGINAL);
 
-		if (DRAW_IMAGE)
+		if (DRAW_IMAGE) {
 			drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
+		}
 	}
 }
