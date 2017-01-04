@@ -17,10 +17,10 @@
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -41,6 +42,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.util.svg.test.PaintSettings;
+import eu.esdihumboldt.util.svg.test.SVGTestPainter;
 
 /**
  * Test for reading surface geometries
@@ -48,6 +51,8 @@ import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest
  * @author Patrick Lieb, Arun Varma
  */
 public class SurfaceGeometryTest extends AbstractHandlerTest {
+
+	private static final boolean GEN_IMAGES = false;
 
 	private Polygon reference;
 	private Polygon referenceOnGrid;
@@ -193,10 +198,29 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			Geometry geom2 = geoms.get(1);
 			Geometry geom3 = geoms.get(2);
 
+			if (GEN_IMAGES) {
+				Envelope envelope = new Envelope();
+				envelope.expandToInclude(geom1.getEnvelopeInternal());
+				envelope.expandToInclude(geom2.getEnvelopeInternal());
+				envelope.expandToInclude(geom3.getEnvelopeInternal());
+				PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+				SVGTestPainter svg = new SVGTestPainter(settings);
+
+				svg.setColor(Color.BLACK);
+				svg.drawGeometry(geom1);
+
+				svg.setColor(Color.BLUE);
+				svg.drawGeometry(geom2);
+
+				svg.setColor(Color.RED);
+				svg.drawGeometry(geom3);
+
+				svg.writeAndOpenFile();
+			}
+
 			// interpolated geometries should not intersect (XXX verify)
-			assertFalse("Geometries intersect", geom1.intersects(geom2));
-			assertFalse("Geometries intersect", geom1.intersects(geom3));
-			assertFalse("Geometries intersect", geom3.intersects(geom2));
+			assertTrue("Geometries intersect", geom1.touches(geom2));
+			assertTrue("Geometries intersect", geom2.touches(geom3));
 
 			// TODO more checks?
 		} finally {

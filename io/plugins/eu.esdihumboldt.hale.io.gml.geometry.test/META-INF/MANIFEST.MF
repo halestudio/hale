@@ -6,6 +6,7 @@ Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.util.svg.test,
  org.junit;version="4.8.2",
  org.osgi.framework;version="1.6.0"
 Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
