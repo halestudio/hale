@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.io.validation;
 
+import java.text.MessageFormat;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
@@ -28,6 +32,9 @@ import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
 public class ValidatorConfigurationImportAdvisor
 		extends DefaultIOAdvisor<ValidatorConfigurationReader> {
 
+	private static final ALogger log = ALoggerFactory
+			.getLogger(ValidatorConfigurationImportAdvisor.class);
+
 	/**
 	 * @see IOAdvisor#handleResults(IOProvider)
 	 */
@@ -38,6 +45,11 @@ public class ValidatorConfigurationImportAdvisor
 		ValidatorConfigurationService service = getService(ValidatorConfigurationService.class);
 		if (service != null) {
 			service.addConfiguration(provider.getResourceIdentifier(), configuration);
+		}
+		else {
+			log.warn(MessageFormat.format(
+					"Implementation for service interface {0} could not be found!",
+					ValidatorConfigurationService.class.getCanonicalName()));
 		}
 
 		super.handleResults(provider);
