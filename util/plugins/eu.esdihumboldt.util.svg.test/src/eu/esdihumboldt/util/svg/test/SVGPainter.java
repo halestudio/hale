@@ -20,6 +20,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -80,6 +81,19 @@ public class SVGPainter {
 		try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
 			g.stream(writer, useCSS);
 		}
+	}
+
+	/**
+	 * Write the SVG to a string.
+	 * 
+	 * @return the SVG as string
+	 * @throws IOException if creating the string representation fails
+	 */
+	public String writeToString() throws IOException {
+		boolean useCSS = true; // we want to use CSS style attributes
+		StringWriter writer = new StringWriter();
+		g.stream(writer, useCSS);
+		return writer.toString();
 	}
 
 	/**

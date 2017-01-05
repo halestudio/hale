@@ -17,8 +17,6 @@ package eu.esdihumboldt.util.svg.test;
 
 import java.awt.Color;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 import org.junit.Test;
 
@@ -29,7 +27,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Simon Templer
  */
-public class SVGPainterTest {
+public class SVGPainterTest extends AbstractSVGPainterTest {
 
 	@SuppressWarnings("javadoc")
 	@Test
@@ -42,12 +40,7 @@ public class SVGPainterTest {
 		painter.setColor(Color.BLUE);
 		painter.drawPoint(point);
 
-		Path tempFile = Files.createTempFile("svg-test", ".svg");
-		painter.writeToFile(tempFile);
-
-		System.out.println("Test graphic written to " + tempFile);
-
-		Files.delete(tempFile);
+		saveDrawing(painter);
 	}
 
 }

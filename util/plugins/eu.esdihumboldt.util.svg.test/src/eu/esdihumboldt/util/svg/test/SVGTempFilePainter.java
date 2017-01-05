@@ -25,7 +25,7 @@ import java.nio.file.Path;
  * 
  * @author Simon Templer
  */
-public class SVGTestPainter extends SVGPainter {
+public class SVGTempFilePainter extends SVGPainter {
 
 	private Path tempFile;
 	private final String filePrefix;
@@ -35,7 +35,7 @@ public class SVGTestPainter extends SVGPainter {
 	 * 
 	 * @param settings the paint settings
 	 */
-	public SVGTestPainter(PaintSettings settings) {
+	public SVGTempFilePainter(PaintSettings settings) {
 		this(settings, null);
 	}
 
@@ -45,7 +45,7 @@ public class SVGTestPainter extends SVGPainter {
 	 * @param settings the paint settings
 	 * @param filePrefix the prefix for the temporary file
 	 */
-	public SVGTestPainter(PaintSettings settings, String filePrefix) {
+	public SVGTempFilePainter(PaintSettings settings, String filePrefix) {
 		super(settings);
 
 		this.filePrefix = (filePrefix != null) ? (filePrefix) : ("testdrawing");
