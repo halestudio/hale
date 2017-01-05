@@ -118,7 +118,7 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="contentType"/>
             <element ref="providerParameter" minOccurs="0" maxOccurs="unbounded"/>
-            <element ref="configurationContentType"/>
+            <element ref="configurationContentType" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="id" type="string" use="required">
             <annotation>
