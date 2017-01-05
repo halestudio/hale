@@ -10,7 +10,6 @@
       <programArgs>-consoleLog -clean
       </programArgs>
       <vmArgs>-Xmx1200M
--XX:MaxPermSize=256m
 -Dosgi.framework.extensions=org.eclipse.equinox.weaving.hook
 -Daj.weaving.verbose=true
 -Dorg.aspectj.weaver.showWeaveInfo=true
@@ -145,6 +144,7 @@
       <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
