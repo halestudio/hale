@@ -123,6 +123,34 @@ public abstract class HaleIO {
 	}
 
 	/**
+	 * Filter I/O provider factories by configuration content type
+	 * 
+	 * @param factories the I/O provider factories
+	 * @param configurationContentType the configuration content type the
+	 *            factories must support
+	 * @return provider factories that support the given configuration content
+	 *         type
+	 */
+	public static List<IOProviderDescriptor> filterFactoriesByConfigurationType(
+			Collection<IOProviderDescriptor> factories, IContentType configurationContentType) {
+		List<IOProviderDescriptor> result = new ArrayList<IOProviderDescriptor>();
+
+		for (IOProviderDescriptor factory : factories) {
+			Set<IContentType> supportedTypes = factory.getConfigurationTypes();
+
+			// check if contentType is supported
+			for (IContentType test : supportedTypes) {
+				if (isCompatibleContentType(test, configurationContentType)) {
+					result.add(factory);
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Find the content types that match the given file name and/or input.
 	 * 
 	 * NOTE: The implementation should try to restrict the result to one content

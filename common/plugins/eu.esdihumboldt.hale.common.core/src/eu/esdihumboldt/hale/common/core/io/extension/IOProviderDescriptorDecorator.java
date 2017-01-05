@@ -72,6 +72,11 @@ public abstract class IOProviderDescriptorDecorator implements IOProviderDescrip
 	}
 
 	@Override
+	public Set<IContentType> getConfigurationTypes() {
+		return descriptor.getConfigurationTypes();
+	}
+
+	@Override
 	public Set<IOProviderParameter> getProviderParameter() {
 		return descriptor.getProviderParameter();
 	}

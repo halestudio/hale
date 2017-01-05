@@ -46,6 +46,13 @@ public interface IOProviderDescriptor extends ExtensionObjectFactory<IOProvider>
 	public Set<IOProviderParameter> getProviderParameter();
 
 	/**
+	 * Get the supported configuration content types
+	 * 
+	 * @return the set of supported configuration content types
+	 */
+	public Set<IContentType> getConfigurationTypes();
+
+	/**
 	 * Get the concrete provider type
 	 * 
 	 * @return the provider type

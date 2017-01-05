@@ -94,27 +94,13 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		@Override
 		public Set<IContentType> getSupportedTypes() {
 			IConfigurationElement[] children = conf.getChildren("contentType");
+			return findContentTypes(children);
+		}
 
-			if (children != null) {
-				Set<IContentType> result = new HashSet<IContentType>();
-
-				for (IConfigurationElement child : children) {
-					String id = child.getAttribute("ref");
-					IContentType ct = HalePlatform.getContentTypeManager().getContentType(id);
-					if (ct != null) {
-						result.add(ct);
-					}
-					else {
-						log.error(MessageFormat.format(
-								"Content type with ID {0} not known by the platform", id));
-					}
-				}
-
-				return result;
-			}
-			else {
-				return Collections.emptySet();
-			}
+		@Override
+		public Set<IContentType> getConfigurationTypes() {
+			IConfigurationElement[] children = conf.getChildren("configurationContentType");
+			return findContentTypes(children);
 		}
 
 		/**
@@ -141,6 +127,28 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 				return Collections.emptySet();
 		}
 
+		private Set<IContentType> findContentTypes(IConfigurationElement[] elements) {
+			if (elements != null) {
+				Set<IContentType> result = new HashSet<IContentType>();
+
+				for (IConfigurationElement element : elements) {
+					String id = element.getAttribute("ref");
+					IContentType ct = HalePlatform.getContentTypeManager().getContentType(id);
+					if (ct != null) {
+						result.add(ct);
+					}
+					else {
+						log.error(MessageFormat
+								.format("Content type with ID {0} not known by the platform", id));
+					}
+				}
+
+				return result;
+			}
+			else {
+				return Collections.emptySet();
+			}
+		}
 	}
 
 	/**
