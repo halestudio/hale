@@ -33,6 +33,17 @@
                ref="eu.esdihumboldt.hale.io.schematron.schema">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.validation.ProjectValidator"
+            id="eu.esdihumboldt.hale.io.validation.projectvalidator"
+            name="Project validator">
+         <contentType
+               ref="org.eclipse.core.runtime.xml">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xml.gzip">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.service">
