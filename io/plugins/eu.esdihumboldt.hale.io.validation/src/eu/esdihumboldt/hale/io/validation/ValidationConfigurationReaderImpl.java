@@ -86,7 +86,8 @@ public class ValidationConfigurationReaderImpl extends AbstractImportProvider
 			// XXX UTF 8 encoding is assumed here. The actual encoding should be
 			// detected or be configurable
 			configuration = new ValidatorConfiguration(
-					IOUtils.toString(validationRuleInput, StandardCharsets.UTF_8), sourceLocation);
+					IOUtils.toString(validationRuleInput, StandardCharsets.UTF_8), sourceLocation,
+					getContentType());
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			throw new IOProviderConfigurationException(

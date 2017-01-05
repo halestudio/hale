@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.validation;
 
 import java.net.URI;
 
+import org.eclipse.core.runtime.content.IContentType;
+
 /**
  * Representation of a validator configuration
  * 
@@ -28,15 +30,19 @@ public class ValidatorConfiguration {
 
 	private final URI location;
 
+	private final IContentType contentType;
+
 	/**
 	 * Creates a validation configuration
 	 * 
 	 * @param configuration Validation configuration
 	 * @param location the source location of the configuration
+	 * @param contentType content type of the configuration
 	 */
-	public ValidatorConfiguration(String configuration, URI location) {
+	public ValidatorConfiguration(String configuration, URI location, IContentType contentType) {
 		this.configuration = configuration;
 		this.location = location;
+		this.contentType = contentType;
 	}
 
 	/**
@@ -51,5 +57,12 @@ public class ValidatorConfiguration {
 	 */
 	public URI getLocation() {
 		return location;
+	}
+
+	/**
+	 * @return the contentType
+	 */
+	public IContentType getContentType() {
+		return contentType;
 	}
 }
