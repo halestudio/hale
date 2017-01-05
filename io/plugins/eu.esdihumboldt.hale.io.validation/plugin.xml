@@ -10,6 +10,11 @@
             resourceName="validator configuration"
             type="eu.esdihumboldt.hale.io.validation.ValidationConfigurationReaderImpl">
       </action>
+      <advisor
+            action="eu.esdihumboldt.hale.io.validation.read"
+            class="eu.esdihumboldt.hale.io.validation.ValidatorConfigurationImportAdvisor"
+            id="eu.esdihumboldt.hale.io.validation.service">
+      </advisor>
    </extension>
    <extension
          point="eu.esdihumboldt.util.resource">
@@ -39,14 +44,6 @@
                interface="eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService">
          </service>
       </services>
-   </extension>
-   <extension
-         point="eu.esdihumboldt.hale.io.action">
-      <advisor
-            action="eu.esdihumboldt.hale.io.validation.read"
-            class="eu.esdihumboldt.hale.io.validation.ValidatorConfigurationImportAdvisor"
-            id="eu.esdihumboldt.hale.io.validation.service">
-      </advisor>
    </extension>
 
 </plugin>
