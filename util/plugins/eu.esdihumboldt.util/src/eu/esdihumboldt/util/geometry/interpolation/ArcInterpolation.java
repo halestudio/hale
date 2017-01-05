@@ -130,17 +130,19 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 		// Calculate center of Arc
 		Coordinate centerOfArc = center;
-		if (centerOfArc == null)
+		if (centerOfArc == null) {
 			centerOfArc = calculateCenterPoint(rawGeometryCoordinates);
+		}
 
 		// is Arc clockwise?
 		isArcClockWise = getOrderOfArc(centerOfArc, rawGeometryCoordinates);
 
 		// Calculate radius of Arc
 		double radiusOfArc = this.radius;
-		if (radiusOfArc == 0)
+		if (radiusOfArc == 0) {
 			radiusOfArc = Math.sqrt(Math.pow((rawGeometryCoordinates[0].x - centerOfArc.x), 2)
 					+ Math.pow((rawGeometryCoordinates[0].y - centerOfArc.y), 2));
+		}
 
 		// return Line String Geometry
 		return interpolateToLineString(rawGeometryCoordinates, centerOfArc, radiusOfArc);

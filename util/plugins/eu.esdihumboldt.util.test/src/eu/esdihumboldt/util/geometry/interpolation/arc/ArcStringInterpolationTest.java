@@ -38,13 +38,16 @@ import com.vividsolutions.jts.geom.LineString;
 import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
 import eu.esdihumboldt.util.geometry.interpolation.ArcStringInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Arc String interpolation test
  * 
  * @author Arun
  */
-
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 
@@ -56,8 +59,6 @@ public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 	private static final double e = 0.1;
 
 	private static final boolean SKIP_TEST = false;
-
-	private static final boolean DRAW_IMAGE = false;
 
 	private static final boolean DEFAULT_KEEP_ORIGINAL = true;
 
@@ -149,9 +150,7 @@ public class ArcStringInterpolationTest extends AbstractInterpolationTest {
 			validateCoordinatesOnGrid(interpolatedArc, this.arcCoordinates.length, e,
 					DEFAULT_KEEP_ORIGINAL);
 
-			if (DRAW_IMAGE) {
-				drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
-			}
+			drawImage((LineString) interpolatedArc, arcCoordinates, testIndex);
 		}
 		else {
 			assertNull(interpolatedArc);

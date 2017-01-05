@@ -26,11 +26,16 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
+
 /**
  * Test for interpolation
  * 
  * @author Arun
  */
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class InterpolationGridCellTest {
 

@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.jdbc.postgresql.test;
 
 import org.junit.Test
 
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.Schema
@@ -30,6 +32,8 @@ import groovy.sql.Sql
  * 
  * @author Sameer Sheikh
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 public class AutoGenKeyReferenceIT extends AbstractDBTest {
 
 	private static final String STATISTICAL_UNIT = '''create table statisticalunits

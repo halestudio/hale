@@ -36,12 +36,16 @@ import com.vividsolutions.jts.geom.LineString;
 import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
 import eu.esdihumboldt.util.geometry.interpolation.ArcByCenterPointInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * ArcByCenterPoint interpolation
  * 
  * @author Arun
  */
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class ArcByCenterPointInterpolationTest extends AbstractInterpolationTest {
 
@@ -56,8 +60,6 @@ public class ArcByCenterPointInterpolationTest extends AbstractInterpolationTest
 	private static final double e = 0.1;
 
 	private static final boolean SKIP_TEST = false;
-
-	private static final boolean DRAW_IMAGE = false;
 
 	/**
 	 * Constructor for parameterized test
@@ -123,9 +125,7 @@ public class ArcByCenterPointInterpolationTest extends AbstractInterpolationTest
 
 		validateCoordinatesOnGrid(interpolatedArc, 0, e, false);
 
-		if (DRAW_IMAGE) {
-			drawImage((LineString) interpolatedArc, new Coordinate[] { center }, testIndex);
-		}
+		drawImage((LineString) interpolatedArc, new Coordinate[] { center }, testIndex);
 	}
 
 }

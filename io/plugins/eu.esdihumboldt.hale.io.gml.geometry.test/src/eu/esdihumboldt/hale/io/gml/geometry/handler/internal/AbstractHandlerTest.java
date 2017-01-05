@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.util.svg.test.AbstractSVGPainterTest;
 
 /**
  * Base class for handler tests.
@@ -51,7 +52,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
  * @author Simon Templer, Arun Varma
  */
 @SuppressWarnings("restriction")
-public abstract class AbstractHandlerTest {
+public abstract class AbstractHandlerTest extends AbstractSVGPainterTest {
 
 	/**
 	 * Test namespace

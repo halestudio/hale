@@ -26,15 +26,16 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
+import eu.esdihumboldt.util.svg.test.AbstractSVGPainterTest;
 import eu.esdihumboldt.util.svg.test.PaintSettings;
-import eu.esdihumboldt.util.svg.test.SVGTestPainter;
+import eu.esdihumboldt.util.svg.test.SVGTempFilePainter;
 
 /**
  * Abstract interpolation test
  * 
  * @author Arun
  */
-public abstract class AbstractInterpolationTest {
+public abstract class AbstractInterpolationTest extends AbstractSVGPainterTest {
 
 	private int skipCount = 0;
 
@@ -113,7 +114,7 @@ public abstract class AbstractInterpolationTest {
 			envelope.expandToInclude(c);
 		}
 		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
-		SVGTestPainter svg = new SVGTestPainter(settings, "interpolation");
+		SVGTempFilePainter svg = new SVGTempFilePainter(settings, "interpolation");
 
 		svg.setColor(Color.DARK_GRAY);
 		svg.getGraphics2D().setFont(svg.getGraphics2D().getFont()
@@ -137,7 +138,7 @@ public abstract class AbstractInterpolationTest {
 			svg.drawPoint(originalCoordinates[i]);
 		}
 
-		svg.writeAndOpenFile();
+		saveDrawing(svg);
 	}
 
 }

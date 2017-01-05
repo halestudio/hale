@@ -35,12 +35,16 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading line string geometries
  * 
  * @author Patrick Lieb, Arun Varma
  */
+@Features("Geometries")
+@Stories("GML")
 public class LineStringHandlerTest extends AbstractHandlerTest {
 
 	private LineString reference;

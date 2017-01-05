@@ -28,12 +28,16 @@ import org.junit.runners.Parameterized.Parameters;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.ArcInterpolation;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for arc order
  * 
  * @author Arun
  */
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class ArcOrderTest {
 

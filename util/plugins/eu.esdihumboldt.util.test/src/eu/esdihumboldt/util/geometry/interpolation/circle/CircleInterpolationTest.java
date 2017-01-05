@@ -36,12 +36,16 @@ import com.vividsolutions.jts.geom.LineString;
 import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
 import eu.esdihumboldt.util.geometry.interpolation.CircleInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for Circle Type
  * 
  * @author Arun
  */
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class CircleInterpolationTest extends AbstractInterpolationTest {
 
@@ -53,8 +57,6 @@ public class CircleInterpolationTest extends AbstractInterpolationTest {
 	private static final double e = 0.1;
 
 	private static final boolean SKIP_TEST = false;
-
-	private static final boolean DRAW_IMAGE = false;
 
 	private static final boolean DEFAULT_KEEP_ORIGINAL = true;
 
@@ -138,8 +140,6 @@ public class CircleInterpolationTest extends AbstractInterpolationTest {
 		validateCoordinatesOnGrid(interpolatedCircle, this.arcCoordinates.length + 1, e,
 				DEFAULT_KEEP_ORIGINAL);
 
-		if (DRAW_IMAGE) {
-			drawImage((LineString) interpolatedCircle, arcCoordinates, testIndex);
-		}
+		drawImage((LineString) interpolatedCircle, arcCoordinates, testIndex);
 	}
 }

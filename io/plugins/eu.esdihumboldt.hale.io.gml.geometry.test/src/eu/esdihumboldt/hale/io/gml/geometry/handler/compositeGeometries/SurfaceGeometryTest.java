@@ -43,16 +43,18 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
 import eu.esdihumboldt.util.svg.test.PaintSettings;
-import eu.esdihumboldt.util.svg.test.SVGTestPainter;
+import eu.esdihumboldt.util.svg.test.SVGPainter;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading surface geometries
  * 
  * @author Patrick Lieb, Arun Varma
  */
+@Features("Geometries")
+@Stories("GML")
 public class SurfaceGeometryTest extends AbstractHandlerTest {
-
-	private static final boolean GEN_IMAGES = false;
 
 	private Polygon reference;
 	private Polygon referenceOnGrid;
@@ -166,6 +168,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	 * 
 	 * @throws Exception if an error occurs
 	 */
+	@Stories("Arcs")
 	@Test
 	public void testSurfaceArcsGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
@@ -198,25 +201,23 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			Geometry geom2 = geoms.get(1);
 			Geometry geom3 = geoms.get(2);
 
-			if (GEN_IMAGES) {
-				Envelope envelope = new Envelope();
-				envelope.expandToInclude(geom1.getEnvelopeInternal());
-				envelope.expandToInclude(geom2.getEnvelopeInternal());
-				envelope.expandToInclude(geom3.getEnvelopeInternal());
-				PaintSettings settings = new PaintSettings(envelope, 1000, 10);
-				SVGTestPainter svg = new SVGTestPainter(settings);
+			Envelope envelope = new Envelope();
+			envelope.expandToInclude(geom1.getEnvelopeInternal());
+			envelope.expandToInclude(geom2.getEnvelopeInternal());
+			envelope.expandToInclude(geom3.getEnvelopeInternal());
+			PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+			SVGPainter svg = new SVGPainter(settings);
 
-				svg.setColor(Color.BLACK);
-				svg.drawGeometry(geom1);
+			svg.setColor(Color.BLACK);
+			svg.drawGeometry(geom1);
 
-				svg.setColor(Color.BLUE);
-				svg.drawGeometry(geom2);
+			svg.setColor(Color.BLUE);
+			svg.drawGeometry(geom2);
 
-				svg.setColor(Color.RED);
-				svg.drawGeometry(geom3);
+			svg.setColor(Color.RED);
+			svg.drawGeometry(geom3);
 
-				svg.writeAndOpenFile();
-			}
+			saveDrawing(svg);
 
 			// interpolated geometries should not intersect (XXX verify)
 			assertTrue("Geometries intersect", geom1.touches(geom2));

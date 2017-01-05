@@ -10,5 +10,6 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.util.svg.test,
  org.junit;version="4.8.1",
  org.junit.runner;version="4.12.0",
- org.junit.runners;version="4.12.0"
+ org.junit.runners;version="4.12.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: org.geotools

@@ -36,12 +36,16 @@ import com.vividsolutions.jts.geom.LineString;
 import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationTest;
 import eu.esdihumboldt.util.geometry.interpolation.CircleByCenterPointInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Circle by center point interpolation test
  * 
  * @author Arun
  */
+@Features("Geometries")
+@Stories("Arcs")
 @RunWith(Parameterized.class)
 public class CircleByCenterPointInterpolationTest extends AbstractInterpolationTest {
 
@@ -54,8 +58,6 @@ public class CircleByCenterPointInterpolationTest extends AbstractInterpolationT
 	private static final double e = 0.1;
 
 	private static final boolean SKIP_TEST = false;
-
-	private static final boolean DRAW_IMAGE = false;
 
 	/**
 	 * Constructor for parameterized test
@@ -118,9 +120,7 @@ public class CircleByCenterPointInterpolationTest extends AbstractInterpolationT
 
 		validateCoordinatesOnGrid(interpolatedCircle, 0, e, false);
 
-		if (DRAW_IMAGE) {
-			drawImage((LineString) interpolatedCircle, new Coordinate[] { center }, testIndex);
-		}
+		drawImage((LineString) interpolatedCircle, new Coordinate[] { center }, testIndex);
 	}
 
 }

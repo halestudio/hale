@@ -17,6 +17,9 @@ package eu.esdihumboldt.hale.io.jdbc.postgresql.test;
 
 import org.junit.Test
 
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
+
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -36,6 +39,8 @@ import groovy.sql.Sql
  * 
  * @author Sameer Sheikh
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 public class WriteInstanceOrderIT extends AbstractDBTest {
 	private static final FIRST_TABLE_LINES = '''CREATE TABLE statisticalunits
 		(
@@ -91,7 +96,9 @@ public class WriteInstanceOrderIT extends AbstractDBTest {
 				statisticalunits{
 					id i
 					name "test $i"
-					geom  new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([new Coordinate(0, 0), new Coordinate(i, i)] as Coordinate[]))
+					geom  new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([
+						new Coordinate(0, 0),
+						new Coordinate(i, i)] as Coordinate[]))
 				}
 				testtable{
 					test_id i

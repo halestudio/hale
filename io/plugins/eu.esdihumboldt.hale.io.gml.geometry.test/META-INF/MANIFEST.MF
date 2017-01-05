@@ -8,7 +8,8 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.test,
  eu.esdihumboldt.util.svg.test,
  org.junit;version="4.8.2",
- org.osgi.framework;version="1.6.0"
+ org.osgi.framework;version="1.6.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
  eu.esdihumboldt.hale.io.xsd;bundle-version="2.5.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.5.0",
