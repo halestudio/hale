@@ -183,6 +183,24 @@ public class ArcByPointsImpl implements ArcByPoints {
 	 * @return the center point
 	 */
 	protected Coordinate calculateCenterPoint() {
+		// we can get two lines using above slope let's say p1p2: (ya =
+		// m_a(x1-x0) + y0) and p2p3: (yb = m_a(x2-x1) + y1)
+
+		Coordinate AB_Mid = new Coordinate((startPoint.x + middlePoint.x) / 2,
+				(startPoint.y + middlePoint.y) / 2);
+
+		if (startPoint.equals(endPoint)) {
+			// start is end point -> circle
+			return AB_Mid;
+		}
+
+		Coordinate BC_Mid = new Coordinate((middlePoint.x + endPoint.x) / 2,
+				(middlePoint.y + endPoint.y) / 2);
+
+		// The center of the circle is the intersection of the two lines
+		// perpendicular to and passing through the midpoints of the lines p1p2
+		// and p2p3.
+
 		double yDelta_a = middlePoint.y - startPoint.y;
 		double xDelta_a = middlePoint.x - startPoint.x;
 		double yDelta_b = endPoint.y - middlePoint.y;
@@ -191,18 +209,6 @@ public class ArcByPointsImpl implements ArcByPoints {
 		double aSlope = yDelta_a / xDelta_a;
 
 		double bSlope = yDelta_b / xDelta_b;
-
-		// we can get two lines using above slope let's say p1p2: (ya =
-		// m_a(x1-x0) + y0) and p2p3: (yb = m_a(x2-x1) + y1)
-
-		Coordinate AB_Mid = new Coordinate((startPoint.x + middlePoint.x) / 2,
-				(startPoint.y + middlePoint.y) / 2);
-		Coordinate BC_Mid = new Coordinate((middlePoint.x + endPoint.x) / 2,
-				(middlePoint.y + endPoint.y) / 2);
-
-		// The center of the circle is the intersection of the two lines
-		// perpendicular to and passing through the midpoints of the lines p1p2
-		// and p2p3.
 
 		double centerX = 0;
 		double centerY = 0;

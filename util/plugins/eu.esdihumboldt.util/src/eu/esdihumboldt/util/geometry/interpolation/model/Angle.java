@@ -18,7 +18,9 @@ package eu.esdihumboldt.util.geometry.interpolation.model;
 import com.vividsolutions.jts.geom.Coordinate;
 
 /**
- * Represents an angle.
+ * Represents an angle. The angle may represent an angle difference or a
+ * positional angle. In the later case the zero angle is located at three
+ * o'clock (x axis direction).
  * 
  * @author Simon Templer
  */

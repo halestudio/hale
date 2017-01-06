@@ -18,6 +18,7 @@ package eu.esdihumboldt.util.geometry.interpolation;
 import java.math.BigDecimal;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 
 /**
@@ -40,6 +41,16 @@ public class InterpolationUtil {
 	 * @return if the arc closely represents a straight line
 	 */
 	public static boolean isStraightLine(Arc arc) {
+		if (arc.isCircle()) {
+			return false;
+		}
+
+		if (arc instanceof ArcByCenterPoint
+				&& Double.isInfinite(((ArcByCenterPoint) arc).getRadius())) {
+			// treat as straight line if the radius is infinite
+			return true;
+		}
+
 		ArcByPoints a = arc.toArcByPoints();
 		double yDelta_a = a.getMiddlePoint().y - a.getStartPoint().y;
 		double xDelta_a = a.getMiddlePoint().x - a.getStartPoint().x;
@@ -78,10 +89,6 @@ public class InterpolationUtil {
 				return Double.NaN;
 			}
 		}
-	}
-
-	public static double test() {
-		Math.
 	}
 
 }

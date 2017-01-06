@@ -16,6 +16,8 @@
 package eu.esdihumboldt.util.geometry.interpolation.model.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
@@ -24,6 +26,7 @@ import org.junit.Test;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.AbstractArcTest;
+import eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
@@ -49,6 +52,9 @@ public class ArcByCenterPointImplTest extends AbstractArcTest {
 
 		assertEquals(-180.0, arc.getAngleBetween().getDegrees(), 1e-10);
 
+		assertFalse(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
 		ArcByPoints converted = arc.toArcByPoints();
 		assertEqualsCoord(new Coordinate(1, 0), converted.getStartPoint());
 		assertEqualsCoord(new Coordinate(0, -1), converted.getMiddlePoint());
@@ -64,10 +70,31 @@ public class ArcByCenterPointImplTest extends AbstractArcTest {
 
 		assertEquals(-270.0, arc.getAngleBetween().getDegrees(), 1e-10);
 
+		assertFalse(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
 		ArcByPoints converted = arc.toArcByPoints();
 		assertEqualsCoord(new Coordinate(1, 1), converted.getStartPoint());
 		assertEqualsCoord(new Coordinate(0, -Math.sqrt(2.0)), converted.getMiddlePoint());
 		assertEqualsCoord(new Coordinate(-1, 1), converted.getEndPoint());
+	}
+
+	@Test
+	public void testCW3() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(1, 1), Math.sqrt(2.0),
+				Angle.fromDegrees(135), Angle.fromDegrees(45), true);
+
+		drawArcWithMarkers(arc);
+
+		assertEquals(-90.0, arc.getAngleBetween().getDegrees(), 1e-10);
+
+		assertFalse(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
+		ArcByPoints converted = arc.toArcByPoints();
+		assertEqualsCoord(new Coordinate(0, 2), converted.getStartPoint());
+		assertEqualsCoord(new Coordinate(1, 1 + Math.sqrt(2.0)), converted.getMiddlePoint());
+		assertEqualsCoord(new Coordinate(2, 2), converted.getEndPoint());
 	}
 
 	@Test
@@ -78,6 +105,9 @@ public class ArcByCenterPointImplTest extends AbstractArcTest {
 		drawArcWithMarkers(arc);
 
 		assertEquals(180.0, arc.getAngleBetween().getDegrees(), 1e-10);
+
+		assertFalse(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
 
 		ArcByPoints converted = arc.toArcByPoints();
 		assertEqualsCoord(new Coordinate(1, 0), converted.getStartPoint());
@@ -94,10 +124,49 @@ public class ArcByCenterPointImplTest extends AbstractArcTest {
 
 		assertEquals(90.0, arc.getAngleBetween().getDegrees(), 1e-10);
 
+		assertFalse(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
 		ArcByPoints converted = arc.toArcByPoints();
 		assertEqualsCoord(new Coordinate(1, 1), converted.getStartPoint());
 		assertEqualsCoord(new Coordinate(0, Math.sqrt(2.0)), converted.getMiddlePoint());
 		assertEqualsCoord(new Coordinate(-1, 1), converted.getEndPoint());
+	}
+
+	@Test
+	public void testCircle1() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0, 0), 1.0,
+				Angle.fromDegrees(0), Angle.fromDegrees(0), false);
+
+		drawArcWithMarkers(arc);
+
+		assertEquals(360.0, arc.getAngleBetween().getDegrees(), 1e-10);
+
+		assertTrue(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
+		ArcByPoints converted = arc.toArcByPoints();
+		assertEqualsCoord(new Coordinate(1, 0), converted.getStartPoint());
+		assertEqualsCoord(new Coordinate(-1, 0), converted.getMiddlePoint());
+		assertEqualsCoord(new Coordinate(1, 0), converted.getEndPoint());
+	}
+
+	@Test
+	public void testCircle2() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0, 0), 1.0,
+				Angle.fromDegrees(0), Angle.fromDegrees(360), false);
+
+		drawArcWithMarkers(arc);
+
+		assertEquals(360.0, arc.getAngleBetween().getDegrees(), 1e-10);
+
+		assertTrue(arc.isCircle());
+		assertFalse(InterpolationUtil.isStraightLine(arc));
+
+		ArcByPoints converted = arc.toArcByPoints();
+		assertEqualsCoord(new Coordinate(1, 0), converted.getStartPoint());
+		assertEqualsCoord(new Coordinate(-1, 0), converted.getMiddlePoint());
+		assertEqualsCoord(new Coordinate(1, 0), converted.getEndPoint());
 	}
 
 }

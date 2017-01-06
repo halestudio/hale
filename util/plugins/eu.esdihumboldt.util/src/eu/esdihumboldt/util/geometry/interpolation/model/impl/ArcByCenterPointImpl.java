@@ -61,7 +61,10 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 
 	@Override
 	public boolean isCircle() {
-		return startAngle.equals(endAngle);
+		// is a circle if the normalised angles are equal
+		return com.vividsolutions.jts.algorithm.Angle
+				.normalize(startAngle.getRadians()) == com.vividsolutions.jts.algorithm.Angle
+						.normalize(endAngle.getRadians());
 	}
 
 	/**
