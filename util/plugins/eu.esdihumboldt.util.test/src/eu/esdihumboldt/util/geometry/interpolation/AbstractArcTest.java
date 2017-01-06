@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import static org.junit.Assert.assertEquals;
+
 import java.awt.Color;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
@@ -44,11 +46,39 @@ public class AbstractArcTest extends AbstractSVGPainterTest {
 	 * @throws IOException if saving the drawing fails
 	 */
 	protected void drawArcWithMarkers(Arc arc) throws IOException {
+		drawArcWithMarkers(arc, null);
+	}
+
+	/**
+	 * Draw an arc with markers for the points defining the arc. Saves the
+	 * resulting drawing.
+	 * 
+	 * @param arc the arc to draw
+	 * @param name an optional name for the drawing
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void drawArcWithMarkers(Arc arc, String name) throws IOException {
 		Envelope envelope = new Envelope(arc.toArcByCenterPoint().getCenterPoint());
 		envelope.expandBy(arc.toArcByCenterPoint().getRadius());
 		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
 		SVGPainter svg = new SVGPainter(settings);
 		svg.setCanvasSize(1000, 1000);
+
+		if (name == null) {
+			name = arc.toString();
+
+//			StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+//			if (trace.length >= 3) {
+//				name = trace[2].getMethodName() + " - " + name;
+//			}
+		}
+
+		if (name != null) {
+			svg.setColor(Color.DARK_GRAY);
+			svg.getGraphics2D().setFont(svg.getGraphics2D().getFont()
+					.deriveFont(40.0f)/* .deriveFont(Font.BOLD) */);
+			svg.getGraphics2D().drawString(name, 30, 70);
+		}
 
 		drawArcWithMarkers(svg, arc);
 
@@ -110,18 +140,25 @@ public class AbstractArcTest extends AbstractSVGPainterTest {
 		ArcByCenterPoint a = arc.toArcByCenterPoint();
 
 		// FIXME probably not the right position
-		Coordinate upperLeft = paintSettings.convertPoint(new Coordinate(
-				a.getCenterPoint().x - a.getRadius(), a.getCenterPoint().y - a.getRadius()));
+		Coordinate center = paintSettings.convertPoint(a.getCenterPoint());
 
-		double upperLeftRectX = upperLeft.x;
-		double upperLeftRectY = upperLeft.y;
-		double circleWidth = a.getRadius() * 2 * paintSettings.getScaleFactor();
-		double circleHeight = circleWidth;
-		// add 180 degrees because Y axis is flipped in Graphics2D
-		double startAngle = a.getStartAngle().getDegrees() + 180.0;
+		double radius = a.getRadius() * paintSettings.getScaleFactor();
+		double startAngle = a.getStartAngle().getDegrees();
 		double angleExtent = a.getAngleBetween().getDegrees();
-		return new Arc2D.Double(upperLeftRectX, upperLeftRectY, circleWidth, circleHeight,
-				startAngle, angleExtent, Arc2D.OPEN);
+		Arc2D.Double arcShape = new Arc2D.Double();
+		arcShape.setArcByCenter(center.x, center.y, radius, startAngle, angleExtent, Arc2D.OPEN);
+		return arcShape;
+	}
+
+	/**
+	 * Test coordinates being equal using a lax comparison for X and Y.
+	 * 
+	 * @param expected the expected coordinate
+	 * @param other the coordinate to compare
+	 */
+	public void assertEqualsCoord(Coordinate expected, Coordinate other) {
+		assertEquals(expected.x, other.x, 1e-3);
+		assertEquals(expected.y, other.y, 1e-3);
 	}
 
 }

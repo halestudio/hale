@@ -32,11 +32,9 @@ public class SVGPainterTest extends AbstractSVGPainterTest {
 	@SuppressWarnings("javadoc")
 	@Test
 	public void testDrawPoint() throws IOException {
-		System.out.println(System.getProperty("sun.java.command"));
-
 		Coordinate point = new Coordinate(1, 1);
 
-		PaintSettings settings = new PaintSettings(1, 0, 0, 10);
+		PaintSettings settings = new PaintSettings(5, 0, 2, 10);
 		SVGPainter painter = new SVGPainter(settings);
 
 		painter.setColor(Color.BLUE);

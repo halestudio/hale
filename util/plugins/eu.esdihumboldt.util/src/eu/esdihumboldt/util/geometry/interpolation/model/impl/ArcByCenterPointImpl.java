@@ -17,6 +17,8 @@ package eu.esdihumboldt.util.geometry.interpolation.model.impl;
 
 import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
 
+import java.text.MessageFormat;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
@@ -105,6 +107,9 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 			endAngleFromX = endAngle.getDegrees();
 			middleAngleFromX = startAngleFromX + 0.5 * getAngleBetween().getDegrees();
 
+			// FIXME rounding necessary?
+			// XXX and does it make sense? e.g. for lat/lon?!!!
+
 			// getting start coordinate
 			double x = round(centerPoint.x + (radius * Math.cos(Math.toRadians(startAngleFromX))),
 					4);
@@ -157,7 +162,7 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 	@Override
 	public Angle getAngleBetween() {
 		double diff = endAngle.getRadians() - startAngle.getRadians();
-		if (isClockwise()) {
+		if (!isClockwise()) {
 			// normalise to positive value between 0 (exclusive) and 2Pi
 			if (diff > 0) {
 				while (diff > Angle.PI_TIMES_2) {
@@ -185,6 +190,13 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 		}
 
 		return Angle.fromRadians(diff);
+	}
+
+	@Override
+	public String toString() {
+		return MessageFormat.format("Arc(c: {0}, r: {1}, {2} - {3} ", centerPoint, radius,
+				startAngle.getDegrees(), endAngle.getDegrees())
+				+ ((clockwise) ? ("CW)") : ("CCW)"));
 	}
 
 }

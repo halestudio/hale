@@ -17,6 +17,8 @@ package eu.esdihumboldt.util.geometry.interpolation.model.impl;
 
 import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
 
+import java.text.MessageFormat;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
@@ -250,6 +252,11 @@ public class ArcByPointsImpl implements ArcByPoints {
 
 		}
 		return new Coordinate(centerX, centerY);
+	}
+
+	@Override
+	public String toString() {
+		return MessageFormat.format("Arc({0}, {1}, {2})", startPoint, middlePoint, endPoint);
 	}
 
 }

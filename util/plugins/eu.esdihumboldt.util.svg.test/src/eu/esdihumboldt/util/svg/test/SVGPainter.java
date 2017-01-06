@@ -55,12 +55,6 @@ public class SVGPainter {
 	public SVGPainter(PaintSettings settings) {
 		this.settings = settings;
 		this.g = createSVGGraphics();
-
-		// flip Y axis
-//		AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-//		g.transform(tx);
-		// XXX does not work well - instead angle have to be adapted when
-		// painting
 	}
 
 	/**
@@ -153,15 +147,11 @@ public class SVGPainter {
 		Coordinate[] coords = geometry.getCoordinates();
 		if (coords.length >= 2) {
 			for (int i = 0; i < coords.length - 1; i++) {
-				g.drawLine(
-						(int) Math.round(
-								(coords[i].x - settings.getMinX()) * settings.getScaleFactor()),
-						(int) Math.round(
-								(coords[i].y - settings.getMinY()) * settings.getScaleFactor()),
-						(int) Math.round(
-								(coords[i + 1].x - settings.getMinX()) * settings.getScaleFactor()),
-						(int) Math.round((coords[i + 1].y - settings.getMinY())
-								* settings.getScaleFactor()));
+				g.drawLine( //
+						settings.convertX(coords[i].x), //
+						settings.convertY(coords[i].y), //
+						settings.convertX(coords[i + 1].x), //
+						settings.convertY(coords[i + 1].y));
 			}
 		}
 	}
@@ -173,10 +163,11 @@ public class SVGPainter {
 	 * @param p2 the second point
 	 */
 	public void drawLine(Coordinate p1, Coordinate p2) {
-		g.drawLine((int) Math.round((p1.x - settings.getMinX()) * settings.getScaleFactor()),
-				(int) Math.round((p1.y - settings.getMinY()) * settings.getScaleFactor()),
-				(int) Math.round((p2.x - settings.getMinX()) * settings.getScaleFactor()),
-				(int) Math.round((p2.y - settings.getMinY()) * settings.getScaleFactor()));
+		g.drawLine( //
+				settings.convertX(p1.x), //
+				settings.convertY(p1.y), //
+				settings.convertX(p2.x), //
+				settings.convertY(p2.y));
 	}
 
 	/**
@@ -215,9 +206,7 @@ public class SVGPainter {
 	private java.awt.Polygon createPolygon(Coordinate[] coordinates) {
 		java.awt.Polygon result = new java.awt.Polygon();
 		for (Coordinate coord : coordinates) {
-			result.addPoint(
-					(int) Math.round((coord.x - settings.getMinX()) * settings.getScaleFactor()),
-					(int) Math.round((coord.y - settings.getMinY()) * settings.getScaleFactor()));
+			result.addPoint(settings.convertX(coord.x), settings.convertY(coord.y));
 		}
 		return result;
 	}
@@ -246,12 +235,10 @@ public class SVGPainter {
 	 * @param coord the point coordinates
 	 */
 	public void drawPoint(Coordinate coord) {
-		g.fillOval(
-				(int) Math.round((coord.x - settings.getMinX()) * settings.getScaleFactor())
-						- settings.getPointSize() / 2,
-				(int) Math.round((coord.y - settings.getMinY()) * settings.getScaleFactor())
-						- settings.getPointSize() / 2,
-				settings.getPointSize(), settings.getPointSize());
+		g.fillOval(settings.convertX(coord.x) - settings.getPointSize() / 2, //
+				settings.convertY(coord.y) - settings.getPointSize() / 2, //
+				settings.getPointSize(), //
+				settings.getPointSize());
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class PaintSettings {
 
 	private final double minX;
 
-	private final double minY;
+	private final double maxY;
 
 	private final int pointSize;
 
@@ -39,15 +39,15 @@ public class PaintSettings {
 	 * @param scaleFactor the scale factor
 	 * @param minX the offset on the X axis (which is subtracted from X
 	 *            ordinates)
-	 * @param minY the offset on the Y axis (which is subtracted from Y
-	 *            ordinates)
+	 * @param maxY the offset on the Y axis (which Y ordinates are substracted
+	 *            from)
 	 * @param pointSize the size of individual drawn points
 	 */
-	public PaintSettings(double scaleFactor, double minX, double minY, int pointSize) {
+	public PaintSettings(double scaleFactor, double minX, double maxY, int pointSize) {
 		super();
 		this.scaleFactor = scaleFactor;
 		this.minX = minX;
-		this.minY = minY;
+		this.maxY = maxY;
 		this.pointSize = pointSize;
 	}
 
@@ -72,7 +72,7 @@ public class PaintSettings {
 			scaleFactor = width / envelope.getWidth();
 		}
 		minX = envelope.getMinX();
-		minY = envelope.getMinY();
+		maxY = envelope.getMaxY();
 
 		this.pointSize = pointSize;
 	}
@@ -94,8 +94,8 @@ public class PaintSettings {
 	/**
 	 * @return the minY
 	 */
-	public double getMinY() {
-		return minY;
+	public double getMaxY() {
+		return maxY;
 	}
 
 	/**
@@ -106,14 +106,33 @@ public class PaintSettings {
 	}
 
 	/**
+	 * Convert an x ordinate according to the paint settings (scaling etc.).
+	 * 
+	 * @param x the x ordinate
+	 * @return the converted x ordinate
+	 */
+	public int convertX(double x) {
+		return (int) Math.round((x - getMinX()) * getScaleFactor());
+	}
+
+	/**
+	 * Convert an y ordinate according to the paint settings (scaling etc.).
+	 * 
+	 * @param y the y ordinate
+	 * @return the converted y ordinate
+	 */
+	public int convertY(double y) {
+		return (int) Math.round((getMaxY() - y) * getScaleFactor());
+	}
+
+	/**
 	 * Convert a coordinate according to the paint settings (scaling etc.).
 	 * 
 	 * @param coord the coordinate to convert
 	 * @return the converted coordinate
 	 */
 	public Coordinate convertPoint(Coordinate coord) {
-		return new Coordinate((int) Math.round((coord.x - getMinX()) * getScaleFactor()),
-				(int) Math.round((coord.y - getMinY()) * getScaleFactor()));
+		return new Coordinate(convertX(coord.x), convertY(coord.y));
 	}
 
 }
