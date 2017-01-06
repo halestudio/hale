@@ -238,7 +238,7 @@ public class Transformation {
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
 		if (validators != null && !validators.isEmpty()) {
-			validationJob = new ValidationJob(validators, reportHandler, target);
+			validationJob = new ValidationJob(validators, reportHandler, target, environment);
 		}
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,

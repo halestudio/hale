@@ -18,10 +18,10 @@ package eu.esdihumboldt.hale.ui.io.schema;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**

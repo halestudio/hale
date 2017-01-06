@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.io.project;
 
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**

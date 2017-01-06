@@ -172,7 +172,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 				}
 			});
 			// make project information available
-			addService(ProjectInfoService.class, new FixedProjectInfoService(project));
+			addService(ProjectInfoService.class, new FixedProjectInfoService(project, location));
 			// make code lists available
 			addService(CodeListRegistry.class, advisor.getCodeListRegistry());
 
