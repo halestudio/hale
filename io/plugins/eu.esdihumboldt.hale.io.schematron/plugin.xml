@@ -30,6 +30,14 @@
                ref="eu.esdihumboldt.hale.io.schematron.schema">
          </configurationContentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReaderImpl"
+            id="eu.esdihumboldt.hale.io.schematron.reader"
+            name="Schematron schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.schematron.schema">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

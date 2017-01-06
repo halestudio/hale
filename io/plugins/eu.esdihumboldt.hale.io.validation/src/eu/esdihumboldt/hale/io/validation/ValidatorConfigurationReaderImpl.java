@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
  * 
  * @author Florian Esser
  */
-public class ValidationConfigurationReaderImpl extends AbstractImportProvider
+public class ValidatorConfigurationReaderImpl extends AbstractImportProvider
 		implements ValidatorConfigurationReader {
 
 	/**

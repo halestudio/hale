@@ -26,14 +26,6 @@
    <extension
          point="eu.esdihumboldt.hale.io.provider">
       <provider
-            class="eu.esdihumboldt.hale.io.validation.ValidationConfigurationReaderImpl"
-            id="eu.esdihumboldt.hale.io.validation.reader"
-            name="Validator configuration">
-         <contentType
-               ref="eu.esdihumboldt.hale.io.schematron.schema">
-         </contentType>
-      </provider>
-      <provider
             class="eu.esdihumboldt.hale.io.validation.ProjectValidator"
             id="eu.esdihumboldt.hale.io.validation.projectvalidator"
             name="Project validator">
