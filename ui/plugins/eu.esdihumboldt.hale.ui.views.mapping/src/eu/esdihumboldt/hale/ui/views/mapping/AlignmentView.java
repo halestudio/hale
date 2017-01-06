@@ -100,7 +100,7 @@ public class AlignmentView extends AbstractMappingView {
 
 	private ISelectionListener selectionListener;
 
-	private TreeLayoutAlgorithm treeLayout;
+	private AlignmentLayoutAlgorithm treeLayout;
 
 	private AlignmentViewContentProvider contentProvider;
 
@@ -546,7 +546,8 @@ public class AlignmentView extends AbstractMappingView {
 
 	@Override
 	protected LayoutAlgorithm createLayout() {
-		treeLayout = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
+		treeLayout = new AlignmentLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
+
 		return treeLayout;
 	}
 
