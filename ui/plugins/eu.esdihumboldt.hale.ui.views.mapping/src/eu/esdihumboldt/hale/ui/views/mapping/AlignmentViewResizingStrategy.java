@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.views.mapping;
 
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Item;
 import org.eclipse.zest.core.widgets.custom.CGraphNode;
 import org.eclipse.zest.layouts.interfaces.EntityLayout;
@@ -52,9 +53,11 @@ public class AlignmentViewResizingStrategy implements ResizingStrategy {
 				Item item = entity.getItems()[0];
 				if (item instanceof CGraphNode) {
 					IFigure figure = ((CGraphNode) item).getFigure();
-					int preferredWidth = figure.getPreferredSize().width;
-					if (preferredWidth > entity.getSize().width && preferredWidth <= maxNodeWidth) {
-						entity.setSize(preferredWidth, entity.getSize().height);
+					Dimension preferredSize = figure.getPreferredSize();
+					if (preferredSize != null && preferredSize.width > entity.getSize().width) {
+						double newWidth = (preferredSize.width <= maxNodeWidth)
+								? preferredSize.width : maxNodeWidth;
+						entity.setSize(newWidth, entity.getSize().height);
 					}
 				}
 			}
