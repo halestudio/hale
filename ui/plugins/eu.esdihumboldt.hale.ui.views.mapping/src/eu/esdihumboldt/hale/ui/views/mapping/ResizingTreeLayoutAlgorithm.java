@@ -30,7 +30,7 @@ import org.eclipse.zest.layouts.interfaces.LayoutContext;
  * 
  * @author Florian Esser
  */
-public class ResizingLayoutAlgorithm implements LayoutAlgorithm {
+public class ResizingTreeLayoutAlgorithm implements LayoutAlgorithm {
 
 	private final ResizingStrategy resizingStrategy;
 	private final TreeLayoutAlgorithm layoutDelegate;
@@ -46,7 +46,7 @@ public class ResizingLayoutAlgorithm implements LayoutAlgorithm {
 	 *            {@link TreeLayoutAlgorithm#TOP_DOWN}
 	 * @param resizingStrategy resizing strategy to use
 	 */
-	public ResizingLayoutAlgorithm(int direction, ResizingStrategy resizingStrategy) {
+	public ResizingTreeLayoutAlgorithm(int direction, ResizingStrategy resizingStrategy) {
 		this.layoutDelegate = new TreeLayoutAlgorithm(direction);
 		this.resizingStrategy = resizingStrategy;
 	}

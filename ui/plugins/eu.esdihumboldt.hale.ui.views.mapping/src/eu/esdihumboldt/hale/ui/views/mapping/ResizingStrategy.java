@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 import org.eclipse.zest.layouts.interfaces.LayoutContext;
 
 /**
- * Interface for resizing strategies used by {@link ResizingLayoutAlgorithm}.
+ * Interface for resizing strategies used by {@link ResizingTreeLayoutAlgorithm}.
  * 
  * @author Florian Esser
  */
