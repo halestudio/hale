@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineString;
 

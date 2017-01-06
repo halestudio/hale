@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
+
 import java.util.ArrayList;
 import java.util.List;
 

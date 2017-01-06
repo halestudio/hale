@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -372,6 +374,21 @@ public class ArcInterpolation extends Interpolation<LineString> {
 
 		}
 		return new Coordinate(centerX, centerY);
+	}
+
+	private boolean areOnStraightLine(Coordinate[] arcCoordinates) {
+		double yDelta_a = arcCoordinates[1].y - arcCoordinates[0].y;
+		double xDelta_a = arcCoordinates[1].x - arcCoordinates[0].x;
+		double yDelta_b = arcCoordinates[2].y - arcCoordinates[1].y;
+		double xDelta_b = arcCoordinates[2].x - arcCoordinates[1].x;
+
+		double aSlope = yDelta_a / xDelta_a;
+		double bSlope = yDelta_b / xDelta_b;
+
+		if (round(aSlope, 4) == round(bSlope, 4)) {
+			return true;
+		}
+		return false;
 	}
 
 	private double getAngleBetweenTwoPoints(Coordinate c1, Coordinate c2, Coordinate center) {
