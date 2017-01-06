@@ -55,6 +55,10 @@ public class SVGPainter {
 	public SVGPainter(PaintSettings settings) {
 		this.settings = settings;
 		this.g = createSVGGraphics();
+
+		if (settings.getCanvasSize() != null) {
+			g.setSVGCanvasSize(settings.getCanvasSize());
+		}
 	}
 
 	/**

@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.util.svg.test;
 
+import java.awt.Dimension;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
@@ -33,6 +35,8 @@ public class PaintSettings {
 
 	private final int pointSize;
 
+	private final Dimension canvasSize;
+
 	/**
 	 * Create a new settings object based on the given values.
 	 * 
@@ -42,13 +46,16 @@ public class PaintSettings {
 	 * @param maxY the offset on the Y axis (which Y ordinates are substracted
 	 *            from)
 	 * @param pointSize the size of individual drawn points
+	 * @param canvasSize the canvas size or <code>null</code>
 	 */
-	public PaintSettings(double scaleFactor, double minX, double maxY, int pointSize) {
+	public PaintSettings(double scaleFactor, double minX, double maxY, int pointSize,
+			Dimension canvasSize) {
 		super();
 		this.scaleFactor = scaleFactor;
 		this.minX = minX;
 		this.maxY = maxY;
 		this.pointSize = pointSize;
+		this.canvasSize = canvasSize;
 	}
 
 	/**
@@ -73,6 +80,8 @@ public class PaintSettings {
 		}
 		minX = envelope.getMinX();
 		maxY = envelope.getMaxY();
+
+		canvasSize = new Dimension(width, height);
 
 		this.pointSize = pointSize;
 	}
@@ -103,6 +112,13 @@ public class PaintSettings {
 	 */
 	public int getPointSize() {
 		return pointSize;
+	}
+
+	/**
+	 * @return the canvasSize
+	 */
+	public Dimension getCanvasSize() {
+		return canvasSize;
 	}
 
 	/**

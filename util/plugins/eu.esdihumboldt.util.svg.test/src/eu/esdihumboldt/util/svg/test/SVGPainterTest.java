@@ -34,7 +34,7 @@ public class SVGPainterTest extends AbstractSVGPainterTest {
 	public void testDrawPoint() throws IOException {
 		Coordinate point = new Coordinate(1, 1);
 
-		PaintSettings settings = new PaintSettings(5, 0, 2, 10);
+		PaintSettings settings = new PaintSettings(5, 0, 2, 10, null);
 		SVGPainter painter = new SVGPainter(settings);
 
 		painter.setColor(Color.BLUE);
