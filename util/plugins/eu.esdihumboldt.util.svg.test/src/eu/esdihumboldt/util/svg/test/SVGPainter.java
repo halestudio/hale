@@ -17,6 +17,7 @@ package eu.esdihumboldt.util.svg.test;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -54,6 +55,22 @@ public class SVGPainter {
 	public SVGPainter(PaintSettings settings) {
 		this.settings = settings;
 		this.g = createSVGGraphics();
+
+		// flip Y axis
+//		AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+//		g.transform(tx);
+		// XXX does not work well - instead angle have to be adapted when
+		// painting
+	}
+
+	/**
+	 * Set the canvas size for the SVG image.
+	 * 
+	 * @param width the width
+	 * @param height the height
+	 */
+	public void setCanvasSize(int width, int height) {
+		g.setSVGCanvasSize(new Dimension(width, height));
 	}
 
 	private SVGGraphics2D createSVGGraphics() {
@@ -150,6 +167,19 @@ public class SVGPainter {
 	}
 
 	/**
+	 * Draw a line between two points.
+	 * 
+	 * @param p1 the first point
+	 * @param p2 the second point
+	 */
+	public void drawLine(Coordinate p1, Coordinate p2) {
+		g.drawLine((int) Math.round((p1.x - settings.getMinX()) * settings.getScaleFactor()),
+				(int) Math.round((p1.y - settings.getMinY()) * settings.getScaleFactor()),
+				(int) Math.round((p2.x - settings.getMinX()) * settings.getScaleFactor()),
+				(int) Math.round((p2.y - settings.getMinY()) * settings.getScaleFactor()));
+	}
+
+	/**
 	 * Draw a polygon.
 	 * 
 	 * @param geometry the polygon geometry
@@ -216,8 +246,11 @@ public class SVGPainter {
 	 * @param coord the point coordinates
 	 */
 	public void drawPoint(Coordinate coord) {
-		g.fillOval((int) Math.round((coord.x - settings.getMinX()) * settings.getScaleFactor()),
-				(int) Math.round((coord.y - settings.getMinY()) * settings.getScaleFactor()),
+		g.fillOval(
+				(int) Math.round((coord.x - settings.getMinX()) * settings.getScaleFactor())
+						- settings.getPointSize() / 2,
+				(int) Math.round((coord.y - settings.getMinY()) * settings.getScaleFactor())
+						- settings.getPointSize() / 2,
 				settings.getPointSize(), settings.getPointSize());
 	}
 
@@ -238,6 +271,13 @@ public class SVGPainter {
 	 */
 	public void setStroke(float width) {
 		g.setStroke(new BasicStroke(width));
+	}
+
+	/**
+	 * @return the settings
+	 */
+	public PaintSettings getSettings() {
+		return settings;
 	}
 
 }

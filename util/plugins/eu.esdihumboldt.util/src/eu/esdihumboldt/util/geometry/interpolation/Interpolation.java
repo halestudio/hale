@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -276,31 +275,6 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 				z));
 
 		return coordinates;
-	}
-
-	/**
-	 * rounding the double value
-	 * 
-	 * @param x a double value to be round off
-	 * @param scale location of decimal points in
-	 * @return rounded double value
-	 */
-	protected static double round(double x, int scale) {
-		return round(x, scale, BigDecimal.ROUND_HALF_UP);
-	}
-
-	private static double round(double x, int scale, int roundingMethod) {
-		try {
-			return (new BigDecimal(Double.toString(x)).setScale(scale, roundingMethod))
-					.doubleValue();
-		} catch (NumberFormatException ex) {
-			if (Double.isInfinite(x)) {
-				return x;
-			}
-			else {
-				return Double.NaN;
-			}
-		}
 	}
 
 }

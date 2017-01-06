@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.util.svg.test;
 
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 
 /**
@@ -102,6 +103,17 @@ public class PaintSettings {
 	 */
 	public int getPointSize() {
 		return pointSize;
+	}
+
+	/**
+	 * Convert a coordinate according to the paint settings (scaling etc.).
+	 * 
+	 * @param coord the coordinate to convert
+	 * @return the converted coordinate
+	 */
+	public Coordinate convertPoint(Coordinate coord) {
+		return new Coordinate((int) Math.round((coord.x - getMinX()) * getScaleFactor()),
+				(int) Math.round((coord.y - getMinY()) * getScaleFactor()));
 	}
 
 }
