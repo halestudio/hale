@@ -8,7 +8,7 @@
             id="eu.esdihumboldt.hale.io.validation.read"
             name="Load validator configuration"
             resourceName="validator configuration"
-            type="eu.esdihumboldt.hale.io.validation.ValidationConfigurationReaderImpl">
+            type="eu.esdihumboldt.hale.io.validation.ValidatorConfigurationReader">
       </action>
       <advisor
             action="eu.esdihumboldt.hale.io.validation.read"
