@@ -100,6 +100,19 @@ public class ProjectValidator extends AbstractInstanceValidator {
 			for (IOProviderDescriptor validatorFactory : HaleIO.filterFactoriesByConfigurationType(
 					validators, configuration.getContentType())) {
 				try {
+					// Assert that the validator can validate the exported
+					// content type, skip otherwise
+					boolean compatible = validatorFactory.getSupportedTypes().stream()
+							.anyMatch(type -> getContentType().isKindOf(type));
+					if (!compatible) {
+						reporter.info(new IOMessageImpl(
+								MessageFormat.format(
+										"Validator \"{0}\" skipped: cannot validate exported content type \"{1}\"",
+										validatorFactory.getIdentifier(), getContentType().getId()),
+								null));
+						continue;
+					}
+
 					ConfigurableInstanceValidator validator = (ConfigurableInstanceValidator) validatorFactory
 							.createExtensionObject();
 
