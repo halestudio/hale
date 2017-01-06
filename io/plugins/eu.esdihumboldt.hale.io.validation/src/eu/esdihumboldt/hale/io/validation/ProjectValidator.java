@@ -41,6 +41,11 @@ import eu.esdihumboldt.hale.io.validation.service.ValidatorConfigurationService;
 public class ProjectValidator extends AbstractInstanceValidator {
 
 	/**
+	 * I/O provider ID
+	 */
+	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.validation.projectvalidator";
+
+	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
 	@Override
