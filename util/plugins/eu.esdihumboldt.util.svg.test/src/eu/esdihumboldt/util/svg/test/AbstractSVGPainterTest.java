@@ -15,7 +15,11 @@
 
 package eu.esdihumboldt.util.svg.test;
 
+import java.awt.Desktop;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import ru.yandex.qatools.allure.annotations.Attachment;
 
@@ -35,7 +39,7 @@ public abstract class AbstractSVGPainterTest {
 	 */
 	@Attachment("Test drawing")
 	public String saveDrawing(SVGPainter painter) throws IOException {
-		return painter.writeToString();
+		return saveDrawingInternal(painter);
 	}
 
 	/**
@@ -48,7 +52,25 @@ public abstract class AbstractSVGPainterTest {
 	 */
 	@Attachment("{0}")
 	public String saveDrawing(String name, SVGPainter painter) throws IOException {
-		return painter.writeToString();
+		return saveDrawingInternal(painter);
+	}
+
+	private String saveDrawingInternal(SVGPainter painter) throws IOException {
+		String result = painter.writeToString();
+
+		if (TestUtil.isRunningEclipseTest()) {
+			// If running from within Eclipse, also create a file
+			Path tempFile = Files.createTempFile("testdrawing", ".svg");
+			try (BufferedWriter writer = Files.newBufferedWriter(tempFile)) {
+				writer.write(result);
+			}
+			System.out.println("Test drawing written to " + tempFile);
+			if (Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(tempFile.toFile());
+			}
+		}
+
+		return result;
 	}
 
 }

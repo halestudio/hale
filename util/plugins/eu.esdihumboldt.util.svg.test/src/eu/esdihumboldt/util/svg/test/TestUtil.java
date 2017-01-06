@@ -15,34 +15,22 @@
 
 package eu.esdihumboldt.util.svg.test;
 
-import java.awt.Color;
-import java.io.IOException;
-
-import org.junit.Test;
-
-import com.vividsolutions.jts.geom.Coordinate;
-
 /**
- * Test for {@link SVGPainter}.
+ * Test utilities.
  * 
  * @author Simon Templer
  */
-public class SVGPainterTest extends AbstractSVGPainterTest {
+public class TestUtil {
 
-	@SuppressWarnings("javadoc")
-	@Test
-	public void testDrawPoint() throws IOException {
-		System.out.println(System.getProperty("sun.java.command"));
-
-		Coordinate point = new Coordinate(1, 1);
-
-		PaintSettings settings = new PaintSettings(1, 0, 0, 10);
-		SVGPainter painter = new SVGPainter(settings);
-
-		painter.setColor(Color.BLUE);
-		painter.drawPoint(point);
-
-		saveDrawing(painter);
+	/**
+	 * Determines if the test is running from within Eclipse.
+	 * 
+	 * @return if we are currently running in the context of an Eclipse test run
+	 */
+	public static boolean isRunningEclipseTest() {
+		String command = System.getProperty("sun.java.command");
+		return command != null
+				&& command.contains("org.eclipse.jdt.internal.junit4.runner.JUnit4TestLoader");
 	}
 
 }
