@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.action">
+      <action-ui
+            action="eu.esdihumboldt.hale.io.validation.read"
+            id="eu.esdihumboldt.hale.io.validation.ui"
+            label="Validator configuration/rules..."
+            priority="0"
+            projectResource="true"
+            ui-advisor="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportUIAdvisor"
+            wizard="eu.esdihumboldt.hale.io.validation.ui.ValidatorConfigurationImportWizard">
+      </action-ui>
+   </extension>
+
+</plugin>

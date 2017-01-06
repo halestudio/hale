@@ -53,6 +53,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
@@ -271,7 +272,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			else if (validationJob == null) {
 				final InstanceValidator validator = (InstanceValidator) provider;
 				validationJob = new ValidationJob(Arrays.asList(validator),
-						DefaultReportHandler.getInstance(), null) {
+						DefaultReportHandler.getInstance(), null, HaleUI.getServiceProvider()) {
 
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {

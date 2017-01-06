@@ -231,14 +231,6 @@ public interface ProjectService extends ProjectInfoService {
 			Class<? extends IOProvider> providerClass);
 
 	/**
-	 * Returns the location the current project was loaded from. May be
-	 * <code>null</code>.
-	 * 
-	 * @return the location the current project was loaded from
-	 */
-	public URI getLoadLocation();
-
-	/**
 	 * Reload the source data.
 	 */
 	public void reloadSourceData();

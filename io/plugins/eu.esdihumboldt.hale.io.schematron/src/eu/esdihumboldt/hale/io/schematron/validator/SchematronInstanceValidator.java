@@ -20,6 +20,8 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 import eu.esdihumboldt.hale.io.schematron.util.SchematronReportParser;
+import eu.esdihumboldt.hale.io.validation.ConfigurableInstanceValidator;
+import eu.esdihumboldt.hale.io.validation.ValidatorConfiguration;
 
 /***
  * 
@@ -27,7 +29,8 @@ import eu.esdihumboldt.hale.io.schematron.util.SchematronReportParser;
  * 
  * @author Florian Esser
  */
-public class SchematronInstanceValidator extends AbstractInstanceValidator {
+public class SchematronInstanceValidator extends AbstractInstanceValidator
+		implements ConfigurableInstanceValidator {
 
 	/**
 	 * Name of the parameter specifying the schematron location.
@@ -143,5 +146,13 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator {
 		if (this.getSchematronLocation() == null) {
 			throw new IOProviderConfigurationException("No schematron rules file is configured");
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.validation.ConfigurableInstanceValidator#configure(eu.esdihumboldt.hale.io.validation.ValidatorConfiguration)
+	 */
+	@Override
+	public void configure(ValidatorConfiguration configuration) {
+		this.setSchematronLocation(configuration.getLocation());
 	}
 }

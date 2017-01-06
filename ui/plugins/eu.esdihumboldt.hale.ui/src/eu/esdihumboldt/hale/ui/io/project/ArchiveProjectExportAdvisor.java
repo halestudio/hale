@@ -18,12 +18,12 @@ package eu.esdihumboldt.hale.ui.io.project;
 import java.net.URI;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 
 /**

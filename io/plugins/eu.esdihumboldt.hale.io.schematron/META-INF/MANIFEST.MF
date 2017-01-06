@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
  groovy;bundle-version="2.3.7"
 Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
+ eu.esdihumboldt.hale.io.validation,
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.validator
 Bundle-ClassPath: .,

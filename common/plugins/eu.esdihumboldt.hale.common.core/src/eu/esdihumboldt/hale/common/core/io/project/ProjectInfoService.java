@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
@@ -30,6 +32,14 @@ public interface ProjectInfoService {
 	 * @return the project info
 	 */
 	public ProjectInfo getProjectInfo();
+
+	/**
+	 * Returns the location the current project was loaded from. May be
+	 * <code>null</code>.
+	 * 
+	 * @return the location the current project was loaded from
+	 */
+	public URI getLoadLocation();
 
 	/**
 	 * Get the property value for the project property with the given name.
