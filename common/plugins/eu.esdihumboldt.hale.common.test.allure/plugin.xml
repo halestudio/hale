@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="de.fhg.igd.equinox.test.listeners">
+      <listener
+            class="eu.esdihumboldt.hale.common.test.allure.AllureTestListener"
+            id="eu.esdihumboldt.hale.common.test.allure">
+      </listener>
+   </extension>
+
+</plugin>
