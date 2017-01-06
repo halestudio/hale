@@ -25,6 +25,7 @@ import com.vividsolutions.jts.geom.LineString;
  * 
  * @author Arun
  */
+@Deprecated
 public class ArcByCenterPointInterpolation extends Interpolation<LineString> {
 
 	private final Coordinate center;

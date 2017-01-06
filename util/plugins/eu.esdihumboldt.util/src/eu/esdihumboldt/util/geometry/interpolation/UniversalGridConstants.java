@@ -20,6 +20,7 @@ package eu.esdihumboldt.util.geometry.interpolation;
  * 
  * @author Arun
  */
+@Deprecated
 public interface UniversalGridConstants {
 
 	/**

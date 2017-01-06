@@ -22,6 +22,7 @@ import com.vividsolutions.jts.geom.Coordinate;
  * 
  * @author Arun
  */
+@Deprecated
 public class CircleInterpolation extends ArcInterpolation {
 
 	/**

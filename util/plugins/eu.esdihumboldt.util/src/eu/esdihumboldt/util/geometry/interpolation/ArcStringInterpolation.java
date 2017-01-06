@@ -31,6 +31,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
  * 
  * @author Arun
  */
+@Deprecated
 public class ArcStringInterpolation extends Interpolation<LineString> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcStringInterpolation.class);

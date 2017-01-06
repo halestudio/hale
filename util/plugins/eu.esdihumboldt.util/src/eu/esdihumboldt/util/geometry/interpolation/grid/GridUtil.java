@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 wetransform GmbH
+ * Copyright (c) 2017 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation;
+package eu.esdihumboldt.util.geometry.interpolation.grid;
 
 import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
 
@@ -21,104 +21,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 
 /**
- * Base class of interpolation
+ * Interpolation grid utilities.
  * 
- * @author Arun
- * @param <T> the type of interpolated Geometry
+ * @author Arun Verma
+ * @author Simon Templer
  */
-@Deprecated
-public abstract class Interpolation<T extends Geometry> implements UniversalGridConstants {
+public class GridUtil {
+
+	// FIXME review, tests, refactoring
 
 	/**
 	 * Grid step size factor
 	 */
-	private static final int GRID_FACTOR = DEFAULT_GRID_STEP_FACTOR;
-	/**
-	 * Next coordinate distance factor.
-	 */
-	private static final double NEXT_COORDINATE_DISTANCE_FACTOR = DEFAULT_COORDINATE_DISTANCE_FACTOR;
+	private static final int GRID_FACTOR = 2;
 
 	/**
 	 * Rounding scale for grid cell value
 	 */
-	protected static final int ROUNDING_SCALE = DEFAULT_ROUNDING_SCALE;
-
-	/**
-	 * Maximum positional error
-	 */
-	protected final double MAX_POSITIONAL_ERROR;
-
-	/**
-	 * Distance of next coordinate from current coordinate
-	 */
-	protected final double NEXT_COORDINATE_DISTANCE;
-
-	/**
-	 * Coordinates of Geometry, which wanted to be interpolated
-	 */
-	protected final Coordinate[] rawGeometryCoordinates;
-
-	/**
-	 * flag to keeps original points in interpolation
-	 */
-	protected final boolean keepOriginal;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param coordinates Coordinates of geometry that need to be interpolated
-	 * @param maxPositionalError maximum positional error for interpolation
-	 * @param keepOriginal keeps original points in interpolation
-	 */
-	public Interpolation(Coordinate[] coordinates, double maxPositionalError,
-			boolean keepOriginal) {
-		this.MAX_POSITIONAL_ERROR = maxPositionalError;
-		this.rawGeometryCoordinates = coordinates;
-		this.NEXT_COORDINATE_DISTANCE = round(NEXT_COORDINATE_DISTANCE_FACTOR * maxPositionalError,
-				ROUNDING_SCALE);
-		this.keepOriginal = keepOriginal;
-	}
-
-	/**
-	 * interpolate raw geometry
-	 * 
-	 * @return interpolated Geometry of type T or <code>null</code>
-	 */
-	public T interpolateRawGeometry() {
-		if (!validateRawCoordinates()) {
-			return null;
-		}
-
-		return getInterpolatedGeometry();
-	}
-
-	/**
-	 * relocate relocate geometry coordinate to the nearest universal grid point
-	 * 
-	 * @param coordinate the geometry coordinates
-	 * @return relocates grid coordinate
-	 */
-	protected Coordinate pointToGrid(Coordinate coordinate) {
-		return pointToGrid(coordinate, this.MAX_POSITIONAL_ERROR);
-	}
-
-	/**
-	 * validate raw geometry
-	 * 
-	 * @return true if validation successful else false.
-	 */
-	protected abstract boolean validateRawCoordinates();
-
-	/**
-	 * get interpolated geometry
-	 * 
-	 * @return interpolated Geometry
-	 * 
-	 */
-	protected abstract T getInterpolatedGeometry();
+	protected static final int ROUNDING_SCALE = 6;
 
 	/**
 	 * relocate geometry coordinate to nearest grid point.
@@ -127,7 +49,8 @@ public abstract class Interpolation<T extends Geometry> implements UniversalGrid
 	 * @param maxPositionalError maximum positional error
 	 * @return relocated grid coordinate
 	 */
-	public static Coordinate pointToGrid(Coordinate coordinate, final double maxPositionalError) {
+	public static Coordinate movePointToGrid(Coordinate coordinate,
+			final double maxPositionalError) {
 
 		// Start form 0,0 always
 		long gridMinXMultiplier = (long) round((coordinate.x / (GRID_FACTOR * maxPositionalError)),
