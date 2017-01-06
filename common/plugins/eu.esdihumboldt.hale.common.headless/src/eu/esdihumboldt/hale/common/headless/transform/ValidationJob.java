@@ -121,20 +121,22 @@ public class ValidationJob extends AbstractTransformationJob {
 			// show message to user
 			if (report.isSuccess()) {
 				// info message
-				log.userInfo(report.getSummary());
+				log.info(report.getSummary());
 			}
 			else {
 				// error message
-				log.userError(report.getSummary());
+				log.error(report.getSummary());
 				successful = false;
 			}
 		}
 
 		reset();
 		if (successful) {
+			log.userInfo("All validations completed successfully.");
 			return Status.OK_STATUS;
 		}
 		else {
+			log.userError("There were validation failures. Please check the reports for details.");
 			return ERROR_STATUS;
 		}
 	}
