@@ -575,7 +575,7 @@ public class GraphLabelProvider extends LabelProvider
 			}
 		}
 
-		if (figure != null) {
+		if (figure != null && !figure.getSize().isEmpty()) {
 			figure.setPreferredSize(figure.getSize());
 		}
 
