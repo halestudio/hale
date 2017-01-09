@@ -77,11 +77,6 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.FingerPost;
 public class GraphLabelProvider extends LabelProvider
 		implements IEntityStyleProvider, IEntityConnectionStyleProvider, IFigureProvider {
 
-	/**
-	 * The maximum figure width
-	 */
-	public static final int MAX_FIGURE_WIDTH = 150;
-
 	private final int entityBorderWidth = 1;
 	private final Color entityBorderColor;
 	private final Color entityBorderHighlightColor;
@@ -580,8 +575,8 @@ public class GraphLabelProvider extends LabelProvider
 			}
 		}
 
-		if (figure != null) {
-			figure.setMaximumWidth(MAX_FIGURE_WIDTH);
+		if (figure != null && !figure.getSize().isEmpty()) {
+			figure.setPreferredSize(figure.getSize());
 		}
 
 		return figure;
