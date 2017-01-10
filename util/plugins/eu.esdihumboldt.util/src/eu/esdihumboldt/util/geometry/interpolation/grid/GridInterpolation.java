@@ -48,6 +48,8 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 
 	private double maxPositionalError;
 
+	private double gridSize;
+
 	// XXX stateful variables
 
 	private Coordinate nextArcCoordinate;
@@ -64,6 +66,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 		super.configure(factory, maxPositionalError, properties);
 
 		this.maxPositionalError = maxPositionalError;
+		this.gridSize = GridUtil.getGridSize(maxPositionalError);
 
 		// FIXME handle setting for moving all coordinates to grid
 
@@ -78,7 +81,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 
 			ArcByPoints byPoints = arc.toArcByPoints();
 			if (moveAllToGrid) {
-				// TODO move to grid
+				// move to grid
 				return createLineString(new Coordinate[] { pointToGrid(byPoints.getStartPoint()),
 						pointToGrid(byPoints.getMiddlePoint()),
 						pointToGrid(byPoints.getEndPoint()) }, arc);
@@ -99,9 +102,8 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 		List<Coordinate> generatedCoordinates = new ArrayList<Coordinate>();
 
 		// Add first Arc coordinate
-		generatedCoordinates
-				.add(moveAllToGrid ? movePointToGrid(byPoints.getStartPoint(), maxPositionalError)
-						: byPoints.getStartPoint());
+		generatedCoordinates.add(
+				moveAllToGrid ? pointToGrid(byPoints.getStartPoint()) : byPoints.getStartPoint());
 
 		// FIXME not sure if this handling is working correctly
 		Coordinate[] arcCoordinates = new Coordinate[] { byPoints.getStartPoint(),
@@ -164,7 +166,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 	 * @return relocates grid coordinate
 	 */
 	protected Coordinate pointToGrid(Coordinate coordinate) {
-		return movePointToGrid(coordinate, maxPositionalError);
+		return movePointToGrid(coordinate, gridSize);
 	}
 
 	/**
