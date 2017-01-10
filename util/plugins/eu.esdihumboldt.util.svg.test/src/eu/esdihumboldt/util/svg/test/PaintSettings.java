@@ -115,7 +115,7 @@ public class PaintSettings {
 	}
 
 	/**
-	 * @return the canvasSize
+	 * @return the canvas size or <code>null</code>
 	 */
 	public Dimension getCanvasSize() {
 		return canvasSize;

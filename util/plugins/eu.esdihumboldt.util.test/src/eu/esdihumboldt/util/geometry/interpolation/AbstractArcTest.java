@@ -20,9 +20,11 @@ import static org.junit.Assert.assertEquals;
 import java.awt.Color;
 import java.awt.geom.Arc2D;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.LineString;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
@@ -37,6 +39,44 @@ import eu.esdihumboldt.util.svg.test.SVGPainter;
  * @author Simon Templer
  */
 public class AbstractArcTest extends AbstractSVGPainterTest {
+
+	/**
+	 * Draw an arc with markers for the points defining the arc. Saves the
+	 * resulting drawing.
+	 * 
+	 * @param arc the arc to draw
+	 * @param draw function that draws on the canvas
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void withArcCanvas(Arc arc, Consumer<SVGPainter> draw) throws IOException {
+		Envelope envelope = new Envelope(arc.toArcByCenterPoint().getCenterPoint());
+		envelope.expandBy(arc.toArcByCenterPoint().getRadius());
+		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+		SVGPainter svg = new SVGPainter(settings);
+		svg.setCanvasSize(1000, 1000);
+
+		draw.accept(svg);
+
+		saveDrawing("arc", svg);
+	}
+
+	/**
+	 * Draw a name.
+	 * 
+	 * @param svg the SVG painter
+	 * @param name the name
+	 */
+	protected void drawName(SVGPainter svg, String name) {
+		if (name == null) {
+			return;
+		}
+
+		svg.setColor(Color.DARK_GRAY);
+//		LineMetrics fontMetrics = svg.getGraphics2D().getFontMetrics().getLineMetrics(name, svg.getGraphics2D());
+		svg.getGraphics2D().setFont(svg.getGraphics2D().getFont()
+				.deriveFont(40.0f)/* .deriveFont(Font.BOLD) */);
+		svg.getGraphics2D().drawString(name, 30, 70);
+	}
 
 	/**
 	 * Draw an arc with markers for the points defining the arc. Saves the
@@ -58,31 +98,84 @@ public class AbstractArcTest extends AbstractSVGPainterTest {
 	 * @throws IOException if saving the drawing fails
 	 */
 	protected void drawArcWithMarkers(Arc arc, String name) throws IOException {
-		Envelope envelope = new Envelope(arc.toArcByCenterPoint().getCenterPoint());
-		envelope.expandBy(arc.toArcByCenterPoint().getRadius());
-		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
-		SVGPainter svg = new SVGPainter(settings);
-		svg.setCanvasSize(1000, 1000);
+		withArcCanvas(arc, svg -> {
+			String arcName = name;
+			if (arcName == null) {
+				arcName = arc.toString();
 
-		if (name == null) {
-			name = arc.toString();
+//				StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+//				if (trace.length >= 3) {
+//					name = trace[2].getMethodName() + " - " + name;
+//				}
+			}
 
-//			StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-//			if (trace.length >= 3) {
-//				name = trace[2].getMethodName() + " - " + name;
-//			}
+			drawName(svg, arcName);
+
+			drawArcWithMarkers(svg, arc);
+		});
+	}
+
+	/**
+	 * Draw an interpolated arc with debug information. Saves the resulting
+	 * drawing.
+	 * 
+	 * @param arc the arc to draw
+	 * @param gridSize the grid size
+	 * @param interpolated the interpolated geometry
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void drawGridInterpolatedArc(Arc arc, double gridSize, LineString interpolated)
+			throws IOException {
+		withArcCanvas(arc, svg -> {
+			drawGrid(svg, gridSize);
+
+			drawName(svg, arc.toString());
+
+			drawArcWithMarkers(svg, arc);
+
+			if (interpolated != null) {
+				svg.setColor(Color.BLACK);
+				svg.setStroke(2.5f);
+				svg.drawLineString(interpolated);
+			}
+		});
+	}
+
+	/**
+	 * Draw a grid with a specified grid size.
+	 * 
+	 * @param svg the SVG painter
+	 * @param gridSize the grid size, i.e. the height/width of grid cells
+	 */
+	private void drawGrid(SVGPainter svg, double gridSize) {
+		svg.setStroke(1.0f);
+		svg.setColor(Color.GREEN.darker());
+
+		double scaledStep = gridSize * svg.getSettings().getScaleFactor();
+
+		double maxY = svg.getSettings().getMaxY();
+		maxY = Math.floor(maxY / gridSize) * gridSize; // match to grid
+		maxY = svg.getSettings().convertY(maxY);
+		double capY = maxY + svg.getSettings().getCanvasSize().getHeight();
+
+		double minX = svg.getSettings().getMinX();
+		minX = Math.ceil(minX / gridSize) * gridSize; // match to grid
+		minX = svg.getSettings().convertX(minX);
+		double capX = minX + svg.getSettings().getCanvasSize().getWidth();
+
+		double y = maxY;
+		while (y <= capY) {
+			svg.getGraphics2D().drawLine((int) Math.round(minX), (int) Math.round(y),
+					(int) Math.round(capX), (int) Math.round(y));
+			y = y + scaledStep;
 		}
 
-		if (name != null) {
-			svg.setColor(Color.DARK_GRAY);
-			svg.getGraphics2D().setFont(svg.getGraphics2D().getFont()
-					.deriveFont(40.0f)/* .deriveFont(Font.BOLD) */);
-			svg.getGraphics2D().drawString(name, 30, 70);
+		double x = minX;
+		while (x <= capX) {
+			svg.getGraphics2D().drawLine((int) Math.round(x), (int) Math.round(maxY),
+					(int) Math.round(x), (int) Math.round(capY));
+			x = x + scaledStep;
 		}
-
-		drawArcWithMarkers(svg, arc);
-
-		saveDrawing("arc", svg);
 	}
 
 	/**
