@@ -50,6 +50,7 @@ public abstract class AbstractInterpolationAlgorithm implements InterpolationAlg
 	/**
 	 * @return the geometry factory
 	 */
+	@Override
 	public GeometryFactory getGeometryFactory() {
 		return factory;
 	}

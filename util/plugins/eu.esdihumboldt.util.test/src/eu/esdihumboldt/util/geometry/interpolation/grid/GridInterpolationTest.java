@@ -162,6 +162,20 @@ public class GridInterpolationTest extends AbstractArcTest {
 		gridInterpolationTest(new ArcStringImpl(arcs), 0.1, true);
 	}
 
+	@Test
+	public void testArcString() throws IOException {
+		List<Arc> arcs = new ArrayList<>();
+
+		arcs.add(new ArcByPointsImpl(new Coordinate(-3, 2), new Coordinate(-2, 4),
+				new Coordinate(0, 4)));
+		arcs.add(new ArcByPointsImpl(new Coordinate(0, 4), new Coordinate(2, 3),
+				new Coordinate(4, 4)));
+		arcs.add(new ArcByPointsImpl(new Coordinate(4, 4), new Coordinate(4, 6),
+				new Coordinate(2, 6)));
+
+		gridInterpolationTest(new ArcStringImpl(arcs), 0.1, false);
+	}
+
 	// utility methods
 
 	private LineString gridInterpolationTest(ArcString arcs, double maxPositionalError,
