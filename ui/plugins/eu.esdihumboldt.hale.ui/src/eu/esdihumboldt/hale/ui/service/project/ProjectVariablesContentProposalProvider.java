@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.service.project;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,6 @@ import java.util.TreeMap;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.PlatformUI;
-
-import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
@@ -43,12 +42,26 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 public class ProjectVariablesContentProposalProvider implements IContentProposalProvider {
 
 	private final Map<String, Value> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+	private boolean displayPlaceholderIfEmpty = false;
 
 	/**
 	 * Creates the content proposal provider and loads the project variables
 	 */
 	public ProjectVariablesContentProposalProvider() {
 		reload();
+	}
+
+	/**
+	 * Creates the content proposal provider and loads the project variables
+	 * 
+	 * @param displayPlaceholderIfEmpty If true and no project variables exist,
+	 *            {@link #getProposals(String, int)} will return one
+	 *            {@link IContentProposal} hinting on that.
+	 */
+	public ProjectVariablesContentProposalProvider(boolean displayPlaceholderIfEmpty) {
+		this();
+
+		this.displayPlaceholderIfEmpty = displayPlaceholderIfEmpty;
 	}
 
 	/**
@@ -59,37 +72,17 @@ public class ProjectVariablesContentProposalProvider implements IContentProposal
 	public IContentProposal[] getProposals(final String contents, final int position) {
 		List<IContentProposal> proposals = new ArrayList<>();
 		if (variables != null) {
-			variables.forEach((varName, varValue) -> proposals.add(new IContentProposal() {
-
-				@Override
-				public String getLabel() {
-					return varName;
-				}
-
-				@Override
-				public String getDescription() {
-					return MessageFormat.format("{0} -> \"{1}\"", varName, varValue);
-				}
-
-				@Override
-				public int getCursorPosition() {
-					return getContent().length();
-				}
-
-				@Override
-				public String getContent() {
-					StringBuilder content = new StringBuilder();
-					if (contents != null && !contents.substring(0, position).endsWith("{")) {
-						content.append("{");
-					}
-					content.append("{project:").append(varName).append("}}");
-
-					return content.toString();
-				}
-			}));
+			if (!variables.isEmpty()) {
+				variables.forEach((variable, value) -> proposals
+						.add(createContentProposal(contents, position, variable, value)));
+			}
+			else if (displayPlaceholderIfEmpty) {
+				proposals.add(createPlaceholder());
+			}
 		}
 
 		return proposals.toArray(new IContentProposal[proposals.size()]);
+
 	}
 
 	/**
@@ -105,5 +98,63 @@ public class ProjectVariablesContentProposalProvider implements IContentProposal
 		if (properties != null) {
 			variables.putAll(properties);
 		}
+	}
+
+	private IContentProposal createContentProposal(String contents, int position, String variable,
+			Value value) {
+		return new IContentProposal() {
+
+			@Override
+			public String getLabel() {
+				return MessageFormat.format("{0} (project variable)", variable);
+			}
+
+			@Override
+			public String getDescription() {
+				return MessageFormat.format("Variable name: {0}\nDefault value: \"{1}\"", variable,
+						value);
+			}
+
+			@Override
+			public int getCursorPosition() {
+				return getContent().length();
+			}
+
+			@Override
+			public String getContent() {
+				StringBuilder content = new StringBuilder();
+				if (contents != null && !contents.substring(0, position).endsWith("{")) {
+					content.append("{");
+				}
+				content.append("{project:").append(variable).append("}}");
+
+				return content.toString();
+			}
+		};
+	}
+
+	private IContentProposal createPlaceholder() {
+		return new IContentProposal() {
+
+			@Override
+			public String getLabel() {
+				return "No project variables defined";
+			}
+
+			@Override
+			public String getDescription() {
+				return null;
+			}
+
+			@Override
+			public int getCursorPosition() {
+				return 0;
+			}
+
+			@Override
+			public String getContent() {
+				return "";
+			}
+		};
 	}
 }
