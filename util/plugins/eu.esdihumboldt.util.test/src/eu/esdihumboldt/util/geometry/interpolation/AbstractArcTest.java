@@ -39,7 +39,7 @@ import eu.esdihumboldt.util.svg.test.SVGPainter;
  * 
  * @author Simon Templer
  */
-public class AbstractArcTest extends AbstractSVGPainterTest {
+public abstract class AbstractArcTest extends AbstractSVGPainterTest {
 
 	/**
 	 * Prepare a canvas to draw an arc, perform the given draw operation and
