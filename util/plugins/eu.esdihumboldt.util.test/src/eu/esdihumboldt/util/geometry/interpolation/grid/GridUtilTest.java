@@ -131,13 +131,17 @@ public class GridUtilTest {
 				maxPositionalError), distance <= maxPositionalError);
 
 		// check if the ordinates are aligned with the grid
-		checkOnGrid(moved.x, gridSize);
-		checkOnGrid(moved.y, gridSize);
+		checkOnGrid(moved, gridSize);
 
 		return moved;
 	}
 
-	private void checkOnGrid(double ord, double gridSize) {
+	public static void checkOnGrid(Coordinate c, double gridSize) {
+		checkOnGrid(c.x, gridSize);
+		checkOnGrid(c.y, gridSize);
+	}
+
+	public static void checkOnGrid(double ord, double gridSize) {
 		double fact = ord / gridSize;
 		assertEquals("Ordinate does not align with the grid", Math.round(fact), fact, 1e-8);
 	}

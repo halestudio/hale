@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.grid;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +51,39 @@ public class GridInterpolationTest extends AbstractArcTest {
 		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0, 0), 1.0,
 				Angle.fromDegrees(0), Angle.fromDegrees(180), true);
 
-		gridInterpolationTest(arc, 0.1);
+		gridInterpolationTest(arc, 0.1, false);
+	}
+
+	@Test
+	public void testHalfCircleAllGrid() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0.5, 0.5), 0.95,
+				Angle.fromDegrees(0), Angle.fromDegrees(180), true);
+
+		gridInterpolationTest(arc, 0.1, true);
+	}
+
+	@Test
+	public void testOffsetBig() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(2, 2), 15.0,
+				Angle.fromDegrees(45), Angle.fromDegrees(135), true);
+
+		gridInterpolationTest(arc, 0.1, false);
+	}
+
+	@Test
+	public void testLarge() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0, 0), 50.0,
+				Angle.fromDegrees(45), Angle.fromDegrees(135), true);
+
+		gridInterpolationTest(arc, 0.1, false);
+	}
+
+	@Test
+	public void testOffsetCircle() throws IOException {
+		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(2, 2), 5.0,
+				Angle.fromDegrees(0), Angle.fromDegrees(0), true);
+
+		gridInterpolationTest(arc, 0.1, false);
 	}
 
 	@Test
@@ -56,21 +91,54 @@ public class GridInterpolationTest extends AbstractArcTest {
 		ArcByCenterPoint arc = new ArcByCenterPointImpl(new Coordinate(0, 0), Math.sqrt(2.0),
 				Angle.fromDegrees(45), Angle.fromDegrees(135), false);
 
-		gridInterpolationTest(arc, 0.1);
+		gridInterpolationTest(arc, 0.1, false);
 	}
 
 	// utility methods
 
-	private void gridInterpolationTest(Arc arc, double maxPositionalError) throws IOException {
+	private LineString gridInterpolationTest(Arc arc, double maxPositionalError,
+			boolean moveAllToGrid) throws IOException {
 		GridInterpolation interpol = new GridInterpolation();
 		Map<String, String> properties = new HashMap<>();
+		if (moveAllToGrid) {
+			properties.put(GridInterpolation.PARAMETER_MOVE_ALL_TO_GRID, "true");
+		}
 		interpol.configure(new GeometryFactory(), maxPositionalError, properties);
 
 		LineString result = interpol.interpolateArc(arc);
 
-		drawGridInterpolatedArc(arc, GridUtil.getGridSize(maxPositionalError), result);
+		double gridSize = GridUtil.getGridSize(maxPositionalError);
+		drawGridInterpolatedArc(arc, gridSize, result);
 
-		// TODO test interpolated geometry
+		// test interpolated geometry
+		Coordinate[] coords = result.getCoordinates();
+		for (int i = 0; i < coords.length; i++) {
+			Coordinate c = coords[i];
+
+			boolean checkGrid = moveAllToGrid || (!c.equals(arc.toArcByPoints().getStartPoint())
+					&& !c.equals(arc.toArcByPoints().getMiddlePoint())
+					&& !c.equals(arc.toArcByPoints().getEndPoint()));
+
+			if (checkGrid) {
+				// check if coordinate on grid
+				GridUtilTest.checkOnGrid(c, gridSize);
+
+				// check if two coordinates are not the same
+				if (i < coords.length - 1) {
+					Coordinate c2 = coords[i + 1];
+
+					assertNotEquals("Subsequent coordinates are equal", c, c2);
+
+					// better check is to compare difference in x and y based on
+					// grid size
+					boolean xDifferent = Math.abs(c2.x - c.x) > (gridSize / 2);
+					boolean yDifferent = Math.abs(c2.y - c.y) > (gridSize / 2);
+					assertTrue("Subsequent coordinates are equal", xDifferent || yDifferent);
+				}
+			}
+		}
+
+		return result;
 	}
 
 }

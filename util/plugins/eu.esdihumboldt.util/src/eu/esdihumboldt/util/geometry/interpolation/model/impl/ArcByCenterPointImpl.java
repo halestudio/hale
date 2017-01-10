@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.model.impl;
 
-import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.round;
-
 import java.text.MessageFormat;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -68,6 +66,18 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 	}
 
 	/**
+	 * Determine the point at the given angle.
+	 * 
+	 * @param angle the angle
+	 * @return the point at the given angle that lies on the arc's circle
+	 */
+	public Coordinate getPointAtAngle(Angle angle) {
+		double x = centerPoint.x + (radius * Math.cos(angle.getRadians()));
+		double y = centerPoint.y + (radius * Math.sin(angle.getRadians()));
+		return new Coordinate(x, y);
+	}
+
+	/**
 	 * {@inheritDoc}
 	 * 
 	 * @author Arun Verma
@@ -75,61 +85,18 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 	@Override
 	public ArcByPoints toArcByPoints() {
 		if (pointsRepresentation == null) {
-			double startAngleFromX;
-			double endAngleFromX;
-			double middleAngleFromX;
-			// FIXME special handling for circle?
-			// FIXME this angle conversion needed for GML Arcs?
-			// for circle
-//			if (isCircle) {
-//				startAngleFromX = 0;
-//				middleAngleFromX = 90;
-//				endAngleFromX = 180;
-//			}
-//			else {
-//				// As angles are bearings, we have to evaluate angles from X axis to
-//				// generate coordinate
-//				if (startAngle < 90)
-//					startAngleFromX = 90 - startAngle;
-//				else
-//					startAngleFromX = 360 - (startAngle - 90);
-//
-//				if (endAngle < 90)
-//					endAngleFromX = 90 - endAngle;
-//				else
-//					endAngleFromX = 360 - (endAngle - 90);
-//
-//				double middleAngle = round(startAngle + (0.5 * (endAngle - startAngle)), 3);
-//				if (middleAngle < 90)
-//					middleAngleFromX = 90 - middleAngle;
-//				else
-//					middleAngleFromX = 360 - (middleAngle - 90);
-//			}
-
-			startAngleFromX = startAngle.getDegrees();
-			endAngleFromX = endAngle.getDegrees();
-			middleAngleFromX = startAngleFromX + 0.5 * getAngleBetween().getDegrees();
-
-			// FIXME rounding necessary?
-			// XXX and does it make sense? e.g. for lat/lon?!!!
+			Angle middleAngle = Angle
+					.fromRadians(startAngle.getRadians() + 0.5 * getAngleBetween().getRadians());
 
 			// getting start coordinate
-			double x = round(centerPoint.x + (radius * Math.cos(Math.toRadians(startAngleFromX))),
-					4);
-			double y = round(centerPoint.y + (radius * Math.sin(Math.toRadians(startAngleFromX))),
-					4);
-			Coordinate startPoint = new Coordinate(x, y);
+			Coordinate startPoint = getPointAtAngle(startAngle);
 
 			// getting end coordinate
-			x = round(centerPoint.x + (radius * Math.cos(Math.toRadians(endAngleFromX))), 4);
-			y = round(centerPoint.y + (radius * Math.sin(Math.toRadians(endAngleFromX))), 4);
-			Coordinate endPoint = new Coordinate(x, y);
+			Coordinate endPoint = getPointAtAngle(endAngle);
 
 			// will generate middle coordinate to use already coded arc
 			// interpolation
-			x = round(centerPoint.x + (radius * Math.cos(Math.toRadians(middleAngleFromX))), 4);
-			y = round(centerPoint.y + (radius * Math.sin(Math.toRadians(middleAngleFromX))), 4);
-			Coordinate middlePoint = new Coordinate(x, y);
+			Coordinate middlePoint = getPointAtAngle(middleAngle);
 
 			pointsRepresentation = new ArcByPointsImpl(startPoint, middlePoint, endPoint);
 		}

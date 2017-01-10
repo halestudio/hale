@@ -22,12 +22,9 @@ import com.vividsolutions.jts.geom.Coordinate;
 /**
  * Interpolation grid utilities.
  * 
- * @author Arun Verma
  * @author Simon Templer
  */
 public class GridUtil {
-
-	// FIXME review, tests, refactoring
 
 	/**
 	 * Factor for grid size based on the maximum position error.
