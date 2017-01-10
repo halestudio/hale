@@ -15,13 +15,18 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.model;
 
+import java.util.List;
+
 /**
- * TODO Type description
+ * An arc string composed of a number of arcs.
  * 
  * @author Simon Templer
  */
 public interface ArcString extends ComplexGeometry {
 
-	// TODO
+	/**
+	 * @return the arcs the arc string is composed of
+	 */
+	List<Arc> getArcs();
 
 }

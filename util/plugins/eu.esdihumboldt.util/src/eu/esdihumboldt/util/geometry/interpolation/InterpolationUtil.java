@@ -16,6 +16,9 @@
 package eu.esdihumboldt.util.geometry.interpolation;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
@@ -89,6 +92,26 @@ public class InterpolationUtil {
 				return Double.NaN;
 			}
 		}
+	}
+
+	/**
+	 * Add a coordinate to a coordinate list only if it is not equal to the last
+	 * coordinate in the list.
+	 * 
+	 * @param coords the coordinates list
+	 * @param c the coordinate to add
+	 */
+	public static void addIfDifferent(List<Coordinate> coords, Coordinate c) {
+		if (coords.isEmpty()) {
+			coords.add(c);
+		}
+		else {
+			Coordinate last = coords.get(coords.size() - 1);
+			if (!c.equals(last)) {
+				coords.add(c);
+			}
+		}
+
 	}
 
 }

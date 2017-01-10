@@ -29,6 +29,7 @@ import com.vividsolutions.jts.geom.LineString;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.svg.test.AbstractSVGPainterTest;
 import eu.esdihumboldt.util.svg.test.PaintSettings;
 import eu.esdihumboldt.util.svg.test.SVGPainter;
@@ -41,16 +42,15 @@ import eu.esdihumboldt.util.svg.test.SVGPainter;
 public class AbstractArcTest extends AbstractSVGPainterTest {
 
 	/**
-	 * Draw an arc with markers for the points defining the arc. Saves the
-	 * resulting drawing.
+	 * Prepare a canvas to draw an arc, perform the given draw operation and
+	 * save the drawing.
 	 * 
 	 * @param arc the arc to draw
 	 * @param draw function that draws on the canvas
 	 * @throws IOException if saving the drawing fails
 	 */
 	protected void withArcCanvas(Arc arc, Consumer<SVGPainter> draw) throws IOException {
-		Envelope envelope = new Envelope(arc.toArcByCenterPoint().getCenterPoint());
-		envelope.expandBy(arc.toArcByCenterPoint().getRadius());
+		Envelope envelope = getArcEnvelope(arc);
 		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
 		SVGPainter svg = new SVGPainter(settings);
 		svg.setCanvasSize(1000, 1000);
@@ -58,6 +58,37 @@ public class AbstractArcTest extends AbstractSVGPainterTest {
 		draw.accept(svg);
 
 		saveDrawing("arc", svg);
+	}
+
+	private Envelope getArcEnvelope(Arc arc) {
+		Envelope envelope = new Envelope(arc.toArcByCenterPoint().getCenterPoint());
+		envelope.expandBy(arc.toArcByCenterPoint().getRadius());
+		return envelope;
+	}
+
+	/**
+	 * Prepare a canvas to draw an arc, perform the given draw operation and
+	 * save the drawing.
+	 * 
+	 * @param arcs the arc string to draw
+	 * @param draw function that draws on the canvas
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void withArcStringCanvas(ArcString arcs, Consumer<SVGPainter> draw)
+			throws IOException {
+		Envelope envelope = new Envelope();
+
+		for (Arc arc : arcs.getArcs()) {
+			envelope.expandToInclude(getArcEnvelope(arc));
+		}
+
+		PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+		SVGPainter svg = new SVGPainter(settings);
+		svg.setCanvasSize(1000, 1000);
+
+		draw.accept(svg);
+
+		saveDrawing("arc-string", svg);
 	}
 
 	/**
@@ -132,6 +163,32 @@ public class AbstractArcTest extends AbstractSVGPainterTest {
 			drawName(svg, arc.toString());
 
 			drawArcWithMarkers(svg, arc);
+
+			if (interpolated != null) {
+				svg.setColor(Color.BLACK);
+				svg.setStroke(2.5f);
+				svg.drawLineString(interpolated);
+			}
+		});
+	}
+
+	/**
+	 * Draw an interpolated arc string with debug information. Saves the
+	 * resulting drawing.
+	 * 
+	 * @param arcs the arc string to draw
+	 * @param gridSize the grid size
+	 * @param interpolated the interpolated geometry
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void drawGridInterpolatedArcString(ArcString arcs, double gridSize,
+			LineString interpolated) throws IOException {
+		withArcStringCanvas(arcs, svg -> {
+			drawGrid(svg, gridSize);
+
+			for (Arc arc : arcs.getArcs()) {
+				drawArcWithMarkers(svg, arc);
+			}
 
 			if (interpolated != null) {
 				svg.setColor(Color.BLACK);

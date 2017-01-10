@@ -128,9 +128,9 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 			Coordinate middle = part.getMiddlePoint();
 			if (middle != null) {
 				// should actually not occur
-				coords.add(middle);
+				InterpolationUtil.addIfDifferent(coords, middle);
 			}
-			coords.add(part.getEndPoint());
+			InterpolationUtil.addIfDifferent(coords, part.getEndPoint());
 		}
 
 		return createLineString(coords.toArray(new Coordinate[coords.size()]), arc);

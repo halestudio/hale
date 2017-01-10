@@ -15,12 +15,16 @@
 
 package eu.esdihumboldt.util.geometry.interpolation;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineString;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 
 /**
  * Interface for interpolations algorithms.
@@ -45,6 +49,40 @@ public interface InterpolationAlgorithm {
 	 * @param arc the arc to interpolate
 	 * @return the interpolated geometry
 	 */
-	Geometry interpolateArc(Arc arc);
+	LineString interpolateArc(Arc arc);
+
+	/**
+	 * Interpolate an arc string.
+	 * 
+	 * @param arcs the arc string to interpolate
+	 * @return the interpolated geometry
+	 */
+	default LineString interpolateArcString(ArcString arcs) {
+		List<Coordinate> coords = new ArrayList<>();
+
+		List<Arc> arcList = new ArrayList<>(arcs.getArcs());
+		for (int i = 0; i < arcList.size(); i++) {
+			Arc arc = arcList.get(i);
+			LineString interpolated = interpolateArc(arc);
+			Coordinate[] lineCoords = interpolated.getCoordinates();
+			int startIndex = 1;
+			if (i == 0) {
+				startIndex = 0;
+			}
+			for (int j = startIndex; j < lineCoords.length; j++) {
+				Coordinate coord = lineCoords[j];
+
+				coords.add(coord);
+			}
+		}
+
+		return new InterpolatedLineString(getGeometryFactory().getCoordinateSequenceFactory()
+				.create(coords.toArray(new Coordinate[coords.size()])), getGeometryFactory(), arcs);
+	}
+
+	/**
+	 * @return the geometry factory associated with the algorithm
+	 */
+	GeometryFactory getGeometryFactory();
 
 }
