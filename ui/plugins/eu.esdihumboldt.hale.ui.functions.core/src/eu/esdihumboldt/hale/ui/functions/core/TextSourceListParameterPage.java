@@ -16,6 +16,12 @@
 
 package eu.esdihumboldt.hale.ui.functions.core;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -46,6 +52,31 @@ public abstract class TextSourceListParameterPage extends SourceListParameterPag
 	 */
 	protected TextSourceListParameterPage(String pageName) {
 		super(pageName);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#configure(java.lang.Object)
+	 */
+	@Override
+	protected void configure(Text textField) {
+		// Add content assist for variables
+		final ControlDecoration infoDeco = new ControlDecoration(textField, SWT.TOP | SWT.LEFT);
+		infoDeco.setDescriptionText("Type Ctrl+Space for content assistance");
+		infoDeco.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		infoDeco.setShowOnlyOnFocus(true);
+
+		KeyStroke ctrlSpace = null;
+		try {
+			ctrlSpace = KeyStroke.getInstance("Ctrl+Space");
+		} catch (ParseException e1) {
+			// Ignore
+		}
+
+		ContentProposalAdapter adapter = new ContentProposalAdapter(textField,
+				new TextContentAdapter(), this, ctrlSpace,
+				/* new char[] { '{' } */ null);
+		adapter.setAutoActivationDelay(0);
 	}
 
 	/**
