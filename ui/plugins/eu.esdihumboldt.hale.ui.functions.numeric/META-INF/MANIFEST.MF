@@ -10,7 +10,8 @@ Require-Bundle: eu.esdihumboldt.hale.common.align,
  org.eclipse.ui,
  com.google.guava,
  com.iabcinc.jmep;bundle-version="0.1.0",
- eu.esdihumboldt.cst.functions.numeric;bundle-version="2.5.0"
+ eu.esdihumboldt.cst.functions.numeric;bundle-version="2.5.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.2.0"
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.hale.common.core.io.supplier,
