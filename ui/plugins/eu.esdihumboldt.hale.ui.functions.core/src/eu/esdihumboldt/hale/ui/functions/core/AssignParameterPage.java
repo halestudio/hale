@@ -65,6 +65,7 @@ public class AssignParameterPage extends HaleWizardPage<AbstractGenericFunctionW
 	 */
 	public AssignParameterPage() {
 		super("assign", "Please enter the value to assign", null);
+		setDescription("Press Ctrl+Space for content assistance.");
 		setPageComplete(false);
 	}
 

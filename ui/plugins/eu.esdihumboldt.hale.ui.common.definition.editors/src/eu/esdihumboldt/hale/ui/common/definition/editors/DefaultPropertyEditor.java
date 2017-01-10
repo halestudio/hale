@@ -279,7 +279,7 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 				// Ignore
 			}
 			ContentProposalAdapter adapter = new ContentProposalAdapter(viewer.getControl(),
-					new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(),
+					new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(true),
 					ctrlSpace, new char[] { '{' });
 			adapter.setAutoActivationDelay(0);
 		}
