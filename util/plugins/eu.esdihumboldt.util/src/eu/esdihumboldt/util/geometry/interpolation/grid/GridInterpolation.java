@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
@@ -73,7 +72,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 	}
 
 	@Override
-	public Geometry interpolateArc(Arc arc) {
+	public LineString interpolateArc(Arc arc) {
 		if (InterpolationUtil.isStraightLine(arc)) {
 			// this happens when slopes are close to equal
 
