@@ -43,6 +43,16 @@ public class GridUtil {
 	protected static final int ROUNDING_SCALE = 6;
 
 	/**
+	 * Determine the grid size given a maximum positional error.
+	 * 
+	 * @param maxPositionalError the maximum positional error
+	 * @return the grid size, i.e. the height/width of grid cells
+	 */
+	public static double getGridSize(double maxPositionalError) {
+		return GRID_FACTOR * maxPositionalError;
+	}
+
+	/**
 	 * relocate geometry coordinate to nearest grid point.
 	 * 
 	 * @param coordinate geometry coordinate
