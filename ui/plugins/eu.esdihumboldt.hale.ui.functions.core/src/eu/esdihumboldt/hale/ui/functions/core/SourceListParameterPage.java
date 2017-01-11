@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -257,7 +258,11 @@ public abstract class SourceListParameterPage<T>
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(GridLayoutFactory.swtDefaults().create());
+		GridLayout layout = GridLayoutFactory.swtDefaults().create();
+		// Add margin to leave space for control decorations
+		layout.marginLeft = 5;
+		layout.marginRight = 5;
+		page.setLayout(layout);
 
 		// input field
 		textField = createAndLayoutTextField(page);

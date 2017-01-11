@@ -200,7 +200,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			infoDeco.setDescriptionText("Type Ctrl+Space for project variable content assistance");
 			infoDeco.setImage(FieldDecorationRegistry.getDefault()
 					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
-			infoDeco.setShowOnlyOnFocus(true);
+			infoDeco.setMarginWidth(2);
 		}
 
 		// specify suffix
