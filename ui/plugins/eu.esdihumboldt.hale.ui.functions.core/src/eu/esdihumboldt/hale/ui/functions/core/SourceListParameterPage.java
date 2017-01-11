@@ -400,10 +400,10 @@ public abstract class SourceListParameterPage<T>
 	}
 
 	/**
-	 * TODO
-	 * 
-	 * @param entity
-	 * @return
+	 * @param contents current contents of the input field
+	 * @param position current position inside the input field
+	 * @param entity entity to create {@link IContentProposal} for
+	 * @return {@link IContentProposal} for the given {@link EntityDefinition}
 	 */
 	protected IContentProposal createContentProposal(String contents, int position,
 			EntityDefinition entity) {
