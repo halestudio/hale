@@ -261,20 +261,17 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 		}
 
 		// add project variable content assistance
-		if (entity != null) {
-			final ControlDecoration infoDeco = new ControlDecoration(viewer.getControl(),
-					SWT.TOP | SWT.LEFT);
-			infoDeco.setDescriptionText(
-					"Type { or Ctrl+Space for project variable content assistance");
-			infoDeco.setImage(FieldDecorationRegistry.getDefault()
-					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
-			infoDeco.setMarginWidth(2);
+		final ControlDecoration infoDeco = new ControlDecoration(viewer.getControl(),
+				SWT.TOP | SWT.LEFT);
+		infoDeco.setDescriptionText("Type { or Ctrl+Space for project variable content assistance");
+		infoDeco.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		infoDeco.setMarginWidth(2);
 
-			ContentProposalAdapter adapter = new ContentProposalAdapter(viewer.getControl(),
-					new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(true),
-					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
-			adapter.setAutoActivationDelay(0);
-		}
+		ContentProposalAdapter adapter = new ContentProposalAdapter(viewer.getControl(),
+				new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(true),
+				ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+		adapter.setAutoActivationDelay(0);
 
 		composite.addDisposeListener(new DisposeListener() {
 
