@@ -20,8 +20,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ComboContentAdapter;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -270,17 +268,11 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 					"Type { or Ctrl+Space for project variable content assistance");
 			infoDeco.setImage(FieldDecorationRegistry.getDefault()
 					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
-			infoDeco.setShowOnlyOnFocus(true);
+			infoDeco.setMarginWidth(2);
 
-			KeyStroke ctrlSpace = null;
-			try {
-				ctrlSpace = KeyStroke.getInstance("Ctrl+Space");
-			} catch (ParseException e1) {
-				// Ignore
-			}
 			ContentProposalAdapter adapter = new ContentProposalAdapter(viewer.getControl(),
 					new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(true),
-					ctrlSpace, new char[] { '{' });
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
 			adapter.setAutoActivationDelay(0);
 		}
 

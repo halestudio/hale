@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.eclipse.jface.bindings.keys.KeyStroke;
+import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.IContentProposal;
 import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.ui.PlatformUI;
@@ -40,6 +42,11 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
  * @author Florian Esser
  */
 public class ProjectVariablesContentProposalProvider implements IContentProposalProvider {
+
+	/**
+	 * {@link KeyStroke} reprensenting the key combination Ctrl+Space
+	 */
+	public static KeyStroke CTRL_SPACE = createKeyStroke("Ctrl+Space");
 
 	private final Map<String, Value> variables = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	private boolean displayPlaceholderIfEmpty = false;
@@ -97,6 +104,23 @@ public class ProjectVariablesContentProposalProvider implements IContentProposal
 		variables.clear();
 		if (properties != null) {
 			variables.putAll(properties);
+		}
+	}
+
+	/**
+	 * Creates a {@link KeyStroke} instance for the given formal key string
+	 * representation.
+	 * 
+	 * @see org.eclipse.jface.bindings.keys.KeyStroke#getInstance(String)
+	 * @param key Formal key representation
+	 * @return {@link KeyStroke} instance or null if no instance could be
+	 *         created for the given key.
+	 */
+	public static KeyStroke createKeyStroke(String key) {
+		try {
+			return KeyStroke.getInstance(key);
+		} catch (ParseException e) {
+			return null;
 		}
 	}
 

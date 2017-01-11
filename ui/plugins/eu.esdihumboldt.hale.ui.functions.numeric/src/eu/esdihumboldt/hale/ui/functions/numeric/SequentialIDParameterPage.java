@@ -18,8 +18,6 @@ package eu.esdihumboldt.hale.ui.functions.numeric;
 
 import java.util.List;
 
-import org.eclipse.jface.bindings.keys.KeyStroke;
-import org.eclipse.jface.bindings.keys.ParseException;
 import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
@@ -173,13 +171,6 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			});
 		}
 
-		KeyStroke ctrlSpace = null;
-		try {
-			ctrlSpace = KeyStroke.getInstance("Ctrl+Space");
-		} catch (ParseException e1) {
-			// Ignore
-		}
-
 		// specify prefix
 		if (getParametersToHandle().containsKey(PARAM_PREFIX)) {
 			label = new Label(page, SWT.NONE);
@@ -201,8 +192,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			});
 
 			ContentProposalAdapter adapter = new ContentProposalAdapter(prefix,
-					new TextContentAdapter(), contentProposalProvider, ctrlSpace,
-					new char[] { '{' });
+					new TextContentAdapter(), contentProposalProvider,
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
 			adapter.setAutoActivationDelay(0);
 
 			final ControlDecoration infoDeco = new ControlDecoration(prefix, SWT.TOP | SWT.LEFT);
@@ -233,8 +224,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			});
 
 			ContentProposalAdapter adapter = new ContentProposalAdapter(suffix,
-					new TextContentAdapter(), contentProposalProvider, ctrlSpace,
-					new char[] { '{' });
+					new TextContentAdapter(), contentProposalProvider,
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
 			adapter.setAutoActivationDelay(0);
 
 			final ControlDecoration infoDeco = new ControlDecoration(suffix, SWT.TOP | SWT.LEFT);
