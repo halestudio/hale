@@ -20,6 +20,8 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.eclipse.jface.fieldassist.ComboContentAdapter;
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -62,6 +64,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstr
 import eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin;
 import eu.esdihumboldt.hale.ui.codelist.selector.CodeListSelectionDialog;
 import eu.esdihumboldt.hale.ui.codelist.service.CodeListService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 import eu.esdihumboldt.util.validator.Validator;
 
 /**
@@ -256,6 +259,19 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 				}
 			});
 		}
+
+		// add project variable content assistance
+		final ControlDecoration infoDeco = new ControlDecoration(viewer.getControl(),
+				SWT.TOP | SWT.LEFT);
+		infoDeco.setDescriptionText("Type { or Ctrl+Space for project variable content assistance");
+		infoDeco.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		infoDeco.setMarginWidth(2);
+
+		ContentProposalAdapter adapter = new ContentProposalAdapter(viewer.getControl(),
+				new ComboContentAdapter(), new ProjectVariablesContentProposalProvider(true),
+				ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+		adapter.setAutoActivationDelay(0);
 
 		composite.addDisposeListener(new DisposeListener() {
 
