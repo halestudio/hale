@@ -44,8 +44,8 @@ import com.google.common.base.Predicate;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.io.wfs.PartitioningWFSInputSupplier;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
@@ -201,7 +201,7 @@ public abstract class AbstractWFSSource<P extends ImportProvider> extends Abstra
 	protected LocatableInputSupplier<? extends InputStream> getSource() {
 		try {
 			URI uri = sourceURL.getURI();
-			return new DefaultInputSupplier(uri);
+			return new PartitioningWFSInputSupplier(uri);
 		} catch (Throwable e) {
 			return null;
 		}
