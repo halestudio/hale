@@ -17,6 +17,9 @@
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -24,9 +27,12 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.PartitioningInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 
 /**
  * Reads XML/GML from a stream
@@ -91,9 +97,24 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
 					false);
 
-			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
-					this);
+			LocatableInputSupplier<? extends InputStream> source = getSource();
+			if (source instanceof PartitioningInputSupplier) {
+				final List<InstanceCollection> instanceCollections = new ArrayList<>();
+				for (LocatableInputSupplier<? extends InputStream> supplier : ((PartitioningInputSupplier<? extends InputStream>) source)
+						.getPartitions()) {
+					instanceCollections.add(new GmlInstanceCollection(supplier, getSourceSchema(),
+							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
+							getCrsProvider(), this));
+				}
+
+				instances = new MultiInstanceCollection(instanceCollections);
+			}
+			else {
+				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
+						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
+						this);
+			}
+
 			// TODO any kind of analysis on file? e.g. types and size - would
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
