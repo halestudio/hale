@@ -15,16 +15,18 @@
 
 package eu.esdihumboldt.hale.io.jdbc;
 
-import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
+import java.util.function.Supplier;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.ColumnDataType;
 
 /**
  * Database specific advisor for handling geometries. It may hold no state, as
@@ -85,10 +87,11 @@ public interface GeometryAdvisor<C> {
 	 *            that was previously configured using
 	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
 	 * @param connection The connection
+	 * @param crsProvider The CRS provider
 	 * @return the geometry property
 	 * @throws Exception if the conversion failed
 	 */
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			C connection) throws Exception;
+			C connection, Supplier<CRSDefinition> crsProvider) throws Exception;
 
 }

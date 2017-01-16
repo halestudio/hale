@@ -3,15 +3,13 @@ package eu.esdihumboldt.hale.io.jdbc.spatialite;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.sqlite.SQLiteConnection;
-
-import schemacrawler.schema.Column;
-import schemacrawler.schema.ColumnDataType;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -35,6 +33,8 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteHelper;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteSupport;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteSupportFactory;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SrsMetadata;
+import schemacrawler.schema.Column;
+import schemacrawler.schema.ColumnDataType;
 
 /**
  * Geometry advisor for SpatiaLite.
@@ -75,9 +75,9 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 			GeometryMetadata columnTypeConstraint;
 			if (srsMeta != null) {
 				// Create constraint to save the informations
-				columnTypeConstraint = new GeometryMetadata(
-						Integer.toString(srsMeta.getAuthSrid()), geomTypeMeta.getCoordDimension(),
-						srsMeta.getSrText(), srsMeta.getAuthName());
+				columnTypeConstraint = new GeometryMetadata(Integer.toString(srsMeta.getAuthSrid()),
+						geomTypeMeta.getCoordDimension(), srsMeta.getSrText(),
+						srsMeta.getAuthName());
 			}
 			else {
 				// no SRS information, just dimension
@@ -188,9 +188,15 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		return encodedValue;
 	}
 
+	/**
+	 * 
+	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
+	 *      java.lang.Object, java.util.function.Supplier)
+	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			SQLiteConnection connection) throws Exception {
+			SQLiteConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
 		// show error and abort if SpatiaLite is not available
 		if (!SpatiaLiteHelper.isSpatialLiteLoadedReport(connection, true)) {
 			// don't throw, will prevent any data being loaded
