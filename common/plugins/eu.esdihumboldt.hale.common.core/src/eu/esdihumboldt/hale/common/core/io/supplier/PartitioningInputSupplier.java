@@ -23,6 +23,7 @@ import java.util.Collection;
  * 
  * @see #getLocation()
  * @author Florian Esser
+ * @param <T> the input type
  */
 public interface PartitioningInputSupplier<T> extends LocatableInputSupplier<T> {
 

@@ -48,7 +48,8 @@ public class PartitioningWFSInputSupplier extends DefaultInputSupplier
 	private int partitionFeatureLimit = 500;
 
 	/**
-	 * Create a partitioning input supplier for WFS requests
+	 * Create a partitioning input supplier for WFS requests with a default
+	 * {@link #partitionFeatureLimit} of 500.
 	 * 
 	 * @param location WFS request URL
 	 */
@@ -152,8 +153,8 @@ public class PartitioningWFSInputSupplier extends DefaultInputSupplier
 	 * Partition the WFS query
 	 * 
 	 * @param featureCount Total features expected
-	 * @return
-	 * @throws URISyntaxException
+	 * @return list of URIs extended by KVP parameters to partition the requests
+	 * @throws URISyntaxException thrown if a URI cannot be built
 	 */
 	private List<URI> partitionRequest(int featureCount) throws URISyntaxException {
 		List<URI> result = new ArrayList<>();
