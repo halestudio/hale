@@ -19,11 +19,14 @@ import java.lang.reflect.Array
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.SQLException
+import java.util.function.Supplier
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -45,14 +48,15 @@ import groovy.transform.CompileStatic
 class TableInstanceBuilder {
 
 	private static final ALogger log = ALoggerFactory.getLogger(TableInstanceBuilder)
-
 	private final InstanceBuilder builder;
+	private final CRSProvider crsProvider
 
 	/**
 	 * Default constructor. 
 	 */
-	public TableInstanceBuilder() {
+	public TableInstanceBuilder(CRSProvider crsProvider) {
 		super();
+		this.crsProvider=crsProvider;
 
 		builder = new InstanceBuilder(strictBinding: false)
 	}
@@ -89,7 +93,10 @@ class TableInstanceBuilder {
 							}
 						}
 						if (gac.advisor != null) {
-							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection)
+							def supplier = {
+								crsProvider.getCRS(type, [property.name])
+							} as Supplier<CRSDefinition>
+							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection, supplier)
 						}
 					}
 

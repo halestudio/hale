@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.function.Supplier;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
@@ -175,9 +176,15 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		return pGeometry;
 	}
 
+	/**
+	 * 
+	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
+	 *      java.lang.Object, java.util.function.Supplier)
+	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			PGConnection connection) throws Exception {
+			PGConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
 
 		if (geom instanceof PGgeometry) {
 			PGgeometry pgeom = (PGgeometry) geom;
