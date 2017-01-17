@@ -13,18 +13,14 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation.grid;
-
-import static eu.esdihumboldt.util.geometry.interpolation.grid.GridUtil.movePointToGrid;
+package eu.esdihumboldt.util.geometry.interpolation.segment;
 
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
 import eu.esdihumboldt.util.geometry.interpolation.AbstractInterpolationAlgorithm;
@@ -38,40 +34,7 @@ import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
  * 
  * @author Simon Templer
  */
-public class GridInterpolation extends AbstractInterpolationAlgorithm {
-
-	/**
-	 * Parameter name for the setting to move all geometries' coordinates to the
-	 * grid.
-	 */
-	public static final String PARAMETER_MOVE_ALL_TO_GRID = "interpolation.gridded.moveAllToGrid";
-
-	private boolean moveAllToGrid = false;
-
-	private double gridSize;
-
-	@Override
-	public void configure(GeometryFactory factory, double maxPositionalError,
-			Map<String, String> properties) {
-		super.configure(factory, maxPositionalError, properties);
-
-		// determine grid size
-		this.gridSize = GridUtil.getGridSize(maxPositionalError);
-
-		// setting to move all geometries to the grid
-		this.moveAllToGrid = Boolean
-				.parseBoolean(properties.getOrDefault(PARAMETER_MOVE_ALL_TO_GRID, "false"));
-	}
-
-	/**
-	 * relocate relocate geometry coordinate to the nearest universal grid point
-	 * 
-	 * @param coordinate the geometry coordinates
-	 * @return relocates grid coordinate
-	 */
-	protected Coordinate pointToGrid(Coordinate coordinate) {
-		return movePointToGrid(coordinate, gridSize);
-	}
+public class SplitInterpolation extends AbstractInterpolationAlgorithm {
 
 	@Override
 	public LineString interpolateArc(Arc arc) {
@@ -79,17 +42,9 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 			// this happens when slopes are close to equal
 
 			ArcByPoints byPoints = arc.toArcByPoints();
-			if (moveAllToGrid) {
-				// move to grid
-				return createLineString(new Coordinate[] { pointToGrid(byPoints.getStartPoint()),
-						pointToGrid(byPoints.getMiddlePoint()),
-						pointToGrid(byPoints.getEndPoint()) }, arc);
-			}
-			else {
-				// return points as-is
-				return createLineString(new Coordinate[] { byPoints.getStartPoint(),
-						byPoints.getMiddlePoint(), byPoints.getEndPoint() }, arc);
-			}
+			// return points as-is
+			return createLineString(new Coordinate[] { byPoints.getStartPoint(),
+					byPoints.getMiddlePoint(), byPoints.getEndPoint() }, arc);
 		}
 
 		return interpolateToLineString(arc);
@@ -99,7 +54,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 		// arc segments to process
 		Deque<ArcSegment> toProcess = new LinkedList<>();
 		// start with full arc as segment
-		toProcess.addFirst(new ArcGridSegment(arc, moveAllToGrid, gridSize));
+		toProcess.addFirst(new ArcSplitSegment(arc, getMaxPositionalError()));
 		// list to collect atomic parts
 		List<ArcSegment> parts = new LinkedList<>();
 

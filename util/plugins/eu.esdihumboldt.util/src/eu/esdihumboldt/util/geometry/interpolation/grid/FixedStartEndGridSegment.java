@@ -25,7 +25,7 @@ import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
  * 
  * @author Simon Templer
  */
-public class FixedStartEndGridSegment extends ArcGridSegmentImpl {
+public class FixedStartEndGridSegment extends ArcGridSegment {
 
 	private final Coordinate start;
 	private final Coordinate end;

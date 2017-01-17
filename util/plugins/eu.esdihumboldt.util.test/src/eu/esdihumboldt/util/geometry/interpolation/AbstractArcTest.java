@@ -173,6 +173,35 @@ public abstract class AbstractArcTest extends AbstractSVGPainterTest {
 	}
 
 	/**
+	 * Draw an interpolated arc with debug information. Saves the resulting
+	 * drawing.
+	 * 
+	 * @param arc the arc to draw
+	 * @param interpolated the interpolated geometry
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void drawInterpolatedArc(Arc arc, LineString interpolated) throws IOException {
+		withArcCanvas(arc, svg -> {
+			if (interpolated != null) {
+				svg.setColor(Color.DARK_GRAY);
+				for (Coordinate coord : interpolated.getCoordinates()) {
+					svg.drawPoint(coord);
+				}
+			}
+
+			drawName(svg, arc.toString());
+
+			drawArcWithMarkers(svg, arc);
+
+			if (interpolated != null) {
+				svg.setColor(Color.BLACK);
+				svg.setStroke(2.5f);
+				svg.drawLineString(interpolated);
+			}
+		});
+	}
+
+	/**
 	 * Draw an interpolated arc string with debug information. Saves the
 	 * resulting drawing.
 	 * 
@@ -185,6 +214,36 @@ public abstract class AbstractArcTest extends AbstractSVGPainterTest {
 			LineString interpolated) throws IOException {
 		withArcStringCanvas(arcs, svg -> {
 			drawGrid(svg, gridSize);
+
+			for (Arc arc : arcs.getArcs()) {
+				drawArcWithMarkers(svg, arc);
+			}
+
+			if (interpolated != null) {
+				svg.setColor(Color.BLACK);
+				svg.setStroke(2.5f);
+				svg.drawLineString(interpolated);
+			}
+		});
+	}
+
+	/**
+	 * Draw an interpolated arc string with debug information. Saves the
+	 * resulting drawing.
+	 * 
+	 * @param arcs the arc string to draw
+	 * @param interpolated the interpolated geometry
+	 * @throws IOException if saving the drawing fails
+	 */
+	protected void drawInterpolatedArcString(ArcString arcs, LineString interpolated)
+			throws IOException {
+		withArcStringCanvas(arcs, svg -> {
+			if (interpolated != null) {
+				svg.setColor(Color.DARK_GRAY);
+				for (Coordinate coord : interpolated.getCoordinates()) {
+					svg.drawPoint(coord);
+				}
+			}
 
 			for (Arc arc : arcs.getArcs()) {
 				drawArcWithMarkers(svg, arc);
