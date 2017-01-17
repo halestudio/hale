@@ -41,6 +41,11 @@ import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 public class GridInterpolation extends AbstractInterpolationAlgorithm {
 
 	/**
+	 * Identifier of the algorithm in the extension point.
+	 */
+	public static final String EXTENSION_ID = "grid";
+
+	/**
 	 * Parameter name for the setting to move all geometries' coordinates to the
 	 * grid.
 	 */

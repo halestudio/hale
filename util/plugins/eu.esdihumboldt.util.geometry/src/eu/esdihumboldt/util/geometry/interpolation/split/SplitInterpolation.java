@@ -36,6 +36,11 @@ import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
  */
 public class SplitInterpolation extends AbstractInterpolationAlgorithm {
 
+	/**
+	 * Identifier of the algorithm in the extension point.
+	 */
+	public static final String EXTENSION_ID = "segment";
+
 	@Override
 	public LineString interpolateArc(Arc arc) {
 		if (InterpolationUtil.isStraightLine(arc)) {
