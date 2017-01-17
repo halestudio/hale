@@ -36,11 +36,10 @@ import eu.esdihumboldt.util.geometry.interpolation.grid.GridInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
-import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByPointsImpl;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcStringImpl;
-import eu.esdihumboldt.util.geometry.interpolation.segment.SplitInterpolation;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 

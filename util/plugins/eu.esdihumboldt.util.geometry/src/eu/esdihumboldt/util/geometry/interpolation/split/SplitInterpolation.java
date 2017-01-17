@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation.segment;
+package eu.esdihumboldt.util.geometry.interpolation.split;
 
 import java.util.ArrayList;
 import java.util.Deque;

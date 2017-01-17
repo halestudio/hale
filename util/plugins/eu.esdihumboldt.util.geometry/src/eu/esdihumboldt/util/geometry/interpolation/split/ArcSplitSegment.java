@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.util.geometry.interpolation.segment;
+package eu.esdihumboldt.util.geometry.interpolation.split;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -21,8 +21,8 @@ import eu.esdihumboldt.util.geometry.interpolation.ArcSegment;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
-import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 
 /**
  * Segment of an arc for split interpolation.
