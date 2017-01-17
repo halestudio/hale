@@ -32,6 +32,7 @@ import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -39,9 +40,9 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -49,7 +50,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Patrick Lieb
  */
-public class LineStringHandler extends InterpolationSupportedGeometryHandler {
+public class LineStringHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String LINE_STRING_TYPE = "LineStringType";
 
@@ -85,10 +86,6 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 	// XXX support for Triangle and Rectangle is not optimal (only exterior and
 	// outerBounderIs needed)
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int, IOProvider)
-	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
@@ -107,8 +104,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 				try {
 					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
-						line = getGeometryFactory()
-								.createLineString(moveToUniversalGrid(cs, reader));
+						line = getGeometryFactory().createLineString(moveCoordinates(cs, reader));
 					}
 				} catch (ParseException e) {
 					throw new GeometryNotSupportedException("Could not parse coordinates", e);
@@ -132,7 +128,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+				Coordinate[] coords = moveCoordinates(cs.toArray(new Coordinate[cs.size()]),
 						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
@@ -148,8 +144,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 				if (value instanceof Instance) {
 					Coordinate[] cs = GMLGeometryUtil.parsePosList((Instance) value, srsDimension);
 					if (cs != null) {
-						line = getGeometryFactory()
-								.createLineString(moveToUniversalGrid(cs, reader));
+						line = getGeometryFactory().createLineString(moveCoordinates(cs, reader));
 					}
 				}
 			}
@@ -177,7 +172,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+				Coordinate[] coords = moveCoordinates(cs.toArray(new Coordinate[cs.size()]),
 						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
@@ -204,7 +199,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+				Coordinate[] coords = moveCoordinates(cs.toArray(new Coordinate[cs.size()]),
 						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
@@ -226,7 +221,7 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 						}
 					}
 				}
-				Coordinate[] coords = moveToUniversalGrid(cs.toArray(new Coordinate[cs.size()]),
+				Coordinate[] coords = moveCoordinates(cs.toArray(new Coordinate[cs.size()]),
 						reader);
 				line = getGeometryFactory().createLineString(coords);
 			}
@@ -313,21 +308,18 @@ public class LineStringHandler extends InterpolationSupportedGeometryHandler {
 		return types;
 	}
 
-	@Override
-	protected Coordinate[] moveToUniversalGrid(Coordinate[] coordinates, IOProvider reader) {
-		return isLineStringRelocationRequired() ? super.moveToUniversalGrid(coordinates, reader)
-				: coordinates;
+	private Coordinate[] moveCoordinates(Coordinate[] coordinates, IOProvider reader) {
+		return isInterpolated() ? coordinates
+				: InterpolationHelper.moveCoordinates(reader, coordinates);
 	}
 
 	/**
-	 * is relocating is required for LineString coordinates
-	 * 
-	 * Override this method to skip the relocation of LineString coordinates;
+	 * States if the handler created interpolated geometries.
 	 * 
 	 * @return true if required else false
 	 */
-	protected boolean isLineStringRelocationRequired() {
-		return true;
+	protected boolean isInterpolated() {
+		return false;
 	}
 
 }

@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.instance.geometry.curve.InterpolationConstant;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -23,8 +22,7 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  *
  */
 public class InterpolationSettingPage
-		extends AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>>
-		implements InterpolationConstant {
+		extends AbstractConfigurationPage<IOProvider, IOWizard<IOProvider>> {
 
 	private Text error;
 	private Button moveToGrid;

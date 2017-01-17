@@ -34,7 +34,7 @@ public class InterpolationExtension
 	/**
 	 * @return the extension instance
 	 */
-	public InterpolationExtension getInstance() {
+	public static InterpolationExtension getInstance() {
 		if (instance == null) {
 			instance = new InterpolationExtension();
 		}

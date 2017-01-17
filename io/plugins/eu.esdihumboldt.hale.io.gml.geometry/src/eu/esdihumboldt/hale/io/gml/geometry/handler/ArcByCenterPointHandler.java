@@ -34,6 +34,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -41,28 +42,27 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
-import eu.esdihumboldt.util.geometry.interpolation.ArcByCenterPointInterpolation;
-import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import eu.esdihumboldt.util.geometry.interpolation.InterpolationAlgorithm;
+import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
+import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
+import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 
 /**
- * Handler for Arc by center point geometries
+ * Handler for Arc by center point geometries.
  * 
- * @author Arun
+ * @author Arun Verma
+ * @author Simon Templer
  */
-public class ArcByCenterPointHandler extends InterpolationSupportedGeometryHandler {
+public class ArcByCenterPointHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String ARC_BY_CENTER_POINT_TYPE = "ArcByCenterPointType";
 
 	private static final ALogger log = ALoggerFactory.getLogger(ArcByCenterPointHandler.class);
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int, eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
@@ -232,12 +232,17 @@ public class ArcByCenterPointHandler extends InterpolationSupportedGeometryHandl
 		if (controlCoord != null && controlCoord.length != 0 && radius != 0) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
 
-			// get interpolation required parameter
-			getInterpolationRequiredParameter(reader);
+			// create Arc
+			// FIXME verify how arc should be created from information in GML
+			boolean clockwise = endAngle - startAngle < 0;
+			Arc arc = new ArcByCenterPointImpl(controlCoord[0], radius,
+					Angle.fromDegrees(startAngle), Angle.fromDegrees(endAngle), clockwise);
 
-			Interpolation<LineString> interpolation = new ArcByCenterPointInterpolation(
-					controlCoord[0], radius, startAngle, endAngle, getMaxPositionalError());
-			LineString interpolatedArc = interpolation.interpolateRawGeometry();
+			// get interpolation algorithm
+			InterpolationAlgorithm interpol = InterpolationHelper.getInterpolation(reader,
+					getGeometryFactory());
+			LineString interpolatedArc = interpol.interpolateArc(arc);
+
 			if (interpolatedArc == null) {
 				log.error("Arc could be not interpolated to Linestring");
 				return null;
@@ -249,9 +254,6 @@ public class ArcByCenterPointHandler extends InterpolationSupportedGeometryHandl
 		throw new GeometryNotSupportedException();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler#initConstraints()
-	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
 		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
@@ -264,9 +266,6 @@ public class ArcByCenterPointHandler extends InterpolationSupportedGeometryHandl
 		return constraints;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.AbstractGeometryHandler#initSupportedTypes()
-	 */
 	@Override
 	protected Set<? extends QName> initSupportedTypes() {
 		Set<QName> types = new HashSet<QName>();

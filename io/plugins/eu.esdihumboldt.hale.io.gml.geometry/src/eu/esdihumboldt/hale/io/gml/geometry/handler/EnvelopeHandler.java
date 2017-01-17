@@ -33,6 +33,7 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -40,10 +41,10 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -51,7 +52,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Patrick Lieb
  */
-public class EnvelopeHandler extends InterpolationSupportedGeometryHandler {
+public class EnvelopeHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String ENVELOPE_TYPE = "EnvelopeType";
 
@@ -120,7 +121,7 @@ public class EnvelopeHandler extends InterpolationSupportedGeometryHandler {
 		if (!points.isEmpty()) {
 			Coordinate[] coordinates = new Coordinate[] { points.get(0).getCoordinate(),
 					points.get(1).getCoordinate() };
-			coordinates = moveToUniversalGrid(coordinates, reader);
+			coordinates = InterpolationHelper.moveCoordinates(reader, coordinates);
 			envelope = getGeometryFactory().createMultiPoint(coordinates);
 		}
 

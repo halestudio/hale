@@ -49,7 +49,7 @@ public class GridInterpolation extends AbstractInterpolationAlgorithm {
 	 * Parameter name for the setting to move all geometries' coordinates to the
 	 * grid.
 	 */
-	public static final String PARAMETER_MOVE_ALL_TO_GRID = "interpolation.gridded.moveAllToGrid";
+	public static final String PARAMETER_MOVE_ALL_TO_GRID = "interpolation.grid.moveAllToGrid";
 
 	private boolean moveAllToGrid = false;
 

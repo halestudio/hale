@@ -25,7 +25,7 @@ import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 
 /**
- * Uutility functions related to interpolation.
+ * Utility functions related to interpolation.
  * 
  * @author Arun Verma
  * @author Simon Templer

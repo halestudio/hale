@@ -34,6 +34,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -41,28 +42,26 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
+import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
-import eu.esdihumboldt.util.geometry.interpolation.CircleByCenterPointInterpolation;
-import eu.esdihumboldt.util.geometry.interpolation.Interpolation;
+import eu.esdihumboldt.util.geometry.interpolation.InterpolationAlgorithm;
+import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
+import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
+import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 
 /**
  * Handler for circle by center point geometries
  * 
  * @author Arun
  */
-public class CircleByCenterPointHandler extends InterpolationSupportedGeometryHandler {
+public class CircleByCenterPointHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String CIRCLE_BY_CENTER_POINT_TYPE = "CircleByCenterPointType";
 
 	private static final ALogger log = ALoggerFactory.getLogger(CircleByCenterPointHandler.class);
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler#createGeometry(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      int, eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
 	@Override
 	public Object createGeometry(Instance instance, int srsDimension, IOProvider reader)
 			throws GeometryNotSupportedException {
@@ -204,12 +203,15 @@ public class CircleByCenterPointHandler extends InterpolationSupportedGeometryHa
 		if (controlCoord != null && controlCoord.length != 0 && radius != 0) {
 			CRSDefinition crsDef = GMLGeometryUtil.findCRS(instance);
 
-			// get interpolation required parameter
-			getInterpolationRequiredParameter(reader);
+			// create Arc representing a circle
+			Arc arc = new ArcByCenterPointImpl(controlCoord[0], radius, Angle.fromDegrees(0),
+					Angle.fromDegrees(0), true);
 
-			Interpolation<LineString> interpolation = new CircleByCenterPointInterpolation(
-					controlCoord[0], radius, getMaxPositionalError());
-			LineString interpolatedCircle = interpolation.interpolateRawGeometry();
+			// get interpolation algorithm
+			InterpolationAlgorithm interpol = InterpolationHelper.getInterpolation(reader,
+					getGeometryFactory());
+			LineString interpolatedCircle = interpol.interpolateArc(arc);
+
 			if (interpolatedCircle == null) {
 				log.error("Circle could be not interpolated to Linestring");
 				return null;
