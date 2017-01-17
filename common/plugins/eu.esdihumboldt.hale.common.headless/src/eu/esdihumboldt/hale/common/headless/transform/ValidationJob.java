@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
@@ -51,6 +52,7 @@ public class ValidationJob extends AbstractTransformationJob {
 	private final List<InstanceValidator> validators = new ArrayList<>();
 
 	private final InstanceWriter writer;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Create a job for validating transformed instances.
@@ -60,12 +62,13 @@ public class ValidationJob extends AbstractTransformationJob {
 	 * @param writer the instance writer
 	 */
 	public ValidationJob(Collection<InstanceValidator> validators, ReportHandler reportHandler,
-			@Nullable InstanceWriter writer) {
+			@Nullable InstanceWriter writer, ServiceProvider serviceProvider) {
 		super("Validation");
 
 		this.validators.addAll(validators);
 		this.writer = writer;
 		this.reportHandler = reportHandler;
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -89,6 +92,8 @@ public class ValidationJob extends AbstractTransformationJob {
 						List<? extends Locatable> schemas = writer.getValidationSchemas();
 						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 					}
+					validator.setServiceProvider(serviceProvider);
+
 					IOReport result = validator.execute(new ProgressMonitorIndicator(monitor));
 					if (result != null) {
 						report = result;

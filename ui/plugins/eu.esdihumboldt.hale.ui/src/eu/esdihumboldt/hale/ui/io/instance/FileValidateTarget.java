@@ -47,11 +47,13 @@ import org.eclipse.ui.PlatformUI;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.io.validation.ProjectValidator;
 import eu.esdihumboldt.hale.ui.io.IOWizardListener;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationDialog;
 import eu.esdihumboldt.hale.ui.io.config.ConfigurationDialogExtension;
@@ -91,6 +93,22 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 				.grab(true, false).span(3, 1).indent(8, 10).create());
 		validatorGroup
 				.setLayout(GridLayoutFactory.swtDefaults().numColumns(3).margins(10, 8).create());
+
+		// Add project validator by default
+
+		IOProviderDescriptor pvDescriptor = HaleIO.findIOProviderFactory(IOProvider.class,
+				getWizard().getContentType(), ProjectValidator.PROVIDER_ID);
+
+		if (pvDescriptor != null) {
+			ProjectValidator projectValidator = new ProjectValidator();
+			List<? extends Locatable> schemas = getWizard().getProvider().getValidationSchemas();
+			projectValidator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+
+			ValidatorEntry entry = new ValidatorEntry(projectValidator, pvDescriptor);
+			validators.add(entry);
+
+			getWizard().addValidator(projectValidator);
+		}
 
 		// viewer with validator list
 

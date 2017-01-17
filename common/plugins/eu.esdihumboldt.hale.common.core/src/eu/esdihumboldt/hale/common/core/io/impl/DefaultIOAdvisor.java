@@ -14,18 +14,17 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.ui.io;
+package eu.esdihumboldt.hale.common.core.io.impl;
 
 import java.net.URI;
 
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
-import eu.esdihumboldt.hale.ui.service.project.ProjectService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 
 /**
- * Base class for UI related {@link IOAdvisor}s.
+ * Base class for {@link IOAdvisor}s that implement {@link ProjectInfoAware}.
  * 
  * @author Simon Templer
  * @param <T> the I/O provider type
@@ -40,7 +39,7 @@ public abstract class DefaultIOAdvisor<T extends IOProvider> extends AbstractIOA
 		super.prepareProvider(provider);
 
 		if (provider instanceof ProjectInfoAware) {
-			ProjectService ps = getService(ProjectService.class);
+			ProjectInfoService ps = getService(ProjectInfoService.class);
 			if (ps != null) {
 				ProjectInfoAware pia = (ProjectInfoAware) provider;
 				pia.setProjectInfo(ps.getProjectInfo());

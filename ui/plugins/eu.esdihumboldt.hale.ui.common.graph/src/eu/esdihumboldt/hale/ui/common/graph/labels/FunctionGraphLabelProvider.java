@@ -43,6 +43,8 @@ import eu.esdihumboldt.util.Pair;
  */
 public class FunctionGraphLabelProvider extends GraphLabelProvider {
 
+	private static final int MAX_FIGURE_WIDTH = 150;
+
 	private final Color targetbackgroundcolor;
 
 	private final Color sourcebackgroundcolor;

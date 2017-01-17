@@ -17,13 +17,15 @@
 package eu.esdihumboldt.hale.ui.functions.core;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.IContentProposal;
+import org.eclipse.jface.fieldassist.IContentProposalProvider;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -39,6 +41,7 @@ import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -56,6 +59,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 
 /**
  * Base parameter page for parameter pages that contain a listing of source
@@ -65,14 +69,18 @@ import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
  * 
  * @author Kai Schwierczek
  */
-public abstract class SourceListParameterPage<T> extends
-		HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> implements ParameterPage {
+public abstract class SourceListParameterPage<T>
+		extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>>
+		implements ParameterPage, IContentProposalProvider {
 
 	private String initialValue = "";
 	private T textField;
+
+	private final List<EntityDefinition> variables = new ArrayList<EntityDefinition>();
 	private TableViewer varTable;
 
-//	private EntityDefinition[] variables = new EntityDefinition[0];
+	private final List<IContentProposalProvider> additionalContentProposalProviders = new ArrayList<>();
+	private final ProjectVariablesContentProposalProvider projectVariablesProposalsProvider = new ProjectVariablesContentProposalProvider();
 
 	/**
 	 * @see HaleWizardPage#HaleWizardPage(String, String, ImageDescriptor)
@@ -111,6 +119,23 @@ public abstract class SourceListParameterPage<T> extends
 	 */
 	protected void configure(T textField) {
 		// default: do nothing
+	}
+
+	/**
+	 * @return the list of {@link EntityDefinition}s
+	 */
+	protected List<EntityDefinition> getVariables() {
+		return variables;
+	}
+
+	/**
+	 * Adds an {@link IContentProposalProvider} to this parameter page that may
+	 * contribute to the content assistance.
+	 * 
+	 * @param provider provider to add
+	 */
+	protected void addContentProposalProvider(IContentProposalProvider provider) {
+		this.additionalContentProposalProviders.add(provider);
 	}
 
 	/**
@@ -188,15 +213,18 @@ public abstract class SourceListParameterPage<T> extends
 		Cell cell = getWizard().getUnfinishedCell();
 
 		// update variables as they could have changed
+		variables.clear();
+
 		List<? extends Entity> sourceEntities = cell.getSource().get(getSourcePropertyName());
-		List<EntityDefinition> variables = new ArrayList<EntityDefinition>();
-		Iterator<? extends Entity> iter = sourceEntities.iterator();
-		while (iter.hasNext())
-			variables.add(iter.next().getDefinition());
+		for (Entity entity : sourceEntities) {
+			variables.add(entity.getDefinition());
+		}
 
 		Map<EntityDefinition, String> varsAndNames = determineDefaultVariableNames(variables);
-
 		varTable.setInput(varsAndNames.entrySet());
+
+		// Update project variables content provider
+		projectVariablesProposalsProvider.reload();
 
 		// inform subclasses
 		sourcePropertiesChanged(varsAndNames.keySet());
@@ -230,13 +258,19 @@ public abstract class SourceListParameterPage<T> extends
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		page.setLayout(GridLayoutFactory.swtDefaults().create());
+		GridLayout layout = GridLayoutFactory.swtDefaults().create();
+		// Add margin to leave space for control decorations
+		layout.marginLeft = 5;
+		layout.marginRight = 5;
+		page.setLayout(layout);
 
 		// input field
 		textField = createAndLayoutTextField(page);
 
 		// let subclasses for example add validation
 		configure(textField);
+
+		addContentProposalProvider(projectVariablesProposalsProvider);
 
 		setText(textField, initialValue);
 
@@ -348,6 +382,53 @@ public abstract class SourceListParameterPage<T> extends
 	 */
 	protected T getTextField() {
 		return textField;
+	}
+
+	/**
+	 * @see org.eclipse.jface.fieldassist.IContentProposalProvider#getProposals(java.lang.String,
+	 *      int)
+	 */
+	@Override
+	public IContentProposal[] getProposals(final String contents, final int position) {
+		final List<IContentProposal> proposals = new ArrayList<>();
+
+		variables.forEach(var -> proposals.add(createContentProposal(contents, position, var)));
+		additionalContentProposalProviders.forEach(provider -> proposals
+				.addAll(Arrays.asList(provider.getProposals(contents, position))));
+
+		return proposals.toArray(new IContentProposal[proposals.size()]);
+	}
+
+	/**
+	 * @param contents current contents of the input field
+	 * @param position current position inside the input field
+	 * @param entity entity to create {@link IContentProposal} for
+	 * @return {@link IContentProposal} for the given {@link EntityDefinition}
+	 */
+	protected IContentProposal createContentProposal(String contents, int position,
+			EntityDefinition entity) {
+		return new IContentProposal() {
+
+			@Override
+			public String getLabel() {
+				return entity.getDefinition().getDisplayName();
+			}
+
+			@Override
+			public String getDescription() {
+				return null;
+			}
+
+			@Override
+			public int getCursorPosition() {
+				return getContent().length();
+			}
+
+			@Override
+			public String getContent() {
+				return getVariableName(entity);
+			}
+		};
 	}
 
 }
