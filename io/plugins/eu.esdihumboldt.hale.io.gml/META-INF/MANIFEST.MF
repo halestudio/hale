@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml;singleton:=true
 Bundle-Version: 3.2.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.geotools;bundle-version="2.6.4",
  eu.esdihumboldt.hale.common.core;bundle-version="2.2.0",
  eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0",
