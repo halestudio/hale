@@ -18,8 +18,6 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -28,11 +26,10 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.common.core.io.supplier.PartitioningInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
+import eu.esdihumboldt.hale.io.gml.reader.internal.wfs.WfsBackedGmlInstanceCollection;
 
 /**
  * Reads XML/GML from a stream
@@ -108,16 +105,20 @@ public class StreamGmlReader extends AbstractInstanceReader {
 					1000);
 
 			LocatableInputSupplier<? extends InputStream> source = getSource();
-			if (source instanceof PartitioningInputSupplier) {
-				final List<InstanceCollection> instanceCollections = new ArrayList<>();
-				for (LocatableInputSupplier<? extends InputStream> supplier : ((PartitioningInputSupplier<? extends InputStream>) source)
-						.getPartitions()) {
-					instanceCollections.add(new GmlInstanceCollection(supplier, getSourceSchema(),
-							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
-							getCrsProvider(), this));
-				}
+			if (source.getLocation() != null) {
+				String scheme = source.getLocation().getScheme();
+				String query = source.getLocation().getQuery();
 
-				instances = new MultiInstanceCollection(instanceCollections);
+				if (query != null && scheme != null
+						&& query.toLowerCase().contains("request=getfeature")
+						&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+
+					// check if WFS is reachable and responds?
+
+					instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
+							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
+							getCrsProvider(), this, featuresPerRequest);
+				}
 			}
 			else {
 				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
