@@ -105,20 +105,22 @@ public class StreamGmlReader extends AbstractInstanceReader {
 					1000);
 
 			LocatableInputSupplier<? extends InputStream> source = getSource();
+			String scheme = null;
+			String query = null;
 			if (source.getLocation() != null) {
-				String scheme = source.getLocation().getScheme();
-				String query = source.getLocation().getQuery();
+				scheme = source.getLocation().getScheme();
+				query = source.getLocation().getQuery();
+			}
 
-				if (query != null && scheme != null
-						&& query.toLowerCase().contains("request=getfeature")
-						&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+			if (query != null && scheme != null
+					&& query.toLowerCase().contains("request=getfeature")
+					&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
 
-					// check if WFS is reachable and responds?
+				// check if WFS is reachable and responds?
 
-					instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
-							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
-							getCrsProvider(), this, featuresPerRequest);
-				}
+				instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
+						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
+						this, featuresPerRequest);
 			}
 			else {
 				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
