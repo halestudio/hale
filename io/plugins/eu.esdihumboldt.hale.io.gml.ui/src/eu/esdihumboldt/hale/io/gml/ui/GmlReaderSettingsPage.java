@@ -17,12 +17,14 @@
 package eu.esdihumboldt.hale.io.gml.ui;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
@@ -35,12 +37,13 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class GmlReaderSettingsPage extends
-		AbstractConfigurationPage<StreamGmlReader, IOWizard<StreamGmlReader>> {
+public class GmlReaderSettingsPage
+		extends AbstractConfigurationPage<StreamGmlReader, IOWizard<StreamGmlReader>> {
 
 	private Button ignoreNamespaces;
 	private Button strict;
 	private Button rootAsInstance;
+	private Spinner featuresPerRequest;
 
 	/**
 	 * Default constructor
@@ -59,6 +62,8 @@ public class GmlReaderSettingsPage extends
 		provider.setParameter(StreamGmlReader.PARAM_STRICT, Value.of(strict.getSelection()));
 		provider.setParameter(StreamGmlReader.PARAM_IGNORE_ROOT,
 				Value.of(!rootAsInstance.getSelection()));
+		provider.setParameter(StreamGmlReader.PARAM_FEATURES_PER_WFS_REQUEST,
+				Value.of(featuresPerRequest.getText()));
 		return true;
 	}
 
@@ -85,15 +90,31 @@ public class GmlReaderSettingsPage extends
 
 		Group root = new Group(page, SWT.NONE);
 		root.setLayout(new GridLayout(1, false));
-		root.setText("Root element");
+		root.setText("WFS requests");
 		groupData.applyTo(root);
 
 		rootAsInstance = new Button(root, SWT.CHECK);
 		rootAsInstance.setText("Create an instance for the root element");
 		// default
 		rootAsInstance.setSelection(false);
+
 		Label descRoot = new Label(root, SWT.NONE);
-		descRoot.setText("Will only take effect if the root element type is classified as mapping relevant type.\nOnly select if you are sure you need it.");
+		descRoot.setText(
+				"Will only take effect if the root element type is classified as mapping relevant type.\nOnly select if you are sure you need it.");
+		Group featuresPerRequestGroup = new Group(page, SWT.NONE);
+		featuresPerRequestGroup.setText("WFS requests");
+		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false)
+				.applyTo(featuresPerRequestGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(featuresPerRequestGroup);
+
+		Label featuresPerRequestLabel = new Label(featuresPerRequestGroup, SWT.NONE);
+		featuresPerRequestLabel.setText("Number of features per WFS request: ");
+		featuresPerRequest = new Spinner(featuresPerRequestGroup, SWT.BORDER);
+		featuresPerRequest.setMinimum(1);
+		featuresPerRequest.setMaximum(500000);
+		featuresPerRequest.setIncrement(100);
+		featuresPerRequest.setPageIncrement(1000);
+		featuresPerRequest.setSelection(1000);
 
 		setPageComplete(true);
 	}

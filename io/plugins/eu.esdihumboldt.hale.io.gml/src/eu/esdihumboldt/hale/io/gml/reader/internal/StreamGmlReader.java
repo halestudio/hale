@@ -64,6 +64,13 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	public static final String PARAM_IGNORE_NAMESPACES = "ignoreNamespaces";
 
+	/**
+	 * The name of the parameter specifying the maximum number of features to
+	 * retrieve per single WFS GetFeature request. Only useful if source is a
+	 * WFS GetFeature request URI.
+	 */
+	public static final String PARAM_FEATURES_PER_WFS_REQUEST = "featuresPerWfsRequest";
+
 	private InstanceCollection instances;
 
 	private final boolean restrictToFeatures;
@@ -81,6 +88,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		addSupportedParameter(PARAM_IGNORE_ROOT);
 		addSupportedParameter(PARAM_STRICT);
 		addSupportedParameter(PARAM_IGNORE_NAMESPACES);
+		addSupportedParameter(PARAM_FEATURES_PER_WFS_REQUEST);
 	}
 
 	/**
@@ -96,6 +104,8 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			boolean strict = getParameter(PARAM_STRICT).as(Boolean.class, false);
 			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
 					false);
+			int featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
+					1000);
 
 			LocatableInputSupplier<? extends InputStream> source = getSource();
 			if (source instanceof PartitioningInputSupplier) {
