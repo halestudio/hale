@@ -67,6 +67,12 @@ import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
  */
 public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
+	/**
+	 * Constant for use with {@link #setMaxNumberOfFeatures(int)} indicating
+	 * unlimited feature retrieval.
+	 */
+	public static final int UNLIMITED = -1;
+
 	private final ALogger log = ALoggerFactory.getLogger(WfsBackedGmlInstanceCollection.class);
 
 	// Original source location
@@ -84,7 +90,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 	// Absolute limit for the amount of features to retrieve (default:
 	// unlimited)
-	private int maxNumberOfFeatures = -1;
+	private int maxNumberOfFeatures = UNLIMITED;
 
 	// Number of features to retrieve at most with one WFS GetFeature request
 	private final int featuresPerRequest;
@@ -374,7 +380,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				return false;
 			}
 
-			if (maxNumberOfFeatures != -1 && totalFeaturesProcessed >= maxNumberOfFeatures) {
+			if (maxNumberOfFeatures != UNLIMITED && totalFeaturesProcessed >= maxNumberOfFeatures) {
 				close();
 				return false;
 			}
