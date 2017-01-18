@@ -13,8 +13,9 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.wfs
+package eu.esdihumboldt.hale.io.gml.reader.internal.wfs
 
+import org.geotools.data.wfs.protocol.wfs.WFSException
 
 /**
  * Helper class for parsing WFS GetFeature requests
@@ -23,7 +24,7 @@ package eu.esdihumboldt.hale.io.wfs
  */
 class FeatureCollectionHelper {
 
-	static int getNumberOfFeatures(InputStream input, WFSVersion version) throws WFSException {
+	static int getNumberOfFeatures(InputStream input) throws WFSException {
 		def xml
 		try {
 			xml = new XmlSlurper().parse(input)
@@ -39,9 +40,21 @@ class FeatureCollectionHelper {
 				throw new WFSException("Not a FeatureCollection: Invalid root element ${xml.name()}")
 		}
 
-		String nof = xml.@numberOfFeatures.text();
+		String nof;
+		if (xml.@numberOfFeatures.size() == 1) {
+			// WFS 1.1.0
+			nof = xml.@numberOfFeatures.text();
+		}
+		else if (xml.@numberMatched.size() == 1) {
+			// WFS 2.0.0 / 2.0.2
+			nof = xml.@numberMatched.text();
+		}
+		else {
+			throw new WFSException("WFS did not include numberOfFeatures/numberMatched attribute in response");
+		}
+
 		if (!nof.isInteger() || nof.toInteger() < 0) {
-			throw new WFSException("Invalid value in numberOfFeatures attribute: ${xml.@numberOfFeatures.text()}")
+			throw new WFSException("Invalid value in numberOfFeatures/numberMatched attribute: ${xml.@numberOfFeatures.text()}")
 		}
 
 		return nof.toInteger();
