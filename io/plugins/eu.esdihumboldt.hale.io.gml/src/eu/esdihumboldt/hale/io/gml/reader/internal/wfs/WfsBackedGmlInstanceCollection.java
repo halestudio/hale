@@ -186,7 +186,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	public void setMaxNumberOfFeatures(int maxNumberOfFeatures) {
 		if (maxNumberOfFeatures < -1) {
 			throw new IllegalArgumentException(
-					"Invalid maximum: must be -1 (unlimited), 0 or a positive integer.");
+					"Invalid maximum: must be either -1 (unlimited) or a non-negative integer.");
 		}
 		this.maxNumberOfFeatures = maxNumberOfFeatures;
 	}
@@ -237,6 +237,8 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	@Override
 	public InstanceReference getReference(Instance instance) {
 		if (instance instanceof StreamGmlInstance) {
+			// XXX Possible improvement: return reference based on feature ID if
+			// source WFS supports a GetFeatureById query
 			return new IndexInstanceReference(instance.getDataSet(),
 					((StreamGmlInstance) instance).getIndexInStream());
 		}

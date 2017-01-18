@@ -90,7 +90,7 @@ public class GmlReaderSettingsPage
 
 		Group root = new Group(page, SWT.NONE);
 		root.setLayout(new GridLayout(1, false));
-		root.setText("WFS requests");
+		root.setText("Root element");
 		groupData.applyTo(root);
 
 		rootAsInstance = new Button(root, SWT.CHECK);
@@ -101,6 +101,7 @@ public class GmlReaderSettingsPage
 		Label descRoot = new Label(root, SWT.NONE);
 		descRoot.setText(
 				"Will only take effect if the root element type is classified as mapping relevant type.\nOnly select if you are sure you need it.");
+
 		Group featuresPerRequestGroup = new Group(page, SWT.NONE);
 		featuresPerRequestGroup.setText("WFS requests");
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false)
