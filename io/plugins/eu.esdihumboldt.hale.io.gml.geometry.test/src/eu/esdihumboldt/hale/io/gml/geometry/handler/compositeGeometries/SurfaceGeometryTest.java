@@ -40,7 +40,6 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
 import eu.esdihumboldt.util.svg.test.PaintSettings;
 import eu.esdihumboldt.util.svg.test.SVGPainter;
@@ -491,19 +490,6 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 
 		Instance geomInstance = (Instance) geom;
 		return checkGeomInstance(geomInstance, checker);
-	}
-
-	private Collection<Geometry> checkGeomInstance(Instance geomInstance,
-			Consumer<Geometry> checker) {
-		List<Geometry> geoms = new ArrayList<>();
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			Geometry geometry = instance.getGeometry();
-			geoms.add(geometry);
-			if (checker != null) {
-				checker.accept(geometry);
-			}
-		}
-		return geoms;
 	}
 
 }

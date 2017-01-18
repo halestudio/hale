@@ -16,36 +16,35 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import javax.xml.namespace.QName;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.MultiPoint;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading envelope geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
  */
 @Features("Geometries")
 @Stories("GML")
 public class EnvelopeHandlerTest extends AbstractHandlerTest {
 
+	// XXX shouldn't an envelope rather be represented by a polygon?
 	private MultiPoint reference;
-	private MultiPoint referenceOnGrid;
 
 	@Override
 	public void init() {
@@ -55,11 +54,6 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 				new Coordinate(-39799.68820381, 273207.53980172),
 				new Coordinate(-39841.185, 273182.863) };
 		reference = geomFactory.createMultiPoint(coordinates);
-
-		coordinates = new Coordinate[] { new Coordinate(-39799.7, 273207.5),
-				new Coordinate(-39841.2, 273182.8) };
-		referenceOnGrid = geomFactory.createMultiPoint(coordinates);
-
 	}
 
 	/**
@@ -71,7 +65,7 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 	public void testEnvelopeGml3() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/envelope/sample-envelope-gml3.xml").toURI(), true);
+				getClass().getResource("/data/envelope/sample-envelope-gml3.xml").toURI());
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -79,7 +73,7 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 			// 1. EnvelopeProperty defined through pos
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkEnvelopePropertyInstance(instance, true);
+			checkSingleGeometry(instance, referenceChecker(reference));
 		} finally {
 			it.close();
 		}
@@ -92,9 +86,10 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 	 */
 	@Test
 	public void testEnvelopeGml3_Grid() throws Exception {
+		ReaderConfiguration config = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/envelope/sample-envelope-gml3.xml").toURI(), false);
+				getClass().getResource("/data/envelope/sample-envelope-gml3.xml").toURI(), config);
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -102,31 +97,14 @@ public class EnvelopeHandlerTest extends AbstractHandlerTest {
 			// 1. EnvelopeProperty defined through pos
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkEnvelopePropertyInstance(instance, false);
+
+			checkSingleGeometry(instance,
+					combine(referenceChecker(reference,
+							InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+					config.geometryChecker()));
 		} finally {
 			it.close();
 		}
-	}
-
-	private void checkEnvelopePropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-		@SuppressWarnings("unchecked")
-		MultiPoint multipoint = ((GeometryProperty<MultiPoint>) geomInstance.getValue())
-				.getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				multipoint.equalsExact(keepOriginal ? reference : referenceOnGrid));
 	}
 
 }
