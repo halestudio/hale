@@ -61,6 +61,10 @@ public class PropertyTypeSelector extends AbstractSelector<TypeDefinition, Entit
 
 	@Override
 	protected TypeDefinition convertFrom(EntityDefinition object) {
+		if (object == null) {
+			return null;
+		}
+
 		DefinitionGroup defGroup = DefinitionUtil.getDefinitionGroup(object.getDefinition());
 		if (defGroup instanceof TypeDefinition) {
 			return (TypeDefinition) defGroup;

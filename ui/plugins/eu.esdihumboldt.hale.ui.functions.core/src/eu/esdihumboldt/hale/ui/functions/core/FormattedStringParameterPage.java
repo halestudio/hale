@@ -32,7 +32,7 @@ public class FormattedStringParameterPage extends TextSourceListParameterPage {
 		super("pattern");
 
 		setTitle("Function parameters");
-		setDescription("Enter a pattern");
+		setDescription("Enter a pattern. Press Ctrl+Space for content assistance.");
 
 		setPageComplete(false);
 	}

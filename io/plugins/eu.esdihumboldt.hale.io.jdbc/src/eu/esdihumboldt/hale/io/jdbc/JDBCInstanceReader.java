@@ -118,7 +118,7 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 				// check constraint is a Database table or not?
 				if (type.getConstraint(DatabaseTable.class).isTable()) {
 					collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
-							user, password) {
+							user, password, getCrsProvider()) {
 
 						// To provide extensibility for getting customized
 						// database connection for

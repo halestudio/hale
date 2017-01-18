@@ -24,6 +24,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.common.editors,
  eu.esdihumboldt.hale.ui.scripting,
+ eu.esdihumboldt.hale.ui.service.project,
  eu.esdihumboldt.util.validator,
  org.springframework.core.convert
 Require-Bundle: org.eclipse.ui,
