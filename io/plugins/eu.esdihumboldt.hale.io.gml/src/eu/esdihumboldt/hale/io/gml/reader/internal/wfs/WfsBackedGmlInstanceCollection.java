@@ -399,8 +399,8 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				throw new NoSuchElementException();
 			}
 
-			totalFeaturesProcessed++;
-			return iterator.next();
+			Instance instance = iterator.next();
+			return new StreamGmlInstance(instance, totalFeaturesProcessed++);
 		}
 
 		/**
