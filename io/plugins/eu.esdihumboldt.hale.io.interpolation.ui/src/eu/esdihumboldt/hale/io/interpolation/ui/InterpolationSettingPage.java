@@ -2,6 +2,12 @@ package eu.esdihumboldt.hale.io.interpolation.ui;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -12,8 +18,12 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.util.geometry.interpolation.extension.InterpolationAlgorithmFactory;
+import eu.esdihumboldt.util.geometry.interpolation.extension.InterpolationExtension;
+import eu.esdihumboldt.util.geometry.interpolation.grid.GridInterpolation;
 
 /**
  * Configuration page for specifying maximum position error for interpolation
@@ -26,6 +36,7 @@ public class InterpolationSettingPage
 
 	private Text error;
 	private Button moveToGrid;
+	private ComboViewer algorithms;
 
 	/**
 	 * Default constructor
@@ -55,8 +66,25 @@ public class InterpolationSettingPage
 			return false;
 		}
 		setErrorMessage("");
-		provider.setParameter(INTERPOL_MAX_POSITION_ERROR, Value.of(error.getText()));
-		provider.setParameter(INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID,
+
+		// set interpolation algorithm
+		Value alg = null;
+		ISelection sel = algorithms.getSelection();
+		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) sel).getFirstElement();
+			if (selected instanceof InterpolationAlgorithmFactory) {
+				String id = ((InterpolationAlgorithmFactory) selected).getIdentifier();
+				alg = Value.of(id);
+			}
+		}
+		provider.setParameter(InterpolationHelper.PARAMETER_INTERPOLATION_ALGORITHM, alg);
+
+		// set maximum positional error
+		provider.setParameter(InterpolationHelper.PARAMETER_MAX_POSITION_ERROR,
+				Value.of(error.getText()));
+
+		// set move to grid flag
+		provider.setParameter(GridInterpolation.PARAMETER_MOVE_ALL_TO_GRID,
 				Value.of(moveToGrid.getSelection()));
 		return true;
 	}
@@ -68,9 +96,33 @@ public class InterpolationSettingPage
 
 		Group groupError = new Group(page, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(3).applyTo(groupError);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(groupError);
-		groupError.setText("Interpolated geometries");
+//		GridDataFactory.fillDefaults().grab(true, false).applyTo(groupError);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).applyTo(groupError);
+		groupError.setText("Interpolated geometries");
+
+		// Interpolation algorithm
+		Label labelAlg = new Label(groupError, SWT.NONE);
+		labelAlg.setText("Interpolation algorithm: ");
+		labelAlg.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
+
+		algorithms = new ComboViewer(groupError, SWT.READ_ONLY);
+		algorithms.setContentProvider(ArrayContentProvider.getInstance());
+		algorithms.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof InterpolationAlgorithmFactory) {
+					return ((InterpolationAlgorithmFactory) element).getDisplayName();
+				}
+				return super.getText(element);
+			}
+
+		});
+		algorithms.getControl().setLayoutData(GridDataFactory.swtDefaults()
+				.align(SWT.FILL, SWT.CENTER).grab(true, false).span(2, 1).create());
+		algorithms.setInput(InterpolationExtension.getInstance().getFactories());
+		algorithms.setSelection(new StructuredSelection(InterpolationExtension.getInstance()
+				.getFactory(InterpolationHelper.DEFAULT_ALGORITHM)));
 
 		// label error
 		Label labelError = new Label(groupError, SWT.NONE);
@@ -97,14 +149,14 @@ public class InterpolationSettingPage
 		GridDataFactory.fillDefaults().span(3, 1).applyTo(group);
 
 		moveToGrid = new Button(group, SWT.CHECK);
-		moveToGrid.setText("Move all geometries to interpolation grid");
+		moveToGrid.setText("Move all geometries to interpolation grid (if applicable)");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(moveToGrid);
 		// default
-		moveToGrid.setSelection(DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID);
+		moveToGrid.setSelection(false);
 
 		Label desc = new Label(group, SWT.NONE);
 		desc.setText(
-				"Moves all geometries coordinates to the interpolation grid to ensure topological consistency with interpolated geometries.");
+				"Moves all geometries coordinates to the interpolation grid to allow for topological consistency with interpolated geometries.");
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(desc);
 
 		// filler
@@ -148,13 +200,35 @@ public class InterpolationSettingPage
 	 * @param provider the I/O provider to get
 	 */
 	private void loadPreValue(IOProvider provider) {
-		Double value = provider.getParameter(INTERPOL_MAX_POSITION_ERROR).as(Double.class);
-		if (value != null)
-			error.setText(Double.toString(value.doubleValue()));
-		else
-			error.setText(Double.toString(DEFAULT_INTERPOL_MAX_POSITION_ERROR));
+		// load interpolation algorithm
+		String id = provider.getParameter(InterpolationHelper.PARAMETER_INTERPOLATION_ALGORITHM)
+				.as(String.class, InterpolationHelper.DEFAULT_ALGORITHM);
+		InterpolationAlgorithmFactory fact = InterpolationExtension.getInstance().getFactory(id);
+		if (fact == null) {
+			fact = InterpolationExtension.getInstance()
+					.getFactory(InterpolationHelper.DEFAULT_ALGORITHM);
+		}
+		ISelection selection;
+		if (fact == null) {
+			selection = new StructuredSelection();
+		}
+		else {
+			selection = new StructuredSelection(fact);
+		}
+		algorithms.setSelection(selection);
 
-		moveToGrid.setSelection(provider.getParameter(INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID)
-				.as(Boolean.class, DEFAULT_INTERPOL_GEOMETRY_MOVE_ALL_TO_GRID));
+		// load maximum positional error
+		Double value = provider.getParameter(InterpolationHelper.PARAMETER_MAX_POSITION_ERROR)
+				.as(Double.class);
+		if (value != null) {
+			error.setText(Double.toString(value.doubleValue()));
+		}
+		else {
+			error.setText(Double.toString(InterpolationHelper.DEFAULT_MAX_POSITION_ERROR));
+		}
+
+		// load move to grid flag
+		moveToGrid.setSelection(provider.getParameter(GridInterpolation.PARAMETER_MOVE_ALL_TO_GRID)
+				.as(Boolean.class, false));
 	}
 }
