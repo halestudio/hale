@@ -14,6 +14,11 @@
             id="segment"
             name="Segment Interpolation">
       </interpolation>
+      <interpolation
+            class="eu.esdihumboldt.util.geometry.interpolation.NoInterpolation"
+            id="none"
+            name="No Interpolation">
+      </interpolation>
    </extension>
 
 </plugin>
