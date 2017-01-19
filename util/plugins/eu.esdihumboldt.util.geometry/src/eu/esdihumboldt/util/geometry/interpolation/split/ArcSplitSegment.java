@@ -21,8 +21,8 @@ import eu.esdihumboldt.util.geometry.interpolation.ArcSegment;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
-import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
+import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 
 /**
  * Segment of an arc for split interpolation.
@@ -74,7 +74,8 @@ public class ArcSplitSegment implements ArcSegment {
 		Arc part = new ArcByCenterPointImpl(byCenter.getCenterPoint(), byCenter.getRadius(),
 				middleAngle, byCenter.getEndAngle(), byCenter.isClockwise());
 
-		return new ArcSplitSegment(part, maxPositionalError);
+		return new FixedStartEndSplitSegment(part, maxPositionalError, getMiddlePoint(),
+				getEndPoint());
 	}
 
 	@Override
@@ -85,7 +86,8 @@ public class ArcSplitSegment implements ArcSegment {
 		Arc part = new ArcByCenterPointImpl(byCenter.getCenterPoint(), byCenter.getRadius(),
 				byCenter.getStartAngle(), middleAngle, byCenter.isClockwise());
 
-		return new ArcSplitSegment(part, maxPositionalError);
+		return new FixedStartEndSplitSegment(part, maxPositionalError, getStartPoint(),
+				getMiddlePoint());
 	}
 
 	@Override

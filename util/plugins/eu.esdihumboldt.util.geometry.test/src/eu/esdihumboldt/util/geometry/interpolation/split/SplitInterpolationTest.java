@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.split;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -36,6 +37,7 @@ import eu.esdihumboldt.util.geometry.interpolation.grid.GridInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcByPoints;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByPointsImpl;
@@ -172,6 +174,13 @@ public class SplitInterpolationTest extends AbstractArcTest {
 
 		// test interpolated geometry
 		Coordinate[] coords = result.getCoordinates();
+
+		if (coords.length > 1 && arc instanceof ArcByPoints) {
+			// test start and end point
+			assertEquals(arc.toArcByPoints().getStartPoint(), coords[0]);
+			assertEquals(arc.toArcByPoints().getEndPoint(), coords[coords.length - 1]);
+		}
+
 		for (int i = 0; i < coords.length; i++) {
 			Coordinate c = coords[i];
 
