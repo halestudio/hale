@@ -27,7 +27,6 @@ import java.util.NoSuchElementException;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
-import org.geotools.data.wfs.protocol.wfs.WFSException;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;

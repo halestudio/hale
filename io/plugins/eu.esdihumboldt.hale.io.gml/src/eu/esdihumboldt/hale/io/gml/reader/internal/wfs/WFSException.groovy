@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.wfs
+package eu.esdihumboldt.hale.io.gml.reader.internal.wfs
 
 import groovy.transform.InheritConstructors
 

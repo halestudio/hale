@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.wfs
 
-import org.geotools.data.wfs.protocol.wfs.WFSException
-
 /**
  * Helper class for parsing WFS GetFeature requests
  * 
