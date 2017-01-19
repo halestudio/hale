@@ -52,15 +52,18 @@ import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
  * Instance collection based on a GML input stream from WFS requests.<br>
  * <br>
  * The {@link InstanceIterator} created by {@link #iterator()} will
- * transparently issue multiple requests to the WFS. The number of features to
- * retrieve per request must be provided when creating the instance collection.
+ * transparently issue multiple requests to the WFS. When all features that
+ * match the request have been retrieved from the WFS (possibly via multiple
+ * requests), the iterator will be closed and subsequent calls to hasNext() will
+ * return false.<br>
  * <br>
- * <br>
- * A starting offset can be provided by adding a <code>STARTINDEX</code>
- * parameter to the source location. Likewise, the maximum overall number of
- * features to retrive can be set by adding a <code>MAXFEATURES</code>/
- * <code>COUNT</code> parameter (depending on the WFS version) to the source
- * location or programmatically via {@link #setMaxNumberOfFeatures(int)}.
+ * The number of features to retrieve per request must be provided when creating
+ * the instance collection. A starting offset can be provided by adding a
+ * <code>STARTINDEX</code> parameter to the source location. Likewise, the
+ * maximum overall number of features to retrive can be set by adding a
+ * <code>MAXFEATURES</code>/<code>COUNT</code> parameter (depending on the WFS
+ * version) to the source location or programmatically via
+ * {@link #setMaxNumberOfFeatures(int)}.
  * 
  * @author Florian Esser
  */
@@ -386,7 +389,9 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 			if (!iterator.hasNext()) {
 				// If all features from the current request have been read, try
-				// to retrieve a new batch from the WFS and continue.
+				// to retrieve a new batch from the WFS and continue. If the new
+				// request does not yield new results this iterator will be
+				// closed.
 				proceedOrClose();
 			}
 
