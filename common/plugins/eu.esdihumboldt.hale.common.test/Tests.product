@@ -21,6 +21,7 @@
 
    <windowImages/>
 
+
    <launcher name="hale_tests">
       <solaris/>
       <win useIco="false">
@@ -177,6 +178,7 @@
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.validation"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
