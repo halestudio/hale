@@ -16,23 +16,24 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 
@@ -46,7 +47,9 @@ import ru.yandex.qatools.allure.annotations.Stories;
 public class RectangleGeometryTest extends AbstractHandlerTest {
 
 	private Polygon referencePolygon;
-	private Polygon referencePolygonOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
 	@Override
 	public void init() {
@@ -59,13 +62,11 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 		LinearRing linearRing = geomFactory.createLinearRing(coordinates);
 		referencePolygon = geomFactory.createPolygon(linearRing, null);
 
-		// grid
-		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
-				new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2), new Coordinate(0, 3.2) };
+		checker = combine(noCoordinatePairs(), referenceChecker(referencePolygon));
 
-		linearRing = geomFactory.createLinearRing(coordinates);
-		referencePolygonOnGrid = geomFactory.createPolygon(linearRing, null);
-
+		gridChecker = combine(noCoordinatePairs(),
+				referenceChecker(referencePolygon, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -85,12 +86,12 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRectanglePropertyPolygon(instance, true);
+			checkSingleGeometry(instance, checker);
 
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			instance = it.next();
-			checkRectanglePropertyPolygon(instance, true);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -106,7 +107,7 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 	public void testRectangleGml32_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/sample-rectangle-gml32.xml").toURI(), false);
+				getClass().getResource("/data/sample-rectangle-gml32.xml").toURI(), gridConfig);
 
 		// two instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -114,31 +115,15 @@ public class RectangleGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRectanglePropertyPolygon(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			instance = it.next();
-			checkRectanglePropertyPolygon(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
-	}
-
-	private void checkRectanglePropertyPolygon(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-		@SuppressWarnings("unchecked")
-		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue()).getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				polygon.equalsExact(keepOriginal ? referencePolygon : referencePolygonOnGrid));
 	}
 
 }

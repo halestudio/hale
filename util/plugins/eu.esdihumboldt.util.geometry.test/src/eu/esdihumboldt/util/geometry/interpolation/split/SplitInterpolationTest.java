@@ -36,9 +36,9 @@ import eu.esdihumboldt.util.geometry.interpolation.grid.GridInterpolation;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
+import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByCenterPointImpl;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcByPointsImpl;
-import eu.esdihumboldt.util.geometry.interpolation.model.ArcString;
 import eu.esdihumboldt.util.geometry.interpolation.model.impl.ArcStringImpl;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
@@ -183,8 +183,9 @@ public class SplitInterpolationTest extends AbstractArcTest {
 			}
 
 			// check distance from center
-			assertTrue(arc.toArcByCenterPoint().getCenterPoint().distance(c)
-					- arc.toArcByCenterPoint().getRadius() <= maxPositionalError);
+			double distance = arc.toArcByCenterPoint().getCenterPoint().distance(c);
+			double delta = Math.abs(distance - arc.toArcByCenterPoint().getRadius());
+			assertTrue(delta <= maxPositionalError);
 		}
 
 		return result;

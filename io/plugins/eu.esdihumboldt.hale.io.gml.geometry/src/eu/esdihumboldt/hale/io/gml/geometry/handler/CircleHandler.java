@@ -97,9 +97,6 @@ public class CircleHandler extends LineStringHandler {
 				interpolatedCircle);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler#initConstraints()
-	 */
 	@Override
 	protected Collection<? extends TypeConstraint> initConstraints() {
 		Collection<TypeConstraint> constraints = new ArrayList<TypeConstraint>(2);
@@ -112,11 +109,8 @@ public class CircleHandler extends LineStringHandler {
 		return constraints;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#isInterpolated()
-	 */
 	@Override
 	protected boolean isInterpolated() {
-		return false;
+		return true;
 	}
 }

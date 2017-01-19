@@ -176,6 +176,16 @@ public class GridInterpolationTest extends AbstractArcTest {
 		gridInterpolationTest(new ArcStringImpl(arcs), 0.1, false);
 	}
 
+	@Test
+	public void testByPointsToCenterAllGrid() throws IOException {
+		ArcByCenterPoint cbp = new ArcByPointsImpl(new Coordinate(0.01, 3.2),
+				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2)).toArcByCenterPoint();
+		Arc arc = new ArcByCenterPointImpl(cbp.getCenterPoint(), cbp.getRadius(),
+				Angle.fromDegrees(0), Angle.fromDegrees(0), false);
+
+		gridInterpolationTest(arc, 0.1, true);
+	}
+
 	// utility methods
 
 	private LineString gridInterpolationTest(ArcString arcs, double maxPositionalError,
@@ -266,6 +276,11 @@ public class GridInterpolationTest extends AbstractArcTest {
 					assertTrue("Subsequent coordinates are equal", xDifferent || yDifferent);
 				}
 			}
+
+			// check distance from center
+			double distance = arc.toArcByCenterPoint().getCenterPoint().distance(c);
+			double delta = Math.abs(distance - arc.toArcByCenterPoint().getRadius());
+			assertTrue(delta <= maxPositionalError);
 		}
 
 		return result;

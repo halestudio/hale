@@ -16,11 +16,9 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -28,29 +26,32 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
 import ru.yandex.qatools.allure.annotations.Features;
 import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading orientable curve geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
 @Features("Geometries")
 @Stories("GML")
 public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 
 	private LineString reference;
-	private LineString referenceOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
-	 */
 	@Override
 	public void init() {
 		super.init();
@@ -59,10 +60,11 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		reference = geomFactory.createLineString(coordinates);
 
-		// for grid test
-		coordinates = new Coordinate[] { new Coordinate(0.0, 3.2), new Coordinate(3.3, 3.3),
-				new Coordinate(0.0, -3.2) };
-		referenceOnGrid = geomFactory.createLineString(coordinates);
+		checker = referenceChecker(reference);
+
+		gridChecker = combine(
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkOrientableCurvePropertyInstance(instance, true);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -99,7 +101,7 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/curve/sample-orientablecurve-gml32.xml").toURI(),
-				false);
+				gridConfig);
 
 		// twelve instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -107,29 +109,9 @@ public class OrientableCurveGeometryTest extends AbstractHandlerTest {
 			// 1. segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkOrientableCurvePropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
-		}
-	}
-
-	private void checkOrientableCurvePropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			Geometry geom = instance.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					geom.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 

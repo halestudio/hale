@@ -114,11 +114,8 @@ public class ArcStringHandler extends LineStringHandler {
 		return constraints;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.LineStringHandler#isInterpolated()
-	 */
 	@Override
 	protected boolean isInterpolated() {
-		return false;
+		return true;
 	}
 }
