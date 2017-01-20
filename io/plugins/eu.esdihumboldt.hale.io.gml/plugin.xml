@@ -182,6 +182,9 @@
                label="Features per WFS request"
                name="featuresPerWfsRequest"
                optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
          </providerParameter>
       </provider>
       <provider
@@ -276,6 +279,9 @@
                label="Features per WFS request"
                name="featuresPerWfsRequest"
                optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
          </providerParameter>
       </provider>
       <provider
