@@ -131,7 +131,7 @@
       <complexType>
          <sequence>
             <element ref="prefix" minOccurs="1" maxOccurs="unbounded"/>
-            <element ref="schema-selection"/>
+            <element ref="schema-selection" minOccurs="0" maxOccurs="1"/>
          </sequence>
          <attribute name="uriBuilder" type="string" use="required">
             <annotation>
@@ -185,8 +185,8 @@
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.io.jdbc.extension.ConnectionHelper"/>
                </appinfo>
-	    </annotation>
-	 </attribute>
+            </annotation>
+         </attribute>
          <attribute name="isFileBased" type="boolean" use="default" value="false">
             <annotation>
                <documentation>
