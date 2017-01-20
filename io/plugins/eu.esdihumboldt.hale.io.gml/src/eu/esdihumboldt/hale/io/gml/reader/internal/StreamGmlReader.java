@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.io.gml.reader.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -24,9 +25,11 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.io.gml.reader.internal.wfs.WfsBackedGmlInstanceCollection;
 
 /**
  * Reads XML/GML from a stream
@@ -58,6 +61,13 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	public static final String PARAM_IGNORE_NAMESPACES = "ignoreNamespaces";
 
+	/**
+	 * The name of the parameter specifying the maximum number of features to
+	 * retrieve per single WFS GetFeature request. Only useful if source is a
+	 * WFS GetFeature request URI.
+	 */
+	public static final String PARAM_FEATURES_PER_WFS_REQUEST = "featuresPerWfsRequest";
+
 	private InstanceCollection instances;
 
 	private final boolean restrictToFeatures;
@@ -75,6 +85,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		addSupportedParameter(PARAM_IGNORE_ROOT);
 		addSupportedParameter(PARAM_STRICT);
 		addSupportedParameter(PARAM_IGNORE_NAMESPACES);
+		addSupportedParameter(PARAM_FEATURES_PER_WFS_REQUEST);
 	}
 
 	/**
@@ -90,10 +101,33 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			boolean strict = getParameter(PARAM_STRICT).as(Boolean.class, false);
 			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
 					false);
+			int featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
+					1000);
 
-			instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
-					restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
-					this);
+			LocatableInputSupplier<? extends InputStream> source = getSource();
+			String scheme = null;
+			String query = null;
+			if (source.getLocation() != null) {
+				scheme = source.getLocation().getScheme();
+				query = source.getLocation().getQuery();
+			}
+
+			if (query != null && scheme != null
+					&& query.toLowerCase().contains("request=getfeature")
+					&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+
+				// check if WFS is reachable and responds?
+
+				instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
+						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
+						this, featuresPerRequest);
+			}
+			else {
+				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
+						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
+						this);
+			}
+
 			// TODO any kind of analysis on file? e.g. types and size - would
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);

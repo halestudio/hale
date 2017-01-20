@@ -21,6 +21,7 @@
 
    <windowImages/>
 
+
    <launcher name="hale_tests">
       <solaris/>
       <win useIco="false">
