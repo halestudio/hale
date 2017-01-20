@@ -20,6 +20,8 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -34,6 +36,8 @@ import groovy.sql.Sql
  * 
  * @author Simon Templer
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 class OneDimensionalArraysIT extends AbstractDBTest {
 
 	public static final String query = '''

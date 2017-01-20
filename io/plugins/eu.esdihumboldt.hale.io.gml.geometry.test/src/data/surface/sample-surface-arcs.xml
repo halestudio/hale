@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gml:FeatureCollection gml:id="fcollection" xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test ../gml/geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+	<gml:featureMember>
+		<hale:SurfaceProperty gml:id="surface1">
+			<hale:geometry gml:id="geometry1">
+				<gml:patches>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:Ring>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3G">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353002.863 5531445.357 353037.564 5531434.873</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3H">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353037.564 5531434.873 353039.027 5531434.548 353040.523 5531434.446</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3I">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353040.523 5531434.446 353042.017 5531434.569 353043.475 5531434.913</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3J">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353043.475 5531434.913 353044.867 5531435.472 353046.158 5531436.232</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3K">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353046.158 5531436.232 353047.321 5531437.176 353048.332 5531438.284</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3L">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353048.332 5531438.284 353014.502 5531464.423</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3M">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353014.502 5531464.423 352999.346 5531451.949 353002.863 5531445.357</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+							</gml:Ring>
+						</gml:exterior>
+					</gml:PolygonPatch>
+				</gml:patches>
+			</hale:geometry>
+		</hale:SurfaceProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:SurfaceProperty gml:id="surface2">
+			<hale:geometry gml:id="geometry2">
+				<gml:patches>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:Ring>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGU">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353037.564 5531434.873 353062.031 5531427.482</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGV">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353062.031 5531427.482 353060.955 5531427.881 353059.931 5531428.399</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGW">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353059.931 5531428.399 353058.972 5531429.033 353058.094 5531429.771</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGX">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353058.094 5531429.771 353057.013 5531430.970 353056.140 5531432.327</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGY">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353056.140 5531432.327 353055.496 5531433.807 353055.098 5531435.371</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OGZ">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353055.098 5531435.371 353054.968 5531436.590 353054.987 5531437.816</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH0">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353054.987 5531437.816 353055.157 5531439.029 353055.473 5531440.213</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH1">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353055.473 5531440.213 353055.932 5531441.349 353056.527 5531442.421</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH2">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353056.527 5531442.421 353057.249 5531443.413 353058.086 5531444.308</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH3">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353058.086 5531444.308 353084.132 5531465.755</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH4">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353084.132 5531465.755 353092.237 5531472.429</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH5">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353092.237 5531472.429 353088.742 5531476.673</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH6">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353088.742 5531476.673 353094.144 5531481.122</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH7">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353094.144 5531481.122 353107.651 5531492.244</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH8">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353107.651 5531492.244 353121.158 5531503.367</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OH9">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353121.158 5531503.367 353129.647 5531510.357</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHA">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353129.647 5531510.357 353133.143 5531506.112</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHB">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353133.143 5531506.112 353136.220 5531508.645</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHC">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353136.220 5531508.645 353137.573 5531509.546 353139.079 5531510.154</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHD">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353139.079 5531510.154 353140.678 5531510.445 353142.302 5531510.407</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHE">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353142.302 5531510.407 353143.886 5531510.041 353145.362 5531509.363</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHF">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353145.362 5531509.363 353146.672 5531508.401 353147.759 5531507.194</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHG">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353147.759 5531507.194 353150.422 5531503.680 353153.202 5531500.259</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHH">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353153.202 5531500.259 353156.097 5531496.933 353159.102 5531493.707</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHI">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353159.102 5531493.707 353163.250 5531497.688</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHJ">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353163.250 5531497.688 353159.921 5531501.280 353156.737 5531505.000</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHK">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353156.737 5531505.000 353153.701 5531508.842 353150.817 5531512.800</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHL">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353150.817 5531512.800 353150.209 5531513.825 353149.760 5531514.930</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHM">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353149.760 5531514.930 353149.480 5531516.089 353149.376 5531517.275</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHN">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353149.376 5531517.275 353149.448 5531518.465 353149.697 5531519.631</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHO">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353149.697 5531519.631 353150.117 5531520.747 353150.698 5531521.787</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHP">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353150.698 5531521.787 353151.302 5531522.758 353151.851 5531523.760</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHQ">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353151.851 5531523.760 353152.346 5531524.791 353152.783 5531525.846</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHR">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353152.783 5531525.846 353153.679 5531528.824 353154.126 5531531.902</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHS">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353154.126 5531531.902 353154.113 5531535.013 353153.642 5531538.086</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHT">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353153.642 5531538.086 353153.405 5531539.339 353153.138 5531540.585</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHU">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353153.138 5531540.585 353152.839 5531541.824 353152.512 5531543.056</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHV">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353152.512 5531543.056 353152.438 5531543.628 353152.531 5531544.198</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHW">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353152.531 5531544.198 353152.783 5531544.716 353153.173 5531545.141</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHX">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353153.173 5531545.141 353153.667 5531545.438 353154.226 5531545.582</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHY">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353154.226 5531545.582 353154.802 5531545.559 353155.349 5531545.373</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OHZ">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353155.349 5531545.373 353140.229 5531557.058</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI0">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353140.229 5531557.058 353141.804 5531554.822 353143.243 5531552.495</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI1">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353143.243 5531552.495 353144.539 5531550.085 353145.688 5531547.602</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI2">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353145.688 5531547.602 353146.685 5531545.054 353147.527 5531542.451</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI3">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353147.527 5531542.451 353148.212 5531539.802 353148.735 5531537.116</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI4">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353148.735 5531537.116 353149.070 5531535.242 353149.181 5531533.341</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI5">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353149.181 5531533.341 353149.065 5531531.441 353148.725 5531529.567</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI6">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353148.725 5531529.567 353148.164 5531527.748 353147.389 5531526.007</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI7">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353147.389 5531526.007 353146.415 5531524.371 353145.253 5531522.863</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI8">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353145.253 5531522.863 353141.430 5531527.506</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OI9">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353141.430 5531527.506 353132.168 5531519.880</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIA">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353132.168 5531519.880 353116.732 5531507.168</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIB">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353116.732 5531507.168 353103.225 5531496.047</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIC">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353103.225 5531496.047 353089.718 5531484.925</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OID">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353089.718 5531484.925 353076.211 5531473.803</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIE">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353076.211 5531473.803 353069.650 5531468.401</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIF">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353069.650 5531468.401 353073.146 5531464.155</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIG">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353073.146 5531464.155 353062.726 5531455.576</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIH">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353062.726 5531455.576 353054.431 5531448.745</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OII">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353054.431 5531448.745 353053.298 5531447.571 353052.292 5531446.285</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIJ">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353052.292 5531446.285 353051.425 5531444.902 353050.705 5531443.437</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIK">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353050.705 5531443.437 353050.348 5531442.540 353050.047 5531441.622</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIL">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353050.047 5531441.622 353049.738 5531440.731 353049.348 5531439.872</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIM">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353049.348 5531439.872 353048.877 5531439.054 353048.332 5531438.284</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIN">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353048.332 5531438.284 353047.321 5531437.176 353046.158 5531436.232</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIO">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353046.158 5531436.232 353044.867 5531435.472 353043.475 5531434.913</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIP">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353043.475 5531434.913 353042.017 5531434.569 353040.523 5531434.446</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="OIQ">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353040.523 5531434.446 353039.027 5531434.548 353037.564 5531434.873</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+							</gml:Ring>
+						</gml:exterior>
+					</gml:PolygonPatch>
+				</gml:patches>
+			</hale:geometry>
+		</hale:SurfaceProperty>
+	</gml:featureMember>
+	<gml:featureMember>
+		<hale:SurfaceProperty gml:id="surface3">
+			<hale:geometry gml:id="geometry3">
+				<gml:patches>
+					<gml:PolygonPatch>
+						<gml:exterior>
+							<gml:Ring>
+								<gml:curveMember>
+									<gml:Curve gml:id="P32">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353055.098 5531435.371 353055.496 5531433.807 353056.140 5531432.327</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P33">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353056.140 5531432.327 353057.013 5531430.970 353058.094 5531429.771</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P34">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353058.094 5531429.771 353058.660 5531429.481 353059.297 5531429.507</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P35">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353059.297 5531429.507 353059.837 5531429.844 353060.142 5531430.403</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P36">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353060.142 5531430.403 353060.937 5531433.034 353094.493 5531423.092</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P37">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353094.493 5531423.092 353100.694 5531443.616</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P38">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353100.694 5531443.616 353090.352 5531434.747</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P39">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353090.352 5531434.747 353058.086 5531444.308</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3A">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353058.086 5531444.308 353057.249 5531443.413 353056.527 5531442.421</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3B">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353056.527 5531442.421 353055.932 5531441.349 353055.473 5531440.213</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3C">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353055.473 5531440.213 353055.157 5531439.029 353054.987 5531437.816</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3D">
+										<gml:segments>
+											<gml:Arc>
+												<gml:posList>353054.987 5531437.816 353054.968 5531436.590 353055.098 5531435.371</gml:posList>
+											</gml:Arc>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+							</gml:Ring>
+						</gml:exterior>
+						<gml:interior>
+							<gml:Ring>
+								<gml:curveMember>
+									<gml:Curve gml:id="P3E">
+										<gml:segments>
+											<gml:LineStringSegment>
+												<gml:posList>353055.098 5531435.371 353059.729 5531439.185 353061.635 5531436.869 353057.004 5531433.056 353055.098 5531435.371</gml:posList>
+											</gml:LineStringSegment>
+										</gml:segments>
+									</gml:Curve>
+								</gml:curveMember>
+							</gml:Ring>
+						</gml:interior>
+					</gml:PolygonPatch>
+				</gml:patches>
+			</hale:geometry>
+		</hale:SurfaceProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>

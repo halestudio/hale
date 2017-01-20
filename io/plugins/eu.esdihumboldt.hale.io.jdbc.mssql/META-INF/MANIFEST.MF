@@ -9,7 +9,7 @@ Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="3.1.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.1.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="3.1.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="3.1.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.io;version="17.0.0",
  com.microsoft.sqlserver.jdbc;version="4.2.0",

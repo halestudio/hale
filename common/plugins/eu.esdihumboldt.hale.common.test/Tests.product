@@ -207,6 +207,8 @@
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.cli"/>
+      <plugin id="eu.esdihumboldt.util.geometry"/>
+      <plugin id="eu.esdihumboldt.util.geometry.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
@@ -222,6 +224,7 @@
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
+      <plugin id="eu.esdihumboldt.util.svg.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>

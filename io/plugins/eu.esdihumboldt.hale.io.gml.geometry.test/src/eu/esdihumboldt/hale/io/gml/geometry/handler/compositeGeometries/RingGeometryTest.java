@@ -16,33 +16,42 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.LinearRing;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading ring geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class RingGeometryTest extends AbstractHandlerTest {
 
 	private LinearRing reference;
-	private LinearRing referenceOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
 	@Override
 	public void init() {
@@ -59,8 +68,11 @@ public class RingGeometryTest extends AbstractHandlerTest {
 				new Coordinate(0, -3.2), new Coordinate(0, 3.2) };
 		linestring = geomFactory.createLineString(coordinates);
 
-		referenceOnGrid = geomFactory.createLinearRing(linestring.getCoordinates());
+		checker = combine(noCoordinatePairs(), referenceChecker(reference));
 
+		gridChecker = combine(noCoordinatePairs(),
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -80,7 +92,7 @@ public class RingGeometryTest extends AbstractHandlerTest {
 			// Ring with segments defined through LineStringSegment
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRingPropertyInstance(instance, true);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -96,7 +108,7 @@ public class RingGeometryTest extends AbstractHandlerTest {
 	public void testRingGml31_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/sample-ring-gml31.xml").toURI(), false);
+				getClass().getResource("/data/sample-ring-gml31.xml").toURI(), gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -104,31 +116,10 @@ public class RingGeometryTest extends AbstractHandlerTest {
 			// Ring with segments defined through LineStringSegment
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkRingPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
-	}
-
-	private void checkRingPropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-		@SuppressWarnings("unchecked")
-		LinearRing linearring = ((GeometryProperty<LinearRing>) geomInstance.getValue())
-				.getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				linearring.equalsExact(keepOriginal ? reference : referenceOnGrid));
 	}
 
 }

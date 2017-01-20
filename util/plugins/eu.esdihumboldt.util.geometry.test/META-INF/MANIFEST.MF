@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geometry utilities tests
+Bundle-SymbolicName: eu.esdihumboldt.util.geometry.test
+Bundle-Version: 3.2.0.qualifier
+Fragment-Host: eu.esdihumboldt.util.geometry;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.cache;version="17.0.0",
+ eu.esdihumboldt.util.svg.test,
+ org.geotools.referencing;version="12.2.0.combined",
+ org.junit;version="4.12.0",
+ org.junit.runner;version="4.12.0",
+ org.junit.runners;version="4.12.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0"
