@@ -60,6 +60,7 @@ public class ValidationJob extends AbstractTransformationJob {
 	 * @param validators the validators
 	 * @param reportHandler the report handler
 	 * @param writer the instance writer
+	 * @param serviceProvider the service provider
 	 */
 	public ValidationJob(Collection<InstanceValidator> validators, ReportHandler reportHandler,
 			@Nullable InstanceWriter writer, ServiceProvider serviceProvider) {

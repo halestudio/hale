@@ -123,6 +123,7 @@ public class PropertyFunctionScriptPage extends GroovyScriptPage<CustomPropertyF
 		if (getWizard().getUnfinishedFunction() == null)
 			return false;
 
+		@SuppressWarnings("unused")
 		List<DefaultCustomPropertyFunctionEntity> sources = getWizard().getUnfinishedFunction()
 				.getSources();
 

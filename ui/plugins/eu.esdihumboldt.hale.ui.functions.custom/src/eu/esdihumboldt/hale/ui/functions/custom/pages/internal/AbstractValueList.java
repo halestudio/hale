@@ -125,6 +125,7 @@ public abstract class AbstractValueList<T, C extends Editor<T>> extends Observab
 				// TODO check event type?
 
 				int changedIndex = editors.indexOf(event.getSource());
+				@SuppressWarnings("unused")
 				C changedEditor = editors.get(changedIndex);
 
 //				// add/remove selector
