@@ -62,6 +62,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	/**
 	 * @see WorkbenchWindowAdvisor#preWindowOpen()
 	 */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
@@ -85,12 +86,12 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowFastViewBars(true);
 
 		// show curved view tabs
-		PlatformUI.getPreferenceStore().setValue(
-				IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
+		PlatformUI.getPreferenceStore()
+				.setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
 
 		// enable heap status item
-		PrefUtil.getAPIPreferenceStore().setValue(
-				IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR, true);
+		PrefUtil.getAPIPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_MEMORY_MONITOR,
+				true);
 
 //      IWorkbenchWindow window = getWindowConfigurer().getWindow();
 //      if (window instanceof WorkbenchWindow) {
@@ -107,8 +108,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		SelectionTracker tracker = SelectionTrackerUtil.getTracker();
 		if (tracker == null) {
 			// create tracker listening on window selection service
-			tracker = new SelectionTrackerImpl(getWindowConfigurer().getWindow()
-					.getSelectionService());
+			tracker = new SelectionTrackerImpl(
+					getWindowConfigurer().getWindow().getSelectionService());
 			SelectionTrackerUtil.registerTracker(tracker);
 		}
 

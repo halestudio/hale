@@ -37,9 +37,6 @@ public class MaximumWidthStrategy implements ResizingStrategy {
 		this.maximumWidth = constant;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.mapping.ResizingStrategy#getMaximumNodeWidth(LayoutContext)
-	 */
 	@Override
 	public void resizeEntities(LayoutContext context) {
 		EntityLayout[] entities = context.getEntities();

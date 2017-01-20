@@ -45,8 +45,9 @@ public abstract class HTMLPopoverBehavior extends PopoverBehavior {
 
 	@Override
 	protected final String newContent() {
-		final String content = String.valueOf(ComponentRenderer
-				.renderComponent(newBodyComponent(ComponentRenderer.COMP_ID)));
+		@SuppressWarnings("deprecation")
+		final String content = String.valueOf(
+				ComponentRenderer.renderComponent(newBodyComponent(ComponentRenderer.COMP_ID)));
 
 		// XXX how to correctly escape?
 		return chomp(content);
