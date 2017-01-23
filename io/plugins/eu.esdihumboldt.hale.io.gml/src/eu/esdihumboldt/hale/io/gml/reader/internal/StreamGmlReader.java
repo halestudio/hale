@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
@@ -132,6 +133,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
+			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
 		}
 

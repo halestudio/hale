@@ -125,6 +125,7 @@ public abstract class StoreInstancesJob extends Job {
 			long lastUpdate = 0; // last count update
 
 			ResourceIterator<Instance> it = instances.iterator();
+			int size = instances.size();
 			try {
 				while (it.hasNext() && !monitor.isCanceled()) {
 					Instance instance = it.next();
@@ -161,7 +162,9 @@ public abstract class StoreInstancesJob extends Job {
 					long now = System.currentTimeMillis();
 					if (now - lastUpdate > 100) { // only update every 100
 													// milliseconds
-						monitor.subTask(String.valueOf(count) + " instances processed");
+						monitor.subTask(MessageFormat.format("{0}{1} instances processed",
+								String.valueOf(count), size != InstanceCollection.UNKNOWN_SIZE
+										? "/" + String.valueOf(size) : ""));
 						lastUpdate = now;
 					}
 				}
