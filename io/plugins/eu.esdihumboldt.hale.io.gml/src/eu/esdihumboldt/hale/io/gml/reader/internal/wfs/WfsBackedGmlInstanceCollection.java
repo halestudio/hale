@@ -274,11 +274,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		}
 	}
 
-	private int requestHits(URI requestUri) throws IOException, WFSException, URISyntaxException {
+	private int requestHits(URI requestUri) throws WFSException {
 		URIBuilder builder = new URIBuilder(requestUri);
 		builder.addParameter("RESULTTYPE", "hits");
 
-		InputStream in = builder.build().toURL().openStream();
+		InputStream in;
+		try {
+			in = builder.build().toURL().openStream();
+		} catch (IOException | URISyntaxException e) {
+			throw new WFSException(
+					MessageFormat.format("Unable to execute WFS request: {0}", e.getMessage()), e);
+		}
 
 		return FeatureCollectionHelper.getNumberOfFeatures(in);
 	}
