@@ -252,7 +252,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return size > 0;
+		return size == 0;
 	}
 
 	/**
