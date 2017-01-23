@@ -97,7 +97,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	// Number of features to retrieve at most with one WFS GetFeature request
 	private final int featuresPerRequest;
 
-	private final boolean empty;
+	private final int size;
 
 	// Parameters needed for instantiation of GmlInstanceCollection
 	private final TypeIndex sourceSchema;
@@ -136,7 +136,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	public WfsBackedGmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
 			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
 			boolean ignoreNamespaces, CRSProvider crsProvider, IOProvider provider,
-			int featuresPerRequest) throws WFSException, IOException, URISyntaxException {
+			int featuresPerRequest) throws URISyntaxException {
 
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
@@ -178,8 +178,32 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
-		int hits = requestHits(primordialUri);
-		this.empty = (hits == 0);
+		int hits;
+		try {
+			hits = requestHits(primordialUri);
+		} catch (WFSException e) {
+			log.debug(MessageFormat.format("Failed to perform hits query (REQUESTTYPE=hits): {0}",
+					e.getMessage()), e);
+			hits = UNKNOWN_SIZE;
+		}
+
+		switch (wfsVersion) {
+		case "1.1.0":
+			// The "numberOfFeatures" reported by a 1.1.0 WFS may be smaller
+			// than the actual number of features matches by the query if the
+			// number of features returned per query is limited on the server
+			// side. Therefore do not rely on it as a size information here.
+			this.size = UNKNOWN_SIZE;
+			break;
+		case "2.0.0":
+		case "2.0.2":
+			// The "numberMatched" reported by a 2.0.0/2.0.2 WFS should be
+			// number of features matched by the query.
+			this.size = hits;
+			break;
+		default:
+			this.size = UNKNOWN_SIZE;
+		}
 
 		this.featuresPerRequest = featuresPerRequest;
 	}
@@ -204,7 +228,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public boolean hasSize() {
-		return false;
+		return size != UNKNOWN_SIZE;
 	}
 
 	/**
@@ -212,7 +236,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public int size() {
-		return UNKNOWN_SIZE;
+		return size;
 	}
 
 	/**
@@ -228,7 +252,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public boolean isEmpty() {
-		return empty;
+		return size > 0;
 	}
 
 	/**
