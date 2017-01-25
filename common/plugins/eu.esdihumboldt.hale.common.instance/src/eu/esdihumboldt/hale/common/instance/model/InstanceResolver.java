@@ -16,6 +16,10 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import java.util.Collection;
+
+import eu.esdihumboldt.hale.common.instance.model.impl.ReferenceInstanceCollection;
+
 /**
  * Interface for instance resolvers, that allow getting a reference for an
  * instance and vice versa.
@@ -42,14 +46,21 @@ public interface InstanceResolver {
 	 */
 	public Instance getInstance(InstanceReference reference);
 
-	/*
-	 * TODO add method to get instances for multiple references? would allow to
-	 * optimize retrieval e.g. for GmlInstanceCollection
+	/**
+	 * Get an instance collection based on the given instance references.
 	 * 
-	 * best would be a list with preserved order, as this would allow
-	 * determining which instance belongs to which reference, as such allowing
-	 * dereferencing instances for a larger number of references, e.g. for
-	 * several instance sets/partitions
+	 * This method allows implementors to optimize retrieval of multiple
+	 * references, and to do a lazy resolving.
+	 * 
+	 * The default implementation delegates to
+	 * {@link #getInstance(InstanceReference)} in the iterator.
+	 * 
+	 * @param references the references to resolve
+	 * @return the instances collection based on the references
 	 */
+	default public InstanceCollection getInstances(
+			Collection<? extends InstanceReference> references) {
+		return new ReferenceInstanceCollection(references, this);
+	}
 
 }
