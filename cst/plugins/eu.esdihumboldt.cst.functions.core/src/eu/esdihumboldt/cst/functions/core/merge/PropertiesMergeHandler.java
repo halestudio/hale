@@ -17,7 +17,6 @@
 package eu.esdihumboldt.cst.functions.core.merge;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,7 +26,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -37,8 +35,10 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -97,7 +97,7 @@ public class PropertiesMergeHandler
 	protected DeepIterableKey getMergeKey(Instance instance, PropertiesMergeConfig mergeConfig) {
 		if (mergeConfig.keyProperties.isEmpty()) {
 			// merge all instances
-			return new DeepIterableKey(Long.valueOf(1)); // XXX Hack Any value.
+			return KEY_ALL;
 		}
 
 		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());
@@ -116,11 +116,13 @@ public class PropertiesMergeHandler
 	}
 
 	@Override
-	protected Instance merge(Collection<Instance> instances, TypeDefinition type,
+	protected Instance merge(InstanceCollection instances, TypeDefinition type,
 			DeepIterableKey mergeKey, PropertiesMergeConfig mergeConfig) {
-		if (instances.size() == 1) {
+		if (instances.hasSize() && instances.size() == 1) {
 			// early exit if only one instance to merge
-			return instances.iterator().next();
+			try (ResourceIterator<Instance> it = instances.iterator()) {
+				return it.next();
+			}
 		}
 
 		MutableInstance result = getInstanceFactory().createInstance(type);
@@ -135,65 +137,148 @@ public class PropertiesMergeHandler
 		Set<QName> rootNames = new HashSet<QName>();
 		Set<QName> nonKeyRootNames = new HashSet<QName>();
 		// collect path roots
-		for (List<QName> path : mergeConfig.keyProperties)
+		for (List<QName> path : mergeConfig.keyProperties) {
 			rootNames.add(path.get(0));
-		for (List<QName> path : mergeConfig.additionalProperties)
+		}
+		for (List<QName> path : mergeConfig.additionalProperties) {
 			nonKeyRootNames.add(path.get(0));
-
-		ArrayListMultimap<QName, Object[]> properties = ArrayListMultimap.create();
-		for (Instance instance : instances)
-			for (QName name : instance.getPropertyNames())
-				properties.put(name, instance.getProperty(name));
-
-		for (QName name : properties.keySet()) {
-			if (nonKeyRootNames.contains(name)) {
-				// only keep unique values
-				Set<DeepIterableKey> uniqueValues = new HashSet<>();
-				for (Object[] values : properties.get(name)) {
-					for (Object value : values) {
-						uniqueValues.add(new DeepIterableKey(value));
-					}
-				}
-				for (DeepIterableKey key : uniqueValues) {
-					result.addProperty(name, key.getObject());
-				}
-			}
-			else if (rootNames.contains(name)
-					|| (mergeConfig.autoDetect && allEqual(properties.get(name)))) {
-				// property is to be merged
-				// property is either a merge key or all values are equal
-				// use only the values of the first occurrence
-				Object[] values = properties.get(name).get(0);
-				for (Object value : values)
-					result.addProperty(name, value);
-			}
-			else {
-				// property is not to be merged
-				// XXX but we could do some kind of aggregation
-
-				// XXX for now just add all values
-				for (Object[] values : properties.get(name)) {
-					for (Object value : values) {
-						result.addProperty(name, value);
-					}
-				}
-			}
 		}
 
 		// XXX what about metadata?!
 		// XXX for now only retain IDs
 		Set<Object> ids = new HashSet<Object>();
-		for (Instance instance : instances) {
-			List<Object> instanceIDs = instance.getMetaData(InstanceMetadata.METADATA_ID);
-			for (Object id : instanceIDs) {
-				ids.add(id);
+
+		try (ResourceIterator<Instance> it = instances.iterator()) {
+			while (it.hasNext()) {
+				Instance instance = it.next();
+
+				for (QName name : instance.getPropertyNames()) {
+					if (rootNames.contains(name)) {
+						/*
+						 * Property is merge key -> only use first occurrence
+						 * (as all entries need to be the same)
+						 * 
+						 * TODO adapt if multiple keys are possible per instance
+						 */
+						addFirstOccurrence(result, instance, name);
+					}
+					else if (nonKeyRootNames.contains(name)) {
+						/*
+						 * Property is additional merge property.
+						 * 
+						 * Traditional behavior: Only keep unique values.
+						 * 
+						 * XXX should this be configurable?
+						 */
+						addUnique(result, instance, name);
+					}
+					else if (mergeConfig.autoDetect) {
+						/*
+						 * Auto-detection is enabled.
+						 * 
+						 * Only keep unique values.
+						 * 
+						 * XXX This differs from the traditional behavior in
+						 * that there only the first value would be used, but
+						 * only if all values were equal. That cannot be easily
+						 * checked in an iterative approach.
+						 */
+						addUnique(result, instance, name);
+					}
+					else {
+						/*
+						 * Property is not to be merged.
+						 * 
+						 * XXX but we could do some kind of aggregation
+						 * 
+						 * XXX for now just add all values
+						 */
+						addValues(result, instance, name);
+					}
+				}
+
+				List<Object> instanceIDs = instance.getMetaData(InstanceMetadata.METADATA_ID);
+				for (Object id : instanceIDs) {
+					ids.add(id);
+				}
 			}
 		}
+
+		// store metadata IDs
 		result.setMetaData(InstanceMetadata.METADATA_ID, ids.toArray());
 
 		return result;
 	}
 
+	/**
+	 * Apply instance property values to the merged result instance. Use the
+	 * "first occurrence" strategy that only keeps the values from the first
+	 * instance.
+	 * 
+	 * @param result the result instance
+	 * @param instance the instance to merge with the result
+	 * @param property the name of the property that should be handled
+	 */
+	private void addFirstOccurrence(MutableInstance result, Instance instance, QName property) {
+		Object[] existingValues = result.getProperty(property);
+
+		if (existingValues == null || existingValues.length <= 0) {
+			// no values yet -> add values
+			addValues(result, instance, property);
+		}
+	}
+
+	/**
+	 * Apply instance property values to the merged result instance. Use the
+	 * "unique" strategy that only keeps unique values.
+	 * 
+	 * @param result the result instance
+	 * @param instance the instance to merge with the result
+	 * @param property the name of the property that should be handled
+	 */
+	private void addUnique(MutableInstance result, Instance instance, QName property) {
+		Object[] values = instance.getProperty(property);
+		if (values == null || values.length <= 0) {
+			return;
+		}
+
+		// collect unique values
+		Object[] existingValues = result.getProperty(property);
+		Set<DeepIterableKey> uniqueValues = new HashSet<>();
+		if (existingValues != null) {
+			for (Object value : existingValues) {
+				uniqueValues.add(new DeepIterableKey(value));
+			}
+		}
+
+		// add values not contained yet
+		for (Object value : values) {
+			DeepIterableKey key = new DeepIterableKey(value);
+			if (uniqueValues.add(key)) {
+				result.addProperty(property, value);
+			}
+		}
+	}
+
+	/**
+	 * Apply instance property values to the merged result instance. Use the
+	 * "add values" strategy that keeps all values.
+	 * 
+	 * @param result the result instance
+	 * @param instance the instance to merge with the result
+	 * @param property the name of the property that should be handled
+	 */
+	private void addValues(MutableInstance result, Instance instance, QName property) {
+		// add all values
+		Object[] values = instance.getProperty(property);
+		if (values != null) {
+			for (Object value : values) {
+				result.addProperty(property, value);
+			}
+		}
+	}
+
+	@SuppressWarnings("unused")
 	private boolean allEqual(List<Object[]> list) {
 		Iterator<Object[]> iter = list.iterator();
 		// get first element
