@@ -150,6 +150,19 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
+               description="Activate pagination for WFS GetFeature requests"
+               label="Activate WFS request pagination"
+               name="paginateRequest"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
                description="Number of features to retrieve at most in a single WFS GetFeature request"
                label="Features per WFS request"
                name="featuresPerWfsRequest"
@@ -256,6 +269,19 @@
             <valueDescriptor
                   default="true"
                   defaultDescription="By default this option is enabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Activate pagination for WFS GetFeature requests"
+               label="Activate WFS request pagination"
+               name="paginateRequest"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
             </valueDescriptor>
             <parameterBinding
                   class="java.lang.Boolean">
