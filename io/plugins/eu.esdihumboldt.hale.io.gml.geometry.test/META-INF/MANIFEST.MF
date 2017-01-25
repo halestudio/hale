@@ -3,11 +3,19 @@ Bundle-ManifestVersion: 2
 Bundle-Name: GML Geometry Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry.test
 Bundle-Version: 3.2.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.util.geometry.interpolation,
+ eu.esdihumboldt.util.geometry.interpolation.grid,
+ eu.esdihumboldt.util.geometry.interpolation.model,
+ eu.esdihumboldt.util.geometry.interpolation.model.impl,
+ eu.esdihumboldt.util.geometry.interpolation.split,
+ eu.esdihumboldt.util.svg.test,
+ javax.annotation,
  org.junit;version="4.8.2",
- org.osgi.framework;version="1.6.0"
+ org.osgi.framework;version="1.6.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
  eu.esdihumboldt.hale.io.xsd;bundle-version="2.5.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.5.0",

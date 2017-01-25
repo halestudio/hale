@@ -32,12 +32,16 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.mssql.MsSqlURIBuilder;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test with another instance of sql server
  * 
  * @author Arun
  */
+@Features("Databases")
+@Stories("SQL Server")
 public class MsSQLServer14Test {
 
 	/**

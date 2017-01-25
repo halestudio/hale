@@ -59,6 +59,7 @@ public class CustomFunctionExplanationPage extends HaleWizardPage<CustomProperty
 			this.editor = editor;
 		}
 
+		@SuppressWarnings("unused")
 		public TabItem getTab() {
 			return tab;
 		}
@@ -189,6 +190,7 @@ public class CustomFunctionExplanationPage extends HaleWizardPage<CustomProperty
 		tabs.put(locale, group);
 	}
 
+	@SuppressWarnings("unused")
 	private void createPreviewPart(Composite page) {
 		GridDataFactory df = GridDataFactory.fillDefaults().grab(true, false).hint(10, 200);
 		try {

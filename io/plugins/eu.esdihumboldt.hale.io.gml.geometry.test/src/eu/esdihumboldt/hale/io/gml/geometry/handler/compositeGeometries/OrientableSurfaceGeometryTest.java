@@ -16,11 +16,9 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -32,22 +30,37 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading orientable surface geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private Polygon reference;
-	private Polygon referenceOnGrid;
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
+	/*
+	 * Max positional error must be smaller than the default as we have
+	 * geographic coordinates.
+	 * 
+	 * With a larger value we also end up with double coordinates (which makes
+	 * them harder to compare to the reference).
 	 */
+	private static final double maxPositionalError = 0.002;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations
+			.grid(maxPositionalError, true);
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
+
 	@Override
 	public void init() {
 		super.init();
@@ -66,18 +79,10 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 
 		reference = geomFactory.createPolygon(shell, holes);
 
-		// grid
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.44, 37.80),
-				new Coordinate(-122.46, 37.80), new Coordinate(-122.46, 37.78),
-				new Coordinate(-122.44, 37.78), new Coordinate(-122.44, 37.80) });
+		checker = referenceChecker(reference);
 
-		holes = new LinearRing[1];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.24, 37.6),
-				new Coordinate(-122.25, 37.59), new Coordinate(-122.25, 37.57),
-				new Coordinate(-122.24, 37.58), new Coordinate(-122.24, 37.6) });
-		holes[0] = hole1;
-
-		referenceOnGrid = geomFactory.createPolygon(shell, holes);
+		gridChecker = combine(referenceChecker(reference, maxPositionalError),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -89,8 +94,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 	public void testOrientableSurfaceGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml").toURI(),
-				true);
+				getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml").toURI());
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -98,7 +102,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 			// Polygon with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkOrientableSurfacePropertyInstance(instance, true);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -115,7 +119,7 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/surface/sample-orientablesurface-gml32.xml").toURI(),
-				false, 0.01);
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -123,29 +127,9 @@ public class OrientableSurfaceGeometryTest extends AbstractHandlerTest {
 			// Polygon with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkOrientableSurfacePropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
-		}
-	}
-
-	private void checkOrientableSurfacePropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			Geometry geom = instance.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					geom.equalsExact(keepOriginal ? reference : referenceOnGrid));
 		}
 	}
 

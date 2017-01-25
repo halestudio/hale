@@ -297,9 +297,8 @@ public class StyleServiceImpl extends AbstractStyleService {
 	}
 
 	private Style getStyle(final DataSet dataset, boolean selected) {
-		SchemaSpace schemas = schemaService
-				.getSchemas((dataset == DataSet.SOURCE) ? (SchemaSpaceID.SOURCE)
-						: (SchemaSpaceID.TARGET));
+		SchemaSpace schemas = schemaService.getSchemas(
+				(dataset == DataSet.SOURCE) ? (SchemaSpaceID.SOURCE) : (SchemaSpaceID.TARGET));
 
 		Style style = styleFactory.createStyle();
 
@@ -334,6 +333,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * 
 	 * @return the converted feature type style
 	 */
+	@SuppressWarnings("deprecation")
 	private FeatureTypeStyle getSelectedStyle(FeatureTypeStyle fts) {
 		List<Rule> rules = fts.rules();
 
@@ -352,8 +352,8 @@ public class StyleServiceImpl extends AbstractStyleService {
 			}
 
 			// create new rule
-			Rule newRule = styleBuilder.createRule(newSymbolizers
-					.toArray(new Symbolizer[newSymbolizers.size()]));
+			Rule newRule = styleBuilder
+					.createRule(newSymbolizers.toArray(new Symbolizer[newSymbolizers.size()]));
 			newRule.setFilter(rule.getFilter());
 			newRule.setIsElseFilter(rule.isElseFilter());
 			newRule.setName(rule.getName());
@@ -385,8 +385,8 @@ public class StyleServiceImpl extends AbstractStyleService {
 			result.add(StyleHelper.createLineSymbolizer(color, width));
 		}
 		else if (symbolizer instanceof PointSymbolizer) {
-			result.add(StyleHelper
-					.mutatePointSymbolizer((PointSymbolizer) symbolizer, color, width));
+			result.add(
+					StyleHelper.mutatePointSymbolizer((PointSymbolizer) symbolizer, color, width));
 			// result.add(createPointSymbolizer(color, width));
 		}
 		else {
@@ -407,9 +407,8 @@ public class StyleServiceImpl extends AbstractStyleService {
 
 		for (Style style : styles) {
 			for (FeatureTypeStyle fts : style.featureTypeStyles()) {
-				if (!fts.featureTypeNames().isEmpty()
-						&& fts.featureTypeNames().iterator().next().getLocalPart()
-								.equals("Feature")) {
+				if (!fts.featureTypeNames().isEmpty() && fts.featureTypeNames().iterator().next()
+						.getLocalPart().equals("Feature")) {
 					this.fbStyle = fts;
 					somethingHappened = true;
 				}
@@ -465,9 +464,11 @@ public class StyleServiceImpl extends AbstractStyleService {
 		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
 
 		// search source...
-		result.addAll(findTypes(schemaService.getSchemas(SchemaSpaceID.SOURCE), qnames, localnames));
+		result.addAll(
+				findTypes(schemaService.getSchemas(SchemaSpaceID.SOURCE), qnames, localnames));
 		// and target types
-		result.addAll(findTypes(schemaService.getSchemas(SchemaSpaceID.TARGET), qnames, localnames));
+		result.addAll(
+				findTypes(schemaService.getSchemas(SchemaSpaceID.TARGET), qnames, localnames));
 
 		return result;
 	}

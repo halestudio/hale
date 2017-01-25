@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="299">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="300">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
@@ -35,12 +35,12 @@
 <repository location="http://build-artifacts.wetransform.to/p2/mirror/jetty-8"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20170105"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/7eccd129f869cb3568ebd9f0c717df1f616ea36e/updatesites/platform"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.201701051219"/>
 <repository location="http://build-artifacts.wetransform.to/p2/equinox-test/build_3"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.0.0.i20170106"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/5ad2be41d6b62b228fdd799983440449920ebb58/updatesites/platform"/>
 </location>
 </locations>
 </target>

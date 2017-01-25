@@ -11,7 +11,8 @@ Import-Package: com.google.common.io;version="17.0.0",
  junit.framework;version="4.12.0",
  net.ucanaccess.jdbc;version="3.0.6",
  org.junit,
- org.slf4j;version="1.7.10"
+ org.slf4j;version="1.7.10",
+ ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc.msaccess;bundle-version="2.9.5",
  eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",

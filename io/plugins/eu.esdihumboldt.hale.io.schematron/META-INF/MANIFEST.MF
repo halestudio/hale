@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
 Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.io.validation,
+ eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.validator
 Bundle-ClassPath: .,

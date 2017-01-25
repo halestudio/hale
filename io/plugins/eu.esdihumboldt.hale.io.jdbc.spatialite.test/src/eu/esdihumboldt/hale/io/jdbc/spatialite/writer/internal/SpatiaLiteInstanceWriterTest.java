@@ -21,6 +21,8 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuite;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion3;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion4;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test class for {@link SpatiaLiteInstanceWriter}. The tests are automatically
@@ -28,6 +30,8 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.test.SpatiaLiteTestSuiteVersion4;
  * 
  * @author Stefano Costa, GeoSolutions
  */
+@Features("Databases")
+@Stories("SpatiaLite")
 public class SpatiaLiteInstanceWriterTest {
 
 	/**

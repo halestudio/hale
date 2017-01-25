@@ -31,6 +31,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.mssql.MsSqlURIBuilder;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test class for Ms SQL Server
@@ -38,7 +40,10 @@ import eu.esdihumboldt.hale.io.jdbc.mssql.MsSqlURIBuilder;
  * @author Arun
  *
  */
+@Features("Databases")
+@Stories("SQL Server")
 public class MsSqlDataReaderTest {
+
 	/**
 	 * Source Database name
 	 */
@@ -60,12 +65,12 @@ public class MsSqlDataReaderTest {
 
 	private String SCHEMA;
 
-	private List<String> tablesInSchema = new ArrayList<>(3);
-	private List<String> tablesNotInSchema = new ArrayList<>(2);
+	private final List<String> tablesInSchema = new ArrayList<>(3);
+	private final List<String> tablesNotInSchema = new ArrayList<>(2);
 
-	private int SOURCE_TOTAL_INSTANCES_COUNT = 11;
+	private final int SOURCE_TOTAL_INSTANCES_COUNT = 11;
 
-	private int SOURCE_GEOMETRY_INSTANCE_COUNT = 3;
+	private final int SOURCE_GEOMETRY_INSTANCE_COUNT = 3;
 
 	private String[] SOURCE_GEOMETRY_TYPE_PROPERTY_NAMES;
 
@@ -96,15 +101,15 @@ public class MsSqlDataReaderTest {
 		SOURCE_GEOMETRY_TYPE_PROPERTY_NAMES = new String[] { "id", "GeomCol1" };
 		PROPERTY_ID_VALUES = new Object[] { 1, 2, 3 };
 
-		PROPERTY_GEO_VALUES = new Object[] { "LINESTRING (100 100, 20 180, 180 180)", "POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))", "POINT (3 3)" };
+		PROPERTY_GEO_VALUES = new Object[] { "LINESTRING (100 100, 20 180, 180 180)",
+				"POLYGON ((0 0, 150 0, 150 150, 0 150, 0 0))", "POINT (3 3)" };
 
 	}
 
 	/**
 	 * Test schema reader
 	 * 
-	 * @throws Exception
-	 *             if error occurred in reading schema
+	 * @throws Exception if error occurred in reading schema
 	 */
 	@Test
 	public void testSchemaReader() throws Exception {
@@ -117,8 +122,7 @@ public class MsSqlDataReaderTest {
 	/**
 	 * Test instance reader
 	 * 
-	 * @throws Exception
-	 *             if error occurred in reading instances
+	 * @throws Exception if error occurred in reading instances
 	 */
 	@SuppressWarnings("unchecked")
 	@Test
@@ -138,7 +142,8 @@ public class MsSqlDataReaderTest {
 		InstanceCollection filteredInstances = null;
 
 		// Check SpatialTable "jdbc:sqlserver:dbo","SpatialTable"
-		filteredInstances = instances.select(new TypeFilter(schema.getType(new QName("jdbc:sqlserver:dbo", "SpatialTable"))));
+		filteredInstances = instances.select(
+				new TypeFilter(schema.getType(new QName("jdbc:sqlserver:dbo", "SpatialTable"))));
 		int geometryPropertyCount = 0;
 		int idPropertyCount = 0;
 		ResourceIterator<Instance> it = filteredInstances.iterator();
@@ -149,10 +154,13 @@ public class MsSqlDataReaderTest {
 				if (value == null)
 					continue;
 				if (value instanceof GeometryProperty) {
-					assertTrue(((GeometryProperty<Geometry>) value).getGeometry().toText().equalsIgnoreCase(String.valueOf(PROPERTY_GEO_VALUES[geometryPropertyCount])));
+					assertTrue(((GeometryProperty<Geometry>) value).getGeometry().toText()
+							.equalsIgnoreCase(
+									String.valueOf(PROPERTY_GEO_VALUES[geometryPropertyCount])));
 					geometryPropertyCount++;
 
-				} else {
+				}
+				else {
 					assertTrue(((int) value) == ((int) PROPERTY_ID_VALUES[idPropertyCount]));
 					idPropertyCount++;
 				}
@@ -162,21 +170,19 @@ public class MsSqlDataReaderTest {
 		assertEquals(SOURCE_GEOMETRY_INSTANCE_COUNT, geometryPropertyCount);
 		assertEquals(SOURCE_GEOMETRY_INSTANCE_COUNT, idPropertyCount);
 
-		
 	}
 
 	/**
 	 * Reads a schema from a MS SQL database.
 	 * 
 	 * @return the schema
-	 * @throws Exception
-	 *             any exception thrown by {@link JDBCSchemaReader}
+	 * @throws Exception any exception thrown by {@link JDBCSchemaReader}
 	 */
 
 	private Schema readSchema() throws Exception {
 
 		JDBCSchemaReader schemaReader = new JDBCSchemaReader();
-		
+
 		JDBCURI = new MsSqlURIBuilder().createJdbcUri(HOST, DATABASE);
 
 		schemaReader.setSource(new NoStreamInputSupplier(JDBCURI));
@@ -199,16 +205,14 @@ public class MsSqlDataReaderTest {
 	 * Reads instances from from a MsAccess database file with the provided
 	 * schema.
 	 * 
-	 * @param sourceSchema
-	 *            the schema of the source database
+	 * @param sourceSchema the schema of the source database
 	 * @return the read instances
-	 * @throws Exception
-	 *             any exception thrown by {@link JDBCInstanceReader}
+	 * @throws Exception any exception thrown by {@link JDBCInstanceReader}
 	 */
 	private InstanceCollection readInstances(Schema sourceSchema) throws Exception {
 
 		JDBCInstanceReader instanceReader = new JDBCInstanceReader();
-		
+
 		JDBCURI = new MsSqlURIBuilder().createJdbcUri(HOST, DATABASE);
 
 		instanceReader.setSource(new NoStreamInputSupplier(JDBCURI));

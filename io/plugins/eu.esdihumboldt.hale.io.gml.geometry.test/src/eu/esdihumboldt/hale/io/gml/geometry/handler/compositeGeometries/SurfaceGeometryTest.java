@@ -17,14 +17,17 @@
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
@@ -35,20 +38,38 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import eu.esdihumboldt.util.svg.test.PaintSettings;
+import eu.esdihumboldt.util.svg.test.SVGPainter;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading surface geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class SurfaceGeometryTest extends AbstractHandlerTest {
 
 	private Polygon reference;
-	private Polygon referenceOnGrid;
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
+	/*
+	 * Max positional error must be smaller than the default as we have
+	 * geographic coordinates.
+	 * 
+	 * With a larger value we also end up with double coordinates (which makes
+	 * them harder to compare to the reference).
 	 */
+	private static final double maxPositionalError = 0.002;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations
+			.grid(maxPositionalError, true);
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
+
 	@Override
 	public void init() {
 		super.init();
@@ -67,18 +88,10 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 
 		reference = geomFactory.createPolygon(shell, holes);
 
-		// grid
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.44, 37.80),
-				new Coordinate(-122.46, 37.80), new Coordinate(-122.46, 37.78),
-				new Coordinate(-122.44, 37.78), new Coordinate(-122.44, 37.80) });
+		checker = combine(noCoordinatePairs(), referenceChecker(reference));
 
-		holes = new LinearRing[1];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.24, 37.6),
-				new Coordinate(-122.25, 37.59), new Coordinate(-122.25, 37.57),
-				new Coordinate(-122.24, 37.58), new Coordinate(-122.24, 37.6) });
-		holes[0] = hole1;
-
-		referenceOnGrid = geomFactory.createPolygon(shell, holes);
+		gridChecker = combine(noCoordinatePairs(), referenceChecker(reference, maxPositionalError),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -98,7 +111,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, reference);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -121,7 +134,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, reference);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -144,7 +157,142 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, reference);
+			checkSingleGeometry(instance, checker);
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test surface geometries read from a GML 3.2 file
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Stories("Arcs")
+	@Test
+	public void testSurfaceArcsGml32() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-surface-arcs.xml").toURI(),
+				InterpolationConfigurations.segment(maxPositionalError));
+
+		// three instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			List<GeometryProperty<?>> geoms = new ArrayList<>();
+
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance1 = it.next();
+			geoms.addAll(checkSingleGeometry(instance1, null));
+
+			assertTrue("Second sample feature missing", it.hasNext());
+			Instance instance2 = it.next();
+			geoms.addAll(checkSingleGeometry(instance2, null));
+
+			assertTrue("Third sample feature missing", it.hasNext());
+			Instance instance3 = it.next();
+			geoms.addAll(checkSingleGeometry(instance3, null));
+
+			assertEquals("Unexpected number of geometries", 3, geoms.size());
+
+			Geometry geom1 = geoms.get(0).getGeometry();
+			Geometry geom2 = geoms.get(1).getGeometry();
+			Geometry geom3 = geoms.get(2).getGeometry();
+
+			Envelope envelope = new Envelope();
+			envelope.expandToInclude(geom1.getEnvelopeInternal());
+			envelope.expandToInclude(geom2.getEnvelopeInternal());
+			envelope.expandToInclude(geom3.getEnvelopeInternal());
+			PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+			SVGPainter svg = new SVGPainter(settings);
+
+			svg.setColor(Color.BLACK);
+			svg.drawGeometry(geom1);
+
+			svg.setColor(Color.BLUE);
+			svg.drawGeometry(geom2);
+
+			svg.setColor(Color.RED);
+			svg.drawGeometry(geom3);
+
+			saveDrawing(svg);
+
+			// ensure that polygons could be created
+			assertTrue(Polygon.class.isAssignableFrom(geom1.getClass()));
+			assertTrue(Polygon.class.isAssignableFrom(geom2.getClass()));
+			assertTrue(Polygon.class.isAssignableFrom(geom3.getClass()));
+
+			// XXX how to test?
+			// intersection area cannot be computed
+//			double interArea1 = geom1.intersection(geom2).getArea();
+//			double interArea2 = geom2.intersection(geom3).getArea();
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
+	 * Test surface geometries read from a GML 3.2 file
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Stories("Arcs")
+	@Test
+	public void testSurfaceArcsGml32_grid() throws Exception {
+		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
+				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
+				getClass().getResource("/data/surface/sample-surface-arcs.xml").toURI(),
+				gridConfig);
+
+		// three instance expected
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			List<GeometryProperty<?>> geoms = new ArrayList<>();
+
+			assertTrue("First sample feature missing", it.hasNext());
+			Instance instance1 = it.next();
+			geoms.addAll(checkSingleGeometry(instance1, null));
+
+			assertTrue("Second sample feature missing", it.hasNext());
+			Instance instance2 = it.next();
+			geoms.addAll(checkSingleGeometry(instance2, null));
+
+			assertTrue("Third sample feature missing", it.hasNext());
+			Instance instance3 = it.next();
+			geoms.addAll(checkSingleGeometry(instance3, null));
+
+			assertEquals("Unexpected number of geometries", 3, geoms.size());
+
+			Geometry geom1 = geoms.get(0).getGeometry();
+			Geometry geom2 = geoms.get(1).getGeometry();
+			Geometry geom3 = geoms.get(2).getGeometry();
+
+			Envelope envelope = new Envelope();
+			envelope.expandToInclude(geom1.getEnvelopeInternal());
+			envelope.expandToInclude(geom2.getEnvelopeInternal());
+			envelope.expandToInclude(geom3.getEnvelopeInternal());
+			PaintSettings settings = new PaintSettings(envelope, 1000, 10);
+			SVGPainter svg = new SVGPainter(settings);
+
+			svg.setColor(Color.BLACK);
+			svg.drawGeometry(geom1);
+
+			svg.setColor(Color.BLUE);
+			svg.drawGeometry(geom2);
+
+			svg.setColor(Color.RED);
+			svg.drawGeometry(geom3);
+
+			saveDrawing(svg);
+
+			// ensure that polygons could be created
+			assertTrue(Polygon.class.isAssignableFrom(geom1.getClass()));
+			assertTrue(Polygon.class.isAssignableFrom(geom2.getClass()));
+			assertTrue(Polygon.class.isAssignableFrom(geom3.getClass()));
+
+			// XXX how to test?
+//			assertTrue("Geometries intersect", geom1.touches(geom2));
+//			assertTrue("Geometries intersect", geom2.touches(geom3));
 		} finally {
 			it.close();
 		}
@@ -174,7 +322,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, composedPolygon);
+			checkSingleGeometry(instance, referenceChecker(composedPolygon));
 		} finally {
 			it.close();
 		}
@@ -209,7 +357,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, composed);
+			checkSingleGeometry(instance, referenceChecker(composed));
 		} finally {
 			it.close();
 		}
@@ -242,7 +390,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, composed);
+			checkSingleGeometry(instance, referenceChecker(composed));
 		} finally {
 			it.close();
 		}
@@ -278,7 +426,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, composed);
+			checkSingleGeometry(instance, referenceChecker(composed));
 		} finally {
 			it.close();
 		}
@@ -313,7 +461,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, composedPolygon);
+			checkSingleGeometry(instance, referenceChecker(composedPolygon));
 		} finally {
 			it.close();
 		}
@@ -329,8 +477,8 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	public void testSurfaceGml3_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-surface-gml3.xml").toURI(), false,
-				0.01);
+				getClass().getResource("/data/surface/sample-surface-gml3.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -338,7 +486,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, referenceOnGrid);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -354,8 +502,8 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	public void testSurfaceGml31_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-surface-gml31.xml").toURI(), false,
-				0.01);
+				getClass().getResource("/data/surface/sample-surface-gml31.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -363,7 +511,7 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, referenceOnGrid);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -379,8 +527,8 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 	public void testSurfaceGml32_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-surface-gml32.xml").toURI(), false,
-				0.01);
+				getClass().getResource("/data/surface/sample-surface-gml32.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -388,29 +536,9 @@ public class SurfaceGeometryTest extends AbstractHandlerTest {
 			// PolygonPatch with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, referenceOnGrid);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
-		}
-	}
-
-	private void checkSurfacePropertyInstance(Instance instance, Geometry referenceGeometry) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, referenceGeometry);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, Geometry referenceGeometry) {
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			Geometry geometry = instance.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					geometry.equalsExact(referenceGeometry));
 		}
 	}
 
