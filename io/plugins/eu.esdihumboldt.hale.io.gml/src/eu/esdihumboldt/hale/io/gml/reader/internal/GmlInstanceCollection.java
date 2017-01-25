@@ -762,6 +762,10 @@ public class GmlInstanceCollection implements InstanceCollection {
 				"Reference can only be determined based on a StreamGmlInstance");
 	}
 
+	/*
+	 * TODO optimize retrieval of multiple references
+	 */
+
 	/**
 	 * @see InstanceResolver#getInstance(InstanceReference)
 	 */
