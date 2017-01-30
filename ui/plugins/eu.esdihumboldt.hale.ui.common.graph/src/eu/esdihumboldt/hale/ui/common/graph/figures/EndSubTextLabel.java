@@ -54,4 +54,14 @@ public class EndSubTextLabel extends Label {
 		return subStringText;
 	}
 
+	/**
+	 * @see org.eclipse.draw2d.Label#invalidate()
+	 */
+	@Override
+	public void invalidate() {
+		subStringText = null;
+
+		super.invalidate();
+	}
+
 }
