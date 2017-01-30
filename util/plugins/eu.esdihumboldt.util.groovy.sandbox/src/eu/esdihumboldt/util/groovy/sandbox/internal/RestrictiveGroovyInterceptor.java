@@ -15,16 +15,10 @@
 
 package eu.esdihumboldt.util.groovy.sandbox.internal;
 
-import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
-import groovy.lang.Closure;
-import groovy.lang.GString;
-import groovy.lang.MissingPropertyException;
-import groovy.lang.Range;
-import groovy.lang.Script;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -33,10 +27,18 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.codehaus.groovy.runtime.GStringImpl;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.kohsuke.groovy.sandbox.GroovyInterceptor;
+
+import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
+import groovy.lang.Closure;
+import groovy.lang.GString;
+import groovy.lang.MissingPropertyException;
+import groovy.lang.Range;
+import groovy.lang.Script;
 
 /**
  * {@link GroovyInterceptor} which allows some basic classes but is pretty
@@ -101,6 +103,11 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(BigDecimal.class);
 		allowedClasses.add(Math.class);
 		allowedClasses.add(Date.class);
+		// allowedClasses.add(Boolean.class);
+
+		// helper classes
+		allowedClasses.add(SimpleDateFormat.class);
+		allowedClasses.add(UUID.class);
 
 		// Collections & Classes used by Groovy
 		allowedClasses.add(LinkedHashMap.class);
