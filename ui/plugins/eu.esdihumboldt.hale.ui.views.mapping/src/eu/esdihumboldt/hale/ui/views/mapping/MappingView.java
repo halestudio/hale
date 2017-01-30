@@ -35,6 +35,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -72,6 +74,8 @@ public class MappingView extends AbstractMappingView {
 	private AlignmentServiceListener alignmentListener;
 	private final Action showCellsOnChildren;
 
+	private ResizingTreeLayoutAlgorithm treeLayout;
+
 	/**
 	 * Default constructor.
 	 */
@@ -101,9 +105,14 @@ public class MappingView extends AbstractMappingView {
 				.setImageDescriptor(MappingViewPlugin.getImageDescriptor("icons/sub_co.gif"));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
+	protected LayoutAlgorithm createLayout() {
+		treeLayout = new ResizingTreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT,
+				new AlignmentViewResizingStrategy());
+
+		return treeLayout;
+	}
+
 	@Override
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);

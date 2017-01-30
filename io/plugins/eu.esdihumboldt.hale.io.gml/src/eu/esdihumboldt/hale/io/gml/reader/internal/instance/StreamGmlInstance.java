@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
@@ -27,6 +28,18 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public class StreamGmlInstance extends DefaultInstance {
 
 	private final int indexInStream;
+
+	/**
+	 * Copy constructor. Creates an instance based on the properties and values
+	 * of the given instance.
+	 * 
+	 * @param instance the instance to copy
+	 * @param indexInStream the index of the instance in the stream
+	 */
+	public StreamGmlInstance(Instance instance, int indexInStream) {
+		super(instance);
+		this.indexInStream = indexInStream;
+	}
 
 	/**
 	 * Create an instance with an associated stream index

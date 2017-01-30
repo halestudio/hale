@@ -29,6 +29,7 @@ import com.vividsolutions.jts.geom.Point;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
@@ -41,7 +42,6 @@ import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * 
  * @author Simon Templer
  */
-public class PointHandler extends InterpolationSupportedGeometryHandler {
+public class PointHandler extends FixedConstraintsGeometryHandler {
 
 	private static final String POINT_TYPE = "PointType";
 
@@ -69,7 +69,7 @@ public class PointHandler extends InterpolationSupportedGeometryHandler {
 				try {
 					Coordinate[] cs = GMLGeometryUtil.parseCoordinates((Instance) value);
 					if (cs != null && cs.length > 0) {
-						cs = moveToUniversalGrid(new Coordinate[] { cs[0] }, reader);
+						cs = InterpolationHelper.moveCoordinates(reader, cs);
 						point = getGeometryFactory().createPoint(cs[0]);
 					}
 				} catch (ParseException e) {
@@ -86,7 +86,7 @@ public class PointHandler extends InterpolationSupportedGeometryHandler {
 				if (value instanceof Instance) {
 					Coordinate c = GMLGeometryUtil.parseDirectPosition((Instance) value);
 					if (c != null) {
-						c = moveToUniversalGrid(new Coordinate[] { c }, reader)[0];
+						c = InterpolationHelper.moveCoordinate(reader, c);
 						point = getGeometryFactory().createPoint(c);
 					}
 				}
@@ -101,7 +101,7 @@ public class PointHandler extends InterpolationSupportedGeometryHandler {
 				if (value instanceof Instance) {
 					Coordinate c = GMLGeometryUtil.parseCoord((Instance) value);
 					if (c != null) {
-						c = moveToUniversalGrid(new Coordinate[] { c }, reader)[0];
+						c = InterpolationHelper.moveCoordinate(reader, c);
 						point = getGeometryFactory().createPoint(c);
 					}
 				}

@@ -25,7 +25,7 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
  * @author Florian Esser
  */
 public interface ConfigurationDialogFactory
-		extends ExtensionObjectFactory<AbstractConfigurationDialog> {
+		extends ExtensionObjectFactory<AbstractConfigurationDialog<?>> {
 
 	/**
 	 * Get the identifiers of the supported providers

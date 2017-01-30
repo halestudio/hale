@@ -34,6 +34,7 @@ public class Activator implements BundleActivator {
 	 * OSGi {@link ServiceTracker} to retrieve the Eclipse OSGi service
 	 * {@link DebugOptions}.
 	 */
+	@SuppressWarnings("rawtypes")
 	private ServiceTracker debugTracker = null;
 
 	/**
@@ -94,6 +95,7 @@ public class Activator implements BundleActivator {
 	 * @param defaultValue
 	 * @return
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static boolean getBooleanDebugOption(String option,
 			boolean defaultValue) {
 		// 1) search param from JVM

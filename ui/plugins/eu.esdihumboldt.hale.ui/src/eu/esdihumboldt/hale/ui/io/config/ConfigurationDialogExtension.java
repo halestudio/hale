@@ -28,16 +28,15 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactoryCollection;
 import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 
 /**
- * TODO Type description
+ * Extension for I/O provider configuration dialogs.
  * 
- * @author Flo
+ * @author Florian Esser
  */
 public class ConfigurationDialogExtension
-		extends AbstractExtension<AbstractConfigurationDialog, ConfigurationDialogFactory> {
+		extends AbstractExtension<AbstractConfigurationDialog<?>, ConfigurationDialogFactory> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ConfigurationDialogExtension.class);
 
@@ -83,23 +82,18 @@ public class ConfigurationDialogExtension
 
 	/**
 	 * Get the configuration dialog registered for the given I/O provider
-	 * descriptors
+	 * descriptor.
 	 * 
-	 * @param
-	 * 			<P>
-	 *            the {@link IOProvider} type used in the wizard
-	 * 
-	 * @param descriptors the provider descriptors
+	 * @param descriptor the provider descriptor
 	 * @return the configuration dialog where the corresponding provider
 	 *         identifier is mapped to the configuration dialog, one page (the
 	 *         same instance) might be mapped for multiple identifiers
 	 */
-	@SuppressWarnings("unchecked")
 	public ConfigurationDialogFactory getConfigurationDialog(
 			final IOProviderDescriptor descriptor) {
 
 		List<ConfigurationDialogFactory> factories = getFactories(
-				new FactoryFilter<AbstractConfigurationDialog, ConfigurationDialogFactory>() {
+				new FactoryFilter<AbstractConfigurationDialog<?>, ConfigurationDialogFactory>() {
 
 					@Override
 					public boolean acceptFactory(ConfigurationDialogFactory factory) {
@@ -109,7 +103,7 @@ public class ConfigurationDialogExtension
 
 					@Override
 					public boolean acceptCollection(
-							ExtensionObjectFactoryCollection<AbstractConfigurationDialog, ConfigurationDialogFactory> collection) {
+							ExtensionObjectFactoryCollection<AbstractConfigurationDialog<?>, ConfigurationDialogFactory> collection) {
 						return false;
 					}
 				});
@@ -130,7 +124,7 @@ public class ConfigurationDialogExtension
 	 * {@link IConfigurationElement}
 	 */
 	private static class ConfigurationDialogFactoryImpl
-			extends AbstractConfigurationFactory<AbstractConfigurationDialog>
+			extends AbstractConfigurationFactory<AbstractConfigurationDialog<?>>
 			implements ConfigurationDialogFactory {
 
 		/**
@@ -142,32 +136,21 @@ public class ConfigurationDialogExtension
 			super(conf, "class");
 		}
 
-		/**
-		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory#dispose(java.lang.Object)
-		 */
 		@Override
-		public void dispose(AbstractConfigurationDialog instance) {
+		public void dispose(AbstractConfigurationDialog<?> instance) {
+			// nothing to do
 		}
 
-		/**
-		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getIdentifier()
-		 */
 		@Override
 		public String getIdentifier() {
 			return conf.getAttribute("class");
 		}
 
-		/**
-		 * @see de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition#getDisplayName()
-		 */
 		@Override
 		public String getDisplayName() {
 			return getIdentifier();
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.ui.io.config.ConfigurationDialogFactory#getSupportedProviderIDs()
-		 */
 		@Override
 		public Set<String> getSupportedProviderIDs() {
 			IConfigurationElement[] children = conf.getChildren("provider");

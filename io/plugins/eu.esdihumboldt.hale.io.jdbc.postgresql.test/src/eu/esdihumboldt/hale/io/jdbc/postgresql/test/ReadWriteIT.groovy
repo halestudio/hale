@@ -19,6 +19,9 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
+
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -40,6 +43,8 @@ import groovy.sql.Sql
  *
  * @author Simon Templer
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 class ReadWriteIT extends AbstractDBTest{
 
 	private static final TABLE_LINES = '''CREATE TABLE lines
@@ -82,7 +87,9 @@ class ReadWriteIT extends AbstractDBTest{
 				lines {
 					ps i
 					name "Some feature $i"
-					geom new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([new Coordinate(0, 0), new Coordinate(i, i)] as Coordinate[]))
+					geom new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), gf.createLineString([
+						new Coordinate(0, 0),
+						new Coordinate(i, i)] as Coordinate[]))
 					dat([0, 1, i, 1, 0] as byte[])
 				}
 			}

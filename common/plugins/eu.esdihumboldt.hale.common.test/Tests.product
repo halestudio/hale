@@ -21,6 +21,7 @@
 
    <windowImages/>
 
+
    <launcher name="hale_tests">
       <solaris/>
       <win useIco="false">
@@ -177,6 +178,7 @@
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.validation"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
@@ -205,6 +207,8 @@
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.cli"/>
+      <plugin id="eu.esdihumboldt.util.geometry"/>
+      <plugin id="eu.esdihumboldt.util.geometry.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
@@ -220,6 +224,7 @@
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
+      <plugin id="eu.esdihumboldt.util.svg.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
