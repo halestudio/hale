@@ -103,7 +103,7 @@ public class MappingView extends AbstractMappingView {
 			}
 		};
 		showCellsOnChildren.setChecked(false);
-		showCellsOnChildren.setToolTipText(active);
+		showCellsOnChildren.setToolTipText(deactive);
 		showCellsOnChildren
 				.setImageDescriptor(MappingViewPlugin.getImageDescriptor("icons/sub_co.gif"));
 	}
