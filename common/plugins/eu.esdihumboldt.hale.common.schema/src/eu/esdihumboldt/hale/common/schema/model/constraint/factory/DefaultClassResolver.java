@@ -35,8 +35,8 @@ public class DefaultClassResolver implements ClassResolver {
 
 		try {
 			// loading via ClassUtils also supports primitive type classes
+			// which Class.forName is not able to restore
 			result = ClassUtils.getClass(className);
-			// result = Class.forName(className);
 		} catch (ClassNotFoundException e) {
 			log.debug("Could not find class " + className, e);
 		}
