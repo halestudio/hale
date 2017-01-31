@@ -445,6 +445,31 @@
             <parameterBinding></parameterBinding>
          </functionParameter>
       </propertyFunction>
+      <propertyFunction
+            category="eu.esdihumboldt.hale.align.general"
+            icon="icons/augmentation.gif"
+            identifier="eu.esdihumboldt.hale.common.align.collector.assign"
+            name="Assign collected references">
+         <targetProperties>
+            <property
+                  eager="false"
+                  maxOccurrence="-1"
+                  minOccurrence="0">
+            </property>
+         </targetProperties>
+         <functionParameter
+               deprecated="false"
+               description="Name of the collector that contains the references"
+               label="Collector name"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="collector"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </functionParameter>
+      </propertyFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.engine">

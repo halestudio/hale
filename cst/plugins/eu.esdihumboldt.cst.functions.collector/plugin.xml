@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.align.transformation">
+      <propertyTransformation
+            class="eu.esdihumboldt.cst.functions.collector.AssignReferenceFromCollector"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.hale.common.align.collector.assign"
+            id="eu.esdihumboldt.hale.common.align.collector.assign">
+      </propertyTransformation>
+   </extension>
+
+</plugin>
