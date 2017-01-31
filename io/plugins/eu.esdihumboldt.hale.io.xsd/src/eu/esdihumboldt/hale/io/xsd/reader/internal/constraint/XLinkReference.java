@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
 /**
@@ -42,4 +44,22 @@ public class XLinkReference extends Reference {
 		return super.extractId(refValue);
 	}
 
+	@Override
+	public Object toId(Object reference) {
+		if (reference == null || reference.toString().isEmpty()) {
+			throw new IllegalArgumentException("Reference must not be null or empty");
+		}
+
+		// if the reference is a valid NCName convert it to a simple ID
+
+		// XXX possible performance impact? this check is done for every
+		// reference...
+		if (!StringUtils.isNumeric(reference.toString().substring(0, 1)) && !StringUtils
+				.containsAny(reference.toString(), "\"\\ !#$%&'()*+,/:;<=>?@[]^`{|}~")) {
+			return "#" + reference.toString();
+		}
+		else {
+			return super.toId(reference);
+		}
+	}
 }
