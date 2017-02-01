@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -191,10 +192,10 @@ public class FileValidateTarget extends FileTarget<InstanceWriter>
 			public void widgetSelected(SelectionEvent e) {
 				validatorSelectionDialog.create();
 				validatorSelectionDialog.setContentType(getWizard().getContentType());
-				validatorSelectionDialog.open();
-
-				IOProviderDescriptor selection = validatorSelectionDialog.getSelection();
-				addValidator(selection);
+				if (validatorSelectionDialog.open() == Dialog.OK) {
+					IOProviderDescriptor selection = validatorSelectionDialog.getSelection();
+					addValidator(selection);
+				}
 			}
 
 			@Override
