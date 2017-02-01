@@ -8,10 +8,10 @@
 	<h1>GML Data Import</h1>
 	<p>
 		When selecting a GML file for data import, choose <i>Import as GML
-			(Features)</i>. The import will load all instances of mapping relevant
+			(Features)</i>. The import will load all instances of mapping-relevant
 		types found in the file, given they are derived from the GML <i>AbstractFeatureType</i>.
-		The root element by default is ignored as it is assumed that it is a
-		container element, e.g. a GML <i>FeatureCollection</i>.
+		The root element is ignored by default as it is assumed to be a container element, 
+		e.g. a GML <i>FeatureCollection</i>.
 	</p>
 	<div>
 		<img src="images/gml_data.png" class="fit"></img>
@@ -29,11 +29,24 @@
 		<img src="images/wfs_data.png" class="fit"></img>
 	</div>
 	<p>When determining the URL based on the service capabilities, you
-		can specify the feature types to select from the server. Also, you can
-		specify a bounding box for the features to request or specify a
+		can specify the feature types to select from the server. Furthermore, you can
+		specify a bounding box for the features to request and specify a
 		maximum number of features that should be returned by the server.</p>
 	<div>
 		<img src="images/wfs_data_bb.png" class="fit"></img>
+	</div>
+	<p>When loading from WFS sources, HALE supports request pagination, a capability that
+	    was introduced with the WFS 2.0 standard. You can activate or deactivate request
+	    pagination on the <i>XML/GML settings</i> page. If activated, the number of features 
+	    that will be retrieved per request can also be set.
+		</p>
+		<p>Even though pagination was introduced in the WFS 2.0 standard, there are
+		WFS server implementations available that support this feature for WFS 1.1.0 
+		requests as well. If you know that the queried WFS supports this and activate 
+		pagination, HALE will paginate the requests also for WFS 1.1.0 requests. 
+		</p>
+	<div>
+		<img src="images/wfs_data_settings.png" class="fit"></img>
 	</div>
 
 	<h2>Troubleshooting loading GML data</h2>
