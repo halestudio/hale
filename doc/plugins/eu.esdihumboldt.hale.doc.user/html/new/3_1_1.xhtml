@@ -10,9 +10,10 @@
 
 	<ul>
 		<li>Read interpolated Arc geometries from GML</li>
-		<li>Validate exported GML instances with Schematron</li>
 		<li>Support for multiple instance validators</li>
-				
+		<li>Validate exported GML instances with Schematron</li>
+		<li>Request pagination for WFS sources</li>
+		<li>Enhanced UI support for project variables</li>	
 	</ul>
 
 	<p>
@@ -25,7 +26,7 @@
 		possible through our contracts with more than 20 customers. We'd like
 		to thank you all for your support!</p>
 
-	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_1_0">
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_1_1">
 		<tbody>
 			
 			<!-- New features -->
@@ -49,6 +50,57 @@
 					<p>
 						Thanks to the <i>Landesamt für Vermessung und
 							Geobasisinformation Rheinland-Pfalz</i> for funding this work.
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="multiple-validators">
+				<td class="title">Multiple validators</td>
+				<td class="content">
+					<p>
+						hale studio's feature to validate exported XML and GML files has
+						been extended. It is now possible to configure multiple validators.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="schematron">
+				<td class="title">Schematron validation</td>
+				<td class="content">
+					<p>
+						In addition to the XML validation hale studio now supports the 
+						validation of exported XML and GML files with Schematron. The
+						required schema can be configured on-the-fly in the export wizard
+						or be added to the project permanently as a resource.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="wfs-pagination">
+				<td class="title">WFS request pagination support</td>
+				<td class="content">
+					<p>
+						When loading from WFS sources, hale studio now supports request 
+						pagination, a capability that was introduced with the WFS 2.0 standard.
+						This allows loading larger datasets from a WFS where previously this
+						may have been limited by a server-side limit of retrievable features
+						per request.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="variable-ui-support">
+				<td class="title">Better UI support for project variables</td>
+				<td class="content">
+					<p>
+						The use of project variables, a feature that was introduced with hale 
+						studio 3.0, is now easier as several wizards in hale studio have been
+						extended to provide content assistance. Simply press Ctrl+Space when
+						inside a text field and choose the desired variable from a list. The
+						content assistant will take care of the correct syntax.
+					</p>
+					<p>
+						<img src="3_1_1_images/project-variables-content-assist.png" />
 					</p>
 				</td>
 			</tr>
