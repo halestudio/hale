@@ -199,7 +199,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		case "2.0.2":
 			// The "numberMatched" reported by a 2.0.0/2.0.2 WFS should be
 			// number of features matched by the query.
-			this.size = hits;
+			this.size = isLimited() ? Math.min(maxNumberOfFeatures, hits) : hits;
 			break;
 		default:
 			this.size = UNKNOWN_SIZE;
@@ -265,6 +265,13 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	public boolean isPaged() {
 		return featuresPerRequest != UNLIMITED;
+	}
+
+	/**
+	 * @return true if an absolute limit of features to be retrieved is set
+	 */
+	public boolean isLimited() {
+		return maxNumberOfFeatures != UNLIMITED;
 	}
 
 	/**
