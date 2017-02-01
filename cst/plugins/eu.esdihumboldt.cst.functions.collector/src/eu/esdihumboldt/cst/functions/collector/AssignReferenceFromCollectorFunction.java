@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.align.model.functions;
+package eu.esdihumboldt.cst.functions.collector;
 
 /**
  * Constants for assign references from collector function
@@ -25,7 +25,7 @@ public interface AssignReferenceFromCollectorFunction {
 	/**
 	 * the function Id
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.align.collector.assign";
+	public static final String ID = "eu.esdihumboldt.cst.functions.collector.assign";
 
 	/**
 	 * Name of the parameter specifying the name of the collector to assign

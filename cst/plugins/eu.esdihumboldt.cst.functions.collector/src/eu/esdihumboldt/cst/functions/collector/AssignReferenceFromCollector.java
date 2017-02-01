@@ -27,7 +27,6 @@ import eu.esdihumboldt.cst.functions.collector.helpers.CollectorGroovyHelper;
 import eu.esdihumboldt.cst.functions.groovy.helpers.ContextHelpers;
 import eu.esdihumboldt.cst.functions.groovy.helpers.util.Collector;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
-import eu.esdihumboldt.hale.common.align.model.functions.AssignReferenceFromCollectorFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
