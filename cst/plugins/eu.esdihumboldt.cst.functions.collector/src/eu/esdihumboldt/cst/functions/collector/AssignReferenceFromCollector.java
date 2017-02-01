@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.align.transformation.report.impl.TransformationMessageImpl;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -88,8 +89,14 @@ public class AssignReferenceFromCollector
 		Collector collector = mainCollector.getAt(collectorName.getValue().toString());
 		if (collector == null) {
 			throw new TransformationException(MessageFormat.format(
-					"Collector \"{0}\" could not (yet) be found. Check spelling and function priority.",
-					collectorName.getValue().toString()));
+					"Error retrieving collector \"{0}\"", collectorName.getValue().toString()));
+		}
+		else if (collector.values().isEmpty()) {
+			log.warn(new TransformationMessageImpl(getCell(),
+					MessageFormat.format(
+							"Collector \"{0}\" contains no values. If this is unexpected, check the spelling of the collector name and the priority of the transformation function.",
+							collectorName.getStringRepresentation()),
+					null));
 		}
 
 		MultiValue result;
