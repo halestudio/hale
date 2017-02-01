@@ -19,6 +19,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import com.google.common.collect.ListMultimap;
 
@@ -52,7 +53,7 @@ public class AssignReferenceFromCollector
 		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
 		implements AssignReferenceFromCollectorFunction {
 
-	private final CollectorGroovyHelper helper = new CollectorGroovyHelper();
+	private static final CollectorGroovyHelper helper = new CollectorGroovyHelper();
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
@@ -70,23 +71,19 @@ public class AssignReferenceFromCollector
 
 		// XXX check anchor?
 
-		// assign the value supplied as parameter
-		// conversion will be applied automatically to fit the binding
-//		return getTransformedParameterChecked(PARAMETER_VALUE);
-
-		Collector mainCollector = (Collector) getExecutionContext().getTransformationContext()
+		final Collector mainCollector = (Collector) getExecutionContext().getTransformationContext()
 				.get(ContextHelpers.KEY_COLLECTOR);
 		if (mainCollector == null) {
 			throw new TransformationException(
 					"Fatal: No collector has been created yet. Check function priority.");
 		}
 
-		ParameterValue collectorName = getParameterChecked(PARAMETER_COLLECTOR);
+		final ParameterValue collectorName = getParameterChecked(PARAMETER_COLLECTOR);
 		if (collectorName == null || collectorName.isEmpty()) {
 			throw new TransformationException("Fatal: No collector name was specified.");
 		}
 
-		Collector collector = mainCollector.getAt(collectorName.getValue().toString());
+		final Collector collector = mainCollector.getAt(collectorName.getValue().toString());
 		if (collector == null) {
 			throw new TransformationException(MessageFormat.format(
 					"Error retrieving collector \"{0}\"", collectorName.getValue().toString()));
@@ -99,28 +96,42 @@ public class AssignReferenceFromCollector
 					null));
 		}
 
-		MultiValue result;
-
-		List<Object> collectedReferences = helper.extractCollectedValues(collector);
+		// Determine where to assign the collected values
 		final TypeDefinition resultPropertyType = resultProperty.getDefinition().getPropertyType();
+		final PropertyDefinition targetProperty;
+		final ResultStrategy resultStrategy;
 		if (resultPropertyType.getConstraint(HasValueFlag.class).isEnabled()) {
-			// Target property can take values, assign directly
-			result = new MultiValue(collectedReferences);
+			// The result property can take values, therefore assign directly to
+			// property
+			targetProperty = resultProperty.getDefinition();
+			// No instance creation is required in this case
+			resultStrategy = ResultStrategy.USE_VALUE;
 		}
 		else {
 			// Find child element/attribute that can be assigned the reference
-			final PropertyDefinition suitableChild = Optional
-					.ofNullable(findReferenceChildProperty(resultPropertyType))
+			targetProperty = Optional.ofNullable(findReferenceChildProperty(resultPropertyType))
 					.orElseThrow(() -> new TransformationException(
 							"Fatal: No child property could be found to assign a reference to."));
-
-			final Reference referenceConstraint = suitableChild.getConstraint(Reference.class);
-
-			result = new MultiValue();
-			collectedReferences.forEach(ref -> result.add(helper.createInstance(resultPropertyType,
-					suitableChild, referenceConstraint.idToReference(ref))));
+			resultStrategy = ResultStrategy.BUILD_INSTANCE;
 		}
 
+		List<Object> collectedReferences = helper.extractCollectedValues(collector);
+
+		// Process collected values if target property is a reference, otherwise
+		// use plain values
+		final Function<Object, Object> referenceStrategy;
+		if (targetProperty.getConstraint(Reference.class).isReference()) {
+			final Reference referenceConstraint = targetProperty.getConstraint(Reference.class);
+			// Use the idToReference method to construct the reference
+			referenceStrategy = referenceConstraint::idToReference;
+		}
+		else {
+			referenceStrategy = Function.identity();
+		}
+
+		MultiValue result = new MultiValue();
+		collectedReferences.forEach(ref -> result.add(resultStrategy
+				.createResult(resultPropertyType, targetProperty, referenceStrategy.apply(ref))));
 		return result;
 	}
 
@@ -139,4 +150,26 @@ public class AssignReferenceFromCollector
 				.orElse(null);
 	}
 
+	private interface ResultStrategy {
+
+		public final ResultStrategy USE_VALUE = new ResultStrategy() {
+
+			@Override
+			public Object createResult(TypeDefinition type, PropertyDefinition property,
+					Object value) {
+				return value;
+			}
+		};
+
+		public final ResultStrategy BUILD_INSTANCE = new ResultStrategy() {
+
+			@Override
+			public Object createResult(TypeDefinition type, PropertyDefinition property,
+					Object value) {
+				return helper.createInstance(type, property, value);
+			}
+		};
+
+		Object createResult(TypeDefinition type, PropertyDefinition property, Object value);
+	}
 }
