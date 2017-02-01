@@ -45,21 +45,20 @@ public class XLinkReference extends Reference {
 	}
 
 	@Override
-	public Object toId(Object reference) {
-		if (reference == null || reference.toString().isEmpty()) {
-			throw new IllegalArgumentException("Reference must not be null or empty");
+	public Object idToReference(Object id) {
+		if (id == null || id.toString().isEmpty()) {
+			throw new IllegalArgumentException("ID must not be null or empty");
 		}
-
-		// if the reference is a valid NCName convert it to a simple ID
 
 		// XXX possible performance impact? this check is done for every
 		// reference...
-		if (!StringUtils.isNumeric(reference.toString().substring(0, 1)) && !StringUtils
-				.containsAny(reference.toString(), "\"\\ !#$%&'()*+,/:;<=>?@[]^`{|}~")) {
-			return "#" + reference.toString();
+		if (!StringUtils.isNumeric(id.toString().substring(0, 1))
+				&& !StringUtils.containsAny(id.toString(), "\"\\ !#$%&'()*+,/:;<=>?@[]^`{|}~")) {
+			// if the ID is a valid NCName convert it to a local XPointer
+			return "#" + id.toString();
 		}
 		else {
-			return super.toId(reference);
+			return super.idToReference(id);
 		}
 	}
 }

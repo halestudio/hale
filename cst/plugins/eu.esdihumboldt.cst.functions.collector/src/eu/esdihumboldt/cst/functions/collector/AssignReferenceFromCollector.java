@@ -118,7 +118,7 @@ public class AssignReferenceFromCollector
 
 			result = new MultiValue();
 			collectedReferences.forEach(ref -> result.add(helper.createInstance(resultPropertyType,
-					suitableChild, referenceConstraint.toId(ref))));
+					suitableChild, referenceConstraint.idToReference(ref))));
 		}
 
 		return result;

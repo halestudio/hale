@@ -124,13 +124,13 @@ public class Reference implements PropertyConstraint {
 
 	/**
 	 * Converts the identifier of a referenced object to the reference value.
-	 * The default implementation just returns the given reference.
+	 * The default implementation just returns the given identifier.
 	 * 
-	 * @param reference the reference
+	 * @param id the identifier
 	 * @return the reference value
 	 */
-	public Object toId(Object reference) {
-		return reference;
+	public Object idToReference(Object id) {
+		return id;
 	}
 
 }
