@@ -103,7 +103,9 @@ public class CSVInstanceReader extends AbstractInstanceReader {
 			for (String part : nextLine) {
 				if (index >= propAr.length) {
 					// break if line has more columns than the specified type
-					reporter.error(new IOMessageImpl("Too many columns in line " + line, null));
+					reporter.warn(new IOMessageImpl(
+							"More data columns encountered than defined in the schema ", null, line,
+							-1));
 					break;
 				}
 				PropertyDefinition property = propAr[index];
