@@ -371,7 +371,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		private void proceedOrClose() {
 			iterator.close();
 
-			if (!isPaged()) {
+			if (!isPaged() || isFeatureLimitReached()) {
 				close();
 			}
 			else {
@@ -441,7 +441,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				return false;
 			}
 
-			if (maxNumberOfFeatures != UNLIMITED && totalFeaturesProcessed >= maxNumberOfFeatures) {
+			if (isFeatureLimitReached()) {
 				close();
 				return false;
 			}
@@ -459,6 +459,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 
 			return false;
+		}
+
+		/**
+		 * @return true if the number of features processed is equal to (or
+		 *         exceeds) the maximum number of features to processed or the
+		 *         number of results reported by the WFS.
+		 */
+		protected boolean isFeatureLimitReached() {
+			return (maxNumberOfFeatures != UNLIMITED
+					&& totalFeaturesProcessed >= maxNumberOfFeatures)
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size);
 		}
 
 		/**
