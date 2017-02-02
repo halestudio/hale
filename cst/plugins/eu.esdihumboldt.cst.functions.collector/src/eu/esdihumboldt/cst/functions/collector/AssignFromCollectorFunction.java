@@ -20,7 +20,7 @@ package eu.esdihumboldt.cst.functions.collector;
  * 
  * @author Florian Esser
  */
-public interface AssignReferenceFromCollectorFunction {
+public interface AssignFromCollectorFunction {
 
 	/**
 	 * the function Id

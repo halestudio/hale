@@ -4,7 +4,7 @@
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
       <propertyTransformation
-            class="eu.esdihumboldt.cst.functions.collector.AssignReferenceFromCollector"
+            class="eu.esdihumboldt.cst.functions.collector.AssignFromCollector"
             engine="eu.esdihumboldt.align.java"
             function="eu.esdihumboldt.cst.functions.collector.assign"
             id="eu.esdihumboldt.cst.functions.collector.assign">
@@ -16,9 +16,10 @@
             category="eu.esdihumboldt.hale.align.general"
             icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.cst.functions.collector.assign"
-            name="Assign collected references">
+            name="Assign collected values">
          <targetProperties>
             <property
+                  description="The property the collected values shall be assigned to"
                   eager="false"
                   maxOccurrence="1"
                   minOccurrence="1">
@@ -26,7 +27,7 @@
          </targetProperties>
          <functionParameter
                deprecated="false"
-               description="Name of the collector that contains the references"
+               description="Name of the collector that contains the values to be assigned"
                label="Collector name"
                maxOccurrence="1"
                minOccurrence="1"
