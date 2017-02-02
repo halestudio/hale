@@ -159,9 +159,17 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 						try {
 							if (!binding.getBinding().equals(String.class)) {
 
-								if (property.getPropertyType().getConstraint(Binding.class)
-										.getBinding().equals(Float.class) && decimalPoint != '.')
+								if (Number.class.isAssignableFrom(property.getPropertyType()
+										.getConstraint(Binding.class).getBinding())
+										&& decimalPoint != '.') {
+									// number binding and we don't have the
+									// default decimal point
+
+									// TODO more sophisticated behavior?
+									// what about thousands separator char?
+
 									part = part.replace(decimalPoint, '.');
+								}
 
 								ConversionService conversionService = HalePlatform
 										.getService(ConversionService.class);
