@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -80,8 +81,7 @@ public class CSVInstanceReaderTest {
 		// read Instances ###
 		InstanceCollection instances = readCSVInstances("/data/test1.csv", typeName, true, schema,
 				null, null, null);
-		assertTrue(instances.hasSize());
-		assertEquals(numberOfInstances, instances.size());
+		assertEquals(numberOfInstances, collectionSize(instances));
 
 		// get Type to check property definition (schema and instance
 		// combination)
@@ -132,8 +132,7 @@ public class CSVInstanceReaderTest {
 		// read Instances ###
 		InstanceCollection instances = readCSVInstances("/data/test3-pointdecimal.csv", typeName,
 				true, schema, ";", null, null, ".");
-		assertTrue(instances.hasSize());
-		assertEquals(numberOfInstances, instances.size());
+		assertEquals(numberOfInstances, collectionSize(instances));
 
 		// get Type to check property definition (schema and instance
 		// combination)
@@ -183,8 +182,7 @@ public class CSVInstanceReaderTest {
 		// read Instances ###
 		InstanceCollection instances = readCSVInstances("/data/test4-commadecimal.csv", typeName,
 				true, schema, ";", null, null, ",");
-		assertTrue(instances.hasSize());
-		assertEquals(numberOfInstances, instances.size());
+		assertEquals(numberOfInstances, collectionSize(instances));
 
 		// get Type to check property definition (schema and instance
 		// combination)
@@ -204,6 +202,21 @@ public class CSVInstanceReaderTest {
 			assertEquals(dataFirstColumn[i], value[0]);
 		}
 
+	}
+
+	private int collectionSize(InstanceCollection instances) {
+		if (instances.hasSize()) {
+			return instances.size();
+		}
+
+		int counter = 0;
+		try (ResourceIterator<Instance> it = instances.iterator()) {
+			while (it.hasNext()) {
+				it.next();
+				counter++;
+			}
+		}
+		return counter;
 	}
 
 	private Schema readCSVSchema(String sourceLocation, String typeName, String paramPropertyType,
