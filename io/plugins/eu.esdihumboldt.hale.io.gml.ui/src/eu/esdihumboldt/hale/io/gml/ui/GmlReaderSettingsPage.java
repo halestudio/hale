@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.io.gml.ui;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -43,6 +45,7 @@ public class GmlReaderSettingsPage
 	private Button ignoreNamespaces;
 	private Button strict;
 	private Button rootAsInstance;
+	private Button requestPaginationEnabled;
 	private Spinner featuresPerRequest;
 
 	/**
@@ -62,6 +65,8 @@ public class GmlReaderSettingsPage
 		provider.setParameter(StreamGmlReader.PARAM_STRICT, Value.of(strict.getSelection()));
 		provider.setParameter(StreamGmlReader.PARAM_IGNORE_ROOT,
 				Value.of(!rootAsInstance.getSelection()));
+		provider.setParameter(StreamGmlReader.PARAM_PAGINATE_REQUEST,
+				Value.of(requestPaginationEnabled.getSelection()));
 		provider.setParameter(StreamGmlReader.PARAM_FEATURES_PER_WFS_REQUEST,
 				Value.of(featuresPerRequest.getText()));
 		return true;
@@ -108,8 +113,18 @@ public class GmlReaderSettingsPage
 				.applyTo(featuresPerRequestGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(featuresPerRequestGroup);
 
-		Label featuresPerRequestLabel = new Label(featuresPerRequestGroup, SWT.NONE);
-		featuresPerRequestLabel.setText("Number of features per WFS request: ");
+		requestPaginationEnabled = new Button(featuresPerRequestGroup, SWT.CHECK);
+		requestPaginationEnabled
+				.setText("Paginate WFS requests; number of features per WFS request:");
+		requestPaginationEnabled.setSelection(true);
+		requestPaginationEnabled.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				featuresPerRequest.setEnabled(requestPaginationEnabled.getSelection());
+			}
+		});
+
 		featuresPerRequest = new Spinner(featuresPerRequestGroup, SWT.BORDER);
 		featuresPerRequest.setMinimum(1);
 		featuresPerRequest.setMaximum(500000);

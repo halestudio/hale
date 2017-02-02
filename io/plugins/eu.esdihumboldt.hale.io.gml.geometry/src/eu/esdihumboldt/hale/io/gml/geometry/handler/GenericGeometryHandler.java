@@ -165,6 +165,15 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		return createGeometry(instance, geoFind.getGeometries(), defaultCrsDef, reader);
 	}
 
+	@SuppressWarnings("unchecked")
+	static Class<? extends Geometry> findClosestCommonSuperclass(Class<? extends Geometry> a,
+			Class<? extends Geometry> b) {
+		while (!a.isAssignableFrom(b)) {
+			a = (Class<? extends Geometry>) a.getSuperclass();
+		}
+		return a;
+	}
+
 	/**
 	 * Create a geometry value from a given instance.
 	 * 
@@ -215,8 +224,8 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 					commonGeomType = geometryType;
 				}
 				else if (!commonGeomType.equals(geometryType)) {
-					// TODO determine common type in inheritance?
-					commonGeomType = Geometry.class;
+					// find common super class
+					commonGeomType = findClosestCommonSuperclass(commonGeomType, geometryType);
 				}
 				geomList.add(geomProp.getGeometry());
 			}
@@ -232,6 +241,22 @@ public class GenericGeometryHandler extends FixedConstraintsGeometryHandler {
 		}
 
 		if (allowCombine && commonGeomType != null) {
+			if (!(commonGeomType.equals(Polygon.class) || commonGeomType.equals(Point.class)
+					|| commonGeomType.equals(LineString.class))) {
+				// if we don't have a supported common geometry type
+				// check if it is a subclass of a supported type
+				if (LineString.class.isAssignableFrom(commonGeomType)) {
+					// for instance for InterpolatedLineString
+					commonGeomType = LineString.class;
+				}
+				if (Point.class.isAssignableFrom(commonGeomType)) {
+					commonGeomType = Point.class;
+				}
+				if (Polygon.class.isAssignableFrom(commonGeomType)) {
+					commonGeomType = Polygon.class;
+				}
+			}
+
 			Geometry geom = null;
 			if (commonGeomType.equals(Polygon.class)) {
 				// create a MultiPolygon

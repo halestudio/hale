@@ -15,13 +15,31 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.wfs
 
-import groovy.transform.InheritConstructors
-
 /**
  * Exception for exceptions during WFS communication
  * 
  * @author Florian Esser
  */
-@InheritConstructors
 class WFSException extends Exception {
+
+	public WFSException() {
+		super();
+	}
+
+	public WFSException(String message, Throwable cause, boolean enableSuppression,
+	boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public WFSException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public WFSException(String message) {
+		super(message);
+	}
+
+	public WFSException(Throwable cause) {
+		super(cause);
+	}
 }

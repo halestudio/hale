@@ -16,15 +16,14 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Polygon;
@@ -32,22 +31,37 @@ import com.vividsolutions.jts.geom.Polygon;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading multi-surface geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 
 	private MultiPolygon reference;
-	private MultiPolygon referenceOnGrid;
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
+	/*
+	 * Max positional error must be smaller than the default as we have
+	 * geographic coordinates.
+	 * 
+	 * With a larger value we also end up with double coordinates (which makes
+	 * them harder to compare to the reference).
 	 */
+	private static final double maxPositionalError = 0.002;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations
+			.grid(maxPositionalError, true);
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
+
 	@Override
 	public void init() {
 		super.init();
@@ -86,38 +100,10 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 
 		reference = geomFactory.createMultiPolygon(polygons);
 
-		// Grid
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.44, 37.80),
-				new Coordinate(-122.46, 37.80), new Coordinate(-122.46, 37.78),
-				new Coordinate(-122.44, 37.78), new Coordinate(-122.44, 37.80) });
+		checker = referenceChecker(reference);
 
-		holes = new LinearRing[1];
-		hole1 = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(-122.24, 37.6),
-				new Coordinate(-122.25, 37.59), new Coordinate(-122.25, 37.57),
-				new Coordinate(-122.24, 37.58), new Coordinate(-122.24, 37.6) });
-		holes[0] = hole1;
-
-		Polygon polygon3 = geomFactory.createPolygon(shell, holes);
-
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
-				new Coordinate(3.33, 3.33), new Coordinate(0, -3.2), new Coordinate(-3.34, -3.2),
-				new Coordinate(0, 3.2) });
-
-		holes = new LinearRing[2];
-		hole1 = geomFactory
-				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
-						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
-		hole2 = geomFactory
-				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
-						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
-		holes[0] = hole1;
-		holes[1] = hole2;
-
-		Polygon polygon4 = geomFactory.createPolygon(shell, holes);
-
-		Polygon[] polygons2 = new Polygon[] { polygon4, polygon3 };
-
-		referenceOnGrid = geomFactory.createMultiPolygon(polygons2);
+		gridChecker = combine(referenceChecker(reference, maxPositionalError),
+				gridConfig.geometryChecker());
 
 	}
 
@@ -138,7 +124,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -161,7 +147,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -184,7 +170,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -200,8 +186,8 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 	public void testMultiSurfaceGml3_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/surface/sample-multisurface-gml3.xml").toURI(), false,
-				0.01);
+				getClass().getResource("/data/surface/sample-multisurface-gml3.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -209,7 +195,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -226,7 +212,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
 				getClass().getResource("/data/surface/sample-multisurface-gml31.xml").toURI(),
-				false, 0.01);
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -234,7 +220,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -251,7 +237,7 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/surface/sample-multisurface-gml32.xml").toURI(),
-				false, 0.01);
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -259,34 +245,10 @@ public class MultiSurfaceGeometryTest extends AbstractHandlerTest {
 			// SurfaceMember with LinearRings defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkSurfacePropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkSurfacePropertyInstance(Instance instance) {
-		checkSurfacePropertyInstance(instance, true);
-	}
-
-	private void checkSurfacePropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			@SuppressWarnings("unchecked")
-			MultiPolygon multipolygon = ((GeometryProperty<MultiPolygon>) instance).getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					multipolygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
-		}
-	}
 }

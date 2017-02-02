@@ -26,13 +26,19 @@ import de.fhg.igd.osgi.util.OsgiUtils;
  * 
  * @author Simon Templer
  */
-public class OsgiClassResolver implements ClassResolver {
+public class OsgiClassResolver extends DefaultClassResolver {
 
 	private final Map<String, Class<?>> classCache = new HashMap<>();
 
 	@Override
 	public Class<?> loadClass(String className) {
 		Class<?> clazz = classCache.get(className);
+
+		if (clazz == null) {
+			// first try default mechanism for loading classes
+			clazz = super.loadClass(className);
+		}
+
 		if (clazz == null) {
 			clazz = OsgiUtils.loadClass(className, null);
 			if (clazz != null) {

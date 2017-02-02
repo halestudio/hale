@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
@@ -62,6 +63,12 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	public static final String PARAM_IGNORE_NAMESPACES = "ignoreNamespaces";
 
 	/**
+	 * The name of the parameter specifying if pagination should be activated
+	 * for WFS GetFeature requests.
+	 */
+	public static final String PARAM_PAGINATE_REQUEST = "paginateRequest";
+
+	/**
 	 * The name of the parameter specifying the maximum number of features to
 	 * retrieve per single WFS GetFeature request. Only useful if source is a
 	 * WFS GetFeature request URI.
@@ -85,6 +92,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		addSupportedParameter(PARAM_IGNORE_ROOT);
 		addSupportedParameter(PARAM_STRICT);
 		addSupportedParameter(PARAM_IGNORE_NAMESPACES);
+		addSupportedParameter(PARAM_PAGINATE_REQUEST);
 		addSupportedParameter(PARAM_FEATURES_PER_WFS_REQUEST);
 	}
 
@@ -101,8 +109,15 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			boolean strict = getParameter(PARAM_STRICT).as(Boolean.class, false);
 			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
 					false);
-			int featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
-					1000);
+			boolean paginateRequest = getParameter(PARAM_PAGINATE_REQUEST).as(Boolean.class, false);
+			int featuresPerRequest;
+			if (paginateRequest) {
+				featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
+						1000);
+			}
+			else {
+				featuresPerRequest = WfsBackedGmlInstanceCollection.UNLIMITED;
+			}
 
 			LocatableInputSupplier<? extends InputStream> source = getSource();
 			String scheme = null;
@@ -132,6 +147,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			// also give feedback to the user if the file can be loaded
 			reporter.setSuccess(true);
 		} catch (Throwable e) {
+			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
 		}
 

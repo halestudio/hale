@@ -73,14 +73,13 @@ public class JDBCTableCollection implements InstanceCollection {
 
 		private boolean done = false;
 
-		private final CRSProvider crsProvider;
-
 		/**
 		 * Default constructor.
+		 * 
+		 * @param crsProvider the CRS provider
 		 */
 		public JDBCTableIterator(CRSProvider crsProvider) {
 			super();
-			this.crsProvider = crsProvider;
 			builder = new TableInstanceBuilder(crsProvider);
 			try {
 				connection = createConnection();

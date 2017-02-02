@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.CellNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.SourceNode;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationNodeVisitor;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree;
+import eu.esdihumboldt.hale.common.align.model.transformation.tree.context.TransformationContext;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.LeftoversImpl;
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.SourceNodeImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
@@ -58,7 +59,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 	 * @param tree the transformation tree, may be null if instance is null
 	 * @param log the transformation log
 	 */
-	public InstanceVisitor(FamilyInstance instance, TransformationTree tree, TransformationLog log) {
+	public InstanceVisitor(FamilyInstance instance, TransformationTree tree,
+			TransformationLog log) {
 		super();
 		this.instance = instance;
 		this.tree = tree;
@@ -102,8 +104,8 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					source.setValue(instance); // also sets the node to defined
 					for (FamilyInstance child : instance.getChildren()) {
 						// Find fitting SourceNodes.
-						Collection<SourceNode> candidateNodes = tree.getRootSourceNodes(child
-								.getDefinition());
+						Collection<SourceNode> candidateNodes = tree
+								.getRootSourceNodes(child.getDefinition());
 
 						if (candidateNodes.isEmpty()) {
 							/*
@@ -138,9 +140,30 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 											candidateNode.getParent(), false);
 									duplicateNode.setAnnotatedParent(source);
 									source.addAnnotatedChild(duplicateNode);
-									duplicateNode.setContext(candidateNode.getContext());
-									candidateNode.getContext().duplicateContext(candidateNode,
-											duplicateNode, Collections.<Cell> emptySet(), log);
+									TransformationContext context = candidateNode.getContext();
+									duplicateNode.setContext(context);
+									if (context != null) {
+										context.duplicateContext(candidateNode, duplicateNode,
+												Collections.<Cell> emptySet(), log);
+									}
+									else {
+										/*
+										 * Not sure what this really means if we
+										 * get here.
+										 * 
+										 * Best guess: Probably that we weren't
+										 * able to determine how the duplication
+										 * of this source can be propagted to
+										 * the target. Thus the duplicated node
+										 * will probably not have any
+										 * connection.
+										 */
+										log.warn(log.createMessage(
+												"No transformation context for duplicated node of source "
+														+ candidateNode.getDefinition()
+																.getDisplayName(),
+												null));
+									}
 									candidateNode = duplicateNode;
 								}
 

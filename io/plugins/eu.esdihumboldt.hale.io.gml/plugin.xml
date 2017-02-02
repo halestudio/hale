@@ -137,34 +137,6 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
-               label="Max Position Error"
-               name="interpolation.maxError"
-               optional="true">
-            <parameterBinding
-                  class="java.lang.Double">
-            </parameterBinding>
-            <valueDescriptor
-                  default="0.1"
-                  defaultDescription="By default 0.1(unit) is supplied">
-            </valueDescriptor>
-         </providerParameter>
-         <providerParameter
-               description="Moves all geometries to the interpolation grid to ensure topological consistency"
-               label="Move all geometries to interpolation gid"
-               name="interpolation.geometries.moveToGrid"
-               optional="true">
-            <parameterBinding
-                  class="java.lang.Boolean">
-            </parameterBinding>
-            <valueDescriptor
-                  default="false"
-                  defaultDescription="Leave non-interpolated geometries untouched"
-                  sample="true"
-                  sampleDescription="will move all coordinates of all geometries to universal grid">
-            </valueDescriptor>
-         </providerParameter>
-         <providerParameter
                description="Combine composite geometries (e.g. CompositeSurface, Surface) to a single (Simple Feature) geometry if possible."
                label="Combine composite geometries"
                name="geometry.combineComposites"
@@ -178,10 +150,69 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
+               description="Activate pagination for WFS GetFeature requests"
+               label="Activate WFS request pagination"
+               name="paginateRequest"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
                description="Number of features to retrieve at most in a single WFS GetFeature request"
                label="Features per WFS request"
                name="featuresPerWfsRequest"
                optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="The identifier of the algorithm to use for the interpolation of Arc and Circle geometries"
+               label="Interpolation algorithm"
+               name="interpolation.algorithm"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="segment"
+                  defaultDescription="The default interpolation algorithm splits arcs in smaller segments based on the maximum positional error"
+                  sample="grid"
+                  sampleDescription="Use the grid interpolation algorithm">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Specify the Maximum positional error for geometry interpolation"
+               label="Maximum Positional Error"
+               name="interpolation.maxError"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Moves all geometries to the interpolation grid to allow for topological consistency (only applicable if the grid interpolation algorithm is selected)"
+               label="Move all geometries to interpolation gid"
+               name="interpolation.grid.moveAllToGrid"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="Leave non-interpolated geometries untouched"
+                  sample="true"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -231,34 +262,6 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Specify the Maximum position error for interpolation of curve geometry(Arc)"
-               label="Max Position Error"
-               name="interpolation.maxError"
-               optional="true">
-            <parameterBinding
-                  class="java.lang.Double">
-            </parameterBinding>
-            <valueDescriptor
-                  default="0.1"
-                  defaultDescription="By default 0.1(unit) is supplied">
-            </valueDescriptor>
-         </providerParameter>
-         <providerParameter
-               description="Moves all geometries to the interpolation grid to ensure topological consistency"
-               label="Move all geometries to interpolation gid"
-               name="interpolation.geometries.moveToGrid"
-               optional="true">
-            <parameterBinding
-                  class="java.lang.Boolean">
-            </parameterBinding>
-            <valueDescriptor
-                  default="false"
-                  defaultDescription="Leave non-interpolated geometries untouched"
-                  sample="true"
-                  sampleDescription="will move all coordinates of all geometries to universal grid">
-            </valueDescriptor>
-         </providerParameter>
-         <providerParameter
                description="Combine composite geometries (e.g. CompositeSurface, Surface) to a single (Simple Feature) geometry if possible."
                label="Combine composite geometries"
                name="geometry.combineComposites"
@@ -272,10 +275,69 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
+               description="Activate pagination for WFS GetFeature requests"
+               label="Activate WFS request pagination"
+               name="paginateRequest"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
                description="Number of features to retrieve at most in a single WFS GetFeature request"
                label="Features per WFS request"
                name="featuresPerWfsRequest"
                optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="The identifier of the algorithm to use for the interpolation of Arc and Circle geometries"
+               label="Interpolation algorithm"
+               name="interpolation.algorithm"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="segment"
+                  defaultDescription="The default interpolation algorithm splits arcs in smaller segments based on the maximum positional error"
+                  sample="grid"
+                  sampleDescription="Use the grid interpolation algorithm">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Specify the Maximum positional error for geometry interpolation"
+               label="Maximum Positional Error"
+               name="interpolation.maxError"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Double">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0.1"
+                  defaultDescription="By default 0.1(unit) is supplied">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Moves all geometries to the interpolation grid to allow for topological consistency (only applicable if the grid interpolation algorithm is selected)"
+               label="Move all geometries to interpolation gid"
+               name="interpolation.grid.moveAllToGrid"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="Leave non-interpolated geometries untouched"
+                  sample="true"
+                  sampleDescription="will move all coordinates of all geometries to universal grid">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider

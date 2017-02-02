@@ -130,9 +130,9 @@ public class DefaultCustomPropertyFunction implements CustomPropertyFunction {
 	};
 
 	private DefaultCustomPropertyFunctionEntity target;
-	private List<DefaultCustomPropertyFunctionEntity> sources;
+	private List<DefaultCustomPropertyFunctionEntity> sources = new ArrayList<>();
 
-	private List<DefaultCustomPropertyFunctionParameter> parameters;
+	private List<DefaultCustomPropertyFunctionParameter> parameters = new ArrayList<>();
 
 	private DefaultCustomFunctionExplanation explanation;
 

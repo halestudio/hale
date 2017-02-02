@@ -19,12 +19,15 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
+import net.jcip.annotations.Immutable;
 
 /**
- * Specifies a Java binding for a type value, default binding is {@link Object}.<br>
+ * Specifies a Java binding for a type value, default binding is {@link Object}.
+ * <br>
  * <br>
  * The binding is usually only relevant when the {@link HasValueFlag} is enabled
  * for a type.
@@ -36,6 +39,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 @Immutable
 @Constraint(mutable = false)
 public class Binding implements TypeConstraint {
+
+	private static final ALogger log = ALoggerFactory.getLogger(Binding.class);
 
 	/**
 	 * Binding singletons, binding class mapped to the corresponding binding
@@ -52,6 +57,11 @@ public class Binding implements TypeConstraint {
 	public static Binding get(Class<?> binding) {
 		Binding bc = singletons.get(binding);
 		if (bc == null) {
+			if (binding.isPrimitive()) {
+				// warn about primitive binding, as it may not have a null value
+				log.warn("Using a primitive type as binding is discouraged");
+			}
+
 			bc = new Binding(binding);
 			singletons.put(binding, bc);
 		}
