@@ -147,45 +147,7 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 					}
 					PropertyDefinition property = propAr[index];
 
-					if (part != null && part.isEmpty()) {
-						// FIXME make this configurable
-						part = null;
-					}
-
-					Object value = part;
-
-					if (part != null) {
-						Binding binding = property.getPropertyType().getConstraint(Binding.class);
-						try {
-							if (!binding.getBinding().equals(String.class)) {
-
-								if (Number.class.isAssignableFrom(property.getPropertyType()
-										.getConstraint(Binding.class).getBinding())
-										&& decimalPoint != '.') {
-									// number binding and we don't have the
-									// default decimal point
-
-									// TODO more sophisticated behavior?
-									// what about thousands separator char?
-
-									part = part.replace(decimalPoint, '.');
-								}
-
-								ConversionService conversionService = HalePlatform
-										.getService(ConversionService.class);
-								if (conversionService.canConvert(String.class,
-										binding.getBinding())) {
-									value = conversionService.convert(part, binding.getBinding());
-								}
-								else {
-									throw new IllegalStateException("Conversion not possible!");
-								}
-							}
-						} catch (Exception e) {
-							log.error(MessageFormat.format("Cannot convert property value to {0}",
-									binding.getBinding().getSimpleName()), e);
-						}
-					}
+					Object value = convertValue(part, property);
 
 					instance.addProperty(property.getName(), value);
 					index++;
@@ -195,6 +157,44 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 			}
 
 			return instance;
+		}
+
+		private Object convertValue(String part, PropertyDefinition property) {
+			if (part == null || part.isEmpty()) {
+				// FIXME make this configurable?
+				return null;
+			}
+
+			Binding binding = property.getPropertyType().getConstraint(Binding.class);
+			try {
+				if (!binding.getBinding().equals(String.class)) {
+
+					if (Number.class.isAssignableFrom(binding.getBinding())
+							&& decimalPoint != '.') {
+						// number binding and we don't have the
+						// default decimal point
+
+						// TODO more sophisticated behavior?
+						// what about thousands separator char?
+
+						part = part.replace(decimalPoint, '.');
+					}
+
+					ConversionService conversionService = HalePlatform
+							.getService(ConversionService.class);
+					if (conversionService.canConvert(String.class, binding.getBinding())) {
+						return conversionService.convert(part, binding.getBinding());
+					}
+					else {
+						throw new IllegalStateException("Conversion not possible!");
+					}
+				}
+			} catch (Exception e) {
+				log.error(MessageFormat.format("Cannot convert property value to {0}",
+						binding.getBinding().getSimpleName()), e);
+			}
+
+			return part;
 		}
 
 		@Override
