@@ -174,6 +174,12 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			// unintended retrieval of too many features
 			maxNumberOfFeatures = Integer
 					.parseInt(primordialQueryParams.get(getMaxFeaturesParameterName(wfsVersion)));
+
+			if (maxNumberOfFeatures < 0) {
+				throw new IllegalArgumentException(
+						MessageFormat.format("Parameter \"{0}\" must be a non-negative integer.",
+								getMaxFeaturesParameterName(wfsVersion)));
+			}
 		}
 
 		// Use primordial URI and issue "hits" request to check if the WFS will
@@ -198,8 +204,9 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		case "2.0.0":
 		case "2.0.2":
 			// The "numberMatched" reported by a 2.0.0/2.0.2 WFS should be
-			// number of features matched by the query.
-			this.size = hits;
+			// number of features matched by the query. If hits equals
+			// UNKNOWN_SIZE then size is also set to that value
+			this.size = isLimited() ? Math.min(maxNumberOfFeatures, hits) : hits;
 			break;
 		default:
 			this.size = UNKNOWN_SIZE;
@@ -265,6 +272,13 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 */
 	public boolean isPaged() {
 		return featuresPerRequest != UNLIMITED;
+	}
+
+	/**
+	 * @return true if an absolute limit of features to be retrieved is set
+	 */
+	public boolean isLimited() {
+		return maxNumberOfFeatures != UNLIMITED;
 	}
 
 	/**
@@ -371,7 +385,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		private void proceedOrClose() {
 			iterator.close();
 
-			if (!isPaged()) {
+			if (!isPaged() || isFeatureLimitReached()) {
 				close();
 			}
 			else {
@@ -441,7 +455,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				return false;
 			}
 
-			if (maxNumberOfFeatures != UNLIMITED && totalFeaturesProcessed >= maxNumberOfFeatures) {
+			if (isFeatureLimitReached()) {
 				close();
 				return false;
 			}
@@ -459,6 +473,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 
 			return false;
+		}
+
+		/**
+		 * @return true if the number of features processed is equal to (or
+		 *         exceeds) the maximum number of features to processed or the
+		 *         number of results reported by the WFS.
+		 */
+		protected boolean isFeatureLimitReached() {
+			return (maxNumberOfFeatures != UNLIMITED
+					&& totalFeaturesProcessed >= maxNumberOfFeatures)
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size);
 		}
 
 		/**
