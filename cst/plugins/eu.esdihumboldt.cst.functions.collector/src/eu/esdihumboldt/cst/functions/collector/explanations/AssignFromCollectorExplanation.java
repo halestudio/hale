@@ -20,7 +20,6 @@ import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -46,9 +45,10 @@ public class AssignFromCollectorExplanation extends MarkdownCellExplanation {
 		binding.put("_isReference", false);
 
 		Entity entity = CellUtil.getFirstEntity(cell.getTarget());
-		if (entity != null) {
-			ChildContext childContext = entity.getDefinition().getPropertyPath().iterator().next();
-			PropertyDefinition resultProperty = childContext.getChild().asProperty();
+		if (entity != null
+				&& entity.getDefinition().getDefinition() instanceof PropertyDefinition) {
+			PropertyDefinition resultProperty = (PropertyDefinition) entity.getDefinition()
+					.getDefinition();
 			TypeDefinition resultPropertyType = resultProperty.getPropertyType();
 
 			boolean isReference = resultProperty.getConstraint(Reference.class).isReference();
