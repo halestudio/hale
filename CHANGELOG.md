@@ -8,7 +8,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Added
 
-- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, Circle, CircleByCenterPoint. The interpolation is based on one of two algorithms that can be selected on import.
 - Project Validator that validates exported instances based on validator configuration (e.g. rules or schemas) imported into the project
 - New transformation function `Assign collected values` allows the assignment of all values collected by a Groovy transformation function. The new function automatically converts collected values to references if the target property takes references.
 - Better usage of available space in Alignment and Mapping views
@@ -17,16 +17,13 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - IO Provider extensions can now have a configurationContentType to describe the content type of configuration files for this provider
 - Total number of imported instances is now shown in progress dialog (if known)
 - InstanceResolver now allows resolving multiple references at once
-- Added CSVInstanceCollection for use with CSVInstanceReader
 
 ### Changed
 
 - `Validator rules` are now called `Validator configurations`
-- PropertiesMergeHandler now uses an iterative approach
+- The Merge function now uses an iterative approach for merging instances which allows for processing more data in a Merge
 - RestrictedGroovyInterceptor now allows SimpleDateFormat and UUID classes
-- Resolve classes via Apache Commons' ClassUtils
-
-### Removed
+- When loading data from CSV files the data is now streamed (similar to XML data sources) and not loaded at once into memory
 
 ### Fixed
 
@@ -35,7 +32,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Removed CRS selection dialog and UI dependency from MS SQL plugin
 - Fixed warning for WFS parameters for XML/GML reader
 - Schema selection configuration for JDBC driver is optional
-- Fixed initial tooltip in Mapping view
+- Fixed wrong tooltip in Mapping view
+- Fixed error when loading hale schema definitions in respect to schema elements w/ primitive bindings
 
 
 ## [3.1.0]
