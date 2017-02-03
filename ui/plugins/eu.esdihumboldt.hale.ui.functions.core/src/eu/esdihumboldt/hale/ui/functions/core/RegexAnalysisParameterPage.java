@@ -19,6 +19,10 @@ package eu.esdihumboldt.hale.ui.functions.core;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -51,6 +55,7 @@ import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 
 /**
  * Parameter page for Regex Analysis function.
@@ -161,7 +166,7 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 					.getTarget().values().iterator().next().getDefinition().getDefinition();
 			if (!propDef.equals(target)) {
 
-				String regexTooltip = "A regular expression containing groups (see http://www.javamex.com/tutorials/regular_expressions/capturing_groups.shtml).";
+				String regexTooltip = "A regular expression containing groups (see http://www.javamex.com/tutorials/regular_expressions/capturing_groups.shtml). Type Ctrl+Space for project variable content assistance.";
 				Group regexGroup = new Group(page, SWT.NONE);
 				regexGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				regexGroup.setLayout(new GridLayout(1, false));
@@ -170,8 +175,19 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 				_regexText = new Text(regexGroup, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 				_regexText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				_regexText.setText("");
-				_regexText.setToolTipText("");
 				_regexText.addModifyListener(this);
+
+				final ControlDecoration regexInfoDeco = new ControlDecoration(_regexText,
+						SWT.TOP | SWT.LEFT);
+				regexInfoDeco.setDescriptionText(regexTooltip);
+				regexInfoDeco.setImage(FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+				regexInfoDeco.setMarginWidth(2);
+
+				ContentProposalAdapter adapter = new ContentProposalAdapter(_regexText,
+						new TextContentAdapter(), new ProjectVariablesContentProposalProvider(true),
+						ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+				adapter.setAutoActivationDelay(0);
 
 				String formatTooltip = "The output format to apply, containing curly brackets delimited group definitions. Ex. {1} represents the result of group 1 from the regex analysis.";
 
@@ -183,8 +199,14 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 				_outformatText = new Text(outformatGroup, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 				_outformatText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				_outformatText.setText("");
-				_outformatText.setToolTipText(formatTooltip);
 				_outformatText.addModifyListener(this);
+
+				final ControlDecoration formatInfoDeco = new ControlDecoration(_outformatText,
+						SWT.TOP | SWT.LEFT);
+				formatInfoDeco.setDescriptionText(formatTooltip);
+				formatInfoDeco.setImage(FieldDecorationRegistry.getDefault()
+						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+				formatInfoDeco.setMarginWidth(2);
 
 				Group exampleGroup = new Group(page, SWT.NONE);
 				exampleGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));

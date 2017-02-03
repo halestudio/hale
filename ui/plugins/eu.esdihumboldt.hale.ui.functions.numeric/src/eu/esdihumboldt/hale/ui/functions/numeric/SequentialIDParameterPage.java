@@ -18,9 +18,11 @@ package eu.esdihumboldt.hale.ui.functions.numeric;
 
 import java.util.List;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.JFaceResources;
@@ -46,6 +48,10 @@ import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationVariables;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.DefaultTransformationVariables;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -53,6 +59,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstr
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.AbstractParameterPage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
 import eu.esdihumboldt.util.validator.Validator;
 
@@ -73,6 +80,9 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	private Label example;
 
 	private ControlDecoration exampleDecoration;
+
+	private ProjectVariablesContentProposalProvider contentProposalProvider = new ProjectVariablesContentProposalProvider(
+			true);
 
 	/**
 	 * Default constructor.
@@ -180,6 +190,17 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 					updateStatus();
 				}
 			});
+
+			ContentProposalAdapter adapter = new ContentProposalAdapter(prefix,
+					new TextContentAdapter(), contentProposalProvider,
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+			adapter.setAutoActivationDelay(0);
+
+			final ControlDecoration infoDeco = new ControlDecoration(prefix, SWT.TOP | SWT.LEFT);
+			infoDeco.setDescriptionText("Type Ctrl+Space for project variable content assistance");
+			infoDeco.setImage(FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+			infoDeco.setMarginWidth(2);
 		}
 
 		// specify suffix
@@ -201,6 +222,17 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 					updateStatus();
 				}
 			});
+
+			ContentProposalAdapter adapter = new ContentProposalAdapter(suffix,
+					new TextContentAdapter(), contentProposalProvider,
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+			adapter.setAutoActivationDelay(0);
+
+			final ControlDecoration infoDeco = new ControlDecoration(suffix, SWT.TOP | SWT.LEFT);
+			infoDeco.setDescriptionText("Type Ctrl+Space for project variable content assistance");
+			infoDeco.setImage(FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+			infoDeco.setShowOnlyOnFocus(true);
 		}
 
 		// show example
@@ -306,6 +338,13 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	protected String generateExample() {
 		String prefix = (this.prefix == null) ? ("") : (this.prefix.getText());
 		String suffix = (this.suffix == null) ? ("") : (this.suffix.getText());
+
+		// replace variables in prefix and suffix
+		TransformationVariables variables = new DefaultTransformationVariables(new ProjectVariables(
+				HaleUI.getServiceProvider().getService(ProjectInfoService.class)));
+
+		prefix = variables.replaceVariables(prefix);
+		suffix = variables.replaceVariables(suffix);
 
 		return prefix + START_VALUE + suffix;
 	}

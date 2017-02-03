@@ -18,6 +18,10 @@ package eu.esdihumboldt.cst.functions.geometric.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.awt.Color;
+import java.io.File;
+import java.nio.file.Path;
+
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -29,6 +33,8 @@ import com.vividsolutions.jts.geom.Polygon;
 
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import eu.esdihumboldt.util.svg.test.PaintSettings;
+import eu.esdihumboldt.util.svg.test.SVGPainter;
 
 /**
  * Tests checking if a calculated point is inside the original area.
@@ -38,7 +44,6 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * 
  * @author Simon Templer
  */
-@SuppressWarnings("unused")
 public class InteriorPointTest {
 
 	private final GeometryFactory factory = new GeometryFactory();
@@ -82,53 +87,32 @@ public class InteriorPointTest {
 			 * dependencies in test product.
 			 */
 
-//			SVGGraphics2D g = createSVGGraphics();
-//			Path file = File.createTempFile("pointwithin", ".svg").toPath();
-//
-//			Envelope envelope = geometry.getEnvelopeInternal();
-//			int height;
-//			int width;
-//			double factor;
-//			if (envelope.getHeight() > envelope.getWidth()) {
-//				height = MAX_SIZE;
-//				width = (int) Math.ceil(height * envelope.getWidth() / envelope.getHeight());
-//				factor = height / envelope.getHeight();
-//			}
-//			else {
-//				width = MAX_SIZE;
-//				height = (int) Math.ceil(width * envelope.getHeight() / envelope.getWidth());
-//				factor = width / envelope.getWidth();
-//			}
-//			double minX = envelope.getMinX();
-//			double minY = envelope.getMinY();
-//
-//			// draw polygon
-//			g.setColor(Color.BLACK);
-//			g.setStroke(new BasicStroke(2.0f));
-//			for (int i = 0; i < geometry.getNumGeometries(); i++) {
-//				Polygon polygon = (Polygon) geometry.getGeometryN(i);
-//				drawPolygon(g, polygon, minX, minY, factor);
-//			}
-//
-//			int pointSize = POINT_SIZE;
-//
-//			// draw centroid as reference
-//			Point centroid = geometry.getCentroid();
-//			g.setColor(Color.BLUE);
-//			g.fillOval((int) Math.round((centroid.getCoordinate().x - minX) * factor),
-//					(int) Math.round((centroid.getCoordinate().y - minY) * factor), pointSize,
-//					pointSize);
-//
-//			// draw point
-//			if (point != null) {
-//				g.setColor(Color.RED);
-//				g.fillOval((int) Math.round((point.getCoordinate().x - minX) * factor),
-//						(int) Math.round((point.getCoordinate().y - minY) * factor), pointSize,
-//						pointSize);
-//			}
-//
-//			writeSVG(g, file);
-//			System.out.println("Test graphic written to " + file);
+			PaintSettings settings = new PaintSettings(geometry.getEnvelopeInternal(), MAX_SIZE,
+					POINT_SIZE);
+			SVGPainter g = new SVGPainter(settings);
+			Path file = File.createTempFile("pointwithin", ".svg").toPath();
+
+			// draw polygon
+			g.setColor(Color.BLACK);
+			g.setStroke(2.0f);
+			for (int i = 0; i < geometry.getNumGeometries(); i++) {
+				Polygon polygon = (Polygon) geometry.getGeometryN(i);
+				g.drawPolygon(polygon);
+			}
+
+			// draw centroid as reference
+			Point centroid = geometry.getCentroid();
+			g.setColor(Color.BLUE);
+			g.drawPoint(centroid);
+
+			// draw point
+			if (point != null) {
+				g.setColor(Color.RED);
+				g.drawPoint(point);
+			}
+
+			g.writeToFile(file);
+			System.out.println("Test graphic written to " + file);
 		}
 
 		if (storedException != null) {
@@ -138,67 +122,6 @@ public class InteriorPointTest {
 		assertNotNull(point);
 		assertTrue("Point is not contained in the polygon", point.within(geometry));
 	}
-
-//	private void drawPolygon(SVGGraphics2D g, Polygon geometry, double minX, double minY,
-//			double factor) {
-//		// exterior
-//		Coordinate[] coordinates = geometry.getExteriorRing().getCoordinates();
-//		java.awt.Polygon outerPolygon = createPolygon(coordinates, minX, minY, factor);
-//
-//		if (geometry.getNumInteriorRing() > 0) {
-//			// polygon has interior geometries
-//
-//			java.awt.geom.Area drawArea = new java.awt.geom.Area(outerPolygon);
-//
-//			// interior
-//			for (int i = 0; i < geometry.getNumInteriorRing(); i++) {
-//				LineString interior = geometry.getInteriorRingN(i);
-//				java.awt.Polygon innerPolygon = createPolygon(interior.getCoordinates(), minX, minY,
-//						factor);
-//				drawArea.subtract(new java.awt.geom.Area(innerPolygon));
-//			}
-//
-//			g.draw(drawArea);
-//		}
-//		else {
-//			// polygon has no interior
-//			// use polygon instead of Area for painting, as painting small
-//			// Areas sometimes produces strange results (some are not
-//			// visible)
-//			g.draw(outerPolygon);
-//		}
-//	}
-
-	private java.awt.Polygon createPolygon(Coordinate[] coordinates, double minX, double minY,
-			double factor) {
-		java.awt.Polygon result = new java.awt.Polygon();
-		for (Coordinate coord : coordinates) {
-			result.addPoint((int) Math.round((coord.x - minX) * factor),
-					(int) Math.round((coord.y - minY) * factor));
-		}
-		return result;
-	}
-
-//	private SVGGraphics2D createSVGGraphics() {
-//		// Get a DOMImplementation.
-//		DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
-//
-//		// Create an instance of org.w3c.dom.Document.
-//		String svgNS = "http://www.w3.org/2000/svg";
-//		Document document = domImpl.createDocument(svgNS, "svg", null);
-//
-//		// Create an instance of the SVG Generator.
-//		return new SVGGraphics2D(document);
-//	}
-//
-//	private void writeSVG(SVGGraphics2D svg, Path file) throws IOException {
-//		// Finally, stream out SVG to the standard output using
-//		// UTF-8 encoding.
-//		boolean useCSS = true; // we want to use CSS style attributes
-//		try (BufferedWriter writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
-//			svg.stream(writer, useCSS);
-//		}
-//	}
 
 	/**
 	 * Test with a simple triangular polygon.

@@ -78,14 +78,14 @@ class ExecContext {
 	Map<String, Value> targetSettings = [:]
 
 	/**
-	 * Identifier of instance validator to use (if any).
+	 * Identifiers of instance validator to use (if any).
 	 */
-	String validateProviderId
+	List<String> validateProviderIds = []
 
 	/**
-	 * Settings for writing the target.
+	 * Settings for validating the target.
 	 */
-	Map<String, Value> validateSettings = [:]
+	List<Map<String, Value>> validateSettings = []
 
 	/**
 	 * The target file to write any reports to, optional.

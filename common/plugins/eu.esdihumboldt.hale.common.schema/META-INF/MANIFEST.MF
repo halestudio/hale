@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Schema API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base,
  com.google.common.collect;version="11.0.1",
@@ -25,6 +25,7 @@ Import-Package: com.google.common.base,
  groovy.xml;version="2.1.5",
  groovy.xml.dom;version="2.1.5",
  net.jcip.annotations,
+ org.apache.commons.lang;version="2.6.0",
  org.opengis.referencing.crs;version="8.0.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.common.schema,

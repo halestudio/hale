@@ -16,35 +16,41 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading line string geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class LineStringHandlerTest extends AbstractHandlerTest {
 
 	private LineString reference;
-	private LineString referenceOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
 	@Override
 	public void init() {
@@ -55,10 +61,11 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 				new Coordinate(-39841.185, 273182.863), new Coordinate(-39882.89, 273153.86) };
 		reference = geomFactory.createLineString(coordinates);
 
-		coordinates = new Coordinate[] { new Coordinate(-39799.7, 273207.5),
-				new Coordinate(-39841.2, 273182.8), new Coordinate(-39882.9, 273153.9) };
-		referenceOnGrid = geomFactory.createLineString(coordinates);
+		checker = combine(referenceChecker(reference), noCoordinatePairs());
 
+		gridChecker = combine(
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker(), noCoordinatePairs());
 	}
 
 	/**
@@ -78,17 +85,17 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. LineStringProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -111,27 +118,27 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. GeometryProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. LineStringProperty with LineString defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 5. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -154,33 +161,33 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. LineStringProperty with LineString defined through pos
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 5. LineStringProperty with LineString defined through
 			// pointProperty
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 6. LineStringProperty with LineString defined through posList
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -203,28 +210,28 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. LineStringProperty with LineString defined through pos
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. LineStringProperty with LineString defined through pointRep
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. LineStringProperty with LineString defined through
 			// pointProperty
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 5. LineStringProperty with LineString defined through posList
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -240,7 +247,7 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
 				getClass().getResource("/data/linestring/sample-linestring-gml2.xml").toURI(),
-				false);
+				gridConfig);
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -248,17 +255,17 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. LineStringProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -274,7 +281,7 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
 				getClass().getResource("/data/linestring/sample-linestring-gml3.xml").toURI(),
-				false);
+				gridConfig);
 
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -282,27 +289,27 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. GeometryProperty with LineString defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. LineStringProperty with LineString defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 5. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -318,7 +325,7 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
 				getClass().getResource("/data/linestring/sample-linestring-gml31.xml").toURI(),
-				false);
+				gridConfig);
 
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -326,33 +333,33 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. LineStringProperty with LineString defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. LineStringProperty with LineString defined through pos
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. LineStringProperty with LineString defined through pointRep
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 5. LineStringProperty with LineString defined through
 			// pointProperty
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 6. LineStringProperty with LineString defined through posList
 			assertTrue("Sixth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -368,7 +375,7 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/linestring/sample-linestring-gml32.xml").toURI(),
-				false);
+				gridConfig);
 
 		// five instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -376,72 +383,31 @@ public class LineStringHandlerTest extends AbstractHandlerTest {
 			// 1. LineStringProperty with LineString defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. LineStringProperty with LineString defined through pos
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. LineStringProperty with LineString defined through pointRep
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. LineStringProperty with LineString defined through
 			// pointProperty
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 5. LineStringProperty with LineString defined through posList
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkLineStringPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
 	}
 
-	private void checkGeometryPropertyInstance(Instance instance) {
-		checkGeometryPropertyInstance(instance, true);
-	}
-
-	private void checkGeometryPropertyInstance(Instance instance, boolean keepOriginal) {
-		Collection<Object> geomVals = PropertyResolver.getValues(instance, "LineString", false);
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.size());
-
-		Object geom = geomVals.iterator().next();
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkLineStringPropertyInstance(Instance instance) {
-		checkLineStringPropertyInstance(instance, true);
-	}
-
-	private void checkLineStringPropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-
-		@SuppressWarnings("unchecked")
-		LineString linestring = ((GeometryProperty<LineString>) geomInstance.getValue())
-				.getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				linestring.equalsExact(keepOriginal ? reference : referenceOnGrid));
-	}
 }

@@ -16,11 +16,9 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler.compositeGeometries;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
@@ -29,25 +27,32 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Test for reading composite curve geometries
  * 
- * @author Patrick Lieb, Arun Varma
+ * @author Patrick Lieb
+ * @author Arun Varma
+ * @author Simon Templer
  */
+@Features("Geometries")
+@Stories("GML")
 public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 
 	private LineString reference;
-	private LineString referenceOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest#init()
-	 */
 	@Override
 	public void init() {
 		super.init();
@@ -56,10 +61,11 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 				new Coordinate(3.33, 3.33), new Coordinate(0.01, -3.2) };
 		reference = geomFactory.createLineString(coordinates);
 
-		// Grid
-		coordinates = new Coordinate[] { new Coordinate(0, 3.2), new Coordinate(3.3, 3.3),
-				new Coordinate(0, -3.2) };
-		referenceOnGrid = geomFactory.createLineString(coordinates);
+		checker = referenceChecker(reference);
+
+		gridChecker = combine(
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -71,8 +77,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 	public void testCompositeCurveGml32() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI(),
-				true);
+				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI());
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -80,7 +85,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 			// segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeCurvePropertyInstance(instance, reference);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -97,8 +102,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 						getClass()
 								.getResource("/data/curve/sample-compositecurve-gml32_combined.xml")
-								.toURI(),
-						true);
+								.toURI());
 
 		LineString combined = geomFactory.createLineString(
 				new Coordinate[] { new Coordinate(0, 0), new Coordinate(1, 1), new Coordinate(2, 2),
@@ -111,7 +115,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 			// segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeCurvePropertyInstance(instance, combined);
+			checkSingleGeometry(instance, referenceChecker(combined));
 		} finally {
 			it.close();
 		}
@@ -128,8 +132,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 				.loadXMLInstances(getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 						getClass()
 								.getResource("/data/curve/sample-compositecurve-gml32_mismatch.xml")
-								.toURI(),
-						true);
+								.toURI());
 
 		LineString ls1 = geomFactory.createLineString(new Coordinate[] { new Coordinate(0, 0),
 				new Coordinate(1, 1), new Coordinate(2, 2) });
@@ -148,7 +151,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 			// segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeCurvePropertyInstance(instance, separate);
+			checkSingleGeometry(instance, referenceChecker(separate));
 		} finally {
 			it.close();
 		}
@@ -165,7 +168,7 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/curve/sample-compositecurve-gml32.xml").toURI(),
-				false);
+				gridConfig);
 
 		// one instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -173,30 +176,9 @@ public class CompositeCurveGeometryTest extends AbstractHandlerTest {
 			// segments with LineStringSegment defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkCompositeCurvePropertyInstance(instance, referenceOnGrid);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
-		}
-	}
-
-	private void checkCompositeCurvePropertyInstance(Instance instance,
-			Geometry referenceGeometry) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, referenceGeometry);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, Geometry referenceGeometry) {
-		for (GeometryProperty<?> instance : getGeometries(geomInstance)) {
-			Geometry geom = instance.getGeometry();
-			assertTrue("Read geometry does not match the reference geometry",
-					geom.equalsExact(referenceGeometry));
 		}
 	}
 

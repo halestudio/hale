@@ -25,12 +25,16 @@ import org.postgresql.PGConnection;
 
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest;
 import eu.esdihumboldt.hale.io.jdbc.test.DBConfigInstance;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Basic database tests.
  * 
  * @author Simon Templer
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 public class DatabaseIT extends AbstractDBTest {
 
 	/**

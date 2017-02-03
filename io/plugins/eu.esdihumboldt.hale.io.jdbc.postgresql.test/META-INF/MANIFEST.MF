@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PostgreSQL Database Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.postgresql.test
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.typesafe.config;version="1.2.1",
@@ -15,6 +15,7 @@ Import-Package: com.typesafe.config;version="1.2.1",
  org.junit;version="4.11.0",
  org.osgi.framework;version="1.8.0",
  org.postgresql;version="9.2.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0",
  schemacrawler.schema;version="8.16.0"
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.0",
  groovy;bundle-version="2.3.7",

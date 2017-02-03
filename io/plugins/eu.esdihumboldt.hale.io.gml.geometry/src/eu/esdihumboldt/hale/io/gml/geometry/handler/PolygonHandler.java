@@ -25,7 +25,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -45,7 +44,6 @@ import eu.esdihumboldt.hale.io.gml.geometry.FixedConstraintsGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GMLGeometryUtil;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.GeometryNotSupportedException;
-import eu.esdihumboldt.hale.io.gml.geometry.InterpolationSupportedGeometryHandler;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 
 /**
@@ -54,7 +52,7 @@ import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
  * @author Patrick Lieb
  * @author Simon Templer
  */
-public class PolygonHandler extends InterpolationSupportedGeometryHandler {
+public class PolygonHandler extends FixedConstraintsGeometryHandler {
 
 	private static final ALogger log = ALoggerFactory.getLogger(PolygonHandler.class);
 
@@ -114,10 +112,8 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
-				innerRings = moveLinerRingsToUniversalGrid(innerRings, reader);
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
-			outerRing = moveLinerRingsToUniversalGrid(outerRing, reader);
 			polygon = getGeometryFactory().createPolygon(outerRing.get(0), holes);
 		}
 
@@ -142,7 +138,6 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 						crs = checkCommonCrs(crs, ring.getCRSDefinition());
 					}
 				}
-				innerRings = moveLinerRingsToUniversalGrid(innerRings, reader);
 				holes = innerRings.toArray(new LinearRing[innerRings.size()]);
 			}
 
@@ -167,7 +162,6 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 					}
 				}
 				outerRing.add(outer);
-				outerRing = moveLinerRingsToUniversalGrid(outerRing, reader);
 				polygon = getGeometryFactory().createPolygon(outerRing.get(0), holes);
 			}
 		}
@@ -210,22 +204,6 @@ public class PolygonHandler extends InterpolationSupportedGeometryHandler {
 		}
 
 		return commonCrs;
-	}
-
-	private List<LinearRing> moveLinerRingsToUniversalGrid(List<LinearRing> linearRings,
-			IOProvider reader) {
-		getInterpolationRequiredParameter(reader);
-		if (!isKeepOriginal()) {
-			List<LinearRing> newRings = new ArrayList<LinearRing>();
-			for (LinearRing ring : linearRings) {
-				Coordinate[] newCoordinates = moveToUniversalGrid(ring.getCoordinates());
-				LinearRing newRing = getGeometryFactory().createLinearRing(newCoordinates);
-				newRings.add(newRing);
-			}
-			return newRings;
-		}
-		else
-			return linearRings;
 	}
 
 	/**

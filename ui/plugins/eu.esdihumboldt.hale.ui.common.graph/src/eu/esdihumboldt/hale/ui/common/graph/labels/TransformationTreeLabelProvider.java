@@ -61,6 +61,8 @@ import eu.esdihumboldt.util.IdentityWrapper;
  */
 public class TransformationTreeLabelProvider extends GraphLabelProvider {
 
+	private static final int MAX_FIGURE_WIDTH = 150;
+
 	private final Color disabledBackgroundColor;
 	private final Color valueBackgroundColor;
 

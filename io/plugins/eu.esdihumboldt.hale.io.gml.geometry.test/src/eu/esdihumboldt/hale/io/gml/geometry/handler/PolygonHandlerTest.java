@@ -16,33 +16,40 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.Polygon;
 
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Tests for reading polygon geometries
  * 
  * @author Patrick Lieb, Arun Varma
  */
+@Features("Geometries")
+@Stories("GML")
 public class PolygonHandlerTest extends AbstractHandlerTest {
 
 	private Polygon reference;
-	private Polygon referenceOnGrid;
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> checker;
+	private Consumer<Geometry> gridChecker;
 
 	// XXX no test for geometry properties
 
@@ -66,21 +73,11 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 
 		reference = geomFactory.createPolygon(shell, holes);
 
-		shell = geomFactory.createLinearRing(new Coordinate[] { new Coordinate(0, 3.2),
-				new Coordinate(3.3, 3.3), new Coordinate(0, -3.2), new Coordinate(-3.4, -3.2),
-				new Coordinate(0, 3.2) });
+		checker = combine(noCoordinatePairs(), referenceChecker(reference));
 
-		holes = new LinearRing[2];
-		hole1 = geomFactory
-				.createLinearRing(new Coordinate[] { new Coordinate(0, 1), new Coordinate(1, 1),
-						new Coordinate(0, -1), new Coordinate(-1, -1), new Coordinate(0, 1) });
-		hole2 = geomFactory
-				.createLinearRing(new Coordinate[] { new Coordinate(0, 2), new Coordinate(2, 2),
-						new Coordinate(0, -2), new Coordinate(-2, -2), new Coordinate(0, 2) });
-		holes[0] = hole1;
-		holes[1] = hole2;
-
-		referenceOnGrid = geomFactory.createPolygon(shell, holes);
+		gridChecker = combine(noCoordinatePairs(),
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -100,7 +97,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -123,7 +120,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -146,7 +143,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -169,7 +166,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// LinearRingProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -184,7 +181,8 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	public void testPolygonGml2_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml2.xml").toURI(), false);
+				getClass().getResource("/data/polygon/sample-polygon-gml2.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -192,7 +190,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -207,7 +205,8 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	public void testPolygonGml3_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml3.xml").toURI(), false);
+				getClass().getResource("/data/polygon/sample-polygon-gml3.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -215,7 +214,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -230,7 +229,8 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	public void testPolygonGml31_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml31.xml").toURI(), false);
+				getClass().getResource("/data/polygon/sample-polygon-gml31.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -238,7 +238,7 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// PolygonProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -253,7 +253,8 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 	public void testPolygonGml32_Grid() throws Exception {
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/polygon/sample-polygon-gml32.xml").toURI(), false);
+				getClass().getResource("/data/polygon/sample-polygon-gml32.xml").toURI(),
+				gridConfig);
 
 		// one instance expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -261,35 +262,10 @@ public class PolygonHandlerTest extends AbstractHandlerTest {
 			// LinearRingProperty with LinearRing defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPolygonPropertyInstance(instance, false);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
-	}
-
-	private void checkPolygonPropertyInstance(Instance instance) {
-		checkPolygonPropertyInstance(instance, true);
-	}
-
-	private void checkPolygonPropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-
-		@SuppressWarnings("unchecked")
-		Polygon polygon = ((GeometryProperty<Polygon>) geomInstance.getValue()).getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				polygon.equalsExact(keepOriginal ? reference : referenceOnGrid));
 	}
 
 }

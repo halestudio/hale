@@ -21,12 +21,16 @@ import org.junit.Test;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReader;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderAccdb;
 import eu.esdihumboldt.hale.io.jdbc.msaccess.test.MsAccessDataReaderTestSuit;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Contains tests for MsAccess Schema Reader
  * 
  * @author Arun
  */
+@Features("Databases")
+@Stories("MS Access")
 public class MsAccessSchemaReaderTest {
 
 	/**

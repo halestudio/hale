@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.cst.functions.core.merge;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -51,6 +50,11 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<TransformationEngine> {
 
 	/**
+	 * Key instance that stands for merging of all instances.
+	 */
+	public static final DeepIterableKey KEY_ALL = new DeepIterableKey(Long.valueOf(1));
+
+	/**
 	 * Resource iterator over the merged instances
 	 */
 	public class MergedIterator extends GenericResourceIteratorAdapter<K, FamilyInstance> {
@@ -79,21 +83,21 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 			// next is the merge key
 
 			// get the instances to merge
-			Collection<InstanceReference> references = index.get(next);
-			// TODO get all instances in one call from instance collection? see
-			// InstanceResolver
-			Collection<Instance> instances = new ArrayList<Instance>(references.size());
+			InstanceCollection instances;
+			if (next == KEY_ALL) {
+				// special case: merge all
+				instances = originalInstances;
+			}
+			else {
+				Collection<InstanceReference> references = index.get(next);
+				instances = originalInstances.getInstances(references);
+			}
+
+			// determine type based on sample instance type
 			TypeDefinition type = null;
-			for (InstanceReference ref : references) {
-				Instance instance = originalInstances.getInstance(ref);
-				if (instance == null) {
-					throw new IllegalStateException("Instance reference could not be resolved");
-				}
-				else {
-					instances.add(instance);
-					if (type == null) {
-						type = instance.getDefinition();
-					}
+			try (ResourceIterator<Instance> it = instances.iterator()) {
+				if (it.hasNext()) {
+					type = it.next().getDefinition();
 				}
 			}
 
@@ -116,9 +120,9 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
-		T mergeConfig = createMergeConfiguration(transformationIdentifier,
-				transformationParameters, executionParameters, log);
+					throws TransformationException {
+		T mergeConfig = createMergeConfiguration(transformationIdentifier, transformationParameters,
+				executionParameters, log);
 
 		// create merge index over all instances (references)
 		Multimap<K, InstanceReference> index = HashMultimap.create();
@@ -150,7 +154,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 * Create the merge configuration from the transformation configuration. The
 	 * merge configuration may be then used in
 	 * {@link #getMergeKey(Instance, Object)} and
-	 * {@link #merge(Collection, TypeDefinition, Object, Object)}
+	 * {@link #merge(InstanceCollection, TypeDefinition, Object, Object)}
 	 * 
 	 * @param transformationIdentifier the transformation identifier
 	 * @param transformationParameters the transformation parameters
@@ -163,7 +167,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	protected abstract T createMergeConfiguration(String transformationIdentifier,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException;
+					throws TransformationException;
 
 	/**
 	 * Get the merge key for a given instance. Instances with an equal merge key
@@ -172,7 +176,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 * @param instance the instance
 	 * @param mergeConfig the merge configuration
 	 * @return the instance merge key
-	 * @see #merge(Collection, TypeDefinition, Object, Object)
+	 * @see #merge(InstanceCollection, TypeDefinition, Object, Object)
 	 */
 	protected abstract K getMergeKey(Instance instance, T mergeConfig);
 
@@ -185,7 +189,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 	 * @param mergeConfig the merge configuration
 	 * @return the merged instance
 	 */
-	protected abstract Instance merge(Collection<Instance> instances, TypeDefinition type,
-			K mergeKey, T mergeConfig);
+	protected abstract Instance merge(InstanceCollection instances, TypeDefinition type, K mergeKey,
+			T mergeConfig);
 
 }

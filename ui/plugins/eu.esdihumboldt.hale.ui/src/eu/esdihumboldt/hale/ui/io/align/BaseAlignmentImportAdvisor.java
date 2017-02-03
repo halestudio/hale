@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.ui.io.align;
 
 import eu.esdihumboldt.hale.common.align.io.BaseAlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
-import eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 public class BaseAlignmentImportAdvisor extends DefaultIOAdvisor<BaseAlignmentReader> {
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.io.DefaultIOAdvisor#prepareProvider(eu.esdihumboldt.hale.common.core.io.IOProvider)
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor#prepareProvider(eu.esdihumboldt.hale.common.core.io.IOProvider)
 	 */
 	@Override
 	public void prepareProvider(BaseAlignmentReader provider) {

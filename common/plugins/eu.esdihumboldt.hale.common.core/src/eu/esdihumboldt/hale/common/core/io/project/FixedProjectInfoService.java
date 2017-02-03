@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import java.net.URI;
+
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 
@@ -26,16 +28,19 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 public class FixedProjectInfoService implements ProjectInfoService {
 
 	private final Project project;
+	private final URI loadLocation;
 	private final ComplexConfigurationService config;
 
 	/**
 	 * Create a new project info service with the given project.
 	 * 
 	 * @param project the project
+	 * @param loadLocation location the project was loaded from
 	 */
-	public FixedProjectInfoService(Project project) {
+	public FixedProjectInfoService(Project project, URI loadLocation) {
 		super();
 		this.project = project;
+		this.loadLocation = loadLocation;
 
 		this.config = ProjectIO.createProjectConfigService(project);
 	}
@@ -48,6 +53,14 @@ public class FixedProjectInfoService implements ProjectInfoService {
 	@Override
 	public Value getProperty(String name) {
 		return config.getProperty(name);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService#getLoadLocation()
+	 */
+	@Override
+	public URI getLoadLocation() {
+		return loadLocation;
 	}
 
 }

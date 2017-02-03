@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE JDBC Schema and Instance Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc;singleton:=true
-Bundle-Version: 3.1.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Eclipse-BuddyPolicy: registered
 Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",

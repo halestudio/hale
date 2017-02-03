@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.cache;version="17.0.0",
@@ -34,6 +34,10 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.geometry,
+ eu.esdihumboldt.util.geometry.interpolation,
+ eu.esdihumboldt.util.geometry.interpolation.extension,
+ eu.esdihumboldt.util.geometry.interpolation.grid,
+ eu.esdihumboldt.util.geometry.interpolation.split,
  net.jcip.annotations,
  org.apache.commons.codec;version="1.3.0",
  org.apache.commons.codec.net;version="1.3.0",
@@ -56,7 +60,6 @@ Export-Package: eu.esdihumboldt.hale.common.instance,
  eu.esdihumboldt.hale.common.instance.extension.validation.report,
  eu.esdihumboldt.hale.common.instance.extension.validation.report.impl,
  eu.esdihumboldt.hale.common.instance.geometry,
- eu.esdihumboldt.hale.common.instance.geometry.curve,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
  eu.esdihumboldt.hale.common.instance.geometry.impl.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.instance.helper,

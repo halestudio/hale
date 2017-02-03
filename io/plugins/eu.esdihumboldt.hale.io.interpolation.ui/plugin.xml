@@ -6,6 +6,12 @@
       <configPage
             class="eu.esdihumboldt.hale.io.interpolation.ui.InterpolationSettingPage"
             order="11">
+         <provider
+               ref="eu.esdihumboldt.hale.io.xml.reader">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.reader">
+         </provider>
       </configPage>
    </extension>
 

@@ -4,13 +4,46 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.2.0]
+
+### Added
+
+- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, Circle, CircleByCenterPoint. The interpolation is based on one of two algorithms that can be selected on import.
+- Project Validator that validates exported instances based on validator configuration (e.g. rules or schemas) imported into the project
+- New transformation function `Assign collected values` allows the assignment of all values collected by a Groovy transformation function. The new function automatically converts collected values to references if the target property takes references.
+- Better usage of available space in Alignment and Mapping views
+- Content assistance for project variables in transformation function wizards such as Formatted String, Regex Analysis and Assign
+- Request pagination for WFS requests. Users can now choose to activate request pagination for WFS sources.
+- IO Provider extensions can now have a configurationContentType to describe the content type of configuration files for this provider
+- Total number of imported instances is now shown in progress dialog (if known)
+- The `InstanceResolver` interface has been extended to allow resolving multiple references at once. Implementations can use this to optimize resolving of multiple references
+
+### Changed
+
+- The HTML documentation that can be generated for an alignment is now much more performant for large mappings due to lazy loading and rendering
+- The Merge function now uses an iterative approach for merging instances which allows for processing more data in a Merge
+- Allow using `SimpleDateFormat` and `UUID` classes in groovy scripts by default
+- When loading data from CSV files the data is now streamed (similar to XML data sources) and not loaded at once into memory
+- When a CSV files has more columns than defined in the schema, this is now a warning, not an error
+
+### Fixed
+
+- Deselecting in a type selector could lead to an exception
+- Removed CRS selection dialog and UI dependency from MS SQL plugin
+- Schema selection configuration for JDBC driver is optional
+- Fixed wrong tooltip in Mapping view
+- Fixed error when loading hale schema definitions in respect to schema elements w/ primitive bindings
+
+
+## [3.1.0]
+
 ### Added
 
 - Support reading from and writing to MS SQL databases
 - Instance counts are now calculated for condition and index contexts as well
 - You can now hide optional properties in the schema explorer
 - SKOS format code lists can now be loaded
-- Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+- Validation based on a Schematron file can now be performed on an encoded XML/GML file
 - To ensure topological consistency in respect to interpolated geometries, other geometries may optionally also be moved to the interpolation grid
 - GML Encoding: It is now possible to specify a number format for geometry ordinates, e.g. if you want a fixed precision after the decimal point
 - During validation in hale also check property values against an assigned code list
@@ -106,5 +139,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.2.0...HEAD
+[3.2.0]: https://github.com/halestudio/hale/compare/3.1.0...3.2.0
+[3.1.0]: https://github.com/halestudio/hale/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/halestudio/hale/compare/2.9.4...3.0.0

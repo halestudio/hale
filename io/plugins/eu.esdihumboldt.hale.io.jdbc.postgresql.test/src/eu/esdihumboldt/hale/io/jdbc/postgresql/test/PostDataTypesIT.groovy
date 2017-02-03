@@ -22,6 +22,9 @@ import java.sql.Timestamp
 
 import org.junit.Test
 
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
+
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -41,6 +44,8 @@ import groovy.sql.Sql
  * SQL type and binding test for postgresql database
  * @author sameer sheikh
  */
+@Features("Databases")
+@Stories("PostgreSQL")
 public class PostDataTypesIT extends AbstractDBTest {
 
 	public static final String query = ''' CREATE TABLE employees

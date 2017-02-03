@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.headless.transform;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -89,16 +90,18 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
-	 * @param validator the instance validator, may be <code>null</code>
+	 * @param validators the instance validator, may be <code>null</code> or
+	 *            empty
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId, InstanceValidator validator) {
+			final ReportHandler reportHandler, Object processId,
+			Collection<InstanceValidator> validators) {
 
-		return transform(sources, target, environment, reportHandler, processId, validator, null);
+		return transform(sources, target, environment, reportHandler, processId, validators, null);
 	}
 
 	/**
@@ -133,7 +136,8 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
-	 * @param validator the instance validator, may be <code>null</code>
+	 * @param validators the instance validators, may be <code>null</code> or
+	 *            empty
 	 * @param filterDefinition {@link InstanceFilterDefinition} object as a
 	 *            filter may be <code>null</code>
 	 * @return the future representing the successful completion of the
@@ -142,8 +146,8 @@ public class Transformation {
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId, InstanceValidator validator,
-			InstanceFilterDefinition filterDefinition) {
+			final ReportHandler reportHandler, Object processId,
+			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition) {
 		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
 
 			/**
@@ -233,8 +237,8 @@ public class Transformation {
 
 		ExportJob exportJob = new ExportJob(targetSink, target, saveDataAdvisor, reportHandler);
 		ValidationJob validationJob = null; // no validation
-		if (validator != null) {
-			validationJob = new ValidationJob(validator, reportHandler, target);
+		if (validators != null && !validators.isEmpty()) {
+			validationJob = new ValidationJob(validators, reportHandler, target, environment);
 		}
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,

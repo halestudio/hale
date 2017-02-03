@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.1.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.2.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -10,13 +10,17 @@
       <programArgs>-consoleLog -clean
       </programArgs>
       <vmArgs>-Xmx1200M
--XX:MaxPermSize=256m
+-Dosgi.framework.extensions=org.eclipse.equinox.weaving.hook
+-Daj.weaving.verbose=true
+-Dorg.aspectj.weaver.showWeaveInfo=true
+-Dorg.aspectj.osgi.verbose=true
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
+
 
    <launcher name="hale_tests">
       <solaris/>
@@ -141,6 +145,7 @@
       <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
@@ -173,6 +178,7 @@
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.validation"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
@@ -201,6 +207,8 @@
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.cli"/>
+      <plugin id="eu.esdihumboldt.util.geometry"/>
+      <plugin id="eu.esdihumboldt.util.geometry.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
@@ -216,6 +224,7 @@
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
       <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
+      <plugin id="eu.esdihumboldt.util.svg.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
@@ -266,10 +275,13 @@
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.poi"/>
+      <plugin id="org.apache.tika.core"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.aspectj.rt"/>
+      <plugin id="org.aspectj.weaver"/>
       <plugin id="org.codehaus.castor.core"/>
       <plugin id="org.codehaus.castor.xml"/>
       <plugin id="org.codehaus.jackson"/>
@@ -321,6 +333,8 @@
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
+      <plugin id="org.eclipse.equinox.weaving.aspectj"/>
+      <plugin id="org.eclipse.equinox.weaving.caching"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
       <plugin id="org.eclipse.gemini.blueprint.extender"/>
@@ -364,6 +378,7 @@
       <plugin id="org.jaitools.jt-zonalstats"/>
       <plugin id="org.jdom"/>
       <plugin id="org.junit"/>
+      <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
@@ -388,6 +403,12 @@
       <plugin id="org.xerial.sqlite-jdbc"/>
       <plugin id="oro"/>
       <plugin id="picocontainer"/>
+      <plugin id="ru.yandex.qatools.allure.java-adaptor-api"/>
+      <plugin id="ru.yandex.qatools.allure.java-annotations"/>
+      <plugin id="ru.yandex.qatools.allure.java-aspects"/>
+      <plugin id="ru.yandex.qatools.allure.junit-adaptor"/>
+      <plugin id="ru.yandex.qatools.allure.model"/>
+      <plugin id="ru.yandex.qatools.properties.loader"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
       <plugin id="xerces.xercesImpl"/>
@@ -406,6 +427,7 @@
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
       <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />

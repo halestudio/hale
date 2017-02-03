@@ -16,31 +16,34 @@
 
 package eu.esdihumboldt.hale.io.gml.geometry.handler;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collection;
-
-import javax.xml.namespace.QName;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 
-import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
+import eu.esdihumboldt.hale.common.instance.geometry.InterpolationHelper;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.AbstractHandlerTest;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.InterpolationConfigurations;
+import eu.esdihumboldt.hale.io.gml.geometry.handler.internal.ReaderConfiguration;
+import ru.yandex.qatools.allure.annotations.Features;
+import ru.yandex.qatools.allure.annotations.Stories;
 
 /**
  * Tests for reading point geometries.
  * 
- * @author Simon Templer, Arun Varma
+ * @author Simon Templer
+ * @author Arun Varma
  */
+@Features("Geometries")
+@Stories("GML")
 public class PointHandlerTest extends AbstractHandlerTest {
 
 	/**
@@ -48,7 +51,9 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	 * correct
 	 */
 	private Point reference;
-	private Point referenceOnGrid;
+
+	private final ReaderConfiguration gridConfig = InterpolationConfigurations.ALL_TO_GRID_DEFAULT;
+	private Consumer<Geometry> gridChecker;
 
 	@Override
 	public void init() {
@@ -56,7 +61,10 @@ public class PointHandlerTest extends AbstractHandlerTest {
 
 		// create the reference point geometry
 		reference = geomFactory.createPoint(new Coordinate(127906.229, 489141.472));
-		referenceOnGrid = geomFactory.createPoint(new Coordinate(127906.3, 489141.5));
+
+		gridChecker = combine(
+				referenceChecker(reference, InterpolationHelper.DEFAULT_MAX_POSITION_ERROR),
+				gridConfig.geometryChecker());
 	}
 
 	/**
@@ -70,23 +78,25 @@ public class PointHandlerTest extends AbstractHandlerTest {
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
 				getClass().getResource("/data/point/sample-point-gml2.xml").toURI());
 
+		Consumer<Geometry> checker = referenceChecker(reference);
+
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. GeometryProperty with Point defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -103,33 +113,35 @@ public class PointHandlerTest extends AbstractHandlerTest {
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
 				getClass().getResource("/data/point/sample-point-gml3.xml").toURI());
 
+		Consumer<Geometry> checker = referenceChecker(reference);
+
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. GeometryProperty with Point defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. PointProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 5. GeometryProperty with Point defined through pos
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -146,33 +158,35 @@ public class PointHandlerTest extends AbstractHandlerTest {
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
 				getClass().getResource("/data/point/sample-point-gml31.xml").toURI());
 
+		Consumer<Geometry> checker = referenceChecker(reference);
+
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. GeometryProperty with Point defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. PointProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 5. GeometryProperty with Point defined through pos
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -189,28 +203,30 @@ public class PointHandlerTest extends AbstractHandlerTest {
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
 				getClass().getResource("/data/point/sample-point-gml32.xml").toURI());
 
+		Consumer<Geometry> checker = referenceChecker(reference);
+
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 2. GeometryProperty with Point defined through coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 3. PointProperty with Point defined through pos
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 
 			// 4. GeometryProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance);
+			checkSingleGeometry(instance, checker);
 		} finally {
 			it.close();
 		}
@@ -224,11 +240,9 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	@Test
 	public void testPointGml2_Grid() throws Exception {
 
-		boolean keepOriginal = false;
-
 		InstanceCollection instances = AbstractHandlerTest.loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml2.xsd").toURI(),
-				getClass().getResource("/data/point/sample-point-gml2.xml").toURI(), keepOriginal);
+				getClass().getResource("/data/point/sample-point-gml2.xml").toURI(), gridConfig);
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -236,17 +250,17 @@ public class PointHandlerTest extends AbstractHandlerTest {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. GeometryProperty with Point defined through coordinates
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -259,10 +273,9 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	 */
 	@Test
 	public void testPointGml3_Grid() throws Exception {
-		boolean keepOriginal = false;
 		InstanceCollection instances = loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml3.xsd").toURI(),
-				getClass().getResource("/data/point/sample-point-gml3.xml").toURI(), keepOriginal);
+				getClass().getResource("/data/point/sample-point-gml3.xml").toURI(), gridConfig);
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -270,27 +283,27 @@ public class PointHandlerTest extends AbstractHandlerTest {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. GeometryProperty with Point defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. PointProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 5. GeometryProperty with Point defined through pos
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -303,10 +316,9 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	 */
 	@Test
 	public void testPointGml31_Grid() throws Exception {
-		boolean keepOriginal = false;
 		InstanceCollection instances = loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml31.xsd").toURI(),
-				getClass().getResource("/data/point/sample-point-gml31.xml").toURI(), keepOriginal);
+				getClass().getResource("/data/point/sample-point-gml31.xml").toURI(), gridConfig);
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -314,27 +326,27 @@ public class PointHandlerTest extends AbstractHandlerTest {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. PointProperty with Point defined through coord
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. GeometryProperty with Point defined through coord
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. PointProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 5. GeometryProperty with Point defined through pos
 			assertTrue("Fifth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
@@ -347,10 +359,9 @@ public class PointHandlerTest extends AbstractHandlerTest {
 	 */
 	@Test
 	public void testPointGml32_Grid() throws Exception {
-		boolean keepOriginal = false;
 		InstanceCollection instances = loadXMLInstances(
 				getClass().getResource("/data/gml/geom-gml32.xsd").toURI(),
-				getClass().getResource("/data/point/sample-point-gml32.xml").toURI(), keepOriginal);
+				getClass().getResource("/data/point/sample-point-gml32.xml").toURI(), gridConfig);
 
 		// three instances expected
 		ResourceIterator<Instance> it = instances.iterator();
@@ -358,68 +369,25 @@ public class PointHandlerTest extends AbstractHandlerTest {
 			// 1. PointProperty with Point defined through coordinates
 			assertTrue("First sample feature missing", it.hasNext());
 			Instance instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 2. GeometryProperty with Point defined through coordinates
 			assertTrue("Second sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 3. PointProperty with Point defined through pos
 			assertTrue("Third sample feature missing", it.hasNext());
 			instance = it.next();
-			checkPointPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 
 			// 4. GeometryProperty with Point defined through pos
 			assertTrue("Fourth sample feature missing", it.hasNext());
 			instance = it.next();
-			checkGeometryPropertyInstance(instance, keepOriginal);
+			checkSingleGeometry(instance, gridChecker);
 		} finally {
 			it.close();
 		}
-	}
-
-	private void checkGeometryPropertyInstance(Instance instance) {
-		checkGeometryPropertyInstance(instance, true);
-	}
-
-	private void checkGeometryPropertyInstance(Instance instance, boolean keepOriginal) {
-		Collection<Object> geomVals = PropertyResolver.getValues(instance, "Point", false);
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.size());
-
-		Object geom = geomVals.iterator().next();
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkPointPropertyInstance(Instance instance) {
-		checkPointPropertyInstance(instance, true);
-	}
-
-	private void checkPointPropertyInstance(Instance instance, boolean keepOriginal) {
-		Object[] geomVals = instance.getProperty(new QName(NS_TEST, "geometry"));
-		assertNotNull(geomVals);
-		assertEquals(1, geomVals.length);
-
-		Object geom = geomVals[0];
-		assertTrue(geom instanceof Instance);
-
-		Instance geomInstance = (Instance) geom;
-		checkGeomInstance(geomInstance, keepOriginal);
-	}
-
-	private void checkGeomInstance(Instance geomInstance, boolean keepOriginal) {
-		assertTrue(geomInstance.getValue() instanceof GeometryProperty<?>);
-
-		@SuppressWarnings("unchecked")
-		Point point = ((GeometryProperty<Point>) geomInstance.getValue()).getGeometry();
-		assertTrue("Read geometry does not match the reference geometry",
-				point.equalsExact(keepOriginal ? reference : referenceOnGrid));
-
-		// TODO check CRS!
 	}
 
 }

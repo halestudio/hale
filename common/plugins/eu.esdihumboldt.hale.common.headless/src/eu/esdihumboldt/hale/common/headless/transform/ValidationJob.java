@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.headless.transform;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -32,6 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 
@@ -46,24 +49,27 @@ public class ValidationJob extends AbstractTransformationJob {
 	private static final ALogger log = ALoggerFactory.getLogger(ValidationJob.class);
 
 	private ReportHandler reportHandler;
-	private InstanceValidator validator;
+	private final List<InstanceValidator> validators = new ArrayList<>();
 
 	private final InstanceWriter writer;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Create a job for validating transformed instances.
 	 * 
-	 * @param validator the validator
+	 * @param validators the validators
 	 * @param reportHandler the report handler
 	 * @param writer the instance writer
+	 * @param serviceProvider the service provider
 	 */
-	public ValidationJob(InstanceValidator validator, ReportHandler reportHandler,
-			@Nullable InstanceWriter writer) {
+	public ValidationJob(Collection<InstanceValidator> validators, ReportHandler reportHandler,
+			@Nullable InstanceWriter writer, ServiceProvider serviceProvider) {
 		super("Validation");
 
-		this.validator = validator;
+		this.validators.addAll(validators);
 		this.writer = writer;
 		this.reportHandler = reportHandler;
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -71,53 +77,67 @@ public class ValidationJob extends AbstractTransformationJob {
 	 */
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
-		IOReporter defaultReporter = validator.createReporter();
-		defaultReporter.setSuccess(false);
-		IOReport report = defaultReporter;
-		try {
-			ATransaction trans = log.begin(defaultReporter.getTaskName());
+		boolean successful = true;
+
+		for (InstanceValidator validator : this.validators) {
+			IOReporter defaultReporter = validator.createReporter();
+			defaultReporter.setSuccess(false);
+			IOReport report = defaultReporter;
 			try {
-				if (writer != null) {
-					// set validation schemas (may have been determined only
-					// during writer execution)
-					List<? extends Locatable> schemas = writer.getValidationSchemas();
-					validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-				}
-				IOReport result = validator.execute(new ProgressMonitorIndicator(monitor));
-				if (result != null) {
-					report = result;
-				}
-				else {
-					defaultReporter.setSuccess(true);
+				ATransaction trans = log.begin(defaultReporter.getTaskName());
+				try {
+					if (writer != null) {
+						// set validation schemas (may have been determined only
+						// during writer execution)
+						// set schemas
+						List<? extends Locatable> schemas = writer.getValidationSchemas();
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+					}
+					validator.setServiceProvider(serviceProvider);
+
+					IOReport result = validator.execute(new ProgressMonitorIndicator(monitor));
+					if (result != null) {
+						report = result;
+					}
+					else {
+						defaultReporter.setSuccess(true);
+					}
+				} catch (Throwable e) {
+					defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+				} finally {
+					trans.end();
 				}
 			} catch (Throwable e) {
 				defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
-			} finally {
-				trans.end();
 			}
-		} catch (Throwable e) {
-			defaultReporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+
+			if (monitor.isCanceled()) {
+				reset();
+				return Status.CANCEL_STATUS;
+			}
+
+			// add report to report service
+			reportHandler.publishReport(report);
+
+			// show message to user
+			if (report.isSuccess()) {
+				// info message
+				log.info(report.getSummary());
+			}
+			else {
+				// error message
+				log.error(report.getSummary());
+				successful = false;
+			}
 		}
 
-		if (monitor.isCanceled()) {
-			reset();
-			return Status.CANCEL_STATUS;
-		}
-
-		// add report to report service
-		reportHandler.publishReport(report);
-
-		// show message to user
-		if (report.isSuccess()) {
-			// info message
-			reset();
-			log.userInfo(report.getSummary());
+		reset();
+		if (successful) {
+			log.userInfo("All validations completed successfully.");
 			return Status.OK_STATUS;
 		}
 		else {
-			// error message
-			reset();
-			log.userError(report.getSummary());
+			log.userError("There were validation failures. Please check the reports for details.");
 			return ERROR_STATUS;
 		}
 	}
@@ -128,7 +148,7 @@ public class ValidationJob extends AbstractTransformationJob {
 	 * Necessary as jobs are referenced by the job manager even after execution.
 	 */
 	private void reset() {
-		validator = null;
+		validators.clear();
 		reportHandler = null;
 	}
 

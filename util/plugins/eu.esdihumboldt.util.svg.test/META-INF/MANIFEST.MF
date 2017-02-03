@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Test Utility Bundle with SVG tools
+Bundle-SymbolicName: eu.esdihumboldt.util.svg.test
+Bundle-Version: 3.2.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ClassPath: .,
+ lib/batik-util-1.8.jar,
+ lib/batik-svggen-1.8.jar,
+ lib/batik-awt-util-1.8.jar,
+ lib/batik-dom-1.8.jar,
+ lib/batik-xml-1.8.jar,
+ lib/xml-apis-1.4.01.jar
+Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
+ org.aspectj.lang;version="1.8.3",
+ org.aspectj.runtime.reflect;version="1.8.3",
+ org.junit;version="4.12.0",
+ org.junit.runner;version="4.12.0",
+ org.junit.runner.notification;version="4.12.0",
+ org.junit.runners;version="4.12.0",
+ org.junit.runners.model;version="4.12.0",
+ ru.yandex.qatools.allure.annotations;version="1.5.0",
+ ru.yandex.qatools.allure.aspects;version="1.5.0";apply-aspects:=true
+Export-Package: eu.esdihumboldt.util.svg.test

@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.transformation;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -52,6 +53,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
 import eu.esdihumboldt.hale.ui.service.project.ProjectResourcesUtil;
@@ -269,8 +271,8 @@ public class TransformDataWizardSourcePage extends WizardPage {
 			}
 			else if (validationJob == null) {
 				final InstanceValidator validator = (InstanceValidator) provider;
-				validationJob = new ValidationJob(validator, DefaultReportHandler.getInstance(),
-						null) {
+				validationJob = new ValidationJob(Arrays.asList(validator),
+						DefaultReportHandler.getInstance(), null, HaleUI.getServiceProvider()) {
 
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
@@ -279,6 +281,7 @@ public class TransformDataWizardSourcePage extends WizardPage {
 						 * writer was not executed yet (and the validation
 						 * schemas thus not updated if applicable)
 						 */
+						// set schemas
 						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
 						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 

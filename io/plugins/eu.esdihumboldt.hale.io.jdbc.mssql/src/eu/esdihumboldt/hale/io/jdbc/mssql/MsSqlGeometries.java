@@ -17,10 +17,8 @@ package eu.esdihumboldt.hale.io.jdbc.mssql;
 
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.geotools.geometry.jts.CurvedGeometryFactory;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.WKTReader2;
@@ -46,7 +44,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
-import eu.esdihumboldt.hale.io.jdbc.mssql.ui.SelectCRSDialog;
 import eu.esdihumboldt.hale.io.jdbc.mssql.util.SRSUtil;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
@@ -140,9 +137,15 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
+	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
+	 *      java.lang.Object, java.util.function.Supplier)
+	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			SQLServerConnection connection) throws Exception {
+			SQLServerConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
 
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -205,39 +208,34 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 				log.warn(
 						"Could not find spatial reference system id " + srId + " in MS sql server");
 
-				final String instanceSRId = Integer.toString(srId);
+				crsDef = crsProvider.get();
 
-				Display display = PlatformUI.getWorkbench().getDisplay();
-				final AtomicReference<CRSDefinition> result = new AtomicReference<CRSDefinition>();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						SelectCRSDialog dialog = new SelectCRSDialog(
-								Display.getCurrent().getActiveShell(), instanceSRId);
-
-						dialog.open();
-						result.set(dialog.getValue());
-					}
-				});
-				crsDef = result.get();
+				if (crsDef == null) {
+					log.warn("Could not retrieve default spatial reference for " + srId
+							+ " in MS sql server");
+				}
 
 				// saving in cache
-				String srsName = CRS.toSRS(crsDef.getCRS());
-				if (srsName != null) {
-					final int index = srsName.lastIndexOf(':');
-					String authorityName = null;
-					String authorizedId = null;
-					if (index > 0) {
-						authorityName = srsName.substring(0, index);
-						authorizedId = srsName.substring(index + 1).trim();
+				if (crsDef != null) {
+
+					String srsName = CRS.toSRS(crsDef.getCRS());
+					if (srsName != null) {
+						final int index = srsName.lastIndexOf(':');
+						String authorityName = null;
+						String authorizedId = null;
+						if (index > 0) {
+							authorityName = srsName.substring(0, index);
+							authorizedId = srsName.substring(index + 1).trim();
+						}
+						// we don't need wkt.
+						SRSUtil.addSRSinCache(srId, authorityName, authorizedId, null);
 					}
-					// we don't need wkt.
-					SRSUtil.addSRSinCache(srId, authorityName, authorizedId, null);
 				}
 			}
 			return new DefaultGeometryProperty<Geometry>(crsDef, jtsGeom);
-		} finally {
+		} finally
+
+		{
 			if (rs != null)
 				try {
 					rs.close();

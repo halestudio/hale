@@ -24,6 +24,7 @@ import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -49,7 +50,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	 */
 	private class JDBCTableIterator implements InstanceIterator {
 
-		private final TableInstanceBuilder builder = new TableInstanceBuilder();
+		private final TableInstanceBuilder builder;
 
 //		private static final int ROW_LIMIT = 100;
 
@@ -74,9 +75,12 @@ public class JDBCTableCollection implements InstanceCollection {
 
 		/**
 		 * Default constructor.
+		 * 
+		 * @param crsProvider the CRS provider
 		 */
-		public JDBCTableIterator() {
+		public JDBCTableIterator(CRSProvider crsProvider) {
 			super();
+			builder = new TableInstanceBuilder(crsProvider);
 			try {
 				connection = createConnection();
 			} catch (SQLException e) {
@@ -213,6 +217,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	private final TypeDefinition type;
 
 	private final String fullTableName;
+	private final CRSProvider crsProvider;
 
 	/**
 	 * Constructor.
@@ -221,12 +226,15 @@ public class JDBCTableCollection implements InstanceCollection {
 	 * @param jdbcURI the JDBC URI to access the database
 	 * @param user the database user
 	 * @param password the user's password
+	 * @param crsProvider crs provider
 	 */
-	public JDBCTableCollection(TypeDefinition type, URI jdbcURI, String user, String password) {
+	public JDBCTableCollection(TypeDefinition type, URI jdbcURI, String user, String password,
+			CRSProvider crsProvider) {
 		this.type = type;
 		this.jdbcURI = jdbcURI;
 		this.user = user;
 		this.password = password;
+		this.crsProvider = crsProvider;
 
 		this.fullTableName = type.getConstraint(DatabaseTable.class).getFullTableName();
 	}
@@ -257,7 +265,7 @@ public class JDBCTableCollection implements InstanceCollection {
 
 	@Override
 	public ResourceIterator<Instance> iterator() {
-		return new JDBCTableIterator();
+		return new JDBCTableIterator(crsProvider);
 	}
 
 	@Override

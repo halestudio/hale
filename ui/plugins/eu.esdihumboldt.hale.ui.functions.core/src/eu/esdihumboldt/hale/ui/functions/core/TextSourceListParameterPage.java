@@ -16,6 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.functions.core;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -24,6 +28,7 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 
 /**
  * Base parameter page for parameter pages that contain a listing of source
@@ -46,6 +51,24 @@ public abstract class TextSourceListParameterPage extends SourceListParameterPag
 	 */
 	protected TextSourceListParameterPage(String pageName) {
 		super(pageName);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.functions.core.SourceListParameterPage#configure(java.lang.Object)
+	 */
+	@Override
+	protected void configure(Text textField) {
+		// Add content assist for variables
+		final ControlDecoration infoDeco = new ControlDecoration(textField, SWT.TOP | SWT.LEFT);
+		infoDeco.setDescriptionText("Type Ctrl+Space for content assistance");
+		infoDeco.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		infoDeco.setMarginWidth(2);
+
+		ContentProposalAdapter adapter = new ContentProposalAdapter(textField,
+				new TextContentAdapter(), this, ProjectVariablesContentProposalProvider.CTRL_SPACE,
+				/* new char[] { '{' } */ null);
+		adapter.setAutoActivationDelay(0);
 	}
 
 	/**

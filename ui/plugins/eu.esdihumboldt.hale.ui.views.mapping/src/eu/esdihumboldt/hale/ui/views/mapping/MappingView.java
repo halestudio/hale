@@ -24,17 +24,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
 import org.eclipse.zest.core.viewers.GraphViewer;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
+import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -72,6 +77,8 @@ public class MappingView extends AbstractMappingView {
 	private AlignmentServiceListener alignmentListener;
 	private final Action showCellsOnChildren;
 
+	private ResizingTreeLayoutAlgorithm treeLayout;
+
 	/**
 	 * Default constructor.
 	 */
@@ -96,17 +103,24 @@ public class MappingView extends AbstractMappingView {
 			}
 		};
 		showCellsOnChildren.setChecked(false);
-		showCellsOnChildren.setToolTipText(active);
+		showCellsOnChildren.setToolTipText(deactive);
 		showCellsOnChildren
 				.setImageDescriptor(MappingViewPlugin.getImageDescriptor("icons/sub_co.gif"));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.mapping.AbstractMappingView#createViewControl(org.eclipse.swt.widgets.Composite)
-	 */
+	@Override
+	protected LayoutAlgorithm createLayout() {
+		treeLayout = new ResizingTreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT,
+				new AlignmentViewResizingStrategy());
+
+		return treeLayout;
+	}
+
 	@Override
 	public void createViewControl(Composite parent) {
 		super.createViewControl(parent);
+
+		updateLayout(false);
 
 		getSite().getWorkbenchWindow().getSelectionService()
 				.addPostSelectionListener(selectionListener = new ISelectionListener() {
@@ -166,6 +180,15 @@ public class MappingView extends AbstractMappingView {
 		if (current != null) {
 			update(current);
 		}
+
+		// listen on size changes
+		getViewer().getControl().addControlListener(new ControlAdapter() {
+
+			@Override
+			public void controlResized(ControlEvent e) {
+				updateLayout(true);
+			}
+		});
 	}
 
 	@Override
@@ -258,6 +281,7 @@ public class MappingView extends AbstractMappingView {
 		}
 
 		getViewer().setInput(cells);
+		updateLayout(true);
 	}
 
 	private Pair<Set<EntityDefinition>, Set<EntityDefinition>> getDefinitionsFromSelection(
@@ -340,6 +364,21 @@ public class MappingView extends AbstractMappingView {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Update the layout to the view size.
+	 * 
+	 * @param triggerLayout if the layout should be applied directly
+	 */
+	private void updateLayout(boolean triggerLayout) {
+		int width = getViewer().getControl().getSize().x;
+
+		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+		if (triggerLayout) {
+			getViewer().applyLayout();
+		}
 	}
 
 }

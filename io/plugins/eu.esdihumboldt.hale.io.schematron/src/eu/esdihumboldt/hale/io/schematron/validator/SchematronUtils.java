@@ -58,20 +58,11 @@ public abstract class SchematronUtils {
 		}
 	}
 
-	/**
-	 * @param result
-	 * @param writer
-	 */
 	private static void convertResult(StreamResult result, StringWriter writer) {
 		ByteArrayOutputStream baos = (ByteArrayOutputStream) result.getOutputStream();
 		writer.write(baos.toString());
 	}
 
-	/**
-	 * @param result
-	 * @param writer
-	 * @throws TransformerFactoryConfigurationError
-	 */
 	private static void convertResult(DOMResult result, StringWriter writer)
 			throws TransformerFactoryConfigurationError {
 		TransformerFactory txfFactory = TransformerFactory.newInstance();

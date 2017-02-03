@@ -30,8 +30,8 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @param <T> the provider type
  * @author Simon Templer
  */
-public abstract class InstanceWriterDecorator<T extends InstanceWriter> extends
-		ExportProviderDecorator<T> implements InstanceWriter {
+public abstract class InstanceWriterDecorator<T extends InstanceWriter>
+		extends ExportProviderDecorator<T>implements InstanceWriter {
 
 	/**
 	 * @see ExportProviderDecorator#ExportProviderDecorator(eu.esdihumboldt.hale.common.core.io.ExportProvider)

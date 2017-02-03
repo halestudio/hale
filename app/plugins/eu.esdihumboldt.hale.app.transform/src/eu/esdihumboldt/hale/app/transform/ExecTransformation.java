@@ -33,6 +33,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -177,7 +178,7 @@ public class ExecTransformation implements ConsoleConstants {
 
 	private final List<InstanceReader> sources = new ArrayList<InstanceReader>();
 
-	private InstanceValidator validator;
+	private final Collection<InstanceValidator> validators = new ArrayList<>();
 
 	@SuppressWarnings("javadoc")
 	public int run(ExecContext context) throws Exception {
@@ -225,8 +226,8 @@ public class ExecTransformation implements ConsoleConstants {
 		// set up writer for target
 		setupWriter();
 
-		// set up the target validator (if any)
-		setupValidator();
+		// set up the target validators (if any)
+		setupValidators();
 
 		if (target == null) {
 			// writer could not be created
@@ -384,27 +385,37 @@ public class ExecTransformation implements ConsoleConstants {
 		target.loadConfiguration(conf.getProviderConfiguration());
 	}
 
-	private void setupValidator() {
-		if (context.getValidateProviderId() != null
-				&& !context.getValidateProviderId().trim().isEmpty()) {
-			validator = HaleIO.createIOProvider(InstanceValidator.class, null,
-					context.getValidateProviderId());
-			if (validator == null) {
-				throw fail("Instance validator with ID " + context.getValidateProviderId()
-						+ " not found");
+	private void setupValidators() {
+		if (context.getValidateProviderIds() != null
+				&& !context.getValidateProviderIds().isEmpty()) {
+
+			for (int i = 0; i < context.getValidateProviderIds().size(); i++) {
+				String validateProviderId = context.getValidateProviderIds().get(i);
+
+				if (!validateProviderId.trim().isEmpty()) {
+					final InstanceValidator validator = HaleIO
+							.createIOProvider(InstanceValidator.class, null, validateProviderId);
+					if (validator == null) {
+						throw fail(
+								"Instance validator with ID " + validateProviderId + " not found");
+					}
+
+					// load validator settings
+					validator.loadConfiguration(context.getValidateSettings().get(i));
+
+					// set schemas
+					List<? extends Locatable> schemas = target.getValidationSchemas();
+					validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+
+					// set source
+					validator.setSource(new DefaultInputSupplier(context.getTarget()));
+
+					// apply target content type
+					validator.setContentType(target.getContentType());
+
+					this.validators.add(validator);
+				}
 			}
-
-			// load validator settings
-			validator.loadConfiguration(context.getValidateSettings());
-
-			// set validation schemas
-			List<? extends Locatable> schemas = target.getValidationSchemas();
-			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-			// set source
-			validator.setSource(new DefaultInputSupplier(context.getTarget()));
-
-			// apply target content type
-			validator.setContentType(target.getContentType());
 		}
 	}
 
@@ -444,7 +455,7 @@ public class ExecTransformation implements ConsoleConstants {
 
 		// run transformation
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
-				reportHandler, id, validator, context.getFilters());
+				reportHandler, id, validators, context.getFilters());
 
 		if (res.get()) {
 			info("Transformation completed. Please check the reports for more details.");

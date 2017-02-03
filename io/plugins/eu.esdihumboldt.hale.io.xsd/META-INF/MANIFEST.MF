@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Schema I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xsd;singleton:=true
-Bundle-Version: 3.1.0.qualifier
+Bundle-Version: 3.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="17.0.0",
@@ -40,6 +40,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.util.validator,
  gnu.trove,
  net.jcip.annotations,
+ org.apache.commons.lang;version="2.6.0",
  org.apache.ws.commons.schema,
  org.apache.ws.commons.schema.constants,
  org.apache.ws.commons.schema.resolver,
