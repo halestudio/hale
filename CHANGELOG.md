@@ -4,9 +4,39 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.2.0]
+
 ### Added
 
 - Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, ArcByCenterPoint, Circle, CircleByCenterPoint. The interpolation is based on a Grid assuring a given maximum positional error.
+- Project Validator that validates exported instances based on validator configuration (e.g. rules or schemas) imported into the project
+- New transformation function `Assign collected values` allows the assignment of all values collected by a Groovy transformation function. The new function automatically converts collected values to references if the target property takes references.
+- Better usage of available space in Alignment and Mapping views
+- Content assistance for project variables in several UI wizards
+- Request pagination for WFS requests. Users can now choose to activate request pagination for WFS sources.
+- IO Provider extensions can now have a configurationContentType to describe the content type of configuration files for this provider
+- Total number of imported instances is now shown in progress dialog (if known)
+- InstanceResolver now allows resolving multiple references at once
+- Added CSVInstanceCollection for use with CSVInstanceReader
+
+### Changed
+
+- `Validator rules` are now called `Validator configurations`
+- PropertiesMergeHandler now uses an iterative approach
+- RestrictedGroovyInterceptor now allows SimpleDateFormat and UUID classes
+- Resolve classes via Apache Commons' ClassUtils
+
+### Removed
+
+### Fixed
+
+- Prevent multiple message boxes during validation when multiple validators are executed
+- Deselecting in a type selector could lead to an exception
+- Removed CRS selection dialog and UI dependency from MS SQL plugin
+- Fixed warning for WFS parameters for XML/GML reader
+- Schema selection configuration for JDBC driver is optional
+- Fixed initial tooltip in Mapping view
+
 
 ## [3.1.0]
 
@@ -112,6 +142,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.1.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.2.0...HEAD
+[3.2.0]: https://github.com/halestudio/hale/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/halestudio/hale/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/halestudio/hale/compare/2.9.4...3.0.0
