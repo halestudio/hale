@@ -16,21 +16,22 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Request pagination for WFS requests. Users can now choose to activate request pagination for WFS sources.
 - IO Provider extensions can now have a configurationContentType to describe the content type of configuration files for this provider
 - Total number of imported instances is now shown in progress dialog (if known)
-- InstanceResolver now allows resolving multiple references at once
+- The `InstanceResolver` interface has been extended to allow resolving multiple references at once. Implementations can use this to optimize resolving of multiple references
 
 ### Changed
 
+- The HTML documentation that can be generated for an alignment is now much more performant for large mappings due to lazy loading and rendering
 - `Validator rules` are now called `Validator configurations`
 - The Merge function now uses an iterative approach for merging instances which allows for processing more data in a Merge
-- RestrictedGroovyInterceptor now allows SimpleDateFormat and UUID classes
+- Allow using `SimpleDateFormat` and `UUID` classes in groovy scripts by default
 - When loading data from CSV files the data is now streamed (similar to XML data sources) and not loaded at once into memory
+- When a CSV files has more columns than defined in the schema, this is now a warning, not an error
 
 ### Fixed
 
 - Prevent multiple message boxes during validation when multiple validators are executed
 - Deselecting in a type selector could lead to an exception
 - Removed CRS selection dialog and UI dependency from MS SQL plugin
-- Fixed warning for WFS parameters for XML/GML reader
 - Schema selection configuration for JDBC driver is optional
 - Fixed wrong tooltip in Mapping view
 - Fixed error when loading hale schema definitions in respect to schema elements w/ primitive bindings
