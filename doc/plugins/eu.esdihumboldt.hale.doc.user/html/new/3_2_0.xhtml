@@ -38,11 +38,11 @@
 				<td class="title">Arc geometries</td>
 				<td class="content">
 					<p>
-						Regarding support for geometries in GML there are still some
-						geometry types not supported by hale studio. To reduce that list
-						we added support for interpolating Arc-like geometries. Thus now
-						the following geometry types are supported in addition: <em>Arc</em>,
-						<em>ArcString</em>, <em>Circle</em>, <em>CircleByCenterPoint</em>.
+						Until now, hale didn't support geometries with non-linear interpolation 
+						between points, such as arcs. We now added a robust interpolation method 
+						that processes <em>Arc</em>s, <em>ArcString</em>s, <em>Circle</em>s, 
+						<em>CircleByCenterPoint</em>s and creates regular <em>LineStrings</em> 
+						and <em>Polygons</em>.						
 					</p>
 					<p>
 						<img src="3_2_0_images/arcs.png" />

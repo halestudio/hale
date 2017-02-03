@@ -12,7 +12,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Project Validator that validates exported instances based on validator configuration (e.g. rules or schemas) imported into the project
 - New transformation function `Assign collected values` allows the assignment of all values collected by a Groovy transformation function. The new function automatically converts collected values to references if the target property takes references.
 - Better usage of available space in Alignment and Mapping views
-- Content assistance for project variables in several UI wizards
+- Content assistance for project variables in transformation function wizards such as Formatted String, Regex Analysis and Assign
 - Request pagination for WFS requests. Users can now choose to activate request pagination for WFS sources.
 - IO Provider extensions can now have a configurationContentType to describe the content type of configuration files for this provider
 - Total number of imported instances is now shown in progress dialog (if known)
@@ -21,7 +21,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 ### Changed
 
 - The HTML documentation that can be generated for an alignment is now much more performant for large mappings due to lazy loading and rendering
-- `Validator rules` are now called `Validator configurations`
 - The Merge function now uses an iterative approach for merging instances which allows for processing more data in a Merge
 - Allow using `SimpleDateFormat` and `UUID` classes in groovy scripts by default
 - When loading data from CSV files the data is now streamed (similar to XML data sources) and not loaded at once into memory
@@ -29,7 +28,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Fixed
 
-- Prevent multiple message boxes during validation when multiple validators are executed
 - Deselecting in a type selector could lead to an exception
 - Removed CRS selection dialog and UI dependency from MS SQL plugin
 - Schema selection configuration for JDBC driver is optional
