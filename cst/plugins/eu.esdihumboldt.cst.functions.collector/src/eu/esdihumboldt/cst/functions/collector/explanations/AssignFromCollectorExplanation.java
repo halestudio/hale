@@ -18,9 +18,8 @@ package eu.esdihumboldt.cst.functions.collector.explanations;
 import java.util.Locale;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
-import eu.esdihumboldt.hale.common.align.extension.function.ParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
@@ -41,38 +40,32 @@ public class AssignFromCollectorExplanation extends MarkdownCellExplanation {
 	protected void customizeBinding(Map<String, Object> binding, Cell cell, boolean html,
 			ServiceProvider provider, Locale locale) {
 
-		FunctionDefinition<? extends ParameterDefinition> function = loadFunction(
-				cell.getTransformationIdentifier(), provider);
-
 		// Default values for all bindings
 		binding.put("_constraintsEvaluated", false);
 		binding.put("_hasValue", false);
 		binding.put("_isReference", false);
 
-		if (!function.getTarget().isEmpty() && !cell.getTarget().isEmpty()) {
+		Entity entity = CellUtil.getFirstEntity(cell.getTarget());
+		if (entity != null) {
+			ChildContext childContext = entity.getDefinition().getPropertyPath().iterator().next();
+			PropertyDefinition resultProperty = childContext.getChild().asProperty();
+			TypeDefinition resultPropertyType = resultProperty.getPropertyType();
 
-			ParameterDefinition parameterDefinition = function.getTarget().iterator().next();
-			Entity entity = cell.getTarget().get(parameterDefinition.getName()).iterator().next();
-			if (entity != null) {
-				ChildContext childContext = entity.getDefinition().getPropertyPath().iterator()
-						.next();
-				PropertyDefinition resultProperty = childContext.getChild().asProperty();
-				TypeDefinition resultPropertyType = resultProperty.getPropertyType();
+			boolean isReference = resultProperty.getConstraint(Reference.class).isReference();
+			binding.put("_isReference", isReference);
 
-				boolean isReference = resultProperty.getConstraint(Reference.class).isReference();
-				binding.put("_isReference", isReference);
-
-				if (!isReference) {
-					boolean hasValue = resultPropertyType.getConstraint(HasValueFlag.class)
-							.isEnabled();
-					binding.put("_hasValue", hasValue);
-				}
-				else {
-					binding.put("_hasValue", true);
-				}
-
-				binding.put("_constraintsEvaluated", true);
+			// If the target is a Reference, the collected values can be
+			// assigned here, otherwise the HasValueFlag has to be checked to
+			// determine this.
+			if (isReference) {
+				binding.put("_hasValue", true);
 			}
+			else {
+				boolean hasValue = resultPropertyType.getConstraint(HasValueFlag.class).isEnabled();
+				binding.put("_hasValue", hasValue);
+			}
+
+			binding.put("_constraintsEvaluated", true);
 		}
 	}
 
