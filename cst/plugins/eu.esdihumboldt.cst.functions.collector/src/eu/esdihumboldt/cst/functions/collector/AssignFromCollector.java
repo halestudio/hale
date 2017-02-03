@@ -43,15 +43,19 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 
 /**
- * Function to assign references collected by a {@link Collector} to a
- * multi-valued target property. In case the target property cannot take the
- * values itself a child property is looked up to assign the references to.
+ * Function to assign values collected by a {@link Collector} to a multi-valued
+ * target property. In case the target property has the {@link Reference}
+ * constraint, the values are passed to {@link Reference#idToReference(Object)}
+ * before assignment.
+ * 
+ * If the target property cannot take the values itself, a child property with
+ * the {@link Reference} constraint is looked up to assign the values to.
  * 
  * @author Florian Esser
  */
-public class AssignReferenceFromCollector
+public class AssignFromCollector
 		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
-		implements AssignReferenceFromCollectorFunction {
+		implements AssignFromCollectorFunction {
 
 	private static final CollectorGroovyHelper helper = new CollectorGroovyHelper();
 

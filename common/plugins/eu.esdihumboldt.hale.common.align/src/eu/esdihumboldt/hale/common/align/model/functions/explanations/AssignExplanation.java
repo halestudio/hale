@@ -16,10 +16,13 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.explanations;
 
+import java.util.Locale;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Explanation for the assign function.
@@ -29,8 +32,9 @@ import eu.esdihumboldt.hale.common.align.model.impl.mdexpl.MarkdownCellExplanati
 public class AssignExplanation extends MarkdownCellExplanation implements AssignFunction {
 
 	@Override
-	protected void customizeBinding(Map<String, Object> binding) {
-		super.customizeBinding(binding);
+	protected void customizeBinding(Map<String, Object> binding, Cell cell, boolean html,
+			ServiceProvider provider, Locale locale) {
+		super.customizeBinding(binding, cell, html, provider, locale);
 
 		// to work with Assign and Bound assign both, add empty _source for
 		// Assign

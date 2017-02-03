@@ -178,7 +178,7 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 		addEntityBindings(binding, function.getTarget(), cell.getTarget(), "_target", html, locale);
 
 		// customization
-		customizeBinding(binding);
+		customizeBinding(binding, cell, html, provider, locale);
 
 		return binding;
 	}
@@ -201,7 +201,8 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	 * 
 	 * @param binding the binding
 	 */
-	protected void customizeBinding(Map<String, Object> binding) {
+	protected void customizeBinding(Map<String, Object> binding, Cell cell, boolean html,
+			ServiceProvider provider, Locale locale) {
 		// override me
 	}
 
