@@ -14,20 +14,33 @@
 		based schemas. Validation can be done on the exported transformation
 		result or on the transformed instances currently available in the
 		application.</p>
+	<p>In addition to schema-based checks, HALE supports validation of the
+		exported transformation result with Schematron. To perform Schematron
+		validation, you can add the Schematron validator to the list of
+		validators and configure it when exporting the transformed instances.
+		Alternatively, you can load Schematron schemas permanently into the
+		project. Validation will then be performed by the Project validator
+		which is enabled in the export wizard by default.</p>
+	<div>
+		<img src="images/validator-add.png" class="fit">
+	</div>
+	<div>
+		<img src="images/configure-schematron-validator.png" class="fit">
+	</div>
 
 	<h2>Validation of exported data</h2>
 	<p>When exporting data or transforming external data you have the
-		option to specify a validator that should be executed when writing the
-		data to the output file is finished. This validator produces a report
-		about errors found during the validation and informs you if the file
-		is valid or not.</p>
+		option to specify which validators should be executed as soon as 
+		writing the data to the output file is finished. Each validator 
+		produces a report about errors found during the validation and 
+		informs you whether the file is valid or not.</p>
 
 	<h2>Validation inside HALE</h2>
-	<p>If you have loaded source data and created a mapping, on each
-		mapping change the live transformation is executed (if activated).
-		When the transformed data changes, automatically a job is started to
-		validate the instances. This can be deactivated and activated in the
-		main menu or tool bar:</p>
+	<p>If a mapping exists and source data is loaded, each mapping change will 
+		trigger the live transformation (if activated).
+		When the transformed data changes, schema-based validation is started
+		automatically to validate the instances. Live validation can be enabled
+		and disabled in the main menu or via the tool bar:</p>
 	<div>
 		<img src="images/validation_activate.png" class="fit">
 	</div>

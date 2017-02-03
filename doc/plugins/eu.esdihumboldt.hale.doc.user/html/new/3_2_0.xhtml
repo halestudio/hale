@@ -11,7 +11,7 @@
 	<ul>
 		<li>Read interpolated Arc geometries from GML</li>
 		<li>Support for multiple instance validators</li>
-		<li>Validate exported GML instances with Schematron</li>
+		<li>New <em>Project validator</em></li>
 		<li>Request pagination for WFS sources</li>
 		<li>Enhanced UI support for project variables</li>	
 	</ul>
@@ -60,18 +60,13 @@
 					<p>
 						hale studio's feature to validate exported XML and GML files has
 						been extended. It is now possible to configure multiple validators.
+						Furthermore, a new type of validator, the <em>Project validator</em>
+						has been added which allows validation of the export result based
+						on rules and schemas (e.g. Schematron schemas) imported into the 
+						project.
 					</p>
-				</td>
-			</tr>
-
-			<tr id="schematron">
-				<td class="title">Schematron validation</td>
-				<td class="content">
 					<p>
-						In addition to the XML validation hale studio now supports the 
-						validation of exported XML and GML files with Schematron. The
-						required schema can be configured on-the-fly in the export wizard
-						or be added to the project permanently as a resource.
+						<img src="3_2_0_images/multiple-validators.png" />
 					</p>
 				</td>
 			</tr>
@@ -85,6 +80,9 @@
 						This allows loading larger datasets from a WFS where previously this
 						may have been limited by a server-side limit of retrievable features
 						per request.
+					</p>
+					<p>
+						<img src="3_2_0_images/wfs-pagination.png" />
 					</p>
 				</td>
 			</tr>
