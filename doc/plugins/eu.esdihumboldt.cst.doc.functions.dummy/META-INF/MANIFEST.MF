@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Dummy Functions Documentation
 Bundle-SymbolicName: eu.esdihumboldt.cst.doc.functions.dummy;singleton:=true
 Fragment-Host: eu.esdihumboldt.cst.doc.functions;bundle-version="2.5.0"
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
 Bundle-Vendor: data harmonisation panel

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Groovy Utilities
 Bundle-SymbolicName: eu.esdihumboldt.util.groovy
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.json,

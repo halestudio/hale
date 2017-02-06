@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for general groovy helper functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy.helpers.test
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.cst.functions.groovy.helpers;bundle-version="2.9.5",
