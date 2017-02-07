@@ -16,7 +16,7 @@ package de.fhg.igd.mapviewer.waypoints;
 
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
-import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.geom.BoundingBox;
 
 /**
  * GenericWaypoint

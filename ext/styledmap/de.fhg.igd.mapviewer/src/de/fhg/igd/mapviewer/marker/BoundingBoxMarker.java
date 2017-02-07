@@ -24,7 +24,7 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.IllegalGeoPositionException;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 
-import de.fhg.igd.mapviewer.geom.BoundingBox;
+import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.mapviewer.marker.area.Area;
 import de.fhg.igd.mapviewer.marker.area.BoxArea;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;

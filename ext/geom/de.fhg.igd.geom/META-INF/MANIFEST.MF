@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geometry
+Bundle-SymbolicName: de.fhg.igd.geom
+Bundle-Version: 3.3.0.qualifier
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: de.fhg.igd.geom,
+ de.fhg.igd.geom.algorithm,
+ de.fhg.igd.geom.algorithm.sweepline,
+ de.fhg.igd.geom.indices,
+ de.fhg.igd.geom.shape,
+ de.fhg.igd.geom.util
+Import-Package: com.google.common.base;version="17.0.0",
+ com.vividsolutions.jts;version="1.13.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
+ com.vividsolutions.jts.geom.impl;version="1.13.0"

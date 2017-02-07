@@ -41,10 +41,10 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
-import de.fhg.igd.mapviewer.geom.BoundingBox;
-import de.fhg.igd.mapviewer.geom.Point3D;
-import de.fhg.igd.mapviewer.geom.shape.Line2D;
-import de.fhg.igd.mapviewer.geom.shape.Surface;
+import de.fhg.igd.geom.BoundingBox;
+import de.fhg.igd.geom.Point3D;
+import de.fhg.igd.geom.shape.Line2D;
+import de.fhg.igd.geom.shape.Surface;
 import de.fhg.igd.mapviewer.marker.AbstractMarker;
 import de.fhg.igd.mapviewer.marker.BoundingBoxMarker;
 import de.fhg.igd.mapviewer.marker.Marker;
@@ -567,20 +567,19 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 	private static java.awt.Polygon[] createBufferPolygon(List<Point2D> linePoints,
 			double distance) {
 		// create metamodel line
-		de.fhg.igd.mapviewer.geom.Point2D[] convertedLinePoints = new de.fhg.igd.mapviewer.geom.Point2D[linePoints
+		de.fhg.igd.geom.Point2D[] convertedLinePoints = new de.fhg.igd.geom.Point2D[linePoints
 				.size()];
 
 		int index = 0;
 		for (Point2D point : linePoints) {
-			convertedLinePoints[index] = new de.fhg.igd.mapviewer.geom.Point2D(point.getX(),
-					point.getY());
+			convertedLinePoints[index] = new de.fhg.igd.geom.Point2D(point.getX(), point.getY());
 			index++;
 		}
 
 		Line2D line = new Line2D(convertedLinePoints);
 
 		Surface buffer = line.computeBuffer(distance);
-		return buffer.toAWTPolygons(1, 1, new de.fhg.igd.mapviewer.geom.Point2D(0, 0));
+		return buffer.toAWTPolygons(1, 1, new de.fhg.igd.geom.Point2D(0, 0));
 	}
 
 	/**

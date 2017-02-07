@@ -18,7 +18,7 @@ package de.fhg.igd.mapviewer.marker.area;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 
-import de.fhg.igd.mapviewer.geom.Point2D;
+import de.fhg.igd.geom.Point2D;
 
 /**
  * Area represented by a polygon
@@ -33,7 +33,7 @@ public class PolygonArea implements Area {
 
 	private boolean areaInitialized = false;
 
-	private de.fhg.igd.mapviewer.geom.shape.Polygon mmPoly = null;
+	private de.fhg.igd.geom.shape.Polygon mmPoly = null;
 
 	/**
 	 * Constructor
@@ -91,28 +91,28 @@ public class PolygonArea implements Area {
 		return toModelPolygon(rect).contains(toModelPolygon());
 	}
 
-	private de.fhg.igd.mapviewer.geom.shape.Polygon toModelPolygon() {
+	private de.fhg.igd.geom.shape.Polygon toModelPolygon() {
 		if (mmPoly == null) {
 			mmPoly = toModelPolygon(poly);
 		}
 		return mmPoly;
 	}
 
-	private static de.fhg.igd.mapviewer.geom.shape.Polygon toModelPolygon(Polygon poly) {
+	private static de.fhg.igd.geom.shape.Polygon toModelPolygon(Polygon poly) {
 		Point2D[] points = new Point2D[poly.npoints];
 		for (int i = 0; i < poly.npoints; i++) {
 			points[i] = new Point2D(poly.xpoints[i], poly.ypoints[i]);
 		}
-		return new de.fhg.igd.mapviewer.geom.shape.Polygon(points);
+		return new de.fhg.igd.geom.shape.Polygon(points);
 	}
 
-	private static de.fhg.igd.mapviewer.geom.shape.Polygon toModelPolygon(Rectangle rect) {
+	private static de.fhg.igd.geom.shape.Polygon toModelPolygon(Rectangle rect) {
 		Point2D[] points = new Point2D[4];
 		points[0] = new Point2D(rect.x, rect.y);
 		points[1] = new Point2D(rect.x + rect.width, rect.y);
 		points[2] = new Point2D(rect.x + rect.width, rect.y + rect.height);
 		points[3] = new Point2D(rect.x, rect.y + rect.height);
-		return new de.fhg.igd.mapviewer.geom.shape.Polygon(points);
+		return new de.fhg.igd.geom.shape.Polygon(points);
 	}
 
 }

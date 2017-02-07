@@ -21,9 +21,9 @@ import org.jdesktop.swingx.mapviewer.GeotoolsConverter;
 import org.jdesktop.swingx.mapviewer.IllegalGeoPositionException;
 import org.jdesktop.swingx.mapviewer.Waypoint;
 
+import de.fhg.igd.geom.BoundingBox;
+import de.fhg.igd.geom.Localizable;
 import de.fhg.igd.mapviewer.Refresher;
-import de.fhg.igd.mapviewer.geom.BoundingBox;
-import de.fhg.igd.mapviewer.geom.Localizable;
 import de.fhg.igd.mapviewer.marker.Marker;
 
 /**

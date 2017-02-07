@@ -37,12 +37,12 @@ import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.jdesktop.swingx.mapviewer.TileOverlayPainter;
 import org.jdesktop.swingx.mapviewer.TileProviderUtils;
 
+import de.fhg.igd.geom.BoundingBox;
+import de.fhg.igd.geom.Verifier;
+import de.fhg.igd.geom.indices.RTree;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.MapKitTileOverlayPainter;
 import de.fhg.igd.mapviewer.Refresher;
-import de.fhg.igd.mapviewer.geom.BoundingBox;
-import de.fhg.igd.mapviewer.geom.Verifier;
-import de.fhg.igd.mapviewer.geom.indices.RTree;
 import de.fhg.igd.mapviewer.marker.area.Area;
 
 /**
@@ -495,7 +495,7 @@ public abstract class CustomWaypointPainter<W extends SelectableWaypoint<W>>
 		final PixelConverter converter = getMapKit().getMainMap().getTileFactory().getTileProvider()
 				.getConverter();
 
-		de.fhg.igd.mapviewer.geom.Point2D[] points = new de.fhg.igd.mapviewer.geom.Point2D[poly.npoints];
+		de.fhg.igd.geom.Point2D[] points = new de.fhg.igd.geom.Point2D[poly.npoints];
 
 		// create a metamodel polygon
 		for (int i = 0; i < poly.npoints; i++) {
@@ -513,10 +513,10 @@ public abstract class CustomWaypointPainter<W extends SelectableWaypoint<W>>
 				return new HashSet<W>();
 			}
 
-			points[i] = new de.fhg.igd.mapviewer.geom.Point2D(pos.getX(), pos.getY());
+			points[i] = new de.fhg.igd.geom.Point2D(pos.getX(), pos.getY());
 		}
 
-		final de.fhg.igd.mapviewer.geom.shape.Polygon verifyPolygon = new de.fhg.igd.mapviewer.geom.shape.Polygon(
+		final de.fhg.igd.geom.shape.Polygon verifyPolygon = new de.fhg.igd.geom.shape.Polygon(
 				points);
 
 		// we need a 3D search bounding box for the R-Tree

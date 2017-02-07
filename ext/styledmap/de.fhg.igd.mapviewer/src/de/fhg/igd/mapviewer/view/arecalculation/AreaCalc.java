@@ -33,8 +33,8 @@ import org.jdesktop.swingx.mapviewer.JXMapViewer;
 import org.opengis.referencing.cs.CoordinateSystem;
 import org.opengis.referencing.cs.CoordinateSystemAxis;
 
-import de.fhg.igd.mapviewer.geom.Point3D;
-import de.fhg.igd.mapviewer.geom.algorithm.FaceTriangulation;
+import de.fhg.igd.geom.Point3D;
+import de.fhg.igd.geom.algorithm.FaceTriangulation;
 
 /**
  * This class manages the calculation of any 2D surface.
