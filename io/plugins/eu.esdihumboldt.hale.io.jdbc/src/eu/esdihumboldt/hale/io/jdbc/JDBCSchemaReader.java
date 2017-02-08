@@ -69,6 +69,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
@@ -217,53 +218,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			}
 
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
-			String quotes = "\"";
-			try {
-				quotes = connection.getMetaData().getIdentifierQuoteString();
-				if (quotes.trim().isEmpty())
-					quotes = "";
-			} catch (SQLException e) {
-				// can't do anything about that
-			}
 
-			URI specificURI;
-			try {
-				specificURI = URI.create(jdbcURI.getRawSchemeSpecificPart());
-			} catch (Exception e) {
-				specificURI = jdbcURI;
-			}
-			StringBuilder ns = new StringBuilder();
-			if (specificURI.getScheme() != null) {
-				if (!specificURI.getScheme().equals("jdbc")) {
-					ns.append("jdbc:");
-				}
-				ns.append(specificURI.getScheme());
-			}
-			if (specificURI.getPath() != null) {
-				String path = null;
-				if (advisor != null) {
-					path = advisor.adaptPathForNamespace(specificURI.getPath());
-				}
-				else {
-					// default handling
-					path = specificURI.getPath();
-					if (path.startsWith("/")) {
-						path = path.substring(1);
-					}
-				}
+			@SuppressWarnings("unused")
+			String quotes = JDBCUtil.determineQuoteString(connection);
+			// FIXME not actually used here or in SQL schema reader
 
-				if (path != null && !path.isEmpty()) {
-					if (ns.length() > 0) {
-						ns.append(':');
-					}
-
-					ns.append(path);
-				}
-			}
-			String overallNamespace = ns.toString();
-			if (overallNamespace == null) {
-				overallNamespace = "";
-			}
+			String overallNamespace = JDBCUtil.determineNamespace(jdbcURI, advisor);
 
 			// create the type index
 			typeIndex = new DefaultSchema(overallNamespace, jdbcURI);
@@ -391,8 +351,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 		// check for existing property definition
 		ChildDefinition<?> existing = tableType.getChild(name);
-		if (existing != null)
+		if (existing != null) {
 			return (DefaultPropertyDefinition) existing;
+		}
 
 		// create new one
 		// determine the column type
@@ -482,9 +443,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @param catalog the catalog for access to other column types
 	 * @return the type definition for the column type
 	 */
-	private TypeDefinition getOrCreateColumnType(Column column, final String overallNamespace,
-			DefaultSchema types, Connection connection, TypeDefinition tableType,
-			IOReporter reporter, Catalog catalog) {
+	public static TypeDefinition getOrCreateColumnType(BaseColumn<?> column,
+			final String overallNamespace, DefaultSchema types, Connection connection,
+			TypeDefinition tableType, IOReporter reporter, Catalog catalog) {
 		// XXX what about shared types?
 		// TODO the size/width info (VARCHAR(_30_)) is in column, the
 		// columntype/-name is not sufficient

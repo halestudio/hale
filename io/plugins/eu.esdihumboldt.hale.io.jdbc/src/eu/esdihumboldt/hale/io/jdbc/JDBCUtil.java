@@ -15,6 +15,14 @@
 
 package eu.esdihumboldt.hale.io.jdbc;
 
+import java.net.URI;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.annotation.Nullable;
+
+import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
+
 /**
  * JDBC utility methods.
  * 
@@ -60,6 +68,75 @@ public class JDBCUtil {
 			return s; // already quoted
 		else
 			return '"' + s + '"';
+	}
+
+	/**
+	 * Determine the identifier quote string for a given JDBC connection.
+	 * 
+	 * @param connection the JDBC connection
+	 * @return the quote string
+	 */
+	public static String determineQuoteString(Connection connection) {
+		String quotes = "\"";
+		try {
+			quotes = connection.getMetaData().getIdentifierQuoteString();
+			if (quotes.trim().isEmpty()) {
+				quotes = "";
+			}
+		} catch (SQLException e) {
+			// can't do anything about that
+		}
+		return quotes;
+	}
+
+	/**
+	 * Determine the namespace for a JDBC source-
+	 * 
+	 * @param jdbcURI the JDBC connection URI
+	 * @param advisor the schema reader advisor, if applicable
+	 * @return the namespace
+	 */
+	public static String determineNamespace(URI jdbcURI,
+			@Nullable JDBCSchemaReaderAdvisor advisor) {
+		URI specificURI;
+		try {
+			specificURI = URI.create(jdbcURI.getRawSchemeSpecificPart());
+		} catch (Exception e) {
+			specificURI = jdbcURI;
+		}
+		StringBuilder ns = new StringBuilder();
+		if (specificURI.getScheme() != null) {
+			if (!specificURI.getScheme().equals("jdbc")) {
+				ns.append("jdbc:");
+			}
+			ns.append(specificURI.getScheme());
+		}
+		if (specificURI.getPath() != null) {
+			String path = null;
+			if (advisor != null) {
+				path = advisor.adaptPathForNamespace(specificURI.getPath());
+			}
+			else {
+				// default handling
+				path = specificURI.getPath();
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+				}
+			}
+
+			if (path != null && !path.isEmpty()) {
+				if (ns.length() > 0) {
+					ns.append(':');
+				}
+
+				ns.append(path);
+			}
+		}
+		String overallNamespace = ns.toString();
+		if (overallNamespace == null) {
+			overallNamespace = "";
+		}
+		return overallNamespace;
 	}
 
 }

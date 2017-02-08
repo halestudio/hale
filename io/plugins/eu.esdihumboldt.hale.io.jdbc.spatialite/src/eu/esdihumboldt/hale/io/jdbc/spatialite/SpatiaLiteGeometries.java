@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteHelper;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteSupport;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SpatiaLiteSupportFactory;
 import eu.esdihumboldt.hale.io.jdbc.spatialite.internal.SrsMetadata;
-import schemacrawler.schema.Column;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.ColumnDataType;
 
 /**
@@ -57,7 +57,7 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(SQLiteConnection connection,
-			Column column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type) {
 		String colName = column.getName();
 		String tabName = column.getParent().getName();
 		SpatiaLiteSupport slSupport = SpatiaLiteSupportFactory.getInstance()
@@ -226,7 +226,7 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 	private Geometry decodeGeometryValue(Object geom,
 			@SuppressWarnings("unused") GeometryMetadata metadata, SQLiteConnection connection)
-			throws SQLException {
+					throws SQLException {
 		// geom parameter is a byte[] in SpatiaLite's internal BLOB format;
 		// for easy parsing with JTS, I must re-read geometry from DB in WKT or
 		// WKB format
