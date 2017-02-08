@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.common.schema.persist.AbstractCachedSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
 import schemacrawler.schema.Catalog;
@@ -123,7 +124,6 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 			reporter.setSummary("No SQL query specified");
 			return null;
 		}
-		// TODO support project variables
 
 		String typename = getParameter(PARAM_TYPE_NAME).as(String.class);
 		if (typename == null) {
@@ -205,6 +205,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 				}
 				st.setFetchSize(1);
 
+				// TODO support project variables
 				ResultSet result = st.executeQuery(query);
 
 				// the query represents a type
@@ -328,7 +329,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 		// set SQL query as description
 		type.setDescription(query);
 
-		// FIXME also set SQL constraint
+		type.setConstraint(new SQLQuery(query));
 
 		// configure type
 		type.setConstraint(MappableFlag.ENABLED);

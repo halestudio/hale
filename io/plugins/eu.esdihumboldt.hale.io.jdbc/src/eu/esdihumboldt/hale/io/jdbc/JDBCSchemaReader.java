@@ -62,6 +62,7 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
@@ -656,8 +657,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(HasValueFlag.DISABLED);
 
 		// set schema and table name
-		type.setConstraint(
-				new DatabaseTable(unquote(schema.getName()), unquote(table.getName()), useQuote));
+		DatabaseTable tableConstraint = new DatabaseTable(unquote(schema.getName()),
+				unquote(table.getName()), useQuote);
+		type.setConstraint(tableConstraint);
+
+		// set SQL query constraint
+		String query = "SELECT * FROM " + tableConstraint.getFullTableName();
+		type.setConstraint(new SQLQuery(query));
 
 		// set primary key if possible
 		PrimaryKey key = null;
