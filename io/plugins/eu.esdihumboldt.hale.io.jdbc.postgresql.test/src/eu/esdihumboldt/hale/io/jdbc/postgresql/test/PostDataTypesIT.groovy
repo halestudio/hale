@@ -32,7 +32,10 @@ import com.vividsolutions.jts.geom.GeometryFactory
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
+import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -41,8 +44,10 @@ import groovy.sql.Sql
 
 
 /**
- * SQL type and binding test for postgresql database
- * @author sameer sheikh
+ * SQL type and binding test for PostgreSQL/PostGIS database.
+ * 
+ * @author Sameer Sheikh
+ * @author Simon Templer
  */
 @Features("Databases")
 @Stories("PostgreSQL")
@@ -70,7 +75,7 @@ public class PostDataTypesIT extends AbstractDBTest {
 		super("postgis", PostDataTypesIT.class)
 	}
 
-	InstanceCollection prepareDatabase() {
+	Schema prepareDatabase() {
 		Sql s = new Sql(waitForConnection());
 		try{
 			s.execute query;
@@ -80,6 +85,11 @@ public class PostDataTypesIT extends AbstractDBTest {
 		}
 		Schema schema = readSchema()
 		checkBindingAndSqlType(schema, map);
+
+		schema
+	}
+
+	InstanceCollection storeInstances(Schema schema) {
 		GeometryFactory gf = new GeometryFactory()
 
 		//creating instances
@@ -116,7 +126,8 @@ public class PostDataTypesIT extends AbstractDBTest {
 	 */
 	@Test
 	void testDataTypes(){
-		InstanceCollection originals = prepareDatabase()
+		Schema schema = prepareDatabase()
+		InstanceCollection originals = storeInstances(schema)
 
 		TypeDefinition gType = schema.getTypes().find { TypeDefinition type ->
 			type.name.localPart == 'employees'
@@ -131,7 +142,8 @@ public class PostDataTypesIT extends AbstractDBTest {
 	 */
 	@Test
 	void testDataTypesSql(){
-		InstanceCollection originals = prepareDatabase()
+		Schema schemaTables = prepareDatabase()
+		InstanceCollection originals = storeInstances(schemaTables)
 
 		String query = 'SELECT * FROM employees';
 		String typename = 'query'
@@ -144,7 +156,22 @@ public class PostDataTypesIT extends AbstractDBTest {
 
 		assertEquals(typename, type.name.localPart)
 
-		checkBindingAndSqlType(schema, map);
+		checkBindingAndSqlType(schema, map)
+
+		// read query result
+		InstanceCollection instances = readInstances(schema).select(new TypeFilter(type));
+		ResourceIterator<Instance> iter = instances.iterator()
+		try {
+			assertTrue(iter.hasNext())
+			Instance instance = iter.next()
+
+			def name = instance.p.first_name.value()
+			assertEquals('Employee 1', name)
+
+			assertFalse(iter.hasNext())
+		} finally {
+			iter.close()
+		}
 	}
 
 	private static Map<String, Class<?>> createMap() {
