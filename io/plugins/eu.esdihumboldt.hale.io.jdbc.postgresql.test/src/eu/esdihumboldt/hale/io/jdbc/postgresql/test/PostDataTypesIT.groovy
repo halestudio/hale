@@ -69,11 +69,8 @@ public class PostDataTypesIT extends AbstractDBTest {
 	PostDataTypesIT(){
 		super("postgis", PostDataTypesIT.class)
 	}
-	/**
-	 * Test for checking sql type and binding
-	 */
-	@Test
-	void testDataTypes(){
+
+	InstanceCollection prepareDatabase() {
 		Sql s = new Sql(waitForConnection());
 		try{
 			s.execute query;
@@ -82,7 +79,7 @@ public class PostDataTypesIT extends AbstractDBTest {
 			s.close();
 		}
 		Schema schema = readSchema()
-		checkBindingAndSqlType(schema,map);
+		checkBindingAndSqlType(schema, map);
 		GeometryFactory gf = new GeometryFactory()
 
 		//creating instances
@@ -110,13 +107,44 @@ public class PostDataTypesIT extends AbstractDBTest {
 		}
 
 		writeInstances(instances, schema)
+
+		instances
+	}
+
+	/**
+	 * Test for checking sql type and binding
+	 */
+	@Test
+	void testDataTypes(){
+		InstanceCollection originals = prepareDatabase()
+
 		TypeDefinition gType = schema.getTypes().find { TypeDefinition type ->
 			type.name.localPart == 'employees'
 		}
 
-		int count = readAndCountInstances(instances, schema, gType)
+		int count = readAndCountInstances(originals, schema, gType)
 		assertEquals(1, count)
+	}
 
+	/**
+	 * Test for checking sql type and binding
+	 */
+	@Test
+	void testDataTypesSql(){
+		InstanceCollection originals = prepareDatabase()
+
+		String query = 'SELECT * FROM employees';
+		String typename = 'query'
+
+		Schema schema = readSchema(query, typename)
+
+		assertEquals(1, schema.getMappingRelevantTypes().size())
+		TypeDefinition type = schema.mappingRelevantTypes[0]
+		assertNotNull(type)
+
+		assertEquals(typename, type.name.localPart)
+
+		checkBindingAndSqlType(schema, map);
 	}
 
 	private static Map<String, Class<?>> createMap() {

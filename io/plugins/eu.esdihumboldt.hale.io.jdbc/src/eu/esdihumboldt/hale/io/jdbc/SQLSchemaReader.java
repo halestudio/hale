@@ -192,7 +192,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 
 			// create the type index
-			DefaultSchema schema = new DefaultSchema(namespace, jdbcURI);
+			typeIndex = new DefaultSchema(namespace, jdbcURI);
 
 			Statement st = null;
 			try {
@@ -211,8 +211,8 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 				// the query represents a type
 
 				// get the type definition
-				TypeDefinition type = addTableType(query, namespace, schema, connection, reporter,
-						typename);
+				TypeDefinition type = addTableType(query, namespace, typeIndex, connection,
+						reporter, typename);
 
 				ResultsColumns additionalInfo = SchemaCrawlerUtility.getResultColumns(result);
 				for (final ResultsColumn column : additionalInfo.getColumns()) {
