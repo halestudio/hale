@@ -317,7 +317,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	@Override
 	public boolean isEmpty() {
 		int size = size();
-		return size <= 0;
+		return size == 0;
 	}
 
 	@Override
