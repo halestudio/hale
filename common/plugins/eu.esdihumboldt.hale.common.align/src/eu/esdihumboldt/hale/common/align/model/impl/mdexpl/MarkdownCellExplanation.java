@@ -200,6 +200,10 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 	 * Customize the binding provided to the template.
 	 * 
 	 * @param binding the binding
+	 * @param cell the mapping cell for which the explanation is created
+	 * @param html if HTML content should be produced
+	 * @param provider the service provider
+	 * @param locale the content locale
 	 */
 	protected void customizeBinding(Map<String, Object> binding, Cell cell, boolean html,
 			ServiceProvider provider, Locale locale) {
