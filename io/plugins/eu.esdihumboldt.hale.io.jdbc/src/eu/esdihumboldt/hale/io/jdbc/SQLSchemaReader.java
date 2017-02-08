@@ -75,6 +75,11 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 	public static final String PARAM_TYPE_NAME = "typename";
 
 	/**
+	 * Fixed namespace for SQL types.
+	 */
+	private static final String NAMESPACE = "jdbc:sql";
+
+	/**
 	 * Default constructor
 	 */
 	public SQLSchemaReader() {
@@ -163,14 +168,8 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 			// FIXME not actually used here or in JDBC schema reader
 
 			URI jdbcURI = getSource().getLocation();
-			// FIXME check if it makes sense to use the base namespace
-			String namespace = determineNamespace(jdbcURI, advisor);
-			if (namespace != null && !namespace.isEmpty()) {
-				namespace = "sql:" + namespace;
-			}
-			else {
-				namespace = "sql";
-			}
+			String dbNamespace = determineNamespace(jdbcURI, advisor);
+			String namespace = NAMESPACE;
 
 			SchemaCrawlerOptions options = new SchemaCrawlerOptions();
 			SchemaInfoLevel level = new SchemaInfoLevel();
@@ -192,7 +191,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
 
 			// create the type index
-			typeIndex = new DefaultSchema(namespace, jdbcURI);
+			typeIndex = new DefaultSchema(dbNamespace, jdbcURI);
 
 			Statement st = null;
 			try {
