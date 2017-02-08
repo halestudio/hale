@@ -60,6 +60,13 @@ public class SQLQuery implements TypeConstraint {
 		return query;
 	}
 
+	/**
+	 * @return states if the constraint has an associated SQL query
+	 */
+	public boolean hasQuery() {
+		return query != null;
+	}
+
 	@Override
 	public boolean isInheritable() {
 		return false;

@@ -35,9 +35,11 @@ import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollectio
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 
 /**
- * Instance collection for instances belonging to a specific database table.
+ * Instance collection for instances belonging to a specific database table or a
+ * schema type with an associated SQL query.
  * 
  * @author Simon Templer
  */
@@ -148,7 +150,7 @@ public class JDBCTableCollection implements InstanceCollection {
 								ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 						st.setFetchSize(500);
 					}
-					currentResults = st.executeQuery("SELECT * FROM " + fullTableName);
+					currentResults = st.executeQuery(sqlQuery);
 
 					proceedToNext();
 				}
@@ -216,7 +218,8 @@ public class JDBCTableCollection implements InstanceCollection {
 	private final String password;
 	private final TypeDefinition type;
 
-	private final String fullTableName;
+	private final String sqlQuery;
+	private final String countQuery;
 	private final CRSProvider crsProvider;
 
 	/**
@@ -236,7 +239,23 @@ public class JDBCTableCollection implements InstanceCollection {
 		this.password = password;
 		this.crsProvider = crsProvider;
 
-		this.fullTableName = type.getConstraint(DatabaseTable.class).getFullTableName();
+		String query = type.getConstraint(SQLQuery.class).getQuery();
+
+		if (type.getConstraint(DatabaseTable.class).isTable() || query == null) {
+			// database table queries
+
+			String fullTableName = type.getConstraint(DatabaseTable.class).getFullTableName();
+			query = "SELECT * FROM " + fullTableName;
+			this.countQuery = "SELECT COUNT(*) FROM " + fullTableName;
+		}
+		else {
+			// custom queries (not a database table)
+
+			// TODO support project variables
+
+			this.countQuery = null;
+		}
+		this.sqlQuery = query;
 	}
 
 	/**
@@ -270,15 +289,19 @@ public class JDBCTableCollection implements InstanceCollection {
 
 	@Override
 	public boolean hasSize() {
-		return true;
+		return countQuery != null;
 	}
 
 	@Override
 	public int size() {
+		if (countQuery == null) {
+			return UNKNOWN_SIZE;
+		}
+
 		try (Connection connection = createConnection()) {
 			Statement st = connection.createStatement();
 
-			ResultSet res = st.executeQuery("SELECT COUNT(*) FROM " + fullTableName);
+			ResultSet res = st.executeQuery(countQuery);
 			int count = 0;
 			if (res.next()) {
 				count = res.getInt(1);
@@ -286,9 +309,8 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn(e.getMessage(), e);
-			// treat as empty
-			return 0;
+			log.warn("Could not determine query size", e);
+			return UNKNOWN_SIZE;
 		}
 	}
 
