@@ -32,6 +32,7 @@ import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -118,7 +119,14 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 			throws IOProviderConfigurationException, IOException {
 		DefaultSchema typeIndex = null;
 
-		String query = getParameter(PARAM_SQL).as(String.class);
+		String query = null;
+		Text text = getParameter(PARAM_SQL).as(Text.class);
+		if (text != null) {
+			query = text.getText();
+		}
+		if (query == null) {
+			query = getParameter(PARAM_SQL).as(String.class);
+		}
 		if (query == null) {
 			reporter.setSuccess(false);
 			reporter.setSummary("No SQL query specified");
