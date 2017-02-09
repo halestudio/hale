@@ -22,7 +22,7 @@ import org.springframework.core.convert.ConversionService;
 
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
-import eu.esdihumboldt.hale.ui.common.VariableReplacer;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 import eu.esdihumboldt.hale.ui.common.editors.AbstractAttributeEditor;
 
 /**

@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.common;
+package eu.esdihumboldt.hale.common.core.io.util;
 
 /**
  * Replaces variable references in a string. Mainly intended to be able to
@@ -24,12 +24,26 @@ package eu.esdihumboldt.hale.ui.common;
 public interface VariableReplacer {
 
 	/**
-	 * Replace variable references in a String by variable values.
+	 * Replace variable references in a String by variable values. If variables
+	 * cannot be resolved the an exception is thrown.
 	 * 
 	 * @param input the input string
 	 * @return the input string w/ variable references replaced by values, if
 	 *         present
 	 */
-	public String replaceVariables(String input);
+	default String replaceVariables(String input) {
+		return replaceVariables(input, true);
+	}
+
+	/**
+	 * Replace variable references in a String by variable values.
+	 * 
+	 * @param input the input string
+	 * @param failUnresolved if the call should fail with an exception if the
+	 *            variables cannot be resolved
+	 * @return the input string w/ variable references replaced by values, if
+	 *         present
+	 */
+	public String replaceVariables(String input, boolean failUnresolved);
 
 }
