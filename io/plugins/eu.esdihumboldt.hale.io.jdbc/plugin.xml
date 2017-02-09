@@ -105,6 +105,7 @@
          </providerParameter>
       </provider>
       <provider
+            allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader"
             description="Schema of a custom SQL query"
             id="eu.esdihumboldt.hale.io.jdbc.sql.schema.reader"
