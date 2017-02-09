@@ -43,10 +43,7 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Point3D;
@@ -330,7 +327,7 @@ public abstract class AbstractInstancePainter
 				Geometry geometry = prop.getGeometry();
 
 				// determine geometry bounding box
-				BoundingBox geometryBB = getBoundingBox(geometry);
+				BoundingBox geometryBB = BoundingBox.compute(geometry);
 
 				if (geometryBB == null) {
 					// no valid bounding box for geometry
@@ -441,69 +438,6 @@ public abstract class AbstractInstancePainter
 	private Marker<? super InstanceWaypoint> createMarker(InstanceWaypoint wp) {
 //		return new InstanceMarker();
 		return new StyledInstanceMarker(wp);
-	}
-
-	/**
-	 * Determine the bounding box for a geometry.
-	 * 
-	 * @param geometry the geometry
-	 * @return the bounding box or <code>null</code> if it is either an empty
-	 *         geometry or the bounding box cannot be determined
-	 */
-	public static BoundingBox getBoundingBox(Geometry geometry) {
-		Geometry envelope = geometry.getEnvelope();
-		if (envelope instanceof Point) {
-			Point point = (Point) envelope;
-			if (!point.isEmpty()) { // not an empty geometry
-				// a bounding box representing the point
-				return new BoundingBox(point.getX(), point.getY(), 0, point.getX(), point.getY(),
-						0);
-			}
-		}
-		else if (envelope instanceof Polygon) {
-			Polygon rect = (Polygon) envelope;
-			if (!rect.isEmpty()) {
-				Double maxX = null, maxY = null, minX = null, minY = null;
-
-				Coordinate[] points = rect.getCoordinates();
-				for (Coordinate point : points) {
-					// maximum x ordinate
-					if (maxX == null) {
-						maxX = point.x;
-					}
-					else {
-						maxX = Math.max(maxX, point.x);
-					}
-					// maximum y ordinate
-					if (maxY == null) {
-						maxY = point.y;
-					}
-					else {
-						maxY = Math.max(maxY, point.y);
-					}
-					// minimum x ordinate
-					if (minX == null) {
-						minX = point.x;
-					}
-					else {
-						minX = Math.min(minX, point.x);
-					}
-					// minimum y ordinate
-					if (minY == null) {
-						minY = point.y;
-					}
-					else {
-						minY = Math.min(minY, point.y);
-					}
-				}
-
-				if (maxX != null && maxY != null && minX != null && minY != null) {
-					return new BoundingBox(minX, minY, 0, maxX, maxY, 0);
-				}
-			}
-		}
-
-		return null;
 	}
 
 	/**

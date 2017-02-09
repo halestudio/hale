@@ -221,7 +221,7 @@ public class InstanceMarker extends BoundingBoxMarker<InstanceWaypoint> {
 				geometryBB = geometryMapBBs.get(geometry);
 				if (geometryBB == null) {
 					// if none available, try to calculate BB
-					BoundingBox calcBB = AbstractInstancePainter.getBoundingBox(geometry);
+					BoundingBox calcBB = BoundingBox.compute(geometry);
 					if (calcBB != null && calcBB.checkIntegrity()) {
 						try {
 							// get CRS converter
