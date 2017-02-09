@@ -26,7 +26,9 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.jdbc.JDBCUtil;
 import eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -77,7 +79,6 @@ public class SQLSchemaPage
 		return true;
 	}
 
-	@SuppressWarnings("null")
 	private void updateState() {
 		boolean typeValid = false;
 		boolean sqlValid = false;
@@ -97,7 +98,19 @@ public class SQLSchemaPage
 
 			sqlValid = sql != null && !sql.isEmpty();
 
-			// XXX also check for validity?
+			if (sqlValid) {
+				@SuppressWarnings("unused")
+				String processedQuery;
+				try {
+					processedQuery = JDBCUtil.replaceVariables(sql, HaleUI.getServiceProvider());
+				} catch (Exception e) {
+					error = e.getLocalizedMessage();
+					sqlValid = false;
+					processedQuery = null;
+				}
+
+				// TODO check if processed SQL query can be executed
+			}
 		}
 
 		boolean complete = typeValid && sqlValid;

@@ -24,6 +24,7 @@ import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -230,9 +231,10 @@ public class JDBCTableCollection implements InstanceCollection {
 	 * @param user the database user
 	 * @param password the user's password
 	 * @param crsProvider crs provider
+	 * @param services the service provider
 	 */
 	public JDBCTableCollection(TypeDefinition type, URI jdbcURI, String user, String password,
-			CRSProvider crsProvider) {
+			CRSProvider crsProvider, ServiceProvider services) {
 		this.type = type;
 		this.jdbcURI = jdbcURI;
 		this.user = user;
@@ -251,7 +253,8 @@ public class JDBCTableCollection implements InstanceCollection {
 		else {
 			// custom queries (not a database table)
 
-			// TODO support project variables
+			// support project variables
+			query = JDBCUtil.replaceVariables(query, services);
 
 			this.countQuery = null;
 		}

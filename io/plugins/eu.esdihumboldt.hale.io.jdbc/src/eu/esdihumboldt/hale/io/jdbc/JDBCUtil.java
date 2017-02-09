@@ -21,6 +21,9 @@ import java.sql.SQLException;
 
 import javax.annotation.Nullable;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariableReplacer;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 
 /**
@@ -137,6 +140,24 @@ public class JDBCUtil {
 			overallNamespace = "";
 		}
 		return overallNamespace;
+	}
+
+	/**
+	 * Replace variables in an SQL query.
+	 * 
+	 * @param query the query
+	 * @param services the service provider
+	 * @return the query with variables replaced
+	 */
+	public static String replaceVariables(String query, ServiceProvider services) {
+		if (services != null) {
+			ProjectInfoService projectInfo = services.getService(ProjectInfoService.class);
+			if (projectInfo != null) {
+				ProjectVariableReplacer replacer = new ProjectVariableReplacer(projectInfo);
+				return replacer.replaceVariables(query, true);
+			}
+		}
+		return query;
 	}
 
 }

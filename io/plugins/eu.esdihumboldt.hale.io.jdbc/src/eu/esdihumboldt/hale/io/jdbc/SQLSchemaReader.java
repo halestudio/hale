@@ -213,8 +213,10 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 				}
 				st.setFetchSize(1);
 
-				// TODO support project variables
-				ResultSet result = st.executeQuery(query);
+				// support project variables
+				String processedQuery = JDBCUtil.replaceVariables(query, getServiceProvider());
+
+				ResultSet result = st.executeQuery(processedQuery);
 
 				// the query represents a type
 
