@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
 
+import javax.xml.namespace.QName;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -35,6 +37,8 @@ import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.JDBCProvider;
 import eu.esdihumboldt.hale.io.jdbc.JDBCUtil;
 import eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader;
@@ -42,6 +46,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
  * Configuration page for specifying SQL query and type name.
@@ -102,8 +107,20 @@ public class SQLSchemaPage
 
 			typeValid = type != null && !type.isEmpty();
 
-			// also test for specific characters?
-			// TODO check if the name already exists in the source schema?
+			if (typeValid) {
+				// check if the name already exists in the source schema
+				SchemaService schemas = HaleUI.getServiceProvider().getService(SchemaService.class);
+				if (schemas != null) {
+					TypeDefinition existing = schemas.getSchemas(SchemaSpaceID.SOURCE)
+							.getType(new QName(SQLSchemaReader.NAMESPACE, type));
+					if (existing != null) {
+						typeValid = false;
+						error = "An SQL query with this name already exists";
+					}
+				}
+
+				// also test for specific characters?
+			}
 		}
 		if (sqlQuery != null) {
 			// check SQL query

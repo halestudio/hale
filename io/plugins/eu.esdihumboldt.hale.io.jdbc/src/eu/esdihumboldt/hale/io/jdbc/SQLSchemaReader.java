@@ -79,7 +79,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader
 	/**
 	 * Fixed namespace for SQL types.
 	 */
-	private static final String NAMESPACE = "jdbc:sql";
+	public static final String NAMESPACE = "jdbc:sql";
 
 	/**
 	 * Default constructor
