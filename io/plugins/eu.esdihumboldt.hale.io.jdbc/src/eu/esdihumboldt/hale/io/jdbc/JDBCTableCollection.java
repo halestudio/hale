@@ -19,7 +19,6 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -138,19 +137,7 @@ public class JDBCTableCollection implements InstanceCollection {
 				else if (currentResults == null) {
 					// retrieve result set
 					connection.setAutoCommit(false);
-					Statement st = null;
-					try {
-						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-								ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
-						st.setFetchSize(500);
-					} catch (SQLFeatureNotSupportedException e) {
-
-						log.warn("Oracle Database supports only HOLD_CURSORS_OVER_COMMIT");
-
-						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-								ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-						st.setFetchSize(500);
-					}
+					Statement st = JDBCUtil.createReadStatement(connection, 500);
 					currentResults = st.executeQuery(sqlQuery);
 
 					proceedToNext();

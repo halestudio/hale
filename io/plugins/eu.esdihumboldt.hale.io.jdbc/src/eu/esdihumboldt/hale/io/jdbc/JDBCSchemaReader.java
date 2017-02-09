@@ -91,7 +91,8 @@ import schemacrawler.utility.SchemaCrawlerUtility;
  * 
  * @author Simon Templer
  */
-public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBCConstants {
+public class JDBCSchemaReader extends AbstractCachedSchemaReader
+		implements JDBCConstants, JDBCProvider {
 
 //	public static final String PARAM_SCHEMAS = "schemas";
 
@@ -137,7 +138,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @return Connection object after loading driver.
 	 * @throws SQLException if connection could not be made.
 	 */
-	protected Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection() throws SQLException {
 		return JDBCConnection.getConnection(this);
 	}
 

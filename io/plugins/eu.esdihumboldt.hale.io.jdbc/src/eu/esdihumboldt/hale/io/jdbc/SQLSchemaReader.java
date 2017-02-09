@@ -25,7 +25,6 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.xml.namespace.QName;
@@ -64,7 +63,8 @@ import schemacrawler.utility.SchemaCrawlerUtility;
  * 
  * @author Simon Templer
  */
-public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCConstants {
+public class SQLSchemaReader extends AbstractCachedSchemaReader
+		implements JDBCConstants, JDBCProvider {
 
 	/**
 	 * Name of the parameter specifying the SQL query.
@@ -110,7 +110,8 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 	 * @return Connection object after loading driver.
 	 * @throws SQLException if connection could not be made.
 	 */
-	protected Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection() throws SQLException {
 		return JDBCConnection.getConnection(this);
 	}
 
@@ -203,15 +204,7 @@ public class SQLSchemaReader extends AbstractCachedSchemaReader implements JDBCC
 
 			Statement st = null;
 			try {
-				try {
-					st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-							ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
-				} catch (SQLFeatureNotSupportedException e) {
-					// Oracle Database supports only HOLD_CURSORS_OVER_COMMIT
-					st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-							ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-				}
-				st.setFetchSize(1);
+				st = JDBCUtil.createReadStatement(connection, 1);
 
 				// support project variables
 				String processedQuery = JDBCUtil.replaceVariables(query, getServiceProvider());

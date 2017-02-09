@@ -15,20 +15,31 @@
 
 package eu.esdihumboldt.hale.io.jdbc.ui;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.MessageFormat;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.jdbc.JDBCProvider;
 import eu.esdihumboldt.hale.io.jdbc.JDBCUtil;
 import eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -76,13 +87,14 @@ public class SQLSchemaPage
 					Value.of(new eu.esdihumboldt.hale.common.core.io.Text(sqlQuery.getText())));
 		}
 
-		return true;
+		return updateState(true);
 	}
 
-	private void updateState() {
+	private boolean updateState(boolean runQuery) {
 		boolean typeValid = false;
 		boolean sqlValid = false;
 		String error = null;
+		String message = null;
 
 		if (typeName != null) {
 			// check type name
@@ -91,6 +103,7 @@ public class SQLSchemaPage
 			typeValid = type != null && !type.isEmpty();
 
 			// also test for specific characters?
+			// TODO check if the name already exists in the source schema?
 		}
 		if (sqlQuery != null) {
 			// check SQL query
@@ -99,7 +112,6 @@ public class SQLSchemaPage
 			sqlValid = sql != null && !sql.isEmpty();
 
 			if (sqlValid) {
-				@SuppressWarnings("unused")
 				String processedQuery;
 				try {
 					processedQuery = JDBCUtil.replaceVariables(sql, HaleUI.getServiceProvider());
@@ -109,7 +121,64 @@ public class SQLSchemaPage
 					processedQuery = null;
 				}
 
-				// TODO check if processed SQL query can be executed
+				// check if processed SQL query can be executed
+				if (runQuery && processedQuery != null) {
+					ImportProvider provider = getWizard().getProvider();
+					if (provider != null && provider instanceof JDBCProvider) {
+						Connection connection = null;
+						try {
+							try {
+								connection = ((JDBCProvider) provider).getConnection();
+							} catch (SQLException e) {
+								sqlValid = false;
+								error = "Could not establish database connection: "
+										+ e.getLocalizedMessage();
+							}
+
+							if (connection != null) {
+								try {
+									Statement statement = JDBCUtil.createReadStatement(connection,
+											1);
+									try {
+										ResultSet result = statement.executeQuery(processedQuery);
+										int columnCount = result.getMetaData().getColumnCount();
+										if (columnCount <= 0) {
+											sqlValid = false;
+											error = "Query result does not have any columns";
+										}
+										else {
+											if (columnCount == 1) {
+												message = "Successfully tested query. It yields a result with a single column.";
+											}
+											else {
+												message = MessageFormat.format(
+														"Successfully tested query. It yields a result with {0} columns.",
+														columnCount);
+											}
+										}
+									} catch (SQLException e) {
+										sqlValid = false;
+										error = "Error querying database: " + e.getMessage();
+									} finally {
+										statement.close();
+									}
+								} catch (SQLException e) {
+									sqlValid = false;
+									error = "Could not create database statement: "
+											+ e.getMessage();
+								}
+							}
+						} finally {
+							if (connection != null) {
+								try {
+									connection.close();
+								} catch (SQLException e) {
+									// ignore
+								}
+							}
+						}
+					}
+				}
 			}
 		}
 
@@ -123,8 +192,10 @@ public class SQLSchemaPage
 		else if (error == null) {
 			error = "Please specify the SQL query to use";
 		}
+		setMessage(message);
 		setErrorMessage(error);
 		setPageComplete(complete);
+		return complete;
 	}
 
 	@Override
@@ -145,7 +216,7 @@ public class SQLSchemaPage
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				updateState();
+				updateState(false);
 			}
 		});
 
@@ -154,19 +225,30 @@ public class SQLSchemaPage
 		labelFactory.applyTo(sqlLabel);
 		sqlLabel.setText("SQL query:");
 
-		sqlQuery = new Text(page, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+		sqlQuery = new Text(page, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(sqlQuery);
 		sqlQuery.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				updateState();
+				updateState(false);
 			}
 		});
 
-		// TODO allow testing the query!
+		// button for testing query
+		Button button = new Button(page, SWT.BORDER | SWT.FLAT);
+		GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).span(2, 1).applyTo(button);
+		button.setImage(CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_PLAY));
+		button.setText("Test query");
+		button.addSelectionListener(new SelectionAdapter() {
 
-		updateState();
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateState(true);
+			}
+		});
+
+		updateState(false);
 	}
 
 }

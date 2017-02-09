@@ -42,7 +42,8 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
  * 
  * @author Simon Templer
  */
-public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCConstants {
+public class JDBCInstanceReader extends AbstractInstanceReader
+		implements JDBCConstants, JDBCProvider {
 
 	private MultiInstanceCollection collection;
 	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceReader.class);
@@ -73,7 +74,8 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 	 * @return Connection object after loading driver.
 	 * @throws SQLException if connection could not be made.
 	 */
-	protected Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection() throws SQLException {
 		return JDBCConnection.getConnection(this);
 	}
 
