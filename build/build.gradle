@@ -110,7 +110,8 @@ ext {
 		file('../ext/xslt'),
 		file('../ext/ageobw'),
 		file('../ext/fme'),
-		file('../ext/nonosgi')
+		file('../ext/nonosgi'),
+		file('../ext/geom')
     ]
 
 	// bundles to exclude for the build (symbolic names)
