@@ -23,6 +23,10 @@ import java.text.MessageFormat;
 
 import javax.xml.namespace.QName;
 
+import org.eclipse.jface.fieldassist.ContentProposalAdapter;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.fieldassist.TextContentAdapter;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -46,6 +50,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -58,6 +63,9 @@ public class SQLSchemaPage
 
 	private Text typeName;
 	private Text sqlQuery;
+
+	private final ProjectVariablesContentProposalProvider contentProposalProvider = new ProjectVariablesContentProposalProvider(
+			true);
 
 	/**
 	 * Default constructor.
@@ -251,6 +259,17 @@ public class SQLSchemaPage
 				updateState(false);
 			}
 		});
+
+		ContentProposalAdapter adapter = new ContentProposalAdapter(sqlQuery,
+				new TextContentAdapter(), contentProposalProvider,
+				ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+		adapter.setAutoActivationDelay(0);
+
+		final ControlDecoration infoDeco = new ControlDecoration(sqlQuery, SWT.TOP | SWT.LEFT);
+		infoDeco.setDescriptionText("Type Ctrl+Space for project variable content assistance");
+		infoDeco.setImage(FieldDecorationRegistry.getDefault()
+				.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		infoDeco.setShowOnlyOnFocus(true);
 
 		// button for testing query
 		Button button = new Button(page, SWT.BORDER | SWT.FLAT);
