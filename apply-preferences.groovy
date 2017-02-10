@@ -282,7 +282,7 @@ def isJava8 = { File projectDir ->
 
 def java7 = 'platform/preferences/java7' as File
 def java8 = 'platform/preferences/java8' as File
-def searchPaths = ['common', 'cst', 'io', 'server', 'doc', 'ui', 'util', 'app', 'ext/styledmap']
+def searchPaths = ['common', 'cst', 'io', 'server', 'doc', 'ui', 'util', 'app', 'ext/styledmap', 'ext/geom']
 
 searchPaths.each {
   apply(java7, it as File, { !isJava8(it) } as ProjectFilter)

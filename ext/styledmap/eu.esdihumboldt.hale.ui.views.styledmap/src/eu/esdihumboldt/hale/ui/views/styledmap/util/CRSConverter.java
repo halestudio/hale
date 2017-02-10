@@ -28,8 +28,8 @@ import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
-import de.fhg.igd.mapviewer.geom.BoundingBox;
-import de.fhg.igd.mapviewer.geom.Point3D;
+import de.fhg.igd.geom.BoundingBox;
+import de.fhg.igd.geom.Point3D;
 
 /**
  * Geotools based CRS converter.
