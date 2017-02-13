@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -39,11 +40,14 @@ import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import gnu.trove.TObjectIntHashMap;
 import gnu.trove.TObjectIntProcedure;
@@ -67,6 +71,8 @@ public abstract class StoreInstancesJob extends Job {
 
 	private final ReportHandler reportHandler;
 
+	private final ServiceProvider serviceProvider;
+
 	/**
 	 * Create a job that stores instances in a database
 	 * 
@@ -77,13 +83,14 @@ public abstract class StoreInstancesJob extends Job {
 	 *            should be generated
 	 */
 	public StoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances,
-			final ReportHandler reportHandler) {
+			final ServiceProvider serviceProvider, final ReportHandler reportHandler) {
 		super(name);
 
 		setUser(true);
 
 		this.database = database;
 		this.instances = instances;
+		this.serviceProvider = serviceProvider;
 		this.reportHandler = reportHandler;
 
 		if (reportHandler != null) {
@@ -120,6 +127,10 @@ public abstract class StoreInstancesJob extends Job {
 			// use intent
 			db.declareIntent(new OIntentMassiveInsert());
 
+			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+					serviceProvider);
+			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+
 			// TODO decouple next() and save()?
 
 			long lastUpdate = 0; // last count update
@@ -132,6 +143,8 @@ public abstract class StoreInstancesJob extends Job {
 
 					// further processing before storing
 					processInstance(instance);
+
+					processors.forEach(p -> p.beforeStore(instance));
 
 					// get/create OInstance
 					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
@@ -147,6 +160,9 @@ public abstract class StoreInstancesJob extends Job {
 					ODocument doc = conv.configureDocument(db);
 					// and save it
 					doc.save();
+
+					processors.forEach(p -> p.afterStore(instance, new OrientInstanceReference(
+							doc.getIdentity(), conv.getDataSet(), conv.getDefinition())));
 
 					count++;
 

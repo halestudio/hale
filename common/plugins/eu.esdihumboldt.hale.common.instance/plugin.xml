@@ -4,6 +4,7 @@
    <extension-point id="eu.esdihumboldt.hale.instance.filter" name="Filter definitions" schema="schema/eu.esdihumboldt.hale.instance.filter.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.instance.validation" name="Instance validator" schema="schema/eu.esdihumboldt.hale.instance.validation.exsd"/>
    <extension-point id="eu.esdihumboldt.hale.instance.metadata" name="Instance Metadata" schema="schema/eu.esdihumboldt.hale.instance.metadata.exsd"/>
+   <extension-point id="eu.esdihumboldt.hale.instance.processing" name="Instance Processing" schema="schema/eu.esdihumboldt.hale.instance.processing.exsd"/>
    <extension
          point="eu.esdihumboldt.hale.io.action">
       <action
