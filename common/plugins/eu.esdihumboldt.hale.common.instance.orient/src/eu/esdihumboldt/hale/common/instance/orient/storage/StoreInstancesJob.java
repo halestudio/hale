@@ -79,6 +79,7 @@ public abstract class StoreInstancesJob extends Job {
 	 * @param name the (human readable) job name
 	 * @param instances the instances to store in the database
 	 * @param database the database
+	 * @param serviceProvider the service provider
 	 * @param reportHandler the report handler, <code>null</code> if no report
 	 *            should be generated
 	 */
