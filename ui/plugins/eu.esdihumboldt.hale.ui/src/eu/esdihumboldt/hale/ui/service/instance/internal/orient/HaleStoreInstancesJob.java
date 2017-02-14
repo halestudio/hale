@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
 import eu.esdihumboldt.hale.ui.DefaultReportHandler;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 
 /**
@@ -47,7 +48,8 @@ public abstract class HaleStoreInstancesJob extends StoreInstancesJob {
 	 */
 	public HaleStoreInstancesJob(String name, LocalOrientDB database,
 			InstanceCollection instances) {
-		super(name, database, instances, DefaultReportHandler.getInstance());
+		super(name, database, instances, HaleUI.getServiceProvider(),
+				DefaultReportHandler.getInstance());
 
 		ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 		metaworker = new MetadataWorker();
