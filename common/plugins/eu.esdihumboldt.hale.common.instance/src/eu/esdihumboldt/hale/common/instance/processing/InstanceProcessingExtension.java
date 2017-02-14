@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.processing;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -23,6 +24,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
 
@@ -33,6 +36,8 @@ import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinition;
  */
 public class InstanceProcessingExtension
 		extends AbstractExtension<InstanceProcessor, InstanceProcessorFactory> {
+
+	private static final ALogger log = ALoggerFactory.getLogger(InstanceProcessingExtension.class);
 
 	private final List<InstanceProcessor> processors = new ArrayList<>();
 
@@ -89,7 +94,8 @@ public class InstanceProcessingExtension
 				p.setServiceProvider(serviceProvider);
 				processors.add(p);
 			} catch (Exception e) {
-				// TODO
+				log.error(MessageFormat.format("Unable to create InstanceProcessor \"{0}\"",
+						factory.getIdentifier()), e);
 			}
 		}
 	}
