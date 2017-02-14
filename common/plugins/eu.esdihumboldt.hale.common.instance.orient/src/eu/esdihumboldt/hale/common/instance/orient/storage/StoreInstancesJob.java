@@ -145,8 +145,6 @@ public abstract class StoreInstancesJob extends Job {
 					// further processing before storing
 					processInstance(instance);
 
-					processors.forEach(p -> p.beforeStore(instance));
-
 					// get/create OInstance
 					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
 							: (new OInstance(instance)));
@@ -162,8 +160,9 @@ public abstract class StoreInstancesJob extends Job {
 					// and save it
 					doc.save();
 
-					processors.forEach(p -> p.afterStore(instance, new OrientInstanceReference(
-							doc.getIdentity(), conv.getDataSet(), conv.getDefinition())));
+					processors.forEach(
+							p -> p.process(instance, new OrientInstanceReference(doc.getIdentity(),
+									conv.getDataSet(), conv.getDefinition())));
 
 					count++;
 

@@ -5,11 +5,19 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.index;singleton:=true
 Bundle-Version: 3.3.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: de.fhg.igd.geom,
+Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
+ com.vividsolutions.jts.geom.impl;version="1.13.0",
+ de.fhg.igd.geom,
  de.fhg.igd.geom.indices,
  eu.esdihumboldt.hale.common.core.service,
+ eu.esdihumboldt.hale.common.instance,
+ eu.esdihumboldt.hale.common.instance.geometry,
+ eu.esdihumboldt.hale.common.instance.geometry.impl,
+ eu.esdihumboldt.hale.common.instance.helper,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
+ eu.esdihumboldt.hale.common.instance.processing,
+ eu.esdihumboldt.hale.common.schema.geometry,
  eu.esdihumboldt.hale.common.schema.model
 Export-Package: eu.esdihumboldt.hale.common.instance.index,
  eu.esdihumboldt.hale.common.instance.index.spatial
