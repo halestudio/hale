@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.common.instance.processing;
 
+import java.io.IOException;
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -29,22 +32,11 @@ public abstract class AbstractInstanceProcessor implements InstanceProcessor {
 	private ServiceProvider serviceProvider;
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor#beforeStore(eu.esdihumboldt.hale.common.instance.model.Instance)
+	 * @see eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor#processAll(java.util.Map)
 	 */
 	@Override
-	public void beforeStore(Instance instance) {
-		// override if required
-
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor#afterStore(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      eu.esdihumboldt.hale.common.instance.model.InstanceReference)
-	 */
-	@Override
-	public void afterStore(Instance instance, InstanceReference reference) {
-		// override if required
-
+	public void processAll(Map<Instance, InstanceReference> instancesAndReferences) {
+		instancesAndReferences.forEach((inst, ref) -> this.process(inst, ref));
 	}
 
 	/**
@@ -60,6 +52,14 @@ public abstract class AbstractInstanceProcessor implements InstanceProcessor {
 	 */
 	protected ServiceProvider getServiceProvider() {
 		return this.serviceProvider;
+	}
+
+	/**
+	 * @see java.io.Closeable#close()
+	 */
+	@Override
+	public void close() throws IOException {
+		// does nothing by default
 	}
 
 }

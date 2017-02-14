@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.common.instance.processing;
 
+import java.io.Closeable;
+import java.util.Map;
+
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -24,7 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
  * 
  * @author Florian Esser
  */
-public interface InstanceProcessor {
+public interface InstanceProcessor extends Closeable {
 
 	/**
 	 * Set the context service provider.
@@ -34,17 +37,19 @@ public interface InstanceProcessor {
 	void setServiceProvider(ServiceProvider services);
 
 	/**
-	 * Processing before an instance is stored.
+	 * Process an instance together with its reference
 	 * 
-	 * @param instance the instance
+	 * @param instance the instance to process
+	 * @param reference a reference to the instance, may be null
+	 * 
 	 */
-	void beforeStore(Instance instance);
+	void process(Instance instance, InstanceReference reference);
 
 	/**
-	 * Processing after an instance is stored
+	 * Process instances and their references
 	 * 
-	 * @param instance the stored instance
-	 * @param reference a reference to the stored instance, may be null
+	 * @param instancesAndReferences Map of instances and their respective
+	 *            references. The reference may be null.
 	 */
-	void afterStore(Instance instance, InstanceReference reference);
+	void processAll(Map<Instance, InstanceReference> instancesAndReferences);
 }
