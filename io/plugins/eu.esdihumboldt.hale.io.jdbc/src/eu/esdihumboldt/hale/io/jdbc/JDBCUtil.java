@@ -155,10 +155,8 @@ public class JDBCUtil {
 	public static String replaceVariables(String query, ServiceProvider services) {
 		if (services != null) {
 			ProjectInfoService projectInfo = services.getService(ProjectInfoService.class);
-			if (projectInfo != null) {
-				ProjectVariableReplacer replacer = new ProjectVariableReplacer(projectInfo);
-				return replacer.replaceVariables(query, true);
-			}
+			ProjectVariableReplacer replacer = new ProjectVariableReplacer(projectInfo);
+			return replacer.replaceVariables(query, true);
 		}
 		return query;
 	}

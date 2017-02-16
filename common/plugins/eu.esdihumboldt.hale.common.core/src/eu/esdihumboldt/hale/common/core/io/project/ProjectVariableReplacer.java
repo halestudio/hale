@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
+import javax.annotation.Nullable;
+
 import eu.esdihumboldt.hale.common.core.io.util.AbstractScopedVariableReplacer;
 
 /**
@@ -36,7 +38,7 @@ public class ProjectVariableReplacer extends AbstractScopedVariableReplacer {
 	 * 
 	 * @param projectInfo the project info service
 	 */
-	public ProjectVariableReplacer(ProjectInfoService projectInfo) {
+	public ProjectVariableReplacer(@Nullable ProjectInfoService projectInfo) {
 		super();
 
 		this.variables = new ProjectVariables(projectInfo);
