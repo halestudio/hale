@@ -36,13 +36,14 @@ public class RTreeSpatialIndexService implements SpatialIndexService<Localizable
 
 	/**
 	 * Verifier to determine whether the bounding box of a given
-	 * {@link Localizable} insersects or covers a given {@link BoundingBox}.
+	 * {@link Localizable} has any spatial relation to another
+	 * {@link BoundingBox}.
 	 */
-	public static final Verifier<Localizable, BoundingBox> MATCH_TILE_VERIFIER = new Verifier<Localizable, BoundingBox>() {
+	public static final Verifier<Localizable, BoundingBox> ANY_RELATION_VERIFIER = new Verifier<Localizable, BoundingBox>() {
 
 		@Override
 		public boolean verify(Localizable first, BoundingBox second) {
-			return second.intersectsOrCovers(first.getBoundingBox());
+			return second.any(first.getBoundingBox());
 		}
 	};
 
@@ -69,7 +70,7 @@ public class RTreeSpatialIndexService implements SpatialIndexService<Localizable
 	 */
 	@Override
 	public Collection<Localizable> retrieve(BoundingBox box) {
-		return index.query(box, MATCH_TILE_VERIFIER);
+		return index.query(box, ANY_RELATION_VERIFIER);
 	}
 
 	/**
