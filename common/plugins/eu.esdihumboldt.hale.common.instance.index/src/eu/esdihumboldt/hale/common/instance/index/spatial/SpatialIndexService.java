@@ -19,6 +19,8 @@ import java.util.Collection;
 
 import de.fhg.igd.geom.Localizable;
 import de.fhg.igd.geom.Verifier;
+import eu.esdihumboldt.hale.common.instance.index.Typed;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Service for maintaining a spatial index.
@@ -46,6 +48,18 @@ public interface SpatialIndexService<L extends Localizable, K extends Localizabl
 	Collection<L> retrieve(K spatialQuery);
 
 	/**
+	 * Retrieves objects that match the given spatial query and the type filter.
+	 * Type matching is supported for {@link Localizable}s that also implement
+	 * the {@link Typed} interface.
+	 * 
+	 * @param spatialQuery spatial query, e.g. a bounding box
+	 * @param typeFilter types to include in result
+	 * @return Objects that match the query or an empty Collection if there are
+	 *         no matches
+	 */
+	Collection<L> retrieve(K spatialQuery, Collection<TypeDefinition> typeFilter);
+
+	/**
 	 * Retrieves objects that match the given query according to the given
 	 * {@link Verifier}.
 	 * 
@@ -56,4 +70,9 @@ public interface SpatialIndexService<L extends Localizable, K extends Localizabl
 	 *         no matches
 	 */
 	Collection<L> retrieve(K spatialQuery, Verifier<? super L, K> verifier);
+
+	/**
+	 * @return the index size
+	 */
+	int size();
 }
