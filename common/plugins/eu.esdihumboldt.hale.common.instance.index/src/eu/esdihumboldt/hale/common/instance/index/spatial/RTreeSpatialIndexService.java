@@ -16,11 +16,14 @@
 package eu.esdihumboldt.hale.common.instance.index.spatial;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Localizable;
 import de.fhg.igd.geom.Verifier;
 import de.fhg.igd.geom.indices.RTree;
+import eu.esdihumboldt.hale.common.instance.index.Typed;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Spatial index service using an {@link RTree} to maintain the index.
@@ -79,4 +82,25 @@ public class RTreeSpatialIndexService implements SpatialIndexService<Localizable
 		return index.query(box, verifier);
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#retrieve(de.fhg.igd.geom.Localizable,
+	 *      java.util.Collection)
+	 */
+	@Override
+	public Collection<Localizable> retrieve(BoundingBox spatialQuery,
+			Collection<TypeDefinition> typeFilter) {
+
+		return retrieve(spatialQuery).stream()
+				.filter(spatialMatch -> spatialMatch instanceof Typed
+						&& typeFilter.contains(((Typed) spatialMatch).getDefinition()))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#size()
+	 */
+	@Override
+	public int size() {
+		return index.size();
+	}
 }
