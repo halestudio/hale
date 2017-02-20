@@ -32,6 +32,7 @@ public class SpatialIndexServiceFactory implements ServiceFactory {
 	 * @see eu.esdihumboldt.hale.common.core.service.ServiceFactory#createService(java.lang.Class,
 	 *      eu.esdihumboldt.hale.common.core.service.ServiceProvider)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator) {
 		if (serviceInterface.equals(SpatialIndexService.class)) {
