@@ -21,17 +21,15 @@ import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Localizable;
 import de.fhg.igd.geom.Verifier;
 import de.fhg.igd.geom.indices.RTree;
-import eu.esdihumboldt.hale.common.instance.index.LocalizableInstanceReference;
 
 /**
  * Spatial index service using an {@link RTree} to maintain the index.
  * 
  * @author Florian Esser
  */
-public class RTreeSpatialIndexService
-		implements SpatialIndexService<LocalizableInstanceReference, BoundingBox> {
+public class RTreeSpatialIndexService implements SpatialIndexService<Localizable, BoundingBox> {
 
-	private final RTree<LocalizableInstanceReference> index;
+	private final RTree<Localizable> index;
 
 	/**
 	 * Verifier to determine whether the bounding box of a given
@@ -56,19 +54,18 @@ public class RTreeSpatialIndexService
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#addInstance(eu.esdihumboldt.hale.common.instance.model.Instance,
-	 *      eu.esdihumboldt.hale.common.instance.model.InstanceReference)
+	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#insert(de.fhg.igd.geom.Localizable)
 	 */
 	@Override
-	public void insert(LocalizableInstanceReference reference) {
+	public void insert(Localizable reference) {
 		index.insert(reference);
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#retrieve(de.fhg.igd.geom.BoundingBox)
+	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#retrieve(de.fhg.igd.geom.Localizable)
 	 */
 	@Override
-	public Collection<LocalizableInstanceReference> retrieve(BoundingBox box) {
+	public Collection<Localizable> retrieve(BoundingBox box) {
 		return index.query(box, MATCH_TILE_VERIFIER);
 	}
 
@@ -77,8 +74,8 @@ public class RTreeSpatialIndexService
 	 *      de.fhg.igd.geom.Verifier)
 	 */
 	@Override
-	public Collection<LocalizableInstanceReference> retrieve(BoundingBox box,
-			Verifier<? super LocalizableInstanceReference, BoundingBox> verifier) {
+	public Collection<Localizable> retrieve(BoundingBox box,
+			Verifier<? super Localizable, BoundingBox> verifier) {
 		return index.query(box, verifier);
 	}
 
