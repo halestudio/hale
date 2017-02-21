@@ -62,12 +62,17 @@ import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.StoreInstancesJob;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 
 /**
@@ -457,7 +462,27 @@ public class Transformation {
 			storeJob.schedule();
 		}
 		else {
-			// otherwise schedule jobs directly
+			// otherwise feed InstanceProcessors directly from the
+			// InstanceCollection...
+			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+					serviceProvider);
+			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+
+			ResourceIterator<Instance> it = sourceToUse.iterator();
+			try {
+				while (it.hasNext()) {
+					Instance instance = it.next();
+
+					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+							new PseudoInstanceReference(instance), sourceToUse);
+					processors.forEach(p -> p.process(instance, resolvableRef));
+
+				}
+			} finally {
+				it.close();
+			}
+
+			// ...and schedule jobs
 			exportJob.schedule();
 			transformJob.schedule();
 		}
