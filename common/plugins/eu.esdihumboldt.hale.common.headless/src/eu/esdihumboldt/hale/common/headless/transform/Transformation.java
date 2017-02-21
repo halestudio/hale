@@ -178,6 +178,7 @@ public class Transformation {
 				}
 			}
 		};
+		loadDataAdvisor.setServiceProvider(environment);
 
 		List<InstanceCollection> sourceList = Lists.transform(sources,
 				new Function<InstanceReader, InstanceCollection>() {
@@ -231,6 +232,7 @@ public class Transformation {
 			}
 
 		};
+		saveDataAdvisor.setServiceProvider(environment);
 
 		saveDataAdvisor.prepareProvider(target);
 		saveDataAdvisor.updateConfiguration(target);

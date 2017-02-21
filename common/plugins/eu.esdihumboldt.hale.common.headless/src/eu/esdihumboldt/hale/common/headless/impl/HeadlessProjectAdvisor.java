@@ -166,12 +166,15 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		}
 
 		sourceSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
+		sourceSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, sourceSchemaAdvisor);
 
 		targetSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
+		targetSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_TARGET_SCHEMA, targetSchemaAdvisor);
 
 		codeListRegistry = new CodeListAdvisor();
+		codeListRegistry.setServiceProvider(this);
 		advisors.put(CodeListReader.ACTION_ID, codeListRegistry);
 	}
 
