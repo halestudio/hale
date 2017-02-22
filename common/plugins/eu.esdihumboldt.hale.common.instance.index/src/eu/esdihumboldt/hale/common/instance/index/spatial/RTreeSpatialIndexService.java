@@ -104,4 +104,12 @@ public class RTreeSpatialIndexService implements SpatialIndexService<Localizable
 	public int size() {
 		return index.size();
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService#flush()
+	 */
+	@Override
+	public void flush() {
+		index.flush();
+	}
 }

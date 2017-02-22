@@ -75,4 +75,9 @@ public interface SpatialIndexService<L extends Localizable, K extends Localizabl
 	 * @return the index size
 	 */
 	int size();
+
+	/**
+	 * Resets the index
+	 */
+	void flush();
 }
