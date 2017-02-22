@@ -194,7 +194,6 @@ public class MultiInstanceCollection implements InstanceCollection {
 						currentIterator.close();
 					currentCollection = hasNextIndex;
 					currentIterator = collections.get(currentCollection).iterator();
-					currentIterator.hasNext(); // force to initialize currentIterator.hasNext flag 
 				}
 
 				// return next of current iterator
