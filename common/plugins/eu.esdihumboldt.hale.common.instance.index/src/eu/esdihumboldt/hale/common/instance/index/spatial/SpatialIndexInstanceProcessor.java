@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.index.spatial;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,13 +49,7 @@ public class SpatialIndexInstanceProcessor extends AbstractInstanceProcessor {
 	 */
 	@Override
 	public void process(Instance instance, InstanceReference reference) {
-		final ServiceProvider serviceProvider = Optional.ofNullable(this.getServiceProvider())
-				.orElseThrow(() -> new IllegalStateException("No service provider available"));
-
-		@SuppressWarnings("unchecked")
-		SpatialIndexService<Localizable, Localizable> index = Optional
-				.ofNullable(serviceProvider.getService(SpatialIndexService.class)).orElseThrow(
-						() -> new IllegalStateException("No SpatialIndexService was provided."));
+		SpatialIndexService<Localizable, Localizable> index = getSpatialIndexService();
 
 		final GeometryFinder finder = new GeometryFinder(null);
 		InstanceTraverser traverser = new DepthFirstInstanceTraverser(true);
@@ -78,6 +73,31 @@ public class SpatialIndexInstanceProcessor extends AbstractInstanceProcessor {
 					instance.getDefinition());
 			index.insert(new LocalizableInstanceReference(typedRef, boundingBox));
 		}
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.processing.AbstractInstanceProcessor#close()
+	 */
+	@Override
+	public void close() throws IOException {
+		getSpatialIndexService().flush();
+	}
+
+	/**
+	 * @return the spatial index service
+	 * @throws IllegalStateException thrown if there is no
+	 *             {@link ServiceProvider} or no {@link SpatialIndexService}
+	 *             provided
+	 */
+	private SpatialIndexService<Localizable, Localizable> getSpatialIndexService() {
+		final ServiceProvider serviceProvider = Optional.ofNullable(this.getServiceProvider())
+				.orElseThrow(() -> new IllegalStateException("No service provider available"));
+
+		@SuppressWarnings("unchecked")
+		SpatialIndexService<Localizable, Localizable> index = Optional
+				.ofNullable(serviceProvider.getService(SpatialIndexService.class)).orElseThrow(
+						() -> new IllegalStateException("No SpatialIndexService was provided."));
+		return index;
 	}
 
 }
