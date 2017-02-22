@@ -457,7 +457,31 @@ public class Transformation {
 			storeJob.schedule();
 		}
 		else {
-			// otherwise schedule jobs directly
+			// otherwise feed InstanceProcessors directly from the
+			// InstanceCollection...
+
+			// TODO Implement differently, not w/ PseudoInstanceReference which
+			// will cause memory problems
+
+//			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+//					serviceProvider);
+//			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+//
+//			ResourceIterator<Instance> it = sourceToUse.iterator();
+//			try {
+//				while (it.hasNext()) {
+//					Instance instance = it.next();
+//
+//					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+//							new PseudoInstanceReference(instance), sourceToUse);
+//					processors.forEach(p -> p.process(instance, resolvableRef));
+//
+//				}
+//			} finally {
+//				it.close();
+//			}
+
+			// ...and schedule jobs
 			exportJob.schedule();
 			transformJob.schedule();
 		}

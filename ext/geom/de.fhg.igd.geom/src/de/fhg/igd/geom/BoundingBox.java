@@ -21,6 +21,7 @@ import java.util.Collection;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -570,6 +571,54 @@ public final class BoundingBox implements Serializable, Localizable, Cloneable {
 	}
 
 	/**
+	 * This static method will return a BoundingBox for a given Array of
+	 * {@link Coordinate}s objects.
+	 * 
+	 * @param points the array of coordinates
+	 * @return a BoundingBox containing all points
+	 */
+	public static BoundingBox compute2D(Coordinate[] points) {
+		Double maxX = null, maxY = null, minX = null, minY = null;
+		for (Coordinate point : points) {
+			// maximum x ordinate
+			if (maxX == null) {
+				maxX = point.x;
+			}
+			else {
+				maxX = Math.max(maxX, point.x);
+			}
+			// maximum y ordinate
+			if (maxY == null) {
+				maxY = point.y;
+			}
+			else {
+				maxY = Math.max(maxY, point.y);
+			}
+			// minimum x ordinate
+			if (minX == null) {
+				minX = point.x;
+			}
+			else {
+				minX = Math.min(minX, point.x);
+			}
+			// minimum y ordinate
+			if (minY == null) {
+				minY = point.y;
+			}
+			else {
+				minY = Math.min(minY, point.y);
+			}
+		}
+
+		if (maxX != null && maxY != null && minX != null && minY != null) {
+			return new BoundingBox(minX, minY, 0, maxX, maxY, 0);
+		}
+		else {
+			return null;
+		}
+	}
+
+	/**
 	 * checks if min* and max* are actually in the expected relation. If a pair
 	 * is real and in the wrong order, it is swapped.
 	 */
@@ -849,49 +898,20 @@ public final class BoundingBox implements Serializable, Localizable, Cloneable {
 						0);
 			}
 		}
+		else if (envelope instanceof LineString) {
+			LineString line = (LineString) envelope;
+			if (!line.isEmpty()) {
+				return compute2D(line.getCoordinates());
+			}
+		}
 		else if (envelope instanceof Polygon) {
 			Polygon rect = (Polygon) envelope;
 			if (!rect.isEmpty()) {
-				Double maxX = null, maxY = null, minX = null, minY = null;
-
-				Coordinate[] points = rect.getCoordinates();
-				for (Coordinate point : points) {
-					// maximum x ordinate
-					if (maxX == null) {
-						maxX = point.x;
-					}
-					else {
-						maxX = Math.max(maxX, point.x);
-					}
-					// maximum y ordinate
-					if (maxY == null) {
-						maxY = point.y;
-					}
-					else {
-						maxY = Math.max(maxY, point.y);
-					}
-					// minimum x ordinate
-					if (minX == null) {
-						minX = point.x;
-					}
-					else {
-						minX = Math.min(minX, point.x);
-					}
-					// minimum y ordinate
-					if (minY == null) {
-						minY = point.y;
-					}
-					else {
-						minY = Math.min(minY, point.y);
-					}
-				}
-
-				if (maxX != null && maxY != null && minX != null && minY != null) {
-					return new BoundingBox(minX, minY, 0, maxX, maxY, 0);
-				}
+				return compute2D(rect.getCoordinates());
 			}
 		}
 
 		return null;
 	}
+
 }

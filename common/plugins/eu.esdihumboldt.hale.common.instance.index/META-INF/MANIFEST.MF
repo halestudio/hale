@@ -18,6 +18,7 @@ Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.instance.processing,
  eu.esdihumboldt.hale.common.schema.geometry,
- eu.esdihumboldt.hale.common.schema.model
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.util.groovy.sandbox
 Export-Package: eu.esdihumboldt.hale.common.instance.index,
  eu.esdihumboldt.hale.common.instance.index.spatial
