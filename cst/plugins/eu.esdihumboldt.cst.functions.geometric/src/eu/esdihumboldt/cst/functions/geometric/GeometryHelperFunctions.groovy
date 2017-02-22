@@ -180,7 +180,7 @@ class GeometryHelperFunctions {
 	new HelperFunctionArgument("spatialIndex",
 	"The spatial index service to query (e.g. '_spatialIndex'"),
 	new HelperFunctionArgument("geometry",
-	"The geometry whose bounding box is used as a spatial query."));
+	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."));
 
 	/**
 	 * Query a spatial index
@@ -192,14 +192,17 @@ class GeometryHelperFunctions {
 	static Collection<Instance> _spatialIndexQuery(Map args) {
 		def result = []
 
-		Geometry geometry = args.geometry.getGeometry()
-		BoundingBox box = BoundingBox.compute(geometry);
-		if (box == null) {
-			// BoundingBox.compute returns null if the geometry is not a
-			// Polygon or a Point. To allow other geometries (e.g. a LineString)
-			// to be used as a query, create a small buffer around it and
-			// compute its bounding box instead.
-			box = BoundingBox.compute(geometry.buffer(0.01));
+		final List<Geometry> geometries = new ArrayList<>();
+		for (GeometryProperty<?> property : _findAll(args.geometry)) {
+			Geometry g = property.getGeometry();
+			for (int i = 0; i < g.getNumGeometries(); i++) {
+				geometries.add(g.getGeometryN(i));
+			}
+		}
+
+		final BoundingBox box = new BoundingBox();
+		for (Geometry geometry : geometries) {
+			box.add(BoundingBox.compute(geometry));
 		}
 
 		if (box != null) {
