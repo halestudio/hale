@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.ui.service.project.internal;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -88,8 +87,6 @@ import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
 import eu.esdihumboldt.hale.common.core.service.cleanup.TemporaryFiles;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
-import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
-import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
@@ -1020,21 +1017,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// drop the existing instances
 				InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
 				is.dropInstances();
-
-				// inform instance processors of the drop
-
-				// XXX This could be done in a more general way by listening to
-				// datasetChanged events from InstanceService
-				final InstanceProcessingExtension ext = new InstanceProcessingExtension(
-						HaleUI.getServiceProvider());
-				final List<InstanceProcessor> processors = ext.getInstanceProcessors();
-				for (InstanceProcessor processor : processors) {
-					try {
-						processor.close();
-					} catch (IOException e) {
-						log.warn("Instance processor could not be closed.", e);
-					}
-				}
 
 				// reload the instances
 				for (IOConfiguration conf : main.getResources()) {
