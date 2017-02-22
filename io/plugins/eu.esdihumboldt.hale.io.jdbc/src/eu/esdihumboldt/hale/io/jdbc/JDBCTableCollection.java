@@ -242,8 +242,13 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			// support project variables
 			query = JDBCUtil.replaceVariables(query, services);
-
-			this.countQuery = null;
+			
+			// this.countQuery = null; 
+			// countQuery = null caused to return UNKNOWN_SIZE in size() with causes isEmpty() 
+			// to return false and that causes problems on iterating with MultiInstanceCollection 
+			this.countQuery = "SELECT COUNT(*) FROM (\n" + query + "\n) tmp";
+			// note 1: this sub query is not supported in all SQL dialects
+			// note 2: the line breaks '\n' prevent from problems using  comments in the embedded query
 		}
 		this.sqlQuery = query;
 	}
