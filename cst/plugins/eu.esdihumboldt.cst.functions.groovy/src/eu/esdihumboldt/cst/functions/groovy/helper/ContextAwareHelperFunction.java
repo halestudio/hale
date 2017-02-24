@@ -33,6 +33,11 @@ public interface ContextAwareHelperFunction<R> extends HelperFunction<R> {
 	 * @return the function result
 	 * @throws Exception if the function call fails due to an exception
 	 */
-	public R call(Object arg, HelperContext context) throws Exception;
+	R call(Object arg, HelperContext context) throws Exception;
+
+	@Override
+	default R call(Object arg) throws Exception {
+		return call(arg, null);
+	}
 
 }

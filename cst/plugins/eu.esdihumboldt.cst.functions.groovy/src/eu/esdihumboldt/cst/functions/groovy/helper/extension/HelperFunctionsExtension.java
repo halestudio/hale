@@ -214,27 +214,34 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 	/**
 	 * Load helper function via reflection from a method.
 	 * 
-	 * @param method the method (probably) defining a helper function
+	 * @param callMethod the method (probably) defining a helper function
 	 * @param helperClass the class defining the method
 	 * @return the loaded helper function or <code>null</code>
 	 */
 	@Nullable
-	protected HelperFunctionWrapper loadFunction(Method method, Class<?> helperClass) {
-		int modifiers = method.getModifiers();
+	protected HelperFunctionWrapper loadFunction(final Method callMethod, Class<?> helperClass) {
+		int modifiers = callMethod.getModifiers();
 
 		// a candidate -> check parameters
-		Class<?>[] params = method.getParameterTypes();
-		if (params != null && params.length == 1) {
-			// has a single parameter
+		Class<?>[] params = callMethod.getParameterTypes();
+		if (params != null && params.length <= 2) {
+			// has maximum two parameters
+
+			// last parameter may be context parameter
+			final boolean hasContextParam = params.length >= 1
+					&& params[params.length - 1].equals(HelperContext.class);
+			// check if there is an actual main parameter
+			final boolean hasMainParam = (hasContextParam && params.length == 2)
+					|| (!hasContextParam && params.length == 1);
+
 			final boolean isStatic = Modifier.isStatic(modifiers);
-			final Method callMethod = method;
 
 			// Get the specification from field
-			String fieldOrMethodName = callMethod.getName() + SPEC_END;
+			String specFieldOrMethodName = callMethod.getName() + SPEC_END;
 
 			Object fieldV = null;
 			try {
-				Field field = helperClass.getField(fieldOrMethodName);
+				Field field = helperClass.getField(specFieldOrMethodName);
 				int fieldModifiers = field.getModifiers();
 				if (Modifier.isStatic(fieldModifiers) && Modifier.isFinal(fieldModifiers)) {
 					fieldV = field.get(null);
@@ -248,7 +255,7 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			Method meth = null;
 			boolean isSpecStatic = false;
 			try {
-				meth = helperClass.getMethod(fieldOrMethodName, new Class[] { String.class });
+				meth = helperClass.getMethod(specFieldOrMethodName, new Class[] { String.class });
 				int specModifier = meth.getModifiers();
 				isSpecStatic = Modifier.isStatic(specModifier);
 
@@ -258,16 +265,29 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			final Method specMethod = meth;
 			final boolean isSpecMethodStatic = isSpecStatic;
 
-			HelperFunction<Object> function = new HelperFunction<Object>() {
+			HelperFunction<Object> function = new ContextAwareHelperFunction<Object>() {
 
 				@Override
-				public Object call(Object arg) throws Exception {
-					if (isStatic) {
-						return callMethod.invoke(null, arg);
+				public Object call(Object arg, HelperContext context) throws Exception {
+					Object helper = null;
+					if (!isStatic) {
+						helper = helperClass.newInstance();
+					}
+					if (hasMainParam) {
+						if (hasContextParam) {
+							return callMethod.invoke(helper, arg, context);
+						}
+						else {
+							return callMethod.invoke(helper, arg);
+						}
 					}
 					else {
-						Object helper = helperClass.newInstance();
-						return callMethod.invoke(helper, arg);
+						if (hasContextParam) {
+							return callMethod.invoke(helper, context);
+						}
+						else {
+							return callMethod.invoke(helper);
+						}
 					}
 				}
 
@@ -292,7 +312,7 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			};
 
 			// method name
-			String name = method.getName().substring(1);
+			String name = callMethod.getName().substring(1);
 			return new HelperFunctionWrapper(function, name);
 		}
 
