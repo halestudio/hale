@@ -15,6 +15,20 @@
 
 package eu.esdihumboldt.hale.io.jdbc;
 
+import java.net.URI;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.sql.Statement;
+
+import javax.annotation.Nullable;
+
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariableReplacer;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
+
 /**
  * JDBC utility methods.
  * 
@@ -60,6 +74,114 @@ public class JDBCUtil {
 			return s; // already quoted
 		else
 			return '"' + s + '"';
+	}
+
+	/**
+	 * Determine the identifier quote string for a given JDBC connection.
+	 * 
+	 * @param connection the JDBC connection
+	 * @return the quote string
+	 */
+	public static String determineQuoteString(Connection connection) {
+		String quotes = "\"";
+		try {
+			quotes = connection.getMetaData().getIdentifierQuoteString();
+			if (quotes.trim().isEmpty()) {
+				quotes = "";
+			}
+		} catch (SQLException e) {
+			// can't do anything about that
+		}
+		return quotes;
+	}
+
+	/**
+	 * Determine the namespace for a JDBC source-
+	 * 
+	 * @param jdbcURI the JDBC connection URI
+	 * @param advisor the schema reader advisor, if applicable
+	 * @return the namespace
+	 */
+	public static String determineNamespace(URI jdbcURI,
+			@Nullable JDBCSchemaReaderAdvisor advisor) {
+		URI specificURI;
+		try {
+			specificURI = URI.create(jdbcURI.getRawSchemeSpecificPart());
+		} catch (Exception e) {
+			specificURI = jdbcURI;
+		}
+		StringBuilder ns = new StringBuilder();
+		if (specificURI.getScheme() != null) {
+			if (!specificURI.getScheme().equals("jdbc")) {
+				ns.append("jdbc:");
+			}
+			ns.append(specificURI.getScheme());
+		}
+		if (specificURI.getPath() != null) {
+			String path = null;
+			if (advisor != null) {
+				path = advisor.adaptPathForNamespace(specificURI.getPath());
+			}
+			else {
+				// default handling
+				path = specificURI.getPath();
+				if (path.startsWith("/")) {
+					path = path.substring(1);
+				}
+			}
+
+			if (path != null && !path.isEmpty()) {
+				if (ns.length() > 0) {
+					ns.append(':');
+				}
+
+				ns.append(path);
+			}
+		}
+		String overallNamespace = ns.toString();
+		if (overallNamespace == null) {
+			overallNamespace = "";
+		}
+		return overallNamespace;
+	}
+
+	/**
+	 * Replace variables in an SQL query.
+	 * 
+	 * @param query the query
+	 * @param services the service provider
+	 * @return the query with variables replaced
+	 */
+	public static String replaceVariables(String query, ServiceProvider services) {
+		if (services != null) {
+			ProjectInfoService projectInfo = services.getService(ProjectInfoService.class);
+			ProjectVariableReplacer replacer = new ProjectVariableReplacer(projectInfo);
+			return replacer.replaceVariables(query, true);
+		}
+		return query;
+	}
+
+	/**
+	 * Create a statement for a default read-only iteration query.
+	 * 
+	 * @param connection the JDBC connection
+	 * @param fetchSize the batch fetch size, should be greater than zero
+	 * @return the statement
+	 * @throws SQLException if the statement cannot be created
+	 */
+	public static Statement createReadStatement(Connection connection, int fetchSize)
+			throws SQLException {
+		Statement st;
+		try {
+			st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
+					ResultSet.CLOSE_CURSORS_AT_COMMIT);
+		} catch (SQLFeatureNotSupportedException e) {
+			// Oracle Database supports only HOLD_CURSORS_OVER_COMMIT
+			st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY,
+					ResultSet.HOLD_CURSORS_OVER_COMMIT);
+		}
+		st.setFetchSize(fetchSize);
+		return st;
 	}
 
 }

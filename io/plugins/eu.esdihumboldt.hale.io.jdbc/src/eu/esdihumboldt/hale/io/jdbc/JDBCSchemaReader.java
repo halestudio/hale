@@ -62,6 +62,7 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 import eu.esdihumboldt.hale.io.jdbc.extension.JDBCSchemaReaderAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomType;
@@ -69,6 +70,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.internal.CustomTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeExtension;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.GeometryTypeInfo;
 import eu.esdihumboldt.hale.io.jdbc.extension.internal.SchemaReaderAdvisorExtension;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.Catalog;
 import schemacrawler.schema.Column;
 import schemacrawler.schema.ColumnDataType;
@@ -89,7 +91,8 @@ import schemacrawler.utility.SchemaCrawlerUtility;
  * 
  * @author Simon Templer
  */
-public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBCConstants {
+public class JDBCSchemaReader extends AbstractCachedSchemaReader
+		implements JDBCConstants, JDBCProvider {
 
 //	public static final String PARAM_SCHEMAS = "schemas";
 
@@ -135,7 +138,8 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @return Connection object after loading driver.
 	 * @throws SQLException if connection could not be made.
 	 */
-	protected Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection() throws SQLException {
 		return JDBCConnection.getConnection(this);
 	}
 
@@ -217,53 +221,12 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 			}
 
 			final Catalog database = SchemaCrawlerUtility.getCatalog(connection, options);
-			String quotes = "\"";
-			try {
-				quotes = connection.getMetaData().getIdentifierQuoteString();
-				if (quotes.trim().isEmpty())
-					quotes = "";
-			} catch (SQLException e) {
-				// can't do anything about that
-			}
 
-			URI specificURI;
-			try {
-				specificURI = URI.create(jdbcURI.getRawSchemeSpecificPart());
-			} catch (Exception e) {
-				specificURI = jdbcURI;
-			}
-			StringBuilder ns = new StringBuilder();
-			if (specificURI.getScheme() != null) {
-				if (!specificURI.getScheme().equals("jdbc")) {
-					ns.append("jdbc:");
-				}
-				ns.append(specificURI.getScheme());
-			}
-			if (specificURI.getPath() != null) {
-				String path = null;
-				if (advisor != null) {
-					path = advisor.adaptPathForNamespace(specificURI.getPath());
-				}
-				else {
-					// default handling
-					path = specificURI.getPath();
-					if (path.startsWith("/")) {
-						path = path.substring(1);
-					}
-				}
+			@SuppressWarnings("unused")
+			String quotes = JDBCUtil.determineQuoteString(connection);
+			// FIXME not actually used here or in SQL schema reader
 
-				if (path != null && !path.isEmpty()) {
-					if (ns.length() > 0) {
-						ns.append(':');
-					}
-
-					ns.append(path);
-				}
-			}
-			String overallNamespace = ns.toString();
-			if (overallNamespace == null) {
-				overallNamespace = "";
-			}
+			String overallNamespace = JDBCUtil.determineNamespace(jdbcURI, advisor);
 
 			// create the type index
 			typeIndex = new DefaultSchema(overallNamespace, jdbcURI);
@@ -391,8 +354,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 
 		// check for existing property definition
 		ChildDefinition<?> existing = tableType.getChild(name);
-		if (existing != null)
+		if (existing != null) {
 			return (DefaultPropertyDefinition) existing;
+		}
 
 		// create new one
 		// determine the column type
@@ -482,9 +446,9 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 	 * @param catalog the catalog for access to other column types
 	 * @return the type definition for the column type
 	 */
-	private TypeDefinition getOrCreateColumnType(Column column, final String overallNamespace,
-			DefaultSchema types, Connection connection, TypeDefinition tableType,
-			IOReporter reporter, Catalog catalog) {
+	public static TypeDefinition getOrCreateColumnType(BaseColumn<?> column,
+			final String overallNamespace, DefaultSchema types, Connection connection,
+			TypeDefinition tableType, IOReporter reporter, Catalog catalog) {
 		// XXX what about shared types?
 		// TODO the size/width info (VARCHAR(_30_)) is in column, the
 		// columntype/-name is not sufficient
@@ -695,8 +659,13 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader implements JDBC
 		type.setConstraint(HasValueFlag.DISABLED);
 
 		// set schema and table name
-		type.setConstraint(
-				new DatabaseTable(unquote(schema.getName()), unquote(table.getName()), useQuote));
+		DatabaseTable tableConstraint = new DatabaseTable(unquote(schema.getName()),
+				unquote(table.getName()), useQuote);
+		type.setConstraint(tableConstraint);
+
+		// set SQL query constraint
+		String query = "SELECT * FROM " + tableConstraint.getFullTableName();
+		type.setConstraint(new SQLQuery(query));
 
 		// set primary key if possible
 		PrimaryKey key = null;

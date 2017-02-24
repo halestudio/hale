@@ -19,11 +19,11 @@ import java.net.URI;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -35,9 +35,11 @@ import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollectio
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 
 /**
- * Instance collection for instances belonging to a specific database table.
+ * Instance collection for instances belonging to a specific database table or a
+ * schema type with an associated SQL query.
  * 
  * @author Simon Templer
  */
@@ -135,20 +137,8 @@ public class JDBCTableCollection implements InstanceCollection {
 				else if (currentResults == null) {
 					// retrieve result set
 					connection.setAutoCommit(false);
-					Statement st = null;
-					try {
-						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-								ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
-						st.setFetchSize(500);
-					} catch (SQLFeatureNotSupportedException e) {
-
-						log.warn("Oracle Database supports only HOLD_CURSORS_OVER_COMMIT");
-
-						st = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-								ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-						st.setFetchSize(500);
-					}
-					currentResults = st.executeQuery("SELECT * FROM " + fullTableName);
+					Statement st = JDBCUtil.createReadStatement(connection, 500);
+					currentResults = st.executeQuery(sqlQuery);
 
 					proceedToNext();
 				}
@@ -216,7 +206,8 @@ public class JDBCTableCollection implements InstanceCollection {
 	private final String password;
 	private final TypeDefinition type;
 
-	private final String fullTableName;
+	private final String sqlQuery;
+	private final String countQuery;
 	private final CRSProvider crsProvider;
 
 	/**
@@ -227,16 +218,39 @@ public class JDBCTableCollection implements InstanceCollection {
 	 * @param user the database user
 	 * @param password the user's password
 	 * @param crsProvider crs provider
+	 * @param services the service provider
 	 */
 	public JDBCTableCollection(TypeDefinition type, URI jdbcURI, String user, String password,
-			CRSProvider crsProvider) {
+			CRSProvider crsProvider, ServiceProvider services) {
 		this.type = type;
 		this.jdbcURI = jdbcURI;
 		this.user = user;
 		this.password = password;
 		this.crsProvider = crsProvider;
 
-		this.fullTableName = type.getConstraint(DatabaseTable.class).getFullTableName();
+		String query = type.getConstraint(SQLQuery.class).getQuery();
+
+		if (type.getConstraint(DatabaseTable.class).isTable() || query == null) {
+			// database table queries
+
+			String fullTableName = type.getConstraint(DatabaseTable.class).getFullTableName();
+			query = "SELECT * FROM " + fullTableName;
+			this.countQuery = "SELECT COUNT(*) FROM " + fullTableName;
+		}
+		else {
+			// custom queries (not a database table)
+
+			// support project variables
+			query = JDBCUtil.replaceVariables(query, services);
+			
+			// this.countQuery = null; 
+			// countQuery = null caused to return UNKNOWN_SIZE in size() with causes isEmpty() 
+			// to return false and that causes problems on iterating with MultiInstanceCollection 
+			this.countQuery = "SELECT COUNT(*) FROM (\n" + query + "\n) tmp";
+			// note 1: this sub query is not supported in all SQL dialects
+			// note 2: the line breaks '\n' prevent from problems using  comments in the embedded query
+		}
+		this.sqlQuery = query;
 	}
 
 	/**
@@ -270,15 +284,19 @@ public class JDBCTableCollection implements InstanceCollection {
 
 	@Override
 	public boolean hasSize() {
-		return true;
+		return countQuery != null;
 	}
 
 	@Override
 	public int size() {
+		if (countQuery == null) {
+			return UNKNOWN_SIZE;
+		}
+
 		try (Connection connection = createConnection()) {
 			Statement st = connection.createStatement();
 
-			ResultSet res = st.executeQuery("SELECT COUNT(*) FROM " + fullTableName);
+			ResultSet res = st.executeQuery(countQuery);
 			int count = 0;
 			if (res.next()) {
 				count = res.getInt(1);
@@ -286,16 +304,15 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn(e.getMessage(), e);
-			// treat as empty
-			return 0;
+			log.warn("Could not determine query size", e);
+			return UNKNOWN_SIZE;
 		}
 	}
 
 	@Override
 	public boolean isEmpty() {
 		int size = size();
-		return size <= 0;
+		return size == 0;
 	}
 
 	@Override

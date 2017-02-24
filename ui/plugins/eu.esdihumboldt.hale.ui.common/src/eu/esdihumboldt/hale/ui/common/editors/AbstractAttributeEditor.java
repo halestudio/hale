@@ -19,8 +19,8 @@ package eu.esdihumboldt.hale.ui.common.editors;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
-import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Abstract base class for editors for events.

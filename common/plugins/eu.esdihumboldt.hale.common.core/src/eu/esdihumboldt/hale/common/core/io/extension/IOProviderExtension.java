@@ -149,6 +149,17 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 				return Collections.emptySet();
 			}
 		}
+
+		@Override
+		public boolean allowDuplicateResource() {
+			String strValue = conf.getAttribute("allowDuplicate");
+			if (strValue == null) {
+				return false;
+			}
+
+			return Boolean.parseBoolean(strValue);
+		}
+
 	}
 
 	/**

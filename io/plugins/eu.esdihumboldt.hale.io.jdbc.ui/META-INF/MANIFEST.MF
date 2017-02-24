@@ -15,6 +15,7 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.extension,
+ eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.util,
  org.slf4j;version="1.7.10"
 Bundle-Vendor: data harmonisation panel

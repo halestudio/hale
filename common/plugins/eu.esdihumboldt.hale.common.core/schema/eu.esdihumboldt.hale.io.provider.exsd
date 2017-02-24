@@ -49,7 +49,7 @@
          </attribute>
       </complexType>
    </element>
-   
+
    <element name="providerParameter">
       <annotation>
          <documentation>
@@ -155,6 +155,13 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                <appinfo>
                   <meta.attribute translatable="true"/>
                </appinfo>
+            </annotation>
+         </attribute>
+         <attribute name="allowDuplicate" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  If loading duplicate resources with this provider is allowed (e.g. if loading the same resource with different settings retrieves different parts of the resource). Only applicable for import providers.
+               </documentation>
             </annotation>
          </attribute>
       </complexType>
