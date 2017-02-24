@@ -23,6 +23,8 @@ import java.util.Map;
 
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.helper.DefaultHelperContext;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -245,7 +247,9 @@ public class GroovyUtil implements GroovyConstants {
 			TransformationLog log, ExecutionContext executionContext,
 			TypeDefinition targetInstanceType) {
 		Binding binding = new Binding();
-		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
+		HelperContext helperContext = new DefaultHelperContext(executionContext, executionContext,
+				cell, typeCell);
+		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault(helperContext));
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
 		TransformationLogWrapper cellLog = new TransformationLogWrapper(log);
