@@ -25,7 +25,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
-import schemacrawler.schema.Column;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.ColumnDataType;
 
 /**
@@ -61,7 +61,7 @@ public interface GeometryAdvisor<C> {
 	 * @return the geometry type that should be used for the
 	 *         {@link GeometryType} binding
 	 */
-	public Class<? extends Geometry> configureGeometryColumnType(C connection, Column column,
+	public Class<? extends Geometry> configureGeometryColumnType(C connection, BaseColumn<?> column,
 			DefaultTypeDefinition type);
 
 	/**
@@ -71,7 +71,7 @@ public interface GeometryAdvisor<C> {
 	 *            associated CRS definition
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
-	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
+	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition)}
 	 * @param connection Connection
 	 * @return the converted geometry that can be written to the database
 	 * @throws Exception something went wrong
@@ -85,7 +85,7 @@ public interface GeometryAdvisor<C> {
 	 * @param geom the geometry read from the database
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
-	 *            {@link #configureGeometryColumnType(Object, Column, DefaultTypeDefinition)}
+	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition)}
 	 * @param connection The connection
 	 * @param crsProvider The CRS provider
 	 * @return the geometry property

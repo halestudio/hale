@@ -35,13 +35,15 @@ import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollec
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
+import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 
 /**
  * Reads instances from a JDBC database.
  * 
  * @author Simon Templer
  */
-public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCConstants {
+public class JDBCInstanceReader extends AbstractInstanceReader
+		implements JDBCConstants, JDBCProvider {
 
 	private MultiInstanceCollection collection;
 	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceReader.class);
@@ -72,7 +74,8 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 	 * @return Connection object after loading driver.
 	 * @throws SQLException if connection could not be made.
 	 */
-	protected Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection() throws SQLException {
 		return JDBCConnection.getConnection(this);
 	}
 
@@ -115,10 +118,28 @@ public class JDBCInstanceReader extends AbstractInstanceReader implements JDBCCo
 			// only load instances for mapping relevant types
 			for (TypeDefinition type : getSourceSchema().getMappingRelevantTypes()) {
 				// TODO test if table exists in DB?
-				// check constraint is a Database table or not?
+
+				// check constraint if a Database table or not
 				if (type.getConstraint(DatabaseTable.class).isTable()) {
 					collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
-							user, password, getCrsProvider()) {
+							user, password, getCrsProvider(), getServiceProvider()) {
+
+						// To provide extensibility for getting customized
+						// database connection for
+						// Instance reading.
+						@Override
+						protected Connection createConnection() throws SQLException {
+							return JDBCInstanceReader.this.getConnection();
+						}
+
+					});
+				}
+				// also support SQL query types
+				// FIXME any way to determine if this is the correct target
+				// database?
+				else if (type.getConstraint(SQLQuery.class).hasQuery()) {
+					collections.put(type, new JDBCTableCollection(type, getSource().getLocation(),
+							user, password, getCrsProvider(), getServiceProvider()) {
 
 						// To provide extensibility for getting customized
 						// database connection for

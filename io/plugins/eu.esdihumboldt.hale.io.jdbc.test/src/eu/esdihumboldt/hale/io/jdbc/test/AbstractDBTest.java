@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCConnection;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceWriter;
 import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
+import eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 
 /**
@@ -217,6 +218,33 @@ public abstract class AbstractDBTest {
 			schemaReader.setParameter(JDBCSchemaReader.SCHEMAS,
 					Value.of(dbi.getUser().toUpperCase()));
 		}
+		IOReport report = schemaReader.execute(null);
+		assertTrue(report.isSuccess());
+		assertTrue(report.getErrors().isEmpty());
+		Schema schema = schemaReader.getSchema();
+		assertNotNull(schema);
+		return schema;
+	}
+
+	/**
+	 * Load the database schema for a SQL statement.
+	 * 
+	 * @param sql the SQL query
+	 * @param typeName the type name for the query
+	 * 
+	 * @return the schema
+	 * @throws Exception if reading the schema fails
+	 */
+	protected Schema readSchema(String sql, String typeName) throws Exception {
+		SQLSchemaReader schemaReader = new SQLSchemaReader();
+
+		schemaReader.setSource(new NoStreamInputSupplier(jdbcUri));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_USER, Value.of(dbi.getUser()));
+		schemaReader.setParameter(JDBCSchemaReader.PARAM_PASSWORD, Value.of(dbi.getPassword()));
+
+		schemaReader.setParameter(SQLSchemaReader.PARAM_SQL, Value.of(sql));
+		schemaReader.setParameter(SQLSchemaReader.PARAM_TYPE_NAME, Value.of(typeName));
+
 		IOReport report = schemaReader.execute(null);
 		assertTrue(report.isSuccess());
 		assertTrue(report.getErrors().isEmpty());

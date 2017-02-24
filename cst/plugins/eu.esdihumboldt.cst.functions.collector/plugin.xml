@@ -15,7 +15,6 @@
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.cst.functions.collector.explanations.AssignFromCollectorExplanation"
-            icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.cst.functions.collector.assign"
             name="Assign collected values">
          <targetProperties>

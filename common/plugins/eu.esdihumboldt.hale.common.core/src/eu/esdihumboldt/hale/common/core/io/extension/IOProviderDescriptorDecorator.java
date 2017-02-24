@@ -111,4 +111,9 @@ public abstract class IOProviderDescriptorDecorator implements IOProviderDescrip
 		return descriptor.getTypeName();
 	}
 
+	@Override
+	public boolean allowDuplicateResource() {
+		return descriptor.allowDuplicateResource();
+	}
+
 }

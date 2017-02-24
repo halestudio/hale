@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.common;
 import java.util.Collection;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 
 /**
  * Attribute editor interface

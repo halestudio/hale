@@ -45,7 +45,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
 import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
 import eu.esdihumboldt.hale.io.jdbc.mssql.util.SRSUtil;
-import schemacrawler.schema.Column;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.ColumnDataType;
 
 /**
@@ -258,7 +258,7 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(SQLServerConnection connection,
-			Column column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type) {
 		type.setConstraint(new GeometryMetadata());
 		return Geometry.class;
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 wetransform GmbH
+ * Copyright (c) 2017 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -13,23 +13,26 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.common;
+package eu.esdihumboldt.hale.io.jdbc;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+
+import eu.esdihumboldt.hale.common.core.io.IOProvider;
 
 /**
- * Replaces variable references in a string. Mainly intended to be able to
- * validate inputs that include variable references.
+ * Common interface for JDBC I/O providers.
  * 
  * @author Simon Templer
  */
-public interface VariableReplacer {
+public interface JDBCProvider extends IOProvider {
 
 	/**
-	 * Replace variable references in a String by variable values.
+	 * Get a database connection.
 	 * 
-	 * @param input the input string
-	 * @return the input string w/ variable references replaced by values, if
-	 *         present
+	 * @return Connection object after loading driver
+	 * @throws SQLException if the connection could not be established
 	 */
-	public String replaceVariables(String input);
+	Connection getConnection() throws SQLException;
 
 }
