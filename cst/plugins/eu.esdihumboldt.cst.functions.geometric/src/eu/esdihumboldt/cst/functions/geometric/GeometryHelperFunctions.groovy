@@ -167,9 +167,22 @@ class GeometryHelperFunctions {
 	 * @param args the function arguments
 	 * @return true if the geometry's boundary completely covers the line
 	 */
-	@Nullable
 	static boolean _boundaryCovers(Map args) {
-		return args.geometry.getGeometry().getBoundary().covers(args.line.getGeometry());
+		def geom = _find(args.geometry)
+		def line = _find(args.line)
+
+		if (!geom) {
+			throw new IllegalArgumentException('No geometry found for geometry argument')
+		}
+		if (!line) {
+			throw new IllegalArgumentException('No geometry found for line argument')
+		}
+
+		/*
+		 * FIXME check if geometries have the same SRS
+		 */
+
+		return geom.getGeometry().getBoundary().covers(line.getGeometry());
 	}
 
 	/**
