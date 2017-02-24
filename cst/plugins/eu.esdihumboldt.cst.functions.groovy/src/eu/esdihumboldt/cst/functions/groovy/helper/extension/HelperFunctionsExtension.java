@@ -201,86 +201,102 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 				int modifiers = method.getModifiers();
 				if (method.getName().startsWith("_") && !Modifier.isAbstract(modifiers)
 						&& !method.getName().endsWith(SPEC_END)) {
-					// a candidate -> check parameters
-					Class<?>[] params = method.getParameterTypes();
-					if (params != null && params.length == 1) {
-						// has a single parameter
-						final boolean isStatic = Modifier.isStatic(modifiers);
-						final Method callMethod = method;
-
-						// Get the specification from field
-						String fieldOrMethodName = callMethod.getName() + SPEC_END;
-
-						Object fieldV = null;
-						try {
-							Field field = helperClass.getField(fieldOrMethodName);
-							int fieldModifiers = field.getModifiers();
-							if (Modifier.isStatic(fieldModifiers)
-									&& Modifier.isFinal(fieldModifiers)) {
-								fieldV = field.get(null);
-							}
-						} catch (Exception e) {
-							// do nothing
-						}
-						final Object fieldValue = fieldV;
-
-						// Get spec from method
-						Method meth = null;
-						boolean isSpecStatic = false;
-						try {
-							meth = helperClass.getMethod(fieldOrMethodName,
-									new Class[] { String.class });
-							int specModifier = meth.getModifiers();
-							isSpecStatic = Modifier.isStatic(specModifier);
-
-						} catch (Exception e) {
-							// do nothing
-						}
-						final Method specMethod = meth;
-						final boolean isSpecMethodStatic = isSpecStatic;
-
-						HelperFunction<Object> function = new HelperFunction<Object>() {
-
-							@Override
-							public Object call(Object arg) throws Exception {
-								if (isStatic) {
-									return callMethod.invoke(null, arg);
-								}
-								else {
-									Object helper = helperClass.newInstance();
-									return callMethod.invoke(helper, arg);
-								}
-							}
-
-							@Override
-							public Specification getSpec(String name) throws Exception {
-								if (fieldValue != null && fieldValue instanceof Specification) {
-
-									return ((Specification) fieldValue);
-								}
-								else if (specMethod != null) {
-									if (isSpecMethodStatic) {
-										return (Specification) specMethod.invoke(null, name);
-									}
-									else {
-										Object helper = helperClass.newInstance();
-										return (Specification) specMethod.invoke(helper, name);
-									}
-
-								}
-								return null;
-							}
-						};
-
-						// method name
-						String name = method.getName().substring(1);
-
-						functions.add(new HelperFunctionWrapper(function, name));
+					HelperFunctionWrapper function = loadFunction(method, helperClass);
+					if (function != null) {
+						functions.add(function);
 					}
 				}
 			}
 			return functions;
 		}
+	}
+
+	/**
+	 * Load helper function via reflection from a method.
+	 * 
+	 * @param method the method (probably) defining a helper function
+	 * @param helperClass the class defining the method
+	 * @return the loaded helper function or <code>null</code>
+	 */
+	@Nullable
+	protected HelperFunctionWrapper loadFunction(Method method, Class<?> helperClass) {
+		int modifiers = method.getModifiers();
+
+		// a candidate -> check parameters
+		Class<?>[] params = method.getParameterTypes();
+		if (params != null && params.length == 1) {
+			// has a single parameter
+			final boolean isStatic = Modifier.isStatic(modifiers);
+			final Method callMethod = method;
+
+			// Get the specification from field
+			String fieldOrMethodName = callMethod.getName() + SPEC_END;
+
+			Object fieldV = null;
+			try {
+				Field field = helperClass.getField(fieldOrMethodName);
+				int fieldModifiers = field.getModifiers();
+				if (Modifier.isStatic(fieldModifiers) && Modifier.isFinal(fieldModifiers)) {
+					fieldV = field.get(null);
+				}
+			} catch (Exception e) {
+				// do nothing
+			}
+			final Object fieldValue = fieldV;
+
+			// Get spec from method
+			Method meth = null;
+			boolean isSpecStatic = false;
+			try {
+				meth = helperClass.getMethod(fieldOrMethodName, new Class[] { String.class });
+				int specModifier = meth.getModifiers();
+				isSpecStatic = Modifier.isStatic(specModifier);
+
+			} catch (Exception e) {
+				// do nothing
+			}
+			final Method specMethod = meth;
+			final boolean isSpecMethodStatic = isSpecStatic;
+
+			HelperFunction<Object> function = new HelperFunction<Object>() {
+
+				@Override
+				public Object call(Object arg) throws Exception {
+					if (isStatic) {
+						return callMethod.invoke(null, arg);
+					}
+					else {
+						Object helper = helperClass.newInstance();
+						return callMethod.invoke(helper, arg);
+					}
+				}
+
+				@Override
+				public Specification getSpec(String name) throws Exception {
+					if (fieldValue != null && fieldValue instanceof Specification) {
+
+						return ((Specification) fieldValue);
+					}
+					else if (specMethod != null) {
+						if (isSpecMethodStatic) {
+							return (Specification) specMethod.invoke(null, name);
+						}
+						else {
+							Object helper = helperClass.newInstance();
+							return (Specification) specMethod.invoke(helper, name);
+						}
+
+					}
+					return null;
+				}
+			};
+
+			// method name
+			String name = method.getName().substring(1);
+			return new HelperFunctionWrapper(function, name);
+		}
+
+		return null;
 	}
 
 	@Override
