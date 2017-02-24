@@ -302,9 +302,6 @@ public final class Extent implements Serializable, Localizable, Comparable<Exten
 		return buffer.toString();
 	}
 
-	/**
-	 * @see de.fhg.igd.mapviewer.geom.Localizable#getBoundingBox()
-	 */
 	@Override
 	public BoundingBox getBoundingBox() {
 		return new BoundingBox(this.minX, this.minY, 0d, this.maxX, this.maxY, 0d);
