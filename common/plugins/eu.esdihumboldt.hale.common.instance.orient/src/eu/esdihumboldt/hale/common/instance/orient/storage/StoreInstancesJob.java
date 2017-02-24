@@ -41,9 +41,11 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
@@ -128,9 +130,13 @@ public abstract class StoreInstancesJob extends Job {
 			// use intent
 			db.declareIntent(new OIntentMassiveInsert());
 
+			// Find all the InstanceProcessors to feed them the stored Instances
 			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
 					serviceProvider);
 			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+
+			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
+					null, DataSet.SOURCE);
 
 			// TODO decouple next() and save()?
 
@@ -160,9 +166,15 @@ public abstract class StoreInstancesJob extends Job {
 					// and save it
 					doc.save();
 
-					processors.forEach(
-							p -> p.process(instance, new OrientInstanceReference(doc.getIdentity(),
-									conv.getDataSet(), conv.getDefinition())));
+					// Create an InstanceReference for the saved instance and
+					// feed it to all known InstanceProcessors. The decoration
+					// with ResolvableInstanceReference allows the
+					// InstanceProcessors to resolve the instances if required.
+					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+							new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
+									conv.getDefinition()),
+							browser);
+					processors.forEach(p -> p.process(instance, resolvableRef));
 
 					count++;
 

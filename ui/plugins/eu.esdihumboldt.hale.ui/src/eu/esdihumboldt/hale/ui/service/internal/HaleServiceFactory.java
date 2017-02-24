@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.service.internal;
 
+import java.io.IOException;
+
 import org.eclipse.ui.services.AbstractServiceFactory;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -24,6 +26,11 @@ import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.compatibility.CompatibilityService;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.compatibility.extension.impl.CompatibilityServiceImpl;
@@ -38,6 +45,7 @@ import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUn
 import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.groovy.internal.PreferencesGroovyService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceViewService;
@@ -80,10 +88,41 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		}
 
 		if (InstanceService.class.equals(serviceInterface)) {
-			return OrientInstanceService.getInstance(locator.getService(SchemaService.class),
+			final InstanceService is = OrientInstanceService.getInstance(
+					locator.getService(SchemaService.class),
 					locator.getService(ProjectService.class),
 					locator.getService(AlignmentService.class),
 					locator.getService(GroovyService.class));
+
+			// Add a listener to close all InstanceProcessors when source data
+			// is cleared
+			// XXX There may a better place to add this listener
+			is.addListener(new InstanceServiceAdapter() {
+
+				@Override
+				public void datasetChanged(DataSet type) {
+					if (type != DataSet.SOURCE) {
+						return;
+					}
+
+					InstanceCollection instances = is.getInstances(type);
+					if (instances.isEmpty()) {
+						// data was cleared, close instance
+						// processors
+						final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+								HaleUI.getServiceProvider());
+						for (InstanceProcessor processor : ext.getInstanceProcessors()) {
+							try {
+								processor.close();
+							} catch (IOException e) {
+								// Ignore
+							}
+						}
+					}
+				}
+			});
+
+			return is;
 		}
 
 		if (OccurringValuesService.class.equals(serviceInterface)) {

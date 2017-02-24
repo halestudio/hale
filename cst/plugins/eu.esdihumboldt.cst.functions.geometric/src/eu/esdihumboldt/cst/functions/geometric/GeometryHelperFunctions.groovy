@@ -27,6 +27,7 @@ import com.vividsolutions.jts.geom.Point
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 
+import de.fhg.igd.geom.BoundingBox
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
@@ -38,6 +39,8 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
+import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import groovy.transform.CompileStatic
@@ -147,6 +150,72 @@ class GeometryHelperFunctions {
 		else {
 			null
 		}
+	}
+
+	/**
+	 * Specification for a _boundaryCovers function
+	 */
+	public static final HelperFunctionSpecification _boundaryCovers_spec = new HelperFunctionSpecification(
+	"Determine if the boundary of a given geometry covers all points of a line.", "true if the all points of the line are on the geometry's boundary",
+	new HelperFunctionArgument("geometry", "Geometry"),
+	new HelperFunctionArgument("line", "Line"),
+	);
+
+	/**
+	 * Determine if the boundary of a geometry covers all points of a line.
+	 *
+	 * @param args the function arguments
+	 * @return true if the geometry's boundary completely covers the line
+	 */
+	@Nullable
+	static boolean _boundaryCovers(Map args) {
+		return args.geometry.getGeometry().getBoundary().covers(args.line.getGeometry());
+	}
+
+	/**
+	 * Specification for the _spatialIndexQuery function
+	 */
+	public static final HelperFunctionSpecification _spatialIndexQuery_spec = new HelperFunctionSpecification(
+	"Query a spatial index. The bounding box of the given geometry is computed and used to query the spatial index.", "Collection of instances that match the query.",
+	new HelperFunctionArgument("spatialIndex",
+	"The spatial index service to query (e.g. '_spatialIndex'"),
+	new HelperFunctionArgument("geometry",
+	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."));
+
+	/**
+	 * Query a spatial index
+	 *
+	 * @param args the function arguments
+	 * @return a Collection of Instances that match the spatial query
+	 */
+	@Nullable
+	static Collection<Instance> _spatialIndexQuery(Map args) {
+		def result = []
+
+		final List<Geometry> geometries = new ArrayList<>();
+		for (GeometryProperty<?> property : _findAll(args.geometry)) {
+			Geometry g = property.getGeometry();
+			for (int i = 0; i < g.getNumGeometries(); i++) {
+				geometries.add(g.getGeometryN(i));
+			}
+		}
+
+		final BoundingBox box = new BoundingBox();
+		for (Geometry geometry : geometries) {
+			box.add(BoundingBox.compute(geometry));
+		}
+
+		if (box != null) {
+			def references = args.spatialIndex.retrieve(box);
+			references.each { ref ->
+				def inst = ResolvableInstanceReference.tryResolve(ref)
+				if (inst != null) {
+					result << inst
+				}
+			}
+		}
+
+		result
 	}
 
 	/**
