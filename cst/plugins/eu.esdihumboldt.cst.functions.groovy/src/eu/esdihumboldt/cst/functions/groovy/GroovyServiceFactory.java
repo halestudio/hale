@@ -31,7 +31,7 @@ public class GroovyServiceFactory implements ServiceFactory {
 	@Override
 	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator) {
 		if (HelperFunctionsService.class.equals(serviceInterface)) {
-			return (T) new HelperFunctionsExtension();
+			return (T) new HelperFunctionsExtension(serviceLocator);
 		}
 		return null;
 	}
