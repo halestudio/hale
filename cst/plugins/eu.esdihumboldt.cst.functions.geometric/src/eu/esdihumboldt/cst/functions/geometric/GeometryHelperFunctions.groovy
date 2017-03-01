@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
+import java.text.MessageFormat
+
 import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
@@ -178,9 +180,9 @@ class GeometryHelperFunctions {
 			throw new IllegalArgumentException('No geometry found for line argument')
 		}
 
-		/*
-		 * FIXME check if geometries have the same SRS
-		 */
+		if (geom.CRSDefinition != line.CRSDefinition) {
+			throw new IllegalArgumentException(MessageFormat.format('The CRS definitions of the geometry ({0}) and line ({1}) arguments differ. This is not supported.', geom.CRSDefinition?.CRS?.name, line.CRSDefinition?.CRS?.name))
+		}
 
 		return geom.getGeometry().getBoundary().covers(line.getGeometry());
 	}
