@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.geometric;
 
+import java.text.MessageFormat
+
 import javax.annotation.Nullable
 
 import com.vividsolutions.jts.geom.Geometry
@@ -169,9 +171,22 @@ class GeometryHelperFunctions {
 	 * @param args the function arguments
 	 * @return true if the geometry's boundary completely covers the line
 	 */
-	@Nullable
 	static boolean _boundaryCovers(Map args) {
-		return args.geometry.getGeometry().getBoundary().covers(args.line.getGeometry());
+		def geom = _find(args.geometry)
+		def line = _find(args.line)
+
+		if (!geom) {
+			throw new IllegalArgumentException('No geometry found for geometry argument')
+		}
+		if (!line) {
+			throw new IllegalArgumentException('No geometry found for line argument')
+		}
+
+		if (geom.CRSDefinition != line.CRSDefinition) {
+			throw new IllegalArgumentException(MessageFormat.format('The CRS definitions of the geometry ({0}) and line ({1}) arguments differ. This is not supported.', geom.CRSDefinition?.CRS?.name, line.CRSDefinition?.CRS?.name))
+		}
+
+		return geom.getGeometry().getBoundary().covers(line.getGeometry());
 	}
 
 	/**
