@@ -32,6 +32,7 @@ import com.vividsolutions.jts.io.WKTReader
 import de.fhg.igd.geom.BoundingBox
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.*
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgument
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
@@ -41,6 +42,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
+import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
@@ -193,7 +195,7 @@ class GeometryHelperFunctions {
 	public static final HelperFunctionSpecification _spatialIndexQuery_spec = new HelperFunctionSpecification(
 	"Query a spatial index. The bounding box of the given geometry is computed and used to query the spatial index.", "Collection of instances that match the query.",
 	new HelperFunctionArgument("spatialIndex",
-	"The spatial index service to query (e.g. '_spatialIndex'"),
+	"The spatial index service to query, defaults to the internal spatial index"),
 	new HelperFunctionArgument("geometry",
 	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."));
 
@@ -204,11 +206,36 @@ class GeometryHelperFunctions {
 	 * @return a Collection of Instances that match the spatial query
 	 */
 	@Nullable
-	static Collection<Instance> _spatialIndexQuery(Map args) {
+	static Collection<Instance> _spatialIndexQuery(Object args, HelperContext context) {
+		def geometryArg
+		if (args instanceof Map) {
+			geometryArg = args.geometry
+		}
+		else {
+			// only one argument provided
+			geometryArg = args
+		}
+
+		SpatialIndexService spatialIndex
+		if (args instanceof Map) {
+			spatialIndex = args.spatialIndex
+		}
+		if (spatialIndex != null) {
+			// use spatial index service by default
+			context?.serviceProvider?.getService(SpatialIndexService)
+		}
+		if (!spatialIndex) {
+			throw new IllegalStateException('No spatial index available to query')
+		}
+
 		def result = []
 
 		final List<Geometry> geometries = new ArrayList<>();
-		for (GeometryProperty<?> property : _findAll(args.geometry)) {
+		/*
+		 * TODO handle spatial reference system in relation to reference
+		 * system of spatial index 
+		 */
+		for (GeometryProperty<?> property : _findAll(geometryArg)) {
 			Geometry g = property.getGeometry();
 			for (int i = 0; i < g.getNumGeometries(); i++) {
 				geometries.add(g.getGeometryN(i));
@@ -221,7 +248,7 @@ class GeometryHelperFunctions {
 		}
 
 		if (box != null) {
-			def references = args.spatialIndex.retrieve(box);
+			def references = spatialIndex.retrieve(box);
 			references.each { ref ->
 				def inst = ResolvableInstanceReference.tryResolve(ref)
 				if (inst != null) {

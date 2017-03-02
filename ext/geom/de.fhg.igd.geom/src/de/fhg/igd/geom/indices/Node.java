@@ -56,12 +56,12 @@ public class Node<T extends Localizable> implements Localizable {
 	 * The page size (number of children/locs that can be attached to this node
 	 * before it gets splitted). Must be even and greater than or equal to 4.
 	 */
-	private int _pageSize;
+	private final int _pageSize;
 
 	/**
 	 * The parent R-Tree
 	 */
-	private RTree<T> _tree;
+	private final RTree<T> _tree;
 
 	/**
 	 * Default constructor
@@ -186,7 +186,7 @@ public class Node<T extends Localizable> implements Localizable {
 	 * @param loc the localizable to find a leaf for
 	 * @return the leaf node
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "null" })
 	private Node<T> chooseLeaf(final Localizable loc) {
 		// if this is a leaf, return this
 		if (this.isLeaf()) {

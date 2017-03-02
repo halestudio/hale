@@ -28,9 +28,31 @@ public interface HelperFunctionsService {
 	 * Retrieves the children of a specific category.
 	 * 
 	 * @param cat the category to inspect
+	 * @param context the helper context or <code>null</code>
 	 * @return the child categories and functions
 	 */
-	Iterable<HelperFunctionOrCategory> getChildren(Category cat);
+	Iterable<HelperFunctionOrCategory> getChildren(Category cat, HelperContext context);
+
+	/**
+	 * Retrieves the children of a specific category.
+	 * 
+	 * @param cat the category to inspect
+	 * @return the child categories and functions
+	 */
+	default Iterable<HelperFunctionOrCategory> getChildren(Category cat) {
+		return getChildren(cat, null);
+	}
+
+	/**
+	 * Get a child category or function.
+	 * 
+	 * @param cat the parent category
+	 * @param name the child name
+	 * @param context the helper context or <code>null</code>
+	 * @return a category, helper function or <code>null</code>
+	 */
+	@Nullable
+	HelperFunctionOrCategory get(Category cat, String name, HelperContext context);
 
 	/**
 	 * Get a child category or function.
@@ -40,6 +62,8 @@ public interface HelperFunctionsService {
 	 * @return a category, helper function or <code>null</code>
 	 */
 	@Nullable
-	HelperFunctionOrCategory get(Category cat, String name);
+	default HelperFunctionOrCategory get(Category cat, String name) {
+		return get(cat, name, null);
+	}
 
 }

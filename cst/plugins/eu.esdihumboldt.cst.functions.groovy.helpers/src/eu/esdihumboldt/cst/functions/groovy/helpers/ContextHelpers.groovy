@@ -17,6 +17,7 @@ package eu.esdihumboldt.cst.functions.groovy.helpers
 
 import javax.annotation.Nullable
 
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.SpecBuilder
 import eu.esdihumboldt.cst.functions.groovy.helpers.util.Collector
 
@@ -35,10 +36,15 @@ class ContextHelpers {
 	public static final eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification _collector_spec = SpecBuilder.newSpec( //
 	description: 'Get the Collector associated to a context map.', //
 	result: 'The Collector instance. Use it to collect values within a transformation') { //
-		context('The context map.') }
+		context('The context map, if omitted uses the overall transformation context.') }
 
 	@Nullable
-	static Collector _collector(def context) {
+	static Collector _collector(def context, HelperContext hc) {
+		if (context == null) {
+			// default to transformation context
+			context = hc?.executionContext?.transformationContext
+		}
+
 		if (context instanceof Map) {
 			synchronized (context) {
 				def collector = context[KEY_COLLECTOR]

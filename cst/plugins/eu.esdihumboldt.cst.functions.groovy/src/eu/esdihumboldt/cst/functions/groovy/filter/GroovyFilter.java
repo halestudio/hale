@@ -91,7 +91,7 @@ public class GroovyFilter implements ContextAwareFilter {
 
 		// helper functions
 		binding.setVariable(GroovyConstants.BINDING_HELPER_FUNCTIONS,
-				HelperFunctions.createDefault());
+				HelperFunctions.createDefault(null));
 		// instance
 		binding.setVariable("instance", instance);
 		// context
