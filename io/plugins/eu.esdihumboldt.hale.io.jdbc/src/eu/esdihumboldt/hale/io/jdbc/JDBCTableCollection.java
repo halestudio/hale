@@ -305,18 +305,7 @@ public class JDBCTableCollection implements InstanceCollection {
 			return count;
 		} catch (SQLException e) {
 			log.warn("Could not determine query size by count query");
-			try (Connection connection = createConnection()) {
-				Statement st = connection.createStatement();
-				ResultSet res = st.executeQuery(sqlQuery);
-				int count = 0;
-				while (res.next()) {
-					count++;
-				}
-				return count;
-			} catch (SQLException e2) {
-				log.warn("Could not determine query size by counting query result", e2);
-				return UNKNOWN_SIZE;
-			}
+			return UNKNOWN_SIZE;
 		}
 	}
 
