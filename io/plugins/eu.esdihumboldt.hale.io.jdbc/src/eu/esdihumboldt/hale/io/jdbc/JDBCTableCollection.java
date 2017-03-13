@@ -308,16 +308,16 @@ public class JDBCTableCollection implements InstanceCollection {
 			try (Connection connection = createConnection()) {
 				Statement st = connection.createStatement();
 				ResultSet res = st.executeQuery(sqlQuery);
-				if(res.next()) {
-					return UNKNOWN_SIZE; 
+				if (res.next()) {
+					return UNKNOWN_SIZE;
 				}
-				else{
+				else {
 					return 0;
 				}
 			} catch (SQLException e2) {
 				log.warn("Could not determine query size by counting query result", e2);
 				return UNKNOWN_SIZE;
-			}			
+			}
 		}
 	}
 
