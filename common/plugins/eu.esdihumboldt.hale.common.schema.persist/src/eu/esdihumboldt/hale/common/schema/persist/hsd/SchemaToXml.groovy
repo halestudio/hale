@@ -28,8 +28,6 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
-import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
-import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
 import eu.esdihumboldt.util.Pair
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
@@ -42,22 +40,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class SchemaToXml implements HaleSchemaConstants {
-
-	private static final Comparator<String> nullStringComparator = { String s1, String s2 ->
-		if (s1 == s2) {
-			0
-		}
-		else if (s1 == null) {
-			-1
-		}
-		else if (s2 == null) {
-			1
-		}
-		else {
-			s1 <=> s2
-		}
-	} as Comparator
+class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 
 	/**
 	 * Create a default DOM builder to use with the *toXml methods for creating
@@ -76,15 +59,9 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param schemas the schemas to serialize
 	 * @return the builder return value for the schemas element
 	 */
-	static Element schemasToXml(NSDOMBuilder b, Iterable<? extends Schema> schemas) throws Exception {
+	Element schemasToXml(NSDOMBuilder b, Iterable<? extends Schema> schemas) throws Exception {
 		b 'hsd:schemas', {
-			schemas.sort(false) { Schema s1, Schema s2 ->
-				int compared = nullStringComparator.compare(s1.namespace, s2.namespace)
-				if (!compared) {
-					compared = nullStringComparator.compare(s1.location?.toString(), s2.location?.toString())
-				}
-				compared
-			}.each { Schema schema ->
+			sortSchemas(schemas).each { Schema schema ->
 				schemaToXml(b, schema)
 			}
 		}
@@ -97,17 +74,14 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param schemas the schema to serialize
 	 * @return the builder return value for the schema element
 	 */
-	static Element schemaToXml(NSDOMBuilder b, Schema schema) throws Exception {
+	Element schemaToXml(NSDOMBuilder b, Schema schema) throws Exception {
 		def attributes = [:]
 		if (schema.namespace) {
 			attributes['namespace'] = schema.namespace
 		}
 
 		// organize types in a list
-		List<TypeDefinition> types = []
-		types.addAll(schema.types)
-		// sort to have a reproducible order (e.g. for versioning)
-		types.sort(true)
+		List<TypeDefinition> types = getSchemaTypes(schema)
 
 		Map<TypeDefinition, String> typeIndex = [:]
 		List<Integer> relevantTypes = []
@@ -150,7 +124,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the type element
 	 */
-	static Element typeToXml(NSDOMBuilder b, TypeDefinition type, Map<TypeDefinition, String> typeIndex) throws Exception {
+	Element typeToXml(NSDOMBuilder b, TypeDefinition type, Map<TypeDefinition, String> typeIndex) throws Exception {
 		// prepare attributes
 		def attributes = [:]
 		String index = typeIndex.get(type)
@@ -187,7 +161,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the property element
 	 */
-	static def propertyToXml(NSDOMBuilder b, PropertyDefinition property, Map<TypeDefinition, String> typeIndex) {
+	def propertyToXml(NSDOMBuilder b, PropertyDefinition property, Map<TypeDefinition, String> typeIndex) {
 		b 'hsd:property', {
 			// definition content (QName, description, constraints)
 			defToXml(b, property, typeIndex)
@@ -218,7 +192,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the group element
 	 */
-	static def groupToXml(NSDOMBuilder b, GroupPropertyDefinition group, Map<TypeDefinition, String> typeIndex) {
+	def groupToXml(NSDOMBuilder b, GroupPropertyDefinition group, Map<TypeDefinition, String> typeIndex) {
 		b 'hsd:group', {
 			// definition content (QName, description, constraints)
 			defToXml(b, group, typeIndex)
@@ -237,7 +211,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param b the XML builder
 	 * @param d the definition group to serialize
 	 */
-	static def defGroupToXml(NSDOMBuilder b, DefinitionGroup group, Map<TypeDefinition, String> typeIndex) {
+	def defGroupToXml(NSDOMBuilder b, DefinitionGroup group, Map<TypeDefinition, String> typeIndex) {
 		if (!group.declaredChildren.empty) {
 			b 'hsd:declares', {
 				Collection<ChildDefinition<?>> children = (Collection<ChildDefinition<?>>) group.declaredChildren // Groovy CompileStatic can't deal properly with ? extends ...
@@ -263,7 +237,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param b the XML builder
 	 * @param d the definition to serialize
 	 */
-	static void defToXml(NSDOMBuilder b, Definition<?> d, Map<TypeDefinition, String> typeIndex) {
+	void defToXml(NSDOMBuilder b, Definition<?> d, Map<TypeDefinition, String> typeIndex) {
 		// qualified name
 		qNameToXml(b, d.name)
 		// description
@@ -271,24 +245,8 @@ class SchemaToXml implements HaleSchemaConstants {
 			//TODO use Text object?
 			b 'hsd:description', d.description
 		}
-		// constraints
-		Collection<Pair<String, Value>> constraints = d.explicitConstraints.findResults { def constraint ->
-			// get value constraint factory, if possible
-			ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.getForConstraint(constraint)
-			if (desc != null && desc.factory != null) {
-				// determine value representation of constraint
-				Value value = desc.factory.store(constraint, typeIndex)
-				String id = desc.id
-				new Pair<String, Value>(id, value)
-			}
-			else {
-				(Pair<String, Value>)null
-			}
-		}
 
-		constraints.sort(false) { Pair<String, Value> p1, Pair<String, Value> p2 ->
-			nullStringComparator.compare(p1.first, p2.first)
-		}.each { Pair<String, Value> pair ->
+		getConstraints(d, typeIndex).each { Pair<String, Value> pair ->
 			Value value = pair.second
 			String id = pair.first
 			if (value != null && value.value != null) {
@@ -307,7 +265,7 @@ class SchemaToXml implements HaleSchemaConstants {
 	 * @param name the qualified name
 	 * @return the builder return value for the name element
 	 */
-	static def qNameToXml(NSDOMBuilder b, QName name) {
+	def qNameToXml(NSDOMBuilder b, QName name) {
 		if (name.namespaceURI) {
 			b 'hsd:name', [namespace: name.namespaceURI], name.localPart
 		}

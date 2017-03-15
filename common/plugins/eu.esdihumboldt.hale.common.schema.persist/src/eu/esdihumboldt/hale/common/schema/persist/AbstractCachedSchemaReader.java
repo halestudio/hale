@@ -44,7 +44,7 @@ public abstract class AbstractCachedSchemaReader extends AbstractCachedSchemaRea
 	@Override
 	protected Value storeInCache(Schema schema) throws Exception {
 		NSDOMBuilder builder = SchemaToXml.createBuilder();
-		Element root = SchemaToXml.schemaToXml(builder, schema);
+		Element root = new SchemaToXml().schemaToXml(builder, schema);
 		return new ElementValue(root, null);
 	}
 

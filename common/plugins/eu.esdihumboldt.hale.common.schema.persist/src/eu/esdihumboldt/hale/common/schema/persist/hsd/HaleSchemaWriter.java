@@ -53,7 +53,7 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 		try (OutputStream out = getTarget().getOutput()) {
 			// create DOM
 			NSDOMBuilder builder = SchemaToXml.createBuilder();
-			Element root = SchemaToXml.schemasToXml(builder, getSchemas().getSchemas());
+			Element root = new SchemaToXml().schemasToXml(builder, getSchemas().getSchemas());
 
 			// configure transformer for serialization
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();
