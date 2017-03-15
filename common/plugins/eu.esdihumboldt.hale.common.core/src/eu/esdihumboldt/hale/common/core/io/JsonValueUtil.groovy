@@ -127,6 +127,10 @@ class JsonValueUtil {
 			}
 		}
 		else {
+			/*
+			 * TODO support representation of primitives? (boolean, number)
+			 * XXX Problem is that the Value representation always uses a StringValue internally! 
+			 */
 			value.stringRepresentation
 		}
 	}
