@@ -105,7 +105,7 @@ class JsonValueUtil {
 			}
 
 			// retrieve complex value definition based on object type
-			ComplexValueDefinition cdv = ComplexValueExtension.instance.getDefinition(intern.class)
+			ComplexValueDefinition cdv = ComplexValueExtension.instance.getDefinition(intern.getClass())
 			if (cdv && cdv.jsonConverter) {
 				def valueJs = cdv.jsonConverter.toJson(intern)
 
