@@ -15,14 +15,13 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
-import java.util.Map;
-
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 
@@ -34,8 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 public class GeometryTypeFactory implements ValueConstraintFactory<GeometryType> {
 
 	@Override
-	public Value store(GeometryType constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(GeometryType constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		if (!constraint.isGeometry() || constraint.getBinding() == null) {
 			// default: no geometry
 			return null;
@@ -45,13 +43,13 @@ public class GeometryTypeFactory implements ValueConstraintFactory<GeometryType>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public GeometryType restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public GeometryType restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		Class<?> binding = resolver.loadClass(value.as(String.class), "com.vividsolutions.jts");
 
 		if (binding == null) {
-			throw new IllegalStateException("Could not resolve geometry type "
-					+ value.as(String.class));
+			throw new IllegalStateException(
+					"Could not resolve geometry type " + value.as(String.class));
 		}
 
 		return GeometryType.get((Class<? extends Geometry>) binding);

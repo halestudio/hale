@@ -15,12 +15,11 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 
@@ -32,7 +31,7 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.SQLType;
 public class SQLTypeFactory implements ValueConstraintFactory<SQLType> {
 
 	@Override
-	public Value store(SQLType constraint, Map<TypeDefinition, String> typeIndex) throws Exception {
+	public Value store(SQLType constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		if (constraint.isSet()) {
 			return Value.of(constraint.getType());
 		}
@@ -42,8 +41,8 @@ public class SQLTypeFactory implements ValueConstraintFactory<SQLType> {
 	}
 
 	@Override
-	public SQLType restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public SQLType restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		return SQLType.get(value.as(Integer.class, Integer.MIN_VALUE));
 	}
 

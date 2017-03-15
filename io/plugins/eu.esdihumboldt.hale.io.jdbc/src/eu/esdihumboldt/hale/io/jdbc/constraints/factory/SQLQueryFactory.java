@@ -15,13 +15,12 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 
@@ -33,8 +32,7 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
 public class SQLQueryFactory implements ValueConstraintFactory<SQLQuery> {
 
 	@Override
-	public Value store(SQLQuery constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(SQLQuery constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		String query = constraint.getQuery();
 		if (query != null) {
 			return Value.of(new Text(query));
@@ -45,8 +43,8 @@ public class SQLQueryFactory implements ValueConstraintFactory<SQLQuery> {
 	}
 
 	@Override
-	public SQLQuery restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public SQLQuery restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		String query;
 		Text text = value.as(Text.class);
 		if (text != null) {

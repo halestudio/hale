@@ -28,6 +28,8 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.MapTypeReferenceBuilder
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
 import eu.esdihumboldt.util.Pair
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
@@ -83,7 +85,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 		// organize types in a list
 		List<TypeDefinition> types = getSchemaTypes(schema)
 
-		Map<TypeDefinition, String> typeIndex = [:]
+		Map<TypeDefinition, Value> typeIndex = [:]
 		List<Integer> relevantTypes = []
 
 		b 'hsd:schema', attributes, {
@@ -91,7 +93,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 			b 'hsd:type-index', {
 				types.eachWithIndex { TypeDefinition type, int index ->
 					// create type index and relevant types list
-					typeIndex[type] = index as String
+					typeIndex[type] = Value.simple(index as String)
 					if (type.getConstraint(MappingRelevantFlag).enabled) {
 						relevantTypes << index
 					}
@@ -109,7 +111,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 			// add all types
 			b 'hsd:types', {
 				types.each { TypeDefinition type ->
-					typeToXml(b, type, typeIndex)
+					typeToXml(b, type, new MapTypeReferenceBuilder(typeIndex))
 				}
 			}
 		}
@@ -124,12 +126,13 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the type element
 	 */
-	Element typeToXml(NSDOMBuilder b, TypeDefinition type, Map<TypeDefinition, String> typeIndex) throws Exception {
+	Element typeToXml(NSDOMBuilder b, TypeDefinition type, TypeReferenceBuilder typeIndex) throws Exception {
 		// prepare attributes
 		def attributes = [:]
-		String index = typeIndex.get(type)
-		if (index != null) {
-			attributes.index = index
+		Optional<Value> ref = typeIndex.createReference(type)
+		if (ref.isPresent()) {
+			// assuming a string as type reference
+			attributes.index = ref.get().as(String)
 		}
 
 		b 'hsd:type', attributes, {
@@ -141,9 +144,10 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 
 			// super type
 			if (type.superType != null) {
-				String superIndex = typeIndex.get(type.superType)
-				if (superIndex != null) {
-					b 'hsd:superType', [index: superIndex]
+				Optional<Value> superIndex = typeIndex.createReference(type.superType)
+				if (superIndex.isPresent()) {
+					// assuming a string as type reference
+					b 'hsd:superType', [index: superIndex.get().as(String)]
 				}
 				else {
 					//TODO warn?
@@ -161,16 +165,16 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the property element
 	 */
-	def propertyToXml(NSDOMBuilder b, PropertyDefinition property, Map<TypeDefinition, String> typeIndex) {
+	def propertyToXml(NSDOMBuilder b, PropertyDefinition property, TypeReferenceBuilder typeIndex) {
 		b 'hsd:property', {
 			// definition content (QName, description, constraints)
 			defToXml(b, property, typeIndex)
 
 			// property type
-			String index = typeIndex.get(property.propertyType)
-			if (index != null) {
-				// type reference
-				b 'hsd:propertyType', [index: index]
+			Optional<Value> index = typeIndex.createReference(property.propertyType)
+			if (index.isPresent()) {
+				// assuming a string as type reference
+				b 'hsd:propertyType', [index: index.get().as(String)]
 			}
 			else {
 				// anonymous type (nested)
@@ -192,7 +196,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 	 *   to an string index as reference
 	 * @return the builder return value for the group element
 	 */
-	def groupToXml(NSDOMBuilder b, GroupPropertyDefinition group, Map<TypeDefinition, String> typeIndex) {
+	def groupToXml(NSDOMBuilder b, GroupPropertyDefinition group, TypeReferenceBuilder typeIndex) {
 		b 'hsd:group', {
 			// definition content (QName, description, constraints)
 			defToXml(b, group, typeIndex)
@@ -211,7 +215,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 	 * @param b the XML builder
 	 * @param d the definition group to serialize
 	 */
-	def defGroupToXml(NSDOMBuilder b, DefinitionGroup group, Map<TypeDefinition, String> typeIndex) {
+	def defGroupToXml(NSDOMBuilder b, DefinitionGroup group, TypeReferenceBuilder typeIndex) {
 		if (!group.declaredChildren.empty) {
 			b 'hsd:declares', {
 				Collection<ChildDefinition<?>> children = (Collection<ChildDefinition<?>>) group.declaredChildren // Groovy CompileStatic can't deal properly with ? extends ...
@@ -237,7 +241,7 @@ class SchemaToXml extends SchemaEncoderBase implements HaleSchemaConstants {
 	 * @param b the XML builder
 	 * @param d the definition to serialize
 	 */
-	void defToXml(NSDOMBuilder b, Definition<?> d, Map<TypeDefinition, String> typeIndex) {
+	void defToXml(NSDOMBuilder b, Definition<?> d, TypeReferenceBuilder typeIndex) {
 		// qualified name
 		qNameToXml(b, d.name)
 		// description

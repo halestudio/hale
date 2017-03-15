@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.factory.type
 
 import javax.xml.namespace.QName
 
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.AbstractPropertiesCompareConstraintFactoryTest
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType
@@ -50,7 +51,7 @@ class ElementTypeFactoryTest extends AbstractPropertiesCompareConstraintFactoryT
 	void testTypeBinding() {
 		TypeDefinition type = new DefaultTypeDefinition(new QName('BindingType'))
 
-		def typeIndex = [(type): 'someid']
+		def typeIndex = [(type): 'someid' as Value]
 
 		storeRestoreTest(ElementType.createFromType(type), typeIndex, null)
 	}

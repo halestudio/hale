@@ -15,11 +15,8 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstraint;
 
 /**
@@ -28,16 +25,16 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.AbstractFlagConstrain
  * @author Simon Templer
  * @param <T> the concrete flag constraint type
  */
-public abstract class FlagConstraintFactory<T extends AbstractFlagConstraint> implements
-		ValueConstraintFactory<T> {
+public abstract class FlagConstraintFactory<T extends AbstractFlagConstraint>
+		implements ValueConstraintFactory<T> {
 
 	@Override
-	public Value store(T constraint, Map<TypeDefinition, String> typeIndex) {
+	public Value store(T constraint, TypeReferenceBuilder typeIndex) {
 		return Value.of(constraint.isEnabled());
 	}
 
 	@Override
-	public T restore(Value value, Definition<?> definition, Map<String, TypeDefinition> typeIndex,
+	public T restore(Value value, Definition<?> definition, TypeResolver typeIndex,
 			ClassResolver resolver) throws Exception {
 		return restore(value.asType(Boolean.class));
 	}

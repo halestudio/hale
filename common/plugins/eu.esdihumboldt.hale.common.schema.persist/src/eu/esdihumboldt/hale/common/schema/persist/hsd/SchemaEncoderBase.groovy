@@ -19,6 +19,7 @@ import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.util.Pair
@@ -33,7 +34,8 @@ import groovy.transform.CompileStatic
 @CompileStatic
 abstract class SchemaEncoderBase {
 
-	static final Comparator<String> nullStringComparator = { String s1, String s2 ->
+	static final Comparator<String> nullStringComparator = {
+		String s1, String s2 ->
 		if (s1 == s2) {
 			0
 		}
@@ -81,14 +83,14 @@ abstract class SchemaEncoderBase {
 	 * @param typeIndex the type index
 	 * @return the list of constraints, each a pair of the constraint ID and the corresponding value
 	 */
-	List<Pair<String, Value>> getConstraints(Definition<?> d, Map<TypeDefinition, String> typeIndex) {
+	List<Pair<String, Value>> getConstraints(Definition<?> d, TypeReferenceBuilder refBuilder) {
 		// constraints
 		Collection<Pair<String, Value>> constraints = d.explicitConstraints.findResults { def constraint ->
 			// get value constraint factory, if possible
 			ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.getForConstraint(constraint)
 			if (desc != null && desc.factory != null) {
 				// determine value representation of constraint
-				Value value = desc.factory.store(constraint, typeIndex)
+				Value value = desc.factory.store(constraint, refBuilder)
 				String id = desc.id
 				new Pair<String, Value>(id, value)
 			}

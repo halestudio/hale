@@ -15,11 +15,8 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 
 /**
@@ -30,7 +27,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
 public class DisplayNameFactory implements ValueConstraintFactory<DisplayName> {
 
 	@Override
-	public Value store(DisplayName constraint, Map<TypeDefinition, String> typeIndex) {
+	public Value store(DisplayName constraint, TypeReferenceBuilder typeIndex) {
 		String name = constraint.getCustomName();
 		if (name == null) {
 			// default
@@ -40,8 +37,8 @@ public class DisplayNameFactory implements ValueConstraintFactory<DisplayName> {
 	}
 
 	@Override
-	public DisplayName restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public DisplayName restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		return new DisplayName(value.as(String.class));
 	}
 

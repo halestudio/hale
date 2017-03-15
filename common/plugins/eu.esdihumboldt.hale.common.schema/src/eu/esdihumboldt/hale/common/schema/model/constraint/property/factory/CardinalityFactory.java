@@ -15,12 +15,11 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.property.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
@@ -35,7 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 public class CardinalityFactory implements ValueConstraintFactory<Cardinality> {
 
 	@Override
-	public Value store(Cardinality constraint, Map<TypeDefinition, String> typeIndex) {
+	public Value store(Cardinality constraint, TypeReferenceBuilder typeIndex) {
 		// convert to a simple from..to string
 		StringBuilder builder = new StringBuilder();
 		builder.append(constraint.getMinOccurs());
@@ -51,8 +50,8 @@ public class CardinalityFactory implements ValueConstraintFactory<Cardinality> {
 	}
 
 	@Override
-	public Cardinality restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) {
+	public Cardinality restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) {
 		String str = value.as(String.class);
 
 		if (str != null) {

@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.common.schema.model.constraint.property.factory;
 
 import java.text.MessageFormat;
-import java.util.Map;
+import java.util.Optional;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
@@ -24,6 +24,8 @@ import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
@@ -53,7 +55,7 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 	public static final String V_TYPES_UNKNOWN = "unknown";
 
 	@Override
-	public Value store(Reference constraint, Map<TypeDefinition, String> typeIndex) {
+	public Value store(Reference constraint, TypeReferenceBuilder typeIndex) {
 		ValueProperties props = new ValueProperties();
 
 		props.put(P_IS_REF, Value.of(constraint.isReference()));
@@ -68,9 +70,9 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 
 			for (TypeDefinition type : constraint.getReferencedTypes()) {
 				// add each type index
-				String index = typeIndex.get(type);
-				if (index != null) {
-					types.add(Value.of(index));
+				Optional<Value> ref = typeIndex.createReference(type);
+				if (ref.isPresent()) {
+					types.add(ref.get());
 				}
 				else {
 					throw new IllegalStateException(MessageFormat.format(
@@ -85,8 +87,8 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 	}
 
 	@Override
-	public Reference restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public Reference restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 
 		Reference ref = new Reference(props.get(P_IS_REF).as(Boolean.class, false));
@@ -96,14 +98,13 @@ public class ReferenceFactory implements ValueConstraintFactory<Reference> {
 			ValueList list = types.as(ValueList.class);
 			if (list != null) {
 				for (Value entry : list) {
-					String index = entry.as(String.class);
-					TypeDefinition type = typeIndex.get(index);
-					if (type != null) {
-						ref.addReferencedType(type);
+					Optional<TypeDefinition> type = typeIndex.resolve(entry);
+					if (type.isPresent()) {
+						ref.addReferencedType(type.get());
 					}
 					else {
 						throw new IllegalStateException(
-								"Could not resolve type definition for index " + index);
+								"Could not resolve type definition for index " + entry);
 					}
 				}
 			}
