@@ -19,6 +19,7 @@ import javax.xml.namespace.QName
 
 import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
@@ -74,7 +75,7 @@ class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
 		List<TypeDefinition> types = getSchemaTypes(schema)
 
 		Map<TypeDefinition, Value> typeIndex = [:]
-		// List<Integer> relevantTypes = []
+		ValueList relevantTypes = new ValueList()
 
 		b {
 			if (schema.namespace) {
@@ -88,12 +89,8 @@ class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
 					ref = refBuilder.createReference(type).orElseGet(null)
 				}
 				else {
-					ref = Value.simple(index as String)
+					ref = Value.simple(index)
 					typeIndex[type] = ref
-				}
-
-				if (type.getConstraint(MappingRelevantFlag).enabled) {
-					// relevantTypes << index
 				}
 
 				if (ref) {
@@ -102,13 +99,17 @@ class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
 						b 'ref', JsonValueUtil.valueJson(ref)
 						qNameToJson(b, type.name)
 					}
+
+					if (type.getConstraint(MappingRelevantFlag).enabled) {
+						relevantTypes << ref
+					}
 				} else {
 					//TODO report error?
 				}
 			}
 
-			// mapping relevant types index (list of indices)
-			// b 'hsd:mapping-relevant', relevantTypes.join(' ')
+			// mapping relevant types index (list of refs)
+			b 'mappingRelevant', JsonValueUtil.valueJson(relevantTypes.toValue())
 
 			// add all types
 			types.each { TypeDefinition type ->
