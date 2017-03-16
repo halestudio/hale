@@ -136,6 +136,12 @@ class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
 				b 'id', JsonValueUtil.valueJson(ref.get())
 			}
 
+			// add location information
+			//XXX instead add for all definitions?
+			if (type.location) {
+				b 'location', type.location.toString()
+			}
+
 			// definition content (QName, description, constraints)
 			defToJson(b, type, refBuilder)
 
