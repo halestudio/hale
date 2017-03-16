@@ -53,9 +53,6 @@ public class HaleSchemaWriterJson extends AbstractSchemaWriter {
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
-			// XXXXXXXXXXXXXXXXXX
-			e.printStackTrace();
-
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
 		} finally {
