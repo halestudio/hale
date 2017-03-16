@@ -15,35 +15,26 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
-import java.util.Map;
-import java.util.Optional;
+import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 
 /**
- * Type resolver backed by a map.
+ * Interface for type providers that allow resolving and populating types.
  * 
  * @author Simon Templer
  */
-public class MapTypeResolver implements TypeResolver {
-
-	private final Map<Value, ? extends TypeDefinition> map;
+public interface TypeProvider extends TypeResolver {
 
 	/**
-	 * Create a new type resolver based on the given map.
+	 * Get an existing type definition or create a new one. This is meant for
+	 * the purpose of populating a type with information read from the schema.
 	 * 
-	 * @param map the map with references mapped to the respective type
-	 *            definitions
+	 * @param typeName the type name
+	 * @param id the identifier of the type
+	 * @return the type definition to populate
 	 */
-	public MapTypeResolver(Map<Value, ? extends TypeDefinition> map) {
-		super();
-		this.map = map;
-	}
-
-	@Override
-	public Optional<TypeDefinition> resolve(Value reference) {
-		return Optional.ofNullable(map.get(reference));
-	}
+	DefaultTypeDefinition getOrCreateType(QName typeName, Value id);
 
 }

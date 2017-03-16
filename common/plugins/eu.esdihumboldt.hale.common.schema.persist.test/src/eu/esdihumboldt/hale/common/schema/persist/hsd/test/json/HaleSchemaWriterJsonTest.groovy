@@ -20,9 +20,11 @@ import java.nio.file.Path
 
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader
 import eu.esdihumboldt.hale.common.schema.io.SchemaWriter
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
+import eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaReaderJson
 import eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaWriterJson
 import eu.esdihumboldt.hale.common.schema.persist.hsd.test.HaleSchemaWriterTest
 import groovy.transform.CompileStatic
@@ -37,16 +39,13 @@ class HaleSchemaWriterJsonTest extends HaleSchemaWriterTest {
 
 	@CompileStatic
 	protected Schema readFromFile(Path file) {
-		// SchemaReader reader = new HaleSchemaReader()
-		// reader.source = new FileIOSupplier(file.toFile())
-		// IOReport report = reader.execute(null)
-		//
-		// assertTrue 'Reader not successful', report.isSuccess()
-		// assertTrue 'Errors reported by the reader', report.errors.isEmpty()
-		//
-		// reader.schema
+		SchemaReader reader = new HaleSchemaReaderJson()
+		reader.source = new FileIOSupplier(file.toFile())
+		IOReport report = reader.execute(null)
 
-		null
+		assertTrue 'Reader not successful', report.isSuccess()
+		assertTrue 'Errors reported by the reader', report.errors.isEmpty()
+		reader.schema
 	}
 
 	@CompileStatic

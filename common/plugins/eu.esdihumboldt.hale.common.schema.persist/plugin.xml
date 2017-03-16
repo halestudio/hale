@@ -35,6 +35,15 @@
                ref="eu.esdihumboldt.hale.common.schema.hsd.json">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaReaderJson"
+            description="HALE native schema format as JSON"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.json.read"
+            name="HALE Schema Definition (JSON)">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.json">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

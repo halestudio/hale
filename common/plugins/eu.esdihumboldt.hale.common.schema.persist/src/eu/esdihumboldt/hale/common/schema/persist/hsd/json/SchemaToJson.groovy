@@ -30,7 +30,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.MapTypeReferenceBuilder
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag
-import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaConstants
 import eu.esdihumboldt.hale.common.schema.persist.hsd.SchemaEncoderBase
 import eu.esdihumboldt.util.Pair
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder
@@ -43,7 +42,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
+class SchemaToJson extends SchemaEncoderBase {
 
 	/**
 	 * Create a JSON representation of the given set of schemas.
