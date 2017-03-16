@@ -259,15 +259,12 @@ class SchemaToJson extends SchemaEncoderBase implements HaleSchemaConstants {
 			b 'description', d.description
 		}
 
-		getConstraints(d, refBuilder).each { Pair<String, Value> pair ->
-			Value value = pair.second
-			String id = pair.first
-			if (value != null && value.value != null) {
-				b 'constraints[]', {
-					// add constraint type/id as attribute
-					b 'type', id
-					// add constraint definition represented as Value
-					b 'value', JsonValueUtil.valueJson(value)
+		b 'constraints', {
+			getConstraints(d, refBuilder).each { Pair<String, Value> pair ->
+				Value value = pair.second
+				String id = pair.first
+				if (value != null && value.value != null) {
+					b id, JsonValueUtil.valueJson(value)
 				}
 			}
 		}
