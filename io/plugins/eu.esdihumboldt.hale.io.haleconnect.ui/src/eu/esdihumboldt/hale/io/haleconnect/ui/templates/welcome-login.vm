@@ -1,0 +1,80 @@
+#**
+	Template for the hale connect login section on the Welcome page.
+	
+	Context variables:
+		- id:
+			id for the main <div>
+	    - actionClass: 
+	    	Name of the class implementing IIntroAction that is called 
+	    	when the Login button is clicked
+		- pluginId: 
+			ID of the plugin where $actionClass resides
+		- username:
+			User name default
+		- password:
+			Password default
+*#
+<style>
+	.hc-login {
+		font-size: 9pt;
+	}
+	.hc-login-input { 
+		width: 300px; 
+	}
+	.hc-login-table {
+		margin-left: 50px; 
+		margin-top: 20px; 
+		margin-bottom: 20px; 
+	}
+</style>
+<div id="$id">
+	<table class="hc-login hc-login-table">
+		<tr>
+			<td><label for="hc-username">User name:</label></td>
+			<td><input id="hc-username" type="text" class="hc-login-input" #if($username)value="$username"#end></td>
+		</tr>
+		<tr>
+			<td><label for="hc-password">Password:</label></td>
+			<td><input id="hc-password" type="password" class="hc-login-input" #if($password)value="$password"#end></td>
+		</tr>
+		<tr>
+			<td>
+				<button class="hc-login" type="button" onClick="login()">Login</button>
+			</td>
+#if ($loggedIn)
+			<td>Logged in</td>
+#else
+			<td>Not registered yet? <a href="http://org.eclipse.ui.intro/openBrowser?url=http://www.haleconnect.com">Create an account.</a></td>
+#end
+		</tr>
+		<tr>
+			<td>
+				<input type="checkbox" id="hc-savecreds">
+				<label for="hc-savecreds">Save credentials</label>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		function login() {
+			var params = {
+				"username": document.getElementById('hc-username').value,
+				"password": document.getElementById('hc-password').value,
+				"savecreds": document.getElementById('hc-savecreds').checked
+			}
+			
+			runAction(params);
+		}
+	
+		function runAction(params) {
+			var loc = 'http://org.eclipse.ui.intro/runAction?pluginId=$pluginId&class=$actionClass';
+			for (var key in params) {
+				loc += addParameter(key, params[key]);
+			}
+			window.location = loc;
+		}
+		
+		function addParameter(key, value) {
+			return '&' + key + '=' + value;
+		}
+	</script>
+</div>

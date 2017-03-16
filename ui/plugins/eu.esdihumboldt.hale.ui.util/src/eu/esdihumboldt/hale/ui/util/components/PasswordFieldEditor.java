@@ -145,4 +145,13 @@ public class PasswordFieldEditor extends FieldEditor {
 		return 2;
 	}
 
+	/**
+	 * Returns this field editor's text control.
+	 *
+	 * @return the text control
+	 */
+	public Text getTextControl() {
+		return text;
+	}
+
 }
