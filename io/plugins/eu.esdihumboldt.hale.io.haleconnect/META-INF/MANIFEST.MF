@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hale connect integration
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.haleconnect;singleton:=true
+Bundle-Version: 3.3.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="3.3.0",
+ com.haleconnect.api.haleconnect-user-api;bundle-version="1.0.0"
+Import-Package: com.google.gson;version="2.6.2",
+ com.google.gson.annotations;version="2.6.2",
+ com.google.gson.reflect;version="2.6.2",
+ com.google.gson.stream;version="2.6.2"
+Export-Package: eu.esdihumboldt.hale.io.haleconnect
