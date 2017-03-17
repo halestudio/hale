@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.service">
+      <services
+            factory="eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceFactory"
+            id="eu.esdihumboldt.hale.io.haleconnect.services"
+            scope="global">
+         <service
+               interface="eu.esdihumboldt.hale.io.haleconnect.HaleConnectService">
+         </service>
+      </services>
+   </extension>
+
+</plugin>
