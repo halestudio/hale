@@ -29,6 +29,8 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.MapTypeResolver
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition
@@ -88,7 +90,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 			DefaultSchema result = new DefaultSchema(schema.'@namespace', null)
 
 			// maps indices to type definitions
-			Map<String, DefaultTypeDefinition> types = [:]
+			Map<Value, DefaultTypeDefinition> types = [:]
 			Element typeIndex = schema.firstChild(NS, 'type-index')
 			if (!typeIndex) {
 				throw new IllegalStateException('Schema document misses type index')
@@ -98,7 +100,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 
 				// create an 'empty' type definition for each type
 				QName typeName = parseName(entry.firstChild(NS, 'name'))
-				types[entry.'@index'] =  new DefaultTypeDefinition(typeName)
+				types[Value.simple(entry.'@index')] =  new DefaultTypeDefinition(typeName)
 			}
 
 			Element typesElem = schema.firstChild(NS, 'types')
@@ -111,10 +113,10 @@ public class XmlToSchema implements HaleSchemaConstants {
 					// fall back to node index
 					lookup = index as String;
 				}
-				DefaultTypeDefinition typeDef = types[lookup]
+				DefaultTypeDefinition typeDef = types[Value.simple(lookup)]
 
 				// populate type
-				parseType(typeElem, typeDef, types, resolver, reporter)
+				parseType(typeElem, typeDef, new MapTypeResolver(types), resolver, reporter)
 
 				result.addType(typeDef)
 			}
@@ -132,7 +134,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 *            definitions
 	 */
 	private static void parseType(Element typeElem, DefaultTypeDefinition typeDef,
-			Map<String, DefaultTypeDefinition> typeIndex, ClassResolver resolver, IOReporter reporter) {
+			TypeResolver typeIndex, ClassResolver resolver, IOReporter reporter) {
 		// common definition stuff (description etc.)
 		populateDefinition(typeElem, typeDef, typeIndex, resolver, reporter)
 
@@ -143,13 +145,13 @@ public class XmlToSchema implements HaleSchemaConstants {
 		typeElem.firstChild(NS, 'superType')?.with {
 			String superIndex = it.'@index'
 			if (superIndex) {
-				typeDef.superType = typeIndex[superIndex]
+				typeDef.superType = typeIndex.resolve(Value.simple(superIndex)).get()
 			}
 		}
 	}
 
 	private static void populateDefinition(Element defElem,
-			AbstractDefinition definition, Map<String, ? extends TypeDefinition> typeIndex, 
+			AbstractDefinition definition, TypeResolver typeIndex,
 			ClassResolver resolver, IOReporter reporter) {
 		// description
 		defElem.firstChild(NS, 'description')?.with {
@@ -182,7 +184,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static void populateGroup(Element defElem, DefinitionGroup group,
-			Map<String, DefaultTypeDefinition> typeIndex, ClassResolver resolver, IOReporter reporter) {
+			TypeResolver typeIndex, ClassResolver resolver, IOReporter reporter) {
 		defElem.firstChild(NS, 'declares')?.children()?.each { child ->
 			if (child instanceof Element) {
 				switch (child.localName) {
@@ -198,7 +200,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static DefaultPropertyDefinition parseProperty(Element propertyElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, 
+			DefinitionGroup parent, TypeResolver typeIndex,
 			ClassResolver resolver, IOReporter reporter) {
 		// name
 		QName name = parseName(propertyElem.firstChild(NS, 'name'))
@@ -209,7 +211,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 		if (propertyTypeElem.hasAttribute('index')) {
 			// references a property type from the index
 			String index = propertyTypeElem.'@index'
-			propertyType = typeIndex.get(index);
+			propertyType = typeIndex.resolve(Value.simple(index)).get();
 		}
 		else {
 			// defines an anonymous type
@@ -235,7 +237,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 	}
 
 	private static DefaultGroupPropertyDefinition parseGroup(Element groupElem,
-			DefinitionGroup parent, Map<String, DefaultTypeDefinition> typeIndex, 
+			DefinitionGroup parent, TypeResolver typeIndex,
 			ClassResolver resolver, IOReporter reporter) {
 		// name
 		QName name = parseName(groupElem.firstChild(NS, 'name'));

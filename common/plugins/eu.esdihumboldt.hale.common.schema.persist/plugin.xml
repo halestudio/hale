@@ -26,6 +26,24 @@
                ref="eu.esdihumboldt.hale.common.schema.hsd.gzip">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaWriterJson"
+            description="HALE native schema format as JSON"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.json.write"
+            name="HALE Schema Definition (JSON)">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.json">
+         </contentType>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaReaderJson"
+            description="HALE native schema format as JSON"
+            id="eu.esdihumboldt.hale.common.schema.persist.hsd.json.read"
+            name="HALE Schema Definition (JSON)">
+         <contentType
+               ref="eu.esdihumboldt.hale.common.schema.hsd.json">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -64,6 +82,13 @@
                   value="{http://www.esdi-humboldt.eu/hale/schema}schemas">
             </parameter>
          </describer>
+      </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.io.json"
+            file-extensions="json"
+            id="eu.esdihumboldt.hale.common.schema.hsd.json"
+            name="HALE Schema Definition (JSON)"
+            priority="normal">
       </content-type>
    </extension>
 

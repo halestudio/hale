@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -25,8 +24,9 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray;
 
@@ -43,7 +43,7 @@ public class SQLArrayFactory implements ValueConstraintFactory<SQLArray> {
 	private static final String NAME_SIZES = "sizes";
 
 	@Override
-	public Value store(SQLArray constraint, Map<TypeDefinition, String> typeIndex) throws Exception {
+	public Value store(SQLArray constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		ValueProperties props = new ValueProperties();
 
 		if (constraint.isArray()) {
@@ -65,8 +65,8 @@ public class SQLArrayFactory implements ValueConstraintFactory<SQLArray> {
 			// store array dimension sizes
 			List<Integer> sizes = constraint.getSizes();
 			if (sizes != null && !sizes.isEmpty()) {
-				ValueList sizeList = new ValueList(Collections2.transform(sizes,
-						new Function<Integer, Value>() {
+				ValueList sizeList = new ValueList(
+						Collections2.transform(sizes, new Function<Integer, Value>() {
 
 							@Override
 							public Value apply(Integer input) {
@@ -84,8 +84,8 @@ public class SQLArrayFactory implements ValueConstraintFactory<SQLArray> {
 	}
 
 	@Override
-	public SQLArray restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public SQLArray restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
 			// read element class

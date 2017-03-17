@@ -15,12 +15,11 @@
 
 package eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation;
 
@@ -30,11 +29,11 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValida
  * 
  * @author Simon Templer
  */
-public class SkipGeometryValidationFactory implements
-		ValueConstraintFactory<SkipGeometryValidation> {
+public class SkipGeometryValidationFactory
+		implements ValueConstraintFactory<SkipGeometryValidation> {
 
 	@Override
-	public Value store(SkipGeometryValidation constraint, Map<TypeDefinition, String> typeIndex)
+	public Value store(SkipGeometryValidation constraint, TypeReferenceBuilder typeIndex)
 			throws Exception {
 		// there is no configuration, either it is set or not
 		return Value.of(true);
@@ -42,7 +41,7 @@ public class SkipGeometryValidationFactory implements
 
 	@Override
 	public SkipGeometryValidation restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+			TypeResolver typeIndex, ClassResolver resolver) throws Exception {
 		return SkipGeometryValidation.getInstance();
 	}
 

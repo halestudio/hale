@@ -15,12 +15,12 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint;
 import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue;
@@ -34,14 +34,14 @@ import eu.esdihumboldt.util.validator.Validator;
 public class ValidationConstraintFactory implements ValueConstraintFactory<ValidationConstraint> {
 
 	@Override
-	public Value store(ValidationConstraint constraint, Map<TypeDefinition, String> typeIndex)
+	public Value store(ValidationConstraint constraint, TypeReferenceBuilder typeIndex)
 			throws Exception {
 		return new ValidatorValue(constraint.getValidator()).toValue();
 	}
 
 	@Override
 	public ValidationConstraint restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+			TypeResolver typeIndex, ClassResolver resolver) throws Exception {
 		Validator validator = value.as(ValidatorValue.class).toValidator();
 		TypeDefinition type = (TypeDefinition) definition;
 		return new ValidationConstraint(validator, type);
