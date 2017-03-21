@@ -27,6 +27,7 @@ import com.haleconnect.api.user.v1.model.Token;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceListener;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
 
 /**
  * hale connect service
@@ -38,7 +39,8 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	private final CopyOnWriteArraySet<HaleConnectServiceListener> listeners = new CopyOnWriteArraySet<HaleConnectServiceListener>();
 
 	private String basePath = "https://users.haleconnect.com/v1";
-	private Token activeToken;
+
+	private HaleConnectSession session;
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#login(java.lang.String,
@@ -46,28 +48,60 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	 */
 	@Override
 	public boolean login(String username, String password) throws HaleConnectException {
-		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(basePath);
+		ApiClient apiClient = getApiClient();
 
 		LoginApi loginApi = new LoginApi(apiClient);
-
 		Credentials credentials = new Credentials();
 		credentials.setUsername(Optional.ofNullable(username).orElse(""));
 		credentials.setPassword(Optional.ofNullable(password).orElse(""));
 
 		try {
-			activeToken = loginApi.login(credentials);
+			Token token = loginApi.login(credentials);
+			if (token != null) {
+				session = new HaleConnectSessionImpl(credentials.getUsername(), token.getToken());
+				notifyLoginStateChanged();
+			}
+			else {
+				clearSession();
+			}
 		} catch (ApiException e) {
 			if (e.getCode() == 401) {
-				activeToken = null;
+				clearSession();
 			}
 			else {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
 		}
 
-		notifyLoginStateChanged();
 		return isLoggedIn();
+	}
+
+	@Override
+	public boolean verifyCredentials(String username, String password) throws HaleConnectException {
+		Credentials credentials = new Credentials();
+		credentials.setUsername(Optional.ofNullable(username).orElse(""));
+		credentials.setPassword(Optional.ofNullable(password).orElse(""));
+
+		try {
+			return getLoginApi().login(credentials) != null;
+		} catch (ApiException e) {
+			if (e.getCode() == 401) {
+				return false;
+			}
+			else {
+				throw new HaleConnectException(e.getMessage(), e);
+			}
+		}
+	}
+
+	private ApiClient getApiClient() {
+		ApiClient apiClient = new ApiClient();
+		apiClient.setBasePath(basePath);
+		return apiClient;
+	}
+
+	private LoginApi getLoginApi() {
+		return new LoginApi(getApiClient());
 	}
 
 	/**
@@ -80,17 +114,13 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	}
 
 	@Override
-	public String getToken() {
-		if (activeToken == null) {
-			return null;
-		}
-
-		return activeToken.getToken();
+	public HaleConnectSession getSession() {
+		return session;
 	}
 
 	@Override
-	public void clearToken() {
-		this.activeToken = null;
+	public void clearSession() {
+		this.session = null;
 		notifyLoginStateChanged();
 	}
 
@@ -99,7 +129,7 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	 */
 	@Override
 	public boolean isLoggedIn() {
-		return activeToken != null;
+		return session != null;
 	}
 
 	/**
