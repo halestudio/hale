@@ -7,6 +7,10 @@
             id="eu.esdihumboldt.hale.io.haleconnect.ui.login"
             name="Login to hale connect">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.io.haleconnect.ui.logout"
+            name="Logout and clear credentials">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
@@ -17,6 +21,12 @@
                commandId="eu.esdihumboldt.hale.io.haleconnect.ui.login"
                id="haleconnectLogin"
                label="Login to hale connect..."
+               style="push">
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.io.haleconnect.ui.logout"
+               id="haleconnectClearCredentials"
+               label="Logout and clear credentials"
                style="push">
          </command>
          <separator
@@ -35,6 +45,18 @@
                   variable="eu.esdihumboldt.hale.io.haleconnect.ui.login.status">
                <equals
                      value="false">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLogoutHandler"
+            commandId="eu.esdihumboldt.hale.io.haleconnect.ui.logout">
+         <activeWhen>
+            <with
+                  variable="eu.esdihumboldt.hale.io.haleconnect.ui.login.status">
+               <equals
+                     value="true">
                </equals>
             </with>
          </activeWhen>
