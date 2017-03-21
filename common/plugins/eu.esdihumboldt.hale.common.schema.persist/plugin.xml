@@ -84,8 +84,8 @@
          </describer>
       </content-type>
       <content-type
-            base-type="eu.esdihumboldt.hale.io.json"
-            file-extensions="json"
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="hsd.json,json"
             id="eu.esdihumboldt.hale.common.schema.hsd.json"
             name="HALE Schema Definition (JSON)"
             priority="normal">
