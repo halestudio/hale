@@ -15,10 +15,14 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.ui;
 
+import java.text.MessageFormat;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -28,6 +32,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectImages;
+import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleUI;
 
 /**
@@ -45,17 +50,56 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell parent = HandlerUtil.getActiveShell(event);
+
+		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
+
+		String username = "";
+		String password = "";
+		try {
+			username = HaleConnectUIPlugin.getStoredUsername();
+			password = HaleConnectUIPlugin.getStoredPassword();
+		} catch (StorageException e) {
+			log.error("Failed to retrieve hale connect credentials from preferences store", e);
+		}
+
+		if (hcs.isLoggedIn()) {
+			if (!MessageDialog.openQuestion(parent, "Login to hale connect",
+					MessageFormat.format(
+							"You are currently logged in as \"{0}\". Do you wish to login with different credentials?",
+							hcs.getSession().getUsername()))) {
+				return null;
+			}
+			else if (hcs.getSession().getUsername().equals(username)) {
+				// Don't fill in from preferences if stored user name was used
+				// to login before
+				username = "";
+				password = "";
+			}
+		}
+
 		HaleConnectLoginDialog loginDialog = new HaleConnectLoginDialog(parent);
 		loginDialog.setTitleAreaColor(new RGB(168, 208, 244));
 		loginDialog.setTitleImage(
 				HaleConnectImages.getImageRegistry().get(HaleConnectImages.IMG_HCLOGO_DIALOG));
+		loginDialog.setUsername(username);
+		loginDialog.setPassword(password);
 
 		if (loginDialog.open() == Dialog.OK) {
-			HaleConnectService hcs = HaleUI.getServiceProvider()
-					.getService(HaleConnectService.class);
 			try {
 				if (hcs.login(loginDialog.getUsername(), loginDialog.getPassword())) {
+					boolean save = loginDialog.isSaveCredentials();
 					loginDialog.close();
+
+					if (save) {
+						try {
+							HaleConnectUIPlugin.storeUsername(loginDialog.getUsername());
+							HaleConnectUIPlugin.storePassword(loginDialog.getPassword());
+						} catch (StorageException e) {
+							log.error("hale connect credentials could not be saved.", e);
+						}
+					}
+
+					log.userInfo("Login to hale connect successful.");
 				}
 				else {
 					log.userWarn("Login to hale connect failed, please check the credentials.");

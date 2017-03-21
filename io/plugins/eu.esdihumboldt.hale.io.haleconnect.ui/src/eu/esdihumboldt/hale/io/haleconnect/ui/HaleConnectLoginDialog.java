@@ -25,6 +25,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -48,9 +49,11 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 
 	private Text usernameInput;
 	private Text passwordInput;
+	private Button saveCredentialsInput;
 
 	private String username;
 	private String password;
+	private boolean saveCredentials;
 
 	/**
 	 * Instantiate a new login dialog.
@@ -77,6 +80,7 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 
 		this.usernameInput = new Text(contents, SWT.SINGLE | SWT.BORDER);
 		usernameInput.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		usernameInput.setText(username);
 
 		Label labelPassword = new Label(contents, SWT.NONE);
 		labelPassword.setText("Password:");
@@ -86,6 +90,10 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 		this.passwordInput = new Text(contents, SWT.BORDER | SWT.SINGLE | SWT.PASSWORD);
 		passwordInput.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
 				.grab(true, false).create());
+		passwordInput.setText(password);
+
+		this.saveCredentialsInput = new Button(contents, SWT.CHECK);
+		saveCredentialsInput.setText("  Save credentials");
 
 		Link link = new Link(contents, SWT.NONE);
 		link.setText(
@@ -136,6 +144,7 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 	protected void okPressed() {
 		this.username = usernameInput.getText();
 		this.password = passwordInput.getText();
+		this.saveCredentials = saveCredentialsInput.getSelection();
 
 		super.okPressed();
 	}
@@ -147,6 +156,7 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 	protected void cancelPressed() {
 		this.username = null;
 		this.password = null;
+		this.saveCredentials = false;
 
 		super.cancelPressed();
 	}
@@ -159,10 +169,31 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 	}
 
 	/**
+	 * @param username the user name
+	 */
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	/**
 	 * @return the password entered
 	 */
 	public String getPassword() {
 		return this.password;
 	}
 
+	/**
+	 * @param password the password
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isSaveCredentials() {
+		return this.saveCredentials;
+	}
+
+	public void setSaveCredentials(boolean save) {
+		this.saveCredentials = save;
+	}
 }
