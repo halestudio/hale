@@ -15,13 +15,12 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
 
@@ -38,7 +37,7 @@ public class GeometryMetadataFactory implements ValueConstraintFactory<GeometryM
 	private static final String NAME_AUTH_NAME = "authName";
 
 	@Override
-	public Value store(GeometryMetadata constraint, Map<TypeDefinition, String> typeIndex)
+	public Value store(GeometryMetadata constraint, TypeReferenceBuilder typeIndex)
 			throws Exception {
 		ValueProperties props = new ValueProperties();
 
@@ -63,8 +62,8 @@ public class GeometryMetadataFactory implements ValueConstraintFactory<GeometryM
 	}
 
 	@Override
-	public GeometryMetadata restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public GeometryMetadata restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
 			String srs = props.getSafe(NAME_SRS).as(String.class);

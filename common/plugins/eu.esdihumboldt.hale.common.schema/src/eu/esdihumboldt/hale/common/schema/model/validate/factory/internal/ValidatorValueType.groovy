@@ -15,24 +15,26 @@
 
 package eu.esdihumboldt.hale.common.schema.model.validate.factory.internal;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.w3c.dom.Element
 
-import org.w3c.dom.Element;
-
-import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
-import eu.esdihumboldt.hale.common.core.io.DOMValueUtil;
-import eu.esdihumboldt.hale.common.core.io.HaleIO;
-import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue;
-import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
+import eu.esdihumboldt.hale.common.core.io.ComplexValueType
+import eu.esdihumboldt.hale.common.core.io.DOMValueUtil
+import eu.esdihumboldt.hale.common.core.io.HaleIO
+import eu.esdihumboldt.hale.common.core.io.JsonValueUtil
+import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.impl.AbstractGroovyValueJson
+import eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue
+import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 /**
  * Complex value descriptor for {@link ValidatorValue}.
  * 
  * @author Simon Templer
  */
-public class ValidatorValueType implements ComplexValueType<ValidatorValue, Void> {
+@CompileStatic
+class ValidatorValueType extends AbstractGroovyValueJson<ValidatorValue, Void> implements ComplexValueType<ValidatorValue, Void> {
 
 	/**
 	 * Name of the attribute holding the validator type identifier.
@@ -67,4 +69,21 @@ public class ValidatorValueType implements ComplexValueType<ValidatorValue, Void
 		return Void.class;
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Override
+	public ValidatorValue fromJson(Object json, Void context) {
+		String type = json.type
+		Value value = JsonValueUtil.fromJson(json.config, context)
+		new ValidatorValue(type, value)
+	}
+
+	@Override
+	public Object toJson(ValidatorValue value) {
+		Map<String, Object> result = [:]
+		result.type = value.type
+		if (value.validatorRepresentation && !value.validatorRepresentation.empty) {
+			result.config = JsonValueUtil.valueJson(value.validatorRepresentation)
+		}
+		result
+	}
 }

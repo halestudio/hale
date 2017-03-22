@@ -189,7 +189,7 @@ class HaleSchemaWriterTest extends GroovyTestCase {
 	}
 
 	@CompileStatic
-	private Schema readFromFile(Path file) {
+	protected Schema readFromFile(Path file) {
 		SchemaReader reader = new HaleSchemaReader()
 		reader.source = new FileIOSupplier(file.toFile())
 		IOReport report = reader.execute(null)
@@ -201,7 +201,7 @@ class HaleSchemaWriterTest extends GroovyTestCase {
 	}
 
 	@CompileStatic
-	private Path writeToTempFileAndValidate(Schema schema) {
+	protected Path writeToTempFileAndValidate(Schema schema) {
 		Path tempFile = Files.createTempFile('hale-schema-test', '.xml')
 
 		SchemaWriter writer = new HaleSchemaWriter()
