@@ -48,12 +48,8 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	 */
 	@Override
 	public boolean login(String username, String password) throws HaleConnectException {
-		ApiClient apiClient = getApiClient();
-
-		LoginApi loginApi = new LoginApi(apiClient);
-		Credentials credentials = new Credentials();
-		credentials.setUsername(Optional.ofNullable(username).orElse(""));
-		credentials.setPassword(Optional.ofNullable(password).orElse(""));
+		LoginApi loginApi = getLoginApi();
+		Credentials credentials = buildCredentials(username, password);
 
 		try {
 			Token token = loginApi.login(credentials);
@@ -78,12 +74,8 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 
 	@Override
 	public boolean verifyCredentials(String username, String password) throws HaleConnectException {
-		Credentials credentials = new Credentials();
-		credentials.setUsername(Optional.ofNullable(username).orElse(""));
-		credentials.setPassword(Optional.ofNullable(password).orElse(""));
-
 		try {
-			return getLoginApi().login(credentials) != null;
+			return getLoginApi().login(buildCredentials(username, password)) != null;
 		} catch (ApiException e) {
 			if (e.getCode() == 401) {
 				return false;
@@ -92,6 +84,21 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
 		}
+	}
+
+	/**
+	 * Build a {@link Credentials} object. Any null values passed in will be
+	 * converted to an empty string.
+	 * 
+	 * @param username the user name
+	 * @param password the password
+	 * @return a Credentials object with the given credentials
+	 */
+	public static Credentials buildCredentials(String username, String password) {
+		Credentials credentials = new Credentials();
+		credentials.setUsername(Optional.ofNullable(username).orElse(""));
+		credentials.setPassword(Optional.ofNullable(password).orElse(""));
+		return credentials;
 	}
 
 	private ApiClient getApiClient() {
