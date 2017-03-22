@@ -2,8 +2,10 @@ package eu.esdihumboldt.hale.io.haleconnect.ui.preferences;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
 
 import org.eclipse.equinox.security.storage.StorageException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
@@ -21,6 +23,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectImages;
@@ -35,6 +39,8 @@ import eu.esdihumboldt.hale.ui.util.components.PasswordFieldEditor;
  */
 public class HaleConnectPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
+
+	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectPreferencePage.class);
 
 	private Label resultLabel;
 
@@ -56,15 +62,35 @@ public class HaleConnectPreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	public void createFieldEditors() {
+		final HaleConnectService hcs = HaleUI.getServiceProvider()
+				.getService(HaleConnectService.class);
+
 		StringFieldEditor usernameEditor = new StringFieldEditor(
 				PreferenceConstants.HALE_CONNECT_USERNAME, "&User name:", getFieldEditorParent());
 		addField(usernameEditor);
+
+		usernameEditor.getTextControl(getFieldEditorParent())
+				.addModifyListener(new ModifyListener() {
+
+					@Override
+					public void modifyText(ModifyEvent e) {
+						clearResult();
+					}
+				});
 
 		PasswordFieldEditor passwordEditor = new PasswordFieldEditor(
 				PreferenceConstants.SECURE_NODE_NAME, PreferenceConstants.HALE_CONNECT_PASSWORD,
 				"&Password:", // $NON-NLS-1$
 				getFieldEditorParent());
 		addField(passwordEditor);
+
+		passwordEditor.getTextControl().addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				clearResult();
+			}
+		});
 
 		Link link = new Link(getFieldEditorParent(), SWT.NONE);
 		link.setText(
@@ -84,31 +110,17 @@ public class HaleConnectPreferencePage extends FieldEditorPreferencePage
 		});
 		link.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
 
-		Button login = new Button(getFieldEditorParent(), SWT.NONE);
-		login.setText("Login");
-
 		resultLabel = new Label(getFieldEditorParent(), SWT.NONE);
-		resultLabel.setText(" ");
-		resultLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		resultLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		clearResult();
 
-		usernameEditor.getTextControl(getFieldEditorParent())
-				.addModifyListener(new ModifyListener() {
+		Button validate = new Button(getFieldEditorParent(), SWT.NONE);
+		validate.setText("Validate credentials");
 
-					@Override
-					public void modifyText(ModifyEvent e) {
-						clearResult();
-					}
-				});
+		Button clear = new Button(getFieldEditorParent(), SWT.NONE);
+		clear.setText("Clear credentials");
 
-		passwordEditor.getTextControl().addModifyListener(new ModifyListener() {
-
-			@Override
-			public void modifyText(ModifyEvent e) {
-				clearResult();
-			}
-		});
-
-		login.addSelectionListener(new SelectionAdapter() {
+		validate.addSelectionListener(new SelectionAdapter() {
 
 			/**
 			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
@@ -117,26 +129,47 @@ public class HaleConnectPreferencePage extends FieldEditorPreferencePage
 			public void widgetSelected(SelectionEvent e) {
 				performApply();
 
-				HaleConnectService hcs = HaleUI.getServiceProvider()
-						.getService(HaleConnectService.class);
-
 				try {
 					String username = HaleConnectUIPlugin.getStoredUsername();
 					String password = HaleConnectUIPlugin.getStoredPassword();
-					if (hcs.login(username, password)) {
-						setResultSuccess("Login successful.");
+					if (hcs.verifyCredentials(username, password)) {
+						setResultSuccess("Credentials are valid.");
 					}
 					else {
-						setResultError("Login failed.");
+						setResultError("Credentials were rejected.");
 					}
 				} catch (HaleConnectException ex) {
-					setResultError("Error accessing hale connect.");
+					log.userError("Error accessing hale connect", ex);
 				} catch (StorageException ex) {
-					setResultError("Error accessing preferences store.");
+					log.userError("Error accessing secure storage", ex);
 				}
 			}
 
 		});
+
+		clear.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (MessageDialog.openConfirm(getShell(), "Remove credentials",
+						"This will remove the stored credentials and log you out.")) {
+					usernameEditor.setStringValue("");
+					passwordEditor.getTextControl().setText("");
+					performApply();
+					clearResult();
+					hcs.clearSession();
+					log.userInfo("Credentials removed.");
+				}
+			}
+
+		});
+
+		if (hcs.isLoggedIn()) {
+			setResult(MessageFormat.format("Logged in as \"{0}\"", hcs.getSession().getUsername()));
+		}
 	}
 
 	/*
@@ -161,6 +194,11 @@ public class HaleConnectPreferencePage extends FieldEditorPreferencePage
 
 	private void setResultError(String text) {
 		resultLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+		resultLabel.setText(text);
+	}
+
+	private void setResult(String text) {
+		resultLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 		resultLabel.setText(text);
 	}
 }

@@ -34,14 +34,25 @@ public interface HaleConnectService {
 	boolean login(String username, String password) throws HaleConnectException;
 
 	/**
-	 * @return the token issued by hale connect upon successful login or null
+	 * Verify that the given credentials are valid
+	 * 
+	 * @param username user name
+	 * @param password password
+	 * @return true, if the credentials were accepted, false otherwise
+	 * @throws HaleConnectException thrown on any API errors that do not simply
+	 *             indicate invalid credentials
 	 */
-	String getToken();
+	boolean verifyCredentials(String username, String password) throws HaleConnectException;
 
 	/**
-	 * Deletes the login token
+	 * @return the currently active session or null
 	 */
-	void clearToken();
+	HaleConnectSession getSession();
+
+	/**
+	 * Deletes all session information
+	 */
+	void clearSession();
 
 	/**
 	 * @return true if a login token was issued by hale connect

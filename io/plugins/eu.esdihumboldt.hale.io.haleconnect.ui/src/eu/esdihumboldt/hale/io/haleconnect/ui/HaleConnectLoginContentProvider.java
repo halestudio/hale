@@ -75,8 +75,7 @@ public class HaleConnectLoginContentProvider implements IIntroContentProvider, I
 			username = HaleConnectUIPlugin.getStoredUsername();
 			password = HaleConnectUIPlugin.getStoredPassword();
 		} catch (StorageException e) {
-			log.error("Failed to retrieve hale connect credentials from preferences store",
-					e.getMessage());
+			log.error("Failed to retrieve hale connect credentials from preferences store", e);
 		}
 
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
@@ -137,7 +136,7 @@ public class HaleConnectLoginContentProvider implements IIntroContentProvider, I
 						HaleConnectUIPlugin.storeUsername(username);
 						HaleConnectUIPlugin.storePassword(password);
 					} catch (StorageException e) {
-						log.error("hale connect credentials could not be saved.", e.getMessage());
+						log.error("hale connect credentials could not be saved.", e);
 					}
 				}
 
