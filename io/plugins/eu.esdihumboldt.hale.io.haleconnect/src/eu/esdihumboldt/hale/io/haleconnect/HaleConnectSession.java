@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.io.haleconnect;
 
 /**
- * TODO Type description
+ * Details of a hale connect session
  * 
  * @author Florian Esser
  */
