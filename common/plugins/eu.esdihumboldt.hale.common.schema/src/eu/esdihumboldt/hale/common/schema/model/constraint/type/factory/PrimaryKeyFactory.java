@@ -17,15 +17,15 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 
@@ -37,8 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 public class PrimaryKeyFactory implements ValueConstraintFactory<PrimaryKey> {
 
 	@Override
-	public Value store(PrimaryKey constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(PrimaryKey constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		if (!constraint.hasPrimaryKey()) {
 			return null;
 		}
@@ -53,8 +52,8 @@ public class PrimaryKeyFactory implements ValueConstraintFactory<PrimaryKey> {
 	}
 
 	@Override
-	public PrimaryKey restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public PrimaryKey restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		ValueList list = value.as(ValueList.class);
 
 		List<QName> names = new ArrayList<>();

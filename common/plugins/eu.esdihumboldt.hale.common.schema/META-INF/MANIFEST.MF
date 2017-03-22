@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Schema API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema;singleton:=true
 Bundle-Version: 3.3.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
  com.google.common.collect;version="11.0.1",
  com.vividsolutions.jts.geom,
@@ -46,5 +46,6 @@ Export-Package: eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.paths,
  eu.esdihumboldt.hale.common.schema.paths.internal;x-internal:=true
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
- eu.esdihumboldt.util.groovy.sandbox
+ eu.esdihumboldt.util.groovy.sandbox,
+ groovy;bundle-version="2.3.7"
 Bundle-Vendor: data harmonisation panel

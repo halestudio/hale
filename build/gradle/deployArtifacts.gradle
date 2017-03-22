@@ -194,6 +194,9 @@ repositories {
 	maven { // HALE artifactory
 		url 'http://artifactory.esdi-humboldt.eu/artifactory/libs-release/'
 	}
+	maven { // wetransform artifactory
+		url 'http://artifactory.wetransform.to/artifactory/libs-release/'
+	}
 	jcenter()
 	maven {
 		url 'http://download.osgeo.org/webdav/geotools/'

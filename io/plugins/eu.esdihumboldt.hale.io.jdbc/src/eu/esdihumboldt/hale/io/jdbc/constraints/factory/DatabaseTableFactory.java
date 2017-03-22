@@ -15,13 +15,12 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 
@@ -37,8 +36,7 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 	private static final String USE_QUOTE = "usequote";
 
 	@Override
-	public Value store(DatabaseTable constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(DatabaseTable constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		ValueProperties props = new ValueProperties();
 
 		String schema = constraint.getSchemaName();
@@ -58,8 +56,8 @@ public class DatabaseTableFactory implements ValueConstraintFactory<DatabaseTabl
 	}
 
 	@Override
-	public DatabaseTable restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public DatabaseTable restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		String schema = null;
 		String table = null;
 		boolean useQuote = true;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Data Harmonisation Panel
+ * Copyright (c) 2017 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,21 +10,16 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.schema.persist.hsd;
+package eu.esdihumboldt.hale.common.schema.persist.hsd.json;
 
 import java.io.IOException;
 import java.io.OutputStream;
-
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Element;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -32,14 +27,14 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
-import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
+import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder;
 
 /**
  * Writes the HALE schema model to XML.
  * 
  * @author Simon Templer
  */
-public class HaleSchemaWriter extends AbstractSchemaWriter {
+public class HaleSchemaWriterJson extends AbstractSchemaWriter {
 
 	@Override
 	public boolean isCancelable() {
@@ -50,22 +45,11 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Save schema", ProgressIndicator.UNKNOWN);
-		try (OutputStream out = getTarget().getOutput()) {
+		try (OutputStream out = getTarget().getOutput();
+				Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
 			// create DOM
-			NSDOMBuilder builder = SchemaToXml.createBuilder();
-			Element root = new SchemaToXml().schemasToXml(builder, getSchemas().getSchemas());
-
-			// configure transformer for serialization
-			Transformer transformer = TransformerFactory.newInstance().newTransformer();
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml"); //$NON-NLS-1$
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8"); //$NON-NLS-1$
-			// TODO configurable?!
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes"); //$NON-NLS-1$
-
-			// serialize DOM
-			DOMSource source = new DOMSource(root);
-			StreamResult result = new StreamResult(out);
-			transformer.transform(source, result);
+			JsonStreamBuilder builder = new JsonStreamBuilder(writer, true);
+			new SchemaToJson().schemasToJson(builder, getSchemas().getSchemas(), null);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
@@ -79,7 +63,7 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE Schema Definition";
+		return "HALE Schema Definition (JSON)";
 	}
 
 }

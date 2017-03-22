@@ -15,12 +15,11 @@
 
 package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 
@@ -35,8 +34,7 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue;
 public class DefaultValueFactory implements ValueConstraintFactory<DefaultValue> {
 
 	@Override
-	public Value store(DefaultValue constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(DefaultValue constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		if (constraint.isSet()) {
 			// XXX which may be cases there this causes a problem?
 			return Value.of(constraint.getValue());
@@ -47,8 +45,8 @@ public class DefaultValueFactory implements ValueConstraintFactory<DefaultValue>
 	}
 
 	@Override
-	public DefaultValue restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public DefaultValue restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		return new DefaultValue(value.getValue());
 	}
 

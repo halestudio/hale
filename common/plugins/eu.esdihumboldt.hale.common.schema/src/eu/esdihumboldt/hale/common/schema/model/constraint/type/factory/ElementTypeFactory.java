@@ -16,13 +16,15 @@
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
 import java.text.MessageFormat;
-import java.util.Map;
+import java.util.Optional;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
 
@@ -44,15 +46,14 @@ public class ElementTypeFactory implements ValueConstraintFactory<ElementType> {
 	public static final String P_BINDING = "binding";
 
 	@Override
-	public Value store(ElementType constraint, Map<TypeDefinition, String> typeIndex)
-			throws Exception {
+	public Value store(ElementType constraint, TypeReferenceBuilder typeIndex) throws Exception {
 		ValueProperties props = new ValueProperties();
 
 		// type definition
 		if (constraint.getDefinition() != null) {
-			String index = typeIndex.get(constraint.getDefinition());
-			if (index != null) {
-				props.put(P_TYPE, Value.of(index));
+			Optional<Value> ref = typeIndex.createReference(constraint.getDefinition());
+			if (ref.isPresent()) {
+				props.put(P_TYPE, ref.get());
 			}
 		}
 
@@ -64,16 +65,16 @@ public class ElementTypeFactory implements ValueConstraintFactory<ElementType> {
 	}
 
 	@Override
-	public ElementType restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public ElementType restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		ValueProperties props = value.as(ValueProperties.class);
 
 		// try type definition
-		String index = props.getSafe(P_TYPE).as(String.class);
+		Value index = props.getSafe(P_TYPE);
 		if (index != null) {
-			TypeDefinition def = typeIndex.get(index);
-			if (def != null) {
-				return ElementType.createFromType(def);
+			Optional<TypeDefinition> def = typeIndex.resolve(index);
+			if (def.isPresent()) {
+				return ElementType.createFromType(def.get());
 			}
 		}
 
@@ -81,8 +82,8 @@ public class ElementTypeFactory implements ValueConstraintFactory<ElementType> {
 		String binding = props.getSafe(P_BINDING).as(String.class);
 		Class<?> clazz = resolver.loadClass(binding);
 		if (clazz == null) {
-			throw new IllegalStateException(MessageFormat.format(
-					"Could not resolve class {0} for element type binding", binding));
+			throw new IllegalStateException(MessageFormat
+					.format("Could not resolve class {0} for element type binding", binding));
 		}
 
 		return ElementType.get(clazz);

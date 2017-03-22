@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.core.io
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue
-import eu.esdihumboldt.hale.common.core.io.impl.StringValue
+import eu.esdihumboldt.hale.common.core.io.impl.SimpleValue
 import eu.esdihumboldt.hale.common.core.io.impl.ValuePropertiesType
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
@@ -72,7 +72,7 @@ class JsonValueUtil {
 		}
 		else {
 			// primitive
-			new StringValue(json as String)
+			new SimpleValue(json)
 		}
 	}
 
@@ -98,14 +98,14 @@ class JsonValueUtil {
 			return null
 		}
 
+		def intern = value.value
 		if (value.isRepresentedAsDOM()) {
-			def intern = value.value
 			if (intern == null) {
 				return null
 			}
 
 			// retrieve complex value definition based on object type
-			ComplexValueDefinition cdv = ComplexValueExtension.instance.getDefinition(intern.class)
+			ComplexValueDefinition cdv = ComplexValueExtension.instance.getDefinition(intern.getClass())
 			if (cdv && cdv.jsonConverter) {
 				def valueJs = cdv.jsonConverter.toJson(intern)
 
@@ -127,7 +127,17 @@ class JsonValueUtil {
 			}
 		}
 		else {
-			value.stringRepresentation
+			/*
+			 * Representation of primitives (boolean, number)
+			 */
+			if (intern instanceof Boolean || intern instanceof Number) {
+				// use directly
+				intern
+			}
+			else {
+				// use string representation
+				value.stringRepresentation
+			}
 		}
 	}
 
