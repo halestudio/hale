@@ -187,11 +187,6 @@
             type="eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable">
       </valueconstraint>
       <valueconstraint
-            factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.GeometryMetadataFactory"
-            id="jdbc.geometry"
-            type="eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata">
-      </valueconstraint>
-      <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLQueryFactory"
             id="jdbc.sqlquery"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery">

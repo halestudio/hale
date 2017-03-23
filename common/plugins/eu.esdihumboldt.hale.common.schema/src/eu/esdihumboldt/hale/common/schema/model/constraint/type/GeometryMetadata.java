@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.jdbc.constraints;
+package eu.esdihumboldt.hale.common.schema.model.constraint.type;
 
 import javax.annotation.Nullable;
 
