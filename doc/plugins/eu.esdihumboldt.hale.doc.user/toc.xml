@@ -128,6 +128,11 @@
          <topic href="html/tasks/alignment/define_custom_function.html" label="Define a custom function">
          </topic>
       </topic>
+      <topic label="hale connect">
+	      <topic href="html/tasks/haleconnect/account.html" label="Accessing your hale connect account">
+	      </topic>
+          <anchor id="haleconnect-end"/>
+      </topic>
       <anchor id="tasks"/>
       <topic href="html/tasks/save_project.html" label="Saving your work">
       </topic>
