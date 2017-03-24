@@ -21,7 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 
 /**
- * A constraint for the metadata geometry
+ * A constraint for the geometry metadata.
  * 
  * @author Dominik Reuter
  */
@@ -29,22 +29,28 @@ import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 public class GeometryMetadata implements TypeConstraint {
 
 	/**
-	 * The srs text
+	 * Represents an unknown dimension.
+	 */
+	public static final int UNKNOWN_DIMENSION = 0;
+
+	/**
+	 * The the WKT definition of the spatial reference system or
+	 * <code>null</code>.
 	 */
 	private final String srsText;
 
 	/**
-	 * The spatial reference system
+	 * The spatial reference system code.
 	 */
 	private final String srs;
 
 	/**
-	 * The dimension
+	 * The dimension.
 	 */
 	private final int dimension;
 
 	/**
-	 * The auth name e.g. EPSG
+	 * The name of the authority defining the SRS code, e.g. EPSG.
 	 */
 	private final String auth_name;
 
@@ -54,17 +60,18 @@ public class GeometryMetadata implements TypeConstraint {
 	public GeometryMetadata() {
 		this.auth_name = null;
 		this.srs = null;
-		this.dimension = 0;
+		this.dimension = UNKNOWN_DIMENSION;
 		this.srsText = null;
 	}
 
 	/**
-	 * The constructor to set the srs and dimension
+	 * The constructor to set the SRS and dimension information.
 	 * 
-	 * @param srs the spatial reference system
-	 * @param dimension the dimension
-	 * @param srsText the srsText or null if there isnt one
-	 * @param auth_name the auth name e.g. EPSG
+	 * @param srs the spatial reference system code
+	 * @param dimension the dimension, or <code>0</code> if unknown
+	 * @param srsText the WKT definition of the spatial reference system
+	 * @param auth_name the name of the authority defining the SRS code, e.g.
+	 *            EPSG
 	 */
 	public GeometryMetadata(@Nullable String srs, int dimension, @Nullable String srsText,
 			@Nullable String auth_name) {
@@ -77,14 +84,14 @@ public class GeometryMetadata implements TypeConstraint {
 	/**
 	 * Create geometry metadata without SRS information.
 	 * 
-	 * @param dimension the dimension
+	 * @param dimension the dimension, or <code>0</code> if unknown
 	 */
 	public GeometryMetadata(int dimension) {
 		this(null, dimension, null, null);
 	}
 
 	/**
-	 * @return the srs
+	 * @return the spatial reference system code or <code>null</code>
 	 */
 	@Nullable
 	public String getSrs() {
@@ -92,7 +99,8 @@ public class GeometryMetadata implements TypeConstraint {
 	}
 
 	/**
-	 * @return the srsText
+	 * @return the WKT definition of the spatial reference system or
+	 *         <code>null</code>
 	 */
 	@Nullable
 	public String getSrsText() {
@@ -100,14 +108,14 @@ public class GeometryMetadata implements TypeConstraint {
 	}
 
 	/**
-	 * @return the dimension
+	 * @return the dimension, <code>0</code> represents an unknown dimension
 	 */
 	public int getDimension() {
 		return dimension;
 	}
 
 	/**
-	 * @return the auth_name
+	 * @return the name of the authority defining the SRS code, e.g. EPSG
 	 */
 	@Nullable
 	public String getAuthName() {
