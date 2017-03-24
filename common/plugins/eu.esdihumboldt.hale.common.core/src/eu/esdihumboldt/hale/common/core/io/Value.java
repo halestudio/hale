@@ -126,6 +126,9 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Number number) {
+		if (number == null) {
+			return NULL;
+		}
 		return new SimpleValue(number);
 	}
 
@@ -136,6 +139,9 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value simple(Object value) {
+		if (value == null) {
+			return NULL;
+		}
 		return new SimpleValue(value);
 	}
 
@@ -146,6 +152,9 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value complex(Object value) {
+		if (value == null) {
+			return NULL;
+		}
 		return new ComplexValue(value);
 	}
 
@@ -160,6 +169,10 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Object object) {
+		if (object == null) {
+			return NULL;
+		}
+
 		// check if there is a complex value definition for the object
 		ComplexValueDefinition def = ComplexValueExtension.getInstance()
 				.getDefinition(object.getClass());
