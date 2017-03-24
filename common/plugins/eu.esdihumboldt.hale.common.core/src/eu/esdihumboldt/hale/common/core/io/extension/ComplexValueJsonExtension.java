@@ -76,4 +76,17 @@ public class ComplexValueJsonExtension extends IdentifiableExtension<ComplexValu
 		return "ref";
 	}
 
+	@Override
+	public ComplexValueJsonDescriptor get(String id) {
+		ComplexValueJsonDescriptor result = super.get(id);
+		if (result == null) {
+			// try to lookup alias
+			ComplexValueAlias alias = ComplexValueAliasExtension.INSTANCE.get(id);
+			if (alias != null) {
+				result = super.get(alias.getRef());
+			}
+		}
+		return result;
+	}
+
 }

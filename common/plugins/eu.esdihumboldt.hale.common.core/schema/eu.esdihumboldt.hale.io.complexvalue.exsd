@@ -20,6 +20,7 @@
          <choice minOccurs="0" maxOccurs="unbounded">
             <element ref="complexValue"/>
             <element ref="complexValueJson"/>
+            <element ref="alias"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -118,6 +119,28 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn=":eu.esdihumboldt.hale.common.core.io.ComplexValueJson"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="alias">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The alias
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="for" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.complexvalue/complexValue/@id"/>
                </appinfo>
             </annotation>
          </attribute>

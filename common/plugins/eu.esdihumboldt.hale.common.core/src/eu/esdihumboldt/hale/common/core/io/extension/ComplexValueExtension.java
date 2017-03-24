@@ -168,4 +168,17 @@ public class ComplexValueExtension extends IdentifiableExtension<ComplexValueDef
 		return null;
 	}
 
+	@Override
+	public ComplexValueDefinition get(String id) {
+		ComplexValueDefinition result = super.get(id);
+		if (result == null) {
+			// try to lookup alias
+			ComplexValueAlias alias = ComplexValueAliasExtension.INSTANCE.get(id);
+			if (alias != null) {
+				result = super.get(alias.getRef());
+			}
+		}
+		return result;
+	}
+
 }
