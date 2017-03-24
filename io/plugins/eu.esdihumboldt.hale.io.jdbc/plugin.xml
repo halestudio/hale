@@ -191,6 +191,10 @@
             id="jdbc.sqlquery"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery">
       </valueconstraint>
+      <alias
+            for="geometry-metadata"
+            id="jdbc.geometry">
+      </alias>
    </extension>
 
 </plugin>
