@@ -122,6 +122,11 @@
             id="validation"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.GeometryMetadataFactory"
+            id="geometry-metadata"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata">
+      </valueconstraint>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.schema.validatorfactory">

@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.jdbc.constraints.factory;
+package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueProperties;
@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
-import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata;
 
 /**
  * Value conversion for geometry metadata constraint.

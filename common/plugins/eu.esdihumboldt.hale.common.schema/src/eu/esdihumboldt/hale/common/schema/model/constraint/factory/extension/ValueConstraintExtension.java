@@ -30,8 +30,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstrai
  * 
  * @author Simon Templer
  */
-public class ValueConstraintExtension extends
-		IdentifiableExtension<ValueConstraintFactoryDescriptor> {
+public class ValueConstraintExtension
+		extends IdentifiableExtension<ValueConstraintFactoryDescriptor> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ValueConstraintExtension.class);
 
@@ -59,14 +59,20 @@ public class ValueConstraintExtension extends
 
 	@Override
 	protected ValueConstraintFactoryDescriptor create(String id, IConfigurationElement conf) {
-		try {
-			ValueConstraintFactoryDescriptor desc = new ValueConstraintFactoryDescriptor(id, conf);
-			synchronized (typeToDescriptor) {
-				typeToDescriptor.put(desc.getConstraintType(), desc);
+		if ("valueconstraint".equals(conf.getName())) {
+			try {
+				ValueConstraintFactoryDescriptor desc = new ValueConstraintFactoryDescriptor(id,
+						conf);
+				synchronized (typeToDescriptor) {
+					typeToDescriptor.put(desc.getConstraintType(), desc);
+				}
+				return desc;
+			} catch (Exception e) {
+				log.error("Could not create value constraint factory with id " + id, e);
+				return null;
 			}
-			return desc;
-		} catch (Exception e) {
-			log.error("Could not create value constraint factory with id " + id, e);
+		}
+		else {
 			return null;
 		}
 	}
@@ -124,6 +130,19 @@ public class ValueConstraintExtension extends
 		}
 
 		return null;
+	}
+
+	@Override
+	public ValueConstraintFactoryDescriptor get(String id) {
+		ValueConstraintFactoryDescriptor result = super.get(id);
+		if (result == null) {
+			// try to lookup alias
+			Alias alias = AliasExtension.INSTANCE.get(id);
+			if (alias != null) {
+				result = super.get(alias.getRef());
+			}
+		}
+		return result;
 	}
 
 }
