@@ -213,4 +213,17 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 		return super.createCollection(conf);
 	}
 
+	@Override
+	public IOProviderDescriptor getFactory(String id) {
+		IOProviderDescriptor result = super.getFactory(id);
+		if (result == null) {
+			// try to lookup alias
+			IOProviderAlias alias = IOProviderAliasExtension.INSTANCE.get(id);
+			if (alias != null) {
+				result = super.getFactory(alias.getRef());
+			}
+		}
+		return result;
+	}
+
 }
