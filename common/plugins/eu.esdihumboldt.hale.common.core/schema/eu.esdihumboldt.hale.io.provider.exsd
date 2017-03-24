@@ -22,6 +22,7 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="factory"/>
             <element ref="provider"/>
+            <element ref="alias"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -206,6 +207,28 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="alias">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The alias
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="for" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.provider/provider/@id"/>
                </appinfo>
             </annotation>
          </attribute>
