@@ -132,43 +132,63 @@
          point="eu.esdihumboldt.hale.io.complexvalue">
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.core.io.impl.TextType"
-            id="eu.esdihumboldt.hale.common.core.text"
+            id="text"
             name="text"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.core.io.Text">
       </complexValue>
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.core.io.impl.ValuePropertiesType"
-            id="eu.esdihumboldt.hale.common.core.properties"
+            id="properties"
             name="properties"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.core.io.ValueProperties">
       </complexValue>
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.core.io.impl.ValueMapType"
-            id="eu.esdihumboldt.hale.common.core.map"
+            id="map"
             name="map"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.core.io.ValueMap">
       </complexValue>
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.core.io.impl.ValueListType"
-            id="eu.esdihumboldt.hale.common.core.list"
+            id="list"
             name="list"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.core.io.ValueList">
       </complexValue>
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.core.io.impl.QNameType"
-            id="eu.esdihumboldt.hale.common.core.qname"
+            id="qualified-name"
             name="name"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="javax.xml.namespace.QName">
       </complexValue>
       <complexValueJson
             class="eu.esdihumboldt.hale.common.core.io.impl.TextTypeJson"
-            ref="eu.esdihumboldt.hale.common.core.text">
+            ref="text">
       </complexValueJson>
+      <alias
+            for="properties"
+            id="eu.esdihumboldt.hale.common.core.properties">
+      </alias>
+      <alias
+            for="text"
+            id="eu.esdihumboldt.hale.common.core.text">
+      </alias>
+      <alias
+            for="map"
+            id="eu.esdihumboldt.hale.common.core.map">
+      </alias>
+      <alias
+            for="list"
+            id="eu.esdihumboldt.hale.common.core.list">
+      </alias>
+      <alias
+            for="qualified-name"
+            id="eu.esdihumboldt.hale.common.core.qname">
+      </alias>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.meta">
