@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013 Simon Templer
+ * Copyright (c) 2017 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,23 +10,24 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     Simon Templer - initial version
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
 package eu.esdihumboldt.util.groovy.paths;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
 /**
- * Path base implementation. This path implementation does not allow
- * <code>null</code> values as part of paths.
+ * Path implementation that supports .
  * 
  * @param <C> the child type
  * @author Simon Templer
  */
-public class PathImpl<C> implements Path<C> {
+public class PathWithNulls<C> implements Path<C> {
 
 	private final List<C> path;
 
@@ -35,9 +36,9 @@ public class PathImpl<C> implements Path<C> {
 	 * 
 	 * @param path the list of definitions defining the path
 	 */
-	public PathImpl(List<C> path) {
+	public PathWithNulls(List<C> path) {
 		super();
-		this.path = ImmutableList.copyOf(path);
+		this.path = Collections.unmodifiableList(new ArrayList<>(path));
 	}
 
 	/**
@@ -45,15 +46,17 @@ public class PathImpl<C> implements Path<C> {
 	 * 
 	 * @param parent the parent element
 	 */
-	public PathImpl(C parent) {
-		this(ImmutableList.<C> of(parent));
+	public PathWithNulls(C parent) {
+		super();
+		this.path = Collections.singletonList(parent);
 	}
 
 	/**
 	 * Create an empty path.
 	 */
-	public PathImpl() {
-		this(ImmutableList.<C> of());
+	public PathWithNulls() {
+		super();
+		this.path = ImmutableList.<C> of();
 	}
 
 	@Override
@@ -63,13 +66,16 @@ public class PathImpl<C> implements Path<C> {
 
 	@Override
 	public Path<C> subPath(C child) {
-		return new PathImpl<C>(ImmutableList.<C> builder().addAll(path).add(child).build());
+		List<C> list = new ArrayList<>(path);
+		list.add(child);
+		return new PathWithNulls<C>(list);
 	}
 
 	@Override
 	public Path<C> subPath(Path<C> append) {
-		return new PathImpl<C>(
-				ImmutableList.<C> builder().addAll(path).addAll(append.getElements()).build());
+		List<C> list = new ArrayList<>(path);
+		list.addAll(append.getElements());
+		return new PathWithNulls<C>(list);
 	}
 
 }
