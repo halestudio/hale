@@ -47,14 +47,16 @@ public class PathWithNulls<C> implements Path<C> {
 	 * @param parent the parent element
 	 */
 	public PathWithNulls(C parent) {
-		this(Collections.singletonList(parent));
+		super();
+		this.path = Collections.singletonList(parent);
 	}
 
 	/**
 	 * Create an empty path.
 	 */
 	public PathWithNulls() {
-		this(ImmutableList.<C> of());
+		super();
+		this.path = ImmutableList.<C> of();
 	}
 
 	@Override
