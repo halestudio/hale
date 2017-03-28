@@ -59,6 +59,7 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("address.street = 'Musterstrasse'").match(max))
 		assertTrue(filter("address.street = 'Taubengasse'").match(max))
 		assertTrue(filter("address.city = 'Musterstadt'").match(max))
+		assertFalse(filter("address.city = 'Bonn'").match(max))
 	}
 
 	@Test
@@ -67,6 +68,24 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("address.street = 'Musterstrasse'").match(maxNoSchema))
 		assertTrue(filter("address.street = 'Taubengasse'").match(maxNoSchema))
 		assertTrue(filter("address.city = 'Musterstadt'").match(maxNoSchema))
+	}
+
+	// not equals
+
+	@Test
+	void testNotEqualSimple() {
+		assertFalse(filter("name <> 'Max Mustermann'").match(max))
+		assertTrue(filter("name <> 'max mustermann'").match(max))
+	}
+
+	@Test
+	void testNotEqualList() {
+		// Behavior: all values must be not equal to the literal
+		assertFalse(filter("address.street <> 'Musterstrasse'").match(max))
+		assertFalse(filter("address.street <> 'Taubengasse'").match(max))
+		assertFalse(filter("address.city <> 'Musterstadt'").match(max))
+		assertTrue(filter("address.street <> 'Luisenplatz'").match(max))
+		assertTrue(filter("address.city <> 'Bonn'").match(max))
 	}
 
 	// NULL
@@ -285,6 +304,35 @@ class CQLFilterTest extends AbstractFilterTest {
 
 		// overlap
 		assertTrue(filter("BBOX(area, 0.5, 0.5, 1.5, 1.5)").match(max))
+	}
+
+	// Time
+
+	@Test
+	void testAfter() {
+		assertTrue(filter("joinDate AFTER 2006-11-30T01:30:00Z").match(max))
+		assertFalse(filter("joinDate AFTER 2016-11-30T01:30:00Z").match(max))
+		assertFalse(filter("joinDate AFTER 2012-12-01T12:00:00Z").match(max))
+	}
+
+	@Test
+	void testBefore() {
+		assertFalse(filter("joinDate BEFORE 2006-11-30T01:30:00Z").match(max))
+		assertTrue(filter("joinDate BEFORE 2016-11-30T01:30:00Z").match(max))
+		assertFalse(filter("joinDate BEFORE 2012-12-01T12:00:00Z").match(max))
+	}
+
+	@Test
+	void testDuring() {
+		assertTrue(filter("joinDate DURING 2006-11-30T01:30:00Z/2016-11-30T01:30:00Z").match(max))
+		assertFalse(filter("joinDate DURING 2014-11-30T01:30:00Z/2016-11-30T01:30:00Z").match(max))
+		assertFalse(filter("joinDate DURING 2004-11-30T01:30:00Z/2006-11-30T01:30:00Z").match(max))
+	}
+
+	@Test
+	void testTimeEquals() {
+		assertTrue(filter("joinDate TEQUALS 2012-12-01T12:00:00Z").match(max))
+		assertFalse(filter("joinDate TEQUALS 2016-12-01T12:00:00Z").match(max))
 	}
 
 }

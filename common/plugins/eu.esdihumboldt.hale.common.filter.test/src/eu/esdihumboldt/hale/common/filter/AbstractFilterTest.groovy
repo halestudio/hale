@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.common.filter;
 
 import static org.junit.Assert.*
 
+import java.text.SimpleDateFormat
+
 import org.junit.Before
 
 import com.vividsolutions.jts.geom.Coordinate
@@ -62,6 +64,8 @@ abstract class AbstractFilterTest {
 			new Coordinate(0, 0)] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
+		def dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
 		def createMax = {
 			name 'Max Mustermann'
 			age 31
@@ -83,6 +87,7 @@ abstract class AbstractFilterTest {
 			nulls(null)
 			nulls(null)
 			area(polyGeom)
+			joinDate(dateFormat.parse('2012-12-01T12:00:00+0000'))
 		}
 
 		// build instance
@@ -106,6 +111,7 @@ abstract class AbstractFilterTest {
 				legalStatus(String)
 				nulls(cardinality: '0..n', String)
 				area(DefaultGeometryProperty)
+				joinDate(Date)
 			}
 		}
 
