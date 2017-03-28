@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.propertyaccessor;
 
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.geotools.factory.Hints;
 import org.geotools.filter.expression.PropertyAccessor;
@@ -23,6 +24,7 @@ import org.geotools.filter.expression.PropertyAccessorFactory;
 
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
  * Factory for property accessor using {@link PropertyResolver}.
@@ -57,8 +59,25 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 			if (object instanceof Instance) {
 				return true;
 			}
-			else
+			else {
 				return false;
+			}
+		}
+
+		protected Object unwrap(Object obj) {
+			if (obj instanceof GeometryProperty) {
+				/*
+				 * Extract geometry from GeometryProperty, as a Geometry is
+				 * usually expected in Geotools filters related to geometries.
+				 * 
+				 * XXX A better alternative might be adding a Geotools converter
+				 * factory that supports this conversions (also see Geotools
+				 * Converters class).
+				 */
+				return ((GeometryProperty<?>) obj).getGeometry();
+			}
+
+			return obj;
 		}
 
 		@SuppressWarnings("unchecked")
@@ -72,7 +91,7 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 					 * value. This is required for instance for the IS NULL
 					 * filter. It does not work on lists.
 					 */
-					return values.iterator().next();
+					return unwrap(values.iterator().next());
 				}
 				else if (values.isEmpty()) {
 					/*
@@ -81,6 +100,10 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 					 * null.
 					 */
 					return null;
+				}
+				else {
+					// unwrap values
+					values = values.stream().map(this::unwrap).collect(Collectors.toList());
 				}
 
 				return values;
