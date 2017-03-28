@@ -17,113 +17,43 @@ package eu.esdihumboldt.hale.common.filter;
 
 import static org.junit.Assert.*
 
-import org.junit.Before
 import org.junit.Test
 
-import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
+import eu.esdihumboldt.hale.common.instance.model.Filter
 import eu.esdihumboldt.hale.common.instance.model.Instance
-import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
-import eu.esdihumboldt.hale.common.schema.model.Schema
 
 /**
- * TODO Type description
+ * Tests for CQL filter.
  * 
- * @author simon
+ * @author Simon Templer
  */
-public class CQLFilterTest {
+class CQLFilterTest extends AbstractFilterTest {
 
-	private static final String defaultNs = "http://www.my.namespace"
-
-	private Instance maxNoSchema
-
-	private Schema schema
-	private Instance max
-
-	@Before
-	void setup() {
-		// build instance
-		maxNoSchema = new InstanceBuilder().instance {
-			name 'Max Mustermann'
-			age 31
-			address {
-				street 'Musterstrasse'
-				number 12
-				city 'Musterstadt'
-			}
-			address {
-				street 'Taubengasse'
-				number 13
-			}
-			relative('father') {
-				name 'Markus Mustermann'
-				age 56
-			}
-			legalStatus null
-		}
-
-
-
-		// build schema
-		schema = new SchemaBuilder().schema(defaultNs) {
-			Person {
-				name()
-				age(Integer)
-				address(cardinality: '0..n') {
-					street()
-					number()
-					city()
-				}
-				relative(cardinality: '0..n', String) {
-					name()
-					age(Integer)
-				}
-				legalStatus(String)
-			}
-		}
-
-		// build instance
-		max = new InstanceBuilder(types: schema).Person {
-			name 'Max Mustermann'
-			age 31
-			address {
-				street 'Musterstrasse'
-				number 12
-				city 'Musterstadt'
-			}
-			address {
-				street 'Taubengasse'
-				number 13
-			}
-			relative('father') {
-				name 'Markus Mustermann'
-				age 56
-			}
-			legalStatus null
-		}
+	Filter filter(String expr) {
+		new FilterGeoCqlImpl(expr)
 	}
 
 	@Test
 	void testNullSchema() {
-		assertTrue(new FilterGeoCqlImpl("legalStatus IS NULL").match(max))
-		assertFalse(new FilterGeoCqlImpl("legalStatus IS NOT NULL").match(max))
+		assertTrue(filter("legalStatus IS NULL").match(max))
+		assertFalse(filter("legalStatus IS NOT NULL").match(max))
 	}
 
 	@Test
 	void testNullNoSchema() {
-		assertTrue(new FilterGeoCqlImpl("legalStatus IS NULL").match(maxNoSchema))
-		assertFalse(new FilterGeoCqlImpl("legalStatus IS NOT NULL").match(maxNoSchema))
+		assertTrue(filter("legalStatus IS NULL").match(maxNoSchema))
+		assertFalse(filter("legalStatus IS NOT NULL").match(maxNoSchema))
 	}
 
 	@Test
 	void testLikeSchema() {
-		assertTrue(new FilterGeoCqlImpl("name LIKE 'Max %'").match(max))
-		assertFalse(new FilterGeoCqlImpl("name LIKE 'Martha %'").match(max))
+		assertTrue(filter("name LIKE 'Max %'").match(max))
+		assertFalse(filter("name LIKE 'Martha %'").match(max))
 	}
 
 	@Test
 	void testLikeNoSchema() {
-		assertTrue(new FilterGeoCqlImpl("name LIKE 'Max %'").match(maxNoSchema))
-		assertFalse(new FilterGeoCqlImpl("name LIKE 'Martha %'").match(maxNoSchema))
+		assertTrue(filter("name LIKE 'Max %'").match(maxNoSchema))
+		assertFalse(filter("name LIKE 'Martha %'").match(maxNoSchema))
 	}
-
 }
