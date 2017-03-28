@@ -203,6 +203,14 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertFalse(filter("name LIKE 'Martha %'").match(maxNoSchema))
 	}
 
+	@Test
+	void testLikeList() {
+		// Behavior: only one occurrence in the list of values needs to match
+		assertTrue(filter("address.street LIKE '%strasse'").match(max))
+		assertTrue(filter("address.street LIKE '%gasse'").match(max))
+		assertFalse(filter("address.street LIKE '%weg'").match(max))
+	}
+
 	// Number comparisons
 
 	@Test
@@ -235,7 +243,15 @@ class CQLFilterTest extends AbstractFilterTest {
 		// more complex tests
 		assertTrue(filter("address.number > 10 AND address.number <= 12").match(max))
 		assertFalse(filter("not(address.number > 10 AND address.number <= 12)").match(max))
+		assertFalse(filter("NOT(address.number > 10 AND address.number <= 12)").match(max))
 		assertFalse(filter("address.number > 20 AND address.number <= 30").match(max))
+	}
+
+	@Test
+	void testStringCompare() {
+		// Behavior: Strings are compared with standard Java String comparison
+		assertTrue(filter("name > 'Adalbert'").match(max))
+		assertFalse(filter("name > 'adalbert'").match(max))
 	}
 
 	// BETWEEN
@@ -310,6 +326,20 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("BBOX(area, 0.5, 0.5, 1.5, 1.5)").match(max))
 	}
 
+	@Test
+	void testGeoBboxList() {
+		// BBOX(attr, x1, y1, x2, y2)
+
+		assertTrue(filter("BBOX(areas, 0, 0, 1, 1)").match(max))
+		assertTrue(filter("BBOX(areas, -10, -10, 10, 10)").match(max))
+		assertTrue(filter("BBOX(areas, 10, 10, 20, 20)").match(max))
+
+		assertFalse(filter("BBOX(areas, -10, -10, -5, -5)").match(max))
+
+		// overlap
+		assertTrue(filter("BBOX(areas, -0.5, -0.5, 1.5, 1.5)").match(max))
+	}
+
 	// Time
 
 	@Test
@@ -328,6 +358,14 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertFalse(filter("joinDate BEFORE 2012-12-01T12:00:00Z").match(max))
 	}
 
+	@Ignore('BEFORE does not seem to support multiple values')
+	@Test
+	void testBeforeList() {
+		assertTrue(filter("moreDates BEFORE 2016-11-30T01:30:00Z").match(max))
+		assertTrue(filter("moreDates BEFORE 2006-11-30T01:30:00Z").match(max))
+		assertFalse(filter("moreDates BEFORE 1999-12-01T12:00:00Z").match(max))
+	}
+
 	@Test
 	void testDuring() {
 		assertTrue(filter("joinDate DURING 2006-11-30T01:30:00Z/2016-11-30T01:30:00Z").match(max))
@@ -335,10 +373,26 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertFalse(filter("joinDate DURING 2004-11-30T01:30:00Z/2006-11-30T01:30:00Z").match(max))
 	}
 
+	@Ignore('DURING does not seem to support multiple values')
+	@Test
+	void testDuringList() {
+		assertTrue(filter("moreDates DURING 2000-11-30T01:30:00Z/2010-11-30T01:30:00Z").match(max))
+		assertFalse(filter("moreDates DURING 2002-11-30T01:30:00Z/2006-11-30T01:30:00Z").match(max))
+		assertTrue(filter("moreDates DURING 2000-11-30T01:30:00Z/2006-11-30T01:30:00Z").match(max))
+	}
+
 	@Test
 	void testTimeEquals() {
 		assertTrue(filter("joinDate TEQUALS 2012-12-01T12:00:00Z").match(max))
 		assertFalse(filter("joinDate TEQUALS 2016-12-01T12:00:00Z").match(max))
+	}
+
+	@Ignore('TEQUALS does not seem to support multiple values')
+	@Test
+	void testTimeEqualsList() {
+		assertTrue(filter("moreDates TEQUALS 2010-01-01T12:00:00Z").match(max))
+		assertTrue(filter("moreDates TEQUALS 2000-12-24T12:00:00Z").match(max))
+		assertFalse(filter("moreDates TEQUALS 2016-12-01T12:00:00Z").match(max))
 	}
 
 }

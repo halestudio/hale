@@ -64,6 +64,14 @@ abstract class AbstractFilterTest {
 			new Coordinate(0, 0)] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
+		def poly2 = gf.createPolygon([
+			new Coordinate(10, 10),
+			new Coordinate(11, 10),
+			new Coordinate(11, 11),
+			new Coordinate(10, 11),
+			new Coordinate(10, 10)] as Coordinate[])
+		def polyGeom2 = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly2)
+
 		def dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 
 		def createMax = {
@@ -87,7 +95,11 @@ abstract class AbstractFilterTest {
 			nulls(null)
 			nulls(null)
 			area(polyGeom)
+			areas(polyGeom)
+			areas(polyGeom2)
 			joinDate(dateFormat.parse('2012-12-01T12:00:00+0000'))
+			moreDates(dateFormat.parse('2000-12-24T12:00:00+0000'))
+			moreDates(dateFormat.parse('2010-01-01T12:00:00+0000'))
 		}
 
 		// build instance
@@ -111,7 +123,9 @@ abstract class AbstractFilterTest {
 				legalStatus(String)
 				nulls(cardinality: '0..n', String)
 				area(DefaultGeometryProperty)
+				areas(cardinality: '0..n', DefaultGeometryProperty)
 				joinDate(Date)
+				moreDates(cardinality: '0..n', Date)
 			}
 		}
 
