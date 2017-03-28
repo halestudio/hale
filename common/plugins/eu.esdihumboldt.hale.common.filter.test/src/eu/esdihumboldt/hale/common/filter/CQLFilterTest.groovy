@@ -39,6 +39,8 @@ class CQLFilterTest extends AbstractFilterTest {
 		new FilterGeoCqlImpl(expr)
 	}
 
+	// EQUALITY (=)
+
 	@Test
 	void testEqualitySimple() {
 		assertTrue(filter("name = 'Max Mustermann'").match(max))
@@ -53,7 +55,7 @@ class CQLFilterTest extends AbstractFilterTest {
 
 	@Test
 	void testEqualityList() {
-		// any occurrence in the list will match
+		// Behavior: only one occurrence in the list of values needs to match
 		assertTrue(filter("address.street = 'Musterstrasse'").match(max))
 		assertTrue(filter("address.street = 'Taubengasse'").match(max))
 		assertTrue(filter("address.city = 'Musterstadt'").match(max))
@@ -61,11 +63,13 @@ class CQLFilterTest extends AbstractFilterTest {
 
 	@Test
 	void testEqualityListNoSchema() {
-		// any occurrence in the list will match
+		// Behavior: only one occurrence in the list of values needs to match
 		assertTrue(filter("address.street = 'Musterstrasse'").match(maxNoSchema))
 		assertTrue(filter("address.street = 'Taubengasse'").match(maxNoSchema))
 		assertTrue(filter("address.city = 'Musterstadt'").match(maxNoSchema))
 	}
+
+	// NULL
 
 	@Test
 	void testNullSchema() {
@@ -119,10 +123,12 @@ class CQLFilterTest extends AbstractFilterTest {
 
 	@Test
 	void testInstanceNoValueNullNoSchema() {
-		//XXX note that this does only check the instance value
+		// Behavior: This only checks the instance value
 		assertTrue(filter("friend IS NULL").match(maxNoSchema))
 		assertFalse(filter("friend IS NOT NULL").match(maxNoSchema))
 	}
+
+	// EXISTS / DOES-NOT-EXIST
 
 	@Ignore('PropertyExistsFunction does not support instances')
 	@Test
@@ -162,10 +168,14 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertFalse(filter("doesNotExist EXISTS").match(max))
 	}
 
+	// LIKE
+
 	@Test
 	void testLikeSchema() {
 		assertTrue(filter("name LIKE 'Max %'").match(max))
 		assertFalse(filter("name LIKE 'Martha %'").match(max))
+		assertTrue(filter("name NOT LIKE 'Martha %'").match(max))
+		assertFalse(filter("name NOT LIKE 'Max %'").match(max))
 	}
 
 	@Test
@@ -173,4 +183,62 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("name LIKE 'Max %'").match(maxNoSchema))
 		assertFalse(filter("name LIKE 'Martha %'").match(maxNoSchema))
 	}
+
+	// Number comparisons
+
+	@Test
+	void testNumber() {
+		assertTrue(filter("age = 31").match(max))
+		assertTrue(filter("age > 30").match(max))
+		assertTrue(filter("age > 0").match(max))
+		assertFalse(filter("age < 30").match(max))
+		assertTrue(filter("age >= 31").match(max))
+		assertFalse(filter("age >= 32").match(max))
+		assertTrue(filter("age <= 31").match(max))
+		assertFalse(filter("age <= 30").match(max))
+	}
+
+	@Test
+	void testNumberString() {
+		// Behavior: Number also matches equal string literal
+		assertTrue(filter("age = '31'").match(max))
+	}
+
+	@Test
+	void testNumberList() {
+		// Behavior: only one occurrence in the list of values needs to match
+		assertTrue(filter("address.number = 12").match(max))
+		assertTrue(filter("address.number > 12").match(max))
+		assertTrue(filter("address.number > 0").match(max))
+		assertFalse(filter("address.number < 10").match(max))
+		assertTrue(filter("address.number < 13").match(max))
+
+		// more complex tests
+		assertTrue(filter("address.number > 10 AND address.number <= 12").match(max))
+		assertFalse(filter("address.number > 20 AND address.number <= 30").match(max))
+	}
+
+	// BETWEEN
+
+	@Test
+	void testNumberBetween() {
+		assertTrue(filter("age BETWEEN 20 AND 40").match(max))
+		assertFalse(filter("age BETWEEN 10 AND 20").match(max))
+	}
+
+	@Test
+	void testStringBetween() {
+		// Behavior: Strings are compared with standard Java String comparison
+		assertTrue(filter("name BETWEEN 'A' AND 'Z'").match(max))
+		assertTrue(filter("name BETWEEN 'G' AND 'O'").match(max))
+		assertFalse(filter("name BETWEEN 'a' AND 'z'").match(max))
+	}
+
+	@Test
+	void testNumberBetweenList() {
+		assertTrue(filter("address.number BETWEEN 10 AND 20").match(max))
+		assertTrue(filter("address.number BETWEEN 10 AND 12").match(max))
+		assertFalse(filter("address.number BETWEEN 1 AND 10").match(max))
+	}
+
 }
