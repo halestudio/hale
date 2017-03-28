@@ -74,6 +74,14 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 					 */
 					return values.iterator().next();
 				}
+				else if (values.isEmpty()) {
+					/*
+					 * No values -> return null. This is required for instance
+					 * for the IS NULL filter. It treats a list always as not
+					 * null.
+					 */
+					return null;
+				}
 
 				return values;
 			}
