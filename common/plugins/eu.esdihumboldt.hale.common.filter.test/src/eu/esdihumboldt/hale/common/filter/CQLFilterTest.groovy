@@ -234,6 +234,7 @@ class CQLFilterTest extends AbstractFilterTest {
 
 		// more complex tests
 		assertTrue(filter("address.number > 10 AND address.number <= 12").match(max))
+		assertFalse(filter("not(address.number > 10 AND address.number <= 12)").match(max))
 		assertFalse(filter("address.number > 20 AND address.number <= 30").match(max))
 	}
 
@@ -255,9 +256,12 @@ class CQLFilterTest extends AbstractFilterTest {
 
 	@Test
 	void testNumberBetweenList() {
+		// Behavior: only one occurrence in the list of values needs to match
 		assertTrue(filter("address.number BETWEEN 10 AND 20").match(max))
 		assertTrue(filter("address.number BETWEEN 10 AND 12").match(max))
 		assertFalse(filter("address.number BETWEEN 1 AND 10").match(max))
+
+		assertFalse(filter("address.number NOT BETWEEN 10 AND 20").match(max))
 	}
 
 	// Geometries
@@ -313,6 +317,8 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("joinDate AFTER 2006-11-30T01:30:00Z").match(max))
 		assertFalse(filter("joinDate AFTER 2016-11-30T01:30:00Z").match(max))
 		assertFalse(filter("joinDate AFTER 2012-12-01T12:00:00Z").match(max))
+
+		assertTrue(filter("not(joinDate AFTER 2012-12-01T12:00:00Z)").match(max))
 	}
 
 	@Test
