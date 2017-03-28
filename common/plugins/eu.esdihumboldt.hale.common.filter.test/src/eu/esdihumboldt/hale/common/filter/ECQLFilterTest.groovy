@@ -17,12 +17,14 @@ package eu.esdihumboldt.hale.common.filter;
 
 import static org.junit.Assert.*
 import eu.esdihumboldt.hale.common.instance.model.Filter
+import groovy.transform.CompileStatic
 
 /**
  * Tests for ECQL filter.
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class ECQLFilterTest extends CQLFilterTest {
 
 	@Override

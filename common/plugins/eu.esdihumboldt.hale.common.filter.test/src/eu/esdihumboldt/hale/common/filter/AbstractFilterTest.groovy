@@ -40,8 +40,7 @@ abstract class AbstractFilterTest {
 
 	@Before
 	void setup() {
-		// build instance
-		maxNoSchema = new InstanceBuilder().instance {
+		def createMax = {
 			name 'Max Mustermann'
 			age 31
 			address {
@@ -57,8 +56,14 @@ abstract class AbstractFilterTest {
 				name 'Markus Mustermann'
 				age 56
 			}
+			friend { name 'Lotte Laura' }
 			legalStatus null
+			nulls(null)
+			nulls(null)
 		}
+
+		// build instance
+		maxNoSchema = new InstanceBuilder().instance(createMax)
 
 		// build schema
 		schema = new SchemaBuilder().schema(defaultNs) {
@@ -74,29 +79,14 @@ abstract class AbstractFilterTest {
 					name()
 					age(Integer)
 				}
+				friend(cardinality: '0..n', nullable: true, String) { name() }
 				legalStatus(String)
+				nulls(cardinality: '0..n', String)
 			}
 		}
 
 		// build instance
-		max = new InstanceBuilder(types: schema).Person {
-			name 'Max Mustermann'
-			age 31
-			address {
-				street 'Musterstrasse'
-				number 12
-				city 'Musterstadt'
-			}
-			address {
-				street 'Taubengasse'
-				number 13
-			}
-			relative('father') {
-				name 'Markus Mustermann'
-				age 56
-			}
-			legalStatus null
-		}
+		max = new InstanceBuilder(types: schema).Person(createMax)
 	}
 
 }
