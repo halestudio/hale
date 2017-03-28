@@ -241,4 +241,50 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertFalse(filter("address.number BETWEEN 1 AND 10").match(max))
 	}
 
+	// Geometries
+
+	@Test
+	void testGeoContains() {
+		assertTrue(filter("CONTAINS(area, POINT(0.5 0.5))").match(max))
+		assertFalse(filter("CONTAINS(area, POINT(2 0))").match(max))
+	}
+
+	@Ignore('CROSS does not seem to be supported')
+	@Test
+	void testGeoCross() {
+		assertFalse(filter("CROSS(area, LINESTRING(2 -1, 2 2))").match(max))
+		assertTrue(filter("CROSS(area, LINESTRING(0.5 -1, 0.5 2))").match(max))
+	}
+
+	@Test
+	void testGeoCrosses() {
+		assertFalse(filter("CROSSES(area, LINESTRING(2 -1, 2 2))").match(max))
+		assertTrue(filter("CROSSES(area, LINESTRING(0.5 -1, 0.5 2))").match(max))
+	}
+
+	@Ignore('INTERSECT does not seem to be supported')
+	@Test
+	void testGeoIntersect() {
+		assertFalse(filter("INTERSECT(area, LINESTRING(2 -1, 2 2))").match(max))
+		assertTrue(filter("INTERSECT(area, LINESTRING(0.5 -1, 0.5 2))").match(max))
+	}
+
+	@Test
+	void testGeoIntersects() {
+		assertFalse(filter("INTERSECTS(area, LINESTRING(2 -1, 2 2))").match(max))
+		assertTrue(filter("INTERSECTS(area, LINESTRING(0.5 -1, 0.5 2))").match(max))
+	}
+
+	@Test
+	void testGeoBbox() {
+		// BBOX(attr, x1, y1, x2, y2)
+
+		assertTrue(filter("BBOX(area, 0, 0, 1, 1)").match(max))
+		assertTrue(filter("BBOX(area, -10, -10, 10, 10)").match(max))
+		assertFalse(filter("BBOX(area, 10, 10, 20, 20)").match(max))
+
+		// overlap
+		assertTrue(filter("BBOX(area, 0.5, 0.5, 1.5, 1.5)").match(max))
+	}
+
 }

@@ -19,6 +19,12 @@ import static org.junit.Assert.*
 
 import org.junit.Before
 
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryFactory
+
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
@@ -40,6 +46,22 @@ abstract class AbstractFilterTest {
 
 	@Before
 	void setup() {
+		GeometryFactory gf = new GeometryFactory()
+
+		def lineString = gf.createLineString([
+			new Coordinate(0, 0),
+			new Coordinate(1, 1),
+			new Coordinate(1, 0)] as Coordinate[])
+		def lineGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), lineString)
+
+		def poly = gf.createPolygon([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
+
 		def createMax = {
 			name 'Max Mustermann'
 			age 31
@@ -60,6 +82,7 @@ abstract class AbstractFilterTest {
 			legalStatus null
 			nulls(null)
 			nulls(null)
+			area(polyGeom)
 		}
 
 		// build instance
@@ -82,6 +105,7 @@ abstract class AbstractFilterTest {
 				friend(cardinality: '0..n', nullable: true, String) { name() }
 				legalStatus(String)
 				nulls(cardinality: '0..n', String)
+				area(DefaultGeometryProperty)
 			}
 		}
 
