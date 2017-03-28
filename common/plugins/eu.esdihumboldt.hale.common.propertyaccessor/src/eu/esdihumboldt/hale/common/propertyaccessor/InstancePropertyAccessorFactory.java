@@ -15,6 +15,8 @@
  */
 package eu.esdihumboldt.hale.common.propertyaccessor;
 
+import java.util.Collection;
+
 import org.geotools.factory.Hints;
 import org.geotools.filter.expression.PropertyAccessor;
 import org.geotools.filter.expression.PropertyAccessorFactory;
@@ -63,7 +65,17 @@ public class InstancePropertyAccessorFactory implements PropertyAccessorFactory 
 		@Override
 		public Object get(Object object, String xpath, @SuppressWarnings("rawtypes") Class target) {
 			if (object instanceof Instance) {
-				return PropertyResolver.getValues((Instance) object, xpath);
+				Collection<Object> values = PropertyResolver.getValues((Instance) object, xpath);
+				if (values.size() == 1) {
+					/*
+					 * Always yield single value if there is only a single
+					 * value. This is required for instance for the IS NULL
+					 * filter. It does not work on lists.
+					 */
+					return values.iterator().next();
+				}
+
+				return values;
 			}
 			return null;
 		}
