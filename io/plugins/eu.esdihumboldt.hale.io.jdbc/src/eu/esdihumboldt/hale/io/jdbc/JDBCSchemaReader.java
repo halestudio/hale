@@ -200,7 +200,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader
 
 			if (SchemaSpaceID.SOURCE.equals(getSchemaSpace())) {
 				// show views and tables
-				List<String> tableList = Arrays.asList("TABLE", "VIEW");
+				List<String> tableList = Arrays.asList("TABLE", "VIEW", "MATERIALIZED VIEW");
 
 				options.setTableTypes(tableList);
 			}
