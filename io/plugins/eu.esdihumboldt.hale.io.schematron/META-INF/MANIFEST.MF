@@ -15,6 +15,7 @@ Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.validator
+Unpuzzle-AddDependencies: org.opengis.cite;schema-utils;1.8
 Bundle-ClassPath: .,
  lib/saxon9-9.0.0.8.jar,
  lib/schema-utils-1.8.jar,
