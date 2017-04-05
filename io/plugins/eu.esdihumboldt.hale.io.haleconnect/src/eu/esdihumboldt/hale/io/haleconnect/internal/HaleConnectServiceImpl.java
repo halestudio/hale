@@ -52,8 +52,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public boolean login(String username, String password) throws HaleConnectException {
-		LoginApi loginApi = getLoginApi();
-		Credentials credentials = buildCredentials(username, password);
+		LoginApi loginApi = UserServiceHelper.getLoginApi(this);
+		Credentials credentials = UserServiceHelper.buildCredentials(username, password);
 
 		try {
 			Token token = loginApi.login(credentials);
@@ -79,7 +79,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	@Override
 	public boolean verifyCredentials(String username, String password) throws HaleConnectException {
 		try {
-			return getLoginApi().login(buildCredentials(username, password)) != null;
+			return UserServiceHelper.getLoginApi(this)
+					.login(UserServiceHelper.buildCredentials(username, password)) != null;
 		} catch (ApiException e) {
 			if (e.getCode() == 401) {
 				return false;
@@ -88,31 +89,6 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 				throw new HaleConnectException(e.getMessage(), e);
 			}
 		}
-	}
-
-	/**
-	 * Build a {@link Credentials} object. Any null values passed in will be
-	 * converted to an empty string.
-	 * 
-	 * @param username the user name
-	 * @param password the password
-	 * @return a Credentials object with the given credentials
-	 */
-	public static Credentials buildCredentials(String username, String password) {
-		Credentials credentials = new Credentials();
-		credentials.setUsername(Optional.ofNullable(username).orElse(""));
-		credentials.setPassword(Optional.ofNullable(password).orElse(""));
-		return credentials;
-	}
-
-	private ApiClient getApiClient() {
-		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(basePath);
-		return apiClient;
-	}
-
-	private LoginApi getLoginApi() {
-		return new LoginApi(getApiClient());
 	}
 
 	/**
