@@ -55,11 +55,11 @@ public class HaleConnectUIPlugin extends AbstractUIPlugin {
 		try {
 			HaleConnectService hcs = HaleUI.getServiceProvider()
 					.getService(HaleConnectService.class);
-			hcs.setBasePath(HaleConnectServices.USER_SERVICE,
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
 					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS));
-			hcs.setBasePath(HaleConnectServices.BUCKET_SERVICE,
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.BUCKET_SERVICE,
 					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA));
-			hcs.setBasePath(HaleConnectServices.PROJECT_STORE,
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.PROJECT_STORE,
 					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS));
 		} catch (Throwable t) {
 			log.error("Error initializing HaleConnectService", t);
