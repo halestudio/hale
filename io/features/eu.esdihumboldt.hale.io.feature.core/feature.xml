@@ -253,6 +253,20 @@
          unpack="false"/>
 
    <plugin
+         id="com.haleconnect.api.haleconnect-project-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.haleconnect.api.haleconnect-projectstore-api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
          id="com.haleconnect.api.haleconnect-user-api"
          download-size="0"
          install-size="0"
