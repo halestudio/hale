@@ -15,12 +15,19 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.util.List;
 /**
- * hale connect service interface
+ * Facade for the hale connect microservices
  * 
  * @author Florian Esser
  */
 public interface HaleConnectService {
+
+	/**
+	 * @return the {@link BasePathManager} for this service implementation
+	 */
+	BasePathManager getBasePathManager();
+
 
 	/**
 	 * Login to hale connect

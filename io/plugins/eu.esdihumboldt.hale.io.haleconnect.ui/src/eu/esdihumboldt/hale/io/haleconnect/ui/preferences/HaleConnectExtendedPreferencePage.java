@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectImages;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -53,7 +54,8 @@ public class HaleConnectExtendedPreferencePage extends FieldEditorPreferencePage
 		super.performApply();
 
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
-		hcs.setBasePath(HaleConnectUIPlugin.getStoredBasePath());
+		hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
+				HaleConnectUIPlugin.getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS));
 	}
 
 	/**

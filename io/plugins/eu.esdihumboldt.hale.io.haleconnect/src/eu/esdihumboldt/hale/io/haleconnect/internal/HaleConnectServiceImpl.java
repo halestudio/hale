@@ -16,6 +16,9 @@
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
 import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.haleconnect.api.user.v1.ApiClient;
@@ -24,9 +27,11 @@ import com.haleconnect.api.user.v1.api.LoginApi;
 import com.haleconnect.api.user.v1.model.Credentials;
 import com.haleconnect.api.user.v1.model.Token;
 
+import eu.esdihumboldt.hale.io.haleconnect.BasePathManager;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceListener;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
 
 /**
@@ -34,11 +39,10 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
  * 
  * @author Florian Esser
  */
-public class HaleConnectServiceImpl implements HaleConnectService {
+public class HaleConnectServiceImpl implements HaleConnectService, BasePathManager {
 
 	private final CopyOnWriteArraySet<HaleConnectServiceListener> listeners = new CopyOnWriteArraySet<HaleConnectServiceListener>();
-
-	private String basePath = "https://users.haleconnect.com/v1";
+	private final ConcurrentHashMap<String, String> basePaths = new ConcurrentHashMap<>();
 
 	private HaleConnectSession session;
 
@@ -156,11 +160,28 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#setBasePath(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.haleconnect.BasePathResolver#getBasePath()
 	 */
 	@Override
-	public void setBasePath(String basePath) {
-		this.basePath = basePath;
+	public String getBasePath(String service) {
+		return basePaths.get(service);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#setBasePath(java.lang.String,
+	 *      java.lang.String)
+	 */
+	@Override
+	public void setBasePath(String service, String basePath) {
+		basePaths.put(service, basePath);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getBasePathManager()
+	 */
+	@Override
+	public BasePathManager getBasePathManager() {
+		return this;
 	}
 
 }
