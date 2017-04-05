@@ -22,6 +22,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
 		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS,
 				"https://users.haleconnect.com/v1");
+		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA,
+				"https://data.haleconnect.com/");
+		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS,
+				"https://project-store.haleconnect.com/");
 	}
 
 }

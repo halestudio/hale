@@ -56,6 +56,10 @@ public class HaleConnectExtendedPreferencePage extends FieldEditorPreferencePage
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
 		hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
 				HaleConnectUIPlugin.getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS));
+		hcs.getBasePathManager().setBasePath(HaleConnectServices.BUCKET_SERVICE,
+				HaleConnectUIPlugin.getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA));
+		hcs.getBasePathManager().setBasePath(HaleConnectServices.PROJECT_STORE, HaleConnectUIPlugin
+				.getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS));
 	}
 
 	/**
@@ -65,6 +69,10 @@ public class HaleConnectExtendedPreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		addField(new StringFieldEditor(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS,
 				"User service base path (URL):", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA,
+				"Bucket service base path (URL):", getFieldEditorParent()));
+		addField(new StringFieldEditor(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS,
+				"Project store base path (URL):", getFieldEditorParent()));
 	}
 
 	/**
