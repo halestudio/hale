@@ -56,7 +56,7 @@
    </extension>
    <extension
          id="eu.esdihumboldt.hale.ui.application"
-         name="HUMBOLDT Alignment Editor"
+         name="hale studio"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
@@ -73,10 +73,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="eu.esdihumboldt.hale.ui.application"
-            name="HUMBOLDT Alignment Editor">
+            name="hale studio">
          <property
                name="appName"
-               value="HUMBOLDT Alignment Editor">
+               value="hale studio">
          </property>
          <property
                name="windowImages"
@@ -84,11 +84,11 @@
          </property>
          <property
                name="aboutText"
-               value="halestudio&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.wetransform.to/products/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://www.wetransform.to/news&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/services/support">
+               value="hale studio&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;http://www.wetransform.to/products/hale&#x0A;&#x0A;Forum:&#x0A;http://www.esdi-community.eu/projects/hale/boards&#x0A;&#x0A;News:&#x0A;http://www.wetransform.to/news&#x0A;&#x0A;Get professional support:&#x0A;http://www.wetransform.to/services/support">
          </property>
          <property
                name="introTitle"
-               value="halestudio">
+               value="hale studio">
          </property>
          <property
                name="introBrandingImage"
