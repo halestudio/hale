@@ -16,7 +16,11 @@
 
 package eu.esdihumboldt.hale.io.xsd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
+import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.apache.ws.commons.schema.XmlSchemaDocumentation;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.XmlSchemaObjectCollection;
@@ -70,6 +74,30 @@ public abstract class XMLSchemaIO {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Get the app info from an annotated XML object
+	 * 
+	 * @param element the annotated element
+	 * @return the list of app infos or <code>null</code>
+	 */
+	public static List<XmlSchemaAppInfo> getAppInfo(XmlSchemaAnnotated element) {
+		List<XmlSchemaAppInfo> result = null;
+		if (element.getAnnotation() != null) {
+			XmlSchemaObjectCollection annotationItems = element.getAnnotation().getItems();
+			for (int i = 0; i < annotationItems.getCount(); i++) {
+				XmlSchemaObject item = annotationItems.getItem(i);
+				if (item instanceof XmlSchemaAppInfo) {
+					if (result == null) {
+						result = new ArrayList<>();
+					}
+					result.add((XmlSchemaAppInfo) item);
+				}
+			}
+		}
+
+		return result;
 	}
 
 }

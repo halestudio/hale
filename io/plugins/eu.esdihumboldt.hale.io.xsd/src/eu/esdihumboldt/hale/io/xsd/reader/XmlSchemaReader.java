@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -33,6 +34,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaAny;
+import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroup;
 import org.apache.ws.commons.schema.XmlSchemaAttributeGroupRef;
@@ -94,10 +96,12 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultGroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentConfiguration;
 import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentHelper;
 import eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAppInfo;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
@@ -1296,6 +1300,20 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	public static void setMetadata(AbstractDefinition<?> definition, XmlSchemaAnnotated annotated,
 			String schemaLocation) {
 		definition.setDescription(XMLSchemaIO.getDescription(annotated));
+
+		List<XmlSchemaAppInfo> appInfo = XMLSchemaIO.getAppInfo(annotated);
+		if (appInfo != null) {
+			XmlAppInfo constraint = new XmlAppInfo(appInfo);
+			if (definition instanceof DefaultPropertyDefinition) {
+				((DefaultPropertyDefinition) definition).setConstraint(constraint);
+			}
+			else if (definition instanceof DefaultGroupPropertyDefinition) {
+				((DefaultGroupPropertyDefinition) definition).setConstraint(constraint);
+			}
+			else if (definition instanceof DefaultTypeDefinition) {
+				((DefaultTypeDefinition) definition).setConstraint(constraint);
+			}
+		}
 
 		definition.setLocation(createLocationURI(schemaLocation, annotated));
 	}
