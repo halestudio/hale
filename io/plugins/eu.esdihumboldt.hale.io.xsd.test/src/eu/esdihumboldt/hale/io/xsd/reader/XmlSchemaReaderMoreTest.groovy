@@ -20,6 +20,7 @@ import static org.junit.Assert.*
 
 import javax.xml.namespace.QName
 
+import org.junit.Ignore
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
@@ -66,6 +67,7 @@ class XmlSchemaReaderMoreTest {
 	/**
 	 * Test if target type for inspire reference is correctly identified. 
 	 */
+	@Ignore
 	@Test
 	void testInspireReferenceAppInfo() throws Exception {
 		def location = URI.create('http://inspire.ec.europa.eu/schemas/ad/4.0/Addresses.xsd')
