@@ -19,6 +19,8 @@ import java.util.Optional;
 
 import com.haleconnect.api.user.v1.ApiClient;
 import com.haleconnect.api.user.v1.api.LoginApi;
+import com.haleconnect.api.user.v1.api.OrganisationsApi;
+import com.haleconnect.api.user.v1.api.UsersApi;
 import com.haleconnect.api.user.v1.model.Credentials;
 
 import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
@@ -48,11 +50,16 @@ public class UserServiceHelper {
 
 	/**
 	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
 	 * @return ApiClient for the user service
 	 */
-	public static ApiClient getApiClient(BasePathResolver resolver) {
+	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
 		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.USER_SERVICE));
+		if (apiKey != null) {
+			apiClient.setApiKey(apiKey);
+			apiClient.setApiKeyPrefix("Bearer");
+		}
 		return apiClient;
 	}
 
@@ -61,6 +68,25 @@ public class UserServiceHelper {
 	 * @return user service's Login API
 	 */
 	public static LoginApi getLoginApi(BasePathResolver resolver) {
-		return new LoginApi(getApiClient(resolver));
+		return new LoginApi(getApiClient(resolver, null));
 	}
+
+	/**
+	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
+	 * @return user service's Users API
+	 */
+	public static UsersApi getUsersApi(BasePathResolver resolver, String apiKey) {
+		return new UsersApi(getApiClient(resolver, apiKey));
+	}
+
+	/**
+	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
+	 * @return user service's Organisations API
+	 */
+	public static OrganisationsApi getOrganisationsApi(BasePathResolver resolver, String apiKey) {
+		return new OrganisationsApi(getApiClient(resolver, apiKey));
+	}
+
 }
