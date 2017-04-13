@@ -29,6 +29,8 @@ public class HaleConnectImages {
 
 	public static final String IMG_HCLOGO_DIALOG = "IMG_HCLOGO_DIALOG";
 
+	public static final String IMG_HCLOGO_ICON = "IMG_HCLOGO_ICON";
+
 	/**
 	 * Get the image registry
 	 * 

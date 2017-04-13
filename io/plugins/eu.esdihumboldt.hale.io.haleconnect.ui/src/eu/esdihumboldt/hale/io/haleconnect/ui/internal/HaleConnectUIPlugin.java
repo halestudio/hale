@@ -86,6 +86,8 @@ public class HaleConnectUIPlugin extends AbstractUIPlugin {
 				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-small.png"));
 		reg.put(HaleConnectImages.IMG_HCLOGO_PREFERENCES,
 				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-mini.png"));
+		reg.put(HaleConnectImages.IMG_HCLOGO_ICON,
+				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-icon.png"));
 	}
 
 	/**
