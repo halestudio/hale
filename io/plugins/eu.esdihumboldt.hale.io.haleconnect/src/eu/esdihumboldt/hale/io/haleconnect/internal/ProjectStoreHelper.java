@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
 import com.haleconnect.api.projectstore.v1.ApiClient;
-import com.haleconnect.api.projectstore.v1.ApiException;
 import com.haleconnect.api.projectstore.v1.api.BucketsApi;
 import com.haleconnect.api.projectstore.v1.api.FilesApi;
 
@@ -37,7 +36,7 @@ public class ProjectStoreHelper {
 	 */
 	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.BUCKET_SERVICE));
+		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.PROJECT_STORE));
 		apiClient.setApiKey(apiKey);
 		apiClient.setApiKeyPrefix("Bearer");
 		return apiClient;
@@ -89,12 +88,5 @@ public class ProjectStoreHelper {
 				return basePath;
 			}
 		}, apiKey));
-	}
-
-	/**
-	 * DONT COMMIT
-	 */
-	public static void test(BasePathResolver resolver, String apiKey) throws ApiException {
-		getFilesApi(resolver, apiKey).getBucketFiles("", "", "").getAccessUrl();
 	}
 }
