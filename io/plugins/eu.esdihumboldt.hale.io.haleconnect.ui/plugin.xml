@@ -92,5 +92,17 @@
             class="eu.esdihumboldt.hale.io.haleconnect.ui.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.source">
+      <source
+            class="eu.esdihumboldt.hale.io.haleconnect.ui.projects.HaleConnectSource"
+            contentType="eu.esdihumboldt.hale.io.project.hale25.zip"
+            description="Load from hale connect"
+            icon="images/hale-connect-icon.png"
+            id="eu.esdihumboldt.hale.io.haleconnect.ui.source"
+            name="hale connect"
+            priority="0">
+      </source>
+   </extension>
 
 </plugin>
