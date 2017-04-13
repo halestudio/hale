@@ -90,8 +90,13 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			Token token = loginApi.login(credentials);
 			if (token != null) {
 				UsersApi usersApi = UserServiceHelper.getUsersApi(this, token.getToken());
+
+				// First get the current user's profile to obtain the extended
+				// profile (including the user's roles/organisations) in the
+				// next step
+				UserInfo shortProfile = usersApi.getProfileOfCurrentUser();
 				session = new HaleConnectSessionImpl(username, token.getToken(),
-						usersApi.getProfile(username));
+						usersApi.getProfile(shortProfile.getId()));
 				notifyLoginStateChanged();
 			}
 			else {
