@@ -65,7 +65,7 @@
    <extension
          point="org.eclipse.ui.services">
       <sourceProvider
-            provider="eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectSource">
+            provider="eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectSourceProvider">
          <variable
                name="eu.esdihumboldt.hale.io.haleconnect.ui.login.status"
                priorityLevel="workbench">
