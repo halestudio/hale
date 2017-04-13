@@ -15,6 +15,11 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Exception class for HaleConnectService
  * 
@@ -24,10 +29,15 @@ public class HaleConnectException extends Exception {
 
 	private static final long serialVersionUID = -5273340965866912596L;
 
+	private final int statusCode;
+
+	private final Map<String, List<String>> responseHeaders = new HashMap<>();
+
 	/**
 	 * @see Exception#Exception()
 	 */
 	public HaleConnectException() {
+		statusCode = -1;
 	}
 
 	/**
@@ -35,6 +45,7 @@ public class HaleConnectException extends Exception {
 	 */
 	public HaleConnectException(String message) {
 		super(message);
+		statusCode = -1;
 	}
 
 	/**
@@ -42,6 +53,7 @@ public class HaleConnectException extends Exception {
 	 */
 	public HaleConnectException(Throwable cause) {
 		super(cause);
+		statusCode = -1;
 	}
 
 	/**
@@ -49,6 +61,43 @@ public class HaleConnectException extends Exception {
 	 */
 	public HaleConnectException(String message, Throwable cause) {
 		super(message, cause);
+		statusCode = -1;
+	}
+
+	/**
+	 * Creates a HaleConnectException
+	 * 
+	 * @param message the detail message (which is saved for later retrieval by
+	 *            the {@link #getMessage()} method).
+	 * @param cause the cause (which is saved for later retrieval by the
+	 *            {@link #getCause()} method). (A <code>null</code> value is
+	 *            permitted, and indicates that the cause is nonexistent or
+	 *            unknown.)
+	 * @param statusCode The status code returned by the hale connect service
+	 * @param responseHeaders The response headers of the service response (may
+	 *            be <code>null</code>)
+	 */
+	public HaleConnectException(String message, Throwable cause, int statusCode,
+			Map<String, List<String>> responseHeaders) {
+		super(message, cause);
+		this.statusCode = statusCode;
+		if (responseHeaders != null) {
+			this.responseHeaders.putAll(responseHeaders);
+		}
+	}
+
+	/**
+	 * @return the statusCode
+	 */
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	/**
+	 * @return the responseHeaders
+	 */
+	public Map<String, List<String>> getResponseHeaders() {
+		return Collections.unmodifiableMap(responseHeaders);
 	}
 
 }

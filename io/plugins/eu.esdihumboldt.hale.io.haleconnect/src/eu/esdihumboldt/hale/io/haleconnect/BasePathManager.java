@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.io.haleconnect;
 
 /**
- * TODO Type description
+ * Interface for hale connect base path managers.
  * 
  * @author Florian Esser
  */

@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.util.List;
+
 /**
  * Details of a hale connect session
  * 
@@ -31,4 +33,14 @@ public interface HaleConnectSession {
 	 * @return JSON Web Token associated with the session
 	 */
 	String getToken();
+
+	/**
+	 * @return ID of the logged-in user
+	 */
+	String getUserId();
+
+	/**
+	 * @return List of IDs of the organisations the user has a role in
+	 */
+	List<String> getOrganisationIds();
 }
