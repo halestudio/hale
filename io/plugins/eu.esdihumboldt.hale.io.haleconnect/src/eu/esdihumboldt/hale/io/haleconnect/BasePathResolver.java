@@ -23,7 +23,9 @@ package eu.esdihumboldt.hale.io.haleconnect;
 public interface BasePathResolver {
 
 	/**
-	 * Resolve the base path of a service
+	 * Resolve the base path of a service.
+	 * 
+	 * The resolver must make sure that the base path does not end with a '/'.
 	 * 
 	 * @param service The service to resolve the base path of, usually one of
 	 *            the constants in {@link HaleConnectServices}

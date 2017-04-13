@@ -187,6 +187,13 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public void setBasePath(String service, String basePath) {
+		if (service == null || basePath == null) {
+			throw new NullPointerException("service and basePath must not be null");
+		}
+
+		while (basePath.endsWith("/")) {
+			basePath = StringUtils.removeEnd(basePath, "/");
+		}
 		basePaths.put(service, basePath);
 	}
 
