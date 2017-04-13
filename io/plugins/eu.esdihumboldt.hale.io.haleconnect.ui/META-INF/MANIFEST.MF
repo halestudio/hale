@@ -10,20 +10,25 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  eu.esdihumboldt.hale.ui;bundle-version="3.3.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.3.0",
  org.apache.velocity;bundle-version="1.6.2",
- de.fhg.igd.slf4jplus
+ de.fhg.igd.slf4jplus,
+ groovy;bundle-version="2.3.7"
 Export-Package: eu.esdihumboldt.hale.io.haleconnect.ui,
  eu.esdihumboldt.hale.io.haleconnect.ui.preferences
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectUIPlugin
 Bundle-ClassPath: .
-Import-Package: com.google.gson;version="2.6.2",
+Import-Package: com.google.common.util.concurrent;version="17.0.0",
+ com.google.gson;version="2.6.2",
  com.google.gson.annotations;version="2.6.2",
  com.google.gson.reflect;version="2.6.2",
  com.google.gson.stream;version="2.6.2",
  eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.components,
  eu.esdihumboldt.hale.ui.util.io,
+ eu.esdihumboldt.hale.ui.util.viewer,
+ eu.esdihumboldt.hale.ui.util.wizard,
  eu.esdihumboldt.util.io,
+ org.apache.commons.lang;version="2.6.0",
  org.eclipse.equinox.security.storage;version="1.0.0",
  org.eclipse.ui.forms.widgets,
  org.eclipse.ui.intro.config,
