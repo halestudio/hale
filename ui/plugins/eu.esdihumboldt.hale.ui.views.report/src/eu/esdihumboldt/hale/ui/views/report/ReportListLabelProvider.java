@@ -37,8 +37,8 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
  */
 public class ReportListLabelProvider extends LabelProvider {
 
-	private Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
-	private SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
+	private final Map<ImageDescriptor, Image> imageCache = new HashMap<ImageDescriptor, Image>();
+	private final SimpleDateFormat df = new SimpleDateFormat("HH:mm yyyy-MM-dd");
 
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
@@ -93,7 +93,11 @@ public class ReportListLabelProvider extends LabelProvider {
 			return ((Report<?>) element).getTaskName();
 		}
 		else if (element instanceof ReportSession) {
-			return df.format(new Date(((ReportSession) element).getId()));
+			long id = ((ReportSession) element).getId();
+			if (id == 0) {
+				return "Import";
+			}
+			return df.format(new Date(id));
 		}
 
 		return "Unhandled type";
@@ -109,8 +113,8 @@ public class ReportListLabelProvider extends LabelProvider {
 	protected Image getImage(String img) {
 		ImageDescriptor descriptor = null;
 
-		descriptor = AbstractUIPlugin.imageDescriptorFromPlugin(
-				"eu.esdihumboldt.hale.ui.views.report", img);
+		descriptor = AbstractUIPlugin
+				.imageDescriptorFromPlugin("eu.esdihumboldt.hale.ui.views.report", img);
 		if (descriptor == null) {
 			return null;
 		}

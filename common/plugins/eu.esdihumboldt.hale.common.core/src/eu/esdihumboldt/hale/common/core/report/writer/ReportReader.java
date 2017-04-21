@@ -243,7 +243,9 @@ public class ReportReader {
 		try {
 			id = Long.parseLong(result);
 		} catch (NumberFormatException e) {
-			_log.error("Could not determine ReportSession ID.");
+			_log.debug("Could not determine ReportSession ID, using current timestamp.");
+			// XXX improvement would be determining the session ID from the file
+			// content
 		}
 
 		return id;
