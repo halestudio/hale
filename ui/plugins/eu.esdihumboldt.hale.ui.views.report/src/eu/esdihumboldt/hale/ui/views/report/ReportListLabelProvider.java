@@ -28,6 +28,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportSession;
+import eu.esdihumboldt.hale.common.core.report.writer.ReportReader;
 
 /**
  * LabelProvider for {@link ReportList}.
@@ -94,7 +95,8 @@ public class ReportListLabelProvider extends LabelProvider {
 		}
 		else if (element instanceof ReportSession) {
 			long id = ((ReportSession) element).getId();
-			if (id == 0) {
+			if (id == ReportReader.UNKNOWN_SESSION) {
+				// session information is not present usually for imported logs
 				return "Import";
 			}
 			return df.format(new Date(id));

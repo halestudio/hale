@@ -41,6 +41,11 @@ import eu.esdihumboldt.hale.common.core.report.ReportSession;
  */
 public class ReportReader {
 
+	/**
+	 * Identifier for unknown report sessions.
+	 */
+	public static final long UNKNOWN_SESSION = 0;
+
 	private final ReportFactory rf = ReportFactory.getInstance();
 	private final MessageFactory mf = MessageFactory.getInstance();
 	private static final ALogger _log = ALoggerFactory.getLogger(ReportReader.class);
@@ -239,7 +244,7 @@ public class ReportReader {
 			result = name[0];
 		}
 
-		long id = 0;
+		long id = UNKNOWN_SESSION;
 		try {
 			id = Long.parseLong(result);
 		} catch (NumberFormatException e) {
