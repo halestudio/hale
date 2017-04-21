@@ -182,7 +182,7 @@ class StreamGmlWriterTest2 {
 		Collection<GeometryProperty<?>> geomsOther = GeometryUtil.getAllGeometries(other);
 		assertEquals(1, geomsOther.size())
 
-		StreamGmlWriterTest.matchGeometries(expected, geomsOther[0].geometry)
+		StreamGmlWriterTest.matchGeometries(expected, geomsOther[0].getGeometry()) // using getter instead of property circumvents type inferring problems of Groovy 2.3.11
 	}
 
 	@CompileStatic
