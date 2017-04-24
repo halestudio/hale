@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.text.MessageFormat;
+
 /**
  * Owner type
  * 
@@ -42,5 +44,17 @@ public enum OwnerType {
 	 */
 	public String getJsonValue() {
 		return jsonValue;
+	}
+
+	public static OwnerType fromJsonValue(String jsonValue) {
+		switch (jsonValue) {
+		case "user":
+			return USER;
+		case "org":
+			return ORGANISATION;
+		default:
+			throw new IllegalArgumentException(
+					MessageFormat.format("Not a valid JSON owner type: {0}", jsonValue));
+		}
 	}
 }
