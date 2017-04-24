@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.haleconnect.internal;
 
 import java.util.Optional;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.haleconnect.api.user.v1.ApiClient;
 import com.haleconnect.api.user.v1.api.LoginApi;
 import com.haleconnect.api.user.v1.api.OrganisationsApi;
@@ -25,6 +27,8 @@ import com.haleconnect.api.user.v1.model.Credentials;
 
 import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
+import eu.esdihumboldt.hale.io.haleconnect.Owner;
+import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
 
 /**
  * Helper class for the user service API
@@ -87,6 +91,33 @@ public class UserServiceHelper {
 	 */
 	public static OrganisationsApi getOrganisationsApi(BasePathResolver resolver, String apiKey) {
 		return new OrganisationsApi(getApiClient(resolver, apiKey));
+	}
+
+	/**
+	 * Helper method to create an {@link Owner} if an API call returns both a
+	 * user ID and an organisation ID, and the owner type is determined by which
+	 * of the values is non-empty.
+	 * 
+	 * @param userId user id value
+	 * @param orgId organisation id value
+	 * @return Owner object
+	 * @throws IllegalArgumentException thrown if none or both of userId and
+	 *             orgId are non-empty.
+	 */
+	public static Owner toOwner(String userId, String orgId) throws IllegalArgumentException {
+		boolean isUser = !StringUtils.isEmpty(userId);
+		boolean isOrg = !StringUtils.isEmpty(orgId);
+
+		if (isUser == isOrg) {
+			throw new IllegalArgumentException("Exactly one of userId, orgId must be non-empty");
+		}
+
+		if (isUser) {
+			return new Owner(OwnerType.USER, userId);
+		}
+		else {
+			return new Owner(OwnerType.ORGANISATION, orgId);
+		}
 	}
 
 }
