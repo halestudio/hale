@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.haleconnect.internal;
 import com.haleconnect.api.projectstore.v1.ApiClient;
 import com.haleconnect.api.projectstore.v1.api.BucketsApi;
 import com.haleconnect.api.projectstore.v1.api.FilesApi;
+import com.haleconnect.api.projectstore.v1.api.PermissionsApi;
 
 import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
@@ -89,4 +90,29 @@ public class ProjectStoreHelper {
 			}
 		}, apiKey));
 	}
+
+	/**
+	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
+	 * @return project store's Files API
+	 */
+	public static PermissionsApi getPermissionsApi(BasePathResolver resolver, String apiKey) {
+		return new PermissionsApi(getApiClient(resolver, apiKey));
+	}
+
+	/**
+	 * @param basePath the base path
+	 * @param apiKey JWT for authentication
+	 * @return project store's Files API
+	 */
+	public static PermissionsApi getPermissionsApi(String basePath, String apiKey) {
+		return new PermissionsApi(getApiClient(new BasePathResolver() {
+
+			@Override
+			public String getBasePath(String service) {
+				return basePath;
+			}
+		}, apiKey));
+	}
+
 }

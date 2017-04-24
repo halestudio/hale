@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 import com.haleconnect.api.user.v1.ApiClient;
 import com.haleconnect.api.user.v1.api.LoginApi;
 import com.haleconnect.api.user.v1.api.OrganisationsApi;
+import com.haleconnect.api.user.v1.api.PermissionsApi;
 import com.haleconnect.api.user.v1.api.UsersApi;
 import com.haleconnect.api.user.v1.model.Credentials;
 
@@ -118,6 +119,30 @@ public class UserServiceHelper {
 		else {
 			return new Owner(OwnerType.ORGANISATION, orgId);
 		}
+	}
+
+	/**
+	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
+	 * @return project store's Files API
+	 */
+	public static PermissionsApi getPermissionsApi(BasePathResolver resolver, String apiKey) {
+		return new PermissionsApi(getApiClient(resolver, apiKey));
+	}
+
+	/**
+	 * @param basePath the base path
+	 * @param apiKey JWT for authentication
+	 * @return project store's Files API
+	 */
+	public static PermissionsApi getPermissionsApi(String basePath, String apiKey) {
+		return new PermissionsApi(getApiClient(new BasePathResolver() {
+
+			@Override
+			public String getBasePath(String service) {
+				return basePath;
+			}
+		}, apiKey));
 	}
 
 }
