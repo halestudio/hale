@@ -25,6 +25,11 @@ public interface HaleConnectServices {
 	/**
 	 * User service
 	 */
+	public static String WEB_CLIENT = "hale-connect";
+
+	/**
+	 * User service
+	 */
 	public static String USER_SERVICE = "user-service";
 
 	/**

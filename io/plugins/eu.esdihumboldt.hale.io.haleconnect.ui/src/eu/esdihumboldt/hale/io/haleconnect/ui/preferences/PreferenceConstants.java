@@ -34,6 +34,7 @@ public interface PreferenceConstants {
 	static final String HALE_CONNECT_BASEPATH_USERS = "eu.esdihumboldt.hale.io.haleconnect.ui.login.endpoint";
 	static final String HALE_CONNECT_BASEPATH_DATA = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.data";
 	static final String HALE_CONNECT_BASEPATH_PROJECTS = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.projects";
+	static final String HALE_CONNECT_BASEPATH_CLIENT = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.client";
 
 	static final String HALE_CONNECT_USERNAME = "eu.esdihumboldt.hale.io.haleconnect.ui.login.username";
 	static final String HALE_CONNECT_PASSWORD = "eu.esdihumboldt.hale.io.haleconnect.ui.login.password";
