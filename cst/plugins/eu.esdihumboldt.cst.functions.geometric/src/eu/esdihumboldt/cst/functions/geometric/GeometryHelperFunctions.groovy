@@ -90,7 +90,7 @@ class GeometryHelperFunctions {
 			return null;
 		}
 
-		if (!result.geometry || result.geometry.isEmpty()) {
+		if (!result.geometry || ((Geometry)result.geometry).isEmpty()) { // Explicit cast to circumvent type inferring problems of Groovy 2.3.11
 			return null;
 		}
 
@@ -117,7 +117,7 @@ class GeometryHelperFunctions {
 	static GeometryProperty<? extends Geometry> _interiorPoint(def geometryHolder) {
 		GeometryProperty<?> result = InteriorPoint.calculateInteriorPoint(geometryHolder);
 
-		if (!result.geometry || result.geometry.isEmpty()) {
+		if (!result.geometry || ((Geometry)result.geometry).isEmpty()) { // Explicit cast to circumvent type inferring problems of Groovy 2.3.11
 			return null;
 		}
 

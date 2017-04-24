@@ -199,7 +199,10 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			List<HelperFunctionWrapper> functions = new ArrayList<>();
 			for (Method method : helperClass.getMethods()) {
 				int modifiers = method.getModifiers();
-				if (method.getName().startsWith("_") && !Modifier.isAbstract(modifiers)
+				if (method.getName().startsWith("_")
+						&& !method.getName().startsWith(
+								"__") /* exclude __$swapInit and the like */
+						&& !Modifier.isAbstract(modifiers)
 						&& !method.getName().endsWith(SPEC_END)) {
 					HelperFunctionWrapper function = loadFunction(method, helperClass);
 					if (function != null) {
