@@ -166,7 +166,7 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 					.getTarget().values().iterator().next().getDefinition().getDefinition();
 			if (!propDef.equals(target)) {
 
-				String regexTooltip = "A regular expression containing groups (see http://www.javamex.com/tutorials/regular_expressions/capturing_groups.shtml). Type Ctrl+Space for project variable content assistance.";
+				String regexTooltip = "A regular expression containing groups (see http://www.javamex.com/tutorials/regular_expressions/capturing_groups.shtml). Press Ctrl+Space for project variable content assistance.";
 				Group regexGroup = new Group(page, SWT.NONE);
 				regexGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 				regexGroup.setLayout(new GridLayout(1, false));
@@ -184,12 +184,12 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
 				regexInfoDeco.setMarginWidth(2);
 
-				ContentProposalAdapter adapter = new ContentProposalAdapter(_regexText,
+				ContentProposalAdapter regexTextAdapter = new ContentProposalAdapter(_regexText,
 						new TextContentAdapter(), new ProjectVariablesContentProposalProvider(true),
 						ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
-				adapter.setAutoActivationDelay(0);
+				regexTextAdapter.setAutoActivationDelay(0);
 
-				String formatTooltip = "The output format to apply, containing curly brackets delimited group definitions. Ex. {1} represents the result of group 1 from the regex analysis.";
+				String formatTooltip = "The output format to apply, containing curly brackets delimited group definitions. Ex. {1} represents the result of group 1 from the regex analysis. Press Ctrl+Space for project variable content assistance.";
 
 				Group outformatGroup = new Group(page, SWT.NONE);
 				outformatGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -207,6 +207,11 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 				formatInfoDeco.setImage(FieldDecorationRegistry.getDefault()
 						.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
 				formatInfoDeco.setMarginWidth(2);
+
+				ContentProposalAdapter outformatAdapter = new ContentProposalAdapter(_outformatText,
+						new TextContentAdapter(), new ProjectVariablesContentProposalProvider(true),
+						ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+				outformatAdapter.setAutoActivationDelay(0);
 
 				Group exampleGroup = new Group(page, SWT.NONE);
 				exampleGroup.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
