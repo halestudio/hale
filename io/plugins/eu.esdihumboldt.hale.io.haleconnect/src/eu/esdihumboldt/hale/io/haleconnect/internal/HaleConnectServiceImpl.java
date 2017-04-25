@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +65,7 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceListener;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUserInfo;
 import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.project.SharingOptions;
@@ -269,6 +269,38 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	@Override
 	public boolean isLoggedIn() {
 		return session != null;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#loadProject(Owner,
+	 *      String)
+	 */
+	@Override
+	public LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId)
+			throws HaleConnectException {
+
+		if (!isLoggedIn()) {
+			throw new IllegalStateException("Not logged in.");
+		}
+
+		FilesApi api = ProjectStoreHelper.getFilesApi(this, this.getSession().getToken());
+		final ApiResponse<File> response;
+		try {
+			response = api.getProjectFilesAsZipWithHttpInfo(owner.getType().getJsonValue(),
+					owner.getId(), projectId);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new HaleConnectException(e.getMessage(), e);
+		}
+
+		return new DefaultInputSupplier(HaleConnectUrnBuilder.buildProjectUrn(owner, projectId)) {
+
+			@Override
+			public InputStream getInput() throws IOException {
+				return new BufferedInputStream(new FileInputStream(response.getData()));
+			}
+
+		};
+
 	}
 
 	/**
@@ -492,37 +524,6 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#loadProject(Owner,
-	 *      String)
-	 */
-	@Override
-	public LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId) {
-		if (!isLoggedIn()) {
-			throw new IllegalStateException("Not logged in.");
-		}
-
-		FilesApi api = ProjectStoreHelper.getFilesApi(this, this.getSession().getToken());
-		ApiResponse<File> response;
-		try {
-			response = api.getProjectFilesAsZipWithHttpInfo(owner.getType().getJsonValue(),
-					owner.getId(), projectId);
-		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-
-		return new DefaultInputSupplier(URI.create(MessageFormat.format("{0}:project:{1}:{2}:{3}",
-				"hc", owner.getType().getJsonValue(), owner.getId(), projectId))) {
-
-			@Override
-			public InputStream getInput() throws IOException {
-				return new BufferedInputStream(new FileInputStream(response.getData()));
-			}
-
-		};
-
 	}
 
 	private ApiCallback<Feedback> createUploadFileCallback(final SettableFuture<Boolean> future,
