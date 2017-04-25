@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
 import eu.esdihumboldt.hale.ui.function.generic.pages.ParameterPage;
 import eu.esdihumboldt.hale.ui.scripting.groovy.InstanceTestValues;
 import eu.esdihumboldt.hale.ui.service.project.ProjectVariablesContentProposalProvider;
+import eu.esdihumboldt.hale.ui.transformation.TransformationVariableReplacer;
 
 /**
  * Parameter page for Regex Analysis function.
@@ -244,8 +245,12 @@ public class RegexAnalysisParameterPage extends HaleWizardPage<AbstractGenericFu
 					public void widgetSelected(SelectionEvent e) {
 						String convertedString = "No match found.";
 						try {
-							convertedString = RegexAnalysis.analize(_regexText.getText(),
-									_outformatText.getText(), _inputText.getText());
+							String regex = new TransformationVariableReplacer()
+									.replaceVariables(_regexText.getText());
+							String outformat = new TransformationVariableReplacer()
+									.replaceVariables(_outformatText.getText());
+							convertedString = RegexAnalysis.analize(regex, outformat,
+									_inputText.getText());
 							outputText.setText(convertedString);
 						} catch (Exception e1) {
 							outputText.setText(e1.getCause().getLocalizedMessage());
