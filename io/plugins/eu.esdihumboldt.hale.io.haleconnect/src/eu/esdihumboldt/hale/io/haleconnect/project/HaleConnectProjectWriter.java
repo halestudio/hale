@@ -25,9 +25,7 @@ import java.text.MessageFormat;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -62,6 +60,8 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	public static final String ENABLE_VERSIONING = "enableVersioning";
 
 	private final HaleConnectService haleConnect;
+	private URI projectUri;
+	private URI clientAccessUrl;
 
 	/**
 	 * Creates a hale connect project writer
@@ -144,18 +144,32 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 					new SharingOptions(publicAccess));
 			result = haleConnect.uploadProjectFile(projectId, owner, projectArchive, progress);
 
-			String targetUrl = MessageFormat.format("{0}/transformation/{1}/{2}/{3}",
-					haleConnect.getBasePathManager().getBasePath(HaleConnectServices.WEB_CLIENT),
-					owner.getType().getJsonValue(), owner.getId(), projectId);
-			IOConfiguration config = getProject().getSaveConfiguration();
-			config.getProviderConfiguration().put(PARAM_TARGET, Value.of(targetUrl));
 		} catch (HaleConnectException e) {
 			throw new IOException(e.getMessage(), e);
 		}
 
+		this.clientAccessUrl = HaleConnectUrnBuilder.buildClientAccessUrl(
+				haleConnect.getBasePathManager().getBasePath(HaleConnectServices.WEB_CLIENT), owner,
+				projectId);
+		this.projectUri = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
 		reporter.setSuccess(result);
 
 		return reporter;
+	}
+
+	/**
+	 * @return the URI of the created project
+	 */
+	public URI getProjectUri() {
+		return this.projectUri;
+	}
+
+	/**
+	 * @return the URL required to access the transformation project via the
+	 *         hale connect web client
+	 */
+	public URI getClientAccessUrl() {
+		return this.clientAccessUrl;
 	}
 
 }

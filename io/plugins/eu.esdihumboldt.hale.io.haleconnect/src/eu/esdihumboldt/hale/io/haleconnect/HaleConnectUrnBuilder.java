@@ -89,4 +89,9 @@ public class HaleConnectUrnBuilder {
 		return true;
 	}
 
+	public static URI buildClientAccessUrl(String basePath, Owner owner, String projectId) {
+		return URI.create(MessageFormat.format("{0}/transformation/{1}/{2}/{3}", basePath,
+				owner.getType().getJsonValue(), owner.getId(), projectId));
+	}
+
 }
