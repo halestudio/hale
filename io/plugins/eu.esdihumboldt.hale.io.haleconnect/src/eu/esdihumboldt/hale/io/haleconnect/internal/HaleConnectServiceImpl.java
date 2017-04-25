@@ -15,32 +15,74 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
-import java.util.Optional;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import com.haleconnect.api.user.v1.ApiClient;
+import org.apache.commons.lang.StringUtils;
+
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.SettableFuture;
+import com.haleconnect.api.projectstore.v1.ApiCallback;
+import com.haleconnect.api.projectstore.v1.ApiResponse;
+import com.haleconnect.api.projectstore.v1.api.FilesApi;
+import com.haleconnect.api.projectstore.v1.model.BucketDetail;
 import com.haleconnect.api.user.v1.ApiException;
 import com.haleconnect.api.user.v1.api.LoginApi;
+import com.haleconnect.api.user.v1.api.OrganisationsApi;
+import com.haleconnect.api.user.v1.api.UsersApi;
 import com.haleconnect.api.user.v1.model.Credentials;
+import com.haleconnect.api.user.v1.model.OrganisationInfo;
 import com.haleconnect.api.user.v1.model.Token;
+import com.haleconnect.api.user.v1.model.UserInfo;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.BasePathManager;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectOrganisationInfo;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceListener;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUserInfo;
+import eu.esdihumboldt.hale.io.haleconnect.Owner;
 
 /**
- * hale connect service
+ * hale connect service facade implementation
  * 
  * @author Florian Esser
  */
-public class HaleConnectServiceImpl implements HaleConnectService {
+public class HaleConnectServiceImpl implements HaleConnectService, BasePathManager {
+
+	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectServiceImpl.class);
 
 	private final CopyOnWriteArraySet<HaleConnectServiceListener> listeners = new CopyOnWriteArraySet<HaleConnectServiceListener>();
-
-	private String basePath = "https://users.haleconnect.com/v1";
+	private final ConcurrentHashMap<String, String> basePaths = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, HaleConnectUserInfo> userInfoCache = new ConcurrentHashMap<>();
+	private final ConcurrentHashMap<String, HaleConnectOrganisationInfo> orgInfoCache = new ConcurrentHashMap<>();
 
 	private HaleConnectSession session;
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getBasePathManager()
+	 */
+	@Override
+	public BasePathManager getBasePathManager() {
+		return this;
+	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#login(java.lang.String,
@@ -48,13 +90,20 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	 */
 	@Override
 	public boolean login(String username, String password) throws HaleConnectException {
-		LoginApi loginApi = getLoginApi();
-		Credentials credentials = buildCredentials(username, password);
+		LoginApi loginApi = UserServiceHelper.getLoginApi(this);
+		Credentials credentials = UserServiceHelper.buildCredentials(username, password);
 
 		try {
 			Token token = loginApi.login(credentials);
 			if (token != null) {
-				session = new HaleConnectSessionImpl(credentials.getUsername(), token.getToken());
+				UsersApi usersApi = UserServiceHelper.getUsersApi(this, token.getToken());
+
+				// First get the current user's profile to obtain the extended
+				// profile (including the user's roles/organisations) in the
+				// next step
+				UserInfo shortProfile = usersApi.getProfileOfCurrentUser();
+				session = new HaleConnectSessionImpl(username, token.getToken(),
+						usersApi.getProfile(shortProfile.getId()));
 				notifyLoginStateChanged();
 			}
 			else {
@@ -75,7 +124,8 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	@Override
 	public boolean verifyCredentials(String username, String password) throws HaleConnectException {
 		try {
-			return getLoginApi().login(buildCredentials(username, password)) != null;
+			return UserServiceHelper.getLoginApi(this)
+					.login(UserServiceHelper.buildCredentials(username, password)) != null;
 		} catch (ApiException e) {
 			if (e.getCode() == 401) {
 				return false;
@@ -84,31 +134,6 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
 		}
-	}
-
-	/**
-	 * Build a {@link Credentials} object. Any null values passed in will be
-	 * converted to an empty string.
-	 * 
-	 * @param username the user name
-	 * @param password the password
-	 * @return a Credentials object with the given credentials
-	 */
-	public static Credentials buildCredentials(String username, String password) {
-		Credentials credentials = new Credentials();
-		credentials.setUsername(Optional.ofNullable(username).orElse(""));
-		credentials.setPassword(Optional.ofNullable(password).orElse(""));
-		return credentials;
-	}
-
-	private ApiClient getApiClient() {
-		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(basePath);
-		return apiClient;
-	}
-
-	private LoginApi getLoginApi() {
-		return new LoginApi(getApiClient());
 	}
 
 	/**
@@ -156,11 +181,218 @@ public class HaleConnectServiceImpl implements HaleConnectService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#setBasePath(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.haleconnect.BasePathResolver#getBasePath(String)
 	 */
 	@Override
-	public void setBasePath(String basePath) {
-		this.basePath = basePath;
+	public String getBasePath(String service) {
+		return basePaths.get(service);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.BasePathManager#setBasePath(String,
+	 *      String)
+	 */
+	@Override
+	public void setBasePath(String service, String basePath) {
+		if (service == null || basePath == null) {
+			throw new NullPointerException("service and basePath must not be null");
+		}
+
+		while (basePath.endsWith("/")) {
+			basePath = StringUtils.removeEnd(basePath, "/");
+		}
+		basePaths.put(service, basePath);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getProjects()
+	 */
+	@Override
+	public List<HaleConnectProjectInfo> getProjects() throws HaleConnectException {
+		List<BucketDetail> bucketDetails;
+		try {
+			bucketDetails = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
+					.getBuckets(null, true);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new HaleConnectException(e.getMessage(), e);
+		}
+
+		return processBucketDetails(bucketDetails);
+	}
+
+	@Override
+	public ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync()
+			throws HaleConnectException {
+		final SettableFuture<List<HaleConnectProjectInfo>> future = SettableFuture.create();
+		try {
+			ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken()).getBucketsAsync(
+					getContextOrganisation(), true, new ApiCallback<List<BucketDetail>>() {
+
+						@Override
+						public void onFailure(com.haleconnect.api.projectstore.v1.ApiException e,
+								int statusCode, Map<String, List<String>> responseHeaders) {
+							future.setException(new HaleConnectException(e.getMessage(), e,
+									statusCode, responseHeaders));
+						}
+
+						@Override
+						public void onSuccess(List<BucketDetail> result, int statusCode,
+								Map<String, List<String>> responseHeaders) {
+							future.set(Collections.unmodifiableList(processBucketDetails(result)));
+						}
+
+						@Override
+						public void onUploadProgress(long bytesWritten, long contentLength,
+								boolean done) {
+							// Ignored
+						}
+
+						@Override
+						public void onDownloadProgress(long bytesRead, long contentLength,
+								boolean done) {
+							// Ignored
+						}
+					});
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new HaleConnectException(e.getMessage(), e);
+		}
+
+		return future;
+	}
+
+	/**
+	 * Convert a list of {@link BucketDetail}s received from the project store
+	 * to a list of {@link HaleConnectProjectInfo}
+	 * 
+	 * @param bucketDetails bucket details
+	 * @return list of hale connect project info
+	 */
+	private List<HaleConnectProjectInfo> processBucketDetails(List<BucketDetail> bucketDetails) {
+		List<HaleConnectProjectInfo> result = new ArrayList<>();
+		for (BucketDetail bucket : bucketDetails) {
+			if (bucket.getId() != null) {
+				String author = null;
+				if (bucket.getProperties() instanceof Map<?, ?>) {
+					@SuppressWarnings("unchecked")
+					Map<Object, Object> properties = (Map<Object, Object>) bucket.getProperties();
+					if (properties.containsKey("author")) {
+						author = properties.get("author").toString();
+					}
+				}
+
+				HaleConnectUserInfo user = null;
+				HaleConnectOrganisationInfo org = null;
+				try {
+					if (!StringUtils.isEmpty(bucket.getId().getUserId())) {
+						user = this.getUserInfo(bucket.getId().getUserId());
+					}
+
+					if (!StringUtils.isEmpty(bucket.getId().getOrgId())) {
+						org = this.getOrganisationInfo(bucket.getId().getOrgId());
+					}
+				} catch (HaleConnectException e) {
+					log.error(e.getMessage(), e);
+				}
+
+				result.add(new HaleConnectProjectInfo(bucket.getId().getTransformationproject(),
+						user, org, bucket.getName(), author));
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#loadProject(Owner,
+	 *      String)
+	 */
+	@Override
+	public LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId) {
+		if (!isLoggedIn()) {
+			throw new IllegalStateException("Not logged in.");
+		}
+
+		FilesApi api = ProjectStoreHelper.getFilesApi(this, this.getSession().getToken());
+		ApiResponse<File> response;
+		try {
+			response = api.getProjectFilesAsZipWithHttpInfo(owner.getType().getJsonValue(),
+					owner.getId(), projectId);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+
+		return new DefaultInputSupplier(URI.create(MessageFormat.format("{0}:project:{1}:{2}:{3}",
+				"hc", owner.getType().getJsonValue(), owner.getId(), projectId))) {
+
+			@Override
+			public InputStream getInput() throws IOException {
+				return new BufferedInputStream(new FileInputStream(response.getData()));
+			}
+
+		};
+
+	}
+
+	private String getContextOrganisation() {
+		if (!this.isLoggedIn()) {
+			return null;
+		}
+
+		List<String> orgIds = this.getSession().getOrganisationIds();
+		if (orgIds.isEmpty()) {
+			return null;
+		}
+
+		// XXX Cannot handle multiple organisations!
+		return orgIds.iterator().next();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getUserInfo(java.lang.String)
+	 */
+	@Override
+	public HaleConnectUserInfo getUserInfo(String userId) throws HaleConnectException {
+		if (!this.isLoggedIn()) {
+			return null;
+		}
+
+		if (!userInfoCache.containsKey(userId)) {
+			UsersApi api = UserServiceHelper.getUsersApi(this, this.getSession().getToken());
+			try {
+				UserInfo info = api.getProfile(userId);
+				userInfoCache.put(info.getId(), new HaleConnectUserInfo(info.getId(),
+						info.getScreenName(), info.getFullName()));
+			} catch (ApiException e) {
+				throw new HaleConnectException(e.getMessage(), e);
+			}
+		}
+
+		return userInfoCache.get(userId);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getOrganisationInfo(java.lang.String)
+	 */
+	@Override
+	public HaleConnectOrganisationInfo getOrganisationInfo(String orgId)
+			throws HaleConnectException {
+
+		if (!this.isLoggedIn()) {
+			return null;
+		}
+
+		if (!orgInfoCache.containsKey(orgId)) {
+			OrganisationsApi api = UserServiceHelper.getOrganisationsApi(this,
+					this.getSession().getToken());
+			try {
+				OrganisationInfo org = api.getOrganisation(orgId);
+				orgInfoCache.put(org.getId(),
+						new HaleConnectOrganisationInfo(org.getId(), org.getName()));
+			} catch (ApiException e) {
+				throw new HaleConnectException(e.getMessage(), e);
+			}
+		}
+
+		return orgInfoCache.get(orgId);
 	}
 
 }

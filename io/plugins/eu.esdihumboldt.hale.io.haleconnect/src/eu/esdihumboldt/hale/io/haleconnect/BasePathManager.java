@@ -15,32 +15,20 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
-import java.util.List;
-
 /**
- * Details of a hale connect session
+ * Interface for hale connect base path managers.
  * 
  * @author Florian Esser
  */
-public interface HaleConnectSession {
+public interface BasePathManager extends BasePathResolver {
 
 	/**
-	 * @return User name that was used to log in to hale connect
+	 * Set the base path of a hale connect microservice (e.g.
+	 * "https://users.haleconnect.com/v1" for the user service)
+	 *
+	 * @param service service to set the base path for, usually one of the
+	 *            constants defined in {@link HaleConnectServices}
+	 * @param basePath Base path to set
 	 */
-	String getUsername();
-
-	/**
-	 * @return JSON Web Token associated with the session
-	 */
-	String getToken();
-
-	/**
-	 * @return ID of the logged-in user
-	 */
-	String getUserId();
-
-	/**
-	 * @return List of IDs of the organisations the user has a role in
-	 */
-	List<String> getOrganisationIds();
+	void setBasePath(String service, String basePath);
 }

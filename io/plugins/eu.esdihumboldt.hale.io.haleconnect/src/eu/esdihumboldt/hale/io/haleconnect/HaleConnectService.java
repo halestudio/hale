@@ -15,12 +15,42 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.io.InputStream;
+import java.util.List;
+
+import com.google.common.util.concurrent.ListenableFuture;
+
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+
 /**
- * hale connect service interface
+ * Facade for the hale connect microservices
  * 
  * @author Florian Esser
  */
 public interface HaleConnectService {
+
+	/**
+	 * @return the {@link BasePathManager} for this service implementation
+	 */
+	BasePathManager getBasePathManager();
+
+	/**
+	 * Adds a listener
+	 * 
+	 * @param listener the listener to add
+	 */
+	void addListener(HaleConnectServiceListener listener);
+
+	/**
+	 * Removes a listener
+	 * 
+	 * @param listener the listener to remove
+	 */
+	void removeListener(HaleConnectServiceListener listener);
+
+	/*
+	 * User service methods
+	 */
 
 	/**
 	 * Login to hale connect
@@ -60,25 +90,52 @@ public interface HaleConnectService {
 	boolean isLoggedIn();
 
 	/**
-	 * Set the base path to the hale connect user service (e.g.
-	 * "https://users.haleconnect.com/v1")
+	 * Get the profile of a user.
 	 * 
-	 * @param basePath Base path to set
+	 * @param userId ID of the user
+	 * @return user profile
+	 * @throws HaleConnectException thrown on any API exception
 	 */
-	void setBasePath(String basePath);
+	HaleConnectUserInfo getUserInfo(String userId) throws HaleConnectException;
 
 	/**
-	 * Adds a listener
+	 * Get information about an organisation
 	 * 
-	 * @param listener the listener to add
+	 * @param orgId ID of the organisation
+	 * @return org profile
+	 * @throws HaleConnectException thrown on any API exception
 	 */
-	void addListener(HaleConnectServiceListener listener);
+	HaleConnectOrganisationInfo getOrganisationInfo(String orgId) throws HaleConnectException;
+
+	/*
+	 * Project store methods
+	 */
 
 	/**
-	 * Removes a listener
+	 * Get a list of available hale connect transformation projects
 	 * 
-	 * @param listener the listener to remove
+	 * @return a list of available projects
+	 * @throws HaleConnectException thrown on any API error
 	 */
-	void removeListener(HaleConnectServiceListener listener);
+	List<HaleConnectProjectInfo> getProjects() throws HaleConnectException;
+
+	/**
+	 * Get a list of available hale connect transformation projects
+	 *
+	 * @return {@link ListenableFuture} of the result
+	 * @throws HaleConnectException thrown on any API error
+	 */
+	ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync() throws HaleConnectException;
+
+	/**
+	 * Load a transformation from hale connect
+	 * 
+	 * @param owner Project owner
+	 * @param projectId Project ID
+	 * @return A LocatableInputSupplier with an InputStream of the project data
+	 * @throws HaleConnectException thrown on any API errors
+	 */
+	LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId)
+			throws HaleConnectException;
 
 }

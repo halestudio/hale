@@ -50,7 +50,58 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Shell parent = HandlerUtil.getActiveShell(event);
+		HaleConnectLoginDialog loginDialog = createLoginDialog(parent);
+		if (loginDialog.open() == Dialog.OK) {
+			performLogin(loginDialog);
+		}
 
+		return null;
+	}
+
+	/**
+	 * Login to hale connect using the credentials entered in the given
+	 * {@link HaleConnectLoginDialog}.
+	 * 
+	 * @param loginDialog Login dialog with credentials
+	 * @return true if successfully logged in
+	 */
+	public static boolean performLogin(HaleConnectLoginDialog loginDialog) {
+		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
+		String username = loginDialog.getUsername();
+		String password = loginDialog.getPassword();
+		boolean saveCredentials = loginDialog.isSaveCredentials();
+		try {
+			if (hcs.login(username, password)) {
+				loginDialog.close();
+				if (saveCredentials) {
+					try {
+						HaleConnectUIPlugin.storeUsername(username);
+						HaleConnectUIPlugin.storePassword(password);
+					} catch (StorageException e) {
+						log.error("hale connect credentials could not be saved.", e);
+					}
+				}
+
+				log.userInfo("Login to hale connect successful.");
+				return true;
+			}
+			else {
+				log.userWarn("Login to hale connect failed, please check the credentials.");
+			}
+		} catch (HaleConnectException e) {
+			log.userError("An error occurred while trying to login to hale connect", e);
+		}
+
+		return false;
+	}
+
+	/**
+	 * Create a hale connect login dialog using the given {@link Shell}.
+	 * 
+	 * @param parent parent shell
+	 * @return the login dialog
+	 */
+	public static HaleConnectLoginDialog createLoginDialog(Shell parent) {
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
 
 		String username = "";
@@ -83,33 +134,7 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 				HaleConnectImages.getImageRegistry().get(HaleConnectImages.IMG_HCLOGO_DIALOG));
 		loginDialog.setUsername(username);
 		loginDialog.setPassword(password);
-
-		if (loginDialog.open() == Dialog.OK) {
-			try {
-				if (hcs.login(loginDialog.getUsername(), loginDialog.getPassword())) {
-					boolean save = loginDialog.isSaveCredentials();
-					loginDialog.close();
-
-					if (save) {
-						try {
-							HaleConnectUIPlugin.storeUsername(loginDialog.getUsername());
-							HaleConnectUIPlugin.storePassword(loginDialog.getPassword());
-						} catch (StorageException e) {
-							log.error("hale connect credentials could not be saved.", e);
-						}
-					}
-
-					log.userInfo("Login to hale connect successful.");
-				}
-				else {
-					log.userWarn("Login to hale connect failed, please check the credentials.");
-				}
-			} catch (HaleConnectException e) {
-				log.userError("An error occurred while trying to login to hale connect", e);
-			}
-		}
-
-		return null;
+		return loginDialog;
 	}
 
 }

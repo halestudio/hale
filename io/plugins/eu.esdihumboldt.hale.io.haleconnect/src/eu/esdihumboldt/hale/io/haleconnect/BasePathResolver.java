@@ -15,32 +15,21 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
-import java.util.List;
-
 /**
- * Details of a hale connect session
+ * Interface for resolving the base path of a hale connect service
  * 
  * @author Florian Esser
  */
-public interface HaleConnectSession {
+public interface BasePathResolver {
 
 	/**
-	 * @return User name that was used to log in to hale connect
+	 * Resolve the base path of a service.
+	 * 
+	 * The resolver must make sure that the base path does not end with a '/'.
+	 * 
+	 * @param service The service to resolve the base path of, usually one of
+	 *            the constants in {@link HaleConnectServices}
+	 * @return the base path if it could be resolved, null otherwise
 	 */
-	String getUsername();
-
-	/**
-	 * @return JSON Web Token associated with the session
-	 */
-	String getToken();
-
-	/**
-	 * @return ID of the logged-in user
-	 */
-	String getUserId();
-
-	/**
-	 * @return List of IDs of the organisations the user has a role in
-	 */
-	List<String> getOrganisationIds();
+	String getBasePath(String service);
 }

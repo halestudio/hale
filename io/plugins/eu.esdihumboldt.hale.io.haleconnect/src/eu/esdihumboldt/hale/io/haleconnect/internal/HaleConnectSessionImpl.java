@@ -15,6 +15,12 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.haleconnect.api.user.v1.model.UserInfo;
+
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession;
 
 /**
@@ -35,21 +41,31 @@ public class HaleConnectSessionImpl implements HaleConnectSession {
 	private final String token;
 
 	/**
+	 * Current user's profile
+	 */
+	private final UserInfo profile;
+
+	/**
 	 * Creates a session with an associated username and token
 	 * 
 	 * @param username user name
 	 * @param token JSON Web Token issued by hale connect
+	 * @param profile Profile of the logged-in user
 	 */
-	public HaleConnectSessionImpl(String username, String token) {
+	public HaleConnectSessionImpl(String username, String token, UserInfo profile) {
 		if (username == null || username.trim().isEmpty()) {
 			throw new IllegalArgumentException("username must not be empty");
 		}
 		if (token == null || token.trim().isEmpty()) {
 			throw new IllegalArgumentException("token must not be empty");
 		}
+		if (profile == null) {
+			throw new IllegalArgumentException("profile must not be null");
+		}
 
 		this.username = username;
 		this.token = token;
+		this.profile = profile;
 	}
 
 	/**
@@ -66,5 +82,28 @@ public class HaleConnectSessionImpl implements HaleConnectSession {
 	@Override
 	public String getToken() {
 		return token;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession#getUserId()
+	 */
+	@Override
+	public String getUserId() {
+		return profile.getId();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectSession#getOrganisationIds()
+	 */
+	@Override
+	public List<String> getOrganisationIds() {
+		List<String> result = new ArrayList<>();
+		if (profile.getOrgRoles() instanceof Map<?, ?>) {
+			@SuppressWarnings("unchecked")
+			Map<Object, Object> roleMap = (Map<Object, Object>) profile.getOrgRoles();
+			roleMap.keySet().forEach(k -> result.add(k.toString()));
+		}
+
+		return result;
 	}
 }

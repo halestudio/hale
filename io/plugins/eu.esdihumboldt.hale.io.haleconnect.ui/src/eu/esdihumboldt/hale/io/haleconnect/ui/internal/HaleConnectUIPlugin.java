@@ -24,6 +24,7 @@ import org.osgi.framework.BundleContext;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.ui.preferences.PreferenceConstants;
 import eu.esdihumboldt.hale.ui.HaleUI;
 
@@ -54,7 +55,12 @@ public class HaleConnectUIPlugin extends AbstractUIPlugin {
 		try {
 			HaleConnectService hcs = HaleUI.getServiceProvider()
 					.getService(HaleConnectService.class);
-			hcs.setBasePath(getStoredBasePath());
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
+					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS));
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.BUCKET_SERVICE,
+					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA));
+			hcs.getBasePathManager().setBasePath(HaleConnectServices.PROJECT_STORE,
+					getPreference(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS));
 		} catch (Throwable t) {
 			log.error("Error initializing HaleConnectService", t);
 		}
@@ -80,25 +86,28 @@ public class HaleConnectUIPlugin extends AbstractUIPlugin {
 				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-small.png"));
 		reg.put(HaleConnectImages.IMG_HCLOGO_PREFERENCES,
 				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-mini.png"));
+		reg.put(HaleConnectImages.IMG_HCLOGO_ICON,
+				imageDescriptorFromPlugin(PLUGIN_ID, "images/hale-connect-icon.png"));
 	}
 
 	/**
-	 * @return the hale connect base path stored in preferences
+	 * @param preference preference ID
+	 * @return the stored preference value
 	 */
-	public static String getStoredBasePath() {
+	public static String getPreference(String preference) {
 		String basePath = HaleConnectUIPlugin.getDefault().getPreferenceStore()
-				.getString(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS);
+				.getString(preference);
 		return basePath;
 	}
 
 	/**
-	 * Store a new hale connect base path in preferences
-	 * 
-	 * @param basePath new base pathj
+	 * Store a preference
+	 *
+	 * @param preference preference ID
+	 * @param value preference value
 	 */
-	public static void storeBasePath(String basePath) {
-		HaleConnectUIPlugin.getDefault().getPreferenceStore()
-				.setValue(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS, basePath);
+	public static void storePreference(String preference, String value) {
+		HaleConnectUIPlugin.getDefault().getPreferenceStore().setValue(preference, value);
 	}
 
 	/**

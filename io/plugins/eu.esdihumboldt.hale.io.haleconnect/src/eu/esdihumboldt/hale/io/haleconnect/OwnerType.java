@@ -15,32 +15,32 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
-import java.util.List;
-
 /**
- * Details of a hale connect session
+ * Owner type
  * 
  * @author Florian Esser
  */
-public interface HaleConnectSession {
+public enum OwnerType {
+	/**
+	 * 
+	 */
+	USER("user"),
 
 	/**
-	 * @return User name that was used to log in to hale connect
+	 * 
 	 */
-	String getUsername();
+	ORGANISATION("org");
+
+	private final String jsonValue;
+
+	private OwnerType(String jsonValue) {
+		this.jsonValue = jsonValue;
+	}
 
 	/**
-	 * @return JSON Web Token associated with the session
+	 * @return Owner type value for the hale connect service APIs
 	 */
-	String getToken();
-
-	/**
-	 * @return ID of the logged-in user
-	 */
-	String getUserId();
-
-	/**
-	 * @return List of IDs of the organisations the user has a role in
-	 */
-	List<String> getOrganisationIds();
+	public String getJsonValue() {
+		return jsonValue;
+	}
 }

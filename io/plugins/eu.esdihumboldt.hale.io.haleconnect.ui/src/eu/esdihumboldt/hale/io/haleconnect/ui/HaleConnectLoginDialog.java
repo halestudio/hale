@@ -189,10 +189,16 @@ public class HaleConnectLoginDialog extends TitleAreaDialog {
 		this.password = password;
 	}
 
+	/**
+	 * @return whether the "Save crendentials" box was checked
+	 */
 	public boolean isSaveCredentials() {
 		return this.saveCredentials;
 	}
 
+	/**
+	 * @param save whether to check the "Save crendentials" box
+	 */
 	public void setSaveCredentials(boolean save) {
 		this.saveCredentials = save;
 	}

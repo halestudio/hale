@@ -13,34 +13,25 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.haleconnect;
+package eu.esdihumboldt.hale.io.haleconnect
 
-import java.util.List;
+import groovy.transform.Immutable
 
 /**
- * Details of a hale connect session
+ * An owner in hale connect.
  * 
  * @author Florian Esser
  */
-public interface HaleConnectSession {
+@Immutable
+class Owner {
+	OwnerType type;
+	String id;
 
-	/**
-	 * @return User name that was used to log in to hale connect
-	 */
-	String getUsername();
+	boolean isUser() {
+		return OwnerType.USER.equals(type);
+	}
 
-	/**
-	 * @return JSON Web Token associated with the session
-	 */
-	String getToken();
-
-	/**
-	 * @return ID of the logged-in user
-	 */
-	String getUserId();
-
-	/**
-	 * @return List of IDs of the organisations the user has a role in
-	 */
-	List<String> getOrganisationIds();
+	boolean isOrganisation() {
+		return OwnerType.ORGANISATION.equals(type);
+	}
 }

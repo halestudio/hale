@@ -13,34 +13,17 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.haleconnect;
+package eu.esdihumboldt.hale.io.haleconnect.ui.projects
 
-import java.util.List;
+import eu.esdihumboldt.hale.io.haleconnect.Owner
 
 /**
- * Details of a hale connect session
- * 
+ * Configuration class for {@link HaleConnectLoadProjectWizard}
+ *  
  * @author Florian Esser
  */
-public interface HaleConnectSession {
-
-	/**
-	 * @return User name that was used to log in to hale connect
-	 */
-	String getUsername();
-
-	/**
-	 * @return JSON Web Token associated with the session
-	 */
-	String getToken();
-
-	/**
-	 * @return ID of the logged-in user
-	 */
-	String getUserId();
-
-	/**
-	 * @return List of IDs of the organisations the user has a role in
-	 */
-	List<String> getOrganisationIds();
+class LoadHaleConnectProjectConfig {
+	String projectId
+	String projectName
+	Owner owner
 }

@@ -15,32 +15,30 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
-import java.util.List;
-
 /**
- * Details of a hale connect session
+ * Constants for hale connect services
  * 
  * @author Florian Esser
  */
-public interface HaleConnectSession {
+public interface HaleConnectServices {
 
 	/**
-	 * @return User name that was used to log in to hale connect
+	 * User service
 	 */
-	String getUsername();
+	public static String USER_SERVICE = "user-service";
 
 	/**
-	 * @return JSON Web Token associated with the session
+	 * Bucket service
 	 */
-	String getToken();
+	public static String BUCKET_SERVICE = "bucket-service";
 
 	/**
-	 * @return ID of the logged-in user
+	 * Project store
 	 */
-	String getUserId();
+	public static String PROJECT_STORE = "project-store";
 
 	/**
-	 * @return List of IDs of the organisations the user has a role in
+	 * Project service
 	 */
-	List<String> getOrganisationIds();
+	public static String PROJECT_SERVICE = "project-service";
 }
