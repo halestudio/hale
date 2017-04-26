@@ -58,7 +58,8 @@ public class RegexAnalysis extends AbstractSingleTargetPropertyTransformation<Tr
 		String regexPattern = getParameters().get(PARAMETER_REGEX_PATTERN).get(0).as(String.class);
 		String outputFormat = getParameters().get(PARAMETER_OUTPUT_FORMAT).get(0).as(String.class);
 
-		// replace transformation variables in output format
+		// replace transformation variables in pattern and output format
+		regexPattern = getExecutionContext().getVariables().replaceVariables(regexPattern);
 		outputFormat = getExecutionContext().getVariables().replaceVariables(outputFormat);
 
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
