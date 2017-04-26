@@ -15,22 +15,25 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.ui.projects;
 
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
+
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard;
+import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
- * Wizard for loading projects from hale connect.
+ * Wizard for choosing a hale connect project.
  * 
  * @author Florian Esser
  */
-public class LoadHaleConnectProjectWizard
-		extends ConfigurationWizard<LoadHaleConnectProjectConfig> {
+public class ChooseHaleConnectProjectWizard extends ConfigurationWizard<HaleConnectProjectConfig> {
 
 	/**
 	 * Create a new wizard
 	 * 
 	 * @param configuration the configuration object
 	 */
-	public LoadHaleConnectProjectWizard(LoadHaleConnectProjectConfig configuration) {
+	public ChooseHaleConnectProjectWizard(HaleConnectProjectConfig configuration) {
 		super(configuration);
 		setWindowTitle("Load project from hale connect");
 	}
@@ -39,7 +42,7 @@ public class LoadHaleConnectProjectWizard
 	 * @see eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard#validate(java.lang.Object)
 	 */
 	@Override
-	protected boolean validate(LoadHaleConnectProjectConfig configuration) {
+	protected boolean validate(HaleConnectProjectConfig configuration) {
 		return configuration.getProjectId() != null && !configuration.getProjectId().isEmpty();
 	}
 
@@ -47,9 +50,28 @@ public class LoadHaleConnectProjectWizard
 	public void addPages() {
 		super.addPages();
 
-		LoadHaleConnectProjectWizardPage selectProjectPage = new LoadHaleConnectProjectWizardPage(
+		ChooseHaleConnectProjectWizardPage selectProjectPage = new ChooseHaleConnectProjectWizardPage(
 				this);
 		addPage(selectProjectPage);
+	}
+
+	/**
+	 * Open a {@link ChooseHaleConnectProjectWizard}
+	 * 
+	 * @return the selected project or null if none was selected
+	 */
+	public static HaleConnectProjectConfig openSelectProject() {
+		HaleConnectProjectConfig config = new HaleConnectProjectConfig();
+		ChooseHaleConnectProjectWizard wizard = new ChooseHaleConnectProjectWizard(config);
+		HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),
+				wizard);
+		dialog.setMinimumPageSize(800, 300);
+
+		if (dialog.open() == WizardDialog.OK) {
+			return wizard.getConfiguration();
+		}
+
+		return null;
 	}
 
 }

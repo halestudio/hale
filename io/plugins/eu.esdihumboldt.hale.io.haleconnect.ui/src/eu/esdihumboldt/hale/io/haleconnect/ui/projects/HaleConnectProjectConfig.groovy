@@ -18,11 +18,11 @@ package eu.esdihumboldt.hale.io.haleconnect.ui.projects
 import eu.esdihumboldt.hale.io.haleconnect.Owner
 
 /**
- * Configuration class for {@link HaleConnectLoadProjectWizard}
+ * Configuration class for {@link ChooseHaleConnectProjectWizard}
  *  
  * @author Florian Esser
  */
-class LoadHaleConnectProjectConfig {
+class HaleConnectProjectConfig {
 	String projectId
 	String projectName
 	Owner owner

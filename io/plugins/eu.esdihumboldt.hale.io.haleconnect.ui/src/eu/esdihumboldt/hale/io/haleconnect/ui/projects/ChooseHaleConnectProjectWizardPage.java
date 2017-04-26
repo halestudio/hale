@@ -66,15 +66,16 @@ import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard;
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizardPage;
 
 /**
- * Wizard page for listing and selecting hale connect projects for import.
+ * Wizard page for listing and choosing one of the available hale connect
+ * projects.
  * 
  * @author Florian Esser
  */
-public class LoadHaleConnectProjectWizardPage
-		extends ConfigurationWizardPage<LoadHaleConnectProjectConfig> {
+public class ChooseHaleConnectProjectWizardPage
+		extends ConfigurationWizardPage<HaleConnectProjectConfig> {
 
 	private static final ALogger log = ALoggerFactory
-			.getLogger(LoadHaleConnectProjectWizardPage.class);
+			.getLogger(ChooseHaleConnectProjectWizardPage.class);
 	private static final OwnerFilterEntry NULL_FILTER = new OwnerFilterEntry(null, "All projects");
 
 	private final HaleConnectService haleConnect;
@@ -89,8 +90,8 @@ public class LoadHaleConnectProjectWizardPage
 	 * @param wizard Wizard this page is associated with
 	 * 
 	 */
-	public LoadHaleConnectProjectWizardPage(
-			ConfigurationWizard<LoadHaleConnectProjectConfig> wizard) {
+	public ChooseHaleConnectProjectWizardPage(
+			ConfigurationWizard<HaleConnectProjectConfig> wizard) {
 		super(wizard, "hcLoadProject");
 		setTitle("Load project");
 		setMessage("Please select a project");
@@ -102,7 +103,7 @@ public class LoadHaleConnectProjectWizardPage
 	 * @see eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizardPage#updateConfiguration(java.lang.Object)
 	 */
 	@Override
-	public boolean updateConfiguration(LoadHaleConnectProjectConfig configuration) {
+	public boolean updateConfiguration(HaleConnectProjectConfig configuration) {
 		if (projects.getSelection().isEmpty()) {
 			return false;
 		}
@@ -134,18 +135,6 @@ public class LoadHaleConnectProjectWizardPage
 
 		ownerFilter = new ComboViewer(page);
 		GridDataFactory.fillDefaults().grab(false, false).applyTo(ownerFilter.getControl());
-//		ownerFilter.setContentProvider(new EnumContentProvider() {
-//
-//			@Override
-//			public Object[] getElements(Object inputElement) {
-//				Object[] values = super.getElements(inputElement);
-//				// add a NoObject
-//				values = Arrays.copyOf(values, values.length + 1, Object[].class);
-//				values[values.length - 1] = NullFilter.VALUE;
-//				return values;
-//			}
-//
-//		});
 		ownerFilter.setContentProvider(new IStructuredContentProvider() {
 
 			@Override
