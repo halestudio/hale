@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
@@ -293,20 +294,16 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					throw new IOException("Can not create directory " + newDirectory.toString(), e);
 				}
 
-				// the filename
-				String name = path.toString().substring(path.lastIndexOf("/") + 1, path.length());
+				// Extract the file name from pathUri.getPath().
+				// This will produce a non-URL-encoded file name to be used in
+				// the File(File parent, String child) constructor below
+				String fileName = FilenameUtils.getName(pathUri.getPath().toString());
 
-				// remove any query string from the filename
-				int queryIndex = name.indexOf('?');
-				if (queryIndex >= 0) {
-					name = name.substring(0, queryIndex);
+				if (path.isEmpty()) {
+					fileName = "file";
 				}
 
-				if (name.isEmpty()) {
-					name = "file";
-				}
-
-				File newFile = new File(newDirectory, name);
+				File newFile = new File(newDirectory, fileName);
 				Path target = newFile.toPath();
 
 				// retrieve the resource advisor
@@ -322,8 +319,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				progress.setCurrentTask("Copying resource at " + path);
 				ra.copyResource(input, target, contentType, includeWebResources, reporter);
 
+				// Extract the URL-encoded file name of the copied resource and
+				// build the new relative resource path
+				String resourceName = FilenameUtils.getName(target.toUri().toString());
+				String newPath = resourceFolder + "/" + resourceName;
+
 				// store new path for resource
-				String newPath = resourceFolder + "/" + name;
 				handledResources.put(pathUri, newPath);
 				// update the provider configuration
 				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(newPath));
