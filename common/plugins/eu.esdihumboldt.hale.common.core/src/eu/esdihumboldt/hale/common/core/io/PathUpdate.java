@@ -16,8 +16,15 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
+import java.text.MessageFormat;
 
+import org.apache.commons.io.FilenameUtils;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.io.IOUtils;
 import eu.esdihumboldt.util.resource.Resources;
 
@@ -28,6 +35,8 @@ import eu.esdihumboldt.util.resource.Resources;
  * @author Kai Schwierczek
  */
 public class PathUpdate {
+
+	private static final ALogger log = ALoggerFactory.getLogger(PathUpdate.class);
 
 	private final URI oldLocation;
 	private final URI newLocation;
@@ -129,10 +138,36 @@ public class PathUpdate {
 			if (newLocation != null) {
 				URI newAbsolute = newLocation.resolve(uri);
 				if (HaleIO.testStream(newAbsolute, allowResource)) {
-					if (keepRelative)
+					if (keepRelative) {
 						return uri;
-					else
+					}
+					else {
 						return newAbsolute;
+					}
+				}
+				else {
+					// Check if the resource file name needs
+					// to be URL-encoded first (for project archives
+					// that were created w/ hale studio 3.2.0 and before)
+					String resourcePath = FilenameUtils.getPath(uri.toString());
+					String resourceFileName = FilenameUtils.getName(uri.toString());
+					try {
+						String encodedPath = resourcePath
+								+ URLEncoder.encode(resourceFileName, "UTF-8");
+						URI encodedUri = URI.create(encodedPath);
+						newAbsolute = newLocation.resolve(encodedUri);
+						if (HaleIO.testStream(newAbsolute, allowResource)) {
+							if (keepRelative) {
+								return encodedUri;
+							}
+							else {
+								return newAbsolute;
+							}
+						}
+					} catch (UnsupportedEncodingException e) {
+						log.debug(MessageFormat.format("Could not URL-encode \"{0}\"",
+								resourceFileName), e);
+					}
 				}
 			}
 			if (oldLocation != null) {
