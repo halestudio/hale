@@ -76,7 +76,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 	/**
 	 * Provider ID of the mapping exporter XXX instead store the descriptor?
 	 */
-	private static final String ID_MAPPING_EXPORT = "eu.esdihumboldt.hale.io.htmlexporter";
+	private static final String ID_MAPPING_EXPORT = "eu.esdihumboldt.hale.io.html.svg.mapping";
 
 	private File tempMappingDir;
 
@@ -152,8 +152,8 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 						public VelocityContext call() throws Exception {
 							VelocityContext context = new VelocityContext();
 
-							context.put("projects", ExampleProjectExtension.getInstance()
-									.getElements());
+							context.put("projects",
+									ExampleProjectExtension.getInstance().getElements());
 
 							return context;
 						}
@@ -232,15 +232,10 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 	 */
 	private InputStream getMappingContent(String projectId) {
 		if (!mappingDocExportInitialized) {
-			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
+			mappingDocExport = HaleIO.createIOProvider(AlignmentWriter.class, null,
 					ID_MAPPING_EXPORT);
-
-			if (descriptor != null) {
-				try {
-					mappingDocExport = (AlignmentWriter) descriptor.createExtensionObject();
-				} catch (Throwable e) {
-					log.error("Could not create mapping documentation exporter.", e);
-				}
+			if (mappingDocExport == null) {
+				log.error("Could not create mapping documentation exporter.");
 			}
 
 			mappingDocExportInitialized = true;
@@ -385,17 +380,18 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 	 *             the given ID is not found
 	 */
 	@SuppressWarnings("unchecked")
-	private void executeProvider(@SuppressWarnings("rawtypes") IOAdvisor advisor,
-			String providerId, IOProvider provider) throws Exception {
+	private void executeProvider(@SuppressWarnings("rawtypes") IOAdvisor advisor, String providerId,
+			IOProvider provider) throws Exception {
 		if (provider == null) {
 			// find and create the provider
-			IOProviderDescriptor descriptor = IOProviderExtension.getInstance().getFactory(
-					providerId);
+			IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
+					.getFactory(providerId);
 			if (descriptor != null) {
 				provider = descriptor.createExtensionObject();
 			}
 			else {
-				throw new IllegalStateException("I/O provider with ID " + providerId + " not found");
+				throw new IllegalStateException(
+						"I/O provider with ID " + providerId + " not found");
 			}
 		}
 
