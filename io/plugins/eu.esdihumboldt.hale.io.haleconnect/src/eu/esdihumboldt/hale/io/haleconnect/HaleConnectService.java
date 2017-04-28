@@ -234,7 +234,7 @@ public interface HaleConnectService {
 	 *         fails
 	 * @throws HaleConnectException thrown on any API exception
 	 */
-	ListenableFuture<Boolean> uploadProjectFileAync(String projectId, Owner owner, File file,
+	ListenableFuture<Boolean> uploadProjectFileAsync(String projectId, Owner owner, File file,
 			ProgressIndicator progress) throws HaleConnectException;
 
 	/**

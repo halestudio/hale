@@ -383,7 +383,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	@Override
-	public ListenableFuture<Boolean> uploadProjectFileAync(String projectId, Owner owner, File file,
+	public ListenableFuture<Boolean> uploadProjectFileAsync(String projectId, Owner owner, File file,
 			ProgressIndicator progress) throws HaleConnectException {
 
 		if (!this.isLoggedIn()) {
