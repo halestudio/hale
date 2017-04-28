@@ -22,6 +22,8 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -43,6 +45,8 @@ import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
  * @author Florian Esser
  */
 public class HaleConnectProjectWriter extends ArchiveProjectWriter {
+
+	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectProjectWriter.class);
 
 	/**
 	 * Owner of the uploaded project
@@ -98,6 +102,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		}
 
 		URI location = getTarget().getLocation();
+		Project project = getProject();
 
 		String projectId;
 		Owner owner;
@@ -121,10 +126,11 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 						MessageFormat.format("Unknown owner type: {0}", ownerType));
 			}
 			owner = new Owner(ownerType, ownerId);
-			Project project = getProject();
 			try {
 				projectId = haleConnect.createProject(project.getName(), project.getAuthor(), owner,
 						enableVersioning);
+				haleConnect.setProjectSharingOptions(projectId, owner,
+						new SharingOptions(publicAccess));
 			} catch (HaleConnectException e) {
 				throw new IOException(e.getMessage(), e);
 			}
@@ -140,12 +146,21 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 
 		boolean result;
 		try {
-			haleConnect.setProjectSharingOptions(projectId, owner,
-					new SharingOptions(publicAccess));
 			result = haleConnect.uploadProjectFile(projectId, owner, projectArchive, progress);
-
 		} catch (HaleConnectException e) {
 			throw new IOException(e.getMessage(), e);
+		}
+
+		// Make sure the bucket name corresponds to possibly updated project
+		// name
+		try {
+			haleConnect.setProjectName(projectId, owner, project.getName());
+		} catch (HaleConnectException e) {
+			// This is non-fatal
+			log.warn(MessageFormat.format(
+					"Unable to update project bucket name for project {0}: {1}",
+					HaleConnectUrnBuilder.buildProjectUrn(owner, projectId).toString(),
+					e.getMessage()), e);
 		}
 
 		this.clientAccessUrl = HaleConnectUrnBuilder.buildClientAccessUrl(
