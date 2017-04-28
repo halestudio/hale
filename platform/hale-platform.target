@@ -40,7 +40,7 @@
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.3.0.i20170428"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/d4954713396099c6ce01415cf0927f54fc49a813/updatesites/platform"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/91d2e1a68c325eddac229429ece5e502f9e2050b/updatesites/platform"/>
 </location>
 </locations>
 </target>
