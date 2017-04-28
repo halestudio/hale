@@ -13,17 +13,22 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.haleconnect.ui.projects
+package eu.esdihumboldt.hale.io.haleconnect.project
 
-import eu.esdihumboldt.hale.io.haleconnect.Owner
+import com.google.gson.annotations.SerializedName
+
+import groovy.transform.Immutable
 
 /**
- * Configuration class for {@link HaleConnectLoadProjectWizard}
- *  
+ * Options for sharing transformation projects on hale connect.
+ * 
  * @author Florian Esser
  */
-class LoadHaleConnectProjectConfig {
-	String projectId
-	String projectName
-	Owner owner
+@Immutable
+class SharingOptions {
+	/**
+	 * Controls whether the shared project is publicly visible
+	 */
+	@SerializedName("public")
+	boolean publicAccess;
 }

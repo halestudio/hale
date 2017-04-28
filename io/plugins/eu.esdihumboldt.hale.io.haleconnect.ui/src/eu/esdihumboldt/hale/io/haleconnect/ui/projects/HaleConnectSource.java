@@ -29,7 +29,6 @@ import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -54,15 +53,12 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
-import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
 /**
  * Provider source for hale connect projects
  * 
  * @author Florian Esser
- * @param
- * 			<P>
- *            Import provider
+ * @param <P> Import provider
  * 
  */
 public class HaleConnectSource<P extends ImportProvider> extends AbstractProviderSource<P> {
@@ -71,7 +67,7 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 	private Button loginButton;
 	private StringFieldEditor projectName;
 	private Button selectProjectButton;
-	private LoadHaleConnectProjectConfig selectedProject;
+	private HaleConnectProjectConfig selectedProject;
 	private Set<IContentType> supportedTypes;
 
 	/**
@@ -134,12 +130,10 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 
 			@Override
 			public void mouseDown(MouseEvent e) {
-				selectProject(projectName);
+				selectProject();
 			}
 
 		});
-
-//		Select button gets disabled and project name editor enabled after login?! 
 
 		projectName.setPropertyChangeListener(new IPropertyChangeListener() {
 
@@ -168,7 +162,7 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				selectProject(projectName);
+				selectProject();
 			}
 		});
 
@@ -234,18 +228,14 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 		super.updateContentType();
 	}
 
-	private void selectProject(StringFieldEditor projectIdEditor) {
-		LoadHaleConnectProjectConfig config = new LoadHaleConnectProjectConfig();
-		LoadHaleConnectProjectWizard wizard = new LoadHaleConnectProjectWizard(config);
-		HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),
-				wizard);
-		dialog.setMinimumPageSize(800, 300);
-
-		if (dialog.open() == WizardDialog.OK) {
-			selectedProject = wizard.getConfiguration();
-			projectIdEditor.setStringValue(selectedProject.getProjectName());
+	private void selectProject() {
+		selectedProject = ChooseHaleConnectProjectWizard.openSelectProject();
+		if (selectedProject != null) {
+			projectName.setStringValue(selectedProject.getProjectName());
 		}
-
+		else {
+			projectName.setStringValue("");
+		}
 	}
 
 	/**

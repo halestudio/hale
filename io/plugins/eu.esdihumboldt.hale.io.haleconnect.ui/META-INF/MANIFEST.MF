@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  de.fhg.igd.slf4jplus,
  groovy;bundle-version="2.3.7"
 Export-Package: eu.esdihumboldt.hale.io.haleconnect.ui,
- eu.esdihumboldt.hale.io.haleconnect.ui.preferences
+ eu.esdihumboldt.hale.io.haleconnect.ui.preferences,
+ eu.esdihumboldt.hale.io.haleconnect.ui.projects
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectUIPlugin
 Bundle-ClassPath: .

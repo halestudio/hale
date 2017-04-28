@@ -12,5 +12,33 @@
          </service>
       </services>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <action
+            id="eu.esdihumboldt.hale.io.haleconnect.share"
+            name="Share project"
+            type="eu.esdihumboldt.hale.common.core.io.project.ProjectWriter">
+      </action>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectWriter"
+            id="eu.esdihumboldt.hale.io.haleconnect.uploader"
+            name="hale connect transformation project">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.haleconnect.zip">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="hcp"
+            id="eu.esdihumboldt.hale.io.haleconnect.zip"
+            name="hale connect project"
+            priority="normal">
+      </content-type>
+   </extension>
 
 </plugin>

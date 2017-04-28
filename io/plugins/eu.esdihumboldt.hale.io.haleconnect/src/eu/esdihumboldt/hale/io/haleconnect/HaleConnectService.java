@@ -15,12 +15,15 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
 import com.google.common.util.concurrent.ListenableFuture;
 
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.project.SharingOptions;
 
 /**
  * Facade for the hale connect microservices
@@ -28,6 +31,31 @@ import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
  * @author Florian Esser
  */
 public interface HaleConnectService {
+
+	/**
+	 * Permission to read resources
+	 */
+	public static final String PERMISSION_READ = "read";
+
+	/**
+	 * Permission to edit resources
+	 */
+	public static final String PERMISSION_EDIT = "edit";
+
+	/**
+	 * Permission to create resources
+	 */
+	public static final String PERMISSION_CREATE = "create";
+
+	/**
+	 * Permission to delete resources
+	 */
+	public static final String PERMISSION_DELETE = "delete";
+
+	/**
+	 * The resource type for transformation projects
+	 */
+	public static final String RESOURCE_TRANSFORMATION_PROJECT = "TransformationProject";
 
 	/**
 	 * @return the {@link BasePathManager} for this service implementation
@@ -107,9 +135,39 @@ public interface HaleConnectService {
 	 */
 	HaleConnectOrganisationInfo getOrganisationInfo(String orgId) throws HaleConnectException;
 
+	/**
+	 * Test if the currently logged on user has the specified permission
+	 * 
+	 * @param resourceType The resource type to test, usually one of the
+	 *            <code>RESOURCE_</code> constants defined in
+	 *            {@link HaleConnectService}.
+	 * @param role The assumed role. This has to be either <code>user</code> (to
+	 *            test if the user has a permission in his own right) or the ID
+	 *            of an organisation (to test if a user has a permission on
+	 *            behalf of an organisation).
+	 * @param permission the permission to test, usually one of the
+	 *            <code>PERMISSION_</code> constants defined in
+	 *            {@link HaleConnectService}.
+	 * @return true if the user has the given permission
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean testUserPermission(String resourceType, String role, String permission)
+			throws HaleConnectException;
+
 	/*
 	 * Project store methods
 	 */
+
+	/**
+	 * Get information on a project.
+	 * 
+	 * @param owner Owner of the project
+	 * @param projectId ID of the project
+	 * @return Information on the specified project or null if the project does
+	 *         not exist
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	HaleConnectProjectInfo getProject(Owner owner, String projectId) throws HaleConnectException;
 
 	/**
 	 * Get a list of available hale connect transformation projects
@@ -137,5 +195,82 @@ public interface HaleConnectService {
 	 */
 	LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId)
 			throws HaleConnectException;
+
+	/**
+	 * Create a new transformation project
+	 * 
+	 * @param name Project name
+	 * @param author Project author
+	 * @param owner Project owner
+	 * @param versionControl whether to activate version control for the project
+	 * @return the project ID
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	String createProject(String name, String author, Owner owner, boolean versionControl)
+			throws HaleConnectException;
+
+	/**
+	 * Upload a project file
+	 * 
+	 * @param projectId Transformation project ID
+	 * @param owner Project owner
+	 * @param file the file to upload
+	 * @param progress a progress indicator
+	 * @return true if the upload was successful
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean uploadProjectFile(String projectId, Owner owner, File file, ProgressIndicator progress)
+			throws HaleConnectException;
+
+	/**
+	 * Upload a project asynchronously
+	 * 
+	 * @param projectId Transformation project ID
+	 * @param owner Project owner
+	 * @param file the file to upload
+	 * @param progress a progress indicator
+	 * @return a {@link ListenableFuture} whose value will be set to true upon
+	 *         successful completion of the request or false when the request
+	 *         fails
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	ListenableFuture<Boolean> uploadProjectFileAsync(String projectId, Owner owner, File file,
+			ProgressIndicator progress) throws HaleConnectException;
+
+	/**
+	 * Set the sharing options for a transformation project
+	 * 
+	 * @param projectId Transformation project ID
+	 * @param owner Project owner
+	 * @param options the options to set
+	 * @return true if the options were successfully set
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean setProjectSharingOptions(String projectId, Owner owner, SharingOptions options)
+			throws HaleConnectException;
+
+	/**
+	 * Set the project name
+	 * 
+	 * @param projectId Transformation project ID
+	 * @param owner Project owner
+	 * @param name Project name to set
+	 * @return true if the name was successfully set
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean setProjectName(String projectId, Owner owner, String name) throws HaleConnectException;
+
+	/**
+	 * Test if the currently logged on user has the specified permission on a
+	 * transformation project
+	 * 
+	 * @param permission the permission to test, usually one of the
+	 *            <code>PERMISSION_</code> constants defined in
+	 *            {@link HaleConnectService}.
+	 * @param projectId Transformation project ID
+	 * @return true if the user has the given permission
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean testProjectPermission(String permission, String projectId) throws HaleConnectException;
 
 }

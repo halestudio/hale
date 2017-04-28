@@ -25,6 +25,11 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	public static final String HALE_CONNECT_BASEPATH_DATA_DEFAULT = "https://data.haleconnect.com";
 
+	/**
+	 * Default base path of the hale connect web client
+	 */
+	public static final String HALE_CONNECT_BASEPATH_CLIENT_DEFAULT = "https://www.haleconnect.com/#";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -41,6 +46,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				HALE_CONNECT_BASEPATH_DATA_DEFAULT);
 		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_PROJECTS,
 				HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT);
+		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_CLIENT,
+				HALE_CONNECT_BASEPATH_CLIENT_DEFAULT);
 	}
 
 }

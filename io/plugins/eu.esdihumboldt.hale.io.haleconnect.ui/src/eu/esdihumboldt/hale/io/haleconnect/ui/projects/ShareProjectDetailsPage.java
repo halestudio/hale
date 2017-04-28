@@ -13,37 +13,26 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.haleconnect;
+package eu.esdihumboldt.hale.io.haleconnect.ui.projects;
+
+import eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectWriter;
+import eu.esdihumboldt.hale.ui.io.project.AbstractProjectDetailsPage;
 
 /**
- * Constants for hale connect services
+ * Wizard page that allows changing project name and author.
  * 
  * @author Florian Esser
  */
-public interface HaleConnectServices {
+public class ShareProjectDetailsPage
+		extends AbstractProjectDetailsPage<HaleConnectProjectWriter, ShareProjectWizard> {
 
 	/**
-	 * User service
+	 * Default constructor
 	 */
-	public static String WEB_CLIENT = "hale-connect";
+	public ShareProjectDetailsPage() {
+		super("project.share.details");
+		setTitle("Project details");
+		setDescription("Please specify project name and author.");
+	}
 
-	/**
-	 * User service
-	 */
-	public static String USER_SERVICE = "user-service";
-
-	/**
-	 * Bucket service
-	 */
-	public static String BUCKET_SERVICE = "bucket-service";
-
-	/**
-	 * Project store
-	 */
-	public static String PROJECT_STORE = "project-store";
-
-	/**
-	 * Project service
-	 */
-	public static String PROJECT_SERVICE = "project-service";
 }

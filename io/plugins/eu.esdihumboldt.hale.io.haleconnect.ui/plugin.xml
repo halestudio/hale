@@ -11,9 +11,23 @@
             id="eu.esdihumboldt.hale.io.haleconnect.ui.logout"
             name="Logout and clear credentials">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.io.haleconnect.ui.share"
+            name="Share...">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
+      <menuContribution
+      		allPopups="false"
+      		locationURI="menu:file?after=saveAlignmentProjectAs">
+         <command
+               commandId="eu.esdihumboldt.hale.io.haleconnect.ui.share"
+               id="shareProject"
+               label="Share project..."
+               style="push">
+         </command>
+      </menuContribution>
       <menuContribution
             allPopups="false"
             locationURI="menu:file?after=HALE.separator1">
@@ -52,6 +66,18 @@
       <handler
             class="eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLogoutHandler"
             commandId="eu.esdihumboldt.hale.io.haleconnect.ui.logout">
+         <activeWhen>
+            <with
+                  variable="eu.esdihumboldt.hale.io.haleconnect.ui.login.status">
+               <equals
+                     value="true">
+               </equals>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.io.haleconnect.ui.projects.ShareProjectHandler"
+            commandId="eu.esdihumboldt.hale.io.haleconnect.ui.share">
          <activeWhen>
             <with
                   variable="eu.esdihumboldt.hale.io.haleconnect.ui.login.status">
@@ -103,6 +129,36 @@
             name="hale connect"
             priority="0">
       </source>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.target">
+      <target
+            class="eu.esdihumboldt.hale.io.haleconnect.ui.projects.HaleConnectTarget"
+            id="haleconnect">
+      </target>
+      <providerTarget
+            provider="eu.esdihumboldt.hale.io.haleconnect.uploader"
+            target="haleconnect">
+      </providerTarget>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.action">
+      <action-ui
+            action="eu.esdihumboldt.hale.io.haleconnect.share"
+            id="eu.esdihumboldt.hale.io.haleconnect.share"
+            label="hale connect project..."
+            priority="0"
+            projectResource="false"
+            wizard="eu.esdihumboldt.hale.io.haleconnect.ui.projects.ShareProjectWizard">
+      </action-ui>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.action">
+      <advisor
+            action="eu.esdihumboldt.hale.io.haleconnect.share"
+            class="eu.esdihumboldt.hale.io.haleconnect.ui.projects.HaleConnectProjectExportAdvisor"
+            id="eu.esdihumboldt.hale.io.haleconnect.share.advisor">
+      </advisor>
    </extension>
 
 </plugin>

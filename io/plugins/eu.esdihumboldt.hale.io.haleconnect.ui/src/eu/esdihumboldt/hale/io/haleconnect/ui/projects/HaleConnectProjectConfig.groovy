@@ -13,37 +13,17 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.haleconnect;
+package eu.esdihumboldt.hale.io.haleconnect.ui.projects
+
+import eu.esdihumboldt.hale.io.haleconnect.Owner
 
 /**
- * Constants for hale connect services
- * 
+ * Configuration class for {@link ChooseHaleConnectProjectWizard}
+ *  
  * @author Florian Esser
  */
-public interface HaleConnectServices {
-
-	/**
-	 * User service
-	 */
-	public static String WEB_CLIENT = "hale-connect";
-
-	/**
-	 * User service
-	 */
-	public static String USER_SERVICE = "user-service";
-
-	/**
-	 * Bucket service
-	 */
-	public static String BUCKET_SERVICE = "bucket-service";
-
-	/**
-	 * Project store
-	 */
-	public static String PROJECT_STORE = "project-store";
-
-	/**
-	 * Project service
-	 */
-	public static String PROJECT_SERVICE = "project-service";
+class HaleConnectProjectConfig {
+	String projectId
+	String projectName
+	Owner owner
 }

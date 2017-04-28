@@ -89,6 +89,26 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		return createProjectArchive(getTarget().getOutput(), reporter, progress);
+	}
+
+	/**
+	 * Creates the project archive.
+	 * 
+	 * @param target {@link OutputStream} to write the archive to
+	 * @param reporter the reporter to use for the execution report
+	 * @param progress the progress indicator
+	 * @return the execution report
+	 * @throws IOException if an I/O operation fails
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *             configured properly
+	 */
+	public IOReport createProjectArchive(OutputStream target, IOReporter reporter,
+			ProgressIndicator progress) throws IOException, IOProviderConfigurationException {
+
+		ZipOutputStream zip = new ZipOutputStream(target);
+
 		// all files related to the project are copied into a temporary
 		// directory first and then packed into a zip file
 
@@ -103,7 +123,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		}
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
-		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
 		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).as(Boolean.class, false);
@@ -169,7 +188,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		return report;
 	}
 
-	private ProjectFileInfo getAlignmentFile(Project project) {
+	/**
+	 * Get a project's alignment file
+	 * 
+	 * @param project the project
+	 * @return info object for the alignment file
+	 */
+	protected ProjectFileInfo getAlignmentFile(Project project) {
 		for (ProjectFileInfo pfi : project.getProjectFiles())
 			if (pfi.getName().equals("alignment.xml")) {
 				return pfi;
@@ -177,8 +202,16 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		return null;
 	}
 
-	// update the resources and copy them into target directory
-	private void updateResources(File targetDirectory, boolean includeWebResources,
+	/**
+	 * Update the resources and copy them into the target directory
+	 * 
+	 * @param targetDirectory target directory
+	 * @param includeWebResources whether to include web resources in the copy
+	 * @param progress the progress indicator
+	 * @param reporter the reporter to use for the execution report
+	 * @throws IOException if an I/O operation fails
+	 */
+	protected void updateResources(File targetDirectory, boolean includeWebResources,
 			ProgressIndicator progress, IOReporter reporter) throws IOException {
 		progress.begin("Copy resources", ProgressIndicator.UNKNOWN);
 		try {
@@ -198,9 +231,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
 				// import not possible due to cycle errors
-				if (excludeDataFiles
-						&& resource.getActionId().equals(
-								"eu.esdihumboldt.hale.io.instance.read.source")) {
+				if (excludeDataFiles && resource.getActionId()
+						.equals("eu.esdihumboldt.hale.io.instance.read.source")) {
 					// delete reference in project file
 					iter.remove();
 					continue;
@@ -214,8 +246,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				try {
 					pathUri = new URI(path);
 				} catch (URISyntaxException e1) {
-					reporter.error(new IOMessageImpl("Skipped resource because of invalid URI: "
-							+ path, e1));
+					reporter.error(new IOMessageImpl(
+							"Skipped resource because of invalid URI: " + path, e1));
 					continue;
 				}
 				if (!pathUri.isAbsolute()) {
@@ -276,8 +308,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 				else {
 					// now can't open that, can we?
-					reporter.error(new IOMessageImpl(
-							"Skipped resource because it cannot be loaded from "
+					reporter.error(
+							new IOMessageImpl("Skipped resource because it cannot be loaded from "
 									+ pathUri.toString(), null));
 					continue;
 				}
@@ -310,8 +342,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				Value ct = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 				IContentType contentType = null;
 				if (ct != null) {
-					contentType = HalePlatform.getContentTypeManager().getContentType(
-							ct.as(String.class));
+					contentType = HalePlatform.getContentTypeManager()
+							.getContentType(ct.as(String.class));
 				}
 				ResourceAdvisor ra = ResourceAdvisorExtension.getInstance().getAdvisor(contentType);
 
