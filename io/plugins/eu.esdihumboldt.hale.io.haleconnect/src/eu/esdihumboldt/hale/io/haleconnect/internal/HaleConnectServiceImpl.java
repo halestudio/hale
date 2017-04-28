@@ -685,4 +685,29 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		return false;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#setProjectName(java.lang.String,
+	 *      eu.esdihumboldt.hale.io.haleconnect.Owner, java.lang.String)
+	 */
+	@Override
+	public boolean setProjectName(String projectId, Owner owner, String name)
+			throws HaleConnectException {
+
+		// Build custom call because BucketsApi.setProjectName() is broken
+		// (does not support plain text body)
+
+		String path = MessageFormat.format("/buckets/{0}/{1}/{2}/name",
+				owner.getType().getJsonValue(), owner.getId(), projectId);
+		Feedback feedback = ProjectStoreHelper.executePlainTextCallWithFeedback("PUT", path, name,
+				this, this.getSession().getToken());
+
+		if (feedback.getError()) {
+			log.error(MessageFormat.format(
+					"Error setting name \"{0}\" for hale connect project {1}", name, projectId));
+			return false;
+		}
+
+		return true;
+	}
+
 }

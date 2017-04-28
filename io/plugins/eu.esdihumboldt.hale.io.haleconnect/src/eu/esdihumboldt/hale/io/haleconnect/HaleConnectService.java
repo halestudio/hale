@@ -250,6 +250,17 @@ public interface HaleConnectService {
 			throws HaleConnectException;
 
 	/**
+	 * Set the project name
+	 * 
+	 * @param projectId Transformation project ID
+	 * @param owner Project owner
+	 * @param name Project name to set
+	 * @return true if the name was successfully set
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	boolean setProjectName(String projectId, Owner owner, String name) throws HaleConnectException;
+
+	/**
 	 * Test if the currently logged on user has the specified permission on a
 	 * transformation project
 	 * 
