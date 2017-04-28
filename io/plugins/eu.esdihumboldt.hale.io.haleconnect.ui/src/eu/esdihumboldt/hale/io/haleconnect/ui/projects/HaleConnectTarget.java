@@ -24,7 +24,14 @@ import java.net.URI;
 import java.text.MessageFormat;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -38,9 +45,13 @@ import org.eclipse.swt.widgets.Label;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
+import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
 import eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectWriter;
 import eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginDialog;
@@ -63,11 +74,23 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private Button loginButton;
 	private Button enableVersioning;
 	private Button publicAccess;
-	private Group ownershipGroup;
+	private Composite ownershipGroup;
 	private Button ownerUser;
 	private Button ownerOrg;
 	private Button includeWebResources;
 	private Button excludeData;
+	private Group updateOrNewGroup;
+	private Button newProject;
+	private Button updateProject;
+	private Composite controlsStack;
+	private StackLayout controlsStackLayout;
+	private Composite newProjectControls;
+	private Composite updateProjectControls;
+	private StringFieldEditor projectName;
+	private Button selectProjectButton;
+
+	private boolean createNewProject;
+	private HaleConnectProjectConfig targetProject;
 
 	/**
 	 * Default constructor
@@ -107,11 +130,55 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		});
 
-		ownershipGroup = new Group(parent, SWT.NONE);
-		ownershipGroup.setText("Who should be the owner of the uploaded project?");
-		GridLayout grid = new GridLayout(3, true);
-		ownershipGroup.setLayout(grid);
-		ownershipGroup.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+		updateOrNewGroup = new Group(parent, SWT.NONE);
+		updateOrNewGroup.setText("Please choose whether you would like to...");
+		updateOrNewGroup.setLayout(new GridLayout(3, true));
+		updateOrNewGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+
+		newProject = new Button(updateOrNewGroup, SWT.RADIO);
+		newProject.setText("create a new project on hale connect");
+		newProject.setSelection(true);
+		newProject.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateState();
+			}
+
+		});
+
+		updateProject = new Button(updateOrNewGroup, SWT.RADIO);
+		updateProject.setText("update an existing project");
+		updateProject.addSelectionListener(new SelectionAdapter() {
+
+			/**
+			 * @see org.eclipse.swt.events.SelectionAdapter#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+			 */
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateState();
+			}
+
+		});
+
+		controlsStackLayout = new StackLayout();
+		controlsStack = new Composite(parent, SWT.NONE);
+		controlsStack.setLayout(controlsStackLayout);
+
+		newProjectControls = new Composite(controlsStack, SWT.NONE);
+		newProjectControls.setLayout(new GridLayout(3, true));
+		GridData grid = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		newProjectControls.setLayoutData(grid);
+
+		ownershipGroup = new Composite(newProjectControls, SWT.NONE);
+		ownershipGroup.setLayout(new GridLayout(3, false));
+		ownershipGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, false, false, 3, 1));
+
+		Label ownerLabel = new Label(ownershipGroup, SWT.NONE);
+		ownerLabel.setText("Who should own the uploaded project?");
 
 		ownerUser = new Button(ownershipGroup, SWT.RADIO);
 		ownerUser.setText("You");
@@ -119,11 +186,11 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		ownerOrg = new Button(ownershipGroup, SWT.RADIO);
 		ownerOrg.setText("Your organisation");
 
-		enableVersioning = new Button(parent, SWT.CHECK);
+		enableVersioning = new Button(newProjectControls, SWT.CHECK);
 		enableVersioning.setText("Enable versioning?");
 		enableVersioning.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
 
-		publicAccess = new Button(parent, SWT.CHECK);
+		publicAccess = new Button(newProjectControls, SWT.CHECK);
 		publicAccess.setText("Allow public access?");
 		publicAccess.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
 
@@ -136,6 +203,97 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		excludeData.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
 		excludeData.setSelection(true);
 
+		updateProjectControls = new Composite(controlsStack, SWT.NONE);
+		updateProjectControls.setVisible(false);
+		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+
+		/*
+		 * Project name text field
+		 */
+		projectName = new StringFieldEditor("project", "Project to update", updateProjectControls) {
+
+			// the following methods are overridden so the button
+			// may appear on the same line
+
+			@Override
+			public int getNumberOfControls() {
+				return super.getNumberOfControls() + 1;
+			}
+
+			@Override
+			protected void doFillIntoGrid(Composite parent, int numColumns) {
+				super.doFillIntoGrid(parent, numColumns - 1);
+			}
+		};
+		projectName.setEmptyStringAllowed(false);
+		projectName.setErrorMessage("Please select a project before continuing.");
+		projectName.setPage(getPage());
+		projectName.getTextControl(updateProjectControls).setEditable(false);
+		projectName.getTextControl(updateProjectControls).addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseDown(MouseEvent e) {
+				selectProject();
+			}
+
+		});
+
+		projectName.setPropertyChangeListener(new IPropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
+					getPage().setMessage(null);
+					updateState();
+				}
+				else if (event.getProperty().equals(FieldEditor.VALUE)) {
+					getPage().setMessage(null);
+					updateState();
+				}
+			}
+		});
+
+		/*
+		 * Select project button
+		 */
+		selectProjectButton = new Button(updateProjectControls, SWT.PUSH);
+		selectProjectButton.setText("Select");
+		selectProjectButton.setToolTipText("Select project");
+		selectProjectButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
+		selectProjectButton.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				selectProject();
+			}
+		});
+
+		ProjectInfoService pis = HaleUI.getServiceProvider().getService(ProjectInfoService.class);
+		URI loadLocation = pis.getLoadLocation();
+		if (loadLocation != null) {
+			// If project was loaded from hale connect, prefill project name
+			try {
+				if (HaleConnectUrnBuilder.isValidProjectUrn(loadLocation)) {
+					String projectId = HaleConnectUrnBuilder.extractProjectId(loadLocation);
+					Owner owner = HaleConnectUrnBuilder.extractProjectOwner(loadLocation);
+					HaleConnectProjectInfo projectInfo = haleConnect.getProject(owner, projectId);
+					if (projectInfo != null) {
+						targetProject = new HaleConnectProjectConfig();
+						targetProject.setOwner(owner);
+						targetProject.setProjectId(projectId);
+						targetProject.setProjectName(projectInfo.getName());
+						newProject.setSelection(false);
+						updateProject.setSelection(true);
+						projectName.setStringValue(projectInfo.getName());
+					}
+				}
+			} catch (Throwable t) {
+				// Non-fatal
+				log.warn(MessageFormat.format("Unable to prefill target project: {0}",
+						t.getMessage()), t);
+			}
+		}
+
 		updateState();
 	}
 
@@ -144,7 +302,17 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	 */
 	protected void updateState() {
 		updateLoginStatus();
-		setValid(haleConnect.isLoggedIn() && (ownerUser.isEnabled() || ownerOrg.isEnabled()));
+		setValid(haleConnect.isLoggedIn() && (ownerUser.isEnabled() || ownerOrg.isEnabled())
+				&& (newProject.getSelection() || targetProject != null));
+		if (newProject.getSelection()) {
+			controlsStackLayout.topControl = newProjectControls;
+			createNewProject = true;
+		}
+		else {
+			controlsStackLayout.topControl = updateProjectControls;
+			createNewProject = false;
+		}
+		controlsStack.layout();
 	}
 
 	@Override
@@ -176,9 +344,18 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 			@Override
 			public URI getLocation() {
-				// Returning null will advise HaleConnectProjectWriter to create
-				// a new hale connect transformation project.
-				return null;
+				if (createNewProject) {
+					// Returning null will advise HaleConnectProjectWriter to
+					// create a new hale connect transformation project
+					return null;
+				}
+				else if (targetProject != null) {
+					return HaleConnectUrnBuilder.buildProjectUrn(targetProject.getOwner(),
+							targetProject.getProjectId());
+				}
+				else {
+					throw new IllegalStateException("No target project selected.");
+				}
 			}
 
 		});
@@ -195,6 +372,9 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		ownerUser.setEnabled(loggedIn);
 		includeWebResources.setEnabled(loggedIn);
 		excludeData.setEnabled(loggedIn);
+		selectProjectButton.setEnabled(loggedIn);
+		newProject.setEnabled(loggedIn);
+		updateProject.setEnabled(loggedIn);
 
 		if (loggedIn) {
 			loginStatusLabel
@@ -253,4 +433,13 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		}
 	}
 
+	private void selectProject() {
+		targetProject = ChooseHaleConnectProjectWizard.openSelectProject();
+		if (targetProject != null) {
+			projectName.setStringValue(targetProject.getProjectName());
+		}
+		else {
+			projectName.setStringValue("");
+		}
+	}
 }
