@@ -180,6 +180,24 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getProject(Owner,
+	 *      String)
+	 */
+	@Override
+	public HaleConnectProjectInfo getProject(Owner owner, String projectId)
+			throws HaleConnectException {
+		BucketDetail bucketDetail;
+		try {
+			bucketDetail = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
+					.getBucketInfo(owner.getType().getJsonValue(), owner.getId(), projectId);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new HaleConnectException(e.getMessage(), e);
+		}
+
+		return processBucketDetail(bucketDetail);
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getProjects()
 	 */
 	@Override
@@ -496,34 +514,38 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		List<HaleConnectProjectInfo> result = new ArrayList<>();
 		for (BucketDetail bucket : bucketDetails) {
 			if (bucket.getId() != null) {
-				String author = null;
-				if (bucket.getProperties() instanceof Map<?, ?>) {
-					@SuppressWarnings("unchecked")
-					Map<Object, Object> properties = (Map<Object, Object>) bucket.getProperties();
-					if (properties.containsKey("author")) {
-						author = properties.get("author").toString();
-					}
-				}
-
-				HaleConnectUserInfo user = null;
-				HaleConnectOrganisationInfo org = null;
-				try {
-					if (!StringUtils.isEmpty(bucket.getId().getUserId())) {
-						user = this.getUserInfo(bucket.getId().getUserId());
-					}
-
-					if (!StringUtils.isEmpty(bucket.getId().getOrgId())) {
-						org = this.getOrganisationInfo(bucket.getId().getOrgId());
-					}
-				} catch (HaleConnectException e) {
-					log.error(e.getMessage(), e);
-				}
-
-				result.add(new HaleConnectProjectInfo(bucket.getId().getTransformationproject(),
-						user, org, bucket.getName(), author));
+				result.add(processBucketDetail(bucket));
 			}
 		}
 		return result;
+	}
+
+	private HaleConnectProjectInfo processBucketDetail(BucketDetail bucket) {
+		String author = null;
+		if (bucket.getProperties() instanceof Map<?, ?>) {
+			@SuppressWarnings("unchecked")
+			Map<Object, Object> properties = (Map<Object, Object>) bucket.getProperties();
+			if (properties.containsKey("author")) {
+				author = properties.get("author").toString();
+			}
+		}
+
+		HaleConnectUserInfo user = null;
+		HaleConnectOrganisationInfo org = null;
+		try {
+			if (!StringUtils.isEmpty(bucket.getId().getUserId())) {
+				user = this.getUserInfo(bucket.getId().getUserId());
+			}
+
+			if (!StringUtils.isEmpty(bucket.getId().getOrgId())) {
+				org = this.getOrganisationInfo(bucket.getId().getOrgId());
+			}
+		} catch (HaleConnectException e) {
+			log.error(e.getMessage(), e);
+		}
+
+		return new HaleConnectProjectInfo(bucket.getId().getTransformationproject(), user, org,
+				bucket.getName(), author);
 	}
 
 	private ApiCallback<Feedback> createUploadFileCallback(final SettableFuture<Boolean> future,
@@ -597,7 +619,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		}
 
 		if (feedback.getError()) {
-			log.error("Error setting sharing options");
+			log.error(MessageFormat.format(
+					"Error setting sharing options for hale connect project {0}", projectId));
 			return false;
 		}
 

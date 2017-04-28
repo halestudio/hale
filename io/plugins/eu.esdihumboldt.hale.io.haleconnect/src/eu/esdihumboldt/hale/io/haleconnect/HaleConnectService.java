@@ -159,6 +159,17 @@ public interface HaleConnectService {
 	 */
 
 	/**
+	 * Get information on a project.
+	 * 
+	 * @param owner Owner of the project
+	 * @param projectId ID of the project
+	 * @return Information on the specified project or null if the project does
+	 *         not exist
+	 * @throws HaleConnectException thrown on any API exception
+	 */
+	HaleConnectProjectInfo getProject(Owner owner, String projectId) throws HaleConnectException;
+
+	/**
 	 * Get a list of available hale connect transformation projects
 	 * 
 	 * @return a list of available projects
