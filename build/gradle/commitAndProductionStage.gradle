@@ -635,6 +635,42 @@ def packageClient(productOutputPath) {
 		if (packProc.exitValue() != 0) {
 		    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
 		}
+
+		// Copy .DS_Store
+		def copyDSCmd = ['cp', '../../templates/macos/DS_Store.template', ".DS_Store"]
+		def copyDSProc = copyDSCmd.execute(null, productOutputPath)
+		def copyDSBuffer = new StringBuffer()
+		copyDSProc.consumeProcessErrorStream(copyDSBuffer)
+		copyDSProc.waitFor()
+		if (copyDSProc.exitValue() != 0) {
+		    println("Exit value is ${copyDSProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to copy .DS_Store:\n${copyDSBuffer.toString()}");
+		}
+
+		// Add link to /Applications
+		def lnAppCmd = ['ln', '-s', '/Applications', "Applications"]
+		def lnAppProc = lnAppCmd.execute(null, productOutputPath)
+		def lnAppBuffer = new StringBuffer()
+		lnAppProc.consumeProcessErrorStream(lnAppBuffer)
+		lnAppProc.waitFor()
+		if (lnAppProc.exitValue() != 0) {
+		    println("Exit value is ${lnAppProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to create /Applications link:\n${lnAppBuffer.toString()}");
+		}
+
+		// Generate DMG image
+		def genisoCmd = ['genisoimage', '-V', "${productName} ${bundleVersion}", '-D', '-R', '-apple', '-no-pad', '-o', "${targetDir}/${productName} ${bundleVersion}.dmg", '.']
+		def genisoProc = genisoCmd.execute(null, productOutputPath)
+		def genisoBuffer = new StringBuffer()
+		genisoProc.consumeProcessErrorStream(genisoBuffer)
+		genisoProc.waitFor()
+		if (genisoProc.exitValue() != 0) {
+		    println("Exit value is ${genisoProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to create DMG image:\n${genisoBuffer.toString()}");
+		}
     }
 }
 
