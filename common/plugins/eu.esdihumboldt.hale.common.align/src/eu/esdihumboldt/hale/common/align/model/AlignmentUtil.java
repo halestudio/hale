@@ -304,15 +304,35 @@ public abstract class AlignmentUtil {
 	 *         present the supplied entity is returned directly
 	 */
 	public static EntityDefinition getAllDefaultEntity(EntityDefinition entity) {
+		return getAllDefaultEntity(entity, false);
+	}
+
+	/**
+	 * Get the entity definition based on the given entity definition with the
+	 * default instance context for each path entry and w/o filter.
+	 * 
+	 * @param entity the entity definition
+	 * @param stripSchemaSpace if the schema space information should be
+	 *            stripped from the entity
+	 * @return the entity definition with the default context in all path
+	 *         elements and w/o type filter, if no contexts and type filter are
+	 *         present the supplied entity is returned directly
+	 */
+	public static EntityDefinition getAllDefaultEntity(EntityDefinition entity,
+			final boolean stripSchemaSpace) {
+		final boolean keepSchemaSpace = !stripSchemaSpace;
+
 		List<ChildContext> path = entity.getPropertyPath();
 
 		if (path == null || path.isEmpty()) {
 			// no path
-			if (entity.getFilter() == null) {
+			if (entity.getFilter() == null
+					&& (keepSchemaSpace || entity.getSchemaSpace() == null)) {
 				return entity;
 			}
 			else {
-				return new TypeEntityDefinition(entity.getType(), entity.getSchemaSpace(), null);
+				return new TypeEntityDefinition(entity.getType(),
+						keepSchemaSpace ? entity.getSchemaSpace() : null, null);
 			}
 		}
 
@@ -329,9 +349,11 @@ public abstract class AlignmentUtil {
 			newPath.add(newcontext);
 		}
 
-		if (contextInPath || entity.getFilter() != null) {
+		if (contextInPath || entity.getFilter() != null
+				|| (stripSchemaSpace && entity.getSchemaSpace() != null)) {
 			// contexts or filter found, return default entity
-			return createEntity(entity.getType(), newPath, entity.getSchemaSpace(), null);
+			return createEntity(entity.getType(), newPath,
+					keepSchemaSpace ? entity.getSchemaSpace() : null, null);
 		}
 		else {
 			// no contexts or filter found, yield unchanged
