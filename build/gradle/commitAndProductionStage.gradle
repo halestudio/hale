@@ -637,6 +637,7 @@ def packageClient(productOutputPath) {
 		    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
 		}
 
+		println("Creating package ${packageName}.dmg ...")
 		// Copy .DS_Store
 		def copyDSCmd = ['cp', '../../templates/macos/DS_Store.template', ".DS_Store"]
 		def copyDSProc = copyDSCmd.execute(null, productOutputPath)
@@ -662,7 +663,7 @@ def packageClient(productOutputPath) {
 		}
 
 		// Generate DMG image
-		def genisoCmd = ['genisoimage', '-V', "${productName} ${bundleVersion}", '-D', '-R', '-apple', '-no-pad', '-o', "${targetDir}/${productName} ${bundleVersion}.dmg", '.']
+		def genisoCmd = ['genisoimage', '-V', "${productName} ${bundleVersion}", '-D', '-R', '-apple', '-no-pad', '-o', "${targetDir}/${packageName}.dmg", '.']
 		def genisoProc = genisoCmd.execute(null, productOutputPath)
 		def genisoBuffer = new StringBuffer()
 		genisoProc.consumeProcessErrorStream(genisoBuffer)
