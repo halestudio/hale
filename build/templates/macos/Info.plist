@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 	<key>CFBundleName</key>
-		<string>hale studio</string>
+		<string>___productName___</string>
 	<key>CFBundlePackageType</key>
 		<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -31,7 +31,7 @@
 			<string>en</string>
 		</array>
 <key>CFBundleDisplayName</key>
-    <string>hale studio</string>
+    <string>___productName___</string>
   </dict>
 
 </plist>

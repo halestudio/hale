@@ -621,6 +621,7 @@ def packageClient(productOutputPath) {
 		ant.replace(file: infoPlist, token: '___version___', value: bundleVersion, summary: true)
 		ant.replace(file: infoPlist, token: '___versionYear___', value: versionYear, summary: true)
 		ant.replace(file: infoPlist, token: '___launcherName___', value: launcherName, summary: true)
+		ant.replace(file: infoPlist, token: '___productName___', value: productName, summary: true)
 
 		// Pack tar archive
 		println('Creating package ' + packageName + '.tar.gz' + ' ...')
