@@ -604,6 +604,24 @@ def packageClient(productOutputPath) {
 		    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
 		}
 
+		// Copy Info.plist template and replace variables
+		def copyCmd = ['cp', '../../templates/macos/Info.plist', "${productName}.app/Contents"]
+		def copyProc = copyCmd.execute(null, productOutputPath)
+		def copyBuffer = new StringBuffer()
+		copyProc.consumeProcessErrorStream(copyBuffer)
+		copyProc.waitFor()
+		if (copyProc.exitValue() != 0) {
+		    println("Exit value is ${copyProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    throw new IllegalStateException("Unable to copy Info.plist:\n${copyBuffer.toString()}");
+		}
+		def versionYear = new Date().format('yyyy')
+		def bundleVersion = productVersion(project.version)
+		File infoPlist = new File(productOutputPath, "${productName}.app/Contents/Info.plist")
+		ant.replace(file: infoPlist, token: '___version___', value: bundleVersion, summary: true)
+		ant.replace(file: infoPlist, token: '___versionYear___', value: versionYear, summary: true)
+		ant.replace(file: infoPlist, token: '___launcherName___', value: launcherName, summary: true)
+
 		// Pack tar archive
 		println('Creating package ' + packageName + '.tar.gz' + ' ...')
 		def targetDir = new File(productOutputPath.absolutePath + '/../../target')
