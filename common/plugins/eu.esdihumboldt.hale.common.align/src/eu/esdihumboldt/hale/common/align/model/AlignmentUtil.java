@@ -21,11 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import javax.xml.namespace.QName;
 
 import com.google.common.base.Function;
-import com.google.common.base.Objects;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.ListMultimap;
@@ -362,6 +362,29 @@ public abstract class AlignmentUtil {
 	}
 
 	/**
+	 * Apply the given schema space to the entity definition. Creates a new
+	 * entity definition if necessary.
+	 * 
+	 * @param entity the entity definition
+	 * @param schemaSpace the schema space to apply
+	 * @return the entity definition with the schema space applied
+	 */
+	public static EntityDefinition applySchemaSpace(EntityDefinition entity,
+			final SchemaSpaceID schemaSpace) {
+		if (entity == null || java.util.Objects.equals(schemaSpace, entity.getSchemaSpace())) {
+			return entity;
+		}
+
+		List<ChildContext> path = entity.getPropertyPath();
+
+		if (path == null || path.isEmpty()) {
+			return new TypeEntityDefinition(entity.getType(), schemaSpace, entity.getFilter());
+		}
+
+		return createEntity(entity.getType(), path, schemaSpace, entity.getFilter());
+	}
+
+	/**
 	 * Derive an entity definition from the given one but with a maximum path
 	 * length.
 	 * 
@@ -407,7 +430,7 @@ public abstract class AlignmentUtil {
 		}
 
 		// check type context
-		if (!Objects.equal(parent.getFilter(), child.getFilter())) {
+		if (!Objects.equals(parent.getFilter(), child.getFilter())) {
 			// if the filters do not match, there can't be a relation
 			return false;
 		}
@@ -859,7 +882,7 @@ public abstract class AlignmentUtil {
 			PropertyEntityDefinition property = (PropertyEntityDefinition) oEntity.getValue()
 					.getDefinition();
 			ChildDefinition<?> childDef = property.getPropertyPath().get(0).getChild();
-			if (Objects.equal(childDef.getDeclaringGroup(), childDef.getParentType())
+			if (Objects.equals(childDef.getDeclaringGroup(), childDef.getParentType())
 					|| property.getFilter() != null)
 				modified.put(oEntity.getKey(), oEntity.getValue());
 			else if (childDef.getDeclaringGroup() instanceof TypeDefinition) {
