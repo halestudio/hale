@@ -60,6 +60,18 @@ def getProductId() {
 }
 
 /**
+ * @return the name of the product definition
+ */
+def getProductName() {
+	def dlcdoc = new XmlSlurper().parse(project.file(getProductFile()))
+	def name = dlcdoc.@name
+	if (name == null) {
+		throw new IllegalStateException('Product needs a valid name')
+	}
+	return name.toString()
+}
+
+/**
  * Get the symbolic name of the bundle that contains the product definition
  */
 def getProductDefiningBundleName() {
@@ -111,7 +123,7 @@ def getPackageName() {
     } else {
         tag = ''
     }
-    return getProductLauncher() + '-' + productVersion(project.version) + '-' + tag +
+    return getProductName().replaceAll(' ', '-') + '-' + productVersion(project.version) + '-' + tag +
             project.ext.osgiOS + '.' + project.ext.osgiWS + '.' + project.osgiArch
 }
 
@@ -571,16 +583,17 @@ def packageClient(productOutputPath) {
 		// package as .tar.gz using external tar command to preserve symbolic links in jdk
 		def packageName = getPackageName()
 		def launcherName = getProductLauncher()
+		def productName = getProductName()
 
 		// rename app
-		def mvCmd = ['mv', 'Eclipse.app', "${launcherName}.app"]
+		def mvCmd = ['mv', 'Eclipse.app', "${productName}.app"]
 		def mvProc = mvCmd.execute(null, productOutputPath)
 		def mvBuffer = new StringBuffer()
 		mvProc.consumeProcessErrorStream(mvBuffer)
 		mvProc.waitFor()
 		
 		// Set file permissions
-		def permCmd = ['chmod', '755', "${launcherName}.app/Contents/MacOS/${launcherName}"]
+		def permCmd = ['chmod', '755', "${productName}.app/Contents/MacOS/${launcherName}"]
 		def permProc = permCmd.execute(null, productOutputPath)
 		def permBuffer = new StringBuffer()
 		permProc.consumeProcessErrorStream(permBuffer)
@@ -590,6 +603,25 @@ def packageClient(productOutputPath) {
 		    println("ls".execute(null, productOutputPath).text)
 		    throw new IllegalStateException("Unable to set required file permissions:\n${permBuffer.toString()}");
 		}
+
+		// Copy Info.plist template and replace variables
+		def copyCmd = ['cp', '../../templates/macos/Info.plist', "${productName}.app/Contents"]
+		def copyProc = copyCmd.execute(null, productOutputPath)
+		def copyBuffer = new StringBuffer()
+		copyProc.consumeProcessErrorStream(copyBuffer)
+		copyProc.waitFor()
+		if (copyProc.exitValue() != 0) {
+		    println("Exit value is ${copyProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    throw new IllegalStateException("Unable to copy Info.plist:\n${copyBuffer.toString()}");
+		}
+		def versionYear = new Date().format('yyyy')
+		def bundleVersion = productVersion(project.version)
+		File infoPlist = new File(productOutputPath, "${productName}.app/Contents/Info.plist")
+		ant.replace(file: infoPlist, token: '___version___', value: bundleVersion, summary: true)
+		ant.replace(file: infoPlist, token: '___versionYear___', value: versionYear, summary: true)
+		ant.replace(file: infoPlist, token: '___launcherName___', value: launcherName, summary: true)
+		ant.replace(file: infoPlist, token: '___productName___', value: productName, summary: true)
 
 		// Pack tar archive
 		println('Creating package ' + packageName + '.tar.gz' + ' ...')
@@ -603,6 +635,43 @@ def packageClient(productOutputPath) {
 		packProc.waitFor()
 		if (packProc.exitValue() != 0) {
 		    throw new IllegalStateException("Unable to create tar archive:\n${packBuffer.toString()}");
+		}
+
+		println("Creating package ${packageName}.dmg ...")
+		// Copy .DS_Store
+		def copyDSCmd = ['cp', '../../templates/macos/DS_Store.template', ".DS_Store"]
+		def copyDSProc = copyDSCmd.execute(null, productOutputPath)
+		def copyDSBuffer = new StringBuffer()
+		copyDSProc.consumeProcessErrorStream(copyDSBuffer)
+		copyDSProc.waitFor()
+		if (copyDSProc.exitValue() != 0) {
+		    println("Exit value is ${copyDSProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to copy .DS_Store:\n${copyDSBuffer.toString()}");
+		}
+
+		// Add link to /Applications
+		def lnAppCmd = ['ln', '-s', '/Applications', "Applications"]
+		def lnAppProc = lnAppCmd.execute(null, productOutputPath)
+		def lnAppBuffer = new StringBuffer()
+		lnAppProc.consumeProcessErrorStream(lnAppBuffer)
+		lnAppProc.waitFor()
+		if (lnAppProc.exitValue() != 0) {
+		    println("Exit value is ${lnAppProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to create /Applications link:\n${lnAppBuffer.toString()}");
+		}
+
+		// Generate DMG image
+		def genisoCmd = ['genisoimage', '-V', "${productName} ${bundleVersion}", '-D', '-R', '-apple', '-no-pad', '-o', "${targetDir}/${packageName}.dmg", '.']
+		def genisoProc = genisoCmd.execute(null, productOutputPath)
+		def genisoBuffer = new StringBuffer()
+		genisoProc.consumeProcessErrorStream(genisoBuffer)
+		genisoProc.waitFor()
+		if (genisoProc.exitValue() != 0) {
+		    println("Exit value is ${genisoProc.exitValue()}")
+		    println("ls".execute(null, productOutputPath).text)
+		    println("Unable to create DMG image:\n${genisoBuffer.toString()}");
 		}
     }
 }
@@ -675,7 +744,7 @@ def packageServer(productOutputPath) {
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
 				exclude(name: launcherName)
-				exclude(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+				exclude(name: "${productName}.app/Contents/MacOS/${launcherName}")
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: launcherName)
@@ -683,7 +752,7 @@ def packageServer(productOutputPath) {
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
 				include(name: launcherName)
-				include(name: "${launcherName}.app/Contents/MacOS/${launcherName}")
+				include(name: "${productName}.app/Contents/MacOS/${launcherName}")
             }
         }
 
