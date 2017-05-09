@@ -69,9 +69,18 @@ public class XmlToSchema implements HaleSchemaConstants {
 					return new DefaultSchema(null, null)
 				}
 				else if (schemas.size() > 1) {
-					// FIXME report? combine? what?
+					List<Schema> loaded = []
+					for (Element element : schemas) {
+						Schema schema = parseSchema(element, resolver, reporter)
+						if (schema != null) {
+							loaded << schema
+						}
+					}
+					return HaleSchemaUtil.combineSchema(loaded, reporter)
 				}
-				return parseSchema(schemas[0], resolver, reporter)
+				else {
+					return parseSchema(schemas[0], resolver, reporter)
+				}
 			case 'schema':
 				return parseSchema(root, resolver, reporter)
 			default:
