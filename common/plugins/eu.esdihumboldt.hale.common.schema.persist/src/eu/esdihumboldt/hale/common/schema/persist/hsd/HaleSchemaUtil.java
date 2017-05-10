@@ -65,7 +65,7 @@ public abstract class HaleSchemaUtil {
 						// check if type is already there
 						QName name = type.getName();
 						if (result.getType(name) != null) {
-							reporter.warn(
+							reporter.error(
 									MessageFormat.format("Multiple definitions of type {0}", name));
 						}
 					}

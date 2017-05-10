@@ -39,7 +39,6 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
-import groovy.transform.TypeChecked
 import groovy.xml.DOMBuilder
 
 /**
