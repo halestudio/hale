@@ -58,7 +58,6 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @return the schema
 	 * @throws Exception if an error occurs
 	 */
-	@TypeChecked
 	public static Schema parseSchema(Reader reader, ClassResolver resolver, IOReporter reporter = null) throws Exception {
 		Element root = DOMBuilder.parse(reader, false, true).documentElement
 		switch (root.localName) {
