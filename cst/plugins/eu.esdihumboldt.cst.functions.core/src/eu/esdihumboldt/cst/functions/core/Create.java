@@ -17,7 +17,6 @@ package eu.esdihumboldt.cst.functions.core;
 
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -27,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import net.jcip.annotations.Immutable;
 
 /**
  * Function that creates target instances independently from source instances.
@@ -36,16 +36,32 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class Create extends AbstractTypeTransformation<TransformationEngine> implements
-		CreateFunction {
+public class Create extends AbstractTypeTransformation<TransformationEngine>
+		implements CreateFunction {
 
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log, Cell cell)
-			throws TransformationException {
-		int number = getOptionalParameter(PARAM_NUMBER, Value.of(1)).as(Integer.class);
+					throws TransformationException {
+		// get number of executions
+		int num;
+		String numberExpr = getOptionalParameter(PARAM_NUMBER, Value.of(1)).as(String.class);
+		if (numberExpr != null) {
+			// replace variables
+			numberExpr = getExecutionContext().getVariables().replaceVariables(numberExpr);
+			try {
+				num = Integer.parseInt(numberExpr);
+			} catch (NumberFormatException e) {
+				log.error(log.createMessage(
+						"Unable to parse expression for number of instances to create", e));
+				num = 1;
+			}
+		}
+		else {
+			num = 1;
+		}
 
-		for (int i = 0; i < number; i++) {
+		for (int i = 0; i < num; i++) {
 			// create <number> of instances of the target type
 			TypeDefinition targetType = getTarget().values().iterator().next().getDefinition()
 					.getDefinition();
