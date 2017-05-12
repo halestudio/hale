@@ -16,6 +16,14 @@
 package eu.esdihumboldt.hale.common.schema.persist.hsd;
 
 import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.List;
+
+import javax.xml.namespace.QName;
+
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 
 /**
  * HALE Schema Definition related utilities.
@@ -31,6 +39,42 @@ public abstract class HaleSchemaUtil {
 	 */
 	public static InputStream getHaleSchemaXSD() {
 		return HaleSchemaUtil.class.getResourceAsStream("hsd.xsd");
+	}
+
+	/**
+	 * Combine the given schemas to a single schema.
+	 * 
+	 * @param schemas the schemas to combine
+	 * @param reporter the reporter if available
+	 * @return the combined schema
+	 */
+	public static Schema combineSchema(List<Schema> schemas, IOReporter reporter) {
+		if (schemas == null || schemas.isEmpty()) {
+			// empty schema
+			return new DefaultSchema(null, null);
+		}
+		else if (schemas.size() == 1) {
+			return schemas.get(0);
+		}
+		else {
+			DefaultSchema result = new DefaultSchema(null, null);
+
+			schemas.forEach(schema -> {
+				schema.getTypes().forEach(type -> {
+					if (reporter != null) {
+						// check if type is already there
+						QName name = type.getName();
+						if (result.getType(name) != null) {
+							reporter.error(
+									MessageFormat.format("Multiple definitions of type {0}", name));
+						}
+					}
+					result.addType(type);
+				});
+			});
+
+			return result;
+		}
 	}
 
 }
