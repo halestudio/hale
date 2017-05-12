@@ -43,9 +43,10 @@ To contribute please check the [contribution guidelines](CONTRIBUTING.md) and re
 
 ## Resources
 
-* [hale User Guide](http://hale.igd.fraunhofer.de/)
+* [hale User Guide](http://help.halestudio.org/)
 * [hale Community Forum](http://discuss.wetransform.to)
 * [hale Community Blog](https://www.wetransform.to/category/news/)
+* [hale Video Tutorial (4 Minutes)](https://www.youtube.com/watch?v=95Krki4thgs)
 
 ## License
 
