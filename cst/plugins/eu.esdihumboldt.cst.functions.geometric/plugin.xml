@@ -344,6 +344,35 @@
             </property>
          </sourceProperties>
       </propertyFunction>
+      <typeFunction
+            category="eu.esdihumboldt.cst.functions.geometric"
+            icon="icons/geometry.png"
+            identifier="eu.esdihumboldt.cst.functions.geometric.spatialjoin"
+            name="Spatial Join">
+         <targetTypes>
+            <type
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </type>
+         </targetTypes>
+         <sourceTypes>
+            <type
+                  maxOccurrence="n"
+                  minOccurrence="2"
+                  name="types">
+            </type>
+         </sourceTypes>
+         <functionParameter
+               deprecated="false"
+               description="Spatial Join definition"
+               label="Spatial Join definition"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="spatialjoin"
+               scriptable="false">
+            <parameterBinding></parameterBinding>
+         </functionParameter>
+      </typeFunction>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.transformation">
@@ -401,6 +430,12 @@
             function="eu.esdihumboldt.cst.functions.geometric.interiorPoint"
             id="eu.esdihumboldt.cst.functions.geometric.interiorPoint">
       </propertyTransformation>
+      <typeTransformation
+            class="eu.esdihumboldt.cst.functions.geometric.join.SpatialJoin"
+            engine="eu.esdihumboldt.align.java"
+            function="eu.esdihumboldt.cst.functions.geometric.spatialjoin"
+            id="eu.esdihumboldt.cst.functions.geometric.spatialjoin">
+      </typeTransformation>
    </extension>
    <extension
          point="eu.esdihumboldt.cst.functions.groovy.helper">
@@ -426,6 +461,16 @@
             category="geom"
             class="eu.esdihumboldt.cst.functions.geometric.SimpleFeatureGeometryHelpers">
       </helper>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.complexvalue">
+      <complexValue
+            descriptor="eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameterType"
+            id="eu.esdihumboldt.cst.functions.geometric.join.parameter"
+            name="spatialjoin-parameter"
+            namespace="http://www.esdi-humboldt.eu/hale/join/spatial"
+            type="eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameter">
+      </complexValue>
    </extension>
 
 </plugin>
