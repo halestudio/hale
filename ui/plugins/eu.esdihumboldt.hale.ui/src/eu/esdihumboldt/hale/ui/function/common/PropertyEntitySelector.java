@@ -84,6 +84,13 @@ public class PropertyEntitySelector extends EntitySelector<PropertyParameterDefi
 	}
 
 	/**
+	 * @return the parent type
+	 */
+	public TypeEntityDefinition getParentType() {
+		return parentType;
+	}
+
+	/**
 	 * @see EntitySelector#createEntityDialog(Shell, SchemaSpaceID,
 	 *      ParameterDefinition)
 	 */
