@@ -82,9 +82,11 @@ public class PropertyEntitiesPage extends
 			public void selectionChanged(SelectionChangedEvent event) {
 				TypeEntityDefinition selectedType = sourceTargetSelector
 						.getSelection(SchemaSpaceID.SOURCE);
-				for (PropertyField field : getFunctionFields())
-					if (field.getSchemaSpace() == SchemaSpaceID.SOURCE)
+				for (PropertyField field : getFunctionFields()) {
+					if (field.getSchemaSpace() == SchemaSpaceID.SOURCE) {
 						field.setParentType(selectedType);
+					}
+				}
 			}
 		}, SchemaSpaceID.SOURCE);
 
