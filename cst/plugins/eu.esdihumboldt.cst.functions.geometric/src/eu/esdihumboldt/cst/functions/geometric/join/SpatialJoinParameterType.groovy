@@ -35,7 +35,7 @@ import groovy.xml.dom.DOMCategory
 /**
  * Descriptor for conversion between DOM and SpatialJoinParameter.
  * 
- * @author Kai Schwierczek
+ * @author Florian Esser
  */
 public class SpatialJoinParameterType implements ComplexValueType<SpatialJoinParameter, LoadAlignmentContext> {
 
