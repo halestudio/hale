@@ -48,7 +48,7 @@ public class CastorAlignmentReader extends AbstractAlignmentReader {
 	@Override
 	protected MutableAlignment loadAlignment(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
+		progress.begin("Load hale alignment", ProgressIndicator.UNKNOWN);
 
 		InputStream in = getSource().getInput();
 		MutableAlignment alignment = null;

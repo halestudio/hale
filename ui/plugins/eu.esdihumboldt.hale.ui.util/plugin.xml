@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.ui.commands">
       <command
-            description="Exit HALE"
+            description="Exit hale studio"
             id="eu.esdihumboldt.hale.ui.util.command.exit"
             name="exit">
       </command>

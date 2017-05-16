@@ -63,7 +63,7 @@ public class HaleSchemaReader extends AbstractSchemaReader {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE Schema Definition";
+		return "hale Schema Definition";
 	}
 
 	@Override

@@ -84,6 +84,6 @@ public class CSVAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "CSV HALE Alignment";
+		return "CSV hale Alignment";
 	}
 }
