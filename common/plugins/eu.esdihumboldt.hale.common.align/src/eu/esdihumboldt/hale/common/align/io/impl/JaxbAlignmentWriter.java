@@ -50,7 +50,7 @@ public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Save HALE alignment", ProgressIndicator.UNKNOWN);
+		progress.begin("Save hale alignment", ProgressIndicator.UNKNOWN);
 
 		PathUpdate pathUpdate = new PathUpdate(getProjectLocation(), getTarget().getLocation());
 		AlignmentType alignment;
@@ -83,7 +83,7 @@ public class JaxbAlignmentWriter extends AbstractAlignmentWriter {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE alignment";
+		return "hale alignment";
 	}
 
 }

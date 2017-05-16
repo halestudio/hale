@@ -77,7 +77,7 @@ public class HaleSchemaReaderJson extends AbstractSchemaReader {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE Schema Definition (JSON)";
+		return "hale Schema Definition (JSON)";
 	}
 
 	@Override
