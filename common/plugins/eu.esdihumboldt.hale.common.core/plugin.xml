@@ -14,14 +14,14 @@
       <content-type
             file-extensions="hale"
             id="eu.esdihumboldt.hale.io.project.hale25"
-            name="HALE project"
+            name="hale project"
             priority="normal">
       </content-type>
       <content-type
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="halex"
             id="eu.esdihumboldt.hale.io.project.hale25.xml"
-            name="HALE XML project"
+            name="hale XML project"
             priority="normal">
          <describer
                class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
@@ -34,7 +34,7 @@
       <content-type
             file-extensions="halez,zip"
             id="eu.esdihumboldt.hale.io.project.hale25.zip"
-            name="HALE project archive"
+            name="hale project archive"
             priority="normal">
       </content-type>
       <content-type
@@ -52,7 +52,7 @@
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectReader"
             id="eu.esdihumboldt.hale.io.project.hale25.reader"
-            name="HALE project">
+            name="hale project">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25">
          </contentType>
@@ -61,7 +61,7 @@
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ZipProjectWriter"
             description="Single project file that includes alignment and styles"
             id="eu.esdihumboldt.hale.io.project.hale25.writer"
-            name="HALE project">
+            name="hale project">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25">
          </contentType>
@@ -69,7 +69,7 @@
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.XMLProjectReader"
             id="eu.esdihumboldt.hale.io.project.hale25.xml.reader"
-            name="HALE XML project">
+            name="hale XML project">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.xml">
          </contentType>
@@ -78,7 +78,7 @@
             class="eu.esdihumboldt.hale.common.core.io.project.impl.XMLProjectWriter"
             description="XML project file with separate alignment file (best choice for version controlled projects)"
             id="eu.esdihumboldt.hale.io.project.hale25.xml.writer"
-            name="HALE XML project">
+            name="hale XML project">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.xml">
          </contentType>
@@ -87,7 +87,7 @@
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter"
             description="ZIP project archive that also includes local resources (best choice for sharing projects)"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.writer"
-            name="HALE project archive">
+            name="hale project archive">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.zip">
          </contentType>
@@ -95,7 +95,7 @@
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectImport"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.import"
-            name="HALE project archive (import)">
+            name="hale project archive (import)">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.zip">
          </contentType>
@@ -103,7 +103,7 @@
       <provider
             class="eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader"
             id="eu.esdihumboldt.hale.io.project.hale25.zip.reader"
-            name="HALE project archive">
+            name="hale project archive">
          <contentType
                ref="eu.esdihumboldt.hale.io.project.hale25.zip">
          </contentType>

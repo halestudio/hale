@@ -5,9 +5,9 @@
          point="eu.esdihumboldt.hale.io.provider">
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter"
-            description="HALE native schema format"
+            description="hale native schema format"
             id="eu.esdihumboldt.hale.common.schema.persist.hsd.write"
-            name="HALE Schema Definition">
+            name="hale Schema Definition">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd">
          </contentType>
@@ -18,7 +18,7 @@
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaReader"
             id="eu.esdihumboldt.hale.common.schema.persist.hsd.read"
-            name="HALE Schema Definition">
+            name="hale Schema Definition">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd">
          </contentType>
@@ -28,18 +28,18 @@
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaWriterJson"
-            description="HALE native schema format as JSON"
+            description="hale native schema format as JSON"
             id="eu.esdihumboldt.hale.common.schema.persist.hsd.json.write"
-            name="HALE Schema Definition (JSON)">
+            name="hale Schema Definition (JSON)">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd.json">
          </contentType>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.common.schema.persist.hsd.json.HaleSchemaReaderJson"
-            description="HALE native schema format as JSON"
+            description="hale native schema format as JSON"
             id="eu.esdihumboldt.hale.common.schema.persist.hsd.json.read"
-            name="HALE Schema Definition (JSON)">
+            name="hale Schema Definition (JSON)">
          <contentType
                ref="eu.esdihumboldt.hale.common.schema.hsd.json">
          </contentType>
@@ -51,7 +51,7 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="hsd,haleschema"
             id="eu.esdihumboldt.hale.common.schema.hsd"
-            name="HALE Schema Definition"
+            name="hale Schema Definition"
             priority="normal">
          <describer
                class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
@@ -69,7 +69,7 @@
             base-type="eu.esdihumboldt.hale.common.core.gzip"
             file-extensions="hsd.gz,haleschema.gz"
             id="eu.esdihumboldt.hale.common.schema.hsd.gzip"
-            name="GZiped HALE Schema Definition"
+            name="GZiped hale Schema Definition"
             priority="normal">
          <describer
                class="eu.esdihumboldt.hale.common.core.io.util.GZipXMLRootElementContentDescriber">
@@ -87,7 +87,7 @@
             base-type="org.eclipse.core.runtime.text"
             file-extensions="hsd.json,json"
             id="eu.esdihumboldt.hale.common.schema.hsd.json"
-            name="HALE Schema Definition (JSON)"
+            name="hale Schema Definition (JSON)"
             priority="normal">
       </content-type>
    </extension>

@@ -55,7 +55,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Load HALE alignment", ProgressIndicator.UNKNOWN);
+		progress.begin("Load hale alignment", ProgressIndicator.UNKNOWN);
 
 		try {
 			JaxbAlignmentIO.addBaseAlignment(getAlignment(), getSource().getUsedLocation(),
@@ -76,7 +76,7 @@ public class JaxbBaseAlignmentReader extends AbstractImportProvider implements B
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE alignment";
+		return "hale alignment";
 	}
 
 	/**

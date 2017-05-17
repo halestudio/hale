@@ -98,7 +98,7 @@ public abstract class ProjectIO {
 	/**
 	 * Project file default type name
 	 */
-	public static final String PROJECT_TYPE_NAME = "HALE project";
+	public static final String PROJECT_TYPE_NAME = "hale project";
 
 	/**
 	 * Name of the internal project file

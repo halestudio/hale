@@ -2,7 +2,7 @@
 <introContent>
    <extensionContent id="euesdihumboldthaleuifirststeps-introExtension_part2" style="css/sample.css" name="Firststeps Cheatsheets" path="firststeps/@">
       <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="Get started with HALE" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" style-id="content-link header-link">
+         <link label="Get started with hale studio" url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=eu.esdihumboldt.hale.ui.firststeps.firststepsCS" style-id="content-link header-link">
             <text>Get a guide along your way to see how the Humboldt Alignment Editor works and to create a new project.</text>
          </link>
          <group id="sub-content-group" label="Or only choose one of the parts of that guide:">

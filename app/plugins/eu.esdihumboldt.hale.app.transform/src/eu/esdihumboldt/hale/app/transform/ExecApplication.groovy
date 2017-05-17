@@ -97,7 +97,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 	protected boolean validate(ExecContext ec) {
 		// project is required
 		if (!ec.project) {
-			error('You need to provide a reference to a HALE project that defines the mapping for the transformation')
+			error('You need to provide a reference to a hale project that defines the mapping for the transformation')
 			return false
 		}
 
@@ -125,7 +125,7 @@ class ExecApplication extends AbstractApplication<ExecContext> {
 Usage:
 $baseCommand
      [-argsFile <file-with-arguments>]
-     -project <file-or-URI-to-HALE-project>
+     -project <file-or-URI-to-hale-project>
      -source <file-or-URI-to-source-data>
          [-include <file-pattern>]
          [-exclude <file-pattern>]

@@ -177,7 +177,7 @@ public class XLSAlignmentMappingWriter extends AbstractAlignmentMappingExport {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "XLS HALE Alignment";
+		return "XLS hale Alignment";
 	}
 
 	private int calculateWidth(int maxColWidth) {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="HALE User Guide">
+<toc label="hale studio User Guide">
    <topic label="Introduction">
-      <topic href="html/introduction/introduction_HALE.html" label="HALE - The HUMBOLDT Alignment Editor">
+      <topic href="html/introduction/introduction_HALE.html" label="hale studio - The HUMBOLDT Alignment Editor">
       </topic>
       <topic href="html/introduction/introduction_project.html" label="The HUMBOLDT project">
       </topic>
@@ -36,9 +36,9 @@
       </topic>
    </topic>
    <topic label="Getting Started">
-      <topic href="html/getting_started/help.html" label="How to use the HALE help">
+      <topic href="html/getting_started/help.html" label="How to use the hale studio help">
       </topic>
-      <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
+      <topic href="html/getting_started/main_workflow.html" label="First steps in hale studio">
       </topic>
       <topic href="html/getting_started/confWorkbench.html" label="Configuring your workbench">
       </topic>
