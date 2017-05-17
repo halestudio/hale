@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/3_3_0.xhtml" label="New in 3.3">
+      </topic>
       <topic href="html/new/3_2_0.xhtml" label="New in 3.2">
       </topic>
       <topic href="html/new/3_1_0.xhtml" label="New in 3.1">

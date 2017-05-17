@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.3?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.3?</h1>
+
+	<ul>
+		<li>Load and share <em>hale connect</em> transformation projects</li>
+		<li>Spatial Join transformation function</li>
+		<li>Use arbitrary SQL queries as a source for schemas and data</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#330"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>The majority of the new features and improvements were made
+		possible through our contracts with more than 20 customers. We'd like
+		to thank you all for your support!</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_2_0">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_3_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="haleconnect">
+				<td class="title">Load and share <em>hale connect</em> transformation projects</td>
+				<td class="content">
+					<p>
+						<em>hale studio</em> now comes with built-in support for the online
+						collaboration platform <em>hale connect</em>, where you can share 
+						transformation projects and discuss alignments with your colleagues.
+						You can also browse transformation projects published by others,
+						extend them and share them back publicly or within your organization.
+					</p>
+					<p>
+						<img src="3_3_0_images/haleconnect.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="spatialjoin">
+				<td class="title">Spatial Join transformation function</td>
+				<td class="content">
+					<p>
+						The Join transformation function now comes with a companion function,
+						the Spatial Join, which lets you join source instances based on
+						the spatial relationship between its geometries. The Spatial Join
+						function supports the relation types <em>contains</em>, <em>covered by</em>, 
+						<em>covers</em>, <em>crosses</em>, <em>equals</em>, <em>intersects</em>, 
+						<em>overlaps</em>, <em>touches</em>, and <em>within</em>.
+					</p>
+					<p>
+						<img src="3_3_0_images/spatialjoin.png" />
+					</p>
+					<p>
+						Thanks to <i>swisstopo</i> for funding this work.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="wfs-pagination">
+				<td class="title">Arbitrary SQL queries as a source for schemas and data</td>
+				<td class="content">
+					<p>
+						Database support in <em>hale studio</em> was further extended by
+						the possibility to tailor the schema and data import by custom
+						SQL queries.
+					</p>
+					<p>
+						<img src="3_3_0_images/sql-source.png" />
+					</p>
+					<p>
+						Thanks to the <i>Bundesanstalt für Wasserbau</i> for funding this work.
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
