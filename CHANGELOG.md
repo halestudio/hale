@@ -8,11 +8,11 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Added
 
-- Integration with the online collaboration platform hale connect: supports logging in to hale connect via hale studio and import published transformation projects as well as sharing projects to hale connect.
+- Integration with the online collaboration platform hale connect: log in to hale connect, import shared transformation projects and upload projects.
 - Spatial Index for instances with geometries that can be queried via the new Groovy geometry helper "spatialIndexQuery"
-- Groovy geometry helper function "boundaryCovers" that can be used to determine if the boundary of a the geometry covers all points of a line
 - Spatial Join transformation function: join instances based on the spatial relation of their geometry properties
-- Arbitrary SQL queries as a source for schema and data
+- Groovy geometry helper function "boundaryCovers" that can be used to determine if the boundary of a the geometry covers all points of a line
+- Use arbitrary SQL queries as a source schema and data source
 - Import/Export hale schema definitions as JSON
 - DMG image for macOS installation
 
@@ -24,7 +24,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Fixed
 
-- Fixed content assistance if RegEx Analysis function
+- Fixed content assistance in RegEx Analysis function
 - Fixed resource copying in hale Project Archive writer
 - Fixed links on About screen
 - Fixed updating a cell when the source or target types are changed to a parent of the original type
