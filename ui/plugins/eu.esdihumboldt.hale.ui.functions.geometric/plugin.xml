@@ -12,6 +12,14 @@
                name="referenceSystem">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.geometric.SpatialJoinParameterPage"
+            function="eu.esdihumboldt.cst.functions.geometric.spatialjoin"
+            id="eu.esdihumboldt.cst.functions.geometric.spatialjoin">
+         <parameter
+               name="spatialjoin">
+         </parameter>
+      </typeParameterPage>
    </extension>
 
 </plugin>

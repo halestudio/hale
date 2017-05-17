@@ -55,4 +55,32 @@ public class InstanceReferenceDecorator implements InstanceReference {
 		return reference.getDataSet();
 	}
 
+	/**
+	 * Determines if a given object is an InstanceReferenceDecorator and itself
+	 * or its original reference is decorated with the given type. If the
+	 * original reference is an InstanceReferenceDecorator itself, the method
+	 * will that object's original reference recursively.
+	 * 
+	 * @param decorator Object to check
+	 * @param decoratorType Decorator type to search
+	 * @return the object or one of its original references that implements the
+	 *         given <code>decoratorType</code>
+	 */
+	public static <T> T findDecoration(final Object decorator, Class<T> decoratorType) {
+		if (!(decorator instanceof InstanceReferenceDecorator)) {
+			return null;
+		}
+
+		InstanceReference current = (InstanceReference) decorator;
+		while (current instanceof InstanceReferenceDecorator) {
+			if (decoratorType.isAssignableFrom(current.getClass())) {
+				return (T) current;
+			}
+			else {
+				current = ((InstanceReferenceDecorator) current).getOriginalReference();
+			}
+		}
+
+		return null;
+	}
 }
