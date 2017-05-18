@@ -36,6 +36,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -79,6 +80,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private Button ownerOrg;
 	private Button includeWebResources;
 	private Button excludeData;
+	private Button excludeCachedResources;
 	private Group updateOrNewGroup;
 	private Button newProject;
 	private Button updateProject;
@@ -194,15 +196,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		publicAccess.setText("Allow public access?");
 		publicAccess.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
 
-		includeWebResources = new Button(parent, SWT.CHECK);
-		includeWebResources.setText("Include web resources?");
-		includeWebResources.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
-
-		excludeData = new Button(parent, SWT.CHECK);
-		excludeData.setText("Exclude source data?");
-		excludeData.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
-		excludeData.setSelection(true);
-
 		updateProjectControls = new Composite(controlsStack, SWT.NONE);
 		updateProjectControls.setVisible(false);
 		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
@@ -267,6 +260,22 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				selectProject();
 			}
 		});
+
+		Composite writerOptions = new Composite(parent, SWT.NONE);
+		writerOptions.setLayout(new RowLayout());
+		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 3, 2));
+
+		includeWebResources = new Button(writerOptions, SWT.CHECK);
+		includeWebResources.setText("Include web resources?");
+
+		excludeData = new Button(writerOptions, SWT.CHECK);
+		excludeData.setText("Exclude source data?");
+		excludeData.setSelection(true);
+
+		excludeCachedResources = new Button(writerOptions, SWT.CHECK);
+		excludeCachedResources.setText(
+				"Use cached internal schema representation (required for big schema files)?");
+		excludeCachedResources.setSelection(true);
 
 		ProjectInfoService pis = HaleUI.getServiceProvider().getService(ProjectInfoService.class);
 		URI loadLocation = pis.getLoadLocation();
@@ -334,6 +343,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				Value.of(excludeData.getSelection()));
 		provider.setParameter(ArchiveProjectWriter.INCLUDE_WEB_RESOURCES,
 				Value.of(includeWebResources.getSelection()));
+		provider.setParameter(ArchiveProjectWriter.EXCLUDE_CACHED_RESOURCES,
+				Value.of(excludeCachedResources.getSelection()));
 
 		provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
 
@@ -372,6 +383,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		ownerUser.setEnabled(loggedIn);
 		includeWebResources.setEnabled(loggedIn);
 		excludeData.setEnabled(loggedIn);
+		excludeCachedResources.setEnabled(loggedIn);
 		selectProjectButton.setEnabled(loggedIn);
 		newProject.setEnabled(loggedIn);
 		updateProject.setEnabled(loggedIn);

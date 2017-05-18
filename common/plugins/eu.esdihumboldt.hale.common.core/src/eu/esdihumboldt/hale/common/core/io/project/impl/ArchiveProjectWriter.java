@@ -86,6 +86,12 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	 */
 	public static final String EXLUDE_DATA_FILES = "excludedata";
 
+	/**
+	 * Parameter for including or excluding resources that have a cached
+	 * representation available
+	 */
+	public static final String EXCLUDE_CACHED_RESOURCES = "excludecachedresources";
+
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -349,15 +355,21 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 
 				// copy the resource
 				progress.setCurrentTask("Copying resource at " + path);
-				ra.copyResource(input, target, contentType, includeWebResources, reporter);
 
 				// Extract the URL-encoded file name of the copied resource and
 				// build the new relative resource path
 				String resourceName = FilenameUtils.getName(target.toUri().toString());
 				String newPath = resourceFolder + "/" + resourceName;
 
-				// store new path for resource
-				handledResources.put(pathUri, newPath);
+				boolean skipCopy = getParameter(EXCLUDE_CACHED_RESOURCES).as(Boolean.class, false)
+						&& !resource.getCache().isEmpty();
+				if (!skipCopy) {
+					ra.copyResource(input, target, contentType, includeWebResources, reporter);
+
+					// store new path for resource
+					handledResources.put(pathUri, newPath);
+				}
+
 				// update the provider configuration
 				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(newPath));
 				count++;
