@@ -133,6 +133,10 @@
       <topic label="hale connect">
 	      <topic href="html/tasks/haleconnect/account.html" label="Accessing your hale connect account">
 	      </topic>
+	      <topic href="html/tasks/haleconnect/loadproject.html" label="Load a hale connect transformation project">
+	      </topic>
+	      <topic href="html/tasks/haleconnect/shareproject.html" label="Sharing a transformation project on hale connect">
+	      </topic>
           <anchor id="haleconnect-end"/>
       </topic>
       <anchor id="tasks"/>
