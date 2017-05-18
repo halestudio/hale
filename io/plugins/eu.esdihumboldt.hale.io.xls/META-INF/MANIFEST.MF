@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls;singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";resolution:=optional,
  de.fhg.igd.eclipse.util.extension,

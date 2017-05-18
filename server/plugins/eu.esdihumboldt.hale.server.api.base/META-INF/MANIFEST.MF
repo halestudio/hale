@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WADL documentation API
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.api.base
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: groovy;bundle-version="1.8.6",
  org.springframework.web;bundle-version="3.1.1",

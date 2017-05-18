@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Custom Tile Service
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.tiles;singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: de.fhg.igd.mapviewer,
