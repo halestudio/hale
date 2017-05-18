@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="304">
+<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="308">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
@@ -39,8 +39,8 @@
 <repository location="http://build-artifacts.wetransform.to/p2/equinox-test/build_3"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.3.0.i20170428"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/91d2e1a68c325eddac229429ece5e502f9e2050b/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.3.0.i20170517"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/6f75c7045242156f583791f2ad00c4dbb412e0e1/updatesites/platform"/>
 </location>
 </locations>
 </target>
