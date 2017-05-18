@@ -31,6 +31,8 @@ public interface PreferenceConstants {
 	 */
 	static final String SECURE_NODE_NAME = "eu.esdihumboldt.hale"; //$NON-NLS-1$
 
+	static final String HALE_CONNECT_BASEPATH_USE_DEFAULTS = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.usedefaults";
+
 	static final String HALE_CONNECT_BASEPATH_USERS = "eu.esdihumboldt.hale.io.haleconnect.ui.login.endpoint";
 	static final String HALE_CONNECT_BASEPATH_DATA = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.data";
 	static final String HALE_CONNECT_BASEPATH_PROJECTS = "eu.esdihumboldt.hale.io.haleconnect.ui.endpoints.projects";

@@ -40,6 +40,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = HaleConnectUIPlugin.getDefault().getPreferenceStore();
 
+		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_USE_DEFAULTS, true);
 		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_USERS,
 				HALE_CONNECT_BASEPATH_USERS_DEFAULT);
 		store.setDefault(PreferenceConstants.HALE_CONNECT_BASEPATH_DATA,
