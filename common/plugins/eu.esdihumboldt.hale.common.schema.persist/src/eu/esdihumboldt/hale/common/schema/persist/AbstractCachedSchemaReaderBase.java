@@ -55,7 +55,14 @@ public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReade
 			schema = loadFromCache(cache, progress, reporter);
 		}
 		else {
-			schema = loadFromSource(progress, reporter);
+			try {
+				schema = loadFromSource(progress, reporter);
+			} catch (Exception e) {
+				reporter.error("Error loading schema from source", e);
+				if (reporter.isSuccess()) {
+					reporter.setSuccess(false);
+				}
+			}
 			if (provideCache && schema != null && reporter.isSuccess()) {
 				try {
 					cache = storeInCache(schema);
@@ -68,8 +75,20 @@ public abstract class AbstractCachedSchemaReaderBase extends AbstractSchemaReade
 				}
 				cacheUpdate = true;
 			}
+			if (!reporter.isSuccess() && validCache(cache) && useCacheAsFallback()) {
+				schema = loadFromCache(cache, progress, reporter);
+			}
 		}
 		return reporter;
+	}
+
+	/**
+	 * @return if the cache should be used as fall-back if loading the source
+	 *         fails
+	 */
+	protected boolean useCacheAsFallback() {
+		// by default use the cache as fall-back if loading the source fails
+		return true;
 	}
 
 	@Override

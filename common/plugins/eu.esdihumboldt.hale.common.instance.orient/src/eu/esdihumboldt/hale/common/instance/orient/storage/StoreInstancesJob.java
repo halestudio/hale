@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -39,11 +40,16 @@ import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessingExtension;
+import eu.esdihumboldt.hale.common.instance.processing.InstanceProcessor;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import gnu.trove.TObjectIntHashMap;
 import gnu.trove.TObjectIntProcedure;
@@ -67,23 +73,27 @@ public abstract class StoreInstancesJob extends Job {
 
 	private final ReportHandler reportHandler;
 
+	private final ServiceProvider serviceProvider;
+
 	/**
 	 * Create a job that stores instances in a database
 	 * 
 	 * @param name the (human readable) job name
 	 * @param instances the instances to store in the database
 	 * @param database the database
+	 * @param serviceProvider the service provider
 	 * @param reportHandler the report handler, <code>null</code> if no report
 	 *            should be generated
 	 */
 	public StoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances,
-			final ReportHandler reportHandler) {
+			final ServiceProvider serviceProvider, final ReportHandler reportHandler) {
 		super(name);
 
 		setUser(true);
 
 		this.database = database;
 		this.instances = instances;
+		this.serviceProvider = serviceProvider;
 		this.reportHandler = reportHandler;
 
 		if (reportHandler != null) {
@@ -120,6 +130,14 @@ public abstract class StoreInstancesJob extends Job {
 			// use intent
 			db.declareIntent(new OIntentMassiveInsert());
 
+			// Find all the InstanceProcessors to feed them the stored Instances
+			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+					serviceProvider);
+			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+
+			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
+					null, DataSet.SOURCE);
+
 			// TODO decouple next() and save()?
 
 			long lastUpdate = 0; // last count update
@@ -147,6 +165,16 @@ public abstract class StoreInstancesJob extends Job {
 					ODocument doc = conv.configureDocument(db);
 					// and save it
 					doc.save();
+
+					// Create an InstanceReference for the saved instance and
+					// feed it to all known InstanceProcessors. The decoration
+					// with ResolvableInstanceReference allows the
+					// InstanceProcessors to resolve the instances if required.
+					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+							new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
+									conv.getDefinition()),
+							browser);
+					processors.forEach(p -> p.process(instance, resolvableRef));
 
 					count++;
 

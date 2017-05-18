@@ -2,12 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Groovy transformation function
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy;singleton:=true
-Bundle-Version: 3.2.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.3.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.vividsolutions.jts.awt;version="1.13.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.geom,
  de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst,
@@ -38,7 +40,8 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
  groovy;bundle-version="2.1.5",
  org.kohsuke.groovy.sandbox;bundle-version="1.5.0",
- org.eclipse.core.runtime;bundle-version="3.10.0"
+ org.eclipse.core.runtime;bundle-version="3.10.0",
+ eu.esdihumboldt.hale.common.instance.index;bundle-version="3.3.0"
 Export-Package: eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.functions.groovy.helper,
  eu.esdihumboldt.cst.functions.groovy.helper.extension,

@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver
 import eu.esdihumboldt.util.groovy.paths.AbstractAccessor
 import eu.esdihumboldt.util.groovy.paths.Path
 import eu.esdihumboldt.util.groovy.paths.PathImpl
+import eu.esdihumboldt.util.groovy.paths.PathWithNulls
 import groovy.transform.CompileStatic
 
 /**
@@ -40,13 +41,18 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class InstanceAccessor extends AbstractAccessor<Object> {
 
+	private final boolean accessorNulls
+
 	/**
-	 * Create an accessor for a given definition.
+	 * Create an accessor for a given instance/value.
 	 * 
-	 * @param definition the definition
+	 * @param object the object to access
+	 * @param accessNulls if it should be possible to access <code>null</code> values 
 	 */
-	public InstanceAccessor(def object) {
-		super(ImmutableList.of(new PathImpl<Object>(object)));
+	public InstanceAccessor(def object, boolean accessNulls = false) {
+		super(ImmutableList.of((object == null || accessNulls)
+		? new PathWithNulls<Object>(object) : new PathImpl<Object>(object)));
+		this.accessorNulls = accessNulls
 	}
 
 	/**
@@ -54,14 +60,20 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 	 * 
 	 * @param objects the initial objects
 	 */
-	public InstanceAccessor(List<?> objects) {
-		super(transform(objects));
+	public InstanceAccessor(List<?> objects, boolean accessNulls = false) {
+		super(transform(objects, accessNulls));
+		this.accessorNulls = accessNulls
 	}
 
-	private static List<Path<Object>> transform(List<?> objects) {
+	private static List<Path<Object>> transform(List<?> objects, final boolean accessNulls) {
 		List<Path<Object>> list = Lists.transform(objects, new Function<Object, Path<Object>>() {
 					public Path<Object> apply(Object from) {
-						return new PathImpl<Object>(from);
+						if (from == null || accessNulls) {
+							return new PathWithNulls<Object>(from);
+						}
+						else {
+							return new PathImpl<Object>(from)
+						}
 					}
 				});
 		return Collections.unmodifiableList(list);
@@ -149,7 +161,10 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 
 			List<Path<Object>> result = []
 			values?.each {
-				result << parentPath.subPath(it)
+				if (it != null || accessorNulls) {
+					// only add if not null or nulls should be listed
+					result << parentPath.subPath(it)
+				}
 			}
 			result
 		}

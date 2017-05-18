@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.ui.function.generic.pages.internal;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.swt.widgets.Composite;
@@ -63,12 +65,33 @@ public class PropertyField extends Field<PropertyParameterDefinition, PropertyEn
 	 * @param parentType the parentType to set
 	 */
 	public void setParentType(TypeEntityDefinition parentType) {
-		this.parentType = parentType;
-
 		// set the parent type on the selectors
-		for (PropertyEntitySelector selector : getSelectors()) {
-			selector.setParentType(parentType);
-		}
+
+		// Simply iterating over the selectors will lead to problems like in
+		// https://github.com/halestudio/hale/issues/72 because setParentType
+		// removes selectors from the list under certain conditions.
+
+//		for (PropertyEntitySelector selector : getSelectors()) {
+//			selector.setParentType(parentType);
+//		}
+
+		// Instead, look iteratively at the subset of selectors whose parentType
+		// is not yet correct, and update one at a time until all remaining
+		// selectors have the correct parentType. This way, the side effects of
+		// calling setParentType are considered properly.
+		boolean finished = false;
+		do {
+			Optional<PropertyEntitySelector> selector = getSelectors().stream()
+					.filter(sel -> !Objects.equals(parentType, sel.getParentType())).findFirst();
+			if (selector.isPresent()) {
+				selector.get().setParentType(parentType);
+			}
+			else {
+				finished = true;
+			}
+		} while (!finished);
+
+		this.parentType = parentType;
 	}
 
 	/**

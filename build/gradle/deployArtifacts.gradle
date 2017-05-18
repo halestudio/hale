@@ -91,6 +91,36 @@ def findOtherMergedParts(java.util.jar.Manifest manifest) {
 }
 
 /**
+ * Add additional dependencies defined in the manifest.
+ */
+void addMoreDependencies(def pom, java.util.jar.Manifest manifest) {
+	def deps = manifest?.attr?.getValue('Unpuzzle-AddDependencies')
+	if (deps) {
+		deps.split(',').each { depStr ->
+			def parts = depStr.split(';')
+			
+			if (parts.length >= 3) {
+				def group = parts[0]
+				def name = parts[1]
+				def version = parts[2]
+				
+				println "Adding additional dependency $group:$name:$version"
+				
+				// add custom dependency
+				pom.dependencyBundles << new org.akhikhl.unpuzzle.osgi2maven.DependencyBundle(
+					// add prefix to be able to identify the dependeny for configuration
+					group: '___more___' + group,
+					name: name,
+					version: version,
+					// not sure what this is for
+					// visibility: 'private',
+					resolution: 'mandatory')
+			}
+		}
+	}
+}
+
+/**
  * Find the artifact version to use from a version mapping part of
  * the bundle artifact map.
  */
@@ -194,6 +224,12 @@ repositories {
 	maven { // HALE artifactory
 		url 'http://artifactory.esdi-humboldt.eu/artifactory/libs-release/'
 	}
+	maven { // wetransform artifactory
+		url 'http://artifactory.wetransform.to/artifactory/libs-release/'
+	}
+	maven { // wetransform artifactory (snapshots)
+		url 'http://artifactory.wetransform.to/artifactory/libs-snapshot/'
+	}
 	jcenter()
 	maven {
 		url 'http://download.osgeo.org/webdav/geotools/'
@@ -288,12 +324,24 @@ unpuzzle {
 				// add "other parts" if bundle was merged with bnd-platform
 				otherParts.addAll(findOtherMergedParts(pom.manifest));
 			}
+			else if (group.startsWith('___more___')) {
+				// custom dependency defined via manifest
+				
+				// remove prefix
+				group = group.substring('___more___'.length())
+				
+				// do not deploy dependency (this should always be an existing Maven dependency)
+				deploy = false
+			}
 			else {
 				// Eclipse-provided or HALE-built bundle
 			
 				// for HALE-built bundles, adapt version number as SNAPSHOT/release
 				version = adaptHaleBundleVersion(version)
 			}
+			
+			// add custom dependencies defined in manifest
+			addMoreDependencies(pom, pom.manifest)
 		}
 	}
 

@@ -104,6 +104,7 @@ public class PropertiesMergeHandler
 
 		for (List<QName> propertyPath : mergeConfig.keyProperties) {
 			// retrieve values from instance
+			// XXX should nulls be listed?
 			InstanceAccessor accessor = new InstanceAccessor(instance);
 			for (QName name : propertyPath) {
 				accessor.findChildren(name.getLocalPart(),

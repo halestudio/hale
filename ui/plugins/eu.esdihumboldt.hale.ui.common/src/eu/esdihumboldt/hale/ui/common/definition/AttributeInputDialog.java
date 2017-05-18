@@ -33,9 +33,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
-import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Attribute input dialog

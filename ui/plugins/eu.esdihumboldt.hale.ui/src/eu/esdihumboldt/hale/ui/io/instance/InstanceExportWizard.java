@@ -113,64 +113,59 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 	}
 
 	/**
-	 * @see IOWizard#performFinish()
+	 * Run the configured validators on the exported instance. May be overriden
+	 * to customize validation process.
+	 * 
+	 * @return true if all validations were successful
 	 */
-	@Override
-	public boolean performFinish() {
-		boolean success = super.performFinish();
+	protected boolean performValidation() {
+		boolean success = true;
+		for (InstanceValidator validator : validators) {
+			// set schemas
+			List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+			validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
 
-		if (success && !validators.isEmpty()) {
-			// validate the written output
+			// set service provider
+			validator.setServiceProvider(HaleUI.getServiceProvider());
 
-			for (InstanceValidator validator : validators) {
-				// set schemas
-				List<? extends Locatable> schemas = getProvider().getValidationSchemas();
-				validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
+			if (exportTarget instanceof FileTarget) {
+				String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
+				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
+						new File(fileName));
+				validator.setSource(source);
+				validator.setContentType(getContentType());
 
-				// set service provider
-				validator.setServiceProvider(HaleUI.getServiceProvider());
+				IOReporter defReport = validator.createReporter();
 
-				ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
-				if (exportTarget instanceof FileTarget) {
-					String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
-					LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
-							new File(fileName));
-					validator.setSource(source);
-					validator.setContentType(getContentType());
+				// validate and execute provider
+				try {
+					// validate configuration
+					validator.validate();
+					IOReport report = execute(validator, defReport);
 
-					// XXX configuration pages for validator?
-
-					IOReporter defReport = validator.createReporter();
-
-					// validate and execute provider
-					try {
-						// validate configuration
-						validator.validate();
-						IOReport report = execute(validator, defReport);
-
-						if (report != null) {
-							// add report to report server
-							ReportService repService = PlatformUI.getWorkbench()
-									.getService(ReportService.class);
-							repService.addReport(report);
-							if (report.isSuccess()) {
-								log.info(report.getSummary());
-							}
-							else {
-								log.error(report.getSummary());
-								success = false;
-							}
+					if (report != null) {
+						// add report to report server
+						ReportService repService = PlatformUI.getWorkbench()
+								.getService(ReportService.class);
+						repService.addReport(report);
+						if (report.isSuccess()) {
+							log.info(report.getSummary());
 						}
-					} catch (IOProviderConfigurationException e) {
-						log.error(MessageFormat.format("The validator '{0}' could not be executed",
-								validator.getClass().getCanonicalName()), e);
-						success = false;
+						else {
+							log.error(report.getSummary());
+							success = false;
+						}
 					}
-				}
-				else {
-					log.error("No input can be provided for validation (no file target)");
+				} catch (IOProviderConfigurationException e) {
+					log.error(MessageFormat.format("The validator '{0}' could not be executed",
+							validator.getClass().getCanonicalName()), e);
 					success = false;
 				}
+			}
+			else {
+				log.error("No input can be provided for validation (no file target)");
+				success = false;
 			}
 		}
 
@@ -180,6 +175,21 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 		else {
 			log.userError(
 					"There were validation failures. Please check the report for more details.");
+		}
+
+		return success;
+	}
+
+	/**
+	 * @see IOWizard#performFinish()
+	 */
+	@Override
+	public boolean performFinish() {
+		boolean success = super.performFinish();
+
+		if (success && !validators.isEmpty()) {
+			// validate the written output
+			success = performValidation();
 		}
 
 		return success;

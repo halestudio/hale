@@ -20,7 +20,8 @@ import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Path base implementation.
+ * Path base implementation. This path implementation does not allow
+ * <code>null</code> values as part of paths.
  * 
  * @param <C> the child type
  * @author Simon Templer
@@ -67,8 +68,8 @@ public class PathImpl<C> implements Path<C> {
 
 	@Override
 	public Path<C> subPath(Path<C> append) {
-		return new PathImpl<C>(ImmutableList.<C> builder().addAll(path)
-				.addAll(append.getElements()).build());
+		return new PathImpl<C>(
+				ImmutableList.<C> builder().addAll(path).addAll(append.getElements()).build());
 	}
 
 }

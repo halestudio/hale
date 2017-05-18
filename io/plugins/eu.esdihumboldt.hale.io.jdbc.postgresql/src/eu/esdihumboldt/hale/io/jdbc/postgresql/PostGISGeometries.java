@@ -43,10 +43,10 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor;
-import eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata;
-import schemacrawler.schema.Column;
+import schemacrawler.schema.BaseColumn;
 import schemacrawler.schema.ColumnDataType;
 
 /**
@@ -68,7 +68,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(PGConnection connection,
-			Column column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type) {
 		Connection con = (Connection) connection;
 
 		String columnValueName = column.getParent().getName();

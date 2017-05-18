@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Control;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 import eu.esdihumboldt.hale.ui.common.AttributeEditor;
-import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Wraps an existing editor as a {@link Value} editor.

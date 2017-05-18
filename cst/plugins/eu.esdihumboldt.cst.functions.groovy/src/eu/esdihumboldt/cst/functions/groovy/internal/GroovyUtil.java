@@ -23,6 +23,8 @@ import java.util.Map;
 
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.helper.DefaultHelperContext;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -38,6 +40,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
@@ -244,7 +247,9 @@ public class GroovyUtil implements GroovyConstants {
 			TransformationLog log, ExecutionContext executionContext,
 			TypeDefinition targetInstanceType) {
 		Binding binding = new Binding();
-		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault());
+		HelperContext helperContext = new DefaultHelperContext(executionContext, executionContext,
+				cell, typeCell);
+		binding.setVariable(BINDING_HELPER_FUNCTIONS, HelperFunctions.createDefault(helperContext));
 		binding.setVariable(BINDING_BUILDER, builder);
 		binding.setVariable(BINDING_CELL, cell);
 		TransformationLogWrapper cellLog = new TransformationLogWrapper(log);
@@ -276,6 +281,9 @@ public class GroovyUtil implements GroovyConstants {
 
 		binding.setVariable(BINDING_PROJECT, new ProjectAccessor(
 				executionContext.getService(ProjectInfoService.class), cellLog, executionContext));
+
+		binding.setVariable(BINDING_SPATIAL_INDEX,
+				executionContext.getService(SpatialIndexService.class));
 
 		return binding;
 	}

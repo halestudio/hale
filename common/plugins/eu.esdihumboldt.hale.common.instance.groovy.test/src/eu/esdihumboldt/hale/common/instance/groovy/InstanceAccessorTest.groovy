@@ -88,6 +88,71 @@ class InstanceAccessorTest extends GroovyTestCase {
 		assertTrue instance.properties.relative.first() instanceof Instance
 	}
 
+	void testAccessNullProperties() {
+		// build instance (schema less)
+		Instance instance = new InstanceBuilder().instance { name null }
+
+		// test access of null property
+		assertNull new InstanceAccessor(instance, true).name.first()
+
+		// test access of null child property
+		assertNull new InstanceAccessor(instance, true).name.some.first()
+
+		def list = new InstanceAccessor(instance, true).name.list()
+		assertEquals(1, list.size())
+		assertNull(list[0])
+	}
+
+	void testNullProperties() {
+		// build instance (schema less)
+		Instance instance = new InstanceBuilder().instance { name null }
+
+		// test access of null property
+		assertNull new InstanceAccessor(instance).name.first()
+
+		// test access of null child property
+		assertNull new InstanceAccessor(instance).name.some.first()
+
+		def list = new InstanceAccessor(instance).name.list()
+		assertEquals(0, list.size())
+	}
+
+	void testNull() {
+		// test access on null object
+		assertNull new InstanceAccessor(null).name.first()
+
+		def list = new InstanceAccessor(null).name.list()
+		assertEquals(0, list.size())
+	}
+
+	void testNullMixed() {
+		// build instances (schema less)
+		Instance instance1 = new InstanceBuilder().instance { name 'Lisa' }
+		Instance instance2 = new InstanceBuilder().instance { name null }
+		Instance instance3 = new InstanceBuilder().instance { name 'Bart' }
+
+		def instances = [
+			instance1,
+			null,
+			instance2,
+			instance3,
+			null
+		]
+
+		// test access to first property
+		assertEquals 'Lisa', new InstanceAccessor(instances).name.first()
+
+		// list w/o null access
+		def list = new InstanceAccessor(instances).name.list()
+		assertEquals(2, list.size())
+		assertEquals('Lisa', list[0])
+		assertEquals('Bart', list[1])
+
+		// list w/ null access
+		def list2 = new InstanceAccessor(instances, true).name.list()
+		assertEquals(3, list2.size())
+	}
+
 	void testSchema() {
 		String defaultNs = "http://www.my.namespace"
 

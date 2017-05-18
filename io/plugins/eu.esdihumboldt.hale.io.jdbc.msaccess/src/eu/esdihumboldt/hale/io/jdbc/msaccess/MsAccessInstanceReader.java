@@ -67,7 +67,7 @@ public class MsAccessInstanceReader extends JDBCInstanceReader {
 	}
 
 	@Override
-	protected UcanaccessConnection getConnection() throws SQLException {
+	public UcanaccessConnection getConnection() throws SQLException {
 
 		String user = getParameter(PARAM_USER).as(String.class);
 		String password = getParameter(PARAM_PASSWORD).as(String.class);

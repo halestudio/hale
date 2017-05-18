@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 
+import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.mapviewer.BasicMapKit;
-import de.fhg.igd.mapviewer.geom.BoundingBox;
 import de.fhg.igd.mapviewer.waypoints.SelectableWaypoint;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;

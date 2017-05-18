@@ -110,6 +110,7 @@ public class GroovyCreatePage extends GroovyScriptPage<AbstractGenericFunctionWi
 		ExecutionContext context = new DummyExecutionContext(HaleUI.getServiceProvider());
 		Binding binding = GroovyUtil.createBinding(builder, cell, cell, log, context,
 				typeEntity.getDefinition().getDefinition());
+		binding.setProperty(BINDING_INDEX, 0);
 
 		GroovyService service = HaleUI.getServiceProvider().getService(GroovyService.class);
 		Script script = null;

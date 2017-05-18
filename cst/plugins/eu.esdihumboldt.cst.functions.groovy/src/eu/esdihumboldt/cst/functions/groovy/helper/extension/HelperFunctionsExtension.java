@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -35,10 +37,15 @@ import de.fhg.igd.eclipse.util.extension.ExtensionUtil;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.groovy.helper.Category;
+import eu.esdihumboldt.cst.functions.groovy.helper.ContextAwareHelperFunction;
+import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunction;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionOrCategory;
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctionsService;
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.Specification;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
  * Groovy script helper functions extension point.
@@ -55,6 +62,41 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 
 	private final AtomicBoolean initialized = new AtomicBoolean();
 	private static final String SPEC_END = "_spec";
+
+	private final ServiceProvider serviceProvider;
+
+	private final HelperContext defaultContext = new HelperContext() {
+
+		@Override
+		public Cell getTypeCell() {
+			return null;
+		}
+
+		@Override
+		public ServiceProvider getServiceProvider() {
+			return serviceProvider;
+		}
+
+		@Override
+		public ExecutionContext getExecutionContext() {
+			return null;
+		}
+
+		@Override
+		public Cell getContextCell() {
+			return null;
+		}
+	};
+
+	/**
+	 * Create a helper function extension instance.
+	 * 
+	 * @param serviceProvider the service provider if available
+	 */
+	public HelperFunctionsExtension(@Nullable ServiceProvider serviceProvider) {
+		super();
+		this.serviceProvider = serviceProvider;
+	}
 
 	/**
 	 * Initialize the extension point from the registered extensions (if not
@@ -157,84 +199,14 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 			List<HelperFunctionWrapper> functions = new ArrayList<>();
 			for (Method method : helperClass.getMethods()) {
 				int modifiers = method.getModifiers();
-				if (method.getName().startsWith("_") && !Modifier.isAbstract(modifiers)
+				if (method.getName().startsWith("_")
+						&& !method.getName().startsWith(
+								"__") /* exclude __$swapInit and the like */
+						&& !Modifier.isAbstract(modifiers)
 						&& !method.getName().endsWith(SPEC_END)) {
-					// a candidate -> check parameters
-					Class<?>[] params = method.getParameterTypes();
-					if (params != null && params.length == 1) {
-						// has a single parameter
-//						final boolean paramIsMap = Map.class.isAssignableFrom(params[0]);
-						final boolean isStatic = Modifier.isStatic(modifiers);
-						final Method callMethod = method;
-
-						// Get the specification from field
-						String fieldOrMethodName = callMethod.getName() + SPEC_END;
-
-						Object fieldV = null;
-						try {
-							Field field = helperClass.getField(fieldOrMethodName);
-							int fieldModifiers = field.getModifiers();
-							if (Modifier.isStatic(fieldModifiers)
-									&& Modifier.isFinal(fieldModifiers)) {
-								fieldV = field.get(null);
-							}
-						} catch (Exception e) {
-							// do nothing
-						}
-						final Object fieldValue = fieldV;
-
-						// Get spec from method
-						Method meth = null;
-						boolean isSpecStatic = false;
-						try {
-							meth = helperClass.getMethod(fieldOrMethodName,
-									new Class[] { String.class });
-							int specModifier = meth.getModifiers();
-							isSpecStatic = Modifier.isStatic(specModifier);
-
-						} catch (Exception e) {
-							// do nothing
-						}
-						final Method specMethod = meth;
-						final boolean isSpecMethodStatic = isSpecStatic;
-
-						HelperFunction<Object> function = new HelperFunction<Object>() {
-
-							@Override
-							public Object call(Object arg) throws Exception {
-								if (isStatic) {
-									return callMethod.invoke(null, arg);
-								}
-								else {
-									Object helper = helperClass.newInstance();
-									return callMethod.invoke(helper, arg);
-								}
-							}
-
-							@Override
-							public Specification getSpec(String name) throws Exception {
-								if (fieldValue != null && fieldValue instanceof Specification) {
-
-									return ((Specification) fieldValue);
-								}
-								else if (specMethod != null) {
-									if (isSpecMethodStatic) {
-										return (Specification) specMethod.invoke(null, name);
-									}
-									else {
-										Object helper = helperClass.newInstance();
-										return (Specification) specMethod.invoke(helper, name);
-									}
-
-								}
-								return null;
-							}
-						};
-
-						// method name
-						String name = method.getName().substring(1);
-
-						functions.add(new HelperFunctionWrapper(function, name));
+					HelperFunctionWrapper function = loadFunction(method, helperClass);
+					if (function != null) {
+						functions.add(function);
 					}
 				}
 			}
@@ -242,24 +214,137 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 		}
 	}
 
+	/**
+	 * Load helper function via reflection from a method.
+	 * 
+	 * @param callMethod the method (probably) defining a helper function
+	 * @param helperClass the class defining the method
+	 * @return the loaded helper function or <code>null</code>
+	 */
+	@Nullable
+	protected HelperFunctionWrapper loadFunction(final Method callMethod, Class<?> helperClass) {
+		int modifiers = callMethod.getModifiers();
+
+		// a candidate -> check parameters
+		Class<?>[] params = callMethod.getParameterTypes();
+		if (params != null && params.length <= 2) {
+			// has maximum two parameters
+
+			// last parameter may be context parameter
+			final boolean hasContextParam = params.length >= 1
+					&& params[params.length - 1].equals(HelperContext.class);
+			// check if there is an actual main parameter
+			final boolean hasMainParam = (hasContextParam && params.length == 2)
+					|| (!hasContextParam && params.length == 1);
+
+			final boolean isStatic = Modifier.isStatic(modifiers);
+
+			// Get the specification from field
+			String specFieldOrMethodName = callMethod.getName() + SPEC_END;
+
+			Object fieldV = null;
+			try {
+				Field field = helperClass.getField(specFieldOrMethodName);
+				int fieldModifiers = field.getModifiers();
+				if (Modifier.isStatic(fieldModifiers) && Modifier.isFinal(fieldModifiers)) {
+					fieldV = field.get(null);
+				}
+			} catch (Exception e) {
+				// do nothing
+			}
+			final Object fieldValue = fieldV;
+
+			// Get spec from method
+			Method meth = null;
+			boolean isSpecStatic = false;
+			try {
+				meth = helperClass.getMethod(specFieldOrMethodName, new Class[] { String.class });
+				int specModifier = meth.getModifiers();
+				isSpecStatic = Modifier.isStatic(specModifier);
+
+			} catch (Exception e) {
+				// do nothing
+			}
+			final Method specMethod = meth;
+			final boolean isSpecMethodStatic = isSpecStatic;
+
+			HelperFunction<Object> function = new ContextAwareHelperFunction<Object>() {
+
+				@Override
+				public Object call(Object arg, HelperContext context) throws Exception {
+					Object helper = null;
+					if (!isStatic) {
+						helper = helperClass.newInstance();
+					}
+					if (hasMainParam) {
+						if (hasContextParam) {
+							return callMethod.invoke(helper, arg, context);
+						}
+						else {
+							return callMethod.invoke(helper, arg);
+						}
+					}
+					else {
+						if (hasContextParam) {
+							return callMethod.invoke(helper, context);
+						}
+						else {
+							return callMethod.invoke(helper);
+						}
+					}
+				}
+
+				@Override
+				public Specification getSpec(String name) throws Exception {
+					if (fieldValue != null && fieldValue instanceof Specification) {
+
+						return ((Specification) fieldValue);
+					}
+					else if (specMethod != null) {
+						if (isSpecMethodStatic) {
+							return (Specification) specMethod.invoke(null, name);
+						}
+						else {
+							Object helper = helperClass.newInstance();
+							return (Specification) specMethod.invoke(helper, name);
+						}
+
+					}
+					return null;
+				}
+			};
+
+			// method name
+			String name = callMethod.getName().substring(1);
+			return new HelperFunctionWrapper(function, name);
+		}
+
+		return null;
+	}
+
 	@Override
-	public Iterable<HelperFunctionOrCategory> getChildren(Category cat) {
+	public Iterable<HelperFunctionOrCategory> getChildren(Category cat, HelperContext context) {
 		init();
 
+		final HelperContext theContext = extendContext(context);
+
 		synchronized (children) {
-			Map<String, HelperFunctionOrCategory> catMap = children.get(cat);
+			final Map<String, HelperFunctionOrCategory> catMap = children.get(cat);
 			if (catMap == null) {
 				return Collections.emptyList();
 			}
 			else {
-				return Collections.unmodifiableCollection(catMap.values());
+				return () -> catMap.values().stream().map(fc -> injectContext(fc, theContext))
+						.iterator();
 			}
 		}
 	}
 
 	@Override
-	public HelperFunctionOrCategory get(Category cat, String name) {
+	public HelperFunctionOrCategory get(Category cat, String name, HelperContext context) {
 		init();
+
+		context = extendContext(context);
 
 		synchronized (children) {
 			Map<String, HelperFunctionOrCategory> catMap = children.get(cat);
@@ -267,8 +352,67 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 				return null;
 			}
 			else {
-				return catMap.get(name);
+				return injectContext(catMap.get(name), context);
 			}
+		}
+	}
+
+	/**
+	 * Inject the helper context if applicable.
+	 * 
+	 * @param helperFunctionOrCategory the helper function or category
+	 * @param context the helper context to inject
+	 * @return the adapted helper function or the unchanged category
+	 */
+	protected HelperFunctionOrCategory injectContext(
+			HelperFunctionOrCategory helperFunctionOrCategory, HelperContext context) {
+		if (context != null) {
+			HelperFunction<?> function = helperFunctionOrCategory.asFunction();
+			if (function != null && function instanceof ContextAwareHelperFunction<?>) {
+				return new HelperFunctionContextWrapper<>((ContextAwareHelperFunction<?>) function,
+						helperFunctionOrCategory.getName(), context);
+			}
+		}
+		return helperFunctionOrCategory;
+	}
+
+	/**
+	 * Extend the given helper context w/ additional information if possible.
+	 * 
+	 * @param context the context to extend
+	 * @return the extended context information
+	 */
+	protected HelperContext extendContext(final HelperContext context) {
+		if (context == null) {
+			return defaultContext;
+		}
+		else if (serviceProvider != null && context.getServiceProvider() == null) {
+			// extend w/ service provider
+			return new HelperContext() {
+
+				@Override
+				public Cell getTypeCell() {
+					return context.getTypeCell();
+				}
+
+				@Override
+				public ServiceProvider getServiceProvider() {
+					return serviceProvider;
+				}
+
+				@Override
+				public ExecutionContext getExecutionContext() {
+					return context.getExecutionContext();
+				}
+
+				@Override
+				public Cell getContextCell() {
+					return context.getContextCell();
+				}
+			};
+		}
+		else {
+			return context;
 		}
 	}
 

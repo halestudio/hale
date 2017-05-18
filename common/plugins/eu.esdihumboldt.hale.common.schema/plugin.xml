@@ -122,6 +122,11 @@
             id="validation"
             type="eu.esdihumboldt.hale.common.schema.model.constraint.type.ValidationConstraint">
       </valueconstraint>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.common.schema.model.constraint.type.factory.GeometryMetadataFactory"
+            id="geometry-metadata"
+            type="eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata">
+      </valueconstraint>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.schema.validatorfactory">
@@ -165,11 +170,15 @@
          point="eu.esdihumboldt.hale.io.complexvalue">
       <complexValue
             descriptor="eu.esdihumboldt.hale.common.schema.model.validate.factory.internal.ValidatorValueType"
-            id="eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue"
+            id="validator"
             name="validator"
             namespace="http://www.esdi-humboldt.eu/hale/core"
             type="eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue">
       </complexValue>
+      <alias
+            for="validator"
+            id="eu.esdihumboldt.hale.common.schema.model.validate.factory.ValidatorValue">
+      </alias>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">

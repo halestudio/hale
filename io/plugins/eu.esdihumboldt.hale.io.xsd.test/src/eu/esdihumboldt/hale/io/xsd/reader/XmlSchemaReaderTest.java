@@ -261,8 +261,8 @@ public class XmlSchemaReaderTest {
 		PropertyDefinition effDate = type.getChild(new QName("effDate")).asProperty();
 		assertNotNull(effDate);
 		// binding must be compatible to Date
-		assertTrue(Date.class.isAssignableFrom(effDate.getPropertyType()
-				.getConstraint(Binding.class).getBinding()));
+		assertTrue(Date.class.isAssignableFrom(
+				effDate.getPropertyType().getConstraint(Binding.class).getBinding()));
 	}
 
 	/**
@@ -278,8 +278,8 @@ public class XmlSchemaReaderTest {
 		XmlIndex schema = (XmlIndex) readSchema(input);
 
 		// envelope element
-		XmlElement envelope = schema.getElements().get(
-				new QName("http://example.org/ord", "envelope"));
+		XmlElement envelope = schema.getElements()
+				.get(new QName("http://example.org/ord", "envelope"));
 		assertNotNull(envelope);
 		TypeDefinition envType = envelope.getType();
 		// mappable
@@ -300,12 +300,12 @@ public class XmlSchemaReaderTest {
 		assertTrue(orderType.getConstraint(MappingRelevantFlag.class).isEnabled());
 
 		// number
-		PropertyDefinition number = orderType.getChild(
-				new QName("http://example.org/ord", "number")).asProperty();
+		PropertyDefinition number = orderType
+				.getChild(new QName("http://example.org/ord", "number")).asProperty();
 		assertNotNull(number);
 		// binding must be string
-		assertEquals(String.class, number.getPropertyType().getConstraint(Binding.class)
-				.getBinding());
+		assertEquals(String.class,
+				number.getPropertyType().getConstraint(Binding.class).getBinding());
 
 		// items
 		PropertyDefinition items = orderType.getChild(new QName("http://example.org/ord", "items"))
@@ -314,12 +314,13 @@ public class XmlSchemaReaderTest {
 		// not mappable
 		assertFalse(items.getPropertyType().getConstraint(MappingRelevantFlag.class).isEnabled());
 		// no elements
-		assertTrue(items.getPropertyType().getConstraint(XmlElements.class).getElements().isEmpty());
+		assertTrue(
+				items.getPropertyType().getConstraint(XmlElements.class).getElements().isEmpty());
 
 		// SpecialOrderType
 		// extension to OrderType, should be mappable using xsi:type
-		TypeDefinition specialOrderType = schema.getType(new QName("http://example.org/ord",
-				"SpecialOrderType"));
+		TypeDefinition specialOrderType = schema
+				.getType(new QName("http://example.org/ord", "SpecialOrderType"));
 		assertNotNull(specialOrderType);
 		// number of declared children
 		assertEquals(1, specialOrderType.getDeclaredChildren().size());
@@ -563,7 +564,8 @@ public class XmlSchemaReaderTest {
 //		//TODO create tests
 //	 }
 
-	private Collection<XmlElement> getElementsWithNS(final String ns, Collection<XmlElement> values) {
+	private Collection<XmlElement> getElementsWithNS(final String ns,
+			Collection<XmlElement> values) {
 		return Collections2.filter(values, new Predicate<XmlElement>() {
 
 			@Override
@@ -583,7 +585,7 @@ public class XmlSchemaReaderTest {
 	 *             reader is invalid
 	 * @throws IOException if reading the schema fails
 	 */
-	private Schema readSchema(LocatableInputSupplier<? extends InputStream> input)
+	public static Schema readSchema(LocatableInputSupplier<? extends InputStream> input)
 			throws IOProviderConfigurationException, IOException {
 		XmlSchemaReader reader = new XmlSchemaReader();
 //		reader.setContentType(XMLSchemaIO.XSD_CT);
@@ -623,8 +625,8 @@ public class XmlSchemaReaderTest {
 		// property type must be a simple type
 		assertTrue(orderperson.getPropertyType().getConstraint(HasValueFlag.class).isEnabled());
 		// binding must be string
-		assertEquals(String.class, orderperson.getPropertyType().getConstraint(Binding.class)
-				.getBinding());
+		assertEquals(String.class,
+				orderperson.getPropertyType().getConstraint(Binding.class).getBinding());
 		// cardinality
 		Cardinality cc = orderperson.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());
@@ -664,21 +666,21 @@ public class XmlSchemaReaderTest {
 		PropertyDefinition quantity = itemType.getChild(new QName(ns, "quantity")).asProperty();
 		assertNotNull(quantity);
 		assertTrue(quantity.getPropertyType().getConstraint(HasValueFlag.class).isEnabled());
-		assertTrue(Number.class.isAssignableFrom(quantity.getPropertyType()
-				.getConstraint(Binding.class).getBinding()));
+		assertTrue(Number.class.isAssignableFrom(
+				quantity.getPropertyType().getConstraint(Binding.class).getBinding()));
 		// price
 		PropertyDefinition price = itemType.getChild(new QName(ns, "price")).asProperty();
 		assertNotNull(price);
 		assertTrue(price.getPropertyType().getConstraint(HasValueFlag.class).isEnabled());
-		assertTrue(Number.class.isAssignableFrom(price.getPropertyType()
-				.getConstraint(Binding.class).getBinding()));
+		assertTrue(Number.class.isAssignableFrom(
+				price.getPropertyType().getConstraint(Binding.class).getBinding()));
 
 		// orderid
 		PropertyDefinition orderid = shiporderType.getChild(new QName(ns, "orderid")).asProperty();
 		assertNotNull(orderid);
 		// binding must be string
-		assertEquals(String.class, orderid.getPropertyType().getConstraint(Binding.class)
-				.getBinding());
+		assertEquals(String.class,
+				orderid.getPropertyType().getConstraint(Binding.class).getBinding());
 		// required
 		cc = orderid.getConstraint(Cardinality.class);
 		assertEquals(1, cc.getMinOccurs());

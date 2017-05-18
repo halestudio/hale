@@ -104,6 +104,52 @@
                </parameterBinding>
          </providerParameter>
       </provider>
+      <provider
+            allowDuplicate="true"
+            class="eu.esdihumboldt.hale.io.jdbc.SQLSchemaReader"
+            description="Schema of a custom SQL query"
+            id="eu.esdihumboldt.hale.io.jdbc.sql.schema.reader"
+            name="SQL Query">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.jdbc">
+         </contentType>
+         <providerParameter
+               description="The user name for the connection to the database."
+               label="User name"
+               name="jdbc.user"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="The password for the connection to the database."
+               label="Password"
+               name="jdbc.password"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="The SQL query to execute on the database"
+               label="SQL Query"
+               name="sql"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="The name of the type that represents the SQL query in hale"
+               label="Type name"
+               name="typename"
+               optional="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -141,10 +187,14 @@
             type="eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable">
       </valueconstraint>
       <valueconstraint
-            factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.GeometryMetadataFactory"
-            id="jdbc.geometry"
-            type="eu.esdihumboldt.hale.io.jdbc.constraints.GeometryMetadata">
+            factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLQueryFactory"
+            id="jdbc.sqlquery"
+            type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery">
       </valueconstraint>
+      <alias
+            for="geometry-metadata"
+            id="jdbc.geometry">
+      </alias>
    </extension>
 
 </plugin>

@@ -162,6 +162,17 @@
                   ref="eu.esdihumboldt.hale.common.core.text">
             </parameterComplexValue>
          </functionParameter>
+         <functionParameter
+               description="Number of instances to create (or rather the number of invocations of the script)"
+               label="Number of instances"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="number"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+         </functionParameter>
       </typeFunction>
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"

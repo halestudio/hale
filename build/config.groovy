@@ -5,14 +5,14 @@
 project = {
 	// version
 	// major.minor.micro-SNAPSHOT - remove -SNAPSHOT for releases
-	version = '3.2.0'
+	version = '3.3.0-SNAPSHOT'
 
 	// when increasing the version number, at least the version of the .application bundles
 	// should be increased so they state an updated application version
 
 	ext {
 		// The title of the win32 installer
-	    win32InstallerTitle = 'HALE'
+	    win32InstallerTitle = 'hale studio'
 
 	    // The GUID used by the win32 installer for product upgrades (must never change!)
 	    win32InstallerUpgradeGUID = '6b6151c0-e3f9-11de-8a39-0800200c9a66'

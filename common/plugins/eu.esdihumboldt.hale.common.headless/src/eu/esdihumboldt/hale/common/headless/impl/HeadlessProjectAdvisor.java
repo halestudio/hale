@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.headless.impl;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +32,8 @@ import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import eu.esdihumboldt.hale.common.core.io.project.FixedProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.ActionProjectFile;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
@@ -127,6 +130,8 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 
 	private final CodeListAdvisor codeListRegistry;
 
+	private URI projectLocation;
+
 	/**
 	 * Default constructor
 	 * 
@@ -161,12 +166,15 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		}
 
 		sourceSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
+		sourceSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, sourceSchemaAdvisor);
 
 		targetSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
+		targetSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_TARGET_SCHEMA, targetSchemaAdvisor);
 
 		codeListRegistry = new CodeListAdvisor();
+		codeListRegistry.setServiceProvider(this);
 		advisors.put(CodeListReader.ACTION_ID, codeListRegistry);
 	}
 
@@ -199,7 +207,8 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 	@Override
 	public void handleResults(ProjectReader provider) {
 		project = provider.getProject();
-		updater = new LocationUpdater(project, provider.getSource().getLocation());
+		projectLocation = provider.getSource().getLocation();
+		updater = new LocationUpdater(project, projectLocation);
 		// no need to keep relative paths in the headless environment
 		updater.updateProject(false);
 
@@ -229,6 +238,15 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		for (ProjectFile file : projectFiles.values()) {
 			file.apply();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <X> X getService(Class<X> serviceInterface) {
+		if (ProjectInfoService.class.equals(serviceInterface) && project != null) {
+			return (X) new FixedProjectInfoService(project, projectLocation);
+		}
+		return super.getService(serviceInterface);
 	}
 
 	/**

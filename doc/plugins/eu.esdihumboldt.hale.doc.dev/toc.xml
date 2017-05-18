@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="HALE Developer Guide">
+<toc label="hale studio Developer Guide">
    <topic label="Getting Started">
-      <topic href="http://www.esdi-community.eu/projects/hale/wiki/How_to_access_the_HALE_sources" label="How to access the HALE sources">
+      <topic href="https://github.com/halestudio/hale/wiki/Set-up-your-development-environment" label="How to access the hale studio sources">
       </topic>
    </topic>
    <topic label="Concepts">

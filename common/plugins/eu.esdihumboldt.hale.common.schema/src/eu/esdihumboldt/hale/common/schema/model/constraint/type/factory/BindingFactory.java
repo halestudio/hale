@@ -15,12 +15,11 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ClassResolver;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReferenceBuilder;
+import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeResolver;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.ValueConstraintFactory;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 
@@ -33,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 public class BindingFactory implements ValueConstraintFactory<Binding> {
 
 	@Override
-	public Value store(Binding constraint, Map<TypeDefinition, String> typeIndex) {
+	public Value store(Binding constraint, TypeReferenceBuilder typeIndex) {
 		Class<?> clazz = constraint.getBinding();
 		if (clazz != null) {
 			return Value.of(clazz.getName());
@@ -43,8 +42,8 @@ public class BindingFactory implements ValueConstraintFactory<Binding> {
 	}
 
 	@Override
-	public Binding restore(Value value, Definition<?> definition,
-			Map<String, TypeDefinition> typeIndex, ClassResolver resolver) throws Exception {
+	public Binding restore(Value value, Definition<?> definition, TypeResolver typeIndex,
+			ClassResolver resolver) throws Exception {
 		String className = value.as(String.class);
 
 		Class<?> clazz = resolver.loadClass(className);

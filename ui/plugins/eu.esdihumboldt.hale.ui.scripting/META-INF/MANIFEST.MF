@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scripting UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.scripting;singleton:=true
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.ui,
  eu.esdihumboldt.hale.common.scripting,
@@ -15,6 +15,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.align.transformation.function,
  eu.esdihumboldt.hale.common.align.transformation.function.impl,
+ eu.esdihumboldt.hale.common.core.io.util,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.instance.model,

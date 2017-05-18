@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE JDBC Support UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.ui;singleton:=true
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ui;bundle-version="3.7.0",
@@ -15,6 +15,7 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.extension,
+ eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.util,
  org.slf4j;version="1.7.10"
 Bundle-Vendor: data harmonisation panel

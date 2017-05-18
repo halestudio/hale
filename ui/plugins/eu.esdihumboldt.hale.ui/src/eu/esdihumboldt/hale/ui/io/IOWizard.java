@@ -68,7 +68,9 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 /**
  * Abstract I/O wizard based on {@link IOProvider} descriptors
  * 
- * @param <P> the {@link IOProvider} type used in the wizard
+ * @param
+ * 			<P>
+ *            the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -534,29 +536,45 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			}
 
 			// prevent loading of duplicate resources
-			if (isProjectResource && provider instanceof ImportProvider) {
+			if (isProjectResource && provider instanceof ImportProvider
+					&& !getProviderFactory().allowDuplicateResource()) {
+
 				String currentResource = ((ImportProvider) provider).getSource().getLocation()
 						.toString();
 				URI currentAbsolute = URI.create(currentResource);
-				if (projectLoc != null && !currentAbsolute.isAbsolute())
+				if (projectLoc != null && !currentAbsolute.isAbsolute()) {
 					currentAbsolute = projectLoc.resolve(currentAbsolute);
+				}
 
 				for (IOConfiguration conf : ((Project) ps.getProjectInfo()).getResources()) {
 					Value otherResourceValue = conf.getProviderConfiguration()
 							.get(ImportProvider.PARAM_SOURCE);
-					if (otherResourceValue == null)
+					if (otherResourceValue == null) {
 						continue;
+					}
 
 					String otherResource = otherResourceValue.as(String.class);
 					URI otherAbsolute = URI.create(otherResource);
-					if (projectLoc != null && !otherAbsolute.isAbsolute())
+					if (projectLoc != null && !otherAbsolute.isAbsolute()) {
 						otherAbsolute = projectLoc.resolve(otherAbsolute);
+					}
 					String action = conf.getActionId();
 					// resource is already loaded into the project
 					if (currentAbsolute.equals(otherAbsolute) && Objects.equal(actionId, action)) {
-						log.userError(
-								"Resource is already loaded. Loading duplicate resources is aborted!");
-						return false;
+						// check if the resource is loaded with a provider that
+						// allows duplicates
+						boolean allowDuplicate = false;
+						IOProviderDescriptor providerFactory = IOProviderExtension.getInstance()
+								.getFactory(conf.getProviderId());
+						if (providerFactory != null) {
+							allowDuplicate = providerFactory.allowDuplicateResource();
+						}
+
+						if (!allowDuplicate) {
+							log.userError(
+									"Resource is already loaded. Loading duplicate resources is aborted!");
+							return false;
+						}
 					}
 				}
 			}

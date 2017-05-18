@@ -15,6 +15,16 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.factory;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.namespace.QName;
+
+import org.w3c.dom.Element;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+
 import eu.esdihumboldt.hale.common.core.io.DOMValueUtil;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -31,16 +41,6 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
 import groovy.util.GroovyTestCase;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.xml.namespace.QName;
-
-import org.w3c.dom.Element;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 /**
  * Base class for {@link ValueConstraintFactory} tests.
@@ -80,7 +80,7 @@ public abstract class AbstractValueConstraintFactoryTest<T> extends GroovyTestCa
 	 *             comparing the constraint
 	 */
 	@SuppressWarnings("unchecked")
-	protected void storeRestoreTest(T constraint, Map<TypeDefinition, String> typeIndex,
+	protected void storeRestoreTest(T constraint, Map<TypeDefinition, Value> typeIndex,
 			Definition<?> constraintDef) throws Exception {
 		// conversion service may be needed for Value conversions
 		TestUtil.startConversionService();
@@ -97,7 +97,7 @@ public abstract class AbstractValueConstraintFactoryTest<T> extends GroovyTestCa
 
 		@SuppressWarnings("rawtypes")
 		ValueConstraintFactory factory = desc.getFactory();
-		Value val = factory.store(constraint, typeIndex);
+		Value val = factory.store(constraint, new MapTypeReferenceBuilder(typeIndex));
 
 		T read;
 		if (val != null) {
@@ -109,10 +109,10 @@ public abstract class AbstractValueConstraintFactoryTest<T> extends GroovyTestCa
 			Value res = DOMValueUtil.fromTag(elem);
 
 			// bimap for reverse index
-			BiMap<TypeDefinition, String> types = HashBiMap.create(typeIndex);
+			BiMap<TypeDefinition, Value> types = HashBiMap.create(typeIndex);
 
-			read = (T) factory
-					.restore(res, constraintDef, types.inverse(), new OsgiClassResolver());
+			read = (T) factory.restore(res, constraintDef, new MapTypeResolver(types.inverse()),
+					new OsgiClassResolver());
 		}
 		else {
 			// fall back to default constraint
@@ -137,8 +137,8 @@ public abstract class AbstractValueConstraintFactoryTest<T> extends GroovyTestCa
 			return type;
 		}
 		else if (PropertyConstraint.class.isAssignableFrom(constraintType)) {
-			return new DefaultPropertyDefinition(DEF_NAME, type, new DefaultTypeDefinition(
-					DEF_PROPERTY_TYPE_NAME));
+			return new DefaultPropertyDefinition(DEF_NAME, type,
+					new DefaultTypeDefinition(DEF_PROPERTY_TYPE_NAME));
 		}
 		else if (GroupPropertyConstraint.class.isAssignableFrom(constraintType)) {
 			return new DefaultGroupPropertyDefinition(DEF_NAME, type, false);

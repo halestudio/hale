@@ -65,7 +65,8 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.internal.GeometryAdvisorConstrai
  * 
  * @author Simon Templer
  */
-public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCConstants {
+public class JDBCInstanceWriter extends AbstractInstanceWriter
+		implements JDBCConstants, JDBCProvider {
 
 	private static final ALogger log = ALoggerFactory.getLogger(JDBCInstanceWriter.class);
 
@@ -104,6 +105,11 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	}
 
 	@Override
+	public Connection getConnection() throws SQLException {
+		return JDBCConnection.getConnection(this);
+	}
+
+	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		InstanceCollection instances = getInstances();
@@ -112,7 +118,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		try {
 			// connect to the database
 			try {
-				connection = JDBCConnection.getConnection(this);
+				connection = getConnection();
 			} catch (Exception e) {
 				reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
 				reporter.setSuccess(false);
@@ -127,8 +133,8 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 			else {
 				// write instances based on type order needed for insert
 				// (to avoid violating constraints)
-				Set<TypeDefinition> sortedSet = getSortedSchemas(getTargetSchema()
-						.getMappingRelevantTypes());
+				Set<TypeDefinition> sortedSet = getSortedSchemas(
+						getTargetSchema().getMappingRelevantTypes());
 
 				for (TypeDefinition td : sortedSet) {
 					writeInstances(connection, instances.select(new TypeFilter(td)), progress,
@@ -190,8 +196,8 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 		connection.setAutoCommit(false);
 
 		boolean trackProgress = instances.hasSize();
-		progress.begin("Write instances to database", (trackProgress) ? (instances.size())
-				: (ProgressIndicator.UNKNOWN));
+		progress.begin("Write instances to database",
+				(trackProgress) ? (instances.size()) : (ProgressIndicator.UNKNOWN));
 
 		// maps type definitions to prepared statements
 		Map<TypeDefinition, Map<Set<QName>, PreparedStatement>> typeStatements = new HashMap<TypeDefinition, Map<Set<QName>, PreparedStatement>>();
@@ -518,7 +524,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	 */
 	private void populateInsertStatementOrExecuteAutoIncStatement(PreparedStatement statement,
 			Set<QName> properties, Instance instance, IOReporter reporter, Connection conn)
-			throws SQLException {
+					throws SQLException {
 		TypeDefinition type = instance.getDefinition();
 
 		int index = 1;
@@ -634,7 +640,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 	@SuppressWarnings("unchecked")
 	private void setStatementParameter(PreparedStatement statement, int index, Object value,
 			PropertyDefinition propertyDef, int sqlType, IOReporter reporter, Connection conn)
-			throws SQLException {
+					throws SQLException {
 		if (propertyDef.getPropertyType().getConstraint(GeometryType.class).isGeometry()) {
 			// is a geometry column
 
@@ -650,8 +656,8 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter implements JDBCCo
 						value = advisor.convertGeometry((GeometryProperty<?>) value,
 								propertyDef.getPropertyType(), conn);
 					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Something went wrong during conversion",
-								e));
+						reporter.error(
+								new IOMessageImpl("Something went wrong during conversion", e));
 					}
 				}
 				else {

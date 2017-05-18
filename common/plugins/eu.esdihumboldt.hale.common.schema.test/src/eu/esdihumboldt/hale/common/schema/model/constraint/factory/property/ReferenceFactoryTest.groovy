@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.factory.property
 
 import javax.xml.namespace.QName
 
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.AbstractPropertiesCompareConstraintFactoryTest
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference
@@ -51,7 +52,7 @@ class ReferenceFactoryTest extends AbstractPropertiesCompareConstraintFactoryTes
 		TypeDefinition type = new DefaultTypeDefinition(new QName('ReferencedType'))
 		Reference ref = new Reference(type)
 
-		def typeIndex = [(type): 'someid']
+		def typeIndex = [(type): 'someid' as Value]
 
 		storeRestoreTest(ref, typeIndex, null)
 	}

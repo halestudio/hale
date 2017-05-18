@@ -6,7 +6,7 @@
 </head>
 <body>
 	<h1>Transactional WFS</h1>
-	<p>HALE supports publishing your transformed GML data to a WFS with
+	<p><i>hale studio</i> supports publishing your transformed GML data to a WFS with
 		support for transactions. Currently supported are Transactional Web
 		Feature Services following the OGC WFS 1.1.0 or WFS 2.0.0
 		specifications. There are two different providers for publishing to
@@ -24,7 +24,7 @@
 			together so the WFS-T is able to retain those references.
 		</li>
 	</ul>
-	<p class="Note">The publishing to WFS in this version of HALE is
+	<p class="Note">The publishing to WFS in this version of <i>hale studio</i> is
 		deemed experimental. This means it does not have the full
 		functionality we want to provide for a WFS publishing feature.
 		However, within its limits it is functional and may be useful to you.</p>
@@ -36,15 +36,15 @@
 			messages in the transformation and export reports. There is no
 			automatic recovery, features may have to be deleted manually if they
 			are not desired to be published.<br>
-		<br>HALE behaves like this because both transformation and GML
+		<br><i>hale studio</i> behaves like this because both transformation and GML
 			export aim to provide you a result even if there are small errors or
 			inconsistencies.<br><br>
 		</li>
-		<li>HALE will not check the WFS Capabilities if the WFS
+		<li><i>hale studio</i> will not check the WFS Capabilities if the WFS
 			supports any of the provided GML feature types.</li>
 	</ul>
 	<p>Target location for the WFS-T export is the POST URL for the
-		WFS Transaction operation. The HALE user interface provides a helper to
+		WFS Transaction operation. The <i>hale studio</i> user interface provides a helper to
 		determine that URL from the WFS capabilities.</p>
 	
 	<br>

@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <introContent>
-   <extensionContent id="euesdihumboldthaleuifirststeps-introExtension" style="css/sample.css" name="Firststeps" path="firststeps/@">
-      <group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
-         <link label="Load Project" url="http://org.eclipse.ui.intro/runAction?class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&amp;closeIntro=true&amp;pluginId=eu.esdihumboldt.hale.ui.firststeps" style-id="content-link header-link">
-            <text>Load an existing project or choose one of the recently opened projects.</text>
-         </link>
-         <group id="recent-files" label="Recent files" expanded="true" expandable="true">
-            <contentProvider id="rfcp" class="eu.esdihumboldt.hale.ui.firststeps.RecentProjectsContentProvider" pluginId="eu.esdihumboldt.hale.ui.firststeps">
-            </contentProvider>
-         </group>
-      </group>
-      <group style-id="content-group" id="awcgroup">
-         <contentProvider id="awc" class="org.eclipse.ui.intro.contentproviders.AlwaysWelcomeCheckbox" pluginId="org.eclipse.ui.intro">
-         </contentProvider>
-      </group>
-   </extensionContent>
+	<extensionContent id="euesdihumboldthaleuifirststeps-introExtension"
+		style="css/sample.css" name="Firststeps" path="firststeps/@">
+		<group style-id="content-group"
+			id="euesdihumboldthaleuifirststeps-haleconnect-login-group">
+			<group id="haleconnect-login" label="Login to hale connect">
+				<contentProvider id="hale-connect-login"
+					class="eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginContentProvider"
+					pluginId="eu.esdihumboldt.hale.io.haleconnect.ui"></contentProvider>
+			</group>
+		</group>
+		<group style-id="content-group" id="euesdihumboldthaleuifirststeps-introLink-group">
+			<link label="Load Project"
+				url="http://org.eclipse.ui.intro/runAction?class=eu.esdihumboldt.hale.ui.firststeps.LoadProjectAction&amp;closeIntro=true&amp;pluginId=eu.esdihumboldt.hale.ui.firststeps"
+				style-id="content-link header-link">
+				<text>Load an existing project or choose one of the recently opened
+					projects.</text>
+			</link>
+			<group id="recent-files" label="Recent files" expanded="true"
+				expandable="true">
+				<contentProvider id="rfcp"
+					class="eu.esdihumboldt.hale.ui.firststeps.RecentProjectsContentProvider"
+					pluginId="eu.esdihumboldt.hale.ui.firststeps">
+				</contentProvider>
+			</group>
+		</group>
+		<group style-id="content-group" id="awcgroup">
+			<contentProvider id="awc"
+				class="org.eclipse.ui.intro.contentproviders.AlwaysWelcomeCheckbox"
+				pluginId="org.eclipse.ui.intro">
+			</contentProvider>
+		</group>
+	</extensionContent>
 </introContent>

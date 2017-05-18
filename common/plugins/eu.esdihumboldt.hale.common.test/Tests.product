@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.2.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.3.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -20,7 +20,6 @@
    </launcherArgs>
 
    <windowImages/>
-
 
    <launcher name="hale_tests">
       <solaris/>
@@ -79,6 +78,7 @@
       <plugin id="de.fhg.igd.eclipse.ui.util"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.equinox.test.app"/>
+      <plugin id="de.fhg.igd.geom"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
@@ -129,6 +129,7 @@
       <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.index"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
       <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
       <plugin id="eu.esdihumboldt.hale.common.logback.config.test" fragment="true"/>

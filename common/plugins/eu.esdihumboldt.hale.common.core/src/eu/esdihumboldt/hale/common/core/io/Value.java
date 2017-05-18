@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueDefinition;
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
 import eu.esdihumboldt.hale.common.core.io.impl.ComplexValue;
+import eu.esdihumboldt.hale.common.core.io.impl.SimpleValue;
 import eu.esdihumboldt.hale.common.core.io.impl.StringValue;
 
 /**
@@ -83,9 +84,9 @@ public abstract class Value implements Serializable {
 
 	};
 
-	private static final Value TRUE = new StringValue(true);
+	private static final Value TRUE = new SimpleValue(true);
 
-	private static final Value FALSE = new StringValue(false);
+	private static final Value FALSE = new SimpleValue(false);
 
 	/**
 	 * Create a value from a string.
@@ -125,7 +126,10 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Number number) {
-		return new StringValue(number);
+		if (number == null) {
+			return NULL;
+		}
+		return new SimpleValue(number);
 	}
 
 	/**
@@ -135,7 +139,10 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value simple(Object value) {
-		return new StringValue(value);
+		if (value == null) {
+			return NULL;
+		}
+		return new SimpleValue(value);
 	}
 
 	/**
@@ -145,6 +152,9 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value complex(Object value) {
+		if (value == null) {
+			return NULL;
+		}
 		return new ComplexValue(value);
 	}
 
@@ -159,9 +169,13 @@ public abstract class Value implements Serializable {
 	 * @return the value wrapper
 	 */
 	public static Value of(Object object) {
+		if (object == null) {
+			return NULL;
+		}
+
 		// check if there is a complex value definition for the object
-		ComplexValueDefinition def = ComplexValueExtension.getInstance().getDefinition(
-				object.getClass());
+		ComplexValueDefinition def = ComplexValueExtension.getInstance()
+				.getDefinition(object.getClass());
 		if (def != null) {
 			return Value.complex(object);
 		}

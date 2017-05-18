@@ -178,6 +178,7 @@ public class Transformation {
 				}
 			}
 		};
+		loadDataAdvisor.setServiceProvider(environment);
 
 		List<InstanceCollection> sourceList = Lists.transform(sources,
 				new Function<InstanceReader, InstanceCollection>() {
@@ -231,6 +232,7 @@ public class Transformation {
 			}
 
 		};
+		saveDataAdvisor.setServiceProvider(environment);
 
 		saveDataAdvisor.prepareProvider(target);
 		saveDataAdvisor.updateConfiguration(target);
@@ -422,7 +424,7 @@ public class Transformation {
 		if (useTempDatabase) {
 			// run store instance job first...
 			Job storeJob = new StoreInstancesJob("Load source instances into temporary database",
-					db, sources, reportHandler) {
+					db, sources, serviceProvider, reportHandler) {
 
 				@Override
 				protected void onComplete() {
@@ -457,7 +459,31 @@ public class Transformation {
 			storeJob.schedule();
 		}
 		else {
-			// otherwise schedule jobs directly
+			// otherwise feed InstanceProcessors directly from the
+			// InstanceCollection...
+
+			// TODO Implement differently, not w/ PseudoInstanceReference which
+			// will cause memory problems
+
+//			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+//					serviceProvider);
+//			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+//
+//			ResourceIterator<Instance> it = sourceToUse.iterator();
+//			try {
+//				while (it.hasNext()) {
+//					Instance instance = it.next();
+//
+//					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+//							new PseudoInstanceReference(instance), sourceToUse);
+//					processors.forEach(p -> p.process(instance, resolvableRef));
+//
+//				}
+//			} finally {
+//				it.close();
+//			}
+
+			// ...and schedule jobs
 			exportJob.schedule();
 			transformJob.schedule();
 		}

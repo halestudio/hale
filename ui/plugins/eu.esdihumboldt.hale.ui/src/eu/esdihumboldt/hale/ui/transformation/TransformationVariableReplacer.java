@@ -15,11 +15,10 @@
 
 package eu.esdihumboldt.hale.ui.transformation;
 
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.DefaultTransformationVariables;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
-import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectVariableReplacer;
+import eu.esdihumboldt.hale.common.core.io.util.VariableReplacer;
 import eu.esdihumboldt.hale.ui.HaleUI;
-import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 
 /**
  * Variable replace for transformation variables.
@@ -29,14 +28,12 @@ import eu.esdihumboldt.hale.ui.common.VariableReplacer;
 public class TransformationVariableReplacer implements VariableReplacer {
 
 	@Override
-	public String replaceVariables(String input) {
+	public String replaceVariables(String input, boolean failUnresolved) {
 		ProjectInfoService projectInfo = HaleUI.getServiceProvider()
 				.getService(ProjectInfoService.class);
 		if (projectInfo != null) {
-			ProjectVariables projectVariables = new ProjectVariables(projectInfo);
-			DefaultTransformationVariables vars = new DefaultTransformationVariables(
-					projectVariables);
-			return vars.replaceVariables(input, true);
+			ProjectVariableReplacer replacer = new ProjectVariableReplacer(projectInfo);
+			return replacer.replaceVariables(input, failUnresolved);
 		}
 		else {
 			return input;

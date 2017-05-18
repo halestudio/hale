@@ -4,6 +4,31 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.3.0]
+
+### Added
+
+- Integration with the online collaboration platform hale connect: log in to hale connect, import shared transformation projects and upload projects.
+- Spatial Index for instances with geometries that can be queried via the new Groovy geometry helper "spatialIndexQuery"
+- Spatial Join transformation function: join instances based on the spatial relation of their geometry properties
+- Groovy geometry helper function "boundaryCovers" that can be used to determine if the boundary of a the geometry covers all points of a line
+- Use arbitrary SQL queries as a source schema and data source
+- Import/Export hale schema definitions as JSON
+- DMG image for macOS installation
+
+### Changed
+
+- Application title is now "hale studio"
+- "Load project from templates..." has been removed in favour of hale connect integration
+- Cached schema definition is now used always if loading source fails
+
+### Fixed
+
+- Fixed content assistance in RegEx Analysis function
+- Fixed resource copying in hale Project Archive writer
+- Fixed links on About screen
+- Fixed updating a cell when the source or target types are changed to a parent of the original type
+
 ## [3.2.0]
 
 ### Added
@@ -139,7 +164,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.2.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.3.0...HEAD
+[3.3.0]: https://github.com/halestudio/hale/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/halestudio/hale/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/halestudio/hale/compare/3.0.0...3.1.0
 [3.0.0]: https://github.com/halestudio/hale/compare/2.9.4...3.0.0

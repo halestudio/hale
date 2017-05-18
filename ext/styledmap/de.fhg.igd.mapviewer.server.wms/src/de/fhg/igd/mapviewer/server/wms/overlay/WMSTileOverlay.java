@@ -38,9 +38,9 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.GeotoolsConverter;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
 
+import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.mapviewer.AbstractTileOverlayPainter;
 import de.fhg.igd.mapviewer.MapKitTileOverlayPainter;
-import de.fhg.igd.mapviewer.geom.BoundingBox;
 import de.fhg.igd.mapviewer.server.wms.Messages;
 import de.fhg.igd.mapviewer.server.wms.WMSConfiguration;
 import de.fhg.igd.mapviewer.server.wms.capabilities.WMSBounds;

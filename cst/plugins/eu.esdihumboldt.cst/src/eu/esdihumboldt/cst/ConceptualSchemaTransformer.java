@@ -59,6 +59,7 @@ import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSe
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.core.service.ServiceProviderAware;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -281,6 +282,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			// use InstanceHandler if available - for example merge or join
 			InstanceHandler instanceHandler = function.getInstanceHandler();
 			if (instanceHandler != null) {
+				injectTransformationContext(instanceHandler, context);
 				progressIndicator.setCurrentTask("Perform instance partitioning");
 				try {
 					iterator = instanceHandler.partitionInstances(source,
@@ -330,6 +332,15 @@ public class ConceptualSchemaTransformer implements TransformationService {
 			}
 		} finally {
 			iterator.close();
+		}
+	}
+
+	private void injectTransformationContext(InstanceHandler<?> instanceHandler,
+			TransformationContext context) {
+		if (instanceHandler != null && instanceHandler instanceof ServiceProviderAware
+				&& context.getServiceProvider() != null) {
+			((ServiceProviderAware) instanceHandler)
+					.setServiceProvider(context.getServiceProvider());
 		}
 	}
 

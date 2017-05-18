@@ -16,10 +16,11 @@
 
 package eu.esdihumboldt.hale.ui.transformation;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -44,7 +45,9 @@ import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.headless.transform.ExportJob;
 import eu.esdihumboldt.hale.common.headless.transform.ValidationJob;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
@@ -249,10 +252,50 @@ public class TransformDataWizardSourcePage extends WizardPage {
 	 */
 	private class InternalInstanceExportWizard extends InstanceExportWizard {
 
+		/**
+		 * @see eu.esdihumboldt.hale.ui.io.instance.InstanceExportWizard#performValidation()
+		 */
+		@Override
+		protected boolean performValidation() {
+			// Customize validation to run as a ValidationJob
+
+			validationJob = new ValidationJob(getValidators(), DefaultReportHandler.getInstance(),
+					null, HaleUI.getServiceProvider()) {
+
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					/*
+					 * Reconfigure validators because when it was created the
+					 * writer was not executed yet (and the validation schemas
+					 * thus not updated if applicable)
+					 */
+					// set schemas
+					List<? extends Locatable> schemas = getProvider().getValidationSchemas();
+					for (InstanceValidator validator : getValidators()) {
+						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
+
+						if (getProvider().getTarget() instanceof FileIOSupplier) {
+							// set source
+							FileIOSupplier fileIO = (FileIOSupplier) getProvider().getTarget();
+							LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
+									new File(fileIO.getLocation()));
+							validator.setSource(source);
+
+							// apply target content type
+							validator.setContentType(getContentType());
+						}
+
+					}
+
+					return super.run(monitor);
+				}
+			};
+
+			return true;
+		}
+
 		@Override
 		protected IOReport execute(final IOProvider provider, final IOReporter defaultReporter) {
-			// this may get called twice: once for the export, and afterwards
-			// another time for the validation
 			if (exportJob == null) {
 				InstanceWriter writer = (InstanceWriter) provider;
 
@@ -269,29 +312,9 @@ public class TransformDataWizardSourcePage extends WizardPage {
 				exportJob = new ExportJob(targetSink, writer, getAdvisor(),
 						DefaultReportHandler.getInstance());
 			}
-			else if (validationJob == null) {
-				final InstanceValidator validator = (InstanceValidator) provider;
-				validationJob = new ValidationJob(Arrays.asList(validator),
-						DefaultReportHandler.getInstance(), null, HaleUI.getServiceProvider()) {
-
-					@Override
-					protected IStatus run(IProgressMonitor monitor) {
-						/*
-						 * Reconfigure validator because when it was created the
-						 * writer was not executed yet (and the validation
-						 * schemas thus not updated if applicable)
-						 */
-						// set schemas
-						List<? extends Locatable> schemas = getProvider().getValidationSchemas();
-						validator.setSchemas(schemas.toArray(new Locatable[schemas.size()]));
-
-						return super.run(monitor);
-					}
-
-				};
-			}
-			else
+			else {
 				throw new IllegalStateException("Unknown calls to export wizard's execute.");
+			}
 
 			return null;
 		}

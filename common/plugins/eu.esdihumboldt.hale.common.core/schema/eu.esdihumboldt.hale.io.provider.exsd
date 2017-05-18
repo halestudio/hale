@@ -22,6 +22,7 @@
          <choice minOccurs="1" maxOccurs="unbounded">
             <element ref="factory"/>
             <element ref="provider"/>
+            <element ref="alias"/>
          </choice>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -49,7 +50,7 @@
          </attribute>
       </complexType>
    </element>
-   
+
    <element name="providerParameter">
       <annotation>
          <documentation>
@@ -157,6 +158,13 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="allowDuplicate" type="boolean" use="default" value="false">
+            <annotation>
+               <documentation>
+                  If loading duplicate resources with this provider is allowed (e.g. if loading the same resource with different settings retrieves different parts of the resource). Only applicable for import providers.
+               </documentation>
+            </annotation>
+         </attribute>
       </complexType>
    </element>
 
@@ -199,6 +207,28 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                </documentation>
                <appinfo>
                   <meta.attribute kind="identifier" basedOn="org.eclipse.core.contenttype.contentTypes/content-type/@id"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="alias">
+      <complexType>
+         <attribute name="id" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The alias
+               </documentation>
+            </annotation>
+         </attribute>
+         <attribute name="for" type="string" use="required">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="identifier" basedOn="eu.esdihumboldt.hale.io.provider/provider/@id"/>
                </appinfo>
             </annotation>
          </attribute>

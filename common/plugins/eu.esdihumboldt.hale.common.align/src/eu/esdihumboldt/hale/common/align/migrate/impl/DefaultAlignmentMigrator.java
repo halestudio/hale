@@ -40,9 +40,15 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  */
 public class DefaultAlignmentMigrator implements AlignmentMigrator {
 
-	private final CellMigrator defaultMigrator = new DefaultCellMigrator();
+	/**
+	 * Default migrator for cells.
+	 */
+	protected final CellMigrator defaultMigrator = new DefaultCellMigrator();
 
-	private final ServiceProvider serviceProvider;
+	/**
+	 * Service provider, e.g. for retrieving transformation functions
+	 */
+	protected final ServiceProvider serviceProvider;
 
 	/**
 	 * @param serviceProvider the service provider if available
@@ -99,7 +105,13 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 		return result;
 	}
 
-	private CellMigrator getCellMigrator(String transformationIdentifier) {
+	/**
+	 * Get the cell migrator for a given transformation function.
+	 *
+	 * @param transformationIdentifier the transformation function identifier
+	 * @return the cell migrator
+	 */
+	protected CellMigrator getCellMigrator(String transformationIdentifier) {
 		return FunctionUtil.getFunction(transformationIdentifier, serviceProvider)
 				.getCustomMigrator().orElse(defaultMigrator);
 	}

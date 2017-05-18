@@ -128,6 +128,10 @@ public abstract class HeadlessIO {
 		// ... and provider
 		IOProvider provider = loadProvider(conf);
 		if (provider != null) {
+			if (serviceProvider != null) {
+				// set service provider, just in case the advisor does not do it
+				provider.setServiceProvider(serviceProvider);
+			}
 			// execute provider
 			executeProvider(provider, advisor, null, reportHandler);
 			// XXX progress?!!

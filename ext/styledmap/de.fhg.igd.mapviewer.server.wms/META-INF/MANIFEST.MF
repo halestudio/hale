@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WMS Map Server
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.wms;singleton:=true
-Bundle-Version: 3.2.0.qualifier
+Bundle-Version: 3.3.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.geom,
  de.fhg.igd.mapviewer,
  de.fhg.igd.mapviewer.concurrency,
- de.fhg.igd.mapviewer.geom,
  de.fhg.igd.mapviewer.server;version="1.0.0",
  de.fhg.igd.mapviewer.view.overlay;version="1.0.0",
  de.fhg.igd.osgi.util;version="1.0.0",

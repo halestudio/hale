@@ -149,6 +149,17 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 				return Collections.emptySet();
 			}
 		}
+
+		@Override
+		public boolean allowDuplicateResource() {
+			String strValue = conf.getAttribute("allowDuplicate");
+			if (strValue == null) {
+				return false;
+			}
+
+			return Boolean.parseBoolean(strValue);
+		}
+
 	}
 
 	/**
@@ -200,6 +211,19 @@ public class IOProviderExtension extends AbstractExtension<IOProvider, IOProvide
 			return (IOProviderFactory) conf.createExecutableExtension("class");
 		}
 		return super.createCollection(conf);
+	}
+
+	@Override
+	public IOProviderDescriptor getFactory(String id) {
+		IOProviderDescriptor result = super.getFactory(id);
+		if (result == null) {
+			// try to lookup alias
+			IOProviderAlias alias = IOProviderAliasExtension.INSTANCE.get(id);
+			if (alias != null) {
+				result = super.getFactory(alias.getRef());
+			}
+		}
+		return result;
 	}
 
 }

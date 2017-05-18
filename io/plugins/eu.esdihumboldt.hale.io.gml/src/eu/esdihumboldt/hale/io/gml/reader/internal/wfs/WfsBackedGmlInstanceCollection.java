@@ -430,6 +430,10 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				}
 			}
 
+			if (offset < 0) {
+				offset = 0;
+			}
+
 			// STARTINDEX is 0-based
 			builder.addParameter("STARTINDEX", Integer.toString(offset + totalFeaturesProcessed));
 
@@ -440,8 +444,10 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			else {
 				maxFeatures = WfsBackedGmlInstanceCollection.this.maxNumberOfFeatures;
 			}
-			builder.addParameter(getMaxFeaturesParameterName(wfsVersion),
-					Integer.toString(maxFeatures));
+			if (maxFeatures >= 0) {
+				builder.addParameter(getMaxFeaturesParameterName(wfsVersion),
+						Integer.toString(maxFeatures));
+			}
 
 			return builder.build();
 		}

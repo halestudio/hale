@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="HUMBOLDT Alignment Editor" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="3.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="3.3.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
       <text>
-         halestudio
+         hale studio
 
 Version ___version___
 
@@ -14,16 +14,16 @@ Build ___build___
 Revision ___revision___
 
 Project page:
-http://www.wetransform.to/products/hale
+https://www.wetransform.to/products/halestudio/
 
 Forum:
-http://www.esdi-community.eu/projects/hale/boards
+https://discuss.wetransform.to/
 
 News:
-http://www.wetransform.to/news
+https://www.wetransform.to/category/news/
 
 Get professional support:
-http://www.wetransform.to/services/support
+https://www.wetransform.to/services/support/
       </text>
    </aboutInfo>
 
