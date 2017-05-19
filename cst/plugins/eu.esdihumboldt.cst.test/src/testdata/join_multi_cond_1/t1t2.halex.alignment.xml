@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="Cf4c7dd8f-e855-4e3c-8e10-0f5a602f1136" priority="normal">
+        <source name="types">
+            <class>
+                <type name="FlaecheType" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="GemeindeType" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                </class>
+                <class>
+                    <type name="FlaecheType" ns="http://www.example.org/t1/"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="bezirk"/>
+                    </property>
+                    <property>
+                        <type name="FlaecheType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="bezirk"/>
+                    </property>
+                </jp:condition>
+                <jp:condition>
+                    <property>
+                        <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="gemeinde"/>
+                    </property>
+                    <property>
+                        <type name="FlaecheType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="gemeinde"/>
+                    </property>
+                </jp:condition>
+                <jp:condition>
+                    <property>
+                        <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="land"/>
+                    </property>
+                    <property>
+                        <type name="FlaecheType" ns="http://www.example.org/t1/"/>
+                        <child name="schluessel"/>
+                        <child name="land"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+def areas = _source.links.flaeche.p.flaeche.values()
+def area = 0
+if (areas) {
+	area = areas.sum()
+	
+	def name = _source.p.name.value()
+	_log.info("${areas.size()} Flächen für ${name}")
+}
+
+_target {
+	flaeche( area )
+	teile( areas?.size() ?: 0 )
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4675245c-9f68-492f-8441-ad8ecc541df0" priority="normal">
+        <source>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                <child name="id"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Ca57d0f9d-8a92-4d56-8c60-3b24005dfa43" priority="normal">
+        <source>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C3e003763-ded2-4de4-a2aa-18e62ae9a496" priority="normal">
+        <source>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t1/"/>
+                <child name="schluessel"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="GemeindeType" ns="http://www.example.org/t2/"/>
+                <child name="schluessel"/>
+            </property>
+        </target>
+        <parameter value="true" name="ignoreNamespaces"/>
+        <parameter value="true" name="structuralRename"/>
+    </cell>
+</alignment>

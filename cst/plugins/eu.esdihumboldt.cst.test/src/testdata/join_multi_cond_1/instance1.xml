@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+	<tns:gemeinde id="1">
+        <name>Hüttenberg</name>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>6000</gemeinde>
+        </schluessel>
+    </tns:gemeinde>
+    <tns:flaeche id="10">
+        <flaeche>3</flaeche>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>6000</gemeinde>
+            <teil>1</teil>
+        </schluessel>
+    </tns:flaeche>
+    <tns:flaeche id="11">
+        <flaeche>5</flaeche>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>6000</gemeinde>
+            <teil>2</teil>
+        </schluessel>
+    </tns:flaeche>
+    <tns:flaeche id="12">
+        <flaeche>7</flaeche>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>6000</gemeinde>
+            <teil>3</teil>
+        </schluessel>
+    </tns:flaeche>
+    <tns:gemeinde id="2">
+        <name>Darmstadt</name>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>4000</gemeinde>
+        </schluessel>
+    </tns:gemeinde>
+    <tns:flaeche id="20">
+        <flaeche>23</flaeche>
+        <schluessel>
+            <land>0X</land>
+            <bezirk>2</bezirk>
+            <gemeinde>4000</gemeinde>
+        </schluessel>
+    </tns:flaeche>
+    <tns:flaeche id="100">
+        <flaeche>67</flaeche>
+        <schluessel>
+            <land>01</land>
+            <bezirk>2</bezirk>
+            <gemeinde>4000</gemeinde>
+        </schluessel>
+    </tns:flaeche>
+    <tns:flaeche id="101">
+        <flaeche>68</flaeche>
+        <schluessel>
+            <land>01</land>
+            <bezirk>2</bezirk>
+            <gemeinde>4000</gemeinde>
+            <teil>1</teil>
+        </schluessel>
+    </tns:flaeche>
+</tns:collection>

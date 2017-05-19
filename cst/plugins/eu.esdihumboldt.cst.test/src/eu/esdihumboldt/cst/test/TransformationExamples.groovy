@@ -32,6 +32,7 @@ abstract class TransformationExamples {
 	public static final String CARD_RENAME = 'cardrename'
 	public static final String DUPE_ASSIGN = 'dupeassign'
 	public static final String PROPERTY_JOIN = 'propjoin'
+	public static final String JOIN_MULTI_COND_1 = 'join_multi_cond_1'
 	public static final String SIMPLE_MERGE = 'simplemerge'
 	public static final String CARDINALITY_MERGE_1 = 'cardmerge_1'
 	public static final String CARDINALITY_MERGE_2 = 'cardmerge_2'
@@ -113,6 +114,7 @@ abstract class TransformationExamples {
 		(CARD_RENAME): defaultExample(CARD_RENAME),
 		(DUPE_ASSIGN): defaultExample(DUPE_ASSIGN),
 		(PROPERTY_JOIN): defaultExample(PROPERTY_JOIN),
+		(JOIN_MULTI_COND_1): defaultExample(JOIN_MULTI_COND_1),
 		(SIMPLE_MERGE): defaultExample(SIMPLE_MERGE),
 		(CARDINALITY_MERGE_1): [
 			sourceSchema: "/testdata/cardmerge/t1.xsd",
