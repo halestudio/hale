@@ -101,6 +101,16 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test with a join that links two types w/ multiple conditions.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testJoinMultiCond_1() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.JOIN_MULTI_COND_1));
+	}
+
+	/**
 	 * Test based on a retype and a formatted string with several inputs where
 	 * one input exists several times, whereas the others only exist once. So
 	 * those should be used all the times.
@@ -124,7 +134,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testCardinalityMerge_1() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.CARDINALITY_MERGE_1));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.CARDINALITY_MERGE_1));
 	}
 
 	/**
@@ -139,7 +150,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testCardinalityMerge_2() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.CARDINALITY_MERGE_2));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.CARDINALITY_MERGE_2));
 	}
 
 	/**
@@ -192,7 +204,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testStructuralRename1() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_1));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_1));
 	}
 
 	/**
@@ -202,7 +215,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testStructuralRename2() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_2));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_2));
 	}
 
 	/**
@@ -212,7 +226,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testStructuralRename3() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_3));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RENAME_3));
 	}
 
 	/**
@@ -222,7 +237,8 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	 */
 	@Test
 	public void testStructuralRetype1() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RETYPE_1));
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.STRUCTURAL_RETYPE_1));
 	}
 
 	/**
