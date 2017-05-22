@@ -20,7 +20,7 @@ hale studio is a desktop and server environment to analyse, transform and valida
 * Real-time, interactive geodata transformation and validation
 * Makes work with large and complex models easy
 * SLD-Compatible Map display
-* Support for all major databases (Oracle, PostGreSQL, SQL Server) and their spatial extensions
+* Support for all major databases (Oracle, PostgreSQL, SQL Server) and their spatial extensions
 * Import and Export GML 3.2.1, SQLite, Shapefile, JSON/GeoJSON and many many other formats
 * Create INSPIRE DataSets for Download Services, write to Transactional Web Feature Services
 * Share Transfromation projects and collaborate to improve them with haleconnect.com integration
