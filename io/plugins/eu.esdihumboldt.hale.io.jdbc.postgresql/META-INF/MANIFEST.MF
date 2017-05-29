@@ -20,7 +20,7 @@ Import-Package: com.vividsolutions.jts,
  org.osgi.framework;version="1.3.0",
  org.postgis,
  org.postgresql;version="8.3.604",
- org.postgresql.jdbc2;version="9.2.0",
+ org.postgresql.jdbc2;version="9.4.0",
  org.slf4j;version="1.5.11",
  schemacrawler.schema;version="8.16.0"
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.5.0",
