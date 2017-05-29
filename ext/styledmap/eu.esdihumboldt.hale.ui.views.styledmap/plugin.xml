@@ -6,7 +6,7 @@
          point="de.fhg.igd.mapviewer.view.MapViewExtension">
       <extra
             class="eu.esdihumboldt.hale.ui.views.styledmap.StyledMapExtra"
-            name="HALE Styled Map">
+            name="hale Styled Map">
       </extra>
    </extension>
    <extension

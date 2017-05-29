@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="GeoServer App-Schema Plug-in for HALE">
+<toc label="GeoServer App-Schema Plug-in for hale">
    <topic href="html/introduction/intro.html" label="Introduction">
       <anchor id="introduction"/>
    </topic>
@@ -8,7 +8,7 @@
       </topic>
       <topic href="html/usage/export.html" label="Export the App-Schema Configuration">
       </topic>
-      <topic href="html/usage/hale_vs_appschema.html" label="HALE vs. App-Schema">
+      <topic href="html/usage/hale_vs_appschema.html" label="hale vs. App-Schema">
       </topic>
       <anchor id="usage"/>
    </topic>

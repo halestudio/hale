@@ -193,7 +193,7 @@ public abstract class AbstractAlignmentReader extends AbstractImportProvider imp
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE alignment";
+		return "hale alignment";
 	}
 
 }

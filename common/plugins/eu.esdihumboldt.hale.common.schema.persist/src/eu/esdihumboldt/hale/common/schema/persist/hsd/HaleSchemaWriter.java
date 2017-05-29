@@ -79,7 +79,7 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE Schema Definition";
+		return "hale Schema Definition";
 	}
 
 }

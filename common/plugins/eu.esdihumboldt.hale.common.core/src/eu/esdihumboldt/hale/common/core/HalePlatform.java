@@ -127,7 +127,7 @@ public class HalePlatform {
 					coreVersion = Version.parseVersion(versionString);
 				}
 			} catch (Exception e) {
-				log.error("Failure determining HALE core version", e);
+				log.error("Failure determining hale core version", e);
 				coreVersion = Version.emptyVersion;
 			}
 		}

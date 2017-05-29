@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Schematron Validator
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.schematron;singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
@@ -15,6 +15,7 @@ Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.validator
+Unpuzzle-AddDependencies: org.opengis.cite;schema-utils;1.8
 Bundle-ClassPath: .,
  lib/saxon9-9.0.0.8.jar,
  lib/schema-utils-1.8.jar,

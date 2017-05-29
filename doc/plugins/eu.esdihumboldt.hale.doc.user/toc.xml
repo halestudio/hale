@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="HALE User Guide">
+<toc label="hale studio User Guide">
    <topic label="Introduction">
-      <topic href="html/introduction/introduction_HALE.html" label="HALE - The HUMBOLDT Alignment Editor">
+      <topic href="html/introduction/introduction_HALE.html" label="hale studio - The HUMBOLDT Alignment Editor">
       </topic>
       <topic href="html/introduction/introduction_project.html" label="The HUMBOLDT project">
       </topic>
@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/3_3_0.xhtml" label="New in 3.3">
+      </topic>
       <topic href="html/new/3_2_0.xhtml" label="New in 3.2">
       </topic>
       <topic href="html/new/3_1_0.xhtml" label="New in 3.1">
@@ -36,9 +38,9 @@
       </topic>
    </topic>
    <topic label="Getting Started">
-      <topic href="html/getting_started/help.html" label="How to use the HALE help">
+      <topic href="html/getting_started/help.html" label="How to use the hale studio help">
       </topic>
-      <topic href="html/getting_started/main_workflow.html" label="First steps in HALE">
+      <topic href="html/getting_started/main_workflow.html" label="First steps in hale studio">
       </topic>
       <topic href="html/getting_started/confWorkbench.html" label="Configuring your workbench">
       </topic>
@@ -130,6 +132,10 @@
       </topic>
       <topic label="hale connect">
 	      <topic href="html/tasks/haleconnect/account.html" label="Accessing your hale connect account">
+	      </topic>
+	      <topic href="html/tasks/haleconnect/loadproject.html" label="Load a hale connect transformation project">
+	      </topic>
+	      <topic href="html/tasks/haleconnect/shareproject.html" label="Sharing a transformation project on hale connect">
 	      </topic>
           <anchor id="haleconnect-end"/>
       </topic>

@@ -39,7 +39,6 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import eu.esdihumboldt.util.groovy.xml.NSDOMCategory
-import groovy.transform.TypeChecked
 import groovy.xml.DOMBuilder
 
 /**
@@ -58,7 +57,6 @@ public class XmlToSchema implements HaleSchemaConstants {
 	 * @return the schema
 	 * @throws Exception if an error occurs
 	 */
-	@TypeChecked
 	public static Schema parseSchema(Reader reader, ClassResolver resolver, IOReporter reporter = null) throws Exception {
 		Element root = DOMBuilder.parse(reader, false, true).documentElement
 		switch (root.localName) {
@@ -69,9 +67,18 @@ public class XmlToSchema implements HaleSchemaConstants {
 					return new DefaultSchema(null, null)
 				}
 				else if (schemas.size() > 1) {
-					// FIXME report? combine? what?
+					List<Schema> loaded = []
+					for (Element element : schemas) {
+						Schema schema = parseSchema(element, resolver, reporter)
+						if (schema != null) {
+							loaded << schema
+						}
+					}
+					return HaleSchemaUtil.combineSchema(loaded, reporter)
 				}
-				return parseSchema(schemas[0], resolver, reporter)
+				else {
+					return parseSchema(schemas[0], resolver, reporter)
+				}
 			case 'schema':
 				return parseSchema(root, resolver, reporter)
 			default:

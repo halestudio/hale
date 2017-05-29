@@ -292,7 +292,7 @@ public class ExecTransformation implements ConsoleConstants {
 	}
 
 	private void loadProject() throws IOException {
-		status("Loading HALE project...");
+		status("Loading hale project...");
 
 		env = new ProjectTransformationEnvironment(id,
 				new DefaultInputSupplier(context.getProject()), reportHandler);
@@ -444,7 +444,7 @@ public class ExecTransformation implements ConsoleConstants {
 	}
 
 	private void transform() throws InterruptedException, ExecutionException {
-		status("Running HALE transformation...");
+		status("Running hale transformation...");
 
 		// configure transformation environment
 

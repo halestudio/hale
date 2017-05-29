@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE MS-SQL Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.mssql;singleton:=true
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.mssql.internal.Activator
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="3.1.0",

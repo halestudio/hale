@@ -7,7 +7,7 @@
 <body>
 	<h1>CQL Filter</h1>
 	<p>The Common Query Language (CQL) is used to define expressions
-		and filters in several parts of <i>HALE</i>. It can be used to define
+		and filters in several parts of <i>hale studio</i>. It can be used to define
 		conditions on schema elements or to filter instances.</p>
 
 	<h2>Property references</h2>
@@ -65,13 +65,13 @@
 		project provided in the <a class="command-link"
 			href='javascript:executeCommand("org.eclipse.ui.cheatsheets.openCheatSheet(cheatSheetId=eu.esdihumboldt.hale.ui.firststeps.firststepsCS)")'>
 			<img src="PLUGINS_ROOT/org.eclipse.help/command_link.png"
-			alt="command link">Get started with HALE</a> guide, using the
+			alt="command link">Get started with hale studio</a> guide, using the
 		<a href="../views/transformed_data.html">Transformed Data view</a>.
 	</p>
 	<h3>Comparisons</h3>
 	<p class="Code">name = 'Yoda'</p>
-	<p class="Code">details.age > (10 + (4 / 2) * 3)</p>
-	<p class="Code">details.age >= 16 AND details.age <= 50</p>
+	<p class="Code">details.age &gt; (10 + (4 / 2) * 3)</p>
+	<p class="Code">details.age &gt;= 16 AND details.age &lt;= 50</p>
 	<p class="Code">details.age BETWEEN 16 AND 50</p>
 	<h3>Text</h3>
 	<p class="Code">name LIKE 'Tom%'</p>
@@ -79,6 +79,196 @@
 	<h3>Null</h3>
 	<p class="Code">details.address.city IS NULL</p>
 	<p class="Code">details.address.city IS NOT NULL</p>
+	
+	<h2>Supported filter operations</h2>
+	<p>Following is a list of filter operations that have been tested
+		with hale:</p>
+		
+	<h3>Equal (=)</h3>
+	<div style="margin-left: 12px;">
+		<p>Checks if a value is equal to another attribute or a literal value.</p>
+		<h5>Examples</h5>
+		<p class="Code">name = 'Yoda'</p>
+		<p class="Code">details.age = 12</p>
+		<h5>Behavior for multiple values</h5>
+		<p>If there are multiple values in an attribute that is checked for
+			equality, it is enough if one of the values is a match.</p>
+	</div>
+	
+	<h3>Not equal (&lt;&gt;)</h3>
+	<div style="margin-left: 12px;">
+		<p>Checks if a value is not equal to another attribute or a literal value.</p>
+		<h5>Examples</h5>
+		<p class="Code">name &lt;&gt; 'Yoda'</p>
+		<p class="Code">details.age &lt;&gt; 12</p>
+		<h5>Behavior for multiple values</h5>
+		<p>All values must be not equal to the given value for the filter to match.</p>
+	</div>
+	
+	<h3>IS NULL</h3>
+	<div style="margin-left: 12px;">
+		<p>
+			Checks if a value does not exist or if the value is the special
+			<code>null</code>
+			value. Using
+			<code>IS NOT NULL</code>
+			you can check for inverse condition that states if an attribute
+			exists and has a non-null value.
+		</p>
+		<h5>Examples</h5>
+		<p class="Code">name IS NULL</p>
+		<p class="Code">id IS NOT NULL</p>
+		<h5>Behavior for multiple values</h5>
+		<p>
+			If there are multiple values for an attribute,
+			<code>IS NULL</code>
+			will never match, as a list of values is always treated as non-null,
+			even if all the values are null.
+		</p>
+		<!-- also something about matching to instances with values? -->
+	</div>
+	
+	<h3>LIKE</h3>
+	<div style="margin-left: 12px;">
+		<p>
+			<code>LIKE</code>
+			lets you compare part of a string value. With
+			<code>LIKE</code>
+			you can check if an attribute value starts, ends or contains a string
+			literal. The percent sign serves as a wildcard.
+		</p>
+		<h5>Examples</h5>
+		<p>Match names that start with <code>Y</code>:</p>
+		<p class="Code">name LIKE 'Y%'</p>
+		<p>Match names that contain an <code>o</code> or <code>O</code></p>
+		<p class="Code">name LIKE '%o%' or name LIKE '%O%'</p>
+		<h5>Behavior for multiple values</h5>
+		<p>If there are multiple values in an attribute that is checked if
+			it contains a string, it is enough if one of the values is a match.</p>
+	</div>
+	
+	<h3>Comparisons (BETWEEN,&lt;,&gt;,...)</h3>
+	<div style="margin-left: 12px;">
+		<p>
+			<code>BETWEEN</code>
+			allows you to determine if a value is in a certain range. Comparison
+			operators like less than (
+			<code>&lt;</code>
+			) and greater than (
+			<code>&gt;</code>
+			) allow you to check a value in relation to another one.
+		</p>
+		<h5>Examples</h5>
+		<p>Match everyone older than 100:</p>
+		<p class="Code">details.age &gt; 100</p>
+		<p>Match everyone that is between 20 and 30:</p>
+		<p class="Code">details.age BETWEEN 20 AND 30</p>
+		<p>Match everyone that is 10 or younger:</p>
+		<p class="Code">details.age &lt;= 10</p>
+		<h5>Behavior for multiple values</h5>
+		<p>If there are multiple values in an attribute that is checked,
+			it is enough if one of the values is a match.</p>
+		<h5>Behavior for Strings</h5>
+		<p>The comparison operations can also be used for Strings, but
+			ordering is case sensitive and not based on alphabetical order. Thus
+			it is rarely useful.</p>
+	</div>
+	
+	<h3>Spatial operations (CONTAINS,BBOX,...)</h3>
+	<div style="margin-left: 12px;">
+		<p>Spatial operations perform checks on geometries. Filters are
+			not aware of any Spatial Reference System, thus currently the checks
+			are performed on the geometries as-is. As a consequence any geometry
+			literals defined must rely on source data having a specific reference
+			system that is previously known.</p>
+		<p>Note that spatial CQL filters only work on attributes that are
+			marked as geometry attributes in hale. It is right now not possible
+			to apply them to parent attributes of geometry attributes directly.</p>
+		<h5>Examples</h5>
+		<p class="Code">CONTAINS(areaAttr, POINT(2 0))</p>
+		<p>
+			Note that the notation for
+			<code>BBOX</code>
+			first expects the ordinates of one corner of the bounding box, then
+			the other corner:
+		</p>
+		<p class="Code">BBOX(area, 10, 10, 20, 20)</p>
+		<p class="Code">INTERSECTS(area, LINESTRING(2 -1, 2 2))</p>
+		<h5>Behavior for multiple values</h5>
+		<p>If there are multiple geometries in an attribute that is checked,
+			it is enough if one of the geometries is a match.</p>
+	</div>
+	
+	<h3>Time comparisons (BEFORE,AFTER,DURING,TEQUALS)</h3>
+	<div style="margin-left: 12px;">
+		<p>Time comparisons allow comparing attributes with date and time literals.</p>
+		<p>Please note that these time comparisons can only be reliably
+			applied on attributes that have a binding of an Date/Time data type.</p>
+		<h5>Examples</h5>
+		<p>
+			Test if the value of attribute
+			<code>date</code>
+			is after a certain point in time:
+		</p>
+		<p class="Code">date AFTER 2006-11-30T01:30:00Z</p>
+		<p>
+			Test if the value of attribute
+			<code>date</code>
+			is before a certain point in time:
+		</p>
+		<p class="Code">date BEFORE 2016-11-30T01:30:00Z</p>
+		<p>
+			Test if the value of attribute
+			<code>date</code>
+			is during a certain period of time:
+		</p>
+		<p class="Code">date DURING 2006-11-30T01:30:00Z/2016-11-30T01:30:00Z</p>
+		<p>
+			Test if the value of attribute
+			<code>date</code>
+			is equal to a certain point in time:
+		</p>
+		<p class="Code">date TEQUALS 2012-12-01T12:00:00Z</p>
+		<h5>Behavior for multiple values</h5>
+		<p>Checks on attributes with multiple values are not supported.
+			Matches will always fail in that case.</p>
+	</div>
+	
+	<h3>Composition and negation</h3>
+	<p>
+		Use
+		<code>AND</code>
+		and
+		<code>OR</code>
+		to combine filter expressions or
+		<code>NOT</code>
+		to negate them.
+	</p>
+	<h5>Examples</h5>
+	<p>Select persons whose name starts with Y and are at least 16 years old:</p>
+	<p class="Code">name like 'Y%' AND details.age &gt;= 16</p>
+	<p>Select persons that don't match the previous filter:</p>
+	<p class="Code">NOT(name like 'Y%' AND details.age &gt;= 16)</p>
+	<p>Select persons that are younger than 10 or older than 50 years:</p>
+	<p class="Code">details.age &lt; 10 OR details.age &gt; 50</p>
+
+	<h3>Unsupported operations</h3>
+	
+	<p>These are CQL filter operations that have been verified to not work with hale:</p>
+	<ul>
+		<li><strong>EXISTS</strong> - use <code>IS NOT NULL</code> instead if possible</li>
+		<li><strong>DOES-NOT-EXIST</strong> - use <code>IS NULL</code> instead if possible</li>
+		<li><strong>CROSS</strong> - use <code>CROSSES</code> instead</li>
+		<li><strong>INTERSECT</strong> - use <code>INTERSECTS</code> instead</li>
+	</ul>
+
+	<p>
+		More general information on CQL can be found in the <a
+			href="http://docs.geotools.org/latest/userguide/library/cql/cql.html"
+			target="_blank">Geotools documentation</a> or the <a
+			href="http://udig.github.io/docs/user/concepts/Constraint%20Query%20Language.html"
+			target="_blank">UDig user guide</a>.
+	</p>
 
 	<br>
 	<!-- related concepts: instance, contexts -->

@@ -10,11 +10,11 @@
 		transformation result to not only follow the schema's structure, but
 		to also meet the other constraints defined by the schema, like
 		mandatory properties or restrictions on property values.</p>
-	<p>Validation of instances in HALE currently is supported for XML
+	<p>Validation of instances in <i>hale studio</i> currently is supported for XML
 		based schemas. Validation can be done on the exported transformation
 		result or on the transformed instances currently available in the
 		application.</p>
-	<p>In addition to schema-based checks, HALE supports validation of the
+	<p>In addition to schema-based checks, <i>hale studio</i> supports validation of the
 		exported transformation result with Schematron. To perform Schematron
 		validation, you can add the Schematron validator to the list of
 		validators and configure it when exporting the transformed instances.
@@ -35,7 +35,7 @@
 		produces a report about errors found during the validation and 
 		informs you whether the file is valid or not.</p>
 
-	<h2>Validation inside HALE</h2>
+	<h2>Validation inside hale studio</h2>
 	<p>If a mapping exists and source data is loaded, each mapping change will 
 		trigger the live transformation (if activated).
 		When the transformed data changes, schema-based validation is started
@@ -44,7 +44,7 @@
 	<div>
 		<img src="images/validation_activate.png" class="fit">
 	</div>
-	<p>A status item in the lower right corner of the HALE window shows
+	<p>A status item in the lower right corner of the <i>hale studio</i> window shows
 		the status of the validation. If there is a small warning sign in the
 		icon, it informs us about validation errors:</p>
 	<div>
@@ -79,10 +79,10 @@
 	<div>
 		<img src="images/validation_properties.png">
 	</div>
-	<p>This kind of validation inside HALE is very convenient, but may
+	<p>This kind of validation inside <i>hale studio</i> is very convenient, but may
 		not be as accurate as the validation on export for some cases. This is
 		due to the fact that the export itself may change the result slightly
-		from what is available in HALE. This could for instance be encodings
+		from what is available in hale studio. This could for instance be encodings
 		that are only replied when writing certain properties, or values like
 		identifiers that are generated when missing.</p>
 

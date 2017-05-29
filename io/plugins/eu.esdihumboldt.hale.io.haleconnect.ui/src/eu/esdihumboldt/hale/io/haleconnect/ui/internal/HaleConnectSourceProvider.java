@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
  * 
  * @author Florian Esser
  */
-public class HaleConnectSource extends AbstractSourceProvider {
+public class HaleConnectSourceProvider extends AbstractSourceProvider {
 
 	/**
 	 * The name of the variable which value is <code>true</code> if there is a
@@ -44,7 +44,7 @@ public class HaleConnectSource extends AbstractSourceProvider {
 	/**
 	 * 
 	 */
-	public HaleConnectSource() {
+	public HaleConnectSourceProvider() {
 		super();
 
 		final HaleConnectService hcs = HaleUI.getServiceProvider()

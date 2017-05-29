@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -29,6 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.OsgiClassResolver;
+import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaUtil;
 
 /**
  * Reads the HALE schema model from JSON (HALE Schema Definition).
@@ -53,18 +56,15 @@ public class HaleSchemaReaderJson extends AbstractSchemaReader {
 			Iterable<Schema> schemas = new JsonToSchema(null, new OsgiClassResolver(), reporter)
 					.parseSchemas(reader);
 
-			Iterator<Schema> it = schemas.iterator();
-			if (it.hasNext()) {
-				schema = it.next();
+			List<Schema> schemaList = StreamSupport.stream(schemas.spliterator(), false)
+					.collect(Collectors.toList());
+			if (!schemaList.isEmpty()) {
+				schema = HaleSchemaUtil.combineSchema(schemaList, reporter);
 				reporter.setSuccess(true);
 			}
 			else {
 				reporter.setSuccess(false);
 				reporter.setSummary("No schema definition found");
-			}
-
-			if (it.hasNext()) {
-				// FIXME what about multiple schemas???
 			}
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
@@ -77,7 +77,7 @@ public class HaleSchemaReaderJson extends AbstractSchemaReader {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "HALE Schema Definition (JSON)";
+		return "hale Schema Definition (JSON)";
 	}
 
 	@Override

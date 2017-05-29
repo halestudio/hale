@@ -505,7 +505,7 @@
             base-type="org.eclipse.core.runtime.xml"
             file-extensions="align,xml"
             id="eu.esdihumboldt.hale.io.align.26"
-            name="HALE alignment"
+            name="hale alignment"
             priority="normal">
          <describer
                class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">

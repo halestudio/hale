@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment XSLT Export Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xslt.test
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: eu.esdihumboldt.hale.io.xslt;bundle-version="2.5.0",

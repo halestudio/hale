@@ -65,7 +65,7 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Translate HALE alignment to App-Schema Configuration",
+		progress.begin("Translate hale alignment to App-Schema Configuration",
 				ProgressIndicator.UNKNOWN);
 		if (getAlignment() == null) {
 			throw new IOProviderConfigurationException("No alignment was provided.");

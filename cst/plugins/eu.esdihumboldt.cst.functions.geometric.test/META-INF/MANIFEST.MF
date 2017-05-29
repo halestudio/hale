@@ -2,14 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions Tests
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric.test
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: data harmonisation panel
-Import-Package: eu.esdihumboldt.cst.functions.geometric,
- eu.esdihumboldt.cst.functions.geometric.interiorpoint,
- eu.esdihumboldt.cst.test,
- eu.esdihumboldt.util.svg.test,
- org.junit;version="4.11.0"
+Import-Package: eu.esdihumboldt.cst.test,
+ eu.esdihumboldt.util.svg.test
 Require-Bundle: com.vividsolutions.jts;bundle-version="1.13.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.1",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.2",
@@ -20,4 +17,8 @@ Require-Bundle: com.vividsolutions.jts;bundle-version="1.13.0",
  eu.esdihumboldt.hale.common.align;bundle-version="2.9.2",
  eu.esdihumboldt.cst;bundle-version="2.9.0",
  org.opengis;bundle-version="12.2.0",
- org.geotools;bundle-version="12.2.0"
+ org.geotools;bundle-version="12.2.0",
+ eu.esdihumboldt.hale.common.schema.groovy;bundle-version="3.3.0",
+ eu.esdihumboldt.cst.functions.geometric;bundle-version="3.3.0",
+ groovy;bundle-version="2.3.7",
+ org.junit;bundle-version="4.12.0"

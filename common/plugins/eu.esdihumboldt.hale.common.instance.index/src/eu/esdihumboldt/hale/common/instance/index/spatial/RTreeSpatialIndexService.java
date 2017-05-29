@@ -23,6 +23,7 @@ import de.fhg.igd.geom.Localizable;
 import de.fhg.igd.geom.Verifier;
 import de.fhg.igd.geom.indices.RTree;
 import eu.esdihumboldt.hale.common.instance.index.Typed;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceReferenceDecorator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -92,8 +93,10 @@ public class RTreeSpatialIndexService implements SpatialIndexService<Localizable
 			Collection<TypeDefinition> typeFilter) {
 
 		return retrieve(spatialQuery).stream()
-				.filter(spatialMatch -> spatialMatch instanceof Typed
-						&& typeFilter.contains(((Typed) spatialMatch).getDefinition()))
+				.filter(spatialMatch -> InstanceReferenceDecorator.findDecoration(spatialMatch,
+						Typed.class) != null
+						&& typeFilter.contains(InstanceReferenceDecorator
+								.findDecoration(spatialMatch, Typed.class).getDefinition()))
 				.collect(Collectors.toList());
 	}
 

@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.io.Files;
@@ -85,9 +86,35 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 	 */
 	public static final String EXLUDE_DATA_FILES = "excludedata";
 
+	/**
+	 * Parameter for including or excluding resources that have a cached
+	 * representation available
+	 */
+	public static final String EXCLUDE_CACHED_RESOURCES = "excludecachedresources";
+
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		return createProjectArchive(getTarget().getOutput(), reporter, progress);
+	}
+
+	/**
+	 * Creates the project archive.
+	 * 
+	 * @param target {@link OutputStream} to write the archive to
+	 * @param reporter the reporter to use for the execution report
+	 * @param progress the progress indicator
+	 * @return the execution report
+	 * @throws IOException if an I/O operation fails
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *             configured properly
+	 */
+	public IOReport createProjectArchive(OutputStream target, IOReporter reporter,
+			ProgressIndicator progress) throws IOException, IOProviderConfigurationException {
+
+		ZipOutputStream zip = new ZipOutputStream(target);
+
 		// all files related to the project are copied into a temporary
 		// directory first and then packed into a zip file
 
@@ -102,7 +129,6 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		}
 
 		LocatableOutputSupplier<OutputStream> out = new FileIOSupplier(baseFile);
-		ZipOutputStream zip = new ZipOutputStream(getTarget().getOutput());
 
 		// false is correct if getParameter is null because false is default
 		boolean includeWebresources = getParameter(INCLUDE_WEB_RESOURCES).as(Boolean.class, false);
@@ -168,7 +194,13 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		return report;
 	}
 
-	private ProjectFileInfo getAlignmentFile(Project project) {
+	/**
+	 * Get a project's alignment file
+	 * 
+	 * @param project the project
+	 * @return info object for the alignment file
+	 */
+	protected ProjectFileInfo getAlignmentFile(Project project) {
 		for (ProjectFileInfo pfi : project.getProjectFiles())
 			if (pfi.getName().equals("alignment.xml")) {
 				return pfi;
@@ -176,8 +208,16 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 		return null;
 	}
 
-	// update the resources and copy them into target directory
-	private void updateResources(File targetDirectory, boolean includeWebResources,
+	/**
+	 * Update the resources and copy them into the target directory
+	 * 
+	 * @param targetDirectory target directory
+	 * @param includeWebResources whether to include web resources in the copy
+	 * @param progress the progress indicator
+	 * @param reporter the reporter to use for the execution report
+	 * @throws IOException if an I/O operation fails
+	 */
+	protected void updateResources(File targetDirectory, boolean includeWebResources,
 			ProgressIndicator progress, IOReporter reporter) throws IOException {
 		progress.begin("Copy resources", ProgressIndicator.UNKNOWN);
 		try {
@@ -197,9 +237,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				// check if ActionId is equal to
 				// eu.esdihumboldt.hale.common.instance.io.InstanceIO.ACTION_LOAD_SOURCE_DATA
 				// import not possible due to cycle errors
-				if (excludeDataFiles
-						&& resource.getActionId().equals(
-								"eu.esdihumboldt.hale.io.instance.read.source")) {
+				if (excludeDataFiles && resource.getActionId()
+						.equals("eu.esdihumboldt.hale.io.instance.read.source")) {
 					// delete reference in project file
 					iter.remove();
 					continue;
@@ -213,8 +252,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				try {
 					pathUri = new URI(path);
 				} catch (URISyntaxException e1) {
-					reporter.error(new IOMessageImpl("Skipped resource because of invalid URI: "
-							+ path, e1));
+					reporter.error(new IOMessageImpl(
+							"Skipped resource because of invalid URI: " + path, e1));
 					continue;
 				}
 				if (!pathUri.isAbsolute()) {
@@ -275,8 +314,8 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 				}
 				else {
 					// now can't open that, can we?
-					reporter.error(new IOMessageImpl(
-							"Skipped resource because it cannot be loaded from "
+					reporter.error(
+							new IOMessageImpl("Skipped resource because it cannot be loaded from "
 									+ pathUri.toString(), null));
 					continue;
 				}
@@ -293,38 +332,44 @@ public class ArchiveProjectWriter extends AbstractProjectWriter {
 					throw new IOException("Can not create directory " + newDirectory.toString(), e);
 				}
 
-				// the filename
-				String name = path.toString().substring(path.lastIndexOf("/") + 1, path.length());
+				// Extract the file name from pathUri.getPath().
+				// This will produce a non-URL-encoded file name to be used in
+				// the File(File parent, String child) constructor below
+				String fileName = FilenameUtils.getName(pathUri.getPath().toString());
 
-				// remove any query string from the filename
-				int queryIndex = name.indexOf('?');
-				if (queryIndex >= 0) {
-					name = name.substring(0, queryIndex);
+				if (path.isEmpty()) {
+					fileName = "file";
 				}
 
-				if (name.isEmpty()) {
-					name = "file";
-				}
-
-				File newFile = new File(newDirectory, name);
+				File newFile = new File(newDirectory, fileName);
 				Path target = newFile.toPath();
 
 				// retrieve the resource advisor
 				Value ct = providerConfig.get(ImportProvider.PARAM_CONTENT_TYPE);
 				IContentType contentType = null;
 				if (ct != null) {
-					contentType = HalePlatform.getContentTypeManager().getContentType(
-							ct.as(String.class));
+					contentType = HalePlatform.getContentTypeManager()
+							.getContentType(ct.as(String.class));
 				}
 				ResourceAdvisor ra = ResourceAdvisorExtension.getInstance().getAdvisor(contentType);
 
 				// copy the resource
 				progress.setCurrentTask("Copying resource at " + path);
-				ra.copyResource(input, target, contentType, includeWebResources, reporter);
 
-				// store new path for resource
-				String newPath = resourceFolder + "/" + name;
-				handledResources.put(pathUri, newPath);
+				// Extract the URL-encoded file name of the copied resource and
+				// build the new relative resource path
+				String resourceName = FilenameUtils.getName(target.toUri().toString());
+				String newPath = resourceFolder + "/" + resourceName;
+
+				boolean skipCopy = getParameter(EXCLUDE_CACHED_RESOURCES).as(Boolean.class, false)
+						&& !resource.getCache().isEmpty();
+				if (!skipCopy) {
+					ra.copyResource(input, target, contentType, includeWebResources, reporter);
+
+					// store new path for resource
+					handledResources.put(pathUri, newPath);
+				}
+
 				// update the provider configuration
 				providerConfig.put(ImportProvider.PARAM_SOURCE, Value.of(newPath));
 				count++;
