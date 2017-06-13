@@ -206,6 +206,10 @@ public class WFSFeatureCollectionWriter extends GmlInstanceWriter
 
 	@Override
 	public boolean isPassthrough() {
+		if (!super.isPassthrough()) {
+			return false;
+		}
+
 		boolean requiresCount = requiresCount();
 		boolean skipCount = getParameter(PARAM_SKIP_COUNT).as(Boolean.class, false);
 
