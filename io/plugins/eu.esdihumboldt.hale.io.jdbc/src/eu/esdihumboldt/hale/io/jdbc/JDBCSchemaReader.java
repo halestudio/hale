@@ -26,9 +26,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -200,9 +203,28 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader
 
 			if (SchemaSpaceID.SOURCE.equals(getSchemaSpace())) {
 				// show views and tables
-				List<String> tableList = Arrays.asList("TABLE", "VIEW");
+				final List<String> tableTypesWanted = Arrays.asList("TABLE", "VIEW",
+						"MATERIALIZED VIEW");
 
-				options.setTableTypes(tableList);
+				// try to determine table types supported by the JDBC connection
+				final List<String> tableTypeSupported = new ArrayList<>();
+				try {
+					ResultSet rs = connection.getMetaData().getTableTypes();
+					while (rs.next()) {
+						String tableType = rs.getString(1);
+						tableTypeSupported.add(tableType);
+					}
+				} catch (Throwable t) {
+					// Ignore, try with wanted list
+					reporter.warn(new IOMessageImpl(MessageFormat.format(
+							"Could not determine supported table types for connection: {0}",
+							t.getMessage()), t));
+					tableTypeSupported.addAll(tableTypesWanted);
+				}
+
+				options.setTableTypes(
+						tableTypesWanted.stream().filter(tt -> tableTypeSupported.contains(tt))
+								.collect(Collectors.toList()));
 			}
 			else {
 				// only show tables
