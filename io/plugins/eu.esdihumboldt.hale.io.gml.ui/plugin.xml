@@ -70,6 +70,22 @@
                ref="eu.esdihumboldt.hale.io.gml.reader">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.gml.ui.PartitionConfigurationPage"
+            order="11">
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.inspiregml.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.fc.write-1.1.0">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.wfs.fc.write-2.0">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>

@@ -462,6 +462,20 @@
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -717,6 +731,20 @@
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.InspireInstanceWriter"
@@ -941,6 +969,20 @@
                   defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
                   sample="000000.000"
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
             </valueDescriptor>
          </providerParameter>
       </provider>

@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.ui.io.instance;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -130,37 +134,54 @@ public class InstanceExportWizard extends ExportWizard<InstanceWriter> {
 
 			ExportTarget<?> exportTarget = getSelectTargetPage().getExportTarget();
 			if (exportTarget instanceof FileTarget) {
-				String fileName = ((FileTarget<?>) exportTarget).getTargetFileName();
-				LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
-						new File(fileName));
-				validator.setSource(source);
-				validator.setContentType(getContentType());
-
-				IOReporter defReport = validator.createReporter();
-
-				// validate and execute provider
-				try {
-					// validate configuration
-					validator.validate();
-					IOReport report = execute(validator, defReport);
-
-					if (report != null) {
-						// add report to report server
-						ReportService repService = PlatformUI.getWorkbench()
-								.getService(ReportService.class);
-						repService.addReport(report);
-						if (report.isSuccess()) {
-							log.info(report.getSummary());
+				LocatableOutputSupplier<? extends OutputStream> target = getProvider().getTarget();
+				List<String> fileNames = new ArrayList<>();
+				if (target instanceof MultiLocationOutputSupplier) {
+					for (URI location : ((MultiLocationOutputSupplier) target).getLocations()) {
+						if (!"file".equals(location.getScheme())) {
+							continue;
 						}
-						else {
-							log.error(report.getSummary());
-							success = false;
-						}
+
+						File targetFile = new File(location);
+						fileNames.add(targetFile.getAbsolutePath());
 					}
-				} catch (IOProviderConfigurationException e) {
-					log.error(MessageFormat.format("The validator '{0}' could not be executed",
-							validator.getClass().getCanonicalName()), e);
-					success = false;
+				}
+				else {
+					fileNames.add(((FileTarget<?>) exportTarget).getTargetFileName());
+				}
+
+				for (String fileName : fileNames) {
+					LocatableInputSupplier<? extends InputStream> source = new FileIOSupplier(
+							new File(fileName));
+					validator.setSource(source);
+					validator.setContentType(getContentType());
+
+					IOReporter defReport = validator.createReporter();
+
+					// validate and execute provider
+					try {
+						// validate configuration
+						validator.validate();
+						IOReport report = execute(validator, defReport);
+
+						if (report != null) {
+							// add report to report server
+							ReportService repService = PlatformUI.getWorkbench()
+									.getService(ReportService.class);
+							repService.addReport(report);
+							if (report.isSuccess()) {
+								log.info(report.getSummary());
+							}
+							else {
+								log.error(report.getSummary());
+								success = false;
+							}
+						}
+					} catch (IOProviderConfigurationException e) {
+						log.error(MessageFormat.format("The validator '{0}' could not be executed",
+								validator.getClass().getCanonicalName()), e);
+						success = false;
+					}
 				}
 			}
 			else {

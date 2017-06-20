@@ -283,6 +283,20 @@
                   default="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
@@ -382,6 +396,20 @@
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
                   sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
             </valueDescriptor>
          </providerParameter>
       </provider>
