@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.instance.orient.storage;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -75,18 +76,39 @@ public abstract class StoreInstancesJob extends Job {
 
 	private final ServiceProvider serviceProvider;
 
+	private final boolean doProcessing;
+
+	/**
+	 * Create a job that stores instances in a database. Does no instance
+	 * processing.
+	 * 
+	 * @param name the (human readable) job name
+	 * @param instances the instances to store in the database
+	 * @param database the database
+	 * @param reportHandler the report handler, <code>null</code> if no report
+	 *            should be generated
+	 */
+	public StoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances,
+			final ReportHandler reportHandler) {
+		this(name, database, instances, null, reportHandler, false);
+	}
+
 	/**
 	 * Create a job that stores instances in a database
 	 * 
 	 * @param name the (human readable) job name
 	 * @param instances the instances to store in the database
 	 * @param database the database
-	 * @param serviceProvider the service provider
+	 * @param serviceProvider the service provider, may be <code>null</code> if
+	 *            processing is disabled
 	 * @param reportHandler the report handler, <code>null</code> if no report
 	 *            should be generated
+	 * @param doProcessing if instance processing should be done on stored
+	 *            instances
 	 */
 	public StoreInstancesJob(String name, LocalOrientDB database, InstanceCollection instances,
-			final ServiceProvider serviceProvider, final ReportHandler reportHandler) {
+			final ServiceProvider serviceProvider, final ReportHandler reportHandler,
+			boolean doProcessing) {
 		super(name);
 
 		setUser(true);
@@ -95,6 +117,7 @@ public abstract class StoreInstancesJob extends Job {
 		this.instances = instances;
 		this.serviceProvider = serviceProvider;
 		this.reportHandler = reportHandler;
+		this.doProcessing = doProcessing;
 
 		if (reportHandler != null) {
 			report = new DefaultReporter<Message>("Load data into database", Message.class, false);
@@ -131,9 +154,15 @@ public abstract class StoreInstancesJob extends Job {
 			db.declareIntent(new OIntentMassiveInsert());
 
 			// Find all the InstanceProcessors to feed them the stored Instances
-			final InstanceProcessingExtension ext = new InstanceProcessingExtension(
-					serviceProvider);
-			final List<InstanceProcessor> processors = ext.getInstanceProcessors();
+			final List<InstanceProcessor> processors;
+			if (doProcessing) {
+				final InstanceProcessingExtension ext = new InstanceProcessingExtension(
+						serviceProvider);
+				processors = ext.getInstanceProcessors();
+			}
+			else {
+				processors = Collections.emptyList();
+			}
 
 			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
 					null, DataSet.SOURCE);
@@ -174,6 +203,7 @@ public abstract class StoreInstancesJob extends Job {
 							new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
 									conv.getDefinition()),
 							browser);
+
 					processors.forEach(p -> p.process(instance, resolvableRef));
 
 					count++;
