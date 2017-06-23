@@ -57,7 +57,7 @@ public class MsAccessURIBuilder implements URIBuilder {
 						MessageFormat.format("Encoding {0} is not supported", UTF8));
 			}
 		}
-		else if ("file".equals(uri)) {
+		else if ("file".equals(uri.getScheme())) {
 			return new File(uri).getAbsolutePath();
 		}
 		else {
