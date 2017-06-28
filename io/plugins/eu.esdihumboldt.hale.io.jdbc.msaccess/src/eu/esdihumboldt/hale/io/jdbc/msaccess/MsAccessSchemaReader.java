@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -30,15 +31,15 @@ import eu.esdihumboldt.hale.io.jdbc.JDBCSchemaReader;
 import net.ucanaccess.jdbc.UcanaccessConnection;
 
 /**
- * Reads a schema from a MSAccess DB. extended {@link JDBCSchemaReader}.
+ * Reads a schema from a MSAccess DB
  * 
- * @author Arun
+ * @author Arun Varma
  */
 public class MsAccessSchemaReader extends JDBCSchemaReader {
 
 	private static final ALogger log = ALoggerFactory.getLogger(MsAccessSchemaReader.class);
-	private static final String ENC = "UTF-8";
-	private URI uri;
+	private static final String UTF8 = "UTF-8";
+	private URI jdbcUri;
 
 	/**
 	 * Default Constructor
@@ -50,8 +51,8 @@ public class MsAccessSchemaReader extends JDBCSchemaReader {
 	@Override
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
 		MsAccessJdbcIOSupplier inputSource = new MsAccessJdbcIOSupplier(
-				new File(source.getLocation()));
-		uri = inputSource.getLocation();
+				new File(MsAccessURIBuilder.getDatabase(source.getLocation())));
+		jdbcUri = inputSource.getLocation();
 		super.setSource(inputSource);
 	}
 
@@ -66,10 +67,10 @@ public class MsAccessSchemaReader extends JDBCSchemaReader {
 
 	private String getDecodedURI() {
 		try {
-			return URLDecoder.decode(this.uri.toString(), ENC);
+			return URLDecoder.decode(this.jdbcUri.toString(), UTF8);
 		} catch (UnsupportedEncodingException e) {
-			log.error(ENC + "! that's supposed to be an encoding!!", e);
-			return this.uri.toString();
+			throw new RuntimeException(
+					MessageFormat.format("Encoding \"{0}\" is not supported", UTF8));
 		}
 	}
 
