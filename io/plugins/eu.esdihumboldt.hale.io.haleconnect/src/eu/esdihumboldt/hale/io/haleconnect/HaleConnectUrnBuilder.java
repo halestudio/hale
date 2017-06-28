@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * TODO Type description
+ * Helper for building and decomposing hale-connect project URNs.
  * 
  * @author Florian Esser
  */
@@ -32,27 +32,42 @@ public class HaleConnectUrnBuilder {
 	 */
 	public static final String SCHEME_HALECONNECT = "hc";
 
+	/**
+	 * Build a project URN from owner and project ID
+	 * 
+	 * @param owner the project owner
+	 * @param projectId the project ID
+	 * @return the hale-connect project URN
+	 */
 	public static URI buildProjectUrn(Owner owner, String projectId) {
 		return URI.create(MessageFormat.format("{0}:project:{1}:{2}:{3}", SCHEME_HALECONNECT,
 				owner.getType().getJsonValue(), owner.getId(), projectId));
 	}
 
+	/**
+	 * Extract the owner from a hale-connect project URN.
+	 * 
+	 * @param hcUrn the project URN to parse
+	 * @return the owner information extracted from the URN
+	 */
 	public static Owner extractProjectOwner(URI hcUrn) {
 		String[] parts = splitProjectUrn(hcUrn);
 
 		return new Owner(OwnerType.fromJsonValue(parts[1]), parts[2]);
 	}
 
+	/**
+	 * Extract the project ID from a hale-connect project URN.
+	 * 
+	 * @param hcUrn the project URN to parse
+	 * @return the project ID extracted from the URN
+	 */
 	public static String extractProjectId(URI hcUrn) {
 		String[] parts = splitProjectUrn(hcUrn);
 
 		return parts[3];
 	}
 
-	/**
-	 * @param urn
-	 * @return
-	 */
 	private static String[] splitProjectUrn(URI urn) {
 		if (urn == null) {
 			throw new NullPointerException("URN must not be null");
@@ -79,6 +94,13 @@ public class HaleConnectUrnBuilder {
 		return parts;
 	}
 
+	/**
+	 * Tests if a given URI is a valid hale-connect project URN.
+	 * 
+	 * @param urn the URI to test
+	 * @return <code>true</code> if the URI is a valid project URN,
+	 *         <code>false</code> otherwise
+	 */
 	public static boolean isValidProjectUrn(URI urn) {
 		try {
 			splitProjectUrn(urn);
@@ -89,6 +111,14 @@ public class HaleConnectUrnBuilder {
 		return true;
 	}
 
+	/**
+	 * Build a URL for accessing a hale-connect project in the remote API.
+	 * 
+	 * @param basePath the base URL of the project service
+	 * @param owner the project owner
+	 * @param projectId the project ID
+	 * @return the access URL
+	 */
 	public static URI buildClientAccessUrl(String basePath, Owner owner, String projectId) {
 		return URI.create(MessageFormat.format("{0}/transformation/{1}/{2}/{3}", basePath,
 				owner.getType().getJsonValue(), owner.getId(), projectId));

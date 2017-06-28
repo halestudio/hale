@@ -36,7 +36,7 @@
                minOccurrence="1"
                name="script">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
          <functionParameter
@@ -89,7 +89,7 @@
                minOccurrence="1"
                name="script">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
          <functionParameter
@@ -135,7 +135,7 @@
                name="script"
                scriptable="false">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
       </typeFunction>
@@ -159,7 +159,7 @@
                name="script"
                scriptable="false">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
          <functionParameter
@@ -228,7 +228,7 @@
                name="script"
                scriptable="false">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
       </typeFunction>
@@ -269,7 +269,7 @@
                name="script"
                scriptable="false">
             <parameterComplexValue
-                  ref="eu.esdihumboldt.hale.common.core.text">
+                  ref="text">
             </parameterComplexValue>
          </functionParameter>
       </typeFunction>

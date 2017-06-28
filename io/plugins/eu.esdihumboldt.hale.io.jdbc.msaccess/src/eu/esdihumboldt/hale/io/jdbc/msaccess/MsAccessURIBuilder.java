@@ -7,8 +7,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
 
 /**
@@ -18,7 +16,6 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
  */
 public class MsAccessURIBuilder implements URIBuilder {
 
-	private static final ALogger log = ALoggerFactory.getLogger(MsAccessURIBuilder.class);
 	private static final String UTF8 = "UTF-8";
 	// UCanAccess Driver;
 	private static final String DRIVER = "jdbc:ucanaccess://";

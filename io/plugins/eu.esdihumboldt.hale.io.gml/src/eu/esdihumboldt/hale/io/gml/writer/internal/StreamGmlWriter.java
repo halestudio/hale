@@ -240,8 +240,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	/**
 	 * Add a schema that should be included for validation. Should be called
 	 * before or in
-	 * {@link #write(InstanceCollection, ProgressIndicator, IOReporter)} prior
-	 * to writing the schema locations, but after {@link #init(IOReporter)}
+	 * {@link #write(InstanceCollection, OutputStream, ProgressIndicator, IOReporter)}
+	 * prior to writing the schema locations, but after {@link #init()}
 	 * 
 	 * @param namespace the schema namespace
 	 * @param schema the schema location
@@ -816,9 +816,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						writeMember(instance, type, reporter);
 					}
 					else {
-						reporter.warn(new IOMessageImpl(MessageFormat.format(
-								"No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
-								type.getDisplayName(), containerName.getLocalPart()), null));
+						reporter.warn(new IOMessageImpl(
+								MessageFormat.format(
+										"No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
+										type.getDisplayName(), containerName.getLocalPart()),
+								null));
 					}
 
 					progress.advance(1);

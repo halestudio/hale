@@ -41,7 +41,11 @@ import eu.esdihumboldt.hale.ui.io.IOWizardPage;
  * Wizard page that allows changing project name and author.
  * 
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * 
+ * @param
+ * 			<P>
+ *            the project writer type
+ * @param <E> the export wizard type
  */
 public abstract class AbstractProjectDetailsPage<P extends ProjectWriter, E extends ExportWizard<P>>
 		extends IOWizardPage<P, E> {
@@ -51,7 +55,7 @@ public abstract class AbstractProjectDetailsPage<P extends ProjectWriter, E exte
 	private Text description;
 
 	/**
-	 * Default constructor
+	 * @see IOWizardPage#IOWizardPage(String)
 	 */
 	public AbstractProjectDetailsPage(String pageName) {
 		super(pageName);
