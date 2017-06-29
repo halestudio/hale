@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFl
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.gml.geometry.constraint.GeometryFactory;
 import eu.esdihumboldt.hale.io.gml.internal.simpletype.SimpleTypeUtil;
+import eu.esdihumboldt.hale.io.gml.reader.internal.StreamGmlReader;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 
@@ -109,6 +110,11 @@ public abstract class StreamGmlHelper {
 			if (dim != null)
 				srsDimension = Integer.parseInt(dim);
 		}
+
+		// extract additional settings from I/O provider
+		boolean suppressParsingGeometry = ioProvider
+				.getParameter(StreamGmlReader.PARAM_SUPPRESS_PARSE_GEOMETRY)
+				.as(Boolean.class, false);
 
 		MutableInstance instance;
 		if (indexInStream == null) {
@@ -179,7 +185,7 @@ public abstract class StreamGmlHelper {
 		}
 
 		// augmented value XXX should this be an else if?
-		if (type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
+		if (!suppressParsingGeometry && type.getConstraint(AugmentedValueFlag.class).isEnabled()) {
 			// add geometry as a GeometryProperty value where applicable
 			GeometryFactory geomFactory = type.getConstraint(GeometryFactory.class);
 			Object geomValue = null;
