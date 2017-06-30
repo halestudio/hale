@@ -75,6 +75,21 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	 */
 	public static final String PARAM_FEATURES_PER_WFS_REQUEST = "featuresPerWfsRequest";
 
+	/**
+	 * The name of the parameter specifying if the selection of mapping relevant
+	 * types for instances that are processed should be ignored.
+	 * 
+	 * Essentially if this is enabled the behavior is like if any type in the
+	 * schema is classified as mapping relevant.
+	 */
+	public static final String PARAM_IGNORE_MAPPING_RELEVANT = "ignoreMappingRelevant";
+
+	/**
+	 * Name of the parameter that that specifies if parsing geometries should be
+	 * suppressed.
+	 */
+	public static final String PARAM_SUPPRESS_PARSE_GEOMETRY = "suppressParsingGeometry";
+
 	private InstanceCollection instances;
 
 	private final boolean restrictToFeatures;
