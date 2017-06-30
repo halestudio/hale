@@ -30,7 +30,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
  */
 public class MappableUsingXsiType extends MappableFlag {
 
-	private XmlTypeDefinition type;
+	private final XmlTypeDefinition type;
 
 	/**
 	 * Create a mapping constraint that checks if a type is mappable using
@@ -59,7 +59,7 @@ public class MappableUsingXsiType extends MappableFlag {
 		TypeDefinition superType = type.getSuperType();
 		while (superType != null) {
 			// check elements first to prevent the mappable constraint to be
-			// determined unncessarily
+			// determined unnecessarily
 			if (!superType.getConstraint(XmlElements.class).getElements().isEmpty()
 					&& superType.getConstraint(MappableFlag.class).isEnabled()) {
 				return true;

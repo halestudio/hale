@@ -125,6 +125,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappingRelevantIfFeatureType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 import eu.esdihumboldt.util.Identifiers;
 import gnu.trove.TObjectIntHashMap;
@@ -180,6 +181,26 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * that have an associated global element definition.
 	 */
 	public static final String PARAM_ONLY_ELEMENTS_MAPPABLE = "onlyElementsMappable";
+
+	/**
+	 * Name of the parameter specifying which mode to use to determine the
+	 * default mapping relevant types.
+	 * 
+	 * Valid values currently are {@value #MAPPING_RELEVANT_MODE_MAIN_SCHEMA}
+	 * and {@value #MAPPING_RELEVANT_MODE_FEATURE_TYPES}.
+	 */
+	public static final String PARAM_MAPPING_RELEVANT_MODE = "relevantMode";
+
+	/**
+	 * Mapping relevant type mode that marks types from the main schema as
+	 * relevant.
+	 */
+	public static final String MAPPING_RELEVANT_MODE_MAIN_SCHEMA = "mainSchema";
+
+	/**
+	 * Mapping relevant type mode that marks GML feature types as relevant.
+	 */
+	public static final String MAPPING_RELEVANT_MODE_FEATURE_TYPES = "featureTypes";
 
 	/**
 	 * Name of the parameter specifying custom type content configuration.
@@ -435,6 +456,23 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	}
 
 	/**
+	 * Set the mode to use for determining mapping relevant types.
+	 * 
+	 * @param mode the mode name
+	 */
+	public void setMappingRelevantMode(String mode) {
+		setParameter(PARAM_MAPPING_RELEVANT_MODE, Value.of(mode));
+	}
+
+	/**
+	 * @return the mode to use for determining mapping relevant types
+	 */
+	public String getMappingRelevantMode() {
+		return getParameter(PARAM_MAPPING_RELEVANT_MODE).as(String.class,
+				MAPPING_RELEVANT_MODE_MAIN_SCHEMA);
+	}
+
+	/**
 	 * Set if only elements should be mappable. Otherwise all types with a
 	 * global type definition are mappable.
 	 * 
@@ -529,15 +567,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// set Mappable constraint (e.g. Mappable)
 					// for types with an associated element it can be determined
 					// on the spot if it is mappable
-					if (mainSchema) {
-						elementType.setConstraint(MappingRelevantFlag.get(true));
-					}
-					else {
-						// do not override with false, e.g. when a schema is
-						// loaded multiple times (e.g. because of different
-						// import locations)
-						elementType.setConstraintIfNotSet(MappingRelevantFlag.get(false));
-					}
+					configureMappingRelevant(elementType, mainSchema);
 					// XXX needed? may result in conflicts when defining
 					// mappable types manually XXX the element is also marked
 					// with the Mappable constraint, to help with cases where
@@ -666,6 +696,35 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	}
 
 	/**
+	 * Configure the mapping relevant flag for a type.
+	 * 
+	 * @param type the type to configure
+	 * @param mainSchema if the type belongs to the main schema
+	 */
+	private void configureMappingRelevant(XmlTypeDefinition type, boolean mainSchema) {
+		MappingRelevantFlag mappingRelevant = null;
+		switch (getMappingRelevantMode()) {
+		case MAPPING_RELEVANT_MODE_FEATURE_TYPES:
+			mappingRelevant = new MappingRelevantIfFeatureType(type);
+			break;
+		case MAPPING_RELEVANT_MODE_MAIN_SCHEMA:
+		default:
+			mappingRelevant = mainSchema ? MappingRelevantFlag.get(true) : null;
+			break;
+		}
+
+		if (mappingRelevant != null) {
+			type.setConstraint(mappingRelevant);
+		}
+		else {
+			// do not override with false, e.g. when a schema is
+			// loaded multiple times (e.g. because of different
+			// import locations)
+			type.setConstraintIfNotSet(MappingRelevantFlag.get(false));
+		}
+	}
+
+	/**
 	 * Add namespace prefixes from a schema to the XmlIndex.
 	 * 
 	 * @param namespaces the namespace prefixes defined in the (single) schema
@@ -773,6 +832,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			else {
 				// all global complex type definitions should be mappable
 				type.setConstraintIfNotSet(MappableFlag.ENABLED);
+				// and mapping relevant depending on the mode
+
+				configureMappingRelevant(type, mainSchema);
 			}
 
 			// set type metadata and constraints
