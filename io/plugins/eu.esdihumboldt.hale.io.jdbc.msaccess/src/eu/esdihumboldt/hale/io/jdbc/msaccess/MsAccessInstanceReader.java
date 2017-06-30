@@ -24,8 +24,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.io.jdbc.JDBCInstanceReader;
 import net.ucanaccess.jdbc.UcanaccessConnection;
@@ -37,7 +35,6 @@ import net.ucanaccess.jdbc.UcanaccessConnection;
  */
 public class MsAccessInstanceReader extends JDBCInstanceReader {
 
-	private static final ALogger log = ALoggerFactory.getLogger(MsAccessInstanceReader.class);
 	private static final String UTF8 = "UTF-8";
 
 	private URI jdbcUri;

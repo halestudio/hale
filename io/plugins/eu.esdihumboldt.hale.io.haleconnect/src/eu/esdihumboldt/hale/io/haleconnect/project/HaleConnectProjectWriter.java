@@ -100,6 +100,10 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		try (final FileOutputStream archiveStream = new FileOutputStream(projectArchive)) {
 			report = createProjectArchive(archiveStream, reporter, progress);
 		}
+		if (!report.isSuccess()) {
+			// exit when creating project archive failed
+			return report;
+		}
 
 		URI location = getTarget().getLocation();
 		Project project = getProject();

@@ -26,8 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectImages;
@@ -41,9 +39,6 @@ import eu.esdihumboldt.hale.ui.HaleUI;
  */
 public class HaleConnectExtendedPreferencePage extends FieldEditorPreferencePage
 		implements IWorkbenchPreferencePage {
-
-	private static final ALogger log = ALoggerFactory
-			.getLogger(HaleConnectExtendedPreferencePage.class);
 
 	private BooleanFieldEditor defaults;
 	private StringFieldEditor clientBasepath;

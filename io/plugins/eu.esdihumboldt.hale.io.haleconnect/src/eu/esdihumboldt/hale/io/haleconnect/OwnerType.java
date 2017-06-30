@@ -24,12 +24,12 @@ import java.text.MessageFormat;
  */
 public enum OwnerType {
 	/**
-	 * 
+	 * A user
 	 */
 	USER("user"),
 
 	/**
-	 * 
+	 * An organisation
 	 */
 	ORGANISATION("org");
 
@@ -46,6 +46,14 @@ public enum OwnerType {
 		return jsonValue;
 	}
 
+	/**
+	 * Yield the owner type for the respective string value.
+	 * 
+	 * @param jsonValue the owner string representation
+	 * @return the owner type
+	 * @throws IllegalArgumentException if there is no owner type for the given
+	 *             string representation
+	 */
 	public static OwnerType fromJsonValue(String jsonValue) {
 		switch (jsonValue) {
 		case "user":

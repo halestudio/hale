@@ -66,6 +66,7 @@ public class InstanceReferenceDecorator implements InstanceReference {
 	 * @return the object or one of its original references that implements the
 	 *         given <code>decoratorType</code>
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T findDecoration(final Object decorator, Class<T> decoratorType) {
 		if (!(decorator instanceof InstanceReferenceDecorator)) {
 			return null;
