@@ -15,15 +15,18 @@
 package eu.esdihumboldt.hale.io.haleconnect.ui.projects;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.DialogPage;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -41,11 +44,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
-import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginDialog;
 import eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginHandler;
@@ -53,6 +57,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.ImportSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractProviderSource;
 import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 
 /**
  * Provider source for hale connect projects
@@ -63,12 +68,48 @@ import eu.esdihumboldt.hale.ui.io.source.AbstractSource;
  */
 public class HaleConnectSource<P extends ImportProvider> extends AbstractProviderSource<P> {
 
+	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectSource.class);
+
 	private Label loginStatusLabel;
 	private Button loginButton;
 	private StringFieldEditor projectName;
 	private Button selectProjectButton;
 	private HaleConnectProjectConfig selectedProject;
 	private Set<IContentType> supportedTypes;
+
+	private class ProjectLoader implements IRunnableWithProgress {
+
+		public LocatableInputSupplier<InputStream> source;
+		public Throwable error;
+
+		/**
+		 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+		 */
+		@Override
+		public void run(IProgressMonitor monitor)
+				throws InvocationTargetException, InterruptedException {
+			monitor.beginTask("Load project from hale connect", IProgressMonitor.UNKNOWN);
+
+			HaleConnectService hcs = HaleUI.getServiceProvider()
+					.getService(HaleConnectService.class);
+
+			try {
+				this.source = hcs.loadProject(selectedProject.getOwner(),
+						selectedProject.getProjectId());
+			} catch (Throwable t) {
+				error = t;
+			}
+
+			monitor.done();
+		}
+
+		/**
+		 * @return true if source was successfully initialized
+		 */
+		public boolean success() {
+			return error != null && source != null;
+		}
+	}
 
 	/**
 	 * @see ImportSource#createControls(Composite)
@@ -252,12 +293,20 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 	 */
 	@Override
 	protected LocatableInputSupplier<? extends InputStream> getSource() {
-		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
+
+		ProjectLoader loader = new ProjectLoader();
 		try {
-			return hcs.loadProject(selectedProject.getOwner(), selectedProject.getProjectId());
-		} catch (HaleConnectException e) {
-			throw new RuntimeException(e.getMessage(), e);
+			ThreadProgressMonitor.runWithProgressDialog(loader, false);
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
 		}
+
+		if (!loader.success()) {
+			log.userError("Error loading project from hale connect", loader.error);
+			return null;
+		}
+
+		return loader.source;
 	}
 
 	/**
