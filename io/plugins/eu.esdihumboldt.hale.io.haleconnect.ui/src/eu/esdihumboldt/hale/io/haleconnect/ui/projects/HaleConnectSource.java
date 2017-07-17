@@ -107,7 +107,7 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 		 * @return true if source was successfully initialized
 		 */
 		public boolean success() {
-			return error != null && source != null;
+			return error == null && source != null;
 		}
 	}
 
