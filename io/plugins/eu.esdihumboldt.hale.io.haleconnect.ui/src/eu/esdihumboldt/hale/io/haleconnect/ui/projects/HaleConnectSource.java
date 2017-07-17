@@ -88,7 +88,7 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 		@Override
 		public void run(IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
-			monitor.beginTask("Load project from hale connect", IProgressMonitor.UNKNOWN);
+			monitor.beginTask("Download project from hale connect", IProgressMonitor.UNKNOWN);
 
 			HaleConnectService hcs = HaleUI.getServiceProvider()
 					.getService(HaleConnectService.class);
@@ -302,7 +302,7 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 		}
 
 		if (!loader.success()) {
-			log.userError("Error loading project from hale connect", loader.error);
+			log.userError("Unable to download project from hale connect", loader.error);
 			return null;
 		}
 
