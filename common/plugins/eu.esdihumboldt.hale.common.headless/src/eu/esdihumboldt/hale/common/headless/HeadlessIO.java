@@ -25,6 +25,7 @@ import de.fhg.igd.eclipse.util.extension.FactoryFilter;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
+import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.common.core.io.CachingImportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -65,7 +66,22 @@ public abstract class HeadlessIO {
 			ServiceProvider serviceProvider) throws IOException {
 		// TODO sort by dependencies?
 		for (IOConfiguration conf : configurations) {
-			executeConfiguration(conf, advisors, reportHandler, serviceProvider);
+			try {
+				executeConfiguration(conf, advisors, reportHandler, serviceProvider);
+			} catch (Throwable t) {
+				// In case the INSPIRE code lists cannot be loaded from
+				// inspire.ec.europa.eu, the fallback mechanism provided by
+				// INSPIRECodeListReader fails when called by hale connect's
+				// project-service. Since loading the code lists is not crucial
+				// in headless mode, just warn about it.
+				if (CodeListReader.ACTION_ID.equals(conf.getActionId())) {
+					// Don't fail on errors during code list import
+					log.warn("Error importing code lists", t);
+				}
+				else {
+					throw t;
+				}
+			}
 		}
 	}
 
