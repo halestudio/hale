@@ -49,8 +49,8 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.util.PlatformUtil;
 import eu.esdihumboldt.util.http.ProxyUtil;
-import eu.esdihumboldt.util.http.client.ClientUtil;
 import eu.esdihumboldt.util.http.client.ClientProxyUtil;
+import eu.esdihumboldt.util.http.client.ClientUtil;
 import eu.esdihumboldt.util.io.InputStreamDecorator;
 import groovy.text.SimpleTemplateEngine;
 import groovy.text.Template;
@@ -114,12 +114,13 @@ public class Request {
 	 */
 	private void init() {
 		if (cacheEnabled) {
-			File cacheDir = PlatformUtil.getInstanceLocation();
-			if (cacheDir == null) {
-				cacheDir = new File(System.getProperty("java.io.tmpdir"));
-			}
-
 			try {
+				// this will throw up in non-OSGi environments
+				File cacheDir = PlatformUtil.getInstanceLocation();
+				if (cacheDir == null) {
+					cacheDir = new File(System.getProperty("java.io.tmpdir"));
+				}
+
 				// create the configuration from the template
 				SimpleTemplateEngine engine = new SimpleTemplateEngine(
 						Request.class.getClassLoader());
@@ -148,6 +149,7 @@ public class Request {
 				HaleCacheManager.getInstance().addCache(cache);
 			} catch (Exception e) {
 				log.error("Cache initialization failed", e);
+				cacheEnabled = false;
 			}
 
 		}
@@ -201,11 +203,16 @@ public class Request {
 			return openStream(uri);
 		}
 
-		// get the current cache for web requests
-		Cache cache = HaleCacheManager.getInstance().getCache(CACHE_NAME);
 		String key = uri.toString(); // removeSpecialChars(uri.toString());
+		Cache cache = null;
+		Element element = null;
+		if (cacheEnabled) {
+			// get the current cache for web requests
+			cache = HaleCacheManager.getInstance().getCache(CACHE_NAME);
 
-		Element element = cache.get(key);
+			element = cache.get(key);
+		}
+
 		if (element == null) {
 			// if the entry does not exist fetch it from the web
 			InputStream in = openStream(uri);
@@ -216,8 +223,10 @@ public class Request {
 				in.close();
 			}
 
-			// and add it to the cache
-			cache.put(new Element(key, data));
+			if (cache != null) {
+				// and add it to the cache
+				cache.put(new Element(key, data));
+			}
 
 			return new ByteArrayInputStream(data);
 		}
