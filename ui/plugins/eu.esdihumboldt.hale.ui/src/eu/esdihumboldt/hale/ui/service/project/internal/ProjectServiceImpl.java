@@ -411,6 +411,14 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
+					URI targetLocation = provider.getTarget().getLocation();
+					if (targetLocation == null || !"file".equals(targetLocation.getScheme())) {
+						// In case of an empty or non-file target location,
+						// treat the save operation as an export and do not
+						// update the project location and the changed flag.
+						return;
+					}
+
 					projectFile = new File(provider.getTarget().getLocation());
 					projectLocation = provider.getTarget().getLocation();
 					changed = false;
