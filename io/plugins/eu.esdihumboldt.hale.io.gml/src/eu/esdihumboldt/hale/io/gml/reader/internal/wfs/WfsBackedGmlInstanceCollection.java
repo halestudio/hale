@@ -424,7 +424,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			int offset = 0;
 			if (primordialQueryParams.containsKey("STARTINDEX")) {
 				try {
-					offset = Math.min(0, Integer.parseInt(primordialQueryParams.get("STARTINDEX")));
+					offset = Math.max(0, Integer.parseInt(primordialQueryParams.get("STARTINDEX")));
 				} catch (NumberFormatException e) {
 					// Ignore if invalid
 				}
