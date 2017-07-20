@@ -424,18 +424,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			int offset = 0;
 			if (primordialQueryParams.containsKey("STARTINDEX")) {
 				try {
-					offset = Integer.parseInt(primordialQueryParams.get("STARTINDEX"));
+					offset = Math.max(0, Integer.parseInt(primordialQueryParams.get("STARTINDEX")));
 				} catch (NumberFormatException e) {
 					// Ignore if invalid
 				}
 			}
 
-			if (offset < 0) {
-				offset = 0;
+			if (isPaged() || offset > 0) {
+				// Add STARTINDEX; is 0-based
+				builder.addParameter("STARTINDEX",
+						Integer.toString(offset + totalFeaturesProcessed));
 			}
-
-			// STARTINDEX is 0-based
-			builder.addParameter("STARTINDEX", Integer.toString(offset + totalFeaturesProcessed));
 
 			final int maxFeatures;
 			if (isPaged()) {
