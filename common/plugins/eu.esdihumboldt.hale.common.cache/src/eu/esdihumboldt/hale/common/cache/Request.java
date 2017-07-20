@@ -113,10 +113,17 @@ public class Request {
 	 * Initialize the cache.
 	 */
 	private void init() {
+		File cacheDir = null;
+		try {
+			// this will throw up in non-OSGi environments
+			cacheDir = PlatformUtil.getInstanceLocation();
+		}
+		catch (Throwable t) {
+			cacheEnabled = false;
+		}
+		
 		if (cacheEnabled) {
 			try {
-				// this will throw up in non-OSGi environments
-				File cacheDir = PlatformUtil.getInstanceLocation();
 				if (cacheDir == null) {
 					cacheDir = new File(System.getProperty("java.io.tmpdir"));
 				}
@@ -149,7 +156,6 @@ public class Request {
 				HaleCacheManager.getInstance().addCache(cache);
 			} catch (Exception e) {
 				log.error("Cache initialization failed", e);
-				cacheEnabled = false;
 			}
 
 		}
