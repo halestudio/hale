@@ -26,4 +26,5 @@ class HaleConnectProjectConfig {
 	String projectId
 	String projectName
 	Owner owner
+	Long lastModified
 }
