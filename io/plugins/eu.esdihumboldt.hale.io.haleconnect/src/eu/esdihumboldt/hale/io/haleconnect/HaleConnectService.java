@@ -267,10 +267,12 @@ public interface HaleConnectService {
 	 * @param permission the permission to test, usually one of the
 	 *            <code>PERMISSION_</code> constants defined in
 	 *            {@link HaleConnectService}.
+	 * @param owner Owner of the transformation project
 	 * @param projectId Transformation project ID
 	 * @return true if the user has the given permission
 	 * @throws HaleConnectException thrown on any API exception
 	 */
-	boolean testProjectPermission(String permission, String projectId) throws HaleConnectException;
+	boolean testProjectPermission(String permission, Owner owner, String projectId)
+			throws HaleConnectException;
 
 }

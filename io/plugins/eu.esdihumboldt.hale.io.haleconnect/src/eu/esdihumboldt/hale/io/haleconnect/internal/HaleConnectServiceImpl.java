@@ -628,12 +628,15 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	@Override
-	public boolean testProjectPermission(String permission, String projectId)
+	public boolean testProjectPermission(String permission, Owner owner, String projectId)
 			throws HaleConnectException {
 		PermissionsApi api = ProjectStoreHelper.getPermissionsApi(this,
 				this.getSession().getToken());
+
+		String combinedBucketId = MessageFormat.format("{0}.{1}.{2}",
+				owner.getType().getJsonValue(), owner.getId(), projectId);
 		try {
-			api.testBucketPermission(permission, projectId);
+			api.testBucketPermission(permission, combinedBucketId);
 		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
 			if (e.getCode() == 403) {
 				// not allowed
