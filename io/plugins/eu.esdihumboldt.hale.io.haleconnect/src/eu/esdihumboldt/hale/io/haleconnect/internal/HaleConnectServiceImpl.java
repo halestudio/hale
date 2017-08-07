@@ -15,11 +15,9 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,10 +54,10 @@ import com.haleconnect.api.user.v1.model.UserInfo;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.io.haleconnect.BasePathManager;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectInputSupplier;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectOrganisationInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
@@ -301,6 +299,13 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			throw new IllegalStateException("Not logged in.");
 		}
 
+		URI location = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
+		HaleConnectProjectInfo projectInfo = getProject(owner, projectId);
+		if (projectInfo == null) {
+			throw new HaleConnectException(
+					MessageFormat.format("Project does not exist: {0}", location.toString()));
+		}
+
 		FilesApi api = ProjectStoreHelper.getFilesApi(this, this.getSession().getToken());
 		final ApiResponse<File> response;
 		try {
@@ -310,15 +315,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			throw new HaleConnectException(e.getMessage(), e);
 		}
 
-		return new DefaultInputSupplier(HaleConnectUrnBuilder.buildProjectUrn(owner, projectId)) {
-
-			@Override
-			public InputStream getInput() throws IOException {
-				return new BufferedInputStream(new FileInputStream(response.getData()));
-			}
-
-		};
-
+		return new HaleConnectInputSupplier(location, response.getData(), projectInfo);
 	}
 
 	/**
@@ -520,10 +517,11 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	private HaleConnectProjectInfo processBucketDetail(BucketDetail bucket) {
 		String author = null;
+		Long lastModified = bucket.getLastModified();
 		if (bucket.getProperties() instanceof Map<?, ?>) {
-			@SuppressWarnings("unchecked")
 			Map<Object, Object> properties = (Map<Object, Object>) bucket.getProperties();
 			if (properties.containsKey("author")) {
 				author = properties.get("author").toString();
@@ -545,7 +543,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		}
 
 		return new HaleConnectProjectInfo(bucket.getId().getTransformationproject(), user, org,
-				bucket.getName(), author);
+				bucket.getName(), author, lastModified);
 	}
 
 	private ApiCallback<Feedback> createUploadFileCallback(final SettableFuture<Boolean> future,

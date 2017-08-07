@@ -117,6 +117,7 @@ public class ChooseHaleConnectProjectWizardPage
 		configuration.setProjectId(pi.getId());
 		configuration.setProjectName(pi.getName());
 		configuration.setOwner(pi.getOwner());
+		configuration.setLastModified(pi.getLastModified());
 
 		return true;
 	}
