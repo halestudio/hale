@@ -212,8 +212,8 @@ public class ProjectResourcesUtil {
 					// handle results
 					if (report.isSuccess()) {
 						advisor.handleResults(provider);
-						result.set(report);
 					}
+					result.set(report);
 				} catch (Exception e) {
 					log.error("Error executing an I/O provider.", e);
 					result.setException(e);
