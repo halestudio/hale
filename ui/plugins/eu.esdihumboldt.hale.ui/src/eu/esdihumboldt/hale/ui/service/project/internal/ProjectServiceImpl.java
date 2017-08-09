@@ -616,14 +616,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					}
 				}
 
-				String title;
+				String projectName = getProjectInfo().getName();
+				String title = appTitle + " - " + ((projectName == null || projectName.isEmpty())
+						? "Unnamed" : projectName);
 				if (projectFile == null) {
-					title = appTitle;
+					// TODO Use scheme to discover plugin that can provide title
+					// information
+					if (projectLocation != null && "hc".equals(projectLocation.getScheme())) {
+						title += " - [hale connect]";
+					}
 				}
 				else {
-					String pn = getProjectInfo().getName();
-					title = appTitle + " - " + ((pn == null || pn.isEmpty()) ? ("Unnamed") : (pn))
-							+ " - " + projectFile;
+					title += " - " + projectFile;
 				}
 
 				if (changed) {
