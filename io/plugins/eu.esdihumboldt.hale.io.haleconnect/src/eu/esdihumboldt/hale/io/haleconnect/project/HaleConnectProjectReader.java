@@ -17,10 +17,12 @@ package eu.esdihumboldt.hale.io.haleconnect.project;
 
 import java.io.IOException;
 
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectInputSupplier;
@@ -58,6 +60,15 @@ public class HaleConnectProjectReader extends ArchiveProjectReader {
 					Value.of(source.getLastModified()));
 			getProject().getProperties().put(HALECONNECT_URN_PROPERTY,
 					Value.of(source.getLocation()));
+
+			IOConfiguration saveConfig = getProject().getSaveConfiguration();
+			saveConfig.setProviderId(HaleConnectProjectWriter.ID);
+			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_CONTENT_TYPE,
+					Value.of(HaleConnectProjectWriter.HALECONNECT_CONTENT_TYPE_ID));
+			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
+					Value.of(source.getLocation()));
+
+			getProject().setSaveConfiguration(saveConfig);
 		}
 
 		return result;
