@@ -52,6 +52,11 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectProjectWriter.class);
 
 	/**
+	 * The provider ID
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.haleconnect.uploader";
+
+	/**
 	 * Owner of the uploaded project
 	 */
 	public static final String OWNER_TYPE = "ownerType";
@@ -65,6 +70,12 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	 * Enable versioning for uploaded project
 	 */
 	public static final String ENABLE_VERSIONING = "enableVersioning";
+
+	/**
+	 * Identifier of the hale connect project content type
+	 */
+	public static final String HALECONNECT_CONTENT_TYPE_ID = "eu.esdihumboldt.hale.io.haleconnect.zip";
+
 
 	private final HaleConnectService haleConnect;
 	private URI projectUri;
