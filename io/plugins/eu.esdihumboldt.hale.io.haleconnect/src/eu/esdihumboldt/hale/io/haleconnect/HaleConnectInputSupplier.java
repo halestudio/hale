@@ -22,7 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
+import com.haleconnect.api.projectstore.v1.ApiException;
+import com.haleconnect.api.projectstore.v1.ApiResponse;
+import com.haleconnect.api.projectstore.v1.api.BucketsApi;
+import com.haleconnect.api.projectstore.v1.api.FilesApi;
+import com.haleconnect.api.projectstore.v1.model.BucketDetail;
+
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.internal.ProjectStoreHelper;
 
 /**
  * I/O supplier for projects imported from hale connect
@@ -31,8 +38,9 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
  */
 public class HaleConnectInputSupplier extends DefaultInputSupplier {
 
-	private final File projectArchive;
-	private final HaleConnectProjectInfo projectInfo;
+	private Long lastModified;
+	private final String apiKey;
+	private final BasePathResolver basePathResolver;
 
 	/**
 	 * Create the input supplier based on the
@@ -41,31 +49,59 @@ public class HaleConnectInputSupplier extends DefaultInputSupplier {
 	 * @param projectArchive The downloaded project archive
 	 * @param projectInfo Details on the hale connect project
 	 */
-	public HaleConnectInputSupplier(URI location, File projectArchive,
-			HaleConnectProjectInfo projectInfo) {
+	public HaleConnectInputSupplier(URI location, String apiKey, BasePathResolver resolver) {
 		super(location);
 
-		this.projectArchive = projectArchive;
-		this.projectInfo = projectInfo;
+		this.apiKey = apiKey;
+		this.basePathResolver = resolver;
+
 	}
 
 	@Override
 	public InputStream getInput() throws IOException {
-		return new BufferedInputStream(new FileInputStream(projectArchive));
+		Owner owner = HaleConnectUrnBuilder.extractProjectOwner(getLocation());
+		String projectId = HaleConnectUrnBuilder.extractProjectId(getLocation());
+
+		URI location = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
+
+		FilesApi api = ProjectStoreHelper.getFilesApi(basePathResolver, apiKey);
+		final ApiResponse<File> response;
+		try {
+			response = api.getProjectFilesAsZipWithHttpInfo(owner.getType().getJsonValue(),
+					owner.getId(), projectId);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
+			throw new IOException(e.getMessage(), e);
+		}
+
+		// Cache lastModified timestamp at the time of import
+		getLastModified();
+
+		return new BufferedInputStream(new FileInputStream(response.getData()));
 	}
 
 	/**
 	 * @return details on the hale connect project
 	 */
-	public HaleConnectProjectInfo getProjectInfo() {
-		return this.projectInfo;
+	public Long getLastModified() {
+		if (lastModified == null) {
+			Owner owner = HaleConnectUrnBuilder.extractProjectOwner(getLocation());
+			String projectId = HaleConnectUrnBuilder.extractProjectId(getLocation());
+			final BucketsApi api = ProjectStoreHelper.getBucketsApi(basePathResolver, apiKey);
+			final ApiResponse<BucketDetail> response;
+			try {
+				response = api.getBucketInfoWithHttpInfo(owner.getType().getJsonValue(),
+						owner.getId(), projectId);
+				lastModified = response.getData().getLastModified();
+			} catch (ApiException e) {
+				// Not fatal
+			}
+		}
+
+		return lastModified;
 	}
 
-	/**
-	 * @return the hale connect project archive
-	 */
-	public File getProjectArchive() {
-		return this.getProjectArchive();
+	public BasePathResolver getBasePathResolver() {
+		return this.basePathResolver;
 	}
 
 }

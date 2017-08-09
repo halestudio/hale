@@ -55,7 +55,7 @@ public class HaleConnectProjectReader extends ArchiveProjectReader {
 		if (getSource() instanceof HaleConnectInputSupplier) {
 			HaleConnectInputSupplier source = (HaleConnectInputSupplier) getSource();
 			getProject().getProperties().put(HALECONNECT_LAST_MODIFIED_PROPERTY,
-					Value.of(source.getProjectInfo().getLastModified()));
+					Value.of(source.getLastModified()));
 			getProject().getProperties().put(HALECONNECT_URN_PROPERTY,
 					Value.of(source.getLocation()));
 		}
