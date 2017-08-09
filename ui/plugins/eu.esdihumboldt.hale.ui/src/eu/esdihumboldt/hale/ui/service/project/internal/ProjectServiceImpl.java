@@ -702,7 +702,24 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						writer.setTarget(new NoStreamOutputSupplier(projectLocation));
 					}
 
-					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor, null);
+					ListenableFuture<IOReport> result = ProjectResourcesUtil.executeProvider(writer,
+							saveProjectAdvisor, true, null);
+
+					PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								IOReport report = result.get();
+								if (!report.isSuccess()) {
+									log.userError(
+											"The project could not be saved. Please check the report for more details.");
+								}
+							} catch (InterruptedException | ExecutionException e) {
+								log.userError("The project could not be saved.", e);
+							}
+						}
+					});
 				}
 				else {
 					log.info(
