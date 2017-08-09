@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter.ProjectWriterMode;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -411,20 +412,19 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
-					URI targetLocation = provider.getTarget().getLocation();
-					if (targetLocation == null || !"file".equals(targetLocation.getScheme())) {
-						// In case of an empty or non-file target location,
-						// treat the save operation as an export and do not
-						// update the project location and the changed flag.
+					if (provider.getLastWriterMode() == ProjectWriterMode.EXPORT) {
 						return;
 					}
 
-					projectFile = new File(provider.getTarget().getLocation());
 					projectLocation = provider.getTarget().getLocation();
+					if ("file".equals(projectLocation.getScheme())) {
+						projectFile = new File(projectLocation);
+						RecentProjectsService rfs = PlatformUI.getWorkbench()
+								.getService(RecentProjectsService.class);
+						rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
+					}
+
 					changed = false;
-					RecentProjectsService rfs = PlatformUI.getWorkbench()
-							.getService(RecentProjectsService.class);
-					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 
 					// override the project load content type
 					projectLoadContentType = provider.getContentType();

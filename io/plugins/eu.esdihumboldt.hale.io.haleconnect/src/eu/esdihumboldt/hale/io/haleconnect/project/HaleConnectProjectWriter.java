@@ -69,6 +69,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	private final HaleConnectService haleConnect;
 	private URI projectUri;
 	private URI clientAccessUrl;
+	private ProjectWriterMode writerMode = ProjectWriterMode.EXPORT;
 
 	/**
 	 * Creates a hale connect project writer
@@ -153,6 +154,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		}
 		else {
 			projectUrn = location;
+			writerMode = ProjectWriterMode.SAVE;
 		}
 
 		// save the hale connect project URN in the project properties
@@ -226,5 +228,13 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	 */
 	public URI getClientAccessUrl() {
 		return this.clientAccessUrl;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.project.impl.AbstractProjectWriter#getLastWriterMode()
+	 */
+	@Override
+	public ProjectWriterMode getLastWriterMode() {
+		return writerMode;
 	}
 }
