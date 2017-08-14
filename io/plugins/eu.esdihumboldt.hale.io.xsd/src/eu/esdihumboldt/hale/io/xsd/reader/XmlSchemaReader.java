@@ -128,6 +128,8 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiTy
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappingRelevantIfFeatureType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
 import eu.esdihumboldt.util.Identifiers;
+import eu.esdihumboldt.util.io.InputSupplier;
+import eu.esdihumboldt.util.resource.Resources;
 import gnu.trove.TObjectIntHashMap;
 
 /**
@@ -317,7 +319,21 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			schemaCol.setBaseUri(findBaseUri(location) + "/"); //$NON-NLS-1$
 		}
 
-		InputStream is = getSource().getInput();
+		InputStream is = null;
+		// try resolving using (local) Resources
+		InputSupplier<? extends InputStream> input = Resources.tryResolve(location,
+				Resources.RESOURCE_TYPE_XML_SCHEMA);
+		if (input != null) {
+			try {
+				is = input.getInput();
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+
+		if (is == null) {
+			is = getSource().getInput();
+		}
 		StreamSource ss = new StreamSource(is);
 		ss.setSystemId(location.toString());
 		xmlSchema = schemaCol.read(ss, null);
