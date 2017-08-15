@@ -55,29 +55,49 @@
          point="eu.esdihumboldt.hale.schema.valueconstraint">
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.XLinkReferenceFactory"
-            id="xsd.xlink"
+            id="xsd_xlink"
             type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.XmlAttributeFlagFactory"
-            id="xsd.attribute"
+            id="xsd_attribute"
             type="eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.RestrictionFlagFactory"
-            id="xsd.restriction"
+            id="xsd_restriction"
             type="eu.esdihumboldt.hale.io.xsd.constraint.RestrictionFlag">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.XmlMixedFlagFactory"
-            id="xsd.mixed"
+            id="xsd_mixed"
             type="eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.factory.SkipGeometryValidationFactory"
-            id="xsd.skip-geometry-validation"
+            id="xsd_skip-geometry-validation"
             type="eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.SkipGeometryValidation">
       </valueconstraint>
+      <alias
+            for="xsd_xlink"
+            id="xsd.xlink">
+      </alias>
+      <alias
+            for="xsd_attribute"
+            id="xsd.attribute">
+      </alias>
+      <alias
+            for="xsd_restriction"
+            id="xsd.restriction">
+      </alias>
+      <alias
+            for="xsd_mixed"
+            id="xsd.mixed">
+      </alias>
+      <alias
+            for="xsd_skip-geometry-validation"
+            id="xsd.skip-geometry-validation">
+      </alias>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">
