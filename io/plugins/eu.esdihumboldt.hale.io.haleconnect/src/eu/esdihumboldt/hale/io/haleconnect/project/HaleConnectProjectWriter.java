@@ -81,11 +81,10 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	 */
 	public static final String HALECONNECT_CONTENT_TYPE_ID = "eu.esdihumboldt.hale.io.haleconnect.zip";
 
-
 	private final HaleConnectService haleConnect;
 	private URI projectUri;
 	private URI clientAccessUrl;
-	private ProjectWriterMode writerMode = ProjectWriterMode.EXPORT;
+	private ProjectWriterMode writerMode = ProjectWriterMode.SAVE;
 
 	/**
 	 * Creates a hale connect project writer
