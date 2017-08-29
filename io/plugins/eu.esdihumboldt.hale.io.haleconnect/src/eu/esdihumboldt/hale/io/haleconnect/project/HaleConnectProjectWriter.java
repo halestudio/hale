@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
@@ -113,15 +112,6 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		URI location = null;
 		if (getTarget().getLocation() != null) {
 			location = getTarget().getLocation();
-		}
-		else if (getProject().getProperties().containsKey(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY)) {
-			// Use cached hale connect location as default target
-			try {
-				location = new URI(
-						getProject().getProperties().get(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY).toString());
-			} catch (URISyntaxException e) {
-				// Ignore
-			}
 		}
 
 		progress.begin("Saving project to hale connect", ProgressIndicator.UNKNOWN);
