@@ -163,37 +163,61 @@
          point="eu.esdihumboldt.hale.schema.valueconstraint">
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.AutoIncrementFlagFactory"
-            id="jdbc.autoinc"
+            id="jdbc_autoinc"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.AutoIncrementFlag">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLArrayFactory"
-            id="jdbc.array"
+            id="jdbc_array"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLArray">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLTypeFactory"
-            id="jdbc.sqltype"
+            id="jdbc_sqltype"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLType">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.DefaultValueFactory"
-            id="jdbc.default"
+            id="jdbc_default"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.DefaultValue">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.DatabaseTableFactory"
-            id="jdbc.table"
+            id="jdbc_table"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable">
       </valueconstraint>
       <valueconstraint
             factory="eu.esdihumboldt.hale.io.jdbc.constraints.factory.SQLQueryFactory"
-            id="jdbc.sqlquery"
+            id="jdbc_sqlquery"
             type="eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery">
       </valueconstraint>
       <alias
             for="geometry-metadata"
             id="jdbc.geometry">
+      </alias>
+      <alias
+            for="jdbc_autoinc"
+            id="jdbc.autoinc">
+      </alias>
+      <alias
+            for="jdbc_array"
+            id="jdbc.array">
+      </alias>
+      <alias
+            for="jdbc_sqltype"
+            id="jdbc.sqltype">
+      </alias>
+      <alias
+            for="jdbc_default"
+            id="jdbc.default">
+      </alias>
+      <alias
+            for="jdbc_table"
+            id="jdbc.table">
+      </alias>
+      <alias
+            for="jdbc_sqlquery"
+            id="jdbc.sqlquery">
       </alias>
    </extension>
 
