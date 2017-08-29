@@ -63,6 +63,11 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	public static final String ID = "eu.esdihumboldt.hale.io.haleconnect.uploader";
 
 	/**
+	 * Type name for hale connect projects
+	 */
+	public static final String PROJECT_TYPE_NAME = "hale connect project";
+
+	/**
 	 * Owner of the uploaded project
 	 */
 	public static final String OWNER_TYPE = "ownerType";
