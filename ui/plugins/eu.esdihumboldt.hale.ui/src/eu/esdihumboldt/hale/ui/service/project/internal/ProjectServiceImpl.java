@@ -426,6 +426,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 								.getService(RecentProjectsService.class);
 						rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 					}
+					else {
+						projectFile = null;
+					}
 
 					changed = false;
 
