@@ -30,6 +30,15 @@
                ref="eu.esdihumboldt.hale.io.haleconnect.zip">
          </contentType>
       </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectReader"
+            id="eu.esdihumboldt.hale.io.project.haleconnect.zip.reader"
+            name="hale connect project archive">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.haleconnect.zip">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

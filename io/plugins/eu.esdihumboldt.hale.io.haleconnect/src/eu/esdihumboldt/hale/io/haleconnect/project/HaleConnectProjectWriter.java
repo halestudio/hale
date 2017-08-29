@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
@@ -27,11 +28,13 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
@@ -94,22 +97,23 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 					MessageFormat.format("Invalid owner type: {0}", ownerTypeParameter), e);
 		}
 
-		// redirect project archive to temporary local file
-		File projectArchive = Files.createTempFile("hc-arc", ".zip").toFile();
-		IOReport report;
-		try (final FileOutputStream archiveStream = new FileOutputStream(projectArchive)) {
-			report = createProjectArchive(archiveStream, reporter, progress);
+		URI location = null;
+		if (getTarget().getLocation() != null) {
+			location = getTarget().getLocation();
 		}
-		if (!report.isSuccess()) {
-			// exit when creating project archive failed
-			return report;
+		else if (getProject().getProperties().containsKey(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY)) {
+			// Use cached hale connect location as default target
+			try {
+				location = new URI(
+						getProject().getProperties().get(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY).toString());
+			} catch (URISyntaxException e) {
+				// Ignore
+			}
 		}
 
-		URI location = getTarget().getLocation();
 		Project project = getProject();
 
-		String projectId;
-		Owner owner;
+		URI projectUrn;
 		if (location == null) {
 			// was not shared before
 			String ownerId;
@@ -129,7 +133,9 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 				throw new IOProviderConfigurationException(
 						MessageFormat.format("Unknown owner type: {0}", ownerType));
 			}
-			owner = new Owner(ownerType, ownerId);
+
+			Owner owner = new Owner(ownerType, ownerId);
+			String projectId;
 			try {
 				projectId = haleConnect.createProject(project.getName(), project.getAuthor(), owner,
 						enableVersioning);
@@ -138,16 +144,33 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			} catch (HaleConnectException e) {
 				throw new IOException(e.getMessage(), e);
 			}
+
+			projectUrn = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
 		}
 		else if (!HaleConnectUrnBuilder.isValidProjectUrn(location)) {
 			throw new IOProviderConfigurationException(
 					MessageFormat.format("Cannot write to location: {0}", location.toString()));
 		}
 		else {
-			projectId = HaleConnectUrnBuilder.extractProjectId(location);
-			owner = HaleConnectUrnBuilder.extractProjectOwner(location);
+			projectUrn = location;
 		}
 
+		// save the hale connect project URN in the project properties
+		getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY, Value.of(projectUrn.toString()));
+
+		// redirect project archive to temporary local file
+		File projectArchive = Files.createTempFile("hc-arc", ".zip").toFile();
+		IOReport report;
+		try (final FileOutputStream archiveStream = new FileOutputStream(projectArchive)) {
+			report = createProjectArchive(archiveStream, reporter, progress);
+		}
+		if (!report.isSuccess()) {
+			// exit when creating project archive failed
+			return report;
+		}
+
+		String projectId = HaleConnectUrnBuilder.extractProjectId(projectUrn);
+		Owner owner = HaleConnectUrnBuilder.extractProjectOwner(projectUrn);
 		boolean result;
 		try {
 			result = haleConnect.uploadProjectFile(projectId, owner, projectArchive, progress);
@@ -163,6 +186,20 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			// This is non-fatal
 			log.warn(MessageFormat.format(
 					"Unable to update project bucket name for project {0}: {1}",
+					HaleConnectUrnBuilder.buildProjectUrn(owner, projectId).toString(),
+					e.getMessage()), e);
+		}
+
+		try {
+			HaleConnectProjectInfo hcProjectInfo = haleConnect.getProject(owner, projectId);
+
+			if (hcProjectInfo != null) {
+				getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_LAST_MODIFIED_PROPERTY,
+						Value.of(hcProjectInfo.getLastModified()));
+			}
+		} catch (HaleConnectException e) {
+			// This is non-fatal
+			log.warn(MessageFormat.format("Unable to get lastUpdated property for project {0}: {1}",
 					HaleConnectUrnBuilder.buildProjectUrn(owner, projectId).toString(),
 					e.getMessage()), e);
 		}
@@ -190,5 +227,4 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	public URI getClientAccessUrl() {
 		return this.clientAccessUrl;
 	}
-
 }
