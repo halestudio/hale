@@ -436,9 +436,19 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 					apiCallback);
 
 			return future.get();
-		} catch (com.haleconnect.api.projectstore.v1.ApiException | InterruptedException
-				| ExecutionException e) {
-			throw new HaleConnectException(e.getMessage(), e);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e1) {
+			throw new HaleConnectException(e1.getMessage(), e1, e1.getCode(),
+					e1.getResponseHeaders());
+		} catch (ExecutionException e2) {
+			Throwable t = e2.getCause();
+			if (t instanceof HaleConnectException) {
+				throw (HaleConnectException) t;
+			}
+			else {
+				throw new HaleConnectException(t.getMessage(), t);
+			}
+		} catch (InterruptedException e3) {
+			throw new HaleConnectException(e3.getMessage(), e3);
 		}
 	}
 

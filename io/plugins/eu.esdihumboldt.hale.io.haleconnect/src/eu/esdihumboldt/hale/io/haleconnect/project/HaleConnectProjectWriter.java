@@ -203,7 +203,15 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		try {
 			result = haleConnect.uploadProjectFile(projectId, owner, projectArchive, progress);
 		} catch (HaleConnectException e) {
-			reporter.error("Error uploading hale connect project", e);
+			switch (e.getStatusCode()) {
+			case 403: /* Forbidden */
+				reporter.error(MessageFormat.format("You are not authorized to access project {0}",
+						projectId), e);
+				break;
+			default:
+				reporter.error(MessageFormat.format("Error uploading hale connect project: {0}",
+						e.getMessage()), e);
+			}
 			reporter.setSuccess(false);
 			return reporter;
 		}
