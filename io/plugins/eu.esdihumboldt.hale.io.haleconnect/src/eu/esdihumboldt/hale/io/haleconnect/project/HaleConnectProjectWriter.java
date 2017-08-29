@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableURI;
+import eu.esdihumboldt.hale.common.core.io.supplier.NoStreamOutputSupplier;
 import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
@@ -179,6 +180,8 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			projectUrn = location;
 			writerMode = ProjectWriterMode.SAVE;
 		}
+
+		this.setTarget(new NoStreamOutputSupplier(projectUrn));
 
 		// save the hale connect project URN in the project properties
 		getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY, Value.of(projectUrn.toString()));
