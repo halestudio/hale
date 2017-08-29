@@ -43,11 +43,11 @@ public class HaleConnectInputSupplier extends DefaultInputSupplier {
 	private final BasePathResolver basePathResolver;
 
 	/**
-	 * Create the input supplier based on the
+	 * Create the hale connect input supplier
 	 * 
 	 * @param location the location URI
-	 * @param projectArchive The downloaded project archive
-	 * @param projectInfo Details on the hale connect project
+	 * @param apiKey API key to access the hale connect
+	 * @param resolver {@link BasePathResolver} for building hale connect URLs
 	 */
 	public HaleConnectInputSupplier(URI location, String apiKey, BasePathResolver resolver) {
 		super(location);
@@ -61,8 +61,6 @@ public class HaleConnectInputSupplier extends DefaultInputSupplier {
 	public InputStream getInput() throws IOException {
 		Owner owner = HaleConnectUrnBuilder.extractProjectOwner(getLocation());
 		String projectId = HaleConnectUrnBuilder.extractProjectId(getLocation());
-
-		URI location = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
 
 		FilesApi api = ProjectStoreHelper.getFilesApi(basePathResolver, apiKey);
 		final ApiResponse<File> response;
@@ -100,6 +98,9 @@ public class HaleConnectInputSupplier extends DefaultInputSupplier {
 		return lastModified;
 	}
 
+	/**
+	 * @return The {@link BasePathResolver} used by this input supplier
+	 */
 	public BasePathResolver getBasePathResolver() {
 		return this.basePathResolver;
 	}
