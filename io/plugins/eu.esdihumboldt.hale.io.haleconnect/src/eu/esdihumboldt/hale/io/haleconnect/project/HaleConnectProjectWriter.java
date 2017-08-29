@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.MutableTargetIOReport;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableURI;
@@ -164,8 +165,12 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 				reporter.setSuccess(false);
 				return reporter;
 			}
-
 			projectUrn = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
+
+			if (reporter instanceof MutableTargetIOReport) {
+				((MutableTargetIOReport) reporter)
+						.setTarget(new LocatableURI(prettifyTarget(projectUrn)));
+			}
 		}
 		else if (!HaleConnectUrnBuilder.isValidProjectUrn(location)) {
 			throw new IOProviderConfigurationException(
@@ -280,19 +285,33 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		}
 
 		try {
-			BasePathResolver resolver = (BasePathResolver) haleConnect;
-
 			URI targetUri = getTarget().getLocation();
-			Owner owner = HaleConnectUrnBuilder.extractProjectOwner(targetUri);
-			String projectId = HaleConnectUrnBuilder.extractProjectId(targetUri);
-			String clientBasePath = resolver.getBasePath(HaleConnectServices.WEB_CLIENT);
-			Locatable prettifiedTarget = new LocatableURI(
-					HaleConnectUrnBuilder.buildClientAccessUrl(clientBasePath, owner, projectId));
+			Locatable prettifiedTarget = new LocatableURI(prettifyTarget(targetUri));
 
 			return new DefaultIOReporter(prettifiedTarget,
 					MessageFormat.format("{0} export", getTypeName()), true);
 		} catch (Throwable t) {
 			return super.createReporter();
 		}
+	}
+
+	private URI prettifyTarget(URI targetUri) {
+		try {
+
+			BasePathResolver resolver = (BasePathResolver) haleConnect;
+			Owner owner = HaleConnectUrnBuilder.extractProjectOwner(targetUri);
+			String projectId = HaleConnectUrnBuilder.extractProjectId(targetUri);
+			String clientBasePath = resolver.getBasePath(HaleConnectServices.WEB_CLIENT);
+
+			return HaleConnectUrnBuilder.buildClientAccessUrl(clientBasePath, owner, projectId);
+
+		} catch (Throwable t) {
+			return targetUri;
+		}
+	}
+
+	@Override
+	protected String getDefaultTypeName() {
+		return PROJECT_TYPE_NAME;
 	}
 }
