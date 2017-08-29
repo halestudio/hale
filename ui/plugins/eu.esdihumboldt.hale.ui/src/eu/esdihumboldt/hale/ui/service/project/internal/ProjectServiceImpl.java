@@ -777,17 +777,25 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void run() {
 				SaveProjectWizard wizard;
-				if (projectLoadContentType != null && projectLoadContentType.getId()
-						.equals(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
+
+				// Find all project archive content types
+				IContentType archiveContentType = HalePlatform.getContentTypeManager()
+						.getContentType(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID);
+
+				if (archiveContentType != null && projectLoadContentType != null
+						&& projectLoadContentType.isKindOf(archiveContentType)) {
 					/*
 					 * For project archives, saving the project has to be
 					 * restricted to project archives again, as the files only
 					 * reside in a temporary location.
 					 */
-					wizard = new SaveProjectWizard(projectLoadContentType);
+					List<IContentType> archiveTypes = HaleIO.findContentTypesOfKind(
+							HalePlatform.getContentTypeManager().getAllContentTypes(),
+							archiveContentType);
+					wizard = new SaveProjectWizard(archiveTypes);
 				}
 				else {
-					wizard = new SaveProjectWizard(null);
+					wizard = new SaveProjectWizard();
 				}
 				wizard.setAdvisor(saveProjectAdvisor, null);
 

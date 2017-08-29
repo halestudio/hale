@@ -19,8 +19,10 @@ package eu.esdihumboldt.hale.ui.io.project;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -44,7 +46,14 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 	 */
 	public static final String ADVISOR_PROJECT_SAVE = "project.save";
 
-	private final IContentType restrictToContentType;
+	private final Set<IContentType> restrictToContentTypes = new HashSet<>();
+
+	/**
+	 * Create a wizard that saves a project
+	 */
+	public SaveProjectWizard() {
+		this((IContentType) null);
+	}
 
 	/**
 	 * Create a wizard that saves a project
@@ -53,8 +62,20 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 	 *            restricted to, or <code>null</code>
 	 */
 	public SaveProjectWizard(IContentType restrictToContentType) {
+		this(restrictToContentType == null ? null : Collections.singleton(restrictToContentType));
+	}
+
+	/**
+	 * Create a wizard that saves a project
+	 * 
+	 * @param restrictToContentTypes the content types the save should be
+	 *            restricted to, or <code>null</code>
+	 */
+	public SaveProjectWizard(Collection<IContentType> restrictToContentTypes) {
 		super(ProjectWriter.class);
-		this.restrictToContentType = restrictToContentType;
+		if (restrictToContentTypes != null) {
+			this.restrictToContentTypes.addAll(restrictToContentTypes);
+		}
 	}
 
 	/**
@@ -69,7 +90,9 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 
 	@Override
 	public List<IOProviderDescriptor> getFactories() {
-		if (restrictToContentType == null) {
+		// Must include null check b/c this method is called from super
+		// constructors before restrictToContentTypes is initalized
+		if (restrictToContentTypes == null || restrictToContentTypes.isEmpty()) {
 			return super.getFactories();
 		}
 
@@ -81,8 +104,8 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 		Iterator<IOProviderDescriptor> it = factories.iterator();
 		while (it.hasNext()) {
 			IOProviderDescriptor pd = it.next();
-			if (pd.getSupportedTypes() == null
-					|| !pd.getSupportedTypes().contains(restrictToContentType)) {
+			if (pd.getSupportedTypes() == null || !restrictToContentTypes.stream()
+					.anyMatch(ct -> pd.getSupportedTypes().contains(ct))) {
 				it.remove();
 			}
 		}
@@ -96,12 +119,12 @@ public class SaveProjectWizard extends ExportWizard<ProjectWriter> {
 
 			@Override
 			public void setAllowedContentTypes(Collection<IContentType> contentTypes) {
-				if (restrictToContentType == null) {
+				if (restrictToContentTypes.isEmpty()) {
 					super.setAllowedContentTypes(contentTypes);
 				}
 				else {
 					// restrict to given specific content type
-					super.setAllowedContentTypes(Collections.singleton(restrictToContentType));
+					super.setAllowedContentTypes(restrictToContentTypes);
 				}
 			}
 
