@@ -519,6 +519,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						projectFile = null;
 						projectLocation = null;
 						changed = false;
+						projectLoadContentType = null;
 					}
 					updateWindowTitle();
 					notifyClean();
