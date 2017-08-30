@@ -103,6 +103,9 @@ public class HaleConnectProjectInfo {
 		}
 	}
 
+	/**
+	 * @return The last modified timestamp of this hale connect project
+	 */
 	public Long getLastModified() {
 		return lastModified;
 	}

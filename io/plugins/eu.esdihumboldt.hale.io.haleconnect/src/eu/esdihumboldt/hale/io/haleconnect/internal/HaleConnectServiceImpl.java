@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.haleconnect.api.projectstore.v1.ApiCallback;
-import com.haleconnect.api.projectstore.v1.ApiResponse;
 import com.haleconnect.api.projectstore.v1.api.BucketsApi;
 import com.haleconnect.api.projectstore.v1.api.FilesApi;
 import com.haleconnect.api.projectstore.v1.api.PermissionsApi;
@@ -306,16 +305,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 					MessageFormat.format("Project does not exist: {0}", location.toString()));
 		}
 
-		FilesApi api = ProjectStoreHelper.getFilesApi(this, this.getSession().getToken());
-		final ApiResponse<File> response;
-		try {
-			response = api.getProjectFilesAsZipWithHttpInfo(owner.getType().getJsonValue(),
-					owner.getId(), projectId);
-		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
-			throw new HaleConnectException(e.getMessage(), e);
-		}
+		return new HaleConnectInputSupplier(location, this.getSession().getToken(), this);
 
-		return new HaleConnectInputSupplier(location, response.getData(), projectInfo);
 	}
 
 	/**
@@ -445,9 +436,19 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 					apiCallback);
 
 			return future.get();
-		} catch (com.haleconnect.api.projectstore.v1.ApiException | InterruptedException
-				| ExecutionException e) {
-			throw new HaleConnectException(e.getMessage(), e);
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e1) {
+			throw new HaleConnectException(e1.getMessage(), e1, e1.getCode(),
+					e1.getResponseHeaders());
+		} catch (ExecutionException e2) {
+			Throwable t = e2.getCause();
+			if (t instanceof HaleConnectException) {
+				throw (HaleConnectException) t;
+			}
+			else {
+				throw new HaleConnectException(t.getMessage(), t);
+			}
+		} catch (InterruptedException e3) {
+			throw new HaleConnectException(e3.getMessage(), e3);
 		}
 	}
 

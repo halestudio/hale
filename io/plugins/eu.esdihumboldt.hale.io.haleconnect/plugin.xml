@@ -43,6 +43,7 @@
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
+            base-type="eu.esdihumboldt.hale.io.project.hale25.zip"
             file-extensions="hcp"
             id="eu.esdihumboldt.hale.io.haleconnect.zip"
             name="hale connect project"

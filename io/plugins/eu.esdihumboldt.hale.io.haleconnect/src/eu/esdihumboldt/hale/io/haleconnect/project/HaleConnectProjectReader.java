@@ -16,14 +16,25 @@
 package eu.esdihumboldt.hale.io.haleconnect.project;
 
 import java.io.IOException;
+import java.net.URI;
+import java.text.MessageFormat;
 
+import eu.esdihumboldt.hale.common.core.io.ExportProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectReader;
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableURI;
+import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectInputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
+import eu.esdihumboldt.hale.io.haleconnect.Owner;
 
 /**
  * Project reader that reads a project archive and adds additional information
@@ -55,11 +66,49 @@ public class HaleConnectProjectReader extends ArchiveProjectReader {
 		if (getSource() instanceof HaleConnectInputSupplier) {
 			HaleConnectInputSupplier source = (HaleConnectInputSupplier) getSource();
 			getProject().getProperties().put(HALECONNECT_LAST_MODIFIED_PROPERTY,
-					Value.of(source.getProjectInfo().getLastModified()));
+					Value.of(source.getLastModified()));
 			getProject().getProperties().put(HALECONNECT_URN_PROPERTY,
 					Value.of(source.getLocation()));
+
+			IOConfiguration saveConfig = getProject().getSaveConfiguration();
+			saveConfig.setProviderId(HaleConnectProjectWriter.ID);
+			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_CONTENT_TYPE,
+					Value.of(HaleConnectProjectWriter.HALECONNECT_CONTENT_TYPE_ID));
+			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
+					Value.of(source.getLocation()));
+
+			getProject().setSaveConfiguration(saveConfig);
 		}
 
 		return result;
 	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractImportProvider#createReporter()
+	 */
+	@Override
+	public IOReporter createReporter() {
+		if (!(getSource() instanceof HaleConnectInputSupplier)
+				|| !HaleConnectUrnBuilder.isValidProjectUrn(getSource().getLocation())) {
+			return super.createReporter();
+		}
+
+		try {
+			BasePathResolver resolver = ((HaleConnectInputSupplier) getSource())
+					.getBasePathResolver();
+
+			URI sourceUri = getSource().getLocation();
+			Owner owner = HaleConnectUrnBuilder.extractProjectOwner(sourceUri);
+			String projectId = HaleConnectUrnBuilder.extractProjectId(sourceUri);
+			String clientBasePath = resolver.getBasePath(HaleConnectServices.WEB_CLIENT);
+			Locatable prettifiedTarget = new LocatableURI(
+					HaleConnectUrnBuilder.buildClientAccessUrl(clientBasePath, owner, projectId));
+
+			return new DefaultIOReporter(prettifiedTarget,
+					MessageFormat.format("{0} import", getTypeName()), true);
+		} catch (Throwable t) {
+			return super.createReporter();
+		}
+	}
+
 }

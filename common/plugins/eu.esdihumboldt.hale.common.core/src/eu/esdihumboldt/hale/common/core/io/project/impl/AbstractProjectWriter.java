@@ -118,4 +118,21 @@ public abstract class AbstractProjectWriter extends AbstractExportProvider
 		return previousTarget;
 	}
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.project.ProjectWriter#getLastWriterMode()
+	 */
+	@Override
+	public ProjectWriterMode getLastWriterMode() {
+		// Default method to determine if a project is saved or exported. This
+		// method can be overwritten by derived if another handling is required.
+
+		URI targetLocation = this.getTarget().getLocation();
+		if (targetLocation == null || !"file".equals(targetLocation.getScheme())) {
+			return ProjectWriterMode.EXPORT;
+		}
+		else {
+			return ProjectWriterMode.SAVE;
+		}
+	}
+
 }

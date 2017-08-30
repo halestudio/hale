@@ -515,7 +515,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				upstreamModifiedWarning
 						.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 				upstreamModifiedWarning.setText(
-						"The project hale connect has been updated since it was last imported.\nChanges may be lost if you continue with this export.");
+						"The project on hale connect has been updated since it was last imported.\nChanges may be lost if you continue with this export.");
 				upstreamModifiedWarning.setVisible(true);
 			}
 			else {

@@ -20,6 +20,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -30,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -72,6 +74,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter.ProjectWriterMode;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfigurationResource;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -81,6 +84,7 @@ import eu.esdihumboldt.hale.common.core.io.project.util.LocationUpdater;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.NoStreamOutputSupplier;
 import eu.esdihumboldt.hale.common.core.service.cleanup.Cleanup;
 import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupContext;
 import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
@@ -411,20 +415,22 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void handleResults(ProjectWriter provider) {
 				synchronized (ProjectServiceImpl.this) {
-					URI targetLocation = provider.getTarget().getLocation();
-					if (targetLocation == null || !"file".equals(targetLocation.getScheme())) {
-						// In case of an empty or non-file target location,
-						// treat the save operation as an export and do not
-						// update the project location and the changed flag.
+					if (provider.getLastWriterMode() == ProjectWriterMode.EXPORT) {
 						return;
 					}
 
-					projectFile = new File(provider.getTarget().getLocation());
 					projectLocation = provider.getTarget().getLocation();
+					if ("file".equals(projectLocation.getScheme())) {
+						projectFile = new File(projectLocation);
+						RecentProjectsService rfs = PlatformUI.getWorkbench()
+								.getService(RecentProjectsService.class);
+						rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
+					}
+					else {
+						projectFile = null;
+					}
+
 					changed = false;
-					RecentProjectsService rfs = PlatformUI.getWorkbench()
-							.getService(RecentProjectsService.class);
-					rfs.add(projectFile.getAbsolutePath(), provider.getProject().getName());
 
 					// override the project load content type
 					projectLoadContentType = provider.getContentType();
@@ -614,14 +620,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					}
 				}
 
-				String title;
+				String projectName = getProjectInfo().getName();
+				String title = appTitle + " - " + ((projectName == null || projectName.isEmpty())
+						? "Unnamed" : projectName);
 				if (projectFile == null) {
-					title = appTitle;
+					// TODO Use scheme to discover plugin that can provide title
+					// information
+					if (projectLocation != null && "hc".equals(projectLocation.getScheme())) {
+						title += " - [hale connect]";
+					}
 				}
 				else {
-					String pn = getProjectInfo().getName();
-					title = appTitle + " - " + ((pn == null || pn.isEmpty()) ? ("Unnamed") : (pn))
-							+ " - " + projectFile;
+					title += " - " + projectFile;
 				}
 
 				if (changed) {
@@ -647,7 +657,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			saveConfig = main.getSaveConfiguration();
 		}
 
-		if (projectFile != null) {
+		if (projectFile != null || canSaveTo(projectLocation)) {
 			Collection<IOProviderDescriptor> providers = HaleIO
 					.getProviderFactories(ProjectWriter.class);
 
@@ -689,9 +699,31 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					writer.loadConfiguration(saveConfig.getProviderConfiguration());
 					// overwrite target with projectFile (as it may have been
 					// moved externally)
-					writer.setTarget(new FileIOSupplier(projectFile));
+					if (projectFile != null) {
+						writer.setTarget(new FileIOSupplier(projectFile));
+					}
+					else {
+						writer.setTarget(new NoStreamOutputSupplier(projectLocation));
+					}
 
-					ProjectResourcesUtil.executeProvider(writer, saveProjectAdvisor, null);
+					ListenableFuture<IOReport> result = ProjectResourcesUtil.executeProvider(writer,
+							saveProjectAdvisor, true, null);
+
+					PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							try {
+								IOReport report = result.get();
+								if (!report.isSuccess()) {
+									log.userError(
+											"The project could not be saved. Please check the report for more details.");
+								}
+							} catch (InterruptedException | ExecutionException e) {
+								log.userError("The project could not be saved.", e);
+							}
+						}
+					});
 				}
 				else {
 					log.info(
@@ -700,7 +732,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					saveAs();
 				}
 			}
-			else {
+			else if (projectFile != null) {
 				// use I/O provider and content type mechanisms to try saving
 				// the project file
 				ProjectWriter writer = HaleIO.findIOProvider(ProjectWriter.class,
@@ -714,10 +746,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					saveAs();
 				}
 			}
+			else {
+				saveAs();
+			}
 		}
 		else {
 			saveAs();
 		}
+	}
+
+	private boolean canSaveTo(URI target) {
+		// TODO Discover plugin responsible for the target scheme and delegate
+		return "hc".equals(target.getScheme());
 	}
 
 	/**
@@ -738,17 +778,24 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			@Override
 			public void run() {
 				SaveProjectWizard wizard;
-				if (projectLoadContentType != null && projectLoadContentType.getId()
-						.equals(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID)) {
+
+				IContentType archiveContentType = HalePlatform.getContentTypeManager()
+						.getContentType(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID);
+
+				if (archiveContentType != null && projectLoadContentType != null
+						&& projectLoadContentType.isKindOf(archiveContentType)) {
 					/*
 					 * For project archives, saving the project has to be
 					 * restricted to project archives again, as the files only
 					 * reside in a temporary location.
 					 */
-					wizard = new SaveProjectWizard(projectLoadContentType);
+					List<IContentType> archiveTypes = HaleIO.findContentTypesOfKind(
+							HalePlatform.getContentTypeManager().getAllContentTypes(),
+							archiveContentType);
+					wizard = new SaveProjectWizard(archiveTypes);
 				}
 				else {
-					wizard = new SaveProjectWizard(null);
+					wizard = new SaveProjectWizard();
 				}
 				wizard.setAdvisor(saveProjectAdvisor, null);
 
@@ -811,7 +858,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			currentLocation = projectLocation;
 		}
 
-		if (currentLocation != null) {
+		if (currentLocation != null
+				&& Arrays.asList("file", "http", "https").contains(currentLocation.getScheme())) {
 			// use I/O provider and content type mechanisms to enable loading of
 			// a project file
 			ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class,

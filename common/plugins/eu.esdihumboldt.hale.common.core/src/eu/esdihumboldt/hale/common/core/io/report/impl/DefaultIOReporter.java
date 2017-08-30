@@ -20,6 +20,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import eu.esdihumboldt.hale.common.core.io.report.IOMessage;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.MutableTargetIOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 
@@ -30,9 +31,10 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public class DefaultIOReporter extends DefaultReporter<IOMessage> implements IOReporter {
+public class DefaultIOReporter extends DefaultReporter<IOMessage>
+		implements IOReporter, MutableTargetIOReport {
 
-	private final Locatable target;
+	private Locatable target;
 
 	/**
 	 * Create an empty I/O report. It is set to not successful by default. But
@@ -57,5 +59,16 @@ public class DefaultIOReporter extends DefaultReporter<IOMessage> implements IOR
 	@Override
 	public Locatable getTarget() {
 		return target;
+	}
+
+	/**
+	 * Update the target, e.g. if the target URL is not known at the time the
+	 * IOReporter is created.
+	 * 
+	 * @param target Updated target
+	 */
+	@Override
+	public void setTarget(Locatable target) {
+		this.target = target;
 	}
 }
