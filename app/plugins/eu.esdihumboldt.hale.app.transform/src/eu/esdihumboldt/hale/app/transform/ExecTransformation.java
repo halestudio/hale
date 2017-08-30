@@ -461,7 +461,6 @@ public class ExecTransformation implements ConsoleConstants {
 			info("Transformation completed. Please check the reports for more details.");
 		}
 		else {
-			fail("Transformation failed, please check the reports for details.");
 			// Job threads might still be active, wait a moment to allow them to
 			// complete and file their report (otherwise error may get lost)
 			try {
@@ -469,6 +468,7 @@ public class ExecTransformation implements ConsoleConstants {
 			} catch (Throwable e) {
 				// ignore
 			}
+			throw fail("Transformation failed, please check the reports for details.");
 		}
 	}
 

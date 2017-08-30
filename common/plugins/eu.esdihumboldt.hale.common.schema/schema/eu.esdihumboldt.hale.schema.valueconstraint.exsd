@@ -59,6 +59,8 @@
             <annotation>
                <documentation>
                   Unique identifier representing the constraint type and factory. Used for resolving a factory and recreating a constraint from a value.
+
+Do not use dots inside the identifier for compatibility reasons.
                </documentation>
             </annotation>
          </attribute>
