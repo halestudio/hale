@@ -778,7 +778,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			public void run() {
 				SaveProjectWizard wizard;
 
-				// Find all project archive content types
 				IContentType archiveContentType = HalePlatform.getContentTypeManager()
 						.getContentType(ProjectIO.PROJECT_ARCHIVE_CONTENT_TYPE_ID);
 
