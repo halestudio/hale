@@ -370,6 +370,11 @@
             forArray="false"
             implementation="eu.esdihumboldt.cst.functions.groovy.internal.AsMultiValueMetaClass">
       </metaClass>
+      <metaClass
+            for="eu.esdihumboldt.cst.functions.groovy.helper.HelperFunctions"
+            forArray="false"
+            implementation="eu.esdihumboldt.cst.functions.groovy.internal.GroovyObjectMetaClass">
+      </metaClass>
    </extension>
    <extension
          point="eu.esdihumboldt.cst.functions.groovy.helper">
