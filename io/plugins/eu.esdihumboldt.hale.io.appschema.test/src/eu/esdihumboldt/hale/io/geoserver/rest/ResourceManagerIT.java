@@ -31,7 +31,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -47,7 +46,6 @@ import eu.esdihumboldt.hale.io.geoserver.FeatureType;
 import eu.esdihumboldt.hale.io.geoserver.Namespace;
 import eu.esdihumboldt.hale.io.geoserver.ResourceBuilder;
 
-@Ignore
 @SuppressWarnings("javadoc")
 public class ResourceManagerIT extends AbstractDockerTest {
 
