@@ -98,6 +98,11 @@
             for="xsd_skip-geometry-validation"
             id="xsd.skip-geometry-validation">
       </alias>
+      <valueconstraint
+            factory="eu.esdihumboldt.hale.io.xsd.constraint.factory.XmlElementsFactory"
+            id="xsd_elements"
+            type="eu.esdihumboldt.hale.io.xsd.constraint.XmlElements">
+      </valueconstraint>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">

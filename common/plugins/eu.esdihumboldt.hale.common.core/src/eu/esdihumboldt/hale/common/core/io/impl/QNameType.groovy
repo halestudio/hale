@@ -1,3 +1,5 @@
+
+
 /*
  * Copyright (c) 2014 Data Harmonisation Panel
  * 
@@ -15,22 +17,26 @@
 
 package eu.esdihumboldt.hale.common.core.io.impl;
 
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.namespace.QName
+import javax.xml.parsers.DocumentBuilderFactory
+import javax.xml.parsers.ParserConfigurationException
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 
-import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
-import eu.esdihumboldt.hale.common.core.io.HaleIO;
+import eu.esdihumboldt.hale.common.core.io.ComplexValueType
+import eu.esdihumboldt.hale.common.core.io.HaleIO
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 /**
  * XML serialization for {@link QName}.
  * 
  * @author Simon Templer
  */
-public class QNameType implements ComplexValueType<QName, Void> {
+@CompileStatic
+public class QNameType extends AbstractGroovyValueJson<QName, Void>
+implements ComplexValueType<QName, Void> {
 
 	/**
 	 * The name of the attribute holding the namespace.
@@ -77,5 +83,33 @@ public class QNameType implements ComplexValueType<QName, Void> {
 	@Override
 	public Class<Void> getContextType() {
 		return Void.class;
+	}
+
+	@Override
+	@CompileStatic(TypeCheckingMode.SKIP)
+	public QName fromJson(Object json, Void context) {
+		// can be a string (no namespace) or a map
+		if (!(json instanceof Map)) {
+			new QName(json.toString())
+		}
+		else {
+			def ns = json[ATTRIBUTE_NS]
+			if (ns) {
+				new QName(ns, json.name)
+			}
+			else {
+				new QName(json.name)
+			}
+		}
+	}
+
+	@Override
+	public Object toJson(QName value) {
+		if (value.getNamespaceURI()) {
+			[name: value.localPart, (ATTRIBUTE_NS): value.namespaceURI]
+		}
+		else {
+			value.localPart
+		}
 	}
 }
