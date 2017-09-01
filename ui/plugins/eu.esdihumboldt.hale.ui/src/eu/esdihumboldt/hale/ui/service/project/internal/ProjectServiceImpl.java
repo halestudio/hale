@@ -757,6 +757,10 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private boolean canSaveTo(URI target) {
 		// TODO Discover plugin responsible for the target scheme and delegate
+		if (target == null) {
+			return false;
+		}
+
 		return "hc".equals(target.getScheme());
 	}
 
