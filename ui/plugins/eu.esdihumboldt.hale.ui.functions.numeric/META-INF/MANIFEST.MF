@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI for CST numeric functions
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.numeric;singleton:=true
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.common.align,
  eu.esdihumboldt.hale.ui,

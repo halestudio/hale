@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Styled Map View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.styledmap;singleton:=true
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.styledmap.internal.StyledMapBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

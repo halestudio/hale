@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SVG Based HTML Documentation
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.html.svg;singleton:=true
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="2.1.5",

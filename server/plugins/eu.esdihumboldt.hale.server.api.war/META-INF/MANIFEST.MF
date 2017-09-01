@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server REST API
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.api.war
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Web-ContextPath: /api
 Webapp-Name: Service API
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

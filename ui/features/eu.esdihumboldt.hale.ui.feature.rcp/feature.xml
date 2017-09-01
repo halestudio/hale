@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.rcp"
       label="RCP base feature"
-      version="3.4.0.qualifier">
+      version="3.3.1.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.

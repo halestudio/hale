@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server OpenID authentication
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.security.openid
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Fragment-Host: eu.esdihumboldt.hale.server.security.extender
 Bundle-Vendor: Data Harmonisation Panel
 Import-Package: eu.esdihumboldt.hale.server.security.extender,

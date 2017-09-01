@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hale UI Service Implementer
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.service.helper
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: wetransform GmbH
 Import-Package: eu.esdihumboldt.hale.common.align.model,
