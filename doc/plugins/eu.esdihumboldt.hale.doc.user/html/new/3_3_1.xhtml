@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.3.1?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.3.1?</h1>
+
+	<ul>
+		<li>Save transformation projects directly to <em>hale connect</em></li>
+		<li>Partition GML output into multiple files</li>
+		<li>Support for PostgreSQL Materialized Views</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#331"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>The majority of the new features and improvements were made
+		possible through our contracts with more than 20 customers. We'd like
+		to thank you all for your support!</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_3_1">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_3_1_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="save-to-hc">
+				<td class="title">Save transformation projects directly to <em>hale connect</em></td>
+				<td class="content">
+					<p>
+						<em>hale studio</em> extends its integration with the online
+						collaboration platform  by allowing to save projects directly to
+						<i>hale connect</i>. This allows for a true <i>online</i> workflow
+						where your changes to a project that was saved to or loaded from
+						<i>hale connect</i> will be saved directly to the remote project
+						without the need of another export. You can switch back to an
+						<i>offline</i> workflow at any time by saving your project to 
+						a local file on your computer. 
+					</p>
+					<p>
+						<img src="3_3_1_images/save-to-hc.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="gml-partitioning">
+				<td class="title">Partition GML output into multiple files</td>
+				<td class="content">
+					<p>
+						When exporting data as GML, the exported data can now be partitioned
+						into multiple output files. The number of features per file can
+						be configured during the export.
+					</p>
+					<p>
+						<img src="3_3_1_images/gml-partitioning.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="pg-materialized-view">
+				<td class="title">Support for PostgreSQL Materialized Views</td>
+				<td class="content">
+					<p>
+						The PostgreSQL schema import now supports loading materialized
+						views alongside tables and regular views.
+					</p>
+					<p>
+						Thanks to the <i>Bundesanstalt für Wasserbau</i> for funding this work.
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
