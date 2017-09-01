@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Instance Graphs
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.graph
-Bundle-Version: 3.3.0.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: com.tinkerpop.blueprints.core;bundle-version="2.5.0",

@@ -201,4 +201,11 @@ public abstract class AbstractGroupPropertyDecorator implements GroupPropertyDef
 		return propertyGroup.toString();
 	}
 
+	/**
+	 * @return internal property group definition
+	 */
+	public GroupPropertyDefinition getDecorated() {
+		return propertyGroup;
+	}
+
 }

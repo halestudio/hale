@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -144,6 +145,44 @@ public abstract class HaleIO {
 					result.add(factory);
 					break;
 				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Find all content types that are of the same kind as the given content
+	 * type.
+	 * 
+	 * @param candidates Content types to search
+	 * @param kind Parent content type
+	 * @return List of matches, including at least <code>kind</code>
+	 */
+	public static List<IContentType> findContentTypesOfKind(IContentType[] candidates,
+			IContentType kind) {
+
+		return findContentTypesOfKind(Arrays.asList(candidates), kind);
+	}
+
+	/**
+	 * Find all content types that are of the same kind as the given content
+	 * type.
+	 * 
+	 * @param candidates Content types to search
+	 * @param kind Parent content type
+	 * @return List of matches, including at least <code>kind</code>
+	 */
+	public static List<IContentType> findContentTypesOfKind(Collection<IContentType> candidates,
+			IContentType kind) {
+		List<IContentType> result = new ArrayList<>();
+		if (candidates == null || kind == null) {
+			return result;
+		}
+
+		for (IContentType candidate : candidates) {
+			if (candidate.isKindOf(kind)) {
+				result.add(candidate);
 			}
 		}
 

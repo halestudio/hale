@@ -28,7 +28,10 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
  */
 public class SubstitutionProperty extends DefaultPropertyDefinition {
 
-	private final DefaultPropertyDefinition originialProperty;
+	/**
+	 * original property that is substituted
+	 */
+	public final DefaultPropertyDefinition originialProperty;
 
 	/**
 	 * Constructor

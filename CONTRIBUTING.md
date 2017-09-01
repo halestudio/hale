@@ -44,7 +44,7 @@ There may be no two projects that have classes in the same package (with OSGi bu
 
 ### Tests
 
-Tests are implemented using *JUnit*. Tests for classes in a bundle are not added to the bundle itself, but to a separate bundle for fragment that adds the suffix `.test` to the name of the original bundle.
+Tests are implemented using *JUnit*. Tests for classes in a bundle are not added to the bundle itself, but to a separate bundle or fragment that adds the suffix `.test` to the name of the original bundle.
 
 Names of test classes by convention end with `Test`, or with `IT` if they are integration tests.
 

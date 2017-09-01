@@ -27,6 +27,7 @@ public class HaleConnectProjectInfo {
 	private final HaleConnectOrganisationInfo organisation;
 	private final String name;
 	private final String author;
+	private final Long lastModified;
 
 	/**
 	 * Create the project info
@@ -38,14 +39,18 @@ public class HaleConnectProjectInfo {
 	 *            organisation, otherwise <code>null</code>)
 	 * @param name Project name
 	 * @param author Project author
+	 * @param lastModified The timestamp when the project was last modified on
+	 *            hale connect
 	 */
 	public HaleConnectProjectInfo(String id, HaleConnectUserInfo user,
-			HaleConnectOrganisationInfo organisation, String name, String author) {
+			HaleConnectOrganisationInfo organisation, String name, String author,
+			Long lastModified) {
 		this.id = id;
 		this.user = user;
 		this.organisation = organisation;
 		this.name = name;
 		this.author = author;
+		this.lastModified = lastModified;
 	}
 
 	/**
@@ -96,5 +101,12 @@ public class HaleConnectProjectInfo {
 		else {
 			throw new IllegalStateException("Unknown owner type");
 		}
+	}
+
+	/**
+	 * @return The last modified timestamp of this hale connect project
+	 */
+	public Long getLastModified() {
+		return lastModified;
 	}
 }

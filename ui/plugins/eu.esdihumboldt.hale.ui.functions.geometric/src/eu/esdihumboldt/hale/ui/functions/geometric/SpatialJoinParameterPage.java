@@ -62,8 +62,6 @@ import org.eclipse.ui.dialogs.PatternFilter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinFunction;
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameter;
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameter.SpatialJoinCondition;
@@ -101,8 +99,6 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * @author Florian Esser
  */
 public class SpatialJoinParameterPage extends AbstractParameterPage implements SpatialJoinFunction {
-
-	private static final ALogger log = ALoggerFactory.getLogger(SpatialJoinParameterPage.class);
 
 	private final List<ConditionPage> pages = new ArrayList<ConditionPage>();
 	private List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>();

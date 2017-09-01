@@ -4,6 +4,29 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.3.1]
+
+### Fixed
+
+- Opening projects that have MS Access database resources
+- `IndexOutOfBoundsException` when calling Groovy helper functions
+- Do not add `STARTINDEX` parameter to non-paginated WFS `GetFeature` requests
+- Loading resources in headless mode from URL when remote server responds with a redirect
+- Loading a project in headless mode no longer fails in cases where code lists cannot be imported
+- Loading INSPIRE schemas from local resources when online version is not available
+- New projects could be saved only as a project archive if the last project loaded was an archive
+
+### Added
+
+- Support for saving changes directly to hale connect
+- Support for partitioning GML output to multiple files
+- Support for table type `MATERIALIZED VIEW` when importing a PostgreSQL database schema
+- Check for remote changes when sharing project to hale connect  
+- Support for `Double` columns for the CSV reader
+- GML reader parameters `ignoreMappingRelevant` and `suppressParsingGeometry`
+- Property constraint `CodeListAssociation`
+- Type constraint `MappingRelevantIfFeatureType`
+
 ## [3.3.0]
 
 ### Added
@@ -164,7 +187,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.3.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.3.1...HEAD
+[3.3.1]: https://github.com/halestudio/hale/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/halestudio/hale/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/halestudio/hale/compare/3.1.0...3.2.0
 [3.1.0]: https://github.com/halestudio/hale/compare/3.0.0...3.1.0

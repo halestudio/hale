@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="GemeindeType">
+    	<sequence>
+    		<element name="name" type="string"></element>
+    		<element name="schluessel" maxOccurs="1" minOccurs="1">
+    			<complexType>
+    				<sequence>
+    					<element name="land" type="string"></element>
+    					<element name="bezirk" type="string"></element>
+    					<element name="gemeinde" type="string"></element>
+    				</sequence>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="int"></attribute>
+    </complexType>
+    
+    <element name="gemeinde" type="tns:GemeindeType"></element>
+    
+    <complexType name="FlaecheType">
+    	<sequence>
+    		<element name="flaeche" type="double"></element>
+    		<element name="schluessel" maxOccurs="1" minOccurs="1">
+    			<complexType>
+    				<sequence>
+    					<element name="land" type="string"></element>
+    					<element name="bezirk" type="string"></element>
+    					<element name="gemeinde" type="string"></element>
+    					<element name="teil" type="string" minOccurs="0"></element>
+    				</sequence>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="int"></attribute>
+    </complexType>
+
+    <element name="flaeche" type="tns:FlaecheType"></element>
+    
+    <complexType name="CollectionType">
+    	<choice maxOccurs="unbounded" minOccurs="0">
+    		<element ref="tns:gemeinde"></element>
+    		<element ref="tns:flaeche"></element>
+    	</choice>
+    </complexType>
+</schema>

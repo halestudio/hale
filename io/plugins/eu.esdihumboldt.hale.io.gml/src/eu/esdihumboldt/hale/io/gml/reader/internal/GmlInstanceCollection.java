@@ -252,7 +252,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 			}
 
 			if (accept) {
-				return def.getConstraint(MappingRelevantFlag.class).isEnabled();
+				return ignoreMappingRelevant
+						|| def.getConstraint(MappingRelevantFlag.class).isEnabled();
 			}
 			else {
 				return false;
@@ -665,6 +666,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final boolean ignoreNamespaces;
 	private final IOProvider ioProvider;
 
+	private final boolean ignoreMappingRelevant;
+
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
 	 * 
@@ -695,6 +698,13 @@ public class GmlInstanceCollection implements InstanceCollection {
 		this.ignoreNamespaces = ignoreNamespaces;
 		this.crsProvider = crsProvider;
 		this.ioProvider = provider;
+
+		// extract additional settings from I/O provider
+
+		this.ignoreMappingRelevant = provider
+				.getParameter(StreamGmlReader.PARAM_IGNORE_MAPPING_RELEVANT)
+				.as(Boolean.class, false);
+
 	}
 
 	/**

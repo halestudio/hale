@@ -3,10 +3,10 @@ package eu.esdihumboldt.hale.io.jdbc.msaccess;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
 
 /**
@@ -16,8 +16,7 @@ import eu.esdihumboldt.hale.io.jdbc.extension.URIBuilder;
  */
 public class MsAccessURIBuilder implements URIBuilder {
 
-	private static final ALogger log = ALoggerFactory.getLogger(MsAccessURIBuilder.class);
-	private static final String ENC = "UTF-8";
+	private static final String UTF8 = "UTF-8";
 	// UCanAccess Driver;
 	private static final String DRIVER = "jdbc:ucanaccess://";
 
@@ -34,23 +33,43 @@ public class MsAccessURIBuilder implements URIBuilder {
 	}
 
 	/**
-	 * @param jdbcUri the JDBC URI
+	 * @param uri the JDBC URI or a file URI pointing to the database file
 	 * @return the file system path to the MsAccess database
 	 */
-	public static String getDatabase(URI jdbcUri) {
-		if (jdbcUri == null) {
-			throw new IllegalArgumentException("JDBC URI must be provided");
+	public static String getDatabase(URI uri) {
+		if (uri == null) {
+			throw new IllegalArgumentException("MS Access JDBC URI must be provided");
 		}
 
-		return jdbcUri.toString().substring(DRIVER.length());
+		if ("jdbc".equals(uri.getScheme())) {
+			String encodedPath = uri.toString().substring(DRIVER.length());
+			if (encodedPath.contains(";")) {
+				encodedPath = encodedPath.substring(0, encodedPath.indexOf(';'));
+			}
+
+			try {
+				return URLDecoder.decode(encodedPath, UTF8);
+			} catch (UnsupportedEncodingException e) {
+				throw new RuntimeException(
+						MessageFormat.format("Encoding {0} is not supported", UTF8));
+			}
+		}
+		else if ("file".equals(uri.getScheme())) {
+			return new File(uri).getAbsolutePath();
+		}
+		else {
+			throw new IllegalArgumentException(MessageFormat.format(
+					"Unsupported source URI scheme \"{0}\". Only \"file\" and \"jdbc\" allowed",
+					uri));
+		}
+
 	}
 
 	private String getEncodedPath(String path) {
 		try {
-			return URLEncoder.encode(path, ENC);
+			return URLEncoder.encode(path, UTF8);
 		} catch (UnsupportedEncodingException e) {
-			log.error(ENC + "! that's supposed to be an encoding", e);
-			return path;
+			throw new RuntimeException(MessageFormat.format("Encoding {0} is not supported", UTF8));
 		}
 	}
 }

@@ -19,6 +19,11 @@
             id="java.lang.Float"
             name="Float">
       </propertyType>
+      <propertyType
+            class="eu.esdihumboldt.hale.io.csv.propertytype.PropertyDouble"
+            id="java.lang.Double"
+            name="Double">
+      </propertyType>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">

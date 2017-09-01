@@ -49,7 +49,7 @@ public abstract class HaleStoreInstancesJob extends StoreInstancesJob {
 	public HaleStoreInstancesJob(String name, LocalOrientDB database,
 			InstanceCollection instances) {
 		super(name, database, instances, HaleUI.getServiceProvider(),
-				DefaultReportHandler.getInstance());
+				DefaultReportHandler.getInstance(), true);
 
 		ps = PlatformUI.getWorkbench().getService(PopulationService.class);
 		metaworker = new MetadataWorker();

@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:tns="http://www.example.org/t2/" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/join_multi_cond_1/t2.xsd">
+  <tns:gemeinde id="1">
+    <name>Hüttenberg</name>
+    <flaeche>15.0</flaeche>
+    <teile>3</teile>
+    <schluessel>
+      <land>0X</land>
+      <bezirk>2</bezirk>
+      <gemeinde>6000</gemeinde>
+    </schluessel>
+  </tns:gemeinde>
+  <tns:gemeinde id="2">
+    <name>Darmstadt</name>
+    <flaeche>23.0</flaeche>
+    <teile>1</teile>
+    <schluessel>
+      <land>0X</land>
+      <bezirk>2</bezirk>
+      <gemeinde>4000</gemeinde>
+    </schluessel>
+  </tns:gemeinde>
+</tns:collection>

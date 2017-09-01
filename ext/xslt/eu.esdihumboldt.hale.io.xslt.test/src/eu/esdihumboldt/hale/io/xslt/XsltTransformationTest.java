@@ -29,8 +29,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import net.sf.saxon.TransformerFactoryImpl;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -47,6 +45,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import net.sf.saxon.TransformerFactoryImpl;
 
 /**
  * Transformation tests based on {@link XsltExport}.
@@ -158,6 +157,14 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 
 	@Ignore
 	// XXX XSLT not yet in a state for this to work
+	@Test
+	@Override
+	public void testJoinMultiCond_1() throws Exception {
+		super.testJoinMultiCond_1();
+	}
+
+	@Ignore
+	// XXX XSLT not yet in a state for this to work
 	@Override
 	@Test
 	public void testSimpleMerge() throws Exception {
@@ -245,8 +252,8 @@ public class XsltTransformationTest extends DefaultTransformationTest {
 			File xsltFile, File targetFile) throws IOException, TransformerException {
 		StreamSource source;
 		if (sourceDataInput.getLocation() != null) {
-			source = new StreamSource(sourceDataInput.getInput(), sourceDataInput.getLocation()
-					.toString());
+			source = new StreamSource(sourceDataInput.getInput(),
+					sourceDataInput.getLocation().toString());
 		}
 		else {
 			source = new StreamSource(sourceDataInput.getInput());
