@@ -762,16 +762,35 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			// write schema locations
 			StringBuffer locations = new StringBuffer();
-			locations.append(targetIndex.getNamespace());
-			locations.append(" "); //$NON-NLS-1$
-			locations.append(targetIndex.getLocation().toString());
-			for (Entry<String, Locatable> schema : additionalSchemas.entrySet()) {
+			String noNamespaceLocation = null;
+			if (targetIndex.getNamespace() != null && !targetIndex.getNamespace().isEmpty()) {
+				locations.append(targetIndex.getNamespace());
 				locations.append(" "); //$NON-NLS-1$
-				locations.append(schema.getKey());
-				locations.append(" "); //$NON-NLS-1$
-				locations.append(schema.getValue().getLocation().toString());
+				locations.append(targetIndex.getLocation().toString());
 			}
-			writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
+			else {
+				noNamespaceLocation = targetIndex.getLocation().toString();
+			}
+			for (Entry<String, Locatable> schema : additionalSchemas.entrySet()) {
+				if (schema.getKey() != null && !schema.getKey().isEmpty()) {
+					if (locations.length() > 0) {
+						locations.append(" "); //$NON-NLS-1$
+					}
+					locations.append(schema.getKey());
+					locations.append(" "); //$NON-NLS-1$
+					locations.append(schema.getValue().getLocation().toString());
+				}
+				else {
+					noNamespaceLocation = schema.getValue().getLocation().toString();
+				}
+			}
+			if (locations.length() > 0) {
+				writer.writeAttribute(SCHEMA_INSTANCE_NS, "schemaLocation", locations.toString()); //$NON-NLS-1$
+			}
+			if (noNamespaceLocation != null) {
+				writer.writeAttribute(SCHEMA_INSTANCE_NS, "noNamespaceSchemaLocation", //$NON-NLS-1$
+						noNamespaceLocation);
+			}
 
 			writeAdditionalElements(writer, containerDefinition, reporter);
 
