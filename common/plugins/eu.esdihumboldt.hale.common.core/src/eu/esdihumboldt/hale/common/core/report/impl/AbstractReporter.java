@@ -120,8 +120,8 @@ public abstract class AbstractReporter<T extends Message> implements Reporter<T>
 	 * @return the report summary
 	 */
 	protected String getSuccessSummary() {
-		if (getErrors().isEmpty()) {
-			if (getWarnings().isEmpty()) {
+		if (!hasErrors()) {
+			if (!hasWarnings()) {
 				return "Finished successfully";
 			}
 			else {
