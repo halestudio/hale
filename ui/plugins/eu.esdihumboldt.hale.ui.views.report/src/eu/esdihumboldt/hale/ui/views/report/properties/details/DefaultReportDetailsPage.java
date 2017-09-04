@@ -17,6 +17,8 @@
 package eu.esdihumboldt.hale.ui.views.report.properties.details;
 
 import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.eclipse.core.runtime.IStatus;
@@ -41,6 +43,7 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
+import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.ui.util.dialog.StackTraceErrorDialog;
 import eu.esdihumboldt.hale.ui.views.report.properties.details.extension.CustomReportDetailsPage;
 import eu.esdihumboldt.hale.ui.views.report.properties.details.tree.ReportTreeContentProvider;
@@ -56,6 +59,8 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 	private TreeViewer treeViewer;
 	private MessageType messageType;
 
+	private int more = 0;
+
 	/**
 	 * @see CustomReportDetailsPage#createControls(Composite)
 	 */
@@ -68,8 +73,8 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		PatternFilter filter = new PatternFilter();
 
 		// create FilteredTree
-		FilteredTree filteredTree = new FilteredTree(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL, filter, true);
+		FilteredTree filteredTree = new FilteredTree(parent,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL, filter, true);
 
 		treeViewer = filteredTree.getViewer();
 
@@ -136,6 +141,11 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		return filteredTree;
 	}
 
+	@Override
+	public void setMore(int more) {
+		this.more = more;
+	}
+
 	/**
 	 * Called when a double click on a message occurred. By default shows a
 	 * stack trace if available.
@@ -153,7 +163,29 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 	@Override
 	public void setInput(Collection<? extends Message> messages, MessageType type) {
 		this.messageType = type;
-		treeViewer.setInput(messages);
+		if (more > 0) {
+			Collection<Message> messageList = new ArrayList<>(messages);
+
+			String message;
+			switch (messageType) {
+			case Error:
+				message = MessageFormat.format("{0} more errors that are not listed", more);
+				break;
+			case Warning:
+				message = MessageFormat.format("{0} more warnings that are not listed", more);
+				break;
+			case Information:
+			default:
+				message = MessageFormat.format("{0} more messages that are not listed", more);
+			}
+
+			messageList.add(new MessageImpl(message, null));
+
+			treeViewer.setInput(messageList);
+		}
+		else {
+			treeViewer.setInput(messages);
+		}
 	}
 
 	/**
@@ -220,8 +252,9 @@ public class DefaultReportDetailsPage implements CustomReportDetailsPage {
 		public void run() {
 			Status status = new Status(IStatus.ERROR, "eu.esdihumboldt.hale.ui.views.report",
 					"See details", new ShowException(m.getStackTrace()));
-			StackTraceErrorDialog d = new StackTraceErrorDialog(Display.getCurrent()
-					.getActiveShell(), "Message Details", m.getMessage(), status, IStatus.ERROR);
+			StackTraceErrorDialog d = new StackTraceErrorDialog(
+					Display.getCurrent().getActiveShell(), "Message Details", m.getMessage(),
+					status, IStatus.ERROR);
 			d.open();
 		}
 	}

@@ -94,20 +94,27 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 	protected void setInputFor(CustomReportDetailsPage.MessageType type) {
 		if (report != null && page != null) {
 			Collection<? extends Message> messages;
+			int more = 0;
 			switch (type) {
 			case Information:
 				messages = report.getInfos();
+				more = report.getTotalInfos() - report.getInfos().size();
 				break;
 			case Warning:
 				messages = report.getWarnings();
+				more = report.getTotalWarnings() - report.getWarnings().size();
 				break;
 			case Error:
 				messages = report.getErrors();
+				more = report.getTotalErrors() - report.getErrors().size();
 				break;
 			default:
 				messages = Collections.emptyList();
 			}
 			page.setInput(messages, type);
+			if (more > 0) {
+				page.setMore(more);
+			}
 		}
 	}
 

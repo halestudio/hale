@@ -34,7 +34,7 @@ public class InfoDetailFilter implements IFilter {
 	@Override
 	public boolean select(Object toTest) {
 		if (toTest instanceof Report<?>) {
-			if (((Report<?>) toTest).getInfos().size() > 0) {
+			if (((Report<?>) toTest).hasInfos()) {
 				return true;
 			}
 		}
