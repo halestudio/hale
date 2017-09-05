@@ -17,6 +17,8 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.ArrayList;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.MultiValue;
@@ -25,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -60,6 +63,7 @@ public class TargetCollector {
 
 	private final ArrayList<TargetData> targetData = new ArrayList<>();
 	private boolean containsValues = false;
+	private boolean containsGeometries = false;
 	private boolean containsClosures = false;
 	private final InstanceBuilder builder;
 	private final TypeDefinition typeDef;
@@ -94,6 +98,9 @@ public class TargetCollector {
 	public void call(Object value) {
 		targetData.add(new TargetData(value, null));
 		containsValues = true;
+		if (value instanceof Geometry || value instanceof GeometryProperty) {
+			containsGeometries = true;
+		}
 	}
 
 	/**
@@ -104,10 +111,15 @@ public class TargetCollector {
 	 */
 	public void call(Object value, Closure<?> targetClosure) {
 		targetData.add(new TargetData(value, targetClosure));
-		if (targetClosure != null)
+		if (targetClosure != null) {
 			containsClosures = true;
-		if (value != null)
+		}
+		if (value != null) {
 			containsValues = true;
+			if (value instanceof Geometry || value instanceof GeometryProperty) {
+				containsGeometries = true;
+			}
+		}
 	}
 
 	/**
@@ -135,9 +147,15 @@ public class TargetCollector {
 			// the target.");
 
 			// this may be desired, e.g. when producing geometries for GML
-			// so instead of a hard error, we just log a warning
-			log.warn(
-					"Value provided for target that does not allow a value according to the schema");
+			String message = "Value provided for target that does not allow a value according to the schema";
+			if (containsGeometries && log.isDebugEnabled()) {
+				// only debug message for geometries
+				log.debug(message);
+			}
+			else {
+				// so instead of a hard error, we just log a warning
+				log.warn(message);
+			}
 		}
 
 		for (TargetData data : targetData) {
