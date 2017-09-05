@@ -19,11 +19,10 @@ import java.util.ArrayList;
 
 import com.vividsolutions.jts.geom.Geometry;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -39,8 +38,6 @@ import groovy.lang.Closure;
  * @author Kai Schwierczek
  */
 public class TargetCollector {
-
-	private static final ALogger log = ALoggerFactory.getLogger(TargetCollector.class);
 
 	private class TargetData {
 
@@ -128,11 +125,12 @@ public class TargetCollector {
 	 * 
 	 * @param builder the instance builder for creating target instances
 	 * @param type the type of the instance to create
+	 * @param log the log
 	 * @return a result value for all closures added to this collector
 	 * @throws TransformationException if some of the collected targets do not
 	 *             match the specified type
 	 */
-	public MultiValue toMultiValue(InstanceBuilder builder, TypeDefinition type)
+	public MultiValue toMultiValue(InstanceBuilder builder, TypeDefinition type, SimpleLog log)
 			throws TransformationException {
 		MultiValue result = new MultiValue(size());
 
@@ -147,14 +145,15 @@ public class TargetCollector {
 			// the target.");
 
 			// this may be desired, e.g. when producing geometries for GML
-			String message = "Value provided for target that does not allow a value according to the schema";
-			if (containsGeometries && log.isDebugEnabled()) {
-				// only debug message for geometries
-				log.debug(message);
+			if (containsGeometries) {
+				// only warning message for geometries
+				log.warn(
+						"Value provided for target that does not allow a value according to the schema, contains geometries");
 			}
 			else {
-				// so instead of a hard error, we just log a warning
-				log.warn(message);
+				// instead of a hard error, we just log an error
+				log.error(
+						"Value provided for target that does not allow a value according to the schema");
 			}
 		}
 

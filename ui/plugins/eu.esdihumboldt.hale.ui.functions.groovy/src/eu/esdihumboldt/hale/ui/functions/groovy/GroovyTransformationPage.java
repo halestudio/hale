@@ -185,7 +185,7 @@ public class GroovyTransformationPage
 			script = gs.parseScript(document, binding);
 
 			GroovyTransformation.evaluate(script, builder,
-					targetProperty.getDefinition().getDefinition().getPropertyType(), gs);
+					targetProperty.getDefinition().getDefinition().getPropertyType(), gs, log);
 		} catch (NoResultException e) {
 			// continue
 		} catch (final Exception e) {

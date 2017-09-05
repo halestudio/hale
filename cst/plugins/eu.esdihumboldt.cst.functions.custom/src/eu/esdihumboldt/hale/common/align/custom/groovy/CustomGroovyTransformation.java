@@ -102,7 +102,7 @@ public class CustomGroovyTransformation
 
 			// evaluate the script
 			result = GroovyTransformation.evaluate(groovyScript, builder,
-					resultProperty.getDefinition().getPropertyType(), service);
+					resultProperty.getDefinition().getPropertyType(), service, log);
 		} catch (TransformationException | NoResultException e) {
 			throw e;
 		} catch (Throwable e) {

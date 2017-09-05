@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultEx
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.PropertyValueImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -94,7 +95,7 @@ public class GroovyTransformation extends
 
 			// evaluate the script
 			result = evaluate(groovyScript, builder,
-					resultProperty.getDefinition().getPropertyType(), service);
+					resultProperty.getDefinition().getPropertyType(), service, log);
 		} catch (TransformationException | NoResultException e) {
 			throw e;
 		} catch (Throwable e) {
@@ -114,12 +115,13 @@ public class GroovyTransformation extends
 	 * @param builder the instance builder, may be <code>null</code>
 	 * @param targetType the type definition of the target property
 	 * @param service the Groovy service
+	 * @param log the log
 	 * @return the result property value or instance
 	 * @throws TransformationException if the evaluation fails
 	 * @throws NoResultException if no result returned from the evaluation
 	 */
 	public static Object evaluate(Script groovyScript, final InstanceBuilder builder,
-			final TypeDefinition targetType, GroovyService service)
+			final TypeDefinition targetType, GroovyService service, SimpleLog log)
 					throws TransformationException, NoResultException {
 		try {
 			return service.evaluate(groovyScript, new ResultProcessor<Object>() {
@@ -139,11 +141,11 @@ public class GroovyTransformation extends
 							// use single collector value as result
 							// -> instance value is set to return value if
 							// applicable
-							result = collector.toMultiValue(builder, targetType).get(0);
+							result = collector.toMultiValue(builder, targetType, log).get(0);
 						}
 						else {
 							// use collector MultiValue as result
-							result = collector.toMultiValue(builder, targetType);
+							result = collector.toMultiValue(builder, targetType, log);
 						}
 					}
 					else if (target instanceof Closure<?>) {
