@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.instance.tools.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,6 +34,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("javadoc")
 public class SimplePartitionerTest {
 
 	static InstanceCollection createCollection(int num) {
@@ -58,6 +60,52 @@ public class SimplePartitionerTest {
 				count += part.size();
 			}
 			assertEquals(1000, count);
+		}
+	}
+
+	@Test
+	public void testIterateEven() {
+		testIterate(1000, 10);
+	}
+
+	@Test
+	public void testIterateRest() {
+		testIterate(1001, 10);
+	}
+
+	@Test
+	public void testIterateLess() {
+		testIterate(1, 10);
+	}
+
+	@Test
+	public void testIterateEmpty() {
+		testIterate(0, 10);
+	}
+
+	@Test
+	public void testIterate2() {
+		testIterate(117, 17);
+	}
+
+	private void testIterate(int num, int partSize) {
+		InstanceCollection c1 = createCollection(num);
+		assertEquals(num, c1.size());
+
+		try (ResourceIterator<InstanceCollection> it = new SimplePartitioner().partition(c1,
+				partSize)) {
+			int count = 0;
+			while (it.hasNext()) {
+				InstanceCollection part = it.next();
+				try (ResourceIterator<Instance> partIt = part.iterator()) {
+					while (partIt.hasNext()) {
+						Instance instance = partIt.next();
+						assertNotNull(instance);
+						count++;
+					}
+				}
+			}
+			assertEquals(num, count);
 		}
 	}
 
