@@ -15,9 +15,8 @@
 
 package eu.esdihumboldt.hale.common.instance.tools;
 
-import java.util.Iterator;
-
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
  * Interface for classes that are able to partition an instance collection.
@@ -43,6 +42,6 @@ public interface InstanceCollectionPartitioner {
 	 *            part if possible
 	 * @return the iterator of the parts
 	 */
-	Iterator<InstanceCollection> partition(InstanceCollection instances, int maxObjects);
+	ResourceIterator<InstanceCollection> partition(InstanceCollection instances, int maxObjects);
 
 }
