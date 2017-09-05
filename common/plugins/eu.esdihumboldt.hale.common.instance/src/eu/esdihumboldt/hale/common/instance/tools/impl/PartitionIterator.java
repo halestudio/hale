@@ -125,7 +125,7 @@ public class PartitionIterator implements ResourceIterator<InstanceCollection> {
 				return UNKNOWN_SIZE;
 			}
 			int cap = (collIndex + 1) * maxObjects;
-			if (instances.size() > cap) {
+			if (instances.size() >= cap) {
 				return maxObjects;
 			}
 			else {
