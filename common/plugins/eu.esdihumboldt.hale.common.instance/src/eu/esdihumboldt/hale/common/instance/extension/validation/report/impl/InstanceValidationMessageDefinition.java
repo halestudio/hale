@@ -69,12 +69,12 @@ public class InstanceValidationMessageDefinition
 		String typeName = props.getProperty(KEY_TYPE);
 		QName type = null;
 		if (typeName != null) {
-			QName.valueOf(typeName);
+			type = QName.valueOf(typeName);
 		}
 
 		int pathCount = 0;
 		try {
-			Integer.valueOf(props.getProperty(KEY_PATH_COUNT));
+			pathCount = Integer.valueOf(props.getProperty(KEY_PATH_COUNT));
 		} catch (Exception e) {
 			// ignore
 		}

@@ -31,7 +31,7 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 	/**
 	 * Maximum number of messages per message type in a report.
 	 */
-	public static final int MESSAGE_CAP = 250;
+	public static final int MESSAGE_CAP = 1000;
 
 	private int totalErrors = 0;
 	private int totalWarnings = 0;
@@ -84,7 +84,7 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 
 	@Override
 	public int getTotalErrors() {
-		return totalWarnings;
+		return totalErrors;
 	}
 
 	@Override
@@ -100,12 +100,14 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 			}
 		}
 		totalErrors += report.getTotalErrors();
+
 		for (T warn : report.getWarnings()) {
 			if (warnings.size() < MESSAGE_CAP) {
 				warnings.add(warn);
 			}
 		}
 		totalWarnings += report.getTotalWarnings();
+
 		for (T info : report.getInfos()) {
 			if (infos.size() < MESSAGE_CAP) {
 				infos.add(info);

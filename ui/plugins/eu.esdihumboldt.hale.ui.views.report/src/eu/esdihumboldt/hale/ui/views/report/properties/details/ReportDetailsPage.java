@@ -111,10 +111,14 @@ public abstract class ReportDetailsPage extends AbstractPropertySection {
 			default:
 				messages = Collections.emptyList();
 			}
-			page.setInput(messages, type);
 			if (more > 0) {
-				page.setMore(more);
+				page.setMore(more); // set more first!
 			}
+			else {
+				// remove old more
+				page.setMore(0);
+			}
+			page.setInput(messages, type);
 		}
 	}
 

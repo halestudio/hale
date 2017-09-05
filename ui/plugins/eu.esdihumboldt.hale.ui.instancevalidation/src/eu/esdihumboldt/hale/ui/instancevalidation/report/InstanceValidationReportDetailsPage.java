@@ -180,10 +180,12 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		if (more > 0) {
 			Collection<Message> messageList = new ArrayList<>(messages);
 
-			String message = MessageFormat.format("{0} more warnings that are not listed", more);
+			String title = MessageFormat.format("{0} more warnings", more);
+			String message = MessageFormat
+					.format("{0} more validation warnings are not listed explicitly", more);
 
 			messageList.add(new DefaultInstanceValidationMessage(null, null,
-					Collections.<QName> emptyList(), "General", message));
+					Collections.<QName> emptyList(), title, message));
 
 			treeViewer.setInput(messageList);
 		}

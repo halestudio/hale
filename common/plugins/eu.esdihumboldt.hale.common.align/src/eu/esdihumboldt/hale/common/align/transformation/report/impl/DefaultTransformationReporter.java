@@ -130,7 +130,7 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		 */
 		private final Map<String, Multiset<TMessageKey>> messages = new HashMap<String, Multiset<TMessageKey>>();
 
-		private static final int MESSAGE_CAP = 75;
+		private static final int MESSAGE_CAP = 100;
 
 		private int more = 0;
 
@@ -143,17 +143,17 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 			String cell = message.getCellId();
 			Multiset<TMessageKey> msgs = messages.get(cell);
 
-			TMessageKey insert = new TMessageKey(message);
-
 			if (msgs == null) {
 				msgs = LinkedHashMultiset.create();
 				messages.put(cell, msgs);
 			}
-			else if (msgs.count(insert) >= MESSAGE_CAP) {
+			else if (msgs.elementSet().size() >= MESSAGE_CAP) {
+				// max messages per cell
 				// we don't store this message, just count it
 				more++;
 				return;
 			}
+			TMessageKey insert = new TMessageKey(message);
 			msgs.add(insert);
 		}
 
