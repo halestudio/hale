@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.align.transformation.report;
 
 import eu.esdihumboldt.hale.common.core.report.ReportLog;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Report log for transformation functions. Messages for the report should be
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.common.core.report.ReportLog;
  * @author Simon Templer
  * @since 2.5
  */
-public interface TransformationLog extends ReportLog<TransformationMessage> {
+public interface TransformationLog extends ReportLog<TransformationMessage>, SimpleLog {
 
 	/**
 	 * Create a message configured with the current cell for use with the log
@@ -36,5 +37,20 @@ public interface TransformationLog extends ReportLog<TransformationMessage> {
 	 * @return the message
 	 */
 	TransformationMessage createMessage(String message, Throwable throwable);
+
+	@Override
+	default void warn(String message, Throwable e) {
+		warn(createMessage(message, e));
+	}
+
+	@Override
+	default void error(String message, Throwable e) {
+		error(createMessage(message, e));
+	}
+
+	@Override
+	default void info(String message, Throwable e) {
+		info(createMessage(message, e));
+	}
 
 }
