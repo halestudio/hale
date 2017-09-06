@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.common.core.report;
 
 import java.text.MessageFormat;
 
+import org.slf4j.Logger;
+
 /**
  * Interface for providing a simple logging interface.
  * 
@@ -24,6 +26,45 @@ import java.text.MessageFormat;
  */
 @SuppressWarnings("javadoc")
 public interface SimpleLog {
+
+	public static final SimpleLog NO_LOG = new SimpleLog() {
+
+		@Override
+		public void warn(String message, Throwable e) {
+			// do nothing
+		}
+
+		@Override
+		public void error(String message, Throwable e) {
+			// do nothing
+		}
+
+		@Override
+		public void info(String message, Throwable e) {
+			// so nothing
+		}
+
+	};
+
+	public static SimpleLog fromLogger(final Logger logger) {
+		return new SimpleLog() {
+
+			@Override
+			public void warn(String message, Throwable e) {
+				logger.warn(message, e);
+			}
+
+			@Override
+			public void info(String message, Throwable e) {
+				logger.info(message, e);
+			}
+
+			@Override
+			public void error(String message, Throwable e) {
+				logger.error(message, e);
+			}
+		};
+	}
 
 	void warn(String message, Throwable e);
 

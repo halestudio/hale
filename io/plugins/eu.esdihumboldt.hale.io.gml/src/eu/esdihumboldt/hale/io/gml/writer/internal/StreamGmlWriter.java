@@ -63,7 +63,8 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
-import eu.esdihumboldt.hale.common.instance.graph.reference.ReferenceGraph;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.instance.graph.reference.ReferenceGraphPartitioner;
 import eu.esdihumboldt.hale.common.instance.graph.reference.impl.XMLInspector;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
@@ -72,6 +73,9 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
+import eu.esdihumboldt.hale.common.instance.tools.impl.NoPartitioner;
+import eu.esdihumboldt.hale.common.instance.tools.impl.SimplePartitioner;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
@@ -154,6 +158,27 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * Name of the parameter defining the instance threshold.
 	 */
 	public static final String PARAM_INSTANCES_THRESHOLD = "instancesPerFile";
+
+	/**
+	 * Name of the parameter stating the mode to use for instance partitioning.
+	 */
+	public static final String PARAM_PARTITION_MODE = "partition.mode";
+
+	/**
+	 * Value for partitioning mode parameter that just creates a single part.
+	 */
+	public static final String PARTITION_MODE_NONE = "none";
+
+	/**
+	 * Value for partitioning mode parameter that always cuts at the threshold.
+	 */
+	public static final String PARTITION_MODE_CUT = "cut";
+
+	/**
+	 * Value for partitioning mode parameter that keeps related instances
+	 * together.
+	 */
+	public static final String PARTITION_MODE_RELATED = "related";
 
 	/**
 	 * Value for threshold parameter to deactivate partitioning.
@@ -264,16 +289,45 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		init();
 
 		if (isThresholdConfigured()) {
+			InstanceCollectionPartitioner partitioner = getPartitioner(this, reporter);
 			int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class,
 					NO_PARTITIONING);
-			Iterator<InstanceCollection> parts = partition(getInstances(), threshold, progress);
-			writeParts(parts, progress, reporter);
+
+			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
+					threshold, progress)) {
+				writeParts(parts, progress, reporter);
+			}
 		}
 		else {
 			write(getInstances(), getTarget().getOutput(), progress, reporter);
 		}
 
 		return reporter;
+	}
+
+	/**
+	 * Get the instance collection partitioner based on the provider
+	 * configuration of the partitioning mode.
+	 * 
+	 * @param provider the I/O provider
+	 * @param log the log
+	 * @return the partitioner to use
+	 */
+	public static InstanceCollectionPartitioner getPartitioner(IOProvider provider, SimpleLog log) {
+		String mode = provider.getParameter(PARAM_PARTITION_MODE).as(String.class,
+				PARTITION_MODE_RELATED);
+
+		switch (mode) {
+		case PARTITION_MODE_NONE:
+			return new NoPartitioner();
+		case PARTITION_MODE_CUT:
+			return new SimplePartitioner();
+		case PARTITION_MODE_RELATED:
+			return new ReferenceGraphPartitioner(new XMLInspector());
+		default:
+			log.error("Unrecognized partition mode {0}, will create only one part", mode);
+			return new NoPartitioner();
+		}
 	}
 
 	/**
@@ -358,6 +412,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * Partition instances in parts that respectively contain all referenced
 	 * instances.
 	 * 
+	 * @param partitioner the partitioner
 	 * @param instances instances to partition
 	 * @param threshold the guiding value for the maximum number of objects in a
 	 *            part
@@ -365,15 +420,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @return an iterator of instance collections, each instance collection
 	 *         represents a part
 	 */
-	protected Iterator<InstanceCollection> partition(InstanceCollection instances, int threshold,
+	protected ResourceIterator<InstanceCollection> partition(
+			InstanceCollectionPartitioner partitioner, InstanceCollection instances, int threshold,
 			ProgressIndicator progress) {
 		progress.setCurrentTask("Partitioning data");
 
-		// create a reference graph
-		ReferenceGraph<String> rg = new ReferenceGraph<String>(new XMLInspector(), getInstances());
-
 		// partition the graph
-		return rg.partition(threshold);
+		return partitioner.partition(instances, threshold);
 	}
 
 	// FIXME
@@ -394,7 +447,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 	@Override
 	public boolean isPassthrough() {
-		return !isThresholdConfigured();
+		if (isThresholdConfigured()) {
+			InstanceCollectionPartitioner partitioner = getPartitioner(this, SimpleLog.NO_LOG);
+			return !partitioner.usesReferences();
+		}
+		else {
+			return true;
+		}
 	}
 
 	/**
