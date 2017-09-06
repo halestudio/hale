@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.core.report;
 
+import java.text.MessageFormat;
+
 /**
  * Interface for providing a simple logging interface.
  * 
@@ -26,19 +28,50 @@ public interface SimpleLog {
 	void warn(String message, Throwable e);
 
 	default void warn(String message) {
-		warn(message, null);
+		warn(message, (Throwable) null);
+	}
+
+	/**
+	 * Log a warning. The given pattern is formatted with {@link MessageFormat}.
+	 * 
+	 * @param pattern the message pattern
+	 * @param args the pattern arguments
+	 */
+	default void warn(String pattern, Object... args) {
+		warn(MessageFormat.format(pattern, args));
 	}
 
 	void error(String message, Throwable e);
 
 	default void error(String message) {
-		error(message, null);
+		error(message, (Throwable) null);
+	}
+
+	/**
+	 * Log an error. The given pattern is formatted with {@link MessageFormat}.
+	 * 
+	 * @param pattern the message pattern
+	 * @param args the pattern arguments
+	 */
+	default void error(String pattern, Object... args) {
+		error(MessageFormat.format(pattern, args));
 	}
 
 	void info(String message, Throwable e);
 
 	default void info(String message) {
-		info(message, null);
+		info(message, (Throwable) null);
+	}
+
+	/**
+	 * Log an info message. The given pattern is formatted with
+	 * {@link MessageFormat}.
+	 * 
+	 * @param pattern the message pattern
+	 * @param args the pattern arguments
+	 */
+	default void info(String pattern, Object... args) {
+		info(MessageFormat.format(pattern, args));
 	}
 
 }
