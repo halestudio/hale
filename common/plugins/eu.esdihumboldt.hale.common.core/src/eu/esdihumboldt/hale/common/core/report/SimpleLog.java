@@ -41,7 +41,35 @@ public interface SimpleLog {
 
 		@Override
 		public void info(String message, Throwable e) {
-			// so nothing
+			// do nothing
+		}
+
+	};
+
+	public static final SimpleLog CONSOLE_LOG = new SimpleLog() {
+
+		@Override
+		public void warn(String message, Throwable e) {
+			System.out.println("WARN " + message);
+			if (e != null) {
+				e.printStackTrace(System.out);
+			}
+		}
+
+		@Override
+		public void error(String message, Throwable e) {
+			System.err.println("ERROR " + message);
+			if (e != null) {
+				e.printStackTrace(System.err);
+			}
+		}
+
+		@Override
+		public void info(String message, Throwable e) {
+			System.out.println("INFO " + message);
+			if (e != null) {
+				e.printStackTrace(System.out);
+			}
 		}
 
 	};

@@ -294,7 +294,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 					NO_PARTITIONING);
 
 			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
-					threshold, progress)) {
+					threshold, progress, reporter)) {
 				writeParts(parts, progress, reporter);
 			}
 		}
@@ -417,16 +417,17 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param threshold the guiding value for the maximum number of objects in a
 	 *            part
 	 * @param progress Progress indicator
+	 * @param log the operation log
 	 * @return an iterator of instance collections, each instance collection
 	 *         represents a part
 	 */
 	protected ResourceIterator<InstanceCollection> partition(
 			InstanceCollectionPartitioner partitioner, InstanceCollection instances, int threshold,
-			ProgressIndicator progress) {
+			ProgressIndicator progress, SimpleLog log) {
 		progress.setCurrentTask("Partitioning data");
 
 		// partition the graph
-		return partitioner.partition(instances, threshold);
+		return partitioner.partition(instances, threshold, log);
 	}
 
 	// FIXME

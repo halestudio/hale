@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -53,7 +54,8 @@ public class SimplePartitionerTest {
 		InstanceCollection c1 = createCollection(1000);
 		assertEquals(1000, c1.size());
 
-		try (ResourceIterator<InstanceCollection> it = new SimplePartitioner().partition(c1, 10)) {
+		try (ResourceIterator<InstanceCollection> it = new SimplePartitioner().partition(c1, 10,
+				SimpleLog.CONSOLE_LOG)) {
 			int count = 0;
 			while (it.hasNext()) {
 				InstanceCollection part = it.next();
@@ -93,7 +95,7 @@ public class SimplePartitionerTest {
 		assertEquals(num, c1.size());
 
 		try (ResourceIterator<InstanceCollection> it = new SimplePartitioner().partition(c1,
-				partSize)) {
+				partSize, SimpleLog.CONSOLE_LOG)) {
 			int count = 0;
 			while (it.hasNext()) {
 				InstanceCollection part = it.next();

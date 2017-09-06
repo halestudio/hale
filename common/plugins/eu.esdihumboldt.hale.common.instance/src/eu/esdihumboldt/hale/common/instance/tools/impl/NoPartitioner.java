@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.instance.tools.impl;
 
 import java.util.Collections;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.ResourceIteratorAdapter;
@@ -36,7 +37,7 @@ public class NoPartitioner implements InstanceCollectionPartitioner {
 
 	@Override
 	public ResourceIterator<InstanceCollection> partition(InstanceCollection instances,
-			int maxObjects) {
+			int maxObjects, SimpleLog log) {
 		return new ResourceIteratorAdapter<>(Collections.singleton(instances).iterator());
 	}
 

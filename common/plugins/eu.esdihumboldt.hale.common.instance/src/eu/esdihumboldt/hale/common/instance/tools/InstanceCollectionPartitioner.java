@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.tools;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
@@ -51,8 +52,10 @@ public interface InstanceCollectionPartitioner {
 	 * @param instances the instances to partition
 	 * @param maxObjects the maximum objects threshold that should be met for a
 	 *            part if possible
+	 * @param log the operation log
 	 * @return the iterator of the parts
 	 */
-	ResourceIterator<InstanceCollection> partition(InstanceCollection instances, int maxObjects);
+	ResourceIterator<InstanceCollection> partition(InstanceCollection instances, int maxObjects,
+			SimpleLog log);
 
 }

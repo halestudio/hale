@@ -73,7 +73,7 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter
 			int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class,
 					DEFAULT_INSTANCES_THRESHOLD);
 			try (ResourceIterator<InstanceCollection> parts = partitioner.partition(getInstances(),
-					threshold)) {
+					threshold, reporter)) {
 
 				if (partitioner.requiresImmediateConsumption()) {
 

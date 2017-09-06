@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.graph.reference;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.ResourceIteratorAdapter;
@@ -46,9 +47,9 @@ public class ReferenceGraphPartitioner implements InstanceCollectionPartitioner 
 
 	@Override
 	public ResourceIterator<InstanceCollection> partition(InstanceCollection instances,
-			int maxObjects) {
+			int maxObjects, SimpleLog log) {
 		ReferenceGraph<String> rg = new ReferenceGraph<String>(inspector, instances);
-		return new ResourceIteratorAdapter<>(rg.partition(maxObjects));
+		return new ResourceIteratorAdapter<>(rg.partition(maxObjects, log));
 	}
 
 }

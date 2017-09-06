@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.instance.tools.impl;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
@@ -36,7 +37,7 @@ public class SimplePartitioner implements InstanceCollectionPartitioner {
 
 	@Override
 	public ResourceIterator<InstanceCollection> partition(InstanceCollection instances,
-			int maxObjects) {
+			int maxObjects, SimpleLog log) {
 		return new PartitionIterator(instances, maxObjects);
 	}
 
