@@ -40,4 +40,11 @@ public class SimplePartitioner implements InstanceCollectionPartitioner {
 		return new PartitionIterator(instances, maxObjects);
 	}
 
+	@Override
+	public boolean requiresImmediateConsumption() {
+		// parts must be handled in sequence, next() may not be called before
+		// the previous part has been completely handled
+		return true;
+	}
+
 }

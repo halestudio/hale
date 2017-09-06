@@ -75,74 +75,133 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter
 			try (ResourceIterator<InstanceCollection> parts = partitioner.partition(getInstances(),
 					threshold)) {
 
-				int partCount = 0;
-				final AtomicBoolean failed = new AtomicBoolean();
-				if (parts.hasNext()) {
-					ExecutorService requestThread = Executors.newSingleThreadExecutor();
+				if (partitioner.requiresImmediateConsumption()) {
 
-					while (parts.hasNext() && !progress.isCanceled()) {
-						partCount++;
+					// handle all parts right here, one after another
 
-						SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
-								progress); // only used for first partitioning
-						if (partCount == 1)
+					int partCount = 0;
+					boolean failed = false;
+					if (parts.hasNext()) {
+						while (parts.hasNext() && !progress.isCanceled()) {
+							partCount++;
+
+							SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
+									progress);
 							partitionProgress.begin("Assembling part " + partCount,
 									ProgressIndicator.UNKNOWN);
-						final InstanceCollection part = parts.next(); // not
-																		// thread
-																		// safe
-						if (partCount == 1)
+							InstanceCollection part = parts.next();
 							partitionProgress.end();
 
-						progress.setCurrentTask("Upload part " + partCount
-								+ ((part.hasSize()) ? (" (" + part.size() + " instances)") : ("")));
+							progress.setCurrentTask("Upload part " + partCount + ((part.hasSize())
+									? (" (" + part.size() + " instances)") : ("")));
 
-						final int currentPart = partCount;
-						requestThread.submit(new Runnable() {
-
-							@Override
-							public void run() {
-								try {
-									IOReport report = uploadInstances(part, reporter,
-											new SubtaskProgressIndicator(progress));
-									if (!report.isSuccess()) {
-										failed.set(true);
-										reporter.error(new IOMessageImpl("Upload of part "
-												+ currentPart + " - " + report.getSummary(), null));
-									}
-									else {
-										reporter.info(new IOMessageImpl("Upload of part "
-												+ currentPart + " - " + report.getSummary(), null));
-									}
-								} catch (Exception e) {
-									failed.set(true);
-									reporter.error(new IOMessageImpl(
-											"Upload of part " + currentPart + " failed", e));
-								}
+							IOReport report = uploadInstances(part, reporter,
+									new SubtaskProgressIndicator(progress));
+							if (!report.isSuccess()) {
+								failed = true;
+								reporter.error("Upload of part {0} - {1}", partCount,
+										report.getSummary());
 							}
-						});
+							else {
+								reporter.info("Upload of part {0} - {1}", partCount,
+										report.getSummary());
+							}
+						}
 
-					}
-
-					// wait for requests completion
-					requestThread.shutdown();
-					if (!requestThread.awaitTermination(24, TimeUnit.HOURS)) {
-						reporter.error(new IOMessageImpl(
-								"Timeout reached waiting for completion of WFS requests", null));
-					}
-
-					reporter.setSuccess(!failed.get() && reporter.getErrors().isEmpty());
-					if (!reporter.isSuccess()) {
-						reporter.setSummary(
-								"Errors during upload to WFS-T, please see the report.");
+						reporter.setSuccess(!failed && reporter.getErrors().isEmpty());
+						if (!reporter.isSuccess()) {
+							reporter.setSummary(
+									"Errors during upload to WFS-T, please see the report.");
+						}
+						else {
+							reporter.setSummary("Successfully uploaded data via WFS-T");
+						}
 					}
 					else {
-						reporter.setSummary("Successfully uploaded data via WFS-T");
+						reporter.setSuccess(false);
+						reporter.setSummary("Partitioning yielded no instances to upload");
 					}
+
 				}
 				else {
-					reporter.setSuccess(false);
-					reporter.setSummary("Partitioning yielded no instances to upload");
+					// can start requests with separate thread (potentially
+					// threads, but tests with WFSes show that this usually is
+					// too much to handle for the service)
+
+					int partCount = 0;
+					final AtomicBoolean failed = new AtomicBoolean();
+					if (parts.hasNext()) {
+						ExecutorService requestThread = Executors.newSingleThreadExecutor();
+
+						while (parts.hasNext() && !progress.isCanceled()) {
+							partCount++;
+
+							SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
+									progress); // only used for first
+												// partitioning
+							if (partCount == 1)
+								partitionProgress.begin("Assembling part " + partCount,
+										ProgressIndicator.UNKNOWN);
+							final InstanceCollection part = parts.next(); // not
+																			// thread
+																			// safe
+							if (partCount == 1)
+								partitionProgress.end();
+
+							progress.setCurrentTask("Upload part " + partCount + ((part.hasSize())
+									? (" (" + part.size() + " instances)") : ("")));
+
+							final int currentPart = partCount;
+							requestThread.submit(new Runnable() {
+
+								@Override
+								public void run() {
+									try {
+										IOReport report = uploadInstances(part, reporter,
+												new SubtaskProgressIndicator(progress));
+										if (!report.isSuccess()) {
+											failed.set(true);
+											reporter.error(new IOMessageImpl("Upload of part "
+													+ currentPart + " - " + report.getSummary(),
+													null));
+										}
+										else {
+											reporter.info(new IOMessageImpl("Upload of part "
+													+ currentPart + " - " + report.getSummary(),
+													null));
+										}
+									} catch (Exception e) {
+										failed.set(true);
+										reporter.error(new IOMessageImpl(
+												"Upload of part " + currentPart + " failed", e));
+									}
+								}
+							});
+
+						}
+
+						// wait for requests completion
+						requestThread.shutdown();
+						if (!requestThread.awaitTermination(24, TimeUnit.HOURS)) {
+							reporter.error(new IOMessageImpl(
+									"Timeout reached waiting for completion of WFS requests",
+									null));
+						}
+
+						reporter.setSuccess(!failed.get() && reporter.getErrors().isEmpty());
+						if (!reporter.isSuccess()) {
+							reporter.setSummary(
+									"Errors during upload to WFS-T, please see the report.");
+						}
+						else {
+							reporter.setSummary("Successfully uploaded data via WFS-T");
+						}
+					}
+					else {
+						reporter.setSuccess(false);
+						reporter.setSummary("Partitioning yielded no instances to upload");
+					}
+
 				}
 
 			}

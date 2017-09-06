@@ -35,6 +35,17 @@ public interface InstanceCollectionPartitioner {
 	boolean usesReferences();
 
 	/**
+	 * States if the partitioner required immediate consumption of the yielded
+	 * parts, meaning it cannot be delegated to later and no other parts may be
+	 * processed before.
+	 * 
+	 * @return if immediate consumption of the parts is requried
+	 */
+	default boolean requiresImmediateConsumption() {
+		return false;
+	}
+
+	/**
 	 * Partition an instance collection.
 	 * 
 	 * @param instances the instances to partition
