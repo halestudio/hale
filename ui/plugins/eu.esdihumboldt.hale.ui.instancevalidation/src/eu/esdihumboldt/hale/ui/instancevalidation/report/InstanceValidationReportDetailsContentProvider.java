@@ -88,8 +88,10 @@ public class InstanceValidationReportDetailsContentProvider implements ITreePath
 						childCache.put(emptyPath, baseTypes);
 					}
 					// XXX maybe expand messages with SSID?
-					TypeDefinition typeDef = ss.getSchemas(SchemaSpaceID.TARGET)
-							.getType(message.getType());
+					TypeDefinition typeDef = null;
+					if (message.getType() != null) {
+						typeDef = ss.getSchemas(SchemaSpaceID.TARGET).getType(message.getType());
+					}
 					// use typeDef if available, QName otherwise
 					Object use = typeDef == null ? message.getType() : typeDef;
 					if (use == null) {

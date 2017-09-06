@@ -61,14 +61,21 @@ public interface CustomReportDetailsPage {
 		/**
 		 * For information messages.
 		 */
-		Information,
+		Information, //
 		/**
 		 * For warning messages
 		 */
-		Warning,
+		Warning, //
 		/**
 		 * For error messages
 		 */
 		Error
 	}
+
+	/**
+	 * Set how many more message there are that are not displayed.
+	 * 
+	 * @param more the number of messages
+	 */
+	public void setMore(int more);
 }

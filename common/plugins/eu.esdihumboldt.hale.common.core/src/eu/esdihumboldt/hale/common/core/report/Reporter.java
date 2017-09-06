@@ -60,4 +60,53 @@ public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
 	 * @param starttime the starttime
 	 */
 	public void setStartTime(Date starttime);
+
+	// add counts of messages - these methods are mainly intended for restoring
+	// report information and not for actual reporting
+
+	/**
+	 * Add a number of errors w/o message, e.g. if no message is available.
+	 * 
+	 * @param number the number of errors
+	 */
+	void countError(int number);
+
+	/**
+	 * Add an error w/o a message, e.g. if no message is available or the reason
+	 * is not known.
+	 */
+	default void countError() {
+		countError(1);
+	}
+
+	/**
+	 * Add a number of warnings w/o message, e.g. if no message is available.
+	 * 
+	 * @param number the number of warnings
+	 */
+	void countWarning(int number);
+
+	/**
+	 * Add a warning w/o a message, e.g. if no message is available or the
+	 * reason is not known.
+	 */
+	default void countWarning() {
+		countError(1);
+	}
+
+	/**
+	 * Add a number of info messages w/o message, e.g. if no message is
+	 * available.
+	 * 
+	 * @param number the number of info messages
+	 */
+	void countInfo(int number);
+
+	/**
+	 * Add an info message w/o a message, e.g. if the message is not available.
+	 */
+	default void countInfo() {
+		countError(1);
+	}
+
 }
