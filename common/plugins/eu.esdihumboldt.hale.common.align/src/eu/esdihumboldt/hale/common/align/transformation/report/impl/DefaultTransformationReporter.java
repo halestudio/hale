@@ -43,6 +43,37 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		implements TransformationReport, TransformationReporter {
 
 	/**
+	 * Maximum number of messages per cell. Negative values mean unlimited
+	 * messages.
+	 */
+	private static final int MESSAGE_CAP = getMessageCap();
+
+	/**
+	 * Determine message cap from system property or environment variable,
+	 * otherwise return a default value.
+	 * 
+	 * @return the message cap
+	 */
+	private static int getMessageCap() {
+		String setting = System.getProperty("hale.reports.message_cap.per_cell");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_REPORTS_MESSAGE_CAP_PER_CELL");
+		}
+
+		if (setting != null) {
+			try {
+				return Integer.valueOf(setting);
+			} catch (Throwable e) {
+				log.error("Error applying custom report message cap setting: " + setting, e);
+			}
+		}
+
+		// default to fall back to
+		return 100;
+	}
+
+	/**
 	 * The logger
 	 */
 	private static final ALogger log = ALoggerFactory
@@ -130,8 +161,6 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		 */
 		private final Map<String, Multiset<TMessageKey>> messages = new HashMap<String, Multiset<TMessageKey>>();
 
-		private static final int MESSAGE_CAP = 100;
-
 		private int more = 0;
 
 		/**
@@ -147,7 +176,7 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 				msgs = LinkedHashMultiset.create();
 				messages.put(cell, msgs);
 			}
-			else if (msgs.elementSet().size() >= MESSAGE_CAP) {
+			else if (MESSAGE_CAP >= 0 && msgs.elementSet().size() >= MESSAGE_CAP) {
 				// max messages per cell
 				// we don't store this message, just count it
 				more++;

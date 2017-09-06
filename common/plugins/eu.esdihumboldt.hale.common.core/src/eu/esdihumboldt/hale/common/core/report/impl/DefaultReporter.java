@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.core.report.impl;
 
 import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
@@ -28,10 +29,13 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  */
 public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 
+	private static final ALogger log = ALoggerFactory.getLogger(DefaultReporter.class);
+
 	/**
-	 * Maximum number of messages per message type in a report.
+	 * Maximum number of messages per message type in a report. Negative values
+	 * mean unlimited messages.
 	 */
-	public static final int MESSAGE_CAP = 1000;
+	public static final int MESSAGE_CAP = getMessageCap();
 
 	private int totalErrors = 0;
 	private int totalWarnings = 0;
@@ -50,9 +54,34 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 		super(taskName, messageType, doLog);
 	}
 
+	/**
+	 * Determine message cap from system property or environment variable,
+	 * otherwise return a default value.
+	 * 
+	 * @return the message cap
+	 */
+	private static int getMessageCap() {
+		String setting = System.getProperty("hale.reports.message_cap");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_REPORTS_MESSAGE_CAP");
+		}
+
+		if (setting != null) {
+			try {
+				return Integer.valueOf(setting);
+			} catch (Throwable e) {
+				log.error("Error applying custom report message cap setting: " + setting, e);
+			}
+		}
+
+		// default to fall back to
+		return 1000;
+	}
+
 	@Override
 	public void warn(T message) {
-		if (super.getTotalWarnings() < MESSAGE_CAP) {
+		if (MESSAGE_CAP < 0 || super.getTotalWarnings() < MESSAGE_CAP) {
 			super.warn(message);
 		}
 		// should we log messages above cap? Probably not to not pollute the log
@@ -61,7 +90,7 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 
 	@Override
 	public void error(T message) {
-		if (super.getTotalErrors() < MESSAGE_CAP) {
+		if (MESSAGE_CAP < 0 || super.getTotalErrors() < MESSAGE_CAP) {
 			super.error(message);
 		}
 		// should we log messages above cap? Probably not to not pollute the log
@@ -70,7 +99,7 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 
 	@Override
 	public void info(T message) {
-		if (super.getTotalInfos() < MESSAGE_CAP) {
+		if (MESSAGE_CAP < 0 || super.getTotalInfos() < MESSAGE_CAP) {
 			super.info(message);
 		}
 		// should we log messages above cap? Probably not to not pollute the log
@@ -95,21 +124,21 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 	@Override
 	public void importMessages(Report<? extends T> report) {
 		for (T error : report.getErrors()) {
-			if (errors.size() < MESSAGE_CAP) {
+			if (MESSAGE_CAP < 0 || errors.size() < MESSAGE_CAP) {
 				errors.add(error);
 			}
 		}
 		totalErrors += report.getTotalErrors();
 
 		for (T warn : report.getWarnings()) {
-			if (warnings.size() < MESSAGE_CAP) {
+			if (MESSAGE_CAP < 0 || warnings.size() < MESSAGE_CAP) {
 				warnings.add(warn);
 			}
 		}
 		totalWarnings += report.getTotalWarnings();
 
 		for (T info : report.getInfos()) {
-			if (infos.size() < MESSAGE_CAP) {
+			if (MESSAGE_CAP < 0 || infos.size() < MESSAGE_CAP) {
 				infos.add(info);
 			}
 		}
