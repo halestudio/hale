@@ -366,6 +366,19 @@ public class ReferenceGraph<T> {
 				"Partitioning the instance collection can only be done once");
 	}
 
+	/**
+	 * Partition the collected instances in parts that respectively contain all
+	 * referenced instances.
+	 * 
+	 * @param maxObjects the guiding value for the maximum number of objects in
+	 *            a part
+	 * @return an iterator of instance collections, each instance collection
+	 *         represents a part
+	 */
+	public Iterator<InstanceCollection> partition(int maxObjects) {
+		return partition(maxObjects, SimpleLog.fromLogger(logger));
+	}
+
 	private Vertex getVertex(T id) {
 		Vertex vertex = null;
 		if (id != null) {
