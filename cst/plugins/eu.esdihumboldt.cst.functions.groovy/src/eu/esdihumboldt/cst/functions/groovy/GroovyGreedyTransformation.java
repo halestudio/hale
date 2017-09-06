@@ -92,7 +92,7 @@ public class GroovyGreedyTransformation extends
 
 			// evaluate the script
 			result = GroovyTransformation.evaluate(groovyScript, builder,
-					resultProperty.getDefinition().getPropertyType(), service);
+					resultProperty.getDefinition().getPropertyType(), service, log);
 		} catch (NoResultException | TransformationException e) {
 			throw e;
 		} catch (Throwable e) {

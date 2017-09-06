@@ -118,7 +118,7 @@ public class GroovyCreatePage extends GroovyScriptPage<AbstractGenericFunctionWi
 			script = service.parseScript(document, binding);
 
 			GroovyUtil.evaluateAll(script, builder, typeEntity.getDefinition().getDefinition(),
-					service);
+					service, log);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}

@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
 
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Reporter for I/O providers
@@ -28,7 +29,7 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.2
  */
-public interface IOReporter extends Reporter<IOMessage>, IOReport {
+public interface IOReporter extends Reporter<IOMessage>, IOReport, SimpleLog {
 
 	// convenience methods
 
@@ -52,6 +53,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * @param message the error message
 	 * @param throwable a throwable describing the error
 	 */
+	@Override
 	default void error(String message, @Nullable Throwable throwable) {
 		error(message, throwable, -1, -1);
 	}
@@ -61,6 +63,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * 
 	 * @param message the error message
 	 */
+	@Override
 	default void error(String message) {
 		error(message, null, -1, -1);
 	}
@@ -85,6 +88,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * @param message the warning message
 	 * @param throwable a throwable describing the warning
 	 */
+	@Override
 	default void warn(String message, @Nullable Throwable throwable) {
 		warn(message, throwable, -1, -1);
 	}
@@ -94,6 +98,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * 
 	 * @param message the warning message
 	 */
+	@Override
 	default void warn(String message) {
 		warn(message, null, -1, -1);
 	}
@@ -118,6 +123,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * @param message the info message
 	 * @param throwable a throwable
 	 */
+	@Override
 	default void info(String message, @Nullable Throwable throwable) {
 		info(message, throwable, -1, -1);
 	}
@@ -127,6 +133,7 @@ public interface IOReporter extends Reporter<IOMessage>, IOReport {
 	 * 
 	 * @param message the info message
 	 */
+	@Override
 	default void info(String message) {
 		info(message, null, -1, -1);
 	}

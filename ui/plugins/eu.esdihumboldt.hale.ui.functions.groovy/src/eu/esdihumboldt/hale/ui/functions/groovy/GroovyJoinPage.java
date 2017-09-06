@@ -125,7 +125,7 @@ public class GroovyJoinPage extends GroovyRetypePage {
 			script = service.parseScript(document, binding);
 
 			GroovyUtil.evaluateAll(script, builder, targetType.getDefinition().getDefinition(),
-					service);
+					service, log);
 		} catch (final Exception e) {
 			return handleValidationResult(script, e);
 		}
