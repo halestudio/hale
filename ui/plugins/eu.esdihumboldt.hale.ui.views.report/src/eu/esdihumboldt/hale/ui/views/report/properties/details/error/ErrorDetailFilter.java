@@ -34,7 +34,7 @@ public class ErrorDetailFilter implements IFilter {
 	@Override
 	public boolean select(Object toTest) {
 		if (toTest instanceof Report<?>) {
-			if (((Report<?>) toTest).getErrors().size() > 0) {
+			if (((Report<?>) toTest).hasErrors()) {
 				return true;
 			}
 		}

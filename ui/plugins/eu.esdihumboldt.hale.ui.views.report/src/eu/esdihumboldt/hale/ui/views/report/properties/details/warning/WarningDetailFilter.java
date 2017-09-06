@@ -34,7 +34,7 @@ public class WarningDetailFilter implements IFilter {
 	@Override
 	public boolean select(Object toTest) {
 		if (toTest instanceof Report<?>) {
-			if (((Report<?>) toTest).getWarnings().size() > 0) {
+			if (((Report<?>) toTest).hasWarnings()) {
 				return true;
 			}
 		}
