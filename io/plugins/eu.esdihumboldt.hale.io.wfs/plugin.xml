@@ -297,6 +297,29 @@
                   sample="1000">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.file.WFS11FCWriter"
@@ -412,6 +435,29 @@
                   sample="1000">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.wfs.PartitioningWFSWriter"
@@ -519,6 +565,29 @@
                    <parameterBinding
                          class="java.lang.String">
                    </parameterBinding>
+                </providerParameter>
+                <providerParameter
+                      description="Mode for partitioning the output"
+                      label="Partitioning mode"
+                      name="partition.mode"
+                      optional="true">
+                   <parameterEnumeration>
+                      <enumerationValue
+                            value="none">
+                      </enumerationValue>
+                      <enumerationValue
+                            value="cut">
+                      </enumerationValue>
+                      <enumerationValue
+                            value="related">
+                      </enumerationValue>
+                   </parameterEnumeration>
+                   <valueDescriptor
+                         default="related"
+                         defaultDescription="By default objects that are connected via local XML references are kept together."
+                         sample="cut"
+                         sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+                   </valueDescriptor>
                 </providerParameter>
          
       </provider>

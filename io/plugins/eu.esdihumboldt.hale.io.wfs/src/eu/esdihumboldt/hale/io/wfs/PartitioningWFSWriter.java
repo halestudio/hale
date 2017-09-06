@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.io.wfs;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,18 +32,21 @@ import eu.esdihumboldt.hale.common.core.io.impl.SubtaskProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.graph.reference.ReferenceGraph;
-import eu.esdihumboldt.hale.common.instance.graph.reference.impl.XMLInspector;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
+import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 
 /**
  * WFS writer that publishes partitioned data sets
  * 
  * @author Simon Templer
  */
-public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements WFSWriter,
-		WFSConstants {
+@SuppressWarnings("restriction")
+public class PartitioningWFSWriter extends AbstractGeoInstanceWriter
+		implements WFSWriter, WFSConstants {
 
 	/**
 	 * Name of the parameter defining the instance threshold.
@@ -63,81 +65,145 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements 
 		try {
 			progress.setCurrentTask("Partitioning data");
 
-			// create a reference graph
-			ReferenceGraph<String> rg = new ReferenceGraph<String>(new XMLInspector(),
-					getInstances());
+			// create the partitioner
+			InstanceCollectionPartitioner partitioner = StreamGmlWriter.getPartitioner(this,
+					reporter);
 
 			// partition the graph
 			int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class,
 					DEFAULT_INSTANCES_THRESHOLD);
-			Iterator<InstanceCollection> parts = rg.partition(threshold);
+			try (ResourceIterator<InstanceCollection> parts = partitioner.partition(getInstances(),
+					threshold, reporter)) {
 
-			int partCount = 0;
-			final AtomicBoolean failed = new AtomicBoolean();
-			if (parts.hasNext()) {
-				ExecutorService requestThread = Executors.newSingleThreadExecutor();
+				if (partitioner.requiresImmediateConsumption()) {
 
-				while (parts.hasNext() && !progress.isCanceled()) {
-					partCount++;
+					// handle all parts right here, one after another
 
-					SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
-							progress); // only used for first partitioning
-					if (partCount == 1)
-						partitionProgress.begin("Assembling part " + partCount,
-								ProgressIndicator.UNKNOWN);
-					final InstanceCollection part = parts.next(); // not thread
-																	// safe
-					if (partCount == 1)
-						partitionProgress.end();
+					int partCount = 0;
+					boolean failed = false;
+					if (parts.hasNext()) {
+						while (parts.hasNext() && !progress.isCanceled()) {
+							partCount++;
 
-					progress.setCurrentTask("Upload part " + partCount
-							+ ((part.hasSize()) ? (" (" + part.size() + " instances)") : ("")));
+							SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
+									progress);
+							partitionProgress.begin("Assembling part " + partCount,
+									ProgressIndicator.UNKNOWN);
+							InstanceCollection part = parts.next();
+							partitionProgress.end();
 
-					final int currentPart = partCount;
-					requestThread.submit(new Runnable() {
+							progress.setCurrentTask("Upload part " + partCount + ((part.hasSize())
+									? (" (" + part.size() + " instances)") : ("")));
 
-						@Override
-						public void run() {
-							try {
-								IOReport report = uploadInstances(part, reporter,
-										new SubtaskProgressIndicator(progress));
-								if (!report.isSuccess()) {
-									failed.set(true);
-									reporter.error(new IOMessageImpl("Upload of part "
-											+ currentPart + " - " + report.getSummary(), null));
-								}
-								else {
-									reporter.info(new IOMessageImpl("Upload of part " + currentPart
-											+ " - " + report.getSummary(), null));
-								}
-							} catch (Exception e) {
-								failed.set(true);
-								reporter.error(new IOMessageImpl("Upload of part " + currentPart
-										+ " failed", e));
+							IOReport report = uploadInstances(part, reporter,
+									new SubtaskProgressIndicator(progress));
+							if (!report.isSuccess()) {
+								failed = true;
+								reporter.error("Upload of part {0} - {1}", partCount,
+										report.getSummary());
+							}
+							else {
+								reporter.info("Upload of part {0} - {1}", partCount,
+										report.getSummary());
 							}
 						}
-					});
 
-				}
+						reporter.setSuccess(!failed && reporter.getErrors().isEmpty());
+						if (!reporter.isSuccess()) {
+							reporter.setSummary(
+									"Errors during upload to WFS-T, please see the report.");
+						}
+						else {
+							reporter.setSummary("Successfully uploaded data via WFS-T");
+						}
+					}
+					else {
+						reporter.setSuccess(false);
+						reporter.setSummary("Partitioning yielded no instances to upload");
+					}
 
-				// wait for requests completion
-				requestThread.shutdown();
-				if (!requestThread.awaitTermination(24, TimeUnit.HOURS)) {
-					reporter.error(new IOMessageImpl(
-							"Timeout reached waiting for completion of WFS requests", null));
-				}
-
-				reporter.setSuccess(!failed.get() && reporter.getErrors().isEmpty());
-				if (!reporter.isSuccess()) {
-					reporter.setSummary("Errors during upload to WFS-T, please see the report.");
 				}
 				else {
-					reporter.setSummary("Successfully uploaded data via WFS-T");
+					// can start requests with separate thread (potentially
+					// threads, but tests with WFSes show that this usually is
+					// too much to handle for the service)
+
+					int partCount = 0;
+					final AtomicBoolean failed = new AtomicBoolean();
+					if (parts.hasNext()) {
+						ExecutorService requestThread = Executors.newSingleThreadExecutor();
+
+						while (parts.hasNext() && !progress.isCanceled()) {
+							partCount++;
+
+							SubtaskProgressIndicator partitionProgress = new SubtaskProgressIndicator(
+									progress); // only used for first
+												// partitioning
+							if (partCount == 1)
+								partitionProgress.begin("Assembling part " + partCount,
+										ProgressIndicator.UNKNOWN);
+							final InstanceCollection part = parts.next(); // not
+																			// thread
+																			// safe
+							if (partCount == 1)
+								partitionProgress.end();
+
+							progress.setCurrentTask("Upload part " + partCount + ((part.hasSize())
+									? (" (" + part.size() + " instances)") : ("")));
+
+							final int currentPart = partCount;
+							requestThread.submit(new Runnable() {
+
+								@Override
+								public void run() {
+									try {
+										IOReport report = uploadInstances(part, reporter,
+												new SubtaskProgressIndicator(progress));
+										if (!report.isSuccess()) {
+											failed.set(true);
+											reporter.error(new IOMessageImpl("Upload of part "
+													+ currentPart + " - " + report.getSummary(),
+													null));
+										}
+										else {
+											reporter.info(new IOMessageImpl("Upload of part "
+													+ currentPart + " - " + report.getSummary(),
+													null));
+										}
+									} catch (Exception e) {
+										failed.set(true);
+										reporter.error(new IOMessageImpl(
+												"Upload of part " + currentPart + " failed", e));
+									}
+								}
+							});
+
+						}
+
+						// wait for requests completion
+						requestThread.shutdown();
+						if (!requestThread.awaitTermination(24, TimeUnit.HOURS)) {
+							reporter.error(new IOMessageImpl(
+									"Timeout reached waiting for completion of WFS requests",
+									null));
+						}
+
+						reporter.setSuccess(!failed.get() && reporter.getErrors().isEmpty());
+						if (!reporter.isSuccess()) {
+							reporter.setSummary(
+									"Errors during upload to WFS-T, please see the report.");
+						}
+						else {
+							reporter.setSummary("Successfully uploaded data via WFS-T");
+						}
+					}
+					else {
+						reporter.setSuccess(false);
+						reporter.setSummary("Partitioning yielded no instances to upload");
+					}
+
 				}
-			}
-			else {
-				reporter.setSuccess(false);
-				reporter.setSummary("Partitioning yielded no instances to upload");
+
 			}
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Error during attempt to upload to WFS-T", e));
@@ -162,7 +228,7 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements 
 	 */
 	protected IOReport uploadInstances(final InstanceCollection instances,
 			final IOReporter reporter, final ProgressIndicator progress)
-			throws IOProviderConfigurationException, IOException {
+					throws IOProviderConfigurationException, IOException {
 		SimpleWFSWriter writer = new SimpleWFSWriter() {
 
 			@Override
@@ -189,7 +255,7 @@ public class PartitioningWFSWriter extends AbstractGeoInstanceWriter implements 
 
 	@Override
 	public boolean isPassthrough() {
-		return false;
+		return !StreamGmlWriter.getPartitioner(this, SimpleLog.NO_LOG).usesReferences();
 	}
 
 	@Override
