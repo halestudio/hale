@@ -86,7 +86,7 @@ public class GroovyCreate extends AbstractTypeTransformation<TransformationEngin
 		try {
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
 			Script script = GroovyUtil.getScript(this, binding, service);
-			return GroovyUtil.evaluateAll(script, builder, type, service);
+			return GroovyUtil.evaluateAll(script, builder, type, service, log);
 		} catch (TransformationException e) {
 			throw e;
 		} catch (NoResultException e) {
