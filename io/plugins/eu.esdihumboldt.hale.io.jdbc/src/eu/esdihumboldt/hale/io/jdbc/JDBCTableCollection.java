@@ -23,6 +23,8 @@ import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.LogAware;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -43,9 +45,9 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
  * 
  * @author Simon Templer
  */
-public class JDBCTableCollection implements InstanceCollection {
+public class JDBCTableCollection implements InstanceCollection, LogAware {
 
-	private static final ALogger log = ALoggerFactory.getLogger(JDBCTableCollection.class);
+	private static final ALogger logger = ALoggerFactory.getLogger(JDBCTableCollection.class);
 
 	/**
 	 * Iterator other a JDBC table.
@@ -209,6 +211,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	private final String sqlQuery;
 	private final String countQuery;
 	private final CRSProvider crsProvider;
+	private SimpleLog log = SimpleLog.fromLogger(logger);
 
 	/**
 	 * Constructor.
@@ -242,13 +245,16 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			// support project variables
 			query = JDBCUtil.replaceVariables(query, services);
-			
-			// this.countQuery = null; 
-			// countQuery = null caused to return UNKNOWN_SIZE in size() with causes isEmpty() 
-			// to return false and that causes problems on iterating with MultiInstanceCollection 
+
+			// this.countQuery = null;
+			// countQuery = null caused to return UNKNOWN_SIZE in size() with
+			// causes isEmpty()
+			// to return false and that causes problems on iterating with
+			// MultiInstanceCollection
 			this.countQuery = "SELECT COUNT(*) FROM (\n" + query + "\n) tmp";
 			// note 1: this sub query is not supported in all SQL dialects
-			// note 2: the line breaks '\n' prevent from problems using  comments in the embedded query
+			// note 2: the line breaks '\n' prevent from problems using comments
+			// in the embedded query
 		}
 		this.sqlQuery = query;
 	}
@@ -316,8 +322,10 @@ public class JDBCTableCollection implements InstanceCollection {
 					return 0;
 				}
 			} catch (SQLException e2) {
-				log.warn("Could not determine query size by counting query result", e2);
-				return UNKNOWN_SIZE;
+				log.error("Could not determine query size by counting query result", e2);
+				// we can't query the database, so we won't be able to yield
+				// instances
+				return 0;
 			}
 		}
 	}
@@ -332,6 +340,16 @@ public class JDBCTableCollection implements InstanceCollection {
 	public InstanceCollection select(Filter filter) {
 		// TODO apply filter to query instead!
 		return FilteredInstanceCollection.applyFilter(this, filter);
+	}
+
+	@Override
+	public void setLog(SimpleLog log) {
+		if (log != null) {
+			this.log = log;
+		}
+		else {
+			this.log = SimpleLog.fromLogger(logger);
+		}
 	}
 
 }

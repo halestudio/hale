@@ -17,9 +17,12 @@
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import eu.esdihumboldt.hale.common.core.report.LogAware;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -36,9 +39,10 @@ import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
  * 
  * @author Kai Schwierczek
  */
-public class MultiInstanceCollection implements InstanceCollection {
+public class MultiInstanceCollection implements InstanceCollection, LogAware {
 
 	private final List<InstanceCollection> collections;
+	private SimpleLog log;
 
 	/**
 	 * Constructor using a list of instance collections..
@@ -46,78 +50,65 @@ public class MultiInstanceCollection implements InstanceCollection {
 	 * @param collections the list of instance collections
 	 */
 	public MultiInstanceCollection(List<InstanceCollection> collections) {
-		this.collections = new ArrayList<InstanceCollection>(collections);
+		this.collections = Collections
+				.unmodifiableList(new ArrayList<InstanceCollection>(collections));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceResolver#getReference(eu.esdihumboldt.hale.common.instance.model.Instance)
-	 */
 	@Override
 	public InstanceReference getReference(Instance instance) {
 		MultiInstanceCollectionInstance inst = (MultiInstanceCollectionInstance) instance;
-		return new MultiInstanceCollectionReference(collections.get(inst.listIndex).getReference(
-				inst.getOriginalInstance()), inst.listIndex);
+		return new MultiInstanceCollectionReference(
+				collections.get(inst.listIndex).getReference(inst.getOriginalInstance()),
+				inst.listIndex);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceResolver#getInstance(eu.esdihumboldt.hale.common.instance.model.InstanceReference)
-	 */
 	@Override
 	public Instance getInstance(InstanceReference reference) {
 		MultiInstanceCollectionReference ref = (MultiInstanceCollectionReference) reference;
-		return new MultiInstanceCollectionInstance(collections.get(ref.listIndex).getInstance(
-				ref.reference), ref.listIndex);
+		return new MultiInstanceCollectionInstance(
+				collections.get(ref.listIndex).getInstance(ref.reference), ref.listIndex);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#iterator()
-	 */
 	@Override
 	public ResourceIterator<Instance> iterator() {
 		return new MultiInstanceCollectionResourceIterator();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#hasSize()
-	 */
 	@Override
 	public boolean hasSize() {
-		for (InstanceCollection collection : collections)
-			if (!collection.hasSize())
+		for (InstanceCollection collection : collections) {
+			if (!collection.hasSize()) {
 				return false;
+			}
+		}
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#size()
-	 */
 	@Override
 	public int size() {
 		int result = 0;
 		for (InstanceCollection collection : collections) {
 			int size = collection.size();
-			if (size == UNKNOWN_SIZE)
+			if (size == UNKNOWN_SIZE) {
 				return UNKNOWN_SIZE;
-			else
+			}
+			else {
 				result += size;
+			}
 		}
 		return result;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#isEmpty()
-	 */
 	@Override
 	public boolean isEmpty() {
-		for (InstanceCollection collection : collections)
-			if (!collection.isEmpty())
+		for (InstanceCollection collection : collections) {
+			if (!collection.isEmpty()) {
 				return false;
+			}
+		}
 		return true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#select(eu.esdihumboldt.hale.common.instance.model.Filter)
-	 */
 	@Override
 	public InstanceCollection select(Filter filter) {
 		/*
@@ -139,7 +130,11 @@ public class MultiInstanceCollection implements InstanceCollection {
 	 * @return the multi instance collection
 	 */
 	protected MultiInstanceCollection createNew(List<InstanceCollection> filtered) {
-		return new MultiInstanceCollection(filtered);
+		MultiInstanceCollection result = new MultiInstanceCollection(filtered);
+		if (log != null) {
+			result.setLog(log);
+		}
+		return result;
 	}
 
 	/**
@@ -179,9 +174,6 @@ public class MultiInstanceCollection implements InstanceCollection {
 			return false;
 		}
 
-		/**
-		 * @see java.util.Iterator#next()
-		 */
 		@Override
 		public Instance next() {
 			// check for hasNext first, because after a unsuccessful call to
@@ -204,20 +196,16 @@ public class MultiInstanceCollection implements InstanceCollection {
 				throw new NoSuchElementException();
 		}
 
-		/**
-		 * @see java.util.Iterator#remove()
-		 */
 		@Override
 		public void remove() {
-			if (currentIterator != null)
+			if (currentIterator != null) {
 				currentIterator.remove();
-			else
+			}
+			else {
 				throw new IllegalStateException();
+			}
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.ResourceIterator#close()
-		 */
 		@Override
 		public void close() {
 			closed = true;
@@ -272,17 +260,11 @@ public class MultiInstanceCollection implements InstanceCollection {
 			this.listIndex = listIndex;
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.InstanceReference#getDataSet()
-		 */
 		@Override
 		public DataSet getDataSet() {
 			return reference.getDataSet();
 		}
 
-		/**
-		 * @see java.lang.Object#hashCode()
-		 */
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -292,17 +274,26 @@ public class MultiInstanceCollection implements InstanceCollection {
 			return result;
 		}
 
-		/**
-		 * @see java.lang.Object#equals(java.lang.Object)
-		 */
 		@Override
 		public boolean equals(Object obj) {
 			if (obj instanceof MultiInstanceCollectionReference) {
 				MultiInstanceCollectionReference other = (MultiInstanceCollectionReference) obj;
 				return listIndex == other.listIndex && reference.equals(other.reference);
 			}
-			else
+			else {
 				return false;
+			}
+		}
+	}
+
+	@Override
+	public void setLog(SimpleLog log) {
+		this.log = log;
+
+		for (InstanceCollection collection : collections) {
+			if (collection instanceof LogAware) {
+				((LogAware) collection).setLog(log);
+			}
 		}
 	}
 }
