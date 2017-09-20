@@ -296,7 +296,7 @@ public class JDBCTableCollection implements InstanceCollection, LogAware {
 	@Override
 	public int size() {
 		if (countQuery == null) {
-			return UNKNOWN_SIZE;
+			return vagueSize();
 		}
 
 		try (Connection connection = createConnection()) {
@@ -310,28 +310,37 @@ public class JDBCTableCollection implements InstanceCollection, LogAware {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn("Could not determine query size by count query");
-			try (Connection connection = createConnection()) {
-				Statement st = connection.createStatement();
-				st.setMaxRows(1);
-				ResultSet res = st.executeQuery(sqlQuery);
-				if (res.next()) {
-					return UNKNOWN_SIZE;
-				}
-				else {
-					return 0;
-				}
-			} catch (SQLException e2) {
-				log.error("Could not determine query size by counting query result", e2);
-				// we can't query the database, so we won't be able to yield
-				// instances
+			log.warn("Could not determine query size by count query", e);
+			return vagueSize();
+		}
+	}
+
+	private int vagueSize() {
+		try (Connection connection = createConnection()) {
+			Statement st = connection.createStatement();
+			st.setMaxRows(1);
+			ResultSet res = st.executeQuery(sqlQuery);
+			if (res.next()) {
+				// we know that there is at least one
+				return UNKNOWN_SIZE;
+			}
+			else {
 				return 0;
 			}
+		} catch (SQLException e2) {
+			log.error("Could not determine query size by counting query result", e2);
+			// we can't query the database, so we won't be able to yield
+			// instances
+			return 0;
 		}
 	}
 
 	@Override
 	public boolean isEmpty() {
+		// it is important that we return a correct value here, especially that
+		// there are no cases where the size is stated as unknown and the
+		// collection is empty anyway (this causes a problem
+		// for instance w/ MultiInstanceCollection)
 		int size = size();
 		return size == 0;
 	}
