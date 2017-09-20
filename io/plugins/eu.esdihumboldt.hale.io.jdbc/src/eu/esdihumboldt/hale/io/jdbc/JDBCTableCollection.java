@@ -304,7 +304,7 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn("Could not determine query size by count query");
+			log.warn("Could not determine query size by count query\n" + countQuery);
 			try (Connection connection = createConnection()) {
 				Statement st = connection.createStatement();
 				st.setMaxRows(1);
@@ -316,7 +316,7 @@ public class JDBCTableCollection implements InstanceCollection {
 					return 0;
 				}
 			} catch (SQLException e2) {
-				log.warn("Could not determine query size by counting query result", e2);
+				log.warn("Could not determine query size by counting query result\n" + sqlQuery, e2);
 				return UNKNOWN_SIZE;
 			}
 		}
