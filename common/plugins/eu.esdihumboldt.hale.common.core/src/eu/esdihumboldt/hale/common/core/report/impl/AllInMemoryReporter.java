@@ -26,6 +26,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportLog;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Former default report implementation
@@ -41,8 +42,7 @@ public class AllInMemoryReporter<T extends Message> extends AbstractReporter<T> 
 	/**
 	 * The logger
 	 */
-	private static final ALogger log = ALoggerFactory.getMaskingLogger(AllInMemoryReporter.class,
-			null);
+	protected final SimpleLog log;
 
 	/**
 	 * The list of errors
@@ -71,11 +71,29 @@ public class AllInMemoryReporter<T extends Message> extends AbstractReporter<T> 
 	 * 
 	 * @param taskName the name of the task the report is related to
 	 * @param messageType the message type
+	 * @param doLog if added messages shall also be logged using the provided
+	 *            logger
+	 * @param log the log to use if doLog is enabled
+	 */
+	public AllInMemoryReporter(String taskName, Class<T> messageType, boolean doLog,
+			SimpleLog log) {
+		super(taskName, messageType);
+		this.doLog = doLog;
+		this.log = log;
+	}
+
+	/**
+	 * Create an empty report. It is set to not successful by default. But you
+	 * should call {@link #setSuccess(boolean)} nonetheless to update the
+	 * timestamp after the task has finished.
+	 * 
+	 * @param taskName the name of the task the report is related to
+	 * @param messageType the message type
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public AllInMemoryReporter(String taskName, Class<T> messageType, boolean doLog) {
-		super(taskName, messageType);
-		this.doLog = doLog;
+		this(taskName, messageType, doLog, SimpleLog
+				.fromLogger(ALoggerFactory.getMaskingLogger(AllInMemoryReporter.class, null)));
 	}
 
 	/**

@@ -18,6 +18,8 @@ package eu.esdihumboldt.hale.common.instance.model.ext.helper;
 
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.report.LogAware;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -31,7 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public abstract class InstanceCollectionDecorator implements InstanceCollection2 {
+public abstract class InstanceCollectionDecorator implements InstanceCollection2, LogAware {
 
 	/**
 	 * The decorated instance collection.
@@ -95,6 +97,13 @@ public abstract class InstanceCollectionDecorator implements InstanceCollection2
 			return ((InstanceCollection2) decoratee).fanout();
 		}
 		return null;
+	}
+
+	@Override
+	public void setLog(SimpleLog log) {
+		if (decoratee instanceof LogAware) {
+			((LogAware) decoratee).setLog(log);
+		}
 	}
 
 }

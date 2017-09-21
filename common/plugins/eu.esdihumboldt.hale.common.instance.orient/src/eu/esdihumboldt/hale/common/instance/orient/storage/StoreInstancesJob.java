@@ -36,8 +36,10 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.fhg.igd.slf4jplus.ATransaction;
+import eu.esdihumboldt.hale.common.core.report.LogAware;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
+import eu.esdihumboldt.hale.common.core.report.ReportSimpleLogSupport;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
@@ -62,6 +64,20 @@ import gnu.trove.TObjectIntProcedure;
  */
 public abstract class StoreInstancesJob extends Job {
 
+	private static class DefaultLog extends DefaultReporter<Message>
+			implements ReportSimpleLogSupport<Message> {
+
+		public DefaultLog(String taskName, Class<Message> messageType, boolean doLog) {
+			super(taskName, messageType, doLog);
+		}
+
+		@Override
+		public Message createMessage(String message, Throwable e) {
+			return new MessageImpl(message, e);
+		}
+
+	}
+
 	private static final ALogger log = ALoggerFactory.getLogger(StoreInstancesJob.class);
 
 	private InstanceCollection instances;
@@ -70,7 +86,7 @@ public abstract class StoreInstancesJob extends Job {
 	/**
 	 * The job report, may be <code>null</code>.
 	 */
-	protected final Reporter<Message> report;
+	protected final DefaultLog report;
 
 	private final ReportHandler reportHandler;
 
@@ -120,7 +136,7 @@ public abstract class StoreInstancesJob extends Job {
 		this.doProcessing = doProcessing;
 
 		if (reportHandler != null) {
-			report = new DefaultReporter<Message>("Load data into database", Message.class, false);
+			report = new DefaultLog("Load data into database", Message.class, false);
 		}
 		else {
 			report = null;
@@ -170,6 +186,10 @@ public abstract class StoreInstancesJob extends Job {
 			// TODO decouple next() and save()?
 
 			long lastUpdate = 0; // last count update
+
+			if (report != null && instances instanceof LogAware) {
+				((LogAware) instances).setLog(report);
+			}
 
 			ResourceIterator<Instance> it = instances.iterator();
 			int size = instances.size();
@@ -228,6 +248,9 @@ public abstract class StoreInstancesJob extends Job {
 				}
 			} finally {
 				it.close();
+				if (report != null && instances instanceof LogAware) {
+					((LogAware) instances).setLog(null);
+				}
 			}
 
 			db.declareIntent(null);

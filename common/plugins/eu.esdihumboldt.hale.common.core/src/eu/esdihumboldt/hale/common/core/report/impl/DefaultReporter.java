@@ -19,6 +19,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Default report implementation
@@ -29,7 +30,7 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  */
 public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 
-	private static final ALogger log = ALoggerFactory.getLogger(DefaultReporter.class);
+	private static final ALogger logger = ALoggerFactory.getLogger(DefaultReporter.class);
 
 	/**
 	 * Maximum number of messages per message type in a report. Negative values
@@ -51,7 +52,8 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
-		super(taskName, messageType, doLog);
+		super(taskName, messageType, doLog,
+				SimpleLog.fromLogger(ALoggerFactory.getMaskingLogger(DefaultReporter.class, null)));
 	}
 
 	/**
@@ -71,7 +73,7 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 			try {
 				return Integer.valueOf(setting);
 			} catch (Throwable e) {
-				log.error("Error applying custom report message cap setting: " + setting, e);
+				logger.error("Error applying custom report message cap setting: " + setting, e);
 			}
 		}
 
