@@ -310,7 +310,7 @@ public class JDBCTableCollection implements InstanceCollection, LogAware {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn("Could not determine query size by count query", e);
+			log.warn("Could not determine query size by count query\n" + countQuery, e);
 			return vagueSize();
 		}
 	}
@@ -328,7 +328,7 @@ public class JDBCTableCollection implements InstanceCollection, LogAware {
 				return 0;
 			}
 		} catch (SQLException e2) {
-			log.error("Could not determine query size by counting query result", e2);
+			log.error("Could not determine query size by counting query result\n" + sqlQuery, e2);
 			// we can't query the database, so we won't be able to yield
 			// instances
 			return 0;
