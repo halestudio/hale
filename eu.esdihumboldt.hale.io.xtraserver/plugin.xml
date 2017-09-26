@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            class="eu.esdihumboldt.hale.io.xtraserver.reader.XtraServerMappingFileReader"
+            id="eu.esdihumboldt.hale.io.xtraserver.reader"
+            name="XtraServer Mapping File">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xtraserver.mapping">
+         </contentType>
+      </provider>
+   </extension>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="eu.esdihumboldt.hale.io.xtraserver.mapping"
+            name="XtraServer Mapping File"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.interactive-instruments.de/namespaces/XtraServer}FeatureTypes">
+            </parameter>
+         </describer>
+      </content-type>
+   </extension>
+
+</plugin>
