@@ -122,7 +122,7 @@
          point="eu.esdihumboldt.hale.ui.io.source">
       <source
             class="eu.esdihumboldt.hale.io.haleconnect.ui.projects.HaleConnectSource"
-            contentType="eu.esdihumboldt.hale.io.project.hale25.zip"
+            contentType="eu.esdihumboldt.hale.io.haleconnect.zip"
             description="Load from hale connect"
             icon="images/hale-connect-icon.png"
             id="eu.esdihumboldt.hale.io.haleconnect.ui.source"

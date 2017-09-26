@@ -43,10 +43,41 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		implements TransformationReport, TransformationReporter {
 
 	/**
+	 * Maximum number of messages per cell. Negative values mean unlimited
+	 * messages.
+	 */
+	private static final int MESSAGE_CAP = getMessageCap();
+
+	/**
+	 * Determine message cap from system property or environment variable,
+	 * otherwise return a default value.
+	 * 
+	 * @return the message cap
+	 */
+	private static int getMessageCap() {
+		String setting = System.getProperty("hale.reports.message_cap.per_cell");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_REPORTS_MESSAGE_CAP_PER_CELL");
+		}
+
+		if (setting != null) {
+			try {
+				return Integer.valueOf(setting);
+			} catch (Throwable e) {
+				log.error("Error applying custom report message cap setting: " + setting, e);
+			}
+		}
+
+		// default to fall back to
+		return 100;
+	}
+
+	/**
 	 * The logger
 	 */
-	private static final ALogger log = ALoggerFactory.getMaskingLogger(
-			DefaultTransformationReporter.class, null);
+	private static final ALogger log = ALoggerFactory
+			.getMaskingLogger(DefaultTransformationReporter.class, null);
 
 	/**
 	 * Transformation message key that decides on message equality. Messages are
@@ -78,14 +109,10 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 			final int prime = 31;
 			int result = 1;
 			result = prime * result + getOuterType().hashCode();
-			result = prime
-					* result
-					+ ((message == null || message.getCellId() == null) ? 0 : message.getCellId()
-							.hashCode());
-			result = prime
-					* result
-					+ ((message == null || message.getMessage() == null) ? 0 : message.getMessage()
-							.hashCode());
+			result = prime * result + ((message == null || message.getCellId() == null) ? 0
+					: message.getCellId().hashCode());
+			result = prime * result + ((message == null || message.getMessage() == null) ? 0
+					: message.getMessage().hashCode());
 			return result;
 		}
 
@@ -134,6 +161,8 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		 */
 		private final Map<String, Multiset<TMessageKey>> messages = new HashMap<String, Multiset<TMessageKey>>();
 
+		private int more = 0;
+
 		/**
 		 * Add a message.
 		 * 
@@ -142,11 +171,19 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		public void add(TransformationMessage message) {
 			String cell = message.getCellId();
 			Multiset<TMessageKey> msgs = messages.get(cell);
+
 			if (msgs == null) {
 				msgs = LinkedHashMultiset.create();
 				messages.put(cell, msgs);
 			}
-			msgs.add(new TMessageKey(message));
+			else if (MESSAGE_CAP >= 0 && msgs.elementSet().size() >= MESSAGE_CAP) {
+				// max messages per cell
+				// we don't store this message, just count it
+				more++;
+				return;
+			}
+			TMessageKey insert = new TMessageKey(message);
+			msgs.add(insert);
 		}
 
 		/**
@@ -167,8 +204,9 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 						if (throwable == null) {
 							stackTrace = org.getStackTrace();
 						}
-						result.add(new TransformationMessageImpl(org.getCellId(), org.getMessage()
-								+ " (" + entry.getCount() + " times)", throwable, stackTrace));
+						result.add(new TransformationMessageImpl(org.getCellId(),
+								org.getMessage() + " (" + entry.getCount() + " times)", throwable,
+								stackTrace));
 					}
 					else {
 						result.add(entry.getElement().getMessage());
@@ -180,12 +218,35 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		}
 
 		/**
+		 * Add more messages that are only represented with the count.
+		 * 
+		 * @param more the number of messages to add
+		 */
+		public void addMore(int more) {
+			more += more;
+		}
+
+		/**
+		 * @return the count of messages represented
+		 */
+		public int getMessageCount() {
+			int count = more;
+
+			for (Multiset<TMessageKey> msgs : messages.values()) {
+				// only count each key once, as the messages are represented
+				count += msgs.elementSet().size();
+			}
+
+			return count;
+		}
+
+		/**
 		 * Determines if there are any messages contained.
 		 * 
 		 * @return if there are any messages present
 		 */
 		public boolean hasMessages() {
-			return !messages.isEmpty();
+			return !messages.isEmpty() || more > 0;
 		}
 	}
 
@@ -242,6 +303,36 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 	}
 
 	@Override
+	public void countError(int number) {
+		error.addMore(number);
+	}
+
+	@Override
+	public void countWarning(int number) {
+		warn.addMore(number);
+	}
+
+	@Override
+	public void countInfo(int number) {
+		info.addMore(number);
+	}
+
+	@Override
+	public int getTotalWarnings() {
+		return warn.getMessageCount();
+	}
+
+	@Override
+	public int getTotalErrors() {
+		return error.getMessageCount();
+	}
+
+	@Override
+	public int getTotalInfos() {
+		return info.getMessageCount();
+	}
+
+	@Override
 	public void setSuccess(boolean success) {
 		super.setSuccess(success);
 
@@ -282,11 +373,23 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 		for (TransformationMessage message : report.getErrors()) {
 			error.add(message);
 		}
+		int errorMore = report.getTotalErrors() - report.getErrors().size();
+		if (errorMore > 0) {
+			error.addMore(errorMore);
+		}
 		for (TransformationMessage message : report.getWarnings()) {
 			warn.add(message);
 		}
+		int warnMore = report.getTotalWarnings() - report.getWarnings().size();
+		if (warnMore > 0) {
+			warn.addMore(warnMore);
+		}
 		for (TransformationMessage message : report.getInfos()) {
 			info.add(message);
+		}
+		int infoMore = report.getTotalInfos() - report.getInfos().size();
+		if (infoMore > 0) {
+			info.addMore(infoMore);
 		}
 	}
 }

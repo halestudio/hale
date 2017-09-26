@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.core.io;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 
@@ -204,10 +205,32 @@ public class PathUpdate {
 	 * @return the new URI
 	 */
 	public URI changePath(URI oldSource) {
-		if (oldRaw != null)
-			return URI.create(oldSource.toString().replace(oldRaw, newRaw));
-		else
+		if (oldRaw != null) {
+			if (oldSource.toString().startsWith(oldRaw)) {
+				return URI.create(oldSource.toString().replace(oldRaw, newRaw));
+			}
+			else {
+				// try to fix cases where oldRaw matches '<scheme>:///<rest>'
+				// but oldSource matches '<scheme>:/<rest>' or vice versa
+				try {
+					URI oldRawUri = new URI(oldRaw);
+					// URI.normalize() will not remove the additional slashes
+					URI normalizedOldRaw = new URI(oldRawUri.getScheme(), oldRawUri.getHost(),
+							oldRawUri.getPath(), oldRawUri.getFragment());
+					URI normalizedOldSource = new URI(oldSource.getScheme(), oldSource.getHost(),
+							oldSource.getPath(), oldSource.getFragment());
+
+					return URI.create(normalizedOldSource.toString()
+							.replace(normalizedOldRaw.toString(), newRaw));
+				} catch (URISyntaxException e) {
+					// tough luck
+					return oldSource;
+				}
+			}
+		}
+		else {
 			return oldSource;
+		}
 	}
 
 	// Analyzes the old and the new project path and tries to return the new one

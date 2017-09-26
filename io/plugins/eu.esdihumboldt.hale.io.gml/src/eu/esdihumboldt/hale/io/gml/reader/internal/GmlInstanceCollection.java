@@ -42,6 +42,8 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
+import eu.esdihumboldt.hale.common.core.report.LogAware;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -71,7 +73,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class GmlInstanceCollection implements InstanceCollection {
+public class GmlInstanceCollection implements InstanceCollection, LogAware {
 
 	/**
 	 * Iterates over {@link Instance}s in an XML/GML stream
@@ -353,7 +355,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 				for (PropertyDefinition property : allProperties) {
 					if (!property.getConstraint(XmlAttributeFlag.class).isEnabled() && property
 							.getName().getLocalPart().equals(elementName.getLocalPart())) {
-						log.debug(MessageFormat.format(
+						logger.debug(MessageFormat.format(
 								"Descending property with differing namespace - {0} replaced with {1}",
 								elementName.toString(), property.getName().toString()));
 						return property.getPropertyType();
@@ -652,7 +654,7 @@ public class GmlInstanceCollection implements InstanceCollection {
 
 	}
 
-	private final ALogger log = ALoggerFactory.getLogger(GmlInstanceCollection.class);
+	private final ALogger logger = ALoggerFactory.getLogger(GmlInstanceCollection.class);
 
 	private final TypeIndex sourceSchema;
 	private final LocatableInputSupplier<? extends InputStream> source;
@@ -667,6 +669,8 @@ public class GmlInstanceCollection implements InstanceCollection {
 	private final IOProvider ioProvider;
 
 	private final boolean ignoreMappingRelevant;
+
+	private SimpleLog log = SimpleLog.fromLogger(logger);
 
 	/**
 	 * Create an XMl/GML instance collection based on the given source.
@@ -792,6 +796,16 @@ public class GmlInstanceCollection implements InstanceCollection {
 			return it.next(); // return the referenced instance
 		} finally {
 			it.close();
+		}
+	}
+
+	@Override
+	public void setLog(SimpleLog log) {
+		if (log != null) {
+			this.log = log;
+		}
+		else {
+			this.log = SimpleLog.fromLogger(logger);
 		}
 	}
 

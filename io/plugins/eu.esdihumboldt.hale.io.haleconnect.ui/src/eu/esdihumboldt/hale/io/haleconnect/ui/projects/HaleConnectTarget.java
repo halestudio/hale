@@ -34,6 +34,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -54,6 +56,7 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
 import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
+import eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectReader;
 import eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectWriter;
 import eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginDialog;
 import eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginHandler;
@@ -90,6 +93,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private Composite updateProjectControls;
 	private StringFieldEditor projectName;
 	private Button selectProjectButton;
+	private Label upstreamModifiedWarning;
 
 	private boolean createNewProject;
 	private HaleConnectProjectConfig targetProject;
@@ -127,6 +131,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				if (loginDialog.open() == Dialog.OK) {
 					HaleConnectLoginHandler.performLogin(loginDialog);
 					updateState();
+					prefillTargetProject();
 				}
 			}
 
@@ -261,6 +266,15 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 			}
 		});
 
+		FontData currentFont = loginStatusLabel.getFont().getFontData()[0];
+
+		upstreamModifiedWarning = new Label(updateProjectControls, SWT.WRAP);
+		upstreamModifiedWarning
+				.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
+		upstreamModifiedWarning.setFont(new Font(upstreamModifiedWarning.getDisplay(),
+				new FontData(currentFont.getName(), currentFont.getHeight(), SWT.BOLD)));
+		upstreamModifiedWarning.setVisible(false);
+
 		Composite writerOptions = new Composite(parent, SWT.NONE);
 		writerOptions.setLayout(new RowLayout());
 		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 3, 2));
@@ -277,33 +291,57 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				"Use cached internal schema representation (required for big schema files)?");
 		excludeCachedResources.setSelection(true);
 
+		prefillTargetProject();
+
+		updateState();
+	}
+
+	/**
+	 * 
+	 */
+	private void prefillTargetProject() {
+		if (!haleConnect.isLoggedIn()) {
+			return;
+		}
+
 		ProjectInfoService pis = HaleUI.getServiceProvider().getService(ProjectInfoService.class);
-		URI loadLocation = pis.getLoadLocation();
-		if (loadLocation != null) {
+		String projectUrnProperty = pis
+				.getProperty(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY)
+				.getStringRepresentation();
+
+		if (projectUrnProperty != null) {
 			// If project was loaded from hale connect, prefill project name
-			try {
-				if (HaleConnectUrnBuilder.isValidProjectUrn(loadLocation)) {
-					String projectId = HaleConnectUrnBuilder.extractProjectId(loadLocation);
-					Owner owner = HaleConnectUrnBuilder.extractProjectOwner(loadLocation);
+
+			URI projectUrn = URI.create(projectUrnProperty);
+			if (HaleConnectUrnBuilder.isValidProjectUrn(projectUrn)) {
+				String projectId = HaleConnectUrnBuilder.extractProjectId(projectUrn);
+				Owner owner = HaleConnectUrnBuilder.extractProjectOwner(projectUrn);
+
+				try {
+					if (!haleConnect.testProjectPermission(HaleConnectService.PERMISSION_EDIT,
+							owner, projectId)) {
+						return;
+					}
+
 					HaleConnectProjectInfo projectInfo = haleConnect.getProject(owner, projectId);
 					if (projectInfo != null) {
 						targetProject = new HaleConnectProjectConfig();
 						targetProject.setOwner(owner);
 						targetProject.setProjectId(projectId);
 						targetProject.setProjectName(projectInfo.getName());
+						targetProject.setLastModified(projectInfo.getLastModified());
 						newProject.setSelection(false);
 						updateProject.setSelection(true);
 						projectName.setStringValue(projectInfo.getName());
 					}
+				} catch (Throwable t) {
+					// Non-fatal
+					log.warn(MessageFormat.format("Unable to prefill target project: {0}",
+							t.getMessage()), t);
 				}
-			} catch (Throwable t) {
-				// Non-fatal
-				log.warn(MessageFormat.format("Unable to prefill target project: {0}",
-						t.getMessage()), t);
 			}
 		}
 
-		updateState();
 	}
 
 	/**
@@ -311,6 +349,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	 */
 	protected void updateState() {
 		updateLoginStatus();
+		updateOverwriteWarning();
+
 		setValid(haleConnect.isLoggedIn() && (ownerUser.isEnabled() || ownerOrg.isEnabled())
 				&& (newProject.getSelection() || targetProject != null));
 		if (newProject.getSelection()) {
@@ -449,9 +489,47 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		targetProject = ChooseHaleConnectProjectWizard.openSelectProject();
 		if (targetProject != null) {
 			projectName.setStringValue(targetProject.getProjectName());
+			updateOverwriteWarning();
 		}
 		else {
 			projectName.setStringValue("");
 		}
+	}
+
+	private void updateOverwriteWarning() {
+		if (createNewProject || targetProject == null) {
+			upstreamModifiedWarning.setVisible(false);
+			return;
+		}
+
+		ProjectInfoService pis = HaleUI.getServiceProvider().getService(ProjectInfoService.class);
+
+		String lastModifiedProperty = pis
+				.getProperty(HaleConnectProjectReader.HALECONNECT_LAST_MODIFIED_PROPERTY)
+				.getStringRepresentation();
+		if (lastModifiedProperty != null && targetProject != null
+				&& targetProject.getLastModified() != null) {
+			Long lastModified = Long.parseLong(lastModifiedProperty);
+			boolean hasNewerVersion = lastModified < targetProject.getLastModified();
+			if (hasNewerVersion) {
+				upstreamModifiedWarning
+						.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+				upstreamModifiedWarning.setText(
+						"The project on hale connect has been updated since it was last imported.\nChanges may be lost if you continue with this export.");
+				upstreamModifiedWarning.setVisible(true);
+			}
+			else {
+				upstreamModifiedWarning.setVisible(false);
+			}
+		}
+		else {
+			upstreamModifiedWarning
+					.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+			upstreamModifiedWarning.setText(
+					"The current project to be exported was not originally imported from hale connect.\nThe project to update on hale connect will be replaced by this project if you continue with this export.");
+			upstreamModifiedWarning.setVisible(true);
+		}
+
+		updateProjectControls.layout();
 	}
 }

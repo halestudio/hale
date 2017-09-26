@@ -352,7 +352,13 @@ public class HelperFunctionsExtension implements HelperFunctionsService {
 				return null;
 			}
 			else {
-				return injectContext(catMap.get(name), context);
+				HelperFunctionOrCategory res = catMap.get(name);
+				if (res != null) {
+					return injectContext(res, context);
+				}
+				else {
+					return null;
+				}
 			}
 		}
 	}

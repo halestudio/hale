@@ -10,6 +10,8 @@
       <anchor id="introduction"/>
    </topic>
    <topic label="What&apos;s new?">
+      <topic href="html/new/3_3_1.xhtml" label="New in 3.3.1">
+      </topic>
       <topic href="html/new/3_3_0.xhtml" label="New in 3.3">
       </topic>
       <topic href="html/new/3_2_0.xhtml" label="New in 3.2">
@@ -135,7 +137,7 @@
 	      </topic>
 	      <topic href="html/tasks/haleconnect/loadproject.html" label="Load a hale connect transformation project">
 	      </topic>
-	      <topic href="html/tasks/haleconnect/shareproject.html" label="Sharing a transformation project on hale connect">
+	      <topic href="html/tasks/haleconnect/shareproject.html" label="Share and update a transformation project on hale connect">
 	      </topic>
           <anchor id="haleconnect-end"/>
       </topic>

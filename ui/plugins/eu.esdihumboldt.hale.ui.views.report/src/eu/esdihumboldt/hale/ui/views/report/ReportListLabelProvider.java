@@ -70,13 +70,13 @@ public class ReportListLabelProvider extends LabelProvider {
 			if (!report.isSuccess()) {
 				img = "icons/error.gif";
 			}
-			else if (report.getWarnings().size() > 0 && report.getErrors().size() > 0) {
+			else if (report.hasWarnings() && report.hasErrors()) {
 				img = "icons/errorwarning_tab.gif";
 			}
-			else if (report.getErrors().size() > 0) {
+			else if (report.hasErrors()) {
 				img = "icons/error_log.gif";
 			}
-			else if (report.getWarnings().size() > 0) {
+			else if (report.hasWarnings()) {
 				img = "icons/warning.gif";
 			}
 

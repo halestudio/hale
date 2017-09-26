@@ -17,14 +17,16 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.ArrayList;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
@@ -36,8 +38,6 @@ import groovy.lang.Closure;
  * @author Kai Schwierczek
  */
 public class TargetCollector {
-
-	private static final ALogger log = ALoggerFactory.getLogger(TargetCollector.class);
 
 	private class TargetData {
 
@@ -60,6 +60,7 @@ public class TargetCollector {
 
 	private final ArrayList<TargetData> targetData = new ArrayList<>();
 	private boolean containsValues = false;
+	private boolean containsGeometries = false;
 	private boolean containsClosures = false;
 	private final InstanceBuilder builder;
 	private final TypeDefinition typeDef;
@@ -94,6 +95,9 @@ public class TargetCollector {
 	public void call(Object value) {
 		targetData.add(new TargetData(value, null));
 		containsValues = true;
+		if (value instanceof Geometry || value instanceof GeometryProperty) {
+			containsGeometries = true;
+		}
 	}
 
 	/**
@@ -104,10 +108,15 @@ public class TargetCollector {
 	 */
 	public void call(Object value, Closure<?> targetClosure) {
 		targetData.add(new TargetData(value, targetClosure));
-		if (targetClosure != null)
+		if (targetClosure != null) {
 			containsClosures = true;
-		if (value != null)
+		}
+		if (value != null) {
 			containsValues = true;
+			if (value instanceof Geometry || value instanceof GeometryProperty) {
+				containsGeometries = true;
+			}
+		}
 	}
 
 	/**
@@ -116,11 +125,12 @@ public class TargetCollector {
 	 * 
 	 * @param builder the instance builder for creating target instances
 	 * @param type the type of the instance to create
+	 * @param log the log
 	 * @return a result value for all closures added to this collector
 	 * @throws TransformationException if some of the collected targets do not
 	 *             match the specified type
 	 */
-	public MultiValue toMultiValue(InstanceBuilder builder, TypeDefinition type)
+	public MultiValue toMultiValue(InstanceBuilder builder, TypeDefinition type, SimpleLog log)
 			throws TransformationException {
 		MultiValue result = new MultiValue(size());
 
@@ -135,9 +145,16 @@ public class TargetCollector {
 			// the target.");
 
 			// this may be desired, e.g. when producing geometries for GML
-			// so instead of a hard error, we just log a warning
-			log.warn(
-					"Value provided for target that does not allow a value according to the schema");
+			if (containsGeometries) {
+				// only warning message for geometries
+				log.warn(
+						"Value provided for target that does not allow a value according to the schema, contains geometries");
+			}
+			else {
+				// instead of a hard error, we just log an error
+				log.error(
+						"Value provided for target that does not allow a value according to the schema");
+			}
 		}
 
 		for (TargetData data : targetData) {

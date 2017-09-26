@@ -23,6 +23,8 @@ import java.sql.Statement;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.LogAware;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -43,9 +45,9 @@ import eu.esdihumboldt.hale.io.jdbc.constraints.SQLQuery;
  * 
  * @author Simon Templer
  */
-public class JDBCTableCollection implements InstanceCollection {
+public class JDBCTableCollection implements InstanceCollection, LogAware {
 
-	private static final ALogger log = ALoggerFactory.getLogger(JDBCTableCollection.class);
+	private static final ALogger logger = ALoggerFactory.getLogger(JDBCTableCollection.class);
 
 	/**
 	 * Iterator other a JDBC table.
@@ -209,6 +211,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	private final String sqlQuery;
 	private final String countQuery;
 	private final CRSProvider crsProvider;
+	private SimpleLog log = SimpleLog.fromLogger(logger);
 
 	/**
 	 * Constructor.
@@ -242,13 +245,16 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			// support project variables
 			query = JDBCUtil.replaceVariables(query, services);
-			
-			// this.countQuery = null; 
-			// countQuery = null caused to return UNKNOWN_SIZE in size() with causes isEmpty() 
-			// to return false and that causes problems on iterating with MultiInstanceCollection 
+
+			// this.countQuery = null;
+			// countQuery = null caused to return UNKNOWN_SIZE in size() with
+			// causes isEmpty()
+			// to return false and that causes problems on iterating with
+			// MultiInstanceCollection
 			this.countQuery = "SELECT COUNT(*) FROM (\n" + query + "\n) tmp";
 			// note 1: this sub query is not supported in all SQL dialects
-			// note 2: the line breaks '\n' prevent from problems using  comments in the embedded query
+			// note 2: the line breaks '\n' prevent from problems using comments
+			// in the embedded query
 		}
 		this.sqlQuery = query;
 	}
@@ -290,7 +296,7 @@ public class JDBCTableCollection implements InstanceCollection {
 	@Override
 	public int size() {
 		if (countQuery == null) {
-			return UNKNOWN_SIZE;
+			return vagueSize();
 		}
 
 		try (Connection connection = createConnection()) {
@@ -304,26 +310,37 @@ public class JDBCTableCollection implements InstanceCollection {
 
 			return count;
 		} catch (SQLException e) {
-			log.warn("Could not determine query size by count query");
-			try (Connection connection = createConnection()) {
-				Statement st = connection.createStatement();
-				st.setMaxRows(1);
-				ResultSet res = st.executeQuery(sqlQuery);
-				if (res.next()) {
-					return UNKNOWN_SIZE;
-				}
-				else {
-					return 0;
-				}
-			} catch (SQLException e2) {
-				log.warn("Could not determine query size by counting query result", e2);
+			log.warn("Could not determine query size by count query\n" + countQuery, e);
+			return vagueSize();
+		}
+	}
+
+	private int vagueSize() {
+		try (Connection connection = createConnection()) {
+			Statement st = connection.createStatement();
+			st.setMaxRows(1);
+			ResultSet res = st.executeQuery(sqlQuery);
+			if (res.next()) {
+				// we know that there is at least one
 				return UNKNOWN_SIZE;
 			}
+			else {
+				return 0;
+			}
+		} catch (SQLException e2) {
+			log.error("Could not determine query size by counting query result\n" + sqlQuery, e2);
+			// we can't query the database, so we won't be able to yield
+			// instances
+			return 0;
 		}
 	}
 
 	@Override
 	public boolean isEmpty() {
+		// it is important that we return a correct value here, especially that
+		// there are no cases where the size is stated as unknown and the
+		// collection is empty anyway (this causes a problem
+		// for instance w/ MultiInstanceCollection)
 		int size = size();
 		return size == 0;
 	}
@@ -332,6 +349,16 @@ public class JDBCTableCollection implements InstanceCollection {
 	public InstanceCollection select(Filter filter) {
 		// TODO apply filter to query instead!
 		return FilteredInstanceCollection.applyFilter(this, filter);
+	}
+
+	@Override
+	public void setLog(SimpleLog log) {
+		if (log != null) {
+			this.log = log;
+		}
+		else {
+			this.log = SimpleLog.fromLogger(logger);
+		}
 	}
 
 }

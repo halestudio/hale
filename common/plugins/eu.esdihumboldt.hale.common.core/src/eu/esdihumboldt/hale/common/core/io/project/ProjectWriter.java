@@ -31,6 +31,25 @@ import eu.esdihumboldt.hale.common.core.io.project.model.ProjectFile;
 public interface ProjectWriter extends ExportProvider {
 
 	/**
+	 * Mode a {@link ProjectWriter} operates in
+	 * 
+	 * @author Florian Esser
+	 */
+	public enum ProjectWriterMode {
+		/**
+		 * The project is saved to a target location and the save configuration
+		 * is updated accordingly
+		 */
+		SAVE,
+
+		/**
+		 * The project is exported to a target location but the save
+		 * configuration is not updated
+		 */
+		EXPORT
+	}
+
+	/**
 	 * Set the additional project files to write.
 	 * 
 	 * @param projectFiles the project files to write (file name mapped to
@@ -58,5 +77,10 @@ public interface ProjectWriter extends ExportProvider {
 	 * @param previousTarget the previous target
 	 */
 	public void setPreviousTarget(URI previousTarget);
+
+	/**
+	 * @return the {@link ProjectWriterMode} that was used in the last operation
+	 */
+	public ProjectWriterMode getLastWriterMode();
 
 }

@@ -36,8 +36,8 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
  * @param <R> the reporter
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractReportDefinition<T extends Report<?>, R extends T> implements
-		ReportDefinition<T> {
+public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
+		implements ReportDefinition<T> {
 
 	private static final ALogger _log = ALoggerFactory.getLogger(AbstractReportDefinition.class);
 
@@ -76,19 +76,34 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	public static final String KEY_REPORT_MESSAGE_TYPE = "messagetype";
 
 	/**
-	 * Key for info messages
+	 * Key for count of info messages not listed.
 	 */
-	public static final String KEY_REPORT_INFOS = "info";
+	public static final String KEY_REPORT_INFO_MORE = "info_more";
 
 	/**
-	 * Key for error messages
+	 * Key for count of error messages not listed.
 	 */
-	public static final String KEY_REPORT_ERRORS = "error";
+	public static final String KEY_REPORT_ERROR_MORE = "error_more";
 
 	/**
-	 * Key for warning messages
+	 * Key for count of warning messages not listed.
 	 */
-	public static final String KEY_REPORT_WARNINGS = "warning";
+	public static final String KEY_REPORT_WARNING_MORE = "warning_more";
+
+	/**
+	 * Key for total count of info messages.
+	 */
+	public static final String KEY_REPORT_INFO_TOTAL = "info_total";
+
+	/**
+	 * Key for total count of error messages.
+	 */
+	public static final String KEY_REPORT_ERROR_TOTAL = "error_total";
+
+	/**
+	 * Key for total count of warning messages.
+	 */
+	public static final String KEY_REPORT_WARNING_TOTAL = "warning_total";
 
 	/**
 	 * Create report definition.
@@ -175,6 +190,26 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		// parse times and set them
 		reporter.setStartTime(new Date(Long.parseLong(props.getProperty(KEY_REPORT_STARTTIME))));
 		reporter.setTimestamp(new Date(Long.parseLong(props.getProperty(KEY_REPORT_TIME))));
+
+		// add not listed message counts
+		String errorStr = props.getProperty(KEY_REPORT_ERROR_MORE);
+		try {
+			reporter.countError(Integer.valueOf(errorStr));
+		} catch (NumberFormatException e) {
+			// ignore
+		}
+		String warnStr = props.getProperty(KEY_REPORT_WARNING_MORE);
+		try {
+			reporter.countWarning(Integer.valueOf(warnStr));
+		} catch (NumberFormatException e) {
+			// ignore
+		}
+		String infoStr = props.getProperty(KEY_REPORT_INFO_MORE);
+		try {
+			reporter.countInfo(Integer.valueOf(infoStr));
+		} catch (NumberFormatException e) {
+			// ignore
+		}
 	}
 
 	/**
@@ -225,8 +260,29 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		}
 
 		if (report.getMessageType() != null) {
-			props.setProperty(KEY_REPORT_MESSAGE_TYPE, ""
-					+ report.getMessageType().getCanonicalName());
+			props.setProperty(KEY_REPORT_MESSAGE_TYPE,
+					"" + report.getMessageType().getCanonicalName());
+		}
+
+		int errorTotal = report.getTotalErrors();
+		int errorMore = errorTotal - report.getErrors().size();
+		props.setProperty(KEY_REPORT_ERROR_TOTAL, String.valueOf(errorTotal));
+		if (errorMore > 0) {
+			props.setProperty(KEY_REPORT_ERROR_MORE, String.valueOf(errorMore));
+		}
+
+		int warnTotal = report.getTotalWarnings();
+		int warnMore = warnTotal - report.getWarnings().size();
+		props.setProperty(KEY_REPORT_WARNING_TOTAL, String.valueOf(warnTotal));
+		if (warnMore > 0) {
+			props.setProperty(KEY_REPORT_WARNING_MORE, String.valueOf(warnMore));
+		}
+
+		int infoTotal = report.getTotalInfos();
+		int infoMore = infoTotal - report.getInfos().size();
+		props.setProperty(KEY_REPORT_INFO_TOTAL, String.valueOf(infoTotal));
+		if (infoMore > 0) {
+			props.setProperty(KEY_REPORT_INFO_MORE, String.valueOf(infoMore));
 		}
 
 		return props;

@@ -31,8 +31,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
  * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationMessageDefinition extends
-		AbstractMessageDefinition<InstanceValidationMessage> {
+public class InstanceValidationMessageDefinition
+		extends AbstractMessageDefinition<InstanceValidationMessage> {
 
 	/**
 	 * Key for category string.
@@ -66,12 +66,22 @@ public class InstanceValidationMessageDefinition extends
 		// instance reference isn't valid anymore either way... simply use null
 		InstanceReference ref = null;
 
-		QName type = QName.valueOf(props.getProperty(KEY_TYPE));
+		String typeName = props.getProperty(KEY_TYPE);
+		QName type = null;
+		if (typeName != null) {
+			type = QName.valueOf(typeName);
+		}
 
-		int pathCount = Integer.valueOf(props.getProperty(KEY_PATH_COUNT));
+		int pathCount = 0;
+		try {
+			pathCount = Integer.valueOf(props.getProperty(KEY_PATH_COUNT));
+		} catch (Exception e) {
+			// ignore
+		}
 		List<QName> path = new ArrayList<QName>(pathCount);
-		for (int i = 0; i < pathCount; i++)
+		for (int i = 0; i < pathCount; i++) {
 			path.add(QName.valueOf(props.getProperty(KEY_PATH_PREFIX + i)));
+		}
 
 		String category = props.getProperty(KEY_CATEGORY);
 		String message = props.getProperty(KEY_MESSAGE);
@@ -86,12 +96,15 @@ public class InstanceValidationMessageDefinition extends
 	protected Properties asProperties(InstanceValidationMessage message) {
 		Properties props = super.asProperties(message);
 
-		props.setProperty(KEY_TYPE, message.getType().toString());
+		if (message.getType() != null) {
+			props.setProperty(KEY_TYPE, message.getType().toString());
+		}
 
 		List<QName> path = message.getPath();
 		props.setProperty(KEY_PATH_COUNT, String.valueOf(path.size()));
-		for (int i = 0; i < path.size(); i++)
+		for (int i = 0; i < path.size(); i++) {
 			props.setProperty(KEY_PATH_PREFIX + i, path.get(i).toString());
+		}
 
 		props.setProperty(KEY_CATEGORY, message.getCategory());
 		// message is stored in super.asProperties
