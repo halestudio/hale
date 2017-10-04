@@ -75,6 +75,12 @@ public class SchemaPresetLabelProvider extends StyledCellLabelProvider implement
 			}
 		}
 
+		// If element was not handled yet, delegate to getText (e.g. for
+		// NoObject.NONE)
+		if (element != null && (text.getString() == null || text.getString().isEmpty())) {
+			text.append(getText(element));
+		}
+
 		cell.setImage(getImage(element));
 		cell.setText(text.toString());
 		cell.setStyleRanges(text.getStyleRanges());
