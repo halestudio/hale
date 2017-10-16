@@ -14,7 +14,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.cst.functions.core.merge;
+package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,13 +24,12 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
-import net.jcip.annotations.Immutable;
-
 import com.google.common.collect.Lists;
 
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.util.StructuredEquals;
+import net.jcip.annotations.Immutable;
 
 /**
  * Key that uses {@link StructuredEquals#deepIterableEquals(Object, Object)} in
@@ -40,6 +39,11 @@ import eu.esdihumboldt.util.StructuredEquals;
  */
 @Immutable
 public class DeepIterableKey {
+
+	/**
+	 * Key instance that stands for merging of all instances.
+	 */
+	public static final DeepIterableKey KEY_ALL = new DeepIterableKey(Long.valueOf(1));
 
 	private static final StructuredEquals se = new StructuredEquals() {
 
