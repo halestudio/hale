@@ -32,7 +32,7 @@ https://www.wetransform.to/services/support/
 
    <launcherArgs>
       <programArgs>-clean
--name &quot;HUMBOLDT Alignment Editor&quot;
+-name &quot;hale studio&quot;
 --launcher.defaultAction openFile
       </programArgs>
       <vmArgs>-Xmx1000m
