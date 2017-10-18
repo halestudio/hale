@@ -195,6 +195,10 @@
             allowAll="false"
             class="javax.xml.namespace.QName">
       </allow>
+      <allowPackage
+            allowChildren="false"
+            name="eu.esdihumboldt.hale.common.schema.geometry">
+      </allowPackage>
    </extension>
 
 </plugin>

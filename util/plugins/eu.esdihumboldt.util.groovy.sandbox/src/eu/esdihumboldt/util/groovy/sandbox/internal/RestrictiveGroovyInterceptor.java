@@ -18,6 +18,9 @@ package eu.esdihumboldt.util.groovy.sandbox.internal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
@@ -103,7 +107,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(BigDecimal.class);
 		allowedClasses.add(Math.class);
 		allowedClasses.add(Date.class);
-		allowedClasses.add(java.sql.Date.class);
+		allowedClasses.add(Locale.class);
 		// allowedClasses.add(Boolean.class);
 
 		// helper classes
@@ -123,6 +127,12 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 
 		// Binding classes
 		allowedClasses.add(Timestamp.class);
+		allowedClasses.add(java.sql.Date.class);
+
+		// Number formatting
+		allowedClasses.add(NumberFormat.class);
+		allowedClasses.add(DecimalFormat.class);
+		allowedClasses.add(DecimalFormatSymbols.class);
 
 		// Google collect
 		allowedPackages.add(new AllowedPrefix("com.google.common.collect", true));
