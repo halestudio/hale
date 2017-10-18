@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.core.report.Reporter;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -95,8 +96,7 @@ public abstract class StoreInstancesJob extends Job {
 	private final boolean doProcessing;
 
 	/**
-	 * Create a job that stores instances in a database. Does no instance
-	 * processing.
+	 * Create a job that stores instances in a database.
 	 * 
 	 * @param name the (human readable) job name
 	 * @param instances the instances to store in the database
@@ -183,6 +183,9 @@ public abstract class StoreInstancesJob extends Job {
 			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
 					null, DataSet.SOURCE);
 
+			final InstanceIndexService indexService = serviceProvider
+					.getService(InstanceIndexService.class);
+
 			// TODO decouple next() and save()?
 
 			long lastUpdate = 0; // last count update
@@ -225,6 +228,10 @@ public abstract class StoreInstancesJob extends Job {
 							browser);
 
 					processors.forEach(p -> p.process(instance, resolvableRef));
+
+					if (indexService != null) {
+						indexService.add(instance, resolvableRef);
+					}
 
 					count++;
 

@@ -11,7 +11,9 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
  com.orientechnologies.orientdb-core;bundle-version="1.5.1",
- eu.esdihumboldt.util.groovy.sandbox
+ eu.esdihumboldt.util.groovy.sandbox,
+ eu.esdihumboldt.hale.common.align;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.instance.index;bundle-version="3.4.0"
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="17.0.0",
  com.orientechnologies.common.exception;version="1.5.1",
