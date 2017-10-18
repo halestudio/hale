@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -39,7 +40,9 @@ import com.google.common.util.concurrent.SettableFuture;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
@@ -55,6 +58,7 @@ import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironmen
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
 import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
 import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -422,6 +426,24 @@ public class Transformation {
 		}
 
 		if (useTempDatabase) {
+			// Initialize instance index with alignment
+			InstanceIndexService indexService = serviceProvider
+					.getService(InstanceIndexService.class);
+
+			// TODO Move to special class?
+			for (Cell typeCell : alignment.getActiveTypeCells()) {
+				if (!MergeFunction.ID.equals(typeCell.getTransformationIdentifier())) {
+					continue;
+				}
+
+				// TODO Add only properties relevant to merge/join
+				indexService.addPropertyMappings(typeCell.getSource().values().stream()
+						.filter(entity -> entity
+								.getDefinition() instanceof PropertyEntityDefinition)
+						.map(entity -> (PropertyEntityDefinition) entity.getDefinition())
+						.collect(Collectors.toList()));
+			}
+
 			// run store instance job first...
 			Job storeJob = new StoreInstancesJob("Load source instances into temporary database",
 					db, sources, serviceProvider, reportHandler, true) {
