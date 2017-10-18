@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
-import eu.esdihumboldt.cst.functions.core.merge.PropertiesMergeHandler;
+import eu.esdihumboldt.cst.functions.core.merge.IndexMergeHandler;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
@@ -33,6 +33,6 @@ public class GroovyMerge extends GroovyRetype implements MergeFunction {
 
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new PropertiesMergeHandler();
+		return new IndexMergeHandler();
 	}
 }
