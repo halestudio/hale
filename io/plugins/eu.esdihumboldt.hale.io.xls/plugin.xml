@@ -52,6 +52,7 @@
          </contentType>
       </provider>
       <provider
+            allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader"
             id="eu.esdihumboldt.hale.io.xls.reader.schema"
             name="XLS file">
@@ -63,6 +64,7 @@
          </contentType>
       </provider>
       <provider
+            allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader"
             id="eu.esdihumboldt.hale.io.xls.reader.instance"
             name="XLS file">
