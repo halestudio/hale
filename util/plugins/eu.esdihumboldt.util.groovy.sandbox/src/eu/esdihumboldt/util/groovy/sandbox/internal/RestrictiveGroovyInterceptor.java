@@ -103,6 +103,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(BigDecimal.class);
 		allowedClasses.add(Math.class);
 		allowedClasses.add(Date.class);
+		allowedClasses.add(java.sql.Date.class);
 		// allowedClasses.add(Boolean.class);
 
 		// helper classes
