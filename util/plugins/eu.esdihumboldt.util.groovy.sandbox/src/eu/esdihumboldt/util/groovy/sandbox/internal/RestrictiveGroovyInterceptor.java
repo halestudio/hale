@@ -208,7 +208,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	 *            declared methods may be used
 	 */
 	public RestrictiveGroovyInterceptor(Set<Class<?>> additionalAllowedClasses,
-			Set<Class<?>> additionalAllAllowedClasses, List<AllowedPrefix> additionalAllowedPackages) {
+			Set<Class<?>> additionalAllAllowedClasses,
+			List<AllowedPrefix> additionalAllowedPackages) {
 		instanceAllowedClasses.addAll(additionalAllowedClasses);
 		instanceAllowedClasses.addAll(additionalAllAllowedClasses);
 		instanceAllAllowedClasses.addAll(additionalAllAllowedClasses);
@@ -221,8 +222,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		if (isAllowedClass(receiver) || isScriptClass(receiver))
 			return super.onStaticCall(invoker, receiver, method, args);
 		else
-			throw new GroovyRestrictionException("using class " + receiver.getSimpleName()
-					+ " is not allowed!");
+			throw new GroovyRestrictionException(
+					"using class " + receiver.getName() + " is not allowed!");
 	}
 
 	@Override
@@ -233,16 +234,16 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		if (isAllowedClass(receiver) || isScriptClass(receiver))
 			return super.onNewInstance(invoker, receiver, args);
 		else
-			throw new GroovyRestrictionException("using class " + receiver.getSimpleName()
-					+ " is not allowed!");
+			throw new GroovyRestrictionException(
+					"using class " + receiver.getName() + " is not allowed!");
 	}
 
 	@Override
 	public Object onMethodCall(Invoker invoker, Object receiver, String method, Object... args)
 			throws Throwable {
 		if (disallowedMethods.contains(method))
-			throw new GroovyRestrictionException("using methods named " + method
-					+ " is not allowed in Groovy transformations!");
+			throw new GroovyRestrictionException(
+					"using methods named " + method + " is not allowed in Groovy transformations!");
 		else if (receiver instanceof Closure && disallowedClosureMethods.contains(method))
 			throw new GroovyRestrictionException("using the closure method " + method
 					+ " is not allowed in Groovy transformations!");
@@ -288,8 +289,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		else if (isScriptClass(receiver.getClass()) && !disallowedScriptMethods.contains(method))
 			return !InvokerHelper.getMetaClass(receiver).respondsTo(receiver, method).isEmpty();
 		throw new GroovyRestrictionException("Possible access of method " + method + " on class "
-				+ receiver.getClass().getSimpleName()
-				+ " is not allowed in Groovy transformations!");
+				+ receiver.getClass().getName() + " is not allowed in Groovy transformations!");
 	}
 
 	/**
@@ -318,7 +318,8 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 	}
 
 	@Override
-	public Object onGetProperty(Invoker invoker, Object receiver, String property) throws Throwable {
+	public Object onGetProperty(Invoker invoker, Object receiver, String property)
+			throws Throwable {
 		if (receiver instanceof Class<?> && isAllowedClass((Class<?>) receiver)
 				&& !"class".equals(property))
 			return super.onGetProperty(invoker, receiver, property);
@@ -373,8 +374,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 				&& (!set || !disallowedScriptWriteProperties.contains(property)))
 			return hasProperty(receiver, property);
 		throw new GroovyRestrictionException("Possible " + (set ? "write " : "")
-				+ "access of property " + property + " on class "
-				+ receiver.getClass().getSimpleName()
+				+ "access of property " + property + " on class " + receiver.getClass().getName()
 				+ " is not allowed in Groovy transformations!");
 	}
 
