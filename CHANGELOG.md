@@ -4,6 +4,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
+
 ## [3.3.1]
 
 ### Fixed
