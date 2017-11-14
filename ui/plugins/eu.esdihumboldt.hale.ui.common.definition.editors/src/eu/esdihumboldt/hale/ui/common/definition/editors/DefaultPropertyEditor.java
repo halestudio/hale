@@ -251,8 +251,13 @@ public class DefaultPropertyEditor extends AbstractBindingValidatingEditor<Objec
 						CodeListService codeListService = PlatformUI.getWorkbench()
 								.getService(CodeListService.class);
 
-						codeListService.assignEntityCodeList(DefaultPropertyEditor.this.entity,
-								newCodeList);
+						if (newCodeList != null) {
+							codeListService.assignEntityCodeList(DefaultPropertyEditor.this.entity,
+									newCodeList);
+						}
+						else {
+							codeListService.unassignEntityCodeList(DefaultPropertyEditor.this.entity);
+						}
 
 						updateCodeList();
 					}
