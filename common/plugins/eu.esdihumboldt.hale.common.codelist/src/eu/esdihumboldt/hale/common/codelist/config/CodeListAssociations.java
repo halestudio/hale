@@ -71,6 +71,15 @@ public class CodeListAssociations {
 	}
 
 	/**
+	 * Remove a code list assignment from an entity.
+	 * 
+	 * @param entity the entity definition
+	 */
+	public void unassignCodeList(EntityDefinition entity) {
+		associations.remove(new DummyEntityKey(entity, true));
+	}
+
+	/**
 	 * @return the map with code list associations
 	 */
 	public Map<DummyEntityKey, CodeListReference> getAssociations() {

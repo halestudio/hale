@@ -163,6 +163,15 @@ public class CodeListServiceImpl implements CodeListService {
 //					code.getNamespace() + "/" + code.getIdentifier());
 //	}
 
+	@Override
+	public void unassignEntityCodeList(EntityDefinition entity) {
+		associations.unassignCodeList(entity);
+
+		// update the project configuration
+		complexConfigService.setProperty(CodeListAssociations.KEY_ASSOCIATIONS,
+				Value.complex(associations));
+	}
+
 	/**
 	 * Find a code list by attribute identifier.
 	 * 
