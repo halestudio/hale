@@ -64,7 +64,7 @@ public class IndexedPropertyValue {
 		}
 	};
 
-	private final QName property;
+	private final List<QName> property;
 	private final List<?> values;
 
 	/**
@@ -73,7 +73,7 @@ public class IndexedPropertyValue {
 	 * @param property Property {@link QName}
 	 * @param values Property values
 	 */
-	public IndexedPropertyValue(QName property, List<?> values) {
+	public IndexedPropertyValue(List<QName> property, List<?> values) {
 		this.property = property;
 		this.values = values;
 	}
@@ -81,7 +81,7 @@ public class IndexedPropertyValue {
 	/**
 	 * @return the property
 	 */
-	public QName getProperty() {
+	public List<QName> getProperty() {
 		return property;
 	}
 

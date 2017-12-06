@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.cst.functions.core.merge;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +43,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProviderAware;
 import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
@@ -49,6 +52,7 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -63,12 +67,12 @@ public class IndexMergeHandler
 
 	class IndexMergeConfig {
 
-		protected final List<QName> keyProperties;
-		protected final List<QName> additionalProperties;
+		protected final List<List<QName>> keyProperties;
+		protected final List<List<QName>> additionalProperties;
 		protected final boolean autoDetect;
 
-		protected IndexMergeConfig(List<QName> keyProperties, List<QName> additionalProperties,
-				boolean autoDetect) {
+		protected IndexMergeConfig(List<List<QName>> keyProperties,
+				List<List<QName>> additionalProperties, boolean autoDetect) {
 			super();
 			this.keyProperties = keyProperties;
 			this.additionalProperties = additionalProperties;
@@ -90,15 +94,18 @@ public class IndexMergeHandler
 			Map<String, String> executionParameters, TransformationLog log)
 			throws TransformationException {
 
-		// TODO Multi-property merges
+		PropertiesMergeHandler fallbackHandler = new PropertiesMergeHandler();
 
 		InstanceIndexService indexService = serviceProvider.getService(InstanceIndexService.class);
 		if (indexService == null) {
-			throw new TransformationException("Index service not available");
+			log.warn(MessageFormat.format(
+					"Index service not available, falling back to merge handler {0}",
+					fallbackHandler.getClass().getCanonicalName()));
+			return fallbackHandler.partitionInstances(instances, transformationIdentifier, engine,
+					transformationParameters, executionParameters, log);
 		}
 
 		final IndexMergeConfig mergeConfig = createMergeConfiguration(transformationParameters);
-
 		QName typeName;
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			if (it.hasNext()) {
@@ -110,8 +117,29 @@ public class IndexMergeHandler
 			}
 		}
 
+		List<Object> inputInstanceIds = new ArrayList<>();
+		try (ResourceIterator<Instance> it = instances.iterator()) {
+			while (it.hasNext()) {
+				Instance i = InstanceDecorator.getRoot(it.next());
+				if (!(i instanceof IdentifiableInstance) || !((IdentifiableInstance) i).hasId()) {
+					log.warn(MessageFormat.format(
+							"At least one instance does not have an ID, falling back to merge handler {0}",
+							fallbackHandler.getClass().getCanonicalName()));
+					return fallbackHandler.partitionInstances(instances, transformationIdentifier,
+							engine, transformationParameters, executionParameters, log);
+				}
+				inputInstanceIds.add(((IdentifiableInstance) i).getId());
+			}
+		}
+
 		Collection<Collection<ResolvableInstanceReference>> partitionedIndex = indexService
 				.groupBy(typeName, mergeConfig.keyProperties);
+
+		// Remove instance groups from the partitioned index where none of the
+		// instances in the group are in the processed instances.
+		partitionedIndex.removeIf(part -> !part.stream().map(rir -> rir.getId())
+				.anyMatch(id -> inputInstanceIds.contains(id)));
+
 		Iterator<Collection<ResolvableInstanceReference>> it = partitionedIndex.iterator();
 		return new ResourceIterator<FamilyInstance>() {
 
@@ -164,11 +192,11 @@ public class IndexMergeHandler
 		Set<QName> rootNames = new HashSet<QName>();
 		Set<QName> nonKeyRootNames = new HashSet<QName>();
 		// collect path roots
-		for (QName path : mergeConfig.keyProperties) {
-			rootNames.add(path);
+		for (List<QName> path : mergeConfig.keyProperties) {
+			rootNames.add(path.get(0));
 		}
-		for (QName path : mergeConfig.additionalProperties) {
-			nonKeyRootNames.add(path);
+		for (List<QName> path : mergeConfig.additionalProperties) {
+			nonKeyRootNames.add(path.get(0));
 		}
 
 		// XXX what about metadata?!
@@ -357,10 +385,7 @@ public class IndexMergeHandler
 					transformationParameters.get(PARAMETER_AUTO_DETECT).get(0).as(String.class));
 		}
 
-		return new IndexMergeConfig(
-				properties.stream().map(p -> p.get(0)).collect(Collectors.toList()),
-				additionalProperties.stream().map(p -> p.get(0)).collect(Collectors.toList()),
-				autoDetect);
+		return new IndexMergeConfig(properties, additionalProperties, autoDetect);
 	}
 
 }

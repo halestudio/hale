@@ -66,7 +66,12 @@ public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
 	Collection<ResolvableInstanceReference> find(V value);
 
 	/**
-	 * Clear the index
+	 * Clear indexes and mappings
 	 */
-	void clear();
+	void clearAll();
+
+	/**
+	 * Clear indexes but retain mappings
+	 */
+	void clearIndexes();
 }

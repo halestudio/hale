@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -40,8 +39,10 @@ import com.google.common.util.concurrent.SettableFuture;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
@@ -430,18 +431,20 @@ public class Transformation {
 			InstanceIndexService indexService = serviceProvider
 					.getService(InstanceIndexService.class);
 
-			// TODO Move to special class?
 			for (Cell typeCell : alignment.getActiveTypeCells()) {
-				if (!MergeFunction.ID.equals(typeCell.getTransformationIdentifier())) {
-					continue;
+				List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
+				switch (typeCell.getTransformationIdentifier()) {
+				case MergeFunction.ID:
+					indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(typeCell));
+					break;
+				case JoinFunction.ID:
+					// TODO
+					break;
 				}
 
-				// TODO Add only properties relevant to merge/join
-				indexService.addPropertyMappings(typeCell.getSource().values().stream()
-						.filter(entity -> entity
-								.getDefinition() instanceof PropertyEntityDefinition)
-						.map(entity -> (PropertyEntityDefinition) entity.getDefinition())
-						.collect(Collectors.toList()));
+				if (!indexedProperties.isEmpty()) {
+					indexService.addPropertyMapping(indexedProperties);
+				}
 			}
 
 			// run store instance job first...

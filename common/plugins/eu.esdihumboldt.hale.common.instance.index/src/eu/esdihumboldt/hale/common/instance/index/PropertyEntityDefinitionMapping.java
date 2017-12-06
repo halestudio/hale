@@ -15,11 +15,15 @@
 
 package eu.esdihumboldt.hale.common.instance.index;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -31,38 +35,44 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Florian Esser
  */
 public class PropertyEntityDefinitionMapping
-		implements IndexMapping<Instance, IndexedPropertyValue> {
+		implements IndexMapping<Instance, List<IndexedPropertyValue>> {
 
-	private final PropertyEntityDefinition definition;
+	private final Set<PropertyEntityDefinition> definitions = new HashSet<>();
 
 	/**
 	 * Create the mapping based on the given property
 	 * 
-	 * @param definition Property entity definition
+	 * @param definitions Property entity definitions
 	 */
-	public PropertyEntityDefinitionMapping(PropertyEntityDefinition definition) {
-		this.definition = definition;
+	public PropertyEntityDefinitionMapping(Set<PropertyEntityDefinition> definitions) {
+		this.definitions.addAll(definitions);
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.index.IndexMapping#map(java.lang.Object)
 	 */
 	@Override
-	public IndexedPropertyValue map(Instance instance) {
-		InstanceAccessor accessor = new InstanceAccessor(instance);
-		for (ChildContext child : definition.getPropertyPath()) {
-			QName name = child.getChild().getName();
-			accessor.findChildren(name.getLocalPart(),
-					Collections.singletonList(name.getNamespaceURI()));
+	public List<IndexedPropertyValue> map(Instance instance) {
+		List<IndexedPropertyValue> result = new ArrayList<>();
+
+		for (PropertyEntityDefinition definition : definitions) {
+			InstanceAccessor accessor = new InstanceAccessor(instance);
+			List<QName> propertyPath = definition.getPropertyPath().stream()
+					.map(cctx -> cctx.getChild().getName()).collect(Collectors.toList());
+			QName rootPropertyName = propertyPath.get(0);
+			accessor.findChildren(rootPropertyName.getLocalPart(),
+					Collections.singletonList(rootPropertyName.getNamespaceURI()));
+			result.add(new IndexedPropertyValue(propertyPath, accessor.list(true)));
+
 		}
 
-		return new IndexedPropertyValue(definition.getDefinition().getName(), accessor.list(true));
+		return result;
 	}
 
 	/**
 	 * @return the property entity definition
 	 */
-	public PropertyEntityDefinition getDefinition() {
-		return definition;
+	public Set<PropertyEntityDefinition> getDefinitions() {
+		return definitions;
 	}
 }

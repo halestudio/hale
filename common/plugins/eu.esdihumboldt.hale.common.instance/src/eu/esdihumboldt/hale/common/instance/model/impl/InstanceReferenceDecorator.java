@@ -84,4 +84,21 @@ public class InstanceReferenceDecorator implements InstanceReference {
 
 		return null;
 	}
+
+	/**
+	 * Find the root {@link InstanceReference} in a layer of
+	 * {@link InstanceReferenceDecorator}s
+	 * 
+	 * @param reference <code>InstanceReference</code> to find the root of
+	 * @return Root reference or <code>reference</code> itself if it is not an
+	 *         <code>InstanceReferenceDecorator</code>
+	 */
+	public static InstanceReference getRootReference(final InstanceReference reference) {
+		InstanceReference current = reference;
+		while (current instanceof InstanceReferenceDecorator) {
+			current = ((InstanceReferenceDecorator) current).getOriginalReference();
+		}
+
+		return current;
+	}
 }

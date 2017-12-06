@@ -17,15 +17,20 @@ package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -48,9 +53,14 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	}
 
 	@Override
-	public void clear() {
-		indexes.values().stream().forEach(i -> i.clear());
+	public void clearAll() {
+		indexes.values().stream().forEach(i -> i.clearAll());
 		indexes.clear();
+	}
+
+	@Override
+	public void clearIndexedValues() {
+		indexes.values().stream().forEach(i -> i.clearIndexes());
 	}
 
 	@Override
@@ -64,11 +74,17 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	 */
 	@Override
 	public void add(Instance instance, InstanceCollection instances) {
-		instances.iterator().forEachRemaining(inst -> {
-			ResolvableInstanceReference ref = new ResolvableInstanceReference(
-					instances.getReference(inst), instances);
-			getIndex(instance.getDefinition().getName()).add(ref, inst);
-		});
+		InstanceReference ref;
+		if (instance instanceof IdentifiableInstance) {
+			Object id = ((IdentifiableInstance) instance).getId();
+			ref = new IdentifiableInstanceReference(instances.getReference(instance), id);
+		}
+		else {
+			ref = instances.getReference(instance);
+		}
+
+		ResolvableInstanceReference rir = new ResolvableInstanceReference(ref, instances);
+		getIndex(instance.getDefinition().getName()).add(rir, instance);
 	}
 
 	/**
@@ -82,24 +98,42 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 				.add(new ResolvableInstanceReference(reference, instances), instance);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#addPropertyMapping(java.util.Collection)
-	 */
 	@Override
-	public void addPropertyMappings(Collection<PropertyEntityDefinition> properties) {
-		properties.forEach(
-				p -> getIndex(p.getType().getName()).addMapping(new PropertyEntityDefinitionMapping(
-						(PropertyEntityDefinition) AlignmentUtil.getAllDefaultEntity(p))));
+	public void addPropertyMapping(List<PropertyEntityDefinition> propertyGroup) {
+		if (propertyGroup.isEmpty()) {
+			return;
+		}
+
+		QName type = propertyGroup.iterator().next().getType().getName();
+		if (!propertyGroup.stream().allMatch(p -> p.getType().getName().equals(type))) {
+			throw new IllegalArgumentException(
+					"All properties in a group must be properties of the same type");
+		}
+
+		Set<PropertyEntityDefinition> keys = new HashSet<>();
+		propertyGroup.forEach(
+				p -> keys.add((PropertyEntityDefinition) AlignmentUtil.getAllDefaultEntity(p)));
+
+		getIndex(type).addMapping(new PropertyEntityDefinitionMapping(keys));
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#removePropertyMappings(java.util.Collection)
-	 */
 	@Override
-	public void removePropertyMappings(Collection<PropertyEntityDefinition> properties) {
-		properties.forEach(p -> getIndex(p.getType().getName())
-				.removeMapping(new PropertyEntityDefinitionMapping(
-						(PropertyEntityDefinition) AlignmentUtil.getAllDefaultEntity(p))));
+	public void removePropertyMapping(List<PropertyEntityDefinition> properties) {
+		if (properties.isEmpty()) {
+			return;
+		}
+
+		QName type = properties.iterator().next().getType().getName();
+		if (!properties.stream().allMatch(p -> p.getType().getName().equals(type))) {
+			throw new IllegalArgumentException(
+					"All properties in a group must be properties of the same type");
+		}
+
+		Set<PropertyEntityDefinition> keys = new HashSet<>();
+		properties.forEach(
+				p -> keys.add((PropertyEntityDefinition) AlignmentUtil.getAllDefaultEntity(p)));
+
+		getIndex(type).removeMapping(new PropertyEntityDefinitionMapping(keys));
 	}
 
 	/**
@@ -107,12 +141,12 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	 *      java.util.Collection)
 	 */
 	@Override
-	public InstanceCollection find(QName typeName, Collection<IndexedPropertyValue> query) {
+	public InstanceCollection find(QName typeName, Collection<List<IndexedPropertyValue>> query) {
 		MultimapInstanceIndex index = indexes.get(typeName);
 
 		Collection<ResolvableInstanceReference> matchingRefs = new ArrayList<>();
-		for (IndexedPropertyValue ipv : query) {
-			matchingRefs.addAll(index.find(ipv));
+		for (List<IndexedPropertyValue> valueGroup : query) {
+			matchingRefs.addAll(index.find(valueGroup));
 		}
 
 		return new DefaultInstanceCollection(
@@ -123,10 +157,15 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#groupBy(javax.xml.namespace.QName,
 	 *      java.util.List)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Collection<ResolvableInstanceReference>> groupBy(QName typeName,
-			List<QName> properties) {
+			List<List<QName>> properties) {
 		MultimapInstanceIndex index = indexes.get(typeName);
+		if (index == null) {
+			return Collections.EMPTY_LIST;
+		}
+
 		return index.groupBy(properties);
 	}
 
@@ -143,7 +182,7 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	 */
 	@Override
 	protected void finalize() throws Throwable {
-		clear();
+		clearAll();
 		super.finalize();
 	}
 

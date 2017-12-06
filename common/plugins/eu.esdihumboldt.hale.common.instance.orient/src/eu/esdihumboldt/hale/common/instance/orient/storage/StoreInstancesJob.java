@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -183,8 +184,10 @@ public abstract class StoreInstancesJob extends Job {
 			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
 					null, DataSet.SOURCE);
 
-			final InstanceIndexService indexService = serviceProvider
-					.getService(InstanceIndexService.class);
+			InstanceIndexService indexService = null;
+			if (doProcessing) {
+				indexService = serviceProvider.getService(InstanceIndexService.class);
+			}
 
 			// TODO decouple next() and save()?
 
@@ -222,10 +225,12 @@ public abstract class StoreInstancesJob extends Job {
 					// feed it to all known InstanceProcessors. The decoration
 					// with ResolvableInstanceReference allows the
 					// InstanceProcessors to resolve the instances if required.
+					OrientInstanceReference oRef = new OrientInstanceReference(doc.getIdentity(),
+							conv.getDataSet(), conv.getDefinition());
+					IdentifiableInstanceReference idRef = new IdentifiableInstanceReference(oRef,
+							doc.getIdentity());
 					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
-							new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
-									conv.getDefinition()),
-							browser);
+							idRef, browser);
 
 					processors.forEach(p -> p.process(instance, resolvableRef));
 

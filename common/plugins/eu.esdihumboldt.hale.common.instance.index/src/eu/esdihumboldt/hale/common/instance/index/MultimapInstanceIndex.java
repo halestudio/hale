@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -36,23 +35,28 @@ import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
  * @author Florian Esser
  */
 public class MultimapInstanceIndex
-		implements InstanceIndex<IndexedPropertyValue, PropertyEntityDefinitionMapping> {
+		implements InstanceIndex<List<IndexedPropertyValue>, PropertyEntityDefinitionMapping> {
 
-	private final Multimap<IndexedPropertyValue, ResolvableInstanceReference> propertiesIndex = HashMultimap
+	private final Multimap<List<IndexedPropertyValue>, ResolvableInstanceReference> propertiesIndex = HashMultimap
 			.create();
-	private final Multimap<ResolvableInstanceReference, IndexedPropertyValue> instanceIndex = HashMultimap
+	private final Multimap<ResolvableInstanceReference, List<IndexedPropertyValue>> instanceIndex = HashMultimap
 			.create();
 
 	private final List<PropertyEntityDefinitionMapping> mappings = new ArrayList<>();
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#clear()
+	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#clearAll()
 	 */
 	@Override
-	public void clear() {
+	public void clearAll() {
+		clearIndexes();
+		mappings.clear();
+	}
+
+	@Override
+	public void clearIndexes() {
 		propertiesIndex.clear();
 		instanceIndex.clear();
-		mappings.clear();
 	}
 
 	/**
@@ -60,10 +64,14 @@ public class MultimapInstanceIndex
 	 */
 	@Override
 	public void addMapping(PropertyEntityDefinitionMapping mapping) {
-		if (!mappings.stream().anyMatch(m -> m.getDefinition().getDefinition().getName()
-				.equals(mapping.getDefinition().getDefinition().getName()))) {
+		if (!mappings.stream()
+				.anyMatch(m -> collectionEquals(m.getDefinitions(), mapping.getDefinitions()))) {
 			mappings.add(mapping);
 		}
+	}
+
+	private static boolean collectionEquals(Collection<?> c1, Collection<?> c2) {
+		return c1.containsAll(c2) && c2.containsAll(c1);
 	}
 
 	/**
@@ -71,11 +79,25 @@ public class MultimapInstanceIndex
 	 */
 	@Override
 	public void removeMapping(PropertyEntityDefinitionMapping mapping) {
-		QName propertyName = mapping.getDefinition().getDefinition().getName();
-		propertiesIndex.asMap().entrySet()
-				.removeIf(e -> e.getKey().getProperty().equals(propertyName));
-		instanceIndex.values().removeIf(v -> v.getProperty().equals(propertyName));
-		mappings.remove(mapping);
+		// extract property names from mapping
+		List<QName> propertyNames = mapping.getDefinitions().stream()
+				.map(m -> m.getDefinition().getName()).collect(Collectors.toList());
+
+		// Remove from properties index if key properties are equal to
+		// properties in mapping
+		propertiesIndex.asMap().entrySet().removeIf(e -> collectionEquals(
+				e.getKey().stream().map(ipv -> ipv.getProperty()).collect(Collectors.toList()),
+				propertyNames));
+
+		// Remove mapped instance values
+		instanceIndex.asMap().values()
+				.forEach(instValues -> instValues.removeIf(instValue -> collectionEquals(
+						instValue.stream().map(iv -> iv.getProperty()).collect(Collectors.toList()),
+						propertyNames)));
+
+		instanceIndex.asMap().entrySet().removeIf(e -> e.getValue().isEmpty());
+
+		mappings.removeIf(m -> collectionEquals(m.getDefinitions(), mapping.getDefinitions()));
 	}
 
 	/**
@@ -85,10 +107,10 @@ public class MultimapInstanceIndex
 	@Override
 	public void add(ResolvableInstanceReference reference, Instance instance) {
 		mappings.forEach(m -> {
-			IndexedPropertyValue propValue = m.map(instance);
+			List<IndexedPropertyValue> propValues = m.map(instance);
 
-			propertiesIndex.put(propValue, reference);
-			instanceIndex.put(reference, propValue);
+			propertiesIndex.put(propValues, reference);
+			instanceIndex.put(reference, propValues);
 		});
 	}
 
@@ -113,7 +135,7 @@ public class MultimapInstanceIndex
 	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#getValues(eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference)
 	 */
 	@Override
-	public Collection<IndexedPropertyValue> getValues(ResolvableInstanceReference reference) {
+	public Collection<List<IndexedPropertyValue>> getValues(ResolvableInstanceReference reference) {
 		return Collections.unmodifiableCollection(instanceIndex.get(reference));
 	}
 
@@ -132,21 +154,34 @@ public class MultimapInstanceIndex
 	 * @param keyProperties Properties to group by
 	 * @return Grouped instance references
 	 */
-	public Collection<Collection<ResolvableInstanceReference>> groupBy(List<QName> keyProperties) {
-		Map<IndexedPropertyValue, Collection<ResolvableInstanceReference>> filteredProperties = propertiesIndex
-				.asMap().entrySet().stream()
-				.filter(entry -> keyProperties.contains(entry.getKey().getProperty()))
-				.collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue()));
+	public Collection<Collection<ResolvableInstanceReference>> groupBy(
+			List<List<QName>> keyProperties) {
 
-		return filteredProperties.values();
+		List<Collection<ResolvableInstanceReference>> result = new ArrayList<>();
+		for (List<IndexedPropertyValue> keyValues : propertiesIndex.keySet()) {
+			List<List<QName>> kvProperties = keyValues.stream().map(ipv -> ipv.getProperty())
+					.collect(Collectors.toList());
+			if (collectionEquals(keyProperties, kvProperties)) {
+				result.add(propertiesIndex.get(keyValues));
+			}
+		}
+
+		return result;
 	}
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#find(java.lang.Object)
 	 */
 	@Override
-	public Collection<ResolvableInstanceReference> find(IndexedPropertyValue value) {
+	public Collection<ResolvableInstanceReference> find(List<IndexedPropertyValue> value) {
 		return propertiesIndex.get(value);
+	}
+
+	/**
+	 * @return an unmodifiable list of mappings
+	 */
+	public List<PropertyEntityDefinitionMapping> getMappings() {
+		return Collections.unmodifiableList(mappings);
 	}
 
 //	public List<List<IndexedPropertyValue>> findUniqueValueCombos(List<QName> keyProperties) {

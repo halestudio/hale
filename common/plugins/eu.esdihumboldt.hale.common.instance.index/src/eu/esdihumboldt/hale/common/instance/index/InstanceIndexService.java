@@ -58,18 +58,19 @@ public interface InstanceIndexService {
 	void add(InstanceReference reference, InstanceCollection instances);
 
 	/**
-	 * Add properties whose values will be indexed
+	 * Add properties whose values will be indexed in a combined key (may be
+	 * single property)
 	 * 
 	 * @param properties Properties to index
 	 */
-	void addPropertyMappings(Collection<PropertyEntityDefinition> properties);
+	void addPropertyMapping(List<PropertyEntityDefinition> properties);
 
 	/**
 	 * Removes properties from the index
 	 * 
 	 * @param properties Properties to remove
 	 */
-	void removePropertyMappings(Collection<PropertyEntityDefinition> properties);
+	void removePropertyMapping(List<PropertyEntityDefinition> properties);
 
 	/**
 	 * Retrieve instance references from the index grouped by the given
@@ -80,7 +81,7 @@ public interface InstanceIndexService {
 	 * @return Grouped instance references
 	 */
 	Collection<Collection<ResolvableInstanceReference>> groupBy(QName typeName,
-			List<QName> properties);
+			List<List<QName>> properties);
 
 	/**
 	 * Retrieves instances with the given property values
@@ -89,10 +90,15 @@ public interface InstanceIndexService {
 	 * @param query Collection of property values
 	 * @return Collection of matching instances
 	 */
-	InstanceCollection find(QName typeName, Collection<IndexedPropertyValue> query);
+	InstanceCollection find(QName typeName, Collection<List<IndexedPropertyValue>> query);
 
 	/**
-	 * Clear the index
+	 * Clear indexes and mappings
 	 */
-	void clear();
+	void clearAll();
+
+	/**
+	 * Clear indexes but retain mappings
+	 */
+	void clearIndexedValues();
 }
