@@ -25,9 +25,13 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
@@ -136,6 +140,51 @@ public class MergeUtil {
 
 		QName property = path.get(0);
 		return new ParameterValue(property.toString());
+	}
+
+	/**
+	 * Get the {@link PropertyEntityDefinition} paths for all key properties of
+	 * a merge.<br>
+	 * <br>
+	 * <b>Subproperties are not yet supported to be part of a merge key.
+	 * Therefore, the inner lists will contain only a single property for the
+	 * time being.</b>
+	 * 
+	 * @param cell Mapping cell of the merge
+	 * @return <code>PropertyEntityDefinition</code> paths for all key
+	 *         properties of the merge
+	 */
+	public static List<PropertyEntityDefinition> getKeyPropertyDefinitions(Cell cell) {
+		if (!cell.getTransformationIdentifier().equals(MergeFunction.ID)) {
+			throw new IllegalArgumentException("This method applies only to Merge transformations");
+		}
+
+		List<PropertyEntityDefinition> result = new ArrayList<>();
+
+		List<List<QName>> mergeProperties = MergeUtil.getProperties(
+				cell.getTransformationParameters(), MergeFunction.PARAMETER_PROPERTY);
+		for (Entity sourceEntity : cell.getSource().values()) {
+			PropertyEntityDefinition keyProperty = null;
+			for (List<QName> mergePropertyPath : mergeProperties) {
+				// TODO Only root property is considered for now
+				// If the propertyPath can consist of more than one element,
+				// make sure to construct the PropertyEntityDefinition
+				// accordingly
+				QName root = mergePropertyPath.get(0);
+				for (PropertyEntityDefinition property : AlignmentUtil
+						.getChildrenWithoutContexts(sourceEntity)) {
+					if (property.getDefinition().getName().equals(root)) {
+						keyProperty = property;
+						break;
+					}
+				}
+				if (keyProperty != null) {
+					result.add(keyProperty);
+				}
+			}
+		}
+
+		return result;
 	}
 
 }
