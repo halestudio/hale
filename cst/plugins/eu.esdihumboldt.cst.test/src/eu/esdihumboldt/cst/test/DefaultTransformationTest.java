@@ -123,6 +123,67 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
+	 * Test based on a merge.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMerge() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE));
+	}
+
+	/**
+	 * Test based on a merge w/ a multi-property key
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeMultiPropKey() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE2));
+	}
+
+	/**
+	 * Test based on a merge w/ a multi-property key and a complex attribute
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeMultiPropKeyWithComplexAtt() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE3));
+	}
+
+	/**
+	 * Test based on a merge w/ a complex key
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeComplexPropKey() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE4));
+	}
+
+	/**
+	 * Test based on a merge with an additional merge property
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeAdditionalProp() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE5));
+	}
+
+	/**
+	 * Test based on {@link #testMergeAdditionalProp()} but without the
+	 * additional merge property
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeWithoutAdditionalProp() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE6));
+	}
+
+	/**
 	 * Test based on a retype and a formatted string with several inputs where
 	 * each input exists several times, so they should be combined accordingly.
 	 * 

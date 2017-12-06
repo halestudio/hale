@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<tns:collection xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:tns="http://www.example.org/t2/" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/t2/ file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/merge6/t2.xsd">
+  <tns:watercourse>
+    <id>river2</id>
+    <name>river2name1</name>
+    <name>river2name3</name>
+    <name>river2name2</name>
+    <type>type1</type>
+    <type>type2</type>
+    <type>type2</type>
+  </tns:watercourse>
+  <tns:watercourse>
+    <id>river1</id>
+    <name>river1name1</name>
+    <type>type1</type>
+  </tns:watercourse>
+</tns:collection>

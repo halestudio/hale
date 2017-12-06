@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.cst.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,11 @@ import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
@@ -36,7 +42,11 @@ import eu.esdihumboldt.hale.common.align.transformation.service.impl.ThreadSafeI
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexServiceImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
  * Tests for the CST's alignment processor implementation
@@ -269,6 +279,34 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		customServices.put(TransformationFunctionService.class,
 				new AlignmentTransformationFunctionService(example.getAlignment()));
 
+		InstanceIndexServiceImpl indexService = new InstanceIndexServiceImpl();
+		customServices.put(InstanceIndexService.class, indexService);
+
+		for (Cell cell : example.getAlignment().getActiveTypeCells()) {
+
+			List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
+			switch (cell.getTransformationIdentifier()) {
+			case MergeFunction.ID:
+				indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(cell));
+				break;
+			case JoinFunction.ID:
+				// TODO
+				break;
+			}
+
+			if (!indexedProperties.isEmpty()) {
+				indexService.addPropertyMapping(indexedProperties);
+			}
+		}
+
+		InstanceCollection source = example.getSourceInstances();
+
+		try (ResourceIterator<Instance> it = source.iterator()) {
+			while (it.hasNext()) {
+				indexService.add(it.next(), source);
+			}
+		}
+
 		final ServiceProvider serviceProvider = new ServiceProvider() {
 
 			private final ServiceProvider projectScope = new ServiceManager(
@@ -286,8 +324,8 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 			}
 		};
 
-		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
-				serviceProvider, new NullProgressIndicator());
+		transformer.transform(example.getAlignment(), source, sink, serviceProvider,
+				new NullProgressIndicator());
 
 		return sink.getDecoratee().getInstances();
 	}

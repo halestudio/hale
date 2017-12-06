@@ -33,6 +33,12 @@ abstract class TransformationExamples {
 	public static final String DUPE_ASSIGN = 'dupeassign'
 	public static final String PROPERTY_JOIN = 'propjoin'
 	public static final String JOIN_MULTI_COND_1 = 'join_multi_cond_1'
+	public static final String MERGE = 'merge'
+	public static final String MERGE2 = 'merge2'
+	public static final String MERGE3 = 'merge3'
+	public static final String MERGE4 = 'merge4'
+	public static final String MERGE5 = 'merge5'
+	public static final String MERGE6 = 'merge6'
 	public static final String SIMPLE_MERGE = 'simplemerge'
 	public static final String CARDINALITY_MERGE_1 = 'cardmerge_1'
 	public static final String CARDINALITY_MERGE_2 = 'cardmerge_2'
@@ -116,6 +122,12 @@ abstract class TransformationExamples {
 		(PROPERTY_JOIN): defaultExample(PROPERTY_JOIN),
 		(JOIN_MULTI_COND_1): defaultExample(JOIN_MULTI_COND_1),
 		(SIMPLE_MERGE): defaultExample(SIMPLE_MERGE),
+		(MERGE): defaultExample(MERGE),
+		(MERGE2): defaultExample(MERGE2),
+		(MERGE3): defaultExample(MERGE3),
+		(MERGE4): defaultExample(MERGE4),
+		(MERGE5): defaultExample(MERGE5),
+		(MERGE6): defaultExample(MERGE6),
 		(CARDINALITY_MERGE_1): [
 			sourceSchema: "/testdata/cardmerge/t1.xsd",
 			targetSchema: "/testdata/cardmerge/t2.xsd",
