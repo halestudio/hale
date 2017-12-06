@@ -21,14 +21,10 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
@@ -45,14 +41,12 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
-import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
@@ -76,7 +70,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-					throws TransformationException {
+			throws TransformationException {
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
 				|| transformationParameters.get(PARAMETER_JOIN).isEmpty()) {
@@ -163,7 +157,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 	 * @return the processed value, possibly wrapped or replaced through a
 	 *         different representation
 	 */
-	protected Object processValue(Object value, PropertyEntityDefinition property) {
+	static Object processValue(Object value, PropertyEntityDefinition property) {
 		// extract the identifier from a reference
 		value = property.getDefinition().getConstraint(Reference.class).extractId(value);
 
@@ -200,109 +194,4 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		return value;
 	}
 
-	private class JoinIterator
-			extends GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
-
-		private final InstanceCollection instances;
-		// type -> direct-parent
-		private final int[] parent;
-		// TypeProp -> (Value -> Collection<Reference>)
-		private final Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index;
-		// ChildType -> (ParentType -> Collection<JoinCondition>)
-		private final Map<Integer, Multimap<Integer, JoinCondition>> joinTable;
-
-		protected JoinIterator(InstanceCollection instances,
-				Collection<InstanceReference> startInstances, int[] parent,
-				Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index,
-				Map<Integer, Multimap<Integer, JoinCondition>> joinTable) {
-			super(startInstances.iterator());
-			this.instances = instances;
-			this.parent = parent;
-			this.index = index;
-			this.joinTable = joinTable;
-		}
-
-		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
-		 */
-		@Override
-		protected FamilyInstance convert(InstanceReference next) {
-			FamilyInstance base = new FamilyInstanceImpl(instances.getInstance(next));
-			FamilyInstance[] currentInstances = new FamilyInstance[parent.length];
-			currentInstances[0] = base;
-
-			join(currentInstances, 0);
-
-			return base;
-		}
-
-		// Joins all direct children of the given type to currentInstances.
-		private void join(FamilyInstance[] currentInstances, int currentType) {
-			// Join all types that are direct children of the last type.
-			for (int i = currentType + 1; i < parent.length; i++) {
-				if (parent[i] == currentType) {
-					// Get join condition for the direct child type.
-					Multimap<Integer, JoinCondition> joinConditions = joinTable.get(i);
-					// Collect intersection of conditions. null marks beginning
-					// in contrast to an empty set.
-					Set<InstanceReference> possibleInstances = null;
-					// ParentType -> JoinConditions
-					for (Map.Entry<Integer, JoinCondition> joinCondition : joinConditions
-							.entries()) {
-						Collection<Object> currentValues = AlignmentUtil.getValues(
-								currentInstances[joinCondition.getKey()],
-								joinCondition.getValue().baseProperty, true);
-
-						if (currentValues == null) {
-							possibleInstances = Collections.emptySet();
-							break;
-						}
-
-						// Allow targets with any of the property values.
-						HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
-						for (Object currentValue : currentValues) {
-							matches.addAll(index.get(joinCondition.getValue().joinProperty)
-									.get(processValue(currentValue,
-											joinCondition.getValue().baseProperty)));
-						}
-						if (possibleInstances == null)
-							possibleInstances = matches;
-						else {
-							// Intersect!
-							Iterator<InstanceReference> iter = possibleInstances.iterator();
-							while (iter.hasNext()) {
-								InstanceReference ref = iter.next();
-								if (!matches.contains(ref))
-									iter.remove();
-							}
-						}
-
-						// Break if set is empty.
-						if (possibleInstances.isEmpty())
-							break;
-					}
-
-					if (possibleInstances != null && !possibleInstances.isEmpty()) {
-						FamilyInstance parent = currentInstances[currentType];
-						for (InstanceReference ref : possibleInstances) {
-							FamilyInstance child = new FamilyInstanceImpl(
-									instances.getInstance(ref));
-							parent.addChild(child);
-							currentInstances[i] = child;
-							join(currentInstances, i);
-						}
-						currentInstances[i] = null;
-					}
-				}
-			}
-		}
-
-		/**
-		 * @see java.util.Iterator#remove()
-		 */
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
 }
