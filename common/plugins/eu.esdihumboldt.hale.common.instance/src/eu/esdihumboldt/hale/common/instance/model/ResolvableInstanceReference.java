@@ -23,7 +23,8 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceReferenceDecorato
  * 
  * @author Florian Esser
  */
-public class ResolvableInstanceReference extends InstanceReferenceDecorator {
+public class ResolvableInstanceReference extends InstanceReferenceDecorator
+		implements IdentifiableInstance {
 
 	private final InstanceResolver resolver;
 
@@ -47,7 +48,9 @@ public class ResolvableInstanceReference extends InstanceReferenceDecorator {
 	 */
 	public Instance resolve() {
 		if (resolver != null) {
-			return resolver.getInstance(this.getOriginalReference());
+			InstanceReference root = InstanceReferenceDecorator
+					.getRootReference(this.getOriginalReference());
+			return resolver.getInstance(root);
 		}
 		else {
 			return null;
@@ -73,6 +76,28 @@ public class ResolvableInstanceReference extends InstanceReferenceDecorator {
 				return ((ResolvableInstanceReference) current).resolve();
 			}
 			current = ((InstanceReferenceDecorator) current).getOriginalReference();
+		}
+
+		return null;
+	}
+
+	/**
+	 * Looks for an ID in the original reference and, if that fails, for an
+	 * {@link InstanceReferenceDecorator}.
+	 * 
+	 * @see eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance#getId()
+	 */
+	@Override
+	public Object getId() {
+		InstanceReference origRef = getOriginalReference();
+		if (origRef instanceof IdentifiableInstance) {
+			return ((IdentifiableInstance) origRef).getId();
+		}
+
+		IdentifiableInstanceReference iir = InstanceReferenceDecorator.findDecoration(origRef,
+				IdentifiableInstanceReference.class);
+		if (iir != null) {
+			return iir.getId();
 		}
 
 		return null;
