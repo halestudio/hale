@@ -21,11 +21,11 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.MessageFormat;
 
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 
 import com.google.common.io.Files;
-import com.ibm.icu.text.MessageFormat;
 
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
