@@ -81,6 +81,11 @@ public class ShapefileCharsetConfigurationPage
 					.getNameWithoutExtension(sourceFile.getFileName().toString());
 			String cpgFileName = sourceFileWithoutExt + ".cpg";
 			Path cpgFile = sourcePath.resolve(cpgFileName);
+			if (!cpgFile.toFile().exists()) {
+				// for case-sensitive file systems
+				cpgFileName = sourceFileWithoutExt + ".CPG";
+				cpgFile = sourcePath.resolve(cpgFileName);
+			}
 
 			if (cpgFile.toFile().exists()) {
 				String charset = Files.readFirstLine(cpgFile.toFile(), Charset.forName("UTF-8"));
