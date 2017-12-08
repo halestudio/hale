@@ -281,7 +281,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 	/**
 	 * Update the page state.
 	 */
-	private void update() {
+	protected void update() {
 		String name = charsetCombo.getText();
 		if (name != null && !name.isEmpty()) {
 			try {
