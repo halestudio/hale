@@ -40,6 +40,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
@@ -50,8 +51,8 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * 
  * @author Simon Templer
  */
-public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P>> extends
-		AbstractConfigurationPage<P, W> {
+public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P>>
+		extends AbstractConfigurationPage<P, W> {
 
 	/**
 	 * Configuration pages modes.
@@ -133,7 +134,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 			ImportProvider pro = (ImportProvider) getWizard().getProvider();
 			if (pro.getSource() != null) {
 				try {
-					detectCharset(pro.getSource().getInput());
+					detectCharset(pro.getSource());
 				} catch (IOException e) {
 					log.error("Character encoding detection failed.", e);
 				}
@@ -194,7 +195,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 					ImportProvider pro = (ImportProvider) getWizard().getProvider();
 					if (pro.getSource() != null) {
 						try {
-							detectCharset(pro.getSource().getInput());
+							detectCharset(pro.getSource());
 						} catch (IOException e1) {
 							log.userError("Character encoding detection failed.", e1);
 						}
@@ -212,11 +213,13 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 	/**
 	 * Try to detect the character encoding.
 	 * 
-	 * @param input the input stream
+	 * @param source the source
 	 * @throws IOException if the resource cannot be read
 	 */
-	protected void detectCharset(InputStream input) throws IOException {
-		// detect character set
+	protected void detectCharset(LocatableInputSupplier<? extends InputStream> source)
+			throws IOException {
+		InputStream input = source.getInput();
+
 		CharsetDetector cd = new CharsetDetector();
 		cd.setText(input);
 		CharsetMatch cm = cd.detect();
