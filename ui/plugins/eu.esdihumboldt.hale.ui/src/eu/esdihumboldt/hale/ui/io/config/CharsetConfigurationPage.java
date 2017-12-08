@@ -22,12 +22,14 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.MessageFormat;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -78,6 +80,8 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 
 	private Combo charsetCombo;
 
+	private ControlDecoration charsetComboDecoration;
+
 	private Button detectButton;
 
 	private final Mode mode;
@@ -110,7 +114,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		if (pro != null) {
 			Charset cs = pro.getCharset();
 			if (cs != null) {
-				charsetCombo.setText(cs.name());
+				setCharset(cs.name());
 				update();
 			}
 
@@ -233,6 +237,34 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		else {
 			setMessage("Character encoding detection yielded no result.", WARNING);
 		}
+	}
+
+	/**
+	 * Set the value of the character set combobox
+	 * 
+	 * @param charset value to set
+	 */
+	protected final void setCharset(String charset) {
+		charsetCombo.setText(charset);
+	}
+
+	/**
+	 * Add a control decoration to the character set combobox.
+	 * 
+	 * @param decorationText Tooltip text of the decoration
+	 * @param image The decoration image, e.g.<br>
+	 *            <code>FieldDecorationRegistry.getDefault()
+								.getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL)
+								.getImage()</code><br>
+	 * @param margin The margin in pixels
+	 */
+	protected final void setCharsetDecoration(String decorationText, Image image, int margin) {
+		if (charsetComboDecoration == null) {
+			charsetComboDecoration = new ControlDecoration(charsetCombo, SWT.TOP | SWT.LEFT);
+		}
+		charsetComboDecoration.setDescriptionText(decorationText);
+		charsetComboDecoration.setImage(image);
+		charsetComboDecoration.setMarginWidth(margin);
 	}
 
 	/**
