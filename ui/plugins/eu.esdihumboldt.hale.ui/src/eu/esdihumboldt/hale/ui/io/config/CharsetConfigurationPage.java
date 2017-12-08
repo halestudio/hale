@@ -227,13 +227,23 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		if (cm != null) {
 			charsetCombo.setText(cm.getName());
 			update();
-			setMessage(MessageFormat.format(
-					"Character encoding {0} detected with {1}% confidence.", cm.getName(),
-					cm.getConfidence()), INFORMATION);
+			setMessage(MessageFormat.format("Character encoding {0} detected with {1}% confidence.",
+					cm.getName(), cm.getConfidence()), INFORMATION);
 		}
 		else {
 			setMessage("Character encoding detection yielded no result.", WARNING);
 		}
+	}
+
+	/**
+	 * The success message to be displayed when a valid character set name was
+	 * entered
+	 * 
+	 * @param cs The selected character set
+	 * @return The message
+	 */
+	protected String successMessage(Charset cs) {
+		return MessageFormat.format("Selected charset: {0}", cs.displayName());
 	}
 
 	/**
@@ -244,7 +254,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		if (name != null && !name.isEmpty()) {
 			try {
 				Charset cs = Charset.forName(name);
-				setMessage(cs.displayName(), INFORMATION);
+				setMessage(successMessage(cs), INFORMATION);
 				setPageComplete(true);
 				return;
 			} catch (UnsupportedCharsetException e) {
