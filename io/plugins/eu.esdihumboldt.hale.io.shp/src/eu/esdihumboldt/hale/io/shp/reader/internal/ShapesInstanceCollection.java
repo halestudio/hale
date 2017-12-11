@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSResolveCache;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.EPSGResolveCache;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -119,8 +120,8 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 			for (Property property : feature.getProperties()) {
 				Object value = property.getValue();
-				QName propertyName = new QName(property.getName().getNamespaceURI(), property
-						.getName().getLocalPart());
+				QName propertyName = new QName(property.getName().getNamespaceURI(),
+						property.getName().getLocalPart());
 
 				if (type.getChild(propertyName) == null) {
 					if (!missingProperties.contains(propertyName)) {
@@ -145,8 +146,8 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 					if (crs == null) {
 						// try CRS associated to geometry descriptor
-						AttributeDescriptor pd = feature.getFeatureType().getDescriptor(
-								property.getName());
+						AttributeDescriptor pd = feature.getFeatureType()
+								.getDescriptor(property.getName());
 						if (pd != null && pd instanceof GeometryDescriptor) {
 							crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
 						}
@@ -160,6 +161,22 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 					CRSDefinition crsDef;
 					if (crs != null) {
 						crsDef = CRSDefinitionUtil.createDefinition(crs, crsCache);
+
+						if (crsDef instanceof WKTDefinition
+								&& crsDef.getCRS().getIdentifiers().isEmpty()) {
+							// Force CRS dialog prompt if the WKT definition
+							// does not contain an EPSG code for the CRS. This
+							// is to prevent that a CRS definition without
+							// Bursa-Wolf parameters is used here silently. In
+							// cases of custom CRSs that don't have an EPSG
+							// code, the user can still provide the WKT
+							// definition in the dialog.
+							//
+							// TODO Replace default WKT definition in dialog
+							// with crsDef.getWkt()?
+							crsDef = crsProvider.getCRS(type,
+									Collections.singletonList(propertyName));
+						}
 					}
 					else {
 						// ask CRS provider
