@@ -22,12 +22,14 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.MessageFormat;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -40,6 +42,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 
 /**
@@ -50,8 +53,8 @@ import eu.esdihumboldt.hale.ui.io.IOWizard;
  * 
  * @author Simon Templer
  */
-public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P>> extends
-		AbstractConfigurationPage<P, W> {
+public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P>>
+		extends AbstractConfigurationPage<P, W> {
 
 	/**
 	 * Configuration pages modes.
@@ -76,6 +79,8 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 	private static final ALogger log = ALoggerFactory.getLogger(CharsetConfigurationPage.class);
 
 	private Combo charsetCombo;
+
+	private ControlDecoration charsetComboDecoration;
 
 	private Button detectButton;
 
@@ -109,7 +114,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		if (pro != null) {
 			Charset cs = pro.getCharset();
 			if (cs != null) {
-				charsetCombo.setText(cs.name());
+				setCharset(cs.name());
 				update();
 			}
 
@@ -133,7 +138,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 			ImportProvider pro = (ImportProvider) getWizard().getProvider();
 			if (pro.getSource() != null) {
 				try {
-					detectCharset(pro.getSource().getInput());
+					detectCharset(pro.getSource());
 				} catch (IOException e) {
 					log.error("Character encoding detection failed.", e);
 				}
@@ -194,7 +199,7 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 					ImportProvider pro = (ImportProvider) getWizard().getProvider();
 					if (pro.getSource() != null) {
 						try {
-							detectCharset(pro.getSource().getInput());
+							detectCharset(pro.getSource());
 						} catch (IOException e1) {
 							log.userError("Character encoding detection failed.", e1);
 						}
@@ -212,11 +217,13 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 	/**
 	 * Try to detect the character encoding.
 	 * 
-	 * @param input the input stream
+	 * @param source the source
 	 * @throws IOException if the resource cannot be read
 	 */
-	protected void detectCharset(InputStream input) throws IOException {
-		// detect character set
+	protected void detectCharset(LocatableInputSupplier<? extends InputStream> source)
+			throws IOException {
+		InputStream input = source.getInput();
+
 		CharsetDetector cd = new CharsetDetector();
 		cd.setText(input);
 		CharsetMatch cm = cd.detect();
@@ -224,9 +231,8 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 		if (cm != null) {
 			charsetCombo.setText(cm.getName());
 			update();
-			setMessage(MessageFormat.format(
-					"Character encoding {0} detected with {1}% confidence.", cm.getName(),
-					cm.getConfidence()), INFORMATION);
+			setMessage(MessageFormat.format("Character encoding {0} detected with {1}% confidence.",
+					cm.getName(), cm.getConfidence()), INFORMATION);
 		}
 		else {
 			setMessage("Character encoding detection yielded no result.", WARNING);
@@ -234,14 +240,53 @@ public class CharsetConfigurationPage<P extends IOProvider, W extends IOWizard<P
 	}
 
 	/**
+	 * Set the value of the character set combobox
+	 * 
+	 * @param charset value to set
+	 */
+	protected final void setCharset(String charset) {
+		charsetCombo.setText(charset);
+	}
+
+	/**
+	 * Add a control decoration to the character set combobox.
+	 * 
+	 * @param decorationText Tooltip text of the decoration
+	 * @param image The decoration image, e.g.<br>
+	 *            <code>FieldDecorationRegistry.getDefault()
+								.getFieldDecoration(FieldDecorationRegistry.DEC_CONTENT_PROPOSAL)
+								.getImage()</code><br>
+	 * @param margin The margin in pixels
+	 */
+	protected final void setCharsetDecoration(String decorationText, Image image, int margin) {
+		if (charsetComboDecoration == null) {
+			charsetComboDecoration = new ControlDecoration(charsetCombo, SWT.TOP | SWT.LEFT);
+		}
+		charsetComboDecoration.setDescriptionText(decorationText);
+		charsetComboDecoration.setImage(image);
+		charsetComboDecoration.setMarginWidth(margin);
+	}
+
+	/**
+	 * The success message to be displayed when a valid character set name was
+	 * entered
+	 * 
+	 * @param cs The selected character set
+	 * @return The message
+	 */
+	protected String successMessage(Charset cs) {
+		return MessageFormat.format("Selected charset: {0}", cs.displayName());
+	}
+
+	/**
 	 * Update the page state.
 	 */
-	private void update() {
+	protected void update() {
 		String name = charsetCombo.getText();
 		if (name != null && !name.isEmpty()) {
 			try {
 				Charset cs = Charset.forName(name);
-				setMessage(cs.displayName(), INFORMATION);
+				setMessage(successMessage(cs), INFORMATION);
 				setPageComplete(true);
 				return;
 			} catch (UnsupportedCharsetException e) {

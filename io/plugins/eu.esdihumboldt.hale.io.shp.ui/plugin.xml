@@ -11,7 +11,7 @@
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.ui.io.config.CharsetConfigurationPage"
+            class="eu.esdihumboldt.hale.ui.io.config.ShapefileCharsetConfigurationPage"
             order="1">
          <provider
                ref="eu.esdihumboldt.hale.io.shape.reader.instance">

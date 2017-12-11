@@ -4,6 +4,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Added
+
+- When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
+
 ### Fixed
 
 - Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
