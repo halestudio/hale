@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,10 +31,12 @@ import java.util.Set;
 import com.google.common.base.Strings;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.migrate.impl.UnmigratedCell;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -222,7 +225,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
@@ -447,11 +450,28 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		loadCustomFunctions(start, alignment, sourceTypes, targetTypes);
 
-		// add cells of main alignment
+		// collect cells for main alignment
+		List<MutableCell> cells = new ArrayList<>();
 		for (C mainCell : getCells(start)) {
 			MutableCell cell = createCell(mainCell, sourceTypes, targetTypes, reporter);
-			if (cell != null)
+			if (cell != null) {
+				cells.add(cell);
+			}
+		}
+
+		// Collect mappings from all UnmigratedCells
+		Map<EntityDefinition, EntityDefinition> allMappings = new HashMap<>();
+		cells.stream().filter(c -> c instanceof UnmigratedCell).map(c -> (UnmigratedCell) c)
+				.forEach(uc -> allMappings.putAll(uc.getEntityMappings()));
+
+		// Add cells to the alignment, migrate UnmigratedCells
+		for (MutableCell cell : cells) {
+			if (cell instanceof UnmigratedCell) {
+				alignment.addCell(((UnmigratedCell) cell).migrate(allMappings));
+			}
+			else {
 				alignment.addCell(cell);
+			}
 		}
 
 		// add modifiers of main alignment
@@ -492,7 +512,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
 			Map<A, AlignmentInfo> alignmentToInfo, PathUpdate updater, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		// XXX What if the project file path would change?
 		// Alignment is a project file, so it is in the same directory.
 		URI currentAbsolute = updater.getNewLocation();
