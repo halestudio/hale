@@ -11,6 +11,14 @@
                ref="eu.esdihumboldt.hale.io.xtraserver.mapping">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingFileWriter"
+            id="eu.esdihumboldt.hale.io.xtraserver.writer"
+            name="XtraServer Mapping File">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.appschema.mapping">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -29,5 +37,4 @@
          </describer>
       </content-type>
    </extension>
-
 </plugin>
