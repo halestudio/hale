@@ -20,9 +20,11 @@ import static eu.esdihumboldt.hale.common.align.migrate.util.MigrationUtil.isDir
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Function;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.merge.MergeCellMigrator;
@@ -122,11 +124,17 @@ public class DefaultMergeCellMigrator extends DefaultCellMigrator implements Mer
 						cells.add(getCellMigrator.apply(match.getTransformationIdentifier())
 								.updateCell(match, cellMigration, replaceTarget, log));
 					}
-					// otherwise, use custom logic to try to combine cells
 					else {
-						// FIXME
-						log.warn("Unsupported combination: " + match.getTransformationIdentifier()
-								+ " / " + originalCell.getTransformationIdentifier());
+						// otherwise, use custom logic to try to combine cells
+
+						MutableCell newCell = new DefaultCell(originalCell);
+
+						// reset source
+						newCell.setSource(ArrayListMultimap.create());
+
+						mergeSource(newCell, sources.keys().iterator().next(), source, match,
+								originalCell, log);
+
 						cells.add(new DefaultCell(originalCell));
 					}
 				}
@@ -134,17 +142,63 @@ public class DefaultMergeCellMigrator extends DefaultCellMigrator implements Mer
 				return cells;
 			}
 			else {
-				// no match -> remove???
-				// FIXME
+				// no match -> remove?
+				// FIXME document as uncertainty? -> but no cell present any
+				// more
+				// XXX rather add original + documentation
 				log.warn("No match for source found, dropping cell "
 						+ CellUtil.getCellDescription(originalCell, null));
 				return Collections.emptyList();
 			}
 		}
 		else {
-			// FIXME
-			return Collections.emptyList();
+			// handle each source
+			MutableCell newCell = new DefaultCell(originalCell);
+
+			// reset source
+			newCell.setSource(ArrayListMultimap.create());
+
+			for (Entry<String, ? extends Entity> source : sources.entries()) {
+				List<Cell> matches = mergeIndex
+						.getCellsForTarget(source.getValue().getDefinition());
+				if (!matches.isEmpty()) {
+					Cell match = matches.get(0);
+
+					mergeSource(newCell, source.getKey(), source.getValue().getDefinition(), match,
+							originalCell, log);
+
+					if (matches.size() > 1) {
+						// FIXME
+						log.warn("Multiple matches for source " + source.getValue().getDefinition()
+								+ ", only handling one");
+					}
+				}
+				else {
+					// not match, just not add source?
+					// FIXME definitely add comment
+				}
+			}
+
+			return Collections.singleton(newCell);
 		}
+	}
+
+	/**
+	 * Merge a source according to a matching cell.
+	 * 
+	 * @param cell the target cell to merge the source to (contains only already
+	 *            merged sources)
+	 * @param sourceName the name of the source
+	 * @param source the source definition
+	 * @param match the match for the source
+	 * @param originalCell the original cell
+	 * @param log the migration process log
+	 */
+	protected void mergeSource(MutableCell cell, String sourceName, EntityDefinition source,
+			Cell match, Cell originalCell, SimpleLog log) {
+		// FIXME
+		log.warn("Unsupported combination: " + match.getTransformationIdentifier() + " / "
+				+ cell.getTransformationIdentifier());
 	}
 
 }
