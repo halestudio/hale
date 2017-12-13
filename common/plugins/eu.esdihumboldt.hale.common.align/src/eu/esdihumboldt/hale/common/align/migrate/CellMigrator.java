@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.align.migrate;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Interface for implementing migration of single cells based on an
@@ -32,9 +33,10 @@ public interface CellMigrator {
 	 * @param originalCell the original cell
 	 * @param migration the alignment migration
 	 * @param options the migration options
+	 * @param log the migration process log
 	 * @return the updated cell
 	 */
 	MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
-			MigrationOptions options);
+			MigrationOptions options, SimpleLog log);
 
 }

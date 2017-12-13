@@ -36,6 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -49,8 +50,8 @@ public class MergeMigrator extends DefaultCellMigrator {
 
 	@Override
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
-			MigrationOptions options) {
-		MutableCell result = super.updateCell(originalCell, migration, options);
+			MigrationOptions options, SimpleLog log) {
+		MutableCell result = super.updateCell(originalCell, migration, options, log);
 
 		if (options.updateSource() && originalCell.getSource() != null) {
 			Entity sourceType = CellUtil.getFirstEntity(originalCell.getSource());

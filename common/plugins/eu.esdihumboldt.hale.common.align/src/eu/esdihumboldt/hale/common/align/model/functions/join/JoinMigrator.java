@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.Join
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Cell migrator for joins.
@@ -43,8 +44,8 @@ public class JoinMigrator extends DefaultCellMigrator {
 
 	@Override
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
-			MigrationOptions options) {
-		MutableCell result = super.updateCell(originalCell, migration, options);
+			MigrationOptions options, SimpleLog log) {
+		MutableCell result = super.updateCell(originalCell, migration, options, log);
 
 		if (options.updateSource()) {
 			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap

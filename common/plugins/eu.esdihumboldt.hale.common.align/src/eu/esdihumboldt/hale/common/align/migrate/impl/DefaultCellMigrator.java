@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Default implementation of migrator for single cells.
@@ -42,7 +43,7 @@ public class DefaultCellMigrator implements CellMigrator {
 
 	@Override
 	public MutableCell updateCell(final Cell originalCell, final AlignmentMigration migration,
-			final MigrationOptions options) {
+			final MigrationOptions options, SimpleLog log) {
 		MutableCell result = new DefaultCell(originalCell);
 
 		EntryTransformer<String, Entity, Entity> entityTransformer = new EntryTransformer<String, Entity, Entity>() {
