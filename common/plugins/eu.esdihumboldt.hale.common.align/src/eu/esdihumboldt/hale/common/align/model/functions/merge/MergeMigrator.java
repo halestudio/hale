@@ -27,6 +27,7 @@ import com.google.common.collect.ListMultimap;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigrationNameLookupSupport;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -47,6 +48,9 @@ public class MergeMigrator extends DefaultCellMigrator {
 
 	private static final ALogger log = ALoggerFactory.getLogger(MergeMigrator.class);
 
+	private static final String[] PROPERTY_PATH_PARAMETERS = { MergeFunction.PARAMETER_PROPERTY,
+			MergeFunction.PARAMETER_ADDITIONAL_PROPERTY };
+
 	@Override
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
 			MigrationOptions options) {
@@ -60,9 +64,9 @@ public class MergeMigrator extends DefaultCellMigrator {
 				ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
 						.create(result.getTransformationParameters());
 
-				updateProperties(modParams, migration, sourceDef, MergeFunction.PARAMETER_PROPERTY);
-				updateProperties(modParams, migration, sourceDef,
-						MergeFunction.PARAMETER_ADDITIONAL_PROPERTY);
+				for (String property : PROPERTY_PATH_PARAMETERS) {
+					updateProperties(modParams, migration, sourceDef, property);
+				}
 
 				result.setTransformationParameters(modParams);
 			}
@@ -84,20 +88,39 @@ public class MergeMigrator extends DefaultCellMigrator {
 
 	private ParameterValue convertProperty(ParameterValue value, AlignmentMigration migration,
 			TypeDefinition sourceType) {
-		try {
-			EntityDefinition entity = MergeUtil.resolvePropertyPath(value, sourceType);
 
-			Optional<EntityDefinition> replacement = migration.entityReplacement(entity);
-			if (replacement.isPresent()) {
-				// yield replacement path
-				List<QName> newPath = replacement.get().getPropertyPath().stream()
-						.map(context -> context.getChild().getName()).collect(Collectors.toList());
-				return MergeUtil.toPropertyParameter(newPath);
+		EntityDefinition entity = null;
+		try {
+			entity = MergeUtil.resolvePropertyPath(value, sourceType);
+		} catch (IllegalStateException e) {
+			// If the migration supports lookup via entity name, try to find a
+			// replacement for the parameter value
+			if (migration instanceof AlignmentMigrationNameLookupSupport) {
+				AlignmentMigrationNameLookupSupport nameLookup = (AlignmentMigrationNameLookupSupport) migration;
+				entity = nameLookup.entityReplacement(value.getStringRepresentation()).orElse(null);
 			}
-			else {
-				// use original path
-				return value;
-			}
+		}
+
+		if (entity == null) {
+			return value;
+		}
+
+		Optional<EntityDefinition> replacement = migration.entityReplacement(entity);
+		if (replacement.isPresent()) {
+			return convertProperty(value, replacement.get());
+		}
+		else {
+			// use original path
+			return value;
+		}
+	}
+
+	private ParameterValue convertProperty(ParameterValue value, EntityDefinition replacingEntity) {
+		try {
+			// yield replacement path
+			List<QName> newPath = replacingEntity.getPropertyPath().stream()
+					.map(context -> context.getChild().getName()).collect(Collectors.toList());
+			return MergeUtil.toPropertyParameter(newPath);
 		} catch (Exception e) {
 			log.error("Unable to perform migration for merge property", e);
 			return value;
