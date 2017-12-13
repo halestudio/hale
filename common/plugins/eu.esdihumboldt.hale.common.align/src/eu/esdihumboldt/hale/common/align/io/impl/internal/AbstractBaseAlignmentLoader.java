@@ -113,7 +113,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	protected abstract String getCellId(C cell);
 
 	/**
-	 * Create a cell from the given cell representation
+	 * Create a cell from the given cell representation. Implementations can
+	 * return {@link UnmigratedCell}s which will be migrated by this alignment
+	 * loader.
 	 * 
 	 * @param cell the cell representation
 	 * @param sourceTypes the source types to use for resolving definition
@@ -282,19 +284,27 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				Collection<CustomPropertyFunction> baseFunctions = getPropertyFunctions(
 						base.getKey(), sourceTypes, targetTypes);
 				Collection<C> baseCells = getCells(base.getKey());
-				Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+				Collection<BaseAlignmentCell> createdBaseCells = new ArrayList<BaseAlignmentCell>(
 						baseCells.size());
+				List<MutableCell> createdCells = new ArrayList<>(baseCells.size());
 				for (C baseCell : baseCells) {
 					// add cells of base alignments
 					MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
 					if (cell != null) {
-						createdCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
-								base.getValue().prefix));
+						createdCells.add(cell);
 					}
 				}
 
+				// Migrate UnmigratedCells
+				migrateCells(createdCells);
+
+				for (MutableCell cell : createdCells) {
+					createdBaseCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
+							base.getValue().prefix));
+				}
+
 				alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
-						createdCells, baseFunctions);
+						createdBaseCells, baseFunctions);
 			}
 		}
 
@@ -459,6 +469,20 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 			}
 		}
 
+		// Migrate all UnmigratedCells and add them to the alignment
+		List<MutableCell> migratedCells = migrateCells(cells);
+		migratedCells.forEach(cell -> alignment.addCell(cell));
+
+		// add modifiers of main alignment
+		applyModifiers(alignment, getModifiers(start), prefixMapping.get(start), null, false,
+				reporter);
+
+		return alignment;
+	}
+
+	private List<MutableCell> migrateCells(List<MutableCell> cells) {
+		List<MutableCell> result = new ArrayList<>();
+
 		// Collect mappings from all UnmigratedCells
 		Map<EntityDefinition, EntityDefinition> allMappings = new HashMap<>();
 		cells.stream().filter(c -> c instanceof UnmigratedCell).map(c -> (UnmigratedCell) c)
@@ -467,18 +491,14 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		// Add cells to the alignment, migrate UnmigratedCells
 		for (MutableCell cell : cells) {
 			if (cell instanceof UnmigratedCell) {
-				alignment.addCell(((UnmigratedCell) cell).migrate(allMappings));
+				result.add(((UnmigratedCell) cell).migrate(allMappings));
 			}
 			else {
-				alignment.addCell(cell);
+				result.add(cell);
 			}
 		}
 
-		// add modifiers of main alignment
-		applyModifiers(alignment, getModifiers(start), prefixMapping.get(start), null, false,
-				reporter);
-
-		return alignment;
+		return result;
 	}
 
 	/**
