@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
@@ -61,17 +62,18 @@ public class JaxbAlignmentIO {
 	 * @param updater the path updater to use for base alignments
 	 * @param resolver the entity resolver, <code>null</code> to use the default
 	 *            resolver
+	 * @param serviceProvider the service provider
 	 * @return the alignment
 	 * @throws JAXBException if reading the alignment failed
 	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver)
-					throws JAXBException, IOException {
+			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver,
+			ServiceProvider serviceProvider) throws JAXBException, IOException {
 		AlignmentType genAlignment = JaxbToAlignment.load(in, reporter);
 		// convert to alignment
 		return new JaxbToAlignment(genAlignment, reporter, sourceTypes, targetTypes, updater,
-				resolver).convert();
+				resolver, serviceProvider).convert();
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
 				targetTypes, reporter);
 	}

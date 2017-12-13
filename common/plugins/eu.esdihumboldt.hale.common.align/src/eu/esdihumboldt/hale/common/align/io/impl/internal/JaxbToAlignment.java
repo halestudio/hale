@@ -69,6 +69,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -87,6 +88,7 @@ public class JaxbToAlignment
 	private final AlignmentType alignment;
 	private final PathUpdate updater;
 	private final EntityResolver resolver;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Private constructor for internal use.
@@ -100,6 +102,7 @@ public class JaxbToAlignment
 		// no custom resolver here, this constructor is used when loading base
 		// alignments
 		this.resolver = DefaultEntityResolver.getInstance();
+		this.serviceProvider = null;
 	}
 
 	/**
@@ -109,9 +112,11 @@ public class JaxbToAlignment
 	 * @param targetTypes the target types for resolving target entities
 	 * @param updater the path updater to use for base alignments
 	 * @param resolver the entity resolver
+	 * @param serviceProvider Service provider
 	 */
 	public JaxbToAlignment(AlignmentType alignment, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver) {
+			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver,
+			ServiceProvider serviceProvider) {
 		this.alignment = alignment;
 		this.reporter = reporter;
 		this.sourceTypes = sourceTypes;
@@ -123,6 +128,7 @@ public class JaxbToAlignment
 		else {
 			this.resolver = resolver;
 		}
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
