@@ -112,7 +112,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 
 			alignment = new DefaultAlignment();
 
-			XtraServerMapping xsm = XtraServerMapping.fromStream(in);
+			XtraServerMapping xsm = XtraServerMapping.createFromStream(in);
 
 			NamedEntityType sourceType;
 			NamedEntityType targetType;
