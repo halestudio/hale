@@ -37,4 +37,21 @@
          </describer>
       </content-type>
    </extension>
+  <extension
+     point="org.eclipse.core.contenttype.contentTypes">
+  <content-type
+        base-type="org.eclipse.core.runtime.xml"
+        file-extensions="xml"
+        id="eu.esdihumboldt.hale.io.xtraserver.mapping"
+        name="XtraServer Configuration File"
+        priority="normal">
+     <describer
+           class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
+        <parameter
+              name="element"
+              value="{http://www.interactive-instruments.de/namespaces/XtraServer}Configuration">
+        </parameter>
+     </describer>
+  </content-type>
+   </extension>
 </plugin>
