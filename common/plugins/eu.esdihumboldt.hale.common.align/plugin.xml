@@ -613,5 +613,12 @@
             class="eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException">
       </allow>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.annotation">
+      <annotation
+            descriptor="eu.esdihumboldt.hale.common.align.model.annotations.messages.MessagesDescriptor"
+            type="messages">
+      </annotation>
+   </extension>
 
 </plugin>

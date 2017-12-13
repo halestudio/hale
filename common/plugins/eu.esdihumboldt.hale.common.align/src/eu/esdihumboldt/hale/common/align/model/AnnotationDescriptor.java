@@ -35,4 +35,9 @@ public interface AnnotationDescriptor<T> extends ComplexValueType<T, Void> {
 	 */
 	public T create();
 
+	@Override
+	default Class<? extends Void> getContextType() {
+		return Void.class;
+	}
+
 }
