@@ -44,6 +44,15 @@ public class DialogCRSProvider implements CRSProvider {
 	 */
 	@Override
 	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
+		return getCRS(parentType, propertyPath, null);
+	}
+
+	/**
+	 * @see CRSProvider#getCRS(TypeDefinition, List, CRSDefinition)
+	 */
+	@Override
+	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath,
+			final CRSDefinition defaultCrs) {
 		// TODO extend dialog to allow selecting a CRS per property definition
 		// XXX for now always reports the same CRS definition
 		if (crsDef == null && !shown) {
@@ -55,8 +64,8 @@ public class DialogCRSProvider implements CRSProvider {
 
 				@Override
 				public void run() {
-					SelectCRSDialog dialog = new SelectCRSDialog(Display.getCurrent()
-							.getActiveShell(), null);
+					SelectCRSDialog dialog = new SelectCRSDialog(
+							Display.getCurrent().getActiveShell(), defaultCrs);
 
 					dialog.open();
 					result.set(dialog.getValue());
