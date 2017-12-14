@@ -54,6 +54,23 @@ public class Message {
 	private Value customPayload;
 
 	/**
+	 * Create a new message.
+	 * 
+	 * @param text the message text
+	 */
+	public Message(String text) {
+		super();
+		this.text = text;
+	}
+
+	/**
+	 * Create a new empty message.
+	 */
+	public Message() {
+		super();
+	}
+
+	/**
 	 * @return if the message was dismissed
 	 */
 	public boolean isDismissed() {
@@ -67,16 +84,6 @@ public class Message {
 	public Message setDismissed(boolean dismissed) {
 		this.dismissed = dismissed;
 		return this;
-	}
-
-	/**
-	 * Create a new message.
-	 * 
-	 * @param text the message text
-	 */
-	public Message(String text) {
-		super();
-		this.text = text;
 	}
 
 	/**
@@ -196,7 +203,7 @@ public class Message {
 	 * 
 	 * @return the value representation of the comment
 	 */
-	public Value toValue() {
+	public ValueProperties toProperties() {
 		ValueProperties props = new ValueProperties();
 		if (author != null) {
 			props.put("author", Value.of(author));
@@ -226,22 +233,23 @@ public class Message {
 					.map(comment -> Value.of(comment)).collect(Collectors.toList()));
 			props.put("comments", commentList.toValue());
 		}
-		return props.toValue();
+		return props;
 	}
 
 	/**
-	 * Convert from a {@link Value}.
+	 * Apply from a given {@link Value}, if the value represents a
+	 * {@link Message}.
 	 * 
-	 * @param value the value to interpret as {@link Comment}
-	 * @return the comment if a valid comment could be created
+	 * @param value the value to interpret as {@link Message}
+	 * @return this for chaining
 	 */
 	@Nullable
-	public static Optional<Message> fromValue(Value value) {
+	public Message applyFromValue(Value value) {
 		ValueProperties props = value.as(ValueProperties.class);
 		if (props != null) {
 			String text = props.get("text").as(String.class);
 			if (text != null && !text.isEmpty()) {
-				Message message = new Message(text) //
+				setText(text) //
 						.setAuthor(props.getSafe("author").as(String.class)) //
 						.setFormat(props.getSafe("format").as(String.class)) //
 						.setCategory(props.getSafe("category").as(String.class))//
@@ -249,28 +257,29 @@ public class Message {
 						.setCustomPayload(props.get("payload"));
 
 				ValueList tags = props.getSafe("tags").as(ValueList.class);
+				this.tags.clear();
 				if (tags != null) {
 					for (Value tag : tags) {
 						String tagString = tag.as(String.class);
 						if (tagString != null) {
-							message.addTag(tagString);
+							addTag(tagString);
 						}
 					}
 				}
 
 				ValueList comments = props.getSafe("comments").as(ValueList.class);
+				this.comments.clear();
 				if (comments != null) {
 					for (Value commentVal : comments) {
 						Optional<Comment> comment = Comment.fromValue(commentVal);
-						comment.ifPresent(c -> message.addComment(c));
+						comment.ifPresent(c -> addComment(c));
 					}
 				}
 
-				return Optional.of(message);
 			}
 		}
 
-		return Optional.empty();
+		return this;
 	}
 
 }
