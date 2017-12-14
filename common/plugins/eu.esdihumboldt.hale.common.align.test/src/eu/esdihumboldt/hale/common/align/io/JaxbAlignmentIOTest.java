@@ -37,7 +37,8 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 	protected MutableAlignment loadAlignment(InputStream input, TypeIndex source, TypeIndex target)
 			throws Exception {
 		// assume no location update needed
-		return JaxbAlignmentIO.load(input, null, source, target, new PathUpdate(null, null), null);
+		return JaxbAlignmentIO.load(input, null, source, target, new PathUpdate(null, null), null,
+				null);
 	}
 
 	@Override

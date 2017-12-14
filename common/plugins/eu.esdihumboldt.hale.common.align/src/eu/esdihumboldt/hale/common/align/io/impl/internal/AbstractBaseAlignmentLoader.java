@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -30,10 +31,12 @@ import java.util.Set;
 import com.google.common.base.Strings;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.migrate.impl.UnmigratedCell;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ModifiableCell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -110,7 +113,9 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	protected abstract String getCellId(C cell);
 
 	/**
-	 * Create a cell from the given cell representation
+	 * Create a cell from the given cell representation. Implementations can
+	 * return {@link UnmigratedCell}s which will be migrated by this alignment
+	 * loader.
 	 * 
 	 * @param cell the cell representation
 	 * @param sourceTypes the source types to use for resolving definition
@@ -222,7 +227,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
@@ -279,19 +284,27 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				Collection<CustomPropertyFunction> baseFunctions = getPropertyFunctions(
 						base.getKey(), sourceTypes, targetTypes);
 				Collection<C> baseCells = getCells(base.getKey());
-				Collection<BaseAlignmentCell> createdCells = new ArrayList<BaseAlignmentCell>(
+				Collection<BaseAlignmentCell> createdBaseCells = new ArrayList<BaseAlignmentCell>(
 						baseCells.size());
+				List<MutableCell> createdCells = new ArrayList<>(baseCells.size());
 				for (C baseCell : baseCells) {
 					// add cells of base alignments
 					MutableCell cell = createCell(baseCell, sourceTypes, targetTypes, reporter);
 					if (cell != null) {
-						createdCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
-								base.getValue().prefix));
+						createdCells.add(cell);
 					}
 				}
 
+				// Migrate UnmigratedCells
+				migrateCells(createdCells);
+
+				for (MutableCell cell : createdCells) {
+					createdBaseCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
+							base.getValue().prefix));
+				}
+
 				alignment.addBaseAlignment(base.getValue().prefix, base.getValue().uri.usedURI,
-						createdCells, baseFunctions);
+						createdBaseCells, baseFunctions);
 			}
 		}
 
@@ -447,18 +460,45 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 
 		loadCustomFunctions(start, alignment, sourceTypes, targetTypes);
 
-		// add cells of main alignment
+		// collect cells for main alignment
+		List<MutableCell> cells = new ArrayList<>();
 		for (C mainCell : getCells(start)) {
 			MutableCell cell = createCell(mainCell, sourceTypes, targetTypes, reporter);
-			if (cell != null)
-				alignment.addCell(cell);
+			if (cell != null) {
+				cells.add(cell);
+			}
 		}
+
+		// Migrate all UnmigratedCells and add them to the alignment
+		List<MutableCell> migratedCells = migrateCells(cells);
+		migratedCells.forEach(cell -> alignment.addCell(cell));
 
 		// add modifiers of main alignment
 		applyModifiers(alignment, getModifiers(start), prefixMapping.get(start), null, false,
 				reporter);
 
 		return alignment;
+	}
+
+	private List<MutableCell> migrateCells(List<MutableCell> cells) {
+		List<MutableCell> result = new ArrayList<>();
+
+		// Collect mappings from all UnmigratedCells
+		Map<EntityDefinition, EntityDefinition> allMappings = new HashMap<>();
+		cells.stream().filter(c -> c instanceof UnmigratedCell).map(c -> (UnmigratedCell) c)
+				.forEach(uc -> allMappings.putAll(uc.getEntityMappings()));
+
+		// Add cells to the alignment, migrate UnmigratedCells
+		for (MutableCell cell : cells) {
+			if (cell instanceof UnmigratedCell) {
+				result.add(((UnmigratedCell) cell).migrate(allMappings));
+			}
+			else {
+				result.add(cell);
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -492,7 +532,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
 			Map<A, AlignmentInfo> alignmentToInfo, PathUpdate updater, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		// XXX What if the project file path would change?
 		// Alignment is a project file, so it is in the same directory.
 		URI currentAbsolute = updater.getNewLocation();
