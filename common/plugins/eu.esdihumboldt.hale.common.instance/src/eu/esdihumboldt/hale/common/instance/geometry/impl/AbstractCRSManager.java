@@ -71,6 +71,13 @@ public abstract class AbstractCRSManager implements CRSProvider {
 
 	@Override
 	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
+		return getCRS(parentType, propertyPath, null);
+	}
+
+	@Override
+	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath,
+			CRSDefinition defaultCrs) {
+
 		CRSDefinition result = null;
 		String resourceId = reader.getResourceIdentifier();
 		if (resourceId == null) {
@@ -98,8 +105,8 @@ public abstract class AbstractCRSManager implements CRSProvider {
 
 		// overall configuration for resource
 		if (result == null && !resourceId.isEmpty()) {
-			result = CRSDefinitionManager.getInstance().parse(
-					loadValue(resourceId + PARAM_DEFAULT_CRS));
+			result = CRSDefinitionManager.getInstance()
+					.parse(loadValue(resourceId + PARAM_DEFAULT_CRS));
 		}
 		// overall configuration
 		if (result == null) {
@@ -108,7 +115,7 @@ public abstract class AbstractCRSManager implements CRSProvider {
 
 		if (result == null && provider != null) {
 			// consult default CRS provider
-			result = provider.getCRS(parentType, propertyPath);
+			result = provider.getCRS(parentType, propertyPath, defaultCrs);
 			if (result != null) {
 				// store in configuration
 				storeValue(propertyKey, CRSDefinitionManager.getInstance().asString(result));

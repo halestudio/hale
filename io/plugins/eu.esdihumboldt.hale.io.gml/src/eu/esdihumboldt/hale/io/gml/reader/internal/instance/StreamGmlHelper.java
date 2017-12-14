@@ -33,6 +33,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+
 import com.google.common.collect.Iterables;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -41,6 +44,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -100,6 +104,43 @@ public abstract class StreamGmlHelper {
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
 			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
 			boolean ignoreNamespaces, IOProvider ioProvider) throws XMLStreamException {
+
+		return parseInstance(reader, type, indexInStream, strict, srsDimension, crsProvider,
+				parentType, propertyPath, allowNull, ignoreNamespaces, ioProvider, null);
+	}
+
+	/**
+	 * Parses an instance with the given type from the given XML stream reader.
+	 * 
+	 * @param reader the XML stream reader, the current event must be the start
+	 *            element of the instance
+	 * @param type the definition of the instance type
+	 * @param indexInStream the index of the instance in the stream or
+	 *            <code>null</code>
+	 * @param strict if associating elements with properties should be done
+	 *            strictly according to the schema, otherwise a fall-back is
+	 *            used trying to populate values also on invalid property paths
+	 * @param srsDimension the dimension of the instance or <code>null</code>
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
+	 * @param parentType the type of the topmost instance
+	 * @param propertyPath the property path down from the topmost instance, may
+	 *            be <code>null</code>
+	 * @param allowNull if a <code>null</code> result is allowed
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
+	 * @param ioProvider the I/O Provider to get value
+	 * @param crs The <code>CRSDefinition</code> to use for geometries
+	 * @return the parsed instance, may be <code>null</code> if allowNull is
+	 *         <code>true</code>
+	 * @throws XMLStreamException if parsing the instance failed
+	 */
+	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
+			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
+			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
+			boolean ignoreNamespaces, IOProvider ioProvider, CRSDefinition crs)
+			throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
@@ -125,6 +166,22 @@ public abstract class StreamGmlHelper {
 			instance = new StreamGmlInstance(type, indexInStream);
 		}
 
+		// If the current instance has an srsName attribute, try to resolve the
+		// corresponding CRS and pass it down the hierarchy and use it for
+		// nested geometries that don't have their own srsName.
+		CRSDefinition lastCrs = crs;
+		String srsName = reader.getAttributeValue(null, "srsName");
+		if (srsName != null) {
+			try {
+				CoordinateReferenceSystem decodedCrs = CRS.decode(srsName);
+				if (decodedCrs != null) {
+					lastCrs = new CodeDefinition(srsName, decodedCrs);
+				}
+			} catch (Exception e) {
+				lastCrs = new CodeDefinition(srsName);
+			}
+		}
+
 		boolean mixed = type.getConstraint(XmlMixedFlag.class).isEnabled();
 
 		if (!mixed) {
@@ -136,8 +193,8 @@ public abstract class StreamGmlHelper {
 			boolean isNil = nilString != null && "true".equalsIgnoreCase(nilString);
 
 			// instance properties
-			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, false, ignoreNamespaces, ioProvider);
+			parseProperties(reader, instance, strict, srsDimension, crsProvider, lastCrs,
+					parentType, propertyPath, false, ignoreNamespaces, ioProvider);
 
 			// nil instance w/o properties
 			if (allowNull && isNil && Iterables.isEmpty(instance.getPropertyNames())) {
@@ -174,8 +231,8 @@ public abstract class StreamGmlHelper {
 			 */
 
 			// instance properties (attributes only)
-			parseProperties(reader, instance, strict, srsDimension, crsProvider, parentType,
-					propertyPath, true, ignoreNamespaces, ioProvider);
+			parseProperties(reader, instance, strict, srsDimension, crsProvider, lastCrs,
+					parentType, propertyPath, true, ignoreNamespaces, ioProvider);
 
 			// combined text
 			String value = readText(reader);
@@ -228,11 +285,15 @@ public abstract class StreamGmlHelper {
 				for (Object value : values) {
 					if (value instanceof Geometry || (value instanceof GeometryProperty<?>
 							&& ((GeometryProperty<?>) value).getCRSDefinition() == null)) {
-						CRSDefinition crs = crsProvider.getCRS(parentType, propertyPath);
+						// try to resolve value of srsName attribute
+
+						CRSDefinition geometryCrs = crsProvider.getCRS(parentType, propertyPath,
+								lastCrs);
 						if (crs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
 									: (((GeometryProperty<?>) value).getGeometry());
-							resultVals.add(new DefaultGeometryProperty<Geometry>(crs, geom));
+							resultVals
+									.add(new DefaultGeometryProperty<Geometry>(geometryCrs, geom));
 							continue;
 						}
 					}
@@ -320,6 +381,8 @@ public abstract class StreamGmlHelper {
 	 * @param srsDimension the dimension of the instance or <code>null</code>
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
+	 * @param crs CRS definition to use if the property contains a geometry that
+	 *            does not carry its own srsName attribute
 	 * @param parentType the type of the topmost instance
 	 * @param propertyPath the property path down from the topmost instance
 	 * @param onlyAttributes if only attributes should be parsed
@@ -330,9 +393,9 @@ public abstract class StreamGmlHelper {
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
-			Integer srsDimension, CRSProvider crsProvider, TypeDefinition parentType,
-			List<QName> propertyPath, boolean onlyAttributes, boolean ignoreNamespaces,
-			IOProvider ioProvider) throws XMLStreamException {
+			Integer srsDimension, CRSProvider crsProvider, CRSDefinition crs,
+			TypeDefinition parentType, List<QName> propertyPath, boolean onlyAttributes,
+			boolean ignoreNamespaces, IOProvider ioProvider) throws XMLStreamException {
 		final MutableGroup topGroup = group;
 
 		// attributes (usually only present in Instances)
@@ -390,7 +453,7 @@ public abstract class StreamGmlHelper {
 							// use an instance as value
 							Instance inst = parseInstance(reader, property.getPropertyType(), null,
 									strict, srsDimension, crsProvider, parentType, path, true,
-									ignoreNamespaces, ioProvider);
+									ignoreNamespaces, ioProvider, crs);
 							if (inst != null) {
 								group.addProperty(property.getName(), inst);
 							}

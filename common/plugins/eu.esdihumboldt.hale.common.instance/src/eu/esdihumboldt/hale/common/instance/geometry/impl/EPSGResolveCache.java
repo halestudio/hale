@@ -42,7 +42,7 @@ public class EPSGResolveCache implements CRSResolveCache {
 			try {
 				Integer epsgCode = CRS.lookupEpsgCode(crs, true);
 				if (epsgCode != null) {
-					String code = SrsSyntax.OGC_URN + String.valueOf(epsgCode);
+					String code = SrsSyntax.OGC_URN.getPrefix() + String.valueOf(epsgCode);
 					CoordinateReferenceSystem resolved = CRS.decode(code);
 					result = new CodeDefinition(code, resolved);
 				}
