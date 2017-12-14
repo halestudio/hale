@@ -55,8 +55,8 @@ public class JoinMigrator extends DefaultCellMigrator {
 				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
 				if (joinParam != null) {
 					joinParams.clear();
-					joinParams.add(new ParameterValue(
-							Value.complex(convertJoinParameter(joinParam, migration, options))));
+					joinParams.add(new ParameterValue(Value
+							.complex(convertJoinParameter(joinParam, migration, options, log))));
 				}
 			}
 			result.setTransformationParameters(modParams);
@@ -71,20 +71,21 @@ public class JoinMigrator extends DefaultCellMigrator {
 	 * @param joinParam the join parameter to migrate
 	 * @param migration the alignment migration
 	 * @param options the migration options
+	 * @param log the migration log
 	 * @return the migrated join parameter
 	 */
 	private JoinParameter convertJoinParameter(JoinParameter joinParam,
-			AlignmentMigration migration, MigrationOptions options) {
+			AlignmentMigration migration, MigrationOptions options, SimpleLog log) {
 
 		List<TypeEntityDefinition> types = joinParam.types.stream().map(type -> {
-			return (TypeEntityDefinition) migration.entityReplacement(type).orElse(type);
+			return (TypeEntityDefinition) migration.entityReplacement(type, log).orElse(type);
 		}).collect(Collectors.toList());
 
 		Set<JoinCondition> conditions = joinParam.conditions.stream().map(condition -> {
 			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.baseProperty).orElse(condition.baseProperty);
+					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
 			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.joinProperty).orElse(condition.joinProperty);
+					.entityReplacement(condition.joinProperty, log).orElse(condition.joinProperty);
 			JoinCondition result = new JoinCondition(baseProperty, joinProperty);
 			return result;
 		}).collect(Collectors.toSet());

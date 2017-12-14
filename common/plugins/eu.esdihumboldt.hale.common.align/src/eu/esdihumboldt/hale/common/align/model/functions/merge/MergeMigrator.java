@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions.merge;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,8 +25,6 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
@@ -46,8 +45,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  */
 public class MergeMigrator extends DefaultCellMigrator {
 
-	private static final ALogger log = ALoggerFactory.getLogger(MergeMigrator.class);
-
 	@Override
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
 			MigrationOptions options, SimpleLog log) {
@@ -61,9 +58,10 @@ public class MergeMigrator extends DefaultCellMigrator {
 				ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
 						.create(result.getTransformationParameters());
 
-				updateProperties(modParams, migration, sourceDef, MergeFunction.PARAMETER_PROPERTY);
+				updateProperties(modParams, migration, sourceDef, MergeFunction.PARAMETER_PROPERTY,
+						log);
 				updateProperties(modParams, migration, sourceDef,
-						MergeFunction.PARAMETER_ADDITIONAL_PROPERTY);
+						MergeFunction.PARAMETER_ADDITIONAL_PROPERTY, log);
 
 				result.setTransformationParameters(modParams);
 			}
@@ -73,22 +71,23 @@ public class MergeMigrator extends DefaultCellMigrator {
 	}
 
 	private void updateProperties(ListMultimap<String, ParameterValue> modParams,
-			AlignmentMigration migration, TypeDefinition sourceType, String parameterProperty) {
+			AlignmentMigration migration, TypeDefinition sourceType, String parameterProperty,
+			SimpleLog log) {
 		List<ParameterValue> params = modParams.get(parameterProperty);
 
 		List<ParameterValue> newParams = params.stream()
-				.map(property -> convertProperty(property, migration, sourceType))
+				.map(property -> convertProperty(property, migration, sourceType, log))
 				.collect(Collectors.toList());
 		params.clear();
 		params.addAll(newParams);
 	}
 
 	private ParameterValue convertProperty(ParameterValue value, AlignmentMigration migration,
-			TypeDefinition sourceType) {
+			TypeDefinition sourceType, SimpleLog log) {
 		try {
 			EntityDefinition entity = MergeUtil.resolvePropertyPath(value, sourceType);
 
-			Optional<EntityDefinition> replacement = migration.entityReplacement(entity);
+			Optional<EntityDefinition> replacement = migration.entityReplacement(entity, log);
 			if (replacement.isPresent()) {
 				// yield replacement path
 				List<QName> newPath = replacement.get().getPropertyPath().stream()
@@ -100,7 +99,8 @@ public class MergeMigrator extends DefaultCellMigrator {
 				return value;
 			}
 		} catch (Exception e) {
-			log.error("Unable to perform migration for merge property", e);
+			log.error(MessageFormat.format("Merge property configuration {0} could not be updated",
+					value.as(String.class)), e);
 			return value;
 		}
 	}

@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Condition
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
+import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
@@ -42,7 +43,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 	protected abstract Optional<EntityDefinition> findMatch(EntityDefinition entity);
 
 	@Override
-	Optional<EntityDefinition> entityReplacement(EntityDefinition entity) {
+	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
 		def defaultEntity = AlignmentUtil.getAllDefaultEntity(entity)
 
 		def matchedEntity = findMatch(defaultEntity)

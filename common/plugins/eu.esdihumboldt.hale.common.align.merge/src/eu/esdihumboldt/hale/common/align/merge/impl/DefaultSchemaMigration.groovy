@@ -15,20 +15,19 @@
 
 package eu.esdihumboldt.hale.common.align.merge.impl
 
-import java.util.Optional
-
-import javax.annotation.Nullable;
+import javax.annotation.Nullable
 import javax.xml.namespace.QName
 
-import eu.esdihumboldt.hale.common.align.groovy.accessor.EntityAccessor;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.EntityAccessor
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration
-import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
-import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
+import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import groovy.transform.CompileStatic;;;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import groovy.transform.CompileStatic
 
 /**
  * Default migration implementation supporting basic migration functionality like replacing namespaces.
@@ -38,152 +37,152 @@ import groovy.transform.CompileStatic;;;
 @CompileStatic
 class DefaultSchemaMigration implements AlignmentMigration {
 
-  final SchemaSpace newSchema
+	final SchemaSpace newSchema
 
-  DefaultSchemaMigration(SchemaSpace newSchema) {
-    this.newSchema = newSchema
-  }
+	DefaultSchemaMigration(SchemaSpace newSchema) {
+		this.newSchema = newSchema
+	}
 
-  @Override
-  public Optional<EntityDefinition> entityReplacement(EntityDefinition entity) {
+	@Override
+	public Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
 
-    // default behavior - try to find entity in new schema, based on names w/o namespace
+		// default behavior - try to find entity in new schema, based on names w/o namespace
 
-    QName typeName = entity.type.getName()
-    TypeDefinition type = findType(typeName)
-    if (!type) {
-      //FIXME
-      println "No type match for $entity found"
-      return Optional.empty()
-    }
+		QName typeName = entity.type.getName()
+		TypeDefinition type = findType(typeName)
+		if (!type) {
+			//FIXME
+			println "No type match for $entity found"
+			return Optional.empty()
+		}
 
-    TypeEntityDefinition typeEntity = new TypeEntityDefinition(type, entity.schemaSpace, entity.filter)
+		TypeEntityDefinition typeEntity = new TypeEntityDefinition(type, entity.schemaSpace, entity.filter)
 
-    if (entity.propertyPath.empty) {
-      // type entity definition - yield
-      return Optional.of(typeEntity)
-    }
-    else {
-      // property entity definition -> follow the path
+		if (entity.propertyPath.empty) {
+			// type entity definition - yield
+			return Optional.of(typeEntity)
+		}
+		else {
+			// property entity definition -> follow the path
 
-      EntityAccessor acc = new EntityAccessor(typeEntity)
+			EntityAccessor acc = new EntityAccessor(typeEntity)
 
-      // descend
-      entity.propertyPath.each {
-        acc.findChildren(it.child.name.localPart)
-      }
-      //TODO check if unique?
-      EntityDefinition candidate = acc.toEntityDefinition()
+			// descend
+			entity.propertyPath.each {
+				acc.findChildren(it.child.name.localPart)
+			}
+			//TODO check if unique?
+			EntityDefinition candidate = acc.toEntityDefinition()
 
-      if (!candidate) {
-        // if no candidate was found, try again ignoring groups
-        acc = new EntityAccessor(typeEntity)
+			if (!candidate) {
+				// if no candidate was found, try again ignoring groups
+				acc = new EntityAccessor(typeEntity)
 
-        // descend
-        entity.propertyPath.each {
-          if (it.child.asProperty()) {
-            acc.findChildren(it.child.name.localPart)
-          }
-        }
-        //TODO check if unique?
-        candidate = acc.toEntityDefinition()
-      }
+				// descend
+				entity.propertyPath.each {
+					if (it.child.asProperty()) {
+						acc.findChildren(it.child.name.localPart)
+					}
+				}
+				//TODO check if unique?
+				candidate = acc.toEntityDefinition()
+			}
 
-      if (!candidate) {
-        // no match found
-        //FIXME
-        println "No match for $entity found"
-        return Optional.empty()
-      }
-      else {
-        return Optional.ofNullable(applyContexts(candidate, entity))
-      }
-    }
-  }
+			if (!candidate) {
+				// no match found
+				//FIXME
+				println "No match for $entity found"
+				return Optional.empty()
+			}
+			else {
+				return Optional.ofNullable(applyContexts(candidate, entity))
+			}
+		}
+	}
 
-  @Nullable
-  private TypeDefinition findType(QName typeName) {
-    // check if same name actually exists
-    TypeDefinition typeDef = newSchema.getType(typeName)
+	@Nullable
+	private TypeDefinition findType(QName typeName) {
+		// check if same name actually exists
+		TypeDefinition typeDef = newSchema.getType(typeName)
 
-    if (!typeDef) {
-      // search in mapping relevant types
-      def candidates = newSchema.mappingRelevantTypes.findAll {
-        it.name.localPart == typeName.localPart
-      }
-      if (!candidates) {
-        // search in all types
-        candidates = newSchema.types.findAll {
-          it.name.localPart == typeName.localPart
-        }
-      }
+		if (!typeDef) {
+			// search in mapping relevant types
+			def candidates = newSchema.mappingRelevantTypes.findAll {
+				it.name.localPart == typeName.localPart
+			}
+			if (!candidates) {
+				// search in all types
+				candidates = newSchema.types.findAll {
+					it.name.localPart == typeName.localPart
+				}
+			}
 
-      if (candidates) {
-        if (candidates.size() > 1) {
-          //FIXME how to react?
-          println "Multiple matches for type $typeName - $candidates"
-        }
+			if (candidates) {
+				if (candidates.size() > 1) {
+					//FIXME how to react?
+					println "Multiple matches for type $typeName - $candidates"
+				}
 
-        typeDef = (TypeDefinition) candidates[0]
-      }
-    }
+				typeDef = (TypeDefinition) candidates[0]
+			}
+		}
 
-    typeDef
-  }
+		typeDef
+	}
 
-  /**
-   * Apply contexts (in the property path) from a context entity to another entity.
-   *
-   * @param entity the entity to apply the contexts to
-   * @param contexts the entity which contexts to apply to the other entity
-   * @return the entity with the contexts applied based on a best guess
-   */
-  public static EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts) {
-    if (!entity.propertyPath || !contexts.propertyPath) {
-      // return unchanged - no properties to adapt
-      return entity
-    }
+	/**
+	 * Apply contexts (in the property path) from a context entity to another entity.
+	 *
+	 * @param entity the entity to apply the contexts to
+	 * @param contexts the entity which contexts to apply to the other entity
+	 * @return the entity with the contexts applied based on a best guess
+	 */
+	public static EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts) {
+		if (!entity.propertyPath || !contexts.propertyPath) {
+			// return unchanged - no properties to adapt
+			return entity
+		}
 
-    def checkContexts = new LinkedList<>(contexts.propertyPath)
-    List<ChildContext> path = []
+		def checkContexts = new LinkedList<>(contexts.propertyPath)
+		List<ChildContext> path = []
 
-    for (int index = 0; index < entity.propertyPath.size(); index++) {
-      ChildContext current = entity.propertyPath[index]
+		for (int index = 0; index < entity.propertyPath.size(); index++) {
+			ChildContext current = entity.propertyPath[index]
 
-      ChildContext candidate = findContext(current, checkContexts)
-      if (candidate == current) {
-        path << current
-      }
-      else {
-        // recreate context
-        ChildContext copy = new ChildContext(candidate.contextName,
-          candidate.index, candidate.condition, current.child)
-        path << copy
-      }
-    }
+			ChildContext candidate = findContext(current, checkContexts)
+			if (candidate == current) {
+				path << current
+			}
+			else {
+				// recreate context
+				ChildContext copy = new ChildContext(candidate.contextName,
+						candidate.index, candidate.condition, current.child)
+				path << copy
+			}
+		}
 
-    new PropertyEntityDefinition(entity.type, path, entity.schemaSpace, entity.filter)
-  }
+		new PropertyEntityDefinition(entity.type, path, entity.schemaSpace, entity.filter)
+	}
 
-  @Nullable
-  private static ChildContext findContext(ChildContext current, Deque<ChildContext> relatedPath) {
-    if (relatedPath.empty) {
-      return current // not context information that is retainable
-    }
+	@Nullable
+	private static ChildContext findContext(ChildContext current, Deque<ChildContext> relatedPath) {
+		if (relatedPath.empty) {
+			return current // not context information that is retainable
+		}
 
-    ChildContext candidate = relatedPath.pop()
+		ChildContext candidate = relatedPath.pop()
 
-    if (current.child.asGroup() && candidate.child.asGroup()) {
-      // if both are groups, assume a match
-      return candidate
-    }
+		if (current.child.asGroup() && candidate.child.asGroup()) {
+			// if both are groups, assume a match
+			return candidate
+		}
 
-    while (!relatedPath.empty && candidate.child.asGroup()) {
-      // skip groups if the current context is not a group
-      candidate = relatedPath.pop()
-    }
+		while (!relatedPath.empty && candidate.child.asGroup()) {
+			// skip groups if the current context is not a group
+			candidate = relatedPath.pop()
+		}
 
-    candidate
-  }
+		candidate
+	}
 
 }

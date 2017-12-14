@@ -52,7 +52,7 @@ public class DefaultCellMigrator implements CellMigrator {
 			public Entity transformEntry(String key, Entity value) {
 				EntityDefinition org = value.getDefinition();
 
-				Optional<EntityDefinition> replace = migration.entityReplacement(org);
+				Optional<EntityDefinition> replace = migration.entityReplacement(org, log);
 
 				EntityDefinition entity = replace.orElse(org);
 				// FIXME what about null replacements / removals?
