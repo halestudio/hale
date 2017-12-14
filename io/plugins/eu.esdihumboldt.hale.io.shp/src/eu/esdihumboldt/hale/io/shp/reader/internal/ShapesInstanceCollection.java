@@ -170,12 +170,10 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 							// Bursa-Wolf parameters is used here silently. In
 							// cases of custom CRSs that don't have an EPSG
 							// code, the user can still provide the WKT
-							// definition in the dialog.
-							//
-							// TODO Replace default WKT definition in dialog
-							// with crsDef.getWkt()?
+							// definition in the dialog. In case of a headless
+							// transformation, the WKT definition will be used.
 							crsDef = crsProvider.getCRS(type,
-									Collections.singletonList(propertyName));
+									Collections.singletonList(propertyName), crsDef);
 						}
 					}
 					else {
