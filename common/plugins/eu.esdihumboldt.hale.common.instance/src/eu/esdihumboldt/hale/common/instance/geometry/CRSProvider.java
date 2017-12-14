@@ -40,6 +40,21 @@ public interface CRSProvider {
 	 * 
 	 * @return the CRS definition or <code>null</code> if it can't be determined
 	 */
-	public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath);
+	CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath);
 
+	/**
+	 * Get the CRS definition for values of the given property definition. If no
+	 * CRS definition can be determined, use the one passed in
+	 * <code>defaultCrs</code>.
+	 * 
+	 * @param parentType the definition of the type of the parent instance
+	 * @param propertyPath the property path in the instance
+	 * @param defaultCrs Default CRS definition to use if none can be determined
+	 *            (may be null)
+	 * @return the CRS definition or <code>null</code> if it can't be determined
+	 */
+	default CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath,
+			CRSDefinition defaultCrs) {
+		return getCRS(parentType, propertyPath);
+	}
 }
