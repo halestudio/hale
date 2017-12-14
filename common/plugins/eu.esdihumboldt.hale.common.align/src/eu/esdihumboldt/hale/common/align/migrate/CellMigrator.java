@@ -28,6 +28,11 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 public interface CellMigrator {
 
 	/**
+	 * Category for cell messages created during migration.
+	 */
+	public static final String CELL_LOG_CATEGORY = "migration";
+
+	/**
 	 * Update a cell as part of an alignment migration.
 	 * 
 	 * @param originalCell the original cell

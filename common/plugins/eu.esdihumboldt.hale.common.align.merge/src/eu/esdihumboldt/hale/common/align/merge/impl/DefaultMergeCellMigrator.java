@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
@@ -128,12 +129,14 @@ public class DefaultMergeCellMigrator extends DefaultCellMigrator implements Mer
 						// otherwise, use custom logic to try to combine cells
 
 						MutableCell newCell = new DefaultCell(originalCell);
+						SimpleLog cellLog = SimpleLog.all(log,
+								new CellLog(newCell, CELL_LOG_CATEGORY));
 
 						// reset source
 						newCell.setSource(ArrayListMultimap.create());
 
 						mergeSource(newCell, sources.keys().iterator().next(), source, match,
-								originalCell, log);
+								originalCell, cellLog);
 
 						cells.add(new DefaultCell(originalCell));
 					}
@@ -154,6 +157,7 @@ public class DefaultMergeCellMigrator extends DefaultCellMigrator implements Mer
 		else {
 			// handle each source
 			MutableCell newCell = new DefaultCell(originalCell);
+			SimpleLog cellLog = SimpleLog.all(log, new CellLog(newCell, CELL_LOG_CATEGORY));
 
 			// reset source
 			newCell.setSource(ArrayListMultimap.create());
@@ -165,12 +169,12 @@ public class DefaultMergeCellMigrator extends DefaultCellMigrator implements Mer
 					Cell match = matches.get(0);
 
 					mergeSource(newCell, source.getKey(), source.getValue().getDefinition(), match,
-							originalCell, log);
+							originalCell, cellLog);
 
 					if (matches.size() > 1) {
 						// FIXME
-						log.warn("Multiple matches for source " + source.getValue().getDefinition()
-								+ ", only handling one");
+						cellLog.warn("Multiple matches for source {0}, only one was handled",
+								source.getValue().getDefinition());
 					}
 				}
 				else {

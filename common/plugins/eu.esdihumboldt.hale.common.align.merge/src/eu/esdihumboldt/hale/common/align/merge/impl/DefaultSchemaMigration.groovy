@@ -49,10 +49,10 @@ class DefaultSchemaMigration implements AlignmentMigration {
 		// default behavior - try to find entity in new schema, based on names w/o namespace
 
 		QName typeName = entity.type.getName()
-		TypeDefinition type = findType(typeName)
+		TypeDefinition type = findType(typeName, log)
 		if (!type) {
 			//FIXME
-			println "No type match for $entity found"
+			log.warn "No type match for $entity found"
 			return Optional.empty()
 		}
 
@@ -91,7 +91,7 @@ class DefaultSchemaMigration implements AlignmentMigration {
 			if (!candidate) {
 				// no match found
 				//FIXME
-				println "No match for $entity found"
+				log.warn "No match for $entity found"
 				return Optional.empty()
 			}
 			else {
@@ -101,7 +101,7 @@ class DefaultSchemaMigration implements AlignmentMigration {
 	}
 
 	@Nullable
-	private TypeDefinition findType(QName typeName) {
+	private TypeDefinition findType(QName typeName, SimpleLog log) {
 		// check if same name actually exists
 		TypeDefinition typeDef = newSchema.getType(typeName)
 
@@ -120,7 +120,7 @@ class DefaultSchemaMigration implements AlignmentMigration {
 			if (candidates) {
 				if (candidates.size() > 1) {
 					//FIXME how to react?
-					println "Multiple matches for type $typeName - $candidates"
+					log.warn "Multiple matches for type $typeName - $candidates"
 				}
 
 				typeDef = (TypeDefinition) candidates[0]

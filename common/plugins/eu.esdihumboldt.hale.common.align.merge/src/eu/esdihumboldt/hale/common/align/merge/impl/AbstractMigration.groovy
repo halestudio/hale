@@ -52,7 +52,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (!matchedEntity.isPresent()) {
 			matchedEntity = findParentMatch(defaultEntity)
 			if (matchedEntity.present) {
-				println "Inaccurate match of $entity to ${matchedEntity.get()} via parent entity"
+				log.warn "Inaccurate match of $entity to ${matchedEntity.get()} via parent entity"
 			}
 		}
 

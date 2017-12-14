@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
@@ -46,13 +47,15 @@ public class DefaultCellMigrator implements CellMigrator {
 			final MigrationOptions options, SimpleLog log) {
 		MutableCell result = new DefaultCell(originalCell);
 
+		SimpleLog cellLog = SimpleLog.all(log, new CellLog(result, CELL_LOG_CATEGORY));
+
 		EntryTransformer<String, Entity, Entity> entityTransformer = new EntryTransformer<String, Entity, Entity>() {
 
 			@Override
 			public Entity transformEntry(String key, Entity value) {
 				EntityDefinition org = value.getDefinition();
 
-				Optional<EntityDefinition> replace = migration.entityReplacement(org, log);
+				Optional<EntityDefinition> replace = migration.entityReplacement(org, cellLog);
 
 				EntityDefinition entity = replace.orElse(org);
 				// FIXME what about null replacements / removals?
