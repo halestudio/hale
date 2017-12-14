@@ -40,14 +40,17 @@ class CellLog implements SimpleLog {
 
 	private final String fixedCategory
 
+	private final String author
+
 	/**
 	 * @param cell
 	 * @param fixedCategory
 	 */
-	CellLog(Cell cell, String fixedCategory = null) {
+	CellLog(Cell cell, String fixedCategory = null, String author = null) {
 		super()
 		this.cell = cell
 		this.fixedCategory = fixedCategory
+		this.author = author
 	}
 
 	private void log(String category, String message, Throwable e) {
@@ -57,6 +60,10 @@ class CellLog implements SimpleLog {
 
 		Message m = (Message) cell.addAnnotation(MessageDescriptor.ID)
 		m.setText(message).setCategory(category)
+
+		if (author) {
+			m.setAuthor(author)
+		}
 
 		if (e != null) {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream()
