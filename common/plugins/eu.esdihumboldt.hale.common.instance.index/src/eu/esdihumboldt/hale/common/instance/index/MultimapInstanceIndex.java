@@ -18,15 +18,21 @@ package eu.esdihumboldt.hale.common.instance.index;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 
 /**
@@ -86,14 +92,18 @@ public class MultimapInstanceIndex
 		// Remove from properties index if key properties are equal to
 		// properties in mapping
 		propertiesIndex.asMap().entrySet().removeIf(e -> collectionEquals(
-				e.getKey().stream().map(ipv -> ipv.getProperty()).collect(Collectors.toList()),
+				e.getKey().stream().map(ipv -> ipv.getPropertyPath()).collect(Collectors.toList()),
 				propertyNames));
 
 		// Remove mapped instance values
 		instanceIndex.asMap().values()
-				.forEach(instValues -> instValues.removeIf(instValue -> collectionEquals(
-						instValue.stream().map(iv -> iv.getProperty()).collect(Collectors.toList()),
-						propertyNames)));
+				.forEach(
+						instValues -> instValues
+								.removeIf(
+										instValue -> collectionEquals(
+												instValue.stream().map(iv -> iv.getPropertyPath())
+														.collect(Collectors.toList()),
+												propertyNames)));
 
 		instanceIndex.asMap().entrySet().removeIf(e -> e.getValue().isEmpty());
 
@@ -159,9 +169,15 @@ public class MultimapInstanceIndex
 
 		List<Collection<ResolvableInstanceReference>> result = new ArrayList<>();
 		for (List<IndexedPropertyValue> keyValues : propertiesIndex.keySet()) {
-			List<List<QName>> kvProperties = keyValues.stream().map(ipv -> ipv.getProperty())
+			List<List<QName>> kvProperties = keyValues.stream().map(ipv -> ipv.getPropertyPath())
 					.collect(Collectors.toList());
-			if (collectionEquals(keyProperties, kvProperties)) {
+			List<String> flatKvProperties = kvProperties.stream().map(
+					e -> e.stream().map(qn -> qn.getLocalPart()).collect(Collectors.joining(".")))
+					.collect(Collectors.toList());
+			List<String> flatKeyProperties = keyProperties.stream().map(
+					e -> e.stream().map(qn -> qn.getLocalPart()).collect(Collectors.joining(".")))
+					.collect(Collectors.toList());
+			if (collectionEquals(flatKvProperties, flatKeyProperties)) {
 				result.add(propertiesIndex.get(keyValues));
 			}
 		}

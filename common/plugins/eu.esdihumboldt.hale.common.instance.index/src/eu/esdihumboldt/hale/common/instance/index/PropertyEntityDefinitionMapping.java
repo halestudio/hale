@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,8 +23,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.collect.Multiset;
+
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
@@ -56,14 +57,14 @@ public class PropertyEntityDefinitionMapping
 		List<IndexedPropertyValue> result = new ArrayList<>();
 
 		for (PropertyEntityDefinition definition : definitions) {
-			InstanceAccessor accessor = new InstanceAccessor(instance);
 			List<QName> propertyPath = definition.getPropertyPath().stream()
 					.map(cctx -> cctx.getChild().getName()).collect(Collectors.toList());
-			QName rootPropertyName = propertyPath.get(0);
-			accessor.findChildren(rootPropertyName.getLocalPart(),
-					Collections.singletonList(rootPropertyName.getNamespaceURI()));
-			result.add(new IndexedPropertyValue(propertyPath, accessor.list(true)));
-
+			Multiset<?> values = AlignmentUtil.getValues(instance, definition, false);
+			// If this is done for a complex property, (possibly a lot of)
+			// Instances will end in the index (and thus in memory).
+			// Can this be improved to have a lower memory footprint??
+			result.add(new IndexedPropertyValue(propertyPath, values.elementSet().stream()
+					.map(v -> new DeepIterableKey(v)).collect(Collectors.toList())));
 		}
 
 		return result;

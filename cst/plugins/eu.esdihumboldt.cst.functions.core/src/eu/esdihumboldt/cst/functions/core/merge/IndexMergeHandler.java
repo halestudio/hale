@@ -117,6 +117,14 @@ public class IndexMergeHandler
 			}
 		}
 
+		// TODO How to get rid of this performance sink???
+		//
+		// Querying the index will yield a result over all instances. We must,
+		// however, be able to operate only on the given input instances instead
+		// of all instances.
+		// We must, therefore, be able to uniquely identify every instance in
+		// the index, so that we can retain from the index query only the
+		// relevant instances.
 		List<Object> inputInstanceIds = new ArrayList<>();
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext()) {

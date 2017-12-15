@@ -64,25 +64,25 @@ public class IndexedPropertyValue {
 		}
 	};
 
-	private final List<QName> property;
+	private final List<QName> propertyPath;
 	private final List<?> values;
 
 	/**
 	 * Create the value
 	 * 
-	 * @param property Property {@link QName}
+	 * @param propertyPath Property path
 	 * @param values Property values
 	 */
-	public IndexedPropertyValue(List<QName> property, List<?> values) {
-		this.property = property;
+	public IndexedPropertyValue(List<QName> propertyPath, List<?> values) {
+		this.propertyPath = propertyPath;
 		this.values = values;
 	}
 
 	/**
-	 * @return the property
+	 * @return the property path
 	 */
-	public List<QName> getProperty() {
-		return property;
+	public List<QName> getPropertyPath() {
+		return propertyPath;
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class IndexedPropertyValue {
 	public boolean equals(Object obj) {
 		if (obj instanceof IndexedPropertyValue) {
 			IndexedPropertyValue other = (IndexedPropertyValue) obj;
-			return this.property.equals(other.property)
+			return this.propertyPath.equals(other.propertyPath)
 					&& se.deepIterableEquals(this.values, other.values);
 		}
 		return false;
@@ -104,7 +104,7 @@ public class IndexedPropertyValue {
 
 	@Override
 	public int hashCode() {
-		int result = 31 + this.property.hashCode();
+		int result = 31 + this.propertyPath.hashCode();
 		result = 31 * result + se.deepIterableHashCode(values);
 
 		return result;
