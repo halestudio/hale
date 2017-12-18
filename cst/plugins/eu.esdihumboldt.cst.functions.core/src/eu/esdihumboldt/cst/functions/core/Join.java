@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
-import eu.esdihumboldt.cst.functions.core.join.JoinHandler;
+import eu.esdihumboldt.cst.functions.core.join.IndexJoinHandler;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
@@ -34,6 +34,6 @@ public class Join extends Retype implements JoinFunction {
 	 */
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new JoinHandler();
+		return new IndexJoinHandler();
 	}
 }

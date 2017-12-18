@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInst
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 
 /**
@@ -129,7 +130,14 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 				if (possibleInstances != null && !possibleInstances.isEmpty()) {
 					FamilyInstance parent = currentInstances[currentType];
 					for (InstanceReference ref : possibleInstances) {
-						FamilyInstance child = new FamilyInstanceImpl(instances.getInstance(ref));
+						FamilyInstance child;
+						if (ref instanceof ResolvableInstanceReference) {
+							child = new FamilyInstanceImpl(
+									((ResolvableInstanceReference) ref).resolve());
+						}
+						else {
+							child = new FamilyInstanceImpl(instances.getInstance(ref));
+						}
 						parent.addChild(child);
 						currentInstances[i] = child;
 						join(currentInstances, i);

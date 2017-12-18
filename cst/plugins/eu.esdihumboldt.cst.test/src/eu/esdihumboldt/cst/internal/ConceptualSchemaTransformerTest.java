@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.cst.internal;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +25,16 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtils;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtils.JoinDefinition;
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
@@ -343,20 +347,28 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		InstanceIndexServiceImpl indexService = new InstanceIndexServiceImpl();
 		customServices.put(InstanceIndexService.class, indexService);
 
+		// TODO DRY: Move to central location
 		for (Cell cell : example.getAlignment().getActiveTypeCells()) {
-
-			List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
 			switch (cell.getTransformationIdentifier()) {
 			case MergeFunction.ID:
-				indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(cell));
+				indexService.addPropertyMapping(MergeUtil.getKeyPropertyDefinitions(cell));
 				break;
 			case JoinFunction.ID:
-				// TODO
-				break;
-			}
+			case GroovyJoin.ID:
+				JoinParameter joinParameter = cell.getTransformationParameters()
+						.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
+				String validation = joinParameter.validate();
+				if (validation != null) {
+					// TODO log
+					break;
+				}
 
-			if (!indexedProperties.isEmpty()) {
-				indexService.addPropertyMapping(indexedProperties);
+				JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
+				for (PropertyEntityDefinition property : joinDefinition.properties.values()) {
+					indexService.addPropertyMapping(Collections.singletonList(property));
+				}
+
+				break;
 			}
 		}
 

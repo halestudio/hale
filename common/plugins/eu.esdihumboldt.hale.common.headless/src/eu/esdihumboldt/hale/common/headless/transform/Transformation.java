@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -36,12 +37,15 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationReport;
@@ -431,14 +435,23 @@ public class Transformation {
 			InstanceIndexService indexService = serviceProvider
 					.getService(InstanceIndexService.class);
 
-			for (Cell typeCell : alignment.getActiveTypeCells()) {
+			// TODO DRY: Move to central location
+			for (Cell cell : alignment.getActiveTypeCells()) {
 				List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
-				switch (typeCell.getTransformationIdentifier()) {
+				switch (cell.getTransformationIdentifier()) {
 				case MergeFunction.ID:
-					indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(typeCell));
+					indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(cell));
 					break;
 				case JoinFunction.ID:
-					// TODO
+				case GroovyJoin.ID:
+					JoinParameter joinParameter = cell.getTransformationParameters()
+							.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
+					for (JoinCondition cond : joinParameter.conditions) {
+						indexService
+								.addPropertyMapping(Collections.singletonList(cond.baseProperty));
+						indexService
+								.addPropertyMapping(Collections.singletonList(cond.joinProperty));
+					}
 					break;
 				}
 
