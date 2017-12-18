@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import com.google.common.collect.Multimap;
+
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
@@ -36,6 +38,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Maintains instance indexes
@@ -104,7 +107,7 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 			return;
 		}
 
-		QName type = propertyGroup.iterator().next().getType().getName();
+		QName type = propertyGroup.get(0).getType().getName();
 		if (!propertyGroup.stream().allMatch(p -> p.getType().getName().equals(type))) {
 			throw new IllegalArgumentException(
 					"All properties in a group must be properties of the same type");
@@ -184,6 +187,31 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	protected void finalize() throws Throwable {
 		clearAll();
 		super.finalize();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#subIndex(java.util.Collection)
+	 */
+	@Override
+	public Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
+			Multimap<TypeDefinition, PropertyEntityDefinition> properties) {
+		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> result = new HashMap<>();
+
+		for (TypeDefinition type : properties.keySet()) {
+			QName typeName = type.getName();
+			MultimapInstanceIndex index = indexes.get(typeName);
+			result.putAll(index.subIndex(properties.get(type)));
+		}
+
+		return result;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#find(javax.xml.namespace.QName)
+	 */
+	@Override
+	public Collection<ResolvableInstanceReference> find(QName typeName) {
+		return indexes.get(typeName).getReferences();
 	}
 
 }

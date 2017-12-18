@@ -177,8 +177,42 @@ public class MultimapInstanceIndex
 			List<String> flatKeyProperties = keyProperties.stream().map(
 					e -> e.stream().map(qn -> qn.getLocalPart()).collect(Collectors.joining(".")))
 					.collect(Collectors.toList());
-			if (collectionEquals(flatKvProperties, flatKeyProperties)) {
+			if (flatKvProperties.equals(flatKeyProperties)) {
 				result.add(propertiesIndex.get(keyValues));
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
+			Collection<PropertyEntityDefinition> properties) {
+
+		// Filter out multi-property entries
+		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> result = new HashMap<>();
+
+		for (PropertyEntityDefinition property : properties) {
+			// Multimaps.filterKeys(...)???
+			List<QName> propertyPath = property.getPropertyPath().stream()
+					.map(cctx -> cctx.getChild().getName()).collect(Collectors.toList());
+			Set<List<IndexedPropertyValue>> matchingValues = propertiesIndex.asMap().keySet()
+					.stream()
+					.filter(k -> k.size() == 1
+							&& collectionEquals(k.get(0).getPropertyPath(), propertyPath))
+					.collect(Collectors.toSet());
+
+			for (List<IndexedPropertyValue> values : matchingValues) {
+				Collection<ResolvableInstanceReference> refs = propertiesIndex.get(values);
+				Multimap<Object, InstanceReference> propertyValues = result.get(property);
+				if (propertyValues == null) {
+					propertyValues = ArrayListMultimap.create();
+				}
+				for (IndexedPropertyValue value : values) {
+					// TODO Consider only first value for now
+					propertyValues.putAll(value.getValues().get(0), refs);
+				}
+				result.put(property, propertyValues);
 			}
 		}
 

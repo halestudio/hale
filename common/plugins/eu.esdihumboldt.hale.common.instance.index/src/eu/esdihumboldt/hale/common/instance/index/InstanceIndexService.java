@@ -17,14 +17,18 @@ package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
+
+import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Service for maintaining an instance index.
@@ -84,6 +88,18 @@ public interface InstanceIndexService {
 			List<List<QName>> properties);
 
 	/**
+	 * Build a sub-index for a given set of type->property mappings, consisting
+	 * of mappings between the properties and a value->InstanceReference map.
+	 * This can be used to look up instances that have specific property values
+	 * (e.g. for a join operation).
+	 * 
+	 * @param properties Mapping of base type to one of its properties
+	 * @return The sub-index
+	 */
+	Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
+			Multimap<TypeDefinition, PropertyEntityDefinition> properties);
+
+	/**
 	 * Retrieves instances with the given property values
 	 * 
 	 * @param typeName Type of the instances to search
@@ -91,6 +107,14 @@ public interface InstanceIndexService {
 	 * @return Collection of matching instances
 	 */
 	InstanceCollection find(QName typeName, Collection<List<IndexedPropertyValue>> query);
+
+	/**
+	 * Retrieves instances of the given type
+	 * 
+	 * @param typeName Type of the instances to search
+	 * @return Collection of matching instances
+	 */
+	Collection<ResolvableInstanceReference> find(QName typeName);
 
 	/**
 	 * Clear indexes and mappings

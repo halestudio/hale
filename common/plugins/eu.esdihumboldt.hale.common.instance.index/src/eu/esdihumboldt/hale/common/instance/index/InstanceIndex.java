@@ -16,8 +16,13 @@
 package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.Collection;
+import java.util.Map;
 
+import com.google.common.collect.Multimap;
+
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 
 /**
@@ -64,6 +69,18 @@ public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
 	 * @return References to all matching instances
 	 */
 	Collection<ResolvableInstanceReference> find(V value);
+
+	/**
+	 * Build a sub-index for a given set of properties, consisting of mappings
+	 * between the properties and a value->InstanceReference map. This can be
+	 * used to look up instances that have specific property values (e.g. for a
+	 * join operation).
+	 * 
+	 * @param properties Mapping of base type to one of its properties
+	 * @return The sub-index
+	 */
+	Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
+			Collection<PropertyEntityDefinition> properties);
 
 	/**
 	 * Clear indexes and mappings
