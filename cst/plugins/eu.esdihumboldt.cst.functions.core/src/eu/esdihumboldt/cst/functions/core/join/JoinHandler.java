@@ -27,15 +27,14 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
+import eu.esdihumboldt.cst.functions.core.join.JoinUtils.JoinDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
-import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -47,7 +46,6 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
 /**
@@ -88,30 +86,12 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		// ChildType -> DirectParentType
 		int[] directParent = new int[joinParameter.types.size()];
 		// ChildType -> (ParentType -> Collection<JoinCondition>)
-		Map<Integer, Multimap<Integer, JoinCondition>> joinTable = new HashMap<>();
-		// all joined properties
-		Multimap<TypeDefinition, PropertyEntityDefinition> properties = HashMultimap.create();
 
-		for (JoinCondition condition : joinParameter.conditions) {
-			int baseTypeIndex = types.indexOf(AlignmentUtil.getTypeEntity(condition.baseProperty));
-			int joinTypeIndex = types.indexOf(AlignmentUtil.getTypeEntity(condition.joinProperty));
-			Multimap<Integer, JoinCondition> typeTable = joinTable.get(joinTypeIndex);
-			if (typeTable == null) {
-				typeTable = ArrayListMultimap.create(2, 2);
-				joinTable.put(joinTypeIndex, typeTable);
-			}
-			typeTable.put(baseTypeIndex, condition);
-
-			// update highest type if necessary
-			if (directParent[joinTypeIndex] < baseTypeIndex)
-				directParent[joinTypeIndex] = baseTypeIndex;
-
-			properties.put(condition.joinProperty.getType(), condition.joinProperty);
-		}
+		JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
 
 		// JoinProperty -> (Value -> Collection<Reference>)
 		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index = new HashMap<>();
-		for (PropertyEntityDefinition property : properties.values())
+		for (PropertyEntityDefinition property : joinDefinition.properties.values())
 			index.put(property, ArrayListMultimap.<Object, InstanceReference> create());
 
 		// remember instances of first type to start join afterwards
@@ -129,7 +109,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 				}
 
 				// fill index over needed properties
-				for (PropertyEntityDefinition property : properties.get(next.getDefinition())) {
+				for (PropertyEntityDefinition property : joinDefinition.properties
+						.get(next.getDefinition())) {
 					// XXX what about null? for now ignore null values
 					// XXX how to treat multiple values? must all be equal (in
 					// order?) or only one?
@@ -145,7 +126,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			iterator.close();
 		}
 
-		return new JoinIterator(instances, startInstances, directParent, index, joinTable);
+		return new JoinIterator(instances, startInstances, directParent, index,
+				joinDefinition.joinTable);
 	}
 
 	/**
