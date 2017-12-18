@@ -48,15 +48,19 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 // ChildType -> (ParentType -> Collection<JoinCondition>)
 	private final Map<Integer, Multimap<Integer, JoinCondition>> joinTable;
 
+	private final JoinIndexValueProcessor valueProcessor;
+
 	protected JoinIterator(InstanceCollection instances,
 			Collection<InstanceReference> startInstances, int[] parent,
 			Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index,
-			Map<Integer, Multimap<Integer, JoinCondition>> joinTable) {
+			Map<Integer, Multimap<Integer, JoinCondition>> joinTable,
+			JoinIndexValueProcessor valueProcessor) {
 		super(startInstances.iterator());
 		this.instances = instances;
 		this.parent = parent;
 		this.index = index;
 		this.joinTable = joinTable;
+		this.valueProcessor = valueProcessor;
 	}
 
 	/**
@@ -97,9 +101,13 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 					// Allow targets with any of the property values.
 					HashSet<InstanceReference> matches = new HashSet<InstanceReference>();
 					for (Object currentValue : currentValues) {
-						matches.addAll(index.get(joinCondition.getValue().joinProperty)
-								.get(JoinHandler.processValue(currentValue,
-										joinCondition.getValue().baseProperty)));
+						Object keyValue = currentValue;
+						if (valueProcessor != null) {
+							keyValue = valueProcessor.processValue(currentValue,
+									joinCondition.getValue().baseProperty);
+						}
+						matches.addAll(
+								index.get(joinCondition.getValue().joinProperty).get(keyValue));
 					}
 					if (possibleInstances == null)
 						possibleInstances = matches;

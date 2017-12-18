@@ -53,7 +53,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
  * 
  * @author Kai Schwierczek
  */
-public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinFunction {
+public class JoinHandler
+		implements InstanceHandler<TransformationEngine>, JoinFunction, JoinIndexValueProcessor {
 
 	// For now no support for using the same type more than once in a join.
 	/**
@@ -127,7 +128,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 		}
 
 		return new JoinIterator(instances, startInstances, directParent, index,
-				joinDefinition.joinTable);
+				joinDefinition.joinTable, this);
 	}
 
 	/**
@@ -139,7 +140,8 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 	 * @return the processed value, possibly wrapped or replaced through a
 	 *         different representation
 	 */
-	static Object processValue(Object value, PropertyEntityDefinition property) {
+	@Override
+	public Object processValue(Object value, PropertyEntityDefinition property) {
 		// extract the identifier from a reference
 		value = property.getDefinition().getConstraint(Reference.class).extractId(value);
 
