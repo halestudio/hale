@@ -354,7 +354,7 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 				indexService.addPropertyMapping(MergeUtil.getKeyPropertyDefinitions(cell));
 				break;
 			case JoinFunction.ID:
-			case GroovyJoin.ID:
+			case GroovyJoin.GROOVY_JOIN_ID:
 				JoinParameter joinParameter = cell.getTransformationParameters()
 						.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
 				String validation = joinParameter.validate();
