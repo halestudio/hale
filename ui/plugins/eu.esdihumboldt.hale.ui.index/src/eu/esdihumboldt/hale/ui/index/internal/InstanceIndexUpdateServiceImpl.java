@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
+import eu.esdihumboldt.cst.functions.groovy.GroovyMerge;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
@@ -75,6 +76,7 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 			List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
 			switch (cell.getTransformationIdentifier()) {
 			case MergeFunction.ID:
+			case GroovyMerge.GROOVY_MERGE_ID:
 				indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(cell));
 				break;
 			case JoinFunction.ID:
@@ -133,7 +135,9 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 		for (Cell cell : cells) {
 			switch (cell.getTransformationIdentifier()) {
 			case MergeFunction.ID:
+			case GroovyMerge.GROOVY_MERGE_ID:
 			case JoinFunction.ID:
+			case GroovyJoin.GROOVY_JOIN_ID:
 				reindex = true;
 				break;
 			}

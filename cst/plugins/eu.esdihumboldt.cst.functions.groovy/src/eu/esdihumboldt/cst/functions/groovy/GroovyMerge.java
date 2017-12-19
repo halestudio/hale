@@ -31,6 +31,12 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  */
 public class GroovyMerge extends GroovyRetype implements MergeFunction {
 
+	/**
+	 * The function ID. Not named <code>ID</code> to avoid shadowing
+	 * {@link MergeFunction#ID}.
+	 */
+	public static final String GROOVY_MERGE_ID = "eu.esdihumboldt.cst.functions.groovy.merge";
+
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		return new IndexMergeHandler();
