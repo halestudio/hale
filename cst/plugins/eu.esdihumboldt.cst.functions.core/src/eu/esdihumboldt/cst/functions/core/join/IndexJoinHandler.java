@@ -100,11 +100,7 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 		}
 
 		List<TypeEntityDefinition> types = joinParameter.types;
-		// ChildType -> DirectParentType
-		int[] directParent = new int[joinParameter.types.size()];
-		// ChildType -> (ParentType -> Collection<JoinCondition>)
-//		Map<Integer, Multimap<Integer, JoinCondition>> joinTable = new HashMap<>();
-		// all joined properties
+
 		JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
 
 		// remember instances of first type to start join afterwards
@@ -136,7 +132,7 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index = indexService
 				.subIndex(joinDefinition.properties);
 
-		return new JoinIterator(instances, startInstances, directParent, index,
+		return new JoinIterator(instances, startInstances, joinDefinition.directParent, index,
 				joinDefinition.joinTable, this);
 	}
 
@@ -154,8 +150,7 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 	 */
 	@Override
 	public Object processValue(Object value, PropertyEntityDefinition property) {
-		Object processedValue = new JoinHandler().processValue(value, property);
-		return new DeepIterableKey(processedValue);
+		return new DeepIterableKey(value);
 	}
 
 }

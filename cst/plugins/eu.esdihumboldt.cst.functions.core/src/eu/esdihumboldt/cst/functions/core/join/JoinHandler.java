@@ -84,9 +84,6 @@ public class JoinHandler
 			throw new TransformationException("Join parameter invalid: " + validation);
 
 		List<TypeEntityDefinition> types = joinParameter.types;
-		// ChildType -> DirectParentType
-		int[] directParent = new int[joinParameter.types.size()];
-		// ChildType -> (ParentType -> Collection<JoinCondition>)
 
 		JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
 
@@ -127,7 +124,7 @@ public class JoinHandler
 			iterator.close();
 		}
 
-		return new JoinIterator(instances, startInstances, directParent, index,
+		return new JoinIterator(instances, startInstances, joinDefinition.directParent, index,
 				joinDefinition.joinTable, this);
 	}
 

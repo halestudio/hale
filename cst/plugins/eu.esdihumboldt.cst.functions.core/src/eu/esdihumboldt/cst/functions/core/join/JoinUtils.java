@@ -52,6 +52,15 @@ public class JoinUtils {
 		 */
 		public final Multimap<TypeDefinition, PropertyEntityDefinition> properties = HashMultimap
 				.create();
+
+		/**
+		 * ChildType -> DirectParentType
+		 */
+		public final int[] directParent;
+
+		private JoinDefinition(int typeCount) {
+			directParent = new int[typeCount];
+		}
 	}
 
 	/**
@@ -63,7 +72,7 @@ public class JoinUtils {
 	 *         properties maps
 	 */
 	public static JoinDefinition getJoinDefinition(JoinParameter joinParameter) {
-		JoinDefinition result = new JoinDefinition();
+		JoinDefinition result = new JoinDefinition(joinParameter.types.size());
 
 		for (JoinCondition condition : joinParameter.conditions) {
 			int baseTypeIndex = joinParameter.types
@@ -76,6 +85,11 @@ public class JoinUtils {
 				result.joinTable.put(joinTypeIndex, typeTable);
 			}
 			typeTable.put(baseTypeIndex, condition);
+
+			// update highest type if necessary
+			if (result.directParent[joinTypeIndex] < baseTypeIndex) {
+				result.directParent[joinTypeIndex] = baseTypeIndex;
+			}
 
 			result.properties.put(condition.joinProperty.getType(), condition.joinProperty);
 		}
