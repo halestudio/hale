@@ -113,7 +113,24 @@ public class IndexMergeHandler
 			}
 			else {
 				// Nothing to partition
-				return null;
+				return new ResourceIterator<FamilyInstance>() {
+
+					@Override
+					public boolean hasNext() {
+						return false;
+					}
+
+					@Override
+					public FamilyInstance next() {
+						return null;
+					}
+
+					@Override
+					public void close() {
+						// Do nothing
+					}
+
+				};
 			}
 		}
 
