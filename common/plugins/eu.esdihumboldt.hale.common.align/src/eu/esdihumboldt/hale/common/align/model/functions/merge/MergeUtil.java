@@ -155,10 +155,6 @@ public class MergeUtil {
 	 *         properties of the merge
 	 */
 	public static List<PropertyEntityDefinition> getKeyPropertyDefinitions(Cell cell) {
-		if (!cell.getTransformationIdentifier().equals(MergeFunction.ID)) {
-			throw new IllegalArgumentException("This method applies only to Merge transformations");
-		}
-
 		List<PropertyEntityDefinition> result = new ArrayList<>();
 
 		List<List<QName>> mergeProperties = MergeUtil.getProperties(
