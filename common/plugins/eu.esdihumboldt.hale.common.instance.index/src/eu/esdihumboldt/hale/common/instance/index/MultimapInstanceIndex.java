@@ -177,7 +177,7 @@ public class MultimapInstanceIndex
 			List<String> flatKeyProperties = keyProperties.stream().map(
 					e -> e.stream().map(qn -> qn.getLocalPart()).collect(Collectors.joining(".")))
 					.collect(Collectors.toList());
-			if (flatKvProperties.equals(flatKeyProperties)) {
+			if (collectionEquals(flatKvProperties, flatKeyProperties)) {
 				result.add(propertiesIndex.get(keyValues));
 			}
 		}
