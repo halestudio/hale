@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -44,7 +43,7 @@ import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
+import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 
@@ -53,8 +52,27 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
  * 
  * @author Florian Esser
  */
-public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, JoinFunction,
-		ServiceProviderAware, JoinIndexValueProcessor {
+public class IndexJoinHandler
+		implements InstanceHandler<TransformationEngine>, JoinFunction, ServiceProviderAware {
+
+	private class IndexJoinValueProcessor extends DefaultValueProcessor {
+
+		/**
+		 * @see eu.esdihumboldt.cst.functions.core.join.DefaultValueProcessor#processValue(java.lang.Object,
+		 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition)
+		 */
+		@Override
+		public Object processValue(Object value, PropertyEntityDefinition property) {
+			if (value instanceof Instance) {
+				return new DeepIterableKey(value);
+			}
+
+			return super.processValue(value, property);
+		}
+
+	}
+
+	private final ValueProcessor valueProcessor = new IndexJoinValueProcessor();
 
 	private ServiceProvider serviceProvider;
 
@@ -79,11 +97,8 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 		}
 
 		JoinHandler fallbackHandler = new JoinHandler();
-
 		InstanceIndexService indexService = serviceProvider.getService(InstanceIndexService.class);
 		if (indexService == null) {
-			// Fall back to JoinHandler
-
 			log.warn(MessageFormat.format(
 					"Index service not available, falling back to join handler {0}",
 					fallbackHandler.getClass().getCanonicalName()));
@@ -104,9 +119,8 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 		JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 
 		// remember instances of first type to start join afterwards
-		Collection<InstanceReference> startInstances = new LinkedList<InstanceReference>();
+		Collection<ResolvableInstanceReference> startInstances = new LinkedList<ResolvableInstanceReference>();
 
-		// TODO How to get rid of this performance sink?
 		List<Object> inputInstanceIds = new ArrayList<>();
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext()) {
@@ -114,7 +128,8 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 
 				// remember instances of first type
 				if (i.getDefinition().equals(types.get(0).getDefinition())) {
-					startInstances.add(instances.getReference(i));
+					startInstances.add(
+							new ResolvableInstanceReference(instances.getReference(i), instances));
 				}
 
 				if (!Identifiable.is(i)) {
@@ -128,12 +143,7 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 			}
 		}
 
-		// JoinProperty -> (Value -> Collection<Reference>)
-		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index = indexService
-				.subIndex(joinDefinition.properties);
-
-		return new JoinIterator(instances, startInstances, joinDefinition.directParent, index,
-				joinDefinition.joinTable, this);
+		return new IndexJoinIterator(instances, startInstances, joinDefinition, indexService);
 	}
 
 	/**
@@ -142,15 +152,6 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 	@Override
 	public void setServiceProvider(ServiceProvider services) {
 		this.serviceProvider = services;
-	}
-
-	/**
-	 * @see eu.esdihumboldt.cst.functions.core.join.JoinIndexValueProcessor#processValue(java.lang.Object,
-	 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition)
-	 */
-	@Override
-	public Object processValue(Object value, PropertyEntityDefinition property) {
-		return new DeepIterableKey(value);
 	}
 
 }

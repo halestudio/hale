@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.collect.Multimap;
-
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Identifiable;
@@ -38,7 +36,6 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
-import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Maintains instance indexes
@@ -190,28 +187,36 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#subIndex(java.util.Collection)
-	 */
-	@Override
-	public Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
-			Multimap<TypeDefinition, PropertyEntityDefinition> properties) {
-		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> result = new HashMap<>();
-
-		for (TypeDefinition type : properties.keySet()) {
-			QName typeName = type.getName();
-			MultimapInstanceIndex index = indexes.get(typeName);
-			result.putAll(index.subIndex(properties.get(type)));
-		}
-
-		return result;
-	}
-
-	/**
 	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexService#find(javax.xml.namespace.QName)
 	 */
 	@Override
 	public Collection<ResolvableInstanceReference> find(QName typeName) {
 		return indexes.get(typeName).getReferences();
+	}
+
+	@Override
+	public List<IndexedPropertyValue> getInstancePropertyValues(QName typeName,
+			List<QName> propertyPath, Object instanceId) {
+		// Because the index supports multi-property mappings, we get a list of
+		// lists here
+		Collection<List<IndexedPropertyValue>> values = indexes.get(typeName)
+				.getInstancePropertyValuesById(instanceId);
+
+		// Because only the indexed values of a single property are of interest
+		// here, find all IndexedPropertyValues where the propertyPath matches
+		// and flatten the result into a 1D list
+		List<IndexedPropertyValue> matches = values.stream()
+				.filter(ipvs -> ipvs.stream()
+						.anyMatch(ipv -> propertyPath.equals(ipv.getPropertyPath())))
+				.flatMap(List::stream).collect(Collectors.toList());
+
+		return matches;
+	}
+
+	@Override
+	public Collection<ResolvableInstanceReference> getInstancesByValue(QName typeName,
+			List<QName> propertyPath, List<?> values) {
+		return indexes.get(typeName).getInstancesByValue(propertyPath, values);
 	}
 
 }

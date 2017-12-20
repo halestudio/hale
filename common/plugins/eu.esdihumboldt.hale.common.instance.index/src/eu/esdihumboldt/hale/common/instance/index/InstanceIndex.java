@@ -16,11 +16,10 @@
 package eu.esdihumboldt.hale.common.instance.index;
 
 import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
-import com.google.common.collect.Multimap;
+import javax.xml.namespace.QName;
 
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
@@ -28,11 +27,13 @@ import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 /**
  * Interface for {@link Instance} indexes
  * 
- * @author Florian Esser
  * @param <V> Value type
  * @param <M> Mapping type
+ * @param <R> Instance reference type
+ * 
+ * @author Florian Esser
  */
-public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
+public interface InstanceIndex<V, M extends IndexMapping<Instance, V>, R extends InstanceReference>
 		extends Index<ResolvableInstanceReference, Instance, InstanceIndexQuery> {
 
 	/**
@@ -50,9 +51,14 @@ public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
 	void removeMapping(M mapping);
 
 	/**
+	 * @return an unmodifiable collection of mappings
+	 */
+	Collection<M> getMappings();
+
+	/**
 	 * @return References to all indexed instances
 	 */
-	Collection<ResolvableInstanceReference> getReferences();
+	Collection<R> getReferences();
 
 	/**
 	 * Retrieve all indexed values for the given instance reference
@@ -60,7 +66,32 @@ public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
 	 * @param reference Instance reference
 	 * @return Collection of values
 	 */
-	Collection<V> getValues(ResolvableInstanceReference reference);
+	Collection<V> getInstancePropertyValues(R reference);
+
+	/**
+	 * Retrieve all indexed values for the instance identified by the given ID
+	 * 
+	 * @param instanceId ID of the instance
+	 * @return Collection of values
+	 */
+	Collection<V> getInstancePropertyValuesById(Object instanceId);
+
+	/**
+	 * Retrieve all indexed instances with the given values
+	 * 
+	 * @param values Values
+	 * @return Collection of instances
+	 */
+	Collection<R> getInstancesByValue(V values);
+
+	/**
+	 * Retrieve all indexed instances with the given property values
+	 * 
+	 * @param propertyPath Property path
+	 * @param values Values
+	 * @return Collection of instances
+	 */
+	Collection<R> getInstancesByValue(List<QName> propertyPath, List<?> values);
 
 	/**
 	 * Find all indexed instances with the given property value
@@ -68,19 +99,7 @@ public interface InstanceIndex<V, M extends IndexMapping<Instance, V>>
 	 * @param value Property value to search
 	 * @return References to all matching instances
 	 */
-	Collection<ResolvableInstanceReference> find(V value);
-
-	/**
-	 * Build a sub-index for a given set of properties, consisting of mappings
-	 * between the properties and a value->InstanceReference map. This can be
-	 * used to look up instances that have specific property values (e.g. for a
-	 * join operation).
-	 * 
-	 * @param properties Mapping of base type to one of its properties
-	 * @return The sub-index
-	 */
-	Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
-			Collection<PropertyEntityDefinition> properties);
+	Collection<R> find(V value);
 
 	/**
 	 * Clear indexes and mappings

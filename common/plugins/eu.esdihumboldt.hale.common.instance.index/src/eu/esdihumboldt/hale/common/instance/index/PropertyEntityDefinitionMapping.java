@@ -60,11 +60,8 @@ public class PropertyEntityDefinitionMapping
 			List<QName> propertyPath = definition.getPropertyPath().stream()
 					.map(cctx -> cctx.getChild().getName()).collect(Collectors.toList());
 			Multiset<?> values = AlignmentUtil.getValues(instance, definition, false);
-			// If this is done for a complex property, (possibly a lot of)
-			// Instances will end in the index (and thus in memory).
-			// Can this be improved to have a lower memory footprint??
 			result.add(new IndexedPropertyValue(propertyPath, values.elementSet().stream()
-					.map(v -> new DeepIterableKey(v)).collect(Collectors.toList())));
+					.map(v -> processValue(v, definition)).collect(Collectors.toList())));
 		}
 
 		return result;
@@ -75,5 +72,13 @@ public class PropertyEntityDefinitionMapping
 	 */
 	public Set<PropertyEntityDefinition> getDefinitions() {
 		return definitions;
+	}
+
+	private static Object processValue(Object value, PropertyEntityDefinition property) {
+		if (value instanceof Instance) {
+			return new DeepIterableKey(value);
+		}
+
+		return InstanceIndexUtil.processValue(value, property);
 	}
 }

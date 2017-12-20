@@ -15,24 +15,23 @@
 
 package eu.esdihumboldt.hale.common.instance.index;
 
+import static eu.esdihumboldt.hale.common.instance.index.InstanceIndexUtil.collectionEquals;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 
 /**
@@ -40,10 +39,10 @@ import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
  * 
  * @author Florian Esser
  */
-public class MultimapInstanceIndex
-		implements InstanceIndex<List<IndexedPropertyValue>, PropertyEntityDefinitionMapping> {
+public class MultimapInstanceIndex implements
+		InstanceIndex<List<IndexedPropertyValue>, PropertyEntityDefinitionMapping, ResolvableInstanceReference> {
 
-	private final Multimap<List<IndexedPropertyValue>, ResolvableInstanceReference> propertiesIndex = HashMultimap
+	private final Multimap<List<IndexedPropertyValue>, ResolvableInstanceReference> valueIndex = HashMultimap
 			.create();
 	private final Multimap<ResolvableInstanceReference, List<IndexedPropertyValue>> instanceIndex = HashMultimap
 			.create();
@@ -61,7 +60,7 @@ public class MultimapInstanceIndex
 
 	@Override
 	public void clearIndexes() {
-		propertiesIndex.clear();
+		valueIndex.clear();
 		instanceIndex.clear();
 	}
 
@@ -76,8 +75,12 @@ public class MultimapInstanceIndex
 		}
 	}
 
-	private static boolean collectionEquals(Collection<?> c1, Collection<?> c2) {
-		return c1.containsAll(c2) && c2.containsAll(c1);
+	/**
+	 * @return an unmodifiable list of mappings
+	 */
+	@Override
+	public Collection<PropertyEntityDefinitionMapping> getMappings() {
+		return Collections.unmodifiableList(mappings);
 	}
 
 	/**
@@ -91,7 +94,7 @@ public class MultimapInstanceIndex
 
 		// Remove from properties index if key properties are equal to
 		// properties in mapping
-		propertiesIndex.asMap().entrySet().removeIf(e -> collectionEquals(
+		valueIndex.asMap().entrySet().removeIf(e -> collectionEquals(
 				e.getKey().stream().map(ipv -> ipv.getPropertyPath()).collect(Collectors.toList()),
 				propertyNames));
 
@@ -119,7 +122,7 @@ public class MultimapInstanceIndex
 		mappings.forEach(m -> {
 			List<IndexedPropertyValue> propValues = m.map(instance);
 
-			propertiesIndex.put(propValues, reference);
+			valueIndex.put(propValues, reference);
 			instanceIndex.put(reference, propValues);
 		});
 	}
@@ -137,16 +140,71 @@ public class MultimapInstanceIndex
 	 */
 	@Override
 	public Collection<ResolvableInstanceReference> search(InstanceIndexQuery query) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#getValues(eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference)
+	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#getInstancePropertyValues(eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference)
 	 */
 	@Override
-	public Collection<List<IndexedPropertyValue>> getValues(ResolvableInstanceReference reference) {
+	public Collection<List<IndexedPropertyValue>> getInstancePropertyValues(
+			ResolvableInstanceReference reference) {
 		return Collections.unmodifiableCollection(instanceIndex.get(reference));
+	}
+
+	@Override
+	public Collection<List<IndexedPropertyValue>> getInstancePropertyValuesById(Object instanceId) {
+		Optional<ResolvableInstanceReference> ref = instanceIndex.keySet().stream()
+				.filter(rir -> rir.getId().equals(instanceId)).findFirst();
+
+		if (ref.isPresent()) {
+			return instanceIndex.get(ref.get());
+		}
+		else {
+			return Collections.emptyList();
+		}
+	}
+
+	@Override
+	public Collection<ResolvableInstanceReference> getInstancesByValue(
+			List<IndexedPropertyValue> values) {
+		return Collections.unmodifiableCollection(valueIndex.get(values));
+	}
+
+	@Override
+	public Collection<ResolvableInstanceReference> getInstancesByValue(List<QName> propertyPath,
+			List<?> values) {
+		List<List<IndexedPropertyValue>> matchingKeys = valueIndex.keySet().stream()
+				.filter(ipvs -> ipvs.stream()
+						.anyMatch(ipv -> ipv.getValues().stream()
+								.anyMatch(v -> propertyPath.equals(ipv.getPropertyPath())
+										&& ipv.getValues().contains(v))))
+				.collect(Collectors.toList());
+
+		Collection<ResolvableInstanceReference> result = new HashSet<>();
+		matchingKeys.forEach(k -> result.addAll(valueIndex.get(k)));
+
+		Iterator<ResolvableInstanceReference> it = result.iterator();
+		while (it.hasNext()) {
+			ResolvableInstanceReference rir = it.next();
+			Collection<List<IndexedPropertyValue>> instValue = instanceIndex.get(rir);
+			boolean remove = false;
+			for (List<IndexedPropertyValue> ipvs : instValue) {
+				for (IndexedPropertyValue ipv : ipvs) {
+					if (ipv.getPropertyPath().equals(propertyPath)) {
+						// Allow targets with any of the property values.
+						if (!ipv.getValues().stream().anyMatch(v -> values.contains(v))) {
+							remove = true;
+						}
+					}
+				}
+			}
+			if (remove) {
+				it.remove();
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -168,7 +226,7 @@ public class MultimapInstanceIndex
 			List<List<QName>> keyProperties) {
 
 		List<Collection<ResolvableInstanceReference>> result = new ArrayList<>();
-		for (List<IndexedPropertyValue> keyValues : propertiesIndex.keySet()) {
+		for (List<IndexedPropertyValue> keyValues : valueIndex.keySet()) {
 			List<List<QName>> kvProperties = keyValues.stream().map(ipv -> ipv.getPropertyPath())
 					.collect(Collectors.toList());
 			List<String> flatKvProperties = kvProperties.stream().map(
@@ -178,41 +236,7 @@ public class MultimapInstanceIndex
 					e -> e.stream().map(qn -> qn.getLocalPart()).collect(Collectors.joining(".")))
 					.collect(Collectors.toList());
 			if (collectionEquals(flatKvProperties, flatKeyProperties)) {
-				result.add(propertiesIndex.get(keyValues));
-			}
-		}
-
-		return result;
-	}
-
-	@Override
-	public Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> subIndex(
-			Collection<PropertyEntityDefinition> properties) {
-
-		// Filter out multi-property entries
-		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> result = new HashMap<>();
-
-		for (PropertyEntityDefinition property : properties) {
-			// Multimaps.filterKeys(...)???
-			List<QName> propertyPath = property.getPropertyPath().stream()
-					.map(cctx -> cctx.getChild().getName()).collect(Collectors.toList());
-			Set<List<IndexedPropertyValue>> matchingValues = propertiesIndex.asMap().keySet()
-					.stream()
-					.filter(k -> k.size() == 1
-							&& collectionEquals(k.get(0).getPropertyPath(), propertyPath))
-					.collect(Collectors.toSet());
-
-			for (List<IndexedPropertyValue> values : matchingValues) {
-				Collection<ResolvableInstanceReference> refs = propertiesIndex.get(values);
-				Multimap<Object, InstanceReference> propertyValues = result.get(property);
-				if (propertyValues == null) {
-					propertyValues = ArrayListMultimap.create();
-				}
-				for (IndexedPropertyValue value : values) {
-					// TODO Consider only first value for now
-					propertyValues.putAll(value.getValues().get(0), refs);
-				}
-				result.put(property, propertyValues);
+				result.add(valueIndex.get(keyValues));
 			}
 		}
 
@@ -224,39 +248,7 @@ public class MultimapInstanceIndex
 	 */
 	@Override
 	public Collection<ResolvableInstanceReference> find(List<IndexedPropertyValue> value) {
-		return propertiesIndex.get(value);
+		return valueIndex.get(value);
 	}
-
-	/**
-	 * @return an unmodifiable list of mappings
-	 */
-	public List<PropertyEntityDefinitionMapping> getMappings() {
-		return Collections.unmodifiableList(mappings);
-	}
-
-//	public List<List<IndexedPropertyValue>> findUniqueValueCombos(List<QName> keyProperties) {
-//		List<ResolvableInstanceReference> candidates = new ArrayList<>();
-//
-//		// Find candidate instances that have all key properties
-//		candidates.addAll(instanceIndex.asMap().entrySet().stream().filter(instEntry -> {
-//			return keyProperties.stream().allMatch(keyProperty -> instEntry.getValue().stream()
-//					.anyMatch(ipv -> keyProperty.equals(ipv.getProperty())));
-//		}).collect(Collectors.toMap(entry -> entry.getKey(), entry -> entry.getValue())).keySet());
-//
-//		List<List<IndexedPropertyValue>> result = new ArrayList<>();
-//		for (QName keyProperty : keyProperties) {
-//			if (result.isEmpty()) {
-//				Set<IndexedPropertyValue> uniqueValues = candidates.stream().filter(cand -> {
-//					instanceIndex.get(cand);
-//				}).collect(Collectors.toSet());
-//				result.addAll(uniqueValues.stream().map(val -> {
-//					List<IndexedPropertyValue> list = new ArrayList<>();
-//					list.add(val);
-//				}));
-//
-//			}
-//
-//		}
-//	}
 
 }
