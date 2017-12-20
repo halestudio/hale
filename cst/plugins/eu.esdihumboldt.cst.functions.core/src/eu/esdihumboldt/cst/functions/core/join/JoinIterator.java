@@ -49,13 +49,13 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 // ChildType -> (ParentType -> Collection<JoinCondition>)
 	private final Map<Integer, Multimap<Integer, JoinCondition>> joinTable;
 
-	private final JoinIndexValueProcessor valueProcessor;
+	private final ValueProcessor valueProcessor;
 
 	protected JoinIterator(InstanceCollection instances,
 			Collection<InstanceReference> startInstances, int[] parent,
 			Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index,
 			Map<Integer, Multimap<Integer, JoinCondition>> joinTable,
-			JoinIndexValueProcessor valueProcessor) {
+			ValueProcessor valueProcessor) {
 		super(startInstances.iterator());
 		this.instances = instances;
 		this.parent = parent;

@@ -25,8 +25,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
-import eu.esdihumboldt.cst.functions.core.join.JoinUtils;
-import eu.esdihumboldt.cst.functions.core.join.JoinUtils.JoinDefinition;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtil;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
@@ -363,8 +363,11 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 					break;
 				}
 
-				JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
+				JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 				for (PropertyEntityDefinition property : joinDefinition.properties.values()) {
+					indexService.addPropertyMapping(Collections.singletonList(property));
+				}
+				for (PropertyEntityDefinition property : joinDefinition.baseProperties.values()) {
 					indexService.addPropertyMapping(Collections.singletonList(property));
 				}
 

@@ -30,7 +30,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.cst.functions.core.join.JoinUtils.JoinDefinition;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
@@ -85,7 +85,7 @@ public class JoinHandler
 
 		List<TypeEntityDefinition> types = joinParameter.types;
 
-		JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
+		JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 
 		// JoinProperty -> (Value -> Collection<Reference>)
 		Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index = new HashMap<>();

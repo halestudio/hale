@@ -23,7 +23,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
  * 
  * @author Florian Esser
  */
-public interface JoinIndexValueProcessor {
+public interface ValueProcessor {
 
 	/**
 	 * Process a value of a property in a join condition before using it with

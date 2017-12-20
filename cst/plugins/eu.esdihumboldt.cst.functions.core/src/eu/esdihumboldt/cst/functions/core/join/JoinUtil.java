@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Florian Esser
  */
-public class JoinUtils {
+public class JoinUtil {
 
 	/**
 	 * Helper class to bundle together the join table and the joined properties
@@ -51,6 +51,12 @@ public class JoinUtils {
 		 * All joined properties
 		 */
 		public final Multimap<TypeDefinition, PropertyEntityDefinition> properties = HashMultimap
+				.create();
+
+		/**
+		 * All base properties
+		 */
+		public final Multimap<TypeDefinition, PropertyEntityDefinition> baseProperties = HashMultimap
 				.create();
 
 		/**
@@ -92,8 +98,10 @@ public class JoinUtils {
 			}
 
 			result.properties.put(condition.joinProperty.getType(), condition.joinProperty);
+			result.baseProperties.put(condition.baseProperty.getType(), condition.baseProperty);
 		}
 
 		return result;
 	}
+
 }

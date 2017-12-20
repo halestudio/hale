@@ -25,7 +25,7 @@ import java.util.Map;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
 
-import eu.esdihumboldt.cst.functions.core.join.JoinUtils.JoinDefinition;
+import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
@@ -101,7 +101,7 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 
 		List<TypeEntityDefinition> types = joinParameter.types;
 
-		JoinDefinition joinDefinition = JoinUtils.getJoinDefinition(joinParameter);
+		JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 
 		// remember instances of first type to start join afterwards
 		Collection<InstanceReference> startInstances = new LinkedList<InstanceReference>();
