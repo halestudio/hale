@@ -33,7 +33,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndex;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -111,9 +111,8 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 			while (it.hasNext()) {
 				Instance i = it.next();
 				InstanceReference ref = source.getReference(i);
-				if (ref instanceof IdentifiableInstance) {
-					ref = new IdentifiableInstanceReference(ref,
-							((IdentifiableInstance) ref).getId());
+				if (Identifiable.is(ref)) {
+					ref = new IdentifiableInstanceReference(ref, Identifiable.getId(ref));
 				}
 				ResolvableInstanceReference rir = new ResolvableInstanceReference(ref, source);
 

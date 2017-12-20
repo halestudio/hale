@@ -41,7 +41,7 @@ import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndex;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
-import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -117,14 +117,14 @@ public class IndexJoinHandler implements InstanceHandler<TransformationEngine>, 
 					startInstances.add(instances.getReference(i));
 				}
 
-				if (!(i instanceof IdentifiableInstance) || !((IdentifiableInstance) i).hasId()) {
+				if (!Identifiable.is(i)) {
 					log.warn(MessageFormat.format(
 							"At least one instance does not have an ID, falling back to join handler {0}",
 							fallbackHandler.getClass().getCanonicalName()));
 					return fallbackHandler.partitionInstances(instances, transformationIdentifier,
 							engine, transformationParameters, executionParameters, log);
 				}
-				inputInstanceIds.add(((IdentifiableInstance) i).getId());
+				inputInstanceIds.add(Identifiable.getId(i));
 			}
 		}
 

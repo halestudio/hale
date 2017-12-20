@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProviderAware;
 import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
-import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceFactory;
@@ -134,8 +134,6 @@ public class IndexMergeHandler
 			}
 		}
 
-		// TODO How to get rid of this performance sink???
-		//
 		// Querying the index will yield a result over all instances. We must,
 		// however, be able to operate only on the given input instances instead
 		// of all instances.
@@ -146,14 +144,14 @@ public class IndexMergeHandler
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext()) {
 				Instance i = InstanceDecorator.getRoot(it.next());
-				if (!(i instanceof IdentifiableInstance) || !((IdentifiableInstance) i).hasId()) {
+				if (Identifiable.is(i)) {
 					log.warn(MessageFormat.format(
 							"At least one instance does not have an ID, falling back to merge handler {0}",
 							fallbackHandler.getClass().getCanonicalName()));
 					return fallbackHandler.partitionInstances(instances, transformationIdentifier,
 							engine, transformationParameters, executionParameters, log);
 				}
-				inputInstanceIds.add(((IdentifiableInstance) i).getId());
+				inputInstanceIds.add(Identifiable.getId(i));
 			}
 		}
 

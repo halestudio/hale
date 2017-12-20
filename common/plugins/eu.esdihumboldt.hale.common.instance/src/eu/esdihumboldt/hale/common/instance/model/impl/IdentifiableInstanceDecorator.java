@@ -13,29 +13,25 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.instance.model;
+package eu.esdihumboldt.hale.common.instance.model.impl;
 
-import eu.esdihumboldt.hale.common.instance.model.impl.InstanceReferenceDecorator;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 
 /**
- * {@link InstanceReference} that stores the ID of the referenced instance
+ * Instance decorator that supports {@link #getId()}
  * 
  * @author Florian Esser
  */
-public class IdentifiableInstanceReference extends InstanceReferenceDecorator
-		implements Identifiable {
-
-	private final Object id;
+public class IdentifiableInstanceDecorator extends InstanceDecorator implements Identifiable {
 
 	/**
-	 * Create the identifiable instance reference
+	 * Constructs the decorator with the given instance.
 	 * 
-	 * @param reference Original reference
-	 * @param id Identifier
+	 * @param instance the instance to decorate
 	 */
-	public IdentifiableInstanceReference(InstanceReference reference, Object id) {
-		super(reference);
-		this.id = id;
+	public IdentifiableInstanceDecorator(Instance instance) {
+		super(instance);
 	}
 
 	/**
@@ -43,7 +39,7 @@ public class IdentifiableInstanceReference extends InstanceReferenceDecorator
 	 */
 	@Override
 	public Object getId() {
-		return this.id;
+		return Identifiable.getId(getOriginalInstance());
 	}
 
 }

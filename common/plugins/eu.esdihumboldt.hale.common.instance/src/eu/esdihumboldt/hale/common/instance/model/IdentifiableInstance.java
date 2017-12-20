@@ -16,22 +16,11 @@
 package eu.esdihumboldt.hale.common.instance.model;
 
 /**
- * Interface for instance classes that provide a way to uniquely identify
- * individual instances.
+ * Convenience interface for {@link Instance} classes that support
+ * {@link Identifiable}
  * 
  * @author Florian Esser
  */
-public interface IdentifiableInstance {
+public interface IdentifiableInstance extends Identifiable, Instance {
 
-	/**
-	 * @return the instance identifier
-	 */
-	Object getId();
-
-	/**
-	 * @return true if the instance has an identifier
-	 */
-	default boolean hasId() {
-		return getId() != null;
-	}
 }

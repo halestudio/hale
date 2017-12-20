@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.instance.model;
 
 import eu.esdihumboldt.hale.common.instance.model.impl.InstanceReferenceDecorator;
+import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 
 /**
  * Adds the capability to an {@link InstanceReference} to resolve the referenced
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceReferenceDecorato
  * @author Florian Esser
  */
 public class ResolvableInstanceReference extends InstanceReferenceDecorator
-		implements IdentifiableInstance {
+		implements Identifiable {
 
 	private final InstanceResolver resolver;
 
@@ -85,13 +86,19 @@ public class ResolvableInstanceReference extends InstanceReferenceDecorator
 	 * Looks for an ID in the original reference and, if that fails, for an
 	 * {@link InstanceReferenceDecorator}.
 	 * 
-	 * @see eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance#getId()
+	 * @see eu.esdihumboldt.hale.common.instance.model.Identifiable#getId()
 	 */
 	@Override
 	public Object getId() {
 		InstanceReference origRef = getOriginalReference();
-		if (origRef instanceof IdentifiableInstance) {
-			return ((IdentifiableInstance) origRef).getId();
+		if (origRef instanceof Identifiable) {
+			return Identifiable.getId(origRef);
+		}
+		else if (origRef instanceof PseudoInstanceReference
+				&& ((PseudoInstanceReference) origRef).getInstance() instanceof Identifiable) {
+			PseudoInstanceReference pir = (PseudoInstanceReference) origRef;
+			Identifiable ii = (Identifiable) pir.getInstance();
+			return ii.getId();
 		}
 
 		IdentifiableInstanceReference iir = InstanceReferenceDecorator.findDecoration(origRef,

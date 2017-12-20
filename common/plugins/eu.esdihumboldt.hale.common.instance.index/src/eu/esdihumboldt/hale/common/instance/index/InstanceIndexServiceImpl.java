@@ -31,7 +31,7 @@ import com.google.common.collect.Multimap;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
-import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -78,9 +78,9 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	@Override
 	public void add(Instance instance, InstanceCollection instances) {
 		InstanceReference ref;
-		if (instance instanceof IdentifiableInstance) {
-			Object id = ((IdentifiableInstance) instance).getId();
-			ref = new IdentifiableInstanceReference(instances.getReference(instance), id);
+		if (Identifiable.is(instance)) {
+			ref = new IdentifiableInstanceReference(instances.getReference(instance),
+					Identifiable.getId(instance));
 		}
 		else {
 			ref = instances.getReference(instance);

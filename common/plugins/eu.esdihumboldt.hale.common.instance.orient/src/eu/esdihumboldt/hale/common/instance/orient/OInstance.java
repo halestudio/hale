@@ -31,7 +31,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
-import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -42,7 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class OInstance extends OGroup implements MutableInstance, IdentifiableInstance {
+public class OInstance extends OGroup implements MutableInstance, Identifiable {
 
 	/**
 	 * Name for the special field for an instance value
@@ -291,7 +291,7 @@ public class OInstance extends OGroup implements MutableInstance, IdentifiableIn
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.IdentifiableInstance#getId()
+	 * @see eu.esdihumboldt.hale.common.instance.model.Identifiable#getId()
 	 */
 	@Override
 	public Object getId() {
