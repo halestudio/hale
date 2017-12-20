@@ -101,17 +101,6 @@ public abstract class DefaultTransformationTest extends AbstractTransformationTe
 	}
 
 	/**
-	 * Test based on a join and some renames with join on properties of
-	 * non-matching types
-	 * 
-	 * @throws Exception if an error occurs executing the test
-	 */
-	@Test
-	public void testPropertyJoinNonMatchingTypes() throws Exception {
-		testTransform(TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_2));
-	}
-
-	/**
 	 * Test with a join that links two types w/ multiple conditions.
 	 * 
 	 * @throws Exception if an error occurs executing the test

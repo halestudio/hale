@@ -332,6 +332,17 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE6));
 	}
 
+	/**
+	 * Test based on a join and some renames with join on properties of
+	 * non-matching types
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyJoinNonMatchingTypes() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_2));
+	}
+
 	@Override
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
