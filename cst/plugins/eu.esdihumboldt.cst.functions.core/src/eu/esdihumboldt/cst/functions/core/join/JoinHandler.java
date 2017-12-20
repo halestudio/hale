@@ -16,10 +16,6 @@
 
 package eu.esdihumboldt.cst.functions.core.join;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -46,15 +42,15 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 
 /**
  * Join based on equal properties.
  * 
  * @author Kai Schwierczek
  */
-public class JoinHandler
-		implements InstanceHandler<TransformationEngine>, JoinFunction, JoinIndexValueProcessor {
+public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinFunction {
+
+	private final ValueProcessor valueProcessor = new DefaultValueProcessor();
 
 	// For now no support for using the same type more than once in a join.
 	/**
@@ -115,7 +111,8 @@ public class JoinHandler
 					Collection<Object> values = AlignmentUtil.getValues(next, property, true);
 					if (values != null && !values.isEmpty()) {
 						// XXX take only first value for now
-						index.get(property).put(processValue(values.iterator().next(), property),
+						index.get(property).put(
+								valueProcessor.processValue(values.iterator().next(), property),
 								instances.getReference(next));
 					}
 				}
@@ -125,54 +122,6 @@ public class JoinHandler
 		}
 
 		return new JoinIterator(instances, startInstances, joinDefinition.directParent, index,
-				joinDefinition.joinTable, this);
+				joinDefinition.joinTable, valueProcessor);
 	}
-
-	/**
-	 * Process a value of a property in a join condition before using it with
-	 * the index.
-	 * 
-	 * @param value the value
-	 * @param property the entity definition the value is associated to
-	 * @return the processed value, possibly wrapped or replaced through a
-	 *         different representation
-	 */
-	@Override
-	public Object processValue(Object value, PropertyEntityDefinition property) {
-		// extract the identifier from a reference
-		value = property.getDefinition().getConstraint(Reference.class).extractId(value);
-
-		/*
-		 * This is done so values will be classified as equal even if they are
-		 * of different types, e.g. Long and Integer or Integer and String.
-		 */
-
-		/*
-		 * Use string representation for numbers.
-		 */
-		if (value instanceof Number) {
-			if (value instanceof BigInteger || value instanceof Long || value instanceof Integer
-					|| value instanceof Byte || value instanceof Short) {
-				// use string representation for integer numbers
-				value = value.toString();
-			}
-			else if (value instanceof BigDecimal) {
-				BigDecimal v = (BigDecimal) value;
-				if (v.scale() <= 0) {
-					// use string representation for integer big decimal
-					value = v.toBigInteger().toString();
-				}
-			}
-		}
-
-		/*
-		 * Use string representation for URIs and URLs.
-		 */
-		if (value instanceof URI || value instanceof URL) {
-			value = value.toString();
-		}
-
-		return value;
-	}
-
 }
