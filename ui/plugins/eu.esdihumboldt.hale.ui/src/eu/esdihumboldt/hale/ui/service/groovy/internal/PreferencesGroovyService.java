@@ -72,7 +72,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	 * {@link #getScriptHash()}.
 	 */
 	private String scriptHash = null;
-	private boolean askedForAllowance = false;
+	private boolean askedForPermission = false;
 
 	/**
 	 * Constructs the service.
@@ -96,7 +96,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				}
 				restrictionActiveURI = null;
 				scriptHash = null;
-				askedForAllowance = false;
+				askedForPermission = false;
 			}
 
 			@Override
@@ -153,7 +153,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 		try {
 			return super.evaluate(script, processor);
 		} catch (GroovyRestrictionException e) {
-			if (!askedForAllowance && askForAllowance()) {
+			if (!askedForPermission && askForPermission()) {
 				return super.evaluate(script, processor);
 			}
 			else {
@@ -163,11 +163,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	}
 
 	/**
-	 * Ask for allowance to run script with full permissions.
+	 * Ask for permission to run script without restrictions
 	 * 
-	 * @return true, if allowance was given.
+	 * @return true if permission was granted
 	 */
-	private synchronized boolean askForAllowance() {
+	private synchronized boolean askForPermission() {
 		boolean hashVerified = false;
 		if (restrictionActiveURI == null && projectService.getLoadLocation() != null) {
 			// If a project is loaded that requires lifting Groovy
@@ -179,14 +179,14 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 		}
 
 		if (hashVerified) {
-			// Don't ask for permission if permissions were lifted for this
+			// Don't ask for permission if restrictions were lifted for this
 			// script before
 			setRestrictionActive(false);
-			askedForAllowance = true;
+			askedForPermission = true;
 		}
 
 		// synchronization...
-		if (!askedForAllowance) {
+		if (!askedForPermission) {
 			final AtomicBoolean disableRestriction = new AtomicBoolean(false);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
@@ -213,7 +213,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			if (disableRestriction.get()) {
 				setRestrictionActive(false);
 			}
-			askedForAllowance = true;
+			askedForPermission = true;
 		}
 
 		return !restrictionActive;
