@@ -168,6 +168,23 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	 * @return true, if allowance was given.
 	 */
 	private synchronized boolean askForAllowance() {
+		boolean hashVerified = false;
+		if (restrictionActiveURI == null && projectService.getLoadLocation() != null) {
+			// If a project is loaded that requires lifting Groovy
+			// restrictions, restrictionActiveURI will still be null because
+			// projectLoaded() is called only after the user confirmation
+			// dialog is closed
+			restrictionActiveURI = projectService.getLoadLocation();
+			hashVerified = verifyScriptHash(restrictionActiveURI);
+		}
+
+		if (hashVerified) {
+			// Don't ask for permission if permissions were lifted for this
+			// script before
+			setRestrictionActive(false);
+			askedForAllowance = true;
+		}
+
 		// synchronization...
 		if (!askedForAllowance) {
 			final AtomicBoolean disableRestriction = new AtomicBoolean(false);
@@ -206,6 +223,14 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	public void setRestrictionActive(final boolean active) {
 		if (restrictionActive != active) {
 			restrictionActive = active;
+			if (restrictionActiveURI == null) {
+				// If a project is loaded that requires lifting Groovy
+				// restrictions, restrictionActiveURI will still be null because
+				// projectLoaded() is called only after the user confirmation
+				// dialog is closed
+				restrictionActiveURI = projectService.getLoadLocation();
+			}
+
 			if (restrictionActiveURI != null) {
 				Map<URI, String> preferences = loadPreferences();
 				if (!restrictionActive)
@@ -344,8 +369,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				restrictionActive = true;
 			}
 			else {
-				String hash = loadPreferences().get(location);
-				boolean hashChecked = hash != null && getScriptHash().equals(hash);
+				boolean hashChecked = verifyScriptHash(location);
 				restrictionActive = !hashChecked;
 				// XXX inform user directly if the hash was invalid?
 				if (!restrictionActive) {
@@ -353,6 +377,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				}
 			}
 		}
+	}
+
+	private boolean verifyScriptHash(URI projectLocation) {
+		String hash = loadPreferences().get(projectLocation);
+		return hash != null && getScriptHash().equals(hash);
 	}
 
 	private String getScriptString(Value value) {
