@@ -15,10 +15,17 @@
 
 package eu.esdihumboldt.cst.functions.groovy;
 
+import java.util.Collection;
+import java.util.List;
+
+import eu.esdihumboldt.cst.functions.core.Join;
 import eu.esdihumboldt.cst.functions.core.join.IndexJoinHandler;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexContribution;
 
 /**
  * Type transformation that joins multiple instances of different source types
@@ -28,7 +35,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  * 
  * @author Simon Templer
  */
-public class GroovyJoin extends GroovyRetype implements JoinFunction {
+public class GroovyJoin extends GroovyRetype implements JoinFunction, InstanceIndexContribution {
 
 	/**
 	 * The function ID. Not named <code>ID</code> to avoid shadowing
@@ -39,6 +46,14 @@ public class GroovyJoin extends GroovyRetype implements JoinFunction {
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		return new IndexJoinHandler();
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndexContribution#getIndexContribution(eu.esdihumboldt.hale.common.align.model.Cell)
+	 */
+	@Override
+	public Collection<List<PropertyEntityDefinition>> getIndexContribution(Cell cell) {
+		return Join.getJoinContribution(cell);
 	}
 
 }
