@@ -16,7 +16,6 @@
 
 package eu.esdihumboldt.cst.internal;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,18 +24,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
-import eu.esdihumboldt.cst.functions.core.join.JoinUtil;
-import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
-import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.cst.test.DefaultTransformationTest;
 import eu.esdihumboldt.cst.test.TransformationExample;
 import eu.esdihumboldt.cst.test.TransformationExamples;
-import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
-import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
-import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
-import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.service.FunctionService;
 import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
@@ -358,42 +348,6 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		InstanceIndexServiceImpl indexService = new InstanceIndexServiceImpl();
 		customServices.put(InstanceIndexService.class, indexService);
 
-		// TODO DRY: Move to central location
-		for (Cell cell : example.getAlignment().getActiveTypeCells()) {
-			switch (cell.getTransformationIdentifier()) {
-			case MergeFunction.ID:
-				indexService.addPropertyMapping(MergeUtil.getKeyPropertyDefinitions(cell));
-				break;
-			case JoinFunction.ID:
-			case GroovyJoin.GROOVY_JOIN_ID:
-				JoinParameter joinParameter = cell.getTransformationParameters()
-						.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
-				String validation = joinParameter.validate();
-				if (validation != null) {
-					// TODO log
-					break;
-				}
-
-				JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
-				for (PropertyEntityDefinition property : joinDefinition.properties.values()) {
-					indexService.addPropertyMapping(Collections.singletonList(property));
-				}
-				for (PropertyEntityDefinition property : joinDefinition.baseProperties.values()) {
-					indexService.addPropertyMapping(Collections.singletonList(property));
-				}
-
-				break;
-			}
-		}
-
-		InstanceCollection source = example.getSourceInstances();
-
-		try (ResourceIterator<Instance> it = source.iterator()) {
-			while (it.hasNext()) {
-				indexService.add(it.next(), source);
-			}
-		}
-
 		final ServiceProvider serviceProvider = new ServiceProvider() {
 
 			private final ServiceProvider projectScope = new ServiceManager(
@@ -410,6 +364,17 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 				return projectScope.getService(serviceInterface);
 			}
 		};
+
+		indexService.addPropertyMappings(example.getAlignment().getActiveTypeCells(),
+				serviceProvider);
+
+		InstanceCollection source = example.getSourceInstances();
+
+		try (ResourceIterator<Instance> it = source.iterator()) {
+			while (it.hasNext()) {
+				indexService.add(it.next(), source);
+			}
+		}
 
 		transformer.transform(example.getAlignment(), source, sink, serviceProvider,
 				new NullProgressIndicator());

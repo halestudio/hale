@@ -20,7 +20,9 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
@@ -64,6 +66,14 @@ public interface InstanceIndexService {
 	 * @param properties Properties to index
 	 */
 	void addPropertyMapping(List<PropertyEntityDefinition> properties);
+
+	/**
+	 * Add all property mappings for the given collection of cells
+	 * 
+	 * @param cells Cells to add property mappings for
+	 * @return true if the property mappings were changed
+	 */
+	boolean addPropertyMappings(Iterable<? extends Cell> cells, ServiceProvider serviceProvider);
 
 	/**
 	 * Removes properties from the index

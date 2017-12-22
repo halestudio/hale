@@ -27,8 +27,13 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import eu.esdihumboldt.hale.common.align.extension.transformation.TransformationFunctionUtil;
+import eu.esdihumboldt.hale.common.align.extension.transformation.TypeTransformationFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.transformation.function.TypeTransformation;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -115,6 +120,47 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 				p -> keys.add((PropertyEntityDefinition) AlignmentUtil.getAllDefaultEntity(p)));
 
 		getIndex(type).addMapping(new PropertyEntityDefinitionMapping(keys));
+	}
+
+	@Override
+	public boolean addPropertyMappings(Iterable<? extends Cell> cells,
+			ServiceProvider serviceProvider) {
+		if (serviceProvider == null) {
+			throw new NullPointerException("Service provider must not be null");
+		}
+
+		boolean result = false;
+
+		for (Cell cell : cells) {
+			List<TypeTransformationFactory> functions = TransformationFunctionUtil
+					.getTypeTransformations(cell.getTransformationIdentifier(), serviceProvider);
+			if (functions.isEmpty()) {
+				// Not a type transformation cell
+				continue;
+			}
+
+			TypeTransformation<?> transformation;
+			try {
+				transformation = functions.get(0).createExtensionObject();
+			} catch (Exception e) {
+				throw new RuntimeException(e.getMessage(), e);
+			}
+
+			List<List<PropertyEntityDefinition>> indexedProperties = new ArrayList<>();
+			if (transformation instanceof InstanceIndexContribution) {
+				InstanceIndexContribution contribution = (InstanceIndexContribution) transformation;
+				indexedProperties.addAll(contribution.getIndexContribution(cell));
+			}
+
+			if (!indexedProperties.isEmpty()) {
+				result = true;
+				for (List<PropertyEntityDefinition> properties : indexedProperties) {
+					this.addPropertyMapping(properties);
+				}
+			}
+		}
+
+		return result;
 	}
 
 	@Override

@@ -14,9 +14,6 @@
  */
 package eu.esdihumboldt.hale.ui.index.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,10 +22,6 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyMerge;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
-import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
-import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
-import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndex;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
@@ -69,34 +62,7 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 
 	@Override
 	public void cellsAdded(Iterable<Cell> cells) {
-		boolean reindex = false;
-
-		// TODO DRY: Move to central location
-		for (Cell cell : cells) {
-			List<PropertyEntityDefinition> indexedProperties = new ArrayList<>();
-			switch (cell.getTransformationIdentifier()) {
-			case MergeFunction.ID:
-			case GroovyMerge.GROOVY_MERGE_ID:
-				indexedProperties.addAll(MergeUtil.getKeyPropertyDefinitions(cell));
-				break;
-			case JoinFunction.ID:
-			case GroovyJoin.GROOVY_JOIN_ID:
-				JoinParameter joinParameter = cell.getTransformationParameters()
-						.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
-				for (JoinCondition cond : joinParameter.conditions) {
-					getIndexService()
-							.addPropertyMapping(Collections.singletonList(cond.baseProperty));
-					getIndexService()
-							.addPropertyMapping(Collections.singletonList(cond.joinProperty));
-				}
-				break;
-			}
-
-			if (!indexedProperties.isEmpty()) {
-				getIndexService().addPropertyMapping(indexedProperties);
-				reindex = true;
-			}
-		}
+		boolean reindex = getIndexService().addPropertyMappings(cells, serviceProvider);
 
 		if (reindex) {
 			reindex();
