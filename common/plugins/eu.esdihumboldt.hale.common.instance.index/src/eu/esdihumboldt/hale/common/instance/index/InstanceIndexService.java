@@ -41,7 +41,7 @@ public interface InstanceIndexService {
 	 * @param instance Instance to add
 	 * @param reference Resolvable reference to the instance
 	 */
-	void add(Instance instance, ResolvableInstanceReference reference); // AlignmentUtil.getAllDefaultEntity
+	void add(Instance instance, ResolvableInstanceReference reference);
 
 	/**
 	 * Add an instance to the index
@@ -71,6 +71,7 @@ public interface InstanceIndexService {
 	 * Add all property mappings for the given collection of cells
 	 * 
 	 * @param cells Cells to add property mappings for
+	 * @param serviceProvider the service provider
 	 * @return true if the property mappings were changed
 	 */
 	boolean addPropertyMappings(Iterable<? extends Cell> cells, ServiceProvider serviceProvider);

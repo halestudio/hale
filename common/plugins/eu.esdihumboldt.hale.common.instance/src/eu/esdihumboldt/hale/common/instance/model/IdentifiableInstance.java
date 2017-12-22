@@ -22,5 +22,5 @@ package eu.esdihumboldt.hale.common.instance.model;
  * @author Florian Esser
  */
 public interface IdentifiableInstance extends Identifiable, Instance {
-
+	// no additions
 }

@@ -154,11 +154,11 @@ public class MultimapInstanceIndex implements
 
 	@Override
 	public Collection<List<IndexedPropertyValue>> getInstancePropertyValuesById(Object instanceId) {
-		Optional<ResolvableInstanceReference> ref = instanceIndex.keySet().stream()
-				.filter(rir -> rir.getId().equals(instanceId)).findFirst();
+		Optional<ResolvableInstanceReference> optionalRef = instanceIndex.keySet().stream()
+				.filter(ref -> ref.getId().equals(instanceId)).findFirst();
 
-		if (ref.isPresent()) {
-			return instanceIndex.get(ref.get());
+		if (optionalRef.isPresent()) {
+			return instanceIndex.get(optionalRef.get());
 		}
 		else {
 			return Collections.emptyList();
@@ -174,6 +174,10 @@ public class MultimapInstanceIndex implements
 	@Override
 	public Collection<ResolvableInstanceReference> getInstancesByValue(List<QName> propertyPath,
 			List<?> values) {
+
+		// Find all IndexedPropertyValues in the key set of valueIndex where any
+		// of the indexed value matches any of the provided values in the given
+		// property
 		List<List<IndexedPropertyValue>> matchingKeys = valueIndex.keySet().stream()
 				.filter(ipvs -> ipvs.stream()
 						.anyMatch(ipv -> ipv.getValues().stream()
@@ -186,8 +190,8 @@ public class MultimapInstanceIndex implements
 
 		Iterator<ResolvableInstanceReference> it = result.iterator();
 		while (it.hasNext()) {
-			ResolvableInstanceReference rir = it.next();
-			Collection<List<IndexedPropertyValue>> instValue = instanceIndex.get(rir);
+			ResolvableInstanceReference ref = it.next();
+			Collection<List<IndexedPropertyValue>> instValue = instanceIndex.get(ref);
 			boolean remove = false;
 			for (List<IndexedPropertyValue> ipvs : instValue) {
 				for (IndexedPropertyValue ipv : ipvs) {

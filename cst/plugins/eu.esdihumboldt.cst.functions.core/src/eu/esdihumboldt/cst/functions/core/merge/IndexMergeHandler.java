@@ -160,7 +160,7 @@ public class IndexMergeHandler
 
 		// Remove instance groups from the partitioned index where none of the
 		// instances in the group are in the processed instances.
-		partitionedIndex.removeIf(part -> !part.stream().map(rir -> rir.getId())
+		partitionedIndex.removeIf(part -> !part.stream().map(ref -> ref.getId())
 				.anyMatch(id -> inputInstanceIds.contains(id)));
 
 		Iterator<Collection<ResolvableInstanceReference>> it = partitionedIndex.iterator();
