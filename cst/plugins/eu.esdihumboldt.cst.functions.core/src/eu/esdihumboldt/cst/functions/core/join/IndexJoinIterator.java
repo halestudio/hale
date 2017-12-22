@@ -35,7 +35,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInst
 import eu.esdihumboldt.hale.common.instance.index.IndexedPropertyValue;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 
@@ -47,16 +46,12 @@ import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAd
 class IndexJoinIterator
 		extends GenericResourceIteratorAdapter<ResolvableInstanceReference, FamilyInstance> {
 
-	private final InstanceCollection instances;
-
 	private final JoinDefinition joinDefinition;
 	private final InstanceIndexService index;
 
-	protected IndexJoinIterator(InstanceCollection instances,
-			Collection<ResolvableInstanceReference> startInstances, JoinDefinition joinDefinition,
-			InstanceIndexService index) {
+	protected IndexJoinIterator(Collection<ResolvableInstanceReference> startInstances,
+			JoinDefinition joinDefinition, InstanceIndexService index) {
 		super(startInstances.iterator());
-		this.instances = instances;
 		this.joinDefinition = joinDefinition;
 		this.index = index;
 	}

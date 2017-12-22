@@ -28,7 +28,6 @@ import eu.esdihumboldt.cst.functions.core.join.JoinUtil.JoinDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler;
@@ -36,7 +35,6 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.core.service.ServiceProviderAware;
-import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndex;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
@@ -54,25 +52,6 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
  */
 public class IndexJoinHandler
 		implements InstanceHandler<TransformationEngine>, JoinFunction, ServiceProviderAware {
-
-	private class IndexJoinValueProcessor extends DefaultValueProcessor {
-
-		/**
-		 * @see eu.esdihumboldt.cst.functions.core.join.DefaultValueProcessor#processValue(java.lang.Object,
-		 *      eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition)
-		 */
-		@Override
-		public Object processValue(Object value, PropertyEntityDefinition property) {
-			if (value instanceof Instance) {
-				return new DeepIterableKey(value);
-			}
-
-			return super.processValue(value, property);
-		}
-
-	}
-
-	private final ValueProcessor valueProcessor = new IndexJoinValueProcessor();
 
 	private ServiceProvider serviceProvider;
 
@@ -143,7 +122,7 @@ public class IndexJoinHandler
 			}
 		}
 
-		return new IndexJoinIterator(instances, startInstances, joinDefinition, indexService);
+		return new IndexJoinIterator(startInstances, joinDefinition, indexService);
 	}
 
 	/**
