@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
 
 /**
- * TODO Type description
+ * Iterator used by {@link JoinHandler}
  * 
  * @author Florian Esser
  */
