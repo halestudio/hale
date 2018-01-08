@@ -36,6 +36,8 @@ import com.orientechnologies.orient.core.storage.OStorage.CLUSTER_TYPE;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.core.report.SimpleLogContext;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableGroup;
@@ -61,6 +63,7 @@ public class OGroup implements MutableGroup {
 	 * The set of special field names, e.g. for the binary wrapper field
 	 */
 	private static final Set<String> SPECIAL_FIELDS = new HashSet<String>();
+
 	static {
 		SPECIAL_FIELDS.add(OSerializationHelper.BINARY_WRAPPER_FIELD);
 		SPECIAL_FIELDS.add(OSerializationHelper.FIELD_SERIALIZATION_TYPE);
@@ -178,8 +181,8 @@ public class OGroup implements MutableGroup {
 
 				if (definition != null) {
 					for (ODocument valueDoc : docs) {
-						ChildDefinition<?> child = definition.getChild(decodeProperty(field
-								.getKey()));
+						ChildDefinition<?> child = definition
+								.getChild(decodeProperty(field.getKey()));
 						DefinitionGroup childGroup;
 						if (child.asProperty() != null) {
 							childGroup = child.asProperty().getPropertyType();
@@ -275,9 +278,8 @@ public class OGroup implements MutableGroup {
 				// default: use list
 				List<Object> valueList = new ArrayList<Object>();
 				valueList.add(value);
-				document.field(pName, valueList,
-						(isInstanceDocument) ? (getCollectionType(propertyName))
-								: (OType.EMBEDDEDLIST));
+				document.field(pName, valueList, (isInstanceDocument)
+						? (getCollectionType(propertyName)) : (OType.EMBEDDEDLIST));
 			}
 			else if (oldValue instanceof Collection<?>) {
 				// add value to collection
@@ -289,9 +291,8 @@ public class OGroup implements MutableGroup {
 				Object[] values = new Object[oldArray.length + 1];
 				System.arraycopy(oldArray, 0, values, 0, oldArray.length);
 				values[oldArray.length] = value;
-				document.field(pName, values,
-						(isInstanceDocument) ? (getCollectionType(propertyName))
-								: (OType.EMBEDDEDLIST));
+				document.field(pName, values, (isInstanceDocument)
+						? (getCollectionType(propertyName)) : (OType.EMBEDDEDLIST));
 			}
 		}
 		else {
@@ -337,7 +338,9 @@ public class OGroup implements MutableGroup {
 	 * @return the converted object
 	 */
 	protected Object convertInstance(Object value) {
-		return OSerializationHelper.convertForDB(value);
+		return OSerializationHelper.convertForDB(value,
+				// get context log
+				SimpleLogContext.getLog(() -> SimpleLog.fromLogger(log)));
 	}
 
 	/**
@@ -394,7 +397,8 @@ public class OGroup implements MutableGroup {
 		if (!collection) {
 			if (values.length > 1) {
 				// TODO log type and property
-				log.warn("Attempt to set multiple values on a property that supports only one, using only the first value");
+				log.warn(
+						"Attempt to set multiple values on a property that supports only one, using only the first value");
 			}
 
 			document.field(pName, convertInstance(values[0]));
