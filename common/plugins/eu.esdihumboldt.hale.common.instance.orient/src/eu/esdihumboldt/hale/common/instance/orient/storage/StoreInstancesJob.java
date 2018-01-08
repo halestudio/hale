@@ -20,6 +20,7 @@ import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.namespace.QName;
 
@@ -41,6 +42,7 @@ import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.core.report.ReportSimpleLogSupport;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.hale.common.core.report.SimpleLogContext;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -152,7 +154,7 @@ public abstract class StoreInstancesJob extends Job {
 		monitor.beginTask("Store instances in database",
 				(exactProgress) ? (instances.size()) : (IProgressMonitor.UNKNOWN));
 
-		int count = 0;
+		AtomicInteger count = new AtomicInteger(0);
 		TObjectIntHashMap<QName> typeCount = new TObjectIntHashMap<>();
 
 		if (report != null) {
@@ -185,73 +187,80 @@ public abstract class StoreInstancesJob extends Job {
 
 			// TODO decouple next() and save()?
 
-			long lastUpdate = 0; // last count update
+			SimpleLogContext.withLog(report, () -> {
 
-			if (report != null && instances instanceof LogAware) {
-				((LogAware) instances).setLog(report);
-			}
+				long lastUpdate = 0; // last count update
 
-			ResourceIterator<Instance> it = instances.iterator();
-			int size = instances.size();
-			try {
-				while (it.hasNext() && !monitor.isCanceled()) {
-					Instance instance = it.next();
-
-					// further processing before storing
-					processInstance(instance);
-
-					// get/create OInstance
-					OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
-							: (new OInstance(instance)));
-
-					conv.setInserted(true);
-
-					// update the instance to store, e.g. generating metadata
-					updateInstance(conv);
-
-					ODatabaseRecordThreadLocal.INSTANCE.set(db);
-					// configure the document
-					ODocument doc = conv.configureDocument(db);
-					// and save it
-					doc.save();
-
-					// Create an InstanceReference for the saved instance and
-					// feed it to all known InstanceProcessors. The decoration
-					// with ResolvableInstanceReference allows the
-					// InstanceProcessors to resolve the instances if required.
-					ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
-							new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
-									conv.getDefinition()),
-							browser);
-
-					processors.forEach(p -> p.process(instance, resolvableRef));
-
-					count++;
-
-					TypeDefinition type = instance.getDefinition();
-					if (type != null) {
-						typeCount.adjustOrPutValue(type.getName(), 1, 1);
-					}
-
-					if (exactProgress) {
-						monitor.worked(1);
-					}
-
-					long now = System.currentTimeMillis();
-					if (now - lastUpdate > 100) { // only update every 100
-													// milliseconds
-						monitor.subTask(MessageFormat.format("{0}{1} instances processed",
-								String.valueOf(count), size != InstanceCollection.UNKNOWN_SIZE
-										? "/" + String.valueOf(size) : ""));
-						lastUpdate = now;
-					}
-				}
-			} finally {
-				it.close();
 				if (report != null && instances instanceof LogAware) {
-					((LogAware) instances).setLog(null);
+					((LogAware) instances).setLog(report);
 				}
-			}
+
+				ResourceIterator<Instance> it = instances.iterator();
+				int size = instances.size();
+				try {
+					while (it.hasNext() && !monitor.isCanceled()) {
+						Instance instance = it.next();
+
+						// further processing before storing
+						processInstance(instance);
+
+						// get/create OInstance
+						OInstance conv = ((instance instanceof OInstance) ? ((OInstance) instance)
+								: (new OInstance(instance)));
+
+						conv.setInserted(true);
+
+						// update the instance to store, e.g. generating
+						// metadata
+						updateInstance(conv);
+
+						ODatabaseRecordThreadLocal.INSTANCE.set(db);
+						// configure the document
+						ODocument doc = conv.configureDocument(db);
+						// and save it
+						doc.save();
+
+						// Create an InstanceReference for the saved instance
+						// and
+						// feed it to all known InstanceProcessors. The
+						// decoration
+						// with ResolvableInstanceReference allows the
+						// InstanceProcessors to resolve the instances if
+						// required.
+						ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
+								new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
+										conv.getDefinition()),
+								browser);
+
+						processors.forEach(p -> p.process(instance, resolvableRef));
+
+						count.incrementAndGet();
+
+						TypeDefinition type = instance.getDefinition();
+						if (type != null) {
+							typeCount.adjustOrPutValue(type.getName(), 1, 1);
+						}
+
+						if (exactProgress) {
+							monitor.worked(1);
+						}
+
+						long now = System.currentTimeMillis();
+						if (now - lastUpdate > 100) { // only update every 100
+														// milliseconds
+							monitor.subTask(MessageFormat.format("{0}{1} instances processed",
+									String.valueOf(count), size != InstanceCollection.UNKNOWN_SIZE
+											? "/" + String.valueOf(size) : ""));
+							lastUpdate = now;
+						}
+					}
+				} finally {
+					it.close();
+					if (report != null && instances instanceof LogAware) {
+						((LogAware) instances).setLog(null);
+					}
+				}
+			});
 
 			db.declareIntent(null);
 		} catch (RuntimeException e) {

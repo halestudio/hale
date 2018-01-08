@@ -85,11 +85,15 @@ public class SimpleLogContext {
 	 * @return the function result
 	 */
 	public static <X> X withLog(final SimpleLog log, Supplier<X> fun) {
-		currentLogs.get().push(log);
+		if (log != null) {
+			currentLogs.get().push(log);
+		}
 		try {
 			return fun.get();
 		} finally {
-			currentLogs.get().pop();
+			if (log != null) {
+				currentLogs.get().pop();
+			}
 		}
 	}
 
@@ -101,11 +105,15 @@ public class SimpleLogContext {
 	 * @param fun the function to execute
 	 */
 	public static void withLog(final SimpleLog log, Runnable fun) {
-		currentLogs.get().push(log);
+		if (log != null) {
+			currentLogs.get().push(log);
+		}
 		try {
 			fun.run();
 		} finally {
-			currentLogs.get().pop();
+			if (log != null) {
+				currentLogs.get().pop();
+			}
 		}
 	}
 
