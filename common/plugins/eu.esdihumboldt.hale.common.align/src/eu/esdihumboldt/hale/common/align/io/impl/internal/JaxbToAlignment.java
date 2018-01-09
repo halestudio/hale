@@ -36,13 +36,17 @@ import com.google.common.base.Function;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
+import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.LoadAlignmentContext;
 import eu.esdihumboldt.hale.common.align.io.impl.DefaultEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
+import eu.esdihumboldt.hale.common.align.io.impl.dummy.DummyEntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base;
@@ -55,8 +59,12 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType;
+import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.impl.UnmigratedCell;
 import eu.esdihumboldt.hale.common.align.model.AnnotationDescriptor;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -69,8 +77,10 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.ElementValue;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -87,6 +97,7 @@ public class JaxbToAlignment
 	private final AlignmentType alignment;
 	private final PathUpdate updater;
 	private final EntityResolver resolver;
+	private final ServiceProvider serviceProvider;
 
 	/**
 	 * Private constructor for internal use.
@@ -100,6 +111,7 @@ public class JaxbToAlignment
 		// no custom resolver here, this constructor is used when loading base
 		// alignments
 		this.resolver = DefaultEntityResolver.getInstance();
+		this.serviceProvider = null;
 	}
 
 	/**
@@ -109,9 +121,11 @@ public class JaxbToAlignment
 	 * @param targetTypes the target types for resolving target entities
 	 * @param updater the path updater to use for base alignments
 	 * @param resolver the entity resolver
+	 * @param serviceProvider Service provider
 	 */
 	public JaxbToAlignment(AlignmentType alignment, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver) {
+			TypeIndex targetTypes, PathUpdate updater, EntityResolver resolver,
+			ServiceProvider serviceProvider) {
 		this.alignment = alignment;
 		this.reporter = reporter;
 		this.sourceTypes = sourceTypes;
@@ -123,6 +137,7 @@ public class JaxbToAlignment
 		else {
 			this.resolver = resolver;
 		}
+		this.serviceProvider = serviceProvider;
 	}
 
 	/**
@@ -174,7 +189,7 @@ public class JaxbToAlignment
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		new JaxbToAlignment().internalAddBaseAlignment(alignment, newBase, projectLocation,
 				sourceTypes, targetTypes, reporter);
 	}
@@ -189,11 +204,65 @@ public class JaxbToAlignment
 		return super.createAlignment(alignment, sourceTypes, targetTypes, updater, reporter);
 	}
 
-	private static MutableCell convert(CellType cell, LoadAlignmentContext context,
-			IOReporter reporter, EntityResolver resolver) {
-		DefaultCell result = new DefaultCell();
+	private static UnmigratedCell createUnmigratedCell(CellType cell, LoadAlignmentContext context,
+			IOReporter reporter, EntityResolver resolver, ServiceProvider serviceProvider) {
+		// The sourceCell represents the cell as it was imported from the
+		// XML alignment. The conversion to the resolved cell must be performed
+		// later by migrating the UnmigratedCell returned from this function.
+		final DefaultCell sourceCell = new DefaultCell();
+		sourceCell.setTransformationIdentifier(cell.getRelation());
 
-		result.setTransformationIdentifier(cell.getRelation());
+		final FunctionDefinition<?> cellFunction = FunctionUtil
+				.getFunction(sourceCell.getTransformationIdentifier(), serviceProvider);
+		final CellMigrator migrator;
+		if (cellFunction != null) {
+			migrator = cellFunction.getCustomMigrator().orElse(new DefaultCellMigrator());
+		}
+		else {
+			migrator = new DefaultCellMigrator();
+		}
+
+		Map<EntityDefinition, EntityDefinition> mappings = new HashMap<>();
+		try {
+			// The returned Entity pair consists of
+			// (1st) a dummy entity representing the entity read from JAXB
+			// (2nd) the resolved entity
+			ListMultimap<String, Pair<Entity, Entity>> convertedSourceEntities = convertEntities(
+					cell.getSource(), context.getSourceTypes(), SchemaSpaceID.SOURCE, resolver);
+			if (convertedSourceEntities == null) {
+				sourceCell.setSource(null);
+			}
+			else {
+				sourceCell.setSource(Multimaps.transformValues(convertedSourceEntities,
+						pair -> pair.getFirst()));
+				for (Pair<Entity, Entity> pair : convertedSourceEntities.values()) {
+					mappings.put(pair.getFirst().getDefinition(), pair.getSecond().getDefinition());
+				}
+			}
+
+			ListMultimap<String, Pair<Entity, Entity>> convertedTargetEntities = convertEntities(
+					cell.getTarget(), context.getTargetTypes(), SchemaSpaceID.TARGET, resolver);
+			if (convertedTargetEntities == null) {
+				sourceCell.setTarget(null);
+			}
+			else {
+				sourceCell.setTarget(Multimaps.transformValues(convertedTargetEntities,
+						pair -> pair.getFirst()));
+				for (Pair<Entity, Entity> pair : convertedTargetEntities.values()) {
+					mappings.put(pair.getFirst().getDefinition(), pair.getSecond().getDefinition());
+				}
+			}
+
+			if (sourceCell.getTarget() == null || sourceCell.getTarget().isEmpty()) {
+				// target is mandatory for cells!
+				throw new IllegalStateException("Cannot create cell without target");
+			}
+		} catch (Exception e) {
+			if (reporter != null) {
+				reporter.error(new IOMessageImpl("Could not create cell", e));
+			}
+			return null;
+		}
 
 		if (!cell.getAbstractParameter().isEmpty()) {
 			ListMultimap<String, ParameterValue> parameters = ArrayListMultimap.create();
@@ -202,8 +271,8 @@ public class JaxbToAlignment
 				if (apt instanceof ParameterType) {
 					// treat string parameters or null parameters
 					ParameterType pt = (ParameterType) apt;
-					parameters.put(pt.getName(),
-							new ParameterValue(pt.getType(), Value.of(pt.getValue())));
+					ParameterValue pv = new ParameterValue(pt.getType(), Value.of(pt.getValue()));
+					parameters.put(pt.getName(), pv);
 				}
 				else if (apt instanceof ComplexParameterType) {
 					// complex parameters
@@ -214,23 +283,7 @@ public class JaxbToAlignment
 				else
 					throw new IllegalStateException("Illegal parameter type");
 			}
-			result.setTransformationParameters(parameters);
-		}
-
-		try {
-			result.setSource(convertEntities(cell.getSource(), context.getSourceTypes(),
-					SchemaSpaceID.SOURCE, resolver));
-			result.setTarget(convertEntities(cell.getTarget(), context.getTargetTypes(),
-					SchemaSpaceID.TARGET, resolver));
-			if (result.getTarget() == null || result.getTarget().isEmpty()) {
-				// target is mandatory for cells!
-				throw new IllegalStateException("Cannot create cell without target");
-			}
-		} catch (Exception e) {
-			if (reporter != null) {
-				reporter.error(new IOMessageImpl("Could not create cell", e));
-			}
-			return null;
+			sourceCell.setTransformationParameters(parameters);
 		}
 
 		// annotations & documentation
@@ -245,7 +298,7 @@ public class JaxbToAlignment
 				if (desc != null) {
 					try {
 						Object value = desc.fromDOM(annot.getAny(), null);
-						result.addAnnotation(annot.getType(), value);
+						sourceCell.addAnnotation(annot.getType(), value);
 					} catch (Exception e) {
 						if (reporter != null) {
 							reporter.error(new IOMessageImpl("Error loading cell annotation", e));
@@ -262,34 +315,35 @@ public class JaxbToAlignment
 			else if (element instanceof DocumentationType) {
 				// add documentation to the cell
 				DocumentationType doc = (DocumentationType) element;
-				result.getDocumentation().put(doc.getType(), doc.getValue());
+				sourceCell.getDocumentation().put(doc.getType(), doc.getValue());
 			}
 		}
 
-		result.setId(cell.getId());
+		sourceCell.setId(cell.getId());
 
 		// a default value is assured for priority
 		String priorityStr = cell.getPriority().value();
 		Priority priority = Priority.fromValue(priorityStr);
 		if (priority != null) {
-			result.setPriority(priority);
+			sourceCell.setPriority(priority);
 		}
 		else {
 			// TODO check if it makes sense to do something. Default value is
 			// used.
 			throw new IllegalArgumentException();
 		}
-		return result;
+
+		return new UnmigratedCell(sourceCell, migrator, mappings);
 	}
 
-	private static ListMultimap<String, ? extends Entity> convertEntities(
+	private static ListMultimap<String, Pair<Entity, Entity>> convertEntities(
 			List<NamedEntityType> namedEntities, TypeIndex types, SchemaSpaceID schemaSpace,
 			EntityResolver resolver) {
 		if (namedEntities == null || namedEntities.isEmpty()) {
 			return null;
 		}
 
-		ListMultimap<String, Entity> result = ArrayListMultimap.create();
+		ListMultimap<String, Pair<Entity, Entity>> result = ArrayListMultimap.create();
 
 		for (NamedEntityType namedEntity : namedEntities) {
 			/**
@@ -303,11 +357,19 @@ public class JaxbToAlignment
 			 * cell</li>
 			 * </ul>
 			 */
-			Entity entity = resolver.resolve(namedEntity.getAbstractEntity().getValue(), types,
-					schemaSpace);
 
-			if (entity != null) {
-				result.put(namedEntity.getName(), entity);
+			// Create a dummy entity from the original XML definition
+			DummyEntityResolver dummyResolver = new DummyEntityResolver();
+			Entity dummyEntity = dummyResolver.resolve(namedEntity.getAbstractEntity().getValue(),
+					types, schemaSpace);
+
+			// Resolve the real entity
+			Entity resolvedEntity = resolver.resolve(namedEntity.getAbstractEntity().getValue(),
+					types, schemaSpace);
+
+			if (resolvedEntity != null) {
+				result.put(namedEntity.getName(),
+						new Pair<Entity, Entity>(dummyEntity, resolvedEntity));
 			}
 		}
 
@@ -362,7 +424,7 @@ public class JaxbToAlignment
 		LoadAlignmentContextImpl context = new LoadAlignmentContextImpl();
 		context.setSourceTypes(sourceTypes);
 		context.setTargetTypes(targetTypes);
-		return convert(cell, context, reporter, resolver);
+		return createUnmigratedCell(cell, context, reporter, resolver, serviceProvider);
 	}
 
 	@Override

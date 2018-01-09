@@ -7,10 +7,12 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 ### Added
 
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
+- Enhanced CRS detection when parsing GML files
 
 ### Fixed
 
 - Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
+- Fixed the CRS definition lookup when importing shapefiles, allowing for automatic detection of CRS details (Bursa-Wolf parameters)
 
 ## [3.3.1]
 
