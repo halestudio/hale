@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="RiverToWatercourse" priority="normal">
+        <source>
+            <class>
+                <type name="River" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="Watercourse" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

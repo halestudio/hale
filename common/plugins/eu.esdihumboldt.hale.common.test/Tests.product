@@ -107,6 +107,8 @@
       <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
@@ -176,6 +178,7 @@
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
