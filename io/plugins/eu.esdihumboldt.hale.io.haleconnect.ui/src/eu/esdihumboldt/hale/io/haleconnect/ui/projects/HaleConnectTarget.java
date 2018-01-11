@@ -473,7 +473,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private void updateLoginStatus() {
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
 		boolean loggedIn = hcs.isLoggedIn();
-		loginButton.setEnabled(!loggedIn);
 		ownershipGroup.setEnabled(loggedIn);
 		enableVersioning.setEnabled(loggedIn);
 		publicAccess.setEnabled(loggedIn);

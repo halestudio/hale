@@ -10,6 +10,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Enhanced CRS detection when parsing GML files
 - Added support for multiple organisations to hale connect integration
 
+### Changed
+
+- Support relogin to hale connect without having to clear stored credentials
+
 ### Fixed
 
 - Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
