@@ -1,5 +1,162 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="C422c9674-d7c7-4dc8-bda5-7e47f0a0c694" priority="normal">
+        <source name="types">
+            <class>
+                <type name="Lake" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="LakeProperties" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="Lake" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="Lake" ns="A"/>
+                </class>
+                <class>
+                    <type name="LakeProperties" ns="A"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="Lake" ns="A"/>
+                        <child name="id" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="LakeProperties" ns="A"/>
+                        <child name="lakeId" ns="A"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cbf017c2e-be45-480f-8fd3-2fc53af46a30" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="A"/>
+                <child name="id" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="id" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C8a644889-f2f9-4cd1-98cd-502d562e6a8e" priority="normal">
+        <source>
+            <property>
+                <type name="LakeProperties" ns="A"/>
+                <child name="maxDepth" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="maxDepth" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cbdf3e93b-441c-4687-ae61-974449e48595" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="A"/>
+                <child name="name" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="name" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="C3b5c23dd-e22a-4462-bcbd-0b6092c85b4c" priority="normal">
+        <source name="types">
+            <class>
+                <type name="Connection" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="Lake" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="LakeFlow" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="Lake" ns="A"/>
+                </class>
+                <class>
+                    <type name="Connection" ns="A"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="Lake" ns="A"/>
+                        <child name="id" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="Connection" ns="A"/>
+                        <child name="standingId" ns="A"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+	// create inflow/outflow properties from associated connections
+	_source.links.Connection.each {	connection -&gt;
+		if (connection.p.direction.value() == 'in') {
+		  inflow {
+		  	riverId( connection.p.streamId.value() )
+		  }
+		}
+		else {
+		  outflow {
+		  	riverId( connection.p.streamId.value() )
+		  }
+		}
+	}
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4cdf1f05-2cd2-448b-896b-b91aa8257310" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="A"/>
+                <child name="id" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="LakeFlow" ns="B"/>
+                <child name="lakeId" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
     <cell relation="eu.esdihumboldt.hale.align.join" id="RiverJoin" priority="normal">
         <source name="types">
             <class>

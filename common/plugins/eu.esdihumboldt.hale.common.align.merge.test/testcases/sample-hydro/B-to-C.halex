@@ -3,7 +3,7 @@
     <name>B to C (to be migrated)</name>
     <author>Simon Templer</author>
     <created>2018-01-10T16:26:35.275+01:00</created>
-    <modified>2018-01-10T16:27:53.193+01:00</modified>
+    <modified>2018-01-11T14:59:20.591+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="charset">UTF-8</setting>
         <setting name="projectFiles.separate">false</setting>

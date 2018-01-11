@@ -5,4 +5,12 @@ schema('C') {
 		length(Double)
 		width(Double)
 	}
+	
+	StandingWater {
+		id()
+		name()
+		maxDepth(Double)
+		inflow(cardinality: '*')
+		outflow(cardinality: '*')
+	}
 }

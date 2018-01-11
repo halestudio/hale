@@ -1,5 +1,124 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="C97a5cf82-d893-407e-9656-b94cf3192d7c" priority="normal">
+        <source name="types">
+            <class>
+                <type name="LakeFlow" ns="B"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="Lake" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="StandingWater" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="Lake" ns="B"/>
+                </class>
+                <class>
+                    <type name="LakeFlow" ns="B"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="Lake" ns="B"/>
+                        <child name="id" ns="B"/>
+                    </property>
+                    <property>
+                        <type name="LakeFlow" ns="B"/>
+                        <child name="lakeId" ns="B"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C8729e13c-47e9-43d6-beca-13192735e128" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="id" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="StandingWater" ns="C"/>
+                <child name="id" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cf7eaa292-d966-4fb9-8043-e55fc3f2cd87" priority="normal">
+        <source>
+            <property>
+                <type name="LakeFlow" ns="B"/>
+                <child name="inflow" ns="B"/>
+                <child name="riverId" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="StandingWater" ns="C"/>
+                <child name="inflow" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cca55c8ea-6e36-4d00-b8d4-6933df8976ae" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="maxDepth" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="StandingWater" ns="C"/>
+                <child name="maxDepth" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C0855e308-9d04-470e-b99e-0f2140b6f158" priority="normal">
+        <source>
+            <property>
+                <type name="Lake" ns="B"/>
+                <child name="name" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="StandingWater" ns="C"/>
+                <child name="name" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cff312c74-9a12-4cbe-8049-c0d72f05e7b6" priority="normal">
+        <source>
+            <property>
+                <type name="LakeFlow" ns="B"/>
+                <child name="outflow" ns="B"/>
+                <child name="riverId" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="StandingWater" ns="C"/>
+                <child name="outflow" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
     <cell relation="eu.esdihumboldt.hale.align.retype" id="RiverToWatercourse" priority="normal">
         <source>
             <class>
