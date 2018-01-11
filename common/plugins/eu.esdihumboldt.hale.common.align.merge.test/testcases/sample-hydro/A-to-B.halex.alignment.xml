@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
-    <cell relation="eu.esdihumboldt.hale.align.join" id="C422c9674-d7c7-4dc8-bda5-7e47f0a0c694" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="LakeJoin" priority="normal">
         <source name="types">
             <class>
                 <type name="Lake" ns="A"/>
@@ -85,7 +85,7 @@
         <parameter value="false" name="ignoreNamespaces"/>
         <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="C3b5c23dd-e22a-4462-bcbd-0b6092c85b4c" priority="normal">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="LakeFlowJoin" priority="normal">
         <source name="types">
             <class>
                 <type name="Connection" ns="A"/>

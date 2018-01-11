@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
-    <cell relation="eu.esdihumboldt.hale.align.join" id="C97a5cf82-d893-407e-9656-b94cf3192d7c" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="LakeAndLakeFlowToStandingWater" priority="normal">
         <source name="types">
             <class>
                 <type name="LakeFlow" ns="B"/>
