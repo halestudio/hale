@@ -116,7 +116,7 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 		if (hcs.isLoggedIn()) {
 			if (!MessageDialog.openQuestion(parent, "Login to hale connect",
 					MessageFormat.format(
-							"You are currently logged in as \"{0}\". Do you wish to login with different credentials?",
+							"You are currently logged in as \"{0}\". Do you wish to log in again?",
 							hcs.getSession().getUsername()))) {
 				return null;
 			}

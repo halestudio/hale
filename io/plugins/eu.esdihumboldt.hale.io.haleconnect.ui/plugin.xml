@@ -54,14 +54,6 @@
       <handler
             class="eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLoginHandler"
             commandId="eu.esdihumboldt.hale.io.haleconnect.ui.login">
-         <activeWhen>
-            <with
-                  variable="eu.esdihumboldt.hale.io.haleconnect.ui.login.status">
-               <equals
-                     value="false">
-               </equals>
-            </with>
-         </activeWhen>
       </handler>
       <handler
             class="eu.esdihumboldt.hale.io.haleconnect.ui.HaleConnectLogoutHandler"

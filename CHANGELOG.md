@@ -8,6 +8,11 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
 - Enhanced CRS detection when parsing GML files
+- Added support for multiple organisations to hale connect integration
+
+### Changed
+
+- Support relogin to hale connect without having to clear stored credentials
 
 ### Fixed
 
