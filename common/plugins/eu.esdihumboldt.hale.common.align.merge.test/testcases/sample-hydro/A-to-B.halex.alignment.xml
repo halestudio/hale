@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
-    <cell relation="eu.esdihumboldt.hale.align.join" id="Ccba17beb-edac-4a58-9cec-7fe35a969d49" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="RiverJoin" priority="normal">
         <source name="types">
             <class>
                 <type name="RiverProperties" ns="A"/>

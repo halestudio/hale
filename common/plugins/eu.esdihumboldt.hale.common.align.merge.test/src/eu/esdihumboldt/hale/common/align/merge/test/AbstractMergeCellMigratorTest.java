@@ -22,7 +22,6 @@ import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.google.common.cache.CacheBuilder;
@@ -38,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.merge.impl.MatchingMigration;
 import eu.esdihumboldt.hale.common.align.merge.impl.TargetIndex;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -74,7 +74,7 @@ public abstract class AbstractMergeCellMigratorTest {
 	 * @return the loaded project
 	 * @throws IOException if loading the project fails
 	 */
-	public static ProjectTransformationEnvironment loadProject(URI uri) throws IOException {
+	private static ProjectTransformationEnvironment loadProject(URI uri) throws IOException {
 		return new ProjectTransformationEnvironment(null, new DefaultInputSupplier(uri),
 				HaleCLIUtil.createReportHandler());
 	}
@@ -82,26 +82,63 @@ public abstract class AbstractMergeCellMigratorTest {
 	/**
 	 * Perform merging using a specific merge migrator.
 	 * 
-	 * @param migrator the migrator to test
+	 * @param migrator the migrator to test, <code>null</code> if the migrator
+	 *            configured in the system should be used
 	 * @param cellToMigrate the cell to migrate
 	 * @param matchingProject the project providing the matching information
 	 * @return the merge result
 	 */
-	protected Collection<MutableCell> runMergeMigrator(MergeCellMigrator migrator,
-			Cell cellToMigrate, ProjectTransformationEnvironment matchingProject) {
+	protected List<MutableCell> mergeWithMigrator(MergeCellMigrator migrator, Cell cellToMigrate,
+			ProjectTransformationEnvironment matchingProject) {
 		MergeIndex mergeIndex = new TargetIndex(matchingProject.getAlignment());
 		AlignmentMigration migration = new MatchingMigration(matchingProject, true);
-		Iterable<MutableCell> result = migrator.mergeCell(cellToMigrate, mergeIndex, migration,
-				this::getCellMigrator, SimpleLog.CONSOLE_LOG);
 		List<MutableCell> cells = new ArrayList<>();
-		Iterables.addAll(cells, result);
+
+		if (migrator == null) {
+			CellMigrator mig = getCellMigrator(cellToMigrate.getTransformationIdentifier());
+			if (mig instanceof MergeCellMigrator) {
+				migrator = (MergeCellMigrator) mig;
+			}
+			else if (mig == null) {
+				throw new IllegalStateException("No cell migrator could be retrieved");
+			}
+			else {
+				// perform migration with "ordinary" CellMigrator
+				MigrationOptions options = new MigrationOptions() {
+
+					@Override
+					public boolean updateTarget() {
+						return false;
+					}
+
+					@Override
+					public boolean updateSource() {
+						return true;
+					}
+
+					@Override
+					public boolean transferBase() {
+						return false;
+					}
+				};
+				mig.updateCell(cellToMigrate, migration, options, SimpleLog.CONSOLE_LOG);
+			}
+		}
+		if (migrator != null) {
+			// perform merge with MergeCellMigrator
+			Iterable<MutableCell> result = migrator.mergeCell(cellToMigrate, mergeIndex, migration,
+					this::getCellMigrator, SimpleLog.CONSOLE_LOG);
+			Iterables.addAll(cells, result);
+		}
+
 		return cells;
 	}
 
 	/**
 	 * Perform merging using a specific merge migrator.
 	 * 
-	 * @param migrator the migrator to test
+	 * @param migrator the migrator to test, <code>null</code> if the migrator
+	 *            configured in the system should be used
 	 * @param cellId the ID of the cell to migrate
 	 * @param projectToMigrate the location of the project containing the cell
 	 *            (Mapping from B to C)
@@ -110,7 +147,7 @@ public abstract class AbstractMergeCellMigratorTest {
 	 * @return the merge result
 	 * @throws Exception if preparing or running the test fails
 	 */
-	public Collection<MutableCell> runMergeMigrator(MergeCellMigrator migrator, String cellId,
+	public List<MutableCell> mergeWithMigrator(MergeCellMigrator migrator, String cellId,
 			URL projectToMigrate, URL matchingProject) throws Exception {
 		ProjectTransformationEnvironment projectToMigrateEnv = projectCache
 				.get(projectToMigrate.toURI());
@@ -122,7 +159,34 @@ public abstract class AbstractMergeCellMigratorTest {
 
 		ProjectTransformationEnvironment matchingProjectEnv = projectCache
 				.get(matchingProject.toURI());
-		return runMergeMigrator(migrator, cellToMigrate, matchingProjectEnv);
+		return mergeWithMigrator(migrator, cellToMigrate, matchingProjectEnv);
+	}
+
+	/**
+	 * Perform merging using the configured cell migrator.
+	 * 
+	 * @param cellId the ID of the cell to migrate
+	 * @param projectToMigrate the location of the project containing the cell
+	 *            (Mapping from B to C)
+	 * @param matchingProject the location of the project providing the matching
+	 *            (Mapping from A to B) information
+	 * @return the merge result
+	 * @throws Exception if preparing or running the test fails
+	 */
+	public List<MutableCell> merge(String cellId, URL projectToMigrate, URL matchingProject)
+			throws Exception {
+		return mergeWithMigrator(null, cellId, projectToMigrate, matchingProject);
+	}
+
+	/**
+	 * Get a loaded transformation project.
+	 * 
+	 * @param location the project location
+	 * @return the loaded project
+	 * @throws Exception if loading the project fails
+	 */
+	protected ProjectTransformationEnvironment getProject(URL location) throws Exception {
+		return projectCache.get(location.toURI());
 	}
 
 	/**
