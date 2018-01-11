@@ -508,7 +508,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 			}
 
 			ownerOrg.setEnabled(false);
-//			orgSelector.getCombo().setEnabled(false);
+			orgSelector.getCombo().setEnabled(false);
 			if (orgAllowed) {
 				final SettableFuture<List<HaleConnectOrganisationInfo>> orgsFuture = SettableFuture
 						.create();
@@ -522,7 +522,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 									@Override
 									public void run() {
 										ownerOrg.setEnabled(true);
-										// orgSelector.getCombo().setEnabled(true);
+										orgSelector.getCombo().setEnabled(true);
 										orgSelector.setInput(result);
 										if (!result.isEmpty()) {
 											orgSelector.setSelection(
