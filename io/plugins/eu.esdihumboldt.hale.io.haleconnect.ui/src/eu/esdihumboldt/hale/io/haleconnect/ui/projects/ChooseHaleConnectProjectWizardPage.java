@@ -127,6 +127,15 @@ public class ChooseHaleConnectProjectWizardPage
 						return;
 					}
 
+					if (t instanceof HaleConnectException
+							&& ((HaleConnectException) t).getStatusCode() == 401) {
+						// In case of 401 (Unauthorized) the most likely cause
+						// is that the API token has expired
+						log.userError(
+								"Unable to retrieve projects from hale connect due to missing permissions. Please re-login and try again.");
+						return;
+					}
+
 					String configuredBasePath = haleConnect.getBasePathManager()
 							.getBasePath(HaleConnectServices.PROJECT_STORE);
 					if (configuredBasePath
