@@ -46,6 +46,7 @@ import com.vividsolutions.jts.io.WKBWriter;
 
 import de.fhg.igd.osgi.util.OsgiUtils;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -278,9 +279,10 @@ public abstract class OSerializationHelper {
 	 * the database.
 	 * 
 	 * @param value the value to convert
+	 * @param log the log
 	 * @return the converted value that may be used as a property value
 	 */
-	public static Object convertForDB(Object value) {
+	public static Object convertForDB(Object value, SimpleLog log) {
 		if (value == null)
 			return null;
 		if (value instanceof OGroup) {
@@ -300,7 +302,7 @@ public abstract class OSerializationHelper {
 			return value;
 		}
 
-		return serialize(value);
+		return serialize(value, log);
 	}
 
 	/**
@@ -308,9 +310,10 @@ public abstract class OSerializationHelper {
 	 * can be stored in the database.
 	 * 
 	 * @param value the value to serialize
+	 * @param log the log
 	 * @return the document wrapping the value
 	 */
-	public static ODocument serialize(Object value) {
+	public static ODocument serialize(Object value, SimpleLog log) {
 		/*
 		 * As collections of ORecordBytes are not supported (or rather of
 		 * records that are no documents, see embeddedCollectionToStream in
@@ -350,7 +353,7 @@ public abstract class OSerializationHelper {
 
 				List<Object> values = new ArrayList<Object>();
 				for (Object element : elements) {
-					Object convElement = convertForDB(element);
+					Object convElement = convertForDB(element, log);
 					values.add(convElement);
 				}
 
@@ -409,8 +412,11 @@ public abstract class OSerializationHelper {
 				ObjectOutputStream out = new ObjectOutputStream(bytes);
 				out.writeObject(value);
 			} catch (IOException e) {
-				throw new IllegalStateException(
-						"Could not serialize field value of type " + value.getClass().getName());
+				log.error(
+						"Could not serialize field value of type {0}, null value is used instead.",
+						value.getClass().getName());
+				// cannot be stored - use null value instead
+				return null;
 			}
 			record.fromStream(bytes.toByteArray());
 		}
