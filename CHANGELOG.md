@@ -9,11 +9,17 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Instance index to improve execution of Merge and Join transformations
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
 - Enhanced CRS detection when parsing GML files
+- Added support for multiple organisations to hale connect integration
+
+### Changed
+
+- Support relogin to hale connect without having to clear stored credentials
 
 ### Fixed
 
 - Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
 - Fixed the CRS definition lookup when importing shapefiles, allowing for automatic detection of CRS details (Bursa-Wolf parameters)
+- Fixed application of Groovy restrictions when loading a project
 
 ## [3.3.1]
 

@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.impl.Transformati
 import eu.esdihumboldt.hale.common.align.transformation.service.InstanceSink;
 import eu.esdihumboldt.hale.common.align.transformation.service.PropertyTransformer;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.hale.common.core.report.SimpleLogContext;
 import eu.esdihumboldt.hale.common.instance.extension.metadata.MetadataWorker;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
@@ -172,66 +173,74 @@ public class TreePropertyTransformer implements PropertyTransformer {
 			@Override
 			public void run() {
 				try {
-					// Add the meta data ID of the source as SourceID to the
-					// target
-					Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
-					Set<Object> ids = new HashSet<Object>();
-					for (Instance inst : sources) {
-						// Merge instances may have multiple IDs
-						List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID);
-						if (sourceIDs != null) {
-							ids.addAll(sourceIDs);
+					SimpleLogContext.withLog(typeLog, () -> {
+
+						// Add the meta data ID of the source as SourceID to the
+						// target
+						Collection<Instance> sources = InstanceUtil.getInstanceOutOfFamily(source);
+						Set<Object> ids = new HashSet<Object>();
+						for (Instance inst : sources) {
+							// Merge instances may have multiple IDs
+							List<Object> sourceIDs = inst.getMetaData(InstanceMetadata.METADATA_ID);
+							if (sourceIDs != null) {
+								ids.addAll(sourceIDs);
+							}
 						}
-					}
-					InstanceMetadata.setSourceID(target, ids.toArray());
+						InstanceMetadata.setSourceID(target, ids.toArray());
 
-					// identify transformations to be executed on given
-					// instances
-					// create/get a transformation tree
-					TransformationTree tree = treePool.getTree(typeCell);
+						// identify transformations to be executed on given
+						// instances
+						// create/get a transformation tree
+						TransformationTree tree = treePool.getTree(typeCell);
 
-					// State: base tree
-					HooksUtil.executeTreeHooks(treeHooks, TreeState.MINIMAL, tree, target);
+						// State: base tree
+						HooksUtil.executeTreeHooks(treeHooks, TreeState.MINIMAL, tree, target);
 
-					// apply instance value to transformation tree
-					InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree, typeLog);
-					tree.accept(instanceVisitor);
+						// apply instance value to transformation tree
+						InstanceVisitor instanceVisitor = new InstanceVisitor(source, tree,
+								typeLog);
+						tree.accept(instanceVisitor);
 
-					// State: basic source populated tree
+						// State: basic source populated tree
 
-					// duplicate subtree as necessary
-					DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree, typeLog);
-					tree.accept(duplicationVisitor);
-					duplicationVisitor.doAugmentationTrackback();
+						// duplicate subtree as necessary
+						DuplicationVisitor duplicationVisitor = new DuplicationVisitor(tree,
+								typeLog);
+						tree.accept(duplicationVisitor);
+						duplicationVisitor.doAugmentationTrackback();
 
-					// State: source populated tree (duplication complete)
-					HooksUtil.executeTreeHooks(treeHooks, TreeState.SOURCE_POPULATED, tree, target);
+						// State: source populated tree (duplication complete)
+						HooksUtil.executeTreeHooks(treeHooks, TreeState.SOURCE_POPULATED, tree,
+								target);
 
-					// apply functions
-					for (FunctionExecutor functionExecutor : executors) {
-						functionExecutor.setTypeCell(typeCell);
-						tree.accept(functionExecutor);
-					}
+						// apply functions
+						for (FunctionExecutor functionExecutor : executors) {
+							functionExecutor.setTypeCell(typeCell);
+							tree.accept(functionExecutor);
+						}
 
-					// State: full tree (target populated)
-					HooksUtil.executeTreeHooks(treeHooks, TreeState.FULL, tree, target);
+						// State: full tree (target populated)
+						HooksUtil.executeTreeHooks(treeHooks, TreeState.FULL, tree, target);
 
-					// fill instance
-					builder.populate(target, tree, typeLog);
+						// fill instance
+						builder.populate(target, tree, typeLog);
 
-					// generate the rest of the metadatas
-					metaworkerthread.get().generate(target);
+						// generate the rest of the metadatas
+						metaworkerthread.get().generate(target);
 
-					// XXX ok to add to sink in any thread?!
-					// XXX addInstance and close were made synchronized in
-					// OrientInstanceSink
-					// XXX instead collect instances and write them in only one
-					// thread?
-					// after property transformations, publish target instance
-					sink.addInstance(target);
+						// XXX ok to add to sink in any thread?!
+						// XXX addInstance and close were made synchronized in
+						// OrientInstanceSink
+						// XXX instead collect instances and write them in only
+						// one
+						// thread?
+						// after property transformations, publish target
+						// instance
+						sink.addInstance(target);
 
-					// and release the tree for further use
-					treePool.releaseTree(tree);
+						// and release the tree for further use
+						treePool.releaseTree(tree);
+					});
 				} catch (Throwable e) {
 					/*
 					 * Catch any error, as exceptions in the executor service
