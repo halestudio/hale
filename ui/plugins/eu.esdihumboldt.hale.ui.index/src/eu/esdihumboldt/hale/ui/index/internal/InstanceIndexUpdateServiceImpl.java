@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.ui.index.InstanceIndexUpdateService;
+import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
@@ -127,7 +128,12 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 
 	@Override
 	public void alignmentChanged() {
-		// TODO Action required?
+		getIndexService().clearAll();
+
+		AlignmentService alignmentService = serviceProvider.getService(AlignmentService.class);
+		getIndexService().addPropertyMappings(alignmentService.getAlignment().getActiveTypeCells(),
+				serviceProvider);
+		reindex();
 	}
 
 	private InstanceIndexService getIndexService() {
