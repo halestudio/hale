@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.3.2?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.3.2?</h1>
+
+	<ul>
+		<li>Improved <i>hale connect</i> integration</li>
+		<li>Enhanced CRS selection dialog</li>
+		<li>Character set detection for Shapefiles</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#332"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>The majority of the new features and improvements were made
+	   possible through our contracts with more than 30 customers. We'd like
+	   to thank you all for your support!</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_3_2">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_3_2_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="hc-multi-orgs">
+				<td class="title">Improved <i>hale connect</i> integration</td>
+				<td class="content">
+					<p>
+						This release of <em>hale studio</em> improves the integration
+						with the online collaboration platform <i>hale connect</i> in
+						a couple of ways. Firstly, it is now possible to select which
+						organisation should own an uploaded transformation project for
+						cases where the currently logged-in user is member of more than
+						one organisation. Furthermore, <em>hale studio</em> now supports
+						a relogin with same or different credentials without having to
+						clear the credentials stored in preferences.
+					</p>
+					<p>
+						<img src="3_3_2_images/save-to-hc-with-org.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="???">
+				<td class="title">Enhanced CRS selection dialog</td>
+				<td class="content">
+					<p>
+					    When loading source data, the user is prompted to provide the 
+					    CRS of the contained coordinates. <em>hale studio</em> now 
+					    facilitates this by providing the content of the <em>srsName</em>
+					    attribute (in case of a GML source) or the WKT definition found
+					    in the projection file (<i>.prj</i>) that accompanies a Shape 
+					    file. This allows the user to select the correct CRS without
+					    having to manually look up this information in the source files.
+					</p>
+					<p>
+						<img src="3_3_2_images/crs-detection.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="???">
+				<td class="title">Character set detection for Shapefiles</td>
+				<td class="content">
+					<p>
+						Importing a schema or source data from a Shapefile requires
+						the user to select the encoding of the Shapefile. In cases
+						where the Shape is accompanied by a Codepage file (<i>.cpg</i>),
+						<em>hale studio</em> can now read the encoding from that file
+						a prefill the character set selection dialog. 
+					</p>
+					<p>
+						<img src="3_3_2_images/shp-charset-detection.png" />
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
