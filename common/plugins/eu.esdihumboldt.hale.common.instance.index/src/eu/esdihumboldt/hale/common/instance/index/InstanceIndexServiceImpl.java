@@ -49,7 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
  */
 public class InstanceIndexServiceImpl implements InstanceIndexService {
 
-	private final Map<QName, MultimapInstanceIndex> indexes = new HashMap<>();
+	private final Map<QName, HaleInstanceIndex> indexes = new HashMap<>();
 
 	/**
 	 * Create the index
@@ -188,7 +188,7 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	 */
 	@Override
 	public InstanceCollection find(QName typeName, Collection<List<IndexedPropertyValue>> query) {
-		MultimapInstanceIndex index = indexes.get(typeName);
+		HaleInstanceIndex index = indexes.get(typeName);
 
 		Collection<ResolvableInstanceReference> matchingRefs = new ArrayList<>();
 		for (List<IndexedPropertyValue> valueGroup : query) {
@@ -207,7 +207,7 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 	@Override
 	public Collection<Collection<ResolvableInstanceReference>> groupBy(QName typeName,
 			List<List<QName>> properties) {
-		MultimapInstanceIndex index = indexes.get(typeName);
+		HaleInstanceIndex index = indexes.get(typeName);
 		if (index == null) {
 			return Collections.EMPTY_LIST;
 		}
@@ -215,7 +215,7 @@ public class InstanceIndexServiceImpl implements InstanceIndexService {
 		return index.groupBy(properties);
 	}
 
-	private MultimapInstanceIndex getIndex(QName typeName) {
+	private HaleInstanceIndex getIndex(QName typeName) {
 		if (!indexes.containsKey(typeName)) {
 			indexes.put(typeName, new MultimapInstanceIndex());
 		}

@@ -39,8 +39,7 @@ import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
  * 
  * @author Florian Esser
  */
-public class MultimapInstanceIndex implements
-		InstanceIndex<List<IndexedPropertyValue>, PropertyEntityDefinitionMapping, ResolvableInstanceReference> {
+public class MultimapInstanceIndex implements HaleInstanceIndex {
 
 	private final Multimap<List<IndexedPropertyValue>, ResolvableInstanceReference> valueIndex = HashMultimap
 			.create();
@@ -219,13 +218,7 @@ public class MultimapInstanceIndex implements
 		return Collections.unmodifiableSet(instanceIndex.keySet());
 	}
 
-	/**
-	 * Retrieve instance references from the index grouped by the given
-	 * properties.
-	 * 
-	 * @param keyProperties Properties to group by
-	 * @return Grouped instance references
-	 */
+	@Override
 	public Collection<Collection<ResolvableInstanceReference>> groupBy(
 			List<List<QName>> keyProperties) {
 
