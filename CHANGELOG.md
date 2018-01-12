@@ -6,6 +6,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Added
 
+- Instance index to improve execution of Merge and Join transformations
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
 - Enhanced CRS detection when parsing GML files
 - Added support for multiple organisations to hale connect integration

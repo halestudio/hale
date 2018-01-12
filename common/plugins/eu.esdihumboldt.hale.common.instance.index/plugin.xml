@@ -11,6 +11,14 @@
                interface="eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService">
          </service>
       </services>
+      <services
+            factory="eu.esdihumboldt.hale.common.instance.index.InstanceIndexServiceFactory"
+            id="eu.esdihumboldt.hale.common.instance.index.service.instance"
+            scope="project">
+         <service
+               interface="eu.esdihumboldt.hale.common.instance.index.InstanceIndexService">
+         </service>
+      </services>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.instance.processing">

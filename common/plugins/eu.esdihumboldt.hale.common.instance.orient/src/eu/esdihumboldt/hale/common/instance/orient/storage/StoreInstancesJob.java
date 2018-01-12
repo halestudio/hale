@@ -46,7 +46,9 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLogContext;
 import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
 import eu.esdihumboldt.hale.common.core.report.impl.MessageImpl;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
@@ -97,8 +99,7 @@ public abstract class StoreInstancesJob extends Job {
 	private final boolean doProcessing;
 
 	/**
-	 * Create a job that stores instances in a database. Does no instance
-	 * processing.
+	 * Create a job that stores instances in a database.
 	 * 
 	 * @param name the (human readable) job name
 	 * @param instances the instances to store in the database
@@ -185,12 +186,17 @@ public abstract class StoreInstancesJob extends Job {
 			BrowseOrientInstanceCollection browser = new BrowseOrientInstanceCollection(database,
 					null, DataSet.SOURCE);
 
+			final InstanceIndexService indexService;
+			if (doProcessing) {
+				indexService = serviceProvider.getService(InstanceIndexService.class);
+			}
+			else {
+				indexService = null;
+			}
+
 			// TODO decouple next() and save()?
 
 			SimpleLogContext.withLog(report, () -> {
-
-				long lastUpdate = 0; // last count update
-
 				if (report != null && instances instanceof LogAware) {
 					((LogAware) instances).setLog(report);
 				}
@@ -199,6 +205,12 @@ public abstract class StoreInstancesJob extends Job {
 				int size = instances.size();
 				try {
 					while (it.hasNext() && !monitor.isCanceled()) {
+						long lastUpdate = 0; // last count update
+
+						if (report != null && instances instanceof LogAware) {
+							((LogAware) instances).setLog(report);
+						}
+
 						Instance instance = it.next();
 
 						// further processing before storing
@@ -227,12 +239,18 @@ public abstract class StoreInstancesJob extends Job {
 						// with ResolvableInstanceReference allows the
 						// InstanceProcessors to resolve the instances if
 						// required.
+						OrientInstanceReference oRef = new OrientInstanceReference(
+								doc.getIdentity(), conv.getDataSet(), conv.getDefinition());
+						IdentifiableInstanceReference idRef = new IdentifiableInstanceReference(
+								oRef, doc.getIdentity());
 						ResolvableInstanceReference resolvableRef = new ResolvableInstanceReference(
-								new OrientInstanceReference(doc.getIdentity(), conv.getDataSet(),
-										conv.getDefinition()),
-								browser);
+								idRef, browser);
 
 						processors.forEach(p -> p.process(instance, resolvableRef));
+
+						if (indexService != null) {
+							indexService.add(instance, resolvableRef);
+						}
 
 						count.incrementAndGet();
 

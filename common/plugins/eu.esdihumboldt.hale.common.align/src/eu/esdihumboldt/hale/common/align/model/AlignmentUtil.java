@@ -1041,6 +1041,23 @@ public abstract class AlignmentUtil {
 	}
 
 	/**
+	 * Get children of an {@link Entity} without context conditions
+	 * 
+	 * @param entity the entity definition
+	 * @return Collection of entity definitions
+	 */
+	public static List<PropertyEntityDefinition> getChildrenWithoutContexts(Entity entity) {
+		TypeEntityDefinition ted = (TypeEntityDefinition) entity.getDefinition();
+		List<PropertyEntityDefinition> childProperties = new ArrayList<>();
+		for (EntityDefinition child : getChildrenWithoutContexts(ted)) {
+			if (child instanceof PropertyEntityDefinition) {
+				childProperties.add((PropertyEntityDefinition) child);
+			}
+		}
+		return childProperties;
+	}
+
+	/**
 	 * Get children of an {@link EntityDefinition} without context conditions
 	 * 
 	 * @param entityDef the entity definition

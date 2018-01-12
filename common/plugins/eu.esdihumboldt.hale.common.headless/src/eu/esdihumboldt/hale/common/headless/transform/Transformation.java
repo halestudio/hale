@@ -55,6 +55,7 @@ import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironmen
 import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSinkExtension;
 import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
 import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -422,6 +423,12 @@ public class Transformation {
 		}
 
 		if (useTempDatabase) {
+			// Initialize instance index with alignment
+			InstanceIndexService indexService = serviceProvider
+					.getService(InstanceIndexService.class);
+
+			indexService.addPropertyMappings(alignment.getActiveTypeCells(), serviceProvider);
+
 			// run store instance job first...
 			Job storeJob = new StoreInstancesJob("Load source instances into temporary database",
 					db, sources, serviceProvider, reportHandler, true) {

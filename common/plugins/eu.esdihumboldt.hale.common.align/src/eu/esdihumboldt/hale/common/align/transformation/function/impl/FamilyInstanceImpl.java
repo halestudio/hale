@@ -22,14 +22,14 @@ import java.util.Collections;
 
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
+import eu.esdihumboldt.hale.common.instance.model.impl.IdentifiableInstanceDecorator;
 
 /**
  * Decorate a given instance with family function.
  * 
  * @author Kai Schwierczek
  */
-public class FamilyInstanceImpl extends InstanceDecorator implements FamilyInstance {
+public class FamilyInstanceImpl extends IdentifiableInstanceDecorator implements FamilyInstance {
 
 	private final Collection<FamilyInstance> children;
 
