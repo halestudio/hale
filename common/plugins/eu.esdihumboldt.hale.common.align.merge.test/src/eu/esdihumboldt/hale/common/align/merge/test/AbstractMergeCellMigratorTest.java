@@ -15,14 +15,20 @@
 
 package eu.esdihumboldt.hale.common.align.merge.test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map.Entry;
+
+import org.junit.Assert;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -40,6 +46,10 @@ import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.cli.HaleCLIUtil;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
@@ -199,6 +209,95 @@ public abstract class AbstractMergeCellMigratorTest {
 	protected CellMigrator getCellMigrator(String transformationIdentifier) {
 		return FunctionUtil.getFunction(transformationIdentifier, HalePlatform.getServiceProvider())
 				.getCustomMigrator().orElse(new DefaultMergeCellMigrator());
+	}
+
+	// test helpers
+
+	/**
+	 * Check if the given cell's target matches the expected target.
+	 * 
+	 * @param cell the cell to check
+	 * @param targetDef the expected target entity (simple definition as name
+	 *            list)
+	 */
+	protected void assertCellTargetEquals(Cell cell, List<String> targetDef) {
+		Entity entity = CellUtil.getFirstEntity(cell.getTarget());
+		assertNotNull("Target entity", entity);
+		EntityDefinition def = entity.getDefinition();
+		assertDefEquals(targetDef, def);
+	}
+
+	/**
+	 * Check if the given cell's sources match the expected sources (order does
+	 * not matter).
+	 * 
+	 * @param cell the cell to check
+	 * @param expected the expected source entities (simple definition as name
+	 *            list)
+	 */
+	protected void assertCellSourcesEqual(Cell cell,
+			@SuppressWarnings("unchecked") List<String>... expected) {
+		assertNotNull("Source entities", cell.getSource());
+
+		List<List<String>> expList = new ArrayList<>(Arrays.asList(expected));
+
+		for (Entry<String, ? extends Entity> source : cell.getSource().entries()) {
+			List<String> match = assertDefEqualsOneOf(expList, source.getValue().getDefinition());
+			expList.remove(match);
+		}
+
+		assertTrue(MessageFormat.format("Sources {0} expected but not found", expList),
+				expList.isEmpty());
+	}
+
+	/**
+	 * Covnert an entity definition to a representation as simple name list
+	 * definition.
+	 * 
+	 * @param def the entity definition
+	 * @return the simple definition representation
+	 */
+	protected List<String> toSimpleDef(EntityDefinition def) {
+		List<String> names = new ArrayList<>();
+		names.add(def.getType().getName().getLocalPart());
+		for (ChildContext child : def.getPropertyPath()) {
+			names.add(child.getChild().getName().getLocalPart());
+		}
+		return names;
+	}
+
+	/**
+	 * Check if an entity equals the given simple definition
+	 * 
+	 * @param expected the expected entity (simple definition as name list)
+	 * @param def the entity definition to check
+	 */
+	protected void assertDefEquals(List<String> expected, EntityDefinition def) {
+		List<String> names = toSimpleDef(def);
+
+		assertEquals(expected, names);
+	}
+
+	/**
+	 * Check if an entity equals the given simple definition
+	 * 
+	 * @param expected the list of expected entities (each a simple definition
+	 *            as name list)
+	 * @param def the entity definition to check
+	 * @return the match from the expected entities
+	 */
+	protected List<String> assertDefEqualsOneOf(List<List<String>> expected, EntityDefinition def) {
+		List<String> names = toSimpleDef(def);
+
+		for (List<String> exp : expected) {
+			if (names.equals(exp)) {
+				return exp;
+			}
+		}
+
+		Assert.fail(MessageFormat.format("No match for entity {0} found in expected entities {1}",
+				names, expected));
+		return null;
 	}
 
 }

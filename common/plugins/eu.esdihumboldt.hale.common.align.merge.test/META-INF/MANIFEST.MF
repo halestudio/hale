@@ -17,4 +17,5 @@ Export-Package: eu.esdihumboldt.hale.common.align.merge.test,
  eu.esdihumboldt.hale.common.align.merge.test.impl
 Import-Package: com.google.common.cache;version="17.0.0",
  com.google.common.collect;version="17.0.0",
+ eu.esdihumboldt.hale.common.schema.model,
  javax.annotation

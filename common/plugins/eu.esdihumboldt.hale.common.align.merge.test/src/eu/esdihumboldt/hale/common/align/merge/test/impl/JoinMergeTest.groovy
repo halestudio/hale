@@ -19,10 +19,14 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import eu.esdihumboldt.hale.common.align.merge.functions.JoinMergeMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Cell
+import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.MutableCell
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter
 
 /**
  * Tests for merging Joins with a Join.
@@ -40,13 +44,50 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		def match1Id = 'LakeJoin'
 		def match2Id = 'LakeFlowJoin'
 
-		def migrated = merge(cellId, toMigrate, matching)
+		def migrated = mergeWithMigrator(new JoinMergeMigrator(), cellId, toMigrate, matching)
 
 		def original = getProject(toMigrate).alignment.getCell(cellId)
 		def match1 = getProject(matching).alignment.getCell(match1Id)
 		def match2 = getProject(matching).alignment.getCell(match2Id)
 
+		// general checks
 		verifyJoinsJoin(migrated, original, [match1, match2])
+
+		// specific checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		// target
+		assertCellTargetEquals(migrated, ['StandingWater'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['Lake'], ['LakeProperties'], ['Connection'])
+
+		// parameters
+		JoinParameter param = CellUtil.getFirstParameter(migrated, JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+
+		// order
+		assertJoinOrder(param, [
+			'Lake',
+			'LakeProperties',
+			'Connection'
+		])
+
+		// conditions
+		assertJoinConditions(param, [
+			[
+				['Lake', 'id'],
+				[
+					'LakeProperties',
+					'lakeId']
+			],
+			[
+				['Lake', 'id'],
+				[
+					'Connection',
+					'standingId']
+			]
+		])
 	}
 
 	private void verifyJoinsJoin(List<MutableCell> migrated, Cell original, List<Cell> matches) {
@@ -59,10 +100,60 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		assertEquals('Join and Join should be combined to a Join', JoinFunction.ID, cell.transformationIdentifier)
 		//XXX Groovy Join possible as well?
 
-		//TODO target
+		// target
 
-		//TODO sources
+		// target must be the same as original
+		assertEquals(original.target, cell.target)
 
-		//TODO parameters
+		// sources
+
+		// sources must be from set of match sources
+		Set<EntityDefinition> matchSources = new HashSet<>()
+		matches.each { match ->
+			match.source?.values().each { entity ->
+				matchSources << entity.definition
+			}
+		}
+		def remaining = new ArrayList<>(matchSources)
+		cell.source.values().each { entity ->
+			assertTrue("Source ${entity.definition} not expected", matchSources.contains(entity.definition))
+			remaining.remove(entity.definition)
+		}
+		assertTrue("Sources expected but not present: ${remaining}", remaining.empty)
+
+		// parameters?
+		// -> better to test individually
 	}
+
+	// helpers
+
+	void assertJoinOrder(JoinParameter param, List<String> expected) {
+		def names = []
+		param.types?.each { type ->
+			names << type.type.name.localPart
+		}
+
+		assertEquals(expected, names)
+	}
+
+	void assertJoinConditions(JoinParameter param, List<List<List<String>>> expected) {
+		// express conditions as lists of string lists as well
+		def conditions = []
+		param.conditions.each { condition ->
+			conditions << [
+				toSimpleDef(condition.baseProperty),
+				toSimpleDef(condition.joinProperty)
+			]
+		}
+
+		def remaining = new ArrayList<>(expected)
+
+		conditions.each { cond ->
+			assertTrue("Condition $cond not expected", remaining.contains(cond))
+			remaining.remove(cond);
+		}
+
+		assertTrue("Expected conditions not found ${remaining}", remaining.empty)
+	}
+
 }
