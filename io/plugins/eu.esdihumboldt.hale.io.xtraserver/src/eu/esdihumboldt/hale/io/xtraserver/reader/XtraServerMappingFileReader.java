@@ -36,6 +36,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 
+import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
 import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
@@ -65,6 +66,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
@@ -96,8 +99,22 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 
 		progress.begin("Load XtraServer mapping", ProgressIndicator.UNKNOWN);
 
-		URI path = getSource().getLocation();
-		InputStream in = getSource().getInput();
+		final InputStream in = getSource().getInput();
+
+		final TypeIndex schemaspace = getTargetSchema();
+		if (schemaspace == null) {
+			reporter.error("Load the target schema first!");
+			reporter.setSuccess(false);
+			return null;
+		}
+		if (!(schemaspace instanceof SchemaSpace)) {
+			throw new IllegalArgumentException(
+					"Unknown target schema type: " + schemaspace.getClass());
+		}
+
+		final Schema schema = ((SchemaSpace) schemaspace).getSchemas().iterator().next();
+		final URI uri = schema.getLocation();
+		final ApplicationSchema applicationSchema = new ApplicationSchema(uri.toURL().openStream());
 
 		MutableAlignment alignment = null;
 		try {
@@ -112,7 +129,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 
 			alignment = new DefaultAlignment();
 
-			XtraServerMapping xsm = XtraServerMapping.createFromStream(in);
+			XtraServerMapping xsm = XtraServerMapping.createFromStream(in, applicationSchema);
 
 			NamedEntityType sourceType;
 			NamedEntityType targetType;
