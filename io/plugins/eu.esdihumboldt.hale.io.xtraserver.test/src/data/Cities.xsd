@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema 
+ targetNamespace="http://www.interactive-instruments.de/namespaces/demo/cities/4.0/cities"
+ xmlns:ci="http://www.interactive-instruments.de/namespaces/demo/cities/4.0/cities"
+ xmlns="http://www.w3.org/2001/XMLSchema"
+ xmlns:ogc="http://www.opengis.net/ogc" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:gml="http://www.opengis.net/gml/3.2" 
+ elementFormDefault="qualified" version="2.0">
+
+	<import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+	
+	<!-- (c) 2012-2014 by interactive instruments GmbH -->
+
+	<!-- NamedGeoObject (abstract) -->
+	<element name="NamedGeoObject" substitutionGroup="gml:AbstractFeature" type="ci:NamedGeoObjectType" abstract="true">
+		<annotation>
+			<documentation>Abstract object carrying common attributes</documentation>
+		</annotation>
+	</element>
+	<complexType name="NamedGeoObjectType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="name" type="string" minOccurs="0">
+						<annotation>
+							<documentation>Name of the city</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<!-- Cities -->
+	<element name="City" substitutionGroup="ci:NamedGeoObject" type="ci:CityType">
+		<annotation>
+			<documentation>Representation of Cities</documentation>
+		</annotation>
+	</element>
+	<complexType name="CityType">
+		<complexContent>
+			<extension base="ci:NamedGeoObjectType">
+				<sequence>
+					<element name="location" type="gml:PointPropertyType">
+						<annotation>
+							<documentation>The location of the city given as point geometry</documentation>
+						</annotation>
+					</element>
+					<element name="alternativeName" type="ci:AlternativeNamePropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>Zero or more alternative names of the city</documentation>
+						</annotation>
+					</element>
+					<element name="country" type="string">
+						<annotation>
+							<documentation>Example of a property mapped to a constant value</documentation>
+						</annotation>
+					</element>
+					<element name="inhabitants" type="integer">
+						<annotation>
+							<documentation>The number of inhabitants</documentation>
+						</annotation>
+					</element>
+					<element name="function" type="string" nillable="true">
+						<annotation>
+							<documentation>Special function of City. Example of a nillable property.</documentation>
+						</annotation>
+					</element>
+					<element name="district" type="ci:DistrictPropertyType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>District objects being part of the city object</documentation>
+						</annotation>
+					</element>
+					<element name="passingRiver" type="gml:ReferenceType" minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<documentation>References to river objects passing the city</documentation>
+							<appinfo>
+								<targetElement xmlns="http://www.opengis.net/gml/3.2">ci:River</targetElement>
+							</appinfo>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<!-- Districts -->
+	<element name="District" substitutionGroup="ci:NamedGeoObject" type="ci:DistrictType">
+		<annotation>
+			<documentation>Representation of city districts</documentation>
+		</annotation>
+	</element>
+	<complexType name="DistrictType">
+		<complexContent>
+			<extension base="ci:NamedGeoObjectType">
+				<sequence>
+					<element name="location" type="gml:PointPropertyType">
+						<annotation>
+							<documentation>The location of the city district given as point geometry</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="DistrictPropertyType">
+		<sequence>
+			<element ref="ci:District"/>
+		</sequence>
+	</complexType>	
+
+	<!-- Rivers -->
+	<element name="River" substitutionGroup="ci:NamedGeoObject" type="ci:RiverType">
+		<annotation>
+			<documentation>Representation of Rivers</documentation>
+		</annotation>
+	</element>
+	<complexType name="RiverType">
+		<complexContent>
+			<extension base="ci:NamedGeoObjectType">
+				<sequence>
+					<element name="location" type="gml:MultiCurvePropertyType">
+						<annotation>
+							<documentation>The location of the river given as multi-curve geometry</documentation>
+						</annotation>
+					</element>
+					<element name="length" type="integer">
+						<annotation>
+							<documentation>The length of this river in km</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="RiverPropertyType">
+		<sequence>
+			<element ref="ci:River"/>
+		</sequence>
+	</complexType>
+	
+	<!-- States -->
+	<element name="State" substitutionGroup="ci:NamedGeoObject" type="ci:StateType">
+		<annotation>
+			<documentation>Representation of states</documentation>
+		</annotation>
+	</element>
+	<complexType name="StateType">
+		<complexContent>
+			<extension base="ci:NamedGeoObjectType">
+				<sequence>
+					<element name="location" type="gml:MultiSurfacePropertyType">
+						<annotation>
+							<documentation>The location of the state given as polygon geometry</documentation>
+						</annotation>
+					</element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+	<complexType name="StatePropertyType">
+		<sequence>
+			<element ref="ci:State"/>
+		</sequence>
+	</complexType>
+
+	<!-- Alternative names -->
+	<element name="AlternativeName" substitutionGroup="gml:AbstractObject" type="ci:AlternativeNameType">
+		<annotation>
+			<documentation>Representation of alternative names of a city</documentation>
+		</annotation>
+	</element>
+	<complexType name="AlternativeNameType">
+		<sequence>
+			<element name="name" type="string">
+				<annotation>
+					<documentation>Alternative name of the city</documentation>
+				</annotation>
+			</element>
+			<element name="language" type="string">
+				<annotation>
+					<documentation>Language of alternative name</documentation>
+				</annotation>
+			</element>
+		</sequence>
+	</complexType>
+	<complexType name="AlternativeNamePropertyType">
+		<sequence>
+			<element ref="ci:AlternativeName"/>
+		</sequence>
+	</complexType>
+
+</schema>

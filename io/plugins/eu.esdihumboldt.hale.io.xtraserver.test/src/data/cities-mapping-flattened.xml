@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	This file is a part of XtraServer SimpleDemo configuration
+	
+	Copyright (c) 2012-2014, interactive instruments GmbH
+-->
+
+<!--GML/DB-Mapping-->
+<FeatureTypes xmlns="http://www.interactive-instruments.de/namespaces/XtraServer">
+
+	<FeatureType>
+		<Name>gml:AbstractFeature</Name>
+		<PGISFeatureTypeImpl>
+			<!--City-->
+			<Table oid_col="id" table_name="city" target=""/>
+			<Table table_name="city" target="@gml:id" value="objid"/>
+			<!--River-->
+			<Table oid_col="id" table_name="river" target=""/>
+			<Table table_name="river" target="@gml:id" value="objid"/>
+		</PGISFeatureTypeImpl>
+	</FeatureType>
+
+	<FeatureType>
+		<Name>ci:NamedGeoObject</Name>
+		<PGISFeatureTypeImpl>
+			<!--City-->
+			<Table table_name="city" oid_col="id" target=""/>
+			<Table table_name="city" value="name" target="ci:name"/>
+			<!--River-->
+			<Table table_name="river" oid_col="id" target=""/>
+			<Table table_name="river" value="name" target="ci:name"/>
+		</PGISFeatureTypeImpl>
+	</FeatureType>
+
+	<FeatureType>
+		<Name>ci:City</Name>
+		<PGISFeatureTypeImpl>
+			<!-- Main table of feature type City -->
+			<Table table_name="city" oid_col="id" target=""/>
+
+			<!-- location -->
+			<Table table_name="city" value="location" target="ci:location"/>
+
+			<!-- country -->
+			<Table table_name="city" value="Germany" value_type="constant" target="ci:country"/>
+
+			<!-- function : nillable property -->
+			<Table table_name="city" value="'urn:ci:function::' || $T$.function" target="ci:function"/>
+			<Table table_name="city" value="function" mapping_mode="nil" db_codes="1 2 3 NULL" schema_codes="'unknown' 'other:unpopulated' 'withheld'" target="ci:function"/>
+
+			<!-- alternativeName : DataType of multiple occurrence -->
+			<Join target="ci:alternativeName" axis="parent" join_path="alternativename/ref(cid:id)::city"/>
+			<Table table_name="alternativename" oid_col="id" target="ci:alternativeName"/>
+			<Table table_name="alternativename" value="name" target="ci:alternativeName/ci:AlternativeName/ci:name"/>
+			<Table table_name="alternativename" value="language" target="ci:alternativeName/ci:AlternativeName/ci:language"/>
+
+
+			<!-- river : FeatureType, multiple occurrence linked by reference -->
+			<Join target="ci:passingRiver" axis="parent" join_path="river/ref(id:rid)::city_river/ref(cid:id)::city"/>
+			<Table table_name="river" oid_col="id" target="ci:passingRiver"/>
+			<Table table_name="river" target="ci:passingRiver/@xlink:href"/>
+			<AssociationTarget object_ref="ci:River" target="ci:passingRiver"/>
+
+		</PGISFeatureTypeImpl>
+	</FeatureType>
+
+	<FeatureType>
+		<Name>ci:River</Name>
+		<PGISFeatureTypeImpl>
+			<!-- Main table of feature type River -->
+			<Table table_name="river" oid_col="id" target=""/>
+			<!-- location -->
+			<Table table_name="river" value="location" target="ci:location"/>
+			<!-- length -->
+			<Table table_name="river" value="length" target="ci:length"/>
+		</PGISFeatureTypeImpl>
+	</FeatureType>
+
+</FeatureTypes>
