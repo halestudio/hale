@@ -6,9 +6,12 @@
 </head>
 <body>
 	<h1>CQL Filter</h1>
-	<p>The Common Query Language (CQL) is used to define expressions
+	<p>
+		The Common Query Language (CQL) is used to define expressions
 		and filters in several parts of <i>hale studio</i>. It can be used to define
-		conditions on schema elements or to filter instances.</p>
+		conditions on schema elements or to filter instances. <i>hale studio</i> also 
+		supports the extended CQL (ECQL) syntax as defined by Geotools. 
+	</p>
 
 	<h2>Property references</h2>
 	<p>In a filter, you can refer to a property value by the property
@@ -58,6 +61,156 @@
 			<td>1.234</td>
 		</tr>
 	</table>
+	
+	<h2>Filter functions</h2>
+	<p>
+		For more complex filters you can use one or a combination of multiple functions. A selection of available functions is provided below. 
+		For the full list of functions, see GeoServer's <a href="http://docs.geoserver.org/latest/en/user/filter/function_reference.html">function reference</a>, 
+		but note that not all of the functions listed there are necessarily supported in a filter.
+	</p>
+	<p>
+		When defining a filter, replace all arguments with either a property name or a lexical expression 
+		(e.g. <tt>'John'</tt> or <tt>47</tt>). Also note, that all expressions must evaluate to true or false, so you may
+		have to add "<tt>= true</tt>" or "<tt>= false</tt>" after the function call, e.g. <tt>strMatches(name, 'Tom.*') = true<tt>.
+	</p>
+	<table>
+		<tr>
+			<th style="text-align: left;">Function with arguments</th>
+			<th style="text-align: left;">Description</th>
+		</tr>
+		<tr>
+			<td><b><em>Comparison functions</em></b></td>
+			<td/>
+		</tr>
+		<tr>
+			<td><tt>equalTo(a, b)</tt></td>
+			<td>Can be used to compare two values <tt>a</tt> and <tt>b</tt></td>
+		</tr>
+		<tr>
+			<td><tt>greaterThan(x, y)</tt></td>
+			<td>True if <tt>x</tt>&nbsp;&gt;&nbsp;<tt>y</tt>. Can be used for numbers and strings.</td>
+		</tr>
+		<tr>
+			<td><tt>greaterEqualThan(x, y)</tt></td>
+			<td>True if <tt>x</tt>&nbsp;&gt;=&nbsp;<tt>y</tt>. Can be used for numbers and strings.</td>
+		</tr>
+		<tr>
+			<td><tt>isLike(string, pattern)</tt></td>
+			<td>True if <tt>string</tt> matches the specified pattern. For the syntax of the pattern specification, see the documentation of the <a href="http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html">Java Pattern class</a>.</td>
+		</tr>
+		<tr>
+			<td><tt>isNull(obj)</tt></td>
+			<td>True if the parameter <tt>obj</tt> is <tt>null</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>lessThan(x, y)</tt></td>
+			<td>True if <tt>x</tt>&nbsp;&lt;&nbsp;<tt>y</tt>. Can be used for numbers and strings.</td>
+		</tr>
+		<tr>
+			<td><tt>lessEqualThan(x, y)</tt></td>
+			<td>True if <tt>x</tt>&nbsp;&lt;=&nbsp;<tt>y</tt>. Can be used for numbers and strings.</td>
+		</tr>
+		<tr>
+			<td><tt>not(bool)</tt></td>
+			<td>True if the expression <tt>bool</tt> is false.</td>
+		</tr>
+		<tr>
+			<td><tt>notEqualTo(a, b)</tt></td>
+			<td>True if <tt>a</tt> and <tt>b</tt> are not equal.</td>
+		</tr>
+		<tr>
+			<td><b><em>String functions</em></b></td>
+			<td/>
+		</tr>		
+		<tr>
+			<td><tt>strStartsWith(string, prefix)</tt></td>
+			<td>True if <tt>string</tt> starts with <tt>prefix</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>strEndsWith(string, suffix)</tt></td>
+			<td>True if <tt>string</tt> ends with <tt>suffix</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>strEqualsIgnoreCase(a, b)</tt></td>
+			<td>True if <tt>a</tt> and <tt>b</tt> are equal ignoring case.</td>
+		</tr>
+		<tr>
+			<td><tt>strLength(string)</tt></td>
+			<td>Returns the length of <tt>string</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>strToUpperCase(string)</tt></td>
+			<td>Returns the upper case version of <tt>string</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>strToLowerCase(string)</tt></td>
+			<td>Returns the lower case version of <tt>string</tt>.</td>
+		</tr>
+		<tr>
+			<td><tt>strMatches(string, pattern)</tt></td>
+			<td>True if <tt>string</tt> matches the specified pattern. For the syntax of the pattern specification, see the documentation of the <a href="http://java.sun.com/javase/6/docs/api/java/util/regex/Pattern.html">Java Pattern class</a>.</td>
+		</tr>
+		<tr>
+			<td><b><em>Spatial relation and geometric functions</em></b></td>
+			<td/>
+		</tr>
+		<tr>
+			<td><tt>area(geom)</tt></td>
+			<td>Returns the area of the given geometry.</td>
+		</tr>
+		<tr>
+			<td><tt>difference(geom1, geom2)</tt></td>
+			<td>Returns the dimension of the given geometry.</td>
+		</tr>
+		<tr>
+			<td><tt>dimension(geom)</tt></td>
+			<td>Returns the dimension of the given geometry.</td>
+		</tr>
+		<tr>
+			<td><tt>distance(geom1, geom2)</tt></td>
+			<td>Returns the euclidian distance between the given geometries.</td>
+		</tr>
+		<tr>
+			<td><tt>geometryType(geom)</tt></td>
+			<td>Returns the type of the given geometry as a string (one of Point, MultiPoint, LineString, LinearRing, MultiLineString, Polygon, MultiPolygon or GeometryCollection)</td>
+		</tr>
+		<tr>
+			<td><tt>dimension(geom)</tt></td>
+			<td>Returns the dimension of the given geometry.</td>
+		</tr>
+		<tr>
+			<td><tt>geomLength(geom)</tt></td>
+			<td>Returns the length of the given geometry</td>
+		</tr>
+		<tr>
+			<td><tt>intersection(geom1, geom2)</tt></td>
+			<td>Returns the intersection of the given geometries</td>
+		</tr>
+		<tr>
+			<td><tt>isClosed(line)</tt></td>
+			<td>Returns true if the LineString <tt>line</tt> is a closed ring</td>
+		</tr>
+		<tr>
+			<td><tt>isEmpty(geom)</tt></td>
+			<td>Returns true if the geometry does not contain any point</td>
+		</tr>
+		<tr>
+			<td><tt>isRing(line)</tt></td>
+			<td>Returns true if the LineString <tt>line</tt> is a closed ring</td>
+		</tr>
+		<tr>
+			<td><tt>isSimple(line)</tt></td>
+			<td>Returns true if the LineString <tt>line</tt> intersects itself only at boundary points</td>
+		</tr>
+		<tr>
+			<td><tt>isValid(geom)</tt></td>
+			<td>Returns true if <tt>geom</tt> is topologically valid</td>
+		</tr>
+		<tr>
+			<td><tt>union(geom1, geom2)</tt></td>
+			<td>Returns the union of the given geometries</td>
+		</tr>	
+	</table>
 
 	<h2>Example filters</h2>
 	<p>
@@ -79,7 +232,6 @@
 	<h3>Null</h3>
 	<p class="Code">details.address.city IS NULL</p>
 	<p class="Code">details.address.city IS NOT NULL</p>
-	
 	<h2>Supported filter operations</h2>
 	<p>Following is a list of filter operations that have been tested
 		with hale:</p>
@@ -87,7 +239,7 @@
 	<h3>Equal (=)</h3>
 	<div style="margin-left: 12px;">
 		<p>Checks if a value is equal to another attribute or a literal value.</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p class="Code">name = 'Yoda'</p>
 		<p class="Code">details.age = 12</p>
 		<h5>Behavior for multiple values</h5>
@@ -98,7 +250,7 @@
 	<h3>Not equal (&lt;&gt;)</h3>
 	<div style="margin-left: 12px;">
 		<p>Checks if a value is not equal to another attribute or a literal value.</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p class="Code">name &lt;&gt; 'Yoda'</p>
 		<p class="Code">details.age &lt;&gt; 12</p>
 		<h5>Behavior for multiple values</h5>
@@ -115,7 +267,7 @@
 			you can check for inverse condition that states if an attribute
 			exists and has a non-null value.
 		</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p class="Code">name IS NULL</p>
 		<p class="Code">id IS NOT NULL</p>
 		<h5>Behavior for multiple values</h5>
@@ -137,7 +289,7 @@
 			you can check if an attribute value starts, ends or contains a string
 			literal. The percent sign serves as a wildcard.
 		</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p>Match names that start with <code>Y</code>:</p>
 		<p class="Code">name LIKE 'Y%'</p>
 		<p>Match names that contain an <code>o</code> or <code>O</code></p>
@@ -158,7 +310,7 @@
 			<code>&gt;</code>
 			) allow you to check a value in relation to another one.
 		</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p>Match everyone older than 100:</p>
 		<p class="Code">details.age &gt; 100</p>
 		<p>Match everyone that is between 20 and 30:</p>
@@ -184,7 +336,7 @@
 		<p>Note that spatial CQL filters only work on attributes that are
 			marked as geometry attributes in hale. It is right now not possible
 			to apply them to parent attributes of geometry attributes directly.</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p class="Code">CONTAINS(areaAttr, POINT(2 0))</p>
 		<p>
 			Note that the notation for
@@ -204,7 +356,7 @@
 		<p>Time comparisons allow comparing attributes with date and time literals.</p>
 		<p>Please note that these time comparisons can only be reliably
 			applied on attributes that have a binding of an Date/Time data type.</p>
-		<h5>Examples</h5>
+		<h4>Examples</h4>
 		<p>
 			Test if the value of attribute
 			<code>date</code>
@@ -244,13 +396,27 @@
 		<code>NOT</code>
 		to negate them.
 	</p>
-	<h5>Examples</h5>
+	
+	<h4>Examples</h4>
 	<p>Select persons whose name starts with Y and are at least 16 years old:</p>
 	<p class="Code">name like 'Y%' AND details.age &gt;= 16</p>
 	<p>Select persons that don't match the previous filter:</p>
 	<p class="Code">NOT(name like 'Y%' AND details.age &gt;= 16)</p>
 	<p>Select persons that are younger than 10 or older than 50 years:</p>
 	<p class="Code">details.age &lt; 10 OR details.age &gt; 50</p>
+
+	<h3>Filter functions</h3>
+	<p>
+		Use ECQL filter functions to create more complex filters.
+	</p>
+	<p>Match all instances where the value in <tt>name</tt> starts with 'Tom':</p>
+	<p class="Code">
+		strMatches(name, 'Tom.*') = true
+	</p>
+	<p>Match all instances where the total area of the geometry in <tt>the_geom</tt> is greater than 9000:</p>
+	<p class="Code">
+		area(the_geom) > 9000
+	</p>
 
 	<h3>Unsupported operations</h3>
 	
