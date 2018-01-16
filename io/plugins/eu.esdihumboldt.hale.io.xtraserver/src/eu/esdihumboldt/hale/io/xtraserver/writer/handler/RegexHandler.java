@@ -15,14 +15,19 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
+import java.util.Iterator;
+import java.util.List;
+
+import com.google.common.collect.ListMultimap;
+
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.cst.functions.string.RegexAnalysisFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 
 /**
- * TODO
- * 
  * Transforms the {@link RegexAnalysisFunction} to a {@link MappingValue}
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
@@ -44,7 +49,34 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 
 		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
 
-		// TODO
+		final ListMultimap<String, ParameterValue> parameters = propertyCell
+				.getTransformationParameters();
+		final List<ParameterValue> regexParam = parameters.get("regexPattern");
+		if (regexParam.isEmpty()) {
+			throw new IllegalArgumentException("Regular expression not set");
+		}
+		final String regex = regexParam.get(0).as(String.class);
+
+		final List<ParameterValue> outputFormatParam = parameters.get("outputFormat");
+		if (outputFormatParam.isEmpty()) {
+			throw new IllegalArgumentException("Output format for regular expression not set");
+		}
+		final String outputFormat = outputFormatParam.get(0).as(String.class);
+
+		final Iterator<ChildContext> it = targetProperty.getDefinition().getPropertyPath()
+				.iterator();
+		ChildContext lastItem = null;
+		while (it.hasNext()) {
+			lastItem = it.next();
+		}
+		if (lastItem == null) {
+			throw new IllegalArgumentException("Invalid target for regular expression");
+		}
+
+		final String regexpTargetProperty = lastItem.getChild().getName().getLocalPart();
+		// Replace {number} with escaped-escaped-escaped \\number
+		mappingValue.setValue("regexp_replace(" + regexpTargetProperty + ", '" + regex + "', '"
+				+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\\\\\$1") + "', 'g')");
 	}
 
 }
