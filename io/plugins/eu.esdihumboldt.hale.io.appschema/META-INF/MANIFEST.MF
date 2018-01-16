@@ -68,4 +68,5 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.appschema,
  eu.esdihumboldt.hale.io.appschema.model,
- eu.esdihumboldt.hale.io.appschema.writer
+ eu.esdihumboldt.hale.io.appschema.writer,
+ eu.esdihumboldt.hale.io.appschema.writer.internal
