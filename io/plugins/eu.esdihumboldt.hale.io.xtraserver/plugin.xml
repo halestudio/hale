@@ -16,9 +16,24 @@
             id="eu.esdihumboldt.hale.io.xtraserver.writer"
             name="XtraServer Mapping File">
          <contentType
-               ref="eu.esdihumboldt.hale.io.appschema.mapping">
+               ref="eu.esdihumboldt.hale.io.xtraserver.mapping">
          </contentType>
       </provider>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.compatibility">
+      <compatibility
+            class="eu.esdihumboldt.hale.io.xtraserver.compatibility.XtraServerCompatibilityMode"
+            id="eu.esdihumboldt.hale.io.xtraserver.compatibility"
+            key="eu.esdihumboldt.hale.io.xtraserver.compatibility.xtraserver"
+            name="XtraServer">
+         <supportsFilter
+               ref="CQL">
+         </supportsFilter>
+         <supportsFilter
+               ref="ECQL">
+         </supportsFilter>
+      </compatibility>
    </extension>
    <extension
          point="org.eclipse.core.contenttype.contentTypes">
@@ -39,7 +54,7 @@
       <content-type
         base-type="org.eclipse.core.runtime.xml"
         file-extensions="xml"
-        id="eu.esdihumboldt.hale.io.xtraserver.mapping"
+        id="eu.esdihumboldt.hale.io.xtraserver.config"
         name="XtraServer Configuration File"
         priority="normal">
      <describer
