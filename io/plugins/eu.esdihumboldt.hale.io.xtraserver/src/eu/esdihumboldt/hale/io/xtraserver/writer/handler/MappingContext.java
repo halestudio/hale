@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -70,8 +69,7 @@ public class MappingContext {
 			throw new IllegalArgumentException("Schemaspace does not contain a schema");
 		}
 		final Schema schema = it.next();
-		final URI uri = schema.getLocation();
-		this.applicationSchema = new ApplicationSchema(uri.toURL().openStream());
+		this.applicationSchema = new ApplicationSchema(schema.getLocation());
 	}
 
 	/**

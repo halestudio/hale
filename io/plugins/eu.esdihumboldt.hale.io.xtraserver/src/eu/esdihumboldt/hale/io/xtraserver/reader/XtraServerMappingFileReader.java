@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.io.xtraserver.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -113,8 +112,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 		}
 
 		final Schema schema = ((SchemaSpace) schemaspace).getSchemas().iterator().next();
-		final URI uri = schema.getLocation();
-		final ApplicationSchema applicationSchema = new ApplicationSchema(uri.toURL().openStream());
+		final ApplicationSchema applicationSchema = new ApplicationSchema(schema.getLocation());
 
 		MutableAlignment alignment = null;
 		try {
