@@ -13,6 +13,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
 - Added support for multiple organisations to hale connect integration
 - Support to automatically update Join and Merge properties in case of a schema remapping
+- Support for ECQL expressions in filters and condition contexts
 
 ### Changed
 
