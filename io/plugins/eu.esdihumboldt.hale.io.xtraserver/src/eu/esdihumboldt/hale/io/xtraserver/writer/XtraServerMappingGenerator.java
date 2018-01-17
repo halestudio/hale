@@ -17,9 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.w3c.dom.Node;
@@ -27,6 +25,7 @@ import org.w3c.dom.Node;
 import de.interactive_instruments.xtraserver.config.util.api.AssociationTarget;
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
+import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -94,14 +93,12 @@ public class XtraServerMappingGenerator {
 	 * @param reporter status reporter
 	 * @return the generated XtraServer Mapping
 	 * 
-	 * @throws IOException if an error occurs loading the mapping template file
 	 * @throws UnsupportedTransformationException if the transformation of types or
 	 *             properties is not supported
 	 */
 	public XtraServerMapping generate(final IOReporter reporter)
-			throws IOException, UnsupportedTransformationException {
+			throws UnsupportedTransformationException {
 
-		final Map<String, FeatureTypeMapping> features = new HashMap<>();
 		missingAssociationTargets.clear();
 
 		for (final Cell typeCell : this.alignment.getActiveTypeCells()) {
@@ -113,10 +110,8 @@ public class XtraServerMappingGenerator {
 					.create(typeTransformationIdentifier);
 			if (typeHandler != null) {
 				final FeatureTypeMapping featureTypeMapping = typeHandler.handle(typeCell);
-				features.put(featureTypeMapping.getName(), featureTypeMapping);
 				this.progress.setCurrentTask(
 						"Mapping values for Feature Type " + featureTypeMapping.getName());
-
 				// Add MappingValues from the type cell's property cells
 				for (final Cell propertyCell : this.alignment.getPropertyCells(typeCell)) {
 					final String propertyTransformationIdentifier = propertyCell
@@ -135,9 +130,11 @@ public class XtraServerMappingGenerator {
 				this.progress.setCurrentTask(
 						"Updating joins for Feature Type " + featureTypeMapping.getName());
 				for (final MappingJoin join : featureTypeMapping.getJoins()) {
-					if (join.getTarget() == null || "NOT_SET".equals(join.getTarget())) {
-						final String table = join.getTargetTable();
-						join.setTarget(featureTypeMapping.getTable(table).getTarget());
+					if (join.getTarget() == null) {
+						final String tableName = join.getTargetTable();
+						final MappingTable table = featureTypeMapping.getTable(tableName);
+						join.setTarget(table.getTarget());
+						table.addJoinPath(join);
 					}
 				}
 				this.progress.advance(1);
@@ -146,10 +143,7 @@ public class XtraServerMappingGenerator {
 				this.progress.advance(this.alignment.getPropertyCells(typeCell).size());
 			}
 		}
-		final XtraServerMapping mapping = mappingContext.createMapping();
-
-		features.values().forEach(m -> mapping.addFeatureTypeMapping(m));
-		return mapping;
+		return mappingContext.getMapping();
 	}
 
 	/**

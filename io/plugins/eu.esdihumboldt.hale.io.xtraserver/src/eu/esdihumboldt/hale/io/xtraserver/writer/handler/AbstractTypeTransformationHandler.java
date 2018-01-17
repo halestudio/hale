@@ -69,7 +69,8 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		return primaryKey.getPrimaryKeyPath().iterator().next().getLocalPart();
 	}
 
-	protected MappingTable createTableIfAbsent(EntityDefinition sourceType) {
+	protected MappingTable createTableIfAbsent(final FeatureTypeMapping featureTypeMapping,
+			final EntityDefinition sourceType) {
 		final TypeDefinition sourceTypeDefinition = sourceType.getType();
 		final String tableName = sourceTypeDefinition.getDisplayName();
 		MappingTable table = this.mappingContext.getTable(tableName);
@@ -89,13 +90,14 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		if (primaryKey != null) {
 			table.setOidCol(primaryKey);
 		}
-		this.mappingContext.addTable(table);
+		featureTypeMapping.addTable(table);
 		return table;
 	}
 
 	@Override
-	public FeatureTypeMapping handle(final Cell cell) {
-		final FeatureTypeMapping mapping = createFeatureTypeMapping(cell);
+	public final FeatureTypeMapping handle(final Cell cell) {
+		final FeatureTypeMapping mapping = mappingContext
+				.addNextFeatureTypeMapping(createFeatureTypeMapping(cell));
 
 		final ListMultimap<String, ? extends Entity> sourceEntities = cell.getSource();
 		if (sourceEntities == null || sourceEntities.size() == 0) {

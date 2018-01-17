@@ -36,8 +36,8 @@ class RetypeHandler extends AbstractTypeTransformationHandler {
 	 */
 	@Override
 	public void doHandle(final Entity sourceType, final Entity targetType,
-			final FeatureTypeMapping mapping, final Cell typeCell) {
-		mapping.addTable(createTableIfAbsent(sourceType.getDefinition()));
+			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
+		createTableIfAbsent(featureTypeMapping, sourceType.getDefinition());
 	}
 
 }
