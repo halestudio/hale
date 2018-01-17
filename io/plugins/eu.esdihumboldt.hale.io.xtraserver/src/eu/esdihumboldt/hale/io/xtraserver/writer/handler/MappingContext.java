@@ -17,15 +17,14 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.LinkedList;
 import java.util.Objects;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
 import de.interactive_instruments.xtraserver.config.util.Namespaces;
+import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
@@ -40,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
  * The mapping context provides access to the {@link Alignment}, the
- * {@link Namespaces} and holds all added {@link MappingTable}s.
+ * {@link Namespaces} and holds all {@link FeatureTypeMapping}s.
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
@@ -48,9 +47,7 @@ public class MappingContext {
 
 	private final Alignment alignment;
 	private final ApplicationSchema applicationSchema;
-	private static final ALogger logger = ALoggerFactory.getLogger(MappingContext.class);
-
-	private final Map<String, MappingTable> mappingTables = new LinkedHashMap<>();
+	private final Deque<FeatureTypeMapping> featureTypeMappings = new LinkedList<>();
 
 	/**
 	 * Constructor Only the first schema is used
@@ -73,30 +70,50 @@ public class MappingContext {
 	}
 
 	/**
+	 * Add a new FeatureTypeMapping to the mapping context
+	 * 
+	 * @param featureTypeMapping new FeatureTypeMapping
+	 * @return the same FeatureTypeMapping for chaining method calls
+	 */
+	FeatureTypeMapping addNextFeatureTypeMapping(final FeatureTypeMapping featureTypeMapping) {
+		featureTypeMappings.push(Objects.requireNonNull(featureTypeMapping));
+		return featureTypeMapping;
+	}
+
+	/**
 	 * Returns the namespaces from the target schema
 	 * 
 	 * @return namespaces from the target schema
 	 */
-	public Namespaces getNamespaces() {
+	Namespaces getNamespaces() {
 		return this.applicationSchema.getNamespaces();
 	}
 
-	void addTable(final MappingTable table) {
-		if (mappingTables.putIfAbsent(Objects.requireNonNull(table.getName(), "Table name is null"),
-				table) != null) {
-			throw new IllegalArgumentException(
-					"Table " + table.getName() + " already added to Mapping Context.");
-		}
-		logger.debug("Table added: {} ", table.getName());
-	}
+	/**
+	 * Add table to current FeatureTypeMapping
+	 * 
+	 * @param table Mapping Table
+	 */
+	/*
+	 * void addTable(final MappingTable table) { if
+	 * (mappingTables.putIfAbsent(Objects.requireNonNull(table.getName(),
+	 * "Table name is null"), table) != null) { throw new IllegalArgumentException(
+	 * "Table " + table.getName() + " already added to Mapping Context."); } }
+	 */
 
+	/**
+	 * Retrieve table from current FeatureTypeMapping
+	 * 
+	 * @param tableName Mapping Table name
+	 * @return MappingTable
+	 */
 	MappingTable getTable(String tableName) {
-		return mappingTables.get(tableName);
+		return featureTypeMappings.peek().getTable(tableName);
 	}
 
 	void addValueMappingToTable(final Property target, final MappingValue value,
 			final String tableName) {
-		final MappingTable table = Objects.requireNonNull(mappingTables.get(tableName),
+		final MappingTable table = Objects.requireNonNull(getTable(tableName),
 				"Table " + tableName + " not found");
 		if (!table.hasTarget() && value.getTarget() != null
 				&& target.getDefinition().getPropertyPath() != null) {
@@ -125,16 +142,21 @@ public class MappingContext {
 	 * @param typeCell the type cell
 	 * @return the property cells associated with type cell
 	 */
-	public Collection<? extends Cell> getPropertyCells(final Cell typeCell) {
+	Collection<? extends Cell> getPropertyCells(final Cell typeCell) {
 		return this.alignment.getPropertyCells(typeCell);
 	}
 
 	/**
-	 * Creates a new, empty XtraServerMapping
+	 * Return the XtraServerMapping containing all FeatureTypeMappings that were
+	 * propagated
 	 * 
-	 * @return new, empty XtraServerMapping
+	 * @return XtraServerMapping containing all FeatureTypeMappings
 	 */
-	public XtraServerMapping createMapping() {
-		return XtraServerMapping.create(this.applicationSchema);
+	public XtraServerMapping getMapping() {
+		final XtraServerMapping xtraServerMapping = XtraServerMapping
+				.create(this.applicationSchema);
+		this.featureTypeMappings.forEach(xtraServerMapping::addFeatureTypeMapping);
+		this.featureTypeMappings.clear();
+		return xtraServerMapping;
 	}
 }
