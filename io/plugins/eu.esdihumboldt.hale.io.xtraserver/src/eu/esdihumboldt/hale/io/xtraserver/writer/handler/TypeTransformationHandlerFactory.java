@@ -44,6 +44,9 @@ public class TypeTransformationHandlerFactory
 				int i = 0;
 				put(supportedTypes[i++], new RetypeHandler(mappingContext));
 				put(supportedTypes[i++], new JoinHandler(mappingContext));
+				// GroovyJoins are partially transformed with warnings
+				put("eu.esdihumboldt.cst.functions.groovy.join",
+						new GroovyJoinHandler(mappingContext));
 			}
 		});
 	}
