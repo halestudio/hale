@@ -16,9 +16,9 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.w3c.dom.Node;
@@ -61,7 +61,7 @@ public class XtraServerMappingGenerator {
 	private final TypeTransformationHandlerFactory typeHandlerFactory;
 	private final PropertyTransformationHandlerFactory propertyHandlerFactory;
 	private final ProgressIndicator progress;
-	private final List<String> missingAssociationTargets = new ArrayList<String>();
+	private final Set<String> missingAssociationTargets = new TreeSet<String>();
 	private final MappingContext mappingContext;
 
 	/**
@@ -155,7 +155,7 @@ public class XtraServerMappingGenerator {
 	 * 
 	 * @return list of properties with missing association targets
 	 */
-	public List<String> getMissingAssociationTargets() {
+	public Set<String> getMissingAssociationTargets() {
 		return this.missingAssociationTargets;
 	}
 
