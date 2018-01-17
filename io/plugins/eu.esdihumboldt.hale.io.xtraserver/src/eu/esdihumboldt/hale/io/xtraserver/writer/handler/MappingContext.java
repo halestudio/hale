@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
 import de.interactive_instruments.xtraserver.config.util.Namespaces;
@@ -50,23 +52,18 @@ public final class MappingContext {
 	/**
 	 * ADV Modellart
 	 */
-	public final static String ADV_MODELLART = "ADV_MODELLART";
+	public final static String PROPERTY_ADV_MODELLART = "ADV_MODELLART";
 
 	/**
 	 * INSPIRE namespace
 	 */
-	public final static String INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
-
-	/**
-	 * Project property types that are used by this plugin
-	 */
-	public final static String[] SUPPORTED_PROJECT_PROPERTY_NAMES = new String[] { ADV_MODELLART,
-			INSPIRE_NAMESPACE };
+	public final static String PROPERTY_INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
 
 	private final Alignment alignment;
 	private final ApplicationSchema applicationSchema;
 	private final Deque<FeatureTypeMapping> featureTypeMappings = new LinkedList<>();
 	private final Map<String, Value> transformationProperties;
+	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
 
 	/**
 	 * Constructor Only the first schema is used
@@ -180,4 +177,30 @@ public final class MappingContext {
 		this.featureTypeMappings.forEach(xtraServerMapping::addFeatureTypeMapping);
 		return xtraServerMapping;
 	}
+
+	/**
+	 * Replace project variables in a string
+	 * 
+	 * @param str input string
+	 * @return string with replaced project variables, unresolved variables are
+	 *         replaced with 'PROJECT_VARIABLE_<VARIABLE_NAME>_NOT_SET'
+	 */
+	public String resolveProjectVars(final String str) {
+		final Matcher m = projectVarPattern.matcher(str);
+		String repStr = str;
+		while (m.find()) {
+			final String varName = m.group(1);
+			final Value val = transformationProperties.get(varName);
+			final String replacement;
+			if (val != null && !val.isEmpty()) {
+				replacement = val.as(String.class);
+			}
+			else {
+				replacement = "PROJECT_VARIABLE_" + varName + "_NOT_SET";
+			}
+			repStr = repStr.replaceAll("\\{\\{project:" + varName + "\\}\\}", replacement);
+		}
+		return repStr;
+	}
+
 }

@@ -18,9 +18,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -30,13 +28,12 @@ import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
-import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.ValueProperties;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.io.xtraserver.writer.handler.MappingContext;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.UnsupportedTransformationException;
 
 /**
@@ -72,14 +69,14 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 	protected IOReport execute(final ProgressIndicator progress, final IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		final Map<String, Value> projectProperties = new HashMap<>();
+		final ValueProperties projectProperties;
 		if (getProjectInfo() instanceof Project) {
-			ComplexConfigurationService service = ProjectIO
+			final ComplexConfigurationService service = ProjectIO
 					.createProjectConfigService((Project) getProjectInfo());
-			for (int i = 0; i < MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES.length; i++) {
-				projectProperties.put(MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES[i],
-						service.getProperty(MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES[i]));
-			}
+			projectProperties = service.getProperty("variables").as(ValueProperties.class);
+		}
+		else {
+			projectProperties = new ValueProperties();
 		}
 
 		progress.begin("Initialising", ProgressIndicator.UNKNOWN);
@@ -102,7 +99,7 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 			mapping.writeToStream(out);
 			progress.advance(1);
 
-			final List<String> missingAssociationTargets = generator.getMissingAssociationTargets();
+			final Set<String> missingAssociationTargets = generator.getMissingAssociationTargets();
 			if (!missingAssociationTargets.isEmpty()) {
 				StringBuilder builder = new StringBuilder();
 				int warningCount = 0;
