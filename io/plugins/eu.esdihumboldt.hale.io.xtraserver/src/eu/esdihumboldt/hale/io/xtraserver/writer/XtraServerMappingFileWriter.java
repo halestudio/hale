@@ -17,7 +17,10 @@ package eu.esdihumboldt.hale.io.xtraserver.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -27,8 +30,13 @@ import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
+import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.io.xtraserver.writer.handler.MappingContext;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.UnsupportedTransformationException;
 
 /**
@@ -38,7 +46,7 @@ import eu.esdihumboldt.hale.io.xtraserver.writer.handler.UnsupportedTransformati
  */
 public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 
-	private static String WRITER_TYPE_NAME = "XtraServer Mapping Exporter";
+	private final static String WRITER_TYPE_NAME = "XtraServer Mapping Exporter";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
@@ -64,6 +72,16 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 	protected IOReport execute(final ProgressIndicator progress, final IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
+		final Map<String, Value> projectProperties = new HashMap<>();
+		if (getProjectInfo() instanceof Project) {
+			ComplexConfigurationService service = ProjectIO
+					.createProjectConfigService((Project) getProjectInfo());
+			for (int i = 0; i < MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES.length; i++) {
+				projectProperties.put(MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES[i],
+						service.getProperty(MappingContext.SUPPORTED_PROJECT_PROPERTY_NAMES[i]));
+			}
+		}
+
 		progress.begin("Initialising", ProgressIndicator.UNKNOWN);
 		if (getAlignment() == null) {
 			throw new IOProviderConfigurationException("No alignment was provided.");
@@ -76,7 +94,8 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 		}
 		try {
 			final XtraServerMappingGenerator generator = new XtraServerMappingGenerator(
-					getAlignment(), getTargetSchema(), progress);
+					getAlignment(), getTargetSchema(), progress,
+					Collections.unmodifiableMap(projectProperties));
 			final XtraServerMapping mapping = generator.generate(reporter);
 			final OutputStream out = getTarget().getOutput();
 			progress.setCurrentTask("Writing XtraServer Mapping file");

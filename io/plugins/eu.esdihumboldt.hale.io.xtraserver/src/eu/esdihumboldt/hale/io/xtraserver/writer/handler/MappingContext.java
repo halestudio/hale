@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Objects;
 
 import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
@@ -32,6 +33,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
@@ -43,22 +45,41 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
-public class MappingContext {
+public final class MappingContext {
+
+	/**
+	 * ADV Modellart
+	 */
+	public final static String ADV_MODELLART = "ADV_MODELLART";
+
+	/**
+	 * INSPIRE namespace
+	 */
+	public final static String INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
+
+	/**
+	 * Project property types that are used by this plugin
+	 */
+	public final static String[] SUPPORTED_PROJECT_PROPERTY_NAMES = new String[] { ADV_MODELLART,
+			INSPIRE_NAMESPACE };
 
 	private final Alignment alignment;
 	private final ApplicationSchema applicationSchema;
 	private final Deque<FeatureTypeMapping> featureTypeMappings = new LinkedList<>();
+	private final Map<String, Value> transformationProperties;
 
 	/**
 	 * Constructor Only the first schema is used
 	 * 
 	 * @param alignment the Alignment with all cells
 	 * @param schemaspace the target schema
+	 * @param transformationProperties Properties used in transformations
 	 * @throws IOException if the schema cannot be read
 	 */
-	public MappingContext(final Alignment alignment, final SchemaSpace schemaspace)
-			throws IOException {
+	public MappingContext(final Alignment alignment, final SchemaSpace schemaspace,
+			final Map<String, Value> transformationProperties) throws IOException {
 		this.alignment = Objects.requireNonNull(alignment);
+		this.transformationProperties = Objects.requireNonNull(transformationProperties);
 
 		final Iterator<? extends Schema> it = Objects
 				.requireNonNull(schemaspace, "Schemaspace not provided").getSchemas().iterator();
@@ -81,6 +102,19 @@ public class MappingContext {
 	}
 
 	/**
+	 * Returns the name of the currently processed Feature Type Mapping
+	 * 
+	 * @return Feature Type Mapping name
+	 */
+	String getFeatureTypeName() {
+		return featureTypeMappings.peek().getName();
+	}
+
+	Value getTransformationProperty(final String name) {
+		return this.transformationProperties.get(name);
+	}
+
+	/**
 	 * Returns the namespaces from the target schema
 	 * 
 	 * @return namespaces from the target schema
@@ -88,18 +122,6 @@ public class MappingContext {
 	Namespaces getNamespaces() {
 		return this.applicationSchema.getNamespaces();
 	}
-
-	/**
-	 * Add table to current FeatureTypeMapping
-	 * 
-	 * @param table Mapping Table
-	 */
-	/*
-	 * void addTable(final MappingTable table) { if
-	 * (mappingTables.putIfAbsent(Objects.requireNonNull(table.getName(),
-	 * "Table name is null"), table) != null) { throw new IllegalArgumentException(
-	 * "Table " + table.getName() + " already added to Mapping Context."); } }
-	 */
 
 	/**
 	 * Retrieve table from current FeatureTypeMapping
@@ -156,7 +178,6 @@ public class MappingContext {
 		final XtraServerMapping xtraServerMapping = XtraServerMapping
 				.create(this.applicationSchema);
 		this.featureTypeMappings.forEach(xtraServerMapping::addFeatureTypeMapping);
-		this.featureTypeMappings.clear();
 		return xtraServerMapping;
 	}
 }

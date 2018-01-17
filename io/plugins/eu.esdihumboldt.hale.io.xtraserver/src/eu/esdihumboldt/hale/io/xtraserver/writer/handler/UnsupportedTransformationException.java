@@ -27,7 +27,7 @@ public class UnsupportedTransformationException extends Exception {
 	private final String transformationIdentifier;
 
 	/**
-	 * Ctor
+	 * Constructor
 	 * 
 	 * @param transformationIdentifier the hale type or property transformation
 	 *            identifier

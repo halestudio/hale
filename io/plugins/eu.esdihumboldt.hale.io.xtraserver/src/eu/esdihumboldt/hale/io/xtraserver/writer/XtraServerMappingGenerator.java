@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
 import org.w3c.dom.Node;
@@ -33,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
@@ -68,13 +70,14 @@ public class XtraServerMappingGenerator {
 	 * @param alignment the Alignment with all cells
 	 * @param targetSchemaSpace the target schema
 	 * @param progress Progress indicator
+	 * @param projectProperties project transformation properties
 	 * @throws IOException if the
 	 */
 	public XtraServerMappingGenerator(final Alignment alignment,
-			final SchemaSpace targetSchemaSpace, final ProgressIndicator progress)
-			throws IOException {
+			final SchemaSpace targetSchemaSpace, final ProgressIndicator progress,
+			final Map<String, Value> projectProperties) throws IOException {
 		this.alignment = alignment;
-		mappingContext = new MappingContext(alignment, targetSchemaSpace);
+		mappingContext = new MappingContext(alignment, targetSchemaSpace, projectProperties);
 		this.typeHandlerFactory = TypeTransformationHandler.createFactory(mappingContext);
 		this.propertyHandlerFactory = PropertyTransformationHandler.createFactory(mappingContext);
 		// Calculate the total work units for the progress indicator (+1 for writing the
