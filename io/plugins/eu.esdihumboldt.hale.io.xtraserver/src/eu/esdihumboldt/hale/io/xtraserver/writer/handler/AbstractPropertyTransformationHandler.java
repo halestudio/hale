@@ -34,10 +34,18 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
  */
 abstract class AbstractPropertyTransformationHandler implements PropertyTransformationHandler {
 
-	final MappingContext mappingContext;
+	protected final MappingContext mappingContext;
 
 	protected AbstractPropertyTransformationHandler(final MappingContext mappingContext) {
 		this.mappingContext = mappingContext;
+	}
+
+	protected static void setConstantType(final MappingValue mappingValue) {
+		mappingValue.setValueType("constant");
+	}
+
+	protected static void setExpressionType(final MappingValue mappingValue) {
+		mappingValue.setValueType("expression");
 	}
 
 	protected String buildPath(final List<ChildContext> path) {
@@ -68,7 +76,7 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		return builder.toString();
 	}
 
-	protected String propertyName(final List<ChildContext> path) {
+	protected static String propertyName(final List<ChildContext> path) {
 		if (path == null || path.isEmpty()) {
 			return "";
 		}

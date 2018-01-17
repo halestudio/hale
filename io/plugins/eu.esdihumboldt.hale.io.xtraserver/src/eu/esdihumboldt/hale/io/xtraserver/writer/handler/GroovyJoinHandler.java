@@ -49,7 +49,7 @@ class GroovyJoinHandler extends JoinHandler {
 			throw e;
 		}
 		logger.warn(
-				"A GroovyJoin has been added but requires further manual editing in Feature Type Mapping: {} {}",
+				"A GroovyJoin has been transformed but requires further manual editing in Mapping file: {} {}",
 				System.getProperty("line.separator"), featureTypeMapping.toString());
 	}
 }

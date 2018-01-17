@@ -45,7 +45,7 @@ class MathematicalExpressionHandler extends AbstractPropertyTransformationHandle
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValueType("expression");
+		setExpressionType(mappingValue);
 		// Get mathematical expression from parameters
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();

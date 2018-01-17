@@ -39,7 +39,8 @@ public class PropertyTransformationHandlerFactory
 	private final static String[] supportedTypes = { RenameFunction.ID,
 			MathematicalExpressionFunction.ID, AssignFunction.ID, AssignFunction.ID_BOUND,
 			FormattedStringFunction.ID, RegexAnalysisFunction.ID, ClassificationMappingFunction.ID,
-			CustomFunctionAdvToUCUM.FUNCTION_ID };
+			CustomFunctionAdvToIdentifier.FUNCTION_ID, CustomFunctionAdvToLocalId.FUNCTION_ID,
+			CustomFunctionAdvToNamespace.FUNCTION_ID, CustomFunctionAdvToUCUM.FUNCTION_ID };
 	final static Set<String> SUPPORTED_TYPES = Collections
 			.unmodifiableSet(new HashSet<String>(Arrays.asList(supportedTypes)));
 
@@ -56,6 +57,9 @@ public class PropertyTransformationHandlerFactory
 				put(supportedTypes[i++], new FormattedStringHandler(mappingContext));
 				put(supportedTypes[i++], new RegexHandler(mappingContext));
 				put(supportedTypes[i++], new ClassificationMappingHandler(mappingContext));
+				put(supportedTypes[i++], new CustomFunctionAdvToIdentifier(mappingContext));
+				put(supportedTypes[i++], new CustomFunctionAdvToLocalId(mappingContext));
+				put(supportedTypes[i++], new CustomFunctionAdvToNamespace(mappingContext));
 				put(supportedTypes[i++], new CustomFunctionAdvToUCUM(mappingContext));
 			}
 		});

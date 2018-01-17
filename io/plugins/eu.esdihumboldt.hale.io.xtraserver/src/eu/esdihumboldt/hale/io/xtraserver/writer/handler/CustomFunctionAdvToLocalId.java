@@ -20,16 +20,16 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 
 /**
- * Transforms the custom function 'custom:alignment:adv.uom.toucum' to a
+ * Transforms the custom function 'custom:alignment:adv.inspire.id.default' to a
  * {@link MappingValue}
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
-class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
+class CustomFunctionAdvToLocalId extends FormattedStringHandler {
 
-	public final static String FUNCTION_ID = "custom:alignment:adv.uom.toucum";
+	public final static String FUNCTION_ID = "custom:alignment:adv.inspire.id.default";
 
-	CustomFunctionAdvToUCUM(final MappingContext mappingContext) {
+	CustomFunctionAdvToLocalId(final MappingContext mappingContext) {
 		super(mappingContext);
 	}
 
@@ -41,10 +41,9 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValue("function_void");
+		setExpressionType(mappingValue);
+		mappingValue.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$.id");
 		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
-		mappingValue.setDbCodes("urn:adv:uom:m2 urn:adv:uom:m urn:adv:uom:km");
-		mappingValue.setDbValues("'m2' 'm' 'km'");
 	}
 
 }

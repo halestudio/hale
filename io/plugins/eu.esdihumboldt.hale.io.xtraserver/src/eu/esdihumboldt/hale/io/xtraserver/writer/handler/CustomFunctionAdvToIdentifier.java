@@ -18,18 +18,19 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
- * Transforms the custom function 'custom:alignment:adv.uom.toucum' to a
+ * Transforms the custom function 'custom:alignment:adv.inspire.identifier' to a
  * {@link MappingValue}
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
-class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
+class CustomFunctionAdvToIdentifier extends FormattedStringHandler {
 
-	public final static String FUNCTION_ID = "custom:alignment:adv.uom.toucum";
+	public final static String FUNCTION_ID = "custom:alignment:adv.inspire.identifier";
 
-	CustomFunctionAdvToUCUM(final MappingContext mappingContext) {
+	CustomFunctionAdvToIdentifier(final MappingContext mappingContext) {
 		super(mappingContext);
 	}
 
@@ -41,10 +42,25 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValue("function_void");
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
-		mappingValue.setDbCodes("urn:adv:uom:m2 urn:adv:uom:m urn:adv:uom:km");
-		mappingValue.setDbValues("'m2' 'm' 'km'");
+		setExpressionType(mappingValue);
+		final Value inspireNamespace = mappingContext
+				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
+		if (inspireNamespace.isEmpty()) {
+			mappingValue.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$.id");
+		}
+		else {
+			mappingValue.setValue("'" + inspireNamespace.as(String.class) + "' || $T$.id");
+		}
+		final String propPath = buildPath(targetProperty.getDefinition().getPropertyPath());
+		mappingValue.setTarget(propPath);
+
+		// Add codespace
+		final MappingValue codeSpaceValue = MappingValue.create(mappingContext.getNamespaces());
+		setConstantType(codeSpaceValue);
+		codeSpaceValue.setValue("http://inspire.ec.europa.eu/ids");
+		codeSpaceValue.setTarget(propPath.replaceAll("/?@.*", "") + "/@codeSpace");
+		final String tableName = ((CellParentWrapper) propertyCell).getTableName();
+		mappingContext.addValueMappingToTable(targetProperty, mappingValue, tableName);
 	}
 
 }

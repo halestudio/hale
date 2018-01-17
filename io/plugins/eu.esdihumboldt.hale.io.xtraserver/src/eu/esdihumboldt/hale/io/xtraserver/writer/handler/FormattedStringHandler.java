@@ -54,7 +54,7 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValueType("expression");
+		setExpressionType(mappingValue);
 		// Get the formatted string from parameters
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
@@ -63,10 +63,13 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 			throw new IllegalArgumentException("Formatted string not set");
 		}
 		final String pattern = patterns.get(0).as(String.class);
-		// TODO test
-		final StringBuilder formattedStr = new StringBuilder(pattern);
-		final Collection<? extends Entity> variables = propertyCell.getSource().asMap().get("var");
-		if (!variables.isEmpty()) {
+		final StringBuilder formattedStr = new StringBuilder(
+				mappingContext.resolveProjectVars(pattern));
+
+		if (propertyCell.getSource() != null
+				&& !propertyCell.getSource().asMap().get("var").isEmpty()) {
+			final Collection<? extends Entity> variables = propertyCell.getSource().asMap()
+					.get("var");
 			final List<int[]> startEndList = new ArrayList<int[]>();
 			final List<String> varList = new ArrayList<String>();
 			final Matcher m = VARIABLE_PATTERN.matcher(pattern);
@@ -130,6 +133,7 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 		}
 		else {
 			formattedStr.insert(0, '\'');
+			// Simple string without formatting
 			formattedStr.append('\'');
 		}
 

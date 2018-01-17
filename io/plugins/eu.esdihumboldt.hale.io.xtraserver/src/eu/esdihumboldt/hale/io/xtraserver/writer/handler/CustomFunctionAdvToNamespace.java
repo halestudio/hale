@@ -18,18 +18,19 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
- * Transforms the custom function 'custom:alignment:adv.uom.toucum' to a
+ * Transforms the custom function 'custom:alignment:adv.inspire.namespace' to a
  * {@link MappingValue}
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
-class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
+class CustomFunctionAdvToNamespace extends FormattedStringHandler {
 
-	public final static String FUNCTION_ID = "custom:alignment:adv.uom.toucum";
+	public final static String FUNCTION_ID = "custom:alignment:adv.inspire.namespace";
 
-	CustomFunctionAdvToUCUM(final MappingContext mappingContext) {
+	CustomFunctionAdvToNamespace(final MappingContext mappingContext) {
 		super(mappingContext);
 	}
 
@@ -41,10 +42,13 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValue("function_void");
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
-		mappingValue.setDbCodes("urn:adv:uom:m2 urn:adv:uom:m urn:adv:uom:km");
-		mappingValue.setDbValues("'m2' 'm' 'km'");
+		final Value inspireNamespace = mappingContext
+				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
+		if (!inspireNamespace.isEmpty()) {
+			setConstantType(mappingValue);
+			mappingValue.setValue(inspireNamespace.as(String.class));
+			mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+		}
 	}
 
 }

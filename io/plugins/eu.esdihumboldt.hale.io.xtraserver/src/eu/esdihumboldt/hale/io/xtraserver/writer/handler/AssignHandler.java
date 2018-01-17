@@ -45,16 +45,15 @@ class AssignHandler extends AbstractPropertyTransformationHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValueType("constant");
+		setConstantType(mappingValue);
 		// Assign constant value from parameters
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
 		final List<ParameterValue> valueParams = parameters.get(PARAMETER_VALUE);
 		final String value = valueParams.get(0).getStringRepresentation();
-		mappingValue.setValue(value);
+		mappingValue.setValue(mappingContext.resolveProjectVars(value));
 		// set target
 		final Property target = AppSchemaMappingUtils.getTargetProperty(propertyCell);
 		mappingValue.setTarget(buildPath(target.getDefinition().getPropertyPath()));
 	}
-
 }
