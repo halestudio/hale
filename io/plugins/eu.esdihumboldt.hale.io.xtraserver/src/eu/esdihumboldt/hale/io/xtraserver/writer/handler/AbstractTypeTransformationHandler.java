@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import com.google.common.collect.ListMultimap;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -26,6 +28,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
+import eu.esdihumboldt.hale.io.xtraserver.compatibility.XtraServerCompatibilityMode;
 
 /**
  * Abstract Type Transformation Handler
@@ -35,6 +38,8 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 abstract class AbstractTypeTransformationHandler implements TypeTransformationHandler {
 
 	protected final MappingContext mappingContext;
+	protected final static ALogger logger = ALoggerFactory
+			.getLogger(TypeTransformationHandler.class);
 
 	protected AbstractTypeTransformationHandler(final MappingContext mappingContext) {
 		this.mappingContext = mappingContext;
@@ -103,6 +108,12 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		if (sourceEntities == null || sourceEntities.size() == 0) {
 			throw new IllegalStateException("No source type has been specified.");
 		}
+		if (XtraServerCompatibilityMode.hasFilters(cell.getSource())) {
+			logger.warn(
+					"Filters are not supported and are ignored during type transformation of Feature Type {}",
+					mappingContext.getFeatureTypeName());
+		}
+
 		final ListMultimap<String, ? extends Entity> targetEntities = cell.getTarget();
 		if (targetEntities == null || targetEntities.size() == 0) {
 			throw new IllegalStateException("No target type has been specified.");

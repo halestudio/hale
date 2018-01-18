@@ -67,19 +67,35 @@ public class XtraServerCompatibilityMode implements CompatibilityMode {
 		if (entities == null) {
 			return true;
 		}
+		if (hasFilters(entities)) {
+			logger.warn("Filters are not supported");
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns true if Filters are found in the entity definitions or the property
+	 * paths
+	 * 
+	 * @param entities entities to check
+	 * @return true if filters are found, false otherwise
+	 */
+	public static boolean hasFilters(final ListMultimap<String, ? extends Entity> entities) {
 		for (Entity entity : entities.values()) {
-			Filter typeFilter = entity.getDefinition().getFilter();
+			final Filter typeFilter = entity.getDefinition().getFilter();
 			if (typeFilter != null) {
-				return false;
+				return true;
 			}
 			for (ChildContext context : entity.getDefinition().getPropertyPath()) {
-				Condition cond = context.getCondition();
+				final Condition cond = context.getCondition();
 				if (cond != null && cond.getFilter() != null) {
-					return false;
+					return true;
 				}
 			}
 		}
-		return true;
+		return false;
 	}
 
 }

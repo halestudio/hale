@@ -51,16 +51,17 @@ class CustomFunctionAdvToIdentifier extends FormattedStringHandler {
 		else {
 			mappingValue.setValue("'" + inspireNamespace.as(String.class) + "' || $T$.id");
 		}
-		final String propPath = buildPath(targetProperty.getDefinition().getPropertyPath());
+		final String propPath = buildPathWithoutAttribute(
+				targetProperty.getDefinition().getPropertyPath());
 		mappingValue.setTarget(propPath);
 
 		// Add codespace
 		final MappingValue codeSpaceValue = MappingValue.create(mappingContext.getNamespaces());
 		setConstantType(codeSpaceValue);
 		codeSpaceValue.setValue("http://inspire.ec.europa.eu/ids");
-		codeSpaceValue.setTarget(propPath.replaceAll("/?@.*", "") + "/@codeSpace");
+		codeSpaceValue.setTarget(propPath + "/@codeSpace");
 		final String tableName = ((CellParentWrapper) propertyCell).getTableName();
-		mappingContext.addValueMappingToTable(targetProperty, mappingValue, tableName);
+		mappingContext.addValueMappingToTable(targetProperty, codeSpaceValue, tableName);
 	}
 
 }

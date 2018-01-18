@@ -19,9 +19,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.common.collect.ListMultimap;
+
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
@@ -49,6 +52,14 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 	}
 
 	protected String buildPath(final List<ChildContext> path) {
+		return buildPath(path, false);
+	}
+
+	protected String buildPathWithoutLast(final List<ChildContext> path) {
+		return buildPath(path, true);
+	}
+
+	protected String buildPathWithoutAttribute(final List<ChildContext> path) {
 		final StringBuilder builder = new StringBuilder();
 		for (final Iterator<ChildContext> it = Objects.requireNonNull(path, "Path not set")
 				.iterator(); it.hasNext();) {
@@ -59,16 +70,44 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 				continue;
 			}
 			if (property.getConstraint(XmlAttributeFlag.class).isEnabled()) {
+				if (builder.length() > 0) {
+					builder.setLength(builder.length() - 1);
+				}
+				return builder.toString();
+			}
+			final String prefixedName = mappingContext.getNamespaces()
+					.getPrefixedName(segment.getChild().getName());
+			builder.append(prefixedName);
+			if (it.hasNext()) {
+				builder.append('/');
+			}
+		}
+		return builder.toString();
+	}
+
+	private String buildPath(final List<ChildContext> path, final boolean withoutLast) {
+		final StringBuilder builder = new StringBuilder();
+		for (final Iterator<ChildContext> it = Objects.requireNonNull(path, "Path not set")
+				.iterator(); it.hasNext();) {
+			final ChildContext segment = it.next();
+			final PropertyDefinition property = segment.getChild().asProperty();
+			if (property == null) {
+				// ignore choice definition
+				continue;
+			}
+			if (withoutLast && !it.hasNext()) {
+				if (builder.length() > 0) {
+					builder.setLength(builder.length() - 1);
+				}
+				break;
+			}
+
+			if (property.getConstraint(XmlAttributeFlag.class).isEnabled()) {
 				builder.append('@');
 			}
 			final String prefixedName = mappingContext.getNamespaces()
 					.getPrefixedName(segment.getChild().getName());
-			if (prefixedName != null) {
-				builder.append(prefixedName);
-			}
-			else {
-				builder.append(segment.getChild().getName());
-			}
+			builder.append(prefixedName);
 			if (it.hasNext()) {
 				builder.append('/');
 			}
@@ -81,6 +120,17 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 			return "";
 		}
 		return path.get(path.size() - 1).getChild().getName().getLocalPart();
+	}
+
+	protected static String getSingleProperty(final ListMultimap<String, ParameterValue> parameters,
+			final String name) {
+		if (parameters != null) {
+			final List<ParameterValue> parameterValues = parameters.get(name);
+			if (parameterValues != null && !parameterValues.isEmpty()) {
+				return parameterValues.get(0).as(String.class);
+			}
+		}
+		return null;
 	}
 
 	@Override

@@ -69,13 +69,13 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 	protected IOReport execute(final ProgressIndicator progress, final IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		final ValueProperties projectProperties;
+		ValueProperties projectProperties = null;
 		if (getProjectInfo() instanceof Project) {
 			final ComplexConfigurationService service = ProjectIO
 					.createProjectConfigService((Project) getProjectInfo());
 			projectProperties = service.getProperty("variables").as(ValueProperties.class);
 		}
-		else {
+		if (projectProperties == null) {
 			projectProperties = new ValueProperties();
 		}
 

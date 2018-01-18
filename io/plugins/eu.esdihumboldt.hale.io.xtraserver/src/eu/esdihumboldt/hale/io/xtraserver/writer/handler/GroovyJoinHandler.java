@@ -44,12 +44,15 @@ class GroovyJoinHandler extends JoinHandler {
 		try {
 			super.doHandle(sourceType, targetType, featureTypeMapping, typeCell);
 		} catch (final Exception e) {
-			logger.error(
-					"Error transforming GroovyJoin. Replace the GroovyJoin with a Join before you transform the Alignment.");
+			logger.error("Error transforming GroovyJoin for Feature Type {}."
+					+ " Replace the GroovyJoin with a Join before you transform the Alignment.",
+					mappingContext.getFeatureTypeName());
 			throw e;
 		}
 		logger.warn(
-				"A GroovyJoin has been transformed but requires further manual editing in Mapping file: {} {}",
-				System.getProperty("line.separator"), featureTypeMapping.toString());
+				"A GroovyJoin for Feature Type {} has been transformed but requires further"
+						+ " manual editing in the generated Mapping file. Details: {} {}",
+				mappingContext.getFeatureTypeName(), System.getProperty("line.separator"),
+				featureTypeMapping.toString());
 	}
 }
