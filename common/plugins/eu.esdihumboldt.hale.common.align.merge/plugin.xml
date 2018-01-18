@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.align.merge.migrator" name="Merge Cell Migrators" schema="schema/eu.esdihumboldt.hale.align.merge.migrator.exsd"/>
+   <extension
+         point="eu.esdihumboldt.hale.align.merge.migrator">
+      <migrator
+            class="eu.esdihumboldt.hale.common.align.merge.functions.JoinMergeMigrator"
+            id="eu.esdihumboldt.hale.common.align.merge.join">
+         <typeFunction
+               ref="eu.esdihumboldt.cst.functions.groovy.join">
+         </typeFunction>
+         <typeFunction
+               ref="eu.esdihumboldt.hale.align.join">
+         </typeFunction>
+      </migrator>
+   </extension>
+
+</plugin>

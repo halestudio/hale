@@ -38,6 +38,7 @@ import com.google.common.collect.Iterables;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.merge.MergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
+import eu.esdihumboldt.hale.common.align.merge.extension.MigratorExtension;
 import eu.esdihumboldt.hale.common.align.merge.impl.DefaultMergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.impl.MatchingMigration;
 import eu.esdihumboldt.hale.common.align.merge.impl.TargetIndex;
@@ -104,6 +105,14 @@ public abstract class AbstractMergeCellMigratorTest {
 		AlignmentMigration migration = new MatchingMigration(matchingProject, true);
 		List<MutableCell> cells = new ArrayList<>();
 
+		if (migrator == null) {
+			try {
+				migrator = MigratorExtension.getInstance()
+						.getMigrator(cellToMigrate.getTransformationIdentifier()).orElse(null);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 		if (migrator == null) {
 			CellMigrator mig = getCellMigrator(cellToMigrate.getTransformationIdentifier());
 			if (mig instanceof MergeCellMigrator) {

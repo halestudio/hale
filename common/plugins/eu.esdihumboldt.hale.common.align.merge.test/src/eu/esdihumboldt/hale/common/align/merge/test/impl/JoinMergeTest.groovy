@@ -159,7 +159,7 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		def match2Id = 'A3toB2'
 		def match3Id = 'A4A5A6A7toB3'
 
-		def migrated = mergeWithMigrator(new JoinMergeMigrator(), cellId, toMigrate, matching)
+		def migrated = merge(cellId, toMigrate, matching)
 
 		def original = getProject(toMigrate).alignment.getCell(cellId)
 		def match1 = getProject(matching).alignment.getCell(match1Id)
