@@ -19,6 +19,7 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.functions.JoinMergeMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Cell
@@ -56,6 +57,7 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		// specific checks
 		assertEquals(1, migrated.size())
 		migrated = migrated[0]
+		JaxbAlignmentIO.printCell(migrated, System.out)
 
 		// target
 		assertCellTargetEquals(migrated, ['StandingWater'])
@@ -111,6 +113,7 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		// specific checks
 		assertEquals(1, migrated.size())
 		migrated = migrated[0]
+		JaxbAlignmentIO.printCell(migrated, System.out)
 
 		// target
 		assertCellTargetEquals(migrated, ['C1'])
