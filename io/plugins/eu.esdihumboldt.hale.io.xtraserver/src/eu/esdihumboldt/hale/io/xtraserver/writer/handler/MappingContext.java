@@ -108,7 +108,11 @@ public final class MappingContext {
 	}
 
 	Value getTransformationProperty(final String name) {
-		return this.transformationProperties.get(name);
+		final Value val = this.transformationProperties.get(name);
+		if (val != null) {
+			return val;
+		}
+		return Value.NULL;
 	}
 
 	/**
