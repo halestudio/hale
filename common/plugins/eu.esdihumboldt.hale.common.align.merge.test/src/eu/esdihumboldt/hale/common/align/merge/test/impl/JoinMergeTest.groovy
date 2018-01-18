@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter
 class JoinMergeTest extends AbstractMergeCellMigratorTest {
 
 	@Test
-	void mergeJoinsWithJoin() {
+	void mergeJoinsWithJoin_sample_hydro() {
 		def toMigrate = this.class.getResource('/testcases/sample-hydro/B-to-C.halex')
 		def cellId = 'LakeAndLakeFlowToStandingWater'
 
@@ -89,6 +89,64 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 			]
 		])
 	}
+
+	@Test
+	void mergeJoinsWithJoin_abstract1() {
+		def toMigrate = this.class.getResource('/testcases/abstract1/B-to-C.halex')
+		def cellId = 'B1B2toC1'
+
+		def matching = this.class.getResource('/testcases/abstract1/A-to-B.halex')
+		def match1Id = 'A1A2toB1'
+		def match2Id = 'A3A4toB2'
+
+		def migrated = mergeWithMigrator(new JoinMergeMigrator(), cellId, toMigrate, matching)
+
+		def original = getProject(toMigrate).alignment.getCell(cellId)
+		def match1 = getProject(matching).alignment.getCell(match1Id)
+		def match2 = getProject(matching).alignment.getCell(match2Id)
+
+		// general checks
+		verifyJoinsJoin(migrated, original, [match1, match2])
+
+		// specific checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		// target
+		assertCellTargetEquals(migrated, ['C1'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1'], ['A2'], ['A3'], ['A4'])
+
+		// parameters
+		JoinParameter param = CellUtil.getFirstParameter(migrated, JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+
+		// order
+		assertJoinOrder(param, [
+			'A1',
+			'A2',
+			'A3',
+			'A4'
+		])
+
+		// conditions
+		assertJoinConditions(param, [
+			[
+				['A1', 'a1'],
+				['A2', 'a1']
+			],
+			[
+				['A2', 'a1'],
+				['A3', 'a1']
+			],
+			[
+				['A3', 'a3'],
+				['A4', 'a3'] //
+			]
+		])
+	}
+
+	// common tests
 
 	private void verifyJoinsJoin(List<MutableCell> migrated, Cell original, List<Cell> matches) {
 		// number of cells
