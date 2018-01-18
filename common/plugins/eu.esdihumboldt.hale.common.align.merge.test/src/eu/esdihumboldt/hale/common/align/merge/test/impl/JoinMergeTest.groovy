@@ -94,10 +94,10 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 
 	@Test
 	void mergeJoinsWithJoin_abstract1() {
-		def toMigrate = this.class.getResource('/testcases/abstract1/B-to-C.halex')
+		def toMigrate = this.class.getResource('/testcases/join-abstract1/B-to-C.halex')
 		def cellId = 'B1B2toC1'
 
-		def matching = this.class.getResource('/testcases/abstract1/A-to-B.halex')
+		def matching = this.class.getResource('/testcases/join-abstract1/A-to-B.halex')
 		def match1Id = 'A1A2toB1'
 		def match2Id = 'A3A4toB2'
 
@@ -145,6 +145,80 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 			[
 				['A3', 'a3'],
 				['A4', 'a3'] //
+			]
+		])
+	}
+
+	@Test
+	void mergeJoinsWithJoin_abstract2() {
+		def toMigrate = this.class.getResource('/testcases/join-abstract2-retype/B-to-C.halex')
+		def cellId = 'B1B2B3toC1'
+
+		def matching = this.class.getResource('/testcases/join-abstract2-retype/A-to-B.halex')
+		def match1Id = 'A1A2toB1'
+		def match2Id = 'A3toB2'
+		def match3Id = 'A4A5A6A7toB3'
+
+		def migrated = mergeWithMigrator(new JoinMergeMigrator(), cellId, toMigrate, matching)
+
+		def original = getProject(toMigrate).alignment.getCell(cellId)
+		def match1 = getProject(matching).alignment.getCell(match1Id)
+		def match2 = getProject(matching).alignment.getCell(match2Id)
+		def match3 = getProject(matching).alignment.getCell(match3Id)
+
+		// general checks
+		verifyJoinsJoin(migrated, original, [match1, match2, match3])
+
+		// specific checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// target
+		assertCellTargetEquals(migrated, ['C1'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1'], ['A2'], ['A3'], ['A4'], ['A5'], ['A6'], ['A7'])
+
+		// parameters
+		JoinParameter param = CellUtil.getFirstParameter(migrated, JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+
+		// order
+		assertJoinOrder(param, [
+			'A1',
+			'A2',
+			'A3',
+			'A4',
+			'A5',
+			'A6',
+			'A7'
+		])
+
+		// conditions
+		assertJoinConditions(param, [
+			[
+				['A1', 'a1'],
+				['A2', 'a1']
+			],
+			[
+				['A4', 'a4'],
+				['A5', 'a4']
+			],
+			[
+				['A4', 'a4'],
+				['A6', 'a4']
+			],
+			[
+				['A6', 'a6'],
+				['A7', 'a6']
+			],
+			[
+				['A1', 'a1'],
+				['A3', 'a1']
+			],
+			[
+				['A3', 'a4'],
+				['A4', 'a4'] //
 			]
 		])
 	}
