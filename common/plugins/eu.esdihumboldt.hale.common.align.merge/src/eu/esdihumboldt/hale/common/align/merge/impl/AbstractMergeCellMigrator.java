@@ -150,7 +150,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						mergeSource(newCell, sources.keys().iterator().next(), source, match,
 								originalCell, cellLog, context, migration, mergeIndex);
 
-						finalize(newCell, context, log);
+						finalize(newCell, migration, context, log);
 
 						cells.add(newCell);
 					}
@@ -200,7 +200,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 			}
 
-			finalize(newCell, context, log);
+			finalize(newCell, migration, context, log);
 
 			return Collections.singleton(newCell);
 		}
@@ -210,10 +210,12 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 	 * Finalize a created cell based on the context.
 	 * 
 	 * @param newCell the new merged cell
+	 * @param migration the alignment migration
 	 * @param context the cell merge context
 	 * @param log the cell log
 	 */
-	protected void finalize(MutableCell newCell, C context, SimpleLog log) {
+	protected void finalize(MutableCell newCell, AlignmentMigration migration, C context,
+			SimpleLog log) {
 		// override me
 	}
 

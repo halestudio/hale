@@ -22,10 +22,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
@@ -74,8 +76,9 @@ public class JoinContext {
 	 * 
 	 * @param newCell the merged cell
 	 * @param log the cell log
+	 * @param migration the alignment migration
 	 */
-	public void apply(MutableCell newCell, SimpleLog log) {
+	public void apply(MutableCell newCell, AlignmentMigration migration, SimpleLog log) {
 		ListMultimap<String, ParameterValue> params = ArrayListMultimap.create();
 
 		/*
@@ -109,8 +112,24 @@ public class JoinContext {
 			}
 		}
 
-		// TODO migrated conditions FIXME
+		// migrate original conditions
+		Set<JoinCondition> migrated = orgParameter.conditions.stream().map(condition -> {
+			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
+					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
+			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration
+					.entityReplacement(condition.joinProperty, log).orElse(condition.joinProperty);
+			JoinCondition result = new JoinCondition(baseProperty, joinProperty);
+			return result;
+		}).collect(Collectors.toSet());
+		for (JoinCondition condition : migrated) {
+			if (!condition.baseProperty.equals(condition.joinProperty)) {
+				// migrated condition may contain "loop" condition
 
+				cons.add(new Pair<>(condition.baseProperty, condition.joinProperty));
+			}
+		}
+
+		// all conditions
 		Set<JoinCondition> conditions = new HashSet<>();
 		for (Pair<PropertyEntityDefinition, PropertyEntityDefinition> condition : cons) {
 			conditions.add(new JoinCondition(condition.getFirst(), condition.getSecond()));

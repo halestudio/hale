@@ -95,8 +95,6 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 					source.getDefinition());
 			return;
 		}
-
-		// TODO conditions
 	}
 
 	@SuppressWarnings("unused")
@@ -116,8 +114,6 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 			context.addOrderReplacement((TypeEntityDefinition) source, matchParameter.types
 					.toArray(new TypeEntityDefinition[matchParameter.types.size()]));
 		}
-
-		// TODO conditions
 
 		// add join match to context (for match conditions)
 		context.addJoinMatch(match);
@@ -147,8 +143,9 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 	}
 
 	@Override
-	protected void finalize(MutableCell newCell, JoinContext context, SimpleLog log) {
-		context.apply(newCell, log);
+	protected void finalize(MutableCell newCell, AlignmentMigration migration, JoinContext context,
+			SimpleLog log) {
+		context.apply(newCell, migration, log);
 	}
 
 }

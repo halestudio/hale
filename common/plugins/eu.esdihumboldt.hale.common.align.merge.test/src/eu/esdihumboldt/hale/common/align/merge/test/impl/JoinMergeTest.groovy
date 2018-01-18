@@ -139,7 +139,7 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 				['A2', 'a1']
 			],
 			[
-				['A2', 'a1'],
+				['A1', 'a1'],
 				['A3', 'a1']
 			],
 			[
