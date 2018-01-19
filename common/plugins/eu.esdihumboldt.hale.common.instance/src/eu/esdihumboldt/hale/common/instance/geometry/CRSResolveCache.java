@@ -39,4 +39,13 @@ public interface CRSResolveCache {
 	@Nullable
 	CRSDefinition resolveCRS(CoordinateReferenceSystem crs);
 
+	/**
+	 * Corrects the cached {@link CRSDefinition} for the given
+	 * {@link CoordinateReferenceSystem}
+	 * 
+	 * @param crs the CRS
+	 * @param crsDef the CRS definition or <code>null</code> to remove the
+	 *            cached definition
+	 */
+	void reviseCache(CoordinateReferenceSystem crs, CRSDefinition crsDef);
 }
