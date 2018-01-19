@@ -17,9 +17,8 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -61,9 +60,11 @@ public final class MappingContext {
 
 	private final Alignment alignment;
 	private final ApplicationSchema applicationSchema;
-	private final Deque<FeatureTypeMapping> featureTypeMappings = new LinkedList<>();
 	private final Map<String, Value> transformationProperties;
 	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
+
+	private final Map<String, FeatureTypeMapping> featureTypeMappings = new HashMap<>();
+	private FeatureTypeMapping currentFeatureTypeMapping;
 
 	/**
 	 * Constructor Only the first schema is used
@@ -94,8 +95,15 @@ public final class MappingContext {
 	 * @return the same FeatureTypeMapping for chaining method calls
 	 */
 	FeatureTypeMapping addNextFeatureTypeMapping(final FeatureTypeMapping featureTypeMapping) {
-		featureTypeMappings.push(Objects.requireNonNull(featureTypeMapping));
-		return featureTypeMapping;
+		final String key = Objects
+				.requireNonNull(featureTypeMapping, "Feature Type Mapping is null").getQName()
+				.toString();
+		currentFeatureTypeMapping = featureTypeMappings.get(key);
+		if (currentFeatureTypeMapping == null) {
+			currentFeatureTypeMapping = featureTypeMapping;
+			featureTypeMappings.put(key, featureTypeMapping);
+		}
+		return currentFeatureTypeMapping;
 	}
 
 	/**
@@ -104,7 +112,7 @@ public final class MappingContext {
 	 * @return Feature Type Mapping name
 	 */
 	String getFeatureTypeName() {
-		return featureTypeMappings.peek().getName();
+		return currentFeatureTypeMapping.getName();
 	}
 
 	Value getTransformationProperty(final String name) {
@@ -131,7 +139,7 @@ public final class MappingContext {
 	 * @return MappingTable
 	 */
 	MappingTable getTable(String tableName) {
-		return featureTypeMappings.peek().getTable(tableName);
+		return currentFeatureTypeMapping.getTable(tableName);
 	}
 
 	void addValueMappingToTable(final Property target, final MappingValue value,
@@ -178,7 +186,7 @@ public final class MappingContext {
 	public XtraServerMapping getMapping() {
 		final XtraServerMapping xtraServerMapping = XtraServerMapping
 				.create(this.applicationSchema);
-		this.featureTypeMappings.forEach(xtraServerMapping::addFeatureTypeMapping);
+		this.featureTypeMappings.values().forEach(xtraServerMapping::addFeatureTypeMapping);
 		return xtraServerMapping;
 	}
 
