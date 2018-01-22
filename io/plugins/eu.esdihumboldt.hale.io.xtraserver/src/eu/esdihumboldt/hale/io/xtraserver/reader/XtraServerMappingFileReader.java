@@ -133,7 +133,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 			NamedEntityType targetType;
 
 			for (String featureType : xsm.getFeatureTypeList(false)) {
-				FeatureTypeMapping ftm = xsm.getFeatureTypeMapping(featureType, true);
+				FeatureTypeMapping ftm = xsm.getFeatureTypeMapping(featureType, true).get();
 				QName targetTypeName = ftm.getQName();
 
 				if (targetTypeName == null) {

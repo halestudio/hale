@@ -25,8 +25,6 @@ import org.w3c.dom.Node;
 
 import de.interactive_instruments.xtraserver.config.util.api.AssociationTarget;
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
-import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -130,17 +128,6 @@ public class XtraServerMappingGenerator {
 					}
 					this.progress.advance(1);
 				}
-				this.progress.setCurrentTask(
-						"Updating joins for Feature Type " + featureTypeMapping.getName());
-				for (final MappingJoin join : featureTypeMapping.getJoins()) {
-					if (join.getTarget() == null) {
-						final String tableName = join.getTargetTable();
-						final MappingTable table = featureTypeMapping.getTable(tableName);
-						join.setTarget(table.getTarget());
-						table.addJoinPath(join);
-					}
-				}
-				this.progress.advance(1);
 			}
 			else {
 				this.progress.advance(this.alignment.getPropertyCells(typeCell).size());

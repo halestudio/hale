@@ -83,7 +83,7 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 					join = MappingJoin.create();
 					joins.add(join);
 				}
-				join.getJoinConditions().add(condition);
+				join.addCondition(condition);
 				previousCondition = condition;
 			}
 			joins.forEach(j -> featureTypeMapping.addJoin(j));
@@ -135,16 +135,14 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 					.getTypeEntity(condition.baseProperty);
 
 			final MappingTable baseTable = createTableIfAbsent(featureTypeMapping, baseType);
-
-			final Condition xsJoinCondition = Condition.create();
-			xsJoinCondition.setTargetField(condition.joinProperty.getPropertyPath().iterator()
-					.next().getChild().getDisplayName());
+			final String baseField = condition.joinProperty.getPropertyPath().iterator().next()
+					.getChild().getDisplayName();
 			final MappingTable joinTable = createTableIfAbsent(featureTypeMapping, joinType);
-			xsJoinCondition.setTargetTable(joinTable);
+			final String joinField = condition.baseProperty.getPropertyPath().iterator().next()
+					.getChild().getDisplayName();
 
-			xsJoinCondition.setSourceField(condition.baseProperty.getPropertyPath().iterator()
-					.next().getChild().getDisplayName());
-			xsJoinCondition.setSourceTable(baseTable);
+			final Condition xsJoinCondition = Condition.create(baseTable, baseField, joinTable,
+					joinField);
 			sortedConditions.add(xsJoinCondition);
 		}
 		return sortedConditions;

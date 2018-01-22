@@ -96,7 +96,7 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 			final XtraServerMapping mapping = generator.generate(reporter);
 			final OutputStream out = getTarget().getOutput();
 			progress.setCurrentTask("Writing XtraServer Mapping file");
-			mapping.writeToStream(out);
+			mapping.writeToStream(out, false);
 			progress.advance(1);
 
 			final Set<String> missingAssociationTargets = generator.getMissingAssociationTargets();

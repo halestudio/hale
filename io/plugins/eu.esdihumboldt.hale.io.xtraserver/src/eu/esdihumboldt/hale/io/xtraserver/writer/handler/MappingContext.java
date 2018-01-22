@@ -186,7 +186,8 @@ public final class MappingContext {
 	public XtraServerMapping getMapping() {
 		final XtraServerMapping xtraServerMapping = XtraServerMapping
 				.create(this.applicationSchema);
-		this.featureTypeMappings.values().forEach(xtraServerMapping::addFeatureTypeMapping);
+		this.featureTypeMappings.values().forEach(featureTypeMapping -> xtraServerMapping
+				.addFeatureTypeMapping(featureTypeMapping, true));
 		return xtraServerMapping;
 	}
 
