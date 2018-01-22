@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * * Transforms the custom function
@@ -58,7 +59,9 @@ class CustomFunctionAdvToGeographicalNameSimple extends FormattedStringHandler {
 
 		mappingValue.setTarget(
 				currentPath + "/gn:GeographicalName/gn:spelling/gn:SpellingOfName/gn:text");
-		mappingValue.setValue(propertyName(targetProperty.getDefinition().getPropertyPath()));
+
+		mappingValue.setValue(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+				.getDefinition().getPropertyPath()));
 
 		final List<MappingValue> constantValues = new ArrayList<MappingValue>();
 

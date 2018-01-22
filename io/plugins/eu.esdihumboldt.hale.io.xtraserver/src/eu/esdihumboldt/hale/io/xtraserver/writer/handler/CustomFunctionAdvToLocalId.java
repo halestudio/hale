@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.inspire.id.default' to a
@@ -42,7 +43,11 @@ class CustomFunctionAdvToLocalId extends FormattedStringHandler {
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
 		setExpressionType(mappingValue);
-		mappingValue.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$.id");
+
+		final String propertyName = propertyName(AppSchemaMappingUtils
+				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
+		mappingValue
+				.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName);
 		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
 	}
 

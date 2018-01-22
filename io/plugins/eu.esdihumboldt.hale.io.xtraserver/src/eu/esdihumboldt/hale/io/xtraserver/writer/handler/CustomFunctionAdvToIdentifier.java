@@ -19,6 +19,7 @@ import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.inspire.identifier' to a
@@ -45,11 +46,16 @@ class CustomFunctionAdvToIdentifier extends FormattedStringHandler {
 		setExpressionType(mappingValue);
 		final Value inspireNamespace = mappingContext
 				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
+
+		final String propertyName = propertyName(AppSchemaMappingUtils
+				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
 		if (inspireNamespace.isEmpty()) {
-			mappingValue.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$.id");
+			mappingValue.setValue(
+					"'" + mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName);
 		}
 		else {
-			mappingValue.setValue("'" + inspireNamespace.as(String.class) + "' || $T$.id");
+			mappingValue
+					.setValue("'" + inspireNamespace.as(String.class) + "' || $T$." + propertyName);
 		}
 		final String propPath = buildPathWithoutAttribute(
 				targetProperty.getDefinition().getPropertyPath());
