@@ -30,7 +30,7 @@
       <provider
             class="eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingFileWriter"
             id="eu.esdihumboldt.hale.io.xtraserver.writer"
-            name="XtraServer Mapping File">
+            name="XtraServer Mapping">
          <contentType ref="eu.esdihumboldt.hale.io.xtraserver.mapping.xml" />
          <contentType ref="eu.esdihumboldt.hale.io.xtraserver.mapping.archive"/>
       </provider>
