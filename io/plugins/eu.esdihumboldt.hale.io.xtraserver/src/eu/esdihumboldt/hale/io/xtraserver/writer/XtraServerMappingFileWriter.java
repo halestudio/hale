@@ -45,6 +45,10 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 
 	private final static String WRITER_TYPE_NAME = "XtraServer Mapping Exporter";
 
+	private static final String CONTENT_TYPE_MAPPING = "eu.esdihumboldt.hale.io.xtraserver.mapping.xml";
+
+	private static final String CONTENT_TYPE_ARCHIVE = "eu.esdihumboldt.hale.io.xtraserver.mapping.archive";
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
 	 */
@@ -95,8 +99,18 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 					Collections.unmodifiableMap(projectProperties));
 			final XtraServerMapping mapping = generator.generate(reporter);
 			final OutputStream out = getTarget().getOutput();
-			progress.setCurrentTask("Writing XtraServer Mapping file");
-			mapping.writeToStream(out, false);
+			if (getContentType().getId().equals(CONTENT_TYPE_MAPPING)) {
+				progress.setCurrentTask("Writing XtraServer Mapping file");
+				mapping.writeToStream(out, false);
+			}
+			else if (getContentType().getId().equals(CONTENT_TYPE_ARCHIVE)) {
+				progress.setCurrentTask("Writing XtraServer Mapping Archive");
+				mapping.writeToStream(out, true);
+			}
+			else {
+				throw new IOProviderConfigurationException(
+						"Content type not supported: " + getContentType().getName());
+			}
 			progress.advance(1);
 
 			final Set<String> missingAssociationTargets = generator.getMissingAssociationTargets();
