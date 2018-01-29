@@ -42,7 +42,6 @@ import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSResolveCache;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.EPSGResolveCache;
-import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -162,8 +161,7 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 					if (crs != null) {
 						crsDef = CRSDefinitionUtil.createDefinition(crs, crsCache);
 
-						if (crsDef instanceof WKTDefinition
-								&& crsDef.getCRS().getIdentifiers().isEmpty()) {
+						if (crs.getIdentifiers().isEmpty()) {
 							// Force CRS dialog prompt if the WKT definition
 							// does not contain an EPSG code for the CRS. This
 							// is to prevent that a CRS definition without
@@ -172,8 +170,12 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 							// code, the user can still provide the WKT
 							// definition in the dialog. In case of a headless
 							// transformation, the WKT definition will be used.
+
 							crsDef = crsProvider.getCRS(type,
 									Collections.singletonList(propertyName), crsDef);
+							// Update the cache with the definition of the
+							// CRSProvider
+							crsCache.reviseCache(crs, crsDef);
 						}
 					}
 					else {
