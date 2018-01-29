@@ -46,10 +46,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -83,6 +83,85 @@ public class ChooseHaleConnectProjectWizardPage
 	private Text keywordFilter;
 	private ComboViewer ownerFilter;
 	private TableViewer projects;
+
+	private class GetProjectsCallback implements FutureCallback<List<HaleConnectProjectInfo>> {
+
+		@Override
+		public void onSuccess(List<HaleConnectProjectInfo> result) {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					if (projects == null) {
+						return;
+					}
+
+					synchronized (projects) {
+						Object currentInput = projects.getInput();
+						if (currentInput != null && currentInput instanceof List<?>) {
+							@SuppressWarnings("unchecked")
+							List<HaleConnectProjectInfo> updatedProjects = new ArrayList<>(
+									(List<HaleConnectProjectInfo>) currentInput);
+							updatedProjects.addAll(result);
+							projects.setInput(updatedProjects);
+						}
+						else {
+							projects.setInput(result);
+						}
+						projects.getTable().setEnabled(true);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onFailure(Throwable t) {
+			Display.getDefault().asyncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					if (haleConnect == null) {
+						log.userError(
+								"Unable to connect to hale connect, please check your network connection.",
+								t);
+						return;
+					}
+
+					if (t instanceof HaleConnectException
+							&& ((HaleConnectException) t).getStatusCode() == 401) {
+						// In case of 401 (Unauthorized) the most likely cause
+						// is that the API token has expired
+						log.userError(
+								"Unable to retrieve projects from hale connect due to missing permissions. Please re-login and try again.");
+						return;
+					}
+
+					String configuredBasePath = haleConnect.getBasePathManager()
+							.getBasePath(HaleConnectServices.PROJECT_STORE);
+					if (configuredBasePath
+							.equals(PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
+						log.userError(
+								"Unable to connect to hale connect, please check your network connection.",
+								t);
+					}
+					else {
+						// Inform user that the default base path was modified
+						log.userError(
+								MessageFormat.format(
+										"Unable to connect to hale connect, please check your network connection.\n\nNote that the configured project store base path ({0}) differs from the default value ({1}), which may also be the cause of this error.",
+										configuredBasePath,
+										PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT),
+								t);
+					}
+
+					if (projects != null) {
+						projects.setInput(
+								Arrays.asList("Error retrieving projects from hale connect."));
+					}
+				}
+			});
+		}
+	}
 
 	/**
 	 * Create the wizard page
@@ -188,7 +267,7 @@ public class ChooseHaleConnectProjectWizardPage
 		}
 		if (!orgs.isEmpty()) {
 			availableFilters.add(new OwnerFilterEntry(orgs.toArray(new Owner[] {}),
-					"My organisation's projects"));
+					"My organisations' projects"));
 		}
 
 		ownerFilter.setInput(availableFilters);
@@ -301,7 +380,7 @@ public class ChooseHaleConnectProjectWizardPage
 				.setLayoutData(GridDataFactory.fillDefaults().span(4, 1).grab(true, true).create());
 		projects.setContentProvider(ArrayContentProvider.getInstance());
 
-		populateProjects(projectsTable);
+		populateProjects();
 
 		final ProjectFilter projectFilter = new ProjectFilter(projects);
 		projects.addFilter(projectFilter);
@@ -344,7 +423,7 @@ public class ChooseHaleConnectProjectWizardPage
 			 */
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				populateProjects(projectsTable);
+				populateProjects();
 			}
 
 		});
@@ -356,59 +435,21 @@ public class ChooseHaleConnectProjectWizardPage
 
 	}
 
-	private void populateProjects(final Table projectsTable) {
-		projects.setInput(Arrays.asList("Loading..."));
+	private void populateProjects() {
+		// Use String[] input here to allow GetProjectsCallback to differentiate
+		// between loading/error messages and actual content
+		projects.setInput(new String[] { "Loading..." });
 		projects.getTable().setEnabled(false);
 
-		ListenableFuture<List<HaleConnectProjectInfo>> projectsFuture;
 		try {
-			projectsFuture = haleConnect.getProjectsAsync();
-			Futures.addCallback(projectsFuture, new FutureCallback<List<HaleConnectProjectInfo>>() {
+			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback());
+			for (String orgId : haleConnect.getSession().getOrganisationIds()) {
+				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback());
+			}
 
-				@Override
-				public void onSuccess(List<HaleConnectProjectInfo> result) {
-					Display.getDefault().syncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							projects.setInput(result.toArray());
-							projectsTable.setEnabled(true);
-						}
-					});
-				}
-
-				@Override
-				public void onFailure(Throwable t) {
-					String configuredBasePath = haleConnect.getBasePathManager()
-							.getBasePath(HaleConnectServices.PROJECT_STORE);
-					if (configuredBasePath
-							.equals(PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
-						log.userError(
-								"Unable to connect to hale connect, please check your network connection.",
-								t);
-					}
-					else {
-						// Inform user that the default base path was modified
-						log.userError(
-								MessageFormat.format(
-										"Unable to connect to hale connect, please check your network connection.\n\nNote that the configured project store base path ({0}) differs from the default value ({1}), which may also be the cause of this error.",
-										configuredBasePath,
-										PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT),
-								t);
-					}
-					Display.getDefault().syncExec(new Runnable() {
-
-						@Override
-						public void run() {
-							projects.setInput(
-									Arrays.asList("Error retrieving projects from hale connect."));
-						}
-					});
-				}
-			});
 		} catch (HaleConnectException e1) {
 			log.error(e1.getMessage(), e1);
-			projects.setInput(Arrays.asList("Error retrieving projects from hale connect."));
+			projects.setInput(new String[] { "Error retrieving projects from hale connect." });
 		}
 	}
 

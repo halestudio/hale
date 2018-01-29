@@ -45,14 +45,26 @@ public abstract class AbstractInstanceReader extends GZipEnabledImport implement
 	private final CRSProvider wrappingProvider = new CRSProvider() {
 
 		@Override
-		public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
+		public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath,
+				CRSDefinition defaultCrs) {
 			CRSDefinition result = getDefaultSRS();
 
+			// Extend interface (default) to be able to provide default if
+			// provider can't resolve it
 			if (result == null && crsProvider != null) {
-				result = crsProvider.getCRS(parentType, propertyPath);
+				result = crsProvider.getCRS(parentType, propertyPath, defaultCrs);
+			}
+
+			if (result == null) {
+				return defaultCrs;
 			}
 
 			return result;
+		}
+
+		@Override
+		public CRSDefinition getCRS(TypeDefinition parentType, List<QName> propertyPath) {
+			return getCRS(parentType, propertyPath, null);
 		}
 	};
 

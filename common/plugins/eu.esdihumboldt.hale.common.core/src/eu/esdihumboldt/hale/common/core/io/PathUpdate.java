@@ -205,7 +205,10 @@ public class PathUpdate {
 	 * @return the new URI
 	 */
 	public URI changePath(URI oldSource) {
-		if (oldRaw != null) {
+		if (oldRaw == null || oldRaw.isEmpty()) {
+			return oldSource;
+		}
+		else {
 			if (oldSource.toString().startsWith(oldRaw)) {
 				return URI.create(oldSource.toString().replace(oldRaw, newRaw));
 			}
@@ -216,9 +219,9 @@ public class PathUpdate {
 					URI oldRawUri = new URI(oldRaw);
 					// URI.normalize() will not remove the additional slashes
 					URI normalizedOldRaw = new URI(oldRawUri.getScheme(), oldRawUri.getHost(),
-							oldRawUri.getPath(), oldRawUri.getFragment());
+							oldRawUri.getPath(), oldRawUri.getQuery(), oldRawUri.getFragment());
 					URI normalizedOldSource = new URI(oldSource.getScheme(), oldSource.getHost(),
-							oldSource.getPath(), oldSource.getFragment());
+							oldSource.getPath(), oldSource.getQuery(), oldSource.getFragment());
 
 					return URI.create(normalizedOldSource.toString()
 							.replace(normalizedOldRaw.toString(), newRaw));
@@ -227,9 +230,6 @@ public class PathUpdate {
 					return oldSource;
 				}
 			}
-		}
-		else {
-			return oldSource;
 		}
 	}
 

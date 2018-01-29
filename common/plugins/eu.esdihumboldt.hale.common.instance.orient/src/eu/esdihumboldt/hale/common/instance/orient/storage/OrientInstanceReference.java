@@ -24,6 +24,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
@@ -37,7 +38,7 @@ import net.jcip.annotations.Immutable;
  * @author Simon Templer
  */
 @Immutable
-public class OrientInstanceReference implements InstanceReference {
+public class OrientInstanceReference implements InstanceReference, Identifiable {
 
 	private static final ALogger log = ALoggerFactory.getLogger(OrientInstanceReference.class);
 
@@ -61,6 +62,7 @@ public class OrientInstanceReference implements InstanceReference {
 	/**
 	 * @return the id
 	 */
+	@Override
 	public ORID getId() {
 		return id;
 	}

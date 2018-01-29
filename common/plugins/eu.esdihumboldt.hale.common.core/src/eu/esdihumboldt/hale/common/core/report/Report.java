@@ -75,11 +75,31 @@ public interface Report<T extends Message> {
 	public Collection<T> getWarnings();
 
 	/**
+	 * Get the total number of warnings. This may be more than the number of
+	 * warnings actually listed with {@link #getWarnings()}.
+	 * 
+	 * @return the number of warnings
+	 */
+	default int getTotalWarnings() {
+		return getWarnings().size();
+	}
+
+	/**
 	 * Get the error messages
 	 * 
 	 * @return the error messages
 	 */
 	public Collection<T> getErrors();
+
+	/**
+	 * Get the total number of errors. This may be more than the number of
+	 * errors actually listed with {@link #getErrors()}.
+	 * 
+	 * @return the number of warnings
+	 */
+	default int getTotalErrors() {
+		return getErrors().size();
+	}
 
 	/**
 	 * Get the info messages
@@ -89,10 +109,41 @@ public interface Report<T extends Message> {
 	public Collection<T> getInfos();
 
 	/**
+	 * Get the total number of info messages. This may be more than the number
+	 * of messages actually listed with {@link #getInfos()}.
+	 * 
+	 * @return the number of warnings
+	 */
+	default int getTotalInfos() {
+		return getInfos().size();
+	}
+
+	/**
 	 * Get the message type (for determining the message type at runtime).
 	 * 
 	 * @return the message type
 	 */
 	public Class<T> getMessageType();
+
+	/**
+	 * @return if the report contains errors
+	 */
+	default boolean hasErrors() {
+		return getTotalErrors() > 0;
+	}
+
+	/**
+	 * @return if the report contains warnings
+	 */
+	default boolean hasWarnings() {
+		return getTotalWarnings() > 0;
+	}
+
+	/**
+	 * @return if the report contains info messages
+	 */
+	default boolean hasInfos() {
+		return getTotalInfos() > 0;
+	}
 
 }

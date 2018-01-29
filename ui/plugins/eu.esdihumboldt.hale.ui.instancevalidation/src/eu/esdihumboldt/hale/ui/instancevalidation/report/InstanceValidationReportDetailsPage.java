@@ -16,7 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.instancevalidation.report;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -57,6 +60,7 @@ import com.google.common.collect.Iterators;
 
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
+import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.ui.instancevalidation.InstanceValidationUIPlugin;
@@ -78,6 +82,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 	private TreeViewer treeViewer;
 	private InstanceValidationReportDetailsContentProvider contentProvider;
 	private Image reportImage;
+	private int more = 0;
 
 	/**
 	 * @see CustomReportDetailsPage#createControls(Composite)
@@ -162,12 +167,31 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 		return filteredTree;
 	}
 
+	@Override
+	public void setMore(int more) {
+		this.more = more;
+	}
+
 	/**
 	 * @see CustomReportDetailsPage#setInput(Collection, MessageType)
 	 */
 	@Override
 	public void setInput(Collection<? extends Message> messages, MessageType type) {
-		treeViewer.setInput(messages);
+		if (more > 0) {
+			Collection<Message> messageList = new ArrayList<>(messages);
+
+			String title = MessageFormat.format("{0} more warnings", more);
+			String message = MessageFormat
+					.format("{0} more validation warnings are not listed explicitly", more);
+
+			messageList.add(new DefaultInstanceValidationMessage(null, null,
+					Collections.<QName> emptyList(), title, message));
+
+			treeViewer.setInput(messageList);
+		}
+		else {
+			treeViewer.setInput(messages);
+		}
 
 		// initially expand all levels
 		treeViewer.expandAll();

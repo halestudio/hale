@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.common.instance.graph.reference;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,6 +40,7 @@ import com.tinkerpop.pipes.branch.LoopPipe.LoopBundle;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.graph.reference.internal.ReferencesInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -85,7 +85,7 @@ public class ReferenceGraph<T> {
 
 	}
 
-	private static final ALogger log = ALoggerFactory.getLogger(ReferenceGraph.class);
+	private static final ALogger logger = ALoggerFactory.getLogger(ReferenceGraph.class);
 
 	/**
 	 * Iterator for instance partitions.
@@ -97,13 +97,16 @@ public class ReferenceGraph<T> {
 		private int partCount = 0;
 		private int partSum = 0;
 		private int biggestAtom = 0;
+		private final SimpleLog log;
 
 		/**
 		 * @param maxObjects the guiding value for the maximum number of objects
 		 *            in a part
+		 * @param log the operation log
 		 */
-		public PartitionIterator(int maxObjects) {
+		public PartitionIterator(int maxObjects, SimpleLog log) {
 			this.maxObjects = maxObjects;
+			this.log = log;
 		}
 
 		@Override
@@ -179,13 +182,13 @@ public class ReferenceGraph<T> {
 
 			partCount++;
 			partSum += part.size();
-			log.debug("Reference based partitioning - Part {} - {} instances", partCount,
+			logger.debug("Reference based partitioning - Part {} - {} instances", partCount,
 					part.size());
 
 			if (!hasNext()) {
-				log.info(MessageFormat.format(
+				log.info(
 						"Completed partitioning of {1} instances in {0} parts, biggest inseparable set of instances was of size {2}.",
-						partCount, partSum, biggestAtom));
+						partCount, partSum, biggestAtom);
 			}
 
 			return new ReferencesInstanceCollection(part, originalCollection);
@@ -350,16 +353,30 @@ public class ReferenceGraph<T> {
 	 * 
 	 * @param maxObjects the guiding value for the maximum number of objects in
 	 *            a part
+	 * @param log the operation log
+	 * @return an iterator of instance collections, each instance collection
+	 *         represents a part
+	 */
+	public Iterator<InstanceCollection> partition(int maxObjects, SimpleLog log) {
+		if (!partitioned) {
+			partitioned = true;
+			return new PartitionIterator(maxObjects, log);
+		}
+		throw new IllegalStateException(
+				"Partitioning the instance collection can only be done once");
+	}
+
+	/**
+	 * Partition the collected instances in parts that respectively contain all
+	 * referenced instances.
+	 * 
+	 * @param maxObjects the guiding value for the maximum number of objects in
+	 *            a part
 	 * @return an iterator of instance collections, each instance collection
 	 *         represents a part
 	 */
 	public Iterator<InstanceCollection> partition(int maxObjects) {
-		if (!partitioned) {
-			partitioned = true;
-			return new PartitionIterator(maxObjects);
-		}
-		throw new IllegalStateException(
-				"Partitioning the instance collection can only be done once");
+		return partition(maxObjects, SimpleLog.fromLogger(logger));
 	}
 
 	private Vertex getVertex(T id) {

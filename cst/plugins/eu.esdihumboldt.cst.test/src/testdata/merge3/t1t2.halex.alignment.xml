@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.merge" id="Caded068d-ab39-4a9f-abf7-8608f6947651" priority="normal">
+        <source>
+            <class>
+                <type name="River" ns="http://www.example.org/t1/"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="Watercourse" ns="http://www.example.org/t2/"/>
+            </class>
+        </target>
+        <parameter value="false" name="auto_detect"/>
+        <parameter value="identifier" name="property"/>
+        <parameter value="type" name="property"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C2d9a5c08-d04c-4069-af66-17031ac0c42e" priority="normal">
+        <source>
+            <property>
+                <type name="River" ns="http://www.example.org/t1/"/>
+                <child name="identifier"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Watercourse" ns="http://www.example.org/t2/"/>
+                <child name="id"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C2d24e0ba-3636-413f-87fa-05414e4a6373" priority="normal">
+        <source>
+            <property>
+                <type name="River" ns="http://www.example.org/t1/"/>
+                <child name="name"/>
+                <child name="name"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Watercourse" ns="http://www.example.org/t2/"/>
+                <child name="name"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cc631f151-149a-4628-992f-dbc39544a35f" priority="normal">
+        <source>
+            <property>
+                <type name="River" ns="http://www.example.org/t1/"/>
+                <child name="type"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Watercourse" ns="http://www.example.org/t2/"/>
+                <child name="type"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

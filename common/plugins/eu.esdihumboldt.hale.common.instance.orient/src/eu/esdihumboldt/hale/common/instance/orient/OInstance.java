@@ -31,6 +31,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -41,7 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class OInstance extends OGroup implements MutableInstance {
+public class OInstance extends OGroup implements MutableInstance, Identifiable {
 
 	/**
 	 * Name for the special field for an instance value
@@ -94,7 +95,8 @@ public class OInstance extends OGroup implements MutableInstance {
 	 * @param db the database
 	 * @param dataSet the data set the instance is associated to
 	 */
-	public OInstance(ODocument document, TypeDefinition typeDef, ODatabaseRecord db, DataSet dataSet) {
+	public OInstance(ODocument document, TypeDefinition typeDef, ODatabaseRecord db,
+			DataSet dataSet) {
 		super(document, typeDef, db);
 
 		this.dataSet = dataSet;
@@ -224,8 +226,8 @@ public class OInstance extends OGroup implements MutableInstance {
 	@Override
 	public void putMetaData(String key, Object obj) {
 
-		Preconditions
-				.checkArgument(!(obj instanceof ODocument || obj instanceof Instance || obj instanceof Group));
+		Preconditions.checkArgument(
+				!(obj instanceof ODocument || obj instanceof Instance || obj instanceof Group));
 
 		ODocument metaData;
 
@@ -273,8 +275,8 @@ public class OInstance extends OGroup implements MutableInstance {
 	public void setMetaData(String key, Object... values) {
 
 		for (Object value : values) {
-			Preconditions
-					.checkArgument(!(value instanceof ODocument || value instanceof Instance || value instanceof Group));
+			Preconditions.checkArgument(!(value instanceof ODocument || value instanceof Instance
+					|| value instanceof Group));
 		}
 
 		ODocument metaData;
@@ -286,6 +288,14 @@ public class OInstance extends OGroup implements MutableInstance {
 			metaData = ((ODocument) document.field(FIELD_METADATA));
 
 		setPropertyInternal(metaData, new QName(key), values);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Identifiable#getId()
+	 */
+	@Override
+	public Object getId() {
+		return getDocument().getIdentity();
 	}
 
 }

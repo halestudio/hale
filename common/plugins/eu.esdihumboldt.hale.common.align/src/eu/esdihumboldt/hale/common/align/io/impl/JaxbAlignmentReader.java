@@ -60,7 +60,7 @@ public class JaxbAlignmentReader extends AbstractAlignmentReader {
 				entityResolver = getServiceProvider().getService(EntityResolver.class);
 			}
 			alignment = JaxbAlignmentIO.load(in, reporter, getSourceSchema(), getTargetSchema(),
-					getPathUpdater(), entityResolver);
+					getPathUpdater(), entityResolver, getServiceProvider());
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.services">
+      <serviceFactory
+            factoryClass="eu.esdihumboldt.hale.ui.index.ServiceFactory">
+         <service
+               serviceClass="eu.esdihumboldt.hale.ui.index.InstanceIndexUpdateService"></service>
+      </serviceFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="eu.esdihumboldt.hale.ui.index.internal.IndexStartup">
+      </startup>
+   </extension>
+
+</plugin>

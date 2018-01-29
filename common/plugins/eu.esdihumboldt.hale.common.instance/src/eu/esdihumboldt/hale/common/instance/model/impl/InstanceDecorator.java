@@ -107,4 +107,20 @@ public class InstanceDecorator implements Instance {
 	public Set<String> getMetaDataNames() {
 		return instance.getMetaDataNames();
 	}
+
+	/**
+	 * Get the root {@link Instance} in a layer of {@link InstanceDecorator}s
+	 * 
+	 * @param inst <code>Instance</code> to find the root of
+	 * @return The root instance of <code>inst</code> itself if it is not an
+	 *         <code>InstanceDecorator</code>
+	 */
+	public static Instance getRoot(Instance inst) {
+		Instance current = inst;
+		while (current instanceof InstanceDecorator) {
+			current = ((InstanceDecorator) current).getOriginalInstance();
+		}
+
+		return current;
+	}
 }

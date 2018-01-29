@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<ex:River xmlns:gml="http://www.opengis.net/gml" xmlns:ns1="http://www.w3.org/1999/xhtml" xmlns:wfs="http://www.opengis.net/wfs" xmlns:ex="eu:esdihumboldt:hale:example" xmlns:hfp="http://www.w3.org/2001/XMLSchema-hasFacetAndProperty" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="eu:esdihumboldt:hale:example platform:/plugin/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro/hydroEx.xsd" fid="_d1a6215e-3185-429f-b9b1-f160437e4f99">
+  <gml:description>Contains Ordnance Survey data © Crown copyright and database right 2011</gml:description>
+  <gml:name></gml:name>
+  <ex:geometry>
+    <gml:LineString srsName="EPSG:27700">
+      <gml:coordinates>389320.0,603730.0 389050.0,603720.0 388910.0,603630.0 388700.0,603560.0 388510.0,603570.0</gml:coordinates>
+    </gml:LineString>
+  </ex:geometry>
+  <ex:code>6223</ex:code>
+  <ex:identifier>3889100603630</ex:identifier>
+  <ex:width>15.0</ex:width>

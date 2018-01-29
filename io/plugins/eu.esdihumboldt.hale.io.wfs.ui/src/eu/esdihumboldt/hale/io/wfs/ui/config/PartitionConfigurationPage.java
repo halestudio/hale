@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.wfs.ui.config;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -33,10 +34,11 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
  * 
  * @author Simon Templer
  */
-public class PartitionConfigurationPage extends
-		AbstractConfigurationPage<PartitioningWFSWriter, IOWizard<PartitioningWFSWriter>> {
+public class PartitionConfigurationPage
+		extends AbstractConfigurationPage<PartitioningWFSWriter, IOWizard<PartitioningWFSWriter>> {
 
 	private Spinner instances;
+	private ComboViewer partitionMode;
 
 	/**
 	 * Default constructor.
@@ -62,6 +64,10 @@ public class PartitionConfigurationPage extends
 	public boolean updateConfiguration(PartitioningWFSWriter provider) {
 		provider.setParameter(PartitioningWFSWriter.PARAM_INSTANCES_THRESHOLD,
 				Value.of(instances.getSelection()));
+
+		eu.esdihumboldt.hale.io.gml.ui.PartitionConfigurationPage.applyPartitionMode(partitionMode,
+				provider);
+
 		return true;
 	}
 
@@ -75,6 +81,7 @@ public class PartitionConfigurationPage extends
 		part.setText("Partitioning");
 		groupData.applyTo(part);
 
+		// threshold
 		instances = new Spinner(part, SWT.BORDER);
 		instances.setMinimum(1);
 		instances.setMaximum(100000);
@@ -85,10 +92,17 @@ public class PartitionConfigurationPage extends
 		Label ext = new Label(part, SWT.NONE);
 		ext.setText("instances per transaction");
 
+		// threshold description
 		Label desc = new Label(part, SWT.WRAP);
 		GridDataFactory.swtDefaults().hint(400, SWT.DEFAULT).align(SWT.FILL, SWT.BEGINNING)
 				.span(2, 1).grab(true, false).applyTo(desc);
-		desc.setText("Number of instances that will be tried to fit into a single transaction. This number will only be exceeded if there are more objects that are all interconnected (e.g. a network).");
+		desc.setText(
+				"Number of instances that will be tried to fit into a single file. This number may only be exceeded if the partitioning mode does not allow separating a larger group of instances:");
+
+		// partitioning mode
+		partitionMode = eu.esdihumboldt.hale.io.gml.ui.PartitionConfigurationPage
+				.createPartitionModeSelector(part);
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(partitionMode.getControl());
 
 		setPageComplete(true);
 	}

@@ -319,7 +319,6 @@ public class HaleConnectSource<P extends ImportProvider> extends AbstractProvide
 
 	private void updateLoginStatus() {
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
-		loginButton.setEnabled(!hcs.isLoggedIn());
 		selectProjectButton.setEnabled(hcs.isLoggedIn());
 		if (hcs.isLoggedIn()) {
 			loginStatusLabel

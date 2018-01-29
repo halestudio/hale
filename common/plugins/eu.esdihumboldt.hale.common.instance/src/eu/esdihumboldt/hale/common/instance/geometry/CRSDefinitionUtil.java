@@ -23,6 +23,8 @@ import javax.annotation.Nullable;
 
 import org.geotools.gml2.SrsSyntax;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.CRS.AxisOrder;
+import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
@@ -55,13 +57,27 @@ public abstract class CRSDefinitionUtil {
 	public static CRSDefinition createDefinition(CoordinateReferenceSystem crs,
 			@Nullable CRSResolveCache cache) {
 		ReferenceIdentifier name = crs.getName();
+		// try to find CRS in EPSG DB
+		CRSDefinition def;
+		if (cache != null) {
+			def = cache.resolveCRS(crs);
+		}
+		else {
+			def = lookupCrs(crs);
+		}
+
+		if (def != null) {
+			return def;
+		}
+
 		// try by code
 		if (name != null) {
 			String code = name.getCode();
 			if (code != null && !code.isEmpty()) {
 				// try decoding
 				try {
-					crs = CRS.decode(code);
+					boolean lonFirst = (CRS.getAxisOrder(crs) == AxisOrder.EAST_NORTH);
+					crs = CRS.decode(code, lonFirst);
 					return new CodeDefinition(code, crs);
 				} catch (Exception e) {
 					// ignore
@@ -69,15 +85,46 @@ public abstract class CRSDefinitionUtil {
 			}
 		}
 
-		// try to find CRS in EPSG DB
-		if (cache != null) {
-			CRSDefinition def = cache.resolveCRS(crs);
-			if (def != null) {
-				return def;
+		// use WKT
+		return new WKTDefinition(crs.toWKT(), crs);
+	}
+
+	/**
+	 * Try to lookup the given CRS via Geotools. If the CRS can be resolved, the
+	 * returned {@link CRSDefinition} will contain a
+	 * {@link CoordinateReferenceSystem} with additional information like
+	 * Bursa-Wolf parameters, otherwise the WKT definition of the input CRS will
+	 * be used as is.
+	 * 
+	 * @param crs The CRS to look up
+	 * @return A {@link CodeDefinition} with the resolved CRS or a
+	 *         {@link WKTDefinition} if the CRS could not be resolved.
+	 */
+	public static CRSDefinition lookupCrs(CoordinateReferenceSystem crs) {
+		try {
+			Integer epsgCode = CRS.lookupEpsgCode(crs, true);
+			if (epsgCode != null) {
+				// We must use the "EPSG:" prefix here, otherwise Geotools will
+				// not honour the longitudeFirst parameter and will always
+				// return the lat/lon variant...
+				String code = SrsSyntax.EPSG_CODE.getPrefix() + String.valueOf(epsgCode);
+
+				// Check if the input CRS is lon/lat
+				boolean lonFirst = (CRS.getAxisOrder(crs) == AxisOrder.EAST_NORTH);
+
+				// Look up the code
+				CoordinateReferenceSystem resolved = CRS.decode(code, lonFirst);
+
+				// Use the CRS resolved by Geotools only if the axis order
+				// is still the same (not guaranteed)
+				if (CRS.getAxisOrder(crs).equals(CRS.getAxisOrder(resolved))) {
+					return new CodeDefinition(code, resolved);
+				}
 			}
+		} catch (FactoryException e) {
+			// Ignore
 		}
 
-		// use WKT
 		return new WKTDefinition(crs.toWKT(), crs);
 	}
 

@@ -22,12 +22,19 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.MouseAdapter;
@@ -44,6 +51,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.SettableFuture;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -51,6 +63,8 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectException;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectOrganisationInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectProjectInfo;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
@@ -81,6 +95,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private Composite ownershipGroup;
 	private Button ownerUser;
 	private Button ownerOrg;
+	private ComboViewer orgSelector;
 	private Button includeWebResources;
 	private Button excludeData;
 	private Button excludeCachedResources;
@@ -181,8 +196,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		newProjectControls.setLayoutData(grid);
 
 		ownershipGroup = new Composite(newProjectControls, SWT.NONE);
-		ownershipGroup.setLayout(new GridLayout(3, false));
-		ownershipGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, false, false, 3, 1));
+		ownershipGroup.setLayout(new GridLayout(4, false));
+		ownershipGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, false, false, 4, 1));
 
 		Label ownerLabel = new Label(ownershipGroup, SWT.NONE);
 		ownerLabel.setText("Who should own the uploaded project?");
@@ -192,6 +207,48 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		ownerOrg = new Button(ownershipGroup, SWT.RADIO);
 		ownerOrg.setText("Your organisation");
+
+		orgSelector = new ComboViewer(ownershipGroup);
+		GridData orgSelectorGrid = new GridData(SWT.LEAD, SWT.LEAD, false, false);
+		orgSelectorGrid.widthHint = 175;
+		orgSelector.getCombo().setLayoutData(orgSelectorGrid);
+		orgSelector.setContentProvider(new IStructuredContentProvider() {
+
+			@Override
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+				//
+			}
+
+			@Override
+			public void dispose() {
+				//
+			}
+
+			@Override
+			public Object[] getElements(Object inputElement) {
+				if (inputElement instanceof List<?>) {
+					List<?> elements = (List<?>) inputElement;
+					return elements.toArray();
+				}
+				else if (inputElement instanceof Object[]) {
+					return (Object[]) inputElement;
+				}
+
+				return new Object[] {};
+			}
+		});
+		orgSelector.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof HaleConnectOrganisationInfo) {
+					return ((HaleConnectOrganisationInfo) element).getName();
+				}
+
+				return super.getText(element);
+			}
+
+		});
 
 		enableVersioning = new Button(newProjectControls, SWT.CHECK);
 		enableVersioning.setText("Enable versioning?");
@@ -416,7 +473,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	private void updateLoginStatus() {
 		HaleConnectService hcs = HaleUI.getServiceProvider().getService(HaleConnectService.class);
 		boolean loggedIn = hcs.isLoggedIn();
-		loginButton.setEnabled(!loggedIn);
 		ownershipGroup.setEnabled(loggedIn);
 		enableVersioning.setEnabled(loggedIn);
 		publicAccess.setEnabled(loggedIn);
@@ -451,8 +507,85 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				}
 			}
 
-			ownerOrg.setEnabled(orgAllowed);
-			ownerOrg.setSelection(orgAllowed);
+			ownerOrg.setEnabled(false);
+			orgSelector.getCombo().setEnabled(false);
+			if (orgAllowed) {
+				final SettableFuture<List<HaleConnectOrganisationInfo>> orgsFuture = SettableFuture
+						.create();
+				Futures.addCallback(orgsFuture,
+						new FutureCallback<List<HaleConnectOrganisationInfo>>() {
+
+							@Override
+							public void onSuccess(List<HaleConnectOrganisationInfo> result) {
+								PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+									@Override
+									public void run() {
+										ownerOrg.setEnabled(true);
+										orgSelector.getCombo().setEnabled(true);
+										orgSelector.setInput(result);
+										if (!result.isEmpty()) {
+											orgSelector.setSelection(
+													new StructuredSelection(result.get(0)));
+										}
+									}
+								});
+							}
+
+							@Override
+							public void onFailure(Throwable t) {
+								log.userError(
+										"A problem occurred while contacting hale connect. Functionality may be limited.",
+										t);
+							}
+						});
+
+				Thread fetchOrgInfoThread = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						boolean hadException = false;
+
+						List<HaleConnectOrganisationInfo> organisations = new ArrayList<>();
+						List<HaleConnectException> exceptions = new ArrayList<>();
+						for (String orgId : hcs.getSession().getOrganisationIds()) {
+							try {
+								HaleConnectOrganisationInfo orgInfo = hcs
+										.getOrganisationInfo(orgId);
+								if (orgInfo != null) {
+									organisations.add(orgInfo);
+								}
+							} catch (HaleConnectException e) {
+								hadException = true;
+								log.error("Error fetching organization details from hale connect.",
+										e);
+								exceptions.add(e);
+
+								// As a fallback, display dummy value that
+								// contains the
+								// orgId
+								organisations.add(new HaleConnectOrganisationInfo(orgId,
+										MessageFormat.format("<Organisation {0}>", orgId)));
+							}
+						}
+
+						orgsFuture.set(organisations);
+
+						if (hadException) {
+							PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									log.userError(
+											"A problem occurred while contacting hale connect. Functionality may be limited.");
+								}
+							});
+						}
+					}
+				});
+
+				fetchOrgInfoThread.start();
+			}
 
 			boolean userAllowed;
 			try {
@@ -465,7 +598,11 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				userAllowed = false;
 			}
 			ownerUser.setEnabled(userAllowed);
+
 			ownerUser.setSelection(userAllowed);
+			if (!userAllowed || !orgAllowed) {
+				ownerOrg.setSelection(orgAllowed);
+			}
 
 			if (!userAllowed && !orgAllowed) {
 				loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
@@ -490,9 +627,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		if (targetProject != null) {
 			projectName.setStringValue(targetProject.getProjectName());
 			updateOverwriteWarning();
-		}
-		else {
-			projectName.setStringValue("");
 		}
 	}
 

@@ -44,6 +44,10 @@
             allowChildren="true"
             name="eu.esdihumboldt.hale.common.instance.model">
       </allowPackage>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty">
+      </allow>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.service">

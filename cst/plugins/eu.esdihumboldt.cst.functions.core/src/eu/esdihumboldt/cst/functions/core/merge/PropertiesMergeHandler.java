@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
+import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceMetadata;
@@ -97,7 +98,7 @@ public class PropertiesMergeHandler
 	protected DeepIterableKey getMergeKey(Instance instance, PropertiesMergeConfig mergeConfig) {
 		if (mergeConfig.keyProperties.isEmpty()) {
 			// merge all instances
-			return KEY_ALL;
+			return DeepIterableKey.KEY_ALL;
 		}
 
 		List<Object> valueList = new ArrayList<Object>(mergeConfig.keyProperties.size());

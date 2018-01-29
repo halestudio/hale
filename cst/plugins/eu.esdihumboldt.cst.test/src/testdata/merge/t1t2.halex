@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="3.4.0.qualifier">
+    <name>Merge test</name>
+    <author>Florian Esser</author>
+    <created>2017-11-13T17:56:41.281+01:00</created>
+    <modified>2017-11-13T17:58:12.852+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/merge/t1t2.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="onlyElementsMappable">true</setting>
+        <setting name="resourceId">70492d2a-118a-4229-aa3b-6afada7bf63c</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/merge/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="onlyElementsMappable">true</setting>
+        <setting name="resourceId">753c6f6e-6db5-4e68-b100-c687a38e7c0a</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/merge/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">bed990db-b13f-404b-a153-3ebea2eabcfc</setting>
+        <setting name="interpolation.grid.moveAllToGrid">false</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/merge/instance1.xml</setting>
+        <setting name="interpolation.maxError">0.1</setting>
+        <setting name="strict">false</setting>
+        <setting name="interpolation.algorithm">segment</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+        <setting name="ignoreNamespaces">false</setting>
+        <setting name="paginateRequest">true</setting>
+        <setting name="featuresPerWfsRequest">1000</setting>
+        <setting name="ignoreRoot">true</setting>
+    </resource>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+</hale-project>

@@ -476,6 +476,29 @@
                   sample="1000">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -617,6 +640,43 @@
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
+               label="Instances per file"
+               name="instancesPerFile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="0"
+                  defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
+                  sample="1000">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -743,6 +803,29 @@
                   default="0"
                   defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
                   sample="1000">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
          </providerParameter>
       </provider>
@@ -983,6 +1066,29 @@
                   default="0"
                   defaultDescription="By default, no partitioning will take place and all instances will be written to a single file."
                   sample="1000">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Mode for partitioning the output"
+               label="Partitioning mode"
+               name="partition.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="none">
+               </enumerationValue>
+               <enumerationValue
+                     value="cut">
+               </enumerationValue>
+               <enumerationValue
+                     value="related">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="related"
+                  defaultDescription="By default objects that are connected via local XML references are kept together."
+                  sample="cut"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
          </providerParameter>
       </provider>

@@ -65,6 +65,11 @@ public interface GroovyConstants {
 	public static final String BINDING_SPATIAL_INDEX = "_spatialIndex";
 
 	/**
+	 * Name of the instance index in the binding.
+	 */
+	public static final String BINDING_INSTANCE_INDEX = "_instanceIndex";
+
+	/**
 	 * Name of the helper functions accessor.
 	 */
 	public static final String BINDING_HELPER_FUNCTIONS = "_";

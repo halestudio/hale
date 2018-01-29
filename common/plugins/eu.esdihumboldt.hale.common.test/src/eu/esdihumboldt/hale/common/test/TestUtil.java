@@ -66,8 +66,8 @@ public class TestUtil {
 	 *             configuration failed
 	 * @throws IOException if the schema could not be loaded
 	 */
-	public static Schema loadSchema(URI location) throws IOProviderConfigurationException,
-			IOException {
+	public static Schema loadSchema(URI location)
+			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlSchemaReader reader = new XmlSchemaReader();
@@ -93,8 +93,8 @@ public class TestUtil {
 	 * @return the loaded alignment
 	 * @throws Exception if the alignment or other resources could not be loaded
 	 */
-	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
-			throws Exception {
+	public static Alignment loadAlignment(final URI location, Schema sourceTypes,
+			Schema targetTypes) throws Exception {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		IOReporter report = new DefaultIOReporter(new Locatable() {
@@ -110,7 +110,7 @@ public class TestUtil {
 					new PathUpdate(null, null));
 		} catch (Exception e) {
 			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
-					new PathUpdate(null, null), null);
+					new PathUpdate(null, null), null, null);
 		}
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());

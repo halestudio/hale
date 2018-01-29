@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2017 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,22 +10,16 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
 package eu.esdihumboldt.hale.common.core.report.impl;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.common.core.report.ReportLog;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Default report implementation
@@ -33,23 +27,20 @@ import eu.esdihumboldt.hale.common.core.report.ReportLog;
  * @param <T> the message type
  * 
  * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @since 2.5
  */
-public class DefaultReporter<T extends Message> extends AbstractReporter<T> {
+public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
+
+	private static final ALogger logger = ALoggerFactory.getLogger(DefaultReporter.class);
 
 	/**
-	 * The logger
+	 * Maximum number of messages per message type in a report. Negative values
+	 * mean unlimited messages.
 	 */
-	public static final ALogger log = ALoggerFactory.getMaskingLogger(DefaultReporter.class, null);
+	public static final int MESSAGE_CAP = getMessageCap();
 
-	private final List<T> errors = new ArrayList<T>();
-
-	private final List<T> warnings = new ArrayList<T>();
-
-	private final List<T> infos = new ArrayList<T>();
-
-	private final boolean doLog;
+	private int totalErrors = 0;
+	private int totalWarnings = 0;
+	private int totalInfos = 0;
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -61,88 +52,114 @@ public class DefaultReporter<T extends Message> extends AbstractReporter<T> {
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
-		super(taskName, messageType);
-		this.doLog = doLog;
+		super(taskName, messageType, doLog,
+				SimpleLog.fromLogger(ALoggerFactory.getMaskingLogger(DefaultReporter.class, null)));
 	}
 
 	/**
-	 * Adds a warning to the report. If configured accordingly a log message
-	 * will also be created.
+	 * Determine message cap from system property or environment variable,
+	 * otherwise return a default value.
 	 * 
-	 * @param message the warning message
+	 * @return the message cap
 	 */
+	private static int getMessageCap() {
+		String setting = System.getProperty("hale.reports.message_cap");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_REPORTS_MESSAGE_CAP");
+		}
+
+		if (setting != null) {
+			try {
+				return Integer.valueOf(setting);
+			} catch (Throwable e) {
+				logger.error("Error applying custom report message cap setting: " + setting, e);
+			}
+		}
+
+		// default to fall back to
+		return 1000;
+	}
+
 	@Override
 	public void warn(T message) {
-		warnings.add(message);
-
-		if (doLog) {
-			log.warn(message.getMessage(), message.getThrowable());
+		if (MESSAGE_CAP < 0 || super.getTotalWarnings() < MESSAGE_CAP) {
+			super.warn(message);
 		}
+		// should we log messages above cap? Probably not to not pollute the log
+		totalWarnings++;
 	}
 
-	/**
-	 * Adds an error to the report. If configured accordingly a log message will
-	 * also be created.
-	 * 
-	 * @param message the error message
-	 */
 	@Override
 	public void error(T message) {
-		errors.add(message);
-
-		if (doLog) {
-			log.error(message.getMessage(), message.getThrowable());
+		if (MESSAGE_CAP < 0 || super.getTotalErrors() < MESSAGE_CAP) {
+			super.error(message);
 		}
+		// should we log messages above cap? Probably not to not pollute the log
+		totalErrors++;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.report.ReportLog#info(eu.esdihumboldt.hale.common.core.report.Message)
-	 */
 	@Override
 	public void info(T message) {
-		infos.add(message);
-
-		if (doLog) {
-			log.info(message.getMessage(), message.getThrowable());
+		if (MESSAGE_CAP < 0 || super.getTotalInfos() < MESSAGE_CAP) {
+			super.info(message);
 		}
+		// should we log messages above cap? Probably not to not pollute the log
+		totalInfos++;
 	}
 
-	/**
-	 * @see Report#getErrors()
-	 */
 	@Override
-	public Collection<T> getErrors() {
-		return Collections.unmodifiableList(errors);
+	public int getTotalWarnings() {
+		return totalWarnings;
 	}
 
-	/**
-	 * @see Report#getWarnings()
-	 */
 	@Override
-	public Collection<T> getWarnings() {
-		return Collections.unmodifiableList(warnings);
+	public int getTotalErrors() {
+		return totalErrors;
 	}
 
-	/**
-	 * @see Report#getInfos()
-	 */
 	@Override
-	public Collection<T> getInfos() {
-		return Collections.unmodifiableList(infos);
+	public int getTotalInfos() {
+		return totalInfos;
 	}
 
-	/**
-	 * Add all messages of the given report to this report. This method will
-	 * never log the messages (because the original report may have logged them
-	 * already.
-	 * 
-	 * @see ReportLog#importMessages(Report)
-	 */
 	@Override
 	public void importMessages(Report<? extends T> report) {
-		errors.addAll(report.getErrors());
-		warnings.addAll(report.getWarnings());
-		infos.addAll(report.getInfos());
+		for (T error : report.getErrors()) {
+			if (MESSAGE_CAP < 0 || errors.size() < MESSAGE_CAP) {
+				errors.add(error);
+			}
+		}
+		totalErrors += report.getTotalErrors();
+
+		for (T warn : report.getWarnings()) {
+			if (MESSAGE_CAP < 0 || warnings.size() < MESSAGE_CAP) {
+				warnings.add(warn);
+			}
+		}
+		totalWarnings += report.getTotalWarnings();
+
+		for (T info : report.getInfos()) {
+			if (MESSAGE_CAP < 0 || infos.size() < MESSAGE_CAP) {
+				infos.add(info);
+			}
+		}
+		totalInfos += report.getTotalInfos();
+	}
+
+	@Override
+	public void countError(int number) {
+		totalErrors += number;
+	}
+
+	@Override
+	public void countWarning(int number) {
+		totalWarnings += number;
+	}
+
+	@Override
+	public void countInfo(int number) {
+		totalInfos += number;
 	}
 
 }

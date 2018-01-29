@@ -23,7 +23,7 @@ import java.util.Collection;
  * 
  * @author Kai Schwierczek
  */
-public interface FamilyInstance extends Instance {
+public interface FamilyInstance extends IdentifiableInstance {
 
 	/**
 	 * Returns the child instances.

@@ -58,7 +58,7 @@ public class GroovyRetype extends AbstractTypeTransformation<TransformationEngin
 			GroovyService service = getExecutionContext().getService(GroovyService.class);
 			Script script = GroovyUtil.getScript(this, binding, service);
 			Iterable<MutableInstance> targets = GroovyUtil.evaluateAll(script, builder, targetType,
-					service);
+					service, log);
 
 			for (MutableInstance target : targets) {
 				getPropertyTransformer().publish(getSource(), target, log, cell);

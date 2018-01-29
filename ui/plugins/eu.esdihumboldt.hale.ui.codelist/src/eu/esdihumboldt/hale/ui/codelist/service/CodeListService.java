@@ -56,6 +56,13 @@ public interface CodeListService extends CodeListRegistry {
 	public void assignEntityCodeList(EntityDefinition entity, CodeList code);
 
 	/**
+	 * Remove any code list association for property entity definition.
+	 * 
+	 * @param entity the entitiy definition
+	 */
+	public void unassignEntityCodeList(EntityDefinition entity);
+
+	/**
 	 * Get the code lists.
 	 * 
 	 * @return the code lists

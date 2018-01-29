@@ -51,6 +51,8 @@ public abstract class AbstractInstanceService implements InstanceService {
 	private boolean liveTransform = true; // TODO where to store the
 											// configuration? project?
 
+	private volatile boolean isTransforming;
+
 	/**
 	 * Create an instance service.
 	 * 
@@ -179,8 +181,17 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * not.
 	 */
 	protected final void retransform() {
-		if (isTransformationEnabled()) {
-			doRetransform();
+		// Retransform only if no other transformation run is currently
+		// executing. Such a nested retransform can be triggered by
+		// listener notifications, e.g. if the user lifts the Groovy
+		// restrictions via the confirmation dialog during a transformation run
+		if (isTransformationEnabled() && !isTransforming) {
+			isTransforming = true;
+			try {
+				doRetransform();
+			} finally {
+				isTransforming = false;
+			}
 		}
 	}
 

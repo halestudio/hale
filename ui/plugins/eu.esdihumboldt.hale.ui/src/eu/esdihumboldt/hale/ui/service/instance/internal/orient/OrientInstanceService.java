@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.internal.ONamespaceMap;
 import eu.esdihumboldt.hale.common.instance.orient.internal.OSerializationHelper;
@@ -193,9 +194,17 @@ public class OrientInstanceService extends AbstractInstanceService {
 
 			@Override
 			public boolean match(Instance instance) {
-				if (instance instanceof OInstance) {
-					return ((OInstance) instance).isInserted();
+				// If instance is an InstanceDecorator, it can't be checked
+				// whether the instance was actually inserted.
+				Instance originalInstance = instance;
+				while (originalInstance instanceof InstanceDecorator) {
+					originalInstance = ((InstanceDecorator) originalInstance).getOriginalInstance();
 				}
+
+				if (originalInstance instanceof OInstance) {
+					return ((OInstance) originalInstance).isInserted();
+				}
+
 				return true;
 			}
 

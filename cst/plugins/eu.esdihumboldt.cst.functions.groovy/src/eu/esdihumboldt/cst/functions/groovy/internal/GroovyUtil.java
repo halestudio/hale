@@ -39,7 +39,9 @@ import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultEx
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -153,6 +155,7 @@ public class GroovyUtil implements GroovyConstants {
 	 * @param builder the instance builder
 	 * @param type the type of the instance to create
 	 * @param service the Groovy service
+	 * @param log the log
 	 * @return the created instance
 	 * @throws TransformationException if the target binding does not contain
 	 *             exactly one result after script evaluation or an internal
@@ -161,9 +164,9 @@ public class GroovyUtil implements GroovyConstants {
 	 *             created
 	 */
 	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
-			final TypeDefinition type, GroovyService service)
-					throws TransformationException, NoResultException {
-		Iterable<MutableInstance> results = evaluateAll(script, builder, type, service);
+			final TypeDefinition type, GroovyService service, SimpleLog log)
+			throws TransformationException, NoResultException {
+		Iterable<MutableInstance> results = evaluateAll(script, builder, type, service, log);
 		Iterator<MutableInstance> it = results.iterator();
 		MutableInstance result;
 		if (it.hasNext()) {
@@ -188,14 +191,15 @@ public class GroovyUtil implements GroovyConstants {
 	 * @param builder the instance builder
 	 * @param type the type of the instance to create
 	 * @param service the Groovy service
+	 * @param log the log
 	 * @return the created instance
 	 * @throws TransformationException if an internal error occurs
 	 * @throws NoResultException if the script implies that no result should be
 	 *             created
 	 */
 	public static Iterable<MutableInstance> evaluateAll(Script script,
-			final InstanceBuilder builder, final TypeDefinition type, GroovyService service)
-					throws TransformationException, NoResultException {
+			final InstanceBuilder builder, final TypeDefinition type, GroovyService service,
+			SimpleLog log) throws TransformationException, NoResultException {
 		try {
 			return service.evaluate(script, new ResultProcessor<Iterable<MutableInstance>>() {
 
@@ -211,7 +215,7 @@ public class GroovyUtil implements GroovyConstants {
 							// TODO warn?
 						}
 						MultiValue instances = ((TargetCollector) result).toMultiValue(builder,
-								type);
+								type, log);
 						Collection<MutableInstance> multiResult = new ArrayList<>(instances.size());
 						for (Object instance : instances) {
 							multiResult.add((MutableInstance) instance);
@@ -284,6 +288,9 @@ public class GroovyUtil implements GroovyConstants {
 
 		binding.setVariable(BINDING_SPATIAL_INDEX,
 				executionContext.getService(SpatialIndexService.class));
+
+		binding.setVariable(BINDING_INSTANCE_INDEX,
+				executionContext.getService(InstanceIndexService.class));
 
 		return binding;
 	}
