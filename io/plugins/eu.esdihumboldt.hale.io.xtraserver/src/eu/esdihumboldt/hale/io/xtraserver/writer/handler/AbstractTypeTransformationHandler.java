@@ -76,27 +76,37 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 
 	protected MappingTable createTableIfAbsent(final FeatureTypeMapping featureTypeMapping,
 			final EntityDefinition sourceType) {
+		return createTableIfAbsent(featureTypeMapping, sourceType, false);
+	}
+
+	protected MappingTable createTableIfAbsent(final FeatureTypeMapping featureTypeMapping,
+			final EntityDefinition sourceType, boolean isJoined) {
 		final TypeDefinition sourceTypeDefinition = sourceType.getType();
 		final String tableName = sourceTypeDefinition.getDisplayName();
-		MappingTable table = this.mappingContext.getTable(tableName);
-		if (table != null) {
-			return table;
-		}
-		table = MappingTable.create();
-		final DatabaseTable dbTable = sourceTypeDefinition.getConstraint(DatabaseTable.class);
-		if (dbTable != null && dbTable.getTableName() != null) {
-			table.setName(dbTable.getTableName());
-		}
-		else {
-			table.setName(tableName);
-		}
 
-		final String primaryKey = getPrimaryKey(sourceTypeDefinition);
-		if (primaryKey != null) {
-			table.setOidCol(primaryKey);
-		}
-		featureTypeMapping.addTable(table);
-		return table;
+		return this.mappingContext.getTable(tableName).orElseGet(() -> {
+			MappingTable table = MappingTable.create();
+			final DatabaseTable dbTable = sourceTypeDefinition.getConstraint(DatabaseTable.class);
+			if (dbTable != null && dbTable.getTableName() != null) {
+				table.setName(dbTable.getTableName());
+			}
+			else {
+				table.setName(tableName);
+			}
+
+			final String primaryKey = getPrimaryKey(sourceTypeDefinition);
+			if (primaryKey != null) {
+				table.setOidCol(primaryKey);
+			}
+			else {
+				table.setOidCol("id");
+				logger.warn("No primary key for table '{}' found, assuming 'id'.", table.getName());
+			}
+			table.setJoined(isJoined);
+
+			featureTypeMapping.addTable(table);
+			return table;
+		});
 	}
 
 	@Override
