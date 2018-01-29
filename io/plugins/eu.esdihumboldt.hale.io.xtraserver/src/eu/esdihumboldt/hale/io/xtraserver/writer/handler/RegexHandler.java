@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Transforms the {@link RegexAnalysisFunction} to a {@link MappingValue}
@@ -63,8 +64,8 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 		}
 		final String outputFormat = outputFormatParam.get(0).as(String.class);
 
-		final Iterator<ChildContext> it = targetProperty.getDefinition().getPropertyPath()
-				.iterator();
+		final Iterator<ChildContext> it = AppSchemaMappingUtils.getSourceProperty(propertyCell)
+				.getDefinition().getPropertyPath().iterator();
 		ChildContext lastItem = null;
 		while (it.hasNext()) {
 			lastItem = it.next();

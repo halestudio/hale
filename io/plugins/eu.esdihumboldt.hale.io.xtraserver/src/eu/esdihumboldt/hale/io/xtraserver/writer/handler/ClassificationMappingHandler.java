@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUt
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Transforms the {@link ClassificationMappingFunction} to a
@@ -54,7 +55,8 @@ class ClassificationMappingHandler extends AbstractPropertyTransformationHandler
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
 
-		mappingValue.setValue("function_void");
+		mappingValue.setValue(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+				.getDefinition().getPropertyPath()));
 		final String path = buildPath(targetProperty.getDefinition().getPropertyPath());
 		final Matcher matcher = NIL_PROPERTY.matcher(path);
 

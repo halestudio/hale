@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.uom.toucum' to a
@@ -41,7 +42,8 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 	@Override
 	public void doHandle(final Cell propertyCell, final Property targetProperty,
 			final MappingValue mappingValue) {
-		mappingValue.setValue("function_void");
+		mappingValue.setValue(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+				.getDefinition().getPropertyPath()));
 		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
 		mappingValue.setDbCodes("urn:adv:uom:m2 urn:adv:uom:m urn:adv:uom:km");
 		mappingValue.setDbValues("'m2' 'm' 'km'");
