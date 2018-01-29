@@ -17,13 +17,10 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
@@ -56,7 +53,8 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	public void doHandle(final Entity sourceType, final Entity targetType,
 			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
 
-		createTableIfAbsent(featureTypeMapping, sourceType.getDefinition());
+		final MappingTable baseTable = createTableIfAbsent(featureTypeMapping,
+				sourceType.getDefinition());
 
 		for (final ParameterValue transParam : typeCell.getTransformationParameters()
 				.get(PARAMETER_JOIN)) {
@@ -67,25 +65,27 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 				throw new IllegalArgumentException("Join parameter invalid: " + validation);
 			}
 
-			final SortedSet<Condition> sortedConditions = transformSortedConditions(
-					joinParameter.conditions, featureTypeMapping);
+			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
+					featureTypeMapping);
 
-			final List<MappingJoin> joins = new ArrayList<MappingJoin>();
-			MappingJoin join = MappingJoin.create();
-			joins.add(join);
-			Condition previousCondition = null;
-			final Iterator<Condition> it = sortedConditions.iterator();
-			while (it.hasNext()) {
-				final Condition condition = it.next();
-				if (previousCondition != null
-						&& previousCondition.getSourceTable().equals(condition.getSourceTable())) {
-					// new Join is required when source tables match
-					join = MappingJoin.create();
-					joins.add(join);
-				}
-				join.addCondition(condition);
-				previousCondition = condition;
-			}
+			final List<MappingJoin> joins = sortedConditions.stream()
+					.filter(condition -> condition.getSourceTable().equals(baseTable.getName()))
+					.map(condition -> {
+						MappingJoin join = MappingJoin.create();
+						join.addCondition(condition);
+
+						Optional<Condition> matchingCondition = sortedConditions.stream()
+								.filter(condition2 -> condition2.getSourceTable()
+										.equals(condition.getTargetTable()))
+								.findFirst();
+
+						if (matchingCondition.isPresent()) {
+							join.addCondition(matchingCondition.get());
+						}
+
+						return join;
+					}).collect(Collectors.toList());
+
 			joins.forEach(j -> featureTypeMapping.addJoin(j));
 		}
 	}
@@ -94,58 +94,37 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	 * Transform and sort hale Join Condition Set into Join Conditions that are
 	 * attached to multiple XtraServer Join objects
 	 * 
-	 * A hale Join with: [ city.id = city_river.cid, city.id = alternativename.cid,
-	 * city_river.rid = river.id ]
-	 * 
-	 * will be sorted into: [ city.id = alternativename.cid, city.id =
-	 * city_river.cid, city_river.rid = river.id]
-	 * 
-	 * @param conditions hale conditions
+	 * @param joinParameter hale conditions
 	 * @param featureTypeMapping FeatureTypeMapping to lookup tables or add missing
 	 *            ones
 	 * @return sorted joins
 	 */
-	private SortedSet<Condition> transformSortedConditions(final Set<JoinCondition> conditions,
+	private List<Condition> transformSortedConditions(final JoinParameter joinParameter,
 			final FeatureTypeMapping featureTypeMapping) {
-		final SortedSet<Condition> sortedConditions = new TreeSet<>(new Comparator<Condition>() {
+
+		return joinParameter.conditions.stream().sorted(new Comparator<JoinCondition>() {
 
 			@Override
-			public int compare(Condition c1, Condition c2) {
-
-				final int cmpSrcTables = c1.getSourceTable().compareTo(c2.getSourceTable());
-				if (cmpSrcTables == 0) {
-					// source tables are equal, sort by target tables
-					return c1.getTargetTable().compareTo(c2.getTargetTable());
-				}
-				// Sources tables are not equal
-				final int cmpTrgtSrc = c2.getTargetTable().compareTo(c1.getSourceTable());
-				if (cmpTrgtSrc == 0) {
-					// Target table and source table match
-					return 1;
-				}
-				return cmpSrcTables;
+			public int compare(JoinCondition o1, JoinCondition o2) {
+				TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.joinProperty);
+				TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.joinProperty);
+				return joinParameter.types.indexOf(o2Type) - joinParameter.types.indexOf(o1Type);
 			}
-
-		});
-		for (final JoinCondition condition : conditions) {
-
-			final TypeEntityDefinition joinType = AlignmentUtil
-					.getTypeEntity(condition.joinProperty);
+		}).map(condition -> {
 			final TypeEntityDefinition baseType = AlignmentUtil
 					.getTypeEntity(condition.baseProperty);
+			final TypeEntityDefinition joinType = AlignmentUtil
+					.getTypeEntity(condition.joinProperty);
 
-			final MappingTable baseTable = createTableIfAbsent(featureTypeMapping, baseType);
-			final String baseField = condition.joinProperty.getPropertyPath().iterator().next()
+			final MappingTable baseTable = createTableIfAbsent(featureTypeMapping, baseType, true);
+			final String baseField = condition.baseProperty.getPropertyPath().iterator().next()
 					.getChild().getDisplayName();
-			final MappingTable joinTable = createTableIfAbsent(featureTypeMapping, joinType);
-			final String joinField = condition.baseProperty.getPropertyPath().iterator().next()
+			final MappingTable joinTable = createTableIfAbsent(featureTypeMapping, joinType, true);
+			final String joinField = condition.joinProperty.getPropertyPath().iterator().next()
 					.getChild().getDisplayName();
 
-			final Condition xsJoinCondition = Condition.create(baseTable, baseField, joinTable,
-					joinField);
-			sortedConditions.add(xsJoinCondition);
-		}
-		return sortedConditions;
+			return Condition.create(baseTable, baseField, joinTable, joinField);
+		}).collect(Collectors.toList());
 	}
 
 }
