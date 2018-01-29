@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -138,15 +139,15 @@ public final class MappingContext {
 	 * @param tableName Mapping Table name
 	 * @return MappingTable
 	 */
-	MappingTable getTable(String tableName) {
+	Optional<MappingTable> getTable(String tableName) {
 		return currentFeatureTypeMapping.getTable(tableName);
 	}
 
 	void addValueMappingToTable(final Property target, final MappingValue value,
 			final String tableName) {
-		final MappingTable table = Objects.requireNonNull(getTable(tableName),
-				"Table " + tableName + " not found");
-		if (!table.hasTarget() && value.getTarget() != null
+		final MappingTable table = getTable(tableName).orElseThrow(
+				() -> new IllegalArgumentException("Table " + tableName + " not found"));
+		if (!table.hasTarget() && table.hasJoinPath() && value.getTarget() != null
 				&& target.getDefinition().getPropertyPath() != null) {
 			// Target is set in value mapping, check if the property is multiple and the
 			// target must be added to the table
@@ -157,6 +158,7 @@ public final class MappingContext {
 				if (property != null) {
 					final Cardinality cardinality = property.getConstraint(Cardinality.class);
 					if (cardinality.mayOccurMultipleTimes()) {
+						// TODO: mergeTarget
 						table.setTarget(
 								this.getNamespaces().getPrefixedName(segment.getChild().getName()));
 						break;

@@ -140,6 +140,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					System.out.println("NOT FOUND: " + ftm.getName());
 					continue;
 				}
+				boolean added = false;
 
 				targetType = getNamedEntity(targetTypeName);
 
@@ -147,8 +148,8 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 				for (String t : ftm.getPrimaryTableNames()) {
 					QName sourceTableName = getTableQName(t, sourceTypes);
 
-					System.out.println(sourceTableName.getLocalPart() + " ||| " + t + " ||| "
-							+ targetTypeName.toString());
+					// System.out.println(sourceTableName.getLocalPart() + " ||| " + t + " ||| "
+					// + targetTypeName.toString());
 					sourceType = getNamedEntity(sourceTableName, "types");
 
 					// addRetype(alignment, sourceTypes, targetTypes, entityResolver, sourceType,
@@ -166,7 +167,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 							.build();
 
 					for (String joinTableName : allTableNames) {
-						MappingTable joinedTable = ftm.getTable(joinTableName);
+						MappingTable joinedTable = ftm.getTable(joinTableName).get();
 
 						if (joinedTable.hasJoinPath()) {
 
@@ -201,7 +202,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					}
 
 					// add self joins for root table
-					MappingTable joinedTable = ftm.getTable(t);
+					MappingTable joinedTable = ftm.getTable(t).get();
 
 					if (joinedTable.hasJoinPath()) {
 
@@ -271,10 +272,14 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					addJoin(alignment, sourceTypes, targetTypes, entityResolver, sourceType,
 							targetType, joinedTables, conditions, joinedSourceTypesQN);
 
-					addValues(alignment, ftm.getValues(), joinedSourceTypesQN, targetTypeName,
-							entityResolver);
-
+					added = addValues(alignment, ftm.getValues(), joinedSourceTypesQN,
+							targetTypeName, entityResolver);
 				}
+
+				/*
+				 * if (!added) { System.out.println("NOT ADDED: " + ftm.getName()); } else {
+				 * System.out.println("ADDED: " + ftm.getName()); }
+				 */
 			}
 
 		} catch (
@@ -293,11 +298,12 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 		return alignment;
 	}
 
-	private void addValues(MutableAlignment alignment, List<MappingValue> mappingValues,
+	private boolean addValues(MutableAlignment alignment, List<MappingValue> mappingValues,
 			Set<QName> sourceTableNames, QName targetTypeName, EntityResolver entityResolver) {
 		TypeIndex sourceTypes = getSourceSchema();
 		TypeIndex targetTypes = getTargetSchema();
 		String oidPrefix = "'urn:adv:oid:' || $T$.";
+		boolean added = false;
 
 		for (MappingValue mappingValue : mappingValues) {
 			try {
@@ -323,11 +329,13 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					NamedEntityType targetProperty = getNamedEntity(targetTypeName,
 							targetPropertyNames);
 
-					System.out.println(sourceTableName.getLocalPart() + " ||| "
-							+ mappingValue.getValue() + " ||| " + targetPropertyNames.toString());
+					// System.out.println(sourceTableName.getLocalPart() + " ||| "
+					// + mappingValue.getValue() + " ||| " + targetPropertyNames.toString());
 
 					addRename(alignment, sourceTypes, targetTypes, entityResolver, sourceProperty,
 							targetProperty);
+
+					added = true;
 				}
 				else if (mappingValue.getValueType().equals("constant")) {
 					List<QName> targetPropertyNames = mappingValue.getTargetQNameList();
@@ -340,8 +348,8 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					NamedEntityType targetProperty = getNamedEntity(targetTypeName,
 							targetPropertyNames);
 
-					System.out.println(sourceTableName.getLocalPart() + " ||| "
-							+ mappingValue.getValue() + " ||| " + targetPropertyNames.toString());
+					// System.out.println(sourceTableName.getLocalPart() + " ||| "
+					// + mappingValue.getValue() + " ||| " + targetPropertyNames.toString());
 
 					String bindValue = null;
 
@@ -375,15 +383,19 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 						NamedEntityType sourceProperty = getNamedEntity(sourceTableName,
 								new QName(bindValue), "anchor");
 
-						System.out.println(sourceTableName.getLocalPart() + " ||| " + bindValue);
+						// System.out.println(sourceTableName.getLocalPart() + " ||| " + bindValue);
 
 						addAssignBound(alignment, sourceTypes, targetTypes, entityResolver,
 								mappingValue.getValue(), sourceProperty, targetProperty);
+
+						added = true;
 					}
 					else {
 
 						addAssign(alignment, sourceTypes, targetTypes, entityResolver,
 								mappingValue.getValue(), targetProperty);
+
+						added = true;
 					}
 				}
 				else if (mappingValue.getValueType().equals("expression")) {
@@ -404,11 +416,13 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 						NamedEntityType targetProperty = getNamedEntity(targetTypeName,
 								targetPropertyNames);
 
-						System.out.println(sourceTableName.getLocalPart() + " ||| " + value
-								+ " ||| " + targetPropertyNames.toString());
+						// System.out.println(sourceTableName.getLocalPart() + " ||| " + value
+						// + " ||| " + targetPropertyNames.toString());
 
 						addFormattedString(alignment, sourceTypes, targetTypes, entityResolver,
 								sourceProperty, targetProperty, pattern);
+
+						added = true;
 					}
 				}
 				// }
@@ -417,6 +431,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 			}
 		}
 
+		return added;
 	}
 
 	private QName getTableQName(String name, TypeIndex sourceTypes) {
@@ -483,6 +498,10 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					new DefaultTypeDefinition(joinedSourceType), SchemaSpaceID.SOURCE, null));
 		}
 		JoinParameter joinParameter = new JoinParameter(typeDefinitions, joinConditions);
+		final String validation = joinParameter.validate();
+		if (validation != null) {
+			throw new IllegalArgumentException("Join parameter invalid: " + validation);
+		}
 
 		parameters.put("join", new ParameterValue(Value.complex(joinParameter)));
 		cell.setTransformationParameters(parameters);
