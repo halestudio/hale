@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Web Administration Console
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.console.war
-Bundle-Version: 3.3.1.qualifier
+Bundle-Version: 3.3.2.qualifier
 Web-ContextPath: /console
 Webapp-Name: Administration Console
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

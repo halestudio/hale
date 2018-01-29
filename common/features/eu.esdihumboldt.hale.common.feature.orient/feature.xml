@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.common.feature.orient"
       label="OrientDB based Instance Database"
-      version="3.3.1.qualifier"
+      version="3.3.2.qualifier"
       provider-name="data harmonisation panel">
 
    <license>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment Groovy API and Utilities
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.groovy;singleton:=true
-Bundle-Version: 3.3.1.qualifier
+Bundle-Version: 3.3.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.collect;version="11.0.1",
  eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.0",

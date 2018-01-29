@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Json I/O tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.test
-Bundle-Version: 3.3.1.qualifier
+Bundle-Version: 3.3.2.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance;singleton:=true
-Bundle-Version: 3.3.1.qualifier
+Bundle-Version: 3.3.2.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.cache;version="17.0.0",

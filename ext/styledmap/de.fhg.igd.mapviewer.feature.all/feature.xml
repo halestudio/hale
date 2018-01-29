@@ -2,7 +2,7 @@
 <feature
       id="de.fhg.igd.mapviewer.feature.all"
       label="All Mapviewer bundles"
-      version="3.3.1.qualifier">
+      version="3.3.2.qualifier">
 
    <license>
       GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
