@@ -16,14 +16,18 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.common.base.Joiner;
 
 import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
 import de.interactive_instruments.xtraserver.config.util.Namespaces;
@@ -151,16 +155,16 @@ public final class MappingContext {
 				&& target.getDefinition().getPropertyPath() != null) {
 			// Target is set in value mapping, check if the property is multiple and the
 			// target must be added to the table
+			List<String> targetPath = new ArrayList<>();
 			for (final Iterator<ChildContext> it = target.getDefinition().getPropertyPath()
 					.iterator(); it.hasNext();) {
 				final ChildContext segment = it.next();
 				final PropertyDefinition property = segment.getChild().asProperty();
+				targetPath.add(this.getNamespaces().getPrefixedName(segment.getChild().getName()));
 				if (property != null) {
 					final Cardinality cardinality = property.getConstraint(Cardinality.class);
 					if (cardinality.mayOccurMultipleTimes()) {
-						// TODO: mergeTarget
-						table.setTarget(
-								this.getNamespaces().getPrefixedName(segment.getChild().getName()));
+						table.setTarget(Joiner.on('/').join(targetPath));
 						break;
 					}
 				}
