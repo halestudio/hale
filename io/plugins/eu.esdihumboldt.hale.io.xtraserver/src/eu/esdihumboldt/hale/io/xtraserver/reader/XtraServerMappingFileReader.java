@@ -204,7 +204,7 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 					// add self joins for root table
 					MappingTable joinedTable = ftm.getTable(t).get();
 
-					if (joinedTable.hasJoinPath()) {
+					if (!joinedTable.getJoinPaths().isEmpty()) {
 
 						for (MappingJoin mappingJoin : joinedTable.getJoinPaths()) {
 							for (MappingJoin.Condition condition : mappingJoin
@@ -215,23 +215,27 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 										sourceTypes);
 
 								if (!joinedTableName.getLocalPart().equals(joinedTable.getName())) {
-									reporter.warn("Valid self join on root table of "
-											+ ftm.getName() + ": " + condition.toString()
-											+ "\ncomplete join: " + mappingJoin.toString()
-											+ "\njoin target: " + mappingJoin.getTarget()
-											+ "\ntable + target: " + joinedTable.getName() + "["
-											+ joinedTable.getTarget() + "]");
-
-									joinedTables.add(getNamedEntity(joinedTableName, "types"));
-									joinedSourceTypesQN.add(baseTableName);
-									joinedSourceTypesQN.add(joinedTableName);
-
-									PropertyEntityDefinition baseProperty = getEntityDefinition(
-											baseTableName, new QName(condition.getSourceField()));
-									PropertyEntityDefinition joinedProperty = getEntityDefinition(
-											joinedTableName, new QName(condition.getTargetField()));
-
-									conditions.add(new JoinCondition(baseProperty, joinedProperty));
+									/*
+									 * reporter.warn("Valid self join on root table of " +
+									 * ftm.getName() + ": " + condition.toString() +
+									 * "\ncomplete join: " + mappingJoin.toString() +
+									 * "\njoin target: " + mappingJoin.getTarget() +
+									 * "\ntable + target: " + joinedTable.getName() + "[" +
+									 * joinedTable.getTarget() + "]");
+									 * 
+									 * joinedTables.add(getNamedEntity(joinedTableName, "types"));
+									 * joinedSourceTypesQN.add(baseTableName);
+									 * joinedSourceTypesQN.add(joinedTableName);
+									 * 
+									 * PropertyEntityDefinition baseProperty = getEntityDefinition(
+									 * baseTableName, new QName(condition.getSourceField()));
+									 * PropertyEntityDefinition joinedProperty =
+									 * getEntityDefinition( joinedTableName, new
+									 * QName(condition.getTargetField()));
+									 * 
+									 * conditions.add(new JoinCondition(baseProperty,
+									 * joinedProperty));
+									 */
 								}
 								else {
 									if (!mappingJoin.isSuppressJoin()) {
