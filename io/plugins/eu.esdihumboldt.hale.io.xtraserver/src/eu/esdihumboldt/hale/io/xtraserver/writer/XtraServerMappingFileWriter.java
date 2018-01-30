@@ -93,12 +93,11 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 		if (getTarget() == null) {
 			throw new IOProviderConfigurationException("No target was provided.");
 		}
-		try {
+		try (final OutputStream out = getTarget().getOutput()) {
 			final XtraServerMappingGenerator generator = new XtraServerMappingGenerator(
 					getAlignment(), getTargetSchema(), progress,
 					Collections.unmodifiableMap(projectProperties));
 			final XtraServerMapping mapping = generator.generate(reporter);
-			final OutputStream out = getTarget().getOutput();
 			if (getContentType().getId().equals(CONTENT_TYPE_MAPPING)) {
 				progress.setCurrentTask("Writing XtraServer Mapping file");
 				mapping.writeToStream(out, false);
