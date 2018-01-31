@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -37,6 +39,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.util.Pair;
@@ -59,6 +62,11 @@ public class JoinContext {
 	 * Match cells that are Joins
 	 */
 	private final List<Cell> joinMatches = new ArrayList<>();
+
+	/**
+	 * Collected Groovy scripts
+	 */
+	private final List<Pair<Cell, String>> scripts = new ArrayList<>();
 
 	/**
 	 * Create new context for merging the given cell.
@@ -138,7 +146,66 @@ public class JoinContext {
 		JoinParameter newParam = new JoinParameter(new ArrayList<>(types), conditions);
 		params.replaceValues(JoinFunction.PARAMETER_JOIN,
 				Collections.singleton(new ParameterValue(Value.of(newParam))));
+
+		// script (Groovy Join)
+
+		// Use Groovy Join if original or match uses a script
+		if (!scripts.isEmpty()) {
+			boolean originalScript = scripts.size() == 1
+					&& GroovyJoin.ID.equals(newCell.getTransformationIdentifier());
+			Text script;
+			if (originalScript) {
+				// use original script
+				script = new Text(scripts.get(0).getSecond());
+
+				// create annotation
+				log.warn(
+						"The Groovy script from the original cell was reused, logic and references to sources are very likely not valid anymore.");
+			}
+			else {
+				// dummy script with all original scripts
+				newCell.setTransformationIdentifier(GroovyJoin.ID);
+
+				script = buildScript(scripts);
+
+				// create annotation
+				log.warn(
+						"At least one source mapping used a Groovy script, the script could not be combined automatically and was replaced with a dummy script (old scripts are commented out). Please check how you can migrate the old functionality.");
+			}
+
+			params.replaceValues(GroovyConstants.PARAMETER_SCRIPT,
+					Collections.singleton(new ParameterValue(Value.of(script))));
+		}
+
 		newCell.setTransformationParameters(params);
+	}
+
+	private static Text buildScript(List<Pair<Cell, String>> scripts) {
+		StringBuilder script = new StringBuilder();
+
+		// add default script
+
+		script.append("// dummy script creating a target instance\n");
+		script.append("_target {\n");
+		script.append("}\n");
+
+		script.append("\n// Find the scripts from before the merge below:\n");
+
+		for (Pair<Cell, String> p : scripts) {
+			script.append("\n\n\n");
+
+			String name = CellUtil.getCellDescription(p.getFirst(), null);
+			script.append("// Cell: ");
+			script.append(name);
+			script.append("\n");
+
+			for (String line : p.getSecond().split("\\r?\\n")) {
+				script.append("\n// ");
+				script.append(line);
+			}
+		}
+
+		return new Text(script.toString());
 	}
 
 	/**
@@ -158,6 +225,16 @@ public class JoinContext {
 	 */
 	public void addJoinMatch(Cell match) {
 		joinMatches.add(match);
+	}
+
+	/**
+	 * Add a Groovy script from the original cell or a match.
+	 * 
+	 * @param cell the associated cell
+	 * @param script the Groovy script
+	 */
+	public void addGroovyScript(Cell cell, String script) {
+		scripts.add(new Pair<>(cell, script));
 	}
 
 }

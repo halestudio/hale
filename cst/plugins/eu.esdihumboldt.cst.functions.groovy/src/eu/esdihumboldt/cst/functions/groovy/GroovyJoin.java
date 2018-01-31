@@ -30,6 +30,11 @@ import eu.esdihumboldt.hale.common.align.transformation.function.InstanceHandler
  */
 public class GroovyJoin extends GroovyRetype implements JoinFunction {
 
+	/**
+	 * The function ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.join";
+
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		return new JoinHandler();

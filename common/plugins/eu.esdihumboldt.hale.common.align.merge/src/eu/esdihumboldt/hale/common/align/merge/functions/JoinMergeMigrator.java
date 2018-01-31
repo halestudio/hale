@@ -20,6 +20,9 @@ import java.util.Map.Entry;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
+import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
@@ -28,10 +31,12 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
@@ -51,12 +56,12 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		boolean groovy = false;
 
 		switch (matchFunction) {
-		case "eu.esdihumboldt.cst.functions.groovy.join":
+		case GroovyJoin.ID:
 			groovy = true;
 		case JoinFunction.ID:
 			mergeJoinSource(cell, source, match, originalCell, log, context, groovy);
 			break;
-		case "eu.esdihumboldt.cst.functions.groovy.retype":
+		case GroovyRetype.ID:
 			groovy = true;
 		case RetypeFunction.ID:
 			mergeRetypeSource(cell, source, match, originalCell, log, context, groovy);
@@ -95,6 +100,10 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 					source.getDefinition());
 			return;
 		}
+
+		if (groovy) {
+			addScript(match, context);
+		}
 	}
 
 	@SuppressWarnings("unused")
@@ -117,6 +126,29 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 
 		// add join match to context (for match conditions)
 		context.addJoinMatch(match);
+
+		if (groovy) {
+			addScript(match, context);
+		}
+	}
+
+	private void addScript(Cell match, JoinContext context) {
+		ParameterValue scriptValue = CellUtil.getFirstParameter(match,
+				GroovyConstants.PARAMETER_SCRIPT);
+		if (scriptValue != null) {
+			String script;
+			// try retrieving as text
+			Text text = scriptValue.as(Text.class);
+			if (text != null) {
+				script = text.getText();
+			}
+			else {
+				// fall back to string value
+				script = scriptValue.as(String.class);
+			}
+
+			context.addGroovyScript(match, script);
+		}
 	}
 
 	private void addSources(MutableCell cell, EntityDefinition source, Cell match, SimpleLog log) {
@@ -139,7 +171,13 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 
 	@Override
 	protected JoinContext newContext(Cell originalCell) {
-		return new JoinContext(originalCell);
+		JoinContext ctx = new JoinContext(originalCell);
+
+		if (GroovyJoin.ID.equals(originalCell.getTransformationIdentifier())) {
+			addScript(originalCell, ctx);
+		}
+
+		return ctx;
 	}
 
 	@Override

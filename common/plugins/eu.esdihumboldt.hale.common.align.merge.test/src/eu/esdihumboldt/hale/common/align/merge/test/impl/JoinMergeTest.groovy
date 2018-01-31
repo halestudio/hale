@@ -19,6 +19,7 @@ import static org.junit.Assert.*
 
 import org.junit.Test
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.functions.JoinMergeMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
@@ -232,8 +233,20 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 		assertNotNull(cell)
 
 		// transformation function
-		assertEquals('Join and Join should be combined to a Join', JoinFunction.ID, cell.transformationIdentifier)
-		//XXX Groovy Join possible as well?
+		boolean groovy = original.transformationIdentifier == GroovyJoin.ID
+		if (!groovy) {
+			// check matches
+			groovy = matches.any {
+				it.transformationIdentifier.contains('.groovy')
+			}
+		}
+
+		if (groovy) {
+			assertEquals('Merged cell function', GroovyJoin.ID, cell.transformationIdentifier)
+		}
+		else {
+			assertEquals('Join and Join should be combined to a Join', JoinFunction.ID, cell.transformationIdentifier)
+		}
 
 		// target
 
