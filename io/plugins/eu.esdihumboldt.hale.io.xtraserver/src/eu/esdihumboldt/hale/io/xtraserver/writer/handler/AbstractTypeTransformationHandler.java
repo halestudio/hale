@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
+import java.util.Collection;
+
 import com.google.common.collect.ListMultimap;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -59,7 +61,8 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		else if (constraints.getElements().size() > 1) {
 			throw new IllegalStateException("More than one constraint has been specified.");
 		}
-		final String name = constraints.getElements().iterator().next().getName().getLocalPart();
+		final String name = mappingContext.getNamespaces()
+				.getPrefixedName(constraints.getElements().iterator().next().getName());
 
 		return FeatureTypeMapping.create(name, targetTypeDefinition.getName(),
 				mappingContext.getNamespaces());
@@ -100,7 +103,9 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 			}
 			else {
 				table.setOidCol("id");
-				logger.warn("No primary key for table '{}' found, assuming 'id'.", table.getName());
+				logger.warn(
+						"No primary key for table '{}' found, assuming 'id'. (context: oid_col in FeatureType {})",
+						table.getName(), featureTypeMapping.getName());
 			}
 			table.setJoined(isJoined);
 
@@ -129,11 +134,11 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 			throw new IllegalStateException("No target type has been specified.");
 		}
 		final Entity targetType = targetEntities.values().iterator().next();
-		final Entity sourceType = sourceEntities.values().iterator().next();
-		doHandle(sourceType, targetType, mapping, cell);
+		final Collection<Entity> sourceTypes = (Collection<Entity>) sourceEntities.values();
+		doHandle(sourceTypes, targetType, mapping, cell);
 		return mapping;
 	}
 
-	public abstract void doHandle(final Entity sourceType, final Entity targetType,
+	public abstract void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
 			final FeatureTypeMapping mapping, final Cell typeCell);
 }

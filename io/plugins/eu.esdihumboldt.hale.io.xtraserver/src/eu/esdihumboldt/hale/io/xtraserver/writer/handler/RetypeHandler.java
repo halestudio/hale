@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
+import java.util.Collection;
+
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -35,9 +37,9 @@ class RetypeHandler extends AbstractTypeTransformationHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Entity sourceType, final Entity targetType,
+	public void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
 			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
-		createTableIfAbsent(featureTypeMapping, sourceType.getDefinition());
+		createTableIfAbsent(featureTypeMapping, sourceTypes.iterator().next().getDefinition());
 	}
 
 }

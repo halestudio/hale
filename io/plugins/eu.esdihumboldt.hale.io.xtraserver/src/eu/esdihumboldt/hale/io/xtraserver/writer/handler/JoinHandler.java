@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -50,11 +51,11 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Entity sourceType, final Entity targetType,
+	public void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
 			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
 
 		final MappingTable baseTable = createTableIfAbsent(featureTypeMapping,
-				sourceType.getDefinition());
+				sourceTypes.iterator().next().getDefinition());
 
 		for (final ParameterValue transParam : typeCell.getTransformationParameters()
 				.get(PARAMETER_JOIN)) {
@@ -66,7 +67,7 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			}
 
 			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
-					featureTypeMapping);
+					featureTypeMapping, sourceTypes);
 
 			final List<MappingJoin> joins = sortedConditions.stream()
 					.filter(condition -> condition.getSourceTable().equals(baseTable.getName()))
@@ -100,7 +101,7 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	 * @return sorted joins
 	 */
 	private List<Condition> transformSortedConditions(final JoinParameter joinParameter,
-			final FeatureTypeMapping featureTypeMapping) {
+			final FeatureTypeMapping featureTypeMapping, final Collection<Entity> sourceTypes) {
 
 		return joinParameter.conditions.stream().sorted(new Comparator<JoinCondition>() {
 
@@ -108,13 +109,17 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			public int compare(JoinCondition o1, JoinCondition o2) {
 				TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.joinProperty);
 				TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.joinProperty);
-				return joinParameter.types.indexOf(o2Type) - joinParameter.types.indexOf(o1Type);
+				return joinParameter.types.indexOf(o1Type) - joinParameter.types.indexOf(o2Type);
 			}
 		}).map(condition -> {
 			final TypeEntityDefinition baseType = AlignmentUtil
 					.getTypeEntity(condition.baseProperty);
-			final TypeEntityDefinition joinType = AlignmentUtil
-					.getTypeEntity(condition.joinProperty);
+
+			final TypeEntityDefinition joinType = sourceTypes.stream()
+					.filter(entity -> entity.getDefinition().getType().getName()
+							.equals(condition.joinProperty.getType().getName()))
+					.map(entity -> AlignmentUtil.getTypeEntity(entity.getDefinition())).findFirst()
+					.orElse(AlignmentUtil.getTypeEntity(condition.joinProperty));
 
 			final MappingTable baseTable = createTableIfAbsent(featureTypeMapping, baseType, true);
 			final String baseField = condition.baseProperty.getPropertyPath().iterator().next()

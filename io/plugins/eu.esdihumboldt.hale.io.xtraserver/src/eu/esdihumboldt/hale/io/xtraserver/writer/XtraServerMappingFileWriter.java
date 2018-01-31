@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import org.xml.sax.SAXException;
 
@@ -135,10 +136,7 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 			reporter.error("The transformation of the type '" + e.getTransformationIdentifier()
 					+ "'  is not supported. Make sure that the XtraServer compatibility mode is enabled.");
 			return reporter;
-		} catch (final JAXBException e) {
-			reporter.error("An internal error occured", e.getMessage());
-			return reporter;
-		} catch (final SAXException e) {
+		} catch (final JAXBException | SAXException | XMLStreamException e) {
 			reporter.error("An internal error occured", e.getMessage());
 			return reporter;
 		}

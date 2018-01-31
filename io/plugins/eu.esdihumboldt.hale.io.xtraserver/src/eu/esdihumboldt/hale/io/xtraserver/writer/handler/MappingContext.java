@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,7 +68,7 @@ public final class MappingContext {
 	private final Map<String, Value> transformationProperties;
 	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
 
-	private final Map<String, FeatureTypeMapping> featureTypeMappings = new HashMap<>();
+	private final Map<String, FeatureTypeMapping> featureTypeMappings = new LinkedHashMap<>();
 	private FeatureTypeMapping currentFeatureTypeMapping;
 
 	/**

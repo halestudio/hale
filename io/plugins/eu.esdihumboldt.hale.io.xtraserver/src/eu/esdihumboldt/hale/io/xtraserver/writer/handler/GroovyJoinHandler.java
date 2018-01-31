@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
+import java.util.Collection;
+
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
@@ -39,10 +41,10 @@ class GroovyJoinHandler extends JoinHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Entity sourceType, final Entity targetType,
+	public void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
 			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
 		try {
-			super.doHandle(sourceType, targetType, featureTypeMapping, typeCell);
+			super.doHandle(sourceTypes, targetType, featureTypeMapping, typeCell);
 		} catch (final Exception e) {
 			logger.error("Error transforming GroovyJoin for Feature Type {}."
 					+ " Replace the GroovyJoin with a Join before you transform the Alignment.",
