@@ -135,9 +135,11 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 		} catch (final UnsupportedTransformationException e) {
 			reporter.error("The transformation of the type '" + e.getTransformationIdentifier()
 					+ "'  is not supported. Make sure that the XtraServer compatibility mode is enabled.");
+			reporter.setSuccess(false);
 			return reporter;
 		} catch (final JAXBException | SAXException | XMLStreamException e) {
-			reporter.error("An internal error occured", e.getMessage());
+			reporter.error("An internal error occurred", e);
+			reporter.setSuccess(false);
 			return reporter;
 		}
 		progress.end();
