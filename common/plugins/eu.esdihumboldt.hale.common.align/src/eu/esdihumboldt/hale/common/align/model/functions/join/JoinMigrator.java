@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -46,6 +47,7 @@ public class JoinMigrator extends DefaultCellMigrator {
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
 			MigrationOptions options, SimpleLog log) {
 		MutableCell result = super.updateCell(originalCell, migration, options, log);
+		SimpleLog cellLog = SimpleLog.all(log, new CellLog(result, CELL_LOG_CATEGORY));
 
 		if (options.updateSource()) {
 			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
@@ -55,8 +57,8 @@ public class JoinMigrator extends DefaultCellMigrator {
 				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
 				if (joinParam != null) {
 					joinParams.clear();
-					joinParams.add(new ParameterValue(Value
-							.complex(convertJoinParameter(joinParam, migration, options, log))));
+					joinParams.add(new ParameterValue(Value.complex(
+							convertJoinParameter(joinParam, migration, options, cellLog))));
 				}
 			}
 			result.setTransformationParameters(modParams);
