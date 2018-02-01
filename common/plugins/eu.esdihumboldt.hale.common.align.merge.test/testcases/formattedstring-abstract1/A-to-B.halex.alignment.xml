@@ -18,7 +18,7 @@
         <source>
             <property>
                 <type name="A1" ns="A"/>
-                <child name="x" ns="A"/>
+                <child name="a" ns="A"/>
             </property>
         </source>
         <target>
@@ -34,7 +34,7 @@
         <source>
             <property>
                 <type name="A1" ns="A"/>
-                <child name="y" ns="A"/>
+                <child name="b" ns="A"/>
             </property>
         </source>
         <target>
@@ -50,7 +50,7 @@
         <source>
             <property>
                 <type name="A1" ns="A"/>
-                <child name="z" ns="A"/>
+                <child name="c" ns="A"/>
             </property>
         </source>
         <target>

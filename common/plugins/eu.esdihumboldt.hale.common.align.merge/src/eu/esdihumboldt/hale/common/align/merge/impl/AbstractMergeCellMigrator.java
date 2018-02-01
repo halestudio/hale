@@ -172,35 +172,65 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 		}
 		else {
 			// handle each source
-			MutableCell newCell = new DefaultCell(originalCell);
-			SimpleLog cellLog = SimpleLog.all(log, new CellLog(newCell, CELL_LOG_CATEGORY));
-			C context = newContext(originalCell);
 
-			// reset source
-			newCell.setSource(ArrayListMultimap.create());
-
-			for (Entry<String, ? extends Entity> source : sources.entries()) {
+			boolean allDirect = sources.entries().stream().allMatch(source -> {
 				List<Cell> matches = mergeIndex
 						.getCellsForTarget(source.getValue().getDefinition());
-				if (!matches.isEmpty()) {
-					Cell match = matches.get(0);
-
-					mergeSource(newCell, source.getKey(), source.getValue().getDefinition(), match,
-							originalCell, cellLog, context, migration, mergeIndex);
-
-					if (matches.size() > 1) {
-						// FIXME
-						cellLog.warn("Multiple matches for source {0}, only one was handled",
-								source.getValue().getDefinition());
-					}
+				if (matches.isEmpty()) {
+					// FIXME add comment to cell?
+					return true;
 				}
 				else {
-					// not match, just not add source?
-					// FIXME definitely add comment
-				}
-			}
+					if (matches.size() > 1) {
+						// FIXME add comment?
+					}
 
-			finalize(newCell, migration, context, cellLog);
+					return isDirectMatch(matches.get(0));
+				}
+			});
+
+			MutableCell newCell;
+
+			if (allDirect) {
+				// if the matching are all Retype/Rename, replace sources of
+				// the original cell
+				MigrationOptions replaceSource = new MigrationOptionsImpl(true, false,
+						transferBase);
+				newCell = getCellMigrator.apply(originalCell.getTransformationIdentifier())
+						.updateCell(originalCell, migration, replaceSource, log);
+			}
+			else {
+				// handle each source separately
+				newCell = new DefaultCell(originalCell);
+				SimpleLog cellLog = SimpleLog.all(log, new CellLog(newCell, CELL_LOG_CATEGORY));
+				C context = newContext(originalCell);
+
+				// reset source
+				newCell.setSource(ArrayListMultimap.create());
+
+				for (Entry<String, ? extends Entity> source : sources.entries()) {
+					List<Cell> matches = mergeIndex
+							.getCellsForTarget(source.getValue().getDefinition());
+					if (!matches.isEmpty()) {
+						Cell match = matches.get(0);
+
+						mergeSource(newCell, source.getKey(), source.getValue().getDefinition(),
+								match, originalCell, cellLog, context, migration, mergeIndex);
+
+						if (matches.size() > 1) {
+							// FIXME
+							cellLog.warn("Multiple matches for source {0}, only one was handled",
+									source.getValue().getDefinition());
+						}
+					}
+					else {
+						// not match, just not add source?
+						// FIXME definitely add comment
+					}
+				}
+
+				finalize(newCell, migration, context, cellLog);
+			}
 
 			return Collections.singleton(newCell);
 		}

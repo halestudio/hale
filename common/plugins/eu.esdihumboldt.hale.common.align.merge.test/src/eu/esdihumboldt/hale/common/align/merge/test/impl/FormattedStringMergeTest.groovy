@@ -21,6 +21,8 @@ import org.junit.Test
 
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
+import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
 
 /**
  * Merge tests related to the FormattedString function.
@@ -53,11 +55,14 @@ class FormattedStringMergeTest extends AbstractMergeCellMigratorTest {
 		JaxbAlignmentIO.printCell(migrated, System.out)
 
 		// target
-		assertCellTargetEquals(migrated, ['xyz'])
+		assertCellTargetEquals(migrated, ['C1', 'xyz'])
 
 		// sources
-		assertCellSourcesEqual(migrated, ['x'], ['y'], ['z'])
+		assertCellSourcesEqual(migrated, ['A1', 'a'], ['A1', 'b'], ['A1', 'c'])
 
-		//TODO
+		// parameter
+		def pattern = CellUtil.getFirstParameter(migrated, FormattedStringFunction.PARAMETER_PATTERN).as(String.class)
+		assertNotNull('Format pattern', pattern)
+		assertEquals('Format pattern', '{a}-{b}-{c}', pattern)
 	}
 }
