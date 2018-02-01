@@ -212,10 +212,10 @@ public class Message {
 			props.put("text", Value.of(text));
 		}
 		if (format != null) {
-			props.put("format", Value.of(author));
+			props.put("format", Value.of(format));
 		}
 		if (category != null) {
-			props.put("category", Value.of(author));
+			props.put("category", Value.of(category));
 		}
 		if (dismissed) {
 			props.put("dismissed", Value.of(dismissed));
