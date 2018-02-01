@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Numeric Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.numeric;singleton:=true
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.100.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
 Import-Package: com.google.common.base;version="9.0.0",

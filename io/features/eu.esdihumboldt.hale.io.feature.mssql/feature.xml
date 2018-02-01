@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.mssql"
       label="HALE MS-SQL Support"
-      version="3.4.0.qualifier"
+      version="3.3.100.qualifier"
       provider-name="wetransform GmbH"
       plugin="eu.esdihumboldt.hale.ui.application">
 

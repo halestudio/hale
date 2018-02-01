@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric;singleton:=true
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.100.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  org.opengis,

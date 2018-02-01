@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment Merge Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.merge.test
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.3.100.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="2.3.7",
- eu.esdihumboldt.hale.common.align.merge;bundle-version="3.4.0",
- eu.esdihumboldt.hale.common.align;bundle-version="3.4.0",
- eu.esdihumboldt.hale.io.schemabuilder;bundle-version="3.4.0",
- eu.esdihumboldt.hale.common.headless;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.align.merge;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.io.schemabuilder;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.common.headless;bundle-version="3.3.0",
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.cli,
  org.junit;bundle-version="4.12.0"
