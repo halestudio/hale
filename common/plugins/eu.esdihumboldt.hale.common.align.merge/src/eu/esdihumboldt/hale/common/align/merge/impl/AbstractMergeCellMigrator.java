@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.align.merge.impl;
 
 import static eu.esdihumboldt.hale.common.align.migrate.util.MigrationUtil.isDirectMatch;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -164,25 +165,35 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				MutableCell newCell = new DefaultCell(originalCell);
 				SimpleLog cellLog = SimpleLog.all(log, new CellLog(newCell, CELL_LOG_CATEGORY));
 
-				cellLog.warn("No match for source found, dropping cell "
-						+ CellUtil.getCellDescription(originalCell, null));
+				cellLog.warn(
+						"No match for source {0} found, unable to associate to new source schema",
+						source);
 
-				return Collections.emptyList();
+				return Collections.singleton(newCell);
 			}
 		}
 		else {
 			// handle each source
 
+			// collects messages in case all matches are direct matches
+			List<String> directMessages = new ArrayList<>();
+
+			// determine if all matches are direct
 			boolean allDirect = sources.entries().stream().allMatch(source -> {
 				List<Cell> matches = mergeIndex
 						.getCellsForTarget(source.getValue().getDefinition());
 				if (matches.isEmpty()) {
-					// FIXME add comment to cell?
+					directMessages.add(MessageFormat.format(
+							"No match was found for source {0}, please check how this can be compensated.",
+							source.getValue().getDefinition()));
+					// if there is no match, treat it as direct match
 					return true;
 				}
 				else {
 					if (matches.size() > 1) {
-						// FIXME add comment?
+						directMessages.add(MessageFormat.format(
+								"Multiple matches for source {0}, only one was taken into account",
+								source.getValue().getDefinition()));
 					}
 
 					return isDirectMatch(matches.get(0));
@@ -198,6 +209,9 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						transferBase);
 				newCell = getCellMigrator.apply(originalCell.getTransformationIdentifier())
 						.updateCell(originalCell, migration, replaceSource, log);
+				// add messages from match check
+				SimpleLog cellLog = SimpleLog.all(log, new CellLog(newCell, CELL_LOG_CATEGORY));
+				directMessages.forEach(msg -> cellLog.warn(msg));
 			}
 			else {
 				// handle each source separately
@@ -218,14 +232,16 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 								match, originalCell, cellLog, context, migration, mergeIndex);
 
 						if (matches.size() > 1) {
-							// FIXME
+							// FIXME how can we deal w/ multiple matches?
 							cellLog.warn("Multiple matches for source {0}, only one was handled",
 									source.getValue().getDefinition());
 						}
 					}
 					else {
-						// not match, just not add source?
-						// FIXME definitely add comment
+						// no match, just not add source?
+						cellLog.warn(
+								"No match was found for source {0}, please check how this can be compensated.",
+								source.getValue().getDefinition());
 					}
 				}
 
