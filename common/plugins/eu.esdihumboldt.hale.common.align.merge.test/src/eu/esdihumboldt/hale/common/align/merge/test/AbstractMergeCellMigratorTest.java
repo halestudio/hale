@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.junit.Assert;
 
@@ -52,6 +53,8 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.Message;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.MessageDescriptor;
 import eu.esdihumboldt.hale.common.cli.HaleCLIUtil;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
@@ -307,6 +310,20 @@ public abstract class AbstractMergeCellMigratorTest {
 		Assert.fail(MessageFormat.format("No match for entity {0} found in expected entities {1}",
 				names, expected));
 		return null;
+	}
+
+	/**
+	 * Get the list of migration messages from the cell.
+	 * 
+	 * @param cell the cell
+	 * @return the list of migration messages
+	 */
+	protected List<Message> getMigrationMessages(Cell cell) {
+		return cell.getAnnotations(MessageDescriptor.ID).stream()
+				// only messages in the right category
+				.filter(msg -> msg instanceof Message
+						&& CellMigrator.CELL_LOG_CATEGORY.equals(((Message) msg).getCategory()))
+				.map(msg -> (Message) msg).collect(Collectors.toList());
 	}
 
 }

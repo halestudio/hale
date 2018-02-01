@@ -241,8 +241,11 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 			}
 		}
 
+		def messages = getMigrationMessages(cell)
+
 		if (groovy) {
 			assertEquals('Merged cell function', GroovyJoin.ID, cell.transformationIdentifier)
+			assertFalse('Groovy Join must be annotated', messages.isEmpty())
 		}
 		else {
 			assertEquals('Join and Join should be combined to a Join', JoinFunction.ID, cell.transformationIdentifier)

@@ -22,4 +22,5 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
- javax.annotation
+ javax.annotation,
+ org.slf4j;version="1.7.12"
