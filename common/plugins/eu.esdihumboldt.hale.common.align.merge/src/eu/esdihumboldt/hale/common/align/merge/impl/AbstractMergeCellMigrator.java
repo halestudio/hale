@@ -150,7 +150,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						mergeSource(newCell, sources.keys().iterator().next(), source, match,
 								originalCell, cellLog, context, migration, mergeIndex);
 
-						finalize(newCell, migration, context, log);
+						finalize(newCell, migration, context, cellLog);
 
 						cells.add(newCell);
 					}
@@ -200,7 +200,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 			}
 
-			finalize(newCell, migration, context, log);
+			finalize(newCell, migration, context, cellLog);
 
 			return Collections.singleton(newCell);
 		}
