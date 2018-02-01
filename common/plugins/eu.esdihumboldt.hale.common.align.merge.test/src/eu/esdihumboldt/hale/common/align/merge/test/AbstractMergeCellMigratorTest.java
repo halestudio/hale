@@ -143,7 +143,7 @@ public abstract class AbstractMergeCellMigratorTest {
 						return false;
 					}
 				};
-				mig.updateCell(cellToMigrate, migration, options, SimpleLog.CONSOLE_LOG);
+				cells.add(mig.updateCell(cellToMigrate, migration, options, SimpleLog.CONSOLE_LOG));
 			}
 		}
 		if (migrator != null) {

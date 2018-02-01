@@ -237,6 +237,7 @@
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.FormattedStringExplanation"
+            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.FormattedStringMigrator"
             description="Creates a formatted string based on a pattern and the input variables"
             icon="icons/text.png"
             identifier="eu.esdihumboldt.hale.align.formattedstring"

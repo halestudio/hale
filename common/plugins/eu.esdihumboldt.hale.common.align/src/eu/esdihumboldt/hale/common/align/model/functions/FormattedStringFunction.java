@@ -16,6 +16,15 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.base.Joiner;
+
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+
 /**
  * Formatted string function constants.
  * 
@@ -40,4 +49,35 @@ public interface FormattedStringFunction {
 	 * the formatted string function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.formattedstring";
+
+	/**
+	 * Add a value to the given map of values, with the variable names derived
+	 * from the associated property definition.
+	 * 
+	 * @param values the map associating variable names to values
+	 * @param value the value
+	 * @param property the associated property
+	 */
+	public static void addValue(Map<String, Object> values, Object value,
+			PropertyEntityDefinition property) {
+		// determine the variable name
+		String name = property.getDefinition().getName().getLocalPart();
+
+		// add with short name, but ensure no variable with only a short
+		// name is overridden
+		if (!values.keySet().contains(name) || property.getPropertyPath().size() == 1) {
+			values.put(name, value);
+		}
+
+		// add with long name if applicable
+		if (property.getPropertyPath().size() > 1) {
+			List<String> names = new ArrayList<String>();
+			for (ChildContext context : property.getPropertyPath()) {
+				names.add(context.getChild().getName().getLocalPart());
+			}
+			String longName = Joiner.on('.').join(names);
+			values.put(longName, value);
+		}
+	}
+
 }
