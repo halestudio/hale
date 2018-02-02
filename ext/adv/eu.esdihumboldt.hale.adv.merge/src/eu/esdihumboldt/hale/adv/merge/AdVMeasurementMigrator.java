@@ -51,6 +51,14 @@ public class AdVMeasurementMigrator extends DefaultMergeCellMigrator {
 			return "km";
 		}
 
+		// also accept if the code is already an UCUM symbol:
+		switch (uom) {
+		case "m":
+		case "m2":
+		case "km":
+			return uom;
+		}
+
 		// Transformations-Warnung falls kein Mapping auf UCUM vorhanden
 		log.warn(MessageFormat.format(
 				"Unknown UCUM representation for unit of measurment {0}, code was used as-is",
