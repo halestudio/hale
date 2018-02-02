@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.model.functions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,11 +75,13 @@ public class FormattedStringMigrator extends DefaultCellMigrator {
 	private String convertPattern(String pattern, ListMultimap<String, ? extends Entity> oldSource,
 			AlignmentMigration migration, SimpleLog log) {
 
-		List<PropertyEntityDefinition> oldVars = oldSource
-				.get(FormattedStringFunction.ENTITY_VARIABLE).stream()
-				.filter(e -> e.getDefinition() instanceof PropertyEntityDefinition)
-				.map(e -> (PropertyEntityDefinition) e.getDefinition())
-				.collect(Collectors.toList());
+		List<PropertyEntityDefinition> oldVars = new ArrayList<>();
+		if (oldSource.get(FormattedStringFunction.ENTITY_VARIABLE) != null) {
+			oldVars = oldSource.get(FormattedStringFunction.ENTITY_VARIABLE).stream()
+					.filter(e -> e.getDefinition() instanceof PropertyEntityDefinition)
+					.map(e -> (PropertyEntityDefinition) e.getDefinition())
+					.collect(Collectors.toList());
+		}
 
 		Map<String, Object> replacements = new HashMap<>();
 		for (PropertyEntityDefinition var : oldVars) {
