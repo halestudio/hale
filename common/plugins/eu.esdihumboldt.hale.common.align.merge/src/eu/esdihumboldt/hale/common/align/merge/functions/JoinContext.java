@@ -96,7 +96,7 @@ public class JoinContext {
 		for (TypeEntityDefinition type : orgParameter.types) {
 			List<TypeEntityDefinition> repl = replacements.get(type);
 			if (repl.isEmpty()) {
-				log.error("Could not find replacement for type {0} in join order");
+				log.error("Could not find replacement for type {0} in join order", type);
 				types.add(type);
 			}
 			else {

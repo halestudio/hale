@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.adv.merge;
 
+import java.text.MessageFormat;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
@@ -50,7 +52,9 @@ public class AdVMeasurementMigrator extends DefaultMergeCellMigrator {
 		}
 
 		// Transformations-Warnung falls kein Mapping auf UCUM vorhanden
-		log.warn("Unknown UCUM representation for unit of measurment $uom, code was used as-is");
+		log.warn(MessageFormat.format(
+				"Unknown UCUM representation for unit of measurment {0}, code was used as-is",
+				uom));
 		return uom;
 	}
 
