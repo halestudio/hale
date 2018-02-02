@@ -76,7 +76,7 @@ public class FormattedStringMigrator extends DefaultCellMigrator {
 			AlignmentMigration migration, SimpleLog log) {
 
 		List<PropertyEntityDefinition> oldVars = new ArrayList<>();
-		if (oldSource.get(FormattedStringFunction.ENTITY_VARIABLE) != null) {
+		if (oldSource != null && oldSource.get(FormattedStringFunction.ENTITY_VARIABLE) != null) {
 			oldVars = oldSource.get(FormattedStringFunction.ENTITY_VARIABLE).stream()
 					.filter(e -> e.getDefinition() instanceof PropertyEntityDefinition)
 					.map(e -> (PropertyEntityDefinition) e.getDefinition())
