@@ -185,7 +185,7 @@ public class JoinContext {
 
 		// add default script
 
-		script.append("// dummy script creating a target instance\n");
+		script.append("// FIXME dummy script creating a target instance\n");
 		script.append("_target {\n");
 		script.append("}\n");
 
