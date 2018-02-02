@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: AdV Alignment Merge functions tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.adv.merge.test
+Bundle-Version: 3.3.100.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.adv.merge;bundle-version="3.3.100",
+ eu.esdihumboldt.hale.common.align.merge;bundle-version="3.3.100",
+ eu.esdihumboldt.hale.common.align.merge.test;bundle-version="3.3.100",
+ eu.esdihumboldt.hale.common.align;bundle-version="3.3.100",
+ groovy;bundle-version="2.3.7",
+ eu.esdihumboldt.hale.common.headless;bundle-version="3.3.100",
+ org.junit;bundle-version="4.12.0"
+Import-Package: com.google.common.cache;version="17.0.0",
+ com.google.common.collect;version="17.0.0"

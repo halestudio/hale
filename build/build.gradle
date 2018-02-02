@@ -111,7 +111,8 @@ ext {
 		file('../ext/ageobw'),
 		file('../ext/fme'),
 		file('../ext/nonosgi'),
-		file('../ext/geom')
+		file('../ext/geom'),
+		file('../ext/adv')
     ]
 
 	// bundles to exclude for the build (symbolic names)
@@ -120,7 +121,8 @@ ext {
     //'eu.esdihumboldt.hale.ui.feature.liveeditor'
 		// FIXME Groovy compiler error that suddenly appeared (local build), unclear cause
 		// FIXME results in tests not being automatically run
-		'eu.esdihumboldt.hale.common.align.merge.test'
+		'eu.esdihumboldt.hale.common.align.merge.test',
+		'eu.esdihumboldt.hale.adv.merge.test'
 	]
 
 	// bundles or fragments that are required additionally for compilation

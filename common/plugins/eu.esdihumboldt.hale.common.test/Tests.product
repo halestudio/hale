@@ -232,6 +232,8 @@
       <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
       <plugin id="eu.esdihumboldt.util.svg.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
+      <plugin id="eu.esdihumbolt.hale.adv.merge"/>
+      <plugin id="eu.esdihumbolt.hale.adv.merge.test"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
