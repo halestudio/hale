@@ -26,4 +26,18 @@ schema('C') {
 		cc()
 		cd()
 	}
+	
+	C5 {
+		ca()
+		cb()
+		cc()
+		cd()
+	}
+	
+	C6 {
+		ca()
+		cb()
+		cc()
+		cd()
+	}
 }

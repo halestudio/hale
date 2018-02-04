@@ -239,4 +239,142 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 			msg.text.toLowerCase().contains('condition')
 		})
 	}
+
+	@Test
+	void testGroovyWarningScript() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B2ba-C2ca'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
+
+	@Test
+	void testGroovyWarningRetype() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B5-C5'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
+
+	@Test
+	void testGroovyWarningMerge() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B6-C6'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
+
+	@Test
+	void testGroovyWarningRetypeTarget() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B2-C2'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
+
+	@Test
+	void testGroovyWarningMergeTarget() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B3-C3'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
+
+	@Test
+	void testGroovyWarningCreateTarget() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B4-C4'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// there should be a message informing to check the script
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('script')
+		})
+	}
 }

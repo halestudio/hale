@@ -26,4 +26,18 @@ schema('B') {
 		bc()
 		bd()
 	}
+	
+	B5 {
+		ba()
+		bb()
+		bc()
+		bd()
+	}
+	
+	B6 {
+		ba()
+		bb()
+		bc()
+		bd()
+	}
 }

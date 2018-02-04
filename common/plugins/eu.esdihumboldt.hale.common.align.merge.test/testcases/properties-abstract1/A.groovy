@@ -19,4 +19,18 @@ schema('A') {
 		ac()
 		ad()
 	}
+	
+	A5 {
+		aa()
+		ab()
+		ac()
+		ad()
+	}
+	
+	A6 {
+		aa()
+		ab()
+		ac()
+		ad()
+	}
 }

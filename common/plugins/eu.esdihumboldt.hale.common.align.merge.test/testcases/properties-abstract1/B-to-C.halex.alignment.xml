@@ -86,7 +86,7 @@ _target {
         <parameter value="false" name="ignoreNamespaces"/>
         <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cf7862958-adcd-4b0d-8bc0-052ce4a23e9e" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B2-C2" priority="normal">
         <source>
             <class>
                 <type name="B2" ns="B"/>
@@ -101,7 +101,25 @@ _target {
         <parameter value="false" name="structuralRename"/>
         <documentation>B2 to C2</documentation>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.retype" id="C4c505a00-7598-4e5b-93ef-2eacb279a9fb" priority="normal">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="B2ba-C2ca" priority="normal">
+        <source name="var">
+            <property>
+                <type name="B2" ns="B"/>
+                <child name="ba" ns="B"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="C2" ns="C"/>
+                <child name="ca" ns="C"/>
+            </property>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">ba + 'ist toll!'</core:text>
+        </complexParameter>
+        <parameter value="false" name="variablesAsInstances"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B3-C3" priority="normal">
         <source>
             <class>
                 <type name="B3" ns="B"/>
@@ -116,7 +134,7 @@ _target {
         <parameter value="false" name="structuralRename"/>
         <documentation>B3 to C3</documentation>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.retype" id="Ccb5c1957-ea17-4c0e-a19e-8bb452b6fd20" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B4-C4" priority="normal">
         <source>
             <class>
                 <type name="B4" ns="B"/>
@@ -130,5 +148,43 @@ _target {
         <parameter value="false" name="ignoreNamespaces"/>
         <parameter value="false" name="structuralRename"/>
         <documentation>B4 to C4</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="B5-C5" priority="normal">
+        <source>
+            <class>
+                <type name="B5" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C5" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.merge" id="B6-C6" priority="normal">
+        <source>
+            <class>
+                <type name="B6" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C6" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="auto_detect"/>
+        <parameter value="{B}ba" name="property"/>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
     </cell>
 </alignment>

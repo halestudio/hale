@@ -101,6 +101,22 @@ _target {
 </core:text>
         </complexParameter>
     </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C5e180246-7d8f-487b-bb16-98d113c363f3" priority="normal">
+        <source>
+            <property>
+                <type name="A2" ns="A"/>
+                <child name="aa" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B2" ns="B"/>
+                <child name="ba" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
     <cell relation="eu.esdihumboldt.cst.functions.groovy.merge" id="C9d1e6f1f-d6e7-4a3f-b1e9-10e8ebf848db" priority="normal">
         <source>
             <class>
@@ -134,5 +150,33 @@ _target {
 }
 </core:text>
         </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C0b890e00-fea3-4172-a3ba-b36873e98b64" priority="normal">
+        <source>
+            <class>
+                <type name="A5" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B5" ns="B"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C673337ac-a66b-4918-b924-d1518314d09e" priority="normal">
+        <source>
+            <class>
+                <type name="A6" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B6" ns="B"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
     </cell>
 </alignment>
