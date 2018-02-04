@@ -196,10 +196,46 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		// sources
 		assertCellSourcesEqual(migrated, ['A1', 'ac'])
 
-		// notes should be taken from cell to migrate (XXX in future change to include source notes as well?)
+		// there should be a message informing to check the condition
 		def messages = getMigrationMessages(migrated)
 		assertTrue(messages.size() > 0)
 		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@Test
+	void testMatchCondition1() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B1bd-C1cd'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// simple rename combination
+		assertEquals(RenameFunction.ID, migrated.transformationIdentifier)
+
+		// target
+		assertCellTargetEquals(migrated, ['C1', 'cd'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1', 'ad'])
+
+		// the condition should be present on the source
+		def filter = CellUtil.getFirstEntity(migrated.source).definition.propertyPath[0].condition.filter
+		assertNotNull(filter)
+		assertEquals('value = \'green lantern\'', filter.filterTerm)
+
+		// there should be no message about the condition
+		def messages = getMigrationMessages(migrated)
+		assertFalse(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
 	}
