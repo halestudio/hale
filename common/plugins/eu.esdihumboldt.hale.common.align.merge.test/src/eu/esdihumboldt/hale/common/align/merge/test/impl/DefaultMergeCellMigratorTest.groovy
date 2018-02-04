@@ -21,12 +21,15 @@ import org.junit.Test
 
 import com.google.common.collect.ListMultimap
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyRetype
+import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.impl.DefaultMergeCellMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.MutableCell
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
+import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
 
 /**
  * Tests for default merge cell migrator.
@@ -109,5 +112,63 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertEquals('Join conditions must be the same as for the matching Join', matchConditions, conditions)
 	}
 
-	//TODO more tests
+	@Test
+	void testNotes1() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B1ba-C1ca'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// simple rename combination
+		assertEquals(RenameFunction.ID, migrated.transformationIdentifier)
+
+		// target
+		assertCellTargetEquals(migrated, ['C1', 'ca'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1', 'aa'])
+
+		// notes should be taken from cell to migrate (XXX in future change to include source notes as well?)
+		def notes = CellUtil.getNotes(migrated)
+		assertNotNull(notes)
+		assertEquals('ba to ca', notes)
+	}
+
+	@Test
+	void testNotes2() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B1-C1'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// Groovy Retype
+		assertEquals(GroovyRetype.ID, migrated.transformationIdentifier)
+
+		// target
+		assertCellTargetEquals(migrated, ['C1'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1'])
+
+		// notes should be taken from cell to migrate (XXX in future change to include source notes as well?)
+		def notes = CellUtil.getNotes(migrated)
+		assertNotNull(notes)
+		assertEquals('B1 to C1', notes)
+	}
 }

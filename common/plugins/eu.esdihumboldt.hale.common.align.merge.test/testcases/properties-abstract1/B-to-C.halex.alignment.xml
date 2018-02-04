@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="B1-C1" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+        <documentation>B1 to C1</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="B1ba-C1ca" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="ba" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="ca" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>ba to ca</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C21fffb3f-4f7c-42f5-a1d8-96591531e7e2" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bb" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="cb" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cdcb0863e-89fb-4eed-8507-a96f28fa0631" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bc" ns="B">
+                    <condition lang="CQL">value = 'US'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="cc" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C7b55e23d-b9fd-4fee-bcf2-42676ad67deb" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bd" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="cd" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cf7862958-adcd-4b0d-8bc0-052ce4a23e9e" priority="normal">
+        <source>
+            <class>
+                <type name="B2" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C2" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>B2 to C2</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C4c505a00-7598-4e5b-93ef-2eacb279a9fb" priority="normal">
+        <source>
+            <class>
+                <type name="B3" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C3" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>B3 to C3</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Ccb5c1957-ea17-4c0e-a19e-8bb452b6fd20" priority="normal">
+        <source>
+            <class>
+                <type name="B4" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C4" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>B4 to C4</documentation>
+    </cell>
+</alignment>

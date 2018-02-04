@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cf7686d9a-bb20-4379-af80-0e1c97973d12" priority="normal">
+        <source>
+            <class>
+                <type name="A1" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cfbb81893-6860-4c32-9819-11e3036a212e" priority="normal">
+        <source>
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="aa" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="ba" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>Notes from match</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy" id="Caed2942c-b8ee-40c8-ac31-e58a433d5e2a" priority="normal">
+        <source name="var">
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="ab" ns="A"/>
+            </property>
+        </source>
+        <target name="result">
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bb" ns="B"/>
+            </property>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">ab + 'ist doof'</core:text>
+        </complexParameter>
+        <parameter value="false" name="variablesAsInstances"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4ee1954f-e373-4dde-b54e-9e13b5865984" priority="normal">
+        <source>
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="ac" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bc" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C65d966ef-02b9-4867-924b-699bda8cd50f" priority="normal">
+        <source>
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="ad" ns="A">
+                    <condition lang="CQL">value = 'green lantern'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="bd" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="C4b534860-3b4f-4a21-a629-eaae9f5723b8" priority="normal">
+        <source>
+            <class>
+                <type name="A2" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B2" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.merge" id="C9d1e6f1f-d6e7-4a3f-b1e9-10e8ebf848db" priority="normal">
+        <source>
+            <class>
+                <type name="A3" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B3" ns="B"/>
+            </class>
+        </target>
+        <parameter value="{A}ac" name="additional_property"/>
+        <parameter value="false" name="auto_detect"/>
+        <parameter value="{A}aa" name="property"/>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.create" id="C152e75fb-dfee-4fc8-be6b-bbe815be4efa" priority="normal">
+        <target>
+            <class>
+                <type name="B4" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+    </cell>
+</alignment>

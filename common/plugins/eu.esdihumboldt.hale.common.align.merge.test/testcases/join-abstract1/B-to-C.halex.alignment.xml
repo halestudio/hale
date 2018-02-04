@@ -36,6 +36,7 @@
                 </jp:condition>
             </jp:join-parameter>
         </complexParameter>
+        <documentation>B1 and B2 to C1</documentation>
     </cell>
     <cell relation="eu.esdihumboldt.hale.align.rename" id="C6ad91c5e-9ed3-418e-a3e1-29eb49fa280c" priority="normal">
         <source>

@@ -148,6 +148,11 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 				['A4', 'a3'] //
 			]
 		])
+
+		// notes should be taken from cell to migrate (XXX in future change to include source notes as well?)
+		def notes = CellUtil.getNotes(migrated)
+		assertNotNull(notes)
+		assertEquals('B1 and B2 to C1', notes)
 	}
 
 	@Test
