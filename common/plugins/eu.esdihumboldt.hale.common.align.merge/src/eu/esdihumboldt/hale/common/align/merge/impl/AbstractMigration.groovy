@@ -60,31 +60,39 @@ abstract class AbstractMigration implements AlignmentMigration {
 			// entity contained contexts -> translate them if possible
 
 			if (entity.filter) {
-				// apply filter to entity
-				//TODO replacements in filter?
-				//FIXME mark unsafe
 
-				// add filter to match
-				matchedEntity = matchedEntity.map { EntityDefinition match ->
-					AlignmentUtil.createEntity(match.type, match.propertyPath,
-							SchemaSpaceID.SOURCE, entity.filter)
+				// what about if match has filter?
+				if (matchedEntity.get().filter) {
+					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
+				}
+				else {
+					// apply filter to entity
+					//TODO replacements in filter?
+					// mark unsafe
+					log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+
+					// add filter to match
+					matchedEntity = matchedEntity.map { EntityDefinition match ->
+						AlignmentUtil.createEntity(match.type, match.propertyPath,
+								SchemaSpaceID.SOURCE, entity.filter)
+					}
 				}
 			}
 
 			if (entity.propertyPath && entity != defaultEntity) {
 				// likely a context was present
-				matchedEntity = matchedEntity.map { applyContexts(it, entity) }
+				matchedEntity = matchedEntity.map { applyContexts(it, entity, log) }
 			}
 		}
 
 		if (!matchedEntity.isPresent()) {
-			println "No match for entity $entity found"
+			log.error("No match for entity $entity found")
 		}
 
 		return matchedEntity
 	}
 
-	private EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts) {
+	private EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts, SimpleLog log) {
 		if (!entity.propertyPath || !contexts.propertyPath) {
 			// return unchanged - no properties to adapt
 			return entity
@@ -93,12 +101,31 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (entity.propertyPath.size() == 1) {
 			// special handling if the property depth is only one
 
+			// check existing context from match
+			//XXX also check index? name?
+			Condition matchCondition = entity.propertyPath[0].condition
+
 			// prefer first instance context
 			Integer contextName = contexts.propertyPath.findResult { it.contextName }
 			// prefer first index context
 			Integer index = contexts.propertyPath.findResult { it.index }
 			// prefer last condition
 			Condition condition = contexts.propertyPath.reverse().findResult { it.condition }
+
+			// decide whether to use match condition or context condition
+			if (matchCondition?.filter) {
+				// keep match condition
+
+				if (condition?.filter) {
+					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
+				}
+
+				condition = matchCondition
+			}
+			else if (condition?.filter) {
+				// mark unsafe
+				log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+			}
 
 			ChildContext pathContext = new ChildContext(contextName, index, condition,
 					entity.propertyPath[0].child)
@@ -110,6 +137,9 @@ abstract class AbstractMigration implements AlignmentMigration {
 		else {
 			// use best guess (top to bottom)
 			//FIXME more cases? improve handling
+
+			//FIXME will replace all match contexts!
+			//XXX though not critical for XtraServer use case because there is only one level of properties
 
 			return DefaultSchemaMigration.applyContexts(entity, contexts)
 		}

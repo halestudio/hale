@@ -52,7 +52,7 @@ _target {
         <parameter value="false" name="ignoreNamespaces"/>
         <parameter value="false" name="structuralRename"/>
     </cell>
-    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cdcb0863e-89fb-4eed-8507-a96f28fa0631" priority="normal">
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="B1bc-C1cc" priority="normal">
         <source>
             <property>
                 <type name="B1" ns="B"/>

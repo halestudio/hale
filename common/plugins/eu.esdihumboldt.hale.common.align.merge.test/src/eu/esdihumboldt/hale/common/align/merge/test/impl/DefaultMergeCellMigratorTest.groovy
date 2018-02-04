@@ -171,4 +171,36 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertNotNull(notes)
 		assertEquals('B1 to C1', notes)
 	}
+
+	@Test
+	void testCondition1() {
+		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
+		def cellId = 'B1bc-C1cc'
+
+		def matching = this.class.getResource('/testcases/properties-abstract1/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// simple rename combination
+		assertEquals(RenameFunction.ID, migrated.transformationIdentifier)
+
+		// target
+		assertCellTargetEquals(migrated, ['C1', 'cc'])
+
+		// sources
+		assertCellSourcesEqual(migrated, ['A1', 'ac'])
+
+		// notes should be taken from cell to migrate (XXX in future change to include source notes as well?)
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.size() > 0)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
 }
