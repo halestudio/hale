@@ -331,4 +331,107 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		// do checks
 		scriptCheck(migrated)
 	}
+
+	@Test
+	void testFilterSame1() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'C1'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		filterCheckSame(migrated, "x <> 'Y'")
+	}
+
+	@Test
+	void testFilterSame2() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'c1'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertEquals(1, migrated.size())
+		migrated = migrated[0]
+
+		//XXX found as match even though source type has a filter
+
+		// simple rename combination
+		assertEquals(RenameFunction.ID, migrated.transformationIdentifier)
+	}
+
+	@Test
+	void testFilterSame3() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'x'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		filterCheckSame(migrated, "value = 'X'")
+	}
+
+	@Test
+	void testFilterSame4() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'y'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		filterCheckSame(migrated, "value = 'Y'")
+	}
+
+	@Test
+	void testFilterSame5() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'z'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		filterCheckSame(migrated, "value = 'Z'")
+	}
+
+	@Test
+	void testFilterSame6() {
+		def toMigrate = this.class.getResource('/testcases/filter-same/B-to-C.halex')
+		def cellId = 'x2'
+
+		def matching = this.class.getResource('/testcases/filter-same/B-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		filterCheckSame(migrated, "value = 'X'")
+	}
+
+	private void filterCheckSame(List<Cell> cells, String expectedFilter) {
+		assertEquals(1, cells.size())
+		def migrated = cells[0]
+
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// the condition should be present on the source
+		def source = CellUtil.getFirstEntity(migrated.source).definition
+		def filter = source.propertyPath.empty ? source.filter : source.propertyPath[0].condition?.filter
+		assertNotNull(filter)
+		assertEquals(expectedFilter, filter.filterTerm)
+
+		// there should be no message about the condition because the new source is the same!
+		def messages = getMigrationMessages(migrated)
+		assertFalse(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
 }

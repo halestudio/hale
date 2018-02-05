@@ -62,14 +62,16 @@ abstract class AbstractMigration implements AlignmentMigration {
 			if (entity.filter) {
 
 				// what about if match has filter?
-				if (matchedEntity.get().filter) {
+				if (matchedEntity.get().filter && entity.filter != matchedEntity.get().filter) {
 					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
 				}
 				else {
 					// apply filter to entity
 					//TODO replacements in filter?
-					// mark unsafe
-					log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+					// mark unsafe if entity is not the same
+					if (!sameEntity(entity, matchedEntity.get())) {
+						log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+					}
 
 					// add filter to match
 					matchedEntity = matchedEntity.map { EntityDefinition match ->
@@ -90,6 +92,35 @@ abstract class AbstractMigration implements AlignmentMigration {
 		}
 
 		return matchedEntity
+	}
+
+	/**
+	 * Check if entities are the same, ignoring contexts.
+	 * @param e1 the first entity to check
+	 * @param e2 the second entity to check
+	 * @return <code>true</code> if the entities are the same, <code>false</code> if not
+	 */
+	private boolean sameEntity(EntityDefinition e1, EntityDefinition e2) {
+		// FIXME rather do a structural check! for filter it matches if the structure changes
+
+		if (!e1.type.equals(e1.type)) {
+			return false
+		}
+
+		// property path
+		if (e1.propertyPath.size() != e2.propertyPath.size()) {
+			return false
+		}
+		for (int i = 0; i < e1.propertyPath.size(); i++) {
+			ChildContext child1 = e1.propertyPath[i]
+			ChildContext child2 = e2.propertyPath[i]
+
+			if (child1.child != child2.child) {
+				return false
+			}
+		}
+
+		return true;
 	}
 
 	private EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts, SimpleLog log) {
@@ -116,15 +147,17 @@ abstract class AbstractMigration implements AlignmentMigration {
 			if (matchCondition?.filter) {
 				// keep match condition
 
-				if (condition?.filter) {
+				if (condition?.filter && matchCondition.filter != condition.filter) {
 					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
 				}
 
 				condition = matchCondition
 			}
 			else if (condition?.filter) {
-				// mark unsafe
-				log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+				// mark unsafe if entity is not the same
+				if (!sameEntity(entity, contexts)) {
+					log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+				}
 			}
 
 			ChildContext pathContext = new ChildContext(contextName, index, condition,
