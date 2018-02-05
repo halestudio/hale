@@ -42,20 +42,33 @@ class CellLog implements SimpleLog {
 
 	private final String author
 
+	private final boolean avoidDuplicates
+
 	/**
 	 * @param cell
 	 * @param fixedCategory
 	 */
-	CellLog(Cell cell, String fixedCategory = null, String author = null) {
+	CellLog(Cell cell, String fixedCategory = null, String author = null, boolean avoidDuplicates = true) {
 		super()
 		this.cell = cell
 		this.fixedCategory = fixedCategory
 		this.author = author
+		this.avoidDuplicates = avoidDuplicates
 	}
 
 	private void log(String category, String message, Throwable e) {
 		if (fixedCategory) {
 			category = fixedCategory
+		}
+
+		if (avoidDuplicates) {
+			// check if message with text and category already exists
+			boolean duplicate = ((List<Message>) cell.getAnnotations(MessageDescriptor.ID)).any { Message m ->
+				m.text == message && m.category == category
+			}
+			if (duplicate) {
+				return
+			}
 		}
 
 		Message m = (Message) cell.addAnnotation(MessageDescriptor.ID)
