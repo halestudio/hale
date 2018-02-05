@@ -250,6 +250,10 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
+		scriptCheck(migrated)
+	}
+
+	private void scriptCheck(def migrated) {
 		assertEquals(1, migrated.size())
 		migrated = migrated[0]
 
@@ -273,17 +277,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
-		assertEquals(1, migrated.size())
-		migrated = migrated[0]
-
-		JaxbAlignmentIO.printCell(migrated, System.out)
-
-		// there should be a message informing to check the script
-		def messages = getMigrationMessages(migrated)
-		assertTrue(messages.size() > 0)
-		assertTrue(messages.any { msg ->
-			msg.text.toLowerCase().contains('script')
-		})
+		scriptCheck(migrated)
 	}
 
 	@Test
@@ -296,17 +290,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
-		assertEquals(1, migrated.size())
-		migrated = migrated[0]
-
-		JaxbAlignmentIO.printCell(migrated, System.out)
-
-		// there should be a message informing to check the script
-		def messages = getMigrationMessages(migrated)
-		assertTrue(messages.size() > 0)
-		assertTrue(messages.any { msg ->
-			msg.text.toLowerCase().contains('script')
-		})
+		scriptCheck(migrated)
 	}
 
 	@Test
@@ -319,17 +303,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
-		assertEquals(1, migrated.size())
-		migrated = migrated[0]
-
-		JaxbAlignmentIO.printCell(migrated, System.out)
-
-		// there should be a message informing to check the script
-		def messages = getMigrationMessages(migrated)
-		assertTrue(messages.size() > 0)
-		assertTrue(messages.any { msg ->
-			msg.text.toLowerCase().contains('script')
-		})
+		scriptCheck(migrated)
 	}
 
 	@Test
@@ -342,17 +316,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
-		assertEquals(1, migrated.size())
-		migrated = migrated[0]
-
-		JaxbAlignmentIO.printCell(migrated, System.out)
-
-		// there should be a message informing to check the script
-		def messages = getMigrationMessages(migrated)
-		assertTrue(messages.size() > 0)
-		assertTrue(messages.any { msg ->
-			msg.text.toLowerCase().contains('script')
-		})
+		scriptCheck(migrated)
 	}
 
 	@Test
@@ -365,16 +329,6 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def migrated = merge(cellId, toMigrate, matching)
 
 		// do checks
-		assertEquals(1, migrated.size())
-		migrated = migrated[0]
-
-		JaxbAlignmentIO.printCell(migrated, System.out)
-
-		// there should be a message informing to check the script
-		def messages = getMigrationMessages(migrated)
-		assertTrue(messages.size() > 0)
-		assertTrue(messages.any { msg ->
-			msg.text.toLowerCase().contains('script')
-		})
+		scriptCheck(migrated)
 	}
 }
