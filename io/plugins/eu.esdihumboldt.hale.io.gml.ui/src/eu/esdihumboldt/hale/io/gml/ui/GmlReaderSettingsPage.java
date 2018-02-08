@@ -136,7 +136,7 @@ public class GmlReaderSettingsPage
 		featuresPerRequest.setSelection(1000);
 
 		ignoreNumberMatched = new Button(wfsGroup, SWT.CHECK);
-		ignoreNumberMatched.setText("Ignore total number of features reported by WFS");
+		ignoreNumberMatched.setText("Ignore total number of features reported by the WFS");
 		// default
 		ignoreNumberMatched.setSelection(false);
 
