@@ -280,7 +280,14 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				file.apply();
 			}
 
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+			boolean txWasEnabled = is.isTransformationEnabled();
+			is.setTransformationEnabled(false);
+
 			executeConfigurations(sourceDataConfigurations);
+			if (txWasEnabled) {
+				is.setTransformationEnabled(true);
+			}
 
 			// reset changed to false if it was altered through the project
 			// files being applied
