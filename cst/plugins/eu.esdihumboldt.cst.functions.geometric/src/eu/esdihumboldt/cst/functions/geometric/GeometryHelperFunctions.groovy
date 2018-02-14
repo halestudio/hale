@@ -220,9 +220,9 @@ class GeometryHelperFunctions {
 		if (args instanceof Map) {
 			spatialIndex = args.spatialIndex
 		}
-		if (spatialIndex != null) {
+		if (!spatialIndex) {
 			// use spatial index service by default
-			context?.serviceProvider?.getService(SpatialIndexService)
+			spatialIndex = context?.serviceProvider?.getService(SpatialIndexService)
 		}
 		if (!spatialIndex) {
 			throw new IllegalStateException('No spatial index available to query')
