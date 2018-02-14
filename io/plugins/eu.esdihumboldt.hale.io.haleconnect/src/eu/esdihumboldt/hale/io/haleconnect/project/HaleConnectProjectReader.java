@@ -74,8 +74,16 @@ public class HaleConnectProjectReader extends ArchiveProjectReader {
 			saveConfig.setProviderId(HaleConnectProjectWriter.ID);
 			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_CONTENT_TYPE,
 					Value.of(HaleConnectProjectWriter.HALECONNECT_CONTENT_TYPE_ID));
-			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
-					Value.of(source.getLocation()));
+
+			/*
+			 * Don't overwrite the target of the save configuration which is, at
+			 * this point, set to the temporary location of the extracted
+			 * project archive. The reason for this is to make sure that
+			 * PathUpdate can correctly resolve all relative resource paths.
+			 * (https://github.com/halestudio/hale/issues/506)
+			 */
+//			saveConfig.getProviderConfiguration().put(ExportProvider.PARAM_TARGET,
+//					Value.of(source.getLocation()));
 
 			getProject().setSaveConfiguration(saveConfig);
 		}
