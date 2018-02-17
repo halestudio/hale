@@ -21,6 +21,8 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.content.IContentType;
 
 import eu.esdihumboldt.hale.common.core.io.extension.ComplexValueExtension;
@@ -57,8 +59,23 @@ public interface IOProvider {
 	 *             configured properly
 	 * @throws IOException if an I/O operation fails
 	 */
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException;
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException;
+
+	/**
+	 * Set the identifier of the associated action.
+	 * 
+	 * @param action the action identifier
+	 */
+	public void setActionId(String action);
+
+	/**
+	 * Get the identifier of the associated action, if set
+	 * 
+	 * @return the action identifier or <code>null</code>
+	 */
+	@Nullable
+	public String getActionId();
 
 	/**
 	 * Create a reporter configured for the execution of this I/O provider.

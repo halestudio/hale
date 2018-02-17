@@ -50,7 +50,7 @@ public class CastorAlignmentIOTest extends DefaultAlignmentIOTest {
 					public URI getLocation() {
 						return newBase;
 					}
-				}, "addBaseAlignment", true));
+				}, "addBaseAlignment", "addBaseAlignment", true));
 	}
 
 	@Override

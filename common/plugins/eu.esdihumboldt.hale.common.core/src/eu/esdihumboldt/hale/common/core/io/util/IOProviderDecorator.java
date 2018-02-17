@@ -54,8 +54,8 @@ public abstract class IOProviderDecorator<T extends IOProvider> implements IOPro
 	}
 
 	@Override
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException {
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
 		return internalProvider.execute(progress);
 	}
 
@@ -122,6 +122,16 @@ public abstract class IOProviderDecorator<T extends IOProvider> implements IOPro
 	@Override
 	public void storeConfiguration(Map<String, Value> configuration) {
 		internalProvider.storeConfiguration(configuration);
+	}
+
+	@Override
+	public void setActionId(String action) {
+		internalProvider.setActionId(action);
+	}
+
+	@Override
+	public String getActionId() {
+		return internalProvider.getActionId();
 	}
 
 }

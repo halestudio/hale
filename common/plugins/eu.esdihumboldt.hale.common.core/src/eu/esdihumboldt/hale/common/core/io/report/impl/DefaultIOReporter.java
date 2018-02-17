@@ -41,14 +41,15 @@ public class DefaultIOReporter extends DefaultReporter<IOMessage>
 	 * you should call {@link #setSuccess(boolean)} nonetheless to update the
 	 * timestamp after the task has finished.
 	 * 
-	 * @see DefaultReporter#DefaultReporter(String, Class, boolean)
+	 * @see DefaultReporter#DefaultReporter(String, String, Class, boolean)
 	 * 
 	 * @param target the locatable target
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
-	public DefaultIOReporter(Locatable target, String taskName, boolean doLog) {
-		super(taskName, IOMessage.class, doLog);
+	public DefaultIOReporter(Locatable target, String taskName, String taskType, boolean doLog) {
+		super(taskName, taskType, IOMessage.class, doLog);
 
 		this.target = target;
 	}

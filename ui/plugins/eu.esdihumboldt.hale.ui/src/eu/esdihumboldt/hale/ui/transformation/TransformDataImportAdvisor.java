@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.transformation;
 
 import java.net.URI;
 
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.ui.HaleUI;
@@ -39,6 +40,7 @@ public class TransformDataImportAdvisor extends InstanceImportAdvisor {
 		super();
 
 		setServiceProvider(HaleUI.getServiceProvider());
+		setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
 	}
 
 	/**

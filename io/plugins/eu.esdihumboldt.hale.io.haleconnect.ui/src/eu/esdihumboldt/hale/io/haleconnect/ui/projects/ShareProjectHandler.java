@@ -20,6 +20,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.util.wizard.HaleWizardDialog;
 
@@ -38,6 +39,7 @@ public class ShareProjectHandler extends AbstractHandler {
 		ShareProjectWizard wizard = new ShareProjectWizard();
 		HaleConnectProjectExportAdvisor advisor = new HaleConnectProjectExportAdvisor();
 		advisor.setServiceProvider(HaleUI.getServiceProvider());
+		advisor.setActionId(ProjectIO.ACTION_SAVE_PROJECT);
 		wizard.setAdvisor(advisor, null);
 
 		HaleWizardDialog dialog = new HaleWizardDialog(Display.getCurrent().getActiveShell(),

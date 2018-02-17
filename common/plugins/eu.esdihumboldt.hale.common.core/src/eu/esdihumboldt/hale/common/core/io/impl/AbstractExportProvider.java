@@ -107,8 +107,8 @@ public abstract class AbstractExportProvider extends AbstractIOProvider implemen
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getTarget(),
-				MessageFormat.format("{0} export", getTypeName()), true);
+		return new DefaultIOReporter(getTarget(), MessageFormat.format("{0} export", getTypeName()),
+				getActionId(), true);
 	}
 
 }

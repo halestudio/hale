@@ -72,6 +72,11 @@ public abstract class AbstractIOProvider implements IOProvider {
 	private Charset charset = null;
 
 	/**
+	 * The action identifier
+	 */
+	private String action = null;
+
+	/**
 	 * Default constructor
 	 */
 	protected AbstractIOProvider() {
@@ -97,8 +102,8 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 * @see IOProvider#execute(ProgressIndicator)
 	 */
 	@Override
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException {
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
 		return execute((progress == null) ? (new LogProgressIndicator()) : (progress),
 				createReporter());
 	}
@@ -116,6 +121,16 @@ public abstract class AbstractIOProvider implements IOProvider {
 	 */
 	protected abstract IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException;
+
+	@Override
+	public void setActionId(String action) {
+		this.action = action;
+	}
+
+	@Override
+	public String getActionId() {
+		return action;
+	}
 
 	/**
 	 * Get the content type name.
@@ -227,8 +242,8 @@ public abstract class AbstractIOProvider implements IOProvider {
 	public void setParameter(String name, Value value) {
 		if (name.equals(PARAM_CONTENT_TYPE)) {
 			// configure content type
-			setContentType(HalePlatform.getContentTypeManager().getContentType(
-					value.as(String.class)));
+			setContentType(
+					HalePlatform.getContentTypeManager().getContentType(value.as(String.class)));
 		}
 		if (name.equals(PARAM_CHARSET)) {
 			// configure character set

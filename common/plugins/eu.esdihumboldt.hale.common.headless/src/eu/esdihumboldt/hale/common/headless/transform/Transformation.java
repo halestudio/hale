@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSi
 import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
 import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -180,6 +181,7 @@ public class Transformation {
 			}
 		};
 		loadDataAdvisor.setServiceProvider(environment);
+		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
 
 		List<InstanceCollection> sourceList = Lists.transform(sources,
 				new Function<InstanceReader, InstanceCollection>() {
@@ -234,6 +236,7 @@ public class Transformation {
 
 		};
 		saveDataAdvisor.setServiceProvider(environment);
+		saveDataAdvisor.setActionId(InstanceIO.ACTION_SAVE_TRANSFORMED_DATA);
 
 		saveDataAdvisor.prepareProvider(target);
 		saveDataAdvisor.updateConfiguration(target);

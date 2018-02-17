@@ -291,7 +291,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			Locatable prettifiedTarget = new LocatableURI(prettifyTarget(targetUri));
 
 			return new DefaultIOReporter(prettifiedTarget,
-					MessageFormat.format("{0} export", getTypeName()), true);
+					MessageFormat.format("{0} export", getTypeName()), getActionId(), true);
 		} catch (Throwable t) {
 			return super.createReporter();
 		}

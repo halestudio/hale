@@ -113,7 +113,7 @@ public class HaleConnectProjectReader extends ArchiveProjectReader {
 					HaleConnectUrnBuilder.buildClientAccessUrl(clientBasePath, owner, projectId));
 
 			return new DefaultIOReporter(prettifiedTarget,
-					MessageFormat.format("{0} import", getTypeName()), true);
+					MessageFormat.format("{0} import", getTypeName()), getActionId(), true);
 		} catch (Throwable t) {
 			return super.createReporter();
 		}

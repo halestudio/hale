@@ -51,6 +51,11 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	public static final String KEY_REPORT_TASKNAME = "taskname";
 
 	/**
+	 * Key for taskname
+	 */
+	public static final String KEY_REPORT_TASKTYPE = "type";
+
+	/**
 	 * Key for success
 	 */
 	public static final String KEY_REPORT_SUCCESS = "success";
@@ -248,6 +253,7 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		Properties props = new Properties();
 
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
+		props.setProperty(KEY_REPORT_TASKTYPE, report.getTaskType());
 		props.setProperty(KEY_REPORT_SUCCESS, "" + report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
 

@@ -48,8 +48,8 @@ public abstract class ProjectIO {
 	/**
 	 * Configuration service wrapper for a project.
 	 */
-	private static class ProjectConfigServiceWrapper extends AbstractConfigurationService implements
-			ComplexConfigurationService {
+	private static class ProjectConfigServiceWrapper extends AbstractConfigurationService
+			implements ComplexConfigurationService {
 
 		private final Project _project;
 
@@ -101,6 +101,16 @@ public abstract class ProjectIO {
 	public static final String PROJECT_TYPE_NAME = "hale project";
 
 	/**
+	 * Action ID for loading a project (Even if no such action is defined).
+	 */
+	public static final String ACTION_LOAD_PROJECT = "eu.esdihumboldt.hale.project.load";
+
+	/**
+	 * Action ID for saving a project (Even if no such action is defined).
+	 */
+	public static final String ACTION_SAVE_PROJECT = "eu.esdihumboldt.hale.project.save";
+
+	/**
 	 * Name of the internal project file
 	 */
 	public static final String PROJECT_FILE = "project.xml";
@@ -118,7 +128,8 @@ public abstract class ProjectIO {
 	 *            advisors created
 	 * @return the default project files
 	 */
-	public static Map<String, ProjectFile> createDefaultProjectFiles(ServiceProvider serviceProvider) {
+	public static Map<String, ProjectFile> createDefaultProjectFiles(
+			ServiceProvider serviceProvider) {
 		Map<String, ProjectFile> result = new HashMap<String, ProjectFile>();
 
 		Collection<ProjectFileFactory> elements = new ProjectFileExtension(serviceProvider)

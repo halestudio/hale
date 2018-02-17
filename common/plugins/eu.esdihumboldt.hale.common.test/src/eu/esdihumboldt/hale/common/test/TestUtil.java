@@ -33,6 +33,7 @@ import org.osgi.framework.BundleException;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import de.fhg.igd.osgi.util.OsgiUtilsActivator;
+import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -103,7 +104,7 @@ public class TestUtil {
 			public URI getLocation() {
 				return location;
 			}
-		}, "Load alignment", true);
+		}, "Load alignment", AlignmentIO.ACTION_LOAD_ALIGNMENT, true);
 		Alignment alignment;
 		try {
 			alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,

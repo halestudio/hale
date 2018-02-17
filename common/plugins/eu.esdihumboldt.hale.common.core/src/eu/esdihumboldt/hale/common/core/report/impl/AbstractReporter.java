@@ -43,6 +43,8 @@ public abstract class AbstractReporter<T extends Message> implements Reporter<T>
 
 	private final String taskName;
 
+	private final String taskType;
+
 	private String summary;
 
 	/**
@@ -51,14 +53,21 @@ public abstract class AbstractReporter<T extends Message> implements Reporter<T>
 	 * timestamp after the task has finished.
 	 * 
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param messageType the message type
 	 */
-	public AbstractReporter(String taskName, Class<T> messageType) {
+	public AbstractReporter(String taskName, String taskType, Class<T> messageType) {
 		super();
 		this.messageType = messageType;
 		this.taskName = taskName;
+		this.taskType = taskType;
 
 		timestamp = new Date();
+	}
+
+	@Override
+	public String getTaskType() {
+		return taskType;
 	}
 
 	/**
