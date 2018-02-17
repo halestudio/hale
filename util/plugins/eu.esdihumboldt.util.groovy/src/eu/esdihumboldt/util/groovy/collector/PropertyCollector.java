@@ -43,4 +43,27 @@ public abstract class PropertyCollector<K, C extends PropertyCollector<K, ?>>
 		getProperty(property).set(newValue);
 	}
 
+	/**
+	 * Increments the collector's value if it is a number (to an integer). If no
+	 * value is set it will be set to one. Otherwise an exception is thrown.
+	 * 
+	 * @return the collector
+	 */
+	@SuppressWarnings("unchecked")
+	public C next() {
+		synchronized (values) {
+			Object value = value();
+			if (value == null) {
+				set(1L);
+			}
+			else if (value instanceof Number) {
+				set(((Number) value).longValue() + 1);
+			}
+			else {
+				throw new IllegalStateException("Incrementing only supported for number values");
+			}
+		}
+		return (C) this;
+	}
+
 }

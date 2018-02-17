@@ -36,7 +36,10 @@ public abstract class GenericCollector<K, V, C extends GenericCollector<K, V, ?>
 
 	private final Map<K, C> properties = new HashMap<>();
 
-	private final List<V> values = new ArrayList<>();
+	/**
+	 * The internal collected values.
+	 */
+	protected final List<V> values = new ArrayList<>();
 
 	/**
 	 * Create a new collector instance.
