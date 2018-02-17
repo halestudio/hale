@@ -53,7 +53,7 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	/**
 	 * Key for taskname
 	 */
-	public static final String KEY_REPORT_TASKTYPE = "type";
+	public static final String KEY_REPORT_TASKTYPE = "tasktype";
 
 	/**
 	 * Key for success
@@ -253,7 +253,12 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		Properties props = new Properties();
 
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
-		props.setProperty(KEY_REPORT_TASKTYPE, report.getTaskType());
+		if (report.getTaskType() != null) {
+			props.setProperty(KEY_REPORT_TASKTYPE, report.getTaskType());
+		}
+		else {
+			_log.warn("Task {} does not have a task type associated", report.getTaskName());
+		}
 		props.setProperty(KEY_REPORT_SUCCESS, "" + report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
 

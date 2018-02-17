@@ -58,6 +58,8 @@ public abstract class AbstractIOAdvisor<T extends IOProvider>
 	 */
 	@Override
 	public void prepareProvider(T provider) {
+		provider.setActionId(getActionId());
+
 		// override me
 	}
 
@@ -67,7 +69,6 @@ public abstract class AbstractIOAdvisor<T extends IOProvider>
 	@Override
 	public void updateConfiguration(T provider) {
 		provider.setServiceProvider(serviceProvider);
-		provider.setActionId(getActionId());
 
 		// override me
 	}
