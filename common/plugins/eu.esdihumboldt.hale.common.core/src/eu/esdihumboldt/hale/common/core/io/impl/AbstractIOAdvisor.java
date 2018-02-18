@@ -27,10 +27,11 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractIOAdvisor<T extends IOProvider> implements IOAdvisor<T>,
-		ServiceProvider {
+public abstract class AbstractIOAdvisor<T extends IOProvider>
+		implements IOAdvisor<T>, ServiceProvider {
 
 	private ServiceProvider serviceProvider;
+	private String action;
 
 	@Override
 	public void setServiceProvider(ServiceProvider serviceProvider) {
@@ -42,11 +43,23 @@ public abstract class AbstractIOAdvisor<T extends IOProvider> implements IOAdvis
 		return serviceProvider.getService(serviceInterface);
 	}
 
+	@Override
+	public String getActionId() {
+		return action;
+	}
+
+	@Override
+	public void setActionId(String actionId) {
+		this.action = actionId;
+	}
+
 	/**
 	 * @see IOAdvisor#prepareProvider(IOProvider)
 	 */
 	@Override
 	public void prepareProvider(T provider) {
+		provider.setActionId(getActionId());
+
 		// override me
 	}
 

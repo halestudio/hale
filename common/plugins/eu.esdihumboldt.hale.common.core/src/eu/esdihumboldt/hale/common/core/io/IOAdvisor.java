@@ -30,6 +30,20 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 public interface IOAdvisor<T extends IOProvider> {
 
 	/**
+	 * Get the identifier of the corresponding action.
+	 * 
+	 * @return the action ID
+	 */
+	public String getActionId();
+
+	/**
+	 * Set the identifier of the action the advisor is associated to.
+	 * 
+	 * @param actionId the action identifier
+	 */
+	public void setActionId(String actionId);
+
+	/**
 	 * Set the service provider through which the advisor can access services in
 	 * the current context. This method must be called before
 	 * {@link #prepareProvider(IOProvider)},

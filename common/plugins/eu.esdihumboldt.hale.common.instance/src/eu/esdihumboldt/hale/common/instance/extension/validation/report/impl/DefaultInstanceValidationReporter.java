@@ -37,6 +37,6 @@ public class DefaultInstanceValidationReporter extends DefaultReporter<InstanceV
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultInstanceValidationReporter(boolean doLog) {
-		super("Instance validation", InstanceValidationMessage.class, doLog);
+		super("Instance validation", TASK_TYPE, InstanceValidationMessage.class, doLog);
 	}
 }

@@ -5,6 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.test;singleton:=true
 Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.osgi.util,
+ eu.esdihumboldt.hale.common.align.io,
  eu.esdihumboldt.hale.common.align.io.impl,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.transformation.service,

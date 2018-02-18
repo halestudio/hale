@@ -112,7 +112,8 @@ public class ProjectResourcesUtil {
 						});
 				if (advisors != null && !advisors.isEmpty()) {
 					try {
-						advisor = advisors.get(0).createAdvisor(HaleUI.getServiceProvider());
+						advisor = advisors.get(0).createAdvisor(actionId,
+								HaleUI.getServiceProvider());
 					} catch (Exception e) {
 						log.error(MessageFormat.format(
 								"Could not execute I/O configuration, advisor with ID {0} could not be created.",

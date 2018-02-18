@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 wetransform GmbH
+ * Copyright (c) 2018 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -13,25 +13,23 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.cst.functions.groovy.helpers.util;
-
-import eu.esdihumboldt.util.groovy.collector.PropertyCollector;
+package eu.esdihumboldt.util.groovy.collector;
 
 /**
- * Thread-safe helper for collecting values.
+ * Collector for collecting statistics.
  * 
  * @author Simon Templer
  */
-public class Collector extends PropertyCollector<Object, Collector> {
+public class StatsCollector extends PropertyCollector<String, StatsCollector> {
 
 	@Override
-	protected Object getPropertyKey(String property) {
+	protected String getPropertyKey(String property) {
 		return property;
 	}
 
 	@Override
-	protected Collector createCollector() {
-		return new Collector();
+	protected StatsCollector createCollector() {
+		return new StatsCollector();
 	}
 
 }

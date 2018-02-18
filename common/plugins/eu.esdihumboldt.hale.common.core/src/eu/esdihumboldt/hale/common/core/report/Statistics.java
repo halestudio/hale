@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2018 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,24 +10,25 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.align.transformation.report;
+package eu.esdihumboldt.hale.common.core.report;
 
-import eu.esdihumboldt.hale.common.core.report.Report;
+import eu.esdihumboldt.util.groovy.collector.StatsCollector;
 
 /**
- * Interface for transformation reports.
+ * Interface for objects providing a statistics collector.
  * 
  * @author Simon Templer
  */
-public interface TransformationReport extends Report<TransformationMessage> {
+public interface Statistics {
 
 	/**
-	 * Task type for transformation reports.
+	 * Get the collector for collecting statistics.
+	 * 
+	 * @return the statistics collector
 	 */
-	public static final String TASK_TYPE = "eu.esdihumboldt.hale.transform";
+	StatsCollector stats();
 
 }

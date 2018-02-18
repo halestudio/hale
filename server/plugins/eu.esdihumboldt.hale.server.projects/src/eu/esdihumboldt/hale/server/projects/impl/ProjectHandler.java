@@ -21,6 +21,7 @@ import java.util.Properties;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.report.Message;
@@ -53,6 +54,7 @@ public class ProjectHandler extends ProjectReference<EnvironmentManager> {
 	 * Default properties
 	 */
 	private static final Properties DEFAULT_PROPERTIES = new Properties();
+
 	static {
 		// configure properties defaults
 		DEFAULT_PROPERTIES.setProperty(PROPERTY_ENABLED, "true");
@@ -135,7 +137,8 @@ public class ProjectHandler extends ProjectReference<EnvironmentManager> {
 
 					// log the exception as report
 					Reporter<Message> report = new DefaultReporter<Message>(
-							"Load project transformation environment", Message.class, false);
+							"Load project transformation environment",
+							ProjectIO.ACTION_LOAD_PROJECT, Message.class, false);
 					report.error(new MessageImpl(e.getMessage(), e));
 					reportFile.publishReport(report);
 				}

@@ -120,7 +120,7 @@ public abstract class HeadlessIO {
 					});
 			if (regAdvisors != null && !regAdvisors.isEmpty()) {
 				try {
-					advisor = regAdvisors.get(0).createAdvisor(serviceProvider);
+					advisor = regAdvisors.get(0).createAdvisor(actionId, serviceProvider);
 					log.info(MessageFormat.format(
 							"No advisor for action {0} given, using advisor registered through extension point.",
 							actionId));

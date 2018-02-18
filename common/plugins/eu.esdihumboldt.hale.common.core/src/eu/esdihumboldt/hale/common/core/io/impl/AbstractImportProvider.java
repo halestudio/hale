@@ -66,8 +66,8 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	 * @see AbstractIOProvider#execute(ProgressIndicator)
 	 */
 	@Override
-	public IOReport execute(ProgressIndicator progress) throws IOProviderConfigurationException,
-			IOException {
+	public IOReport execute(ProgressIndicator progress)
+			throws IOProviderConfigurationException, IOException {
 		if (resourceIdentifier == null) {
 			resourceIdentifier = generateResourceId();
 		}
@@ -151,8 +151,8 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(),
-				MessageFormat.format("{0} import", getTypeName()), true);
+		return new DefaultIOReporter(getSource(), MessageFormat.format("{0} import", getTypeName()),
+				getActionId(), true);
 	}
 
 	/**

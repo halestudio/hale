@@ -27,7 +27,7 @@ import java.util.Date;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @since 2.5
  */
-public interface Reporter<T extends Message> extends Report<T>, ReportLog<T> {
+public interface Reporter<T extends Message> extends Report<T>, ReportLog<T>, Statistics {
 
 	/**
 	 * Set if the task was successful. Should set the timestamps if none are

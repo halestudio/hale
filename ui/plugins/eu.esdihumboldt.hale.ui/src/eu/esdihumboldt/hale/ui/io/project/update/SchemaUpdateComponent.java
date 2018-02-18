@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.core.io.ImportProvider;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.schema.SchemaImportAdvisor;
 import eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard;
@@ -207,6 +208,7 @@ public class SchemaUpdateComponent extends Composite {
 			// FIXME
 			SchemaImportAdvisor advisor = new SchemaImportAdvisor(SchemaSpaceID.TARGET);
 			advisor.setServiceProvider(HaleUI.getServiceProvider());
+			advisor.setActionId(SchemaIO.ACTION_LOAD_TARGET_SCHEMA);
 			wizard.setAdvisor(advisor, actionId);
 
 			// open wizard

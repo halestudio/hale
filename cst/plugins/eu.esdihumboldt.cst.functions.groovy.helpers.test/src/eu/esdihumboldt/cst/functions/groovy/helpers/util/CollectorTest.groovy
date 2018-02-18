@@ -22,6 +22,8 @@ import org.junit.Test
 /**
  * Tests for collector usage.
  * 
+ * TODO migrate tests to util bundle?
+ * 
  * @author Simon Templer
  */
 class CollectorTest {

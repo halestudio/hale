@@ -51,7 +51,7 @@ public class JaxbAlignmentIOTest extends DefaultAlignmentIOTest {
 					public URI getLocation() {
 						return newBase;
 					}
-				}, "addBaseAlignment", true));
+				}, "addBaseAlignment", "addBaseAlignment", true));
 	}
 
 	@SuppressWarnings("deprecation")

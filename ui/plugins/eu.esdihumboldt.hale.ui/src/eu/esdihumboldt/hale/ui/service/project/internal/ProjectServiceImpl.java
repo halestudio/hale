@@ -130,6 +130,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		public OpenProjectAdvisor(boolean updateSchema) {
 			super();
 			this.updateSchema = updateSchema;
+			setActionId(ProjectIO.ACTION_LOAD_PROJECT);
 		}
 
 		@Override
@@ -463,6 +464,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				updateWindowTitle();
 			}
 		};
+		saveProjectAdvisor.setActionId(ProjectIO.ACTION_SAVE_PROJECT);
 	}
 
 	/**
