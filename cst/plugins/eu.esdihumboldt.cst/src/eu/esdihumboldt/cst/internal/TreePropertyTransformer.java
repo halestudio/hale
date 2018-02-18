@@ -168,6 +168,11 @@ public class TreePropertyTransformer implements PropertyTransformer {
 	public void publish(final FamilyInstance source, final MutableInstance target,
 			final TransformationLog typeLog, final Cell typeCell) {
 		instanceCounter.adjustOrPutValue(typeCell, 1, 1);
+
+		// increase output type counter
+		reporter.stats().at("createdPerType").at(target.getDefinition().getName().toString())
+				.next();
+
 		Runnable job = new Runnable() {
 
 			@Override
