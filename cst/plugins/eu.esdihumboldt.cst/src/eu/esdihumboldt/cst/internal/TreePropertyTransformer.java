@@ -293,8 +293,7 @@ public class TreePropertyTransformer implements PropertyTransformer {
 						null));
 
 				// also store as statistics
-				reporter.stats().at(TransformationReporter.TASK_TYPE).at("createdPerCell")
-						.at(cell.getId()).set(count);
+				reporter.stats().at("createdPerCell").at(cell.getId()).set(count);
 
 				return true;
 			}

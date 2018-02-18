@@ -368,7 +368,7 @@ public abstract class StoreInstancesJob extends Job {
 				report.info(new MessageImpl(msg.toString(), null));
 
 				// store info in statistics
-				report.stats().at(TASK_TYPE).at("countPerType").at(typeName.toString()).set(count);
+				report.stats().at("countPerType").at(typeName.toString()).set(count);
 
 				return true;
 			}
