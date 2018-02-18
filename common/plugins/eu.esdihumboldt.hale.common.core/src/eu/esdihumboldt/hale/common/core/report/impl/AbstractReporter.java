@@ -21,6 +21,7 @@ import java.util.Date;
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.util.groovy.collector.StatsCollector;
 
 /**
  * Abstract report implementation
@@ -46,6 +47,8 @@ public abstract class AbstractReporter<T extends Message> implements Reporter<T>
 	private final String taskType;
 
 	private String summary;
+
+	private final StatsCollector stats = new StatsCollector();
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -206,4 +209,10 @@ public abstract class AbstractReporter<T extends Message> implements Reporter<T>
 	public void setStartTime(Date starttime) {
 		this.startTime = starttime;
 	}
+
+	@Override
+	public StatsCollector stats() {
+		return stats;
+	}
+
 }
