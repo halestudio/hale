@@ -316,7 +316,7 @@ public class Transformation {
 					});
 		}
 		else {
-			sourceToUse = sources;
+			sourceToUse = new StatsCountInstanceCollection(sources, reportHandler);
 			db = null;
 		}
 
