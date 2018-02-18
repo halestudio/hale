@@ -144,7 +144,7 @@ public abstract class PropertyCollector<K, C extends PropertyCollector<K, ?>>
 
 				Map res = new HashMap<>();
 				if (!values.isEmpty()) {
-					if (compact && values.size() == 1) {
+					if (values.size() == 1) {
 						res.put(KEY_VALUES, values.get(0));
 					}
 					else {
