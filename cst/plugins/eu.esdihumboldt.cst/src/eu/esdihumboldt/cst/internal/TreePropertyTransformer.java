@@ -292,6 +292,10 @@ public class TreePropertyTransformer implements PropertyTransformer {
 						MessageFormat.format("Created {0} instances during transformation", count),
 						null));
 
+				// also store as statistics
+				reporter.stats().at(TransformationReporter.TASK_TYPE).at("createdPerCell")
+						.at(cell.getId()).set(count);
+
 				return true;
 			}
 		});
