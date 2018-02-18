@@ -32,16 +32,4 @@ public class StatsCollector extends PropertyCollector<String, StatsCollector> {
 		return new StatsCollector();
 	}
 
-	// convenience methods for calling from java
-
-	/**
-	 * Get a sub collector with the given name.
-	 * 
-	 * @param property the sub collector name
-	 * @return the sub collector
-	 */
-	public StatsCollector at(String property) {
-		return getProperty(property);
-	}
-
 }

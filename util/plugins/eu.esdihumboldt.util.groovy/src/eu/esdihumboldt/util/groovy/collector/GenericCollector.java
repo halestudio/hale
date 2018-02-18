@@ -34,7 +34,10 @@ import groovy.lang.GroovyObjectSupport;
 public abstract class GenericCollector<K, V, C extends GenericCollector<K, V, ?>>
 		extends GroovyObjectSupport {
 
-	private final Map<K, C> properties = new HashMap<>();
+	/**
+	 * The internal sub collectors.
+	 */
+	protected final Map<K, C> properties = new HashMap<>();
 
 	/**
 	 * The internal collected values.
