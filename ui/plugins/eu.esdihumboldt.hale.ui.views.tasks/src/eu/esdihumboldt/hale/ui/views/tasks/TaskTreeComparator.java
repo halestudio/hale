@@ -19,10 +19,11 @@ package eu.esdihumboldt.hale.ui.views.tasks;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.ui.util.tree.AbstractMultiColumnTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 
 /**
  * Default task comparator
@@ -42,26 +43,29 @@ public class TaskTreeComparator extends ViewerComparator {
 			// task nodes
 			Object value1 = ((DefaultTreeNode) e1).getFirstValue();
 			Object value2 = ((DefaultTreeNode) e2).getFirstValue();
-			
+
 			if (value1 instanceof ResolvedTask && value2 instanceof ResolvedTask) {
 				return compareTasks((ResolvedTask) value1, (ResolvedTask) value2);
 			}
 		}
-		else if (e1 instanceof AbstractMultiColumnTreeNode && e2 instanceof AbstractMultiColumnTreeNode) {
+		else if (e1 instanceof AbstractMultiColumnTreeNode
+				&& e2 instanceof AbstractMultiColumnTreeNode) {
 			// parent nodes
 			Object value1 = ((AbstractMultiColumnTreeNode) e1).getFirstValue();
 			Object value2 = ((AbstractMultiColumnTreeNode) e2).getFirstValue();
-			
-			if (value1 instanceof SchemaElement && value2 instanceof SchemaElement) {
-				return getComparator().compare( 
-						((SchemaElement) value1).getIdentifier(),
-						((SchemaElement) value2).getIdentifier());
+
+			if (value1 instanceof TypeDefinition && value2 instanceof TypeDefinition) {
+				return getComparator().compare(((TypeDefinition) value1).getIdentifier(),
+						((TypeDefinition) value2).getIdentifier());
+			}
+			else if (value1 instanceof Cell && value2 instanceof Cell) {
+				return getComparator().compare(((Cell) value1).getId(), ((Cell) value2).getId());
 			}
 			else {
 				return getComparator().compare(value1, value2);
 			}
 		}
-		
+
 		// fall back
 		return super.compare(viewer, e1, e2);
 	}
@@ -72,31 +76,31 @@ public class TaskTreeComparator extends ViewerComparator {
 	 * @param task1 the first task
 	 * @param task2 the second task
 	 * 
-	 * @return a negative integer, zero, or a positive integer as this object
-     *		is less than, equal to, or greater than the specified object. 
+	 * @return a negative integer, zero, or a positive integer as this object is
+	 *         less than, equal to, or greater than the specified object.
 	 */
 	protected int compareTasks(ResolvedTask task1, ResolvedTask task2) {
-		//return task1.compareTo(task2);
-		
+		// return task1.compareTo(task2);
+
 		int result = task1.getTaskStatus().compareTo(task2.getTaskStatus());
-		
+
 		if (result == 0) {
 			result = task1.getSeverityLevel().compareTo(task2.getSeverityLevel());
 		}
-			
-		if (result == 0) {
-			if (task1.getValue() > task2.getValue()) {
-				return -1;
-			}
-			else if (task1.getValue() < task2.getValue()) {
-				return 1;
-			}
-		}
-		
+
+//		if (result == 0) {
+//			if (task1.getValue() > task2.getValue()) {
+//				return -1;
+//			}
+//			else if (task1.getValue() < task2.getValue()) {
+//				return 1;
+//			}
+//		}
+
 		if (result == 0) {
 			result = task1.getTask().compareTo(task2.getTask());
 		}
-		
+
 		return result;
 	}
 

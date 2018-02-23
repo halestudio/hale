@@ -18,11 +18,11 @@ package eu.esdihumboldt.hale.ui.views.tasks;
 
 import org.eclipse.jface.viewers.TreeNode;
 
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 
 /**
- * Task comment labels 
+ * Task comment labels
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research

@@ -22,9 +22,9 @@ import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
-import eu.esdihumboldt.hale.ui.views.tasks.model.TaskUserData;
-import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskUserData;
 
 /**
  * Editing support for the task comment
@@ -37,7 +37,7 @@ public class TaskCommentEditingSupport extends AbstractTaskEditingSupport {
 	/**
 	 * Constructor
 	 * 
-	 * @param viewer the column viewer 
+	 * @param viewer the column viewer
 	 * @param taskService the task service
 	 */
 	public TaskCommentEditingSupport(ColumnViewer viewer, TaskService taskService) {
@@ -58,12 +58,12 @@ public class TaskCommentEditingSupport extends AbstractTaskEditingSupport {
 	@Override
 	protected Object getValue(Object element) {
 		ResolvedTask task = getTask(element);
-		
+
 		Object value = null;
 		if (task != null) {
 			value = task.getUserComment();
 		}
-		
+
 		if (value == null) {
 			// may not return null as value
 			return ""; //$NON-NLS-1$

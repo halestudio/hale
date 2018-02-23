@@ -18,10 +18,10 @@ package eu.esdihumboldt.hale.ui.views.tasks;
 
 import org.eclipse.jface.viewers.TreeNode;
 
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 
 /**
  * Task description label provider
@@ -30,17 +30,17 @@ import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TaskCountLabelProvider extends MultiColumnTreeNodeLabelProvider {
-	
+
 	private final int index;
-	
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param index index of the task value 
+	 * @param index index of the task value
 	 */
 	public TaskCountLabelProvider(int index) {
 		super(index);
-		
+
 		this.index = index;
 	}
 
@@ -69,7 +69,7 @@ public class TaskCountLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	 */
 	private String getNodeText(MapTreeNode<?, ?> node) {
 		int count = getTaskCount(node);
-		
+
 		return String.valueOf(count);
 	}
 
@@ -83,7 +83,7 @@ public class TaskCountLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	private int getTaskCount(MapTreeNode<?, ?> node) {
 		int count = 0;
 		TreeNode[] children = node.getChildren();
-		
+
 		for (TreeNode child : children) {
 			if (child instanceof DefaultTreeNode) {
 				// child is task node
@@ -108,7 +108,7 @@ public class TaskCountLabelProvider extends MultiColumnTreeNodeLabelProvider {
 				count += getTaskCount(childNode);
 			}
 		}
-		
+
 		return count;
 	}
 

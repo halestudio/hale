@@ -37,24 +37,28 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.part.WorkbenchPart;
 
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
-import eu.esdihumboldt.hale.ui.service.HaleServiceListener;
+import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.Task;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
+import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.tasks.TaskServiceAdapter;
 import eu.esdihumboldt.hale.ui.util.tree.CollectionTreeNodeContentProvider;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.SortedMapTreeNode;
-import eu.esdihumboldt.hale.ui.views.schemas.ModelNavigationView;
+import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.Messages;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
-import eu.esdihumboldt.hale.ui.views.tasks.model.Task;
-import eu.esdihumboldt.hale.ui.views.tasks.model.TaskUtils;
-import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
-import eu.esdihumboldt.hale.ui.views.tasks.service.TaskServiceAdapter;
 
 /**
  * Task view based on a tree
@@ -63,7 +67,7 @@ import eu.esdihumboldt.hale.ui.views.tasks.service.TaskServiceAdapter;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TaskTreeView extends ViewPart {
-	
+
 	/**
 	 * The view ID
 	 */
@@ -73,19 +77,21 @@ public class TaskTreeView extends ViewPart {
 	 * The tree viewer
 	 */
 	private TreeViewer tree;
-	
+
 	private TaskService taskService;
 
-	private HaleServiceListener taskListener;
-	
+	private TaskServiceListener taskListener;
+
 	private SchemaService schemaService;
-	
-	private MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> sourceNode;
-	
-	private MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
-	
-	private final Map<Task, DefaultTreeNode> taskNodes = new HashMap<Task, DefaultTreeNode>();
-	
+
+//	private MapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>> sourceNode;
+
+//	private MapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>> targetNode;
+
+	private MapTreeNode<Cell, MapTreeNode<ResolvedTask<Cell>, TreeNode>> cellNode;
+
+	private final Map<Task<?>, DefaultTreeNode> taskNodes = new HashMap<Task<?>, DefaultTreeNode>();
+
 	/**
 	 * @see WorkbenchPart#createPartControl(Composite)
 	 */
@@ -94,27 +100,27 @@ public class TaskTreeView extends ViewPart {
 		Composite page = new Composite(parent, SWT.NONE);
 		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		page.setLayoutData(data);
-		
+
 		// tree column layout
-		TreeColumnLayout layout = new TreeColumnLayout(); 
+		TreeColumnLayout layout = new TreeColumnLayout();
 		page.setLayout(layout);
-		
+
 		// tree viewer
 		tree = new TreeViewer(page, SWT.SINGLE | SWT.FULL_SELECTION | SWT.BORDER);
 		tree.setContentProvider(new CollectionTreeNodeContentProvider());
 		tree.setUseHashlookup(true);
-		
+
 		tree.getTree().setHeaderVisible(true);
 		tree.getTree().setLinesVisible(true);
-		
+
 		tree.setComparator(new TaskTreeComparator());
-		
-		schemaService = (SchemaService) PlatformUI.getWorkbench().getService(SchemaService.class);
-		taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-		
+
+		schemaService = HaleUI.getServiceProvider().getService(SchemaService.class);
+		taskService = HaleUI.getServiceProvider().getService(TaskService.class);
+
 		// columns
 		IColorProvider colorProvider = new TaskColorProvider(Display.getCurrent());
-		
+
 		// title/description
 		TreeViewerColumn description = new TreeViewerColumn(tree, SWT.LEFT);
 		description.getColumn().setText(Messages.TaskTreeView_TitleDescriptionText);
@@ -124,7 +130,7 @@ public class TaskTreeView extends ViewPart {
 		descriptionLabelProvider.setProviders(colorProvider);
 		description.setLabelProvider(descriptionLabelProvider);
 		layout.setColumnData(description.getColumn(), new ColumnWeightData(4));
-		
+
 		// value
 		TreeViewerColumn value = new TreeViewerColumn(tree, SWT.CENTER);
 		value.getColumn().setText("!"); //$NON-NLS-1$
@@ -134,7 +140,7 @@ public class TaskTreeView extends ViewPart {
 		valueLabelProvider.setProviders(colorProvider);
 		value.setLabelProvider(valueLabelProvider);
 		layout.setColumnData(value.getColumn(), new ColumnWeightData(0, 20));
-		
+
 		// number of tasks
 		TreeViewerColumn number = new TreeViewerColumn(tree, SWT.RIGHT);
 		number.getColumn().setText("#"); //$NON-NLS-1$
@@ -144,30 +150,32 @@ public class TaskTreeView extends ViewPart {
 		numberLabelProvider.setProviders(colorProvider);
 		number.setLabelProvider(numberLabelProvider);
 		layout.setColumnData(number.getColumn(), new ColumnWeightData(0, 48));
-		
+
 		// user data: status
 		TreeViewerColumn status = new TreeViewerColumn(tree, SWT.LEFT);
 		status.getColumn().setText(Messages.TaskTreeView_StatusText);
-		TreeColumnViewerLabelProvider statusLabelProvider = new TreeColumnViewerLabelProvider(new TaskStatusLabelProvider(0));
+		TreeColumnViewerLabelProvider statusLabelProvider = new TreeColumnViewerLabelProvider(
+				new TaskStatusLabelProvider(0));
 		statusLabelProvider.setProviders(colorProvider);
 		status.setLabelProvider(statusLabelProvider);
 		layout.setColumnData(status.getColumn(), new ColumnWeightData(1));
 		status.setEditingSupport(new TaskStatusEditingSupport(tree, taskService));
-		
+
 		// user data: comment
-		TreeViewerColumn comment = new TreeViewerColumn(tree, SWT.LEFT);
-		comment.getColumn().setText(Messages.TaskTreeView_CommentText);
-		TreeColumnViewerLabelProvider commentLabelProvider = new TreeColumnViewerLabelProvider(new TaskCommentLabelProvider(0));
-		commentLabelProvider.setProviders(colorProvider);
-		comment.setLabelProvider(commentLabelProvider);
-		layout.setColumnData(comment.getColumn(), new ColumnWeightData(4));
-		comment.setEditingSupport(new TaskCommentEditingSupport(tree, taskService));
-		
+//		TreeViewerColumn comment = new TreeViewerColumn(tree, SWT.LEFT);
+//		comment.getColumn().setText(Messages.TaskTreeView_CommentText);
+//		TreeColumnViewerLabelProvider commentLabelProvider = new TreeColumnViewerLabelProvider(
+//				new TaskCommentLabelProvider(0));
+//		commentLabelProvider.setProviders(colorProvider);
+//		comment.setLabelProvider(commentLabelProvider);
+//		layout.setColumnData(comment.getColumn(), new ColumnWeightData(4));
+//		comment.setEditingSupport(new TaskCommentEditingSupport(tree, taskService));
+
 		// listeners
 		taskService.addListener(taskListener = new TaskServiceAdapter() {
-			
+
 			@Override
-			public void tasksRemoved(final Iterable<Task> tasks) {
+			public void tasksRemoved(final Iterable<Task<?>> tasks) {
 				if (Display.getCurrent() != null) {
 					removeTasks(tasks);
 				}
@@ -179,13 +187,13 @@ public class TaskTreeView extends ViewPart {
 						public void run() {
 							removeTasks(tasks);
 						}
-						
+
 					});
 				}
 			}
 
 			@Override
-			public void tasksAdded(final Iterable<Task> tasks) {
+			public <C> void tasksAdded(final Iterable<Task<C>> tasks) {
 				if (Display.getCurrent() != null) {
 					addTasks(tasks);
 				}
@@ -197,7 +205,7 @@ public class TaskTreeView extends ViewPart {
 						public void run() {
 							addTasks(tasks);
 						}
-						
+
 					});
 				}
 			}
@@ -215,20 +223,20 @@ public class TaskTreeView extends ViewPart {
 						public void run() {
 							updateNode(task);
 						}
-						
+
 					});
 				}
 			}
-			
+
 		});
-		
+
 		createInput();
-		
+
 		configureActions();
-		
+
 		// interaction
 		tree.addDoubleClickListener(new IDoubleClickListener() {
-			
+
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				ISelection selection = event.getSelection();
@@ -246,39 +254,57 @@ public class TaskTreeView extends ViewPart {
 						}
 						if (value instanceof Task) {
 							// node is task node
-							Task task = (Task) value;
-							onDoubleClick(task.getMainContext().getIdentifier());
-						}
-						else if (value instanceof SchemaElement) {
-							SchemaElement type = (SchemaElement) value;
-							onDoubleClick(type.getIdentifier());
+							Task<?> task = (Task<?>) value;
+							onDoubleClick(task.getMainContext());
 						}
 					}
 				}
 			}
 		});
 	}
-	
+
 	/**
 	 * React on a double click on an item that represents the given identifier
 	 * 
 	 * @param identifier the identifier
 	 */
-	protected void onDoubleClick(String identifier) {
-		//FIXME use selection mechanism instead of getting the view (real ugly)
-		ModelNavigationView modelView = (ModelNavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ModelNavigationView.ID);
-		if (modelView != null) {
-			modelView.selectItem(identifier);
+	protected void onDoubleClick(Object context) {
+		// FIXME use selection mechanism instead of getting the view (real ugly)
+//		ModelNavigationView modelView = (ModelNavigationView) PlatformUI.getWorkbench()
+//				.getActiveWorkbenchWindow().getActivePage().findView(ModelNavigationView.ID);
+//		if (modelView != null) {
+//			modelView.selectItem(identifier);
+//		}
+		// show cell in mapping view
+
+		String cellId;
+		if (context instanceof Cell) {
+			cellId = ((Cell) context).getId();
 		}
+		else {
+			return;
+		}
+
+		IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+
+		try {
+			IViewPart part = activeWindow.getActivePage().showView(MappingView.ID);
+			if (part instanceof MappingView) {
+				((MappingView) part).selectCell(cellId);
+			}
+		} catch (PartInitException e) {
+			// ignore
+		}
+
 	}
 
 	private void configureActions() {
 		IActionBars bars = getViewSite().getActionBars();
-		
+
 		// tool-bar
-		//IToolBarManager toolBar = bars.getToolBarManager();
-		//toolBar.add(...);
-		
+		// IToolBarManager toolBar = bars.getToolBarManager();
+		// toolBar.add(...);
+
 		// menu
 		IMenuManager menu = bars.getMenuManager();
 		menu.add(new TaskProviderMenu());
@@ -288,19 +314,25 @@ public class TaskTreeView extends ViewPart {
 	 * Update the view
 	 */
 	private void createInput() {
-		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-		
+		TaskService taskService = HaleUI.getServiceProvider().getService(TaskService.class);
+
 		final Collection<TreeNode> input = new ArrayList<TreeNode>();
-		sourceNode = new SortedMapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_SourceNodeTitle);
-		targetNode = new SortedMapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>(Messages.TaskTreeView_TargetNodeTitle);
-		input.add(sourceNode);
-		input.add(targetNode);
-		
-		Collection<ResolvedTask> tasks = taskService.getResolvedTasks();
-		for (ResolvedTask task : tasks) {
+//		sourceNode = new SortedMapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>>(
+//				Messages.TaskTreeView_SourceNodeTitle);
+//		targetNode = new SortedMapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>>(
+//				Messages.TaskTreeView_TargetNodeTitle);
+//		input.add(sourceNode);
+//		input.add(targetNode);
+
+		cellNode = new MapTreeNode<Cell, MapTreeNode<ResolvedTask<Cell>, TreeNode>>(
+				"Cell messages");
+		input.add(cellNode);
+
+		Collection<ResolvedTask<?>> tasks = taskService.getResolvedTasks();
+		for (ResolvedTask<?> task : tasks) {
 			addTask(task);
 		}
-			
+
 		tree.setInput(input);
 	}
 
@@ -309,9 +341,11 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @param task the task to add
 	 */
-	private void addTask(ResolvedTask task) {
+	@SuppressWarnings("unchecked")
+	private <C> void addTask(ResolvedTask<C> task) {
 		// add task to model
-		MapTreeNode<ResolvedTask, TreeNode> parent = getParentNode(task, true);
+		MapTreeNode<ResolvedTask<C>, TreeNode> parent = (MapTreeNode<ResolvedTask<C>, TreeNode>) getParentNode(
+				task, true);
 		if (parent != null) {
 			DefaultTreeNode node = new DefaultTreeNode(task);
 			parent.addChild(task, node);
@@ -326,14 +360,14 @@ public class TaskTreeView extends ViewPart {
 			}
 		}
 	}
-	
+
 	/**
 	 * Adds the given tasks
 	 * 
 	 * @param tasks the tasks to add
 	 */
-	protected void removeTasks(Iterable<Task> tasks) {
-		//TODO smart refresh
+	protected void removeTasks(Iterable<Task<?>> tasks) {
+		// TODO smart refresh
 		for (Task task : tasks) {
 			removeTask(task);
 		}
@@ -347,16 +381,18 @@ public class TaskTreeView extends ViewPart {
 	@SuppressWarnings("unchecked")
 	private void removeTask(Task task) {
 		DefaultTreeNode node = taskNodes.get(task);
-		
+
 		if (node != null) {
 			// remove task from model
-			MapTreeNode<ResolvedTask, TreeNode> parent = (MapTreeNode<ResolvedTask, TreeNode>) node.getParent();
+			MapTreeNode<ResolvedTask, TreeNode> parent = (MapTreeNode<ResolvedTask, TreeNode>) node
+					.getParent();
 			if (parent != null) {
 				parent.removeChildNode(node);
 				taskNodes.remove(task);
 				// remove empty nodes
 				if (!parent.hasChildren()) {
-					MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>>) parent.getParent();
+					MapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>> root = (MapTreeNode<Definition, MapTreeNode<ResolvedTask, TreeNode>>) parent
+							.getParent();
 					root.removeChildNode(parent);
 					tree.refresh(root, true);
 				}
@@ -372,7 +408,7 @@ public class TaskTreeView extends ViewPart {
 			}
 		}
 	}
-	
+
 	/**
 	 * Update the node label for the given task
 	 * 
@@ -382,11 +418,12 @@ public class TaskTreeView extends ViewPart {
 		DefaultTreeNode node = taskNodes.get(task.getTask());
 		if (node != null) {
 			node.setValues(task);
-			//refresh parent instead of update node (sorting) - tree.update(node, null);
-			
+			// refresh parent instead of update node (sorting) -
+			// tree.update(node, null);
+
 			// update parent nodes
 			TreeNode parent = node.getParent();
-			
+
 			if (parent != null) {
 				tree.refresh(parent, true);
 				parent = parent.getParent();
@@ -394,7 +431,7 @@ public class TaskTreeView extends ViewPart {
 			else {
 				tree.update(node, null);
 			}
-			
+
 			while (parent != null) {
 				tree.update(parent, null);
 				parent = parent.getParent();
@@ -410,24 +447,35 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the parent node
 	 */
-	private MapTreeNode<ResolvedTask, TreeNode> getParentNode(ResolvedTask task, boolean allowCreate) {
-		SchemaElement group = TaskUtils.getGroup(task);
-		if (group.getElementName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
-			// source task
-			return getGroupNode(sourceNode, group, allowCreate);
+	private <C> MapTreeNode<?, TreeNode> getParentNode(ResolvedTask<C> task, boolean allowCreate) {
+
+		if (task.getMainContext() instanceof Cell) {
+			MapTreeNode<ResolvedTask<Cell>, TreeNode> node = getGroupNode(cellNode,
+					(Cell) task.getMainContext(), allowCreate);
+			return node;
 		}
-		else if (group.getElementName().getNamespaceURI().equals(schemaService.getTargetNameSpace())) {
-			// target task
-			return getGroupNode(targetNode, group, allowCreate);
-		}
-		else {
-			// invalid task ?
-			MapTreeNode<ResolvedTask, TreeNode> result = getGroupNode(sourceNode, group, false);
-			if (result == null) {
-				result = getGroupNode(targetNode, group, false);
-			}
-			return result;
-		}
+//		Object group = TaskUtils.getGroup(task);
+//		if (group.getName().getNamespaceURI().equals(schemaService.getSourceNameSpace())) {
+//			// source task
+//			return getGroupNode(sourceNode, group, allowCreate);
+//		}
+//		else if (group.getElementName().getNamespaceURI()
+//				.equals(schemaService.getTargetNameSpace())) {
+//			// target task
+//			return getGroupNode(targetNode, group, allowCreate);
+//		}
+//		else {
+//			// invalid task ?
+//			MapTreeNode<ResolvedTask, TreeNode> result = getGroupNode(sourceNode, null, true);
+//			if (result == null) {
+//				result = getGroupNode(targetNode, null, true);
+//			}
+//			return result;
+//		}
+
+		return null;
+
+//		sourceNode.addChild(key, child);
 	}
 
 	/**
@@ -439,12 +487,12 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @return the group node
 	 */
-	private MapTreeNode<ResolvedTask, TreeNode> getGroupNode(
-			MapTreeNode<SchemaElement, MapTreeNode<ResolvedTask, TreeNode>> rootNode,
-			SchemaElement group, boolean allowCreate) {
-		MapTreeNode<ResolvedTask, TreeNode> groupNode = rootNode.getChild(group);
+	private <C> MapTreeNode<ResolvedTask<C>, TreeNode> getGroupNode(
+			MapTreeNode<C, MapTreeNode<ResolvedTask<C>, TreeNode>> rootNode, C group,
+			boolean allowCreate) {
+		MapTreeNode<ResolvedTask<C>, TreeNode> groupNode = rootNode.getChild(group);
 		if (groupNode == null && allowCreate) {
-			groupNode = new SortedMapTreeNode<ResolvedTask, TreeNode>(group);
+			groupNode = new SortedMapTreeNode<ResolvedTask<C>, TreeNode>(group);
 			rootNode.addChild(group, groupNode);
 			// update viewer
 			tree.refresh(rootNode, true);
@@ -457,9 +505,9 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @param tasks the tasks to add
 	 */
-	protected void addTasks(Iterable<Task> tasks) {
-		//TODO smart refresh
-		for (Task task : tasks) {
+	protected <C> void addTasks(Iterable<Task<C>> tasks) {
+		// TODO smart refresh
+		for (Task<C> task : tasks) {
 			addTask(taskService.resolveTask(task));
 		}
 	}
@@ -478,10 +526,10 @@ public class TaskTreeView extends ViewPart {
 	@Override
 	public void dispose() {
 		if (taskListener != null) {
-			TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
+			TaskService taskService = HaleUI.getServiceProvider().getService(TaskService.class);
 			taskService.removeListener(taskListener);
 		}
-		
+
 		super.dispose();
 	}
 

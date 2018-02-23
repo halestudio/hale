@@ -20,11 +20,11 @@ import org.eclipse.jface.viewers.BaseLabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.graphics.Image;
 
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.TasksViewPlugin;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 
 /**
  * Task description label provider
@@ -33,21 +33,21 @@ import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
-	
+
 	private final Image priorityImage;
-	
+
 	private final int index;
-	
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param index index of the task value 
+	 * @param index index of the task value
 	 */
 	public TaskValueLabelProvider(int index) {
 		super(index);
-		
+
 		this.index = index;
-		
+
 		priorityImage = TasksViewPlugin.getImageDescriptor("icons/priority.gif").createImage(); //$NON-NLS-1$
 	}
 
@@ -56,10 +56,11 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	 */
 	@Override
 	protected Image getValueImage(Object value, TreeNode node) {
-		if (value instanceof ResolvedTask) {
-			ResolvedTask task = (ResolvedTask) value;
+		if (value instanceof ResolvedTask<?>) {
+			ResolvedTask<?> task = (ResolvedTask<?>) value;
 			if (task.isOpen()) {
-				return getValueImage(task.getValue());
+//				return getValueImage(task.getValue());
+				return getValueImage(1);
 			}
 			else {
 				return super.getValueImage(value, node);
@@ -98,7 +99,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	 */
 	private Image getNodeImage(MapTreeNode<?, ?> node) {
 		double value = getNodeValue(node);
-		
+
 		return getValueImage(value);
 	}
 
@@ -112,7 +113,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	private double getNodeValue(MapTreeNode<?, ?> node) {
 		double result = 0.0;
 		TreeNode[] children = node.getChildren();
-		
+
 		for (TreeNode child : children) {
 			if (child instanceof DefaultTreeNode) {
 				// child is task node
@@ -128,10 +129,10 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 				}
 				// determine level
 				if (value instanceof ResolvedTask) {
-					ResolvedTask task = (ResolvedTask) value;
-					if (task.isOpen()) {
-						result = Math.max(result, task.getValue());
-					}
+					ResolvedTask<?> task = (ResolvedTask<?>) value;
+//					if (task.isOpen()) {
+//						result = Math.max(result, task.getValue());
+//					}
 				}
 			}
 			else if (child instanceof MapTreeNode<?, ?>) {
@@ -141,7 +142,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 				result = Math.max(result, childValue);
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -159,7 +160,7 @@ public class TaskValueLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	@Override
 	public void dispose() {
 		priorityImage.dispose();
-		
+
 		super.dispose();
 	}
 

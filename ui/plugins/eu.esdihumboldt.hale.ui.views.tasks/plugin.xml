@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="eu.esdihumboldt.hale.task.TaskProvider" name="Task providers" schema="schema/eu.esdihumboldt.hale.task.TaskProvider.exsd"/>
    <extension
          point="org.eclipse.ui.views">
       <view
@@ -19,7 +18,7 @@
                serviceClass="eu.esdihumboldt.hale.ui.views.tasks.service.TaskService"></service>
       </serviceFactory>
    </extension>
-   <extension
+<!--   <extension
          point="eu.esdihumboldt.hale.task.TaskProvider">
       <tasks
             class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.SourceMappingTaskProvider"
@@ -48,12 +47,28 @@
             id="eu.esdihumboldt.hale.task.schema.NoGeometry"
             name="%tasks.name">
       </tasks>
-   </extension>
+      <tasks
+            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.CellMessageTaskProvider"
+            defaultEnabled="true"
+            description="Test"
+            id="eu.esdihumboldt.hale.ui.views.tasks.alignmentMessage"
+            name="Alignment Messages">
+      </tasks>
+   </extension>-->
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
             class="eu.esdihumboldt.hale.ui.views.tasks.model.preferences.TaskPreferenceInitializer">
       </initializer>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.common.tasks">
+      <provider
+            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.CellMessageTaskProvider"
+            defaultEnabled="true"
+            id="eu.esdihumboldt.hale.ui.views.tasks.CellMessageTaskProvider"
+            name="Cell Message Task Provider">
+      </provider>
    </extension>
 
 </plugin>

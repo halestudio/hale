@@ -26,9 +26,9 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.views.tasks.model.extension.TaskProviderExtension;
-import eu.esdihumboldt.hale.ui.views.tasks.model.extension.TaskProviderFactory;
-import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.extension.TaskProviderExtension;
+import eu.esdihumboldt.hale.common.tasks.extension.TaskProviderFactory;
 
 /**
  * Task provider activation menu
@@ -39,12 +39,12 @@ import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
 public class TaskProviderMenu extends ContributionItem {
 
 	/**
-	 * Action for activating/deactivating a task provider 
+	 * Action for activating/deactivating a task provider
 	 */
 	private static class TaskProviderAction extends Action {
-		
+
 		private final String taskProviderId;
-		
+
 		private final TaskService taskService;
 
 		/**
@@ -53,15 +53,14 @@ public class TaskProviderMenu extends ContributionItem {
 		 * @param factory the task provider factory
 		 * @param taskService the task service
 		 */
-		public TaskProviderAction(TaskProviderFactory factory,
-				TaskService taskService) {
-			super(factory.getName(), AS_CHECK_BOX);
-			
-			this.taskProviderId = factory.getId();
+		public TaskProviderAction(TaskProviderFactory factory, TaskService taskService) {
+			super(factory.getDisplayName(), AS_CHECK_BOX);
+
+			this.taskProviderId = factory.getIdentifier();
 			this.taskService = taskService;
-			
-			setChecked(taskService.taskProviderIsActive(taskProviderId));
-			setToolTipText(factory.getDescription());
+
+//			setChecked(taskService.taskProviderIsActive(taskProviderId));
+//			setToolTipText(factory.getDescription());
 		}
 
 		/**
@@ -70,10 +69,10 @@ public class TaskProviderMenu extends ContributionItem {
 		@Override
 		public void run() {
 			if (isChecked()) {
-				taskService.activateTaskProvider(taskProviderId);
+//				taskService.activateTaskProvider(taskProviderId);
 			}
 			else {
-				taskService.deactivateTaskProvider(taskProviderId);
+//				taskService.deactivateTaskProvider(taskProviderId);
 			}
 		}
 
@@ -84,8 +83,8 @@ public class TaskProviderMenu extends ContributionItem {
 	 */
 	@Override
 	public void fill(Menu menu, int index) {
-		TaskService taskService = (TaskService) PlatformUI.getWorkbench().getService(TaskService.class);
-		
+		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
+
 		List<TaskProviderFactory> factories = TaskProviderExtension.getTaskProviderFactories();
 		for (TaskProviderFactory factory : factories) {
 			IAction action = new TaskProviderAction(factory, taskService);

@@ -21,8 +21,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
 
 /**
  * Task color provider
@@ -31,9 +31,9 @@ import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TaskColorProvider implements IColorProvider {
-	
+
 	private final Display display;
-	
+
 	/**
 	 * Constructor
 	 * 
@@ -50,7 +50,7 @@ public class TaskColorProvider implements IColorProvider {
 	 * @return the default font
 	 */
 	private Color getDefaultColor() {
-		return null; //display.getSystemColor(SWT.COLOR_LIST_FOREGROUND);
+		return null; // display.getSystemColor(SWT.COLOR_LIST_FOREGROUND);
 	}
 
 	/**
@@ -75,8 +75,8 @@ public class TaskColorProvider implements IColorProvider {
 		if (element instanceof DefaultTreeNode) {
 			DefaultTreeNode node = (DefaultTreeNode) element;
 			Object value = node.getFirstValue();
-			if (value instanceof ResolvedTask) {
-				ResolvedTask task = (ResolvedTask) value;
+			if (value instanceof ResolvedTask<?>) {
+				ResolvedTask<?> task = (ResolvedTask<?>) value;
 				if (task.isOpen()) {
 					return getDefaultColor();
 				}
@@ -85,7 +85,7 @@ public class TaskColorProvider implements IColorProvider {
 				}
 			}
 		}
-		
+
 		return getDefaultColor();
 	}
 

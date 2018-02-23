@@ -25,10 +25,10 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
-import eu.esdihumboldt.hale.ui.views.tasks.model.TaskUserData;
-import eu.esdihumboldt.hale.ui.views.tasks.model.TaskUserData.TaskStatus;
-import eu.esdihumboldt.hale.ui.views.tasks.service.TaskService;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskUserData;
+import eu.esdihumboldt.hale.common.tasks.TaskUserData.TaskStatus;
 
 /**
  * Editing support for the task status
@@ -41,7 +41,7 @@ public class TaskStatusEditingSupport extends AbstractTaskEditingSupport {
 	/**
 	 * Constructor
 	 * 
-	 * @param viewer the column viewer 
+	 * @param viewer the column viewer
 	 * @param taskService the task service
 	 */
 	public TaskStatusEditingSupport(ColumnViewer viewer, TaskService taskService) {
@@ -53,12 +53,17 @@ public class TaskStatusEditingSupport extends AbstractTaskEditingSupport {
 	 */
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		ComboBoxViewerCellEditor editor = new ComboBoxViewerCellEditor((Composite) getViewer().getControl(), SWT.READ_ONLY);
-		
-		editor.setContenProvider(ArrayContentProvider.getInstance());
+		ComboBoxViewerCellEditor editor = new ComboBoxViewerCellEditor(
+				(Composite) getViewer().getControl(), SWT.READ_ONLY);
+
+		editor.setContentProvider(ArrayContentProvider.getInstance());
 		editor.setLabelProvider(new LabelProvider());
-		editor.setInput(new Object[]{TaskStatus.NEW, TaskStatus.ACTIVE, TaskStatus.COMPLETED, TaskStatus.IGNORED});
-		
+//		editor.setInput(new Object[] { TaskStatus.NEW, TaskStatus.ACTIVE, TaskStatus.COMPLETED,
+//				TaskStatus.IGNORED });
+
+		// TODO Make this depend on the task type
+		editor.setInput(new Object[] { TaskStatus.NEW, TaskStatus.COMPLETED });
+
 		return editor;
 	}
 
@@ -67,16 +72,16 @@ public class TaskStatusEditingSupport extends AbstractTaskEditingSupport {
 	 */
 	@Override
 	protected Object getValue(Object element) {
-		ResolvedTask task = getTask(element);
-		
+		ResolvedTask<?> task = getTask(element);
+
 		Object value = null;
 		if (task != null) {
 			value = task.getTaskStatus();
 		}
-		
+
 		if (value == null) {
 			// may not return null as value
-			return TaskStatus.ACTIVE;
+			return TaskStatus.NEW;
 		}
 		else {
 			return value;
@@ -88,7 +93,7 @@ public class TaskStatusEditingSupport extends AbstractTaskEditingSupport {
 	 */
 	@Override
 	protected void setValue(Object element, Object value) {
-		ResolvedTask task = getTask(element);
+		ResolvedTask<?> task = getTask(element);
 		if (task != null) {
 			TaskUserData userData = getUserData(task);
 			userData.setTaskStatus((TaskStatus) value);

@@ -22,13 +22,12 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.schemaprovider.model.SchemaElement;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.TaskType.SeverityLevel;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.TasksViewPlugin;
-import eu.esdihumboldt.hale.ui.views.tasks.model.ResolvedTask;
-import eu.esdihumboldt.hale.ui.views.tasks.model.TaskType.SeverityLevel;
 
 /**
  * Task description label provider
@@ -37,21 +36,21 @@ import eu.esdihumboldt.hale.ui.views.tasks.model.TaskType.SeverityLevel;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvider {
-	
+
 	private final Image taskImage;
-	
+
 	private final int index;
-	
+
 	/**
 	 * Default constructor
 	 * 
-	 * @param index index of the task value 
+	 * @param index index of the task value
 	 */
 	public TaskDescriptionLabelProvider(int index) {
 		super(index);
-		
+
 		this.index = index;
-		
+
 		taskImage = TasksViewPlugin.getImageDescriptor("icons/tasks.gif").createImage(); //$NON-NLS-1$
 	}
 
@@ -60,8 +59,8 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 */
 	@Override
 	protected Image getValueImage(Object value, TreeNode node) {
-		if (value instanceof ResolvedTask) {
-			ResolvedTask task = (ResolvedTask) value;
+		if (value instanceof ResolvedTask<?>) {
+			ResolvedTask<?> task = (ResolvedTask<?>) value;
 			return getLevelImage(task.getSeverityLevel());
 		}
 		else if (node instanceof MapTreeNode<?, ?>) {
@@ -83,15 +82,18 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 		if (severityLevel == null) {
 			return null;
 		}
-		
+
 		switch (severityLevel) {
-		case task:
-			//return taskImage;
-			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_INFO_TSK);
-		case warning:
-			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK);
-		case error:
-			return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
+		case TASK:
+			// return taskImage;
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_INFO_TSK);
+		case WARNING:
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_WARN_TSK);
+		case ERROR:
+			return PlatformUI.getWorkbench().getSharedImages()
+					.getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 		default:
 			return null;
 		}
@@ -106,7 +108,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 */
 	private Image getNodeImage(MapTreeNode<?, ?> node) {
 		SeverityLevel level = getNodeLevel(node);
-		
+
 		return getLevelImage(level);
 	}
 
@@ -120,7 +122,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	private SeverityLevel getNodeLevel(MapTreeNode<?, ?> node) {
 		SeverityLevel level = null;
 		TreeNode[] children = node.getChildren();
-		
+
 		for (TreeNode child : children) {
 			if (child instanceof DefaultTreeNode) {
 				// child is task node
@@ -149,7 +151,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 				level = SeverityLevel.max(level, childLevel);
 			}
 		}
-		
+
 		return level;
 	}
 
@@ -162,10 +164,10 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 			// task title
 			return ((ResolvedTask) value).getTitle();
 		}
-		else if (value instanceof SchemaElement) {
-			// type name
-			return ((SchemaElement) value).getDisplayName();
-		}
+//		else if (value instanceof SchemaElement) {
+//			// type name
+//			return ((SchemaElement) value).getDisplayName();
+//		}
 		else {
 			return super.getValueText(value, node);
 		}
@@ -177,7 +179,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	@Override
 	public void dispose() {
 		taskImage.dispose();
-		
+
 		super.dispose();
 	}
 

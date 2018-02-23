@@ -22,9 +22,9 @@ import java.util.Map;
 
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import eu.esdihumboldt.hale.common.tasks.extension.TaskProviderExtension;
+import eu.esdihumboldt.hale.common.tasks.extension.TaskProviderFactory;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.TasksViewPlugin;
-import eu.esdihumboldt.hale.ui.views.tasks.model.extension.TaskProviderExtension;
-import eu.esdihumboldt.hale.ui.views.tasks.model.extension.TaskProviderFactory;
 
 /**
  * Task preference utilities
@@ -33,21 +33,21 @@ import eu.esdihumboldt.hale.ui.views.tasks.model.extension.TaskProviderFactory;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class TaskPreferenceUtils implements TaskPreferenceConstants {
-	
+
 	/**
 	 * Get the preference keys and factories for the task providers
 	 * 
 	 * @return the preference keys and factories for the task providers
 	 */
 	public static Map<String, TaskProviderFactory> getTaskProviders() {
-		Map<String , TaskProviderFactory> result = new HashMap<String, TaskProviderFactory>();
+		Map<String, TaskProviderFactory> result = new HashMap<String, TaskProviderFactory>();
 		List<TaskProviderFactory> factories = TaskProviderExtension.getTaskProviderFactories();
 		for (TaskProviderFactory factory : factories) {
-			result.put(TASK_PROVIDER_PREFIX + factory.getId(), factory);
+			result.put(TASK_PROVIDER_PREFIX + factory.getIdentifier(), factory);
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Get if the task provider with the given id is set to active
 	 * 
@@ -57,19 +57,19 @@ public abstract class TaskPreferenceUtils implements TaskPreferenceConstants {
 	 */
 	public static boolean getTaskProviderActive(String id) {
 		IPreferenceStore preferences = TasksViewPlugin.getDefault().getPreferenceStore();
-		
+
 		return preferences.getBoolean(TASK_PROVIDER_PREFIX + id);
 	}
-	
+
 	/**
 	 * Change the setting for the task provider with the given id
 	 * 
 	 * @param id the task provider id
-	 * @param active the active setting value 
+	 * @param active the active setting value
 	 */
 	public static void setTaskProviderActive(String id, boolean active) {
 		IPreferenceStore preferences = TasksViewPlugin.getDefault().getPreferenceStore();
-		
+
 		preferences.setValue(TASK_PROVIDER_PREFIX + id, active);
 	}
 
