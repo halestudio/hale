@@ -148,6 +148,7 @@
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.tasks"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
