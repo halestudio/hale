@@ -88,13 +88,13 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	 * @param preferredPrefix the preferred prefix
 	 * @throws XMLStreamException if setting a prefix for the namespace fails
 	 */
-	public static void addNamespace(XMLStreamWriter writer, String namespace, String preferredPrefix)
-			throws XMLStreamException {
+	public static void addNamespace(PrefixAwareStreamWriter writer, String namespace,
+			String preferredPrefix) throws XMLStreamException {
 		if (writer.getPrefix(namespace) == null) {
 			// no prefix for schema instance namespace
 
 			String prefix = preferredPrefix;
-			String ns = writer.getNamespaceContext().getNamespaceURI(prefix);
+			String ns = writer.getNamespace(prefix);
 			if (ns == null) {
 				// add xsi namespace
 				writer.setPrefix(prefix, namespace);
@@ -102,7 +102,7 @@ public abstract class GmlWriterUtil implements GMLConstants {
 			else {
 				int i = 0;
 				while (ns != null) {
-					ns = writer.getNamespaceContext().getNamespaceURI(prefix + "-" + (++i)); //$NON-NLS-1$
+					ns = writer.getNamespace(prefix + "-" + (++i)); //$NON-NLS-1$
 				}
 
 				writer.setPrefix(prefix + "-" + i, namespace); //$NON-NLS-1$
@@ -171,7 +171,8 @@ public abstract class GmlWriterUtil implements GMLConstants {
 			}
 		}
 		else {
-			writeAtt(writer, SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()), propDef);
+			writeAtt(writer, SimpleTypeUtil.convertToXml(value, propDef.getPropertyType()),
+					propDef);
 		}
 	}
 
@@ -179,13 +180,13 @@ public abstract class GmlWriterUtil implements GMLConstants {
 			throws XMLStreamException {
 		String ns = propDef.getName().getNamespaceURI();
 		if (ns != null && !ns.isEmpty()) {
-			writer.writeAttribute(ns, propDef.getName().getLocalPart(), (value != null) ? (value)
-					: (null));
+			writer.writeAttribute(ns, propDef.getName().getLocalPart(),
+					(value != null) ? (value) : (null));
 		}
 		else {
 			// no namespace
-			writer.writeAttribute(propDef.getName().getLocalPart(), (value != null) ? (value)
-					: (null));
+			writer.writeAttribute(propDef.getName().getLocalPart(),
+					(value != null) ? (value) : (null));
 		}
 	}
 
@@ -226,7 +227,8 @@ public abstract class GmlWriterUtil implements GMLConstants {
 		PropertyDefinition idProp = null;
 		for (PropertyDefinition prop : collectProperties(DefinitionUtil.getAllChildren(type))) {
 			if (prop.getConstraint(XmlAttributeFlag.class).isEnabled()
-					&& (desiredId != null || prop.getConstraint(Cardinality.class).getMinOccurs() > 0)
+					&& (desiredId != null
+							|| prop.getConstraint(Cardinality.class).getMinOccurs() > 0)
 					&& isID(prop.getPropertyType())) {
 				idProp = prop;
 				break; // we assume there is only one ID attribute
