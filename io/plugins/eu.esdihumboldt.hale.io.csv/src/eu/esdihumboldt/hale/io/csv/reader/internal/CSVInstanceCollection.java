@@ -246,8 +246,15 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 		decimalPoint = CSVUtil.getDecimal(reader);
 
 		// Schema type
-		type = reader.getSourceSchema().getType(QName.valueOf(
-				reader.getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
+		String typeName = reader.getParameter(CommonSchemaConstants.PARAM_TYPENAME)
+				.as(String.class);
+		type = reader.getSourceSchema().getType(QName.valueOf(typeName));
+		if (type == null) {
+			String message = MessageFormat.format("Could not find type {1} in source schema",
+					typeName);
+			// can't really continue w/o type
+			throw new IllegalStateException(message);
+		}
 	}
 
 	@Override
