@@ -36,4 +36,13 @@ public interface PrefixAwareStreamWriter extends XMLStreamWriter {
 	@Nullable
 	String getNamespace(String prefix);
 
+	/**
+	 * States if a prefix is set for the given namespace.
+	 * 
+	 * @param namespace the namespace
+	 * @return <code>true</code> if a prefix is set for the namespace, false
+	 *         otherwise
+	 */
+	boolean hasPrefix(String namespace);
+
 }

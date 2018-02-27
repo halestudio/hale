@@ -90,13 +90,13 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	 */
 	public static void addNamespace(PrefixAwareStreamWriter writer, String namespace,
 			String preferredPrefix) throws XMLStreamException {
-		if (writer.getPrefix(namespace) == null) {
-			// no prefix for schema instance namespace
+		if (!writer.hasPrefix(namespace)) {
+			// no prefix for namespace set
 
 			String prefix = preferredPrefix;
 			String ns = writer.getNamespace(prefix);
 			if (ns == null) {
-				// add xsi namespace
+				// add namespace
 				writer.setPrefix(prefix, namespace);
 			}
 			else {

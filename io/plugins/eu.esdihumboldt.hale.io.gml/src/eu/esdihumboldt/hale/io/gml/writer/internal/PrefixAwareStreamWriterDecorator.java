@@ -71,4 +71,14 @@ public class PrefixAwareStreamWriterDecorator extends XMLStreamWriterDecorator
 		}
 	}
 
+	@Override
+	public boolean hasPrefix(String namespace) {
+		if (prefixAware != null) {
+			return prefixAware.hasPrefix(namespace);
+		}
+		else {
+			return prefixes.containsValue(namespace);
+		}
+	}
+
 }
