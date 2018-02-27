@@ -144,7 +144,7 @@ public class IndexMergeHandler
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext()) {
 				Instance i = InstanceDecorator.getRoot(it.next());
-				if (Identifiable.is(i)) {
+				if (!Identifiable.is(i)) {
 					log.warn(MessageFormat.format(
 							"At least one instance does not have an ID, falling back to merge handler {0}",
 							fallbackHandler.getClass().getCanonicalName()));
