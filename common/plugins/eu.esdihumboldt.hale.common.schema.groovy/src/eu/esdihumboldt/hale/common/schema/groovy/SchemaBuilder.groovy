@@ -47,7 +47,6 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex
 import eu.esdihumboldt.util.groovy.builder.BuilderBase
 import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
 import groovy.transform.TypeCheckingMode
 
 
@@ -324,6 +323,12 @@ class SchemaBuilder extends BuilderBase {
 				def constraint = fact.createConstraint(value, definition)
 				if (constraint != null) {
 					definition.setConstraint(constraint)
+				}
+			}
+			else {
+				// inbuilt "constraints"
+				if (key in ['description', 'desc']) {
+					definition.setDescription(value as String)
 				}
 			}
 		}
