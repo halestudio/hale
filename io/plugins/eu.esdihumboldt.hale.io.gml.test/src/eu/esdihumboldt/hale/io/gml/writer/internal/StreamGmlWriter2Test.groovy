@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 import org.junit.BeforeClass
+import org.junit.Ignore
 import org.junit.Test
 
 import com.vividsolutions.jts.geom.Geometry
@@ -52,7 +53,7 @@ import groovy.transform.CompileStatic
  * 
  * @author Simon Templer
  */
-class StreamGmlWriterTest2 {
+class StreamGmlWriter2Test {
 
 	/**
 	 * If temporary files shall be deleted
@@ -126,6 +127,7 @@ class StreamGmlWriterTest2 {
 	 *
 	 * @throws Exception if an error occurs
 	 */
+	@Ignore("MultiLineStrings are combined to a LineString for a Curve if possible")
 	@Test
 	public void testGeometryPrimitive_32_Curve_MultiLineString() throws Exception {
 		// create the geometry
@@ -153,6 +155,7 @@ class StreamGmlWriterTest2 {
 	 *
 	 * @throws Exception if an error occurs
 	 */
+	@Ignore("MultiLineStrings are combined to a LineString for a CompositeCurve if possible")
 	@Test
 	public void testGeometryPrimitive_32_CompositeCurve_MultiLineString() throws Exception {
 		// create the geometry
@@ -236,11 +239,6 @@ class StreamGmlWriterTest2 {
 		// load file
 		InstanceCollection loaded = StreamGmlWriterTest.loadGML(outFile.toURI(), schema)
 
-		// delete temporary file
-		if (DEL_TEMP_FILES) {
-			outFile.delete()
-		}
-
 		def iterator = loaded.iterator()
 		Instance result
 		try {
@@ -248,6 +246,10 @@ class StreamGmlWriterTest2 {
 			result = iterator.next()
 		} finally {
 			iterator.close()
+			// delete temporary file
+			if (DEL_TEMP_FILES) {
+				outFile.delete()
+			}
 		}
 
 		result
