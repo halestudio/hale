@@ -66,7 +66,7 @@ public class CellTaskFactory extends AbstractTaskFactory<Cell> {
 		 */
 		@Override
 		public SeverityLevel getSeverityLevel(Task<Cell> task) {
-			return SeverityLevel.TASK;
+			return SeverityLevel.WARNING;
 		}
 
 		/**
