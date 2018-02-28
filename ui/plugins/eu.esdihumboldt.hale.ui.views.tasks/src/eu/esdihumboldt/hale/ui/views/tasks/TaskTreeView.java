@@ -257,6 +257,9 @@ public class TaskTreeView extends ViewPart {
 							Task<?> task = (Task<?>) value;
 							onDoubleClick(task.getMainContext());
 						}
+						else if (value instanceof Cell) {
+							onDoubleClick(value);
+						}
 					}
 				}
 			}
