@@ -345,6 +345,22 @@ class SchemaBuilderTest extends GroovyTestCase {
 	}
 
 	/**
+	 * Tests creating a single type definition.
+	 */
+	void testDescriptions() {
+		// create the type
+		TypeDefinition itemType = new SchemaBuilder().ItemType(description: 'Type') {
+			id(Long, description: 'Property')
+		}
+
+		assertNotNull itemType
+		assertEquals 1, itemType.children.size()
+
+		assertEquals 'Type', itemType.description
+		assertEquals 'Property', itemType.children.iterator().next().description
+	}
+
+	/**
 	 * Test assigning named and custom constraints.
 	 */
 	void testConstraints() {
