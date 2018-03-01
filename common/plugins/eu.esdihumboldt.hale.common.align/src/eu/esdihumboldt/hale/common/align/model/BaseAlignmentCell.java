@@ -207,6 +207,13 @@ public class BaseAlignmentCell implements ModifiableCell {
 				"Cannot add annotation to a cell of a base alignment.");
 	}
 
+	@Override
+	public void addAnnotation(String type, Object annotation) {
+		// TODO allow adding annotations?
+		throw new UnsupportedOperationException(
+				"Cannot add annotation to a cell of a base alignment.");
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.model.Cell#removeAnnotation(java.lang.String,
 	 *      java.lang.Object)

@@ -111,6 +111,15 @@ public interface Cell {
 	public Object addAnnotation(String type);
 
 	/**
+	 * Add an existing annotation object.
+	 * 
+	 * @param type the annotation type identifier as registered in the
+	 *            corresponding extension point
+	 * @param annotation annotation object to add
+	 */
+	void addAnnotation(String type, Object annotation);
+
+	/**
 	 * Remove the given annotation object.
 	 * 
 	 * @param type the annotation type identifier as registered in the

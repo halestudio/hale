@@ -157,16 +157,6 @@ public class DefaultCell implements Cell, MutableCell {
 		return Multimaps.unmodifiableListMultimap(parameters);
 	}
 
-	/**
-	 * Add an annotation object.
-	 * 
-	 * @param type the annotation type
-	 * @param annotation the annotation object
-	 */
-	public void addAnnotation(String type, Object annotation) {
-		annotations.put(type, annotation);
-	}
-
 	@Override
 	public List<?> getAnnotations(String type) {
 		return Collections.unmodifiableList(annotations.get(type));
@@ -182,6 +172,27 @@ public class DefaultCell implements Cell, MutableCell {
 			return annotation;
 		}
 		return null;
+	}
+
+	/**
+	 * Add an annotation object.
+	 * 
+	 * @param type the annotation type
+	 * @param annotation the annotation object
+	 */
+	@Override
+	public void addAnnotation(String type, Object annotation) {
+		AnnotationDescriptor<?> descriptor = AnnotationExtension.getInstance().get(type);
+		if (descriptor == null) {
+			throw new IllegalArgumentException("Invalid annotation type");
+		}
+
+		if (!descriptor.create().getClass().equals(annotation.getClass())) {
+			throw new IllegalArgumentException(
+					"Provided annotation object does not match annotation type");
+		}
+
+		annotations.put(type, annotation);
 	}
 
 	@Override
