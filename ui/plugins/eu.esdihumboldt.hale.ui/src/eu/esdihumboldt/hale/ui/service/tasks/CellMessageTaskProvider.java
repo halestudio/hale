@@ -13,10 +13,11 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema;
+package eu.esdihumboldt.hale.ui.service.tasks;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.tasks.AbstractTaskProvider;
+import eu.esdihumboldt.hale.common.tasks.CellTaskFactory;
 import eu.esdihumboldt.hale.common.tasks.TaskService;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -31,19 +32,13 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 
 	private final CellTaskFactory taskFactory;
 	private AlignmentService alignmentService;
-	private AlignmentServiceAdapter alignmentListener;
 
 	/**
 	 * Default constructor
 	 */
 	public CellMessageTaskProvider() {
 		super();
-		addFactory(taskFactory = new CellTaskFactory("baseTypeName"));
-	}
-
-	@Override
-	protected void doDeactivate() {
-		// not used
+		addFactory(taskFactory = new CellTaskFactory());
 	}
 
 	@Override
@@ -54,7 +49,7 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 		generateTasks(taskService);
 
 		// create tasks when cells have been removed
-		alignmentService.addListener(alignmentListener = new AlignmentServiceAdapter() {
+		alignmentService.addListener(new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentChanged() {
@@ -74,7 +69,7 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
 				for (Cell cell : cells) {
-					generateTasks(cell, taskService); // XXX
+					generateTasks(cell, taskService);
 				}
 			}
 		});

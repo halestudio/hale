@@ -57,7 +57,7 @@ public class TaskCommentEditingSupport extends AbstractTaskEditingSupport {
 	 */
 	@Override
 	protected Object getValue(Object element) {
-		ResolvedTask task = getTask(element);
+		ResolvedTask<?> task = getTask(element);
 
 		Object value = null;
 		if (task != null) {
@@ -78,7 +78,7 @@ public class TaskCommentEditingSupport extends AbstractTaskEditingSupport {
 	 */
 	@Override
 	protected void setValue(Object element, Object value) {
-		ResolvedTask task = getTask(element);
+		ResolvedTask<?> task = getTask(element);
 		if (task != null) {
 			TaskUserData userData = getUserData(task);
 			userData.setUserComment(value.toString());

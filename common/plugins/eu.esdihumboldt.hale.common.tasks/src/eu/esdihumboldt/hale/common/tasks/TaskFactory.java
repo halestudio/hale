@@ -33,7 +33,7 @@ public interface TaskFactory<C> {
 	 * 
 	 * @return the task type
 	 */
-	public TaskType<C> getTaskType();
+	TaskType<C> getTaskType();
 
 	/**
 	 * Create a task for the given definitions. The task factory must check if

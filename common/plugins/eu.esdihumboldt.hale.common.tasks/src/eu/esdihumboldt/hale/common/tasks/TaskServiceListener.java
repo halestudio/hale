@@ -29,20 +29,20 @@ public interface TaskServiceListener {
 	 * 
 	 * @param tasks the tasks that have been added
 	 */
-	public <C> void tasksAdded(Iterable<Task<C>> tasks);
+	<C> void tasksAdded(Iterable<Task<C>> tasks);
 
 	/**
 	 * Called when tasks have been removed
 	 * 
 	 * @param tasks the tasks that have been removed
 	 */
-	public void tasksRemoved(Iterable<Task<?>> tasks);
+	void tasksRemoved(Iterable<Task<?>> tasks);
 
 	/**
 	 * Called when the user data of a task has changed
 	 * 
 	 * @param task the resolved task
 	 */
-	public void taskUserDataChanged(ResolvedTask<?> task);
+	void taskUserDataChanged(ResolvedTask<?> task);
 
 }

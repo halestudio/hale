@@ -23,7 +23,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
-import eu.esdihumboldt.hale.common.tasks.TaskType.SeverityLevel;
+import eu.esdihumboldt.hale.common.tasks.TaskType.TaskSeverity;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MultiColumnTreeNodeLabelProvider;
@@ -78,7 +78,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 * 
 	 * @return the image or <code>null</code>
 	 */
-	private Image getLevelImage(SeverityLevel severityLevel) {
+	private Image getLevelImage(TaskSeverity severityLevel) {
 		if (severityLevel == null) {
 			return null;
 		}
@@ -107,7 +107,7 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 * @return the image or <code>null</code>
 	 */
 	private Image getNodeImage(MapTreeNode<?, ?> node) {
-		SeverityLevel level = getNodeLevel(node);
+		TaskSeverity level = getNodeLevel(node);
 
 		return getLevelImage(level);
 	}
@@ -119,8 +119,8 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	 * 
 	 * @return the severity level or <code>null</code>
 	 */
-	private SeverityLevel getNodeLevel(MapTreeNode<?, ?> node) {
-		SeverityLevel level = null;
+	private TaskSeverity getNodeLevel(MapTreeNode<?, ?> node) {
+		TaskSeverity level = null;
 		TreeNode[] children = node.getChildren();
 
 		for (TreeNode child : children) {
@@ -138,17 +138,17 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 				}
 				// determine level
 				if (value instanceof ResolvedTask) {
-					ResolvedTask task = (ResolvedTask) value;
+					ResolvedTask<?> task = (ResolvedTask<?>) value;
 					if (task.isOpen()) { // only inspect open tasks
-						level = SeverityLevel.max(level, task.getSeverityLevel());
+						level = TaskSeverity.max(level, task.getSeverityLevel());
 					}
 				}
 			}
 			else if (child instanceof MapTreeNode<?, ?>) {
 				// child is map node
 				MapTreeNode<?, ?> childNode = (MapTreeNode<?, ?>) child;
-				SeverityLevel childLevel = getNodeLevel(childNode);
-				level = SeverityLevel.max(level, childLevel);
+				TaskSeverity childLevel = getNodeLevel(childNode);
+				level = TaskSeverity.max(level, childLevel);
 			}
 		}
 
@@ -162,12 +162,8 @@ public class TaskDescriptionLabelProvider extends MultiColumnTreeNodeLabelProvid
 	protected String getValueText(Object value, TreeNode node) {
 		if (value instanceof ResolvedTask) {
 			// task title
-			return ((ResolvedTask) value).getTitle();
+			return ((ResolvedTask<?>) value).getTitle();
 		}
-//		else if (value instanceof SchemaElement) {
-//			// type name
-//			return ((SchemaElement) value).getDisplayName();
-//		}
 		else {
 			return super.getValueText(value, node);
 		}

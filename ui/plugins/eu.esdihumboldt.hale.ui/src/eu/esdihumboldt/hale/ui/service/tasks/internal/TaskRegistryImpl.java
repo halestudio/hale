@@ -52,20 +52,4 @@ public class TaskRegistryImpl implements TaskRegistry {
 			types.put(type.getName(), type);
 		}
 	}
-
-	/**
-	 * @see TaskRegistry#createTask(ServiceProvider, String, Definition[])
-	 */
-//	@Override
-//	public Task createTask(ServiceProvider serviceProvider, String typeName,
-//			Definition... definitions) {
-//		TaskType type = getType(typeName);
-//		if (type != null) {
-//			return type.getTaskFactory().createTask(serviceProvider, definitions);
-//		}
-//		else {
-//			return null;
-//		}
-//	}
-
 }

@@ -65,8 +65,6 @@ public class TaskServiceImpl extends AbstractTaskService {
 
 	/**
 	 * Default constructor
-	 * 
-	 * @param serviceProvider
 	 */
 	public TaskServiceImpl() {
 		super();
@@ -79,11 +77,6 @@ public class TaskServiceImpl extends AbstractTaskService {
 					// register task types
 					taskProvider.registerTaskTypes(registry);
 					taskProvider.activate(this);
-
-					// activate provider
-//				if (TaskPreferenceUtils.getTaskProviderActive(factory.getIdentifier())) {
-//					taskProvider.activate(this, serviceProvider);
-//				}
 
 					taskProviders.put(factory.getIdentifier(), taskProvider);
 				}
@@ -223,11 +216,7 @@ public class TaskServiceImpl extends AbstractTaskService {
 			this.taskUserData.put(task, userData);
 		}
 
-//		AlignmentService alignmentService = HaleUI.getServiceProvider()
-//				.getService(AlignmentService.class);
-
 		if (task instanceof TaskUserDataAware && ((TaskUserDataAware) task).setUserData(userData)) {
-//			alignmentService.set???   AlignmentService muss notifyAlignmentChanged senden! Wie??
 			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
 			if (ps != null) {
 				ps.setChanged();
@@ -247,39 +236,14 @@ public class TaskServiceImpl extends AbstractTaskService {
 		return ResolvedTask.resolveTask(registry, task, taskUserData.get(task));
 	}
 
-//	/**
-//	 * @see TaskService#activateTaskProvider(String)
-//	 */
-//	@Override
-//	public void activateTaskProvider(String id) {
-//		TaskProvider taskProvider = taskProviders.get(id);
-//
-//		if (taskProvider != null) {
-//			TaskPreferenceUtils.setTaskProviderActive(id, true);
-//			taskProvider.activate(this, serviceProvider);
-//		}
-//	}
-//
-//	/**
-//	 * @see TaskService#deactivateTaskProvider(String)
-//	 */
-//	@Override
-//	public void deactivateTaskProvider(String id) {
-//		TaskProvider taskProvider = taskProviders.get(id);
-//
-//		if (taskProvider != null) {
-//			TaskPreferenceUtils.setTaskProviderActive(id, false);
-//			taskProvider.deactivate();
-//		}
-//	}
-//
-//	/**
-//	 * @see TaskService#taskProviderIsActive(String)
-//	 */
-//	@Override
-//	public boolean taskProviderIsActive(String id) {
-//		return TaskPreferenceUtils.getTaskProviderActive(id);
-//	}
+	@Override
+	public void activateTaskProvider(String id) {
+		TaskProvider taskProvider = taskProviders.get(id);
+
+		if (taskProvider != null) {
+			taskProvider.activate(this);
+		}
+	}
 
 	/**
 	 * @see TaskService#getUserTasks()
@@ -294,8 +258,8 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 */
 	@Override
 	public void clearUserTasks() {
-		List<Task> userDataTasks = new ArrayList<Task>();
-		for (Task task : taskUserData.keySet()) {
+		List<Task<?>> userDataTasks = new ArrayList<Task<?>>();
+		for (Task<?> task : taskUserData.keySet()) {
 			if (tasks.contains(task)) {
 				userDataTasks.add(task);
 			}
@@ -303,7 +267,7 @@ public class TaskServiceImpl extends AbstractTaskService {
 
 		taskUserData.clear();
 
-		for (Task task : userDataTasks) {
+		for (Task<?> task : userDataTasks) {
 			notifyTaskUserDataChanged(resolveTask(task));
 		}
 	}

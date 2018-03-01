@@ -16,16 +16,17 @@
 package eu.esdihumboldt.hale.common.tasks;
 
 /**
- * TODO Type description
+ * Interface that allows a {@link Task} to be aware of its user data
  * 
  * @author Florian Esser
  */
 public interface TaskUserDataAware {
 
 	/**
+	 * Set the task's user data
 	 * 
 	 * @param data can be <code>null</code>
-	 * @return
+	 * @return true if the user data was updated
 	 */
 	boolean setUserData(TaskUserData data);
 

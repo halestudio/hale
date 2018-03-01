@@ -37,7 +37,9 @@ public class TaskProviderExtension extends AbstractExtension<TaskProvider, TaskP
 			implements TaskProviderFactory {
 
 		/**
+		 * Create the TaskProviderFactory for the given configuration element
 		 * 
+		 * @param conf the configuration element
 		 */
 		public TaskProviderFactoryImpl(IConfigurationElement conf) {
 			super(conf, "class");

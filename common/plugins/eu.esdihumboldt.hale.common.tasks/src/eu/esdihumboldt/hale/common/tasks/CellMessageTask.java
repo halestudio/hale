@@ -23,17 +23,20 @@ import eu.esdihumboldt.hale.common.align.model.annotations.messages.Message;
 import eu.esdihumboldt.hale.common.tasks.TaskUserData.TaskStatus;
 
 /**
- * TODO Type description
+ * Task for {@link Message} annotations of a {@link Cell}.
  * 
  * @author Florian Esser
  */
-public class CellMessageTask extends DefaultTask<Cell> implements TaskUserDataAware {
+public class CellMessageTask extends AbstractTask<Cell> implements TaskUserDataAware {
 
 	private final Message message;
 
 	/**
-	 * @param taskType
-	 * @param context
+	 * Create the cell message task
+	 * 
+	 * @param taskType the task type
+	 * @param context the Cell this task was generated from
+	 * @param message the message annotation
 	 */
 	public CellMessageTask(TaskType<Cell> taskType, List<Cell> context, Message message) {
 		super(taskType, context);
@@ -41,36 +44,33 @@ public class CellMessageTask extends DefaultTask<Cell> implements TaskUserDataAw
 		this.message = message;
 	}
 
+	/**
+	 * @return the cell's message annotation
+	 */
 	public Message getMessage() {
 		return message;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.tasks.model.impl.BaseTask#compareTo(eu.esdihumboldt.hale.common.tasks.Task)
-	 */
 	@Override
 	public int compareTo(Task<Cell> other) {
 		if (other == null) {
 			return -1;
 		}
-//		else if (this.equals(other)) {
-//			return 0;
-//		}
+		else if (this.equals(other)) {
+			return 0;
+		}
 
 		if (other instanceof CellMessageTask) {
 			CellMessageTask cmt = (CellMessageTask) other;
 			return this.getMessage().getText().compareTo(cmt.getMessage().getText());
 		}
 		else if (other instanceof ResolvedTask<?>) {
-			return this.compareTo(((ResolvedTask) other).getTask());
+			return this.compareTo(((ResolvedTask<Cell>) other).getTask());
 		}
 
 		return this.getMainContext().getId().compareTo(other.getMainContext().getId());
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.tasks.TaskUserDataAware#setTaskStatus(eu.esdihumboldt.hale.common.tasks.TaskUserData.TaskStatus)
-	 */
 	@Override
 	public boolean setUserData(TaskUserData data) {
 		if (data == null) {
@@ -116,36 +116,28 @@ public class CellMessageTask extends DefaultTask<Cell> implements TaskUserDataAw
 		}
 	}
 
-//	/**
-//	 * @see eu.esdihumboldt.hale.ui.views.tasks.model.impl.BaseTask#hashCode()
-//	 */
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + ((getMainContext() == null) ? 0 : getMainContext().hashCode());
-//		result = prime * result + ((message == null) ? 0 : message.hashCode());
-//
-//		System.out.println("CellMessageTask: " + result);
-//
-//		return result;
-//	}
-//
-//	/**
-//	 * @see eu.esdihumboldt.hale.ui.views.tasks.model.impl.BaseTask#equals(java.lang.Object)
-//	 */
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj) {
-//			return true;
-//		}
-//		if (obj == null || !(obj instanceof CellMessageTask)) {
-//			return false;
-//		}
-//
-//		CellMessageTask other = (CellMessageTask) obj;
-//		return this.getMainContext().equals(other.getMainContext())
-//				&& this.message.equals(other.message);
-//	}
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getMainContext() == null) ? 0 : getMainContext().hashCode());
+		result = prime * result + ((message == null) ? 0 : message.hashCode());
+
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || !(obj instanceof CellMessageTask)) {
+			return false;
+		}
+
+		CellMessageTask other = (CellMessageTask) obj;
+		return this.getMainContext().equals(other.getMainContext())
+				&& this.message.equals(other.message);
+	}
 
 }

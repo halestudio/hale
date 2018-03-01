@@ -4,6 +4,8 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            allowMultiple="false"
+            category="eu.esdihumboldt.hale.ui"
             class="eu.esdihumboldt.hale.ui.views.tasks.TaskTreeView"
             icon="icons/tasks.gif"
             id="eu.esdihumboldt.hale.ui.views.tasks"
@@ -11,60 +13,9 @@
       </view>
    </extension>
    <extension
-         point="org.eclipse.ui.services">
-      <serviceFactory
-            factoryClass="eu.esdihumboldt.hale.ui.views.tasks.service.internal.TaskServiceFactory">
-         <service
-               serviceClass="eu.esdihumboldt.hale.ui.views.tasks.service.TaskService"></service>
-      </serviceFactory>
-   </extension>
-<!--   <extension
-         point="eu.esdihumboldt.hale.task.TaskProvider">
-      <tasks
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.SourceMappingTaskProvider"
-            defaultEnabled="true"
-            description="%tasks.sourceMappingTaskProvider.description"
-            id="eu.esdihumboldt.hale.task.schema.SourceMappingTaskProvider"
-            name="%tasks.sourceMappingTaskProvider.name">
-      </tasks>
-      <tasks
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.TargetMappingTaskProvider"
-            defaultEnabled="false"
-            description="%tasks.targetMappingTaskProvider.description"
-            id="eu.esdihumboldt.hale.task.schema.TargetMappingTaskProvider"
-            name="%tasks.targetMappingTaskProvider.name">
-      </tasks>
-      <tasks
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.NilAttributeTaskProvider"
-            defaultEnabled="true"
-            description="%tasks.nilWarningsTaskProvider.description"
-            id="eu.esdihumboldt.hale.task.schema.NilAttributeTaskProvider"
-            name="%tasks.nilWarningsTaskProvider.name">
-      </tasks>
-      <tasks
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.geometry.SchemaSetNoGeometryTaskProvider"
-            defaultEnabled="true"
-            id="eu.esdihumboldt.hale.task.schema.NoGeometry"
-            name="%tasks.name">
-      </tasks>
-      <tasks
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.CellMessageTaskProvider"
-            defaultEnabled="true"
-            description="Test"
-            id="eu.esdihumboldt.hale.ui.views.tasks.alignmentMessage"
-            name="Alignment Messages">
-      </tasks>
-   </extension>-->
-   <extension
-         point="org.eclipse.core.runtime.preferences">
-      <initializer
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.preferences.TaskPreferenceInitializer">
-      </initializer>
-   </extension>
-   <extension
          point="eu.esdihumboldt.hale.common.tasks">
       <provider
-            class="eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema.CellMessageTaskProvider"
+            class="eu.esdihumboldt.hale.ui.service.tasks.CellMessageTaskProvider"
             defaultEnabled="true"
             id="eu.esdihumboldt.hale.ui.views.tasks.CellMessageTaskProvider"
             name="Cell Message Task Provider">

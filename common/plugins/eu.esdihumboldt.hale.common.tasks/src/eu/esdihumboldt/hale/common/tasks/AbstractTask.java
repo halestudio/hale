@@ -19,13 +19,15 @@ package eu.esdihumboldt.hale.common.tasks;
 import java.util.List;
 
 /**
- * Base task implementation
+ * Base class for tasks
  *
+ * @param <C> the type of the context object
+ * 
  * @author Simon Templer
+ * @author Florian Esser
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
- * @version $Id$
  */
-public class BaseTask<C> implements Task<C> {
+public abstract class AbstractTask<C> implements Task<C> {
 
 	private final TaskType<C> taskType;
 
@@ -34,10 +36,10 @@ public class BaseTask<C> implements Task<C> {
 	/**
 	 * Create a new task
 	 * 
-	 * @param typeName the name of the task type
+	 * @param taskType the task type
 	 * @param context the task context
 	 */
-	public BaseTask(TaskType<C> taskType, List<? extends C> context) {
+	public AbstractTask(TaskType<C> taskType, List<? extends C> context) {
 		super();
 		this.taskType = taskType;
 		this.context = context;
@@ -71,9 +73,6 @@ public class BaseTask<C> implements Task<C> {
 		}
 	}
 
-	/**
-	 * @see Task#getTypeName()
-	 */
 	@Override
 	public TaskType<C> getTaskType() {
 		return taskType;
@@ -86,70 +85,4 @@ public class BaseTask<C> implements Task<C> {
 	public void dispose() {
 		// do nothing
 	}
-
-	/**
-	 * @see Object#hashCode()
-	 */
-//	@Override
-//	public int hashCode() {
-//		final int prime = 31;
-//		int result = 1;
-//		result = prime * result + ((context == null) ? 0 : context.hashCode());
-//		result = prime * result + ((taskType == null) ? 0 : taskType.hashCode());
-//		return result;
-//	}
-
-	/**
-	 * @see Object#equals(Object)
-	 */
-//	@Override
-//	public boolean equals(Object obj) {
-//		// test if the other is a task with equal context and type name
-//
-//		if (this == obj) {
-//			return true;
-//		}
-//		if (obj == null) {
-//			return false;
-//		}
-//		if (!(obj instanceof Task)) {
-//			return false;
-//		}
-//
-//		Task<?> other = (Task<?>) obj;
-//		if (context == null) {
-//			if (other.getContext() != null) {
-//				return false;
-//			}
-//		}
-//		else if (!context.equals(other.getContext())) {
-//			return false;
-//		}
-//
-//		return true;
-//	}
-
-	/**
-	 * @see Comparable#compareTo(Object)
-	 */
-	@Override
-	public int compareTo(Task<C> other) {
-		if (other == null) {
-			return -1;
-		}
-		else if (this.equals(other)) {
-			return 0;
-		}
-
-		return 1;
-//		int result = getMainContext().getIdentifier()
-//				.compareTo(other.getMainContext().getIdentifier());
-//		if (result == 0) {
-//			return getTypeName().compareTo(other.getTypeName());
-//		}
-//		else {
-//			return result;
-//		}
-	}
-
 }

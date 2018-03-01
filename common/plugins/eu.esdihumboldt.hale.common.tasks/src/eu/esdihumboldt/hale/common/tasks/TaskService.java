@@ -43,28 +43,28 @@ public interface TaskService {
 	 * 
 	 * @param task the task to add
 	 */
-	public void addTask(Task<?> task);
+	void addTask(Task<?> task);
 
 	/**
 	 * Add tasks
 	 * 
 	 * @param tasks the tasks to add
 	 */
-	public <C> void addTasks(Iterable<Task<C>> tasks);
+	<C> void addTasks(Iterable<Task<C>> tasks);
 
 	/**
 	 * Remove a task
 	 * 
 	 * @param task the task to remove
 	 */
-	public void removeTask(Task<?> task);
+	void removeTask(Task<?> task);
 
 	/**
 	 * Remove all tasks of the given type
 	 * 
 	 * @param type the type name
 	 */
-	public void removeTasks(String type);
+	void removeTasks(String type);
 
 	/**
 	 * Set the user data for the given task
@@ -72,21 +72,21 @@ public interface TaskService {
 	 * @param task the task
 	 * @param userData the task user data
 	 */
-	public void setUserData(Task<?> task, TaskUserData userData);
+	void setUserData(Task<?> task, TaskUserData userData);
 
 	/**
 	 * Get the tasks
 	 * 
 	 * @return a collection of all tasks
 	 */
-	public Collection<Task<?>> getTasks();
+	Collection<Task<?>> getTasks();
 
 	/**
 	 * Resolves the tasks and returns them
 	 * 
 	 * @return the resolved tasks
 	 */
-	public Collection<ResolvedTask<?>> getResolvedTasks();
+	Collection<ResolvedTask<?>> getResolvedTasks();
 
 	/**
 	 * Resolves the given task
@@ -95,7 +95,7 @@ public interface TaskService {
 	 * 
 	 * @return the resolved task
 	 */
-	public ResolvedTask<?> resolveTask(Task<?> task);
+	ResolvedTask<?> resolveTask(Task<?> task);
 
 	// task provider management
 
@@ -104,36 +104,23 @@ public interface TaskService {
 	 * 
 	 * @param id the task provider id
 	 */
-//	public void activateTaskProvider(String id);
-
-	/**
-	 * Deactivate the task provider with the given ID
-	 * 
-	 * @param id the task provider id
-	 */
-//	public void deactivateTaskProvider(String id);
-
-	/**
-	 * Determine if the task provider with the given ID is active
-	 * 
-	 * @param id the task provider id
-	 * 
-	 * @return if the task provider is active
-	 */
-//	public boolean taskProviderIsActive(String id);
+	void activateTaskProvider(String id);
 
 	/**
 	 * Get the user tasks
 	 * 
 	 * @return the user tasks
 	 */
-	public Map<Task<?>, TaskUserData> getUserTasks();
+	Map<Task<?>, TaskUserData> getUserTasks();
 
 	/**
 	 * Clear the user data associated with the tasks
 	 */
-	public void clearUserTasks();
+	void clearUserTasks();
 
+	/**
+	 * Clear all tasks
+	 */
 	void clearTasks();
 
 	/**
@@ -141,12 +128,12 @@ public interface TaskService {
 	 * 
 	 * @param listener the listener to add
 	 */
-	public void addListener(TaskServiceListener listener);
+	void addListener(TaskServiceListener listener);
 
 	/**
 	 * Removes a listener to the service
 	 * 
 	 * @param listener the listener to remove
 	 */
-	public void removeListener(TaskServiceListener listener);
+	void removeListener(TaskServiceListener listener);
 }

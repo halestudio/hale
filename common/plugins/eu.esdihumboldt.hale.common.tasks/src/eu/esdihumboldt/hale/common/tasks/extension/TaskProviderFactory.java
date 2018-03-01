@@ -19,10 +19,10 @@ import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.tasks.TaskProvider;
 
 /**
- * TODO Type description
+ * Factory interface for {@link TaskProvider}s
  * 
  * @author Florian Esser
  */
 public interface TaskProviderFactory extends ExtensionObjectFactory<TaskProvider> {
-
+	// typed interface
 }
