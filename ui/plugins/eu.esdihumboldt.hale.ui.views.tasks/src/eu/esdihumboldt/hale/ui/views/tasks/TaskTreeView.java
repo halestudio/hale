@@ -57,6 +57,7 @@ import eu.esdihumboldt.hale.ui.util.tree.CollectionTreeNodeContentProvider;
 import eu.esdihumboldt.hale.ui.util.tree.DefaultTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.SortedMapTreeNode;
+import eu.esdihumboldt.hale.ui.util.viewer.ReadOnlyEditingSupport;
 import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.Messages;
 
@@ -129,6 +130,7 @@ public class TaskTreeView extends ViewPart {
 				new TaskDescriptionLabelProvider(0));
 		descriptionLabelProvider.setProviders(colorProvider);
 		description.setLabelProvider(descriptionLabelProvider);
+		description.setEditingSupport(new ReadOnlyEditingSupport(tree, descriptionLabelProvider));
 		layout.setColumnData(description.getColumn(), new ColumnWeightData(4));
 
 		// value
