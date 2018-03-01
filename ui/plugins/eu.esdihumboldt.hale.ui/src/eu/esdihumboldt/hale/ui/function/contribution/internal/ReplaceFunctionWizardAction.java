@@ -29,8 +29,8 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  * 
  * @author Simon Templer
  */
-public class ReplaceFunctionWizardAction extends
-		AbstractWizardAction<SchemaSelectionFunctionContribution> {
+public class ReplaceFunctionWizardAction
+		extends AbstractWizardAction<SchemaSelectionFunctionContribution> {
 
 	private final Cell originalCell;
 
@@ -55,7 +55,8 @@ public class ReplaceFunctionWizardAction extends
 	 */
 	@Override
 	protected FunctionWizard createWizard() {
-		return descriptor.createNewWizard(functionContribution.getSelection());
+		return descriptor.createNewWizard(functionContribution.getSelection(),
+				originalCell.getTransformationParameters());
 	}
 
 	/**
