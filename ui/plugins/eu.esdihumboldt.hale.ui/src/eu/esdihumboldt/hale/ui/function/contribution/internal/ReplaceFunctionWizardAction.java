@@ -64,11 +64,15 @@ public class ReplaceFunctionWizardAction
 	 */
 	@Override
 	protected void handleResult(MutableCell cell) {
-		// Copy annotations to new Cell
+		// Copy properties to new Cell
 		for (String annotationType : originalCell.getAnnotationTypes()) {
 			originalCell.getAnnotations(annotationType).stream()
 					.forEach(a -> cell.addAnnotation(annotationType, a));
 		}
+		cell.getDocumentation().putAll(originalCell.getDocumentation());
+		cell.setPriority(originalCell.getPriority());
+		cell.setTransformationMode(originalCell.getTransformationMode());
+		originalCell.getDisabledFor().stream().forEach(c -> cell.setDisabledFor(c, true));
 
 		alignmentService.replaceCell(originalCell, cell);
 	}
