@@ -18,7 +18,10 @@ package eu.esdihumboldt.hale.ui.function;
 
 import org.eclipse.jface.wizard.Wizard;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
 /**
@@ -29,8 +32,8 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 public abstract class AbstractFunctionWizard extends Wizard implements FunctionWizard {
 
 	private final Cell initCell;
-
 	private final SchemaSelection initSelection;
+	private final ListMultimap<String, ParameterValue> initParameters;
 
 	/**
 	 * Create a function wizard based on an existing cell
@@ -42,6 +45,7 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 
 		this.initCell = cell;
 		this.initSelection = null;
+		this.initParameters = null;
 	}
 
 	/**
@@ -50,10 +54,22 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	public AbstractFunctionWizard(SchemaSelection selection) {
+		this(selection, null);
+	}
+
+	/**
+	 * Create a function wizard based on a schema selection
+	 * 
+	 * @param selection the schema selection, may be <code>null</code>
+	 * @param parameters the initial function parameters
+	 */
+	public AbstractFunctionWizard(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters) {
 		super();
 
 		this.initCell = null;
 		this.initSelection = selection;
+		this.initParameters = parameters;
 	}
 
 	/**
@@ -66,8 +82,11 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 		if (initCell != null) {
 			init(initCell);
 		}
-		else {
+		else if (initParameters == null) {
 			init(initSelection);
+		}
+		else {
+			init(initSelection, initParameters);
 		}
 	}
 
@@ -86,11 +105,30 @@ public abstract class AbstractFunctionWizard extends Wizard implements FunctionW
 	}
 
 	/**
+	 * @return the initial parameters
+	 */
+	public ListMultimap<String, ParameterValue> getInitParameters() {
+		return initParameters;
+	}
+
+	/**
 	 * Initialize the wizard based on a schema selection.
 	 * 
 	 * @param selection the schema selection, may be <code>null</code>
 	 */
 	protected void init(SchemaSelection selection) {
+		// override me
+	}
+
+	/**
+	 * Initialize the wizard based on a schema selection and prefill the
+	 * function parameters.
+	 * 
+	 * @param selection the schema selection, may be <code>null</code>
+	 * @param parameters the function parameters to prefill
+	 */
+	protected void init(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters) {
 		// override me
 	}
 

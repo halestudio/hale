@@ -20,12 +20,15 @@ import java.net.URL;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
+import com.google.common.collect.ListMultimap;
+
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectDefinition;
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
@@ -139,6 +142,15 @@ public abstract class AbstractFunctionWizardDescriptor<T extends FunctionDefinit
 	@Override
 	public FunctionWizard createNewWizard(SchemaSelection schemaSelection) {
 		return getFactory().createNewWizard(schemaSelection);
+	}
+
+	/**
+	 * @see FunctionWizardFactory#createNewWizard(SchemaSelection, ListMultimap)
+	 */
+	@Override
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection,
+			ListMultimap<String, ParameterValue> parameters) {
+		return getFactory().createNewWizard(schemaSelection, parameters);
 	}
 
 	/**
