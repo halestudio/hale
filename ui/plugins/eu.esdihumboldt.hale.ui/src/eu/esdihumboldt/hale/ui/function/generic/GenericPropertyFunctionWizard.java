@@ -16,10 +16,13 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.PropertyParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.PropertyEntitiesPage;
@@ -46,6 +49,15 @@ public class GenericPropertyFunctionWizard extends
 	 */
 	public GenericPropertyFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection, functionId);
+	}
+
+	/**
+	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(SchemaSelection,
+	 *      ListMultimap, String)
+	 */
+	public GenericPropertyFunctionWizard(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters, String functionId) {
+		super(selection, parameters, functionId);
 	}
 
 	/**

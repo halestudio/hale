@@ -115,6 +115,11 @@ public class MutableCellDecorator implements MutableCell {
 	}
 
 	@Override
+	public void addAnnotation(String type, Object annotation) {
+		decoratee.addAnnotation(type, annotation);
+	}
+
+	@Override
 	public void removeAnnotation(String type, Object annotation) {
 		decoratee.removeAnnotation(type, annotation);
 	}

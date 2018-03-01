@@ -29,8 +29,8 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
  * 
  * @author Simon Templer
  */
-public class ReplaceFunctionWizardAction extends
-		AbstractWizardAction<SchemaSelectionFunctionContribution> {
+public class ReplaceFunctionWizardAction
+		extends AbstractWizardAction<SchemaSelectionFunctionContribution> {
 
 	private final Cell originalCell;
 
@@ -55,7 +55,8 @@ public class ReplaceFunctionWizardAction extends
 	 */
 	@Override
 	protected FunctionWizard createWizard() {
-		return descriptor.createNewWizard(functionContribution.getSelection());
+		return descriptor.createNewWizard(functionContribution.getSelection(),
+				originalCell.getTransformationParameters());
 	}
 
 	/**
@@ -63,8 +64,16 @@ public class ReplaceFunctionWizardAction extends
 	 */
 	@Override
 	protected void handleResult(MutableCell cell) {
-		// remove the original cell
-		// and add the new cell
+		// Copy properties to new Cell
+		for (String annotationType : originalCell.getAnnotationTypes()) {
+			originalCell.getAnnotations(annotationType).stream()
+					.forEach(a -> cell.addAnnotation(annotationType, a));
+		}
+		cell.getDocumentation().putAll(originalCell.getDocumentation());
+		cell.setPriority(originalCell.getPriority());
+		cell.setTransformationMode(originalCell.getTransformationMode());
+		originalCell.getDisabledFor().stream().forEach(c -> cell.setDisabledFor(c, true));
+
 		alignmentService.replaceCell(originalCell, cell);
 	}
 

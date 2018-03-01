@@ -96,6 +96,22 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 	}
 
 	/**
+	 * Create a generic function wizard for a certain function based on a schema
+	 * selection
+	 * 
+	 * @param selection the schema selection, may be <code>null</code>
+	 * @param parameters initial function parameters
+	 * @param functionId the function identifier
+	 */
+	public AbstractGenericFunctionWizard(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters, String functionId) {
+		super(selection, parameters);
+
+		setHelpAvailable(true);
+		this.functionId = functionId;
+	}
+
+	/**
 	 * @see AbstractFunctionWizard#AbstractFunctionWizard(Cell)
 	 */
 	public AbstractGenericFunctionWizard(Cell cell) {
@@ -121,8 +137,14 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 		entitiesPage = createEntitiesPage(getInitSelection(), getInitCell());
 
 		// create parameter pages
-		if (!getFunction().getDefinedParameters().isEmpty())
-			parameterPages = createParameterPages(getInitCell());
+		if (!getFunction().getDefinedParameters().isEmpty()) {
+			if (getInitCell() != null) {
+				parameterPages = createParameterPages(getInitCell());
+			}
+			else {
+				parameterPages = createParameterPages(getInitParameters());
+			}
+		}
 	}
 
 	/**
@@ -133,6 +155,14 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 		// create a new cell
 		resultCell = new DefaultCell();
 		resultCell.setTransformationIdentifier(getFunctionId());
+	}
+
+	@Override
+	protected void init(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters) {
+		init(selection);
+
+		resultCell.setTransformationParameters(parameters);
 	}
 
 	/**
@@ -162,21 +192,15 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
 			Cell initCell);
 
-	/**
-	 * Create the page for configuring the function parameters.
-	 * 
-	 * @param initialCell the initial cell, may be <code>null</code>
-	 * @return the parameter configuration page or <code>null</code>
-	 */
-	protected List<ParameterPage> createParameterPages(Cell initialCell) {
+	protected List<ParameterPage> createParameterPages(
+			ListMultimap<String, ParameterValue> initialValues) {
 		LinkedList<ParameterPage> parameterPages = new LinkedList<ParameterPage>();
+
 		// create copy of function parameter set
 		Set<FunctionParameterDefinition> functionParameters = new LinkedHashSet<>();
 		for (FunctionParameterDefinition param : getFunction().getDefinedParameters())
 			functionParameters.add(param);
-		// get initial values
-		ListMultimap<String, ParameterValue> initialValues = initialCell == null ? null
-				: initialCell.getTransformationParameters();
+
 		if (initialValues != null)
 			initialValues = Multimaps.unmodifiableListMultimap(initialValues);
 		// get available parameter pages
@@ -223,6 +247,20 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 		}
 
 		return parameterPages;
+	}
+
+	/**
+	 * Create the page for configuring the function parameters.
+	 * 
+	 * @param initialCell the initial cell, may be <code>null</code>
+	 * @return the parameter configuration page or <code>null</code>
+	 */
+	protected List<ParameterPage> createParameterPages(Cell initialCell) {
+		// get initial values
+		ListMultimap<String, ParameterValue> initialValues = (initialCell == null) ? null
+				: initialCell.getTransformationParameters();
+
+		return createParameterPages(initialValues);
 	}
 
 	@Override
