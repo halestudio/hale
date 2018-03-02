@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeColumnViewerLabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -35,7 +36,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -55,6 +58,7 @@ import eu.esdihumboldt.hale.ui.util.tree.MapTreeNode;
 import eu.esdihumboldt.hale.ui.util.tree.SortedMapTreeNode;
 import eu.esdihumboldt.hale.ui.util.viewer.ReadOnlyEditingSupport;
 import eu.esdihumboldt.hale.ui.views.mapping.MappingView;
+import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.tasks.internal.Messages;
 
 /**
@@ -74,13 +78,12 @@ public class TaskTreeView extends ViewPart {
 	 * The tree viewer
 	 */
 	private TreeViewer tree;
-
 	private TaskService taskService;
 
 	private TaskServiceListener taskListener;
+	private ISelectionListener selectionListener;
 
 	private MapTreeNode<Cell, MapTreeNode<ResolvedTask<Cell>, TreeNode>> cellNode;
-
 	private final Map<Task<?>, DefaultTreeNode> taskNodes = new HashMap<Task<?>, DefaultTreeNode>();
 
 	/**
@@ -210,6 +213,24 @@ public class TaskTreeView extends ViewPart {
 			}
 
 		});
+
+		getSite().getWorkbenchWindow().getSelectionService()
+				.addPostSelectionListener(selectionListener = new ISelectionListener() {
+
+					@Override
+					public void selectionChanged(IWorkbenchPart part, ISelection selection) {
+						if (!(part instanceof PropertiesViewPart)) {
+							// only update the selection if it originates from a
+							// part that provides definition or instance
+							// selections
+							return;
+						}
+
+						if (part != TaskTreeView.this) {
+							update(selection);
+						}
+					}
+				});
 
 		createInput();
 
@@ -477,6 +498,28 @@ public class TaskTreeView extends ViewPart {
 		// TODO smart refresh
 		for (Task<C> task : tasks) {
 			addTask(taskService.resolveTask(task));
+		}
+	}
+
+	/**
+	 * Update the view with the given selection
+	 * 
+	 * @param selection the selection
+	 */
+	protected void update(ISelection selection) {
+		if (selection instanceof IStructuredSelection) {
+			Object element = ((IStructuredSelection) selection).getFirstElement();
+			if (element instanceof Cell) {
+				Collection<Task<Cell>> tasks = taskService.getTasks((Cell) element);
+				if (!tasks.isEmpty()) {
+					ResolvedTask<Cell> rt = taskService.resolveTask(tasks.iterator().next());
+					MapTreeNode<?, TreeNode> cellNode = getParentNode(rt, false);
+					tree.setSelection(new StructuredSelection(cellNode));
+				}
+			}
+		}
+		else {
+			tree.setInput(null);
 		}
 	}
 
