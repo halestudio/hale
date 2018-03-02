@@ -237,6 +237,7 @@
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.FormattedStringExplanation"
+            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.FormattedStringMigrator"
             description="Creates a formatted string based on a pattern and the input variables"
             icon="icons/text.png"
             identifier="eu.esdihumboldt.hale.align.formattedstring"
@@ -584,6 +585,13 @@
             namespace="http://www.esdi-humboldt.eu/hale/join"
             type="eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter">
       </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.common.align.model.annotations.messages.MessageDescriptor"
+            id="eu.esdihumboldt.hale.common.align.message"
+            name="message"
+            namespace="http://www.esdi-humboldt.eu/hale/core"
+            type="eu.esdihumboldt.hale.common.align.model.annotations.messages.Message">
+      </complexValue>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
@@ -612,6 +620,13 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException">
       </allow>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.annotation">
+      <annotation
+            descriptor="eu.esdihumboldt.hale.common.align.model.annotations.messages.MessageDescriptor"
+            type="message">
+      </annotation>
    </extension>
 
 </plugin>

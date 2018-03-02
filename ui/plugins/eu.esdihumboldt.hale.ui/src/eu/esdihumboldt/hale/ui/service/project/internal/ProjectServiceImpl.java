@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -392,6 +393,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 
+	private final Map<String, Value> temporarySettings = new HashMap<>();
+
 	private boolean changed = false;
 
 	private UILocationUpdater updater = new UILocationUpdater(null, null);
@@ -551,6 +554,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						projectLocation = null;
 						changed = false;
 						projectLoadContentType = null;
+						temporarySettings.clear();
 					}
 					updateWindowTitle();
 					notifyClean();
@@ -1196,4 +1200,23 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return getConfigurationService().getProperty(name);
 	}
 
+	@Override
+	public void setTemporaryProperty(String key, Value value) {
+		temporarySettings.put(key, value);
+	}
+
+	@Override
+	public Value getTemporaryProperty(String key) {
+		return temporarySettings.get(key);
+	}
+
+	@Override
+	public Value getTemporaryProperty(String key, Value defaultValue) {
+		if (temporarySettings.containsKey(key)) {
+			return temporarySettings.get(key);
+		}
+		else {
+			return defaultValue;
+		}
+	}
 }

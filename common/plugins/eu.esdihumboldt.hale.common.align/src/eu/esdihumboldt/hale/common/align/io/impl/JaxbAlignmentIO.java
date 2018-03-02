@@ -29,11 +29,16 @@ import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentToJaxb;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToAlignment;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType;
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
 import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
+import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -158,6 +163,45 @@ public class JaxbAlignmentIO {
 		ObjectFactory of = new ObjectFactory();
 		try {
 			m.marshal(of.createAlignment(alignment), out);
+		} finally {
+			out.flush();
+			out.close();
+		}
+	}
+
+	/**
+	 * Print a cell to an output stream (intended for tests/debugging).
+	 * 
+	 * @param cell the cell to print
+	 * @param out the output stream
+	 * @throws Exception if an error occurs trying to print the cell
+	 */
+	public static void printCell(MutableCell cell, OutputStream out) throws Exception {
+		DefaultAlignment alignment = new DefaultAlignment();
+		alignment.addCell(cell);
+
+		IOReporter reporter = new DefaultIOReporter(new Locatable() {
+
+			@Override
+			public URI getLocation() {
+				return null;
+			}
+
+		}, "Print cell", null, false);
+		PathUpdate pathUpdate = new PathUpdate(null, null);
+
+		AlignmentType at = convert(alignment, reporter, pathUpdate);
+		CellType ct = (CellType) at.getCellOrModifier().get(0);
+
+		JAXBContext jc = JAXBContext.newInstance(ALIGNMENT_CONTEXT,
+				ObjectFactory.class.getClassLoader());
+		Marshaller m = jc.createMarshaller();
+
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		ObjectFactory of = new ObjectFactory();
+		try {
+			m.marshal(of.createCell(ct), out);
 		} finally {
 			out.flush();
 			out.close();

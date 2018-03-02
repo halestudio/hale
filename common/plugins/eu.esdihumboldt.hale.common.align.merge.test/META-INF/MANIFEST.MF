@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alignment Merge Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.merge.test
+Bundle-Version: 3.4.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: groovy;bundle-version="2.3.7",
+ eu.esdihumboldt.hale.common.align.merge;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.io.schemabuilder;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.common.headless;bundle-version="3.3.0",
+ eu.esdihumboldt.hale.common.core,
+ eu.esdihumboldt.hale.common.cli,
+ org.junit;bundle-version="4.12.0"
+Export-Package: eu.esdihumboldt.hale.common.align.merge.test,
+ eu.esdihumboldt.hale.common.align.merge.test.impl
+Import-Package: com.google.common.cache;version="17.0.0",
+ com.google.common.collect;version="17.0.0",
+ de.fhg.igd.eclipse.util.extension,
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.cst.functions.groovy,
+ eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.5",
+ eu.esdihumboldt.hale.common.instance.groovy,
+ eu.esdihumboldt.hale.common.instance.index,
+ eu.esdihumboldt.hale.common.instance.model,
+ eu.esdihumboldt.hale.common.schema.model,
+ javax.annotation,
+ org.slf4j;version="1.7.12"

@@ -23,6 +23,7 @@ import java.util.List;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ComplexConfigurationService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectDescription;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
@@ -239,5 +240,34 @@ public interface ProjectService extends ProjectInfoService {
 	 * Reload the project and offer options to update it.
 	 */
 	public void update();
+
+	/**
+	 * Set the temporary property with the given name to the given value. The
+	 * property will not be persisted in the project.
+	 * 
+	 * @param name the property name
+	 * @param value the property value
+	 */
+	public void setTemporaryProperty(String name, Value value);
+
+	/**
+	 * Return the value of the temporary property with the given name.
+	 * 
+	 * @param name the property name
+	 * @return the property value or <code>null</code> if the property does not
+	 *         exist
+	 */
+	public Value getTemporaryProperty(String name);
+
+	/**
+	 * Return the value of the temporary property with the given name. If no
+	 * property with that name exists, defaultValue is returned instead.
+	 * 
+	 * @param name the property name
+	 * @param defaultValue default value
+	 * @return the property value or <code>defaultValue</code> if the property
+	 *         does not exist
+	 */
+	public Value getTemporaryProperty(String name, Value defaultValue);
 
 }

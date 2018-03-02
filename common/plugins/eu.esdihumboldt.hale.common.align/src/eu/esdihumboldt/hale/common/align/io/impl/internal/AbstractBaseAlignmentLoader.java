@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.io.IOUtils;
 
@@ -227,7 +228,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	protected final void internalAddBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		Map<A, Map<String, String>> prefixMapping = new HashMap<A, Map<String, String>>();
 		Map<A, AlignmentInfo> alignmentToInfo = new HashMap<A, AlignmentInfo>();
 
@@ -296,7 +297,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 				}
 
 				// Migrate UnmigratedCells
-				migrateCells(createdCells);
+				migrateCells(createdCells, reporter);
 
 				for (MutableCell cell : createdCells) {
 					createdBaseCells.add(new BaseAlignmentCell(cell, base.getValue().uri.usedURI,
@@ -470,7 +471,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		}
 
 		// Migrate all UnmigratedCells and add them to the alignment
-		List<MutableCell> migratedCells = migrateCells(cells);
+		List<MutableCell> migratedCells = migrateCells(cells, reporter);
 		migratedCells.forEach(cell -> alignment.addCell(cell));
 
 		// add modifiers of main alignment
@@ -480,7 +481,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		return alignment;
 	}
 
-	private List<MutableCell> migrateCells(List<MutableCell> cells) {
+	private List<MutableCell> migrateCells(List<MutableCell> cells, SimpleLog log) {
 		List<MutableCell> result = new ArrayList<>();
 
 		// Collect mappings from all UnmigratedCells
@@ -491,7 +492,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 		// Add cells to the alignment, migrate UnmigratedCells
 		for (MutableCell cell : cells) {
 			if (cell instanceof UnmigratedCell) {
-				result.add(((UnmigratedCell) cell).migrate(allMappings));
+				result.add(((UnmigratedCell) cell).migrate(allMappings, log));
 			}
 			else {
 				result.add(cell);
@@ -532,7 +533,7 @@ public abstract class AbstractBaseAlignmentLoader<A, C, M> {
 	 */
 	private void generatePrefixMapping(A start, Map<A, Map<String, String>> prefixMapping,
 			Map<A, AlignmentInfo> alignmentToInfo, PathUpdate updater, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		// XXX What if the project file path would change?
 		// Alignment is a project file, so it is in the same directory.
 		URI currentAbsolute = updater.getNewLocation();
