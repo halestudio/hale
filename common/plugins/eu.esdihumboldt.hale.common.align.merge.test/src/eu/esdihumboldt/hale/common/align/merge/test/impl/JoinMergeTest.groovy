@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.merge.functions.JoinMergeMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.MutableCell
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
@@ -227,6 +228,36 @@ class JoinMergeTest extends AbstractMergeCellMigratorTest {
 				['A4', 'a4'] //
 			]
 		])
+	}
+
+	@Test
+	void testJoinFilter() {
+		def toMigrate = this.class.getResource('/testcases/join-filter/B-to-C.halex')
+		def cellId = 'B1B2toC1'
+
+		def matching = this.class.getResource('/testcases/join-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		// expect no filters to be present (because we do not know where to associate them)
+		assertNotNull(migrated[0].source)
+		assertEquals(4, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			assertNull(filter)
+		}
+
+		// there should be a message about the conditions being dropped
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
 	}
 
 	// common tests
