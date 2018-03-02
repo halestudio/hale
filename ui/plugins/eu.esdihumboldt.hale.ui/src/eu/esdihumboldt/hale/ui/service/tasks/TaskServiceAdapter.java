@@ -51,13 +51,4 @@ public abstract class TaskServiceAdapter implements TaskServiceListener {
 	public void taskUserDataChanged(ResolvedTask<?> task) {
 		// override me
 	}
-
-	/**
-	 * @see HaleServiceListener#update(UpdateMessage)
-	 */
-//	@Override
-//	public void update(@SuppressWarnings("rawtypes") UpdateMessage message) {
-//		// override me if you are sure you need to be called on any event
-//	}
-
 }

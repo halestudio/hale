@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2018 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,10 +10,10 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
-package eu.esdihumboldt.hale.common.tasks.extension;
+
+package eu.esdihumboldt.hale.ui.common.graph.figures.extension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,30 +23,32 @@ import org.eclipse.core.runtime.Platform;
 
 import de.fhg.igd.eclipse.util.extension.AbstractConfigurationFactory;
 import de.fhg.igd.eclipse.util.extension.AbstractExtension;
-import eu.esdihumboldt.hale.common.tasks.TaskProvider;
+import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
+import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigureContribution;
 
 /**
- * Task provider extension utilities
+ * Utilities for the {@link CellFigure} extension point
  * 
- * @author Simon Templer
- * @partner 01 / Fraunhofer Institute for Computer Graphics Research
+ * @author Florian Esser
  */
-public class TaskProviderExtension extends AbstractExtension<TaskProvider, TaskProviderFactory> {
+public class CellFigureExtension
+		extends AbstractExtension<CellFigureContribution, CellFigureContributionFactory> {
 
-	private static class TaskProviderFactoryImpl extends AbstractConfigurationFactory<TaskProvider>
-			implements TaskProviderFactory {
+	private static class CellFigureContributionFactoryImpl
+			extends AbstractConfigurationFactory<CellFigureContribution>
+			implements CellFigureContributionFactory {
 
 		/**
-		 * Create the TaskProviderFactory for the given configuration element
+		 * Create the factory for the given configuration element
 		 * 
 		 * @param conf the configuration element
 		 */
-		public TaskProviderFactoryImpl(IConfigurationElement conf) {
+		public CellFigureContributionFactoryImpl(IConfigurationElement conf) {
 			super(conf, "class");
 		}
 
 		@Override
-		public void dispose(TaskProvider instance) {
+		public void dispose(CellFigureContribution instance) {
 			// do nothing
 		}
 
@@ -65,21 +67,19 @@ public class TaskProviderExtension extends AbstractExtension<TaskProvider, TaskP
 	/**
 	 * The extension point ID
 	 */
-	public static final String ID = "eu.esdihumboldt.hale.common.tasks"; //$NON-NLS-1$
+	public static final String ID = "eu.esdihumboldt.hale.ui.common.graph.figures.cell"; //$NON-NLS-1$
 
 	/**
-	 * Default constructor
+	 * Default extension constructor
 	 */
-	public TaskProviderExtension() {
+	public CellFigureExtension() {
 		super(ID);
 	}
 
-	/**
-	 * @see AbstractExtension#createFactory(IConfigurationElement)
-	 */
 	@Override
-	protected TaskProviderFactory createFactory(IConfigurationElement conf) throws Exception {
-		return new TaskProviderFactoryImpl(conf);
+	protected CellFigureContributionFactory createFactory(IConfigurationElement conf)
+			throws Exception {
+		return new CellFigureContributionFactoryImpl(conf);
 	}
 
 	/**
@@ -87,14 +87,14 @@ public class TaskProviderExtension extends AbstractExtension<TaskProvider, TaskP
 	 * 
 	 * @return the task provider factories
 	 */
-	public static List<TaskProviderFactory> getTaskProviderFactories() {
+	public static List<CellFigureContributionFactory> getCellFigureContributionFactories() {
 		IConfigurationElement[] confArray = Platform.getExtensionRegistry()
 				.getConfigurationElementsFor(ID);
 
-		List<TaskProviderFactory> result = new ArrayList<TaskProviderFactory>();
+		List<CellFigureContributionFactory> result = new ArrayList<>();
 
 		for (IConfigurationElement conf : confArray) {
-			result.add(new TaskProviderFactoryImpl(conf));
+			result.add(new CellFigureContributionFactoryImpl(conf));
 		}
 
 		return result;

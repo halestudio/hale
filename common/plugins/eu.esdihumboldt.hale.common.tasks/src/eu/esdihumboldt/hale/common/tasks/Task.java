@@ -43,9 +43,8 @@ public interface Task<C> extends Comparable<Task<C>> {
 	C getMainContext();
 
 	/**
-	 * @return the {@link Definition}s that form the context of this
-	 *         {@link Task}, i.e. those which are directly modified by it. An
-	 *         example would be the Mapping to be clarified.
+	 * @return the the context objects of this {@link Task}, i.e. those that are
+	 *         targeted by this task.
 	 */
 	List<? extends C> getContext();
 

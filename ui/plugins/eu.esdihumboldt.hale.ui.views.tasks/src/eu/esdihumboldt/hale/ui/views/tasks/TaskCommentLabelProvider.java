@@ -42,7 +42,7 @@ public class TaskCommentLabelProvider extends MultiColumnTreeNodeLabelProvider {
 	@Override
 	protected String getValueText(Object value, TreeNode node) {
 		if (value instanceof ResolvedTask) {
-			ResolvedTask task = (ResolvedTask) value;
+			ResolvedTask<?> task = (ResolvedTask<?>) value;
 			return task.getUserComment();
 		}
 		else {

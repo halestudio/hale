@@ -30,15 +30,10 @@ import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
  * {@link TaskServiceListener}s
  *
  * @author Simon Templer
+ * @author Florian Esser
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class AbstractTaskService implements TaskService {
-
-	/**
-	 * The default update message
-	 */
-//	private static final UpdateMessage<?> DEF_MESSAGE = new UpdateMessage<Object>(TaskService.class,
-//			null);
 
 	private final CopyOnWriteArraySet<TaskServiceListener> listeners = new CopyOnWriteArraySet<>();
 
@@ -83,13 +78,6 @@ public abstract class AbstractTaskService implements TaskService {
 		for (TaskServiceListener listener : listeners) {
 			listener.taskUserDataChanged(task);
 		}
-//		for (HaleServiceListener listener : getListeners()) {
-//			if (listener instanceof TaskServiceListener) {
-//				((TaskServiceListener) listener).taskUserDataChanged(task);
-//			}
-//
-//			listener.update(DEF_MESSAGE);
-//		}
 	}
 
 }

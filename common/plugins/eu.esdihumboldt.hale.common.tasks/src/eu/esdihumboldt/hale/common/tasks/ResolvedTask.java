@@ -18,12 +18,14 @@ package eu.esdihumboldt.hale.common.tasks;
 
 import java.util.List;
 
-import eu.esdihumboldt.hale.common.tasks.TaskType.SeverityLevel;
+import eu.esdihumboldt.hale.common.tasks.TaskType.TaskSeverity;
 import eu.esdihumboldt.hale.common.tasks.TaskUserData.TaskStatus;
 
 /**
  * Task decorator that provides convenience methods for accessing the task type
  * information
+ * 
+ * @param <C> The type of the context object
  *
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -39,7 +41,6 @@ public class ResolvedTask<C> implements Task<C> {
 	 * Create a resolved task
 	 * 
 	 * @param task the task
-	 * @param type the task's type
 	 * @param userData the task user data, may be <code>null</code>
 	 */
 	public ResolvedTask(Task<C> task, TaskUserData userData) {
@@ -68,13 +69,7 @@ public class ResolvedTask<C> implements Task<C> {
 			((TaskUserDataAware) task).populateUserData(userData);
 		}
 
-//		TaskType type = registry.getType(task.getTypeName());
-//		if (type != null) {
 		return new ResolvedTask<C>(task, userData);
-//		}
-//		else {
-//			return null;
-//		}
 	}
 
 	/**
@@ -129,11 +124,8 @@ public class ResolvedTask<C> implements Task<C> {
 		}
 	}
 
-	/**
-	 * @see Task#getTypeName()
-	 */
 	@Override
-	public TaskType getTaskType() {
+	public TaskType<C> getTaskType() {
 		return task.getTaskType();
 	}
 
@@ -153,7 +145,7 @@ public class ResolvedTask<C> implements Task<C> {
 	 * 
 	 * @return the severity level of the task
 	 */
-	public SeverityLevel getSeverityLevel() {
+	public TaskSeverity getSeverityLevel() {
 		return task.getTaskType().getSeverityLevel(task);
 	}
 
@@ -193,22 +185,6 @@ public class ResolvedTask<C> implements Task<C> {
 	 */
 	@Override
 	public int compareTo(Task<C> other) {
-		if (other instanceof ResolvedTask<?>) {
-			int result = getSeverityLevel().compareTo(((ResolvedTask<C>) other).getSeverityLevel());
-
-//			if (result == 0) {
-//				if (getValue() > ((ResolvedTask) other).getValue()) {
-//					return -1;
-//				}
-//				else if (getValue() < ((ResolvedTask) other).getValue()) {
-//					return 1;
-//				}
-//			}
-//			else {
-//				return result;
-//			}
-		}
-
 		return task.compareTo(other);
 	}
 

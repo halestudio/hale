@@ -61,25 +61,25 @@ public interface TaskUserData {
 	/**
 	 * @return the status this Task is currently in.
 	 */
-	public TaskStatus getTaskStatus();
+	TaskStatus getTaskStatus();
 
 	/**
 	 * Set the task status
 	 * 
 	 * @param status the task status
 	 */
-	public void setTaskStatus(TaskStatus status);
+	void setTaskStatus(TaskStatus status);
 
 	/**
 	 * @return the user comment associated with the task
 	 */
-	public String getUserComment();
+	String getUserComment();
 
 	/**
 	 * Set the task's user comment
 	 * 
 	 * @param comment the user comment
 	 */
-	public void setUserComment(String comment);
+	void setUserComment(String comment);
 
 }

@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.views.tasks.model.providers.schema;
+package eu.esdihumboldt.hale.common.tasks;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -24,19 +24,13 @@ import java.util.List;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.Message;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.MessageDescriptor;
-import eu.esdihumboldt.hale.common.tasks.AbstractTaskFactory;
-import eu.esdihumboldt.hale.common.tasks.AbstractTaskType;
-import eu.esdihumboldt.hale.common.tasks.CellMessageTask;
-import eu.esdihumboldt.hale.common.tasks.Task;
-import eu.esdihumboldt.hale.common.tasks.TaskFactory;
-import eu.esdihumboldt.hale.common.tasks.TaskType;
 
 /**
- * TODO Type description
+ * Task factory for {@link Cell}s
  * 
  * @author Florian Esser
  */
-public class CellTaskFactory extends AbstractTaskFactory<Cell> {
+public class CellTaskFactory implements TaskFactory<Cell> {
 
 	/**
 	 * The task type
@@ -52,30 +46,18 @@ public class CellTaskFactory extends AbstractTaskFactory<Cell> {
 			super(taskFactory);
 		}
 
-		/**
-		 * @see TaskType#getReason(Task)
-		 */
 		@Override
-		public String getReason(Task task) {
-//			return Messages.MapNilAttributeTaskFactory_0; // $NON-NLS-1$
-			return "reason.Message";
+		public String getReason(Task<Cell> task) {
+			return "Created from cell annotation";
 		}
 
-		/**
-		 * @see TaskType#getSeverityLevel(Task)
-		 */
 		@Override
-		public SeverityLevel getSeverityLevel(Task<Cell> task) {
-			return SeverityLevel.WARNING;
+		public TaskSeverity getSeverityLevel(Task<Cell> task) {
+			return TaskSeverity.WARNING;
 		}
 
-		/**
-		 * @see TaskType#getTitle(Task)
-		 */
 		@Override
 		public String getTitle(Task<Cell> task) {
-//			return MessageFormat.format(Messages.MapNilAttributeTaskFactory_1,
-//					((PropertyDefinition) task.getMainContext()).getName()); // $NON-NLS-1$
 			if (task instanceof CellMessageTask) {
 				return ((CellMessageTask) task).getMessage().getText();
 			}
@@ -85,9 +67,6 @@ public class CellTaskFactory extends AbstractTaskFactory<Cell> {
 			}
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.ui.views.tasks.model.TaskType#getName()
-		 */
 		@Override
 		public String getName() {
 			return "CellMessageTaskType";
@@ -100,25 +79,18 @@ public class CellTaskFactory extends AbstractTaskFactory<Cell> {
 	private final CellMessageTaskType taskType;
 
 	/**
-	 * @param baseTypeName
+	 * Default constructor
 	 */
-	public CellTaskFactory(String baseTypeName) {
-		super(baseTypeName);
-
+	public CellTaskFactory() {
 		this.taskType = new CellMessageTaskType(this);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.tasks.model.TaskFactory#getTaskType()
-	 */
 	@Override
 	public TaskType<Cell> getTaskType() {
 		return taskType;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.tasks.model.TaskFactory#createTask(java.lang.Object)
-	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<Task<Cell>> createTasks(Cell context) {
 		List<Task<Cell>> cellTasks = new ArrayList<>();
@@ -131,8 +103,6 @@ public class CellTaskFactory extends AbstractTaskFactory<Cell> {
 	}
 
 	private Task<Cell> createTask(Message cellMessage, Cell context) {
-		// TODO Use cellMessage
-//		return new DefaultTask<Cell>(taskType, Arrays.asList(context));
 		return new CellMessageTask(taskType, Collections.singletonList(context), cellMessage);
 	}
 

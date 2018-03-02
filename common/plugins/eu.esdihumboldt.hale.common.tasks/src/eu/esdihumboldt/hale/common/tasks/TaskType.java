@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.tasks;
 /**
  * Represents a certain type of task and allows retrieving information on a task
  * of that type
+ * 
+ * @param <C> the type of the context object
  *
  * @author Simon Templer, Thorsten Reitz
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -28,7 +30,7 @@ public interface TaskType<C> {
 	/**
 	 * Task severity level
 	 */
-	public enum SeverityLevel { // TODO Rename to TaskSeverity
+	public enum TaskSeverity {
 		/**
 		 * A logical error in the alignment that makes it impossible to apply.
 		 */
@@ -51,7 +53,7 @@ public interface TaskType<C> {
 		 * 
 		 * @return the maximum severity of both given levels
 		 */
-		public static SeverityLevel max(SeverityLevel one, SeverityLevel theOther) {
+		public static TaskSeverity max(TaskSeverity one, TaskSeverity theOther) {
 			if (one == null) {
 				return theOther;
 			}
@@ -87,7 +89,7 @@ public interface TaskType<C> {
 	public TaskFactory<C> getTaskFactory();
 
 	/**
-	 * Get the severity level of the given task. The {@link SeverityLevel}
+	 * Get the severity level of the given task. The {@link TaskSeverity}
 	 * identifies whether the task is required to clear up a logical error in
 	 * the mapping or schema, whether it is a logical warning that indicates a
 	 * possible mismatch or erroneous modeling, and a normal task indicates a
@@ -101,7 +103,7 @@ public interface TaskType<C> {
 	 * 
 	 * @return the severity level of the task
 	 */
-	public SeverityLevel getSeverityLevel(Task<C> task);
+	public TaskSeverity getSeverityLevel(Task<C> task);
 
 	/**
 	 * Get the creation reason for the given task

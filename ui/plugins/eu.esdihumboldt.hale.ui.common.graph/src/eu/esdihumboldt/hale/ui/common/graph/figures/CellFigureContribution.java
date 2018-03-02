@@ -13,16 +13,27 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.tasks.extension;
+package eu.esdihumboldt.hale.ui.common.graph.figures;
 
-import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.tasks.TaskProvider;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 
 /**
- * Factory interface for {@link TaskProvider}s
+ * Interface for UI contributions to a {@link CellFigure}
  * 
  * @author Florian Esser
  */
-public interface TaskProviderFactory extends ExtensionObjectFactory<TaskProvider> {
-	// typed interface
+public interface CellFigureContribution {
+
+	/**
+	 * Method that contributes to the {@link CellFigure}
+	 * 
+	 * @param figure CellFigure to contribute to
+	 * @param cell the represented Cell
+	 */
+	void contribute(CellFigure figure, Cell cell);
+
+	/**
+	 * @return the number of columns contributed to the {@link CellFigure} label
+	 */
+	int getLabelColumnCount();
 }

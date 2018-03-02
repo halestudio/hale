@@ -19,8 +19,6 @@ package eu.esdihumboldt.hale.common.tasks;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
-
 /**
  * Abstract task provider
  *
@@ -30,12 +28,6 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 public abstract class AbstractTaskProvider implements TaskProvider {
 
 	private boolean active = false;
-
-	/**
-	 * The service provider, it is first set in
-	 * {@link #activate(TaskService, ServiceProvider)}
-	 */
-	protected ServiceProvider serviceProvider;
 
 	/**
 	 * The task service
@@ -76,12 +68,8 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 		}
 	}
 
-	/**
-	 * @see TaskProvider#activate(TaskService, ServiceProvider)
-	 */
 	@Override
 	public void activate(TaskService taskService) {
-//		this.serviceProvider = serviceProvider;
 		this.taskService = taskService;
 
 		if (!active) {
@@ -93,36 +81,9 @@ public abstract class AbstractTaskProvider implements TaskProvider {
 	/**
 	 * Initialize the task provider. This method is called after registering the
 	 * task types
+	 * 
+	 * @param taskService the TaskService instance
 	 */
 	protected abstract void doActivate(TaskService taskService);
-
-	/**
-	 * @see TaskProvider#deactivate()
-	 */
-//	@Override
-//	public void deactivate() {
-//		if (active) {
-//			active = false;
-//			doDeactivate();
-//			// remove tasks that were created by this task provider (by type)
-//			for (String type : factories.keySet()) {
-//				taskService.removeTasks(type);
-//			}
-//		}
-//	}
-
-	/**
-	 * Clean up the task provider. This method is called when the task provider
-	 * is deactivated
-	 */
-	protected abstract void doDeactivate();
-
-	/**
-	 * @see TaskProvider#isActive()
-	 */
-//	@Override
-//	public boolean isActive() {
-//		return active;
-//	}
 
 }

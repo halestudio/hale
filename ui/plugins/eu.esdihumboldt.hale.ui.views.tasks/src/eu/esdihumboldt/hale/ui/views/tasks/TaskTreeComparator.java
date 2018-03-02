@@ -45,7 +45,7 @@ public class TaskTreeComparator extends ViewerComparator {
 			Object value2 = ((DefaultTreeNode) e2).getFirstValue();
 
 			if (value1 instanceof ResolvedTask && value2 instanceof ResolvedTask) {
-				return compareTasks((ResolvedTask) value1, (ResolvedTask) value2);
+				return compareTasks((ResolvedTask<Object>) value1, (ResolvedTask<Object>) value2);
 			}
 		}
 		else if (e1 instanceof AbstractMultiColumnTreeNode
@@ -79,23 +79,12 @@ public class TaskTreeComparator extends ViewerComparator {
 	 * @return a negative integer, zero, or a positive integer as this object is
 	 *         less than, equal to, or greater than the specified object.
 	 */
-	protected int compareTasks(ResolvedTask task1, ResolvedTask task2) {
-		// return task1.compareTo(task2);
-
+	protected <C> int compareTasks(ResolvedTask<C> task1, ResolvedTask<C> task2) {
 		int result = task1.getTaskStatus().compareTo(task2.getTaskStatus());
 
 		if (result == 0) {
 			result = task1.getSeverityLevel().compareTo(task2.getSeverityLevel());
 		}
-
-//		if (result == 0) {
-//			if (task1.getValue() > task2.getValue()) {
-//				return -1;
-//			}
-//			else if (task1.getValue() < task2.getValue()) {
-//				return 1;
-//			}
-//		}
 
 		if (result == 0) {
 			result = task1.getTask().compareTo(task2.getTask());

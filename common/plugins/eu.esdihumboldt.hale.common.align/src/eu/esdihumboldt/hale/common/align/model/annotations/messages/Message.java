@@ -282,4 +282,99 @@ public class Message {
 		return this;
 	}
 
+	/**
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((author == null) ? 0 : author.hashCode());
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((comments == null) ? 0 : comments.hashCode());
+		result = prime * result + ((customPayload == null) ? 0 : customPayload.hashCode());
+		result = prime * result + (dismissed ? 1231 : 1237);
+		result = prime * result + ((format == null) ? 0 : format.hashCode());
+		result = prime * result + ((tags == null) ? 0 : tags.hashCode());
+		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		return result;
+	}
+
+	/**
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Message)) {
+			return false;
+		}
+		Message other = (Message) obj;
+		if (author == null) {
+			if (other.author != null) {
+				return false;
+			}
+		}
+		else if (!author.equals(other.author)) {
+			return false;
+		}
+		if (category == null) {
+			if (other.category != null) {
+				return false;
+			}
+		}
+		else if (!category.equals(other.category)) {
+			return false;
+		}
+		if (comments == null) {
+			if (other.comments != null) {
+				return false;
+			}
+		}
+		else if (!comments.equals(other.comments)) {
+			return false;
+		}
+		if (customPayload == null) {
+			if (other.customPayload != null) {
+				return false;
+			}
+		}
+		else if (!customPayload.equals(other.customPayload)) {
+			return false;
+		}
+		if (dismissed != other.dismissed) {
+			return false;
+		}
+		if (format == null) {
+			if (other.format != null) {
+				return false;
+			}
+		}
+		else if (!format.equals(other.format)) {
+			return false;
+		}
+		if (tags == null) {
+			if (other.tags != null) {
+				return false;
+			}
+		}
+		else if (!tags.equals(other.tags)) {
+			return false;
+		}
+		if (text == null) {
+			if (other.text != null) {
+				return false;
+			}
+		}
+		else if (!text.equals(other.text)) {
+			return false;
+		}
+		return true;
+	}
+
 }

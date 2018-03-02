@@ -13,16 +13,17 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.common.tasks.extension;
+package eu.esdihumboldt.hale.ui.common.graph.figures.extension;
 
 import de.fhg.igd.eclipse.util.extension.ExtensionObjectFactory;
-import eu.esdihumboldt.hale.common.tasks.TaskProvider;
+import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigureContribution;
 
 /**
- * Factory interface for {@link TaskProvider}s
+ * Factory interface for {@link CellFigureContribution}s
  * 
  * @author Florian Esser
  */
-public interface TaskProviderFactory extends ExtensionObjectFactory<TaskProvider> {
+public interface CellFigureContributionFactory
+		extends ExtensionObjectFactory<CellFigureContribution> {
 	// typed interface
 }

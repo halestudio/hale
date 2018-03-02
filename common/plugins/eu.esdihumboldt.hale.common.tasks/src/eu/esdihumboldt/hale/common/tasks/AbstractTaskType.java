@@ -19,6 +19,8 @@ package eu.esdihumboldt.hale.common.tasks;
 /**
  * Abstract task type
  *
+ * @param <C> the type of the context object
+ * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  * @version $Id$

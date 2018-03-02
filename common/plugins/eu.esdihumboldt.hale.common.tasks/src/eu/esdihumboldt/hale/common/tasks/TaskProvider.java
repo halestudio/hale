@@ -26,7 +26,7 @@ public interface TaskProvider {
 
 	/**
 	 * Register the task types provided by this task provider. This method must
-	 * be called before calling {@link #activate(TaskService, ServiceProvider)}
+	 * be called before calling {@link #activate(TaskService)}
 	 * 
 	 * @param taskRegistry the task type registry to register the types at
 	 */
@@ -37,21 +37,6 @@ public interface TaskProvider {
 	 * task types
 	 * 
 	 * @param taskService the task service
-	 * @param serviceProvider the service provider
 	 */
 	public void activate(TaskService taskService);
-
-	/**
-	 * Clean up the task provider. This method is called when the task provider
-	 * is deactivated
-	 */
-//	public void deactivate();
-
-	/**
-	 * Determine if the task provider is currently active
-	 * 
-	 * @return if the task provider is active
-	 */
-//	public boolean isActive();
-
 }
