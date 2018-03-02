@@ -251,4 +251,8 @@ public interface CommonSharedImagesConstants {
 	 */
 	public static final String IMG_FUNCTION = "IMG_FUNCTION";
 
+	/**
+	 * Key for tasks images
+	 */
+	public static final String IMG_TASKS = "IMG_TASKS";
 }
