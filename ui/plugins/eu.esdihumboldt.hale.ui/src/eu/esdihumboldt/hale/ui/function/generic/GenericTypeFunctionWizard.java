@@ -16,10 +16,13 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeFunctionDefinition;
 import eu.esdihumboldt.hale.common.align.extension.function.TypeParameterDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.function.generic.pages.EntitiesPage;
 import eu.esdihumboldt.hale.ui.function.generic.pages.TypeEntitiesPage;
@@ -30,8 +33,8 @@ import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
  * 
  * @author Simon Templer
  */
-public class GenericTypeFunctionWizard extends
-		AbstractGenericFunctionWizard<TypeParameterDefinition, TypeFunctionDefinition> {
+public class GenericTypeFunctionWizard
+		extends AbstractGenericFunctionWizard<TypeParameterDefinition, TypeFunctionDefinition> {
 
 	/**
 	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(Cell)
@@ -46,6 +49,15 @@ public class GenericTypeFunctionWizard extends
 	 */
 	public GenericTypeFunctionWizard(SchemaSelection selection, String functionId) {
 		super(selection, functionId);
+	}
+
+	/**
+	 * @see AbstractGenericFunctionWizard#AbstractGenericFunctionWizard(
+	 *      SchemaSelection, ListMultimap, String)
+	 */
+	public GenericTypeFunctionWizard(SchemaSelection selection,
+			ListMultimap<String, ParameterValue> parameters, String functionId) {
+		super(selection, parameters, functionId);
 	}
 
 	/**

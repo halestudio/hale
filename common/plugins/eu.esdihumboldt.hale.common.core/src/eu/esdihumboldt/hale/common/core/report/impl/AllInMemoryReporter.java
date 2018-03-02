@@ -70,14 +70,15 @@ public class AllInMemoryReporter<T extends Message> extends AbstractReporter<T> 
 	 * timestamp after the task has finished.
 	 * 
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param messageType the message type
 	 * @param doLog if added messages shall also be logged using the provided
 	 *            logger
 	 * @param log the log to use if doLog is enabled
 	 */
-	public AllInMemoryReporter(String taskName, Class<T> messageType, boolean doLog,
-			SimpleLog log) {
-		super(taskName, messageType);
+	public AllInMemoryReporter(String taskName, String taskType, Class<T> messageType,
+			boolean doLog, SimpleLog log) {
+		super(taskName, taskType, messageType);
 		this.doLog = doLog;
 		this.log = log;
 	}
@@ -88,11 +89,13 @@ public class AllInMemoryReporter<T extends Message> extends AbstractReporter<T> 
 	 * timestamp after the task has finished.
 	 * 
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param messageType the message type
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
-	public AllInMemoryReporter(String taskName, Class<T> messageType, boolean doLog) {
-		this(taskName, messageType, doLog, SimpleLog
+	public AllInMemoryReporter(String taskName, String taskType, Class<T> messageType,
+			boolean doLog) {
+		this(taskName, taskType, messageType, doLog, SimpleLog
 				.fromLogger(ALoggerFactory.getMaskingLogger(AllInMemoryReporter.class, null)));
 	}
 

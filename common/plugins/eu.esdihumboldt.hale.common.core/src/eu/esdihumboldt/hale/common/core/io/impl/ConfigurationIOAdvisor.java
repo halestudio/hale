@@ -73,6 +73,7 @@ public class ConfigurationIOAdvisor<T extends IOProvider> extends AbstractIOAdvi
 			if (provider instanceof CachingImportProvider) {
 				((CachingImportProvider) provider).setCache(conf.getCache());
 			}
+			setActionId(conf.getActionId());
 		}
 	}
 

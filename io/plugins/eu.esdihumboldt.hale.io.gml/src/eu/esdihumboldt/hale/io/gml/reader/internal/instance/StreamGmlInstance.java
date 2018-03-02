@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.instance;
 
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -25,7 +26,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class StreamGmlInstance extends DefaultInstance {
+public class StreamGmlInstance extends DefaultInstance implements Identifiable {
 
 	private final int indexInStream;
 
@@ -56,6 +57,14 @@ public class StreamGmlInstance extends DefaultInstance {
 	 * @return the index in the stream
 	 */
 	public int getIndexInStream() {
+		return indexInStream;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Identifiable#getId()
+	 */
+	@Override
+	public Object getId() {
 		return indexInStream;
 	}
 

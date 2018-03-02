@@ -27,6 +27,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.report.Report;
 import eu.esdihumboldt.hale.common.core.report.ReportDefinition;
 import eu.esdihumboldt.hale.common.core.report.Reporter;
+import eu.esdihumboldt.hale.common.core.report.Statistics;
 
 /**
  * Abstract report definition.
@@ -49,6 +50,16 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 	 * Key for taskname
 	 */
 	public static final String KEY_REPORT_TASKNAME = "taskname";
+
+	/**
+	 * Key for task type
+	 */
+	public static final String KEY_REPORT_TASKTYPE = "tasktype";
+
+	/**
+	 * Key for statistics
+	 */
+	public static final String KEY_REPORT_STATS = "stats";
 
 	/**
 	 * Key for success
@@ -191,6 +202,12 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		reporter.setStartTime(new Date(Long.parseLong(props.getProperty(KEY_REPORT_STARTTIME))));
 		reporter.setTimestamp(new Date(Long.parseLong(props.getProperty(KEY_REPORT_TIME))));
 
+		// set statistics
+		String stats = props.getProperty(KEY_REPORT_STATS);
+		if (stats != null) {
+			reporter.stats().loadFromJson(stats);
+		}
+
 		// add not listed message counts
 		String errorStr = props.getProperty(KEY_REPORT_ERROR_MORE);
 		try {
@@ -248,6 +265,21 @@ public abstract class AbstractReportDefinition<T extends Report<?>, R extends T>
 		Properties props = new Properties();
 
 		props.setProperty(KEY_REPORT_TASKNAME, report.getTaskName());
+
+		if (report.getTaskType() != null) {
+			props.setProperty(KEY_REPORT_TASKTYPE, report.getTaskType());
+		}
+		else {
+			_log.warn("Task {} does not have a task type associated", report.getTaskName());
+		}
+
+		if (report instanceof Statistics) {
+			String json = ((Statistics) report).stats().saveToJson(true);
+			if (json != null) {
+				props.setProperty(KEY_REPORT_STATS, json);
+			}
+		}
+
 		props.setProperty(KEY_REPORT_SUCCESS, "" + report.isSuccess());
 		props.setProperty(KEY_REPORT_SUMMARY, report.getSummary());
 

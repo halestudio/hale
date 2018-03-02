@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.instance.model.impl;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 
 /**
@@ -24,7 +25,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
  * 
  * @author Simon Templer
  */
-public class IndexInstanceReference implements InstanceReference {
+public class IndexInstanceReference implements InstanceReference, Identifiable {
 
 	private final DataSet dataSet;
 
@@ -86,6 +87,14 @@ public class IndexInstanceReference implements InstanceReference {
 		if (index != other.index)
 			return false;
 		return true;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.instance.model.Identifiable#getId()
+	 */
+	@Override
+	public Object getId() {
+		return index;
 	}
 
 }

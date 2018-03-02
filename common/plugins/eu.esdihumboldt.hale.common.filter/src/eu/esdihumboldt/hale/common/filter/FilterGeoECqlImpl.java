@@ -16,10 +16,12 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
+import org.geotools.filter.IsEqualsToImpl;
+import org.geotools.filter.LiteralExpressionImpl;
 import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.filter.Filter;
-
+import org.opengis.filter.expression.Expression;
 
 /**
  * Extended CQL Filter. Two ECQL filters are seen as equal if they are based on
@@ -30,8 +32,15 @@ import org.opengis.filter.Filter;
  */
 public class FilterGeoECqlImpl extends AbstractGeotoolsFilter {
 
+	private class EqualsTrue extends IsEqualsToImpl {
+
+		public EqualsTrue(Expression expression) {
+			super(expression, new LiteralExpressionImpl(true), MatchAction.ANY);
+		}
+	}
+
 	/**
-	 * Create a ECQL filter.
+	 * Create an ECQL filter.
 	 * 
 	 * @param filterTerm the ECQL expression
 	 * @throws CQLException if parsing the ECQL fails
@@ -42,7 +51,24 @@ public class FilterGeoECqlImpl extends AbstractGeotoolsFilter {
 
 	@Override
 	protected Filter createFilter(String filterTerm) throws CQLException {
-		return ECQL.toFilter(filterTerm);
+		CQLException filterException = null;
+		try {
+			return ECQL.toFilter(filterTerm);
+		} catch (CQLException e) {
+			filterException = e;
+		}
+
+		// Try if filterTerm can be evaluated as an Expression and if so,
+		// use it in a PropertyIsEqualTo filter. This is the same as if
+		// "= true" were added to the filter term.
+		Expression expr;
+		try {
+			expr = ECQL.toExpression(filterTerm);
+			return new EqualsTrue(expr);
+		} catch (CQLException e) {
+			throw filterException;
+		}
+
 	}
 
 }

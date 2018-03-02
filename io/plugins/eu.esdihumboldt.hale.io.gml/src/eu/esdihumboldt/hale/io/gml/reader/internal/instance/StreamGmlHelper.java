@@ -140,7 +140,7 @@ public abstract class StreamGmlHelper {
 			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
 			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
 			boolean ignoreNamespaces, IOProvider ioProvider, CRSDefinition crs)
-			throws XMLStreamException {
+					throws XMLStreamException {
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
@@ -289,7 +289,7 @@ public abstract class StreamGmlHelper {
 
 						CRSDefinition geometryCrs = crsProvider.getCRS(parentType, propertyPath,
 								lastCrs);
-						if (crs != null) {
+						if (geometryCrs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
 									: (((GeometryProperty<?>) value).getGeometry());
 							resultVals

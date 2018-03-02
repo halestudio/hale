@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t2/" targetNamespace="http://www.example.org/t2/">
+    <complexType name="Watercourse">
+		<sequence>
+			<element name="id" type="string" maxOccurs="1" minOccurs="1" />
+			<element name="name" type="string" maxOccurs="unbounded" minOccurs="0" />
+			<element name="type" type="string" maxOccurs="unbounded" minOccurs="0" />
+		</sequence>
+    </complexType>
+
+    <element name="watercourse" type="tns:Watercourse" />
+    
+    <element name="collection" type="tns:CollectionType" />
+    
+    <complexType name="CollectionType">
+    	<sequence>
+    		<element ref="tns:watercourse" maxOccurs="unbounded" minOccurs="0" />
+    	</sequence>
+    </complexType>
+</schema>

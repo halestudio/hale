@@ -19,9 +19,22 @@
 		</li>
 		<li>The <strong>partitioned upload</strong> partitions the
 			transformed data before upload to be able to do multiple requests to
-			the WFS-T for large data sets. The partitioning is done based on the
-			references between features. Features that are connected are kept
-			together so the WFS-T is able to retain those references.
+			the WFS-T for large data sets. There are three options for the way
+			the data will be partitioned:
+			<ul>
+				<li>
+					<strong>Keep instances that reference each other together</strong>:
+					This is the default behaviour that used in previous versions of
+					<em>hale studio</em>. The partitioning is done based on the references 
+					between features. Features that are connected are kept together so the 
+					WFS-T is able to retain those references.
+				</li>
+				<li>
+					<strong>Cut strictly at threshold</strong>:
+					In this mode, the partitions will be cut exactly at the given threshold,
+					without taking mutual referencing of instances into account.
+				</li>
+			</ul>
 		</li>
 	</ul>
 	<p class="Note">The publishing to WFS in this version of <i>hale studio</i> is

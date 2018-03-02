@@ -596,6 +596,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 			if (nextType == null) {
 				try {
 					proceedToNext();
+					elementIndex++;
 				} catch (XMLStreamException e) {
 					throw new IllegalStateException(e);
 				}

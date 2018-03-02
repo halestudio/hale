@@ -4,15 +4,36 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [3.3.2]
+
 ### Added
 
-- When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
+- Instance index to improve execution of Merge and Join transformations
 - Enhanced CRS detection when parsing GML files
+- When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
+- Added support for multiple organisations to hale connect integration
+- Support to automatically update Join and Merge properties in case of a schema remapping
+- Support for ECQL expressions in filters and condition contexts
+
+### Changed
+
+- Partitioning modes `none`, `cut` and `related` for GML output
+- Support for `noNamespaceSchemaLocation` in GML output
+- Support for loading XLS files multiple times
+- Support relogin to hale connect without having to clear stored credentials
+- Limit number of messages per message type in a report
+- Groovy scripts: Whitelisted use of `java.sql.Date` as well as classes needed for creating geometry properties
+- Updated default hale connect endpoints
 
 ### Fixed
 
+- Fixed opening a project file on launch (e.g. via double-clicking from a file explorer)
+- Allow removing a previously assigned code list
+- Fixed automatic resource path update to also work with URIs w/ a query part
 - Fixed hale connect login on Welcome Page to work for user names and passwords w/ special characters
 - Fixed the CRS definition lookup when importing shapefiles, allowing for automatic detection of CRS details (Bursa-Wolf parameters)
+- Fixed application of Groovy restrictions when loading a project
+- Fixed handling of JDBC collection sizes
 
 ## [3.3.1]
 
@@ -197,7 +218,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.3.1...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/3.3.2...HEAD
+[3.3.2]: https://github.com/halestudio/hale/compare/3.3.1...3.3.2
 [3.3.1]: https://github.com/halestudio/hale/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/halestudio/hale/compare/3.2.0...3.3.0
 [3.2.0]: https://github.com/halestudio/hale/compare/3.1.0...3.2.0

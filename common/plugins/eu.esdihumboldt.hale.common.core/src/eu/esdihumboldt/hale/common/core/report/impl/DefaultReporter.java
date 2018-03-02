@@ -48,11 +48,12 @@ public class DefaultReporter<T extends Message> extends AllInMemoryReporter<T> {
 	 * timestamp after the task has finished.
 	 * 
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param messageType the message type
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
-	public DefaultReporter(String taskName, Class<T> messageType, boolean doLog) {
-		super(taskName, messageType, doLog,
+	public DefaultReporter(String taskName, String taskType, Class<T> messageType, boolean doLog) {
+		super(taskName, taskType, messageType, doLog,
 				SimpleLog.fromLogger(ALoggerFactory.getMaskingLogger(DefaultReporter.class, null)));
 	}
 

@@ -188,7 +188,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	/**
 	 * The XML stream writer
 	 */
-	private XMLStreamWriter writer;
+	private PrefixAwareStreamWriter writer;
 
 	/**
 	 * The GML namespace
@@ -545,7 +545,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @throws XMLStreamException if creating or configuring the
 	 *             <code>XMLStreamWriter</code> fails
 	 */
-	protected XMLStreamWriter createWriter(OutputStream outStream, IOReporter reporter)
+	protected PrefixAwareStreamWriter createWriter(OutputStream outStream, IOReporter reporter)
 			throws XMLStreamException {
 		// create and set-up a writer
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -553,9 +553,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
 				Boolean.valueOf(true));
 
-		// create XML stream writer with UTF-8 encoding
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream,
-				getCharset().name()); // $NON-NLS-1$
+		// create XML stream writer with specified encoding
+		PrefixAwareStreamWriter tmpWriter = new PrefixAwareStreamWriterDecorator(
+				outputFactory.createXMLStreamWriter(outStream, getCharset().name())); // $NON-NLS-1$
 
 		XmlIndex index = getXMLIndex();
 		// read the namespaces from the map containing namespaces
@@ -718,7 +718,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	protected void write(InstanceCollection instances, OutputStream out, ProgressIndicator progress,
 			IOReporter reporter) throws IOException {
-		XMLStreamWriter writer;
+		PrefixAwareStreamWriter writer;
 		try {
 			writer = createWriter(out, reporter);
 		} catch (XMLStreamException e) {
@@ -744,7 +744,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param progress the progress
 	 * @see #createWriter(OutputStream, IOReporter)
 	 */
-	protected void write(InstanceCollection instances, XMLStreamWriter writer,
+	protected void write(InstanceCollection instances, PrefixAwareStreamWriter writer,
 			ProgressIndicator progress, IOReporter reporter) {
 
 		this.writer = writer;
@@ -814,6 +814,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			if (documentWrapper != null) {
 				documentWrapper.startWrap(writer, reporter);
 			}
+
 			GmlWriterUtil.writeStartElement(writer, containerName);
 
 			// generate mandatory id attribute (for feature collection)

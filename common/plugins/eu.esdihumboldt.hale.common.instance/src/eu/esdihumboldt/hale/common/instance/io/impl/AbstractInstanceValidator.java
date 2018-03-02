@@ -72,7 +72,7 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(), getReportLabel(), false) {
+		return new DefaultIOReporter(getSource(), getReportLabel(), getActionId(), false) {
 
 			@Override
 			protected String getFailSummary() {

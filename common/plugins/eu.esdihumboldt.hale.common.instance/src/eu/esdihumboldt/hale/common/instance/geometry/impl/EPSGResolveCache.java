@@ -44,4 +44,18 @@ public class EPSGResolveCache implements CRSResolveCache {
 		return result;
 	}
 
+	@Override
+	public void reviseCache(CoordinateReferenceSystem crs, CRSDefinition crsDef) {
+		if (crs == null) {
+			return;
+		}
+
+		if (crsDef == null) {
+			cached.remove(crs);
+		}
+		else {
+			cached.put(crs, crsDef);
+		}
+	}
+
 }

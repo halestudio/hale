@@ -36,7 +36,11 @@ import eu.esdihumboldt.hale.common.align.transformation.service.impl.ThreadSafeI
 import eu.esdihumboldt.hale.common.core.io.impl.NullProgressIndicator;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexServiceImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 
 /**
  * Tests for the CST's alignment processor implementation
@@ -257,6 +261,78 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		// TODO check transformation instructions
 	}
 
+	/**
+	 * Test based on a merge.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMerge() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE));
+	}
+
+	/**
+	 * Test based on a merge w/ a multi-property key
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeMultiPropKey() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE2));
+	}
+
+	/**
+	 * Test based on a merge w/ a multi-property key and a complex attribute
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeMultiPropKeyWithComplexAtt() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE3));
+	}
+
+	/**
+	 * Test based on a merge w/ a complex key
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeComplexPropKey() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE4));
+	}
+
+	/**
+	 * Test based on a merge with an additional merge property
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeAdditionalProp() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE5));
+	}
+
+	/**
+	 * Test based on {@link #testMergeAdditionalProp()} but without the
+	 * additional merge property
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testMergeWithoutAdditionalProp() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.MERGE6));
+	}
+
+	/**
+	 * Test based on a join and some renames with join on properties of
+	 * non-matching types
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyJoinNonMatchingTypes() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_2));
+	}
+
 	@Override
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();
@@ -268,6 +344,9 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 				new AlignmentFunctionService(example.getAlignment()));
 		customServices.put(TransformationFunctionService.class,
 				new AlignmentTransformationFunctionService(example.getAlignment()));
+
+		InstanceIndexServiceImpl indexService = new InstanceIndexServiceImpl();
+		customServices.put(InstanceIndexService.class, indexService);
 
 		final ServiceProvider serviceProvider = new ServiceProvider() {
 
@@ -286,8 +365,19 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 			}
 		};
 
-		transformer.transform(example.getAlignment(), example.getSourceInstances(), sink,
-				serviceProvider, new NullProgressIndicator());
+		indexService.addPropertyMappings(example.getAlignment().getActiveTypeCells(),
+				serviceProvider);
+
+		InstanceCollection source = example.getSourceInstances();
+
+		try (ResourceIterator<Instance> it = source.iterator()) {
+			while (it.hasNext()) {
+				indexService.add(it.next(), source);
+			}
+		}
+
+		transformer.transform(example.getAlignment(), source, sink, serviceProvider,
+				new NullProgressIndicator());
 
 		return sink.getDecoratee().getInstances();
 	}

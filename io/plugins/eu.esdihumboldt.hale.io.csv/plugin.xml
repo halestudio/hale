@@ -29,7 +29,7 @@
          point="org.eclipse.core.contenttype.contentTypes">
       <content-type
             base-type="org.eclipse.core.runtime.text"
-            file-extensions="csv"
+            file-extensions="csv,txt"
             id="eu.esdihumboldt.hale.io.csv"
             name="CSV file"
             priority="normal">

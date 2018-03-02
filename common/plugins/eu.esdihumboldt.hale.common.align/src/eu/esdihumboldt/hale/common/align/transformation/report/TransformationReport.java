@@ -19,12 +19,15 @@ package eu.esdihumboldt.hale.common.align.transformation.report;
 import eu.esdihumboldt.hale.common.core.report.Report;
 
 /**
- * TODO Type description
+ * Interface for transformation reports.
  * 
  * @author Simon Templer
  */
 public interface TransformationReport extends Report<TransformationMessage> {
 
-	// TODO anything to add?
+	/**
+	 * Task type for transformation reports.
+	 */
+	public static final String TASK_TYPE = "eu.esdihumboldt.hale.transform";
 
 }

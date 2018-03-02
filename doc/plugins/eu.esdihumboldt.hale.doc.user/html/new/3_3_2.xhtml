@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 3.3.2?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 3.3.2?</h1>
+
+	<ul>
+		<li>Improved <i>hale connect</i> integration</li>
+		<li>Enhanced CRS selection dialog</li>
+		<li>Character set detection for Shapefiles</li>
+		<li>Support for CQL functions in filter contexts</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#332"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>The majority of the new features and improvements were made
+	   possible through our contracts with more than 30 customers. We'd like
+	   to thank you all for your support!</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="3_3_2">
+		<tbody>
+			
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="3_3_2_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="hc-multi-orgs">
+				<td class="title">Improved <i>hale connect</i> integration</td>
+				<td class="content">
+					<p>
+						This release of <em>hale studio</em> improves the integration
+						with the online collaboration platform <i>hale connect</i> in
+						a couple of ways. Firstly, it is now possible to select which
+						organisation should own an uploaded transformation project for
+						cases where the currently logged-in user is member of more than
+						one organisation. Furthermore, <em>hale studio</em> now supports
+						a relogin with same or different credentials without having to
+						clear the credentials stored in preferences.
+					</p>
+					<p>
+						<img src="3_3_2_images/save-to-hc-with-org.png" />
+					</p>
+				</td>
+			</tr>
+			
+			<tr id="crs-dialog">
+				<td class="title">Enhanced CRS selection dialog</td>
+				<td class="content">
+					<p>
+					    When loading source data, the user is prompted to provide the 
+					    CRS of the contained coordinates. <em>hale studio</em> now 
+					    facilitates this by providing the content of the <em>srsName</em>
+					    attribute (in case of a GML source) or the WKT definition found
+					    in the projection file (<i>.prj</i>) that accompanies a Shape 
+					    file. This allows the user to select the correct CRS without
+					    having to manually look up this information in the source files.
+					</p>
+					<p>
+						<img src="3_3_2_images/crs-detection.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="shp-charset-detection">
+				<td class="title">Character set detection for Shapefiles</td>
+				<td class="content">
+					<p>
+						Importing a schema or source data from a Shapefile requires
+						the user to select the encoding of the Shapefile. In cases
+						where the Shape is accompanied by a Codepage file (<i>.cpg</i>),
+						<em>hale studio</em> can now read the encoding from that file
+						a prefill the character set selection dialog. 
+					</p>
+					<p>
+						<img src="3_3_2_images/shp-charset-detection.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="context-cql">
+				<td class="title">Support for CQL functions in filter contexts</td>
+				<td class="content">
+					<p>
+						(E)CQL doesn't just contain simple operators, but also a large set 
+						of functions that can be applied to any operand in any place where 
+						hale studio enables the use of such filters:
+					</p>
+					<ul>
+						<li>Condition contexts on source schema elements</li>
+						<li>Filters on source and target data table views</li>
+					</ul>
+					<p>
+						Filter functions can be used to build expressions such as
+						<tt>strToLowerCase(VALUE) like '%m%'</tt>. They also simplify 
+						many expressions, e.g. through functions such as 
+						<tt>IN(val1, val2, ...)</tt>, which needed an <tt>OR</tt> chain 
+						of comparisons so far, or <tt>between(val, low, high)</tt> statements. 
+						It is even possible to use spatial functions to filter by the spatial 
+						relationship - <tt>contains(geomA, geomB)</tt> will return <tt>true</tt>
+						when <tt>geomA</tt>contains <tt>geomB</tt>.
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>

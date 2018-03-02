@@ -32,7 +32,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.impl.GroupDecorator;
-import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
+import eu.esdihumboldt.hale.common.instance.model.impl.IdentifiableInstanceDecorator;
 
 /**
  * Database handle that manages objects referencing the database object. It will
@@ -43,7 +43,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 public class DatabaseHandle {
 
 	@SuppressWarnings("javadoc")
-	public final class InstanceHandle extends InstanceDecorator {
+	public final class InstanceHandle extends IdentifiableInstanceDecorator {
 
 		public InstanceHandle(Instance instance) {
 			super(instance);

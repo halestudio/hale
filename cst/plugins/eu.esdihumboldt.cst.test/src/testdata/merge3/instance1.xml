@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t1/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
+    <tns:river>
+        <identifier>river1</identifier>
+		<name>
+			<tns:Name>
+				<name>river1name1</name>
+			</tns:Name>
+		</name>
+		<type>type1</type>
+    </tns:river>
+    <tns:river>
+        <identifier>river2</identifier>
+		<name>
+			<tns:Name>
+				<name>river2name1</name>
+			</tns:Name>
+		</name>
+		<type>type1</type>
+    </tns:river>
+    <tns:river>
+        <identifier>river2</identifier>
+		<name>
+			<tns:Name>
+				<name>river2name2</name>
+			</tns:Name>
+		</name>
+		<type>type2</type>
+    </tns:river>
+    <tns:river>
+        <identifier>river2</identifier>
+		<name>
+			<tns:Name>
+				<name>river2name3</name>
+			</tns:Name>
+		</name>
+		<type>type2</type>
+    </tns:river>
+</tns:collection>
