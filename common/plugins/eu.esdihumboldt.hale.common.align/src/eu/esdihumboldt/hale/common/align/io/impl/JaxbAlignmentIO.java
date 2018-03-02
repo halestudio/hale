@@ -97,7 +97,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
 				targetTypes, reporter);
 	}
@@ -187,7 +187,7 @@ public class JaxbAlignmentIO {
 				return null;
 			}
 
-		}, "Print cell", false);
+		}, "Print cell", null, false);
 		PathUpdate pathUpdate = new PathUpdate(null, null);
 
 		AlignmentType at = convert(alignment, reporter, pathUpdate);
