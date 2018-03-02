@@ -482,4 +482,49 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 			msg.text.toLowerCase().contains('condition')
 		})
 	}
+
+	@Test
+	void testTypeFilter3() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'B3-C3' // Merge
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		filterCheck(migrated[0], "bc = 'test'")
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@Test
+	void testTypeFilter4() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'B4-C4' // Retype - from Create
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		// expect filter to be dropped (because there is no source)
+		assertTrue(migrated[0].source == null || migrated[0].source.empty)
+
+		// there should be a message about the condition being dropped
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
 }

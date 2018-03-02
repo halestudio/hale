@@ -278,7 +278,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 
 			if (!isDefault) {
 				ListMultimap<String, ? extends Entity> newSource = newCell.getSource();
-				if (newSource.size() == 0) {
+				if (newSource == null || newSource.size() == 0) {
 					// new cell does not have a source -> drop contexts
 					log.warn(
 							"Any conditions/contexts on the original source have been dropped because the new mapping does not have a source");
