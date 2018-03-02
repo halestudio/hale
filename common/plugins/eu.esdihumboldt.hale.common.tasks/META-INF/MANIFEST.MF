@@ -9,7 +9,7 @@ Export-Package: eu.esdihumboldt.hale.common.tasks,
  eu.esdihumboldt.hale.common.tasks.extension
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
  de.fhg.igd.eclipse.util;bundle-version="1.0.0",
- eu.esdihumboldt.hale.common.align;bundle-version="3.3.100",
- eu.esdihumboldt.hale.common.core;bundle-version="3.3.100"
+ eu.esdihumboldt.hale.common.align;bundle-version="3.3.2",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.3.2"
 Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.7.12"
