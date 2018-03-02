@@ -60,19 +60,17 @@ public class CellMessageTask extends AbstractTask<Cell> implements TaskUserDataA
 			return 0;
 		}
 
-		if (!this.getMainContext().equals(other.getMainContext())) {
-			return this.getMainContext().getId().compareTo(other.getMainContext().getId());
-		}
-		else if (other instanceof CellMessageTask) {
-			CellMessageTask cmt = (CellMessageTask) other;
-			return this.getMessage().getText().compareTo(cmt.getMessage().getText());
-		}
-		else if (other instanceof ResolvedTask<?>) {
-			return this.compareTo(((ResolvedTask<Cell>) other).getTask());
+		if (this.getMainContext().getId().equals(other.getMainContext().getId())) {
+			if (other instanceof CellMessageTask) {
+				CellMessageTask cmt = (CellMessageTask) other;
+				return this.getMessage().getText().compareTo(cmt.getMessage().getText());
+			}
+			else if (other instanceof ResolvedTask<?>) {
+				return this.compareTo(((ResolvedTask<Cell>) other).getTask());
+			}
 		}
 
-		// XXX Nothing to compare by, throw exception?
-		return 1;
+		return this.getMainContext().getId().compareTo(other.getMainContext().getId());
 	}
 
 	@Override
