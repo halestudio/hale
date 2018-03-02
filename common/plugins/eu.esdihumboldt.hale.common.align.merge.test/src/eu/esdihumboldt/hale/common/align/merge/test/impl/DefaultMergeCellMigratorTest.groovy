@@ -420,6 +420,16 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertEquals(1, cells.size())
 		def migrated = cells[0]
 
+		filterCheck(migrated)
+
+		// there should be no message about the condition because the new source is the same!
+		def messages = getMigrationMessages(migrated)
+		assertFalse(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	private void filterCheck(Cell migrated, String expectedFilter) {
 		JaxbAlignmentIO.printCell(migrated, System.out)
 
 		// the condition should be present on the source
@@ -427,10 +437,48 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def filter = source.propertyPath.empty ? source.filter : source.propertyPath[0].condition?.filter
 		assertNotNull(filter)
 		assertEquals(expectedFilter, filter.filterTerm)
+	}
 
-		// there should be no message about the condition because the new source is the same!
+	@Test
+	void testTypeFilter1() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'B1-C1' // Groovy Retype
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		filterCheck(migrated[0], "ba = 'test'")
+
+		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated)
-		assertFalse(messages.any { msg ->
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@Test
+	void testTypeFilter2() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'B2-C2' // Retype
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		filterCheck(migrated[0], "bb = 'test'")
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated)
+		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
 	}

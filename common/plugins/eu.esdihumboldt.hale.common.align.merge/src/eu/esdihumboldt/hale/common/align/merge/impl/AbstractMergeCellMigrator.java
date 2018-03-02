@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.impl.MigrationOptionsImpl;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -117,9 +118,6 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					// if the cell is a Retype/Rename, replace the target of
 					// matching cell
 					else if (isDirectMatch(originalCell)) {
-						// FIXME respect any conditions/contexts on the original
-						// source?
-						// XXX at least try to transfer them
 						MigrationOptions replaceTarget = new MigrationOptionsImpl(false, true,
 								transferBase);
 						AlignmentMigration cellMigration = new AbstractMigration() {
@@ -134,8 +132,21 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 								return Optional.empty();
 							}
 						};
-						cells.add(getCellMigrator.apply(match.getTransformationIdentifier())
-								.updateCell(match, cellMigration, replaceTarget, log));
+						MutableCell newCell = getCellMigrator
+								.apply(match.getTransformationIdentifier())
+								.updateCell(match, cellMigration, replaceTarget, log);
+						SimpleLog cellLog = SimpleLog.all(log,
+								new CellLog(newCell, CELL_LOG_CATEGORY));
+
+						// source of original cell may have
+						// filters/conditions/contexts that are not applied by
+						// changing the target
+
+						// try to apply source contexts
+						Entity originalSource = CellUtil.getFirstEntity(originalCell.getSource());
+						applySourceContexts(newCell, originalSource, cellLog);
+
+						cells.add(newCell);
 					}
 					else {
 						// otherwise, use custom logic to try to combine cells
@@ -249,6 +260,47 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 			}
 
 			return Collections.singleton(newCell);
+		}
+	}
+
+	/**
+	 * Apply contexts/conditions from the original source to the source of the
+	 * new mapping cell that replaces it.
+	 * 
+	 * @param newCell the cell to adapt
+	 * @param originalSource the original source
+	 * @param log the cell log
+	 */
+	private void applySourceContexts(MutableCell newCell, Entity originalSource, SimpleLog log) {
+		if (originalSource != null) {
+			EntityDefinition original = originalSource.getDefinition();
+			boolean isDefault = AlignmentUtil.isDefaultEntity(original);
+
+			if (!isDefault) {
+				ListMultimap<String, ? extends Entity> newSource = newCell.getSource();
+				if (newSource.size() == 0) {
+					// new cell does not have a source -> drop contexts
+					log.warn(
+							"Any conditions/contexts on the original source have been dropped because the new mapping does not have a source");
+				}
+				else if (newSource.size() == 1) {
+					// try to transfer contexts
+					Entity singleSource = CellUtil.getFirstEntity(newSource);
+					if (singleSource != null) {
+						EntityDefinition transferedSource = AbstractMigration
+								.translateContexts(original, singleSource.getDefinition(), log);
+						ListMultimap<String, Entity> s = ArrayListMultimap.create();
+						s.put(newSource.keySet().iterator().next(),
+								AlignmentUtil.createEntity(transferedSource));
+						newCell.setSource(s);
+					}
+				}
+				else {
+					// no idea where to add contexts -> report
+					log.warn(
+							"Any conditions/contexts on the original source have been dropped because the new mapping has multiple sources and it is not clear where they should be attached");
+				}
+			}
 		}
 	}
 

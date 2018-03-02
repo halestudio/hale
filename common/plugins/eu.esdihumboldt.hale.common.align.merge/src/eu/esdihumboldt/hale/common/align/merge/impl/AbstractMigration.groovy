@@ -44,9 +44,8 @@ abstract class AbstractMigration implements AlignmentMigration {
 
 	@Override
 	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
-		def defaultEntity = AlignmentUtil.getAllDefaultEntity(entity)
-
-		def matchedEntity = findMatch(defaultEntity)
+		EntityDefinition defaultEntity = AlignmentUtil.getAllDefaultEntity(entity)
+		Optional<EntityDefinition> matchedEntity = findMatch(defaultEntity)
 
 		// special case handling
 		if (!matchedEntity.isPresent()) {
@@ -59,32 +58,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (matchedEntity.present) {
 			// entity contained contexts -> translate them if possible
 
-			if (entity.filter) {
-
-				// what about if match has filter?
-				if (matchedEntity.get().filter && entity.filter != matchedEntity.get().filter) {
-					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
-				}
-				else {
-					// apply filter to entity
-					//TODO replacements in filter?
-					// mark unsafe if entity is not the same
-					if (!sameEntity(entity, matchedEntity.get())) {
-						log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
-					}
-
-					// add filter to match
-					matchedEntity = matchedEntity.map { EntityDefinition match ->
-						AlignmentUtil.createEntity(match.type, match.propertyPath,
-								SchemaSpaceID.SOURCE, entity.filter)
-					}
-				}
-			}
-
-			if (entity.propertyPath && entity != defaultEntity) {
-				// likely a context was present
-				matchedEntity = matchedEntity.map { applyContexts(it, entity, log) }
-			}
+			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), log));
 		}
 
 		if (!matchedEntity.isPresent()) {
@@ -94,16 +68,47 @@ abstract class AbstractMigration implements AlignmentMigration {
 		return matchedEntity
 	}
 
+	static EntityDefinition translateContexts(EntityDefinition original, EntityDefinition target, SimpleLog log) {
+		def defaultEntity = AlignmentUtil.getAllDefaultEntity(original)
+
+		if (original.filter) {
+
+			// what about if match has filter?
+			if (target.filter && original.filter != target.filter) {
+				log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
+			}
+			else {
+				// apply filter to entity
+				//TODO replacements in filter?
+				// mark unsafe if entity is not the same
+				if (!sameEntity(original, target)) {
+					log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
+				}
+
+				// add filter to match
+				target = AlignmentUtil.createEntity(target.type, target.propertyPath,
+						SchemaSpaceID.SOURCE, original.filter)
+			}
+		}
+
+		if (original.propertyPath && original != defaultEntity) {
+			// likely a context was present
+			target = applyContexts(target, original, log)
+		}
+
+		return target
+	}
+
 	/**
 	 * Check if entities are the same, ignoring contexts.
 	 * @param e1 the first entity to check
 	 * @param e2 the second entity to check
 	 * @return <code>true</code> if the entities are the same, <code>false</code> if not
 	 */
-	private boolean sameEntity(EntityDefinition e1, EntityDefinition e2) {
+	private static boolean sameEntity(EntityDefinition e1, EntityDefinition e2) {
 		// FIXME rather do a structural check! for filter it matches if the structure changes
 
-		if (!e1.type.equals(e1.type)) {
+		if (!e1.type.equals(e2.type)) {
 			return false
 		}
 
@@ -123,7 +128,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		return true;
 	}
 
-	private EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts, SimpleLog log) {
+	private static EntityDefinition applyContexts(EntityDefinition entity, EntityDefinition contexts, SimpleLog log) {
 		if (!entity.propertyPath || !contexts.propertyPath) {
 			// return unchanged - no properties to adapt
 			return entity

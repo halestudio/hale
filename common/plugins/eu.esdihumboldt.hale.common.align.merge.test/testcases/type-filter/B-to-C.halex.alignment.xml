@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="B1-C1" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B">
+                    <condition lang="CQL">ba = 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+        <documentation>B1 to C1</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B2-C2" priority="normal">
+        <source>
+            <class>
+                <type name="B2" ns="B">
+                    <condition lang="CQL">bb = 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C2" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>B2 to C2</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.merge" id="B3-C3" priority="normal">
+        <source>
+            <class>
+                <type name="B3" ns="B">
+                    <condition lang="CQL">bc = 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C3" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="auto_detect"/>
+        <parameter value="{B}bc" name="property"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B4-C4" priority="normal">
+        <source>
+            <class>
+                <type name="B4" ns="B">
+                    <condition lang="CQL">bd = 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C4" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+        <documentation>B4 to C4</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="GJoin" priority="normal">
+        <source name="types">
+            <class>
+                <type name="B5" ns="B">
+                    <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="B6" ns="B">
+                    <condition lang="CQL">bc = 'test' and bd &lt;&gt; 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C5" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="B5" ns="B">
+                        <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                    </type>
+                </class>
+                <class>
+                    <type name="B6" ns="B">
+                        <condition lang="CQL">bc = 'test' and bd &lt;&gt; 'test'</condition>
+                    </type>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="B5" ns="B">
+                            <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                        </type>
+                        <child name="ba" ns="B"/>
+                    </property>
+                    <property>
+                        <type name="B6" ns="B">
+                            <condition lang="CQL">bc = 'test' and bd &lt;&gt; 'test'</condition>
+                        </type>
+                        <child name="ba" ns="B"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+}
+</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.join" id="Join" priority="normal">
+        <source name="types">
+            <class>
+                <type name="B5" ns="B">
+                    <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                </type>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="B6" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C6" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="B5" ns="B">
+                        <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                    </type>
+                </class>
+                <class>
+                    <type name="B6" ns="B"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="B5" ns="B">
+                            <condition lang="CQL">ba = 'test' and bb &lt;&gt; 'test'</condition>
+                        </type>
+                        <child name="bb" ns="B"/>
+                    </property>
+                    <property>
+                        <type name="B6" ns="B"/>
+                        <child name="bb" ns="B"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+    </cell>
+</alignment>
