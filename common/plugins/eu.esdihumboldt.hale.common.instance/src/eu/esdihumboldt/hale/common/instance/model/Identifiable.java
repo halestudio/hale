@@ -43,7 +43,7 @@ public interface Identifiable {
 	 *         actually has an ID
 	 */
 	static boolean is(Object o) {
-		return (o instanceof Identifiable || !((Identifiable) o).hasId());
+		return (o instanceof Identifiable && !((Identifiable) o).hasId());
 	}
 
 	/**
