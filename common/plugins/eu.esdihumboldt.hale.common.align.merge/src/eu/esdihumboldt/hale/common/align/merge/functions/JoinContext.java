@@ -29,9 +29,12 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
+import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
@@ -62,6 +65,12 @@ public class JoinContext {
 	 * Match cells that are Joins
 	 */
 	private final List<Cell> joinMatches = new ArrayList<>();
+
+	/**
+	 * Original sources that were replaced and filters/contexts could not be
+	 * retained.
+	 */
+	private final List<EntityDefinition> strippedSources = new ArrayList<>();
 
 	/**
 	 * Collected Groovy scripts
@@ -122,10 +131,10 @@ public class JoinContext {
 
 		// migrate original conditions
 		Set<JoinCondition> migrated = orgParameter.conditions.stream().map(condition -> {
-			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
-			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.joinProperty, log).orElse(condition.joinProperty);
+			PropertyEntityDefinition baseProperty = processOriginalConditionProperty(
+					condition.baseProperty, migration, log);
+			PropertyEntityDefinition joinProperty = processOriginalConditionProperty(
+					condition.joinProperty, migration, log);
 			JoinCondition result = new JoinCondition(baseProperty, joinProperty);
 			return result;
 		}).collect(Collectors.toSet());
@@ -134,6 +143,15 @@ public class JoinContext {
 				// migrated condition may contain "loop" condition
 
 				cons.add(new Pair<>(condition.baseProperty, condition.joinProperty));
+			}
+		}
+
+		// add messages on dropped filter/conditions
+		for (EntityDefinition stripped : strippedSources) {
+			if (!AlignmentUtil.isDefaultEntity(stripped)) {
+				String msg = "Conditions/contexts for an original source could not be transfered and were dropped: "
+						+ MergeUtil.getContextInfoString(stripped);
+				log.warn(msg);
 			}
 		}
 
@@ -178,6 +196,30 @@ public class JoinContext {
 		}
 
 		newCell.setTransformationParameters(params);
+	}
+
+	/**
+	 * Process a property that is part of the original join conditions.
+	 * 
+	 * @param property the property to process
+	 * @param migration the alignment migration
+	 * @param log the log
+	 * @return the processed property
+	 */
+	private PropertyEntityDefinition processOriginalConditionProperty(
+			PropertyEntityDefinition property, AlignmentMigration migration, SimpleLog log) {
+		boolean isStripped = strippedSources.stream().anyMatch(e -> {
+			return e.getType().equals(property.getType());
+		});
+		if (!isStripped) {
+			return (PropertyEntityDefinition) migration.entityReplacement(property, log)
+					.orElse(property);
+		}
+		else {
+			EntityDefinition stripped = AlignmentUtil.getAllDefaultEntity(property);
+			return (PropertyEntityDefinition) migration.entityReplacement(stripped, log)
+					.orElse(stripped);
+		}
 	}
 
 	private static Text buildScript(List<Pair<Cell, String>> scripts) {
@@ -235,6 +277,16 @@ public class JoinContext {
 	 */
 	public void addGroovyScript(Cell cell, String script) {
 		scripts.add(new Pair<>(cell, script));
+	}
+
+	/**
+	 * Add an original source that was replaced where filter/contexts were not
+	 * retained.
+	 * 
+	 * @param source the source to add
+	 */
+	public void addStrippedSource(EntityDefinition source) {
+		strippedSources.add(source);
 	}
 
 }

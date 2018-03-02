@@ -38,6 +38,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
 
 /**
  * Merge migrator for the Groovy Retype function.
@@ -97,6 +98,17 @@ public class GroovyRetypeMergeMigrator extends DefaultMergeCellMigrator {
 
 		// source from match
 		cell.setSource(ArrayListMultimap.create(match.getSource()));
+
+		if (source.getFilter() != null) {
+			// note about dropped filter
+			String msg = "The filter on the original source has been dropped because transfering it was not possible automatically.";
+			String filterString = FilterDefinitionManager.getInstance()
+					.asString(source.getFilter());
+			if (filterString != null) {
+				msg = msg + " The original filter was: \"" + filterString + "\".";
+			}
+			log.warn(msg);
+		}
 
 		// parameters from match
 		ListMultimap<String, ParameterValue> params = ArrayListMultimap

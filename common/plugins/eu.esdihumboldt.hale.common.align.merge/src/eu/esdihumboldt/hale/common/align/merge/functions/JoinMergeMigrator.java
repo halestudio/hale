@@ -25,7 +25,9 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMergeCellMigrator;
+import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -79,7 +81,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		/*
 		 * Sources: Add all from match (should be one)
 		 */
-		addSources(cell, source, match, log);
+		addSources(cell, source, match, log, true);
 
 		/*
 		 * Join order: Replace type with matched source
@@ -112,7 +114,10 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		/*
 		 * Sources: Add all from match (should be at least two)
 		 */
-		addSources(cell, source, match, log);
+		addSources(cell, source, match, log, false);
+
+		// add source that was replaced and filter/contexts were not retained
+		context.addStrippedSource(source);
 
 		/*
 		 * Join order: Replace type with matched sources (use match join order)
@@ -151,13 +156,23 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		}
 	}
 
-	private void addSources(MutableCell cell, EntityDefinition source, Cell match, SimpleLog log) {
+	private void addSources(MutableCell cell, EntityDefinition source, Cell match, SimpleLog log,
+			boolean transferContext) {
 		if (match.getSource() != null) {
 			ListMultimap<String, Entity> sources = ArrayListMultimap.create(cell.getSource());
 			for (Entry<String, ? extends Entity> entry : match.getSource().entries()) {
-				if (!sources.containsEntry(entry.getKey(), entry.getValue())) {
+				Entity entity = entry.getValue();
+
+				if (transferContext) {
+					// transfer filter and contexts if possible
+					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
+							entity.getDefinition(), log);
+					entity = AlignmentUtil.createEntity(withContexts);
+				}
+
+				if (!sources.containsEntry(entry.getKey(), entity)) {
 					// add if not already present
-					sources.put(entry.getKey(), entry.getValue());
+					sources.put(entry.getKey(), entity);
 				}
 			}
 			cell.setSource(sources);
