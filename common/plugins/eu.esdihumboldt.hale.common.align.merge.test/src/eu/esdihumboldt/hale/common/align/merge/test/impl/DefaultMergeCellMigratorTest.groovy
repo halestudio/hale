@@ -30,12 +30,15 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.MutableCell
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
+import groovy.transform.CompileStatic
+import groovy.transform.TypeCheckingMode
 
 /**
  * Tests for default merge cell migrator.
  * 
  * @author Simon Templer
  */
+@CompileStatic
 class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 	@Test
@@ -204,6 +207,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		})
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
 	@Test
 	void testMatchCondition1() {
 		def toMigrate = this.class.getResource('/testcases/properties-abstract1/B-to-C.halex')
@@ -253,6 +257,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		scriptCheck(migrated)
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
 	private void scriptCheck(def migrated) {
 		assertEquals(1, migrated.size())
 		migrated = migrated[0]
@@ -416,7 +421,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		filterCheckSame(migrated, "value = 'X'")
 	}
 
-	private void filterCheckSame(List<Cell> cells, String expectedFilter) {
+	private void filterCheckSame(List<? extends Cell> cells, String expectedFilter) {
 		assertEquals(1, cells.size())
 		def migrated = cells[0]
 
@@ -429,6 +434,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		})
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
 	private void filterCheck(Cell migrated, String expectedFilter) {
 		JaxbAlignmentIO.printCell(migrated, System.out)
 
@@ -455,7 +461,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		filterCheck(migrated[0], "ba = 'test'")
 
 		// there should be a message about the condition
-		def messages = getMigrationMessages(migrated)
+		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
@@ -477,7 +483,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		filterCheck(migrated[0], "bb = 'test'")
 
 		// there should be a message about the condition
-		def messages = getMigrationMessages(migrated)
+		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
@@ -499,7 +505,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		filterCheck(migrated[0], "bc = 'test'")
 
 		// there should be a message about the condition
-		def messages = getMigrationMessages(migrated)
+		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
@@ -522,7 +528,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertTrue(migrated[0].source == null || migrated[0].source.empty)
 
 		// there should be a message about the condition being dropped
-		def messages = getMigrationMessages(migrated)
+		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
