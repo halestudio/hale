@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: hale CLI Default Commands
 Bundle-SymbolicName: eu.esdihumboldt.hale.app.cli.commands;singleton:=true
-Bundle-Version: 3.3.100.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.util.cli;bundle-version="2.9.5",

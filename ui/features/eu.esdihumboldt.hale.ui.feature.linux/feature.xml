@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.linux"
       label="Linux specific HALE feature"
-      version="3.3.100.qualifier"
+      version="3.4.0.qualifier"
       provider-name="data harmonisation panel"
       os="linux">
 

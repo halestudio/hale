@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.xslt.feature"
       label="XSLT Mapping Feature"
-      version="3.3.100.qualifier"
+      version="3.4.0.qualifier"
       provider-name="Fraunhofer IGD"
       plugin="eu.esdihumboldt.hale.io.xslt">
 

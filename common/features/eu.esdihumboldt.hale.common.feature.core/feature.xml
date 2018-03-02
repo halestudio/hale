@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.common.feature.core"
       label="HALE core logic and models"
-      version="3.3.100.qualifier"
+      version="3.4.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
