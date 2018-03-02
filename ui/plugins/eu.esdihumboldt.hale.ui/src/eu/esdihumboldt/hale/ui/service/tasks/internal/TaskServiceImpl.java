@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.eclipse.ui.PlatformUI;
 
@@ -164,6 +165,18 @@ public class TaskServiceImpl extends AbstractTaskService {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <C> Collection<Task<C>> getTasks(C context) {
+		List<Task<C>> result;
+		synchronized (tasks) {
+			result = tasks.stream().filter(t -> t.getMainContext().equals(context))
+					.map(t -> (Task<C>) t).collect(Collectors.toList());
+		}
+
+		return result;
+	}
+
 	/**
 	 * @see TaskService#removeTask(Task)
 	 */
@@ -232,7 +245,7 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 * @see TaskService#resolveTask(Task)
 	 */
 	@Override
-	public ResolvedTask<?> resolveTask(Task<?> task) {
+	public <C> ResolvedTask<C> resolveTask(Task<C> task) {
 		return ResolvedTask.resolveTask(registry, task, taskUserData.get(task));
 	}
 

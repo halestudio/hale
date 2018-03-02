@@ -82,6 +82,14 @@ public interface TaskService {
 	Collection<Task<?>> getTasks();
 
 	/**
+	 * Get tasks for the given context object
+	 * 
+	 * @param context context object
+	 * @return All tasks concerning the given context object
+	 */
+	<C> Collection<Task<C>> getTasks(C context);
+
+	/**
 	 * Resolves the tasks and returns them
 	 * 
 	 * @return the resolved tasks
@@ -95,7 +103,7 @@ public interface TaskService {
 	 * 
 	 * @return the resolved task
 	 */
-	ResolvedTask<?> resolveTask(Task<?> task);
+	<C> ResolvedTask<C> resolveTask(Task<C> task);
 
 	// task provider management
 
