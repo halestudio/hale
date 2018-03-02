@@ -420,7 +420,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertEquals(1, cells.size())
 		def migrated = cells[0]
 
-		filterCheck(migrated)
+		filterCheck(migrated, expectedFilter)
 
 		// there should be no message about the condition because the new source is the same!
 		def messages = getMigrationMessages(migrated)
