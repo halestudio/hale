@@ -108,7 +108,6 @@
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
@@ -234,7 +233,6 @@
       <plugin id="eu.esdihumboldt.util.svg.test"/>
       <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
       <plugin id="eu.esdihumbolt.hale.adv.merge"/>
-      <plugin id="eu.esdihumbolt.hale.adv.merge.test"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
