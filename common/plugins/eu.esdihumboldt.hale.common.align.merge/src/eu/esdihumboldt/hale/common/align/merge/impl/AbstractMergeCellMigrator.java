@@ -30,6 +30,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.merge.MergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
+import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
@@ -280,9 +281,9 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				ListMultimap<String, ? extends Entity> newSource = newCell.getSource();
 				if (newSource == null || newSource.size() == 0) {
 					// new cell does not have a source -> drop contexts
-					// TODO include dropped filters/contexts in log
 					log.warn(
-							"Any conditions/contexts on the original source have been dropped because the new mapping does not have a source");
+							"Any conditions/contexts on the original source have been dropped because the new mapping does not have a source: "
+									+ MergeUtil.getContextInfoString(original));
 				}
 				else if (newSource.size() == 1) {
 					// try to transfer contexts
@@ -298,9 +299,9 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 				else {
 					// no idea where to add contexts -> report
-					// TODO include dropped filters/contexts in log
 					log.warn(
-							"Any conditions/contexts on the original source have been dropped because the new mapping has multiple sources and it is not clear where they should be attached");
+							"Any conditions/contexts on the original source have been dropped because the new mapping has multiple sources and it is not clear where they should be attached: "
+									+ MergeUtil.getContextInfoString(original));
 				}
 			}
 		}
