@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.align.merge.impl.DefaultMergeCellMigrator
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.Entity
 import eu.esdihumboldt.hale.common.align.model.MutableCell
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction
@@ -528,6 +529,73 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertTrue(migrated[0].source == null || migrated[0].source.empty)
 
 		// there should be a message about the condition being dropped
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Test
+	void testTypeFilter5() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'Join' // Join
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		// expect filters to be present on A5 source
+		assertNotNull(migrated[0].source)
+		assertEquals(2, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.definition.name.localPart == 'A5') {
+				assertNotNull(filter)
+				assertEquals('ba = \'test\' and bb <> \'test\'', filter.filterTerm)
+			}
+			else {
+				assertNull(filter)
+			}
+		}
+
+		// there should be a message about the conditions being migrated
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@Test
+	void testTypeFilter6() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'GJoin' // Groovy Join
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		// expect filters to be present on both sources
+		assertNotNull(migrated[0].source)
+		assertEquals(2, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			assertNotNull(filter)
+		}
+
+		// there should be a message about the conditions being migrated
 		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
