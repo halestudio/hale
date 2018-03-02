@@ -60,7 +60,10 @@ public class CellMessageTask extends AbstractTask<Cell> implements TaskUserDataA
 			return 0;
 		}
 
-		if (other instanceof CellMessageTask) {
+		if (!this.getMainContext().equals(other.getMainContext())) {
+			return this.getMainContext().getId().compareTo(other.getMainContext().getId());
+		}
+		else if (other instanceof CellMessageTask) {
 			CellMessageTask cmt = (CellMessageTask) other;
 			return this.getMessage().getText().compareTo(cmt.getMessage().getText());
 		}
@@ -68,7 +71,8 @@ public class CellMessageTask extends AbstractTask<Cell> implements TaskUserDataA
 			return this.compareTo(((ResolvedTask<Cell>) other).getTask());
 		}
 
-		return this.getMainContext().getId().compareTo(other.getMainContext().getId());
+		// XXX Nothing to compare by, throw exception?
+		return 1;
 	}
 
 	@Override
