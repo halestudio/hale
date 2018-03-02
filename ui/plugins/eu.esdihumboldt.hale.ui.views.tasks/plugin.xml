@@ -21,5 +21,12 @@
             name="Cell Message Task Provider">
       </provider>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.common.graph.figures.cell">
+      <label
+            class="eu.esdihumboldt.hale.ui.views.tasks.CellFigureTaskLabelContribution"
+            id="eu.esdihumboldt.hale.ui.views.tasks.figures.cell.label">
+      </label>
+   </extension>
 
 </plugin>
