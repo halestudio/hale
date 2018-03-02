@@ -69,6 +69,7 @@ public class ReplaceFunctionWizardAction
 			originalCell.getAnnotations(annotationType).stream()
 					.forEach(a -> cell.addAnnotation(annotationType, a));
 		}
+		cell.setId(originalCell.getId());
 		cell.getDocumentation().putAll(originalCell.getDocumentation());
 		cell.setPriority(originalCell.getPriority());
 		cell.setTransformationMode(originalCell.getTransformationMode());
