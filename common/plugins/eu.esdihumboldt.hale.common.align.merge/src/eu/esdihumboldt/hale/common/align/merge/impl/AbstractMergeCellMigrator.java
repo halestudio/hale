@@ -280,6 +280,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				ListMultimap<String, ? extends Entity> newSource = newCell.getSource();
 				if (newSource == null || newSource.size() == 0) {
 					// new cell does not have a source -> drop contexts
+					// TODO include dropped filters/contexts in log
 					log.warn(
 							"Any conditions/contexts on the original source have been dropped because the new mapping does not have a source");
 				}
@@ -297,6 +298,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 				else {
 					// no idea where to add contexts -> report
+					// TODO include dropped filters/contexts in log
 					log.warn(
 							"Any conditions/contexts on the original source have been dropped because the new mapping has multiple sources and it is not clear where they should be attached");
 				}

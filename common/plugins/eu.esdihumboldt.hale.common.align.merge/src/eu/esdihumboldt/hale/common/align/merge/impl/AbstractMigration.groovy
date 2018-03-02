@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.Condition
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
+import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
@@ -75,7 +76,12 @@ abstract class AbstractMigration implements AlignmentMigration {
 
 			// what about if match has filter?
 			if (target.filter && original.filter != target.filter) {
-				log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
+				def filterString = FilterDefinitionManager.instance.asString(original.filter)
+				def msg = "Filter condition applied to the original source type has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions."
+				if (filterString) {
+					msg = msg + " The filter on the original source ${original} was \"${filterString}\"."
+				}
+				log.warn(msg)
 			}
 			else {
 				// apply filter to entity
@@ -153,7 +159,12 @@ abstract class AbstractMigration implements AlignmentMigration {
 				// keep match condition
 
 				if (condition?.filter && matchCondition.filter != condition.filter) {
-					log.warn("Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions.")
+					def filterString = FilterDefinitionManager.instance.asString(condition.filter)
+					def msg = "Filter condition applied to the original source has been dropped because a filter already existed for the entity it was replaced with. Please check if you need to change the condition to match both original conditions."
+					if (filterString) {
+						msg = msg + " The filter on the original source ${entity} was \"${filterString}\"."
+					}
+					log.warn(msg)
 				}
 
 				condition = matchCondition
