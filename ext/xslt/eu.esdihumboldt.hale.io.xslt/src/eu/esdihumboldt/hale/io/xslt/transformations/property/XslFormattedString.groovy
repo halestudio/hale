@@ -19,12 +19,10 @@ import java.util.regex.Pattern
 
 import com.google.common.collect.ListMultimap
 
-import eu.esdihumboldt.cst.functions.core.FormattedString as FS
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
 import eu.esdihumboldt.hale.io.xslt.XsltGenerationContext
-import eu.esdihumboldt.hale.io.xslt.functions.XslFunction
 import eu.esdihumboldt.hale.io.xslt.functions.XslVariable
 import eu.esdihumboldt.hale.io.xslt.transformations.base.AbstractFunctionTransformation
 
@@ -37,7 +35,7 @@ class XslFormattedString extends AbstractFunctionTransformation implements Forma
 
 	@Override
 	public String getSequence(Cell cell, ListMultimap<String, XslVariable> variables,
-	XsltGenerationContext context, Cell typeCell) {
+			XsltGenerationContext context, Cell typeCell) {
 		// get the pattern parameter
 		def pattern = CellUtil.getFirstParameter(cell, PARAMETER_PATTERN).as(String)
 		if (!pattern) {
@@ -48,9 +46,7 @@ class XslFormattedString extends AbstractFunctionTransformation implements Forma
 		// map pattern variable names to XPath expressions
 		def varNames = [:]
 		for (XslVariable var in variables.get(ENTITY_VARIABLE)) {
-			use (FS) {
-				varNames.addValue(var.XPath, var.entity)
-			}
+			FormattedStringFunction.addValue(varNames, var.XPath, var.entity)
 		}
 
 		// replace markers in pattern
