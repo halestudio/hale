@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 
@@ -33,13 +33,14 @@ class RenameHandler extends AbstractPropertyTransformationHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.api.MappingValue,
+	 *      java.lang.String)
 	 */
 	@Override
-	public String doHandle(final MappingValue mappingValue) {
+	public String doHandle(final MappingValue mappingValue, final String tableName) {
 
-		transformationContext.nextPropertyTransformation(mappingValue.getTable(),
-				mappingValue.getValue(), mappingValue.getTargetQNameList());
+		transformationContext.nextPropertyTransformation(tableName, mappingValue.getValue(),
+				mappingValue.getQualifiedTargetPath());
 
 		final ListMultimap<String, ParameterValue> parameters = transformationContext
 				.getCurrentPropertyParameters();

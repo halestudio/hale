@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import java.util.Optional;
+
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
@@ -36,19 +39,20 @@ class CustomFunctionAdvToLocalId extends FormattedStringHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.AbstractPropertyTransformationHandler#doHandle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.common.align.model.Property,
-	 *      de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-		setExpressionType(mappingValue);
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
 
 		final String propertyName = propertyName(AppSchemaMappingUtils
 				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
-		mappingValue
-				.setValue("'" + mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName);
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+
+		final MappingValue mappingValue = new MappingValueBuilder().expression()
+				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
+				.value("'" + mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName)
+				.build();
+
+		return Optional.of(mappingValue);
 	}
 
 }

@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -24,30 +24,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Joiner;
+import javax.xml.namespace.QName;
 
-import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
-import de.interactive_instruments.xtraserver.config.util.Namespaces;
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
-import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMappingBuilder;
+import de.interactive_instruments.xtraserver.config.api.MappingTable;
+import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
+import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder.MappingTableDraft;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.api.XtraServerMappingBuilder;
+import de.interactive_instruments.xtraserver.config.transformer.XtraServerMappingTransformer;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 
 /**
- * The mapping context provides access to the {@link Alignment}, the
- * {@link Namespaces} and holds all {@link FeatureTypeMapping}s.
+ * The mapping context provides access to the {@link Alignment} and holds all
+ * {@link FeatureTypeMapping}s.
  * 
  * @author Jon Herrmann ( herrmann aT interactive-instruments doT de )
  */
@@ -64,12 +72,19 @@ public final class MappingContext {
 	public final static String PROPERTY_INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
 
 	private final Alignment alignment;
-	private final ApplicationSchema applicationSchema;
+	// private final ApplicationSchema applicationSchema;
 	private final Map<String, Value> transformationProperties;
 	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
 
-	private final Map<String, FeatureTypeMapping> featureTypeMappings = new LinkedHashMap<>();
-	private FeatureTypeMapping currentFeatureTypeMapping;
+	private final Map<String, FeatureTypeMappingBuilder> featureTypeMappings = new LinkedHashMap<>();
+	private FeatureTypeMappingBuilder currentFeatureTypeMapping;
+	private String currentFeatureTypeMappingName;
+	private final Map<String, MappingTableBuilder> currentMappingTables = new LinkedHashMap<>();
+	private final Set<String> missingAssociationTargets = new TreeSet<String>();
+	private final URI applicationSchemaUri;
+	private final ProjectInfo projectInfo;
+	private final URI projectLocation;
+	private final IOReporter reporter;
 
 	/**
 	 * Constructor Only the first schema is used
@@ -77,10 +92,13 @@ public final class MappingContext {
 	 * @param alignment the Alignment with all cells
 	 * @param schemaspace the target schema
 	 * @param transformationProperties Properties used in transformations
-	 * @throws IOException if the schema cannot be read
+	 * @param projectInfo project info
+	 * @param projectLocation project file
+	 * @param reporter reporter
 	 */
 	public MappingContext(final Alignment alignment, final SchemaSpace schemaspace,
-			final Map<String, Value> transformationProperties) throws IOException {
+			final Map<String, Value> transformationProperties, final ProjectInfo projectInfo,
+			final URI projectLocation, final IOReporter reporter) {
 		this.alignment = Objects.requireNonNull(alignment);
 		this.transformationProperties = Objects.requireNonNull(transformationProperties);
 
@@ -90,25 +108,71 @@ public final class MappingContext {
 			throw new IllegalArgumentException("Schemaspace does not contain a schema");
 		}
 		final Schema schema = it.next();
-		this.applicationSchema = new ApplicationSchema(schema.getLocation());
+		this.applicationSchemaUri = schema.getLocation();
+		this.projectInfo = projectInfo;
+		this.projectLocation = projectLocation;
+		this.reporter = reporter;
 	}
 
 	/**
 	 * Add a new FeatureTypeMapping to the mapping context
 	 * 
-	 * @param featureTypeMapping new FeatureTypeMapping
+	 * @param featureTypeName feature type name
 	 * @return the same FeatureTypeMapping for chaining method calls
 	 */
-	FeatureTypeMapping addNextFeatureTypeMapping(final FeatureTypeMapping featureTypeMapping) {
-		final String key = Objects
-				.requireNonNull(featureTypeMapping, "Feature Type Mapping is null").getQName()
+	FeatureTypeMappingBuilder addNextFeatureTypeMapping(final QName featureTypeName) {
+		buildAndClearCurrentTables();
+
+		final String key = Objects.requireNonNull(featureTypeName, "Feature Type name is null")
 				.toString();
 		currentFeatureTypeMapping = featureTypeMappings.get(key);
 		if (currentFeatureTypeMapping == null) {
-			currentFeatureTypeMapping = featureTypeMapping;
-			featureTypeMappings.put(key, featureTypeMapping);
+			currentFeatureTypeMapping = new FeatureTypeMappingBuilder()
+					.qualifiedName(featureTypeName);
+			featureTypeMappings.put(key, currentFeatureTypeMapping);
 		}
+
+		this.currentFeatureTypeMappingName = featureTypeName.getLocalPart();
+
 		return currentFeatureTypeMapping;
+	}
+
+	void addCurrentMappingTable(final String tableName, final MappingTableBuilder mappingTable) {
+		this.currentMappingTables.put(tableName, mappingTable);
+	}
+
+	Collection<MappingTableBuilder> getCurrentMappingTables() {
+		return this.currentMappingTables.values();
+	}
+
+	void buildAndClearCurrentTables() {
+		if (this.currentFeatureTypeMapping == null) {
+			return;
+		}
+
+		this.currentMappingTables.values().stream().filter(isValidJoinTable())
+				.map(MappingTableBuilder::build).forEach(table -> {
+					if (this.currentMappingTables
+							.containsKey(table.getJoinPaths().iterator().next().getSourceTable())) {
+						this.currentMappingTables
+								.get(table.getJoinPaths().iterator().next().getSourceTable())
+								.joiningTable(table);
+					}
+				});
+
+		final Optional<MappingTable> primaryTable = this.currentMappingTables.values().stream()
+				.map(MappingTableBuilder::build).filter(table -> table.isPrimary()).findFirst();
+
+		if (primaryTable.isPresent()) {
+			this.currentFeatureTypeMapping.primaryTable(primaryTable.get());
+		}
+
+		this.currentMappingTables.clear();
+	}
+
+	private Predicate<MappingTableBuilder> isValidJoinTable() {
+		return tableBuilder -> tableBuilder.buildDraft().isJoined()
+				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent();
 	}
 
 	/**
@@ -116,8 +180,22 @@ public final class MappingContext {
 	 * 
 	 * @return Feature Type Mapping name
 	 */
-	String getFeatureTypeName() {
-		return currentFeatureTypeMapping.getName();
+	public String getFeatureTypeName() {
+		return currentFeatureTypeMappingName;
+	}
+
+	/**
+	 * Return all property paths for which no association target could be found in
+	 * the schema.
+	 * 
+	 * @return list of properties with missing association targets
+	 */
+	public Set<String> getMissingAssociationTargets() {
+		return this.missingAssociationTargets;
+	}
+
+	void addMissingAssociationTarget(final String associationTarget) {
+		this.missingAssociationTargets.add(associationTarget);
 	}
 
 	Value getTransformationProperty(final String name) {
@@ -129,48 +207,47 @@ public final class MappingContext {
 	}
 
 	/**
-	 * Returns the namespaces from the target schema
-	 * 
-	 * @return namespaces from the target schema
-	 */
-	Namespaces getNamespaces() {
-		return this.applicationSchema.getNamespaces();
-	}
-
-	/**
 	 * Retrieve table from current FeatureTypeMapping
 	 * 
 	 * @param tableName Mapping Table name
 	 * @return MappingTable
 	 */
-	Optional<MappingTable> getTable(String tableName) {
-		return currentFeatureTypeMapping.getTable(tableName);
+	Optional<MappingTableBuilder> getTable(String tableName) {
+		return Optional.ofNullable(currentMappingTables.get(tableName));
 	}
 
 	void addValueMappingToTable(final Property target, final MappingValue value,
 			final String tableName) {
-		final MappingTable table = getTable(tableName).orElseThrow(
+
+		final MappingTableBuilder tableBuilder = getTable(tableName).orElseThrow(
 				() -> new IllegalArgumentException("Table " + tableName + " not found"));
-		if (!table.hasTarget() && table.hasJoinPath() && value.getTarget() != null
+		final MappingTableDraft tableDraft = tableBuilder.buildDraft();
+
+		if (tableDraft.getQualifiedTargetPath().isEmpty() && !tableDraft.getJoinPaths().isEmpty()
 				&& target.getDefinition().getPropertyPath() != null) {
 			// Target is set in value mapping, check if the property is multiple and the
 			// target must be added to the table
-			List<String> targetPath = new ArrayList<>();
+			List<QName> targetPath = new ArrayList<>();
 			for (final Iterator<ChildContext> it = target.getDefinition().getPropertyPath()
 					.iterator(); it.hasNext();) {
 				final ChildContext segment = it.next();
 				final PropertyDefinition property = segment.getChild().asProperty();
-				targetPath.add(this.getNamespaces().getPrefixedName(segment.getChild().getName()));
+				targetPath.add(segment.getChild().getName());
 				if (property != null) {
 					final Cardinality cardinality = property.getConstraint(Cardinality.class);
 					if (cardinality.mayOccurMultipleTimes()) {
-						table.setTarget(Joiner.on('/').join(targetPath));
+						tableBuilder.qualifiedTargetPath(targetPath);
 						break;
 					}
 				}
 			}
 		}
-		value.setTable(table);
+
+		tableBuilder.value(value);
+	}
+
+	IOReporter getReporter() {
+		return reporter;
 	}
 
 	/**
@@ -190,11 +267,24 @@ public final class MappingContext {
 	 * @return XtraServerMapping containing all FeatureTypeMappings
 	 */
 	public XtraServerMapping getMapping() {
-		final XtraServerMapping xtraServerMapping = XtraServerMapping
-				.create(this.applicationSchema);
-		this.featureTypeMappings.values().forEach(featureTypeMapping -> xtraServerMapping
-				.addFeatureTypeMapping(featureTypeMapping, true));
-		return xtraServerMapping;
+		buildAndClearCurrentTables();
+
+		final XtraServerMappingBuilder xtraServerMappingBuilder = new XtraServerMappingBuilder();
+
+		xtraServerMappingBuilder.description("\n  Source:\n    - hale "
+				+ projectInfo.getHaleVersion().toString() + "\n    - "
+				+ (projectLocation != null ? projectLocation.toString() : projectInfo.getName())
+				+ "\n");
+
+		featureTypeMappings.values().stream().map(FeatureTypeMappingBuilder::build)
+				.forEach(xtraServerMappingBuilder::featureTypeMapping);
+
+		final XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
+				.forMapping(xtraServerMappingBuilder.build())
+				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
+				.ensureRelationNavigability().transform();
+
+		return fannedOutmapping;
 	}
 
 	/**

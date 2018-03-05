@@ -16,13 +16,17 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder.ValueClassification;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
@@ -41,8 +45,7 @@ import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
  */
 class ClassificationMappingHandler extends AbstractPropertyTransformationHandler {
 
-	private final static Pattern NIL_PROPERTY = Pattern
-			.compile("(/?(http://www.w3.org/2001/XMLSchema:)?@?nilReason)|(/?@?null)");
+	private final static String NIL_REASON = "@nilReason";
 
 	ClassificationMappingHandler(final MappingContext mappingContext) {
 		super(mappingContext);
@@ -52,53 +55,46 @@ class ClassificationMappingHandler extends AbstractPropertyTransformationHandler
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
 
-		mappingValue.setValue(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+		final ValueClassification mappingValue;
+
+		final List<QName> path = buildPath(targetProperty.getDefinition().getPropertyPath());
+
+		if (path.get(path.size() - 1).getLocalPart().equals(NIL_REASON)) {
+			mappingValue = new MappingValueBuilder().nil();
+			mappingValue.qualifiedTargetPath(path.subList(0, path.size() - 1));
+		}
+		else {
+			mappingValue = new MappingValueBuilder().classification();
+			mappingValue.qualifiedTargetPath(path);
+		}
+
+		mappingValue.value(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
 				.getDefinition().getPropertyPath()));
-		final String path = buildPath(targetProperty.getDefinition().getPropertyPath());
-		final Matcher matcher = NIL_PROPERTY.matcher(path);
 
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
-
-		if (matcher.find()) {
-			mappingValue.setMappingMode("nil");
-			mappingValue.setTarget(matcher.replaceAll(""));
-		}
-		else {
-			mappingValue.setTarget(path);
-		}
 
 		// Assign DB codes and values from the lookup table
 		final LookupTable lookup = ClassificationMappingUtil.getClassificationLookup(parameters,
 				new ServiceManager(ServiceManager.SCOPE_PROJECT));
 		if (lookup != null) {
-			final StringBuilder dbCodeBuilder = new StringBuilder();
-			final StringBuilder dbValueBuilder = new StringBuilder();
 			final Map<Value, Value> valueMap = lookup.asMap();
 			final Iterator<Value> it = valueMap.keySet().iterator();
 			while (it.hasNext()) {
 				final Value sourceValue = it.next();
-				final String targetValueStr = valueMap.get(sourceValue).as(String.class);
-				dbCodeBuilder.append(sourceValue.as(String.class));
+				final String targetValueStr = '\'' + valueMap.get(sourceValue).as(String.class)
+						+ '\'';
 
-				dbValueBuilder.append('\'');
-				dbValueBuilder.append(targetValueStr);
-				dbValueBuilder.append('\'');
-
-				if (it.hasNext()) {
-					dbCodeBuilder.append(' ');
-					dbValueBuilder.append(' ');
-				}
+				mappingValue.keyValue(sourceValue.as(String.class), targetValueStr);
 			}
-			mappingValue.setDbCodes(dbCodeBuilder.toString());
-			mappingValue.setDbValues(dbValueBuilder.toString());
 		}
 		else {
-			mappingValue.setDbCodes("NULL");
+			mappingValue.keyValue("NULL", "");
 		}
+
+		return Optional.of(mappingValue.build());
 	}
 
 }

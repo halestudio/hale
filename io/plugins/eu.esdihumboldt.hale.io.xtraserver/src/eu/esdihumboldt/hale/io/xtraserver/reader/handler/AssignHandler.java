@@ -15,9 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
+import java.util.Map;
 import java.util.Optional;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
 
@@ -33,25 +34,31 @@ class AssignHandler extends AbstractPropertyTransformationHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.api.MappingValue,
+	 *      java.lang.String)
 	 */
 	@Override
-	public String doHandle(final MappingValue mappingValue) {
+	public String doHandle(final MappingValue mappingValue, final String tableName) {
 
 		Optional<String> bindValue = Optional.<String> empty();
 
-		if (isAttribute(mappingValue.getTarget())) {
+		if (isAttribute(mappingValue.getTargetPath())) {
+			final String parentTarget = mappingValue.getTargetPath().substring(0,
+					mappingValue.getTargetPath().lastIndexOf('/'));
+
 			bindValue = transformationContext.getCurrentFeatureTypeMapping()
-					.getParentValue(mappingValue).map(value -> value.getValueColumn())
-					.orElse(Optional.<String> empty());
+					.getTableValuesForPath(parentTarget).entrySet().stream()
+					.filter(entry -> entry.getKey().getName().equals(tableName))
+					.map(Map.Entry::getValue).map(MappingValue::getValueColumn)
+					.filter(Optional::isPresent).map(Optional::get).findFirst();
 		}
 
 		if (bindValue.isPresent()) {
-			transformationContext.nextPropertyTransformation(mappingValue.getTable(),
-					bindValue.get(), "anchor", mappingValue.getTargetQNameList());
+			transformationContext.nextPropertyTransformation(mappingValue.getQualifiedTargetPath(),
+					tableName, "anchor", bindValue.get());
 		}
 		else {
-			transformationContext.nextPropertyTransformation(mappingValue.getTargetQNameList());
+			transformationContext.nextPropertyTransformation(mappingValue.getQualifiedTargetPath());
 		}
 
 		transformationContext.getCurrentPropertyParameters().put("value",

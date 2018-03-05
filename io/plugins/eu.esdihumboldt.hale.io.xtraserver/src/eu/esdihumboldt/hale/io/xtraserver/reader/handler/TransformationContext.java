@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 
 /**
  * 
@@ -68,16 +69,17 @@ public final class TransformationContext {
 	private FeatureTypeMapping currentFeatureTypeMapping;
 	private ListMultimap<String, ParameterValue> currenTypeParameters;
 	private ListMultimap<String, ParameterValue> currentPropertyParameters;
-	private NamedEntityType currentSourcePropertyName;
+	private Set<NamedEntityType> currentSourcePropertyNames;
 	private NamedEntityType currentTargetPropertyName;
 
 	/**
-	 * Constructor Only the first schema is used
+	 * Constructor
 	 * 
-	 * @param alignment the Alignment with all cells
-	 * @param schemaspace the target schema
-	 * @param transformationProperties Properties used in transformations
-	 * @throws IOException if the schema cannot be read
+	 * @param sourceTypes source types
+	 * @param targetTypes target types
+	 * @param entityResolver entity resolver
+	 * @param progress progress indicator
+	 * @param reporter reporter
 	 */
 	public TransformationContext(final TypeIndex sourceTypes, final TypeIndex targetTypes,
 			final EntityResolver entityResolver, final ProgressIndicator progress,
@@ -92,37 +94,37 @@ public final class TransformationContext {
 	void nextTypeTransformation(String sourceType, FeatureTypeMapping featureTypeMapping) {
 		this.currentSourceTableNames = new LinkedHashSet<>();
 		addTable(sourceType);
-		this.currentTargetTypeName = findTargetType(featureTypeMapping.getQName());
+		this.currentTargetTypeName = findTargetType(featureTypeMapping.getQualifiedName());
 		this.currentFeatureTypeMapping = featureTypeMapping;
 		this.currenTypeParameters = ArrayListMultimap.create();
 	}
 
 	void nextPropertyTransformation(List<QName> targetProperty) {
 
-		nextPropertyTransformation(null, null, "", targetProperty);
+		nextPropertyTransformation(targetProperty, null, "");
 
 	}
 
 	void nextPropertyTransformation(String sourceType, String sourceProperty,
 			List<QName> targetProperty) {
 
-		nextPropertyTransformation(sourceType, sourceProperty, "", targetProperty);
+		nextPropertyTransformation(targetProperty, sourceType, "", sourceProperty);
 
 	}
 
-	void nextPropertyTransformation(String sourceType, String sourceProperty, String sourceVarName,
-			List<QName> targetProperty) {
+	void nextPropertyTransformation(List<QName> targetProperty, String sourceType,
+			String sourceVarName, String... sourceProperties) {
 
-		if (sourceType != null && sourceProperty != null) {
+		if (sourceType != null && sourceProperties != null && sourceProperties.length > 0) {
 			final QName sourceTableName = findCurrentSourceType(sourceType);
 
-			// TODO: validate source and target types (or is the entitityResolver enough)
-
-			this.currentSourcePropertyName = getNamedEntity(sourceTableName,
-					new QName(sourceProperty), sourceVarName);
+			this.currentSourcePropertyNames = Arrays.stream(sourceProperties)
+					.map(sourceProperty -> getNamedEntity(sourceTableName,
+							new QName(sourceProperty), sourceVarName))
+					.collect(Collectors.toSet());
 		}
 		else {
-			this.currentSourcePropertyName = null;
+			this.currentSourcePropertyNames = new LinkedHashSet<>();
 		}
 
 		this.currentTargetPropertyName = getNamedEntity(currentTargetTypeName, targetProperty, "");
@@ -131,7 +133,7 @@ public final class TransformationContext {
 	}
 
 	boolean hasCurrentSourceProperty() {
-		return this.currentSourcePropertyName != null;
+		return !this.currentSourcePropertyNames.isEmpty();
 	}
 
 	QName addTable(String name) {
@@ -196,7 +198,7 @@ public final class TransformationContext {
 
 	ListMultimap<String, Entity> getCurrentSourcePropertyEntities() {
 
-		return convertEntities(ImmutableList.of(currentSourcePropertyName), sourceTypes,
+		return convertEntities(ImmutableList.copyOf(currentSourcePropertyNames), sourceTypes,
 				SchemaSpaceID.SOURCE);
 	}
 
@@ -243,11 +245,9 @@ public final class TransformationContext {
 	}
 
 	QName findTargetType(QName name) {
-		if (name == null) {
-			boolean b = true;
-		}
-		return targetTypes.getTypes().stream().map(TypeDefinition::getName).filter(name::equals)
-				.findFirst().orElseThrow(
+		return targetTypes.getTypes().stream()
+				.filter(typeDefinition -> name.equals(getElementNameForType(typeDefinition)))
+				.map(TypeDefinition::getName).findFirst().orElseThrow(
 						() -> new IllegalArgumentException("Target type '" + name + "' not found"));
 	}
 
@@ -255,6 +255,21 @@ public final class TransformationContext {
 		return currentSourceTableNames.stream()
 				.filter(tableName -> name.equals(tableName.getLocalPart())).findFirst().orElseThrow(
 						() -> new IllegalArgumentException("Source type '" + name + "' not found"));
+	}
+
+	QName getElementNameForType(TypeDefinition typeDefinition) {
+		final XmlElements constraints = typeDefinition.getConstraint(XmlElements.class);
+		if (constraints == null || constraints.getElements().size() == 0) {
+			// throw new IllegalStateException("No constraint has been specified.");
+			return null;
+		}
+		else if (constraints.getElements().size() > 1) {
+			// throw new IllegalStateException("More than one constraint has been
+			// specified.");
+			return null;
+		}
+
+		return constraints.getElements().iterator().next().getName();
 	}
 
 	NamedEntityType getNamedEntity(QName qname) {
@@ -301,8 +316,10 @@ public final class TransformationContext {
 		sourceQN.setType(sourceQNT);
 
 		for (QName p : properties) {
+			String localName = p.getLocalPart().startsWith("@") ? p.getLocalPart().substring(1)
+					: p.getLocalPart();
 			ChildContextType sourceP = new ChildContextType();
-			sourceP.setName(p.getLocalPart());
+			sourceP.setName(localName);
 			sourceP.setNs(p.getNamespaceURI());
 			sourceQN.getChild().add(sourceP);
 		}

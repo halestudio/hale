@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import java.util.Optional;
+
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
@@ -36,17 +39,19 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.AbstractPropertyTransformationHandler#doHandle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.common.align.model.Property,
-	 *      de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-		mappingValue.setValue(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
-				.getDefinition().getPropertyPath()));
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
-		mappingValue.setDbCodes("urn:adv:uom:m2 urn:adv:uom:m urn:adv:uom:km");
-		mappingValue.setDbValues("'m2' 'm' 'km'");
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
+		final MappingValue mappingValue = new MappingValueBuilder().classification()
+				.keyValue("urn:adv:uom:m2", "'m2'").keyValue("urn:adv:uom:m", "'m'")
+				.keyValue("urn:adv:uom:km", "'km'")
+				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
+				.value(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+						.getDefinition().getPropertyPath()))
+				.build();
+
+		return Optional.of(mappingValue);
 	}
 
 }

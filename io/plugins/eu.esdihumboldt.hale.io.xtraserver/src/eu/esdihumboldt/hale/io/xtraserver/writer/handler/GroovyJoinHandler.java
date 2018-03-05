@@ -17,9 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.Collection;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 
@@ -31,8 +29,6 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
  */
 class GroovyJoinHandler extends JoinHandler {
 
-	private static final ALogger logger = ALoggerFactory.getLogger(GroovyJoinHandler.class);
-
 	GroovyJoinHandler(final MappingContext mappingContext) {
 		super(mappingContext);
 	}
@@ -41,20 +37,19 @@ class GroovyJoinHandler extends JoinHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
-			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
+	public void doHandle(final Collection<? extends Entity> sourceTypes, final Entity targetType,
+			final Cell typeCell) {
 		try {
-			super.doHandle(sourceTypes, targetType, featureTypeMapping, typeCell);
+			super.doHandle(sourceTypes, targetType, typeCell);
 		} catch (final Exception e) {
-			logger.error("Error transforming GroovyJoin for Feature Type {}."
+			mappingContext.getReporter().error("Error transforming GroovyJoin for Feature Type {0}."
 					+ " Replace the GroovyJoin with a Join before you transform the Alignment.",
 					mappingContext.getFeatureTypeName());
 			throw e;
 		}
-		logger.warn(
-				"A GroovyJoin for Feature Type {} has been transformed but requires further"
-						+ " manual editing in the generated Mapping file. Details: {} {}",
-				mappingContext.getFeatureTypeName(), System.getProperty("line.separator"),
-				featureTypeMapping.toString());
+		mappingContext.getReporter()
+				.warn("A GroovyJoin for Feature Type {0} has been transformed but requires further"
+						+ " manual editing in the generated Mapping file.",
+						mappingContext.getFeatureTypeName());
 	}
 }

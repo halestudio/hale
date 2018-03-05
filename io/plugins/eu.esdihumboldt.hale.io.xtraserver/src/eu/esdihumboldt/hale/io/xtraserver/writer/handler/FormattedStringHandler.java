@@ -19,12 +19,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -52,9 +54,8 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-		setExpressionType(mappingValue);
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
+
 		// Get the formatted string from parameters
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
@@ -137,9 +138,11 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 			formattedStr.append('\'');
 		}
 
-		mappingValue.setValue(formattedStr.toString());
-		// set target
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+		final MappingValue mappingValue = new MappingValueBuilder().expression()
+				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
+				.value(formattedStr.toString()).build();
+
+		return Optional.of(mappingValue);
 	}
 
 	private static void leftConcat(final StringBuilder builder, final int currentIdx,

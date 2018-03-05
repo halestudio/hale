@@ -15,21 +15,18 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
-import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin;
+import de.interactive_instruments.xtraserver.config.api.MappingTable;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
@@ -44,8 +41,11 @@ import eu.esdihumboldt.hale.common.core.io.Value;
  */
 class JoinHandler extends AbstractTypeTransformationHandler {
 
+	private final Set<String> seenTables;
+
 	JoinHandler(final TransformationContext mappingContext) {
 		super(mappingContext);
+		this.seenTables = new HashSet<>();
 	}
 
 	/**
@@ -55,50 +55,21 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	public String doHandle(final FeatureTypeMapping featureTypeMapping,
 			final String primaryTableName) {
 
-		// TODO: only get joined tables with source primaryTableName (should be realized
-		// with api redesign)
+		final Optional<MappingTable> primaryTable = featureTypeMapping.getTable(primaryTableName);
 
-		final Set<JoinCondition> joinConditions = new LinkedHashSet<>();
-
-		List<String> allTableNames = ImmutableList.<String> builder()
-				.addAll(featureTypeMapping.getJoinedTableNames())
-				.addAll(featureTypeMapping.getReferenceTableNames()).build();
-
-		for (String joinTableName : allTableNames) {
-			MappingTable joinedTable = featureTypeMapping.getTable(joinTableName).get();
-
-			if (joinedTable.hasJoinPath()) {
-
-				for (MappingJoin mappingJoin : joinedTable.getJoinPaths()) {
-					for (MappingJoin.Condition condition : mappingJoin.getJoinConditions()) {
-						QName baseTableName = transformationContext
-								.addTable(condition.getSourceTable());
-						QName joinedTableName = transformationContext
-								.addTable(condition.getTargetTable());
-
-						if (baseTableName.getLocalPart().equals(joinedTable.getName())) {
-							transformationContext.getReporter().warn("SELF JOIN: "
-									+ condition.toString() + " [" + mappingJoin.toString() + "]");
-						}
-
-						PropertyEntityDefinition baseProperty = transformationContext
-								.getEntityDefinition(baseTableName,
-										new QName(condition.getSourceField()));
-						PropertyEntityDefinition joinedProperty = transformationContext
-								.getEntityDefinition(joinedTableName,
-										new QName(condition.getTargetField()));
-
-						joinConditions.add(new JoinCondition(baseProperty, joinedProperty));
-					}
-				}
-
-			}
+		if (!primaryTable.isPresent()) {
+			throw new IllegalArgumentException("Primary table not found: " + primaryTableName);
 		}
 
-		// TODO: api redesign
-		filterSelfJoins(featureTypeMapping, primaryTableName);
+		seenTables.add(primaryTableName);
 
-		JoinParameter joinParameter = new JoinParameter(
+		final Set<JoinCondition> joinConditions = primaryTable.get().getAllJoiningTablesStream()
+				.filter(isNotJoinedYet()).filter(hasValues())
+				.flatMap(joinedTable -> joinedTable.getJoinPaths().stream())
+				.flatMap(joinPath -> joinPath.getJoinConditions().stream())
+				.map(toHaleJoinCondition()).collect(Collectors.toSet());
+
+		final JoinParameter joinParameter = new JoinParameter(
 				transformationContext.getCurrentSourceTypeEntityDefinitions(), joinConditions);
 
 		final String validation = joinParameter.validate();
@@ -112,72 +83,40 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 		return JoinFunction.ID;
 	}
 
-	private void filterSelfJoins(FeatureTypeMapping featureTypeMapping, String primaryTableName) {
-		// add self joins for root table
-		MappingTable primaryTable = featureTypeMapping.getTable(primaryTableName).get();
+	private Function<MappingJoin.Condition, JoinCondition> toHaleJoinCondition() {
+		return condition -> {
 
-		if (!primaryTable.getJoinPaths().isEmpty()) {
+			final QName baseTableName = transformationContext.addTable(condition.getSourceTable());
+			final QName joinedTableName = transformationContext
+					.addTable(condition.getTargetTable());
 
-			for (MappingJoin mappingJoin : primaryTable.getJoinPaths()) {
-				for (MappingJoin.Condition condition : mappingJoin.getJoinConditions()) {
-					// QName baseTableName = getTableQName(condition.getSourceTable(),
-					// sourceTypes);
-					QName joinedTableName = transformationContext
-							.findSourceType(condition.getTargetTable());
+			final PropertyEntityDefinition baseProperty = transformationContext
+					.getEntityDefinition(baseTableName, new QName(condition.getSourceField()));
+			final PropertyEntityDefinition joinedProperty = transformationContext
+					.getEntityDefinition(joinedTableName, new QName(condition.getTargetField()));
 
-					if (!joinedTableName.getLocalPart().equals(primaryTable.getName())) {
-						/*
-						 * reporter.warn("Valid self join on root table of " + ftm.getName() + ": "
-						 * + condition.toString() + "\ncomplete join: " + mappingJoin.toString() +
-						 * "\njoin target: " + mappingJoin.getTarget() + "\ntable + target: " +
-						 * joinedTable.getName() + "[" + joinedTable.getTarget() + "]");
-						 * 
-						 * joinedTables.add(getNamedEntity(joinedTableName, "types"));
-						 * joinedSourceTypesQN.add(baseTableName);
-						 * joinedSourceTypesQN.add(joinedTableName);
-						 * 
-						 * PropertyEntityDefinition baseProperty = getEntityDefinition(
-						 * baseTableName, new QName(condition.getSourceField()));
-						 * PropertyEntityDefinition joinedProperty = getEntityDefinition(
-						 * joinedTableName, new QName(condition.getTargetField()));
-						 * 
-						 * conditions.add(new JoinCondition(baseProperty, joinedProperty));
-						 */
-					}
-					else {
-						if (!mappingJoin.isSuppressJoin()) {
-							transformationContext.getReporter().warn("Self join on root table of "
-									+ featureTypeMapping.getName() + ": " + condition.toString()
-									+ "\ncomplete join: " + mappingJoin.toString()
-									+ "\njoin target: " + mappingJoin.getTarget()
-									+ "\ntable + target: " + primaryTable.getName() + "["
-									+ primaryTable.getTarget() + "]");
-						}
+			return new JoinCondition(baseProperty, joinedProperty);
+		};
+	}
 
-						Collection<MappingValue> ignoreValues = Collections2.filter(
-								featureTypeMapping.getValues(), new Predicate<MappingValue>() {
+	private Predicate<MappingTable> isNotJoinedYet() {
+		return joinedTable -> {
+			if (seenTables.contains(joinedTable.getName())) {
+				transformationContext.getReporter()
+						.warn("Table is already joined for this feature type, skipping: "
+								+ joinedTable.getName() + " ["
+								+ joinedTable.getJoinPaths().toString() + "]");
 
-									@Override
-									public boolean apply(MappingValue value) {
-										return value.getTarget().startsWith(mappingJoin.getTarget())
-												&& value.getTable().equals(primaryTable.getName());
-									}
-								});
-						if (!mappingJoin.isSuppressJoin()) {
-							for (MappingValue ignoreValue : ignoreValues) {
-								transformationContext.getReporter()
-										.warn("Ignored joined value: " + ignoreValue.getTable()
-												+ " " + ignoreValue.getValue() + " "
-												+ ignoreValue.getTarget());
-							}
-						}
-						featureTypeMapping.getValues().removeAll(ignoreValues);
-					}
-				}
+				return false;
 			}
 
-		}
+			seenTables.add(joinedTable.getName());
+			return true;
+		};
+	}
 
+	private Predicate<MappingTable> hasValues() {
+		return joinedTable -> !joinedTable.getValues().isEmpty();
 	}
 
 }

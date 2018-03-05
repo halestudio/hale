@@ -15,10 +15,12 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
 
@@ -37,34 +39,36 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractPropertyTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.api.MappingValue,
+	 *      java.lang.String)
 	 */
 	@Override
-	public String doHandle(final MappingValue mappingValue) {
+	public String doHandle(final MappingValue mappingValue, final String tableName) {
 
 		final Matcher matcher = EXPRESSION_PATTERN.matcher(mappingValue.getValue());
 		final StringBuilder pattern = new StringBuilder();
-		String column = null;
+		final List<String> columns = new ArrayList<>();
 
 		while (matcher.find()) {
 			String text = matcher.group("text");
-			column = matcher.group("column");
+			String column = matcher.group("column");
 
 			if (text != null) {
 				pattern.append(text);
 			}
 			else if (column != null) {
 				pattern.append('{').append(column).append('}');
+				columns.add(column);
 			}
 		}
 
-		if (column == null) {
+		if (columns.isEmpty()) {
 			throw new IllegalArgumentException(
 					"Expression could not be parsed: " + mappingValue.getValue());
 		}
-		// TODO: multiple columns
-		transformationContext.nextPropertyTransformation(mappingValue.getTable(), column, "var",
-				mappingValue.getTargetQNameList());
+
+		transformationContext.nextPropertyTransformation(mappingValue.getQualifiedTargetPath(),
+				tableName, "var", columns.toArray(new String[0]));
 
 		transformationContext.getCurrentPropertyParameters().put("pattern",
 				new ParameterValue(pattern.toString()));

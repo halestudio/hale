@@ -15,19 +15,31 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.apache.ws.commons.schema.XmlSchemaAppInfo;
+import org.w3c.dom.Node;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xsd.constraint.XmlAppInfo;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -43,76 +55,24 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		this.mappingContext = mappingContext;
 	}
 
-	protected static void setConstantType(final MappingValue mappingValue) {
-		mappingValue.setValueType("constant");
-	}
-
-	protected static void setExpressionType(final MappingValue mappingValue) {
-		mappingValue.setValueType("expression");
-	}
-
-	protected String buildPath(final List<ChildContext> path) {
+	protected List<QName> buildPath(final List<ChildContext> path) {
 		return buildPath(path, false);
 	}
 
-	protected String buildPathWithoutLast(final List<ChildContext> path) {
+	protected List<QName> buildPathWithoutLast(final List<ChildContext> path) {
 		return buildPath(path, true);
 	}
 
-	protected String buildPathWithoutAttribute(final List<ChildContext> path) {
-		final StringBuilder builder = new StringBuilder();
-		for (final Iterator<ChildContext> it = Objects.requireNonNull(path, "Path not set")
-				.iterator(); it.hasNext();) {
-			final ChildContext segment = it.next();
-			final PropertyDefinition property = segment.getChild().asProperty();
-			if (property == null) {
-				// ignore choice definition
-				continue;
-			}
-			if (property.getConstraint(XmlAttributeFlag.class).isEnabled()) {
-				if (builder.length() > 0) {
-					builder.setLength(builder.length() - 1);
-				}
-				return builder.toString();
-			}
-			final String prefixedName = mappingContext.getNamespaces()
-					.getPrefixedName(segment.getChild().getName());
-			builder.append(prefixedName);
-			if (it.hasNext()) {
-				builder.append('/');
-			}
-		}
-		return builder.toString();
+	protected List<QName> buildPath(final List<ChildContext> path, final boolean withoutLast) {
+		return path.stream().map(segment -> segment.getChild().asProperty())
+				.filter(Objects::nonNull).map(toPropertyNameWithAttributePrefix())
+				.limit(withoutLast ? path.size() - 1 : path.size()).collect(Collectors.toList());
 	}
 
-	private String buildPath(final List<ChildContext> path, final boolean withoutLast) {
-		final StringBuilder builder = new StringBuilder();
-		for (final Iterator<ChildContext> it = Objects.requireNonNull(path, "Path not set")
-				.iterator(); it.hasNext();) {
-			final ChildContext segment = it.next();
-			final PropertyDefinition property = segment.getChild().asProperty();
-			if (property == null) {
-				// ignore choice definition
-				continue;
-			}
-			if (withoutLast && !it.hasNext()) {
-				if (builder.length() > 0) {
-					builder.setLength(builder.length() - 1);
-				}
-				break;
-			}
-
-			if (property.getConstraint(XmlAttributeFlag.class).isEnabled()) {
-				builder.append('@');
-			}
-			final String prefixedName = mappingContext.getNamespaces()
-					.getPrefixedName(segment.getChild().getName());
-			builder.append(prefixedName);
-			if (it.hasNext()) {
-				builder.append('/');
-			}
-		}
-		return builder.toString();
+	private Function<PropertyDefinition, QName> toPropertyNameWithAttributePrefix() {
+		return property -> property.getConstraint(XmlAttributeFlag.class).isEnabled() ? new QName(
+				property.getName().getNamespaceURI(), "@" + property.getName().getLocalPart())
+				: property.getName();
 	}
 
 	protected static String propertyName(final List<ChildContext> path) {
@@ -133,18 +93,93 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		return null;
 	}
 
-	@Override
-	public final MappingValue handle(final Cell propertyCell) {
-		final MappingValue mappingValue = MappingValue.create(mappingContext.getNamespaces());
+	/**
+	 * Check if the property cell is a reference and if yes add the association
+	 * target that is found in the schema.
+	 * 
+	 * @param propertyCell Property cell
+	 * @param lastValue associated value mapping for the property
+	 * @return possibly changed value mapping
+	 */
+	private MappingValue ensureAssociationTarget(final Cell propertyCell,
+			final MappingValue lastValue) {
 		final Property targetProperty = AppSchemaMappingUtils.getTargetProperty(propertyCell);
+		if (targetProperty.getDefinition().getDefinition().getConstraint(Reference.class)
+				.isReference()) {
+			final String associationTargetRef = getTargetFromSchema(targetProperty);
+			if (associationTargetRef == null) {
+				final PropertyEntityDefinition propDef = targetProperty.getDefinition();
+				mappingContext.addMissingAssociationTarget(propDef.toString());
+			}
+			else {
+				return new MappingValueBuilder().reference()
+						.referencedFeatureType(associationTargetRef)
+						.qualifiedTargetPath(lastValue.getQualifiedTargetPath())
+						.value(lastValue.getValue()).build();
+			}
+		}
 
-		doHandle(propertyCell, targetProperty, mappingValue);
-
-		final String tableName = ((CellParentWrapper) propertyCell).getTableName();
-		mappingContext.addValueMappingToTable(targetProperty, mappingValue, tableName);
-		return mappingValue;
+		return lastValue;
 	}
 
-	protected abstract void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue);
+	/**
+	 * Find the association target from the AppInfo annotation in the XSD
+	 * 
+	 * @param targetProperty target property to analyze
+	 * @return association target as String
+	 */
+	private String getTargetFromSchema(final Property targetProperty) {
+		if (targetProperty.getDefinition().getPropertyPath().isEmpty()) {
+			return null;
+		}
+
+		final ChildDefinition<?> firstChild = targetProperty.getDefinition().getPropertyPath()
+				.get(0).getChild();
+		if (!(firstChild instanceof PropertyDefinition)) {
+			return null;
+		}
+		final XmlAppInfo appInfoAnnotation = ((PropertyDefinition) firstChild)
+				.getConstraint(XmlAppInfo.class);
+
+		for (final XmlSchemaAppInfo appInfo : appInfoAnnotation.getAppInfos()) {
+			for (int i = 0; i < appInfo.getMarkup().getLength(); i++) {
+				final Node item = appInfo.getMarkup().item(i);
+				if ("targetElement".equals(item.getNodeName())) {
+					final String target = item.getTextContent();
+					return target;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public final MappingValue handle(final Cell propertyCell) {
+		final Property targetProperty = AppSchemaMappingUtils.getTargetProperty(propertyCell);
+		final Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(propertyCell);
+
+		if (targetProperty == null || (sourceProperty == null && !((this instanceof AssignHandler)
+				|| (this instanceof CustomFunctionAdvToNamespace)))) {
+			CellParentWrapper cellParentWrapper = (CellParentWrapper) propertyCell;
+			mappingContext.getReporter().warn(
+					"Cell could not be exported, source or target property is not set (Table: {0}, Source: {1}, Target: {2})",
+					cellParentWrapper.getTableName(), sourceProperty, targetProperty);
+			return null;
+		}
+
+		final Optional<MappingValue> optionalMappingValue = doHandle(propertyCell, targetProperty);
+
+		final String tableName = ((CellParentWrapper) propertyCell).getTableName();
+
+		optionalMappingValue.ifPresent(mappingValue -> {
+			mappingValue = ensureAssociationTarget(propertyCell, mappingValue);
+
+			mappingContext.addValueMappingToTable(targetProperty, mappingValue, tableName);
+		});
+
+		return optionalMappingValue.orElse(null);
+	}
+
+	protected abstract Optional<MappingValue> doHandle(final Cell propertyCell,
+			final Property targetProperty);
 }

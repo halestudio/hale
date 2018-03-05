@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
 import java.util.Optional;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 
 /**
  * Factory for creating Type Transformation Handlers
@@ -39,16 +39,19 @@ public class TypeTransformationHandlerFactory {
 	 * Create a new Transformation Type Handler
 	 * 
 	 * @param featureTypeMapping the mapping that should be transformed
+	 * @param primaryTableName primary table name
 	 * 
 	 * @return new TypeHandler
 	 */
-	public Optional<TypeTransformationHandler> create(final FeatureTypeMapping featureTypeMapping) {
-		if (featureTypeMapping.getTables().stream()
-				.allMatch(mappingTable -> mappingTable.isPrimary())) {
-			return Optional.of(new RetypeHandler(transformationContext));
-		}
-		else if (!featureTypeMapping.getTables().isEmpty()) {
-			return Optional.of(new JoinHandler(transformationContext));
+	public Optional<TypeTransformationHandler> create(final FeatureTypeMapping featureTypeMapping,
+			final String primaryTableName) {
+		if (featureTypeMapping.getTable(primaryTableName).isPresent()) {
+			if (featureTypeMapping.getTable(primaryTableName).get().getJoiningTables().isEmpty()) {
+				return Optional.of(new RetypeHandler(transformationContext));
+			}
+			else {
+				return Optional.of(new JoinHandler(transformationContext));
+			}
 		}
 
 		return Optional.empty();

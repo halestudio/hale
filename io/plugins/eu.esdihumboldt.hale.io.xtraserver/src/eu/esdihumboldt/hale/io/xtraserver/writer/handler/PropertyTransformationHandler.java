@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 
 /**
  * Handler for Property transformations

@@ -38,7 +38,7 @@ public class TypeTransformationHandlerFactory
 
 	@SuppressWarnings("serial")
 	TypeTransformationHandlerFactory(final MappingContext mappingContext) {
-		super(new HashMap<String, TypeTransformationHandler>() {
+		super(mappingContext, new HashMap<String, TypeTransformationHandler>() {
 
 			{
 				int i = 0;

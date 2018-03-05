@@ -17,12 +17,12 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.Collection;
 
+import javax.xml.namespace.QName;
+
 import com.google.common.collect.ListMultimap;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -40,14 +40,12 @@ import eu.esdihumboldt.hale.io.xtraserver.compatibility.XtraServerCompatibilityM
 abstract class AbstractTypeTransformationHandler implements TypeTransformationHandler {
 
 	protected final MappingContext mappingContext;
-	protected final static ALogger logger = ALoggerFactory
-			.getLogger(TypeTransformationHandler.class);
 
 	protected AbstractTypeTransformationHandler(final MappingContext mappingContext) {
 		this.mappingContext = mappingContext;
 	}
 
-	protected FeatureTypeMapping createFeatureTypeMapping(final Cell cell) {
+	protected QName getFeatureTypeName(final Cell cell) {
 		final ListMultimap<String, ? extends Entity> targetEntities = cell.getTarget();
 		if (targetEntities == null || targetEntities.size() == 0) {
 			throw new IllegalStateException("No target type has been specified.");
@@ -61,11 +59,7 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		else if (constraints.getElements().size() > 1) {
 			throw new IllegalStateException("More than one constraint has been specified.");
 		}
-		final String name = mappingContext.getNamespaces()
-				.getPrefixedName(constraints.getElements().iterator().next().getName());
-
-		return FeatureTypeMapping.create(name, targetTypeDefinition.getName(),
-				mappingContext.getNamespaces());
+		return constraints.getElements().iterator().next().getName();
 	}
 
 	protected String getPrimaryKey(final TypeDefinition definition) {
@@ -77,55 +71,48 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		return primaryKey.getPrimaryKeyPath().iterator().next().getLocalPart();
 	}
 
-	protected MappingTable createTableIfAbsent(final FeatureTypeMapping featureTypeMapping,
-			final EntityDefinition sourceType) {
-		return createTableIfAbsent(featureTypeMapping, sourceType, false);
-	}
-
-	protected MappingTable createTableIfAbsent(final FeatureTypeMapping featureTypeMapping,
-			final EntityDefinition sourceType, boolean isJoined) {
+	protected MappingTableBuilder createTableIfAbsent(final EntityDefinition sourceType) {
 		final TypeDefinition sourceTypeDefinition = sourceType.getType();
 		final String tableName = sourceTypeDefinition.getDisplayName();
 
 		return this.mappingContext.getTable(tableName).orElseGet(() -> {
-			MappingTable table = MappingTable.create();
+			MappingTableBuilder table = new MappingTableBuilder();
 			final DatabaseTable dbTable = sourceTypeDefinition.getConstraint(DatabaseTable.class);
 			if (dbTable != null && dbTable.getTableName() != null) {
-				table.setName(dbTable.getTableName());
+				table.name(dbTable.getTableName());
 			}
 			else {
-				table.setName(tableName);
+				table.name(tableName);
 			}
 
 			final String primaryKey = getPrimaryKey(sourceTypeDefinition);
 			if (primaryKey != null) {
-				table.setOidCol(primaryKey);
+				table.primaryKey(primaryKey);
 			}
 			else {
-				table.setOidCol("id");
-				logger.warn(
-						"No primary key for table '{}' found, assuming 'id'. (context: oid_col in FeatureType {})",
-						table.getName(), featureTypeMapping.getName());
+				table.primaryKey("id");
+				mappingContext.getReporter().warn(
+						"No primary key for table '{0}' found, assuming 'id'. (context: oid_col in FeatureType {1})",
+						tableName, mappingContext.getFeatureTypeName());
 			}
-			table.setJoined(isJoined);
 
-			featureTypeMapping.addTable(table);
+			mappingContext.addCurrentMappingTable(tableName, table);
+
 			return table;
 		});
 	}
 
 	@Override
 	public final FeatureTypeMapping handle(final Cell cell) {
-		final FeatureTypeMapping mapping = mappingContext
-				.addNextFeatureTypeMapping(createFeatureTypeMapping(cell));
+		mappingContext.addNextFeatureTypeMapping(getFeatureTypeName(cell));
 
 		final ListMultimap<String, ? extends Entity> sourceEntities = cell.getSource();
 		if (sourceEntities == null || sourceEntities.size() == 0) {
 			throw new IllegalStateException("No source type has been specified.");
 		}
 		if (XtraServerCompatibilityMode.hasFilters(cell.getSource())) {
-			logger.warn(
-					"Filters are not supported and are ignored during type transformation of Feature Type {}",
+			mappingContext.getReporter().warn(
+					"Filters are not supported and are ignored during type transformation of Feature Type {0}",
 					mappingContext.getFeatureTypeName());
 		}
 
@@ -134,11 +121,12 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 			throw new IllegalStateException("No target type has been specified.");
 		}
 		final Entity targetType = targetEntities.values().iterator().next();
-		final Collection<Entity> sourceTypes = (Collection<Entity>) sourceEntities.values();
-		doHandle(sourceTypes, targetType, mapping, cell);
-		return mapping;
+		final Collection<? extends Entity> sourceTypes = sourceEntities.values();
+		doHandle(sourceTypes, targetType, cell);
+
+		return null;
 	}
 
-	public abstract void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
-			final FeatureTypeMapping mapping, final Cell typeCell);
+	public abstract void doHandle(final Collection<? extends Entity> sourceTypes,
+			final Entity targetType, final Cell typeCell);
 }

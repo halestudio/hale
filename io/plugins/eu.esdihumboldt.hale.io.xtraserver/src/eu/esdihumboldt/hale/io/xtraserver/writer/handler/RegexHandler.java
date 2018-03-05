@@ -17,10 +17,12 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.cst.functions.string.RegexAnalysisFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
@@ -41,14 +43,11 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.AbstractPropertyTransformationHandler#doHandle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.common.align.model.Property,
-	 *      de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	protected void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+	protected Optional<MappingValue> doHandle(final Cell propertyCell,
+			final Property targetProperty) {
 
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
@@ -76,8 +75,13 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 
 		final String regexpTargetProperty = lastItem.getChild().getName().getLocalPart();
 		// Replace {number} with escaped-escaped-escaped \\number
-		mappingValue.setValue("regexp_replace(" + regexpTargetProperty + ", '" + regex + "', '"
-				+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\\\\\$1") + "', 'g')");
+		final MappingValue mappingValue = new MappingValueBuilder().expression()
+				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
+				.value("regexp_replace(" + regexpTargetProperty + ", '" + regex + "', '"
+						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\\\\\$1") + "', 'g')")
+				.build();
+
+		return Optional.of(mappingValue);
 	}
 
 }

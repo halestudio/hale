@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 
 /**
  * Handler for Type transformations

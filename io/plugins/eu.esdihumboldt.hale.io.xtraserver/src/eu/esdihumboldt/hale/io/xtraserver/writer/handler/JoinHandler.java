@@ -23,10 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingJoin;
-import de.interactive_instruments.xtraserver.config.util.api.MappingJoin.Condition;
-import de.interactive_instruments.xtraserver.config.util.api.MappingTable;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
+import de.interactive_instruments.xtraserver.config.api.MappingJoinBuilder;
+import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -51,10 +52,10 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Collection<Entity> sourceTypes, final Entity targetType,
-			final FeatureTypeMapping featureTypeMapping, final Cell typeCell) {
+	public void doHandle(final Collection<? extends Entity> sourceTypes, final Entity targetType,
+			final Cell typeCell) {
 
-		final MappingTable baseTable = createTableIfAbsent(featureTypeMapping,
+		final MappingTableBuilder baseTable = createTableIfAbsent(
 				sourceTypes.iterator().next().getDefinition());
 
 		for (final ParameterValue transParam : typeCell.getTransformationParameters()
@@ -67,13 +68,12 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			}
 
 			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
-					featureTypeMapping, sourceTypes);
+					sourceTypes);
 
-			final List<MappingJoin> joins = sortedConditions.stream()
-					.filter(condition -> condition.getSourceTable().equals(baseTable.getName()))
-					.map(condition -> {
-						MappingJoin join = MappingJoin.create();
-						join.addCondition(condition);
+			final List<MappingJoin> joins = sortedConditions.stream().filter(condition -> condition
+					.getSourceTable().equals(baseTable.buildDraft().getName())).map(condition -> {
+						final MappingJoinBuilder join = new MappingJoinBuilder();
+						join.joinCondition(condition);
 
 						Optional<Condition> matchingCondition = sortedConditions.stream()
 								.filter(condition2 -> condition2.getSourceTable()
@@ -81,13 +81,16 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 								.findFirst();
 
 						if (matchingCondition.isPresent()) {
-							join.addCondition(matchingCondition.get());
+							join.joinCondition(matchingCondition.get());
 						}
-
-						return join;
+						join.targetPath("TODO");
+						return join.build();
 					}).collect(Collectors.toList());
 
-			joins.forEach(j -> featureTypeMapping.addJoin(j));
+			joins.forEach(joinPath -> {
+				mappingContext.getTable(joinPath.getTargetTable())
+						.ifPresent(targetTable -> targetTable.joinPath(joinPath));
+			});
 		}
 	}
 
@@ -96,12 +99,11 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	 * attached to multiple XtraServer Join objects
 	 * 
 	 * @param joinParameter hale conditions
-	 * @param featureTypeMapping FeatureTypeMapping to lookup tables or add missing
-	 *            ones
+	 * @param sourceTypes source types from cell with primary keys
 	 * @return sorted joins
 	 */
 	private List<Condition> transformSortedConditions(final JoinParameter joinParameter,
-			final FeatureTypeMapping featureTypeMapping, final Collection<Entity> sourceTypes) {
+			final Collection<? extends Entity> sourceTypes) {
 
 		return joinParameter.conditions.stream().sorted(new Comparator<JoinCondition>() {
 
@@ -121,14 +123,18 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 					.map(entity -> AlignmentUtil.getTypeEntity(entity.getDefinition())).findFirst()
 					.orElse(AlignmentUtil.getTypeEntity(condition.joinProperty));
 
-			final MappingTable baseTable = createTableIfAbsent(featureTypeMapping, baseType, true);
+			final MappingTableBuilder baseTable = createTableIfAbsent(baseType);
 			final String baseField = condition.baseProperty.getPropertyPath().iterator().next()
 					.getChild().getDisplayName();
-			final MappingTable joinTable = createTableIfAbsent(featureTypeMapping, joinType, true);
+			final MappingTableBuilder joinTable = createTableIfAbsent(joinType);
 			final String joinField = condition.joinProperty.getPropertyPath().iterator().next()
 					.getChild().getDisplayName();
 
-			return Condition.create(baseTable, baseField, joinTable, joinField);
+			final MappingJoin.Condition mappingJoinCondition = new MappingJoinBuilder.ConditionBuilder()
+					.sourceTable(baseTable.buildDraft().getName()).sourceField(baseField)
+					.targetTable(joinTable.buildDraft().getName()).targetField(joinField).build();
+
+			return mappingJoinCondition;
 		}).collect(Collectors.toList());
 	}
 

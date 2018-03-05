@@ -15,7 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import java.util.Optional;
+
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -36,19 +39,21 @@ class CustomFunctionAdvToNamespace extends FormattedStringHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.AbstractPropertyTransformationHandler#doHandle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.common.align.model.Property,
-	 *      de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
 		final Value inspireNamespace = mappingContext
 				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
 		if (!inspireNamespace.isEmpty()) {
-			setConstantType(mappingValue);
-			mappingValue.setValue(inspireNamespace.as(String.class));
-			mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+			final MappingValue mappingValue = new MappingValueBuilder().constant()
+					.qualifiedTargetPath(
+							buildPath(targetProperty.getDefinition().getPropertyPath()))
+					.value(inspireNamespace.as(String.class)).build();
+			return Optional.of(mappingValue);
 		}
+
+		return Optional.empty();
 	}
 
 }

@@ -18,10 +18,6 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 import java.util.Map;
 import java.util.Objects;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingGenerator;
-
 /**
  * Abstract Factory for creating Type and Property Transformation Handlers
  * 
@@ -30,12 +26,14 @@ import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingGenerator;
  */
 abstract class AbstractTransformationHandlerFactory<T extends TransformationHandler<?>> {
 
-	private final Map<String, T> handlers;
-	private static final ALogger logger = ALoggerFactory
-			.getLogger(XtraServerMappingGenerator.class);
 	private final static boolean ignoreUnknownTransformations = true;
 
-	AbstractTransformationHandlerFactory(final Map<String, T> handlers) {
+	private final Map<String, T> handlers;
+	private final MappingContext mappingContext;
+
+	AbstractTransformationHandlerFactory(final MappingContext mappingContext,
+			final Map<String, T> handlers) {
+		this.mappingContext = mappingContext;
 		this.handlers = handlers;
 	}
 
@@ -53,7 +51,8 @@ abstract class AbstractTransformationHandlerFactory<T extends TransformationHand
 				"Type transformation identifier is null"));
 		if (handler == null) {
 			if (ignoreUnknownTransformations) {
-				logger.warn("Transformation not supported: {}", typeTransformationIdentifier);
+				mappingContext.getReporter().warn("Transformation not supported: {0}",
+						typeTransformationIdentifier);
 			}
 			else {
 				throw new UnsupportedTransformationException(typeTransformationIdentifier);

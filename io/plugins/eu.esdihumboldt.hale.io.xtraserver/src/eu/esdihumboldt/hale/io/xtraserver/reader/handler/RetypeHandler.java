@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 
@@ -33,8 +33,8 @@ class RetypeHandler extends AbstractTypeTransformationHandler {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.TypeTransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      String)
+	 * @see eu.esdihumboldt.hale.io.xtraserver.reader.handler.AbstractTypeTransformationHandler#doHandle(de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping,
+	 *      java.lang.String)
 	 */
 	@Override
 	public String doHandle(final FeatureTypeMapping featureTypeMapping,

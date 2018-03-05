@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
+import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 

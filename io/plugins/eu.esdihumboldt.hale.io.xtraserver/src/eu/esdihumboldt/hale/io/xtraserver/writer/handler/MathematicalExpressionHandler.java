@@ -17,10 +17,12 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.collect.ListMultimap;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.cst.functions.numeric.MathematicalExpressionFunction;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -43,9 +45,8 @@ class MathematicalExpressionHandler extends AbstractPropertyTransformationHandle
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.TransformationHandler#handle(eu.esdihumboldt.hale.common.align.model.Cell)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-		setExpressionType(mappingValue);
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
+
 		// Get mathematical expression from parameters
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
@@ -63,9 +64,12 @@ class MathematicalExpressionHandler extends AbstractPropertyTransformationHandle
 			final String varName = var.getDefinition().getDefinition().getName().getLocalPart();
 			expression = expression.replaceAll(varName, "\\$T\\$." + varName);
 		}
-		mappingValue.setValue(expression);
-		// set target
-		mappingValue.setTarget(buildPath(targetProperty.getDefinition().getPropertyPath()));
+
+		final MappingValue mappingValue = new MappingValueBuilder().expression()
+				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
+				.value(expression).build();
+
+		return Optional.of(mappingValue);
 	}
 
 }

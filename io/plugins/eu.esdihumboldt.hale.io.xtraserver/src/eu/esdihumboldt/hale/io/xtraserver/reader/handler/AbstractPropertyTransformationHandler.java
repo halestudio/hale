@@ -15,7 +15,9 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import javax.xml.namespace.QName;
+
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 
@@ -25,6 +27,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
  * @author zahnen
  */
 abstract class AbstractPropertyTransformationHandler implements PropertyTransformationHandler {
+
+	private final static String XSI_NS = "http://www.w3.org/2001/XMLSchema-instance";
 
 	protected final TransformationContext transformationContext;
 
@@ -38,9 +42,16 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 	 *      java.lang.String)
 	 */
 	@Override
-	public MutableCell handle(MappingValue mappingValue, String primaryTableName) {
+	public MutableCell handle(final MappingValue mappingValue, final String tableName) {
+		// ignore xsi:nil
+		QName lastPathElement = mappingValue.getQualifiedTargetPath()
+				.get(mappingValue.getQualifiedTargetPath().size() - 1);
+		if (lastPathElement.getNamespaceURI().equals(XSI_NS)
+				&& lastPathElement.getLocalPart().equals("@nil")) {
+			return null;
+		}
 
-		final String transformationIdentifier = doHandle(mappingValue);
+		final String transformationIdentifier = doHandle(mappingValue, tableName);
 
 		final MutableCell propertyCell = new DefaultCell();
 
@@ -57,6 +68,6 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		return propertyCell;
 	}
 
-	protected abstract String doHandle(final MappingValue mappingValue);
+	protected abstract String doHandle(final MappingValue mappingValue, final String tableName);
 
 }

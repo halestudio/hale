@@ -15,31 +15,18 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer;
 
-import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
-import org.apache.ws.commons.schema.XmlSchemaAppInfo;
-import org.w3c.dom.Node;
-
-import de.interactive_instruments.xtraserver.config.util.api.AssociationTarget;
-import de.interactive_instruments.xtraserver.config.util.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
-import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
-import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
-import eu.esdihumboldt.hale.io.xsd.constraint.XmlAppInfo;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.CellParentWrapper;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.MappingContext;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.PropertyTransformationHandler;
@@ -59,7 +46,6 @@ public class XtraServerMappingGenerator {
 	private final TypeTransformationHandlerFactory typeHandlerFactory;
 	private final PropertyTransformationHandlerFactory propertyHandlerFactory;
 	private final ProgressIndicator progress;
-	private final Set<String> missingAssociationTargets = new TreeSet<String>();
 	private final MappingContext mappingContext;
 
 	/**
@@ -69,13 +55,17 @@ public class XtraServerMappingGenerator {
 	 * @param targetSchemaSpace the target schema
 	 * @param progress Progress indicator
 	 * @param projectProperties project transformation properties
-	 * @throws IOException if the
+	 * @param projectInfo project info
+	 * @param projectLocation project file
+	 * @param reporter reporter
 	 */
 	public XtraServerMappingGenerator(final Alignment alignment,
 			final SchemaSpace targetSchemaSpace, final ProgressIndicator progress,
-			final Map<String, Value> projectProperties) throws IOException {
+			final Map<String, Value> projectProperties, final ProjectInfo projectInfo,
+			final URI projectLocation, final IOReporter reporter) {
 		this.alignment = alignment;
-		mappingContext = new MappingContext(alignment, targetSchemaSpace, projectProperties);
+		mappingContext = new MappingContext(alignment, targetSchemaSpace, projectProperties,
+				projectInfo, projectLocation, reporter);
 		this.typeHandlerFactory = TypeTransformationHandler.createFactory(mappingContext);
 		this.propertyHandlerFactory = PropertyTransformationHandler.createFactory(mappingContext);
 		// Calculate the total work units for the progress indicator (+1 for writing the
@@ -100,8 +90,6 @@ public class XtraServerMappingGenerator {
 	public XtraServerMapping generate(final IOReporter reporter)
 			throws UnsupportedTransformationException {
 
-		missingAssociationTargets.clear();
-
 		for (final Cell typeCell : this.alignment.getActiveTypeCells()) {
 			final String typeTransformationIdentifier = typeCell.getTransformationIdentifier();
 			// Create FeatureTypeMapping from the type cells. The Mapping tables are created
@@ -110,9 +98,9 @@ public class XtraServerMappingGenerator {
 			final TypeTransformationHandler typeHandler = typeHandlerFactory
 					.create(typeTransformationIdentifier);
 			if (typeHandler != null) {
-				final FeatureTypeMapping featureTypeMapping = typeHandler.handle(typeCell);
+				typeHandler.handle(typeCell);
 				this.progress.setCurrentTask(
-						"Mapping values for Feature Type " + featureTypeMapping.getName());
+						"Mapping values for Feature Type " + mappingContext.getFeatureTypeName());
 				// Add MappingValues from the type cell's property cells
 				for (final Cell propertyCell : this.alignment.getPropertyCells(typeCell)) {
 					final String propertyTransformationIdentifier = propertyCell
@@ -120,11 +108,7 @@ public class XtraServerMappingGenerator {
 					final PropertyTransformationHandler propertyHandler = propertyHandlerFactory
 							.create(propertyTransformationIdentifier);
 					if (propertyHandler != null) {
-						final MappingValue mappingValue = propertyHandlerFactory
-								.create(propertyTransformationIdentifier)
-								.handle(new CellParentWrapper(typeCell, propertyCell));
-						featureTypeMapping.addValue(mappingValue);
-						ensureAssociationTarget(propertyCell, mappingValue, featureTypeMapping);
+						propertyHandler.handle(new CellParentWrapper(typeCell, propertyCell));
 					}
 					this.progress.advance(1);
 				}
@@ -143,69 +127,7 @@ public class XtraServerMappingGenerator {
 	 * @return list of properties with missing association targets
 	 */
 	public Set<String> getMissingAssociationTargets() {
-		return this.missingAssociationTargets;
+		return this.mappingContext.getMissingAssociationTargets();
 	}
 
-	/**
-	 * Check if the property cell is a reference and if yes add the association
-	 * target that is found in the schema.
-	 * 
-	 * @param propertyCell Property cell
-	 * @param lastValue associated value mapping for the property
-	 * @param featureTypeMapping FeatureTypeMapping object to which the
-	 *            AssociationTarget object is added
-	 */
-	private void ensureAssociationTarget(final Cell propertyCell, final MappingValue lastValue,
-			final FeatureTypeMapping featureTypeMapping) {
-		final Property targetProperty = AppSchemaMappingUtils.getTargetProperty(propertyCell);
-		if (targetProperty.getDefinition().getDefinition().getConstraint(Reference.class)
-				.isReference()) {
-			final String associationTargetRef = getTargetFromSchema(targetProperty);
-			if (associationTargetRef == null) {
-				final PropertyEntityDefinition propDef = targetProperty.getDefinition();
-				missingAssociationTargets.add(propDef.toString());
-			}
-			else {
-				if (lastValue.getTarget() == null) {
-					throw new IllegalStateException("Target not set by handler");
-				}
-				final AssociationTarget xsAssociationTarget = AssociationTarget.create();
-				xsAssociationTarget.setObjectRef(associationTargetRef);
-				xsAssociationTarget
-						.setTarget(lastValue.getTarget().replaceAll("/?@(xlink:)?href", ""));
-				featureTypeMapping.addAssociationTarget(xsAssociationTarget);
-			}
-		}
-	}
-
-	/**
-	 * Find the association target from the AppInfo annotation in the XSD
-	 * 
-	 * @param targetProperty target property to analyze
-	 * @return association target as String
-	 */
-	private String getTargetFromSchema(final Property targetProperty) {
-		if (targetProperty.getDefinition().getPropertyPath().isEmpty()) {
-			return null;
-		}
-
-		final ChildDefinition<?> firstChild = targetProperty.getDefinition().getPropertyPath()
-				.get(0).getChild();
-		if (!(firstChild instanceof PropertyDefinition)) {
-			return null;
-		}
-		final XmlAppInfo appInfoAnnotation = ((PropertyDefinition) firstChild)
-				.getConstraint(XmlAppInfo.class);
-
-		for (final XmlSchemaAppInfo appInfo : appInfoAnnotation.getAppInfos()) {
-			for (int i = 0; i < appInfo.getMarkup().getLength(); i++) {
-				final Node item = appInfo.getMarkup().item(i);
-				if ("targetElement".equals(item.getNodeName())) {
-					final String target = item.getTextContent();
-					return target;
-				}
-			}
-		}
-		return null;
-	}
 }

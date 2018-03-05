@@ -47,7 +47,7 @@ public class PropertyTransformationHandlerFactory
 
 	@SuppressWarnings("serial")
 	PropertyTransformationHandlerFactory(final MappingContext mappingContext) {
-		super(new HashMap<String, PropertyTransformationHandler>() {
+		super(mappingContext, new HashMap<String, PropertyTransformationHandler>() {
 
 			{
 				int i = 0;

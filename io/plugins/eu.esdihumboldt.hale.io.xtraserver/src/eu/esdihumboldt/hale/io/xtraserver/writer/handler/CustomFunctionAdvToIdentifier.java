@@ -15,7 +15,16 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import java.util.List;
+import java.util.Optional;
+
+import javax.xml.namespace.QName;
+
+import com.google.common.collect.ImmutableList;
+
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
+import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder.ValueDefault;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -37,37 +46,39 @@ class CustomFunctionAdvToIdentifier extends FormattedStringHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.xtraserver.writer.handler.AbstractPropertyTransformationHandler#doHandle(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.common.align.model.Property,
-	 *      de.interactive_instruments.xtraserver.config.util.api.MappingValue)
+	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	public void doHandle(final Cell propertyCell, final Property targetProperty,
-			final MappingValue mappingValue) {
-		setExpressionType(mappingValue);
+	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
+
 		final Value inspireNamespace = mappingContext
 				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
 
 		final String propertyName = propertyName(AppSchemaMappingUtils
 				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
-		if (inspireNamespace.isEmpty()) {
-			mappingValue.setValue(
-					"'" + mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName);
+
+		String value = "'";
+		if (!inspireNamespace.isEmpty()) {
+			value += inspireNamespace.as(String.class)
+					+ (inspireNamespace.as(String.class).endsWith("/") ? "" : "/");
 		}
-		else {
-			mappingValue
-					.setValue("'" + inspireNamespace.as(String.class) + "' || $T$." + propertyName);
-		}
-		final String propPath = buildPathWithoutAttribute(
-				targetProperty.getDefinition().getPropertyPath());
-		mappingValue.setTarget(propPath);
+		value += mappingContext.getFeatureTypeName() + "_' || $T$." + propertyName;
+
+		final List<QName> propPath = buildPath(targetProperty.getDefinition().getPropertyPath());
+
+		final ValueDefault mappingValue = new MappingValueBuilder().expression()
+				.qualifiedTargetPath(propPath).value(value);
 
 		// Add codespace
-		final MappingValue codeSpaceValue = MappingValue.create(mappingContext.getNamespaces());
-		setConstantType(codeSpaceValue);
-		codeSpaceValue.setValue("http://inspire.ec.europa.eu/ids");
-		codeSpaceValue.setTarget(propPath + "/@codeSpace");
+		final List<QName> codespacePath = ImmutableList.<QName> builder().addAll(propPath)
+				.add(new QName("@codeSpace")).build();
+		final MappingValue codeSpaceValue = new MappingValueBuilder().constant()
+				.qualifiedTargetPath(codespacePath).value("http://inspire.ec.europa.eu/ids")
+				.build();
 		final String tableName = ((CellParentWrapper) propertyCell).getTableName();
 		mappingContext.addValueMappingToTable(targetProperty, codeSpaceValue, tableName);
+
+		return Optional.of(mappingValue.build());
 	}
 
 }

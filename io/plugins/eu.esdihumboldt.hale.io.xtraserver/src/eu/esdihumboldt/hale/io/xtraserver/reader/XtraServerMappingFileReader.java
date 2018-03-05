@@ -18,8 +18,9 @@ package eu.esdihumboldt.hale.io.xtraserver.reader;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.interactive_instruments.xtraserver.config.util.ApplicationSchema;
-import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.io.XtraServerMappingFile;
+import de.interactive_instruments.xtraserver.config.transformer.XtraServerMappingTransformer;
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentReader;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
@@ -30,7 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
-import eu.esdihumboldt.hale.io.xtraserver.reader.handler.HaleAlignmentGenerator;
+import eu.esdihumboldt.hale.io.xtraserver.reader.handler.AlignmentGenerator;
 
 /**
  * Reads an XtraServer Mapping file into an Alignment .
@@ -76,7 +77,6 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 		TypeIndex targetTypes = getTargetSchema();
 
 		final Schema schema = ((SchemaSpace) schemaspace).getSchemas().iterator().next();
-		final ApplicationSchema applicationSchema = new ApplicationSchema(schema.getLocation());
 
 		final MutableAlignment alignment;
 
@@ -84,10 +84,15 @@ public class XtraServerMappingFileReader extends AbstractAlignmentReader {
 
 			progress.setCurrentTask("Loading XtraServer Mapping file");
 
-			XtraServerMapping xsm = XtraServerMapping.createFromStream(in, applicationSchema);
+			final XtraServerMapping xtraServerMapping = XtraServerMappingFile.read().fromStream(in);
 
-			final HaleAlignmentGenerator haleAlignmentGenerator = new HaleAlignmentGenerator(
-					sourceTypes, targetTypes, entityResolver, progress, reporter, xsm);
+			final XtraServerMapping flatXtraServerMapping = XtraServerMappingTransformer
+					.forMapping(xtraServerMapping).applySchemaInfo(schema.getLocation())
+					.flattenInheritance().transform();
+
+			final AlignmentGenerator haleAlignmentGenerator = new AlignmentGenerator(
+					sourceTypes, targetTypes, entityResolver, progress, reporter,
+					flatXtraServerMapping);
 
 			alignment = haleAlignmentGenerator.generate();
 

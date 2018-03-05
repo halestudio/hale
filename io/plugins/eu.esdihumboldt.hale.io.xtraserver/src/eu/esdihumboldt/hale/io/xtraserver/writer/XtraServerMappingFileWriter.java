@@ -25,7 +25,8 @@ import javax.xml.stream.XMLStreamException;
 
 import org.xml.sax.SAXException;
 
-import de.interactive_instruments.xtraserver.config.util.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
+import de.interactive_instruments.xtraserver.config.io.XtraServerMappingFile;
 import eu.esdihumboldt.hale.common.align.io.impl.AbstractAlignmentWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -97,20 +98,23 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 		try (final OutputStream out = getTarget().getOutput()) {
 			final XtraServerMappingGenerator generator = new XtraServerMappingGenerator(
 					getAlignment(), getTargetSchema(), progress,
-					Collections.unmodifiableMap(projectProperties));
+					Collections.unmodifiableMap(projectProperties), getProjectInfo(),
+					getProjectLocation(), reporter);
 			final XtraServerMapping mapping = generator.generate(reporter);
+			XtraServerMappingFile.Writer writer = XtraServerMappingFile.write().mapping(mapping);
+
 			if (getContentType().getId().equals(CONTENT_TYPE_MAPPING)) {
 				progress.setCurrentTask("Writing XtraServer Mapping file");
-				mapping.writeToStream(out, false);
 			}
 			else if (getContentType().getId().equals(CONTENT_TYPE_ARCHIVE)) {
 				progress.setCurrentTask("Writing XtraServer Mapping Archive");
-				mapping.writeToStream(out, true);
+				writer.createArchiveWithAdditionalFiles();
 			}
 			else {
 				throw new IOProviderConfigurationException(
 						"Content type not supported: " + getContentType().getName());
 			}
+			writer.toStream(out);
 			progress.advance(1);
 
 			final Set<String> missingAssociationTargets = generator.getMissingAssociationTargets();

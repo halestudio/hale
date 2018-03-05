@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.reader.handler;
 
 import java.util.Optional;
 
-import de.interactive_instruments.xtraserver.config.util.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.MappingValue;
 
 /**
  * Factory for creating Property Transformation Handlers
@@ -43,15 +43,15 @@ public class PropertyTransformationHandlerFactory {
 	 * @return new TypeHandler
 	 */
 	public Optional<PropertyTransformationHandler> create(final MappingValue mappingValue) {
-		if (mappingValue.getValueType().equals("value")) {
-			return Optional.of(new RenameHandler(transformationContext));
-		}
-		else if (mappingValue.getValueType().equals("expression")
+		if (mappingValue.isExpression()
 				&& FormattedStringHandler.isFormattedStringExpression(mappingValue.getValue())) {
 			return Optional.of(new FormattedStringHandler(transformationContext));
 		}
-		else if (mappingValue.getValueType().equals("constant")) {
+		else if (mappingValue.isConstant()) {
 			return Optional.of(new AssignHandler(transformationContext));
+		}
+		else if (mappingValue.isColumn()) {
+			return Optional.of(new RenameHandler(transformationContext));
 		}
 
 		return Optional.empty();
