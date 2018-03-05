@@ -97,7 +97,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-			throws IOException {
+					throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
 				targetTypes, reporter);
 	}
@@ -156,6 +156,8 @@ public class JaxbAlignmentIO {
 
 		// Indent output
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		// set ecndoing
+		m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		// Specify the schema location
 //		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
 //				"http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");
