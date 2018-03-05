@@ -121,7 +121,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			BucketsApi bucketsApi = ProjectStoreHelper.getBucketsApi(this, apiKey);
 
 			// POST /buckets
-			id = bucketsApi.createBucket(newBucket, getContextOrganisation());
+			id = bucketsApi.createBucketWithOwner(owner.getType().getJsonValue(), owner.getId(),
+					newBucket);
 			Owner bucketOwner = UserServiceHelper.toOwner(id.getUserId(), id.getOrgId());
 
 			// PUT /buckets/{ownerType}/{ownerId}/{bucketID}/p/author
@@ -195,14 +196,15 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getProjects()
+	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getProjects(String)
 	 */
 	@Override
-	public List<HaleConnectProjectInfo> getProjects() throws HaleConnectException {
+	public List<HaleConnectProjectInfo> getProjects(String contextOrganisation)
+			throws HaleConnectException {
 		List<BucketDetail> bucketDetails;
 		try {
 			bucketDetails = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
-					.getBuckets(null, true);
+					.getBuckets(contextOrganisation, true);
 		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
 			throw new HaleConnectException(e.getMessage(), e);
 		}
@@ -211,12 +213,12 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	@Override
-	public ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync()
-			throws HaleConnectException {
+	public ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync(
+			String contextOrganisation) throws HaleConnectException {
 		final SettableFuture<List<HaleConnectProjectInfo>> future = SettableFuture.create();
 		try {
 			ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken()).getBucketsAsync(
-					getContextOrganisation(), true, new ApiCallback<List<BucketDetail>>() {
+					contextOrganisation, true, new ApiCallback<List<BucketDetail>>() {
 
 						@Override
 						public void onDownloadProgress(long bytesRead, long contentLength,
@@ -371,8 +373,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	}
 
 	@Override
-	public ListenableFuture<Boolean> uploadProjectFileAsync(String projectId, Owner owner, File file,
-			ProgressIndicator progress) throws HaleConnectException {
+	public ListenableFuture<Boolean> uploadProjectFileAsync(String projectId, Owner owner,
+			File file, ProgressIndicator progress) throws HaleConnectException {
 
 		if (!this.isLoggedIn()) {
 			throw new HaleConnectException("Not logged in");
@@ -479,20 +481,6 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 				throw new HaleConnectException(e.getMessage(), e);
 			}
 		}
-	}
-
-	private String getContextOrganisation() {
-		if (!this.isLoggedIn()) {
-			return null;
-		}
-
-		List<String> orgIds = this.getSession().getOrganisationIds();
-		if (orgIds.isEmpty()) {
-			return null;
-		}
-
-		// XXX Cannot handle multiple organisations!
-		return orgIds.iterator().next();
 	}
 
 	private void notifyLoginStateChanged() {
@@ -661,7 +649,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 					.getResourcePermissionInfo(resourceType, permission);
 			if ("user".equals(role)) {
 				Object userPermission = permissions.get("user");
-				return "true".equals(userPermission.toString());
+				return !"false".equals(userPermission.toString());
 			}
 			else {
 				// Interpret role as orgId

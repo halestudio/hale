@@ -72,7 +72,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	 * {@link #getScriptHash()}.
 	 */
 	private String scriptHash = null;
-	private boolean askedForAllowance = false;
+	private boolean askedForPermission = false;
 
 	/**
 	 * Constructs the service.
@@ -96,7 +96,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				}
 				restrictionActiveURI = null;
 				scriptHash = null;
-				askedForAllowance = false;
+				askedForPermission = false;
 			}
 
 			@Override
@@ -153,7 +153,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 		try {
 			return super.evaluate(script, processor);
 		} catch (GroovyRestrictionException e) {
-			if (!askedForAllowance && askForAllowance()) {
+			if (!askedForPermission && askForPermission()) {
 				return super.evaluate(script, processor);
 			}
 			else {
@@ -163,13 +163,30 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	}
 
 	/**
-	 * Ask for allowance to run script with full permissions.
+	 * Ask for permission to run script without restrictions
 	 * 
-	 * @return true, if allowance was given.
+	 * @return true if permission was granted
 	 */
-	private synchronized boolean askForAllowance() {
+	private synchronized boolean askForPermission() {
+		boolean hashVerified = false;
+		if (restrictionActiveURI == null && projectService.getLoadLocation() != null) {
+			// If a project is loaded that requires lifting Groovy
+			// restrictions, restrictionActiveURI will still be null because
+			// projectLoaded() is called only after the user confirmation
+			// dialog is closed
+			restrictionActiveURI = projectService.getLoadLocation();
+			hashVerified = verifyScriptHash(restrictionActiveURI);
+		}
+
+		if (hashVerified) {
+			// Don't ask for permission if restrictions were lifted for this
+			// script before
+			setRestrictionActive(false);
+			askedForPermission = true;
+		}
+
 		// synchronization...
-		if (!askedForAllowance) {
+		if (!askedForPermission) {
 			final AtomicBoolean disableRestriction = new AtomicBoolean(false);
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
@@ -196,7 +213,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			if (disableRestriction.get()) {
 				setRestrictionActive(false);
 			}
-			askedForAllowance = true;
+			askedForPermission = true;
 		}
 
 		return !restrictionActive;
@@ -206,6 +223,14 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 	public void setRestrictionActive(final boolean active) {
 		if (restrictionActive != active) {
 			restrictionActive = active;
+			if (restrictionActiveURI == null) {
+				// If a project is loaded that requires lifting Groovy
+				// restrictions, restrictionActiveURI will still be null because
+				// projectLoaded() is called only after the user confirmation
+				// dialog is closed
+				restrictionActiveURI = projectService.getLoadLocation();
+			}
+
 			if (restrictionActiveURI != null) {
 				Map<URI, String> preferences = loadPreferences();
 				if (!restrictionActive)
@@ -344,8 +369,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				restrictionActive = true;
 			}
 			else {
-				String hash = loadPreferences().get(location);
-				boolean hashChecked = hash != null && getScriptHash().equals(hash);
+				boolean hashChecked = verifyScriptHash(location);
 				restrictionActive = !hashChecked;
 				// XXX inform user directly if the hash was invalid?
 				if (!restrictionActive) {
@@ -353,6 +377,11 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				}
 			}
 		}
+	}
+
+	private boolean verifyScriptHash(URI projectLocation) {
+		String hash = loadPreferences().get(projectLocation);
+		return hash != null && getScriptHash().equals(hash);
 	}
 
 	private String getScriptString(Value value) {

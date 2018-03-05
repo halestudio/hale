@@ -37,6 +37,7 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.impl.ChildEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
+import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager;
@@ -175,6 +176,23 @@ public abstract class AlignmentUtil {
 		List<ChildContext> path = new ArrayList<ChildContext>(entity.getPropertyPath());
 		path.add(new ChildContext(child));
 		return createEntity(entity.getType(), path, entity.getSchemaSpace(), entity.getFilter());
+	}
+
+	/**
+	 * Create an entity wrapper for a given entity definition.
+	 * 
+	 * @param def the entity definition
+	 * @return the entity wrapper
+	 */
+	public static Entity createEntity(EntityDefinition def) {
+		if (def instanceof TypeEntityDefinition) {
+			return new DefaultType((TypeEntityDefinition) def);
+		}
+		else if (def instanceof PropertyEntityDefinition) {
+			return new DefaultProperty((PropertyEntityDefinition) def);
+		}
+		else
+			throw new IllegalArgumentException("Unsupported entity type");
 	}
 
 	/**
@@ -1038,6 +1056,23 @@ public abstract class AlignmentUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get children of an {@link Entity} without context conditions
+	 * 
+	 * @param entity the entity definition
+	 * @return Collection of entity definitions
+	 */
+	public static List<PropertyEntityDefinition> getChildrenWithoutContexts(Entity entity) {
+		TypeEntityDefinition ted = (TypeEntityDefinition) entity.getDefinition();
+		List<PropertyEntityDefinition> childProperties = new ArrayList<>();
+		for (EntityDefinition child : getChildrenWithoutContexts(ted)) {
+			if (child instanceof PropertyEntityDefinition) {
+				childProperties.add((PropertyEntityDefinition) child);
+			}
+		}
+		return childProperties;
 	}
 
 	/**

@@ -8,6 +8,10 @@
             dialogFactory="eu.esdihumboldt.hale.ui.filter.cql.CQLFilterDialogFactory"
             filter="CQL">
       </filter-ui>
+      <filter-ui
+            dialogFactory="eu.esdihumboldt.hale.ui.filter.cql.CQLFilterDialogFactory"
+            filter="ECQL">
+      </filter-ui>
    </extension>
 
 </plugin>

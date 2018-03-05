@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,7 @@ import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
 import eu.esdihumboldt.hale.common.core.service.cleanup.TemporaryFiles;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
@@ -129,6 +131,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		public OpenProjectAdvisor(boolean updateSchema) {
 			super();
 			this.updateSchema = updateSchema;
+			setActionId(ProjectIO.ACTION_LOAD_PROJECT);
 		}
 
 		@Override
@@ -256,6 +259,18 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				}
 			}
 
+			// Defer execution of source data providers until after Alignment
+			// is loaded
+			List<IOConfiguration> sourceDataConfigurations = new ArrayList<>();
+			for (IOConfiguration conf : confs) {
+				IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
+						.getFactory(conf.getProviderId());
+				if (InstanceReader.class.isAssignableFrom(descriptor.getProviderType())) {
+					sourceDataConfigurations.add(conf);
+				}
+			}
+			confs.removeAll(sourceDataConfigurations);
+
 			executeConfigurations(confs);
 
 			// notify listeners
@@ -266,6 +281,16 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				// XXX do this in a Job or something?
 				file.apply();
 			}
+
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+			boolean txWasEnabled = is.isTransformationEnabled();
+			is.setTransformationEnabled(false);
+
+			executeConfigurations(sourceDataConfigurations);
+			if (txWasEnabled) {
+				is.setTransformationEnabled(true);
+			}
+
 			// reset changed to false if it was altered through the project
 			// files being applied
 			// FIXME this is ugly XXX what if there actually is a real
@@ -368,6 +393,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	private final ProjectConfigurationService configurationService = new ProjectConfigurationService();
 
+	private final Map<String, Value> temporarySettings = new HashMap<>();
+
 	private boolean changed = false;
 
 	private UILocationUpdater updater = new UILocationUpdater(null, null);
@@ -440,6 +467,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				updateWindowTitle();
 			}
 		};
+		saveProjectAdvisor.setActionId(ProjectIO.ACTION_SAVE_PROJECT);
 	}
 
 	/**
@@ -526,6 +554,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 						projectLocation = null;
 						changed = false;
 						projectLoadContentType = null;
+						temporarySettings.clear();
 					}
 					updateWindowTitle();
 					notifyClean();
@@ -1171,4 +1200,23 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 		return getConfigurationService().getProperty(name);
 	}
 
+	@Override
+	public void setTemporaryProperty(String key, Value value) {
+		temporarySettings.put(key, value);
+	}
+
+	@Override
+	public Value getTemporaryProperty(String key) {
+		return temporarySettings.get(key);
+	}
+
+	@Override
+	public Value getTemporaryProperty(String key, Value defaultValue) {
+		if (temporarySettings.containsKey(key)) {
+			return temporarySettings.get(key);
+		}
+		else {
+			return defaultValue;
+		}
+	}
 }

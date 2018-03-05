@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.TransformationE
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.FamilyInstanceImpl;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
+import eu.esdihumboldt.hale.common.instance.index.DeepIterableKey;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -48,11 +49,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * @author Simon Templer
  */
 public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<TransformationEngine> {
-
-	/**
-	 * Key instance that stands for merging of all instances.
-	 */
-	public static final DeepIterableKey KEY_ALL = new DeepIterableKey(Long.valueOf(1));
 
 	/**
 	 * Resource iterator over the merged instances
@@ -84,7 +80,7 @@ public abstract class AbstractMergeHandler<T, K> implements InstanceHandler<Tran
 
 			// get the instances to merge
 			InstanceCollection instances;
-			if (next == KEY_ALL) {
+			if (next == DeepIterableKey.KEY_ALL) {
 				// special case: merge all
 				instances = originalInstances;
 			}

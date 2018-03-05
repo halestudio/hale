@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
+import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -164,7 +165,7 @@ public class GroovyUtil implements GroovyConstants {
 	 */
 	public static MutableInstance evaluate(Script script, final InstanceBuilder builder,
 			final TypeDefinition type, GroovyService service, SimpleLog log)
-					throws TransformationException, NoResultException {
+			throws TransformationException, NoResultException {
 		Iterable<MutableInstance> results = evaluateAll(script, builder, type, service, log);
 		Iterator<MutableInstance> it = results.iterator();
 		MutableInstance result;
@@ -287,6 +288,9 @@ public class GroovyUtil implements GroovyConstants {
 
 		binding.setVariable(BINDING_SPATIAL_INDEX,
 				executionContext.getService(SpatialIndexService.class));
+
+		binding.setVariable(BINDING_INSTANCE_INDEX,
+				executionContext.getService(InstanceIndexService.class));
 
 		return binding;
 	}

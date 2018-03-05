@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C9e4828af-e6b0-456d-98bb-209a523864e8" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="FormattedString" priority="normal">
+        <source name="var">
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="z" ns="B"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="y" ns="B"/>
+            </property>
+        </source>
+        <source name="var">
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="x" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="xyz" ns="C"/>
+            </property>
+        </target>
+        <parameter value="{x}-{y}-{z}" name="pattern"/>
+    </cell>
+</alignment>

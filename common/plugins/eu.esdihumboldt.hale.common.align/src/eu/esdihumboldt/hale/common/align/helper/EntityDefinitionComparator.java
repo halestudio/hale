@@ -32,6 +32,12 @@ public class EntityDefinitionComparator implements Comparator<EntityDefinition> 
 
 	@Override
 	public int compare(EntityDefinition o1, EntityDefinition o2) {
+		// first, compare type
+		int compare = compareType(o1, o2);
+		if (compare != 0) {
+			return compare;
+		}
+
 		Iterator<ChildContext> o1iterator = o1.getPropertyPath().iterator();
 		Iterator<ChildContext> o2iterator = o2.getPropertyPath().iterator();
 
@@ -91,6 +97,32 @@ public class EntityDefinitionComparator implements Comparator<EntityDefinition> 
 		}
 
 		return 0;
+	}
+
+	private int compareType(EntityDefinition t1, EntityDefinition t2) {
+		// compare local name
+		int comp = t1.getType().getName().getLocalPart()
+				.compareTo(t2.getType().getName().getLocalPart());
+
+		if (comp == 0) {
+			// compare namespace
+			comp = t1.getType().getName().getNamespaceURI()
+					.compareTo(t2.getType().getName().getNamespaceURI());
+		}
+
+		if (comp == 0) {
+			// compare filter
+			if (t1.getFilter() != null && t2.getFilter() != null) {
+				String f1 = Strings.nullToEmpty(
+						FilterDefinitionManager.getInstance().asString(t1.getFilter()));
+				String f2 = Strings.nullToEmpty(
+						FilterDefinitionManager.getInstance().asString(t2.getFilter()));
+
+				comp = f1.compareTo(f2);
+			}
+		}
+
+		return comp;
 	}
 
 	private int compareContext(ChildContext o1c, ChildContext o2c) {

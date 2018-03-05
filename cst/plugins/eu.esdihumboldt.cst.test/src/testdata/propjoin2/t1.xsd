@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.example.org/t1/" targetNamespace="http://www.example.org/t1/">
+    <complexType name="PersonType">
+    	<sequence>
+    		<element name="name" type="string"></element>
+    		<element name="details" maxOccurs="1" minOccurs="0">
+    			<complexType>
+    				<sequence>
+    					<element name="age" type="int"></element>
+    					<element name="income" type="double"></element>
+    					<element name="addressId" type="string" maxOccurs="unbounded" minOccurs="0"></element>
+    				</sequence>
+    			</complexType>
+    		</element>
+    	</sequence>
+    	<attribute name="id" type="int"></attribute>
+    </complexType>
+
+    <element name="person" type="tns:PersonType"></element>
+
+    <complexType name="AddressType">
+    	<sequence>
+    		<element name="street" type="string"></element>
+    		<element name="zip" type="int"></element>
+    	</sequence>
+		<attribute name="id" type="int"></attribute>
+    </complexType>
+
+    <element name="address" type="tns:AddressType"></element>
+
+    <complexType name="CityType">
+    	<sequence>
+    		<element name="name" type="string"></element>
+    		<element name="zip" type="int"></element>
+    	</sequence>
+    </complexType>
+
+    <element name="city" type="tns:CityType"></element>
+
+	<element name="collection" type="tns:CollectionType"></element>
+    
+    <complexType name="CollectionType">
+    	<choice maxOccurs="unbounded" minOccurs="0">
+    		<element ref="tns:person"></element>
+    		<element ref="tns:address"></element>
+    		<element ref="tns:city"></element>
+    	</choice>
+    </complexType>
+</schema>

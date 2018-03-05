@@ -24,5 +24,12 @@ import eu.esdihumboldt.hale.common.core.report.Report;
  * @author Kai Schwierczek
  */
 public interface InstanceValidationReport extends Report<InstanceValidationMessage> {
+
+	/**
+	 * Action ID for instance validation (Even though there is no actual action
+	 * defined).
+	 */
+	public static final String TASK_TYPE = "eu.esdihumboldt.hale.instance.validation.internal";
+
 	// nothing to add, just for concrete type...
 }

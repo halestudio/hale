@@ -28,11 +28,13 @@ import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Cell migrator for joins.
@@ -43,8 +45,9 @@ public class JoinMigrator extends DefaultCellMigrator {
 
 	@Override
 	public MutableCell updateCell(Cell originalCell, AlignmentMigration migration,
-			MigrationOptions options) {
-		MutableCell result = super.updateCell(originalCell, migration, options);
+			MigrationOptions options, SimpleLog log) {
+		MutableCell result = super.updateCell(originalCell, migration, options, log);
+		SimpleLog cellLog = SimpleLog.all(log, new CellLog(result, CELL_LOG_CATEGORY));
 
 		if (options.updateSource()) {
 			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
@@ -54,8 +57,8 @@ public class JoinMigrator extends DefaultCellMigrator {
 				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
 				if (joinParam != null) {
 					joinParams.clear();
-					joinParams.add(new ParameterValue(
-							Value.complex(convertJoinParameter(joinParam, migration, options))));
+					joinParams.add(new ParameterValue(Value.complex(
+							convertJoinParameter(joinParam, migration, options, cellLog))));
 				}
 			}
 			result.setTransformationParameters(modParams);
@@ -70,20 +73,21 @@ public class JoinMigrator extends DefaultCellMigrator {
 	 * @param joinParam the join parameter to migrate
 	 * @param migration the alignment migration
 	 * @param options the migration options
+	 * @param log the migration log
 	 * @return the migrated join parameter
 	 */
 	private JoinParameter convertJoinParameter(JoinParameter joinParam,
-			AlignmentMigration migration, MigrationOptions options) {
+			AlignmentMigration migration, MigrationOptions options, SimpleLog log) {
 
 		List<TypeEntityDefinition> types = joinParam.types.stream().map(type -> {
-			return (TypeEntityDefinition) migration.entityReplacement(type).orElse(type);
+			return (TypeEntityDefinition) migration.entityReplacement(type, log).orElse(type);
 		}).collect(Collectors.toList());
 
 		Set<JoinCondition> conditions = joinParam.conditions.stream().map(condition -> {
 			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.baseProperty).orElse(condition.baseProperty);
+					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
 			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.joinProperty).orElse(condition.joinProperty);
+					.entityReplacement(condition.joinProperty, log).orElse(condition.joinProperty);
 			JoinCondition result = new JoinCondition(baseProperty, joinProperty);
 			return result;
 		}).collect(Collectors.toSet());

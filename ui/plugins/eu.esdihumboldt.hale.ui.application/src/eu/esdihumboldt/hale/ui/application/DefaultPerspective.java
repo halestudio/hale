@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.ui.views.functions.FunctionsView;
 import eu.esdihumboldt.hale.ui.views.mapping.AlignmentView;
 import eu.esdihumboldt.hale.ui.views.report.ReportList;
 import eu.esdihumboldt.hale.ui.views.schemas.SchemasView;
+import eu.esdihumboldt.hale.ui.views.tasks.TaskTreeView;
 import eu.esdihumboldt.hale.ui.views.typehierarchy.TypeHierarchyView;
 
 /**
@@ -47,6 +48,7 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		IFolderLayout bottom = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.7f, editorArea); //$NON-NLS-1$
 		bottom.addView("org.eclipse.pde.runtime.LogView");
 		bottom.addView(IPageLayout.ID_PROP_SHEET);
+		bottom.addView(TaskTreeView.ID);
 
 		// bottom right
 		IFolderLayout bottomRight = _layout.createFolder("bottomRight", IPageLayout.RIGHT, 0.7f,
@@ -60,8 +62,8 @@ public class DefaultPerspective implements IPerspectiveFactory {
 		topLeft.addView(SchemasView.ID);
 
 		// top right
-		IFolderLayout topRight = _layout.createFolder(
-				"topRight", IPageLayout.RIGHT, 0.4f, editorArea); //$NON-NLS-1$
+		IFolderLayout topRight = _layout.createFolder("topRight", IPageLayout.RIGHT, 0.4f, //$NON-NLS-1$
+				editorArea);
 		topRight.addView(AlignmentView.ID);
 //		topRight.addPlaceholder(MapView.ID);
 

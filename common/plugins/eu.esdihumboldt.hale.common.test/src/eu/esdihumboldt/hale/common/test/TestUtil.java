@@ -33,6 +33,7 @@ import org.osgi.framework.BundleException;
 import de.fhg.igd.osgi.util.OsgiUtils;
 import de.fhg.igd.osgi.util.OsgiUtils.Condition;
 import de.fhg.igd.osgi.util.OsgiUtilsActivator;
+import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -66,8 +67,8 @@ public class TestUtil {
 	 *             configuration failed
 	 * @throws IOException if the schema could not be loaded
 	 */
-	public static Schema loadSchema(URI location) throws IOProviderConfigurationException,
-			IOException {
+	public static Schema loadSchema(URI location)
+			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		XmlSchemaReader reader = new XmlSchemaReader();
@@ -93,8 +94,8 @@ public class TestUtil {
 	 * @return the loaded alignment
 	 * @throws Exception if the alignment or other resources could not be loaded
 	 */
-	public static Alignment loadAlignment(final URI location, Schema sourceTypes, Schema targetTypes)
-			throws Exception {
+	public static Alignment loadAlignment(final URI location, Schema sourceTypes,
+			Schema targetTypes) throws Exception {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
 		IOReporter report = new DefaultIOReporter(new Locatable() {
@@ -103,14 +104,14 @@ public class TestUtil {
 			public URI getLocation() {
 				return location;
 			}
-		}, "Load alignment", true);
+		}, "Load alignment", AlignmentIO.ACTION_LOAD_ALIGNMENT, true);
 		Alignment alignment;
 		try {
 			alignment = CastorAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
 					new PathUpdate(null, null));
 		} catch (Exception e) {
 			alignment = JaxbAlignmentIO.load(input.getInput(), report, sourceTypes, targetTypes,
-					new PathUpdate(null, null), null);
+					new PathUpdate(null, null), null, null);
 		}
 
 		assertTrue("Errors are contained in the report", report.getErrors().isEmpty());

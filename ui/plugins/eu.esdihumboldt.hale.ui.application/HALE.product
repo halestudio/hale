@@ -32,17 +32,23 @@ https://www.wetransform.to/services/support/
 
    <launcherArgs>
       <programArgs>-clean
--name &quot;HUMBOLDT Alignment Editor&quot;
+-name &quot;hale studio&quot;
 --launcher.defaultAction openFile
 --launcher.GTK_version 2
       </programArgs>
-      <vmArgs>-Xmx1000m
--Dsun.net.client.defaultConnectTimeout=10000
+      <vmArgs>-Dsun.net.client.defaultConnectTimeout=10000
 -Dsun.net.client.defaultReadTimeout=20000
 -Dcache.level1.enabled=false
 -Dcache.level1.size=0
 -Dcache.level2.enabled=false
 -Dcache.level2.size=0
+         <argsX86>-Xmx1000m</argsX86>
+         <argsX86_64>-Xmx2g</argsX86_64>
+         <argsPPC>-Xmx1000m</argsPPC>
+         <argsIA_64>-Xmx1000m</argsIA_64>
+         <argsIA_64_32>-Xmx1000m</argsIA_64_32>
+         <argsPA_RISC>-Xmx1000m</argsPA_RISC>
+         <argsSPARC>-Xmx1000m</argsSPARC>
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>

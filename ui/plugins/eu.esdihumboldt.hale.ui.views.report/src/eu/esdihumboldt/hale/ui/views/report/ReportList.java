@@ -191,7 +191,16 @@ public class ReportList extends PropertiesViewPart
 				else if (e1 instanceof Report<?> && e2 instanceof Report<?>) {
 					Report<?> first = (Report<?>) e1;
 					Report<?> second = (Report<?>) e2;
-					if (first.getStartTime().getTime() > second.getStartTime().getTime()) {
+					if (first.getStartTime() == null && second.getStartTime() == null) {
+						return 0;
+					}
+					else if (first.getStartTime() == null) {
+						return 1;
+					}
+					else if (second.getStartTime() == null) {
+						return -1;
+					}
+					else if (first.getStartTime().getTime() > second.getStartTime().getTime()) {
 						return -1;
 					}
 					else if (first.getStartTime().getTime() < second.getStartTime().getTime()) {

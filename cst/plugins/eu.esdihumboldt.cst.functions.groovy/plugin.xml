@@ -7,6 +7,7 @@
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyExplanation"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyMigrator"
             description="Use a groovy script to derive a target property value."
             help="help/script.xhtml"
             icon="icons/star.png"
@@ -59,9 +60,10 @@
       <propertyFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyExplanation"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyMigrator"
             description="Use a groovy script to derive a target property value."
-            icon="icons/star.png"
             help="help/script.xhtml"
+            icon="icons/star.png"
             identifier="eu.esdihumboldt.cst.functions.groovy.greedy"
             name="Groovy script (greedy)">
          <targetProperties>
@@ -112,6 +114,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyRetypeExplanation"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyMigrator"
             description="Use a Groovy script to do a 1:1 instance conversion."
             help="help/retype.xhtml"
             icon="icons/star.png"
@@ -142,6 +145,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyCreateExplanation"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyMigrator"
             description="Use a Groovy script to create target instances."
             help="help/create.xhtml"
             icon="icons/star.png"
@@ -177,7 +181,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyMergeExplanation"
-            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.merge.MergeMigrator"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyMergeMigrator"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             help="help/merge.xhtml"
             icon="icons/star.png"
@@ -235,7 +239,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.groovy"
             cellExplanation="eu.esdihumboldt.cst.functions.groovy.GroovyJoinExplanation"
-            cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.join.JoinMigrator"
+            cellMigrator="eu.esdihumboldt.cst.functions.groovy.GroovyJoinMigrator"
             description="Joins multiple instances of different source types into one instance of the target type, based on one or more matching properties."
             help="help/join.xhtml"
             icon="icons/star.png"

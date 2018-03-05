@@ -205,7 +205,10 @@ public class PathUpdate {
 	 * @return the new URI
 	 */
 	public URI changePath(URI oldSource) {
-		if (oldRaw != null) {
+		if (oldRaw == null || oldRaw.isEmpty()) {
+			return oldSource;
+		}
+		else {
 			if (oldSource.toString().startsWith(oldRaw)) {
 				return URI.create(oldSource.toString().replace(oldRaw, newRaw));
 			}
@@ -227,9 +230,6 @@ public class PathUpdate {
 					return oldSource;
 				}
 			}
-		}
-		else {
-			return oldSource;
 		}
 	}
 

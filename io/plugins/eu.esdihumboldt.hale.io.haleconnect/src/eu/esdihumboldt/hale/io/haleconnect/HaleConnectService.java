@@ -172,18 +172,28 @@ public interface HaleConnectService {
 	/**
 	 * Get a list of available hale connect transformation projects
 	 * 
+	 * @param contextOrganisation If provided, projects owned by the given
+	 *            organisation will be returned if the currently logged in user
+	 *            has sufficient permissions. If <code>null</code> is passed,
+	 *            projects owned by the current user will be returned.
 	 * @return a list of available projects
 	 * @throws HaleConnectException thrown on any API error
 	 */
-	List<HaleConnectProjectInfo> getProjects() throws HaleConnectException;
+	List<HaleConnectProjectInfo> getProjects(String contextOrganisation)
+			throws HaleConnectException;
 
 	/**
 	 * Get a list of available hale connect transformation projects
 	 *
+	 * @param contextOrganisation If provided, projects owned by the given
+	 *            organisation will be returned if the currently logged in user
+	 *            has sufficient permissions. If <code>null</code> is passed,
+	 *            projects owned by the current user will be returned.
 	 * @return {@link ListenableFuture} of the result
 	 * @throws HaleConnectException thrown on any API error
 	 */
-	ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync() throws HaleConnectException;
+	ListenableFuture<List<HaleConnectProjectInfo>> getProjectsAsync(String contextOrganisation)
+			throws HaleConnectException;
 
 	/**
 	 * Load a transformation from hale connect

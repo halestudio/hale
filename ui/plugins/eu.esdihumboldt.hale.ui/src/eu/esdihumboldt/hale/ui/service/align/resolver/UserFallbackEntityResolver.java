@@ -34,6 +34,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
@@ -43,6 +44,7 @@ import eu.esdihumboldt.hale.ui.function.common.TypeEntityDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
+import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 
 /**
@@ -52,6 +54,12 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  * @author Simon Templer
  */
 public class UserFallbackEntityResolver extends DefaultEntityResolver {
+
+	/**
+	 * Name of the temporary property to indicate that the user wants to skip
+	 * resolving entities until a new project is loaded
+	 */
+	public static final String RESOLVE_SKIP_PROPERTY = "resolve.skip";
 
 	@Override
 	public Property resolveProperty(final PropertyType entity, final TypeIndex schema,
@@ -67,33 +75,53 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 						.getService(EntityDefinitionService.class);
 				es.addContexts(candidate);
 			}
+
+			ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+
+			final AtomicBoolean canceledOrSkipped;
+			if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
+				canceledOrSkipped = new AtomicBoolean(true);
+			}
+			else {
+				canceledOrSkipped = new AtomicBoolean(false);
+			}
+
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
-			final AtomicBoolean canceled = new AtomicBoolean(false);
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-				@Override
-				public void run() {
-					PropertyEntityDialog dlg = new PropertyEntityDialog(
-							Display.getCurrent().getActiveShell(), schemaSpace, null,
-							"Cell entity could not be resolved", candidate) {
+			if (!canceledOrSkipped.get()) {
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-						@Override
-						public void create() {
-							super.create();
-							openTray(new ViewerEntityTray(entity, schemaSpace));
+					@Override
+					public void run() {
+						PropertyEntityDialog dlg = new PropertyEntityDialog(
+								Display.getCurrent().getActiveShell(), schemaSpace, null,
+								"Cell entity could not be resolved", candidate) {
+
+							@Override
+							public void create() {
+								super.create();
+								openTray(new ViewerEntityTray(entity, schemaSpace));
+							}
+
+						};
+						switch (dlg.open()) {
+						case Window.OK:
+							result.set(dlg.getObject());
+							break;
+						case Window.CANCEL:
+							// Don't try to resolve further entities
+							ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
+							canceledOrSkipped.set(true);
+							break;
+						default:
+							canceledOrSkipped.set(true);
 						}
+					}
+				});
+			}
 
-					};
-					if (dlg.open() == Window.OK) {
-						result.set(dlg.getObject());
-					}
-					else {
-						canceled.set(true);
-					}
-				}
-			});
 			EntityDefinition def = result.get();
-			if (canceled.get()) {
+			if (canceledOrSkipped.get()) {
 				// return a dummy so the cell is not lost
 				return new DefaultProperty(
 						(PropertyEntityDefinition) EntityToDef.toDummyDef(entity, schemaSpace));
@@ -122,33 +150,54 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 						.getService(EntityDefinitionService.class);
 				es.addContexts(candidate);
 			}
+
+			ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+
+			final AtomicBoolean canceledOrSkipped;
+			if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
+				canceledOrSkipped = new AtomicBoolean(true);
+			}
+			else {
+				canceledOrSkipped = new AtomicBoolean(false);
+			}
+
 			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
-			final AtomicBoolean canceled = new AtomicBoolean(false);
-			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-				@Override
-				public void run() {
-					TypeEntityDialog dlg = new TypeEntityDialog(
-							Display.getCurrent().getActiveShell(), schemaSpace,
-							"Cell entity could not be resolved", candidate, false) {
+			if (!canceledOrSkipped.get()) {
+				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-						@Override
-						public void create() {
-							super.create();
-							openTray(new ViewerEntityTray(entity, schemaSpace));
+					@Override
+					public void run() {
+						TypeEntityDialog dlg = new TypeEntityDialog(
+								Display.getCurrent().getActiveShell(), schemaSpace,
+								"Cell entity could not be resolved", candidate, false) {
+
+							@Override
+							public void create() {
+								super.create();
+								openTray(new ViewerEntityTray(entity, schemaSpace));
+							}
+
+						};
+
+						switch (dlg.open()) {
+						case Window.OK:
+							result.set(dlg.getObject());
+							break;
+						case Window.CANCEL:
+							// Don't try to resolve further entities
+							ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
+							canceledOrSkipped.set(true);
+							break;
+						default:
+							canceledOrSkipped.set(true);
 						}
+					}
+				});
+			}
 
-					};
-					if (dlg.open() == Window.OK) {
-						result.set(dlg.getObject());
-					}
-					else {
-						canceled.set(true);
-					}
-				}
-			});
 			EntityDefinition def = result.get();
-			if (canceled.get()) {
+			if (canceledOrSkipped.get()) {
 				// return a dummy so the cell is not lost
 				return new DefaultType(EntityToDef.toDummyDef(entity, schemaSpace));
 			}

@@ -50,8 +50,10 @@ public class IOReportImplDefinition extends AbstractReportDefinition<IOReport, I
 
 	@Override
 	protected IOReporter createReport(Properties props) {
-		return new DefaultIOReporter(new DefaultInputSupplier(URI.create(props
-				.getProperty(KEY_IOREPORT_TARGET))), props.getProperty(KEY_REPORT_TASKNAME), false);
+		return new DefaultIOReporter(
+				new DefaultInputSupplier(URI.create(props.getProperty(KEY_IOREPORT_TARGET))),
+				props.getProperty(KEY_REPORT_TASKNAME), props.getProperty(KEY_REPORT_TASKTYPE),
+				false);
 	}
 
 	@Override

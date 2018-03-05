@@ -499,4 +499,23 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="eu.esdihumboldt.hale.adv.merge"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.ui.views.tasks"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.ui.index"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

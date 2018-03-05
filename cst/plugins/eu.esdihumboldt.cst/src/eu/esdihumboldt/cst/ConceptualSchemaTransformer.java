@@ -280,6 +280,7 @@ public class ConceptualSchemaTransformer implements TransformationService {
 
 			// Step 2: partition
 			// use InstanceHandler if available - for example merge or join
+			function.setExecutionContext(context.getCellContext(typeCell));
 			InstanceHandler instanceHandler = function.getInstanceHandler();
 			if (instanceHandler != null) {
 				injectTransformationContext(instanceHandler, context);

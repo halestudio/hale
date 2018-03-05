@@ -107,12 +107,14 @@
       <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.cli"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
@@ -145,6 +147,7 @@
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.tasks"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
@@ -163,6 +166,7 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess.test"/>
@@ -176,6 +180,7 @@
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -260,6 +265,7 @@
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.commons.beanutils"/>
+      <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.compress"/>

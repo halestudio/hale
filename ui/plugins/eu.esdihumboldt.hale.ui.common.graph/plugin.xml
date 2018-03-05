@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.ui.common.graph.figures.cell" name="Cell Figure Extension" schema="schema/eu.esdihumboldt.hale.ui.common.graph.figures.cell.exsd"/>
+
+</plugin>

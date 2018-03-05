@@ -56,7 +56,8 @@ public interface AlignmentService {
 	public void removeCustomPropertyFunction(String id);
 
 	/**
-	 * Adds the cells contained in the given alignment to the current alignment.<br>
+	 * Adds the cells contained in the given alignment to the current alignment.
+	 * <br>
 	 * <br>
 	 * If cells with the same entities and transformations already exist they
 	 * will be replaced. THIS IS NOT TRUE, yet at least.

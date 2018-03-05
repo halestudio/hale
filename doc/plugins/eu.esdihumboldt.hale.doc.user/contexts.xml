@@ -5,7 +5,7 @@
       <topic href="html/reference/schema_elements.html" label="Schema elements reference"/>
    </context>
    <context id="filter_field" title="Filter field">
-      <description>Enter a CQL filter to be applied on instances.</description>
+      <description>Enter an CQL or ECQL filter to be applied on instances.</description>
       <topic href="html/reference/cql_filter.html" label="Define a CQL Filter"/>
    </context>
    <context id="source_data">

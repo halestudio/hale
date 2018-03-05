@@ -13,17 +13,17 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	/**
 	 * Default base path of the hale connect user service
 	 */
-	public static String HALE_CONNECT_BASEPATH_USERS_DEFAULT = "https://users.haleconnect.com/v1";
+	public static String HALE_CONNECT_BASEPATH_USERS_DEFAULT = "https://haleconnect.com/accounts/v1";
 
 	/**
 	 * Default base path of the hale connect project store
 	 */
-	public static final String HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT = "https://project-store.haleconnect.com";
+	public static final String HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT = "https://haleconnect.com/store/projects";
 
 	/**
 	 * Default base path of the hale connect bucket service
 	 */
-	public static final String HALE_CONNECT_BASEPATH_DATA_DEFAULT = "https://data.haleconnect.com";
+	public static final String HALE_CONNECT_BASEPATH_DATA_DEFAULT = "https://haleconnect.com/store/data";
 
 	/**
 	 * Default base path of the hale connect web client

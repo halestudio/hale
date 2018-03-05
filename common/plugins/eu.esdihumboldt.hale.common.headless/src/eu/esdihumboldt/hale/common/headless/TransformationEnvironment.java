@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.headless;
 
 import java.util.Map;
 
-import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentProvider;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
@@ -29,7 +29,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * 
  * @author Simon Templer
  */
-public interface TransformationEnvironment extends ServiceProvider {
+public interface TransformationEnvironment extends ServiceProvider, AlignmentProvider {
 
 	/**
 	 * Get the unique identifier for this transformation environment.
@@ -44,13 +44,6 @@ public interface TransformationEnvironment extends ServiceProvider {
 	 * @return the project information or <code>null</code>
 	 */
 	public ProjectInfo getProjectInfo();
-
-	/**
-	 * Get the alignment between source and target schemas.
-	 * 
-	 * @return the alignment
-	 */
-	public Alignment getAlignment();
 
 	/**
 	 * Get the source schemas.

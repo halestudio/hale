@@ -21,7 +21,7 @@ import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
-import eu.esdihumboldt.hale.common.filter.FilterGeoCqlImpl;
+import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -73,9 +73,11 @@ public class CQLFilterField extends TypeFilterField {
 	 */
 	@Override
 	protected Filter createFilter(String filterString) throws CQLException {
+		return new FilterGeoECqlImpl(filterString);
+
 //		switch (filterType) {
 //		case CQL:
-		return new FilterGeoCqlImpl(filterString);
+//			return new FilterGeoCqlImpl(filterString);
 //		case ECQL:
 //			return new FilterGeoECqlImpl(filterString);
 	}
@@ -85,8 +87,9 @@ public class CQLFilterField extends TypeFilterField {
 	 */
 	@Override
 	protected String selectVariable() {
-		PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(Display.getCurrent()
-				.getActiveShell(), ssid, type, Messages.FeatureFilterField_7, null);
+		PropertyDefinitionDialog dialog = new PropertyDefinitionDialog(
+				Display.getCurrent().getActiveShell(), ssid, type, Messages.FeatureFilterField_7,
+				null);
 
 		if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
 				&& dialog.getObject().getType().getName().toString().length() >= 1) {

@@ -184,7 +184,8 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		this.setTarget(new NoStreamOutputSupplier(projectUrn));
 
 		// save the hale connect project URN in the project properties
-		getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY, Value.of(projectUrn.toString()));
+		getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY,
+				Value.of(projectUrn.toString()));
 
 		// redirect project archive to temporary local file
 		File projectArchive = Files.createTempFile("hc-arc", ".zip").toFile();
@@ -232,7 +233,8 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			HaleConnectProjectInfo hcProjectInfo = haleConnect.getProject(owner, projectId);
 
 			if (hcProjectInfo != null) {
-				getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_LAST_MODIFIED_PROPERTY,
+				getProject().getProperties().put(
+						HaleConnectProjectReader.HALECONNECT_LAST_MODIFIED_PROPERTY,
 						Value.of(hcProjectInfo.getLastModified()));
 			}
 		} catch (HaleConnectException e) {
@@ -289,7 +291,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			Locatable prettifiedTarget = new LocatableURI(prettifyTarget(targetUri));
 
 			return new DefaultIOReporter(prettifiedTarget,
-					MessageFormat.format("{0} export", getTypeName()), true);
+					MessageFormat.format("{0} export", getTypeName()), getActionId(), true);
 		} catch (Throwable t) {
 			return super.createReporter();
 		}

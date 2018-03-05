@@ -5,20 +5,30 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.index;singleton:=true
 Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
+Import-Package: com.google.common.collect;version="17.0.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
  com.vividsolutions.jts.geom.impl;version="1.13.0",
+ de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.geom,
  de.fhg.igd.geom.indices,
+ eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.hale.common.instance,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
+ eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.helper,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instance.model.impl,
  eu.esdihumboldt.hale.common.instance.processing,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.geometry,
  eu.esdihumboldt.hale.common.schema.model,
- eu.esdihumboldt.util.groovy.sandbox
+ eu.esdihumboldt.hale.common.schema.model.constraint.property,
+ net.jcip.annotations
 Export-Package: eu.esdihumboldt.hale.common.instance.index,
  eu.esdihumboldt.hale.common.instance.index.spatial
+Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="3.4.0",
+ eu.esdihumboldt.util;bundle-version="3.4.0",
+ eu.esdihumboldt.util.groovy;bundle-version="3.4.0",
+ eu.esdihumboldt.util.groovy.sandbox;bundle-version="3.4.0"

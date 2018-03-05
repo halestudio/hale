@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.align.merge.migrator">
+      <migrator
+            class="eu.esdihumboldt.hale.adv.merge.AdVMeasurementMigrator"
+            id="eu.esdihumbolt.hale.adv.merge.measurement">
+         <propertyFunction
+               ref="custom:alignment:adv.uom.toucum">
+         </propertyFunction>
+      </migrator>
+   </extension>
+
+</plugin>
