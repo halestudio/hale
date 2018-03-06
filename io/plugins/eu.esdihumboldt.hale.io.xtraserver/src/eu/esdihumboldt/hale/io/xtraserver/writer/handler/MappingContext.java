@@ -279,10 +279,13 @@ public final class MappingContext {
 		featureTypeMappings.values().stream().map(FeatureTypeMappingBuilder::build)
 				.forEach(xtraServerMappingBuilder::featureTypeMapping);
 
-		final XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
+		XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
 				.forMapping(xtraServerMappingBuilder.build())
-				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
-				.ensureRelationNavigability().transform();
+				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance().transform();
+
+		fannedOutmapping = XtraServerMappingTransformer.forMapping(fannedOutmapping)
+				.applySchemaInfo(this.applicationSchemaUri).ensureRelationNavigability()
+				.transform();
 
 		return fannedOutmapping;
 	}
