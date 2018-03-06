@@ -15,9 +15,14 @@
 
 package eu.esdihumboldt.hale.ui.service.tasks;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.tasks.AbstractTaskProvider;
 import eu.esdihumboldt.hale.common.tasks.CellTaskFactory;
+import eu.esdihumboldt.hale.common.tasks.Task;
 import eu.esdihumboldt.hale.common.tasks.TaskService;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
@@ -46,14 +51,14 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 		alignmentService = HaleUI.getServiceProvider().getService(AlignmentService.class);
 
 		// create tasks from the current schema
-		generateTasks(taskService);
+		addTasks(generateTasks(), taskService);
 
 		// create tasks when cells have been removed
 		alignmentService.addListener(new AlignmentServiceAdapter() {
 
 			@Override
 			public void alignmentChanged() {
-				generateTasks(taskService);
+				addTasks(generateTasks(), taskService);
 			}
 
 			@Override
@@ -63,24 +68,34 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
-				generateTasks(taskService);
+				addTasks(generateTasks(), taskService);
 			}
 
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
+				List<Task<Cell>> tasks = new ArrayList<>();
 				for (Cell cell : cells) {
-					generateTasks(cell, taskService);
+					tasks.addAll(generateTasks(cell));
 				}
+
+				addTasks(tasks, taskService);
 			}
 		});
 	}
 
-	private void generateTasks(TaskService taskService) {
+	private List<Task<Cell>> generateTasks() {
+		List<Task<Cell>> result = new ArrayList<>();
 		alignmentService.getAlignment().getActiveTypeCells().stream()
-				.forEach(c -> generateTasks(c, taskService));
+				.forEach(c -> result.addAll(generateTasks(c)));
+
+		return result;
 	}
 
-	private void generateTasks(Cell cell, TaskService taskService) {
-		taskService.addTasks(taskFactory.createTasks(cell));
+	private Collection<Task<Cell>> generateTasks(Cell cell) {
+		return taskFactory.createTasks(cell);
+	}
+
+	private void addTasks(Collection<Task<Cell>> tasks, TaskService taskService) {
+		taskService.addTasks(tasks);
 	}
 }
