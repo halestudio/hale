@@ -713,7 +713,7 @@ public class AlignmentView extends AbstractMappingView {
 	private void refreshGraph() {
 
 		final Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
+		display.asyncExec(new Runnable() {
 
 			@Override
 			public void run() {
