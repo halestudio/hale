@@ -130,7 +130,9 @@ public class TaskServiceImpl extends AbstractTaskService {
 			}
 		}
 
-		notifyTasksAdded(added);
+		if (!added.isEmpty()) {
+			notifyTasksAdded(added);
+		}
 	}
 
 	/**
@@ -214,7 +216,9 @@ public class TaskServiceImpl extends AbstractTaskService {
 			task.dispose();
 		}
 
-		notifyTasksRemoved(toRemove);
+		if (!toRemove.isEmpty()) {
+			notifyTasksRemoved(toRemove);
+		}
 	}
 
 	/**
