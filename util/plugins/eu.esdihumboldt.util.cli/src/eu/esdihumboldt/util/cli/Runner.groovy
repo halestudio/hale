@@ -39,6 +39,9 @@ class Runner extends GroupCommand {
 	int run(String[] args) {
 		CommandContext context = new ContextImpl(baseCommand, null)
 
+		File outFile = null
+		File errFile = null
+
 		if (args) {
 			// support --version
 			if (args[0] == '--version') {
@@ -75,9 +78,43 @@ class Runner extends GroupCommand {
 					return 1
 				}
 			}
+
+			// support delegating standard out/err
+			for (int i = 0; i < args.length - 1; i++) {
+				String arg = args[i]
+				if (arg == '--log-out') {
+					outFile = args[i+1] as File
+				}
+				else if (arg == '--log-err') {
+					errFile = args[i+1] as File
+				}
+			}
 		}
 
-		run(args as List, context)
+		def out = System.out
+		def err = System.err
+		def outFileStream
+		if (outFile) {
+			outFileStream = outFile.newOutputStream()
+			System.out = new PrintStream(new TeeOutputStream(outFileStream, out))
+		}
+		def errFileStream
+		if (errFile) {
+			errFileStream = errFile.newOutputStream()
+			System.err = new PrintStream(new TeeOutputStream(errFileStream, out))
+		}
+		try {
+			run(args as List, context)
+		} finally {
+			if (outFileStream) {
+				System.out = out
+				outFileStream.close()
+			}
+			if (errFileStream) {
+				System.err = err
+				errFileStream.close()
+			}
+		}
 	}
 
 }
