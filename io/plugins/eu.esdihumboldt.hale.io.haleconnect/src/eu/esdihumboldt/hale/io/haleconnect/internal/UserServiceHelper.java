@@ -60,11 +60,9 @@ public class UserServiceHelper {
 	 */
 	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.USER_SERVICE));
-		if (apiKey != null) {
-			apiClient.setApiKey(apiKey);
-			apiClient.setApiKeyPrefix("Bearer");
-		}
+		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.USER_SERVICE,
+				resolver, apiKey);
+
 		return apiClient;
 	}
 

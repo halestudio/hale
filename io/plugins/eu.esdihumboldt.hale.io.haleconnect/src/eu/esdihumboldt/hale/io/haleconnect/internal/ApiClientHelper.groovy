@@ -69,7 +69,7 @@ class ApiClientHelper {
 			apiClient.httpClient.proxy = proxy
 		}
 
-		if (apiClient.metaclass.respondsTo(apiClient, "setApiKey")) {
+		if (apiClient.metaClass.respondsTo(apiClient, "setApiKey")) {
 			apiClient.apiKey = apiKey
 			apiClient.apiKeyPrefix = "Bearer"
 		}
