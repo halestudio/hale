@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.app.cli.commands.alignment;
 
 import static eu.esdihumboldt.hale.io.csv.writer.MappingTableConstants.*
-import eu.esdihumboldt.hale.common.cli.HaleCLIUtil
 import eu.esdihumboldt.hale.common.cli.project.AbstractProjectEnvironmentCommand
 import eu.esdihumboldt.hale.common.core.HalePlatform
 import eu.esdihumboldt.hale.common.core.io.Value
@@ -65,8 +64,7 @@ class MappingTableCommand extends AbstractProjectEnvironmentCommand {
 		writer.target = new FileIOSupplier(mappingTable)
 
 		IOReport report = writer.execute(null)
-
-		HaleCLIUtil.printSummary(report)
+		reports.publishReport(report)
 
 		report.isSuccess() && !report.errors
 	}
