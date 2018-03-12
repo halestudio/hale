@@ -102,7 +102,7 @@ public class JoinContext {
 		 * Order: Keep original order but replace entities w/ all matches
 		 */
 		Set<TypeEntityDefinition> types = new LinkedHashSet<>();
-		for (TypeEntityDefinition type : orgParameter.types) {
+		for (TypeEntityDefinition type : orgParameter.getTypes()) {
 			List<TypeEntityDefinition> repl = replacements.get(type);
 			if (repl.isEmpty()) {
 				log.error("Could not find replacement for type {0} in join order", type);
@@ -124,13 +124,13 @@ public class JoinContext {
 		for (Cell match : joinMatches) {
 			JoinParameter matchParameter = CellUtil
 					.getFirstParameter(match, JoinFunction.PARAMETER_JOIN).as(JoinParameter.class);
-			for (JoinCondition condition : matchParameter.conditions) {
+			for (JoinCondition condition : matchParameter.getConditions()) {
 				cons.add(new Pair<>(condition.baseProperty, condition.joinProperty));
 			}
 		}
 
 		// migrate original conditions
-		Set<JoinCondition> migrated = orgParameter.conditions.stream().map(condition -> {
+		Set<JoinCondition> migrated = orgParameter.getConditions().stream().map(condition -> {
 			PropertyEntityDefinition baseProperty = processOriginalConditionProperty(
 					condition.baseProperty, migration, log);
 			PropertyEntityDefinition joinProperty = processOriginalConditionProperty(

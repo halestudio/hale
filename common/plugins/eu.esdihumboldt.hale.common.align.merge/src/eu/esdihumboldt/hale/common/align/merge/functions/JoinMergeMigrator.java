@@ -125,8 +125,8 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		JoinParameter matchParameter = CellUtil
 				.getFirstParameter(match, JoinFunction.PARAMETER_JOIN).as(JoinParameter.class);
 		if (matchParameter != null) {
-			context.addOrderReplacement((TypeEntityDefinition) source, matchParameter.types
-					.toArray(new TypeEntityDefinition[matchParameter.types.size()]));
+			context.addOrderReplacement((TypeEntityDefinition) source, matchParameter.getTypes()
+					.toArray(new TypeEntityDefinition[matchParameter.getTypes().size()]));
 		}
 
 		// add join match to context (for match conditions)

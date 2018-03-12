@@ -101,7 +101,7 @@ public class GroovyJoinPage extends GroovyRetypePage {
 		 * 
 		 * XXX for now just base instance
 		 */
-		TypeEntityDefinition sourceType = joinParameter.types.get(0);
+		TypeEntityDefinition sourceType = joinParameter.getTypes().get(0);
 
 		InstanceBuilder builder = new InstanceBuilder(false);
 		Instance instance = getTestValues().get(sourceType);
@@ -147,10 +147,10 @@ public class GroovyJoinPage extends GroovyRetypePage {
 						ParameterValue param = CellUtil.getFirstParameter(
 								getWizard().getUnfinishedCell(), JoinFunction.PARAMETER_JOIN);
 						JoinParameter joinParameter = param.as(JoinParameter.class);
-						if (joinParameter != null && joinParameter.types != null
-								&& !joinParameter.types.isEmpty()) {
+						if (joinParameter != null && joinParameter.getTypes() != null
+								&& !joinParameter.getTypes().isEmpty()) {
 							return Collections
-									.singleton(joinParameter.types.get(0).getDefinition());
+									.singleton(joinParameter.getTypes().get(0).getDefinition());
 						}
 						return Collections.emptyList();
 					}
