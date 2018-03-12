@@ -79,11 +79,11 @@ public class JoinMigrator extends DefaultCellMigrator {
 	private JoinParameter convertJoinParameter(JoinParameter joinParam,
 			AlignmentMigration migration, MigrationOptions options, SimpleLog log) {
 
-		List<TypeEntityDefinition> types = joinParam.types.stream().map(type -> {
+		List<TypeEntityDefinition> types = joinParam.getTypes().stream().map(type -> {
 			return (TypeEntityDefinition) migration.entityReplacement(type, log).orElse(type);
 		}).collect(Collectors.toList());
 
-		Set<JoinCondition> conditions = joinParam.conditions.stream().map(condition -> {
+		Set<JoinCondition> conditions = joinParam.getConditions().stream().map(condition -> {
 			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
 					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
 			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration

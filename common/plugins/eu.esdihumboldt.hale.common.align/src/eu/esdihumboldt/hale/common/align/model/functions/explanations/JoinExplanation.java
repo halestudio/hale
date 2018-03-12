@@ -43,12 +43,12 @@ public class JoinExplanation extends AbstractCellExplanation implements JoinFunc
 		JoinParameter join = CellUtil.getFirstParameter(cell, PARAMETER_JOIN)
 				.as(JoinParameter.class);
 
-		if (join != null && join.types != null && !join.types.isEmpty()) {
+		if (join != null && join.getTypes() != null && !join.getTypes().isEmpty()) {
 
 			// types
 			StringBuilder types = new StringBuilder();
 			boolean first = true;
-			for (TypeEntityDefinition type : join.types) {
+			for (TypeEntityDefinition type : join.getTypes()) {
 				if (first) {
 					first = false;
 				}
@@ -64,7 +64,7 @@ public class JoinExplanation extends AbstractCellExplanation implements JoinFunc
 
 			// conditions
 
-			for (JoinCondition condition : join.conditions) {
+			for (JoinCondition condition : join.getConditions()) {
 				sb.append(formatFullEntity(condition.baseProperty, html, locale));
 				sb.append(" = ");
 				sb.append(formatFullEntity(condition.joinProperty, html, locale));

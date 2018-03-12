@@ -37,12 +37,12 @@ public class JoinParameter {
 	/**
 	 * Unmodifiable ordered list of the types to join.
 	 */
-	public final List<TypeEntityDefinition> types;
+	private final List<TypeEntityDefinition> types;
 
 	/**
 	 * Unmodifiable set of join conditions.
 	 */
-	public final Set<JoinCondition> conditions;
+	private final Set<JoinCondition> conditions;
 
 	/**
 	 * Constructs a new join parameter descriptor.
@@ -51,8 +51,22 @@ public class JoinParameter {
 	 * @param conditions the join conditions
 	 */
 	public JoinParameter(List<TypeEntityDefinition> types, Set<JoinCondition> conditions) {
-		this.types = Collections.unmodifiableList(new ArrayList<>(types));
-		this.conditions = Collections.unmodifiableSet(new HashSet<>(conditions));
+		this.types = new ArrayList<>(types);
+		this.conditions = new HashSet<>(conditions);
+	}
+
+	/**
+	 * @return the types
+	 */
+	public List<TypeEntityDefinition> getTypes() {
+		return Collections.unmodifiableList(types);
+	}
+
+	/**
+	 * @return the conditions
+	 */
+	public Set<JoinCondition> getConditions() {
+		return Collections.unmodifiableSet(conditions);
 	}
 
 	/**
@@ -65,17 +79,37 @@ public class JoinParameter {
 	 *         valid.
 	 */
 	public String validate() {
+		return validate(false);
+	}
+
+	/**
+	 * Checks whether this join parameter is valid.<br>
+	 * <br>
+	 * Valid means, that there has to be at least two types, with each type
+	 * after the first having at least one join condition on previous types.
+	 * 
+	 * @param tryFix if it should be attempted to fix the configuration, the
+	 *            user is expected to complete it
+	 * 
+	 * @return a error description or <code>null</code> if the parameter is
+	 *         valid.
+	 */
+	public String validate(boolean tryFix) {
 		// enough types?
-		if (types.size() < 2)
+		if (types.size() < 2) {
 			return "Less than two types.";
+		}
 
 		// Check that each type is only in here once.
 		Set<TypeDefinition> typeSet = new HashSet<>();
-		for (TypeEntityDefinition type : types)
-			if (typeSet.contains(type.getDefinition()))
+		for (TypeEntityDefinition type : types) {
+			if (typeSet.contains(type.getDefinition())) {
 				return "Same base type is used twice.";
-			else
+			}
+			else {
 				typeSet.add(type.getDefinition());
+			}
+		}
 
 		// direct parent map
 		int[] parent = new int[types.size()];
@@ -100,25 +134,49 @@ public class JoinParameter {
 			int baseIndex = types.indexOf(baseType);
 			int joinIndex = types.indexOf(joinType);
 			// types have to exist, and join has to be after base
-			if (baseIndex == -1 || joinIndex == -1)
-				return "Property references no specified type.";
-			if (joinIndex <= baseIndex)
-				return "Invalid condition for type order.";
+			if (baseIndex == -1 || joinIndex == -1) {
+				if (tryFix) {
+					// remove wrong condition
+					this.conditions.remove(condition);
+				}
+				else {
+					return "Property references no specified type.";
+				}
+			}
+			if (joinIndex <= baseIndex) {
+				if (tryFix) {
+					// remove wrong condition
+					this.conditions.remove(condition);
+				}
+				else {
+					return "Invalid condition for type order.";
+				}
+			}
 
-			conditionFound[joinIndex] = true;
+			if (joinIndex >= 0) {
+				conditionFound[joinIndex] = true;
 
-			// sorted conditions allow this dependsOn-check
-			if (parent[joinIndex] < baseIndex) {
-				if (!dependsOn(baseIndex, parent[joinIndex], parent))
-					return "A join type depends on two types which do not depend on each other.";
-				parent[joinIndex] = baseIndex;
+				// sorted conditions allow this dependsOn-check
+				if (parent[joinIndex] < baseIndex) {
+					if (!dependsOn(baseIndex, parent[joinIndex], parent)) {
+						if (tryFix) {
+							// ignore
+						}
+						else {
+							return "A join type depends on two types which do not depend on each other.";
+						}
+					}
+					parent[joinIndex] = baseIndex;
+				}
 			}
 		}
 
 		// check whether each type (except the first) has a join condition
-		for (int i = 1; i < conditionFound.length; i++)
-			if (!conditionFound[i])
+		for (int i = 1; i < conditionFound.length; i++) {
+			if (!conditionFound[i] && !tryFix) {
 				return "A joined type does not have any join conditions.";
+			}
+		}
 
 		return null;
 	}

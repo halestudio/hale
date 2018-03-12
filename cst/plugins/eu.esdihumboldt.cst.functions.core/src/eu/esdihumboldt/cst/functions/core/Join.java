@@ -66,7 +66,7 @@ public class Join extends Retype implements JoinFunction, InstanceIndexContribut
 
 		JoinParameter joinParameter = cell.getTransformationParameters()
 				.get(JoinFunction.PARAMETER_JOIN).get(0).as(JoinParameter.class);
-		for (JoinCondition cond : joinParameter.conditions) {
+		for (JoinCondition cond : joinParameter.getConditions()) {
 			// Index all base and join properties individually
 			result.add(Collections.singletonList(cond.baseProperty));
 			result.add(Collections.singletonList(cond.joinProperty));

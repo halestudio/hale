@@ -195,9 +195,9 @@ public class FeatureChainingConfigurationPage extends
 					List<JoinCondition> conditions = getSortedJoinConditions(joinParameter);
 					TypeEntityDefinition joinTarget = getTargetType(typeCell).getDefinition();
 
-					for (int i = 0; i < joinParameter.types.size() - 1; i++) {
+					for (int i = 0; i < joinParameter.getTypes().size() - 1; i++) {
 						ChainPage chainPage = new ChainPage(pageIdx, typeCell.getId(), i,
-								joinParameter.types, conditions, joinTarget);
+								joinParameter.getTypes(), conditions, joinTarget);
 
 						chainPage.setWizard(getWizard());
 						pages.add(chainPage);
