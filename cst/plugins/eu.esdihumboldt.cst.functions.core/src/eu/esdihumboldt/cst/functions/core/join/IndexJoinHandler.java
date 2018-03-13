@@ -67,7 +67,7 @@ public class IndexJoinHandler
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
@@ -93,7 +93,7 @@ public class IndexJoinHandler
 			throw new TransformationException("Join parameter invalid: " + validation);
 		}
 
-		List<TypeEntityDefinition> types = joinParameter.types;
+		List<TypeEntityDefinition> types = joinParameter.getTypes();
 
 		JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 

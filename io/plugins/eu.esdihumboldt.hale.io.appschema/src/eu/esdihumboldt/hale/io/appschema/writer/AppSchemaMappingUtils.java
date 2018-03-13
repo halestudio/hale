@@ -158,8 +158,8 @@ public class AppSchemaMappingUtils {
 		QName propertyTypeName = propertyDef.getPropertyType().getName();
 
 		//
-		return (hasGmlNamespace(propertyTypeName) || HALE_INSPIRE_EXT_URI.equals(propertyTypeName
-				.getNamespaceURI()))
+		return (hasGmlNamespace(propertyTypeName)
+				|| HALE_INSPIRE_EXT_URI.equals(propertyTypeName.getNamespaceURI()))
 				&& GML_NIL_REASON_TYPE.equals(propertyTypeName.getLocalPart())
 				&& GML_NIL_REASON.equals(propertyName.getLocalPart());
 	}
@@ -205,7 +205,8 @@ public class AppSchemaMappingUtils {
 		}
 
 		QName typeName = typeDefinition.getName();
-		if (hasGmlNamespace(typeName) && GML_ABSTRACT_FEATURE_TYPE.equals(typeName.getLocalPart())) {
+		if (hasGmlNamespace(typeName)
+				&& GML_ABSTRACT_FEATURE_TYPE.equals(typeName.getLocalPart())) {
 			return true;
 		}
 		else {
@@ -226,7 +227,8 @@ public class AppSchemaMappingUtils {
 		}
 
 		QName typeName = typeDefinition.getName();
-		if (hasGmlNamespace(typeName) && GML_ABSTRACT_GEOMETRY_TYPE.equals(typeName.getLocalPart())) {
+		if (hasGmlNamespace(typeName)
+				&& GML_ABSTRACT_GEOMETRY_TYPE.equals(typeName.getLocalPart())) {
 			return true;
 		}
 		else {
@@ -542,8 +544,8 @@ public class AppSchemaMappingUtils {
 			throw new IllegalArgumentException("Provided entity definition is not a geometry");
 		}
 
-		List<ChildContext> geometryPropertyPath = getContainerPropertyPath(geometry
-				.getPropertyPath());
+		List<ChildContext> geometryPropertyPath = getContainerPropertyPath(
+				geometry.getPropertyPath());
 		return AlignmentUtil.createEntity(geometry.getType(), geometryPropertyPath,
 				geometry.getSchemaSpace(), geometry.getFilter());
 	}
@@ -570,7 +572,8 @@ public class AppSchemaMappingUtils {
 	 * @param nestedPath the nested property path
 	 * @return <code>true</code> if it is contained, false otherwise
 	 */
-	public static boolean isNested(List<ChildContext> containerPath, List<ChildContext> nestedPath) {
+	public static boolean isNested(List<ChildContext> containerPath,
+			List<ChildContext> nestedPath) {
 		boolean isContained = true;
 		if (containerPath.size() >= nestedPath.size()) {
 			isContained = false;
@@ -686,8 +689,8 @@ public class AppSchemaMappingUtils {
 	 */
 	public static JoinParameter getJoinParameter(Cell joinCell) {
 		if (joinCell != null && joinCell.getTransformationParameters() != null) {
-			List<ParameterValue> joinParameterList = joinCell.getTransformationParameters().get(
-					PARAMETER_JOIN);
+			List<ParameterValue> joinParameterList = joinCell.getTransformationParameters()
+					.get(PARAMETER_JOIN);
 			if (joinParameterList != null && joinParameterList.size() > 0) {
 				return joinParameterList.get(0).as(JoinParameter.class);
 			}
@@ -704,15 +707,15 @@ public class AppSchemaMappingUtils {
 		List<JoinCondition> conditions = new ArrayList<JoinCondition>();
 
 		if (joinParameter != null) {
-			conditions.addAll(joinParameter.conditions);
+			conditions.addAll(joinParameter.getConditions());
 			Collections.sort(conditions, new Comparator<JoinCondition>() {
 
 				@Override
 				public int compare(JoinCondition o1, JoinCondition o2) {
 					TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.joinProperty);
 					TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.joinProperty);
-					return joinParameter.types.indexOf(o1Type)
-							- joinParameter.types.indexOf(o2Type);
+					return joinParameter.getTypes().indexOf(o1Type)
+							- joinParameter.getTypes().indexOf(o2Type);
 				}
 			});
 		}
@@ -798,8 +801,8 @@ public class AppSchemaMappingUtils {
 				for (ChainConfiguration chain : chains) {
 					if (chain.getNestedTypeTarget() == null
 							&& chain.getJaxbNestedTypeTarget() != null) {
-						Property resolved = resolver.resolveProperty(
-								chain.getJaxbNestedTypeTarget(), types, ssid);
+						Property resolved = resolver
+								.resolveProperty(chain.getJaxbNestedTypeTarget(), types, ssid);
 						if (resolved != null) {
 							chain.setNestedTypeTarget(resolved.getDefinition());
 							chain.setJaxbNestedTypeTarget(null);
