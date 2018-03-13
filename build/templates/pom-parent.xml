@@ -15,7 +15,7 @@
       <id>artifactory</id>
       <url>http://www.cityserver3d.de:8082/artifactory/repo</url>
     </pluginRepository -->
-    <!-- see https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin#how-to-use-the-compiler-plugin---setting-up-the-pom -->
+    <!-- see https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin -->
     <pluginRepository>
       <id>bintray</id>
       <name>Groovy Bintray</name>
