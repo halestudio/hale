@@ -421,7 +421,7 @@ class GeometryHelperFunctions {
 	static Collection<GeometryProperty<? extends Geometry>> _splitMulti(def geometryHolders) {
 		List<GeometryProperty<? extends Geometry>> all = _findAll(geometryHolders)
 
-		return all.collectMany { prop ->
+		return (Collection<GeometryProperty<? extends Geometry>>) all.collectMany { prop ->
 			Geometry geom = prop.getGeometry()
 			if (geom.getNumGeometries() > 1) {
 				Deque<Geometry> multis = new ArrayDeque<>()
