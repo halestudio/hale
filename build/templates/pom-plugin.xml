@@ -105,6 +105,10 @@
            <source>$javaSource</source>
            <target>$javaTarget</target>
                 <compilerId>groovy-eclipse-compiler</compilerId>
+                <compilerArguments>
+					<indy/><!-- optional; supported by batch 2.4.12-04+ -->
+					<!-- <configScript>config.groovy</configScript> -->
+				</compilerArguments>
                 <verbose>true</verbose>
                 <extensions>true</extensions>
                 <excludeResources>
@@ -123,7 +127,7 @@
 	        <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-batch</artifactId>
-	        	<version>2.4.13-02</version>
+	        	<version>2.4.14-01</version>
 	        	<!-- OLD REMARK FOR GROOVY 2.1
 	        	For some reasons with the most up-to-date version
 	        	the compiled Groovy is not consistent with the
