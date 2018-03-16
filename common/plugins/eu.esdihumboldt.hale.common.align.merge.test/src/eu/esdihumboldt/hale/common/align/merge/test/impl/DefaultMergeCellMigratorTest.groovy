@@ -626,4 +626,32 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 			msg.text.toLowerCase().contains('condition')
 		})
 	}
+
+	@Test
+	void testParentMappingGeometry() {
+		def toMigrate = this.class.getResource('/testcases/parent-mapping/B-to-C.halex')
+		def cellId = 'geom'
+
+		def matching = this.class.getResource('/testcases/parent-mapping/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+		assertNotNull(migrated)
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		assertEquals(RenameFunction.ID, migrated[0].transformationIdentifier)
+
+		// target
+		assertCellTargetEquals(migrated[0], ['C1', 'geom'])
+
+		// sources
+		assertCellSourcesEqual(migrated[0], ['A1', 'geom'])
+
+		// there should be a message about an inaccurate match
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('inaccurate')
+		})
+	}
 }
