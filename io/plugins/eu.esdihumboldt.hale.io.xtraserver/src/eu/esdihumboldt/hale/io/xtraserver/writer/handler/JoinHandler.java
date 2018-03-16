@@ -24,8 +24,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.api.MappingJoin;
 import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin;
 import de.interactive_instruments.xtraserver.config.api.MappingJoinBuilder;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -55,9 +55,6 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	public void doHandle(final Collection<? extends Entity> sourceTypes, final Entity targetType,
 			final Cell typeCell) {
 
-		final MappingTableBuilder baseTable = createTableIfAbsent(
-				sourceTypes.iterator().next().getDefinition());
-
 		for (final ParameterValue transParam : typeCell.getTransformationParameters()
 				.get(PARAMETER_JOIN)) {
 
@@ -66,6 +63,9 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			if (validation != null) {
 				throw new IllegalArgumentException("Join parameter invalid: " + validation);
 			}
+
+			final MappingTableBuilder baseTable = createTableIfAbsent(
+					joinParameter.getTypes().iterator().next());
 
 			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
 					sourceTypes);
@@ -105,13 +105,14 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 	private List<Condition> transformSortedConditions(final JoinParameter joinParameter,
 			final Collection<? extends Entity> sourceTypes) {
 
-		return joinParameter.conditions.stream().sorted(new Comparator<JoinCondition>() {
+		return joinParameter.getConditions().stream().sorted(new Comparator<JoinCondition>() {
 
 			@Override
 			public int compare(JoinCondition o1, JoinCondition o2) {
 				TypeEntityDefinition o1Type = AlignmentUtil.getTypeEntity(o1.joinProperty);
 				TypeEntityDefinition o2Type = AlignmentUtil.getTypeEntity(o2.joinProperty);
-				return joinParameter.types.indexOf(o1Type) - joinParameter.types.indexOf(o2Type);
+				return joinParameter.getTypes().indexOf(o1Type)
+						- joinParameter.getTypes().indexOf(o2Type);
 			}
 		}).map(condition -> {
 			final TypeEntityDefinition baseType = AlignmentUtil

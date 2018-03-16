@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
+import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
+
 import java.util.List;
 import java.util.Set;
 
@@ -22,10 +24,13 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
 
@@ -72,6 +77,19 @@ public class CellParentWrapper implements Cell {
 		return null;
 	}
 
+	private EntityDefinition getParentCellSourceType() {
+		if (parentTypeCell.getTransformationIdentifier().equals(JoinFunction.ID)) {
+			List<ParameterValue> parameters = parentTypeCell.getTransformationParameters()
+					.get(PARAMETER_JOIN);
+			if (!parameters.isEmpty()) {
+				final JoinParameter joinParameter = parameters.get(0).as(JoinParameter.class);
+				return joinParameter.getTypes().iterator().next();
+			}
+		}
+
+		return getParentCellSource().getDefinition();
+	}
+
 	/**
 	 * Returns the table name of the property cell or the parent type cell. If the
 	 * source of the alignment is not a database schema, the name of the type is
@@ -98,11 +116,10 @@ public class CellParentWrapper implements Cell {
 				}
 			}
 		}
-		final Entity sourceType = getParentCellSource();
-		final DatabaseTable table = sourceType.getDefinition().getType()
-				.getConstraint(DatabaseTable.class);
+		final EntityDefinition sourceType = getParentCellSourceType();
+		final DatabaseTable table = sourceType.getType().getConstraint(DatabaseTable.class);
 		if (!table.isTable()) {
-			return sourceType.getDefinition().getType().getDisplayName();
+			return sourceType.getType().getDisplayName();
 		}
 		else {
 			return table.getTableName();
@@ -155,6 +172,15 @@ public class CellParentWrapper implements Cell {
 	@Override
 	public Object addAnnotation(String type) {
 		return wrappedCell.addAnnotation(type);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.align.model.Cell#addAnnotation(java.lang.String,
+	 *      java.lang.Object)
+	 */
+	@Override
+	public void addAnnotation(String type, Object annotation) {
+		wrappedCell.addAnnotation(type, annotation);
 	}
 
 	/**

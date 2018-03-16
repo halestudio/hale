@@ -92,7 +92,7 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 			else {
 				table.primaryKey("id");
 				mappingContext.getReporter().warn(
-						"No primary key for table '{0}' found, assuming 'id'. (context: oid_col in FeatureType {1})",
+						"No primary key for table \"{0}\" found, assuming \"id\". (context: oid_col in FeatureType \"{1}\")",
 						tableName, mappingContext.getFeatureTypeName());
 			}
 
@@ -112,7 +112,7 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 		}
 		if (XtraServerCompatibilityMode.hasFilters(cell.getSource())) {
 			mappingContext.getReporter().warn(
-					"Filters are not supported and are ignored during type transformation of Feature Type {0}",
+					"Filters are not supported and are ignored during type transformation of Feature Type \"{0}\"",
 					mappingContext.getFeatureTypeName());
 		}
 
