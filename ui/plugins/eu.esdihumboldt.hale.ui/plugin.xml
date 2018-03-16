@@ -33,6 +33,10 @@
             name="Edit condition context">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext"
+            name="Purge condition context">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.entity.removecontext"
             name="Remove instance context">
       </command>
@@ -175,6 +179,15 @@
       <handler
             class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.EditConditionContextHandler"
             commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.PurgeConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext">
          <activeWhen>
             <reference
                   definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
@@ -951,6 +964,13 @@
          </dynamic>
          <command
                commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
+               commandId="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext"
                style="push">
             <visibleWhen
                   checkEnabled="true">
