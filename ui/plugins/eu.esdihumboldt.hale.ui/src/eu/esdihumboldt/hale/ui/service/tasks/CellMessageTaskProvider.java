@@ -68,6 +68,7 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
+				taskService.clearTasks();
 				addTasks(generateTasks(), taskService);
 			}
 
