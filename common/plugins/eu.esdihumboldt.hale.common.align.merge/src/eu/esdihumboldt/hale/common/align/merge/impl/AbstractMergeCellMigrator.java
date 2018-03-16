@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 
 /**
  * Cell merger base class.
@@ -103,6 +105,21 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 		if (sources.size() == 1) {
 			EntityDefinition source = sources.values().iterator().next().getDefinition();
 			List<Cell> matches = mergeIndex.getCellsForTarget(source);
+
+			List<String> storedMessages = new ArrayList<>();
+			boolean inaccurateMatch = false;
+			if (matches.isEmpty()) {
+				// try to find match via parent (in specific cases)
+				matches = findParentMatch(source, mergeIndex);
+				if (!matches.isEmpty()) {
+					inaccurateMatch = true;
+					// message may not be added in every case, because it may be
+					// a duplicate
+//					storedMessages.add(MessageFormat
+//							.format("Inaccurate match of {0} via parent entity", source));
+				}
+			}
+
 			if (!matches.isEmpty()) {
 				List<MutableCell> cells = new ArrayList<>();
 				for (Cell match : matches) {
@@ -160,6 +177,11 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						// reset source
 						newCell.setSource(ArrayListMultimap.create());
 
+						if (inaccurateMatch) {
+							cellLog.warn(MessageFormat
+									.format("Inaccurate match of {0} via parent entity", source));
+						}
+
 						mergeSource(newCell, sources.keys().iterator().next(), source, match,
 								originalCell, cellLog, context, migration, mergeIndex);
 
@@ -167,6 +189,14 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 
 						cells.add(newCell);
 					}
+				}
+
+				if (!cells.isEmpty() && !storedMessages.isEmpty()) {
+					// add stored messages
+					cells.forEach(cell -> {
+						CellLog cLog = new CellLog(cell, CELL_LOG_CATEGORY);
+						storedMessages.forEach(msg -> cLog.warn(msg));
+					});
 				}
 
 				return cells;
@@ -262,6 +292,27 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 
 			return Collections.singleton(newCell);
 		}
+	}
+
+	private List<Cell> findParentMatch(EntityDefinition entity, MergeIndex mergeIndex) {
+		// XXX only allow parent matches for specific cases right now
+		if (!(entity.getDefinition() instanceof PropertyDefinition)
+				|| !((PropertyDefinition) entity.getDefinition()).getPropertyType()
+						.getConstraint(GeometryType.class).isGeometry()) {
+			// not a geometry
+			return Collections.emptyList();
+		}
+
+		while (entity != null) {
+			entity = AlignmentUtil.getParent(entity);
+
+			List<Cell> matches = mergeIndex.getCellsForTarget(entity);
+			if (!matches.isEmpty()) {
+				return matches;
+			}
+		}
+
+		return Collections.emptyList();
 	}
 
 	/**

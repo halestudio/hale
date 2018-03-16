@@ -15,21 +15,13 @@
 
 package eu.esdihumboldt.hale.common.align.merge.impl
 
-import java.util.Optional
+import java.util.function.Function
 
-import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration
-import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
-import eu.esdihumboldt.hale.common.align.model.ChildContext
-import eu.esdihumboldt.hale.common.align.model.Condition;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
-import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import groovy.transform.CompileStatic;;;
 
 /**
@@ -40,51 +32,54 @@ import groovy.transform.CompileStatic;;;
 @CompileStatic
 class MatchingMigration extends AbstractMigration {
 
-  final ProjectTransformationEnvironment project
+	final ProjectTransformationEnvironment project
 
-  final boolean reverse
+	final boolean reverse
 
-  MatchingMigration(ProjectTransformationEnvironment project, boolean reverse = false) {
-    this.project = project
-    this.reverse = reverse
-  }
+	MatchingMigration(ProjectTransformationEnvironment project, boolean reverse = false) {
+		this.project = project
+		this.reverse = reverse
+	}
 
-  protected Optional<EntityDefinition> findMatch(EntityDefinition entity) {
-    if (reverse) {
-      // match to target
-      entity = AlignmentUtil.getAllDefaultEntity(entity, true)
-      entity = AlignmentUtil.applySchemaSpace(entity, SchemaSpaceID.TARGET)
-    }
-    Collection<? extends Cell> cells = project.alignment.getCells(entity)
+	protected Optional<EntityDefinition> findMatch(EntityDefinition entity) {
+		findMatches(entity).map({ List<EntityDefinition> list ->
+			list ? list[0] : null
+		} as Function).filter({ EntityDefinition e -> e != null})
+	}
 
-    if (cells.empty) {
-      //XXX no replacement can be found -> what to do in this case?
-      Optional.empty()
-    }
-    else {
-      if (cells.size() == 1) {
-        Cell cell = cells.iterator().next()
+	public Optional<List<EntityDefinition>> findMatches(EntityDefinition entity) {
+		if (reverse) {
+			// match to target
+			entity = AlignmentUtil.getAllDefaultEntity(entity, true)
+			entity = AlignmentUtil.applySchemaSpace(entity, SchemaSpaceID.TARGET)
+		}
+		Collection<? extends Cell> cells = project.alignment.getCells(entity)
 
-        if (cell.target && !reverse) {
-          // replace by target
-          Entity e = cell.target.values().iterator().next()
-          Optional.ofNullable(e.definition)
-        }
-        else if (cell.source && reverse) {
-          // replace by source
-          Entity e = cell.source.values().iterator().next()
-          Optional.ofNullable(e.definition)
-        }
-        else {
-          Optional.empty()
-        }
-      }
-      else {
-        //XXX more than one cell - for now ignored
+		if (cells.empty) {
+			//XXX no replacement can be found -> what to do in this case?
+			Optional.empty()
+		}
+		else {
+			if (cells.size() == 1) {
+				Cell cell = cells.iterator().next()
 
-        Optional.empty()
-      }
-    }
-  }
+				if (cell.target && !reverse) {
+					// replace by target
+					Optional.ofNullable(cell.target.values().collect { e -> e.definition }.toList())
+				}
+				else if (cell.source && reverse) {
+					// replace by source
+					Optional.ofNullable(cell.source.values().collect { e -> e.definition }.toList())
+				}
+				else {
+					Optional.empty()
+				}
+			}
+			else {
+				//XXX more than one cell - for now ignored
 
+				Optional.empty()
+			}
+		}
+	}
 }
