@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="A1A2toB1" priority="normal">
+        <source name="types">
+            <class>
+                <type name="A2" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="A1" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="A1" ns="A"/>
+                </class>
+                <class>
+                    <type name="A2" ns="A"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="A1" ns="A"/>
+                        <child name="a1" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="A2" ns="A"/>
+                        <child name="a1" ns="A"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cf10f30a6-b797-4795-b38e-6da959456c89" priority="normal">
+        <source>
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="a1" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="b1" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="A3toB2" priority="normal">
+        <source>
+            <class>
+                <type name="A3" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B2" ns="B"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cfd1d2c25-2406-4826-9ab3-3a325216fa32" priority="normal">
+        <source>
+            <property>
+                <type name="A3" ns="A"/>
+                <child name="a1" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B2" ns="B"/>
+                <child name="b1" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C2cdddaa5-1d04-458f-a160-4e7b1d8c3c58" priority="normal">
+        <source>
+            <property>
+                <type name="A3" ns="A"/>
+                <child name="a3" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B2" ns="B"/>
+                <child name="b2" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C4cd46ef5-e90d-4932-b90f-517d7eae307c" priority="normal">
+        <source>
+            <property>
+                <type name="A3" ns="A"/>
+                <child name="a4" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B2" ns="B"/>
+                <child name="b3" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.join" id="A4A5A6A7toB3" priority="normal">
+        <source name="types">
+            <class>
+                <type name="A4" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="A7" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="A6" ns="A"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="A5" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B3" ns="B"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="A4" ns="A"/>
+                </class>
+                <class>
+                    <type name="A5" ns="A"/>
+                </class>
+                <class>
+                    <type name="A6" ns="A"/>
+                </class>
+                <class>
+                    <type name="A7" ns="A"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="A4" ns="A"/>
+                        <child name="a4" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="A5" ns="A"/>
+                        <child name="a4" ns="A"/>
+                    </property>
+                </jp:condition>
+                <jp:condition>
+                    <property>
+                        <type name="A4" ns="A"/>
+                        <child name="a4" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="A6" ns="A"/>
+                        <child name="a4" ns="A"/>
+                    </property>
+                </jp:condition>
+                <jp:condition>
+                    <property>
+                        <type name="A6" ns="A"/>
+                        <child name="a6" ns="A"/>
+                    </property>
+                    <property>
+                        <type name="A7" ns="A"/>
+                        <child name="a6" ns="A"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cf4db4501-8e5e-45d3-934c-02d7eea229fe" priority="normal">
+        <source>
+            <property>
+                <type name="A4" ns="A"/>
+                <child name="a4" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B3" ns="B"/>
+                <child name="b3" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

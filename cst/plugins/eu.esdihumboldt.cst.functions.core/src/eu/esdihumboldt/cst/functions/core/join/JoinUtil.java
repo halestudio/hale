@@ -78,12 +78,12 @@ public class JoinUtil {
 	 *         properties maps
 	 */
 	public static JoinDefinition getJoinDefinition(JoinParameter joinParameter) {
-		JoinDefinition result = new JoinDefinition(joinParameter.types.size());
+		JoinDefinition result = new JoinDefinition(joinParameter.getTypes().size());
 
-		for (JoinCondition condition : joinParameter.conditions) {
-			int baseTypeIndex = joinParameter.types
+		for (JoinCondition condition : joinParameter.getConditions()) {
+			int baseTypeIndex = joinParameter.getTypes()
 					.indexOf(AlignmentUtil.getTypeEntity(condition.baseProperty));
-			int joinTypeIndex = joinParameter.types
+			int joinTypeIndex = joinParameter.getTypes()
 					.indexOf(AlignmentUtil.getTypeEntity(condition.joinProperty));
 			Multimap<Integer, JoinCondition> typeTable = result.joinTable.get(joinTypeIndex);
 			if (typeTable == null) {

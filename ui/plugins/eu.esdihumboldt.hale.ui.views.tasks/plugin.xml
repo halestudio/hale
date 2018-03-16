@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="false"
+            category="eu.esdihumboldt.hale.ui"
+            class="eu.esdihumboldt.hale.ui.views.tasks.TaskTreeView"
+            icon="icons/tasks.gif"
+            id="eu.esdihumboldt.hale.ui.views.tasks"
+            name="%view.tasks.name">
+      </view>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.common.tasks">
+      <provider
+            class="eu.esdihumboldt.hale.ui.service.tasks.CellMessageTaskProvider"
+            defaultEnabled="true"
+            id="eu.esdihumboldt.hale.ui.views.tasks.CellMessageTaskProvider"
+            name="Cell Message Task Provider">
+      </provider>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.common.graph.figures.cell">
+      <label
+            class="eu.esdihumboldt.hale.ui.views.tasks.CellFigureTaskLabelContribution"
+            id="eu.esdihumboldt.hale.ui.views.tasks.figures.cell.label">
+      </label>
+   </extension>
+
+</plugin>

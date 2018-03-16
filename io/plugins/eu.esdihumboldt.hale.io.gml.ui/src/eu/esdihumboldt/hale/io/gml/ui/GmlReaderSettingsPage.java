@@ -43,6 +43,7 @@ public class GmlReaderSettingsPage
 		extends AbstractConfigurationPage<StreamGmlReader, IOWizard<StreamGmlReader>> {
 
 	private Button ignoreNamespaces;
+	private Button ignoreNumberMatched;
 	private Button strict;
 	private Button rootAsInstance;
 	private Button requestPaginationEnabled;
@@ -69,6 +70,8 @@ public class GmlReaderSettingsPage
 				Value.of(requestPaginationEnabled.getSelection()));
 		provider.setParameter(StreamGmlReader.PARAM_FEATURES_PER_WFS_REQUEST,
 				Value.of(featuresPerRequest.getText()));
+		provider.setParameter(StreamGmlReader.PARAM_IGNORE_NUMBER_MATCHED,
+				Value.of(ignoreNumberMatched.getSelection()));
 		return true;
 	}
 
@@ -107,13 +110,13 @@ public class GmlReaderSettingsPage
 		descRoot.setText(
 				"Will only take effect if the root element type is classified as mapping relevant type.\nOnly select if you are sure you need it.");
 
-		Group featuresPerRequestGroup = new Group(page, SWT.NONE);
-		featuresPerRequestGroup.setText("WFS requests");
+		Group wfsGroup = new Group(page, SWT.NONE);
+		wfsGroup.setText("WFS requests");
 		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false)
-				.applyTo(featuresPerRequestGroup);
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(featuresPerRequestGroup);
+				.applyTo(wfsGroup);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(wfsGroup);
 
-		requestPaginationEnabled = new Button(featuresPerRequestGroup, SWT.CHECK);
+		requestPaginationEnabled = new Button(wfsGroup, SWT.CHECK);
 		requestPaginationEnabled
 				.setText("Paginate WFS requests; number of features per WFS request:");
 		requestPaginationEnabled.setSelection(true);
@@ -125,12 +128,17 @@ public class GmlReaderSettingsPage
 			}
 		});
 
-		featuresPerRequest = new Spinner(featuresPerRequestGroup, SWT.BORDER);
+		featuresPerRequest = new Spinner(wfsGroup, SWT.BORDER);
 		featuresPerRequest.setMinimum(1);
 		featuresPerRequest.setMaximum(500000);
 		featuresPerRequest.setIncrement(100);
 		featuresPerRequest.setPageIncrement(1000);
 		featuresPerRequest.setSelection(1000);
+
+		ignoreNumberMatched = new Button(wfsGroup, SWT.CHECK);
+		ignoreNumberMatched.setText("Ignore total number of features reported by the WFS");
+		// default
+		ignoreNumberMatched.setSelection(false);
 
 		setPageComplete(true);
 	}

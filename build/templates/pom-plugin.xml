@@ -52,6 +52,7 @@
           <excludeResources>
        		<!-- Exclude translation files (because they are very incomplete ATM) -->
        		<excludeResource>**/messages_*.properties</excludeResource>
+       		<excludeResource>**/bundle_*.properties</excludeResource>
      	  </excludeResources>
         </configuration>
       </plugin>
@@ -71,6 +72,7 @@
             <excludeResource>**/*.scala</excludeResource>
             <!-- Exclude translation files (because they are very incomplete ATM) -->
             <excludeResource>**/messages_*.properties</excludeResource>
+            <excludeResource>**/bundle_*.properties</excludeResource>
           </excludeResources>
         </configuration>
       </plugin>
@@ -109,6 +111,7 @@
             		<excludeResource>**/*.groovy</excludeResource>
             		<!-- Exclude translation files (because they are very incomplete ATM) -->
             		<excludeResource>**/messages_*.properties</excludeResource>
+            		<excludeResource>**/bundle_*.properties</excludeResource>
           		</excludeResources>
          </configuration>
          <dependencies>

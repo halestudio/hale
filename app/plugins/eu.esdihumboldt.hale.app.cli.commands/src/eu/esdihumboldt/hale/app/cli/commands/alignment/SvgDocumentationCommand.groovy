@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.app.cli.commands.alignment;
 
-import eu.esdihumboldt.hale.common.cli.HaleCLIUtil
 import eu.esdihumboldt.hale.common.cli.project.AbstractProjectEnvironmentCommand
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
@@ -54,8 +53,7 @@ class SvgDocumentationCommand extends AbstractProjectEnvironmentCommand {
 		writer.target = new FileIOSupplier(mappingTable)
 
 		IOReport report = writer.execute(null)
-
-		HaleCLIUtil.printSummary(report)
+		reports.publishReport(report)
 
 		report.isSuccess() && !report.errors
 	}

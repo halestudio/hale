@@ -15,7 +15,10 @@
  */
 package eu.esdihumboldt.hale.ui.function.extension;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
 
@@ -36,6 +39,18 @@ public interface FunctionWizardFactory {
 	 * @return the new wizard instance
 	 */
 	public FunctionWizard createNewWizard(SchemaSelection schemaSelection);
+
+	/**
+	 * Creates a wizard for creating a new cell based on the given schema
+	 * selection.
+	 * 
+	 * @param schemaSelection the schema selection or <code>null</code> if no
+	 *            pre-selection is available
+	 * @param parameters initial function parameters
+	 * @return the new wizard instance
+	 */
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection,
+			ListMultimap<String, ParameterValue> parameters);
 
 	/**
 	 * Creates a wizard for editing an existing cell.

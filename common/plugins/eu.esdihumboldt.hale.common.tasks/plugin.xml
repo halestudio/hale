@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="eu.esdihumboldt.hale.common.tasks" name="Tasks Extensions" schema="schema/eu.esdihumboldt.hale.common.tasks.exsd"/>
+
+</plugin>

@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.align.migrate;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Interface for implementing migration of a complete alignment based on an
@@ -32,9 +33,10 @@ public interface AlignmentMigrator {
 	 * @param originalAlignment the original alignment
 	 * @param migration the alignment migration
 	 * @param options the migration options
+	 * @param log the migration process log
 	 * @return the updated alignment
 	 */
 	MutableAlignment updateAligmment(Alignment originalAlignment, AlignmentMigration migration,
-			MigrationOptions options);
+			MigrationOptions options, SimpleLog log);
 
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="GroovyRetype" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">
+_target {
+	c1( 'C_' + _source.p.b1.value() )
+}
+</core:text>
+        </complexParameter>
+    </cell>
+</alignment>

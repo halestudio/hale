@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 
 /**
@@ -60,7 +61,7 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 
 	@Override
 	public MutableAlignment updateAligmment(Alignment originalAlignment,
-			AlignmentMigration migration, MigrationOptions options) {
+			AlignmentMigration migration, MigrationOptions options, SimpleLog log) {
 		MutableAlignment result = new DefaultAlignment(originalAlignment);
 
 		// XXX TODO adapt custom functions?!
@@ -71,7 +72,7 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 			// XXX
 			if (cell instanceof MutableCell) {
 				CellMigrator cm = getCellMigrator(cell.getTransformationIdentifier());
-				MutableCell newCell = cm.updateCell(cell, migration, options);
+				MutableCell newCell = cm.updateCell(cell, migration, options, log);
 				MigrationUtil.removeIdPrefix(newCell, options.transferBase(),
 						options.transferBase());
 				result.removeCell(cell);
@@ -84,7 +85,7 @@ public class DefaultAlignmentMigrator implements AlignmentMigrator {
 				if (options.transferBase()) {
 					// include base alignment cell as mutable mapping cell
 					CellMigrator cm = getCellMigrator(cell.getTransformationIdentifier());
-					MutableCell newCell = cm.updateCell(cell, migration, options);
+					MutableCell newCell = cm.updateCell(cell, migration, options, log);
 					MigrationUtil.removeIdPrefix(newCell, true, true);
 					result.removeCell(cell);
 					if (newCell != null) {

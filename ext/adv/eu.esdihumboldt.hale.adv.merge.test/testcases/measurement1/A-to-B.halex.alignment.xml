@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="Cc8a5bf0d-1dcf-465e-a8b4-a4e7056d4d61" priority="normal">
+        <source>
+            <class>
+                <type name="A1" ns="A"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C395eecb0-527e-411b-8bfc-9e2bf3537d3c" priority="normal">
+        <source>
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="length" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="length" ns="B"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.assign.bound" id="Cdc8fd415-62a4-4c68-9c48-a4d01e62faef" priority="normal">
+        <source name="anchor">
+            <property>
+                <type name="A1" ns="A"/>
+                <child name="length" ns="A"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="length" ns="B"/>
+                <child name="uom" ns="B"/>
+            </property>
+        </target>
+        <parameter value="urn:adv:uom:m" name="value"/>
+    </cell>
+</alignment>

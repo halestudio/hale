@@ -76,6 +76,12 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	public static final String PARAM_FEATURES_PER_WFS_REQUEST = "featuresPerWfsRequest";
 
 	/**
+	 * The name of the parameter specifying if hale should ignore the total
+	 * number of features reported by the WFS.
+	 */
+	public static final String PARAM_IGNORE_NUMBER_MATCHED = "ignoreNumberMatched";
+
+	/**
 	 * The name of the parameter specifying if the selection of mapping relevant
 	 * types for instances that are processed should be ignored.
 	 * 
@@ -125,6 +131,9 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			boolean ignoreNamespaces = getParameter(PARAM_IGNORE_NAMESPACES).as(Boolean.class,
 					false);
 			boolean paginateRequest = getParameter(PARAM_PAGINATE_REQUEST).as(Boolean.class, false);
+			boolean ignoreNumberMatched = getParameter(PARAM_IGNORE_NUMBER_MATCHED)
+					.as(Boolean.class, false);
+
 			int featuresPerRequest;
 			if (paginateRequest) {
 				featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
@@ -150,7 +159,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 
 				instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
 						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
-						this, featuresPerRequest);
+						this, featuresPerRequest, ignoreNumberMatched);
 			}
 			else {
 				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),

@@ -41,6 +41,11 @@ import groovy.lang.Script;
 public class GroovyRetype extends AbstractTypeTransformation<TransformationEngine>
 		implements GroovyConstants {
 
+	/**
+	 * The function ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.retype";
+
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log, Cell cell)

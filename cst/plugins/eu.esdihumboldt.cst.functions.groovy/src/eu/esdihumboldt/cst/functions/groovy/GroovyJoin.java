@@ -43,6 +43,11 @@ public class GroovyJoin extends GroovyRetype implements JoinFunction, InstanceIn
 	 */
 	public static final String GROOVY_JOIN_ID = "eu.esdihumboldt.cst.functions.groovy.join";
 
+	/**
+	 * The function ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.join";
+
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		return new IndexJoinHandler();

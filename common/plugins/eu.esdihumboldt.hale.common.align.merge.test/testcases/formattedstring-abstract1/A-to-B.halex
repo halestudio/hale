@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="3.3.100.qualifier">
+    <name>A to B (matching)</name>
+    <author>Simon Templer</author>
+    <created>2018-01-10T16:17:32.757+01:00</created>
+    <modified>2018-02-01T10:53:13.076+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/home/simon/repos/hale/common/plugins/eu.esdihumboldt.hale.common.align.merge.test/testcases/formattedstring-abstract1/A-to-B.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">6534b899-7ef3-4ead-8e4f-9af3af16f030</setting>
+        <setting name="source">A.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">67afcd12-5dd4-4adc-ab52-042786a4b3af</setting>
+        <setting name="source">B.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <file name="alignment.xml" location="A-to-B.halex.alignment.xml"/>
+    <file name="styles.sld" location="A-to-B.halex.styles.sld"/>
+</hale-project>

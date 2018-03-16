@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C1" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B">
+                    <condition lang="CQL">x &lt;&gt; 'Y'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="c1" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B">
+                    <condition lang="CQL">x &lt;&gt; 'Y'</condition>
+                </type>
+                <child name="b1" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="c1" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="x" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="x" ns="B">
+                    <condition lang="CQL">value = 'X'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="x" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="x2" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="x2" ns="B">
+                    <condition lang="CQL">value = 'X'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="x2" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="y" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="y" ns="B">
+                    <condition lang="CQL">value = 'Y'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="y" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="z" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B">
+                    <condition lang="CQL">x &lt;&gt; 'Y'</condition>
+                </type>
+                <child name="z" ns="B">
+                    <condition lang="CQL">value = 'Z'</condition>
+                </child>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="z" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

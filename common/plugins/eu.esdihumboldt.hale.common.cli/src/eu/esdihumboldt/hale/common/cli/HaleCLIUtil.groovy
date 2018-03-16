@@ -49,6 +49,24 @@ class HaleCLIUtil {
 		println ''
 	}
 
+	static void defaultOptions(CliBuilder cli, boolean logReports = false) {
+		cli._(longOpt: 'log-out', args:1, argName:'file', 'Log output stream to a file')
+		cli._(longOpt: 'log-err', args:1, argName:'file', 'Log error stream to a file')
+		if (logReports) {
+			cli._(longOpt: 'log-reports', args: 1, argName: 'file', 'Log reports to a file')
+		}
+	}
+
+	static ReportHandler createReportHandler(OptionAccessor options) {
+		def repFile = options.'log-reports'
+		if (repFile) {
+			createReportHandler(repFile as File)
+		}
+		else {
+			createReportHandler()
+		}
+	}
+
 	@CompileStatic
 	static ReportHandler createReportHandler(File reportFile = null) {
 		final ReportHandler delegateTo

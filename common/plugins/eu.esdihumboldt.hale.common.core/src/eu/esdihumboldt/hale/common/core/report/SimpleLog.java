@@ -94,6 +94,32 @@ public interface SimpleLog {
 		};
 	}
 
+	public static SimpleLog all(final SimpleLog... logs) {
+		return new SimpleLog() {
+
+			@Override
+			public void warn(String message, Throwable e) {
+				for (SimpleLog log : logs) {
+					log.warn(message, e);
+				}
+			}
+
+			@Override
+			public void info(String message, Throwable e) {
+				for (SimpleLog log : logs) {
+					log.info(message, e);
+				}
+			}
+
+			@Override
+			public void error(String message, Throwable e) {
+				for (SimpleLog log : logs) {
+					log.error(message, e);
+				}
+			}
+		};
+	}
+
 	void warn(String message, Throwable e);
 
 	default void warn(String message) {

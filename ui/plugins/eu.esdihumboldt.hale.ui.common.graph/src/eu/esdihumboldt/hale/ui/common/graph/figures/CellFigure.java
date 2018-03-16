@@ -16,6 +16,9 @@
 
 package eu.esdihumboldt.hale.ui.common.graph.figures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.Label;
@@ -25,10 +28,14 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Priority;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
+import eu.esdihumboldt.hale.ui.common.graph.figures.extension.CellFigureContributionFactory;
+import eu.esdihumboldt.hale.ui.common.graph.figures.extension.CellFigureExtension;
 import eu.esdihumboldt.hale.ui.util.graph.CustomShapeFigure;
 import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
 
@@ -39,6 +46,8 @@ import eu.esdihumboldt.hale.ui.util.graph.shapes.StretchedHexagon;
  * @author Andrea Antonello
  */
 public class CellFigure extends CustomShapeFigure {
+
+	private static final ALogger logger = ALoggerFactory.getLogger(CellFigure.class);
 
 	/**
 	 * Default constructor
@@ -57,27 +66,52 @@ public class CellFigure extends CustomShapeFigure {
 
 		setAntialias(SWT.ON);
 
-		GridLayout gridLayout = new GridLayout();
-		gridLayout.numColumns = getNumColumns(cell, isCompatible, isInherited);
-		gridLayout.makeColumnsEqualWidth = false;
-		gridLayout.marginHeight = 3;
-		gridLayout.marginWidth = 3;
-		setLayoutManager(gridLayout);
+		List<CellFigureContribution> contributors = new ArrayList<>();
+		List<CellFigureContributionFactory> factories = CellFigureExtension
+				.getCellFigureContributionFactories();
+		for (CellFigureContributionFactory factory : factories) {
+			try {
+				CellFigureContribution contribution = factory.createExtensionObject();
+				if (contribution != null) {
+					contributors.add(contribution);
+				}
+			} catch (Exception e) {
+				logger.error("Couldn't create task provider", e);
+			}
 
-		addLabels(cell, isCompatible, lastCompatibilityMode, isInherited);
+			GridLayout gridLayout = new GridLayout();
+			gridLayout.numColumns = getNumColumns(cell, isCompatible, isInherited, contributors);
+			gridLayout.makeColumnsEqualWidth = false;
+			gridLayout.marginHeight = 3;
+			gridLayout.marginWidth = 3;
+			setLayoutManager(gridLayout);
+
+			addLabels(cell, isCompatible, lastCompatibilityMode, isInherited);
+
+			contributors.stream().forEach(c -> c.contribute(this, cell));
+		}
 	}
 
-	private int getNumColumns(Cell cell, boolean isCompatible, boolean isInherited) {
+	private int getNumColumns(Cell cell, boolean isCompatible, boolean isInherited,
+			List<CellFigureContribution> contributors) {
 		int numColumns = 1; // main label
 
-		if (!isCompatible)
+		if (!isCompatible) {
 			numColumns++;
-		if (isInherited)
+		}
+		if (isInherited) {
 			numColumns++;
-		if (AlignmentUtil.isTypeCell(cell))
+		}
+		if (AlignmentUtil.isTypeCell(cell)) {
 			numColumns++;
-		if (cell.getPriority() != Priority.NORMAL)
+		}
+		if (cell.getPriority() != Priority.NORMAL) {
 			numColumns++;
+		}
+
+		for (CellFigureContribution contributor : contributors) {
+			numColumns += contributor.getLabelColumnCount();
+		}
 
 		return numColumns;
 	}

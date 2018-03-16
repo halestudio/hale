@@ -44,6 +44,11 @@ public class GroovyMerge extends GroovyRetype implements MergeFunction, Instance
 	 */
 	public static final String GROOVY_MERGE_ID = "eu.esdihumboldt.cst.functions.groovy.merge";
 
+	/**
+	 * The function ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.merge";
+
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		return new IndexMergeHandler();
