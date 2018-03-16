@@ -243,19 +243,31 @@ public class MappingView extends AbstractMappingView {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isUpdateRequired(SchemaSelection currentSelection, Iterable<Cell> cells) {
-		if (cells == null || !cells.iterator().hasNext())
+		if (cells == null || !cells.iterator().hasNext()) {
 			return false;
-
-		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
-				currentSelection);
-		for (Cell cell : cells) {
-			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
-					|| associatedWith(items.getSecond(), cell)) {
-				return true;
-			}
 		}
-		return false;
+
+		// XXX assume update is always required because routine below is broken
+		return true;
+
+		/*
+		 * FIXME there seems to be a race condition here. For instance when
+		 * deleting the cell selected in the mapping view it will not disappear
+		 * because this method states that no update is required. If stalled in
+		 * debugging via a breakpoint, there is a different result and the view
+		 * is updated.
+		 */
+//		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
+//				currentSelection);
+//		for (Cell cell : cells) {
+//			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
+//					|| associatedWith(items.getSecond(), cell)) {
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
 	/**

@@ -21,8 +21,16 @@ import java.util.stream.Collectors;
 
 import org.eclipse.draw2d.GridData;
 import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.common.tasks.TaskService;
@@ -39,6 +47,9 @@ import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigureContribution;
  * @author Florian Esser
  */
 public class CellFigureTaskLabelContribution implements CellFigureContribution {
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(CellFigureTaskLabelContribution.class);
 
 	private TaskServiceListener taskServiceListener;
 
@@ -57,6 +68,34 @@ public class CellFigureTaskLabelContribution implements CellFigureContribution {
 		Image tasksImage = null;
 		tasksImage = CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_TASKS);
 		tasksLabel.setIcon(tasksImage);
+		tasksLabel.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent me) {
+				try {
+					IViewPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage().showView(TaskTreeView.ID);
+					// XXX better would be if we could trigger the selection in
+					// the alignment/mapping view
+					if (part instanceof TaskTreeView) {
+						((TaskTreeView) part).update(new StructuredSelection(cell));
+					}
+					me.consume();
+				} catch (PartInitException e) {
+					log.error("Error creating task view", e);
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent me) {
+				// ignore
+			}
+
+			@Override
+			public void mouseDoubleClicked(MouseEvent me) {
+				// ignore
+			}
+		});
 		if (tasksImage != null) {
 			Label priorityTip = new Label(MessageFormat.format(
 					"There {0} {1} open tasks for this cell. Please refer to the Tasks view for details.",
