@@ -515,6 +515,7 @@ public class TaskTreeView extends ViewPart {
 					ResolvedTask<Cell> rt = taskService.resolveTask(tasks.iterator().next());
 					MapTreeNode<?, TreeNode> cellNode = getParentNode(rt, false);
 					tree.setSelection(new StructuredSelection(cellNode));
+					tree.expandToLevel(cellNode, TreeViewer.ALL_LEVELS);
 				}
 			}
 		}
