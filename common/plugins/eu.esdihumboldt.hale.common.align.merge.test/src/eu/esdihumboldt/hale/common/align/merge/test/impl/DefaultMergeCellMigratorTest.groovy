@@ -457,7 +457,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// do checks
 
-		// filter
+		// type filter
 		assertEquals(1, migrated.size())
 		filterCheck(migrated[0], "ba = 'test'")
 
@@ -481,7 +481,32 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// filter
 		assertEquals(1, migrated.size())
-		filterCheck(migrated[0], "bb = 'test'")
+		filterCheck(migrated[0], "bb = 'test'") // the filter should be retained
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	@Test
+	@CompileStatic(TypeCheckingMode.SKIP)
+	void testTypeFilter2Property() {
+		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
+		def cellId = 'B2C2a' // Rename
+
+		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// type filter should be retained
+		def source = CellUtil.getFirstEntity(migrated[0].source).definition
+		def filter = source.filter
+		assertNotNull(filter)
+		assertEquals("bb = 'test'", filter.filterTerm)
 
 		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated[0])

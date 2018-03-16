@@ -90,8 +90,8 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 
 	@Override
 	public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
-		cellsRemoved(cells.keySet().stream().map(c -> (Cell) c).collect(Collectors.toList()));
-		cellsAdded(cells.entrySet().stream().map(c -> (Cell) c).collect(Collectors.toList()));
+		cellsRemoved(cells.keySet().stream().collect(Collectors.toList()));
+		cellsAdded(cells.values().stream().collect(Collectors.toList()));
 	}
 
 	@Override

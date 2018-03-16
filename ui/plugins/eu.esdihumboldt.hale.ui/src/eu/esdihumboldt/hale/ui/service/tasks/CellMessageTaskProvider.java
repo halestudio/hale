@@ -68,6 +68,7 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
+				taskService.clearTasks();
 				addTasks(generateTasks(), taskService);
 			}
 
@@ -85,7 +86,7 @@ public class CellMessageTaskProvider extends AbstractTaskProvider {
 
 	private List<Task<Cell>> generateTasks() {
 		List<Task<Cell>> result = new ArrayList<>();
-		alignmentService.getAlignment().getActiveTypeCells().stream()
+		alignmentService.getAlignment().getCells().stream()
 				.forEach(c -> result.addAll(generateTasks(c)));
 
 		return result;

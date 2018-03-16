@@ -38,6 +38,24 @@ _target {
         <parameter value="false" name="structuralRename"/>
         <documentation>B2 to C2</documentation>
     </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="B2C2a" priority="normal">
+        <source>
+            <property>
+                <type name="B2" ns="B">
+                    <condition lang="CQL">bb = 'test'</condition>
+                </type>
+                <child name="ba" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C2" ns="C"/>
+                <child name="ca" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
     <cell relation="eu.esdihumboldt.hale.align.merge" id="B3-C3" priority="normal">
         <source>
             <class>

@@ -506,7 +506,7 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @param selection the selection
 	 */
-	protected void update(ISelection selection) {
+	public void update(ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
 			Object element = ((IStructuredSelection) selection).getFirstElement();
 			if (element instanceof Cell) {
@@ -515,6 +515,7 @@ public class TaskTreeView extends ViewPart {
 					ResolvedTask<Cell> rt = taskService.resolveTask(tasks.iterator().next());
 					MapTreeNode<?, TreeNode> cellNode = getParentNode(rt, false);
 					tree.setSelection(new StructuredSelection(cellNode));
+					tree.expandToLevel(cellNode, TreeViewer.ALL_LEVELS);
 				}
 			}
 		}

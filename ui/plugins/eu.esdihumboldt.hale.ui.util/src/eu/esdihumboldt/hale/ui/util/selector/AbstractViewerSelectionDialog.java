@@ -316,6 +316,15 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	}
 
 	/**
+	 * Set the internal selection.
+	 * 
+	 * @param selected the selection
+	 */
+	protected void internalSetSelected(T selected) {
+		this.selected = selected;
+	}
+
+	/**
 	 * Set the viewer filters
 	 * 
 	 * @param filters the filters
