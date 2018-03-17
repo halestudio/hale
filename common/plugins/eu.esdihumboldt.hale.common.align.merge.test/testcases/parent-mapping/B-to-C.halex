@@ -3,12 +3,12 @@
     <name>B to C (to be migrated)</name>
     <author>Simon Templer</author>
     <created>2018-01-10T16:26:35.275+01:00</created>
-    <modified>2018-03-16T16:12:23.458+01:00</modified>
+    <modified>2018-03-16T23:56:34.902+01:00</modified>
     <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
         <setting name="charset">UTF-8</setting>
         <setting name="projectFiles.separate">false</setting>
         <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
-        <setting name="target">file:/home/simon/repos/hale/common/plugins/eu.esdihumboldt.hale.common.align.merge.test/testcases/type-filter/B-to-C.halex</setting>
+        <setting name="target">file:/home/simon/repos/hale/common/plugins/eu.esdihumboldt.hale.common.align.merge.test/testcases/parent-mapping/B-to-C.halex</setting>
     </save-config>
     <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
         <setting name="charset">UTF-8</setting>
@@ -24,4 +24,9 @@
     </resource>
     <file name="alignment.xml" location="B-to-C.halex.alignment.xml"/>
     <file name="styles.sld" location="B-to-C.halex.styles.sld"/>
+    <property name="defaultGeometry:{B}B1/1">{B}geom</property>
+    <property name="defaultGeometry:{B}B1/2">{B}Point</property>
+    <property name="defaultGeometry:{B}B1/count">2</property>
+    <property name="defaultGeometry:{C}C1/1">{C}geom</property>
+    <property name="defaultGeometry:{C}C1/count">1</property>
 </hale-project>

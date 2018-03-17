@@ -314,7 +314,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		}
 
 		JoinParameter initialValue = null;
-		if (firstShow && !getInitialValues().isEmpty()) {
+		if (firstShow && !getInitialValues().get(PARAMETER_JOIN).isEmpty()) {
 			initialValue = getInitialValues().get(PARAMETER_JOIN).get(0).as(JoinParameter.class);
 
 			if (initialValue != null) {

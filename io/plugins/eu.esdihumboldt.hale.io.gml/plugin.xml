@@ -172,6 +172,15 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
+               description="Ignore number of matched features reported by the WFS"
+               label="Ignore number of matched features reported by the WFS"
+               name="ignoreNumberMatched"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
                description="The identifier of the algorithm to use for the interpolation of Arc and Circle geometries"
                label="Interpolation algorithm"
                name="interpolation.algorithm"
@@ -294,6 +303,15 @@
                optional="true">
             <parameterBinding
                   class="java.lang.Integer">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Ignore number of matched features reported by the WFS"
+               label="Ignore number of matched features reported by the WFS"
+               name="ignoreNumberMatched"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
             </parameterBinding>
          </providerParameter>
          <providerParameter

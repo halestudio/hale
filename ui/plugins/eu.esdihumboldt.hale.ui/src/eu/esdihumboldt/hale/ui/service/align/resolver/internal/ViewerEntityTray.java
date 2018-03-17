@@ -58,7 +58,8 @@ public class ViewerEntityTray extends DialogTray {
 
 		// text / description
 		Label label = new Label(page, SWT.WRAP);
-		label.setText("An entity that is referenced in a mapping cell cannot be resolved. This may be due to a changed schema, with for instance changed namespaces or property names. To update the cell please select a replacement entity to the left, a candidate may already be selected. Cancel to leave the cell entity unchanged.\n\nBelow is a (inaccurate) reconstruction of the original entity for reference:");
+		label.setText(
+				"An entity that is referenced in a mapping cell cannot be resolved. This may be due to a changed schema, with for instance changed namespaces or property names. To update the cell please select a replacement entity to the left, a candidate may already be selected. Press Skip to leave the cell entity unchanged or Cancel to skip all remaining entities.\n\nBelow is a (inaccurate) reconstruction of the original entity for reference:");
 		GridDataFactory.swtDefaults().hint(300, SWT.DEFAULT).applyTo(label);
 
 		// viewer for dummy entity
