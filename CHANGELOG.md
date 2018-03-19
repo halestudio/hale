@@ -4,6 +4,10 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Fixed
+
+- Fixed hale connect integration when using a proxy
+
 ## [3.3.2]
 
 ### Added
