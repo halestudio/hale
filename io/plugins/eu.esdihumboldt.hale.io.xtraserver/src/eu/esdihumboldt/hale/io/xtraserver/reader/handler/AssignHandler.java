@@ -49,8 +49,8 @@ class AssignHandler extends AbstractPropertyTransformationHandler {
 			bindValue = transformationContext.getCurrentFeatureTypeMapping()
 					.getTableValuesForPath(parentTarget).entrySet().stream()
 					.filter(entry -> entry.getKey().getName().equals(tableName))
-					.map(Map.Entry::getValue).map(MappingValue::getValueColumn)
-					.filter(Optional::isPresent).map(Optional::get).findFirst();
+					.map(Map.Entry::getValue).filter(value -> !value.getValueColumns().isEmpty())
+					.map(value -> value.getValueColumns().get(0)).findFirst();
 		}
 
 		if (bindValue.isPresent()) {

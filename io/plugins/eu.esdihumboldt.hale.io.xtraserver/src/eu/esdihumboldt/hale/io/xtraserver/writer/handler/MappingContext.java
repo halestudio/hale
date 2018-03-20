@@ -29,6 +29,7 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -38,6 +39,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingTable;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder.MappingTableDraft;
 import de.interactive_instruments.xtraserver.config.api.MappingValue;
+import de.interactive_instruments.xtraserver.config.api.VirtualTableBuilder;
 import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
 import de.interactive_instruments.xtraserver.config.api.XtraServerMappingBuilder;
 import de.interactive_instruments.xtraserver.config.transformer.XtraServerMappingTransformer;
@@ -80,6 +82,7 @@ public final class MappingContext {
 	private FeatureTypeMappingBuilder currentFeatureTypeMapping;
 	private String currentFeatureTypeMappingName;
 	private final Map<String, MappingTableBuilder> currentMappingTables = new LinkedHashMap<>();
+	private final Map<String, VirtualTableBuilder> currentVirtualTables = new LinkedHashMap<>();
 	private final Set<String> missingAssociationTargets = new TreeSet<String>();
 	private final URI applicationSchemaUri;
 	private final ProjectInfo projectInfo;
@@ -160,6 +163,39 @@ public final class MappingContext {
 					}
 				});
 
+		this.currentMappingTables.values().stream().filter(isInvalidJoinTableWithoutTarget())
+				.map(MappingTableBuilder::buildDraft).forEach(table -> {
+					String primaryName = table.getJoinPaths().iterator().next().getSourceTable();
+					if (this.currentMappingTables.containsKey(primaryName)) {
+						MappingTableBuilder primaryTable = currentMappingTables.get(primaryName);
+						String virtualName = primaryTable.buildDraft().getName();
+						boolean virtualExists = currentVirtualTables.containsKey(primaryName);
+
+						VirtualTableBuilder virtualTable = currentVirtualTables.get(primaryName);
+						if (!virtualExists) {
+							virtualTable = new VirtualTableBuilder();
+							virtualTable.originalTable(primaryTable.buildDraft());
+							this.currentVirtualTables.put(primaryName, virtualTable);
+						}
+
+						if (!virtualExists) {
+							virtualName = "vrt_" + virtualName;
+						}
+
+						if (!virtualName.contains(table.getName())) {
+							virtualName += "_" + table.getName();
+							this.currentMappingTables.get(primaryName)
+									.name("$" + virtualName + "$");
+						}
+
+						virtualTable.name(virtualName);
+						virtualTable.originalTable(table);
+
+						primaryTable
+								.values(table.getAllValuesStream().collect(Collectors.toList()));
+					}
+				});
+
 		final Optional<MappingTable> primaryTable = this.currentMappingTables.values().stream()
 				.map(MappingTableBuilder::build).filter(table -> table.isPrimary()).findFirst();
 
@@ -172,6 +208,13 @@ public final class MappingContext {
 
 	private Predicate<MappingTableBuilder> isValidJoinTable() {
 		return tableBuilder -> tableBuilder.buildDraft().isJoined()
+				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent();
+	}
+
+	private Predicate<MappingTableBuilder> isInvalidJoinTableWithoutTarget() {
+		return tableBuilder -> !tableBuilder.buildDraft().getJoinPaths().isEmpty()
+				&& tableBuilder.buildDraft().getTargetPath().isEmpty()
+				&& tableBuilder.buildDraft().getQualifiedTargetPath().isEmpty()
 				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent();
 	}
 
@@ -245,12 +288,12 @@ public final class MappingContext {
 			}
 			// if no multiple property is found, use first property in path as target and
 			// issue warning
-			if (!pathIsSet && !targetPath.isEmpty()) {
-				tableBuilder.qualifiedTargetPath(targetPath.subList(0, 1));
-				reporter.warn(
-						"No multiple property found for joined table \"{0}\", used \"{1}\" as target path.",
-						tableName, targetPath.get(0));
-			}
+			/*
+			 * if (!pathIsSet && !targetPath.isEmpty()) {
+			 * tableBuilder.qualifiedTargetPath(targetPath.subList(0, 1)); reporter.warn(
+			 * "No multiple property found for joined table \"{0}\", used \"{1}\" as target path."
+			 * , tableName, targetPath.get(0)); }
+			 */
 		}
 
 		tableBuilder.value(value);
@@ -289,14 +332,19 @@ public final class MappingContext {
 		featureTypeMappings.values().stream().map(FeatureTypeMappingBuilder::build)
 				.forEach(xtraServerMappingBuilder::featureTypeMapping);
 
+		currentVirtualTables.values().stream().map(VirtualTableBuilder::build)
+				.forEach(xtraServerMappingBuilder::virtualTable);
+
 		XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
 				.forMapping(xtraServerMappingBuilder.build())
-				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance().transform();
+				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
+				.ensureRelationNavigability().transform();
 
-		fannedOutmapping = XtraServerMappingTransformer.forMapping(fannedOutmapping)
-				.applySchemaInfo(this.applicationSchemaUri).ensureRelationNavigability()
-				.transform();
-
+		/*
+		 * fannedOutmapping = XtraServerMappingTransformer.forMapping(fannedOutmapping)
+		 * .applySchemaInfo(this.applicationSchemaUri).ensureRelationNavigability()
+		 * .transform();
+		 */
 		return fannedOutmapping;
 	}
 

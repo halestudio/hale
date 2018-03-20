@@ -61,7 +61,9 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				.getTransformationParameters();
 		final List<ParameterValue> patterns = parameters.get("pattern");
 		if (patterns == null || patterns.isEmpty() || patterns.get(0).isEmpty()) {
-			throw new IllegalArgumentException("Formatted string not set");
+			mappingContext.getReporter().warn("Formatted string was ignored, no pattern set.");
+			return Optional.empty();
+			// throw new IllegalArgumentException("Formatted string not set");
 		}
 		final String pattern = patterns.get(0).as(String.class);
 		final StringBuilder formattedStr = new StringBuilder(
@@ -81,6 +83,8 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				startEndList.add(startEnd);
 				varList.add(m.group(1)); // the variable name, without curly braces
 			}
+			// TODO: never throw, warn only if subst var not found
+			// TODO: or throw and catch outside where context can be logged
 			if (varList.size() != variables.size()
 					&& varList.size() == new HashSet<>(varList).size()) {
 				throw new IllegalArgumentException(
