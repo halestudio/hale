@@ -322,7 +322,7 @@ public class AlignmentView extends AbstractMappingView {
 			}
 
 			@Override
-			public <C> void tasksAdded(Iterable<Task<C>> tasks) {
+			public void tasksAdded(Iterable<Task<?>> tasks) {
 				refreshGraph();
 			}
 

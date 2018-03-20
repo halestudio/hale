@@ -50,7 +50,7 @@ public interface TaskService {
 	 * 
 	 * @param tasks the tasks to add
 	 */
-	<C> void addTasks(Iterable<Task<C>> tasks);
+	void addTasks(Iterable<? extends Task<?>> tasks);
 
 	/**
 	 * Remove a task

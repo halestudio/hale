@@ -122,9 +122,9 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 * @see TaskService#addTasks(Iterable)
 	 */
 	@Override
-	public <C> void addTasks(Iterable<Task<C>> tasks) {
-		Collection<Task<C>> added = new ArrayList<>();
-		for (Task<C> task : tasks) {
+	public void addTasks(Iterable<? extends Task<?>> tasks) {
+		Collection<Task<?>> added = new ArrayList<>();
+		for (Task<?> task : tasks) {
 			if (addTaskInternal(task)) {
 				added.add(task);
 			}
