@@ -49,9 +49,9 @@ public class ProjectStoreHelper {
 	 */
 	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.PROJECT_STORE));
-		apiClient.setApiKey(apiKey);
-		apiClient.setApiKeyPrefix("Bearer");
+		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.PROJECT_STORE,
+				resolver, apiKey);
+
 		return apiClient;
 	}
 

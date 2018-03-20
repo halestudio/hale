@@ -30,20 +30,23 @@ public class BucketServiceHelper {
 
 	/**
 	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
 	 * @return ApiClient for the bucket service
 	 */
-	public static ApiClient getApiClient(BasePathResolver resolver) {
+	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.BUCKET_SERVICE));
+		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.BUCKET_SERVICE,
+				resolver, apiKey);
 		return apiClient;
 	}
 
 	/**
 	 * @param resolver the base path resolver
+	 * @param apiKey JWT for authentication
 	 * @return bucket service's Buckets API
 	 */
-	public static BucketsApi getBucketsApi(BasePathResolver resolver) {
-		return new BucketsApi(getApiClient(resolver));
+	public static BucketsApi getBucketsApi(BasePathResolver resolver, String apiKey) {
+		return new BucketsApi(getApiClient(resolver, apiKey));
 	}
 
 }
