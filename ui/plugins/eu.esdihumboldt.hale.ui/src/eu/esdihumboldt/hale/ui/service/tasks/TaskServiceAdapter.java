@@ -40,7 +40,7 @@ public abstract class TaskServiceAdapter implements TaskServiceListener {
 	 * @see TaskServiceListener#tasksAdded(Iterable)
 	 */
 	@Override
-	public <C> void tasksAdded(Iterable<Task<C>> tasks) {
+	public void tasksAdded(Iterable<Task<?>> tasks) {
 		// override me
 	}
 

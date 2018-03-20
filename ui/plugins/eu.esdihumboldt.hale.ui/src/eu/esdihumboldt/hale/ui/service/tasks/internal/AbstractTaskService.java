@@ -52,7 +52,7 @@ public abstract class AbstractTaskService implements TaskService {
 	 * 
 	 * @param tasks the tasks that have been added
 	 */
-	protected <C> void notifyTasksAdded(Iterable<Task<C>> tasks) {
+	protected void notifyTasksAdded(Iterable<Task<?>> tasks) {
 		for (TaskServiceListener listener : listeners) {
 			listener.tasksAdded(tasks);
 		}
