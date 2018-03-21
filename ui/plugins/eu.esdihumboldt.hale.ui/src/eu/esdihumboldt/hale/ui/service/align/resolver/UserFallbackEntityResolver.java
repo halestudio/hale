@@ -178,7 +178,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	 */
 	public static ResolveCache getCache() {
 		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
-		ResolveCache result = ps.getTemporaryProperty(PROPERTY_RESOLVE_CACHE)
+		ResolveCache result = ps.getTemporaryProperty(PROPERTY_RESOLVE_CACHE, Value.NULL)
 				.as(ResolveCache.class);
 		if (result == null) {
 			result = new ResolveCache();

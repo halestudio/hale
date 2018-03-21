@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
+import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 
 /**
  * Migration based on user input.
@@ -56,13 +57,14 @@ public class UserMigration implements AlignmentMigration {
 
 		// use functionality from entity resolver
 		if (entity instanceof TypeEntityDefinition) {
-			EntityDefinition candidate = null; // TODO
+			EntityDefinition candidate = entity;
 			Type type = UserFallbackEntityResolver.resolveType((TypeEntityDefinition) entity,
 					candidate, schemaSpace);
 			return Optional.ofNullable(type).map(e -> e.getDefinition());
 		}
 		else if (entity instanceof PropertyEntityDefinition) {
-			EntityDefinition candidate = null; // TODO
+			EntityDefinition candidate = entity;
+			candidate = EntityCandidates.find((PropertyEntityDefinition) entity);
 			Property property = UserFallbackEntityResolver
 					.resolveProperty((PropertyEntityDefinition) entity, candidate, schemaSpace);
 			return Optional.ofNullable(property).map(e -> e.getDefinition());
