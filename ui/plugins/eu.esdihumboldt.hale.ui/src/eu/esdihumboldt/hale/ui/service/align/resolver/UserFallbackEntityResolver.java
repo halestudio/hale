@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -76,68 +78,82 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				es.addContexts(candidate);
 			}
 
-			ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+			PropertyEntityDefinition dummy = EntityToDef.toDummyDef(entity, schemaSpace);
 
-			final AtomicBoolean canceled;
-			final AtomicBoolean skipped = new AtomicBoolean(false);
-			if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
-				canceled = new AtomicBoolean(true);
-			}
-			else {
-				canceled = new AtomicBoolean(false);
-			}
+			return resolveProperty(dummy, candidate, schemaSpace);
+		}
+	}
 
-			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
+	/**
+	 * Ask the user to select a replacement for a property.
+	 * 
+	 * @param original the original entity
+	 * @param candidate a candidate for the replacement
+	 * @param schemaSpace the schema space
+	 * @return the resolved property (may be the original)
+	 */
+	public static Property resolveProperty(PropertyEntityDefinition original,
+			@Nullable EntityDefinition candidate, SchemaSpaceID schemaSpace) {
+		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
 
-			if (!canceled.get()) {
-				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+		final AtomicBoolean canceled;
+		final AtomicBoolean skipped = new AtomicBoolean(false);
+		if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
+			canceled = new AtomicBoolean(true);
+		}
+		else {
+			canceled = new AtomicBoolean(false);
+		}
 
-					@Override
-					public void run() {
-						PropertyEntityResolverDialog dlg = new PropertyEntityResolverDialog(
-								Display.getCurrent().getActiveShell(), schemaSpace, null,
-								"Cell entity could not be resolved", candidate) {
+		final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 
-							@Override
-							public void create() {
-								super.create();
-								openTray(new ViewerEntityTray(entity, schemaSpace));
-							}
+		if (!canceled.get()) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-						};
-						switch (dlg.open()) {
-						case Window.OK:
-							result.set(dlg.getObject());
-							break;
-						case Window.CANCEL:
-							// Don't try to resolve further entities
-							ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
-							canceled.set(true);
-							break;
-						case PropertyEntityResolverDialog.SKIP:
-							// skip this entity
-							skipped.set(true);
-							break;
-						default:
-							canceled.set(true);
+				@Override
+				public void run() {
+					PropertyEntityResolverDialog dlg = new PropertyEntityResolverDialog(
+							Display.getCurrent().getActiveShell(), schemaSpace, null,
+							"Cell entity could not be resolved", candidate) {
+
+						@Override
+						public void create() {
+							super.create();
+							openTray(new ViewerEntityTray(original));
 						}
-					}
-				});
-			}
 
-			EntityDefinition def = result.get();
-			if (canceled.get() || skipped.get()) {
-				// return a dummy so the cell is not lost
-				return new DefaultProperty(
-						(PropertyEntityDefinition) EntityToDef.toDummyDef(entity, schemaSpace));
-			}
-			else if (def == null) {
-				// caller must take care about this
-				return null;
-			}
-			else {
-				return new DefaultProperty((PropertyEntityDefinition) def);
-			}
+					};
+					switch (dlg.open()) {
+					case Window.OK:
+						result.set(dlg.getObject());
+						break;
+					case Window.CANCEL:
+						// Don't try to resolve further entities
+						ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
+						canceled.set(true);
+						break;
+					case PropertyEntityResolverDialog.SKIP:
+						// skip this entity
+						skipped.set(true);
+						break;
+					default:
+						canceled.set(true);
+					}
+				}
+			});
+		}
+
+		EntityDefinition def = result.get();
+		if (canceled.get() || skipped.get()) {
+			// return the original so the cell is not lost
+			return new DefaultProperty(original);
+		}
+		else if (def == null) {
+			// caller must take care about this
+			return null;
+		}
+		else {
+			return new DefaultProperty((PropertyEntityDefinition) def);
 		}
 	}
 
@@ -156,77 +172,100 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				es.addContexts(candidate);
 			}
 
-			ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+			TypeEntityDefinition dummy = EntityToDef.toDummyDef(entity, schemaSpace);
 
-			final AtomicBoolean canceled;
-			final AtomicBoolean skipped = new AtomicBoolean(false);
-			if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
-				canceled = new AtomicBoolean(true);
-			}
-			else {
-				canceled = new AtomicBoolean(false);
-			}
-
-			final AtomicReference<EntityDefinition> result = new AtomicReference<>();
-
-			if (!canceled.get()) {
-				PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						TypeEntityResolverDialog dlg = new TypeEntityResolverDialog(
-								Display.getCurrent().getActiveShell(), schemaSpace,
-								"Cell entity could not be resolved", candidate, false) {
-
-							@Override
-							public void create() {
-								super.create();
-								openTray(new ViewerEntityTray(entity, schemaSpace));
-							}
-
-						};
-
-						switch (dlg.open()) {
-						case Window.OK:
-							result.set(dlg.getObject());
-							break;
-						case Window.CANCEL:
-							// Don't try to resolve further entities
-							ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
-							canceled.set(true);
-							break;
-						case TypeEntityResolverDialog.SKIP:
-							// skip this entity
-							skipped.set(true);
-							break;
-						default:
-							canceled.set(true);
-						}
-					}
-				});
-			}
-
-			EntityDefinition def = result.get();
-			if (canceled.get() || skipped.get()) {
-				// return a dummy so the cell is not lost
-				return new DefaultType(EntityToDef.toDummyDef(entity, schemaSpace));
-			}
-			else if (def == null) {
-				// caller must take care about this
-				return null;
-			}
-			else {
-				TypeEntityDefinition ted = (TypeEntityDefinition) def;
-
-				// make sure that the type is classified as mapping relevant
-				if (!ted.getType().getConstraint(MappingRelevantFlag.class).isEnabled()) {
-					SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
-					ss.toggleMappable(schemaSpace, Collections.singleton(ted.getType()));
-				}
-
-				return new DefaultType(ted);
-			}
+			return resolveType(dummy, candidate, schemaSpace);
 		}
+	}
+
+	/**
+	 * Ask the user to select a replacement for a type.
+	 * 
+	 * @param original the original entity
+	 * @param candidate a candidate for the replacement
+	 * @param schemaSpace the schema space
+	 * @return the resolved type (may be the original)
+	 */
+	public static Type resolveType(TypeEntityDefinition original,
+			@Nullable EntityDefinition candidate, SchemaSpaceID schemaSpace) {
+		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+
+		final AtomicBoolean canceled;
+		final AtomicBoolean skipped = new AtomicBoolean(false);
+		if (ps.getTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false)).as(Boolean.class)) {
+			canceled = new AtomicBoolean(true);
+		}
+		else {
+			canceled = new AtomicBoolean(false);
+		}
+
+		final AtomicReference<EntityDefinition> result = new AtomicReference<>();
+
+		if (!canceled.get()) {
+			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					TypeEntityResolverDialog dlg = new TypeEntityResolverDialog(
+							Display.getCurrent().getActiveShell(), schemaSpace,
+							"Cell entity could not be resolved", candidate, false) {
+
+						@Override
+						public void create() {
+							super.create();
+							openTray(new ViewerEntityTray(original));
+						}
+
+					};
+
+					switch (dlg.open()) {
+					case Window.OK:
+						result.set(dlg.getObject());
+						break;
+					case Window.CANCEL:
+						// Don't try to resolve further entities
+						ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(true));
+						canceled.set(true);
+						break;
+					case TypeEntityResolverDialog.SKIP:
+						// skip this entity
+						skipped.set(true);
+						break;
+					default:
+						canceled.set(true);
+					}
+				}
+			});
+		}
+
+		EntityDefinition def = result.get();
+		if (canceled.get() || skipped.get()) {
+			// return the original so the cell is not lost
+			return new DefaultType(original);
+		}
+		else if (def == null) {
+			// caller must take care about this
+			return null;
+		}
+		else {
+			TypeEntityDefinition ted = (TypeEntityDefinition) def;
+
+			// make sure that the type is classified as mapping relevant
+			if (!ted.getType().getConstraint(MappingRelevantFlag.class).isEnabled()) {
+				SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
+				ss.toggleMappable(schemaSpace, Collections.singleton(ted.getType()));
+			}
+
+			return new DefaultType(ted);
+		}
+	}
+
+	/**
+	 * Reset the project setting that will skip all properties.
+	 */
+	public static void resetSkip() {
+		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+		ps.setTemporaryProperty(RESOLVE_SKIP_PROPERTY, Value.of(false));
 	}
 
 }

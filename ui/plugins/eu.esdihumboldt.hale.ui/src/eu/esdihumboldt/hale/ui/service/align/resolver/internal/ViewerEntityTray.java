@@ -47,7 +47,14 @@ public class ViewerEntityTray extends DialogTray {
 	 * @param schemaSpace the schema space
 	 */
 	public ViewerEntityTray(AbstractEntityType entity, SchemaSpaceID schemaSpace) {
-		this.entity = EntityToDef.toDummyDef(entity, schemaSpace);
+		this(EntityToDef.toDummyDef(entity, schemaSpace));
+	}
+
+	/**
+	 * @param entity the entity definition
+	 */
+	public ViewerEntityTray(EntityDefinition entity) {
+		this.entity = entity;
 	}
 
 	@Override
