@@ -16,19 +16,17 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ListMultimap;
 
 import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
-import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction;
@@ -63,7 +61,6 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 		if (patterns == null || patterns.isEmpty() || patterns.get(0).isEmpty()) {
 			mappingContext.getReporter().warn("Formatted string was ignored, no pattern set.");
 			return Optional.empty();
-			// throw new IllegalArgumentException("Formatted string not set");
 		}
 		final String pattern = patterns.get(0).as(String.class);
 		final StringBuilder formattedStr = new StringBuilder(
@@ -71,11 +68,12 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 
 		if (propertyCell.getSource() != null
 				&& !propertyCell.getSource().asMap().get("var").isEmpty()) {
-			final Collection<? extends Entity> variables = propertyCell.getSource().asMap()
-					.get("var");
+			final List<String> variables = propertyCell.getSource().asMap().get("var").stream()
+					.map(var -> propertyName(var.getDefinition().getPropertyPath()))
+					.collect(Collectors.toList());
 			final List<int[]> startEndList = new ArrayList<int[]>();
 			final List<String> varList = new ArrayList<String>();
-			final Matcher m = VARIABLE_PATTERN.matcher(pattern);
+			final Matcher m = VARIABLE_PATTERN.matcher(formattedStr);
 			while (m.find()) {
 				int[] startEnd = new int[2];
 				startEnd[0] = m.start(); // index of '{' character
@@ -83,13 +81,14 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				startEndList.add(startEnd);
 				varList.add(m.group(1)); // the variable name, without curly braces
 			}
-			// TODO: never throw, warn only if subst var not found
-			// TODO: or throw and catch outside where context can be logged
-			if (varList.size() != variables.size()
-					&& varList.size() == new HashSet<>(varList).size()) {
-				throw new IllegalArgumentException(
-						"Found " + varList.size() + " variables in the format pattern, but "
-								+ variables.size() + " provided variables should be replaced");
+
+			List<String> missingVars = varList.stream().filter(var -> !variables.contains(var))
+					.collect(Collectors.toList());
+			if (!missingVars.isEmpty()) {
+				mappingContext.getReporter().warn("Formatted string was ignored. Variables \""
+						+ missingVars
+						+ "\" were used in pattern, but do not exist in source properties.");
+				return Optional.empty();
 			}
 
 			final StringBuilder varBuilder = new StringBuilder();
