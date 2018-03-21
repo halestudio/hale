@@ -36,12 +36,15 @@ import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 public class PropertyTransformationHandlerFactory
 		extends AbstractTransformationHandlerFactory<PropertyTransformationHandler> {
 
+	private final static String SQL_EXPRESSION_ID = "eu.esdihumboldt.hale.io.xtraserver.sqlExpression";
+
 	private final static String[] supportedTypes = { RenameFunction.ID,
 			MathematicalExpressionFunction.ID, AssignFunction.ID, AssignFunction.ID_BOUND,
 			FormattedStringFunction.ID, RegexAnalysisFunction.ID, ClassificationMappingFunction.ID,
 			CustomFunctionAdvToGeographicalNameSimple.FUNCTION_ID,
 			CustomFunctionAdvToIdentifier.FUNCTION_ID, CustomFunctionAdvToLocalId.FUNCTION_ID,
-			CustomFunctionAdvToNamespace.FUNCTION_ID, CustomFunctionAdvToUCUM.FUNCTION_ID };
+			CustomFunctionAdvToNamespace.FUNCTION_ID, CustomFunctionAdvToUCUM.FUNCTION_ID,
+			SQL_EXPRESSION_ID };
 	final static Set<String> SUPPORTED_TYPES = Collections
 			.unmodifiableSet(new HashSet<String>(Arrays.asList(supportedTypes)));
 
@@ -64,6 +67,7 @@ public class PropertyTransformationHandlerFactory
 				put(supportedTypes[i++], new CustomFunctionAdvToLocalId(mappingContext));
 				put(supportedTypes[i++], new CustomFunctionAdvToNamespace(mappingContext));
 				put(supportedTypes[i++], new CustomFunctionAdvToUCUM(mappingContext));
+				put(supportedTypes[i++], new SqlExpressionHandler(mappingContext));
 			}
 		});
 	}

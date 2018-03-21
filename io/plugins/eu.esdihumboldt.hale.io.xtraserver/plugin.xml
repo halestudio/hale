@@ -59,4 +59,43 @@
         priority="normal">
       </content-type>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            id="eu.esdihumboldt.hale.io.xtraserver.functions"
+            name="XtraServer">
+      </category>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            category="eu.esdihumboldt.hale.io.xtraserver.functions"
+            identifier="eu.esdihumboldt.hale.io.xtraserver.sqlExpression"
+            name="SQL Expression">
+         <targetProperties>
+            <property
+                  eager="false"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  eager="false"
+                  maxOccurrence="n"
+                  minOccurrence="0">
+            </property>
+         </sourceProperties>
+         <functionParameter
+               deprecated="false"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="sql"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </functionParameter>
+      </propertyFunction>
+   </extension>
 </plugin>

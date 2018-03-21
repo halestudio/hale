@@ -159,7 +159,8 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		final Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(propertyCell);
 
 		if (targetProperty == null || (sourceProperty == null && !((this instanceof AssignHandler)
-				|| (this instanceof CustomFunctionAdvToNamespace)))) {
+				|| (this instanceof CustomFunctionAdvToNamespace)
+				|| (this instanceof SqlExpressionHandler)))) {
 			CellParentWrapper cellParentWrapper = (CellParentWrapper) propertyCell;
 			mappingContext.getReporter().warn(
 					"Cell could not be exported, source or target property is not set (Table: {0}, Source: {1}, Target: {2})",
