@@ -29,7 +29,7 @@ public interface TaskServiceListener {
 	 * 
 	 * @param tasks the tasks that have been added
 	 */
-	<C> void tasksAdded(Iterable<Task<C>> tasks);
+	void tasksAdded(Iterable<Task<?>> tasks);
 
 	/**
 	 * Called when tasks have been removed

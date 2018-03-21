@@ -177,7 +177,7 @@ public class TaskTreeView extends ViewPart {
 			}
 
 			@Override
-			public <C> void tasksAdded(final Iterable<Task<C>> tasks) {
+			public void tasksAdded(final Iterable<Task<?>> tasks) {
 				if (Display.getCurrent() != null) {
 					addTasks(tasks);
 				}
@@ -494,9 +494,9 @@ public class TaskTreeView extends ViewPart {
 	 * 
 	 * @param tasks the tasks to add
 	 */
-	protected <C> void addTasks(Iterable<Task<C>> tasks) {
+	protected void addTasks(Iterable<Task<?>> tasks) {
 		// TODO smart refresh
-		for (Task<C> task : tasks) {
+		for (Task<?> task : tasks) {
 			addTask(taskService.resolveTask(task));
 		}
 	}

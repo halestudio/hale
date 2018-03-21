@@ -74,6 +74,23 @@ public abstract class AbstractTask<C> implements Task<C> {
 	}
 
 	@Override
+	public boolean hasMainContext(Object context) {
+		// Default implementation that simply calls equals on the context
+		// object. Override to handle special cases where equals may return
+		// false but the context need to be considered the same nonetheless.
+
+		if (context == null) {
+			return this.getMainContext() == null;
+		}
+
+		if (this.getMainContext() == null) {
+			return false;
+		}
+
+		return this.getMainContext().equals(context);
+	}
+
+	@Override
 	public TaskType<C> getTaskType() {
 		return taskType;
 	}

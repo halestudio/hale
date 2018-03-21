@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.common.tasks;
 
 import java.util.List;
+import java.util.Objects;
 
 import eu.esdihumboldt.hale.common.tasks.TaskType.TaskSeverity;
 import eu.esdihumboldt.hale.common.tasks.TaskUserData.TaskStatus;
@@ -45,7 +46,10 @@ public class ResolvedTask<C> implements Task<C> {
 	 */
 	public ResolvedTask(Task<C> task, TaskUserData userData) {
 		super();
+
+		Objects.requireNonNull(task, "task cannot be null");
 		this.task = task;
+
 		this.userData = userData;
 	}
 
@@ -243,6 +247,14 @@ public class ResolvedTask<C> implements Task<C> {
 		if (!task.equals(other))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.tasks.Task#hasMainContext(java.lang.Object)
+	 */
+	@Override
+	public boolean hasMainContext(Object context) {
+		return task.hasMainContext(context);
 	}
 
 }
