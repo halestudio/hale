@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.PropertyEntityResolverDialog;
+import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ResolveCache;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.TypeEntityResolverDialog;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.ViewerEntityTray;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -62,6 +63,11 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	 * resolving entities until a new project is loaded
 	 */
 	public static final String RESOLVE_SKIP_PROPERTY = "resolve.skip";
+
+	/**
+	 * Name of the temporary property that contains the resolve cache.
+	 */
+	public static final String PROPERTY_RESOLVE_CACHE = "resolve.cache";
 
 	@Override
 	public Property resolveProperty(final PropertyType entity, final TypeIndex schema,
@@ -94,6 +100,13 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	 */
 	public static Property resolveProperty(PropertyEntityDefinition original,
 			@Nullable EntityDefinition candidate, SchemaSpaceID schemaSpace) {
+		ResolveCache cache = getCache();
+		PropertyEntityDefinition replacement = cache.getReplacement(original);
+		if (replacement != null) {
+			// use cached replacement
+			return new DefaultProperty(replacement);
+		}
+
 		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
 
 		final AtomicBoolean canceled;
@@ -108,6 +121,7 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 		final AtomicReference<EntityDefinition> result = new AtomicReference<>();
 
 		if (!canceled.get()) {
+
 			PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
 				@Override
@@ -153,8 +167,32 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 			return null;
 		}
 		else {
-			return new DefaultProperty((PropertyEntityDefinition) def);
+			PropertyEntityDefinition propDef = (PropertyEntityDefinition) def;
+			cache.put(original, propDef);
+			return new DefaultProperty(propDef);
 		}
+	}
+
+	/**
+	 * @return the current resolve cache
+	 */
+	public static ResolveCache getCache() {
+		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+		ResolveCache result = ps.getTemporaryProperty(PROPERTY_RESOLVE_CACHE)
+				.as(ResolveCache.class);
+		if (result == null) {
+			result = new ResolveCache();
+			ps.setTemporaryProperty(PROPERTY_RESOLVE_CACHE, Value.of(result));
+		}
+		return result;
+	}
+
+	/**
+	 * Reset the resolve cache.
+	 */
+	public static void resetCache() {
+		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
+		ps.setTemporaryProperty(PROPERTY_RESOLVE_CACHE, Value.of(new ResolveCache()));
 	}
 
 	@Override
@@ -188,6 +226,13 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 	 */
 	public static Type resolveType(TypeEntityDefinition original,
 			@Nullable EntityDefinition candidate, SchemaSpaceID schemaSpace) {
+		ResolveCache cache = getCache();
+		TypeEntityDefinition replacement = cache.getReplacement(original);
+		if (replacement != null) {
+			// use cached replacement
+			return new DefaultType(replacement);
+		}
+
 		ProjectService ps = HaleUI.getServiceProvider().getService(ProjectService.class);
 
 		final AtomicBoolean canceled;
@@ -255,6 +300,8 @@ public class UserFallbackEntityResolver extends DefaultEntityResolver {
 				SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 				ss.toggleMappable(schemaSpace, Collections.singleton(ted.getType()));
 			}
+
+			cache.put(original, ted);
 
 			return new DefaultType(ted);
 		}

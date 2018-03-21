@@ -47,6 +47,8 @@ public class UserMigration implements AlignmentMigration {
 
 		// reset setting to skip replacements
 		UserFallbackEntityResolver.resetSkip();
+		// reset replacement cache
+		UserFallbackEntityResolver.resetCache();
 	}
 
 	@Override
@@ -54,13 +56,15 @@ public class UserMigration implements AlignmentMigration {
 
 		// use functionality from entity resolver
 		if (entity instanceof TypeEntityDefinition) {
-			Type type = UserFallbackEntityResolver.resolveType((TypeEntityDefinition) entity, null,
-					schemaSpace);
+			EntityDefinition candidate = null; // TODO
+			Type type = UserFallbackEntityResolver.resolveType((TypeEntityDefinition) entity,
+					candidate, schemaSpace);
 			return Optional.ofNullable(type).map(e -> e.getDefinition());
 		}
 		else if (entity instanceof PropertyEntityDefinition) {
+			EntityDefinition candidate = null; // TODO
 			Property property = UserFallbackEntityResolver
-					.resolveProperty((PropertyEntityDefinition) entity, null, schemaSpace);
+					.resolveProperty((PropertyEntityDefinition) entity, candidate, schemaSpace);
 			return Optional.ofNullable(property).map(e -> e.getDefinition());
 		}
 		else {
