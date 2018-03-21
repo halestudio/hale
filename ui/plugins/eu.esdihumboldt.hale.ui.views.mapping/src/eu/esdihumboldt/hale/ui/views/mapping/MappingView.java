@@ -51,6 +51,10 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.Task;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -75,6 +79,7 @@ public class MappingView extends AbstractMappingView {
 
 	private ISelectionListener selectionListener;
 	private AlignmentServiceListener alignmentListener;
+	private TaskServiceListener tasksListener;
 	private final Action showCellsOnChildren;
 
 	private ResizingTreeLayoutAlgorithm treeLayout;
@@ -173,6 +178,35 @@ public class MappingView extends AbstractMappingView {
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				updateViewWithCurrentSelection(cells);
+			}
+		});
+
+		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.addListener(tasksListener = new TaskServiceListener() {
+
+			@Override
+			public void tasksRemoved(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void tasksAdded(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void taskUserDataChanged(ResolvedTask<?> task) {
+				updateViewWithCurrentSelection(getAffectedCells(Collections.singleton(task)));
+			}
+
+			private List<Cell> getAffectedCells(Iterable<Task<?>> tasks) {
+				List<Cell> affectedCells = new ArrayList<>();
+				tasks.forEach(t -> {
+					if (t.getMainContext() instanceof Cell) {
+						affectedCells.add((Cell) t.getMainContext());
+					}
+				});
+				return affectedCells;
 			}
 		});
 
