@@ -13,7 +13,7 @@ hale studio is a desktop and server environment to analyse, transform and valida
 * Integration of data from multiple sources into harmonised, consistent data sets
 * Assessment of migration risks, mismatches, data quality
 
-[![App](http://www.dhpanel.eu/images/content/hale-screenshot.jpg "hale studio's main perspective")] (http://www.dhpanel.eu/humboldt-framework/hale.html)
+![App](http://www.dhpanel.eu/images/content/hale-screenshot.jpg "hale studio's main perspective")
 
 
 ## Features
