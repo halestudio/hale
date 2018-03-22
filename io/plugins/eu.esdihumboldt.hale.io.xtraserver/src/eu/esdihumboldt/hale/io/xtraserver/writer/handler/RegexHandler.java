@@ -78,7 +78,7 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 		final MappingValue mappingValue = new MappingValueBuilder().expression()
 				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
 				.value("regexp_replace($T$." + regexpTargetProperty + ", '" + regex + "', '"
-						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\\\\\$1") + "', 'g')")
+						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\$1") + "', 'g')")
 				.build();
 
 		return Optional.of(mappingValue);
