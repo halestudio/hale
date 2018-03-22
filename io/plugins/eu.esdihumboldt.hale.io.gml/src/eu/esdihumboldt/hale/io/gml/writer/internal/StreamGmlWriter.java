@@ -20,10 +20,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -153,6 +155,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * coordinates should be formatted.
 	 */
 	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.decimalFormat";
+
+	/**
+	 * The name of the parameter specifying how the output of Double values
+	 * should be formatted.
+	 */
+	public static final String PARAM_DECIMAL_FORMAT = "gml.decimalFormat";
 
 	/**
 	 * Name of the parameter defining the instance threshold.
@@ -688,12 +696,33 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	}
 
 	/**
+	 * @return {@link DecimalFormat} to apply to {@link Double} values
+	 */
+	public DecimalFormat getDecimalFormatter() {
+		String pattern = getParameter(PARAM_DECIMAL_FORMAT).as(String.class);
+		if (pattern != null && pattern.trim().length() > 0) {
+			return DecimalFormatUtil.getFormatter(pattern);
+		}
+
+		return null;
+	}
+
+	/**
 	 * Set the output format of geometry coordinates
 	 * 
 	 * @param format pattern in which geometry coordinates would be formatted
 	 */
 	public void setGeometryWriteFormat(String format) {
 		setParameter(PARAM_GEOMETRY_FORMAT, Value.of(format));
+	}
+
+	/**
+	 * Set the output format of {@link Double} values
+	 * 
+	 * @param format pattern in which geometry coordinates would be formatted
+	 */
+	public void setDecimalWriteFormat(String format) {
+		setParameter(PARAM_DECIMAL_FORMAT, Value.of(format));
 	}
 
 	/**
@@ -1532,6 +1561,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 					writer.writeCharacters(SimpleTypeUtil.convertToXml(element,
 							propType.getConstraint(ElementType.class).getDefinition()));
 				}
+			}
+			else if (value instanceof Double || value instanceof Float
+					|| value instanceof BigDecimal) {
+				// Apply formatting only to decimal values, not integers
+				String representation = DecimalFormatUtil.applyFormatter((Number) value,
+						getDecimalFormatter());
+				writer.writeCharacters(
+						SimpleTypeUtil.convertToXml(representation, propDef.getPropertyType()));
 			}
 			else {
 				// write value as content
