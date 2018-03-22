@@ -73,7 +73,7 @@ class EntityToDef {
 		new TypeEntityDefinition(type, schemaSpace, filter)
 	}
 
-	static EntityDefinition toDummyDef(PropertyType property, SchemaSpaceID schemaSpace) {
+	static PropertyEntityDefinition toDummyDef(PropertyType property, SchemaSpaceID schemaSpace) {
 		TypeEntityDefinition typeEntity = toDummyDef(property.type, schemaSpace)
 
 		DefaultTypeDefinition typeDef = (DefaultTypeDefinition) typeEntity.definition
