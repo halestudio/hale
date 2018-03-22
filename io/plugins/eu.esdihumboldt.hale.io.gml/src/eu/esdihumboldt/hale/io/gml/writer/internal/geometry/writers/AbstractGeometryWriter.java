@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.Descent;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryWriter;
-import eu.esdihumboldt.util.geometry.NumberFormatter;
+import eu.esdihumboldt.util.format.DecimalFormatUtil;
 
 /**
  * Abstract geometry writer implementation
@@ -172,7 +172,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 */
 	protected static void writeCoordinates(XMLStreamWriter writer, Coordinate[] coordinates,
 			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
-					throws XMLStreamException {
+			throws XMLStreamException {
 		if (coordinates.length > 1) {
 			if (writeList(writer, coordinates, elementType, gmlNs, decimalFormatter)) {
 				return;
@@ -203,7 +203,8 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 * @param posName the name of the desired DirectPositionType property, or
 	 *            <code>null</code> if any
 	 * @param decimalFormatter a decimal formatter to format geometry
-	 *            coordinates
+	 *            coordinates or <code>null</code> to use
+	 *            <code>Double.toString()</code>
 	 * @return if writing the coordinates was successful
 	 * @throws XMLStreamException if an error occurs writing the coordinates
 	 */
@@ -235,13 +236,15 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 			if (coordinates.length > 0) {
 				Coordinate coordinate = coordinates[0];
 
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
+				writer.writeCharacters(
+						DecimalFormatUtil.applyFormatter(coordinate.x, decimalFormatter));
 				writer.writeCharacters(" "); //$NON-NLS-1$
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
+				writer.writeCharacters(
+						DecimalFormatUtil.applyFormatter(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(" "); //$NON-NLS-1$
 					writer.writeCharacters(
-							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
+							DecimalFormatUtil.applyFormatter(coordinate.z, decimalFormatter));
 				}
 			}
 
@@ -267,7 +270,7 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 	 */
 	private static boolean writeList(XMLStreamWriter writer, Coordinate[] coordinates,
 			TypeDefinition elementType, String gmlNs, DecimalFormat decimalFormatter)
-					throws XMLStreamException {
+			throws XMLStreamException {
 		PropertyDefinition listAttribute = null;
 		String delimiter = " "; //$NON-NLS-1$
 		String setDelimiter = " "; //$NON-NLS-1$
@@ -307,13 +310,15 @@ public abstract class AbstractGeometryWriter<T extends Geometry> extends Abstrac
 					writer.writeCharacters(setDelimiter);
 				}
 
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.x, decimalFormatter));
+				writer.writeCharacters(
+						DecimalFormatUtil.applyFormatter(coordinate.x, decimalFormatter));
 				writer.writeCharacters(delimiter);
-				writer.writeCharacters(NumberFormatter.formatTo(coordinate.y, decimalFormatter));
+				writer.writeCharacters(
+						DecimalFormatUtil.applyFormatter(coordinate.y, decimalFormatter));
 				if (!Double.isNaN(coordinate.z)) {
 					writer.writeCharacters(delimiter);
 					writer.writeCharacters(
-							NumberFormatter.formatTo(coordinate.z, decimalFormatter));
+							DecimalFormatUtil.applyFormatter(coordinate.z, decimalFormatter));
 				}
 			}
 
