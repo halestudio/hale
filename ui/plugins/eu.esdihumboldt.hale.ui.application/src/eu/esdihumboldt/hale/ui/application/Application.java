@@ -30,6 +30,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.app.AbstractApplication;
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
+import eu.esdihumboldt.hale.ui.common.crs.AdVCRSFactory;
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.launchaction.extension.LaunchActionExtension;
@@ -52,6 +53,8 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 		SLF4JBridgeHandler.install();
 
 		WKTPreferencesCRSFactory.install();
+
+		AdVCRSFactory.install();
 
 		// init HSQL database
 		try {
@@ -79,15 +82,14 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 		// launch action
 		LaunchAction action = null;
 		if (executionContext.getLaunchAction() != null) {
-			LaunchActionFactory factory = LaunchActionExtension.getInstance().getFactory(
-					executionContext.getLaunchAction());
+			LaunchActionFactory factory = LaunchActionExtension.getInstance()
+					.getFactory(executionContext.getLaunchAction());
 			if (factory != null) {
 				try {
 					action = factory.createExtensionObject();
 				} catch (Exception e) {
-					_log.error(
-							"Could not create requested launch action "
-									+ executionContext.getLaunchAction(), e);
+					_log.error("Could not create requested launch action "
+							+ executionContext.getLaunchAction(), e);
 				}
 				if (action != null) {
 					// initialize action
