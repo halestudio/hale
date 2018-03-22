@@ -20,7 +20,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.WorkbenchPart;
@@ -36,6 +39,7 @@ import eu.esdihumboldt.hale.ui.common.graph.content.ReverseCellGraphContentProvi
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.graph.LayoutAction;
+import eu.esdihumboldt.hale.ui.util.selection.SelectionProviderFacade;
 import eu.esdihumboldt.hale.ui.util.viewer.PostSelectionSupport;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
@@ -46,14 +50,13 @@ import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
  * 
  * @author Simon Templer
  */
-public abstract class AbstractMappingView extends PropertiesViewPart implements
-		IZoomableWorkbenchPart {
+public abstract class AbstractMappingView extends PropertiesViewPart
+		implements IZoomableWorkbenchPart {
 
 	private GraphViewer viewer;
 
-	/**
-	 * @see eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart#createViewControl(org.eclipse.swt.widgets.Composite)
-	 */
+	private SelectionProviderFacade selectionFacade;
+
 	@Override
 	public void createViewControl(Composite parent) {
 		viewer = new GraphViewer(parent, SWT.BORDER);
@@ -68,7 +71,28 @@ public abstract class AbstractMappingView extends PropertiesViewPart implements
 		fillToolBar();
 
 		// set selection provider
-		getSite().setSelectionProvider(new PostSelectionSupport(getViewer()));
+		selectionFacade = new SelectionProviderFacade();
+		selectionFacade.setSelectionProvider(getViewer());
+		getSite().setSelectionProvider(new PostSelectionSupport(selectionFacade));
+
+		viewer.getControl().addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.keyCode == 'a' && (e.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+					// XXX even though getSelection returns the current state, a
+					// selection update is not triggered by the control
+					// -> force selection change event after Ctrl+A
+					ISelection sel = viewer.getSelection();
+					selectionFacade.setSelection(sel);
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// nothing to do
+			}
+		});
 
 		// create context menu
 		new ViewerMenu(getSite(), getViewer()) {

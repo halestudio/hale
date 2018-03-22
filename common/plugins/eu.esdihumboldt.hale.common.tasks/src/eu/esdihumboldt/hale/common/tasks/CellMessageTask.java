@@ -119,6 +119,29 @@ public class CellMessageTask extends AbstractTask<Cell> implements TaskUserDataA
 	}
 
 	@Override
+	public boolean hasMainContext(Object context) {
+		if (context == null) {
+			return this.getMainContext() == null;
+		}
+
+		if (this.getMainContext() == null) {
+			return false;
+		}
+
+		if (!(context instanceof Cell)) {
+			return false;
+		}
+
+		// Two cells are considered to be the same task context if they have
+		// identical IDs. This allows to replace a cell in the alignment (with
+		// the replacing cell having the same ID but not being the same object
+		// as the original cell) and retain the task associations.
+
+		Cell otherCell = (Cell) context;
+		return this.getMainContext().getId().equals(otherCell.getId());
+	}
+
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

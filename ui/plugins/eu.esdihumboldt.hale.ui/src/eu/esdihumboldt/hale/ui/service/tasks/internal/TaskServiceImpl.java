@@ -122,9 +122,9 @@ public class TaskServiceImpl extends AbstractTaskService {
 	 * @see TaskService#addTasks(Iterable)
 	 */
 	@Override
-	public <C> void addTasks(Iterable<Task<C>> tasks) {
-		Collection<Task<C>> added = new ArrayList<>();
-		for (Task<C> task : tasks) {
+	public void addTasks(Iterable<? extends Task<?>> tasks) {
+		Collection<Task<?>> added = new ArrayList<>();
+		for (Task<?> task : tasks) {
 			if (addTaskInternal(task)) {
 				added.add(task);
 			}
@@ -172,8 +172,8 @@ public class TaskServiceImpl extends AbstractTaskService {
 	public <C> Collection<Task<C>> getTasks(C context) {
 		List<Task<C>> result;
 		synchronized (tasks) {
-			result = tasks.stream().filter(t -> t.getMainContext().equals(context))
-					.map(t -> (Task<C>) t).collect(Collectors.toList());
+			result = tasks.stream().filter(t -> t.hasMainContext(context)).map(t -> (Task<C>) t)
+					.collect(Collectors.toList());
 		}
 
 		return result;

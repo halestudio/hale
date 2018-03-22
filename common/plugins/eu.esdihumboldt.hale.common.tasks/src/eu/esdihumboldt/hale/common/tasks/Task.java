@@ -53,4 +53,13 @@ public interface Task<C> extends Comparable<Task<C>> {
 	 * task service
 	 */
 	void dispose();
+
+	/**
+	 * Compare this task's main context object to the given one
+	 * 
+	 * @param context the context object to compare
+	 * @return true if the context objects are equal or are both
+	 *         <code>null</code>
+	 */
+	boolean hasMainContext(Object context);
 }
