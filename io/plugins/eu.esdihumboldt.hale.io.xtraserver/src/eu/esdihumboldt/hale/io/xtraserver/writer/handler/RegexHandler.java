@@ -77,7 +77,7 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 		// Replace {number} with escaped-escaped-escaped \\number
 		final MappingValue mappingValue = new MappingValueBuilder().expression()
 				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
-				.value("regexp_replace(" + regexpTargetProperty + ", '" + regex + "', '"
+				.value("regexp_replace($T$." + regexpTargetProperty + ", '" + regex + "', '"
 						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\\\\\$1") + "', 'g')")
 				.build();
 

@@ -368,7 +368,8 @@ public final class MappingContext {
 			else {
 				replacement = "PROJECT_VARIABLE_" + varName + "_NOT_SET";
 			}
-			repStr = repStr.replaceAll("\\{\\{project:" + varName + "\\}\\}", replacement);
+			repStr = repStr.replaceAll("\\{\\{project:" + varName + "\\}\\}",
+					Matcher.quoteReplacement(replacement));
 		}
 		return repStr;
 	}
