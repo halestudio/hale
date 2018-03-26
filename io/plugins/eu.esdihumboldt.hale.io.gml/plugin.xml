@@ -494,7 +494,7 @@
                   sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
                   	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
                   	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
-                  	not a leading/trailing zero. In case the original value has more significant decimal digits than the pattern allows for, the number will be rounded.">
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -689,7 +689,7 @@
                   sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
                   	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
                   	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
-                  	not a leading/trailing zero. In case the original value has more significant decimal digits than the pattern allows for, the number will be rounded.">
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -857,7 +857,7 @@
                   sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
                   	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
                   	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
-                  	not a leading/trailing zero. In case the original value has more significant decimal digits than the pattern allows for, the number will be rounded.">
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -1137,7 +1137,7 @@
                   sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
                   	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
                   	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
-                  	not a leading/trailing zero. In case the original value has more significant decimal digits than the pattern allows for, the number will be rounded.">
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter

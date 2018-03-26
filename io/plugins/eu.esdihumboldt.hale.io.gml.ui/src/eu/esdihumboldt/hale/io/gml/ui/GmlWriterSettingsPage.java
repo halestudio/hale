@@ -58,6 +58,7 @@ public class GmlWriterSettingsPage
 	private Button nilReason;
 	private Button enableCoordinateFormat;
 	private Text coordinateFormat;
+	private Label coordinateFormatWarning;
 	private Button enableDecimalFormat;
 	private Text decimalFormat;
 	private Label decimalFormatExample;
@@ -163,13 +164,6 @@ public class GmlWriterSettingsPage
 			}
 		});
 
-		Label duplicateCoordWarning = new Label(writeFormat, SWT.WRAP);
-		GridDataFactory.swtDefaults().span(2, 2).applyTo(duplicateCoordWarning);
-		duplicateCoordWarning.setText(
-				"Reducing the number of significant figures of the coordinates may result in the\ninadvertent duplication of points.");
-		duplicateCoordWarning
-				.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-
 		Label coordinateFormatLabel = new Label(writeFormat, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(coordinateFormatLabel);
 		coordinateFormatLabel.setText("Format: ");
@@ -236,7 +230,17 @@ public class GmlWriterSettingsPage
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
 				.applyTo(decFormatDesc);
 		decFormatDesc
-				.setText("(e.g. use 0.000## to write at least 3 and at most 5 decimal digits)");
+				.setText("(e.g. use 0.000## to write at least 3 and at most 5 decimal places)");
+
+		coordinateFormatWarning = new Label(page, SWT.WRAP);
+		GridDataFactory.swtDefaults().span(2, 2).applyTo(coordinateFormatWarning);
+		coordinateFormatWarning.setText(
+				"Reducing the number of significant figures of the coordinates may result in the inadvertent\n" //
+						+ "duplication of points. Resulting invalid geometries (e.g. a polygon that has less than three\n" //
+						+ "distinct points) will not be fixed or warned about by hale studio.");
+		coordinateFormatWarning
+				.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+		coordinateFormatWarning.setVisible(false);
 
 		// filler
 		new Label(page, SWT.NONE);
@@ -277,6 +281,7 @@ public class GmlWriterSettingsPage
 		}
 
 		coordinateFormat.setEnabled(enableCoordinateFormat.getSelection());
+		coordinateFormatWarning.setVisible(enableCoordinateFormat.getSelection());
 		validateFormats();
 	}
 
