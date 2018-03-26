@@ -216,4 +216,24 @@ public class CodeDefinition implements CRSDefinition {
 		return null;
 	}
 
+	/**
+	 * Try to resolve the CRS with the given code
+	 * 
+	 * @param code CRS code
+	 * @return a resolved CodeDefinition or <code>null</code> if the code could
+	 *         not be resolved
+	 */
+	public static CodeDefinition tryResolve(String code) {
+		CodeDefinition candidate = new CodeDefinition(code, false);
+		try {
+			CoordinateReferenceSystem crs = candidate.getCRS();
+			if (crs != null) {
+				return candidate;
+			}
+		} catch (Exception e) {
+			// Ignore
+		}
+
+		return null;
+	}
 }
