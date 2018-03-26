@@ -1562,8 +1562,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							propType.getConstraint(ElementType.class).getDefinition()));
 				}
 			}
-			else if (value instanceof Double || value instanceof Float
-					|| value instanceof BigDecimal) {
+			else if (getDecimalFormatter() != null && (value instanceof Double
+					|| value instanceof Float || value instanceof BigDecimal)) {
 				// Apply formatting only to decimal values, not integers
 				String representation = DecimalFormatUtil.applyFormatter((Number) value,
 						getDecimalFormatter());
