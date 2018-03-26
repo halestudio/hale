@@ -483,7 +483,7 @@
          <providerParameter
                description="Pattern for formatting decimal numbers"
                label="Decimal number format pattern"
-               name="gml.decimalFormat"
+               name="xml.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -678,7 +678,7 @@
          <providerParameter
                description="Pattern for formatting decimal numbers"
                label="Decimal number format pattern"
-               name="gml.decimalFormat"
+               name="xml.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -846,7 +846,7 @@
          <providerParameter
                description="Pattern for formatting decimal numbers"
                label="Decimal number format pattern"
-               name="gml.decimalFormat"
+               name="xml.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">
@@ -1126,7 +1126,7 @@
          <providerParameter
                description="Pattern for formatting decimal numbers"
                label="Decimal number format pattern"
-               name="gml.decimalFormat"
+               name="xml.decimalFormat"
                optional="true">
             <parameterBinding
                   class="java.lang.String">

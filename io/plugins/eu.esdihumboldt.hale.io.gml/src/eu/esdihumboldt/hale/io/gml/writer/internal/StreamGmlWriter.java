@@ -160,7 +160,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * The name of the parameter specifying how the output of Double values
 	 * should be formatted.
 	 */
-	public static final String PARAM_DECIMAL_FORMAT = "gml.decimalFormat";
+	public static final String PARAM_DECIMAL_FORMAT = "xml.decimalFormat";
 
 	/**
 	 * Name of the parameter defining the instance threshold.
