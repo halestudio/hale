@@ -30,6 +30,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -161,6 +162,13 @@ public class GmlWriterSettingsPage
 				updateCoordinateFormat();
 			}
 		});
+
+		Label duplicateCoordWarning = new Label(writeFormat, SWT.WRAP);
+		GridDataFactory.swtDefaults().span(2, 2).applyTo(duplicateCoordWarning);
+		duplicateCoordWarning.setText(
+				"Reducing the number of significant figures of the coordinates may result in the\ninadvertent duplication of points.");
+		duplicateCoordWarning
+				.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 
 		Label coordinateFormatLabel = new Label(writeFormat, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(coordinateFormatLabel);
