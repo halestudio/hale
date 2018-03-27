@@ -34,7 +34,6 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
 import eu.esdihumboldt.hale.common.tasks.TaskService;
-import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.graph.figures.CellFigure;
@@ -51,7 +50,7 @@ public class CellFigureTaskLabelContribution implements CellFigureContribution {
 	private static final ALogger log = ALoggerFactory
 			.getLogger(CellFigureTaskLabelContribution.class);
 
-	private TaskServiceListener taskServiceListener;
+//	private TaskServiceListener taskServiceListener;
 
 	@Override
 	public void contribute(CellFigure figure, Cell cell) {
