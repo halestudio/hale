@@ -81,6 +81,7 @@ public class TaskTreeView extends ViewPart {
 	private TaskService taskService;
 
 	private TaskServiceListener taskListener;
+	@SuppressWarnings("unused")
 	private ISelectionListener selectionListener;
 
 	private MapTreeNode<Cell, MapTreeNode<ResolvedTask<Cell>, TreeNode>> cellNode;

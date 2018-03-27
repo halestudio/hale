@@ -79,6 +79,7 @@ public class MappingView extends AbstractMappingView {
 
 	private ISelectionListener selectionListener;
 	private AlignmentServiceListener alignmentListener;
+	@SuppressWarnings("unused")
 	private TaskServiceListener tasksListener;
 	private final Action showCellsOnChildren;
 

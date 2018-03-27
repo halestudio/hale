@@ -22,6 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -192,8 +194,15 @@ public abstract class AbstractGenericFunctionWizard<P extends ParameterDefinitio
 	protected abstract EntitiesPage<T, P, ?> createEntitiesPage(SchemaSelection initSelection,
 			Cell initCell);
 
+	/**
+	 * Create parameter pages.
+	 * 
+	 * @param initialValues the initial parameter values, may be
+	 *            <code>null</code>
+	 * @return the list of parameter pages
+	 */
 	protected List<ParameterPage> createParameterPages(
-			ListMultimap<String, ParameterValue> initialValues) {
+			@Nullable ListMultimap<String, ParameterValue> initialValues) {
 		LinkedList<ParameterPage> parameterPages = new LinkedList<ParameterPage>();
 
 		// create copy of function parameter set
