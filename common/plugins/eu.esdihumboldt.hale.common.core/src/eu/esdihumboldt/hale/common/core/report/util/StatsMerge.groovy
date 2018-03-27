@@ -23,17 +23,30 @@ package eu.esdihumboldt.hale.common.core.report.util
  */
 class StatsMerge {
 
+	private final boolean mongoCompatible
+
+	/**
+	 * Create a new helper for merging statistics.
+	 * 
+	 * @param mongoCompatible if the result should be compatible to MongoDB,
+	 *   i.e. not use any dots in field names
+	 */
+	public StatsMerge(boolean mongoCompatible) {
+		super();
+		this.mongoCompatible = mongoCompatible;
+	}
+
 	/**
 	 * Merge statistic maps together.
 	 *
 	 * @param configs the configurations
 	 * @return the merged configuration
 	 */
-	static Map mergeConfigs(@SuppressWarnings("rawtypes") Map... configs) {
-		(configs as List).inject([:], StatsMerge.&combineMap)
+	Map mergeConfigs(@SuppressWarnings("rawtypes") Map... configs) {
+		(configs as List).inject([:], this.&combineMap)
 	}
 
-	private static Map combineMap(Map a, Map b) {
+	private Map combineMap(Map a, Map b) {
 		Map target = [:]
 		if (a.is(b)) {
 			target = a
@@ -42,7 +55,7 @@ class StatsMerge {
 			target.putAll(a)
 			b.each { key, value ->
 				if (value != null) {
-					target.merge(key, value, StatsMerge.&combineValue.curry(key))
+					target.merge(key, value, this.&combineValue.curry(key))
 				}
 			}
 		}
@@ -50,7 +63,7 @@ class StatsMerge {
 		target.each { key, value ->
 			// make compatible to MongoDB
 			String newKey = key
-			if (newKey.contains('.')) {
+			if (mongoCompatible && newKey.contains('.')) {
 				newKey = newKey.replaceAll(/\./, '_')
 			}
 			// map keys may not have been processed
@@ -58,12 +71,12 @@ class StatsMerge {
 				value = combineMap([:], value)
 			}
 			result.remove(key)
-			result.merge(newKey, value, StatsMerge.&combineValue.curry(newKey))
+			result.merge(newKey, value, this.&combineValue.curry(newKey))
 		}
 		result
 	}
 
-	private static Object combineValue(String key, Object a, Object b) {
+	private Object combineValue(String key, Object a, Object b) {
 		if (a == null && b == null) {
 			null
 		}
@@ -119,7 +132,7 @@ class StatsMerge {
 		}
 	}
 
-	private static Object combineSingleValue(String key, Object a, Object b) {
+	private Object combineSingleValue(String key, Object a, Object b) {
 		if (a instanceof Number && b instanceof Number) {
 			// add numbers
 			((Number) a).longValue() + ((Number) b).longValue()

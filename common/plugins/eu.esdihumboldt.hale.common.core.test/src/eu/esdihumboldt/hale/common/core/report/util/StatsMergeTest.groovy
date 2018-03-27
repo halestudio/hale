@@ -38,7 +38,7 @@ class StatsMergeTest {
 			[summary: ['Test 1', 'Test 2'], completed: false, duration: 1, count: 15]
 		]
 
-		def result = StatsMerge.mergeConfigs(a, b)
+		def result = new StatsMerge(true).mergeConfigs(a, b)
 
 		assert result == expected
 	}
@@ -62,8 +62,8 @@ class StatsMergeTest {
 			la_la: [summary: 'Test 2', completed: true, count: 1],
 		]
 
-		def result = StatsMerge.mergeConfigs(a, b)
-		result = StatsMerge.mergeConfigs(result, c)
+		def result = new StatsMerge(true).mergeConfigs(a, b)
+		result = new StatsMerge(true).mergeConfigs(result, c)
 
 		assert result == expected
 	}
@@ -83,7 +83,7 @@ class StatsMergeTest {
 			'report_2': [summary: 'Test 2', completed: false, count: 5]
 		]
 
-		def result = StatsMerge.mergeConfigs(a, b)
+		def result = new StatsMerge(true).mergeConfigs(a, b)
 
 		assert result == expected
 	}
@@ -115,9 +115,9 @@ class StatsMergeTest {
 				], completed: false, duration: 1, c_ount: 23]
 		]
 
-		def result = StatsMerge.mergeConfigs(a, b)
-		result = StatsMerge.mergeConfigs(result, c)
-		result = StatsMerge.mergeConfigs(result, d)
+		def result = new StatsMerge(true).mergeConfigs(a, b)
+		result = new StatsMerge(true).mergeConfigs(result, c)
+		result = new StatsMerge(true).mergeConfigs(result, d)
 
 		assert result == expected
 	}
@@ -132,7 +132,22 @@ class StatsMergeTest {
 			[summary: 'Test 1', completed: true, duration: 1, 'c_ount': 10, types: ['www_example_com': 12]]
 		]
 
-		def result = StatsMerge.mergeConfigs([:], a)
+		def result = new StatsMerge(true).mergeConfigs([:], a)
+
+		assert result == expected
+	}
+
+	@Test
+	void testMerge6() {
+		def a = ['report.1':
+			[summary: 'Test 1', completed: true, duration: 1, 'c.ount': 10, types: ['www.example.com': 12]]
+		]
+
+		def expected = ['report.1':
+			[summary: 'Test 1', completed: true, duration: 1, 'c.ount': 10, types: ['www.example.com': 12]]
+		]
+
+		def result = new StatsMerge(false).mergeConfigs([:], a)
 
 		assert result == expected
 	}

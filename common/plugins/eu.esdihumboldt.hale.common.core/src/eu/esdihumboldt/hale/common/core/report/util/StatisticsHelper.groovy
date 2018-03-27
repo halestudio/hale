@@ -85,7 +85,7 @@ class StatisticsHelper {
 	 *
 	 * @param reports the reports
 	 */
-	StatsCollector getStatistics(Iterable<Report<?>> reports) {
+	StatsCollector getStatistics(Iterable<Report<?>> reports, boolean mongoCompatible = false) {
 		StatsCollector root = new StatsCollector()
 
 		// get aggregated stats from reports
@@ -95,7 +95,7 @@ class StatisticsHelper {
 			StatsCollector stats = getStatistics(rep)
 			Map statMap = (Map) stats.saveToMapListStructure(false)
 			if (statMap != null) {
-				repsMap = StatsMerge.mergeConfigs(repsMap, statMap)
+				repsMap = new StatsMerge(mongoCompatible).mergeConfigs(repsMap, statMap)
 			}
 		}
 		reps.loadFromMapListStructure(repsMap);
