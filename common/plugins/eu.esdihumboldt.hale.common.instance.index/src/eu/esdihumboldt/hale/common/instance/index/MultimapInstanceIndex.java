@@ -142,9 +142,6 @@ public class MultimapInstanceIndex implements HaleInstanceIndex {
 		throw new UnsupportedOperationException();
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.index.InstanceIndex#getInstancePropertyValues(eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference)
-	 */
 	@Override
 	public Collection<List<IndexedPropertyValue>> getInstancePropertyValues(
 			ResolvableInstanceReference reference) {
