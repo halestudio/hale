@@ -85,7 +85,7 @@ class StatisticsHelper {
 	 *
 	 * @param reports the reports
 	 */
-	private StatsCollector getStats(Iterable<Report<?>> reports) {
+	StatsCollector getStatistics(Iterable<Report<?>> reports) {
 		StatsCollector root = new StatsCollector()
 
 		// get aggregated stats from reports

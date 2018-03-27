@@ -23,10 +23,14 @@ import static eu.esdihumboldt.hale.app.transform.ExecUtil.warn;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
@@ -40,6 +44,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
+import org.codehaus.groovy.control.CompilerConfiguration;
 import org.eclipse.core.runtime.content.IContentType;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -52,16 +57,18 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
-import eu.esdihumboldt.hale.common.core.report.Report;
-import eu.esdihumboldt.hale.common.core.report.ReportHandler;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
-import eu.esdihumboldt.hale.common.headless.report.ReportFile;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.util.groovy.collector.StatsCollector;
 import eu.esdihumboldt.util.groovy.sandbox.DefaultGroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import groovy.json.JsonOutput;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
+import groovy.util.DelegatingScript;
 
 /**
  * Executes a transformation.
@@ -168,7 +175,7 @@ public class ExecTransformation implements ConsoleConstants {
 	 */
 	private final String id = UUID.randomUUID().toString();
 
-	private ReportHandler reportHandler = null;
+	private TransformationReports reportHandler = null;
 
 	private ProjectTransformationEnvironment env;
 
@@ -187,7 +194,7 @@ public class ExecTransformation implements ConsoleConstants {
 		new ConsoleProgressManager();
 
 		// set up report handler
-		setupReportHandler();
+		this.reportHandler = new TransformationReports(context.getReportsOut());
 
 		// set up transformation environment
 		loadProject();
@@ -236,10 +243,7 @@ public class ExecTransformation implements ConsoleConstants {
 		}
 
 		// trigger transformation
-		transform();
-
-		// exit OK
-		return 0;
+		return transform();
 	}
 
 	/**
@@ -265,30 +269,6 @@ public class ExecTransformation implements ConsoleConstants {
 			throw new IllegalStateException("Error browsing source directory " + parentDir, e);
 		}
 		return visitor.getCollectedFiles();
-	}
-
-	private void setupReportHandler() {
-		final ReportHandler delegateTo;
-		if (context.getReportsOut() != null) {
-			delegateTo = new ReportFile(context.getReportsOut());
-		}
-		else {
-			delegateTo = null;
-		}
-
-		/*
-		 * The report handler writes a summary to std out
-		 */
-		reportHandler = new ReportHandler() {
-
-			@Override
-			public void publishReport(Report<?> report) {
-				ExecUtil.printSummary(report);
-				if (delegateTo != null) {
-					delegateTo.publishReport(report);
-				}
-			}
-		};
 	}
 
 	private void loadProject() throws IOException {
@@ -443,7 +423,7 @@ public class ExecTransformation implements ConsoleConstants {
 		}
 	}
 
-	private void transform() throws InterruptedException, ExecutionException {
+	private int transform() throws InterruptedException, ExecutionException {
 		status("Running hale transformation...");
 
 		// configure transformation environment
@@ -457,19 +437,72 @@ public class ExecTransformation implements ConsoleConstants {
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
 				reportHandler, id, validators, context.getFilters());
 
-		if (res.get()) {
+		boolean success = res.get();
+
+		// Job threads might still be active, wait a moment to allow
+		// them to complete and file their report (otherwise error may get lost)
+		try {
+			Thread.sleep(3000);
+		} catch (Throwable e) {
+			// ignore
+		}
+
+		success = evaluateSuccess(success);
+		if (success) {
 			info("Transformation completed. Please check the reports for more details.");
 		}
 		else {
-			// Job threads might still be active, wait a moment to allow them to
-			// complete and file their report (otherwise error may get lost)
-			try {
-				Thread.sleep(3000);
-			} catch (Throwable e) {
-				// ignore
-			}
 			throw fail("Transformation failed, please check the reports for details.");
 		}
+
+		// exit OK
+		return 0;
+	}
+
+	private boolean evaluateSuccess(boolean success) {
+		boolean compact = true; // configurable?
+		StatsCollector statistics = reportHandler.getStatistics();
+
+		if (context.getStatisticsFile() != null) {
+			// write to statistics file
+			try (Writer writer = Files.newBufferedWriter(context.getStatisticsFile().toPath(),
+					StandardCharsets.UTF_8)) {
+				writer.write(JsonOutput.prettyPrint(statistics.saveToJson(compact)));
+			} catch (IOException e) {
+				ExecUtil.error("Error writing statistics file: " + e.getMessage());
+				// XXX should this fail the command?
+			}
+		}
+
+		if (context.getSuccessEvaluationScript() == null) {
+			// no custom evaluation script
+			return success;
+		}
+
+		// run evaluation script
+
+		CompilerConfiguration compilerConfiguration = new CompilerConfiguration();
+		compilerConfiguration.setScriptBaseClass(DelegatingScript.class.getName());
+
+		// Configure the GroovyShell and pass the compiler configuration.
+		GroovyShell shell = new GroovyShell(getClass().getClassLoader(), new Binding(),
+				compilerConfiguration);
+		DelegatingScript script;
+		try (InputStream in = new DefaultInputSupplier(context.getSuccessEvaluationScript())
+				.getInput();
+				InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
+			script = (DelegatingScript) shell.parse(reader);
+		} catch (IOException e) {
+			ExecUtil.error("Error executing evaluation script: " + e.getMessage());
+			return false;
+		}
+
+		script.setDelegate(statistics);
+		Object res = script.run();
+		if (res instanceof Boolean) {
+			return ((Boolean) res);
+		}
+		return true;
 	}
 
 }

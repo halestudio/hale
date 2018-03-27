@@ -103,6 +103,16 @@ class ExecContext {
 	boolean restrictGroovy = true
 
 	/**
+	 * File to write statistics to
+	 */
+	File statisticsFile
+
+	/**
+	 * Location of script for success evaluation
+	 */
+	URI successEvaluationScript
+
+	/**
 	 * Filters apply on all sources commonly
 	 */
 	final InstanceFilterDefinition filters = new InstanceFilterDefinition()
