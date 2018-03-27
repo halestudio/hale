@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.app.transform.test;
 import eu.esdihumboldt.hale.app.transform.ExecApplication
 import eu.esdihumboldt.hale.common.app.ApplicationUtil
 import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -787,6 +788,58 @@ class ExecuteTest extends GroovyTestCase {
 		}
 
 		validateHydro(targetFile, '1234')
+	}
+
+	/**
+	 * Test statistics on hydro example project.
+	 */
+	@CompileStatic(TypeCheckingMode.SKIP)
+	void testStatistics() {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		File statsFile =  File.createTempFile('transform-hydro', '.json')
+		statsFile.deleteOnExit()
+
+		transform([
+			//
+			'-project',
+			getProjectURI(HYDRO_PROJECT).toString(),
+			//
+			'-source',
+			getProjectURI(HYDRO_DATA).toString(),
+			//
+			'-target',
+			targetFile.absolutePath,
+			//
+			// select preset for export
+			'-preset',
+			'INSPIRE SpatialDataSet',
+			//
+			// override a setting
+			'-Sinspire.sds.localId',
+			'1234',
+			//
+			'-statisticsOut',
+			statsFile.absolutePath //
+		]) { //
+			File output, int code ->
+			// check exit code
+			assert code == 0
+		}
+
+		println ">> Statistics were written to ${statsFile}..."
+
+		def stats = new JsonSlurper().parse(statsFile)
+		assert stats
+		assert stats.aggregated
+
+		assert stats.aggregated['eu.esdihumboldt.hale.transform.source'].report.completed == true
+		assert stats.aggregated['eu.esdihumboldt.hale.transform.source'].report.errors == 0
+		assert stats.aggregated['eu.esdihumboldt.hale.transform.source'].loadedPerType['{eu:esdihumboldt:hale:example}RiverType'] == 982
+
+		assert stats.aggregated['eu.esdihumboldt.hale.transform']
 	}
 
 	@CompileStatic(TypeCheckingMode.SKIP)
