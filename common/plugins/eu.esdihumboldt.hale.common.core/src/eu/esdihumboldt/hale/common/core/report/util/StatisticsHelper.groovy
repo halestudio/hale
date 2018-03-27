@@ -79,4 +79,29 @@ class StatisticsHelper {
 
 		stats
 	}
+
+	/**
+	 * Get the combined statistics for the provided reports.
+	 *
+	 * @param reports the reports
+	 */
+	private StatsCollector getStats(Iterable<Report<?>> reports) {
+		StatsCollector root = new StatsCollector()
+
+		// get aggregated stats from reports
+		StatsCollector reps = root.at('aggregated')
+		Map repsMap = new HashMap()
+		for (Report<?> rep : reports) {
+			StatsCollector stats = getStatistics(rep)
+			Map statMap = (Map) stats.saveToMapListStructure(false)
+			if (statMap != null) {
+				repsMap = StatsMerge.mergeConfigs(repsMap, statMap)
+			}
+		}
+		reps.loadFromMapListStructure(repsMap);
+
+		//TODO also add individual report information?
+
+		return root
+	}
 }
