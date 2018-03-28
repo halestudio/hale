@@ -13,7 +13,7 @@
  *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.appschema.writer.internal;
+package eu.esdihumboldt.hale.io.appschema.writer.internal.mapping;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public class AppSchemaMappingWrapper {
 	 */
 	public static final String FEATURE_LINK_FIELD = "FEATURE_LINK";
 
-	private final String defaultPrefix = "nns";
+	private final String defaultPrefix = "nns__";
 	private int prefixCounter = 1;
 	private final Map<String, Namespace> namespaceUriMap;
 	private final Map<String, Namespace> namespacePrefixMap;
@@ -138,16 +138,22 @@ public class AppSchemaMappingWrapper {
 	 * @param prefix the namespace prefix
 	 * @return the created namespace object
 	 */
-	public Namespace getOrCreateNamespace(String namespaceURI, String prefix) {
+	Namespace getOrCreateNamespace(String namespaceURI, String prefix) {
 		if (namespaceURI != null && !namespaceURI.isEmpty()) {
 			if (!namespaceUriMap.containsKey(namespaceURI)) {
+				String basePrefix, uniquePrefix;
 				if (prefix == null || prefix.trim().isEmpty()) {
-					prefix = defaultPrefix;
+					basePrefix = defaultPrefix;
+					uniquePrefix = basePrefix + prefixCounter;
+					prefixCounter++;
+				}
+				else {
+					basePrefix = prefix;
+					uniquePrefix = basePrefix;
 				}
 				// make sure prefix is unique
-				String uniquePrefix = prefix;
 				while (namespacePrefixMap.containsKey(uniquePrefix)) {
-					uniquePrefix = prefix + prefixCounter;
+					uniquePrefix = basePrefix + prefixCounter;
 					prefixCounter++;
 				}
 
@@ -297,7 +303,7 @@ public class AppSchemaMappingWrapper {
 	 * @param targetType the target type
 	 * @return the feature type mapping
 	 */
-	public FeatureTypeMapping getOrCreateFeatureTypeMapping(TypeDefinition targetType) {
+	FeatureTypeMapping getOrCreateFeatureTypeMapping(TypeDefinition targetType) {
 		return getOrCreateFeatureTypeMapping(targetType, null);
 	}
 
@@ -314,8 +320,7 @@ public class AppSchemaMappingWrapper {
 	 * @param mappingName the mapping name
 	 * @return the feature type mapping
 	 */
-	public FeatureTypeMapping getOrCreateFeatureTypeMapping(TypeDefinition targetType,
-			String mappingName) {
+	FeatureTypeMapping getOrCreateFeatureTypeMapping(TypeDefinition targetType, String mappingName) {
 		if (targetType == null) {
 			return null;
 		}
@@ -328,12 +333,17 @@ public class AppSchemaMappingWrapper {
 			featureTypeMapping.setAttributeMappings(new AttributeMappings());
 			// TODO: how do I know the datasource from which data will be read?
 			featureTypeMapping.setSourceDataStore(getDefaultDataStore().getId());
+			// Retrieve namespace this feature type belongs to and prepend its
+			// prefix to the feature type name; if a namespace with the same URI
+			// already existed with a valid prefix, that will be used instead of
+			// the one passed here
+			Namespace ns = getOrCreateNamespace(targetType.getName().getNamespaceURI(), targetType
+					.getName().getPrefix());
 			// TODO: I'm getting the element name with
 			// targetType.getDisplayName():
 			// isn't there a more elegant (and perhaps more reliable) way to
 			// know which element corresponds to a type?
-			featureTypeMapping.setTargetElement(targetType.getName().getPrefix() + ":"
-					+ targetType.getDisplayName());
+			featureTypeMapping.setTargetElement(ns.getPrefix() + ":" + targetType.getDisplayName());
 			if (mappingName != null && !mappingName.isEmpty()) {
 				featureTypeMapping.setMappingName(mappingName);
 			}
@@ -438,7 +448,7 @@ public class AppSchemaMappingWrapper {
 	 *            <code>null</code>)
 	 * @return a unique <code>FEATURE_LINK[i]</code> attribute name
 	 */
-	public String getUniqueFeatureLinkAttribute(TypeDefinition featureType, String mappingName) {
+	String getUniqueFeatureLinkAttribute(TypeDefinition featureType, String mappingName) {
 		Integer featureTypeKey = getFeatureTypeMappingHashKey(featureType, mappingName);
 		if (!featureLinkCounter.containsKey(featureTypeKey)) {
 			featureLinkCounter.put(featureTypeKey, 0);
@@ -463,8 +473,8 @@ public class AppSchemaMappingWrapper {
 	 * @param propertyPath the property path
 	 * @return the attribute mapping
 	 */
-	public AttributeMappingType getOrCreateAttributeMapping(TypeDefinition owningType,
-			String mappingName, List<ChildContext> propertyPath) {
+	AttributeMappingType getOrCreateAttributeMapping(TypeDefinition owningType, String mappingName,
+			List<ChildContext> propertyPath) {
 		if (propertyPath == null || propertyPath.isEmpty()) {
 			return null;
 		}

@@ -24,8 +24,18 @@
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.io.appschema.ui.AppSchemaDataStoreConfigurationPage"
+            class="eu.esdihumboldt.hale.io.appschema.ui.WorkspaceConfigurationPage"
             order="3">
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.writer">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.appschema.uploader">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.appschema.ui.AppSchemaDataStoreConfigurationPage"
+            order="4">
          <provider
                ref="eu.esdihumboldt.hale.io.appschema.writer">
          </provider>
