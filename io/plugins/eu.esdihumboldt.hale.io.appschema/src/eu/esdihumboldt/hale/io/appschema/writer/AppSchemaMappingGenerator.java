@@ -55,13 +55,14 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Sour
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore.Parameters.Parameter;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
 import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
-import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext;
-import eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingWrapper;
+import eu.esdihumboldt.hale.io.appschema.model.WorkspaceConfiguration;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandlerFactory;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandlerFactory;
 import eu.esdihumboldt.hale.io.appschema.writer.internal.UnsupportedTransformationException;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingWrapper;
 import eu.esdihumboldt.hale.io.geoserver.AppSchemaDataStore;
 import eu.esdihumboldt.hale.io.geoserver.FeatureType;
 import eu.esdihumboldt.hale.io.geoserver.Layer;
@@ -85,7 +86,9 @@ public class AppSchemaMappingGenerator {
 	private final Schema targetSchema;
 	private final DataStore dataStore;
 	private final FeatureChaining chainingConf;
+	private final WorkspaceConfiguration workspaceConf;
 	private AppSchemaMappingWrapper mappingWrapper;
+	private AppSchemaMappingContext context;
 	private AppSchemaDataAccessType mainMapping;
 	private AppSchemaDataAccessType includedTypesMapping;
 
@@ -98,7 +101,7 @@ public class AppSchemaMappingGenerator {
 	 * @param chainingConf the feature chaining configuration
 	 */
 	public AppSchemaMappingGenerator(Alignment alignment, SchemaSpace targetSchemaSpace,
-			DataStore dataStore, FeatureChaining chainingConf) {
+			DataStore dataStore, FeatureChaining chainingConf, WorkspaceConfiguration workspaceConf) {
 		this.alignment = alignment;
 		this.targetSchemaSpace = targetSchemaSpace;
 		// pick the target schemas from which interpolation variables will be
@@ -106,6 +109,7 @@ public class AppSchemaMappingGenerator {
 		this.targetSchema = pickTargetSchema();
 		this.dataStore = dataStore;
 		this.chainingConf = chainingConf;
+		this.workspaceConf = workspaceConf;
 	}
 
 	/**
@@ -122,6 +126,8 @@ public class AppSchemaMappingGenerator {
 		try {
 			AppSchemaDataAccessType mapping = loadMappingTemplate();
 			mappingWrapper = new AppSchemaMappingWrapper(mapping);
+			context = new AppSchemaMappingContext(mappingWrapper, alignment,
+					targetSchema.getMappingRelevantTypes(), chainingConf, workspaceConf);
 
 			// create namespace objects for all target types / properties
 			// TODO: this removes all namespaces that were defined in the
@@ -138,8 +144,6 @@ public class AppSchemaMappingGenerator {
 			createTargetTypes();
 
 			// populate typeMappings element
-			AppSchemaMappingContext context = new AppSchemaMappingContext(mappingWrapper,
-					alignment, targetSchema.getMappingRelevantTypes(), chainingConf);
 			createTypeMappings(context, reporter);
 
 			// cache mainMapping and includedTypesMapping for performance
@@ -274,8 +278,10 @@ public class AppSchemaMappingGenerator {
 		checkMappingGenerated();
 		checkTargetSchemaAvailable();
 
-		Namespace ns = mappingWrapper.getOrCreateNamespace(targetSchema.getNamespace(), null);
-		return getWorkspace(ns.getPrefix());
+		Namespace ns = context.getOrCreateNamespace(targetSchema.getNamespace(), null);
+		Workspace ws = getWorkspace(ns.getPrefix(), ns.getUri());
+
+		return ws;
 	}
 
 	/**
@@ -289,7 +295,7 @@ public class AppSchemaMappingGenerator {
 		checkMappingGenerated();
 		checkTargetSchemaAvailable();
 
-		Namespace ns = mappingWrapper.getOrCreateNamespace(targetSchema.getNamespace(), null);
+		Namespace ns = context.getOrCreateNamespace(targetSchema.getNamespace(), null);
 		return getNamespace(ns);
 	}
 
@@ -323,7 +329,10 @@ public class AppSchemaMappingGenerator {
 	 * @return the configuration of the workspace associated to <code>ns</code>
 	 */
 	public Workspace getWorkspace(eu.esdihumboldt.hale.io.geoserver.Namespace ns) {
-		return getWorkspace(ns.name());
+		Object namespaceUri = ns.getAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.URI);
+		Workspace ws = getWorkspace(ns.name(), String.valueOf(namespaceUri));
+
+		return ws;
 	}
 
 	private eu.esdihumboldt.hale.io.geoserver.Namespace getNamespace(Namespace ns) {
@@ -331,17 +340,20 @@ public class AppSchemaMappingGenerator {
 		String uri = ns.getUri();
 		String namespaceId = prefix + "_namespace";
 
-		return ResourceBuilder.namespace(prefix)
+		return ResourceBuilder
+				.namespace(prefix)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ID, namespaceId)
-				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.URI, uri).build();
+				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.URI, uri)
+				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ISOLATED, isIsolated(uri))
+				.build();
 	}
 
-	private Workspace getWorkspace(String nsPrefix) {
+	private Workspace getWorkspace(String nsPrefix, String nsUri) {
 		String workspaceId = nsPrefix + "_workspace";
 		String workspaceName = nsPrefix;
 
 		return ResourceBuilder.workspace(workspaceName).setAttribute(Workspace.ID, workspaceId)
-				.build();
+				.setAttribute(Workspace.ISOLATED, isIsolated(nsUri)).build();
 	}
 
 	/**
@@ -486,7 +498,7 @@ public class AppSchemaMappingGenerator {
 			ListMultimap<String, ? extends Entity> targetEntities = typeCell.getTarget();
 			if (targetEntities != null) {
 				for (Entity entity : targetEntities.values()) {
-					createNamespaceForEntity(entity, mappingWrapper);
+					createNamespaceForEntity(entity);
 				}
 			}
 
@@ -495,26 +507,25 @@ public class AppSchemaMappingGenerator {
 				Collection<? extends Entity> targetProperties = propCell.getTarget().values();
 				if (targetProperties != null) {
 					for (Entity property : targetProperties) {
-						createNamespaceForEntity(property, mappingWrapper);
+						createNamespaceForEntity(property);
 					}
 				}
 			}
 		}
 	}
 
-	private void createNamespaceForEntity(Entity entity, AppSchemaMappingWrapper wrapper) {
+	private void createNamespaceForEntity(Entity entity) {
 		QName typeName = entity.getDefinition().getType().getName();
 		String namespaceURI = typeName.getNamespaceURI();
 		String prefix = typeName.getPrefix();
 
-		wrapper.getOrCreateNamespace(namespaceURI, prefix);
+		context.getOrCreateNamespace(namespaceURI, prefix);
 
 		List<ChildContext> propertyPath = entity.getDefinition().getPropertyPath();
-		createNamespacesForPath(propertyPath, wrapper);
+		createNamespacesForPath(propertyPath);
 	}
 
-	private void createNamespacesForPath(List<ChildContext> propertyPath,
-			AppSchemaMappingWrapper wrapper) {
+	private void createNamespacesForPath(List<ChildContext> propertyPath) {
 		if (propertyPath != null) {
 			for (ChildContext childContext : propertyPath) {
 				PropertyDefinition child = childContext.getChild().asProperty();
@@ -522,10 +533,20 @@ public class AppSchemaMappingGenerator {
 					String namespaceURI = child.getName().getNamespaceURI();
 					String prefix = child.getName().getPrefix();
 
-					wrapper.getOrCreateNamespace(namespaceURI, prefix);
+					context.getOrCreateNamespace(namespaceURI, prefix);
 				}
 			}
 		}
+	}
+
+	private boolean isIsolated(String namespaceUri) {
+		boolean isIsolated = false;
+
+		if (workspaceConf != null && workspaceConf.hasWorkspace(namespaceUri)) {
+			return workspaceConf.getWorkspace(namespaceUri).isIsolated();
+		}
+
+		return isIsolated;
 	}
 
 	private void createTargetTypes() {

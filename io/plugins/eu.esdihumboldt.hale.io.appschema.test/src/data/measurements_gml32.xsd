@@ -1,0 +1,29 @@
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:gml="http://www.opengis.net/gml/3.2"
+           xmlns:ms="http://www.measurements_gml32.org/1.0"
+           targetNamespace="http://www.measurements_gml32.org/1.0"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+
+  <xs:complexType name="MeasurementPropertyType">
+    <xs:sequence>
+      <xs:element ref="ms:Measurement_gml32"/>
+    </xs:sequence>
+    <xs:attributeGroup ref="gml:AssociationAttributeGroup"/>
+  </xs:complexType>
+
+  <xs:complexType name="MeasurementType">
+    <xs:complexContent>
+      <xs:extension base="gml:AbstractFeatureType">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string"/>
+          <xs:element name="unit" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="Measurement_gml32" type="ms:MeasurementType" substitutionGroup="gml:AbstractFeature"/>
+
+</xs:schema>

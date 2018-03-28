@@ -58,6 +58,10 @@ public abstract class AppSchemaIO {
 	 */
 	public static final String PARAM_INCLUDE_SCHEMA = "appschema.include.schema";
 	/**
+	 * Workspace configuration parameter name.
+	 */
+	public static final String PARAM_WORKSPACE = "appschema.workspace.conf";
+	/**
 	 * REST user configuration parameter name.
 	 */
 	public static final String PARAM_USER = "appschema.rest.user";

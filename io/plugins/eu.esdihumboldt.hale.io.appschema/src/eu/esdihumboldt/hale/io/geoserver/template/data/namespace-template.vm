@@ -4,4 +4,9 @@
   #end
   <prefix>$prefix</prefix>
   <uri>$uri</uri>
+  #if ($isIsolated == "true")
+  <isolated>true</isolated>
+  #else
+  <isolated>false</isolated>
+  #end
 </namespace>
