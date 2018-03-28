@@ -419,13 +419,19 @@ public class MappingView extends AbstractMappingView {
 	 * @param triggerLayout if the layout should be applied directly
 	 */
 	private void updateLayout(boolean triggerLayout) {
-		int width = getViewer().getControl().getSize().x;
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+			@Override
+			public void run() {
+				int width = getViewer().getControl().getSize().x;
 
-		if (triggerLayout) {
-			getViewer().applyLayout();
-		}
+				treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+				if (triggerLayout) {
+					getViewer().applyLayout();
+				}
+			}
+		});
 	}
 
 }
