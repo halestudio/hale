@@ -33,6 +33,10 @@ public class Workspace extends AbstractResource {
 	 * "Workspace name" attribute.
 	 */
 	public static final String NAME = "workspaceName";
+	/**
+	 * "Workspace is isolated" attribute.
+	 */
+	public static final String ISOLATED = "isIsolated";
 
 	private static final String TEMPLATE_LOCATION = "/eu/esdihumboldt/hale/io/geoserver/template/data/workspace-template.vm";
 
@@ -41,6 +45,7 @@ public class Workspace extends AbstractResource {
 	static {
 		allowedAttributes.add(ID);
 		allowedAttributes.add(NAME);
+		allowedAttributes.add(ISOLATED);
 	}
 
 	/**

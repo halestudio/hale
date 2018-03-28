@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.appschema.writer.internal;
 
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.AttributeMappingType;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext;
 
 /**
  * Interface defining the API for property transformation handlers.

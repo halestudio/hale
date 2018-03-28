@@ -4,9 +4,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
-### Fixed
-
 - Fixed hale connect integration when using a proxy
+- Fix CLI transformations when source data contains unknown or invalid CRS definitions
 
 ## [3.3.2]
 

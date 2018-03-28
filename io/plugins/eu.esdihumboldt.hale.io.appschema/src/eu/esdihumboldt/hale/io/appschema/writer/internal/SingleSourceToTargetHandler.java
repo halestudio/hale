@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.TypeMappingsPropertyType.FeatureTypeMapping;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext;
 
 /**
  * Base class for type transformation handlers converting a single source entity
@@ -32,7 +33,7 @@ public abstract class SingleSourceToTargetHandler implements TypeTransformationH
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext)
 	 */
 	@Override
 	public FeatureTypeMapping handleTypeTransformation(Cell typeCell,
@@ -52,8 +53,7 @@ public abstract class SingleSourceToTargetHandler implements TypeTransformationH
 		Entity targetType = targetEntities.values().iterator().next();
 		TypeDefinition targetTypeDef = targetType.getDefinition().getType();
 
-		FeatureTypeMapping ftMapping = context.getMappingWrapper().getOrCreateFeatureTypeMapping(
-				targetTypeDef);
+		FeatureTypeMapping ftMapping = context.getOrCreateFeatureTypeMapping(targetTypeDef);
 		ftMapping.setSourceType(sourceType.getDefinition().getType().getName().getLocalPart());
 
 		return ftMapping;
