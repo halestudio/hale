@@ -30,7 +30,7 @@ import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.app.AbstractApplication;
 import eu.esdihumboldt.hale.ui.application.internal.HALEApplicationPlugin;
-import eu.esdihumboldt.hale.ui.common.crs.AdVCRSFactory;
+import eu.esdihumboldt.hale.ui.common.crs.AdvCrsAuthorityFactory;
 import eu.esdihumboldt.hale.ui.common.crs.WKTPreferencesCRSFactory;
 import eu.esdihumboldt.hale.ui.launchaction.LaunchAction;
 import eu.esdihumboldt.hale.ui.launchaction.extension.LaunchActionExtension;
@@ -53,8 +53,7 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 		SLF4JBridgeHandler.install();
 
 		WKTPreferencesCRSFactory.install();
-
-		AdVCRSFactory.install();
+		AdvCrsAuthorityFactory.install();
 
 		// init HSQL database
 		try {
