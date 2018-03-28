@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.app.transform;
 
+import static eu.esdihumboldt.hale.app.transform.ExecUtil.error;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.fail;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.info;
 import static eu.esdihumboldt.hale.app.transform.ExecUtil.status;
@@ -437,7 +438,7 @@ public class ExecTransformation implements ConsoleConstants {
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
 				reportHandler, id, validators, context.getFilters());
 
-		boolean success = res.get();
+		boolean orgSuccess = res.get();
 
 		// Job threads might still be active, wait a moment to allow
 		// them to complete and file their report (otherwise error may get lost)
@@ -447,12 +448,29 @@ public class ExecTransformation implements ConsoleConstants {
 			// ignore
 		}
 
-		success = evaluateSuccess(success);
+		boolean success;
+		try {
+			success = evaluateSuccess(orgSuccess);
+		} catch (Throwable e) {
+			error("Success evaluation resulted in an error:\n" + e.getMessage());
+			if (context.isLogException()) {
+				e.printStackTrace();
+			}
+			return 2;
+		}
+
 		if (success) {
 			info("Transformation completed. Please check the reports for more details.");
 		}
 		else {
-			throw fail("Transformation failed, please check the reports for details.");
+			if (orgSuccess) {
+				error("Transformation failed according to the success evaluation script.");
+				return 2;
+			}
+			else {
+				error("Transformation failed, please check the reports for details.");
+				return 1;
+			}
 		}
 
 		// exit OK
@@ -460,14 +478,13 @@ public class ExecTransformation implements ConsoleConstants {
 	}
 
 	private boolean evaluateSuccess(boolean success) {
-		boolean compact = true; // configurable?
 		StatsCollector statistics = reportHandler.getStatistics();
 
 		if (context.getStatisticsFile() != null) {
 			// write to statistics file
 			try (Writer writer = Files.newBufferedWriter(context.getStatisticsFile().toPath(),
 					StandardCharsets.UTF_8)) {
-				writer.write(JsonOutput.prettyPrint(statistics.saveToJson(compact)));
+				writer.write(JsonOutput.prettyPrint(statistics.saveToJson(true)));
 			} catch (IOException e) {
 				ExecUtil.error("Error writing statistics file: " + e.getMessage());
 				// XXX should this fail the command?
@@ -493,11 +510,12 @@ public class ExecTransformation implements ConsoleConstants {
 				InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8)) {
 			script = (DelegatingScript) shell.parse(reader);
 		} catch (IOException e) {
-			ExecUtil.error("Error executing evaluation script: " + e.getMessage());
+			ExecUtil.error("Error executing evaluation script:\n" + e.getMessage());
 			return false;
 		}
 
-		script.setDelegate(statistics);
+		// run against compact map/list structure of statistics
+		script.setDelegate(statistics.saveToMapListStructure(true));
 		Object res = script.run();
 		if (res instanceof Boolean) {
 			return ((Boolean) res);

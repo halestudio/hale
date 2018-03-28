@@ -842,6 +842,98 @@ class ExecuteTest extends GroovyTestCase {
 		assert stats.aggregated['eu.esdihumboldt.hale.transform']
 	}
 
+	void testEvaluateSuccess1() {
+		def script = '''
+// the transformation must have been completed
+assert aggregated['eu.esdihumboldt.hale.transform'].report.completed == true
+// without errors
+assert aggregated['eu.esdihumboldt.hale.transform'].report.errors == 0
+
+// writing the transformation result must have been completed
+assert aggregated['eu.esdihumboldt.hale.io.instance.write.transformed'].report.completed == true
+// without errors
+assert aggregated['eu.esdihumboldt.hale.io.instance.write.transformed'].report.errors == 0
+
+// there must have been objects created as part of the transformation
+assert aggregated['eu.esdihumboldt.hale.transform'].createdPerType.any { name, count -> count > 0 }
+'''
+
+		evaluateSuccessHydro(script, true)
+	}
+
+	void testEvaluateSuccess2() {
+		def script = '''
+// internal validation must have been run
+assert aggregated['eu.esdihumboldt.hale.instance.validation.internal']?.report?.completed == true : 'Internal validation was not run'
+// without errors or warnings
+assert aggregated['eu.esdihumboldt.hale.instance.validation.internal'].report.errors == 0
+assert aggregated['eu.esdihumboldt.hale.instance.validation.internal'].report.warnings == 0
+'''
+
+		evaluateSuccessHydro(script, false)
+	}
+
+	/**
+	 * Helper for testing success evaluation on hydro example.
+	 */
+	private void evaluateSuccessHydro(String evaluateScript, boolean expectedSuccess) {
+		File targetFile =  File.createTempFile('transform-hydro', '.gml')
+		targetFile.deleteOnExit()
+		println ">> Transformed data will be written to ${targetFile}..."
+
+		File evalFile =  File.createTempFile('transform-hydro', '.groovy')
+		evalFile.setText(evaluateScript, 'UTF-8')
+		evalFile.deleteOnExit()
+
+		boolean seenError = false
+		try {
+			transform([
+				//
+				'-project',
+				getProjectURI(HYDRO_PROJECT).toString(),
+				//
+				'-source',
+				getProjectURI(HYDRO_DATA).toString(),
+				//
+				'-target',
+				targetFile.absolutePath,
+				//
+				// select preset for export
+				'-preset',
+				'INSPIRE SpatialDataSet',
+				//
+				// override a setting
+				'-Sinspire.sds.localId',
+				'1234',
+				//
+				'-successEvaluation',
+				evalFile.absolutePath //
+			]) { //
+				File output, int code ->
+				// check exit code
+				if (expectedSuccess) {
+					assert code == 0
+				}
+				else {
+					assert code != 0
+					seenError = true
+				}
+			}
+		} catch (e) {
+			if (expectedSuccess) {
+				throw e
+			}
+			else {
+				e.printStackTrace()
+				seenError = true
+			}
+		}
+
+		if (!expectedSuccess) {
+			assert seenError
+		}
+	}
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	private void validateTransformedDataSize(File targetFile, int dataSize) {
 		// check written file
