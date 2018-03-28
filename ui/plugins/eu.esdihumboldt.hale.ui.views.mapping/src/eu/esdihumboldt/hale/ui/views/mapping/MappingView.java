@@ -79,8 +79,6 @@ public class MappingView extends AbstractMappingView {
 
 	private ISelectionListener selectionListener;
 	private AlignmentServiceListener alignmentListener;
-	@SuppressWarnings("unused")
-	private TaskServiceListener tasksListener;
 	private final Action showCellsOnChildren;
 
 	private ResizingTreeLayoutAlgorithm treeLayout;
@@ -183,7 +181,7 @@ public class MappingView extends AbstractMappingView {
 		});
 
 		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
-		taskService.addListener(tasksListener = new TaskServiceListener() {
+		taskService.addListener(new TaskServiceListener() {
 
 			@Override
 			public void tasksRemoved(Iterable<Task<?>> tasks) {
