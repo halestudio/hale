@@ -91,7 +91,7 @@ class StatisticsHelper {
 		// get aggregated stats from reports
 		StatsCollector reps = root.at('aggregated')
 		Map repsMap = new HashMap()
-		for (Report<?> rep : reports) {
+		reports.each { Report rep ->
 			StatsCollector stats = getStatistics(rep)
 			Map statMap = (Map) stats.saveToMapListStructure(false)
 			if (statMap != null) {
