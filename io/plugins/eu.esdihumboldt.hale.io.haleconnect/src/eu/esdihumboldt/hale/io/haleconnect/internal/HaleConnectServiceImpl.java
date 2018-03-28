@@ -114,7 +114,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 
 		NewBucket newBucket = new NewBucket();
 		newBucket.setName(name);
-		newBucket.setVersionControl(versionControl);
+		newBucket.setDriver(versionControl ? "git" : "s3");
 
 		final BucketIdent id;
 		try {
