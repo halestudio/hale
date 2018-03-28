@@ -16,16 +16,21 @@
 
 package eu.esdihumboldt.hale.io.gml.ui;
 
-import java.util.regex.Pattern;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -34,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.io.gml.writer.internal.StreamGmlWriter;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
+import eu.esdihumboldt.util.format.DecimalFormatUtil;
 
 /**
  * Configuration page for basic {@link StreamGmlWriter} settings.
@@ -44,13 +50,18 @@ import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 public class GmlWriterSettingsPage
 		extends AbstractConfigurationPage<StreamGmlWriter, IOWizard<StreamGmlWriter>> {
 
-	private static final String DEFAULT_FORMAT = "0.000";
+	private static final String DEFAULT_COORDINATE_FORMAT = "0.000";
+	private static final String DEFAULT_DECIMAL_FORMAT = "0.############";
 
 	private Button prettyPrint;
 	private Button simplify;
 	private Button nilReason;
-	private Button checkNumberFormat;
-	private Text formattedText;
+	private Button enableCoordinateFormat;
+	private Text coordinateFormat;
+	private Label coordinateFormatWarning;
+	private Button enableDecimalFormat;
+	private Text decimalFormat;
+	private Label decimalFormatExample;
 
 	/**
 	 * Default constructor
@@ -69,15 +80,16 @@ public class GmlWriterSettingsPage
 	protected void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
 		if (firstShow) {
-			checkNumberFormat.setSelection(false);
-			update();
+			enableCoordinateFormat.setSelection(false);
+			enableDecimalFormat.setSelection(false);
+			updateCoordinateFormat();
+			updateDecimalFormat();
 		}
 	}
 
 	@Override
 	public boolean updateConfiguration(StreamGmlWriter provider) {
-		if (checkNumberFormat.getSelection() && !validate()) {
-			setErrorMessage("Number format is not valid!");
+		if (enableCoordinateFormat.getSelection() && !validateFormats()) {
 			return false;
 		}
 		setMessage("Basic XML and GML encoding settings");
@@ -86,7 +98,15 @@ public class GmlWriterSettingsPage
 				Value.of(simplify.getSelection()));
 		provider.setParameter(StreamGmlWriter.PARAM_OMIT_NIL_REASON,
 				Value.of(nilReason.getSelection()));
-		provider.setGeometryWriteFormat(formattedText.getText());
+
+		if (enableCoordinateFormat.getSelection()) {
+			provider.setGeometryWriteFormat(coordinateFormat.getText().trim());
+		}
+
+		if (enableDecimalFormat.getSelection()) {
+			provider.setDecimalWriteFormat(decimalFormat.getText().trim());
+		}
+
 		return true;
 	}
 
@@ -131,34 +151,96 @@ public class GmlWriterSettingsPage
 		Group writeFormat = new Group(page, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(writeFormat);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(writeFormat);
-		writeFormat.setText("Formatted Number");
+		writeFormat.setText("Output formatting");
 
-		checkNumberFormat = new Button(writeFormat, SWT.CHECK);
-		checkNumberFormat.setText("Use a formatted number output for geometry coordinates");
-		GridDataFactory.swtDefaults().span(2, 1).applyTo(checkNumberFormat);
-		checkNumberFormat.addSelectionListener(new SelectionAdapter() {
+		enableCoordinateFormat = new Button(writeFormat, SWT.CHECK);
+		enableCoordinateFormat.setText("Use a formatted number output for geometry coordinates");
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(enableCoordinateFormat);
+		enableCoordinateFormat.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				update();
+				updateCoordinateFormat();
 			}
 		});
 
-		Label lbl = new Label(writeFormat, SWT.NONE);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(lbl);
-		lbl.setText("Format: ");
+		Label coordinateFormatLabel = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(coordinateFormatLabel);
+		coordinateFormatLabel.setText("Format: ");
 
-		formattedText = new Text(writeFormat, SWT.SINGLE | SWT.BORDER);
+		coordinateFormat = new Text(writeFormat, SWT.SINGLE | SWT.BORDER);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-				.applyTo(formattedText);
+				.applyTo(coordinateFormat);
+		coordinateFormat.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				if (enableCoordinateFormat.getSelection()) {
+					updateCoordinateFormat();
+				}
+			}
+		});
 		// filler
-		Label lblfiller = new Label(writeFormat, SWT.NONE);
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(lblfiller);
+		Label cfFiller = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(cfFiller);
 
-		Label formatDesc = new Label(writeFormat, SWT.NONE);
+		Label coordFormatDesc = new Label(writeFormat, SWT.NONE);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-				.applyTo(formatDesc);
-		formatDesc.setText("(e.g. 00000.000)");
+				.applyTo(coordFormatDesc);
+		coordFormatDesc.setText("(e.g. 00000.000)");
+
+		enableDecimalFormat = new Button(writeFormat, SWT.CHECK);
+		enableDecimalFormat.setText("Use a formatted output for decimal values");
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(enableDecimalFormat);
+		enableDecimalFormat.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateDecimalFormat();
+			}
+		});
+
+		Label decimalFormatLabel = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(decimalFormatLabel);
+		decimalFormatLabel.setText("Format: ");
+
+		decimalFormat = new Text(writeFormat, SWT.SINGLE | SWT.BORDER);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+				.applyTo(decimalFormat);
+		decimalFormat.addModifyListener(new ModifyListener() {
+
+			@Override
+			public void modifyText(ModifyEvent e) {
+				updateDecimalFormat();
+			}
+		});
+
+		Label dfFiller2 = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(dfFiller2);
+
+		decimalFormatExample = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+				.applyTo(decimalFormatExample);
+
+		// filler
+		Label dfFiller = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(dfFiller);
+
+		Label decFormatDesc = new Label(writeFormat, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+				.applyTo(decFormatDesc);
+		decFormatDesc
+				.setText("(e.g. use 0.000## to write at least 3 and at most 5 decimal places)");
+
+		coordinateFormatWarning = new Label(page, SWT.WRAP);
+		GridDataFactory.swtDefaults().span(2, 2).applyTo(coordinateFormatWarning);
+		coordinateFormatWarning.setText(
+				"Reducing the number of significant figures of the coordinates may result in the inadvertent\n" //
+						+ "duplication of points. Resulting invalid geometries (e.g. a polygon that has less than three\n" //
+						+ "distinct points) will not be fixed or warned about by hale studio.");
+		coordinateFormatWarning
+				.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+		coordinateFormatWarning.setVisible(false);
 
 		// filler
 		new Label(page, SWT.NONE);
@@ -166,19 +248,78 @@ public class GmlWriterSettingsPage
 		setPageComplete(true);
 	}
 
-	private boolean validate() {
-		String txt = formattedText.getText();
-		String regEx = "0{1,13}(\\.0*)?";
-		return Pattern.matches(regEx, txt);
+	private boolean validateFormats() {
+		boolean result = true;
+
+		if (enableCoordinateFormat.getSelection()) {
+			result &= validateFormat(coordinateFormat.getText());
+		}
+
+		if (result && enableDecimalFormat.getSelection()) {
+			result &= validateFormat(decimalFormat.getText());
+		}
+
+		return result;
 	}
 
-	private void update() {
-		if (checkNumberFormat.getSelection())
-			formattedText.setText(DEFAULT_FORMAT);
-		else
-			formattedText.setText("");
+	private boolean validateFormat(String format) {
+		try {
+			DecimalFormatUtil.getFormatter(format);
+		} catch (Exception e) {
+			setErrorMessage("Invalid format: " + e.getMessage());
+			return false;
+		}
 
-		formattedText.setEnabled(checkNumberFormat.getSelection());
+		setErrorMessage(null);
+		return true;
+	}
+
+	private void updateCoordinateFormat() {
+		if (enableCoordinateFormat.getSelection()
+				&& StringUtils.isEmpty(coordinateFormat.getText())) {
+			coordinateFormat.setText(DEFAULT_COORDINATE_FORMAT);
+		}
+
+		coordinateFormat.setEnabled(enableCoordinateFormat.getSelection());
+		coordinateFormatWarning.setVisible(enableCoordinateFormat.getSelection());
+		validateFormats();
+	}
+
+	private void updateDecimalFormat() {
+		if (enableDecimalFormat.getSelection() && StringUtils.isEmpty(decimalFormat.getText())) {
+			decimalFormat.setText(DEFAULT_DECIMAL_FORMAT);
+		}
+
+		setDecimalFormatExample(decimalFormat.getText());
+
+		decimalFormat.setEnabled(enableDecimalFormat.getSelection());
+		if (!decimalFormat.isEnabled() && !StringUtils.isEmpty(decimalFormat.getText())) {
+			decimalFormat.setText("");
+		}
+
+		validateFormats();
+	}
+
+	private void setDecimalFormatExample(String pattern) {
+		final String text = "Test: 123456789.6543 will be represented as {0}";
+		final double exampleValue = 123456789.6543;
+
+		if (decimalFormatExample != null && !decimalFormatExample.isDisposed()) {
+			if (!enableDecimalFormat.getSelection()
+					|| StringUtils.isEmpty(decimalFormat.getText())) {
+				// default example
+				decimalFormatExample
+						.setText(MessageFormat.format(text, Double.toString(exampleValue)));
+			}
+			else if (!validateFormat(pattern)) {
+				decimalFormatExample.setText("Invalid pattern");
+			}
+			else {
+				DecimalFormat formatter = DecimalFormatUtil.getFormatter(pattern);
+				decimalFormatExample
+						.setText(MessageFormat.format(text, formatter.format(exampleValue)));
+			}
+		}
 	}
 
 	/**
