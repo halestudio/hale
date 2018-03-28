@@ -149,7 +149,9 @@
      -reportsOut &lt;reports-file&gt;
      -stacktrace
      -trustGroovy
-     -overallFilterContext</code></pre>
+     -overallFilterContext
+     -statisticsOut &lt;statistics-file&gt;
+     -successEvaluation &lt;file-or-URI-to-script&gt;</code></pre>
 	<h4>hale project file</h4>
 	<pre class="cli"><code>-project &lt;file-or-URI-to-hale-project&gt;</code></pre>
 	<p>
@@ -349,6 +351,26 @@
 		<dd>Provide this flag if you trust any Groovy transformation
 			functions used in the provided project. This will lift restrictions
 			on Groovy calls and speed up the execution.</dd>
+		<dt><code>-statisticsOut &lt;statistics-file&gt;</code></dt>
+		<dd>
+			Specifies the location of a file to write the transformation statistics to.
+			The transformation statistics are saved as JSON.
+			They contain aggregated information on the different tasks that were run as part of the transformation.
+		</dd>
+		<dt><code>-successEvaluation &lt;file-or-URI-to-script&gt;</code></dt>
+		<dd>
+			This option allows you to customize the behavior of the transformation command in respect to if a run is interpreted as successful or not.
+			The script you can specify here is a Groovy script that is evaluated against the transformation statistics.
+			You can use the <code>-statisticsOut</code> parameter to get an idea of the contents of the statistics.<br>
+			A success evaluation script could for example look like this:<br>
+			<pre><code>// the transformation must have been completed
+assert aggregated['eu.esdihumboldt.hale.transform'].report.completed == true
+// without errors
+assert aggregated['eu.esdihumboldt.hale.transform'].report.errors == 0
+
+// there must have been objects created as part of the transformation
+assert aggregated['eu.esdihumboldt.hale.transform'].createdPerType.any { name, count -> count > 0 }</code></pre>
+		</dd>
 	</dl>
 	<h2>Examples</h2>
 	<p>Here is an example on how to use the command line interface. There is a 
