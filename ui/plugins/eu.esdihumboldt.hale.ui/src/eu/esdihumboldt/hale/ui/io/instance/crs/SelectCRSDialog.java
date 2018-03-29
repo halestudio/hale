@@ -15,6 +15,8 @@
  */
 package eu.esdihumboldt.hale.ui.io.instance.crs;
 
+import java.text.MessageFormat;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
+import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
@@ -428,8 +431,17 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	private void updateMessage(CRSFieldEditor editor) {
 		if (editor.isValid()) {
 			setErrorMessage(null);
-			setMessage(editor.getCRSDefinition().getCRS().getName().toString(),
-					IMessageProvider.INFORMATION);
+			CoordinateReferenceSystem crs = editor.getCRSDefinition().getCRS();
+			if (crs.getIdentifiers().isEmpty()) {
+				setMessage(crs.getName().toString(), IMessageProvider.INFORMATION);
+			}
+			else {
+				ReferenceIdentifier firstId = crs.getIdentifiers().iterator().next();
+				setMessage(
+						MessageFormat.format("[{0}:{1}] {2}", firstId.getCodeSpace(),
+								firstId.getCode(), crs.getName().getCode()),
+						IMessageProvider.INFORMATION);
+			}
 		}
 		else {
 			setErrorMessage(editor.getErrorMessage());
@@ -441,9 +453,8 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 * Update the button state
 	 */
 	private void updateState() {
-		getButton(OK).setEnabled(
-				(radioCRS.getSelection() && crsField.isValid())
-						|| (radioWKT.getSelection() && wktField.isValid()));
+		getButton(OK).setEnabled((radioCRS.getSelection() && crsField.isValid())
+				|| (radioWKT.getSelection() && wktField.isValid()));
 	}
 
 }
