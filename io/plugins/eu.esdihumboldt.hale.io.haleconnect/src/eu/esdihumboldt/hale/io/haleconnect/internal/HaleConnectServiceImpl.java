@@ -340,6 +340,10 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			if (e.getCode() == 401) {
 				clearSession();
 			}
+			else if (e.getCause() != null) {
+				Throwable cause = e.getCause();
+				throw new HaleConnectException(cause.getMessage(), cause);
+			}
 			else {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
