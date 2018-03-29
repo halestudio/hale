@@ -35,7 +35,6 @@ import org.opengis.metadata.citation.Citation;
 import org.opengis.metadata.citation.PresentationForm;
 import org.opengis.metadata.citation.Role;
 import org.opengis.referencing.AuthorityFactory;
-import org.opengis.referencing.Factory;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.IdentifiedObject;
 import org.opengis.referencing.NoSuchAuthorityCodeException;
@@ -46,24 +45,18 @@ import org.opengis.referencing.crs.GeographicCRS;
 import org.opengis.referencing.crs.ProjectedCRS;
 import org.opengis.util.InternationalString;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
-
 /**
- * CRSAuthorityFactory for AdV CRS URNs (e.g. "urn:adv:crs:DE_DHDN_3GK3")
+ * CRSAuthorityFactory for AdV CRS definitions (e.g. "DE_DHDN_3GK3")
  * 
  * @author Florian Esser
  */
 public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 		implements CRSAuthorityFactory {
 
-	private static final ALogger _log = ALoggerFactory.getLogger(AdvCrsAuthorityFactory.class);
-
 	/**
 	 * The authority
 	 */
 	public static final String AUTHORITY = "ADV"; //$NON-NLS-1$
-//	public static final String AUTHORITY = "URN:ADV:CRS"; //$NON-NLS-1$
 
 	/**
 	 * The authority prefix
@@ -88,7 +81,6 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 
 		final CitationImpl c = new CitationImpl(advRespParty);
 		c.getIdentifiers().add(new IdentifierImpl(AUTHORITY));
-//		c.getIdentifiers().add(new IdentifierImpl(AUTHORITY_PREFIX));
 		c.getPresentationForm().add(PresentationForm.TABLE_DIGITAL);
 		c.freeze();
 		ADV = c;
@@ -102,8 +94,6 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	/**
 	 * Preferences node
 	 */
-//	private final Preferences node = Preferences.userNodeForPackage(AdvCrsAuthorityFactory.class)
-//			.node(AUTHORITY);
 	private final Map<String, String> mappings = new HashMap<>();
 
 	/**
@@ -122,15 +112,17 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	protected AdvCrsAuthorityFactory() {
 		this(ReferencingFactoryFinder.getCRSFactory(null));
 
-		// TODO Read from external file/database?
-		addEpsgMapping("ETRS89_UTM32", "EPSG:25832");
-		addEpsgMapping("ETRS89_UTM33", "EPSG:25833");
-		addEpsgMapping("ETRS89_Lat-Lon", "EPSG:4258");
-		addEpsgMapping("DE_DHDN_3GK2", "EPSG:31466");
-		addEpsgMapping("DE_DHDN_3GK3", "EPSG:31467");
-		addEpsgMapping("DE_DHHN92_NH", "EPSG:5783");
+		addCodeMapping("ETRS89_UTM32", "EPSG:25832");
+		addCodeMapping("ETRS89_UTM33", "EPSG:25833");
+		addCodeMapping("ETRS89_Lat-Lon", "EPSG:4258");
+		addCodeMapping("DE_DHDN_3GK2", "EPSG:31466");
+		addCodeMapping("DE_DHDN_3GK3", "EPSG:31467");
+		addCodeMapping("DE_DHHN92_NH", "EPSG:5783");
 
 		// EPSG:7837 is not available in EPSG registry version 7.9.0
+		// which is shipped with GeoTools 12.2. See also
+		// https://github.com/halestudio/hale/issues/573
+		//
 		// addEpsgMapping("DE_DHHN2016_NH", "EPSG:7837");
 	}
 
@@ -142,7 +134,6 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	protected AdvCrsAuthorityFactory(final CRSFactory factory) {
 		super(MAXIMUM_PRIORITY); // allow overriding CRS definitions in the
 									// database
-		// MINIMUM_PRIORITY); // Select other factories first
 		this.crsFactory = factory;
 	}
 
@@ -171,8 +162,8 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	 * @param code the CRS code (e.g. DE_DHDN_3GK3)
 	 * @param epsgCode the code of the corresponding EPSG CRS
 	 */
-	public synchronized static void registerEpsgCode(String code, String epsgCode) {
-		getInstance().addEpsgMapping(code, epsgCode);
+	public synchronized static void registerCode(String code, String epsgCode) {
+		getInstance().addCodeMapping(code, epsgCode);
 	}
 
 	/**
@@ -182,31 +173,17 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	 * @param epsgCode the code of the corresponding EPSG CRS (must include
 	 *            prefix)
 	 */
-	public void addEpsgMapping(String code, String epsgCode) {
+	public void addCodeMapping(String code, String epsgCode) {
 		Objects.requireNonNull("AdV code must not be null", code);
 		if (code.startsWith(AUTHORITY_PREFIX)) {
 			code = code.substring(AUTHORITY_PREFIX.length());
 		}
 
 		Objects.requireNonNull("EPSG code must not be null", epsgCode);
-		if (!epsgCode.contains(":")) {
+		if (!epsgCode.startsWith("EPSG:")) {
 			throw new IllegalArgumentException(
-					"EPSG code must include authority prefix (e.g. \"EPSG:\")");
+					"EPSG code must start with authority prefix \"EPSG:\"");
 		}
-
-		// warn about ESPG codes not found in the used Geotools database
-//		try {
-//			if (CRS.decode(epsgCode) == null) {
-//				_log.warn(MessageFormat.format(
-//						"Mapping between \"{0}\" and \"{1}\" skipped: EPSG code could not be resolved.",
-//						code, epsgCode));
-//				return;
-//			}
-//		} catch (Exception e) {
-//			_log.error(MessageFormat.format("Mapping between \"{0}\" and \"{1}\" skipped: {2}",
-//					code, epsgCode, e.getMessage()), e);
-//			return;
-//		}
 
 		mappings.put(code.toUpperCase(), epsgCode);
 	}
@@ -219,6 +196,10 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	 * @return the EPSG code or <code>null</code>
 	 */
 	public String getEpsgCode(String code) {
+		if (code == null) {
+			return null;
+		}
+
 		if (code.startsWith(AUTHORITY_PREFIX)) {
 			code = code.substring(AUTHORITY_PREFIX.length());
 		}
@@ -248,7 +229,7 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 			}
 		}
 
-		String epsgCode = mappings.get(advCode);
+		String epsgCode = getEpsgCode(advCode);
 		if (epsgCode == null) {
 			throw new NoSuchAuthorityCodeException("Unknown AdV code", AUTHORITY, code); //$NON-NLS-1$
 		}
@@ -270,37 +251,21 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 		return createCoordinateReferenceSystem(code);
 	}
 
-	/**
-	 * @see CRSAuthorityFactory#createProjectedCRS(String)
-	 */
 	@Override
 	public ProjectedCRS createProjectedCRS(String code) throws FactoryException {
 		return (ProjectedCRS) createCoordinateReferenceSystem(code);
 	}
 
-	/**
-	 * @see CRSAuthorityFactory#createGeographicCRS(String)
-	 */
 	@Override
 	public GeographicCRS createGeographicCRS(String code) throws FactoryException {
 		return (GeographicCRS) createCoordinateReferenceSystem(code);
 	}
 
-	/**
-	 * @see AuthorityFactory#getAuthority()
-	 */
 	@Override
 	public Citation getAuthority() {
 		return ADV;
 	}
 
-	/**
-	 * @see AuthorityFactory#getAuthorityCodes(Class)
-	 * 
-	 *      The following implementation filters the set of codes based on the
-	 *      "PROJCS" and "GEOGCS" at the start of the WKT strings. It is assumed
-	 *      that we only have GeographicCRS and ProjectedCRS's here.
-	 */
 	@Override
 	public Set<String> getAuthorityCodes(Class<? extends IdentifiedObject> clazz)
 			throws FactoryException {
@@ -308,17 +273,11 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 		return cache.keySet();
 	}
 
-	/**
-	 * @see Factory#getVendor()
-	 */
 	@Override
 	public Citation getVendor() {
 		return Citations.GEOTOOLS; // XXX
 	}
 
-	/**
-	 * @see AuthorityFactory#getDescriptionText(String)
-	 */
 	@Override
 	public InternationalString getDescriptionText(String code) throws FactoryException {
 		if (code == null) {

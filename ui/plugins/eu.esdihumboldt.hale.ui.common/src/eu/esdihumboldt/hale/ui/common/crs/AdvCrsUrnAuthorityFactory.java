@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.ui.common.crs;
 
 import java.net.URI;
+import java.util.Objects;
 
 import org.geotools.metadata.iso.IdentifierImpl;
 import org.geotools.metadata.iso.citation.CitationImpl;
@@ -30,18 +31,21 @@ import org.opengis.metadata.citation.PresentationForm;
 import org.opengis.metadata.citation.Role;
 import org.opengis.referencing.AuthorityFactory;
 import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
 import org.opengis.referencing.crs.CRSAuthorityFactory;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
- * TODO Type description
+ * Wraps {@link AdvCrsAuthorityFactory} for the {@code "urn:adv:crs"} namespace.
+ * An example of a complete URN is {@code "urn:adv:crs:DE_DHDN_3GK3"}.
  * 
  * @author Florian Esser
  */
 public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		implements CRSAuthorityFactory {
 
+	/**
+	 * Citation for the urn:adv:crs namespace
+	 */
 	public static final Citation URN_ADV;
 	static {
 		final OnLineResourceImpl advOnlineRes = new OnLineResourceImpl(
@@ -63,22 +67,7 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		URN_ADV = c;
 	}
 
-	private static class UrnParser {
-
-		/**
-		 * The beginning parts of the URN, typically {@code "urn:adv:"}. All
-		 * elements in the array are treated as synonymous. Those parts are up
-		 * to, but do not include, the type part ({@code "crs"}, {@code "cs"},
-		 * {@code "datum"}, <cite>etc.</cite>). They must include a trailing
-		 * (@value #URN_SEPARATOR} character.
-		 */
-		private static final String[] URN_BASES = new String[] { "urn:adv:" };
-
-		/**
-		 * Used to join the authority and code in {@link #getAuthorityCode()}
-		 * getAuthorityCode.
-		 */
-		private static final char SEPARATOR = ':';
+	private static class AdvCrsUrn {
 
 		/**
 		 * The parsed code as full URN.
@@ -86,17 +75,7 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		public final String urn;
 
 		/**
-		 * The type part of the URN ({@code "crs"}).
-		 */
-		public final String type;
-
-		/**
-		 * The authority part of the URI (typically {@code "adv"}).
-		 */
-		public final String authority;
-
-		/**
-		 * The code part of the URI.
+		 * The parsed code
 		 */
 		public final String code;
 
@@ -104,23 +83,34 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		 * Constructor.
 		 * 
 		 * @param urn the full URN string
-		 * @param type the resource type, for example "crs"
-		 * @param authority the resource authority, for example "adv"
-		 * @param code the resource code
 		 */
-		public UrnParser(String urn, String type, String authority, String code) {
+		public AdvCrsUrn(String urn) {
+			Objects.requireNonNull("urn must not be null", urn);
+			if (!urn.toLowerCase().startsWith("urn:adv:crs:")) {
+				throw new IllegalArgumentException(
+						"Can only parse URNs starting with 'urn:adv:crs:'");
+			}
+
 			this.urn = urn;
-			this.type = type;
-			this.authority = authority;
-			this.code = code;
+			this.code = urn.substring("urn:adv:crs:".length());
 		}
 
 		/**
-		 * @return the concatenation of the {@linkplain #authority} and the
-		 *         {@linkplain #code}, separated by {@link #SEPARATOR}.
+		 * Creates a parser for the given URN
+		 * 
+		 * @param urn URN to parse
+		 * @return the parser
+		 */
+		public static AdvCrsUrn from(String urn) {
+			return new AdvCrsUrn(urn);
+		}
+
+		/**
+		 * @return the concatenation of the authority and the {@linkplain #code}
+		 *         , separated by ':'
 		 */
 		public String getAuthorityCode() {
-			return "ADV" + SEPARATOR + code;
+			return "ADV:" + code;
 		}
 
 		/**
@@ -130,18 +120,13 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		public String toString() {
 			return urn;
 		}
-
-		public static UrnParser buildParser(final String urn) throws NoSuchAuthorityCodeException {
-			if (urn.toLowerCase().startsWith("urn:adv:crs:")) {
-				return new UrnParser(urn, "crs", "urn:adv", urn.substring("urn:adv:crs:".length()));
-			}
-
-			throw new NoSuchAuthorityCodeException("", urn, urn);
-		}
 	}
 
 	private static AdvCrsUrnAuthorityFactory INSTANCE;
 
+	/**
+	 * Default constructor
+	 */
 	protected AdvCrsUrnAuthorityFactory() {
 		super(AdvCrsAuthorityFactory.getInstance());
 	}
@@ -199,17 +184,9 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 				.createCoordinateReferenceSystem(toBackingFactoryCode(code));
 	}
 
-	/**
-	 * Returns a simple authority code (like "EPSG:4236") that can be passed to
-	 * the wrapped factories.
-	 *
-	 * @param code The code given to this factory.
-	 * @return The code to give to the underlying factories.
-	 * @throws FactoryException if the code can't be converted.
-	 */
 	@Override
 	protected String toBackingFactoryCode(final String code) throws FactoryException {
-		return UrnParser.buildParser(code).getAuthorityCode();
+		return AdvCrsUrn.from(code).getAuthorityCode();
 	}
 
 	@Override
