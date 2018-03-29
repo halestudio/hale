@@ -15,14 +15,20 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.ui;
 
+import java.lang.reflect.InvocationTargetException;
+import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -34,6 +40,7 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectImages;
 import eu.esdihumboldt.hale.io.haleconnect.ui.internal.HaleConnectUIPlugin;
 import eu.esdihumboldt.hale.ui.HaleUI;
+import eu.esdihumboldt.hale.ui.util.io.ThreadProgressMonitor;
 
 /**
  * Handler for the hale connect login command
@@ -70,8 +77,37 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 		String username = loginDialog.getUsername();
 		String password = loginDialog.getPassword();
 		boolean saveCredentials = loginDialog.isSaveCredentials();
+
 		try {
-			if (hcs.login(username, password)) {
+			final AtomicBoolean loginSuccessful = new AtomicBoolean(false);
+			final AtomicReference<HaleConnectException> loginException = new AtomicReference<>(
+					null);
+			ThreadProgressMonitor.runWithProgressDialog(new IRunnableWithProgress() {
+
+				@Override
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
+					monitor.setTaskName("Logging in to hale connect...");
+					try {
+						loginSuccessful.set(hcs.login(username, password));
+					} catch (HaleConnectException e) {
+						loginException.set(e);
+					}
+				}
+			}, false);
+
+			if (loginException.get() != null) {
+				HaleConnectException e = loginException.get();
+				if (e.getCause() instanceof SocketTimeoutException) {
+					log.userError(
+							"The connection to hale connect timed out. Please check your internet connection and proxy settings.",
+							e);
+				}
+				else {
+					log.userError("An error occurred while trying to login to hale connect", e);
+				}
+			}
+			else if (loginSuccessful.get()) {
 				loginDialog.close();
 				if (saveCredentials) {
 					try {
@@ -88,7 +124,7 @@ public class HaleConnectLoginHandler extends AbstractHandler {
 			else {
 				log.userWarn("Login to hale connect failed, please check the credentials.");
 			}
-		} catch (HaleConnectException e) {
+		} catch (Exception e) {
 			log.userError("An error occurred while trying to login to hale connect", e);
 		}
 
