@@ -70,6 +70,7 @@ public class PasswordFieldEditor extends FieldEditor {
 	 */
 	public PasswordFieldEditor(String secureNodeName, String keyName, String name,
 			Composite fieldEditorParent) {
+		init(keyName, name);
 		this.keyName = keyName;
 		this.secureNodeName = secureNodeName;
 		this.name = name;
@@ -107,8 +108,8 @@ public class PasswordFieldEditor extends FieldEditor {
 	@Override
 	protected void doLoad() {
 		try {
-			text.setText(SecurePreferencesFactory.getDefault().node(secureNodeName)
-					.get(keyName, "")); //$NON-NLS-1$
+			text.setText(
+					SecurePreferencesFactory.getDefault().node(secureNodeName).get(keyName, "")); //$NON-NLS-1$
 		} catch (StorageException e) {
 			text.setText(""); //$NON-NLS-1$
 			log.warn("Can't access secure preferences", e); //$NON-NLS-1$
@@ -130,8 +131,8 @@ public class PasswordFieldEditor extends FieldEditor {
 	protected void doStore() {
 		try {
 			String password = text.getText();
-			SecurePreferencesFactory.getDefault().node(secureNodeName)
-					.put(keyName, password, password != null && !password.isEmpty());
+			SecurePreferencesFactory.getDefault().node(secureNodeName).put(keyName, password,
+					password != null && !password.isEmpty());
 		} catch (StorageException e) {
 			log.error("Unable to save password to secure preferences", e); //$NON-NLS-1$
 		}
