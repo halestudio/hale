@@ -124,16 +124,21 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	public void createControls(Composite parent) {
 		getPage().setDescription("Please select a destination file for the export");
 
-		parent.setLayout(new GridLayout(3, false));
+		parent.setLayout(new GridLayout(4, false));
+
+		Composite loginGroup = new Composite(parent, SWT.NONE);
+		loginGroup.setLayout(new GridLayout(4, false));
+		loginGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 4, 1));
 
 		/*
 		 * Login status label
 		 */
-		loginStatusLabel = new Label(parent, SWT.NONE);
-		loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		loginStatusLabel = new Label(loginGroup, SWT.NONE);
+		loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 1));
 
-		loginButton = new Button(parent, SWT.PUSH);
+		loginButton = new Button(loginGroup, SWT.PUSH);
 		loginButton.setText("Login");
+		loginButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 		loginButton.addSelectionListener(new SelectionAdapter() {
 
 			/**
@@ -154,8 +159,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		updateOrNewGroup = new Group(parent, SWT.NONE);
 		updateOrNewGroup.setText("Please choose whether you would like to...");
-		updateOrNewGroup.setLayout(new GridLayout(3, true));
-		updateOrNewGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+		updateOrNewGroup.setLayout(new GridLayout(4, true));
+		updateOrNewGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 4, 1));
 
 		newProject = new Button(updateOrNewGroup, SWT.RADIO);
 		newProject.setText("create a new project on hale connect");
@@ -191,8 +196,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		controlsStack.setLayout(controlsStackLayout);
 
 		newProjectControls = new Composite(controlsStack, SWT.NONE);
-		newProjectControls.setLayout(new GridLayout(3, true));
-		GridData grid = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		newProjectControls.setLayout(new GridLayout(4, true));
+		GridData grid = new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1);
 		newProjectControls.setLayoutData(grid);
 
 		ownershipGroup = new Composite(newProjectControls, SWT.NONE);
@@ -252,15 +257,15 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		enableVersioning = new Button(newProjectControls, SWT.CHECK);
 		enableVersioning.setText("Enable versioning?");
-		enableVersioning.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+		enableVersioning.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 4, 1));
 
 		publicAccess = new Button(newProjectControls, SWT.CHECK);
 		publicAccess.setText("Allow public access?");
-		publicAccess.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+		publicAccess.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 4, 1));
 
 		updateProjectControls = new Composite(controlsStack, SWT.NONE);
 		updateProjectControls.setVisible(false);
-		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
 		/*
 		 * Project name text field
@@ -327,14 +332,14 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		upstreamModifiedWarning = new Label(updateProjectControls, SWT.WRAP);
 		upstreamModifiedWarning
-				.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
+				.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 4, 1));
 		upstreamModifiedWarning.setFont(new Font(upstreamModifiedWarning.getDisplay(),
 				new FontData(currentFont.getName(), currentFont.getHeight(), SWT.BOLD)));
 		upstreamModifiedWarning.setVisible(false);
 
 		Composite writerOptions = new Composite(parent, SWT.NONE);
 		writerOptions.setLayout(new RowLayout());
-		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 3, 2));
+		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 4, 2));
 
 		includeWebResources = new Button(writerOptions, SWT.CHECK);
 		includeWebResources.setText("Include web resources?");
