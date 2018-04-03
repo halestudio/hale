@@ -20,12 +20,15 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,6 +38,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
@@ -52,6 +56,12 @@ import eu.esdihumboldt.hale.ui.filter.internal.Messages;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class TypeFilterField extends Composite {
+
+	/**
+	 * This specified how much time (in milliseconds) needs to pass since the
+	 * last change to the field until the filter is updated.
+	 */
+	private static final int UPDATE_DELAY = 1000;
 
 	/**
 	 * Property name of the filter property (as used in
@@ -88,6 +98,8 @@ public abstract class TypeFilterField extends Composite {
 	private final Image openFormImage;
 	private final Image clearFilterImage;
 
+	private Timer currentTimer = null;
+
 	private final Set<PropertyChangeListener> listeners = new HashSet<PropertyChangeListener>();
 
 	/**
@@ -122,26 +134,53 @@ public abstract class TypeFilterField extends Composite {
 		// text field
 		filterText = new Text(filterComp, SWT.SINGLE | SWT.BORDER);
 		filterText.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-		filterText.setToolTipText(Messages.FeatureFilterField_3); //$NON-NLS-1$
+		filterText.setToolTipText(Messages.FeatureFilterField_3); // $NON-NLS-1$
 		filterText.addModifyListener(new ModifyListener() {
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				updateFilter();
-			}
+				synchronized (this) {
+					if (currentTimer != null) {
+						currentTimer.cancel();
+					}
 
+					final Display display = PlatformUI.getWorkbench().getDisplay();
+
+					currentTimer = new Timer();
+					currentTimer.schedule(new TimerTask() {
+
+						@Override
+						public void run() {
+							display.syncExec(new Runnable() {
+
+								@Override
+								public void run() {
+									BusyIndicator.showWhile(display, new Runnable() {
+
+										@Override
+										public void run() {
+											updateFilter();
+										}
+									});
+								}
+							});
+						}
+					}, UPDATE_DELAY);
+				}
+			}
 		});
-		PlatformUI.getWorkbench().getHelpSystem()
-				.setHelp(filterText, "eu.esdihumboldt.hale.doc.user.filter_field");
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(filterText,
+				"eu.esdihumboldt.hale.doc.user.filter_field");
 
 		decoration = new ControlDecoration(filterText, SWT.RIGHT | SWT.TOP);
+
 		showDefaultDecoration();
 
 		// clear filter
 		clearFilter = new Button(this, SWT.PUSH);
 		clearFilter.setEnabled(false);
 		clearFilter.setImage(clearFilterImage);
-		clearFilter.setToolTipText(Messages.FeatureFilterField_0); //$NON-NLS-1$
+		clearFilter.setToolTipText(Messages.FeatureFilterField_0); // $NON-NLS-1$
 		clearFilter.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		clearFilter.addSelectionListener(new SelectionAdapter() {
 
@@ -157,7 +196,7 @@ public abstract class TypeFilterField extends Composite {
 		// insert variable
 		insertVar = new Button(this, SWT.PUSH);
 		insertVar.setImage(insertVarImage);
-		insertVar.setToolTipText(Messages.FeatureFilterField_6); //$NON-NLS-1$
+		insertVar.setToolTipText(Messages.FeatureFilterField_6); // $NON-NLS-1$
 		insertVar.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false));
 		insertVar.addSelectionListener(new SelectionAdapter() {
 
