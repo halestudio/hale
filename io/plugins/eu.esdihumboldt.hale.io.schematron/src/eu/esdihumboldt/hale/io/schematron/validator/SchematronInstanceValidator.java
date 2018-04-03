@@ -38,6 +38,11 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 	public static final String PARAM_SCHEMATRON_LOCATION = "schematron.location";
 
 	/**
+	 * The identifier of the registration as I/O provider.
+	 */
+	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.schematron.validator";
+
+	/**
 	 * Set the location of the schematron rules definition to use for
 	 * validation.
 	 * 
@@ -154,5 +159,10 @@ public class SchematronInstanceValidator extends AbstractInstanceValidator
 	@Override
 	public void configure(ValidatorConfiguration configuration) {
 		this.setSchematronLocation(configuration.getLocation());
+	}
+
+	@Override
+	protected String getReportType() {
+		return PROVIDER_ID;
 	}
 }

@@ -72,7 +72,7 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport
 	 */
 	@Override
 	public IOReporter createReporter() {
-		return new DefaultIOReporter(getSource(), getReportLabel(), getActionId(), false) {
+		return new DefaultIOReporter(getSource(), getReportLabel(), getReportType(), false) {
 
 			@Override
 			protected String getFailSummary() {
@@ -91,6 +91,12 @@ public abstract class AbstractInstanceValidator extends GZipEnabledImport
 	 * @return the label of the validation report
 	 */
 	protected abstract String getReportLabel();
+
+	/**
+	 * @return the identifier of the validation report type, by convention the
+	 *         same as the I/O provider id
+	 */
+	protected abstract String getReportType();
 
 	/**
 	 * @return the name default failure summary for the validation report
