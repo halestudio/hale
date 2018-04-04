@@ -109,14 +109,12 @@ public abstract class CRSDefinitionUtil {
 				// return the lat/lon variant...
 				String code = SrsSyntax.EPSG_CODE.getPrefix() + String.valueOf(epsgCode);
 
-				// Check if the input CRS is lon/lat
-				boolean lonFirst = (CRS.getAxisOrder(crs) == AxisOrder.EAST_NORTH);
-
 				// Look up the code
-				CoordinateReferenceSystem resolved = CRS.decode(code, lonFirst);
+				CoordinateReferenceSystem resolved = CRS.decode(code);
 
-				// Use the CRS resolved by Geotools only if the axis order
-				// is still the same (not guaranteed)
+				// Use the CRS resolved by GeoTools only if its axis order
+				// is the same as the axis order of the provided CRS (not
+				// guaranteed)
 				if (CRS.getAxisOrder(crs).equals(CRS.getAxisOrder(resolved))) {
 					return new CodeDefinition(code, resolved);
 				}
