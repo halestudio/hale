@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.haleconnect
 
-import groovy.transform.Immutable
+import groovy.transform.*
 
 /**
  * Information about a hale connect user
@@ -23,6 +23,7 @@ import groovy.transform.Immutable
  * @author Florian Esser
  */
 @Immutable
+@EqualsAndHashCode(includes = ["userId"])
 class HaleConnectUserInfo {
 	String userId
 	String screenName
