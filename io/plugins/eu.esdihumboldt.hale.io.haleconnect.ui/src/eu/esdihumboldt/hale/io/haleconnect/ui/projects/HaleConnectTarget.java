@@ -30,11 +30,12 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.MouseAdapter;
@@ -217,31 +218,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		GridData orgSelectorGrid = new GridData(SWT.LEAD, SWT.LEAD, false, false);
 		orgSelectorGrid.widthHint = 175;
 		orgSelector.getCombo().setLayoutData(orgSelectorGrid);
-		orgSelector.setContentProvider(new IStructuredContentProvider() {
-
-			@Override
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				//
-			}
-
-			@Override
-			public void dispose() {
-				//
-			}
-
-			@Override
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof List<?>) {
-					List<?> elements = (List<?>) inputElement;
-					return elements.toArray();
-				}
-				else if (inputElement instanceof Object[]) {
-					return (Object[]) inputElement;
-				}
-
-				return new Object[] {};
-			}
-		});
+		orgSelector.setContentProvider(ArrayContentProvider.getInstance());
 		orgSelector.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -447,6 +424,16 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				Value.of(includeWebResources.getSelection()));
 		provider.setParameter(ArchiveProjectWriter.EXCLUDE_CACHED_RESOURCES,
 				Value.of(excludeCachedResources.getSelection()));
+
+		// organisation selection
+		ISelection sel = orgSelector.getSelection();
+		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) sel).getFirstElement();
+			if (selected instanceof HaleConnectOrganisationInfo) {
+				String orgId = ((HaleConnectOrganisationInfo) selected).getId();
+				provider.setParameter(HaleConnectProjectWriter.ORGANISATION_ID, Value.of(orgId));
+			}
+		}
 
 		provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
 
