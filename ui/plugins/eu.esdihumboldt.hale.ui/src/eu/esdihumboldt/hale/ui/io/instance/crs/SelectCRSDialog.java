@@ -313,6 +313,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		if (value instanceof CodeDefinition) {
 			code = ((CodeDefinition) value).getCode();
 		}
+		else if (value instanceof WKTDefinition) {
+			// Don't show possibly contradicting code
+			code = "";
+		}
 		else {
 			code = lastCode;
 		}
@@ -343,6 +347,15 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		String wkt;
 		if (value instanceof WKTDefinition) {
 			wkt = ((WKTDefinition) value).getWkt();
+		}
+		else if (value instanceof CodeDefinition) {
+			// Display WKT corresponding to the given code, if possible
+			try {
+				wkt = ((CodeDefinition) value).getCRS().toWKT();
+			} catch (Exception e) {
+				// Avoid displaying possibly contradicting WKT
+				wkt = "";
+			}
 		}
 		else {
 			wkt = lastWKT;
