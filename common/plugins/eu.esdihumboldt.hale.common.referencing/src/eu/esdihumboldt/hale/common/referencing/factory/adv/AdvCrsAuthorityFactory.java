@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.common.crs;
+package eu.esdihumboldt.hale.common.referencing.factory.adv;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+import org.geotools.factory.Hints;
 import org.geotools.metadata.iso.IdentifierImpl;
 import org.geotools.metadata.iso.citation.CitationImpl;
 import org.geotools.metadata.iso.citation.Citations;
@@ -87,11 +88,6 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	}
 
 	/**
-	 * The one and only factory instance
-	 */
-	protected static AdvCrsAuthorityFactory INSTANCE;
-
-	/**
 	 * Preferences node
 	 */
 	private final Map<String, String> mappings = new HashMap<>();
@@ -107,9 +103,15 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	private final Map<String, CoordinateReferenceSystem> cache = new HashMap<String, CoordinateReferenceSystem>();
 
 	/**
+	 * The name used in {@link Hints#FORCE_AXIS_ORDER_HONORING} for this
+	 * factory.
+	 */
+	public static final String HINTS_AUTHORITY = "urn";
+
+	/**
 	 * Creates a new instance
 	 */
-	protected AdvCrsAuthorityFactory() {
+	public AdvCrsAuthorityFactory() {
 		this(ReferencingFactoryFinder.getCRSFactory(null));
 
 		addCodeMapping("ETRS89_UTM32", "EPSG:25832");
@@ -131,39 +133,10 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 	 * 
 	 * @param factory the CRS factory to use
 	 */
-	protected AdvCrsAuthorityFactory(final CRSFactory factory) {
+	public AdvCrsAuthorityFactory(final CRSFactory factory) {
 		super(MAXIMUM_PRIORITY); // allow overriding CRS definitions in the
 									// database
 		this.crsFactory = factory;
-	}
-
-	/**
-	 * Get the factory instance
-	 * 
-	 * @return the factory instance
-	 */
-	public synchronized static AdvCrsAuthorityFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new AdvCrsAuthorityFactory();
-		}
-		return INSTANCE;
-	}
-
-	/**
-	 * Install the factory with the {@link ReferencingFactoryFinder}
-	 */
-	public synchronized static void install() {
-		ReferencingFactoryFinder.addAuthorityFactory(getInstance());
-	}
-
-	/**
-	 * Register an AdV CRS definition with the factory
-	 * 
-	 * @param code the CRS code (e.g. DE_DHDN_3GK3)
-	 * @param epsgCode the code of the corresponding EPSG CRS
-	 */
-	public synchronized static void registerCode(String code, String epsgCode) {
-		getInstance().addCodeMapping(code, epsgCode);
 	}
 
 	/**

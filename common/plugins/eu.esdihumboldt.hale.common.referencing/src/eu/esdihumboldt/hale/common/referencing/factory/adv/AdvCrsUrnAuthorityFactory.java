@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.ui.common.crs;
+package eu.esdihumboldt.hale.common.referencing.factory.adv;
 
 import java.net.URI;
 import java.util.Objects;
@@ -23,7 +23,7 @@ import org.geotools.metadata.iso.citation.CitationImpl;
 import org.geotools.metadata.iso.citation.ContactImpl;
 import org.geotools.metadata.iso.citation.OnLineResourceImpl;
 import org.geotools.metadata.iso.citation.ResponsiblePartyImpl;
-import org.geotools.referencing.ReferencingFactoryFinder;
+import org.geotools.referencing.factory.AllAuthoritiesFactory;
 import org.geotools.referencing.factory.AuthorityFactoryAdapter;
 import org.geotools.util.SimpleInternationalString;
 import org.opengis.metadata.citation.Citation;
@@ -122,32 +122,11 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		}
 	}
 
-	private static AdvCrsUrnAuthorityFactory INSTANCE;
-
 	/**
 	 * Default constructor
 	 */
-	protected AdvCrsUrnAuthorityFactory() {
-		super(AdvCrsAuthorityFactory.getInstance());
-	}
-
-	/**
-	 * Install the factory with the {@link ReferencingFactoryFinder}
-	 */
-	public synchronized static void install() {
-		ReferencingFactoryFinder.addAuthorityFactory(getInstance());
-	}
-
-	/**
-	 * Get the factory instance
-	 * 
-	 * @return the factory instance
-	 */
-	public synchronized static AdvCrsUrnAuthorityFactory getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new AdvCrsUrnAuthorityFactory();
-		}
-		return INSTANCE;
+	public AdvCrsUrnAuthorityFactory() {
+		super(new AllAuthoritiesFactory(null));
 	}
 
 	/**
@@ -189,12 +168,12 @@ public class AdvCrsUrnAuthorityFactory extends AuthorityFactoryAdapter
 		return AdvCrsUrn.from(code).getAuthorityCode();
 	}
 
-	@Override
-	protected CRSAuthorityFactory getCRSAuthorityFactory(final String code)
-			throws FactoryException {
-		if (code != null && code.toLowerCase().startsWith("urn:adv:crs:")) {
-			return AdvCrsAuthorityFactory.getInstance();
-		}
-		return super.getCRSAuthorityFactory(code);
-	}
+//	@Override
+//	protected CRSAuthorityFactory getCRSAuthorityFactory(final String code)
+//			throws FactoryException {
+//		if (code != null && code.toLowerCase().startsWith("urn:adv:crs:")) {
+//			return AdvCrsAuthorityFactory.getInstance();
+//		}
+//		return super.getCRSAuthorityFactory(code);
+//	}
 }
