@@ -35,7 +35,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
@@ -216,6 +218,8 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	private WKText wktField;
 
+	private Label wktWarning;
+
 	private static final String DEF_MESSAGE = ""; //$NON-NLS-1$
 
 	private Button radioCRS;
@@ -316,6 +320,18 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		crsField.setPropertyChangeListener(this);
 		crsField.setEnabled(lastWasCode, group);
 
+		new Label(group, SWT.NONE);
+
+		wktWarning = new Label(group, SWT.NONE);
+		wktWarning.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		wktWarning.setText(
+				"Please be aware that if you provide a WKT definition here, hale studio may\n"
+						+ "not be able to perform accurate coordinate transformations due to missing\n"
+						+ "Bursa-Wolf parameters. If you intend to perform coordinate transformations,\n"
+						+ "please provide an appropriate CRS code instead.");
+		wktWarning.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+		wktWarning.setVisible(!lastWasCode);
+
 		// WKT string
 		radioWKT = new Button(group, SWT.RADIO);
 		radioWKT.setSelection(!lastWasCode);
@@ -345,6 +361,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 		crsField.setEnabled(enableCode, group);
 		wktField.getTextField().setEnabled(!enableCode);
+		wktWarning.setVisible(!enableCode);
 
 		updateMessage();
 		updateState();
