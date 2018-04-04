@@ -295,13 +295,14 @@ public abstract class StreamGmlHelper {
 							&& ((GeometryProperty<?>) value).getCRSDefinition() == null)) {
 						// try to resolve value of srsName attribute
 
-						CRSDefinition geometryCrs = crsProvider.getCRS(parentType, propertyPath,
-								lastCrs);
-						if (geometryCrs != null) {
+						if (lastCrs == null) {
+							lastCrs = crsProvider.getCRS(parentType, propertyPath, lastCrs);
+						}
+
+						if (lastCrs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
 									: (((GeometryProperty<?>) value).getGeometry());
-							resultVals
-									.add(new DefaultGeometryProperty<Geometry>(geometryCrs, geom));
+							resultVals.add(new DefaultGeometryProperty<Geometry>(lastCrs, geom));
 							continue;
 						}
 					}
