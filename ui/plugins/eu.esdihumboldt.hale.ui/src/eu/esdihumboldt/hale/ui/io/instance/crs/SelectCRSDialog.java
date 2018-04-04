@@ -188,31 +188,27 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	}
 
-	private static final String DEFAULT_CODE = "EPSG:4326"; //$NON-NLS-1$
-
-	private static final String DEFAULT_WKT = "PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
-			"\tGEOGCS[\"MGI (Ferro)\",\n" + //$NON-NLS-1$
-			"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
-			"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
-			"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" + //$NON-NLS-1$
-			"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" + //$NON-NLS-1$
-			"\t\tUNIT[\"degree\",0.017453292519943295],\n" + //$NON-NLS-1$
-			"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" + //$NON-NLS-1$
-			"\t\tAXIS[\"Geodetic longitude\",EAST],\n" + //$NON-NLS-1$
-			"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" + //$NON-NLS-1$
-			"\tPROJECTION[\"Transverse Mercator\"],\n" + //$NON-NLS-1$
-			"PARAMETER[\"central_meridian\",28.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"latitude_of_origin\",0.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"scale_factor\",1.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"false_easting\",0.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"false_northing\",-5000000.0],\n" + //$NON-NLS-1$
-			"UNIT[\"m\",1.0],\n" + //$NON-NLS-1$
-			"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
-			"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
-			"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
+	private static final String DEFAULT_CODE = "EPSG:4258"; //$NON-NLS-1$
 
 	private static String lastCode = DEFAULT_CODE;
-	private static String lastWKT = DEFAULT_WKT;
+	private static String lastWKT;
+	static {
+		try {
+			lastWKT = CRS.decode(DEFAULT_CODE).toWKT();
+		} catch (Exception e) {
+			lastWKT = "GEOGCS[\"ETRS89\",\n" + //$NON-NLS-1$
+					"\tDATUM[\"European_Terrestrial_Reference_System_1989\",\n" + //$NON-NLS-1$
+					"\t\tSPHEROID[\"GRS 1980\",6378137,298.257222101,\n" + //$NON-NLS-1$
+					"\t\t\tAUTHORITY[\"EPSG\",\"7019\"]],\n" + //$NON-NLS-1$
+					"\t\tTOWGS84[0,0,0,0,0,0,0],\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"6258\"]],\n" + //$NON-NLS-1$
+					"\tPRIMEM[\"Greenwich\",0,\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"8901\"]],\n" + //$NON-NLS-1$
+					"\tUNIT[\"degree\",0.0174532925199433,\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"9122\"]],\n" + //$NON-NLS-1$
+					"\tAUTHORITY[\"EPSG\",\"4258\"]]"; //$NON-NLS-1$
+		}
+	}
 
 	private CRSFieldEditor crsField;
 
