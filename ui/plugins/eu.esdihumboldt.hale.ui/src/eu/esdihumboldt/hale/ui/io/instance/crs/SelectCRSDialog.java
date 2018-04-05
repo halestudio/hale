@@ -35,12 +35,16 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.datum.DefaultGeodeticDatum;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.SingleCRS;
 
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
@@ -186,35 +190,33 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 	}
 
-	private static final String DEFAULT_CODE = "EPSG:4326"; //$NON-NLS-1$
-
-	private static final String DEFAULT_WKT = "PROJCS[\"MGI (Ferro)/AustriaGKWestZone\",\n" + //$NON-NLS-1$
-			"\tGEOGCS[\"MGI (Ferro)\",\n" + //$NON-NLS-1$
-			"\t\tDATUM[\"Militar-Geographische Institut (Ferro)\",\n" + //$NON-NLS-1$
-			"\t\t\tSPHEROID[\"Bessel 1841\",6377397.155,299.1528128,\n" + //$NON-NLS-1$
-			"\t\t\tAUTHORITY[\"EPSG\",\"7004\"]],AUTHORITY[\"EPSG\",\"6805\"]],\n" + //$NON-NLS-1$
-			"\t\tPRIMEM[\"Ferro\",-17.666666666666668,AUTHORITY[\"EPSG\",\"8909\"]],\n" + //$NON-NLS-1$
-			"\t\tUNIT[\"degree\",0.017453292519943295],\n" + //$NON-NLS-1$
-			"\t\tAXIS[\"Geodetic latitude\",NORTH],\n" + //$NON-NLS-1$
-			"\t\tAXIS[\"Geodetic longitude\",EAST],\n" + //$NON-NLS-1$
-			"\t\tAUTHORITY[\"EPSG\",\"4805\"]],\n" + //$NON-NLS-1$
-			"\tPROJECTION[\"Transverse Mercator\"],\n" + //$NON-NLS-1$
-			"PARAMETER[\"central_meridian\",28.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"latitude_of_origin\",0.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"scale_factor\",1.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"false_easting\",0.0],\n" + //$NON-NLS-1$
-			"PARAMETER[\"false_northing\",-5000000.0],\n" + //$NON-NLS-1$
-			"UNIT[\"m\",1.0],\n" + //$NON-NLS-1$
-			"AXIS[\"Y\",EAST],\n" + //$NON-NLS-1$
-			"AXIS[\"X\",NORTH],\n" + //$NON-NLS-1$
-			"AUTHORITY[\"EPSG\",\"31251\"]]"; //$NON-NLS-1$
+	private static final String DEFAULT_CODE = "EPSG:4258"; //$NON-NLS-1$
 
 	private static String lastCode = DEFAULT_CODE;
-	private static String lastWKT = DEFAULT_WKT;
+	private static String lastWKT;
+	static {
+		try {
+			lastWKT = CRS.decode(DEFAULT_CODE).toWKT();
+		} catch (Exception e) {
+			lastWKT = "GEOGCS[\"ETRS89\",\n" + //$NON-NLS-1$
+					"\tDATUM[\"European_Terrestrial_Reference_System_1989\",\n" + //$NON-NLS-1$
+					"\t\tSPHEROID[\"GRS 1980\",6378137,298.257222101,\n" + //$NON-NLS-1$
+					"\t\t\tAUTHORITY[\"EPSG\",\"7019\"]],\n" + //$NON-NLS-1$
+					"\t\tTOWGS84[0,0,0,0,0,0,0],\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"6258\"]],\n" + //$NON-NLS-1$
+					"\tPRIMEM[\"Greenwich\",0,\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"8901\"]],\n" + //$NON-NLS-1$
+					"\tUNIT[\"degree\",0.0174532925199433,\n" + //$NON-NLS-1$
+					"\t\tAUTHORITY[\"EPSG\",\"9122\"]],\n" + //$NON-NLS-1$
+					"\tAUTHORITY[\"EPSG\",\"4258\"]]"; //$NON-NLS-1$
+		}
+	}
 
 	private CRSFieldEditor crsField;
 
 	private WKText wktField;
+
+	private Label wktWarning;
 
 	private static final String DEF_MESSAGE = ""; //$NON-NLS-1$
 
@@ -309,6 +311,10 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		if (value instanceof CodeDefinition) {
 			code = ((CodeDefinition) value).getCode();
 		}
+		else if (value instanceof WKTDefinition) {
+			// Don't show possibly contradicting code
+			code = "";
+		}
 		else {
 			code = lastCode;
 		}
@@ -328,11 +334,33 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		if (value instanceof WKTDefinition) {
 			wkt = ((WKTDefinition) value).getWkt();
 		}
+		else if (value instanceof CodeDefinition) {
+			// Display WKT corresponding to the given code, if possible
+			try {
+				wkt = ((CodeDefinition) value).getCRS().toWKT();
+			} catch (Exception e) {
+				// Avoid displaying possibly contradicting WKT
+				wkt = "";
+			}
+		}
 		else {
 			wkt = lastWKT;
 		}
 		wktField.setText(wkt);
 		wktField.getTextField().setEnabled(!lastWasCode);
+
+		new Label(group, SWT.NONE);
+
+		wktWarning = new Label(group, SWT.NONE);
+		wktWarning.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		wktWarning.setText("Please be aware that this WKT definition does not contain Bursa-Wolf\n"
+				+ "parameters in the DATUM definition. Therefore, hale studio may not be able\n"
+				+ "to perform accurate coordinate transformations when a datum shift is involved.\n"
+				+ "If you intend to perform coordinate transformations with a datum shift,\n"
+				+ "please provide the Bursa-Wolf parameters (TOWGS84) or provide an appropriate\n"
+				+ "CRS code instead. If no Bursa-Wolf parameters are required for the datum of\n"
+				+ "this CRS (e.g. in case of WGS 84 itself), you can ignore this warning.");
+		wktWarning.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 
 		return page;
 	}
@@ -408,17 +436,41 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	private void updateMessage() {
 		if (radioCRS.getSelection()) {
+			if (wktWarning != null) {
+				wktWarning.setVisible(false);
+			}
 			updateMessage(crsField);
 		}
 		else {
 			if (wktField.isValid()) {
 				setErrorMessage(null);
+
+				CoordinateReferenceSystem wktCrs = wktField.getCRSDefinition().getCRS();
+				boolean bursaWolfApplicable = false;
+				boolean bursaWolfAvailable = false;
+				if (wktCrs instanceof SingleCRS
+						&& ((SingleCRS) wktCrs).getDatum() instanceof DefaultGeodeticDatum) {
+					// Check for Bursa-Wolf parameters
+					bursaWolfApplicable = true;
+
+					DefaultGeodeticDatum datum = (DefaultGeodeticDatum) ((SingleCRS) wktCrs)
+							.getDatum();
+					bursaWolfAvailable = datum.getBursaWolfParameters().length > 0;
+				}
+
+				boolean showWktWarning = bursaWolfApplicable && !bursaWolfAvailable;
+
 				setMessage(wktField.getCRSDefinition().getCRS().getName().toString(),
-						IMessageProvider.INFORMATION);
+						showWktWarning ? IMessageProvider.WARNING : IMessageProvider.INFORMATION);
+
+				if (wktWarning != null) {
+					wktWarning.setVisible(showWktWarning);
+				}
 			}
 			else {
 				setErrorMessage(wktField.getErrorMessage());
-				setMessage(DEF_MESSAGE);
+				setMessage(DEF_MESSAGE, IMessageProvider.INFORMATION);
+				wktWarning.setVisible(false);
 			}
 		}
 	}
