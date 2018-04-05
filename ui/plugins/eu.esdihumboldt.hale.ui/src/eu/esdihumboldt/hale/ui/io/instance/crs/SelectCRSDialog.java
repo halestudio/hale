@@ -41,8 +41,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.datum.DefaultGeodeticDatum;
 import org.opengis.referencing.ReferenceIdentifier;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.crs.SingleCRS;
 
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
@@ -320,18 +322,6 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		crsField.setPropertyChangeListener(this);
 		crsField.setEnabled(lastWasCode, group);
 
-		new Label(group, SWT.NONE);
-
-		wktWarning = new Label(group, SWT.NONE);
-		wktWarning.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-		wktWarning.setText(
-				"Please be aware that if you provide a WKT definition here, hale studio may\n"
-						+ "not be able to perform accurate coordinate transformations due to missing\n"
-						+ "Bursa-Wolf parameters. If you intend to perform coordinate transformations,\n"
-						+ "please provide an appropriate CRS code instead.");
-		wktWarning.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
-		wktWarning.setVisible(!lastWasCode);
-
 		// WKT string
 		radioWKT = new Button(group, SWT.RADIO);
 		radioWKT.setSelection(!lastWasCode);
@@ -359,6 +349,19 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		wktField.setText(wkt);
 		wktField.getTextField().setEnabled(!lastWasCode);
 
+		new Label(group, SWT.NONE);
+
+		wktWarning = new Label(group, SWT.NONE);
+		wktWarning.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		wktWarning.setText("Please be aware that this WKT definition does not contain Bursa-Wolf\n"
+				+ "parameters in the DATUM definition. Therefore, hale studio may not be able\n"
+				+ "to perform accurate coordinate transformations when a datum shift is involved.\n"
+				+ "If you intend to perform coordinate transformations with a datum shift,\n"
+				+ "please provide the Bursa-Wolf parameters (TOWGS84) or provide an appropriate\n"
+				+ "CRS code instead. If no Bursa-Wolf parameters are required for the datum of\n"
+				+ "this CRS (e.g. in case of WGS 84 itself), you can ignore this warning.");
+		wktWarning.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
+
 		return page;
 	}
 
@@ -370,7 +373,6 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 
 		crsField.setEnabled(enableCode, group);
 		wktField.getTextField().setEnabled(!enableCode);
-		wktWarning.setVisible(!enableCode);
 
 		updateMessage();
 		updateState();
@@ -434,17 +436,41 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 	 */
 	private void updateMessage() {
 		if (radioCRS.getSelection()) {
+			if (wktWarning != null) {
+				wktWarning.setVisible(false);
+			}
 			updateMessage(crsField);
 		}
 		else {
 			if (wktField.isValid()) {
 				setErrorMessage(null);
+
+				CoordinateReferenceSystem wktCrs = wktField.getCRSDefinition().getCRS();
+				boolean bursaWolfApplicable = false;
+				boolean bursaWolfAvailable = false;
+				if (wktCrs instanceof SingleCRS
+						&& ((SingleCRS) wktCrs).getDatum() instanceof DefaultGeodeticDatum) {
+					// Check for Bursa-Wolf parameters
+					bursaWolfApplicable = true;
+
+					DefaultGeodeticDatum datum = (DefaultGeodeticDatum) ((SingleCRS) wktCrs)
+							.getDatum();
+					bursaWolfAvailable = datum.getBursaWolfParameters().length > 0;
+				}
+
+				boolean showWktWarning = bursaWolfApplicable && !bursaWolfAvailable;
+
 				setMessage(wktField.getCRSDefinition().getCRS().getName().toString(),
-						IMessageProvider.INFORMATION);
+						showWktWarning ? IMessageProvider.WARNING : IMessageProvider.INFORMATION);
+
+				if (wktWarning != null) {
+					wktWarning.setVisible(showWktWarning);
+				}
 			}
 			else {
 				setErrorMessage(wktField.getErrorMessage());
-				setMessage(DEF_MESSAGE);
+				setMessage(DEF_MESSAGE, IMessageProvider.INFORMATION);
+				wktWarning.setVisible(false);
 			}
 		}
 	}
