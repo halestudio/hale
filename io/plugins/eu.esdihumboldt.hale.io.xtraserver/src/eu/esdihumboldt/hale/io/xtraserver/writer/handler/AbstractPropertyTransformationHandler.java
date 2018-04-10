@@ -34,7 +34,6 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
@@ -107,11 +106,7 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		if (targetProperty.getDefinition().getDefinition().getConstraint(Reference.class)
 				.isReference()) {
 			final String associationTargetRef = getTargetFromSchema(targetProperty);
-			if (associationTargetRef == null) {
-				final PropertyEntityDefinition propDef = targetProperty.getDefinition();
-				mappingContext.addMissingAssociationTarget(propDef.toString());
-			}
-			else {
+			if (associationTargetRef != null) {
 				return new MappingValueBuilder().reference()
 						.referencedFeatureType(associationTargetRef)
 						.qualifiedTargetPath(lastValue.getQualifiedTargetPath())

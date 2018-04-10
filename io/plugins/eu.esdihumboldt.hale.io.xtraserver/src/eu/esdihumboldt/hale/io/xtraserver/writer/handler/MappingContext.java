@@ -208,14 +208,19 @@ public final class MappingContext {
 
 	private Predicate<MappingTableBuilder> isValidJoinTable() {
 		return tableBuilder -> tableBuilder.buildDraft().isJoined()
-				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent();
+				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent()
+				&& tableBuilder.buildDraft().getAllValuesStream()
+						.allMatch(value -> value.getQualifiedTargetPath().get(0)
+								.equals(tableBuilder.buildDraft().getQualifiedTargetPath().get(0)));
 	}
 
 	private Predicate<MappingTableBuilder> isInvalidJoinTableWithoutTarget() {
 		return tableBuilder -> !tableBuilder.buildDraft().getJoinPaths().isEmpty()
-				&& tableBuilder.buildDraft().getTargetPath().isEmpty()
-				&& tableBuilder.buildDraft().getQualifiedTargetPath().isEmpty()
-				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent();
+				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent()
+				&& (tableBuilder.buildDraft().getQualifiedTargetPath().isEmpty() || tableBuilder
+						.buildDraft().getAllValuesStream()
+						.anyMatch(value -> !value.getQualifiedTargetPath().get(0).equals(
+								tableBuilder.buildDraft().getQualifiedTargetPath().get(0))));
 	}
 
 	/**
@@ -271,7 +276,6 @@ public final class MappingContext {
 			// Target is set in value mapping, check if the property is multiple and the
 			// target must be added to the table
 			List<QName> targetPath = new ArrayList<>();
-			boolean pathIsSet = false;
 			for (final Iterator<ChildContext> it = target.getDefinition().getPropertyPath()
 					.iterator(); it.hasNext();) {
 				final ChildContext segment = it.next();
@@ -281,19 +285,10 @@ public final class MappingContext {
 					final Cardinality cardinality = property.getConstraint(Cardinality.class);
 					if (cardinality.mayOccurMultipleTimes()) {
 						tableBuilder.qualifiedTargetPath(targetPath);
-						pathIsSet = true;
 						break;
 					}
 				}
 			}
-			// if no multiple property is found, use first property in path as target and
-			// issue warning
-			/*
-			 * if (!pathIsSet && !targetPath.isEmpty()) {
-			 * tableBuilder.qualifiedTargetPath(targetPath.subList(0, 1)); reporter.warn(
-			 * "No multiple property found for joined table \"{0}\", used \"{1}\" as target path."
-			 * , tableName, targetPath.get(0)); }
-			 */
 		}
 
 		tableBuilder.value(value);
@@ -338,7 +333,7 @@ public final class MappingContext {
 		XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
 				.forMapping(xtraServerMappingBuilder.build())
 				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
-				.ensureRelationNavigability().transform();
+				.ensureRelationNavigability().fixMultiplicity().transform();
 
 		/*
 		 * fannedOutmapping = XtraServerMappingTransformer.forMapping(fannedOutmapping)

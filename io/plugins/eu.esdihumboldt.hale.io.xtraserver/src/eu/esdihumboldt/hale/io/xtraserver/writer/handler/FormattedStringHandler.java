@@ -38,7 +38,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.FormattedStringFunction
  */
 class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 
-	private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{(.+?)\\}");
+	private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{([^$].+?)\\}");
 	private static final String XS_VAR_PREFIX = "$T$.";
 	private static final String XS_CONCAT = " || ";
 	private static final String XS_CONCAT_LEFT_STR = "' || ";

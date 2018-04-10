@@ -62,7 +62,6 @@ public final class TransformationContext {
 	private final TypeIndex sourceTypes;
 	private final TypeIndex targetTypes;
 	private final EntityResolver entityResolver;
-	private final ProgressIndicator progress;
 	private final IOReporter reporter;
 	private Set<QName> currentSourceTableNames;
 	private QName currentTargetTypeName;
@@ -87,7 +86,6 @@ public final class TransformationContext {
 		this.sourceTypes = sourceTypes;
 		this.targetTypes = targetTypes;
 		this.entityResolver = entityResolver;
-		this.progress = progress;
 		this.reporter = reporter;
 	}
 
