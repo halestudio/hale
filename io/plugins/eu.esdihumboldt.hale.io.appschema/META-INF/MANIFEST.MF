@@ -69,4 +69,5 @@ Import-Package: com.google.common.base;version="17.0.0",
 Export-Package: eu.esdihumboldt.hale.io.appschema,
  eu.esdihumboldt.hale.io.appschema.model,
  eu.esdihumboldt.hale.io.appschema.writer,
- eu.esdihumboldt.hale.io.appschema.writer.internal
+ eu.esdihumboldt.hale.io.appschema.writer.internal,
+ eu.esdihumboldt.hale.io.appschema.writer.internal.mapping

@@ -46,6 +46,8 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Type
 import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
 import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingWrapper;
 
 /**
  * Translates a type cell specifying a {@link Join} transformation function to
@@ -71,7 +73,7 @@ public class JoinHandler implements TypeTransformationHandler {
 
 	/**
 	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.TypeTransformationHandler#handleTypeTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext)
 	 */
 	@Override
 	public FeatureTypeMapping handleTypeTransformation(Cell typeCell,
@@ -141,7 +143,7 @@ public class JoinHandler implements TypeTransformationHandler {
 			if (previousChainConf != null) {
 				containerMappingName = previousChainConf.getMappingName();
 			}
-			FeatureTypeMapping containerFTMapping = mapping
+			FeatureTypeMapping containerFTMapping = context
 					.getOrCreateFeatureTypeMapping(containerTypeTargetType, containerMappingName);
 			containerFTMapping
 					.setSourceType(containerType.getDefinition().getName().getLocalPart());
@@ -156,7 +158,7 @@ public class JoinHandler implements TypeTransformationHandler {
 				nestedFTPath = chainConf.getNestedTypeTarget().getPropertyPath();
 				// remove last element
 				nestedFTPath = nestedFTPath.subList(0, nestedFTPath.size() - 1);
-				nestedFTMapping = mapping.getOrCreateFeatureTypeMapping(nestedFT,
+				nestedFTMapping = context.getOrCreateFeatureTypeMapping(nestedFT,
 						chainConf.getMappingName());
 				nestedFTMapping.setSourceType(nestedType.getDefinition().getName().getLocalPart());
 			}
@@ -188,11 +190,9 @@ public class JoinHandler implements TypeTransformationHandler {
 								// a new mapping
 								nestedFTPath = findOwningTypePath(targetProperty.getDefinition(),
 										context.getRelevantTargetTypes());
-
-								// TODO: always generate unique mapping name?
-								nestedFTMapping = mapping.getOrCreateFeatureTypeMapping(nestedFT);
+								nestedFTMapping = context.getOrCreateFeatureTypeMapping(nestedFT);
 								nestedFTMapping.setSourceType(
-										nestedType.getDefinition().getName().getLocalPart());
+									    nestedType.getDefinition().getName().getLocalPart());
 
 								// I assume at most 2 FeatureTypes are involved
 								// in the join
@@ -215,9 +215,7 @@ public class JoinHandler implements TypeTransformationHandler {
 
 								if (childFT != null) {
 									nestedFTPath = hrefContainerPath;
-									// TODO: always generate unique mapping
-									// name?
-									nestedFTMapping = mapping
+									nestedFTMapping = context
 											.getOrCreateFeatureTypeMapping(childFT);
 									nestedFTMapping.setSourceType(
 											nestedType.getDefinition().getName().getLocalPart());
@@ -234,7 +232,7 @@ public class JoinHandler implements TypeTransformationHandler {
 
 			// build join mapping
 			if (nestedFTMapping != null && nestedFTPath != null) {
-				AttributeMappingType containerJoinMapping = mapping.getOrCreateAttributeMapping(
+				AttributeMappingType containerJoinMapping = context.getOrCreateAttributeMapping(
 						containerTypeTargetType, containerTypeTargetMappingName, nestedFTPath);
 				containerJoinMapping.setTargetAttribute(
 						mapping.buildAttributeXPath(containerTypeTargetType, nestedFTPath));
@@ -249,7 +247,7 @@ public class JoinHandler implements TypeTransformationHandler {
 				// join column extracted from join condition
 				containerSourceExpr.setOCQL(baseProperty.getDefinition().getName().getLocalPart());
 				containerSourceExpr.setLinkElement(getLinkElementValue(nestedFTMapping));
-				String linkField = mapping.getUniqueFeatureLinkAttribute(nestedFT,
+				String linkField = context.getUniqueFeatureLinkAttribute(nestedFT,
 						nestedFTMapping.getMappingName());
 				containerSourceExpr.setLinkField(linkField);
 				containerJoinMapping.setSourceExpression(containerSourceExpr);

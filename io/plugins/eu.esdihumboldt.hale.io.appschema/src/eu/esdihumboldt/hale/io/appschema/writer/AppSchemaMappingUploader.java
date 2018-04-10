@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.io.geoserver.Workspace;
 import eu.esdihumboldt.hale.io.geoserver.rest.DataStoreFileManager;
 import eu.esdihumboldt.hale.io.geoserver.rest.DataStoreManager;
 import eu.esdihumboldt.hale.io.geoserver.rest.NamespaceManager;
+import eu.esdihumboldt.hale.io.geoserver.rest.ResourceException;
 
 /**
  * Uploads the generated app-schema mapping configuration to a GeoServer
@@ -86,20 +87,45 @@ public class AppSchemaMappingUploader extends AbstractAppSchemaConfigurator {
 
 		// check whether main namespace/workspace exists; if not, create it
 		Namespace mainNs = generator.getMainNamespace();
-		nsMgr.setResource(mainNs);
-		if (!nsMgr.exists()) {
-			nsMgr.create();
-		}
+		createNamespaceIfRequired(nsMgr, mainNs);
 
 		// check whether secondary namespaces/workspaces exist; if not, create
 		// them
 		List<Namespace> secondaryNamespaces = generator.getSecondaryNamespaces();
 		for (Namespace ns : secondaryNamespaces) {
-			nsMgr.setResource(ns);
+			createNamespaceIfRequired(nsMgr, ns);
+		}
+	}
 
-			if (!nsMgr.exists()) {
-				nsMgr.create();
-			}
+	private void createNamespaceIfRequired(NamespaceManager nsMgr, Namespace ns) {
+		nsMgr.setResource(ns);
+		if (!nsMgr.exists()) {
+			nsMgr.create();
+		}
+		else {
+			// check whether the attributes of the existent namespace match
+			// those of the one being created; throw exeption if they don't
+			Namespace existing = Namespace.fromDocument(nsMgr.read());
+			throwIfAttributesDontMatch(ns, existing);
+		}
+	}
+
+	private void throwIfAttributesDontMatch(Namespace nsNew, Namespace nsExisting) {
+		Object newUri = nsNew.getAttribute(Namespace.URI);
+		Object existingUri = nsExisting.getAttribute(Namespace.URI);
+		if (!newUri.equals(existingUri)) {
+			throw new ResourceException("Namespace \"" + nsNew.name() + "\""
+					+ " exists, but its URI is \"" + existingUri + "\" instead of \"" + newUri
+					+ "\"");
+		}
+
+		Object newIsolatedAttr = nsNew.getAttribute(Namespace.ISOLATED);
+		Object existingIsolatedAttr = nsExisting.getAttribute(Namespace.ISOLATED);
+		if (!newIsolatedAttr.equals(existingIsolatedAttr)) {
+			// isolated attributes don't match, play it safe and throw exception
+			throw new ResourceException("Namespace \"" + nsNew.name()
+					+ " exists, but the value of its \"isolated\" attribute is \""
+					+ existingIsolatedAttr + "\" instead of \"" + newIsolatedAttr + "\"");
 		}
 	}
 

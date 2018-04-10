@@ -18,7 +18,10 @@ package eu.esdihumboldt.hale.io.haleconnect.ui.projects;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -98,10 +101,10 @@ public class ChooseHaleConnectProjectWizardPage
 
 					synchronized (projects) {
 						Object currentInput = projects.getInput();
-						if (currentInput != null && currentInput instanceof List<?>) {
+						if (currentInput != null && currentInput instanceof Collection<?>) {
 							@SuppressWarnings("unchecked")
-							List<HaleConnectProjectInfo> updatedProjects = new ArrayList<>(
-									(List<HaleConnectProjectInfo>) currentInput);
+							Set<HaleConnectProjectInfo> updatedProjects = new LinkedHashSet<>(
+									(Collection<HaleConnectProjectInfo>) currentInput);
 							updatedProjects.addAll(result);
 							projects.setInput(updatedProjects);
 						}

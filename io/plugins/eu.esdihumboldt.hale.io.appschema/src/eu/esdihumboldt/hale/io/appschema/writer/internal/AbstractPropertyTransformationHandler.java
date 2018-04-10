@@ -60,6 +60,8 @@ import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.Type
 import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
 import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingWrapper;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -67,8 +69,8 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
  * 
  * @author Stefano Costa, GeoSolutions
  */
-public abstract class AbstractPropertyTransformationHandler implements
-		PropertyTransformationHandler {
+public abstract class AbstractPropertyTransformationHandler
+		implements PropertyTransformationHandler {
 
 	private static final ALogger log = ALoggerFactory
 			.getLogger(AbstractPropertyTransformationHandler.class);
@@ -103,7 +105,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 	/**
 	 * @see eu.esdihumboldt.hale.io.appschema.writer.internal.PropertyTransformationHandler#handlePropertyTransformation(eu.esdihumboldt.hale.common.align.model.Cell,
 	 *      eu.esdihumboldt.hale.common.align.model.Cell,
-	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.AppSchemaMappingContext)
+	 *      eu.esdihumboldt.hale.io.appschema.writer.internal.mapping.AppSchemaMappingContext)
 	 */
 	@Override
 	public AttributeMappingType handlePropertyTransformation(Cell typeCell, Cell propertyCell,
@@ -155,7 +157,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 
 		if (featureType != null) {
 			// fetch FeatureTypeMapping from mapping configuration
-			this.featureTypeMapping = mapping.getOrCreateFeatureTypeMapping(featureType,
+			this.featureTypeMapping = context.getOrCreateFeatureTypeMapping(featureType,
 					mappingName);
 
 			// TODO: verify source property (if any) belongs to mapped source
@@ -170,21 +172,21 @@ public abstract class AbstractPropertyTransformationHandler implements
 				if (isGmlId(targetPropertyDef)) {
 					// TODO: handle gml:id for geometry types
 					if (featureType.equals(parentType)) {
-						handleAsFeatureGmlId(featureType, mappingName);
+						handleAsFeatureGmlId(featureType, mappingName, context);
 					}
 					else if (isGeometryType(parentType)) {
-						handleAsGeometryGmlId(featureType, mappingName);
+						handleAsGeometryGmlId(featureType, mappingName, context);
 					}
 					else {
-						handleAsXmlAttribute(featureType, mappingName);
+						handleAsXmlAttribute(featureType, mappingName, context);
 					}
 				}
 				else {
-					handleAsXmlAttribute(featureType, mappingName);
+					handleAsXmlAttribute(featureType, mappingName, context);
 				}
 			}
 			else {
-				handleAsXmlElement(featureType, mappingName);
+				handleAsXmlElement(featureType, mappingName, context);
 			}
 		}
 
@@ -255,12 +257,14 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
+	 * @param context the app-schema mapping context
 	 */
-	protected void handleAsFeatureGmlId(TypeDefinition featureType, String mappingName) {
+	protected void handleAsFeatureGmlId(TypeDefinition featureType, String mappingName,
+			AppSchemaMappingContext context) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		List<ChildContext> gmlIdPath = targetPropertyEntityDef.getPropertyPath();
 
-		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName, gmlIdPath);
+		attributeMapping = context.getOrCreateAttributeMapping(featureType, mappingName, gmlIdPath);
 		// set targetAttribute to feature type qualified name
 		attributeMapping.setTargetAttribute(featureTypeMapping.getTargetElement());
 		// set id expression
@@ -289,13 +293,15 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
+	 * @param context the app-schema mapping context
 	 */
-	protected void handleAsGeometryGmlId(TypeDefinition featureType, String mappingName) {
+	protected void handleAsGeometryGmlId(TypeDefinition featureType, String mappingName,
+			AppSchemaMappingContext context) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyEntityDefinition geometry = (PropertyEntityDefinition) AlignmentUtil
 				.getParent(targetPropertyEntityDef);
 
-		createGeometryAttributeMapping(featureType, mappingName, geometry);
+		createGeometryAttributeMapping(featureType, mappingName, geometry, context);
 
 		// set id expression
 		AttributeExpressionMappingType idExpression = new AttributeExpressionMappingType();
@@ -325,8 +331,10 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
+	 * @param context the app-schema mapping context
 	 */
-	protected void handleAsXmlAttribute(TypeDefinition featureType, String mappingName) {
+	protected void handleAsXmlAttribute(TypeDefinition featureType, String mappingName,
+			AppSchemaMappingContext context) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
 
@@ -337,17 +345,18 @@ public abstract class AbstractPropertyTransformationHandler implements
 			PropertyDefinition parentPropertyDef = parentPropertyPath
 					.get(parentPropertyPath.size() - 1).getChild().asProperty();
 			if (parentPropertyDef != null) {
-				attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
+				attributeMapping = context.getOrCreateAttributeMapping(featureType, mappingName,
 						parentPropertyPath);
 				// set targetAttribute if empty
 				if (attributeMapping.getTargetAttribute() == null
 						|| attributeMapping.getTargetAttribute().isEmpty()) {
-					attributeMapping.setTargetAttribute(mapping.buildAttributeXPath(featureType,
-							parentPropertyPath));
+					attributeMapping.setTargetAttribute(
+							mapping.buildAttributeXPath(featureType, parentPropertyPath));
 				}
 
-				Namespace targetPropNS = mapping.getOrCreateNamespace(targetPropertyDef.getName()
-						.getNamespaceURI(), targetPropertyDef.getName().getPrefix());
+				Namespace targetPropNS = context.getOrCreateNamespace(
+						targetPropertyDef.getName().getNamespaceURI(),
+						targetPropertyDef.getName().getPrefix());
 				String unqualifiedName = targetPropertyDef.getName().getLocalPart();
 				boolean isQualified = targetPropNS != null
 						&& !Strings.isNullOrEmpty(targetPropNS.getPrefix());
@@ -355,8 +364,8 @@ public abstract class AbstractPropertyTransformationHandler implements
 				// encode attribute as <ClientProperty>
 				ClientProperty clientProperty = new ClientProperty();
 				@SuppressWarnings("null")
-				String clientPropName = (isQualified) ? targetPropNS.getPrefix() + ":"
-						+ unqualifiedName : unqualifiedName;
+				String clientPropName = (isQualified)
+						? targetPropNS.getPrefix() + ":" + unqualifiedName : unqualifiedName;
 				clientProperty.setName(clientPropName);
 				clientProperty.setValue(getSourceExpressionAsCQL());
 				setEncodeIfEmpty(clientProperty);
@@ -371,7 +380,7 @@ public abstract class AbstractPropertyTransformationHandler implements
 					// when nilReason is null and viceversa)
 					if (isNilReason(targetPropertyDef) && isNillable(parentPropertyDef)
 							&& attributeMapping.getSourceExpression() == null) {
-						addOrReplaceXsiNilAttribute(clientProperty.getValue(), true);
+						addOrReplaceXsiNilAttribute(clientProperty.getValue(), true, context);
 					}
 				}
 			}
@@ -384,22 +393,24 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
+	 * @param context the app-schema mapping context
 	 */
-	protected void handleAsXmlElement(TypeDefinition featureType, String mappingName) {
+	protected void handleAsXmlElement(TypeDefinition featureType, String mappingName,
+			AppSchemaMappingContext context) {
 		PropertyEntityDefinition targetPropertyEntityDef = targetProperty.getDefinition();
 		PropertyDefinition targetPropertyDef = targetPropertyEntityDef.getDefinition();
 		TypeDefinition targetPropertyType = targetPropertyDef.getPropertyType();
 
 		if (isGeometryType(targetPropertyType)) {
-			handleXmlElementAsGeometryType(featureType, mappingName);
+			handleXmlElementAsGeometryType(featureType, mappingName, context);
 		}
 		else {
-			attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
+			attributeMapping = context.getOrCreateAttributeMapping(featureType, mappingName,
 					targetPropertyEntityDef.getPropertyPath());
 			List<ChildContext> targetPropertyPath = targetPropertyEntityDef.getPropertyPath();
 			// set target attribute
-			attributeMapping.setTargetAttribute(mapping.buildAttributeXPath(featureType,
-					targetPropertyPath));
+			attributeMapping.setTargetAttribute(
+					mapping.buildAttributeXPath(featureType, targetPropertyPath));
 		}
 
 		// set source expression
@@ -413,7 +424,8 @@ public abstract class AbstractPropertyTransformationHandler implements
 		// if element is nillable, add xsi:nil attribute with inverted logic
 		// (i.e. null if source expression is NOT null, and viceversa)
 		if (isNillable(targetPropertyDef)) {
-			addOrReplaceXsiNilAttribute(attributeMapping.getSourceExpression().getOCQL(), false);
+			addOrReplaceXsiNilAttribute(attributeMapping.getSourceExpression().getOCQL(), false,
+					context);
 		}
 		// TODO: isList?
 		// TODO: targetAttributeNode?
@@ -432,19 +444,21 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param featureType the target feature type
 	 * @param mappingName the target feature type's mapping name (may be
 	 *            <code>null</code>)
+	 * @param context the app-schema mapping context
 	 */
-	protected void handleXmlElementAsGeometryType(TypeDefinition featureType, String mappingName) {
+	protected void handleXmlElementAsGeometryType(TypeDefinition featureType, String mappingName,
+			AppSchemaMappingContext context) {
 		PropertyEntityDefinition geometry = targetProperty.getDefinition();
 
-		createGeometryAttributeMapping(featureType, mappingName, geometry);
+		createGeometryAttributeMapping(featureType, mappingName, geometry, context);
 
 		// GeometryTypes require special handling
 		TypeDefinition geometryType = geometry.getDefinition().getPropertyType();
 		QName geomTypeName = geometryType.getName();
-		Namespace geomNS = mapping.getOrCreateNamespace(geomTypeName.getNamespaceURI(),
+		Namespace geomNS = context.getOrCreateNamespace(geomTypeName.getNamespaceURI(),
 				geomTypeName.getPrefix());
-		attributeMapping.setTargetAttributeNode(geomNS.getPrefix() + ":"
-				+ geomTypeName.getLocalPart());
+		attributeMapping
+				.setTargetAttributeNode(geomNS.getPrefix() + ":" + geomTypeName.getLocalPart());
 
 		// set target attribute to parent (should be gml:AbstractGeometry)
 		// TODO: this is really ugly, but I don't see a better way to do it
@@ -456,8 +470,8 @@ public abstract class AbstractPropertyTransformationHandler implements
 		Definition<?> parentDef = parentEntityDef.getDefinition();
 		String parentQName = geomNS.getPrefix() + ":" + parentDef.getDisplayName();
 		List<ChildContext> targetPropertyPath = parentEntityDef.getPropertyPath();
-		attributeMapping.setTargetAttribute(mapping.buildAttributeXPath(featureType,
-				targetPropertyPath) + "/" + parentQName);
+		attributeMapping.setTargetAttribute(
+				mapping.buildAttributeXPath(featureType, targetPropertyPath) + "/" + parentQName);
 	}
 
 	/**
@@ -514,11 +528,11 @@ public abstract class AbstractPropertyTransformationHandler implements
 	protected abstract String getSourceExpressionAsCQL();
 
 	private void createGeometryAttributeMapping(TypeDefinition featureType, String mappingName,
-			PropertyEntityDefinition geometry) {
+			PropertyEntityDefinition geometry, AppSchemaMappingContext context) {
 		EntityDefinition geometryProperty = getGeometryPropertyEntity(geometry);
 
 		// use geometry property path to create / retrieve attribute mapping
-		attributeMapping = mapping.getOrCreateAttributeMapping(featureType, mappingName,
+		attributeMapping = context.getOrCreateAttributeMapping(featureType, mappingName,
 				geometryProperty.getPropertyPath());
 	}
 
@@ -560,14 +574,16 @@ public abstract class AbstractPropertyTransformationHandler implements
 	 * @param sameLogic if {@code true}, {@code xsi:nil} will be {@code null}
 	 *            when {@code sourceExpression} is and {@code 'true'} when it
 	 *            isn't, if {@code false} the opposite applies
+	 * @param context the app-schema mapping context
 	 */
-	private void addOrReplaceXsiNilAttribute(String sourceExpression, boolean sameLogic) {
+	private void addOrReplaceXsiNilAttribute(String sourceExpression, boolean sameLogic,
+			AppSchemaMappingContext context) {
 		final String sameLogicPattern = "if_then_else(isNull(%s), Expression.NIL, 'true')";
 		final String invertedLogicPattern = "if_then_else(isNull(%s), 'true', Expression.NIL)";
 		final String pattern = sameLogic ? sameLogicPattern : invertedLogicPattern;
 
 		// make sure xsi namespace is included in the mapping
-		mapping.getOrCreateNamespace(XSI_URI, XSI_PREFIX);
+		context.getOrCreateNamespace(XSI_URI, XSI_PREFIX);
 
 		String xsiNilQName = QNAME_XSI_NIL.getPrefix() + ":" + QNAME_XSI_NIL.getLocalPart();
 

@@ -78,15 +78,26 @@ public class ProxySettings {
 
 		if (host == null || host.isEmpty()) {
 			System.clearProperty("http.proxyHost"); //$NON-NLS-1$
+			System.clearProperty("https.proxyHost"); //$NON-NLS-1$
+
 			System.clearProperty("http.proxyPort"); //$NON-NLS-1$
+			System.clearProperty("https.proxyPort"); //$NON-NLS-1$
+
 			System.clearProperty("http.nonProxyHosts"); //$NON-NLS-1$
+			// http.nonProxyHost is used also by https
 
 			System.clearProperty("http.proxyUser"); //$NON-NLS-1$
+			System.clearProperty("https.proxyUser"); //$NON-NLS-1$
+
 			System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
+			System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
 		}
 		else {
 			System.setProperty("http.proxyHost", host); //$NON-NLS-1$
+			System.setProperty("https.proxyHost", host); //$NON-NLS-1$
+
 			System.setProperty("http.proxyPort", String.valueOf(port)); //$NON-NLS-1$
+			System.setProperty("https.proxyPort", String.valueOf(port)); //$NON-NLS-1$
 			if (nonProxyHosts == null || nonProxyHosts.isEmpty()) {
 				System.clearProperty("http.nonProxyHosts"); //$NON-NLS-1$
 			}
@@ -98,6 +109,7 @@ public class ProxySettings {
 			String proxyUser = prefs.getString(PreferenceConstants.CONNECTION_PROXY_USER);
 			if (proxyUser != null && !proxyUser.isEmpty()) {
 				System.setProperty("http.proxyUser", proxyUser); //$NON-NLS-1$
+				System.setProperty("https.proxyUser", proxyUser); //$NON-NLS-1$
 
 				try {
 					String password = SecurePreferencesFactory.getDefault()
@@ -106,11 +118,13 @@ public class ProxySettings {
 
 					if (password != null) {
 						System.setProperty("http.proxyPassword", password); //$NON-NLS-1$
+						System.setProperty("https.proxyPassword", password); //$NON-NLS-1$
 
 						Authenticator.setDefault(new HttpAuth(proxyUser, password));
 					}
 					else {
 						System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
+						System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
 					}
 				} catch (StorageException e) {
 					log.error("Error accessing secure preferences for proxy password"); //$NON-NLS-1$
@@ -118,7 +132,10 @@ public class ProxySettings {
 			}
 			else {
 				System.clearProperty("http.proxyUser"); //$NON-NLS-1$
+				System.clearProperty("https.proxyUser"); //$NON-NLS-1$
+
 				System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
+				System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
 			}
 		}
 	}

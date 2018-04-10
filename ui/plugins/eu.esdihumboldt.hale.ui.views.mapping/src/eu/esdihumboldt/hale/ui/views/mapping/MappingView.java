@@ -51,6 +51,10 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.Task;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -173,6 +177,35 @@ public class MappingView extends AbstractMappingView {
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 				updateViewWithCurrentSelection(cells);
+			}
+		});
+
+		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.addListener(new TaskServiceListener() {
+
+			@Override
+			public void tasksRemoved(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void tasksAdded(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void taskUserDataChanged(ResolvedTask<?> task) {
+				updateViewWithCurrentSelection(getAffectedCells(Collections.singleton(task)));
+			}
+
+			private List<Cell> getAffectedCells(Iterable<Task<?>> tasks) {
+				List<Cell> affectedCells = new ArrayList<>();
+				tasks.forEach(t -> {
+					if (t.getMainContext() instanceof Cell) {
+						affectedCells.add((Cell) t.getMainContext());
+					}
+				});
+				return affectedCells;
 			}
 		});
 
@@ -384,13 +417,19 @@ public class MappingView extends AbstractMappingView {
 	 * @param triggerLayout if the layout should be applied directly
 	 */
 	private void updateLayout(boolean triggerLayout) {
-		int width = getViewer().getControl().getSize().x;
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+			@Override
+			public void run() {
+				int width = getViewer().getControl().getSize().x;
 
-		if (triggerLayout) {
-			getViewer().applyLayout();
-		}
+				treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+				if (triggerLayout) {
+					getViewer().applyLayout();
+				}
+			}
+		});
 	}
 
 }

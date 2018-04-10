@@ -6,6 +6,7 @@ Bundle-Version: 3.4.0.qualifier
 Fragment-Host: eu.esdihumboldt.util.geometry;bundle-version="3.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.cache;version="17.0.0",
+ eu.esdihumboldt.util.format,
  eu.esdihumboldt.util.svg.test,
  org.geotools.referencing;version="12.2.0.combined",
  org.junit;version="4.12.0",

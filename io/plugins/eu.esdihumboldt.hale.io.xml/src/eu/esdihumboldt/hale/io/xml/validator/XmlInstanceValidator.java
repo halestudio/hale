@@ -43,6 +43,11 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceValidator;
 public class XmlInstanceValidator extends AbstractInstanceValidator {
 
 	/**
+	 * The identifier of the registration as I/O provider.
+	 */
+	public static final String PROVIDER_ID = "eu.esdihumboldt.hale.io.xml.validator";
+
+	/**
 	 * @see AbstractIOProvider#execute(ProgressIndicator, IOReporter)
 	 */
 	@Override
@@ -119,6 +124,11 @@ public class XmlInstanceValidator extends AbstractInstanceValidator {
 	@Override
 	public boolean isCancelable() {
 		return false;
+	}
+
+	@Override
+	protected String getReportType() {
+		return PROVIDER_ID;
 	}
 
 }

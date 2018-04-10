@@ -73,6 +73,11 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	public static final String OWNER_TYPE = "ownerType";
 
 	/**
+	 * Selected organisation (if applicable)
+	 */
+	public static final String ORGANISATION_ID = "organisation";
+
+	/**
 	 * Share uploaded project publicly
 	 */
 	public static final String SHARING_PUBLIC = "sharingOptions.public";
@@ -141,12 +146,15 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 				ownerId = haleConnect.getSession().getUserId();
 				break;
 			case ORGANISATION:
-				if (haleConnect.getSession().getOrganisationIds().isEmpty()) {
-					throw new IOProviderConfigurationException(MessageFormat.format(
-							"Owner type is set to ORGANISATION but user \"{0}\" is not associated with any organisation",
-							haleConnect.getSession().getUsername()));
+				ownerId = getParameter(ORGANISATION_ID).as(String.class);
+				if (ownerId == null) {
+					if (haleConnect.getSession().getOrganisationIds().isEmpty()) {
+						throw new IOProviderConfigurationException(MessageFormat.format(
+								"Owner type is set to ORGANISATION but user \"{0}\" is not associated with any organisation",
+								haleConnect.getSession().getUsername()));
+					}
+					ownerId = haleConnect.getSession().getOrganisationIds().iterator().next();
 				}
-				ownerId = haleConnect.getSession().getOrganisationIds().iterator().next();
 				break;
 			default:
 				throw new IOProviderConfigurationException(

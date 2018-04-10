@@ -78,7 +78,7 @@ public class IndexJoinHandler
 		JoinHandler fallbackHandler = new JoinHandler();
 		InstanceIndexService indexService = serviceProvider.getService(InstanceIndexService.class);
 		if (indexService == null) {
-			log.warn(MessageFormat.format(
+			log.info(MessageFormat.format(
 					"Index service not available, falling back to join handler {0}",
 					fallbackHandler.getClass().getCanonicalName()));
 			return fallbackHandler.partitionInstances(instances, transformationIdentifier, engine,
@@ -112,7 +112,7 @@ public class IndexJoinHandler
 				}
 
 				if (!Identifiable.is(i)) {
-					log.warn(MessageFormat.format(
+					log.info(MessageFormat.format(
 							"At least one instance does not have an ID, falling back to join handler {0}",
 							fallbackHandler.getClass().getCanonicalName()));
 					return fallbackHandler.partitionInstances(instances, transformationIdentifier,

@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.io.appschema.AppSchemaIO;
 import eu.esdihumboldt.hale.io.appschema.impl.internal.generated.app_schema.SourceDataStoresPropertyType.DataStore;
 import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
+import eu.esdihumboldt.hale.io.appschema.model.WorkspaceConfiguration;
 
 /**
  * Base class for HALE alignment to app-schema mapping translators.
@@ -62,11 +63,32 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 		return false;
 	}
 
-	@Override
-	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
-			throws IOProviderConfigurationException, IOException {
-		progress.begin("Translate hale alignment to App-Schema Configuration",
-				ProgressIndicator.UNKNOWN);
+	/**
+	 * Returns the {@link AppSchemaMappingGenerator} instance created during the
+	 * latest invocation of {@link #generateMapping(IOReporter)}.
+	 * <p>
+	 * <strong>NOTE</strong>: may return {@code null} if
+	 * {@link #generateMapping(IOReporter)} has never been called.
+	 * </p>
+	 * 
+	 * @return the current mapping generator instance
+	 */
+	public AppSchemaMappingGenerator getMappingGenerator() {
+		return generator;
+	}
+
+	/**
+	 * Uses a fresh {@link AppSchemaMappingGenerator} instance to generates the
+	 * mapping configuration based on the current provider's configuration
+	 * parameters.
+	 * 
+	 * @param reporter the status reporter
+	 * @throws IOProviderConfigurationException if something is wrong with the
+	 *             provider configuration
+	 * @throws IOException if an error occurs loading the mapping template file
+	 */
+	public void generateMapping(IOReporter reporter) throws IOProviderConfigurationException,
+			IOException {
 		if (getAlignment() == null) {
 			throw new IOProviderConfigurationException("No alignment was provided.");
 		}
@@ -84,10 +106,21 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 		// loading
 		resolvePropertyTypes(featureChainingParam, getTargetSchema(), SchemaSpaceID.TARGET);
 
+		WorkspaceConfiguration workspaceConfParam = getWorkspaceConfigurationParameter();
+
 		generator = new AppSchemaMappingGenerator(getAlignment(), getTargetSchema(),
-				dataStoreParam, featureChainingParam);
+				dataStoreParam, featureChainingParam, workspaceConfParam);
+		generator.generateMapping(reporter);
+	}
+
+	@Override
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException {
+		progress.begin("Translate hale alignment to App-Schema Configuration",
+				ProgressIndicator.UNKNOWN);
+
 		try {
-			generator.generateMapping(reporter);
+			generateMapping(reporter);
 
 			handleMapping(progress, reporter);
 		} catch (IOProviderConfigurationException pce) {
@@ -137,6 +170,15 @@ public abstract class AbstractAppSchemaConfigurator extends AbstractAlignmentWri
 		else {
 			return parameterValue.as(Boolean.class);
 		}
+	}
+
+	/**
+	 * Retrieves the Workspace configuration.
+	 * 
+	 * @return the workspace configuration
+	 */
+	protected WorkspaceConfiguration getWorkspaceConfigurationParameter() {
+		return getParameter(AppSchemaIO.PARAM_WORKSPACE).as(WorkspaceConfiguration.class);
 	}
 
 	/**

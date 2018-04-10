@@ -39,6 +39,13 @@
             namespace="http://www.geotools.org/app-schema"
             type="eu.esdihumboldt.hale.io.appschema.model.FeatureChaining">
       </complexValue>
+      <complexValue
+            descriptor="eu.esdihumboldt.hale.io.appschema.model.WorkspaceConfigurationComplexType"
+            id="eu.esdihumboldt.hale.io.appschema.workspaceconf"
+            name="WorkspaceConfiguration"
+            namespace="http://www.geotools.org/app-schema"
+            type="eu.esdihumboldt.hale.io.appschema.model.WorkspaceConfiguration">
+      </complexValue>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.align.compatibility">

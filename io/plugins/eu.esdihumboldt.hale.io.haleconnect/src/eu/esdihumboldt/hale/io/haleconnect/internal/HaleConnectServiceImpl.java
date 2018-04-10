@@ -114,7 +114,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 
 		NewBucket newBucket = new NewBucket();
 		newBucket.setName(name);
-		newBucket.setVersionControl(versionControl);
+		newBucket.setDriver(versionControl ? "git" : "s3");
 
 		final BucketIdent id;
 		try {
@@ -339,6 +339,10 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		} catch (ApiException e) {
 			if (e.getCode() == 401) {
 				clearSession();
+			}
+			else if (e.getCause() != null) {
+				Throwable cause = e.getCause();
+				throw new HaleConnectException(cause.getMessage(), cause);
 			}
 			else {
 				throw new HaleConnectException(e.getMessage(), e);

@@ -481,6 +481,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -659,6 +676,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -807,6 +841,23 @@
                   defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
                   sample="000000.000"
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -1070,6 +1121,23 @@
                   defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
                   sample="000000.000"
                   sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
             </valueDescriptor>
          </providerParameter>
          <providerParameter

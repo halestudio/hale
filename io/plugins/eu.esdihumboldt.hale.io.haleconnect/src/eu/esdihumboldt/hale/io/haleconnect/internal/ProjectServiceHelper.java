@@ -35,9 +35,8 @@ public class ProjectServiceHelper {
 	 */
 	public static ApiClient getApiClient(BasePathResolver resolver, String apiKey) {
 		ApiClient apiClient = new ApiClient();
-		apiClient.setBasePath(resolver.getBasePath(HaleConnectServices.BUCKET_SERVICE));
-		apiClient.setApiKey(apiKey);
-		apiClient.setApiKeyPrefix("Bearer");
+		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.BUCKET_SERVICE,
+				resolver, apiKey);
 		return apiClient;
 	}
 
