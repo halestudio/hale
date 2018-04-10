@@ -168,6 +168,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	public static final String PARAM_INSTANCES_THRESHOLD = "instancesPerFile";
 
 	/**
+	 * Name of the parameter to create separate files for each feature type
+	 */
+	public static final String PARAM_PARTITION_BY_FEATURE_TYPE = "partition.byFeatureType";
+
+	/**
 	 * Name of the parameter stating the mode to use for instance partitioning.
 	 */
 	public static final String PARAM_PARTITION_MODE = "partition.mode";
@@ -452,6 +457,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	private boolean isThresholdConfigured() {
 		int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class, NO_PARTITIONING);
 		return threshold != NO_PARTITIONING && threshold > 0;
+	}
+
+	private boolean isPartitionByFeatureTypeConfigured() {
+		return getParameter(PARAM_PARTITION_BY_FEATURE_TYPE).as(Boolean.class, false);
 	}
 
 	@Override

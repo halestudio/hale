@@ -53,6 +53,7 @@ public class PartitionConfigurationPage
 	private Button activatePartitioning;
 	private Spinner instances;
 	private ComboViewer partitionMode;
+	private Button activatePartitioningByFeatureType;
 
 	/**
 	 * Default constructor.
@@ -76,11 +77,18 @@ public class PartitionConfigurationPage
 
 	@Override
 	public boolean updateConfiguration(StreamGmlWriter provider) {
-		int threshold = activatePartitioning.getSelection() ? instances.getSelection()
-				: StreamGmlWriter.NO_PARTITIONING;
-		provider.setParameter(StreamGmlWriter.PARAM_INSTANCES_THRESHOLD, Value.of(threshold));
+		if (activatePartitioning.getSelection()) {
+			provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_FEATURE_TYPE, Value.of(false));
 
-		applyPartitionMode(partitionMode, provider);
+			int threshold = instances.getSelection();
+			provider.setParameter(StreamGmlWriter.PARAM_INSTANCES_THRESHOLD, Value.of(threshold));
+			applyPartitionMode(partitionMode, provider);
+		}
+		else if (activatePartitioningByFeatureType.getSelection()) {
+			provider.setParameter(StreamGmlWriter.PARAM_INSTANCES_THRESHOLD,
+					Value.of(StreamGmlWriter.NO_PARTITIONING));
+			provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_FEATURE_TYPE, Value.of(true));
+		}
 
 		return true;
 	}
@@ -132,6 +140,21 @@ public class PartitionConfigurationPage
 		partitionMode = createPartitionModeSelector(part);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
 				.applyTo(partitionMode.getControl());
+
+		activatePartitioningByFeatureType = new Button(part, SWT.CHECK);
+		activatePartitioningByFeatureType.setSelection(false);
+		activatePartitioningByFeatureType.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				update();
+			}
+		});
+
+		Label labelByFeatureType = new Label(part, SWT.NONE);
+		labelByFeatureType.setText("Create a separate output file for every feature type");
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).span(2, 1).grab(true, false)
+				.applyTo(labelByFeatureType);
 
 		update();
 		setPageComplete(true);
@@ -206,6 +229,8 @@ public class PartitionConfigurationPage
 	private void update() {
 		instances.setEnabled(activatePartitioning.getSelection());
 		partitionMode.getControl().setEnabled(activatePartitioning.getSelection());
+		activatePartitioningByFeatureType.setEnabled(!activatePartitioning.getSelection());
+		activatePartitioning.setEnabled(!activatePartitioningByFeatureType.getSelection());
 	}
 
 }
