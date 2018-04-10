@@ -5,8 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.util.groovy.sandbox;singleton:=true
 Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: groovy;bundle-version="2.1.5",
- org.kohsuke.groovy.sandbox;bundle-version="1.5.0",
- findbugsAnnotations
+ org.kohsuke.groovy.sandbox;bundle-version="1.5.0"
 Export-Package: eu.esdihumboldt.util.groovy.sandbox,
  eu.esdihumboldt.util.groovy.sandbox.internal;x-internal:=true
 Import-Package: de.fhg.igd.eclipse.util.extension,

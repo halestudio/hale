@@ -34,7 +34,6 @@ https://www.wetransform.to/services/support/
       <programArgs>-clean
 -name &quot;hale studio&quot;
 --launcher.defaultAction openFile
---launcher.GTK_version 2
       </programArgs>
       <vmArgs>-Dsun.net.client.defaultConnectTimeout=10000
 -Dsun.net.client.defaultReadTimeout=20000
@@ -61,6 +60,7 @@ https://www.wetransform.to/services/support/
    <launcher name="HALE">
       <linux icon="/eu.esdihumboldt.hale.ui.application/images/hale.xpm"/>
       <macosx icon="/eu.esdihumboldt.hale.ui.application/images/hale.icns"/>
+      <solaris/>
       <win useIco="true">
          <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
          <bmp/>
@@ -107,7 +107,6 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
       <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
-      <feature id="de.fhg.igd.mapviewer.feature.core"/>
    </features>
 
    <configurations>

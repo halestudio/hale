@@ -117,10 +117,10 @@ public class ConsoleController {
 	}
 
 	/**
-	 * Creates an InputStream that can be used in the console service to read the
-	 * commands. The input stream will be connected via a pipe with
-	 * {@link #_output}, so commands can be written to the output stream and will be
-	 * read by the console service.
+	 * Creates an InputStream that can be used in the console service to read
+	 * the commands. The input stream will be connected via a pipe with
+	 * {@link #_output}, so commands can be written to the output stream and
+	 * will be read by the console service.
 	 * 
 	 * @return the input stream
 	 */
