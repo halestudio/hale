@@ -10,7 +10,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance,
  eu.esdihumboldt.hale.common.align,
  org.apache.velocity;bundle-version="1.6.2",
  eu.esdihumboldt.hale.io.appschema.model.jaxb;bundle-version="1.0.0",
- de.interactive_instruments.xtraserver-config-util;bundle-version="[0.9.0,1.1.0)"
+ de.interactive_instruments.xtraserver-config-util;bundle-version="[1.0.0,1.1.0)"
 Import-Package: com.google.common.base;version="17.0.0",
  com.google.common.collect;version="1.0.0",
  com.google.common.io;version="17.0.0",
