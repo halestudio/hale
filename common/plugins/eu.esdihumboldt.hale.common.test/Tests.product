@@ -83,6 +83,7 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.interactive_instruments.xtraserver-config-util"/>
       <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
@@ -196,6 +197,8 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
