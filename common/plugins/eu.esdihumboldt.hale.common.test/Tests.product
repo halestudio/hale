@@ -22,7 +22,6 @@
    <windowImages/>
 
    <launcher name="hale_tests">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -83,6 +82,7 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.interactive_instruments.xtraserver-config-util"/>
       <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
@@ -126,6 +126,7 @@
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
@@ -196,6 +197,8 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -222,7 +225,7 @@
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
-      <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.test"/>
       <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>

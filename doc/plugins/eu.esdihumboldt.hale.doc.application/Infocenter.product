@@ -80,6 +80,7 @@
       <plugin id="eu.esdihumboldt.hale.doc.user.ioproviders"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
+      <plugin id="eu.esdihumboldt.hale.doc.xtraserver"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>

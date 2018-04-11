@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<!-- XtraServer Comptatibility -->
+   <extension
+         point="eu.esdihumboldt.hale.align.compatibility">
+      <compatibility
+            class="eu.esdihumboldt.hale.io.xtraserver.compatibility.XtraServerCompatibilityMode"
+            id="eu.esdihumboldt.hale.io.xtraserver.compatibility"
+            key="eu.esdihumboldt.hale.io.xtraserver.compatibility.xtraserver"
+            name="XtraServer">
+         <supportsFilter
+               ref="CQL">
+         </supportsFilter>
+         <supportsFilter
+               ref="ECQL">
+         </supportsFilter>
+      </compatibility>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <!-- XtraServer Mapping File Reader -->   
+      <provider
+            class="eu.esdihumboldt.hale.io.xtraserver.reader.XtraServerMappingFileReader"
+            id="eu.esdihumboldt.hale.io.xtraserver.reader"
+            name="XtraServer Mapping File">
+         <contentType ref="eu.esdihumboldt.hale.io.xtraserver.mapping.xml" />
+      </provider>
+      <!-- XtraServer Mapping File Writer -->
+      <provider
+            class="eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingFileWriter"
+            id="eu.esdihumboldt.hale.io.xtraserver.writer"
+            name="XtraServer Mapping">
+         <contentType ref="eu.esdihumboldt.hale.io.xtraserver.mapping.xml" />
+         <contentType ref="eu.esdihumboldt.hale.io.xtraserver.mapping.archive"/>
+      </provider>
+   </extension>
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <!-- XtraServer Mapping File XML Content Type -->   
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="xml"
+            id="eu.esdihumboldt.hale.io.xtraserver.mapping.xml"
+            name="XtraServer Mapping File"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="{http://www.interactive-instruments.de/namespaces/XtraServer}FeatureTypes">
+            </parameter>
+         </describer>
+      </content-type>
+      <!-- XtraServer Mapping Archive Content Type -->
+      <content-type 
+        file-extensions="zip"
+        id="eu.esdihumboldt.hale.io.xtraserver.mapping.archive"
+        name="XtraServer Mapping Archive"
+        priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.category">
+      <category
+            id="eu.esdihumboldt.hale.io.xtraserver.functions"
+            name="XtraServer">
+      </category>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.align.function">
+      <propertyFunction
+            category="eu.esdihumboldt.hale.io.xtraserver.functions"
+            identifier="eu.esdihumboldt.hale.io.xtraserver.sqlExpression"
+            name="SQL Expression">
+         <targetProperties>
+            <property
+                  eager="false"
+                  maxOccurrence="1"
+                  minOccurrence="1">
+            </property>
+         </targetProperties>
+         <sourceProperties>
+            <property
+                  eager="false"
+                  maxOccurrence="n"
+                  minOccurrence="0">
+            </property>
+         </sourceProperties>
+         <functionParameter
+               deprecated="false"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="sql"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </functionParameter>
+      </propertyFunction>
+   </extension>
+</plugin>

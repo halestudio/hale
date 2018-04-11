@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tests for XtraServer Mapping I/O
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xtraserver.test
+Bundle-Version: 3.4.0.qualifier
+Bundle-Vendor: interactive instruments GmbH
+Fragment-Host: eu.esdihumboldt.hale.io.xtraserver;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.typesafe.config;version="1.2.1",
+ eu.esdihumboldt.cst.test,
+ eu.esdihumboldt.hale.common.align.io,
+ eu.esdihumboldt.hale.common.core.io.extension,
+ eu.esdihumboldt.hale.common.core.io.project,
+ eu.esdihumboldt.hale.common.core.io.project.impl,
+ eu.esdihumboldt.hale.common.core.io.project.model,
+ eu.esdihumboldt.hale.common.core.service,
+ eu.esdihumboldt.hale.common.headless,
+ eu.esdihumboldt.hale.common.headless.impl,
+ eu.esdihumboldt.hale.common.headless.test,
+ eu.esdihumboldt.hale.common.lookup.impl,
+ eu.esdihumboldt.hale.common.schema.persist.hsd,
+ eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.hale.io.xsd.reader,
+ eu.esdihumboldt.util.io,
+ org.apache.commons.io,
+ org.junit;version="4.11.0"
