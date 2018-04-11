@@ -19,8 +19,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
-import java.net.URI;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -31,9 +29,6 @@ import java.util.stream.Collectors;
 
 import org.junit.Assert;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Iterables;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionUtil;
@@ -55,43 +50,17 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.Message;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.MessageDescriptor;
-import eu.esdihumboldt.hale.common.cli.HaleCLIUtil;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
-import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.test.AbstractProjectTest;
 
 /**
  * Base class for {@link MergeCellMigrator} tests.
  * 
  * @author Simon Templer
  */
-public abstract class AbstractMergeCellMigratorTest {
-
-	/**
-	 * Cache of loaded projects
-	 */
-	protected final LoadingCache<URI, ProjectTransformationEnvironment> projectCache = CacheBuilder
-			.newBuilder().build(new CacheLoader<URI, ProjectTransformationEnvironment>() {
-
-				@Override
-				public ProjectTransformationEnvironment load(URI key) throws Exception {
-					return loadProject(key);
-				}
-
-			});
-
-	/**
-	 * Load a transformation project.
-	 * 
-	 * @param uri the project location
-	 * @return the loaded project
-	 * @throws IOException if loading the project fails
-	 */
-	private static ProjectTransformationEnvironment loadProject(URI uri) throws IOException {
-		return new ProjectTransformationEnvironment(null, new DefaultInputSupplier(uri),
-				HaleCLIUtil.createReportHandler());
-	}
+public abstract class AbstractMergeCellMigratorTest extends AbstractProjectTest {
 
 	/**
 	 * Perform merging using a specific merge migrator.
@@ -198,17 +167,6 @@ public abstract class AbstractMergeCellMigratorTest {
 	public List<MutableCell> merge(String cellId, URL projectToMigrate, URL matchingProject)
 			throws Exception {
 		return mergeWithMigrator(null, cellId, projectToMigrate, matchingProject);
-	}
-
-	/**
-	 * Get a loaded transformation project.
-	 * 
-	 * @param location the project location
-	 * @return the loaded project
-	 * @throws Exception if loading the project fails
-	 */
-	protected ProjectTransformationEnvironment getProject(URL location) throws Exception {
-		return projectCache.get(location.toURI());
 	}
 
 	/**
