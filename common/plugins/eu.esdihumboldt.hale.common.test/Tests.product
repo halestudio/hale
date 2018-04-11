@@ -22,7 +22,6 @@
    <windowImages/>
 
    <launcher name="hale_tests">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -127,6 +126,7 @@
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
@@ -225,7 +225,7 @@
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
-      <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.test"/>
       <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>

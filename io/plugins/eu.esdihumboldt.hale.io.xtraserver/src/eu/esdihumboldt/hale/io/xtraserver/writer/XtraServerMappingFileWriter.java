@@ -47,9 +47,9 @@ public class XtraServerMappingFileWriter extends AbstractAlignmentWriter {
 
 	private final static String WRITER_TYPE_NAME = "XtraServer Mapping Exporter";
 
-	private static final String CONTENT_TYPE_MAPPING = "eu.esdihumboldt.hale.io.xtraserver.mapping.xml";
+	static final String CONTENT_TYPE_MAPPING = "eu.esdihumboldt.hale.io.xtraserver.mapping.xml";
 
-	private static final String CONTENT_TYPE_ARCHIVE = "eu.esdihumboldt.hale.io.xtraserver.mapping.archive";
+	static final String CONTENT_TYPE_ARCHIVE = "eu.esdihumboldt.hale.io.xtraserver.mapping.archive";
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.core.io.IOProvider#isCancelable()
