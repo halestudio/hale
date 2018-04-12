@@ -17,6 +17,7 @@
 package eu.esdihumboldt.hale.ui.service.project;
 
 import java.io.File;
+import java.text.MessageFormat;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.action.ContributionItem;
@@ -27,6 +28,9 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.PlatformUI;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+
 /**
  * A menu filled with the list of recently opened files (MRU).
  * 
@@ -34,6 +38,8 @@ import org.eclipse.ui.PlatformUI;
  * @author Simon Templer
  */
 public class RecentProjectsMenu extends ContributionItem {
+
+	private static final ALogger log = ALoggerFactory.getLogger(RecentProjectsMenu.class);
 
 	/**
 	 * The string filled in for the gap in the filename
@@ -71,7 +77,13 @@ public class RecentProjectsMenu extends ContributionItem {
 		@Override
 		public void widgetSelected(SelectionEvent e) {
 			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
-			ps.load(file.toURI());
+			if (!file.exists()) {
+				log.userError(MessageFormat.format("The file \"{0}\" does not exist.",
+						file.getAbsolutePath()));
+			}
+			else {
+				ps.load(file.toURI());
+			}
 		}
 	}
 
