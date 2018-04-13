@@ -141,7 +141,16 @@ public class PartitionConfigurationPage
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
 				.applyTo(partitionMode.getControl());
 
-		activatePartitioningByFeatureType = new Button(part, SWT.CHECK);
+		Group gml = new Group(page, SWT.NONE);
+		gml.setLayout(new GridLayout(3, false));
+		gml.setText("Split by feature type");
+		groupData.applyTo(gml);
+
+		activatePartitioningByFeatureType = new Button(gml, SWT.CHECK);
+		activatePartitioningByFeatureType
+				.setText("Create separate output file for every feature type");
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).span(3, 1).grab(true, false)
+				.applyTo(activatePartitioningByFeatureType);
 		activatePartitioningByFeatureType.setSelection(false);
 		activatePartitioningByFeatureType.addSelectionListener(new SelectionAdapter() {
 
@@ -150,11 +159,6 @@ public class PartitionConfigurationPage
 				update();
 			}
 		});
-
-		Label labelByFeatureType = new Label(part, SWT.NONE);
-		labelByFeatureType.setText("Create a separate output file for every feature type");
-		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.BEGINNING).span(2, 1).grab(true, false)
-				.applyTo(labelByFeatureType);
 
 		update();
 		setPageComplete(true);
