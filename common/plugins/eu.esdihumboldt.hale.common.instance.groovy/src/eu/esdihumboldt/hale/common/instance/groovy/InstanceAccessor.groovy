@@ -116,6 +116,9 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 			fullName = new QName(name)
 		}
 
+		// special case - get all children
+		boolean allChildren = name == null || name.isEmpty() || name == '*'
+
 		List<Path<Object>> allPaths = (List<Path<Object>>) all() // Groovy CompileStatic can't deal properly with ? extends ...
 		allPaths.collectMany { Path<Object> parentPath ->
 			// search for possible children and
@@ -128,7 +131,16 @@ class InstanceAccessor extends AbstractAccessor<Object> {
 				// there may only be children if this is a group
 				Group group = (Group) object
 
-				if (group.definition != null) {
+				if (allChildren) {
+					// yield all children
+					def valueList = []
+					group.propertyNames.each { QName pname ->
+						def pvalues = group.getProperty(pname)
+						pvalues?.each { valueList << it }
+					}
+					values = valueList
+				}
+				else if (group.definition != null) {
 					// access based on definitions
 
 					// find possible paths to children
