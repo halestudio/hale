@@ -308,7 +308,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
 					threshold, progress, reporter)) {
-				writeParts(parts, progress, reporter);
+				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
 			}
 		}
 		else {
@@ -348,19 +348,19 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * configured target as a base file name.<br>
 	 * <br>
 	 * Parts can only be written if the configured target is a URI to a local
-	 * file. The output files will be named after the target file, amended by a
-	 * counter. If, for example, the configured target file name is
-	 * <code>output.gml</code>, the files created by this method will be called
-	 * <code>output.0001.gml</code>, <code>output.0002.gml</code>, etc.
+	 * file.
 	 * 
 	 * @param instanceCollections the parts to write
+	 * @param handler Handler that provides the parts' file names and an XML
+	 *            writer
 	 * @param progress Progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @throws IOException if an I/O operation fails
 	 * @see #setTarget(LocatableOutputSupplier)
 	 */
 	protected void writeParts(Iterator<InstanceCollection> instanceCollections,
-			ProgressIndicator progress, IOReporter reporter) throws IOException {
+			MultipartHandler handler, ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
 		final URI location = getTarget().getLocation();
 
 		if (location == null) {
@@ -375,30 +375,29 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		}
 
 		Path origPath = Paths.get(location).normalize();
-		String filename;
-		String extension;
-		Path targetFolder;
 		if (origPath.toFile().isDirectory()) {
 			reporter.error("Cannot write to a directory: Target must a file");
 			return;
 			// TODO Support writing to a directory; use parameter to specify
 			// file name prefix.
 		}
-		else {
-			targetFolder = origPath.getParent();
-			filename = Files.getNameWithoutExtension(origPath.toString());
-			extension = Files.getFileExtension(origPath.toString());
-		}
 
 		List<URI> filesWritten = new ArrayList<>();
-		int i = 1;
 		while (instanceCollections.hasNext()) {
-			String targetFilename = String.format("%s%s%s.%04d.%s", targetFolder.toString(),
-					File.separator, filename, i++, extension);
+			InstanceCollection instances = instanceCollections.next();
+			String targetFilename = handler.getTargetFilename(instances, location);
 			File targetFile = new File(targetFilename);
 			FileOutputStream out = new FileOutputStream(targetFile);
-			InstanceCollection instances = instanceCollections.next();
-			write(instances, out, progress, reporter);
+			PrefixAwareStreamWriter writer;
+			try {
+				// The MultipartHandler can provide a specially decorated
+				// writer, e.g. for reference rewriting
+				writer = handler.getDecoratedWriter(createWriter(out, reporter),
+						targetFile.toURI());
+				write(instances, writer, progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException("Unable to create XML writer", e);
+			}
 			filesWritten.add(targetFile.toURI());
 		}
 
