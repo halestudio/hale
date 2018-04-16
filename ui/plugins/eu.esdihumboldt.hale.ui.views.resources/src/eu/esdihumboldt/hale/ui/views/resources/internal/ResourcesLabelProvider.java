@@ -131,6 +131,19 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 		}
 		if (element instanceof Resource) {
 			Resource resource = (Resource) element;
+
+			ActionUI actionUI = null;
+			if (resource.getActionId() != null) {
+				actionUI = ActionUIExtension.getInstance().findActionUI(resource.getActionId());
+			}
+
+			if (actionUI != null && actionUI.getUIAdvisor() != null
+					&& actionUI.getUIAdvisor().supportsCustomName()) {
+				String name = actionUI.getUIAdvisor().getCustomName(resource.getResourceId());
+				if (name != null) {
+					return name;
+				}
+			}
 			if (resource.getSource() != null) {
 				String location = resource.getSource().toString();
 				int index = location.lastIndexOf('/');

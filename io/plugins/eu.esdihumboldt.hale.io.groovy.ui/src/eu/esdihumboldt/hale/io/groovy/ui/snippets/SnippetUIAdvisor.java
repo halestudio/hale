@@ -76,4 +76,18 @@ public class SnippetUIAdvisor extends AbstractActionUIAdvisor<Snippet> {
 		return null;
 	}
 
+	@Override
+	public boolean supportsCustomName() {
+		return true;
+	}
+
+	@Override
+	public String getCustomName(String resourceId) {
+		Snippet snippet = retrieveResource(resourceId);
+		if (snippet != null) {
+			return snippet.getIdentifier();
+		}
+		return null;
+	}
+
 }
