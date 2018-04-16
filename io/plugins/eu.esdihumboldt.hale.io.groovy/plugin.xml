@@ -68,5 +68,12 @@
             priority="normal">
       </content-type>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="true"
+            class="eu.esdihumboldt.hale.io.groovy.snippets.GroovySnippets">
+      </allow>
+   </extension>
 
 </plugin>
