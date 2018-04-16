@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.io.groovy.ui.snippets;
 
+import java.net.URI;
+
+import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -57,6 +60,30 @@ public class SnippetConfigurationPage
 	@Override
 	public void disable() {
 		// nothing to do
+	}
+
+	@Override
+	protected void onShowPage(boolean firstShow) {
+		super.onShowPage(firstShow);
+
+		if (firstShow) {
+			// determine default for identifier from file name
+
+			URI loc = null;
+			try {
+				loc = getWizard().getProvider().getSource().getLocation();
+			} catch (NullPointerException e) {
+				// ignore
+			}
+			if (loc != null) {
+				String baseName = FilenameUtils.getBaseName(loc.getPath());
+				if (baseName != null && !baseName.isEmpty()) {
+					baseName = baseName.replaceAll("[^\\w]", "_");
+					identifierText.setText(baseName);
+					updateState();
+				}
+			}
+		}
 	}
 
 	@Override
