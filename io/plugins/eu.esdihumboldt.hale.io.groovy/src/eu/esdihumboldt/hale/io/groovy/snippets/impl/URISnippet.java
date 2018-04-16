@@ -15,6 +15,10 @@
 
 package eu.esdihumboldt.hale.io.groovy.snippets.impl;
 
+import java.net.URI;
+import java.nio.charset.Charset;
+
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.io.groovy.snippets.Snippet;
 import groovy.lang.Script;
@@ -24,25 +28,39 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class LoadedSnippet implements Snippet {
+public class URISnippet implements Snippet {
 
-	private final Script script;
+	private Script lastScript = null;
 	private final String id;
+	private final URI location;
+	private final Charset encoding;
 
 	/**
 	 * Create a new snippet.
 	 * 
-	 * @param script the snippet script
+	 * @param location the snippet location
 	 * @param id the snippet identifier
+	 * @param encoding the snippet encoding
 	 */
-	public LoadedSnippet(Script script, String id) {
-		this.script = script;
+	public URISnippet(URI location, String id, Charset encoding) {
+		this.location = location;
 		this.id = id;
+		this.encoding = encoding;
 	}
 
 	@Override
-	public Script getScript(ServiceProvider services) {
-		return script;
+	public void invalidate() {
+		lastScript = null;
+	}
+
+	@Override
+	public synchronized Script getScript(ServiceProvider services) throws Exception {
+		if (lastScript == null) {
+			lastScript = SnippetReaderImpl.loadSnippet(new DefaultInputSupplier(location), services,
+					encoding);
+		}
+
+		return lastScript;
 	}
 
 	@Override

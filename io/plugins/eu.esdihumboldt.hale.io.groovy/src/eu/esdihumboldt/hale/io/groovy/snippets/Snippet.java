@@ -41,4 +41,10 @@ public interface Snippet {
 	 */
 	String getIdentifier();
 
+	/**
+	 * Invalidate the snippet to trigger reloading after Groovy restrictions
+	 * settings have changed.
+	 */
+	void invalidate();
+
 }

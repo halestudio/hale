@@ -28,7 +28,7 @@ import groovy.lang.Script;
  * 
  * @author Simon Templer
  */
-public class ReloadSnippet implements Snippet {
+public class FileSnippet implements Snippet {
 
 	private final File snippetFile;
 	private final String id;
@@ -44,17 +44,22 @@ public class ReloadSnippet implements Snippet {
 	 * @param id the snippet identifier
 	 * @param encoding the encoding of the snippet file
 	 */
-	public ReloadSnippet(File snippetFile, String id, Charset encoding) {
+	public FileSnippet(File snippetFile, String id, Charset encoding) {
 		this.snippetFile = snippetFile;
 		this.id = id;
 		this.encoding = encoding;
 	}
 
 	@Override
-	public Script getScript(ServiceProvider services) throws Exception {
+	public void invalidate() {
+		lastScript = null;
+	}
+
+	@Override
+	public synchronized Script getScript(ServiceProvider services) throws Exception {
 		long mod = snippetFile.lastModified();
 
-		if (mod > lastMod) {
+		if (mod > lastMod || lastScript == null) {
 			lastScript = SnippetReaderImpl.loadSnippet(new FileIOSupplier(snippetFile), services,
 					encoding);
 		}

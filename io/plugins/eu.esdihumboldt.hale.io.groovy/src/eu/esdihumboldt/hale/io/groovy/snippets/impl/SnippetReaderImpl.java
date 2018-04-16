@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
+import eu.esdihumboldt.hale.io.groovy.snippets.Snippet;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import groovy.lang.Binding;
 import groovy.lang.Script;
@@ -61,23 +62,22 @@ public class SnippetReaderImpl extends AbstractSnippetReader {
 				}
 			}
 
+			Snippet snippet;
 			if (snippetFile != null) {
-				// lazy load snippet
-				ReloadSnippet rl = new ReloadSnippet(snippetFile, id, getCharset());
-
-				// trigger first loading of script
-				try {
-					rl.getScript(getServiceProvider());
-				} catch (Exception e) {
-					reporter.error("Attempt to load script failed", e);
-				}
-
-				setSnippet(rl);
+				snippet = new FileSnippet(snippetFile, id, getCharset());
 			}
 			else {
-				Script script = loadSnippet(getSource(), getServiceProvider(), getCharset());
-				setSnippet(new LoadedSnippet(script, id));
+				snippet = new URISnippet(loc, id, getCharset());
 			}
+
+			// trigger first loading of script
+			try {
+				snippet.getScript(getServiceProvider());
+			} catch (Exception e) {
+				reporter.error("Attempt to load script failed", e);
+			}
+
+			setSnippet(snippet);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {

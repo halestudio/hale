@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.groovy;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.io.groovy.snippets.SnippetService;
 import eu.esdihumboldt.hale.io.groovy.snippets.impl.SnippetServiceImpl;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 
 /**
  * Service factory.
@@ -30,7 +31,7 @@ public class ServiceFactory implements eu.esdihumboldt.hale.common.core.service.
 	@Override
 	public <T> T createService(Class<T> serviceInterface, ServiceProvider serviceLocator) {
 		if (SnippetService.class.equals(serviceInterface)) {
-			return (T) new SnippetServiceImpl();
+			return (T) new SnippetServiceImpl(serviceLocator.getService(GroovyService.class));
 		}
 
 		return null;

@@ -15,58 +15,85 @@
 
 package eu.esdihumboldt.hale.io.groovy.snippets.impl;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import eu.esdihumboldt.hale.io.groovy.snippets.Snippet;
 import eu.esdihumboldt.hale.io.groovy.snippets.SnippetService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
+import eu.esdihumboldt.util.groovy.sandbox.GroovyServiceListener;
 
 /**
- * TODO Type description
+ * Default snippet service implementation.
  * 
- * @author simon
+ * @author Simon Templer
  */
 public class SnippetServiceImpl implements SnippetService {
 
+	private final Map<String, Snippet> snippets = new HashMap<>();
+	private final Map<String, Snippet> byId = new HashMap<>();
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param gs the groovy service
+	 */
+	public SnippetServiceImpl(GroovyService gs) {
+		super();
+
+		gs.addListener(new GroovyServiceListener() {
+
+			@Override
+			public void restrictionChanged(boolean restrictionActive) {
+				synchronized (snippets) {
+					snippets.values().forEach(snippet -> snippet.invalidate());
+				}
+			}
+		});
+	}
+
 	@Override
 	public void addSnippet(String resourceId, Snippet snippet) {
-		// TODO Auto-generated method stub
-
+		if (snippet == null) {
+			return;
+		}
+		synchronized (snippets) {
+			snippets.put(resourceId, snippet);
+			byId.put(snippet.getIdentifier(), snippet);
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.groovy.snippets.SnippetService#removeSnippet(java.lang.String)
-	 */
 	@Override
 	public void removeSnippet(String resourceId) {
-		// TODO Auto-generated method stub
-
+		synchronized (snippets) {
+			Snippet sn = snippets.remove(resourceId);
+			if (sn != null) {
+				byId.remove(sn.getIdentifier());
+			}
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.groovy.snippets.SnippetService#clearSnippets()
-	 */
 	@Override
 	public void clearSnippets() {
-		// TODO Auto-generated method stub
-
+		synchronized (snippets) {
+			snippets.clear();
+			byId.clear();
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.groovy.snippets.SnippetService#getSnippet(java.lang.String)
-	 */
 	@Override
-	public Optional<Snippet> getSnippet(String resourceId) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<Snippet> getSnippet(String identifier) {
+		synchronized (snippets) {
+			return Optional.ofNullable(byId.get(identifier));
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.groovy.snippets.SnippetService#getResourceSnippet(java.lang.String)
-	 */
 	@Override
 	public Optional<Snippet> getResourceSnippet(String resourceId) {
-		// TODO Auto-generated method stub
-		return null;
+		synchronized (snippets) {
+			return Optional.ofNullable(snippets.get(resourceId));
+		}
 	}
 
 }
