@@ -4,6 +4,12 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+### Added
+
+- Split GML output by feature type
+
+### Fixed
+
 - Fixed hale connect integration when using a proxy
 - Fix CLI transformations when source data contains unknown or invalid CRS definitions
 

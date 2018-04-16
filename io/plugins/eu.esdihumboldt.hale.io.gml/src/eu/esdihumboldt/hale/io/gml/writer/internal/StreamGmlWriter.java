@@ -47,7 +47,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.gml3.GML;
 
-import com.google.common.io.Files;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -75,6 +74,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.NoPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.SimplePartitioner;
@@ -166,6 +166,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * Name of the parameter defining the instance threshold.
 	 */
 	public static final String PARAM_INSTANCES_THRESHOLD = "instancesPerFile";
+
+	/**
+	 * Name of the parameter to create separate files for each feature type
+	 */
+	public static final String PARAM_PARTITION_BY_FEATURE_TYPE = "partition.byFeatureType";
 
 	/**
 	 * Name of the parameter stating the mode to use for instance partitioning.
@@ -303,8 +308,35 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
 					threshold, progress, reporter)) {
-				writeParts(parts, progress, reporter);
+				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
 			}
+		}
+		else if (isPartitionByFeatureTypeConfigured()) {
+			// Threshold currently not supported if partitioning by feature type
+
+			final Set<TypeDefinition> types = new HashSet<>();
+
+			// Map GML IDs to features types and collect types
+			final XMLInspector gadget = new XMLInspector();
+			final Map<String, TypeDefinition> idToTypeMapping = new HashMap<>();
+			try (ResourceIterator<Instance> it = getInstances().iterator()) {
+				while (it.hasNext()) {
+					Instance inst = it.next();
+					types.add(inst.getDefinition());
+					idToTypeMapping.put(gadget.getIdentity(inst), inst.getDefinition());
+				}
+			}
+
+			final Map<TypeDefinition, URI> typeToTargetMapping = new HashMap<>();
+			types.stream().forEach(t -> typeToTargetMapping.put(t, new File(
+					PerTypePartsHandler.getTargetFilename(t.getName(), getTarget().getLocation()))
+							.toURI()));
+			final PerTypePartsHandler handler = new PerTypePartsHandler(typeToTargetMapping,
+					idToTypeMapping);
+			final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
+					.fromInstances(getInstances(), types);
+
+			writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
 		}
 		else {
 			write(getInstances(), getTarget().getOutput(), progress, reporter);
@@ -343,19 +375,19 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * configured target as a base file name.<br>
 	 * <br>
 	 * Parts can only be written if the configured target is a URI to a local
-	 * file. The output files will be named after the target file, amended by a
-	 * counter. If, for example, the configured target file name is
-	 * <code>output.gml</code>, the files created by this method will be called
-	 * <code>output.0001.gml</code>, <code>output.0002.gml</code>, etc.
+	 * file.
 	 * 
 	 * @param instanceCollections the parts to write
+	 * @param handler Handler that provides the parts' file names and an XML
+	 *            writer
 	 * @param progress Progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @throws IOException if an I/O operation fails
 	 * @see #setTarget(LocatableOutputSupplier)
 	 */
 	protected void writeParts(Iterator<InstanceCollection> instanceCollections,
-			ProgressIndicator progress, IOReporter reporter) throws IOException {
+			MultipartHandler handler, ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
 		final URI location = getTarget().getLocation();
 
 		if (location == null) {
@@ -370,30 +402,29 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		}
 
 		Path origPath = Paths.get(location).normalize();
-		String filename;
-		String extension;
-		Path targetFolder;
 		if (origPath.toFile().isDirectory()) {
 			reporter.error("Cannot write to a directory: Target must a file");
 			return;
 			// TODO Support writing to a directory; use parameter to specify
 			// file name prefix.
 		}
-		else {
-			targetFolder = origPath.getParent();
-			filename = Files.getNameWithoutExtension(origPath.toString());
-			extension = Files.getFileExtension(origPath.toString());
-		}
 
 		List<URI> filesWritten = new ArrayList<>();
-		int i = 1;
 		while (instanceCollections.hasNext()) {
-			String targetFilename = String.format("%s%s%s.%04d.%s", targetFolder.toString(),
-					File.separator, filename, i++, extension);
+			InstanceCollection instances = instanceCollections.next();
+			String targetFilename = handler.getTargetFilename(instances, location);
 			File targetFile = new File(targetFilename);
 			FileOutputStream out = new FileOutputStream(targetFile);
-			InstanceCollection instances = instanceCollections.next();
-			write(instances, out, progress, reporter);
+			PrefixAwareStreamWriter writer;
+			try {
+				// The MultipartHandler can provide a specially decorated
+				// writer, e.g. for reference rewriting
+				writer = handler.getDecoratedWriter(createWriter(out, reporter),
+						targetFile.toURI());
+				write(instances, writer, progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException("Unable to create XML writer", e);
+			}
 			filesWritten.add(targetFile.toURI());
 		}
 
@@ -452,6 +483,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	private boolean isThresholdConfigured() {
 		int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class, NO_PARTITIONING);
 		return threshold != NO_PARTITIONING && threshold > 0;
+	}
+
+	private boolean isPartitionByFeatureTypeConfigured() {
+		return getParameter(PARAM_PARTITION_BY_FEATURE_TYPE).as(Boolean.class, false);
 	}
 
 	@Override
