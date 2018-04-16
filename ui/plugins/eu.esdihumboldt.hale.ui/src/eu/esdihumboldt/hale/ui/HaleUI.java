@@ -46,7 +46,14 @@ public abstract class HaleUI {
 		 * Project scope services
 		 */
 		private final ServiceManager projectScope = new ServiceManager(
-				ServiceManager.SCOPE_PROJECT);
+				ServiceManager.SCOPE_PROJECT) {
+
+			@Override
+			protected ServiceProvider getServiceLocator() {
+				return uiServiceProvider;
+			}
+
+		};
 
 		@Override
 		public <T> T getService(Class<T> serviceInterface) {

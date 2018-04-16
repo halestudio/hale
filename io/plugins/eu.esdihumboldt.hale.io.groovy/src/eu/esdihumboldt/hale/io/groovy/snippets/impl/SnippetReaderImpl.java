@@ -73,7 +73,7 @@ public class SnippetReaderImpl extends AbstractSnippetReader {
 			// trigger first loading of script
 			try {
 				snippet.getScript(getServiceProvider());
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				reporter.error("Attempt to load script failed", e);
 			}
 

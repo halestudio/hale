@@ -14,5 +14,15 @@
             wizard="eu.esdihumboldt.hale.io.groovy.ui.snippets.SnippetImportWizard">
       </action-ui>
    </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.groovy.ui.snippets.SnippetConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.groovy.snippets">
+         </provider>
+      </configPage>
+   </extension>
 
 </plugin>
