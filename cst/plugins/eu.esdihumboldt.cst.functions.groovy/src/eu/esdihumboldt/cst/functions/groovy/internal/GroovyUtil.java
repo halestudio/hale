@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.groovy.snippets.GroovySnippets;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyService.ResultProcessor;
 import groovy.lang.Binding;
@@ -285,6 +286,8 @@ public class GroovyUtil implements GroovyConstants {
 
 		binding.setVariable(BINDING_PROJECT, new ProjectAccessor(
 				executionContext.getService(ProjectInfoService.class), cellLog, executionContext));
+
+		binding.setVariable(BINDING_SNIPPETS, new GroovySnippets(executionContext, binding));
 
 		binding.setVariable(BINDING_SPATIAL_INDEX,
 				executionContext.getService(SpatialIndexService.class));

@@ -30,11 +30,13 @@ import eu.esdihumboldt.hale.io.groovy.snippets.SnippetReader;
 public abstract class AbstractSnippetReader extends AbstractImportProvider
 		implements SnippetReader {
 
+	private static final boolean AUTO_RELOAD_DEFAULT = true;
+
 	private Snippet snippet;
 
 	private String identifier;
 
-	private boolean autoReload = false;
+	private boolean autoReload = AUTO_RELOAD_DEFAULT;
 
 	@Override
 	public boolean isCancelable() {
@@ -96,7 +98,7 @@ public abstract class AbstractSnippetReader extends AbstractImportProvider
 			setIdentifier(value.as(String.class));
 		}
 		else if (name.equals(PARAM_AUTO_RELOAD)) {
-			setAutoReload(value.as(Boolean.class, false));
+			setAutoReload(value.as(Boolean.class, AUTO_RELOAD_DEFAULT));
 		}
 		else {
 			super.setParameter(name, value);

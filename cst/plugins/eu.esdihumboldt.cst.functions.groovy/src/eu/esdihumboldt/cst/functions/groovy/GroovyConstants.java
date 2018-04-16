@@ -101,6 +101,11 @@ public interface GroovyConstants {
 	public static final String BINDING_PROJECT = "_project";
 
 	/**
+	 * Name of the snippets accessor.
+	 */
+	public static final String BINDING_SNIPPETS = "_snippets";
+
+	/**
 	 * Name of the cell context variable in the binding.
 	 */
 	public static final String BINDING_CELL_CONTEXT = "withCellContext";
