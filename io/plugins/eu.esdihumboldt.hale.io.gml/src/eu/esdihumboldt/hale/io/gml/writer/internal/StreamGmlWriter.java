@@ -47,7 +47,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.gml3.GML;
 
-import com.google.common.io.Files;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -75,6 +74,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.NoPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.SimplePartitioner;
@@ -310,6 +310,33 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 					threshold, progress, reporter)) {
 				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
 			}
+		}
+		else if (isPartitionByFeatureTypeConfigured()) {
+			// Threshold currently not supported if partitioning by feature type
+
+			final Set<TypeDefinition> types = new HashSet<>();
+
+			// Map GML IDs to features types and collect types
+			final XMLInspector gadget = new XMLInspector();
+			final Map<String, TypeDefinition> idToTypeMapping = new HashMap<>();
+			try (ResourceIterator<Instance> it = getInstances().iterator()) {
+				while (it.hasNext()) {
+					Instance inst = it.next();
+					types.add(inst.getDefinition());
+					idToTypeMapping.put(gadget.getIdentity(inst), inst.getDefinition());
+				}
+			}
+
+			final Map<TypeDefinition, URI> typeToTargetMapping = new HashMap<>();
+			types.stream().forEach(t -> typeToTargetMapping.put(t, new File(
+					PerTypePartsHandler.getTargetFilename(t.getName(), getTarget().getLocation()))
+							.toURI()));
+			final PerTypePartsHandler handler = new PerTypePartsHandler(typeToTargetMapping,
+					idToTypeMapping);
+			final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
+					.fromInstances(getInstances(), types);
+
+			writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
 		}
 		else {
 			write(getInstances(), getTarget().getOutput(), progress, reporter);
