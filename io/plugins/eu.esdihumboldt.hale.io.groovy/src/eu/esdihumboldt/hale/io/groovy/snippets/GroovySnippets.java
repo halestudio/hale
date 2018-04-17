@@ -37,6 +37,12 @@ import groovy.lang.Script;
  */
 public class GroovySnippets extends GroovyObjectSupport {
 
+	/**
+	 * Binding of the marker variable that specifies that the snippet runs in
+	 * hale.
+	 */
+	public static final String BINDING_HALE_MARKER = "runs_in_hale";
+
 	private final SnippetService snippets;
 	private final Binding parentBinding;
 	private final ServiceProvider services;
@@ -62,6 +68,7 @@ public class GroovySnippets extends GroovyObjectSupport {
 			// "clone" the script
 			script = script.getClass().newInstance();
 			Map variables = new HashMap<>();
+			variables.put(BINDING_HALE_MARKER, true);
 			if (parentBinding != null) {
 				variables.putAll(parentBinding.getVariables());
 			}

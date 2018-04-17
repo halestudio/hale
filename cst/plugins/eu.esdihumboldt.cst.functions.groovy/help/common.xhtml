@@ -476,6 +476,15 @@
 						applied to external snippets, even if the snippet changed since
 						the original import.</li>
 				</ul>
+				<p>
+					<b>Tip: </b>In case you are using the snippet script also in other
+					contexts than hale, you can detect within the script if it is run
+					in hale with the following check:
+				</p>
+				<pre><code><b>if</b> (binding.hasVariable('runs_in_hale')) {
+  <i>// only do this when run in hale</i>
+  ...
+}</code></pre>
 			</li>
 			<li>
 				<p>

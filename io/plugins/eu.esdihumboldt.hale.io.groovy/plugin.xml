@@ -74,6 +74,10 @@
             allowAll="true"
             class="eu.esdihumboldt.hale.io.groovy.snippets.GroovySnippets">
       </allow>
+      <allow
+            allowAll="false"
+            class="groovy.lang.Binding">
+      </allow>
    </extension>
 
 </plugin>

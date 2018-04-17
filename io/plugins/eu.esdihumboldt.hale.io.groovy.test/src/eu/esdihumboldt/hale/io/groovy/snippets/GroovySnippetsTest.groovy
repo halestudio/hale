@@ -110,6 +110,14 @@ new MyClass()
 		assert res == '+++'
 	}
 
+	@Test
+	void testRunsInHale() {
+		addSnippet('test', "binding.hasVariable('runs_in_hale')")
+
+		def res = get().test()
+		assert res == true
+	}
+
 	// util
 
 	void addSnippet(String id, String script) {
