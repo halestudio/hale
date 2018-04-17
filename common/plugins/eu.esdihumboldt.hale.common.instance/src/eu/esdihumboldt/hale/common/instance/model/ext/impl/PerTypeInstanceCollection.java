@@ -16,15 +16,21 @@
 package eu.esdihumboldt.hale.common.instance.model.ext.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableMap;
 
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.instance.model.ext.InstanceCollection2;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.SingleTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
@@ -32,8 +38,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
  * 
  * @author Simon Templer
  */
-public class PerTypeInstanceCollection extends MultiInstanceCollection implements
-		InstanceCollection2 {
+public class PerTypeInstanceCollection extends MultiInstanceCollection
+		implements InstanceCollection2 {
 
 	private final Map<TypeDefinition, InstanceCollection> collections;
 
@@ -59,6 +65,13 @@ public class PerTypeInstanceCollection extends MultiInstanceCollection implement
 		return collections;
 	}
 
+	public Iterator<InstanceCollection> collectionsIterator() {
+		return collections.entrySet().stream()
+				.map(e -> (InstanceCollection) new SingleTypeInstanceCollection(e.getValue(),
+						e.getKey()))
+				.collect(Collectors.toList()).iterator();
+	}
+
 	@Override
 	public InstanceCollection select(Filter filter) {
 		// apply filter to this collection, as it supports fan-out an probably
@@ -66,4 +79,25 @@ public class PerTypeInstanceCollection extends MultiInstanceCollection implement
 		return FilteredInstanceCollection.applyFilter(this, filter);
 	}
 
+	/**
+	 * Create a PerTypeInstanceCollection from an {@link InstanceCollection} by
+	 * selecting from it all instances of the given types.
+	 * 
+	 * @param instances Instance collection to use as input
+	 * @param types Types to select from the input collection
+	 * @return The created PerTypeInstanceCollection
+	 */
+	public static PerTypeInstanceCollection fromInstances(InstanceCollection instances,
+			Collection<TypeDefinition> types) {
+
+		Map<TypeDefinition, InstanceCollection> partitioned = new HashMap<>();
+		for (TypeDefinition type : types) {
+			InstanceCollection typed = instances.select(new TypeFilter(type));
+			if (!typed.isEmpty()) {
+				partitioned.put(type, typed);
+			}
+		}
+
+		return new PerTypeInstanceCollection(partitioned);
+	}
 }
