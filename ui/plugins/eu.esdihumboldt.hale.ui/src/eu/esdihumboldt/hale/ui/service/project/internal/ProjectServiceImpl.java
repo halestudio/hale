@@ -227,7 +227,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				confs = new ArrayList<IOConfiguration>(main.getResources());
 			}
 
-			// before execution, perform eventual schema update
+			// before execution, perform possible schema update
 			boolean updated = false;
 			if (updateSchema) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
@@ -259,8 +259,13 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				}
 			}
 
-			// Defer execution of source data providers until after Alignment
-			// is loaded
+			// Disable live transformation until schema and data are loaded
+			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+			boolean txWasEnabled = is.isTransformationEnabled();
+			is.setTransformationEnabled(false);
+
+			// Defer execution of source data providers until after Alignment is
+			// loaded
 			List<IOConfiguration> sourceDataConfigurations = new ArrayList<>();
 			for (IOConfiguration conf : confs) {
 				IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
@@ -282,11 +287,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				file.apply();
 			}
 
-			InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
-			boolean txWasEnabled = is.isTransformationEnabled();
-			is.setTransformationEnabled(false);
-
 			executeConfigurations(sourceDataConfigurations);
+
+			// Reactivate live transformation unless it was disabled by the user
 			if (txWasEnabled) {
 				is.setTransformationEnabled(true);
 			}
