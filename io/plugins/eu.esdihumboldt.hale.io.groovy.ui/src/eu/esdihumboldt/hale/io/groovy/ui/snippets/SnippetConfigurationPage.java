@@ -48,8 +48,8 @@ public class SnippetConfigurationPage
 	public SnippetConfigurationPage() {
 		super("snippet");
 
-		setTitle("GeoJSON geometry configuration");
-		setDescription("Please select the geometries to use for the GeoJSON export");
+		setTitle("Groovy snippet");
+		setDescription("Please provide an identifier for the snippet");
 	}
 
 	@Override

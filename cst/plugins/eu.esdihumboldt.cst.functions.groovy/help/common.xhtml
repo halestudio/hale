@@ -442,13 +442,13 @@
 					allows to easily reuse them across different transformation
 					scripts.
 				</p>
-				<p>You can reference a specific Groovy snippet by it's
-					identifier that you set when importing the snippet. The snippet
-					identifier can be looked up in the project view. There all snippets
-					are listed with their identifier and you can also remove imported
-					snippets there.</p>
-				<p>A snippet has the same binding available as the transformation script you include it in.
-				You can pass additional variables to the script that will be added to the binding.</p>
+				<p>You can reference a specific Groovy snippet by its identifier
+					that you set when importing the snippet. A list of all snippets and
+					their identifiers is available in the Project view which also
+					allows removing imported snippets.</p>
+				<p>A snippet has the same binding available as the
+					transformation script you include it in. You can pass additional
+					variables to the script that will be added to the binding.</p>
 				<p>For calling a snippet there are two recommended ways:</p>
 				<ol>
 					<li>Run the snippet script or</li>
@@ -472,8 +472,9 @@
 				<ul>
 					<li>Snippets are not supported when used in base alignments,
 						as they rely on the snippets being imported into the project.</li>
-					<li>If you disabled the Groovy restriction, it is also
-						deactivated for the external snippets and any changes made to them.</li>
+					<li>If Groovy restrictions have been lifted, they are also not
+						applied to external snippets, even if the snippet changed since
+						the original import.</li>
 				</ul>
 			</li>
 			<li>
