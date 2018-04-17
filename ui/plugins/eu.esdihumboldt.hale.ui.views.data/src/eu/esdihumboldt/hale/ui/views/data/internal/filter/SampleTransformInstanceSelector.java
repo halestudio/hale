@@ -23,12 +23,14 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -65,6 +67,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.sample.InstanceSampleService;
+import eu.esdihumboldt.hale.ui.util.jobs.ExclusiveSchedulingRule;
 
 /**
  * Instance selector based on a transformation sample
@@ -89,6 +92,8 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 		private final Observer referenceListener;
 
 		private AlignmentServiceAdapter alignmentListener;
+
+		private final AtomicReference<Job> updateJob = new AtomicReference<>();
 
 		/**
 		 * @see Composite#Composite(Composite, int)
@@ -123,7 +128,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 				@Override
 				public void update(Observable arg0, Object arg1) {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 			});
 
@@ -133,172 +138,200 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 				@Override
 				public void alignmentCleared() {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void cellsRemoved(Iterable<Cell> cells) {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void cellsAdded(Iterable<Cell> cells) {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void alignmentChanged() {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void customFunctionsChanged() {
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 
 				@Override
 				public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
 					// property changes may affect transformation result
-					updateInDisplayThread();
+					updateFeatureTypesSelection();
 				}
 			});
-		}
-
-		private void updateInDisplayThread() {
-			if (Display.getCurrent() != null) {
-				preSelectionChanged();
-				updateFeatureTypesSelection();
-				postSelectionChanged();
-			}
-			else {
-				final Display display = PlatformUI.getWorkbench().getDisplay();
-				display.syncExec(new Runnable() {
-
-					@Override
-					public void run() {
-						preSelectionChanged();
-						updateFeatureTypesSelection();
-						postSelectionChanged();
-					}
-				});
-			}
 		}
 
 		/**
 		 * Update the feature types selection
 		 */
 		protected void updateFeatureTypesSelection() {
-			instanceMap.clear();
+			final Display display = PlatformUI.getWorkbench().getDisplay();
 
-			final AtomicBoolean finished = new AtomicBoolean(false);
-			Job job = new Job("Transform samples") {
+			final Job job = new Job("Transform samples") {
 
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						final InstanceSampleService rss = PlatformUI.getWorkbench()
-								.getService(InstanceSampleService.class);
-						final AlignmentService alService = PlatformUI.getWorkbench()
-								.getService(AlignmentService.class);
-						final TransformationService cst = HalePlatform
-								.getService(TransformationService.class);
+					if (monitor.isCanceled()) {
+						return Status.CANCEL_STATUS;
+					}
 
-						// get reference instances
-						Collection<Instance> reference = rss.getReferenceInstances();
+					display.syncExec(new Runnable() {
 
-						if (reference != null && !reference.isEmpty()) {
-							// create an instance collection
-							InstanceCollection instances = new DefaultInstanceCollection(reference);
+						@Override
+						public void run() {
+							preSelectionChanged();
+						}
+					});
 
-							DefaultInstanceSink target = new DefaultInstanceSink();
+					instanceMap.clear();
 
-							// transform features
-							TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
-									instances, target, HaleUI.getServiceProvider(),
-									new ProgressMonitorIndicator(monitor));
+					final InstanceSampleService rss = PlatformUI.getWorkbench()
+							.getService(InstanceSampleService.class);
+					final AlignmentService alService = PlatformUI.getWorkbench()
+							.getService(AlignmentService.class);
+					final TransformationService cst = HalePlatform
+							.getService(TransformationService.class);
 
-							if (!report.isSuccess()) {
-								// TODO log message
-							}
+					// get reference instances
+					Collection<Instance> reference = rss.getReferenceInstances();
 
-							// Sort target instances by comparing meta data IDs
-							// of the source
-							// instances with the SourcesIDs of the target
-							// instances
-							ArrayList<Instance> targetSorted = new ArrayList<Instance>();
-							ResourceIterator<Instance> it = instances.iterator();
-							try {
-								while (it.hasNext()) {
-									Instance inst = it.next();
-									for (Instance instance : target.getInstances()) {
-										if (InstanceMetadata.getID(inst)
-												.equals(InstanceMetadata.getSourceID(instance))) {
-											targetSorted.add(instance);
-										}
+					if (reference != null && !reference.isEmpty()) {
+						// create an instance collection
+						InstanceCollection instances = new DefaultInstanceCollection(reference);
+
+						DefaultInstanceSink target = new DefaultInstanceSink();
+
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
+
+						// transform features
+						TransformationReport report = cst.transform(alService.getAlignment(), // Alignment
+								instances, target, HaleUI.getServiceProvider(),
+								new ProgressMonitorIndicator(monitor));
+
+						if (!report.isSuccess()) {
+							// TODO log message?
+						}
+
+						// Sort target instances by comparing meta data
+						// IDs of the source instances with the
+						// SourcesIDs of the target instances
+						ArrayList<Instance> targetSorted = new ArrayList<Instance>();
+						ResourceIterator<Instance> it = instances.iterator();
+						try {
+							while (it.hasNext()) {
+								if (monitor.isCanceled()) {
+									return Status.CANCEL_STATUS;
+								}
+
+								Instance inst = it.next();
+								for (Instance instance : target.getInstances()) {
+									if (InstanceMetadata.getID(inst)
+											.equals(InstanceMetadata.getSourceID(instance))) {
+										targetSorted.add(instance);
 									}
 								}
-							} finally {
-								it.close();
 							}
+						} finally {
+							it.close();
+						}
 
-							// check if there are target instances without a
-							// matched source id
-							for (Instance instance : target.getInstances()) {
-								if (!targetSorted.contains(instance)) {
-									targetSorted.add(instance);
-								}
-							}
-
-							// determine types
-							for (Instance instance : targetSorted) {
-								instanceMap.put(instance.getDefinition(), instance);
+						// check if there are target instances without a
+						// matched source id
+						for (Instance instance : target.getInstances()) {
+							if (!targetSorted.contains(instance)) {
+								targetSorted.add(instance);
 							}
 						}
 
-						return Status.OK_STATUS;
-					} finally {
-						finished.set(true);
+						if (monitor.isCanceled()) {
+							return Status.CANCEL_STATUS;
+						}
+
+						// determine types
+						instanceMap.clear();
+						for (Instance instance : targetSorted) {
+							instanceMap.put(instance.getDefinition(), instance);
+						}
 					}
+
+					return Status.OK_STATUS;
 				}
 			};
 
-			job.schedule();
-			if (Display.getCurrent() != null) {
-				while (!finished.get()) {
-					if (!Display.getCurrent().readAndDispatch()) {
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// ignore
+			synchronized (updateJob) {
+				// cancel the previously scheduled job, if any
+				Job currentJob = updateJob.get();
+				if (currentJob != null) {
+					currentJob.cancel();
+				}
+
+				// set the current job
+				updateJob.set(job);
+			}
+
+			job.addJobChangeListener(new JobChangeAdapter() {
+
+				@Override
+				public void done(final IJobChangeEvent event) {
+					boolean wasLast = false;
+					synchronized (updateJob) {
+						wasLast = updateJob.get() == job;
+						if (wasLast) {
+							updateJob.set(null);
 						}
 					}
+					final boolean last = wasLast;
+
+					display.asyncExec(new Runnable() {
+
+						@Override
+						public void run() {
+							if (last) {
+								Collection<TypeDefinition> selectableTypes = instanceMap.keySet();
+								typesCombo.setInput(selectableTypes);
+
+								if (!selectableTypes.isEmpty()) {
+									typesCombo.setSelection(new StructuredSelection(
+											selectableTypes.iterator().next()));
+									typesCombo.getControl().setEnabled(true);
+								}
+								else {
+									typesCombo.getControl().setEnabled(false);
+								}
+
+								layout(true, true);
+
+								updateSelection();
+
+								postSelectionChanged();
+							}
+						}
+					});
 				}
-			}
-			try {
-				job.join();
-			} catch (InterruptedException e) {
-				// ignore
-			}
 
-			Collection<TypeDefinition> selectableTypes = instanceMap.keySet();
-			typesCombo.setInput(selectableTypes);
+			});
 
-			if (!selectableTypes.isEmpty()) {
-				typesCombo.setSelection(new StructuredSelection(selectableTypes.iterator().next()));
-				typesCombo.getControl().setEnabled(true);
-			}
-			else {
-				typesCombo.getControl().setEnabled(false);
-			}
+			// jobs may not run at the same time
+			job.setRule(new ExclusiveSchedulingRule(SampleTransformInstanceSelector.this));
 
-			layout(true, true);
-
-			updateSelection();
+			// schedule with some delay in case a lot of updates happen in a
+			// short time
+			job.schedule(1000);
 		}
 
 		/**
