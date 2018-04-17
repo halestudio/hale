@@ -40,8 +40,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -275,8 +277,14 @@ public class ExecTransformation implements ConsoleConstants {
 	private void loadProject() throws IOException {
 		status("Loading hale project...");
 
+		Map<Class<?>, Object> services = new HashMap<>();
+		// override/set Groovy service
+		GroovyService gs = new DefaultGroovyService();
+		gs.setRestrictionActive(context.isRestrictGroovy());
+		services.put(GroovyService.class, gs);
+
 		env = new ProjectTransformationEnvironment(id,
-				new DefaultInputSupplier(context.getProject()), reportHandler);
+				new DefaultInputSupplier(context.getProject()), reportHandler, null, services);
 	}
 
 	private void setupReader(URI uri, int index) {
@@ -426,13 +434,6 @@ public class ExecTransformation implements ConsoleConstants {
 
 	private int transform() throws InterruptedException, ExecutionException {
 		status("Running hale transformation...");
-
-		// configure transformation environment
-
-		// override/set Groovy service
-		GroovyService gs = new DefaultGroovyService();
-		gs.setRestrictionActive(context.isRestrictGroovy());
-		env.addService(GroovyService.class, gs);
 
 		// run transformation
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,

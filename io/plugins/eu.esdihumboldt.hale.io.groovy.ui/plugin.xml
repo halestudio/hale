@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.action">
+      <action-ui
+            action="eu.esdihumboldt.hale.io.groovy.snippets.load"
+            customTitle="Import Groovy snippet"
+            id="eu.esdihumboldt.hale.io.groovy.snippets.load"
+            label="Groovy snippet..."
+            priority="0"
+            projectResource="true"
+            ui-advisor="eu.esdihumboldt.hale.io.groovy.ui.snippets.SnippetUIAdvisor"
+            wizard="eu.esdihumboldt.hale.io.groovy.ui.snippets.SnippetImportWizard">
+      </action-ui>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.groovy.ui.snippets.SnippetConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.groovy.snippets">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>

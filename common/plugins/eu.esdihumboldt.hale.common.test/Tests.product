@@ -22,6 +22,7 @@
    <windowImages/>
 
    <launcher name="hale_tests">
+      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -167,6 +168,8 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
       <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
