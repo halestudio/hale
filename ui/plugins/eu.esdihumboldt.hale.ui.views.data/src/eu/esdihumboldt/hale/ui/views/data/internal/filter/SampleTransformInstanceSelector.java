@@ -224,7 +224,7 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 								new ProgressMonitorIndicator(monitor));
 
 						if (!report.isSuccess()) {
-							// TODO log message
+							// TODO log message?
 						}
 
 						// Sort target instances by comparing meta data
@@ -274,11 +274,13 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 			};
 
 			synchronized (updateJob) {
+				// cancel the previously scheduled job, if any
 				Job currentJob = updateJob.get();
 				if (currentJob != null) {
 					currentJob.cancel();
 				}
 
+				// set the current job
 				updateJob.set(job);
 			}
 
@@ -324,8 +326,11 @@ public class SampleTransformInstanceSelector implements InstanceSelector {
 
 			});
 
+			// jobs may not run at the same time
 			job.setRule(new ExclusiveSchedulingRule(SampleTransformInstanceSelector.this));
 
+			// schedule with some delay in case a lot of updates happen in a
+			// short time
 			job.schedule(1000);
 		}
 
