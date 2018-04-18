@@ -289,11 +289,6 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			executeConfigurations(sourceDataConfigurations);
 
-			// Reactivate live transformation unless it was disabled by the user
-			if (txWasEnabled) {
-				is.setTransformationEnabled(true);
-			}
-
 			// reset changed to false if it was altered through the project
 			// files being applied
 			// FIXME this is ugly XXX what if there actually is a real
@@ -302,6 +297,12 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				changed = updated;
 			}
 			notifyAfterLoad();
+
+			// Reactivate live transformation unless it was disabled by the user
+			if (txWasEnabled) {
+				is.setTransformationEnabled(true);
+			}
+
 			updateWindowTitle();
 		}
 	}
