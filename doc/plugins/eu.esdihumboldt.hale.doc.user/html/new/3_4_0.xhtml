@@ -11,9 +11,9 @@
 	<ul>
 		<li>Support for isolated workspaces in App-Schema plugin</li>
 		<li>XtraServer configuration plugin</li>
-		<li>Support for merging alignments and viewing related tasks</li>
+		<li>Viewing tasks and messages associated with alignment cells</li>
 		<li>Capability to import Groovy snippets and use them in transformation scripts</li>
-		<li>Presets for AAA schemas</li>
+		<li>Preset for AAA XML schema</li>
 	</ul>
 
 	<p>
@@ -39,11 +39,10 @@
 				<td class="content">
 					<p>
 						The AppSchema plugin developed at <a href="https://www.geo-solutions.it">GeoSolutions</a> 
-						now comes with support for GeoServer's isolated workspaces feature. Thanks to <i>GeoSolutions</i>, 
-						Stefano Costa, and Nuno Oliveira for this contribution!
+						now comes with support for GeoServer's isolated workspaces feature.
 					</p>
-					<p>
-						<img src="3_4_0_images/save-to-hc-with-org.png" />
+					<p>	
+						Thanks to <i>GeoSolutions</i>, Stefano Costa, and Nuno Oliveira for this contribution!
 					</p>
 				</td>
 			</tr>
@@ -52,23 +51,43 @@
 				<td class="title">XtraServer configuration plugin</td>
 				<td class="content">
 					<p>
-						[...]
-						Thanks to interactive instruments, Jon Herrmann, and Andreas Zahnen for this contribution!
+						XtraServer is a product of interactive instruments. It is a suite of implementations 
+						of various OGC service specifications, e.g. Web Feature Service (WFS) and Web Map 
+						Service (WMS). XtraServer services can base on any application schema according to the 
+						Geography Markup Language (GML). For this, a mapping from the GML application schema to 
+						the table structure of the underlying database is to be provided in the configuration 
+						of the service. The mapping language of XtraServer is very flexible and can virtually 
+						map  all GML application schemas to heavily deviating database schemas. For this reason, 
+						mappings can be quite complex.
 					</p>
 					<p>
-						<img src="3_4_0_images/crs-detection.png" />
+						The purpose of this plugin is to
+					</p>
+					<ul>
+						<li>transform the XtraServer mappings to hale alignments (via Import) and</li>
+						<li>generate new XtraServer mapping file easily (via Export)</li>
+					</ul>
+					<p>
+						<img src="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.xtraserver/images/export_format.jpg"></img>
+					</p>
+					<p>
+						Thanks to interactive instruments, Jon Herrmann, and Andreas Zahnen for this contribution!
 					</p>
 				</td>
 			</tr>
 
 			<tr id="alignment-merger">
-				<td class="title">Support for merging alignments and viewing related tasks</td>
+				<td class="title">Viewing tasks and messages associated with alignment cells</td>
 				<td class="content">
 					<p>
-						[...]
+						This new feature allows you to view tasks and messages that are associated with
+						cells in the alignment. 
 					</p>
 					<p>
-						<img src="3_4_0_images/shp-charset-detection.png" />
+						<img src="../views/images/tasks_list.jpg"></img>
+					</p>
+					<p>
+						Thanks to interactive instruments for funding this work.
 					</p>
 				</td>
 			</tr>
@@ -77,10 +96,24 @@
 				<td class="title">Import Groovy snippets and use them in transformation scripts</td>
 				<td class="content">
 					<p>
-						[...]
+						Using Groovy snippets allows you to keep extensive logic in external files and to easily reuse 
+						them across different transformation scripts.
 					</p>
 					<p>
-						<img src="3_4_0_images/shp-charset-detection.png" />
+						<img src="3_4_0_images/groovy-snippets.png" />
+					</p>
+				</td>
+			</tr>
+
+			<tr id="groovy-snippets">
+				<td class="title">Preset for AAA XML schema</td>
+				<td class="content">
+					<p>
+						The list of presets for source and target schemas has been extended:
+						Its newest addition is the <i>AAA XML Schema 6.0</i>. 
+					</p>
+					<p>
+						<img src="3_4_0_images/aaa-schema-preset.png" />
 					</p>
 				</td>
 			</tr>
