@@ -23,6 +23,7 @@ import java.nio.file.Paths;
 import com.google.common.io.Files;
 
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Handler that adds an incrementing number to the target file name.
@@ -38,10 +39,38 @@ public class DefaultMultipartHandler implements MultipartHandler {
 		return formatTargetFilename(location);
 	}
 
+	/**
+	 * Return the file name without extension and the extension as a
+	 * {@link Pair}. If the file name ends with <code>.xml.gz</code> or
+	 * <code>.gml.gz</code>, this will also be the returned extension (and not
+	 * <code>gz</code>).
+	 * 
+	 * @param filename File name to split
+	 * @return Pair of name and extension
+	 */
+	public static Pair<String, String> getFileNameAndExtension(String filename) {
+		String nameWithoutExt;
+		String extension;
+		if (filename.endsWith(".gml.gz") || filename.endsWith(".xml.gz")) {
+			String gz = Files.getFileExtension(filename);
+			String nameWithoutGz = Files.getNameWithoutExtension(filename);
+			String xgml = Files.getFileExtension(nameWithoutGz);
+
+			nameWithoutExt = Files.getNameWithoutExtension(nameWithoutGz);
+			extension = xgml + "." + gz;
+		}
+		else {
+			nameWithoutExt = Files.getFileExtension(filename);
+			extension = Files.getFileExtension(filename);
+		}
+
+		return new Pair<>(nameWithoutExt, extension);
+	}
+
 	private String formatTargetFilename(URI location) {
 		Path origPath = Paths.get(location).normalize();
+		Pair<String, String> nameAndExt = getFileNameAndExtension(origPath.toString());
 		return String.format("%s%s%s.%04d.%s", origPath.getParent(), File.separator,
-				Files.getNameWithoutExtension(origPath.toString()), currentPart++,
-				Files.getFileExtension(origPath.toString()));
+				nameAndExt.getFirst(), currentPart++, nameAndExt.getSecond());
 	}
 }
