@@ -17,7 +17,6 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -61,6 +60,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
@@ -309,6 +309,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
 					threshold, progress, reporter)) {
 				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException(e.getMessage(), e);
 			}
 		}
 		else if (isPartitionByFeatureTypeConfigured()) {
@@ -336,7 +338,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
 					.fromInstances(getInstances(), types);
 
-			writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
+			try {
+				writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 		else {
 			write(getInstances(), getTarget().getOutput(), progress, reporter);
@@ -383,11 +389,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param progress Progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @throws IOException if an I/O operation fails
+	 * @throws XMLStreamException if an XML processing error occurs
 	 * @see #setTarget(LocatableOutputSupplier)
 	 */
 	protected void writeParts(Iterator<InstanceCollection> instanceCollections,
 			MultipartHandler handler, ProgressIndicator progress, IOReporter reporter)
-			throws IOException {
+			throws IOException, XMLStreamException {
 		final URI location = getTarget().getLocation();
 
 		if (location == null) {
@@ -413,18 +420,27 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		while (instanceCollections.hasNext()) {
 			InstanceCollection instances = instanceCollections.next();
 			String targetFilename = handler.getTargetFilename(instances, location);
+
 			File targetFile = new File(targetFilename);
-			FileOutputStream out = new FileOutputStream(targetFile);
-			PrefixAwareStreamWriter writer;
+			LocatableOutputSupplier<? extends OutputStream> out = new FileIOSupplier(targetFile);
+			if (getTarget() instanceof GZipOutputSupplier) {
+				out = new GZipOutputSupplier(out);
+			}
+
+			PrefixAwareStreamWriter writer = null;
+			OutputStream os = out.getOutput();
 			try {
 				// The MultipartHandler can provide a specially decorated
 				// writer, e.g. for reference rewriting
-				writer = handler.getDecoratedWriter(createWriter(out, reporter),
-						targetFile.toURI());
+				writer = handler.getDecoratedWriter(createWriter(os, reporter), targetFile.toURI());
 				write(instances, writer, progress, reporter);
-			} catch (XMLStreamException e) {
-				throw new IOException("Unable to create XML writer", e);
+			} finally {
+				os.close();
+				if (writer != null) {
+					writer.close();
+				}
 			}
+
 			filesWritten.add(targetFile.toURI());
 		}
 
