@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI Utilities
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.util;singleton:=true
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

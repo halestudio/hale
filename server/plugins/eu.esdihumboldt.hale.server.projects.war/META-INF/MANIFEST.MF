@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Project Upload to Server
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.projects.war
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Web-ContextPath: /projects
 Webapp-Name: Manage projects
 Bundle-Vendor: Data Harmonisation Panel

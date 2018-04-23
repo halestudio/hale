@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Json IO
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json;singleton:=true
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.base;version="1.6.0",

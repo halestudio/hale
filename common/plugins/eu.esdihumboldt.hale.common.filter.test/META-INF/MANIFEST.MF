@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hale Filter API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter.test
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.vividsolutions.jts;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.13.0",

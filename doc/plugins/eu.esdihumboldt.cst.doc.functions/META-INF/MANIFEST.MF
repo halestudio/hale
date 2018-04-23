@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Functions Documentation
 Bundle-SymbolicName: eu.esdihumboldt.cst.doc.functions;singleton:=true
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.cst.doc.functions
 Require-Bundle: org.eclipse.help;bundle-version="3.5.100"

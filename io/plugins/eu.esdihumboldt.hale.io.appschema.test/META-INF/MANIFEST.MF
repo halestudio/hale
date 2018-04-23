@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests for GeoTools app-schema plugin
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.appschema.test
-Bundle-Version: 3.3.2.qualifier
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Fragment-Host: eu.esdihumboldt.hale.io.appschema;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
