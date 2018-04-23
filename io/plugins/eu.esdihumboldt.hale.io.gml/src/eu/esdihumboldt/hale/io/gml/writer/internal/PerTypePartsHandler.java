@@ -24,11 +24,10 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import com.google.common.io.Files;
-
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.SingleTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.util.Pair;
 
 /**
  * Handler for writing instances split by feature type.
@@ -75,9 +74,11 @@ public class PerTypePartsHandler implements MultipartHandler {
 	 */
 	public static String getTargetFilename(QName typeName, URI location) {
 		Path origPath = Paths.get(location).normalize();
+		Pair<String, String> nameAndExt = DefaultMultipartHandler
+				.getFileNameAndExtension(origPath.toString());
+
 		return String.format("%s%s%s.%s.%s", origPath.getParent().toString(), File.separator,
-				Files.getNameWithoutExtension(origPath.toString()), typeName.getLocalPart(),
-				Files.getFileExtension(origPath.toString()));
+				nameAndExt.getFirst(), typeName.getLocalPart(), nameAndExt.getSecond());
 	}
 
 	@Override
