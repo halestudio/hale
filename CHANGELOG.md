@@ -2,16 +2,46 @@
 All notable changes to this project will be documented in this file.
 See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
 
-## [Unreleased]
+## [3.4.0]
 
 ### Added
 
-- Split GML output by feature type
+- Support for isolated workspaces to App-Schema plugin
+- XtraServer configuration plugin
+- Support for merging alignments and viewing related tasks
+- Allow to split GML output by feature type
+- Capability to import Groovy snippets and use them in transformation scripts
+- Preset for AAA XML schema
+- Support for several AdV CRS codes
+- Option to ignore the total number of features reported by a WFS
+- Option to format non-integer decimals in XML/GML output
+- Support for replacing source and target entities of a cell
+- CLI option to output transformation statistics
+- Capability to define custom transformation success conditions based on statistics
+- Support to access the same property on all children in Groovy scripts
+
+### Changed
+
+- Allow ".txt" extension for CSV files
+- Preserve annotations, ID and re-use existing functions parameters when replacing a cell
+- Retain Join configuration when adding/removing types
+- Allow to skip entities in remapping wizard
+- Added warning to CRS selection dialog if WKT does not contain Bursa-Wolf parameters
 
 ### Fixed
 
 - Fixed hale connect integration when using a proxy
-- Fix CLI transformations when source data contains unknown or invalid CRS definitions
+- Fixed hale connect project list and versioning support
+- Fixed hale connect integration if user is a member of multiple organisations
+- Fixed opening hale connect project with subfolders
+- Fixed CLI transformations when source data contains unknown or invalid CRS definitions
+- Fixed fallback mechanism in index merge handler
+- Fixed Spatialite export to destinations when destination path contains spaces
+- Apply proxy settings also to HTTPS connections
+- Fixed Spatial Index Groovy helper function
+- Fixed that defaultSrs parameter of XML/GML readers had no effect in CLI
+- Fixed that transformation runs were being triggered without data and/or multiple times during project load
+- Fixed that compression could not be used when partitioning GML output
 
 ## [3.3.2]
 
@@ -46,16 +76,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [3.3.1]
 
-### Fixed
-
-- Opening projects that have MS Access database resources
-- `IndexOutOfBoundsException` when calling Groovy helper functions
-- Do not add `STARTINDEX` parameter to non-paginated WFS `GetFeature` requests
-- Loading resources in headless mode from URL when remote server responds with a redirect
-- Loading a project in headless mode no longer fails in cases where code lists cannot be imported
-- Loading INSPIRE schemas from local resources when online version is not available
-- New projects could be saved only as a project archive if the last project loaded was an archive
-
 ### Added
 
 - Support for saving changes directly to hale connect
@@ -66,6 +86,16 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - GML reader parameters `ignoreMappingRelevant` and `suppressParsingGeometry`
 - Property constraint `CodeListAssociation`
 - Type constraint `MappingRelevantIfFeatureType`
+
+### Fixed
+
+- Opening projects that have MS Access database resources
+- `IndexOutOfBoundsException` when calling Groovy helper functions
+- Do not add `STARTINDEX` parameter to non-paginated WFS `GetFeature` requests
+- Loading resources in headless mode from URL when remote server responds with a redirect
+- Loading a project in headless mode no longer fails in cases where code lists cannot be imported
+- Loading INSPIRE schemas from local resources when online version is not available
+- New projects could be saved only as a project archive if the last project loaded was an archive
 
 ## [3.3.0]
 
@@ -227,7 +257,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.3.2...HEAD
+[3.4.0]: https://github.com/halestudio/hale/compare/3.3.2...3.4.0
 [3.3.2]: https://github.com/halestudio/hale/compare/3.3.1...3.3.2
 [3.3.1]: https://github.com/halestudio/hale/compare/3.3.0...3.3.1
 [3.3.0]: https://github.com/halestudio/hale/compare/3.2.0...3.3.0
