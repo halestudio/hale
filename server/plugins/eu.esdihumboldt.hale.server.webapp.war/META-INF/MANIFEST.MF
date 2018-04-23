@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Main HALE Wep Application Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.webapp.war
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.5.0.qualifier
 Web-ContextPath: /
 Webapp-Hide: true
 Bundle-Activator: eu.esdihumboldt.hale.server.webapp.war.internal.Activator

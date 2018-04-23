@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Templates Repository Webapp
 Web-ContextPath: /templates
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.templates.war
-Bundle-Version: 3.4.0.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Data Harmonisation Panel
 Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
