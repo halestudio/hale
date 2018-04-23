@@ -16,7 +16,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Option to ignore the total number of features reported by a WFS
 - Option to format non-integer decimals in XML/GML output
 - Support for replacing source and target entities of a cell
-- CLI option to output statistics and define custom success conditions
+- CLI option to output transformation statistics
+- Capability to define custom transformation success conditions based on statistics
 - Support to access the same property on all children in Groovy scripts
 
 ### Changed
