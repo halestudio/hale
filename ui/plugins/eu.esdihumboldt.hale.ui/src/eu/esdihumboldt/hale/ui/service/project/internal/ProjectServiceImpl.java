@@ -92,7 +92,6 @@ import eu.esdihumboldt.hale.common.core.service.cleanup.CleanupService;
 import eu.esdihumboldt.hale.common.core.service.cleanup.TemporaryFiles;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
-import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.io.project.OpenProjectWizard;
 import eu.esdihumboldt.hale.ui.io.project.SaveProjectWizard;
@@ -268,9 +267,7 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 			// loaded
 			List<IOConfiguration> sourceDataConfigurations = new ArrayList<>();
 			for (IOConfiguration conf : confs) {
-				IOProviderDescriptor descriptor = IOProviderExtension.getInstance()
-						.getFactory(conf.getProviderId());
-				if (InstanceReader.class.isAssignableFrom(descriptor.getProviderType())) {
+				if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(conf.getActionId())) {
 					sourceDataConfigurations.add(conf);
 				}
 			}
