@@ -90,6 +90,21 @@ public class DefaultGroovyService implements GroovyService {
 
 		cc.addCompilationCustomizers(importCustomizer);
 
+		/*
+		 * Disable handling Groovy Grape annotations.
+		 * 
+		 * This mainly serves the purpose to allow external Groovy snippets to
+		 * use Grapes, but have them disabled when imported into hale.
+		 * 
+		 * If at some point we support Grapes within hale studio, we will want
+		 * to change this behavior. Then we will need to think about how we can
+		 * deal with conflicts on the classpath.
+		 */
+		if (cc.getDisabledGlobalASTTransformations() == null) {
+			cc.setDisabledGlobalASTTransformations(new HashSet<String>());
+		}
+		cc.getDisabledGlobalASTTransformations().add("groovy.grape.GrabAnnotationTransformation");
+
 		if (isRestrictionActive()) {
 			// configure restriction
 			cc.addCompilationCustomizers(new SandboxTransformer());

@@ -433,6 +433,61 @@
 			</li>
 			<li>
 				<p>
+					Using
+					<code>
+						<b>_snippets</b>
+					</code>
+					you can access Groovy snippets that were imported into the project.
+					This allows you to keep extensive logic in external files, and
+					allows to easily reuse them across different transformation
+					scripts.
+				</p>
+				<p>You can reference a specific Groovy snippet by its identifier
+					that you set when importing the snippet. A list of all snippets and
+					their identifiers is available in the Project view which also
+					allows removing imported snippets.</p>
+				<p>A snippet has the same binding available as the
+					transformation script you include it in. You can pass additional
+					variables to the script that will be added to the binding.</p>
+				<p>For calling a snippet there are two recommended ways:</p>
+				<ol>
+					<li>Run the snippet script or</li>
+					<li>run a closure on the snippet script</li>
+				</ol>
+				<p>In both cases usually the return value of the snippet or
+					closure will be used in the transformation script.
+					Here are some examples calling a snippet with the identifier <code>util</code>:</p>
+				<pre><code><i>// run the snippet</i>
+<b>def</b> res1 = <b>_snippets</b>.util()
+<i>// run the snippet passing binding variables</i>
+<b>def</b> res2 = <b>_snippets</b>.util(limit: 10, verbose: true)
+<i>// run a closure</i>
+<i>// assuming the snippet defines the method &quot;format&quot;</i>
+<b>def</b> res3 = <b>_snippets</b>.util {
+  format(source_field)
+}
+</code></pre>
+				<p>There are some restrictions associated with the use of
+					snippets:</p>
+				<ul>
+					<li>Snippets are not supported when used in base alignments,
+						as they rely on the snippets being imported into the project.</li>
+					<li>If Groovy restrictions have been lifted, they are also not
+						applied to external snippets, even if the snippet changed since
+						the original import.</li>
+				</ul>
+				<p>
+					<b>Tip: </b>In case you are using the snippet script also in other
+					contexts than hale, you can detect within the script if it is run
+					in hale with the following check:
+				</p>
+				<pre><code><b>if</b> (binding.hasVariable('runs_in_hale')) {
+  <i>// only do this when run in hale</i>
+  ...
+}</code></pre>
+			</li>
+			<li>
+				<p>
 					<code><b>withCellContext</b></code> provides access to a map unique to each 
 					cell. For synchronization you should only access the map inside the 
 					closure like shown in this example:

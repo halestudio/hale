@@ -57,7 +57,7 @@ public class GroovyJoinContentProvider extends TypePropertyContentProvider {
 
 		JoinParameter joinParameter = param.as(JoinParameter.class);
 
-		for (JoinCondition j : joinParameter.conditions) {
+		for (JoinCondition j : joinParameter.getConditions()) {
 			if (j.baseProperty.getType().equals(inputElement)) {
 
 				elements.add(j.joinProperty.getType());
@@ -79,7 +79,7 @@ public class GroovyJoinContentProvider extends TypePropertyContentProvider {
 
 		JoinParameter joinParameter = param.as(JoinParameter.class);
 
-		for (JoinCondition j : joinParameter.conditions) {
+		for (JoinCondition j : joinParameter.getConditions()) {
 			if (j.baseProperty.getType().equals(parentElement)) {
 
 				elements.add(j.joinProperty.getType());

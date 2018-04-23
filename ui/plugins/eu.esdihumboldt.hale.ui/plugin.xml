@@ -33,6 +33,10 @@
             name="Edit condition context">
       </command>
       <command
+            id="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext"
+            name="Purge condition context">
+      </command>
+      <command
             id="eu.esdihumboldt.hale.ui.entity.removecontext"
             name="Remove instance context">
       </command>
@@ -144,6 +148,14 @@
             id="eu.esdihumboldt.hale.ui.project.update"
             name="Update project">
       </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.align.migrate.source"
+            name="Replace sources">
+      </command>
+      <command
+            id="eu.esdihumboldt.hale.ui.align.migrate.target"
+            name="Replace targets">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -175,6 +187,15 @@
       <handler
             class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.EditConditionContextHandler"
             commandId="eu.esdihumboldt.hale.ui.entity.editconditioncontext">
+         <activeWhen>
+            <reference
+                  definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
+            </reference>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.entity.internal.handler.PurgeConditionContextHandler"
+            commandId="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext">
          <activeWhen>
             <reference
                   definitionId="eu.esdihumboldt.hale.ui.selection.entity.allow_contextedit">
@@ -496,6 +517,48 @@
             </or>
          </activeWhen>
       </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.align.internal.handler.ReplaceSourcesHandler"
+            commandId="eu.esdihumboldt.hale.ui.align.migrate.source">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <and>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.Cell">
+                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.service.align.cell.allow_edit">
+                     </test>
+                  </and>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
+      <handler
+            class="eu.esdihumboldt.hale.ui.service.align.internal.handler.ReplaceTargetsHandler"
+            commandId="eu.esdihumboldt.hale.ui.align.migrate.target">
+         <activeWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <and>
+                     <instanceof
+                           value="eu.esdihumboldt.hale.common.align.model.Cell">
+                     </instanceof>
+                     <test
+                           property="eu.esdihumboldt.hale.ui.service.align.cell.allow_edit">
+                     </test>
+                  </and>
+               </iterate>
+            </with>
+         </activeWhen>
+      </handler>
    </extension>
    <extension
          point="org.eclipse.ui.services">
@@ -578,6 +641,9 @@
          </service>
          <service
                serviceClass="eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService">
+         </service>
+         <service
+               serviceClass="eu.esdihumboldt.hale.common.tasks.TaskService">
          </service>
       </serviceFactory>
       <sourceProvider
@@ -954,6 +1020,13 @@
             </visibleWhen>
          </command>
          <command
+               commandId="eu.esdihumboldt.hale.ui.entity.purgeconditioncontext"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+         <command
                commandId="eu.esdihumboldt.hale.ui.entity.removecontext"
                style="push">
             <visibleWhen
@@ -1067,6 +1140,36 @@
                   class="eu.esdihumboldt.hale.ui.function.contribution.ReplaceFunctionWizardContribution"
                   id="eu.esdihumboldt.hale.ui.cell.replace">
             </dynamic>
+         </menu>
+         <menu
+               label="Replace entities">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <iterate
+                        operator="or">
+                     <and>
+                        <instanceof
+                              value="eu.esdihumboldt.hale.common.align.model.Cell">
+                        </instanceof>
+                        <test
+                              property="eu.esdihumboldt.hale.ui.service.align.cell.allow_edit">
+                        </test>
+                     </and>
+                  </iterate>
+               </with>
+            </visibleWhen>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.align.migrate.source"
+                  label="Replace sources"
+                  style="push">
+            </command>
+            <command
+                  commandId="eu.esdihumboldt.hale.ui.align.migrate.target"
+                  label="Replace targets"
+                  style="push">
+            </command>
          </menu>
          <command
                commandId="eu.esdihumboldt.hale.ui.edit.modify"

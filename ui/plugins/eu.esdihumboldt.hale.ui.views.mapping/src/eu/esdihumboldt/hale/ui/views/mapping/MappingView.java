@@ -51,6 +51,10 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.Task;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -176,6 +180,35 @@ public class MappingView extends AbstractMappingView {
 			}
 		});
 
+		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.addListener(new TaskServiceListener() {
+
+			@Override
+			public void tasksRemoved(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void tasksAdded(Iterable<Task<?>> tasks) {
+				updateViewWithCurrentSelection(getAffectedCells(tasks));
+			}
+
+			@Override
+			public void taskUserDataChanged(ResolvedTask<?> task) {
+				updateViewWithCurrentSelection(getAffectedCells(Collections.singleton(task)));
+			}
+
+			private List<Cell> getAffectedCells(Iterable<Task<?>> tasks) {
+				List<Cell> affectedCells = new ArrayList<>();
+				tasks.forEach(t -> {
+					if (t.getMainContext() instanceof Cell) {
+						affectedCells.add((Cell) t.getMainContext());
+					}
+				});
+				return affectedCells;
+			}
+		});
+
 		SchemaSelection current = SchemaSelectionHelper.getSchemaSelection();
 		if (current != null) {
 			update(current);
@@ -243,19 +276,31 @@ public class MappingView extends AbstractMappingView {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isUpdateRequired(SchemaSelection currentSelection, Iterable<Cell> cells) {
-		if (cells == null || !cells.iterator().hasNext())
+		if (cells == null || !cells.iterator().hasNext()) {
 			return false;
-
-		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
-				currentSelection);
-		for (Cell cell : cells) {
-			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
-					|| associatedWith(items.getSecond(), cell)) {
-				return true;
-			}
 		}
-		return false;
+
+		// XXX assume update is always required because routine below is broken
+		return true;
+
+		/*
+		 * FIXME there seems to be a race condition here. For instance when
+		 * deleting the cell selected in the mapping view it will not disappear
+		 * because this method states that no update is required. If stalled in
+		 * debugging via a breakpoint, there is a different result and the view
+		 * is updated.
+		 */
+//		Pair<Set<EntityDefinition>, Set<EntityDefinition>> items = getDefinitionsFromSelection(
+//				currentSelection);
+//		for (Cell cell : cells) {
+//			if ((cell.getSource() != null && associatedWith(items.getFirst(), cell))
+//					|| associatedWith(items.getSecond(), cell)) {
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
 	/**
@@ -372,13 +417,19 @@ public class MappingView extends AbstractMappingView {
 	 * @param triggerLayout if the layout should be applied directly
 	 */
 	private void updateLayout(boolean triggerLayout) {
-		int width = getViewer().getControl().getSize().x;
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
-		treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+			@Override
+			public void run() {
+				int width = getViewer().getControl().getSize().x;
 
-		if (triggerLayout) {
-			getViewer().applyLayout();
-		}
+				treeLayout.setNodeSpace(new Dimension((width - 10) / 3, 30));
+
+				if (triggerLayout) {
+					getViewer().applyLayout();
+				}
+			}
+		});
 	}
 
 }

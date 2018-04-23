@@ -89,7 +89,14 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	private final ServiceProvider serviceProvider = new ServiceProvider() {
 
 		private final ServiceProvider projectScope = new ServiceManager(
-				ServiceManager.SCOPE_PROJECT);
+				ServiceManager.SCOPE_PROJECT) {
+
+			@Override
+			protected ServiceProvider getServiceLocator() {
+				return serviceProvider;
+			}
+
+		};
 
 		@SuppressWarnings("unchecked")
 		@Override
@@ -114,7 +121,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	public ProjectTransformationEnvironment(String id,
 			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler)
-					throws IOException {
+			throws IOException {
 		this(id, input, reportHandler, null);
 	}
 
@@ -132,6 +139,26 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	public ProjectTransformationEnvironment(String id,
 			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler,
 			Map<String, IOAdvisor<?>> additionalAdvisors) throws IOException {
+		this(id, input, reportHandler, additionalAdvisors, null);
+	}
+
+	/**
+	 * Create a transformation environment based on a project file.
+	 * 
+	 * @param id the identifier for the transformation environment
+	 * @param input the project file input
+	 * @param reportHandler the report handler for the reports during project
+	 *            loading, may be <code>null</code>
+	 * @param additionalAdvisors a map with additional I/O advisors, action ID
+	 *            mapped to advisor, may be <code>null</code>
+	 * @param additionalServices a map with additional services to be provided
+	 *            before loading the project, may be <code>null</code>
+	 * @throws IOException if loading the project fails
+	 */
+	public ProjectTransformationEnvironment(String id,
+			LocatableInputSupplier<? extends InputStream> input, ReportHandler reportHandler,
+			Map<String, IOAdvisor<?>> additionalAdvisors, Map<Class<?>, Object> additionalServices)
+			throws IOException {
 		super();
 		this.id = id;
 
@@ -142,6 +169,12 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 		if (reader != null) {
 			// configure reader
 			reader.setSource(input);
+
+			if (additionalServices != null) {
+				for (Entry<Class<?>, Object> entry : additionalServices.entrySet()) {
+					customServices.put(entry.getKey(), entry.getKey().cast(entry.getValue()));
+				}
+			}
 
 			HeadlessProjectAdvisor advisor = new HeadlessProjectAdvisor(reportHandler,
 					serviceProvider, additionalAdvisors);

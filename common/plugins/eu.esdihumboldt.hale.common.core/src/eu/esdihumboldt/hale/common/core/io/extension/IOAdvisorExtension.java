@@ -96,13 +96,15 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 		}
 
 		@Override
-		public IOAdvisor<?> createAdvisor(ServiceProvider serviceProvider) throws Exception {
+		public IOAdvisor<?> createAdvisor(String actionId, ServiceProvider serviceProvider)
+				throws Exception {
 			if (serviceProvider == null)
 				throw new IllegalArgumentException(
 						"Service provider must be specified when creating an I/O advisor");
 
 			IOAdvisor<?> advisor = super.createExtensionObject();
 			advisor.setServiceProvider(serviceProvider);
+			advisor.setActionId(actionId);
 			return advisor;
 		}
 
@@ -180,7 +182,7 @@ public class IOAdvisorExtension extends AbstractExtension<IOAdvisor<?>, IOAdviso
 			}
 
 			try {
-				advisor = advisors.get(0).createAdvisor(serviceProvider);
+				advisor = advisors.get(0).createAdvisor(actionId, serviceProvider);
 			} catch (Exception e) {
 				log.error("Error creating advisor instance", e);
 				advisor = null;

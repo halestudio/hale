@@ -31,6 +31,13 @@ import java.util.Date;
 public interface Report<T extends Message> {
 
 	/**
+	 * Get the task type. This is an identifier for the type of task.
+	 * 
+	 * @return the task type
+	 */
+	String getTaskType();
+
+	/**
 	 * Get the name of the task the report relates to
 	 * 
 	 * @return the task name

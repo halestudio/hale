@@ -42,6 +42,11 @@ import groovy.lang.Script;
 public class GroovyCreate extends AbstractTypeTransformation<TransformationEngine>
 		implements GroovyConstants, CreateFunction {
 
+	/**
+	 * The function ID.
+	 */
+	public static final String ID = "eu.esdihumboldt.cst.functions.groovy.create";
+
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
 			Map<String, String> executionParameters, TransformationLog log, Cell cell)

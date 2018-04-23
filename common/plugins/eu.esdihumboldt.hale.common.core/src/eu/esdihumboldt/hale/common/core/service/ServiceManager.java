@@ -95,7 +95,7 @@ public class ServiceManager implements ServiceProvider, ServiceConstants {
 				List<ServiceFactory> serviceFactories = factories.get(serviceInterface);
 				for (ServiceFactory factory : serviceFactories) {
 					try {
-						T service = factory.createService(serviceInterface, this);
+						T service = factory.createService(serviceInterface, getServiceLocator());
 						if (service != null) {
 							services.put(serviceInterface, service);
 						}
@@ -119,6 +119,13 @@ public class ServiceManager implements ServiceProvider, ServiceConstants {
 				return ImmutableList.copyOf(instances);
 			}
 		}
+	}
+
+	/**
+	 * @return the service locator to provide when creating services
+	 */
+	protected ServiceProvider getServiceLocator() {
+		return this;
 	}
 
 	/**

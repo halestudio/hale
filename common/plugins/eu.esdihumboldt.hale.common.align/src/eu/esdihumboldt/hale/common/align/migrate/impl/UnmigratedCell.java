@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.MutableCellDecorator;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Decorator for a {@link MutableCell} that allows to do lazy migration.
@@ -68,9 +69,11 @@ public class UnmigratedCell extends MutableCellDecorator {
 	 * @param additionalMappings Additional mappings of original
 	 *            {@link EntityDefinition}s to the resolved ones that should be
 	 *            considered in the migration
+	 * @param log the log
 	 * @return the migrated cell
 	 */
-	public MutableCell migrate(Map<EntityDefinition, EntityDefinition> additionalMappings) {
+	public MutableCell migrate(Map<EntityDefinition, EntityDefinition> additionalMappings,
+			SimpleLog log) {
 		final Map<EntityDefinition, EntityDefinition> joinedMappings = new HashMap<>(
 				entityMappings);
 		joinedMappings.putAll(additionalMappings);
@@ -78,8 +81,8 @@ public class UnmigratedCell extends MutableCellDecorator {
 		AlignmentMigration migration = new AlignmentMigrationNameLookupSupport() {
 
 			@Override
-			public Optional<EntityDefinition> entityReplacement(EntityDefinition entity) {
-
+			public Optional<EntityDefinition> entityReplacement(EntityDefinition entity,
+					SimpleLog log) {
 				return Optional.ofNullable(joinedMappings.get(entity));
 			}
 
@@ -114,7 +117,7 @@ public class UnmigratedCell extends MutableCellDecorator {
 			}
 		};
 
-		return migrator.updateCell(this, migration, options);
+		return migrator.updateCell(this, migration, options, log);
 	}
 
 	/**

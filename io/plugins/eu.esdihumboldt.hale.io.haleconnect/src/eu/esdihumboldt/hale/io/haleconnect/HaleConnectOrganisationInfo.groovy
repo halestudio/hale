@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.haleconnect
 
-import groovy.transform.Immutable
+import groovy.transform.*
 
 /**
  * Info about an organisation in hale connect
@@ -23,6 +23,7 @@ import groovy.transform.Immutable
  * @author Florian Esser
  */
 @Immutable
+@EqualsAndHashCode(includes = ["id"])
 class HaleConnectOrganisationInfo {
 	String id
 	String name

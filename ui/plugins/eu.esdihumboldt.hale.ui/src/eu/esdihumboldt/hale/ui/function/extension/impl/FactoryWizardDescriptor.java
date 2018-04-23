@@ -18,9 +18,12 @@ package eu.esdihumboldt.hale.ui.function.extension.impl;
 
 import java.net.URL;
 
+import com.google.common.collect.ListMultimap;
+
 import de.fhg.igd.eclipse.util.extension.AbstractObjectFactory;
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition;
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardDescriptor;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
@@ -84,6 +87,12 @@ public class FactoryWizardDescriptor<T extends FunctionDefinition<?>> extends
 	}
 
 	@Override
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection,
+			ListMultimap<String, ParameterValue> parameters) {
+		return factory.createNewWizard(schemaSelection, parameters);
+	}
+
+	@Override
 	public FunctionWizard createEditWizard(Cell cell) {
 		return factory.createEditWizard(cell);
 	}
@@ -102,5 +111,4 @@ public class FactoryWizardDescriptor<T extends FunctionDefinition<?>> extends
 	public URL getIconURL() {
 		return function.getIconURL();
 	}
-
 }

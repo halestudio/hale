@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import org.eclipse.jface.dialogs.IPageChangingListener;
 import org.eclipse.jface.dialogs.PageChangingEvent;
@@ -73,6 +72,8 @@ import eu.esdihumboldt.hale.io.appschema.model.ChainConfiguration;
 import eu.esdihumboldt.hale.io.appschema.model.FeatureChaining;
 import eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.appschema.writer.UniqueMappingNameGenerator;
+import eu.esdihumboldt.hale.io.appschema.writer.internal.RandomUniqueMappingNameGenerator;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.HaleWizardPage;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionComparator;
@@ -80,6 +81,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.DefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.function.generic.AbstractGenericFunctionWizard;
+import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.entity.EntityDefinitionService;
@@ -98,11 +100,13 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  * 
  * @author Stefano Costa, GeoSolutions
  */
-public class FeatureChainingConfigurationPage extends
-		AbstractConfigurationPage<AbstractAppSchemaConfigurator, AppSchemaAlignmentExportWizard> {
+public class FeatureChainingConfigurationPage
+		extends
+		AbstractConfigurationPage<AbstractAppSchemaConfigurator, ExportWizard<AbstractAppSchemaConfigurator>> {
 
 	private final List<ChainPage> pages = new ArrayList<ChainPage>();
 	private final FeatureChaining featureChaining = new FeatureChaining();
+	private final UniqueMappingNameGenerator mappingNameGenerator = new RandomUniqueMappingNameGenerator();
 	private IPageChangingListener changeListener;
 	private boolean goingBack = false;
 
@@ -183,8 +187,8 @@ public class FeatureChainingConfigurationPage extends
 				page.dispose();
 			pages.clear();
 
-			AlignmentService alignmentService = HaleUI.getServiceProvider()
-					.getService(AlignmentService.class);
+			AlignmentService alignmentService = HaleUI.getServiceProvider().getService(
+					AlignmentService.class);
 			Alignment alignment = alignmentService.getAlignment();
 
 			int pageIdx = 0;
@@ -195,9 +199,9 @@ public class FeatureChainingConfigurationPage extends
 					List<JoinCondition> conditions = getSortedJoinConditions(joinParameter);
 					TypeEntityDefinition joinTarget = getTargetType(typeCell).getDefinition();
 
-					for (int i = 0; i < joinParameter.types.size() - 1; i++) {
+					for (int i = 0; i < joinParameter.getTypes().size() - 1; i++) {
 						ChainPage chainPage = new ChainPage(pageIdx, typeCell.getId(), i,
-								joinParameter.types, conditions, joinTarget);
+								joinParameter.getTypes(), conditions, joinTarget);
 
 						chainPage.setWizard(getWizard());
 						pages.add(chainPage);
@@ -256,8 +260,7 @@ public class FeatureChainingConfigurationPage extends
 					Object currentPage = event.getCurrentPage();
 					Object targetPage = event.getTargetPage();
 
-					if ((currentPage instanceof ChainPage
-							|| currentPage instanceof AppSchemaDataStoreConfigurationPage)
+					if ((currentPage instanceof ChainPage || currentPage instanceof WorkspaceConfigurationPage)
 							&& targetPage instanceof FeatureChainingConfigurationPage) {
 						goingBack = true;
 					}
@@ -276,8 +279,15 @@ public class FeatureChainingConfigurationPage extends
 		}
 	}
 
-	private class ChainPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> {
+	/**
+	 * Configuration pain for a single link in the feature chain, i.e. a join
+	 * between one container type and one nested type.
+	 * 
+	 * @author Stefano Costa, GeoSolutions
+	 */
+	public class ChainPage extends HaleWizardPage<AbstractGenericFunctionWizard<?, ?>> {
 
+		private final FeatureChainingConfigurationPage parentPage;
 		private final List<TypeEntityDefinition> joinTypes;
 		private final TypeEntityDefinition joinTarget;
 		private final int pageIdx;
@@ -295,6 +305,17 @@ public class FeatureChainingConfigurationPage extends
 		private TableViewer joinTypesViewer;
 		private Button checkUniqueMapping;
 
+		/**
+		 * Constructor.
+		 * 
+		 * @param pageIdx the page index, relative to the parent feature
+		 *            chaining configuration page
+		 * @param joinCellId the ID of the join cell associated to this page
+		 * @param chainIdx the chain index
+		 * @param joinTypes the types to join
+		 * @param joinConditions the join conditions
+		 * @param joinTarget the join target type
+		 */
 		protected ChainPage(int pageIdx, String joinCellId, int chainIdx,
 				List<TypeEntityDefinition> joinTypes, List<JoinCondition> joinConditions,
 				TypeEntityDefinition joinTarget) {
@@ -303,11 +324,12 @@ public class FeatureChainingConfigurationPage extends
 							.getDefinition().getDisplayName()
 					+ " and "
 					+ AlignmentUtil.getTypeEntity(joinConditions.get(chainIdx).joinProperty)
-							.getDefinition().getDisplayName(),
-					null);
+							.getDefinition().getDisplayName(), null);
+			this.parentPage = FeatureChainingConfigurationPage.this;
 			this.joinCondition = joinConditions.get(chainIdx);
-			this.message = "Please select target for nested source type " + AlignmentUtil
-					.getTypeEntity(joinCondition.joinProperty).getDefinition().getDisplayName();
+			this.message = "Please select target for nested source type "
+					+ AlignmentUtil.getTypeEntity(joinCondition.joinProperty).getDefinition()
+							.getDisplayName();
 			this.joinTypes = joinTypes;
 			this.joinTarget = joinTarget;
 			this.pageIdx = pageIdx;
@@ -341,14 +363,14 @@ public class FeatureChainingConfigurationPage extends
 			// can't reliably get the previous chain configuration from current
 			// chain configuration, because the latter may not exist yet
 			int previousChainIndex = joinTypes.indexOf(containerTypeSource) - 1;
-			ChainConfiguration previousChainConf = (previousChainIndex >= 0)
-					? featureChaining.getChain(joinCellId, previousChainIndex) : null;
+			ChainConfiguration previousChainConf = (previousChainIndex >= 0) ? featureChaining
+					.getChain(joinCellId, previousChainIndex) : null;
 			ChainConfiguration chainConf = featureChaining.getChain(joinCellId, chainIdx);
 			// set nested type target
 			if (chainConf != null) {
 				nestedTypeTarget = chainConf.getNestedTypeTarget();
-				uniqueMapping = (chainConf.getMappingName() != null
-						&& !chainConf.getMappingName().isEmpty());
+				uniqueMapping = (chainConf.getMappingName() != null && !chainConf.getMappingName()
+						.isEmpty());
 				checkUniqueMapping.setSelection(uniqueMapping);
 			}
 			else {
@@ -405,10 +427,10 @@ public class FeatureChainingConfigurationPage extends
 			gridData.minimumHeight = 150;
 			tableParent.setLayoutData(gridData);
 
-			final TableViewer tableViewer = new TableViewer(tableParent,
-					SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-			tableViewer.getControl()
-					.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
+			final TableViewer tableViewer = new TableViewer(tableParent, SWT.H_SCROLL
+					| SWT.V_SCROLL | SWT.BORDER);
+			tableViewer.getControl().setLayoutData(
+					new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 			tableViewer.setContentProvider(ArrayContentProvider.getInstance());
 			tableViewer.getTable().setHeaderVisible(true);
 			tableViewer.getTable().setLinesVisible(true);
@@ -423,8 +445,7 @@ public class FeatureChainingConfigurationPage extends
 				}
 			});
 
-			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(tableViewer, true,
-					true);
+			final DefinitionLabelProvider dlp = new DefinitionLabelProvider(tableViewer, true, true);
 			TableViewerColumn typeColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 			layout.setColumnData(typeColumn.getColumn(), new ColumnWeightData(1, true));
 			typeColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -468,8 +489,8 @@ public class FeatureChainingConfigurationPage extends
 
 			PatternFilter patternFilter = new SchemaPatternFilter();
 			patternFilter.setIncludeLeadingWildcard(true);
-			final FilteredTree filteredTree = new TreePathFilteredTree(parent,
-					SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+			final FilteredTree filteredTree = new TreePathFilteredTree(parent, SWT.SINGLE
+					| SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2);
 			gridData.minimumHeight = 160;
 			gridData.minimumWidth = 140;
@@ -478,8 +499,8 @@ public class FeatureChainingConfigurationPage extends
 
 			viewer.setComparator(new DefinitionComparator());
 
-			EntityDefinitionService eds = PlatformUI.getWorkbench()
-					.getService(EntityDefinitionService.class);
+			EntityDefinitionService eds = PlatformUI.getWorkbench().getService(
+					EntityDefinitionService.class);
 			viewer.setContentProvider(new TreePathProviderAdapter(
 					new EntityTypeIterableContentProvider(eds, SchemaSpaceID.TARGET)));
 			viewer.setLabelProvider(new StyledDefinitionLabelProvider(viewer));
@@ -499,8 +520,8 @@ public class FeatureChainingConfigurationPage extends
 						List<ChildContext> selectedPropertyPath = selectedProperty
 								.getPropertyPath();
 
-						SchemaService schemaService = HaleUI.getServiceProvider()
-								.getService(SchemaService.class);
+						SchemaService schemaService = HaleUI.getServiceProvider().getService(
+								SchemaService.class);
 						SchemaSpace targetSchema = schemaService.getSchemas(SchemaSpaceID.TARGET);
 						List<ChildContext> containerPath = containerTypeTarget.getPropertyPath();
 
@@ -539,11 +560,16 @@ public class FeatureChainingConfigurationPage extends
 			conf.setNestedTypeTarget(nestedTypeTarget);
 			uniqueMapping = checkUniqueMapping.getSelection();
 			if (uniqueMapping) {
-				conf.setMappingName(UUID.randomUUID().toString());
+				// TODO: verify this is correct
+				conf.setMappingName(mappingNameGenerator.generateUniqueMappingName(nestedTypeTarget
+						.getDefinition().getName()));
 			}
 			else {
 				conf.setMappingName(null);
 			}
+
+			// Update feature chaining parameter
+			parentPage.updateConfiguration(parentPage.getWizard().getProvider());
 
 			setMessage();
 		}
@@ -563,8 +589,8 @@ public class FeatureChainingConfigurationPage extends
 			@Override
 			public String getText(Object element) {
 				TypeEntityDefinition typeEntityDef = (TypeEntityDefinition) element;
-				PropertyEntityDefinition property = (typeEntityDef.equals(containerTypeSource))
-						? joinCondition.baseProperty : joinCondition.joinProperty;
+				PropertyEntityDefinition property = (typeEntityDef.equals(containerTypeSource)) ? joinCondition.baseProperty
+						: joinCondition.joinProperty;
 				return property.getDefinition().getDisplayName();
 			}
 

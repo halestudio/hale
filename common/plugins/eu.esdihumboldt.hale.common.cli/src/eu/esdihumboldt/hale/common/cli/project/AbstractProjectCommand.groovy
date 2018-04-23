@@ -48,6 +48,8 @@ abstract class AbstractProjectCommand<T> implements Command {
 	public int run(List<String> args, CommandContext context) {
 		def cli = new CliBuilder(usage: context.baseCommand + ' [options] <project>' + usageExtension)
 
+		HaleCLIUtil.defaultOptions(cli, true)
+
 		cli._(longOpt: 'help', 'Show this help')
 
 		setupOptions(cli)
@@ -120,7 +122,7 @@ abstract class AbstractProjectCommand<T> implements Command {
 		List<URI> failedProjects = []
 
 		boolean failed = false
-		ReportHandler reports = HaleCLIUtil.createReportHandler()
+		ReportHandler reports = HaleCLIUtil.createReportHandler(options)
 		projects.each { URI project ->
 			try {
 				println()

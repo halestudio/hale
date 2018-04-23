@@ -47,8 +47,8 @@ import org.eclipse.swt.widgets.ToolBar;
  * @param <V> the type of the viewer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer> extends
-		TrayDialog {
+public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewer>
+		extends TrayDialog {
 
 	private static final int NONE_ID = IDialogConstants.CLIENT_ID + 1;
 
@@ -159,8 +159,8 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 			toolbar.dispose();
 
 		if (!(viewer.getControl().getLayoutData() instanceof GridData)) {
-			viewer.getControl().setLayoutData(
-					GridDataFactory.fillDefaults().grab(true, true).create());
+			viewer.getControl()
+					.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		}
 
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -313,6 +313,15 @@ public abstract class AbstractViewerSelectionDialog<T, V extends StructuredViewe
 	 */
 	public T getObject() {
 		return selected;
+	}
+
+	/**
+	 * Set the internal selection.
+	 * 
+	 * @param selected the selection
+	 */
+	protected void internalSetSelected(T selected) {
+		this.selected = selected;
 	}
 
 	/**

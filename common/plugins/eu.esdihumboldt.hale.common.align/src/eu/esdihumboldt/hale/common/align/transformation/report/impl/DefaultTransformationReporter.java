@@ -267,7 +267,7 @@ public class DefaultTransformationReporter extends AbstractReporter<Transformati
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
 	public DefaultTransformationReporter(String taskName, boolean doLog) {
-		super(taskName, TransformationMessage.class);
+		super(taskName, TASK_TYPE, TransformationMessage.class);
 
 		this.doLog = doLog;
 	}

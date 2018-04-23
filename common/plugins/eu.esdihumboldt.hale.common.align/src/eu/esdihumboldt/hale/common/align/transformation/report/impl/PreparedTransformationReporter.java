@@ -27,8 +27,8 @@ import eu.esdihumboldt.hale.common.core.report.impl.DefaultReporter;
  * 
  * @author Simon Templer
  */
-public class PreparedTransformationReporter extends DefaultReporter<TransformationMessage> implements
-		TransformationReport, TransformationReporter {
+public class PreparedTransformationReporter extends DefaultReporter<TransformationMessage>
+		implements TransformationReport, TransformationReporter {
 
 	/**
 	 * Create an empty report. It is set to not successful by default. But you
@@ -36,10 +36,11 @@ public class PreparedTransformationReporter extends DefaultReporter<Transformati
 	 * timestamp after the task has finished.
 	 * 
 	 * @param taskName the name of the task the report is related to
+	 * @param taskType the identifier of the task type
 	 * @param doLog if added messages shall also be logged using {@link ALogger}
 	 */
-	public PreparedTransformationReporter(String taskName, boolean doLog) {
-		super(taskName, TransformationMessage.class, doLog);
+	public PreparedTransformationReporter(String taskName, String taskType, boolean doLog) {
+		super(taskName, taskType, TransformationMessage.class, doLog);
 	}
 
 }

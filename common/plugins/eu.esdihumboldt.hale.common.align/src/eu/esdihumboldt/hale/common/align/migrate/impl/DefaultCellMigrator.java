@@ -16,7 +16,10 @@
 package eu.esdihumboldt.hale.common.align.migrate.impl;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps.EntryTransformer;
 import com.google.common.collect.Multimaps;
 
@@ -27,11 +30,13 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultProperty;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultType;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
 /**
  * Default implementation of migrator for single cells.
@@ -42,8 +47,12 @@ public class DefaultCellMigrator implements CellMigrator {
 
 	@Override
 	public MutableCell updateCell(final Cell originalCell, final AlignmentMigration migration,
-			final MigrationOptions options) {
+			final MigrationOptions options, SimpleLog log) {
 		MutableCell result = new DefaultCell(originalCell);
+
+		SimpleLog cellLog = SimpleLog.all(log, new CellLog(result, CELL_LOG_CATEGORY));
+
+		final AtomicBoolean replacedEntities = new AtomicBoolean(false);
 
 		EntryTransformer<String, Entity, Entity> entityTransformer = new EntryTransformer<String, Entity, Entity>() {
 
@@ -51,10 +60,14 @@ public class DefaultCellMigrator implements CellMigrator {
 			public Entity transformEntry(String key, Entity value) {
 				EntityDefinition org = value.getDefinition();
 
-				Optional<EntityDefinition> replace = migration.entityReplacement(org);
+				Optional<EntityDefinition> replace = migration.entityReplacement(org, cellLog);
 
 				EntityDefinition entity = replace.orElse(org);
 				// FIXME what about null replacements / removals?
+
+				if (!Objects.equal(entity, org)) {
+					replacedEntities.set(true);
+				}
 
 				if (entity instanceof PropertyEntityDefinition) {
 					return new DefaultProperty((PropertyEntityDefinition) entity);
@@ -71,17 +84,34 @@ public class DefaultCellMigrator implements CellMigrator {
 
 		// update source entities
 		if (options.updateSource() && result.getSource() != null && !result.getSource().isEmpty()) {
-			result.setSource(Multimaps.transformEntries(result.getSource(), entityTransformer));
+			result.setSource(ArrayListMultimap
+					.create(Multimaps.transformEntries(result.getSource(), entityTransformer)));
 		}
 
 		// update target entities
 		if (options.updateTarget() && result.getTarget() != null && !result.getTarget().isEmpty()) {
-			result.setTarget(Multimaps.transformEntries(result.getTarget(), entityTransformer));
+			result.setTarget(ArrayListMultimap
+					.create(Multimaps.transformEntries(result.getTarget(), entityTransformer)));
 		}
 
 		// TODO anything else?
 
+		postUpdateCell(result, options, replacedEntities.get(), cellLog);
+
 		return result;
+	}
+
+	/**
+	 * Called after updating a cell to migrate.
+	 * 
+	 * @param result the result cell
+	 * @param options the migration options
+	 * @param entitiesReplaced if any entities were replaced
+	 * @param log the cell log
+	 */
+	protected void postUpdateCell(MutableCell result, MigrationOptions options,
+			boolean entitiesReplaced, SimpleLog log) {
+		// override me
 	}
 
 }

@@ -26,8 +26,10 @@ Import-Package: com.google.common.io;version="1.6.0",
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition,
  eu.esdihumboldt.hale.ui.util.io,
+ eu.esdihumboldt.util.format,
  eu.esdihumboldt.util.groovy.paths,
  eu.esdihumboldt.util.io,
+ org.apache.commons.lang;version="2.6.0",
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin

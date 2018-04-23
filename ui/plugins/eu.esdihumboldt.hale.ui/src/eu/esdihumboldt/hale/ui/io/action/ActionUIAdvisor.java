@@ -78,4 +78,24 @@ public interface ActionUIAdvisor<T> {
 	 */
 	public T retrieveResource(String resourceId);
 
+	/**
+	 * States if providing a custom name for a resource is supported.
+	 * 
+	 * @return if retrieving a custom name for a resource is supported
+	 */
+	default boolean supportsCustomName() {
+		return false;
+	}
+
+	/**
+	 * Determine the name for the resource with the given identifier.
+	 * 
+	 * @param resourceId the resource identifier
+	 * @return the resource name or <code>null</code>
+	 * @see #supportsCustomName()
+	 */
+	default String getCustomName(String resourceId) {
+		return null;
+	}
+
 }

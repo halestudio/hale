@@ -19,6 +19,7 @@ package eu.esdihumboldt.hale.ui.transformation;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.impl.DefaultIOAdvisor;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -44,6 +45,7 @@ public class TransformDataExportAdvisor extends DefaultIOAdvisor<InstanceWriter>
 		this.instances = instances;
 
 		setServiceProvider(HaleUI.getServiceProvider());
+		setActionId(InstanceIO.ACTION_SAVE_TRANSFORMED_DATA);
 	}
 
 	/**

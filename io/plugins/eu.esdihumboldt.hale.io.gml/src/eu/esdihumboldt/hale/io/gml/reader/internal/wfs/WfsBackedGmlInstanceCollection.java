@@ -130,13 +130,15 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	 * @param featuresPerRequest Number of features to retrieve at most with one
 	 *            WFS GetFeature request, or {@value #UNLIMITED} to disable
 	 *            pagination
+	 * @param ignoreNumberMatched If featuresPerRequest is set, ignore the
+	 *            number of matches reported by the WFS
 	 * @throws URISyntaxException thrown if the WFS request URL cannot be
 	 *             generated from the source location URI
 	 */
 	public WfsBackedGmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
 			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
 			boolean ignoreNamespaces, CRSProvider crsProvider, IOProvider provider,
-			int featuresPerRequest) throws URISyntaxException {
+			int featuresPerRequest, boolean ignoreNumberMatched) throws URISyntaxException {
 
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
@@ -185,12 +187,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
 		int hits;
-		try {
-			hits = requestHits(primordialUri);
-		} catch (WFSException e) {
-			log.debug(MessageFormat.format("Failed to perform hits query (REQUESTTYPE=hits): {0}",
-					e.getMessage()), e);
+		if (ignoreNumberMatched) {
 			hits = UNKNOWN_SIZE;
+		}
+		else {
+			try {
+				hits = requestHits(primordialUri);
+			} catch (WFSException e) {
+				log.debug(MessageFormat.format(
+						"Failed to perform hits query (REQUESTTYPE=hits): {0}", e.getMessage()), e);
+				hits = UNKNOWN_SIZE;
+			}
 		}
 
 		switch (wfsVersion) {

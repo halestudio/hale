@@ -30,11 +30,12 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.MouseAdapter;
@@ -124,16 +125,23 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	public void createControls(Composite parent) {
 		getPage().setDescription("Please select a destination file for the export");
 
-		parent.setLayout(new GridLayout(3, false));
+		parent.setLayout(new GridLayout(4, false));
+
+		Composite loginGroup = new Composite(parent, SWT.BORDER);
+		loginGroup.setLayout(new GridLayout(4, false));
+		GridData loginGroupLayout = new GridData(SWT.LEAD, SWT.LEAD, false, false, 4, 1);
+		loginGroupLayout.widthHint = 550;
+		loginGroup.setLayoutData(loginGroupLayout);
 
 		/*
 		 * Login status label
 		 */
-		loginStatusLabel = new Label(parent, SWT.NONE);
-		loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		loginStatusLabel = new Label(loginGroup, SWT.NONE);
+		loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 
-		loginButton = new Button(parent, SWT.PUSH);
+		loginButton = new Button(loginGroup, SWT.PUSH);
 		loginButton.setText("Login");
+		loginButton.setLayoutData(new GridData(SWT.LEAD, SWT.CENTER, false, false, 1, 1));
 		loginButton.addSelectionListener(new SelectionAdapter() {
 
 			/**
@@ -143,7 +151,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 			public void widgetSelected(SelectionEvent e) {
 				HaleConnectLoginDialog loginDialog = HaleConnectLoginHandler
 						.createLoginDialog(Display.getCurrent().getActiveShell());
-				if (loginDialog.open() == Dialog.OK) {
+				if (loginDialog != null && loginDialog.open() == Dialog.OK) {
 					HaleConnectLoginHandler.performLogin(loginDialog);
 					updateState();
 					prefillTargetProject();
@@ -154,8 +162,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		updateOrNewGroup = new Group(parent, SWT.NONE);
 		updateOrNewGroup.setText("Please choose whether you would like to...");
-		updateOrNewGroup.setLayout(new GridLayout(3, true));
-		updateOrNewGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+		updateOrNewGroup.setLayout(new GridLayout(4, false));
+		updateOrNewGroup.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, false, false, 4, 1));
 
 		newProject = new Button(updateOrNewGroup, SWT.RADIO);
 		newProject.setText("create a new project on hale connect");
@@ -191,8 +199,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		controlsStack.setLayout(controlsStackLayout);
 
 		newProjectControls = new Composite(controlsStack, SWT.NONE);
-		newProjectControls.setLayout(new GridLayout(3, true));
-		GridData grid = new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1);
+		newProjectControls.setLayout(new GridLayout(4, true));
+		GridData grid = new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1);
 		newProjectControls.setLayoutData(grid);
 
 		ownershipGroup = new Composite(newProjectControls, SWT.NONE);
@@ -212,31 +220,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		GridData orgSelectorGrid = new GridData(SWT.LEAD, SWT.LEAD, false, false);
 		orgSelectorGrid.widthHint = 175;
 		orgSelector.getCombo().setLayoutData(orgSelectorGrid);
-		orgSelector.setContentProvider(new IStructuredContentProvider() {
-
-			@Override
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-				//
-			}
-
-			@Override
-			public void dispose() {
-				//
-			}
-
-			@Override
-			public Object[] getElements(Object inputElement) {
-				if (inputElement instanceof List<?>) {
-					List<?> elements = (List<?>) inputElement;
-					return elements.toArray();
-				}
-				else if (inputElement instanceof Object[]) {
-					return (Object[]) inputElement;
-				}
-
-				return new Object[] {};
-			}
-		});
+		orgSelector.setContentProvider(ArrayContentProvider.getInstance());
 		orgSelector.setLabelProvider(new LabelProvider() {
 
 			@Override
@@ -250,17 +234,19 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		});
 
-		enableVersioning = new Button(newProjectControls, SWT.CHECK);
-		enableVersioning.setText("Enable versioning?");
-		enableVersioning.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
+		Composite bucketOptions = new Composite(parent, SWT.NONE);
+		bucketOptions.setLayout(new RowLayout());
+		bucketOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 4, 1));
 
-		publicAccess = new Button(newProjectControls, SWT.CHECK);
+		enableVersioning = new Button(bucketOptions, SWT.CHECK);
+		enableVersioning.setText("Enable versioning?");
+
+		publicAccess = new Button(bucketOptions, SWT.CHECK);
 		publicAccess.setText("Allow public access?");
-		publicAccess.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, false, 3, 1));
 
 		updateProjectControls = new Composite(controlsStack, SWT.NONE);
 		updateProjectControls.setVisible(false);
-		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		updateProjectControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
 
 		/*
 		 * Project name text field
@@ -327,14 +313,14 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 		upstreamModifiedWarning = new Label(updateProjectControls, SWT.WRAP);
 		upstreamModifiedWarning
-				.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 3, 1));
+				.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false, 4, 1));
 		upstreamModifiedWarning.setFont(new Font(upstreamModifiedWarning.getDisplay(),
 				new FontData(currentFont.getName(), currentFont.getHeight(), SWT.BOLD)));
 		upstreamModifiedWarning.setVisible(false);
 
 		Composite writerOptions = new Composite(parent, SWT.NONE);
 		writerOptions.setLayout(new RowLayout());
-		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 3, 2));
+		writerOptions.setLayoutData(new GridData(SWT.LEAD, SWT.LEAD, true, true, 4, 2));
 
 		includeWebResources = new Button(writerOptions, SWT.CHECK);
 		includeWebResources.setText("Include web resources?");
@@ -442,6 +428,16 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				Value.of(includeWebResources.getSelection()));
 		provider.setParameter(ArchiveProjectWriter.EXCLUDE_CACHED_RESOURCES,
 				Value.of(excludeCachedResources.getSelection()));
+
+		// organisation selection
+		ISelection sel = orgSelector.getSelection();
+		if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) sel).getFirstElement();
+			if (selected instanceof HaleConnectOrganisationInfo) {
+				String orgId = ((HaleConnectOrganisationInfo) selected).getId();
+				provider.setParameter(HaleConnectProjectWriter.ORGANISATION_ID, Value.of(orgId));
+			}
+		}
 
 		provider.setTarget(new LocatableOutputSupplier<OutputStream>() {
 
@@ -562,8 +558,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 								exceptions.add(e);
 
 								// As a fallback, display dummy value that
-								// contains the
-								// orgId
+								// contains the orgId
 								organisations.add(new HaleConnectOrganisationInfo(orgId,
 										MessageFormat.format("<Organisation {0}>", orgId)));
 							}
@@ -605,7 +600,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 			}
 
 			if (!userAllowed && !orgAllowed) {
-				loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 				loginStatusLabel
 						.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 				loginStatusLabel.setText(
@@ -613,7 +607,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 			}
 		}
 		else {
-			loginStatusLabel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 			loginStatusLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 			loginStatusLabel.setText(
 					"You are not logged in to hale connect. Please login before sharing a project.");

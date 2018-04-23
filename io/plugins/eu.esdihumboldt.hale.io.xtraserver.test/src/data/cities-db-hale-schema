@@ -1,0 +1,739 @@
+<?xml version="1.0" encoding="UTF-8"?><hsd:schemas xmlns:hsd="http://www.esdi-humboldt.eu/hale/schema">
+<hsd:schema namespace="jdbc:postgresql:simpledemo_doc">
+<hsd:type-index>
+<hsd:entry index="0">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">alternativename</hsd:name>
+</hsd:entry>
+<hsd:entry index="1">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">city</hsd:name>
+</hsd:entry>
+<hsd:entry index="2">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">city_river</hsd:name>
+</hsd:entry>
+<hsd:entry index="3">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">district</hsd:name>
+</hsd:entry>
+<hsd:entry index="4">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">geography_columns</hsd:name>
+</hsd:entry>
+<hsd:entry index="5">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/city/location">geometry</hsd:name>
+</hsd:entry>
+<hsd:entry index="6">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/district/location">geometry</hsd:name>
+</hsd:entry>
+<hsd:entry index="7">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/river/location">geometry</hsd:name>
+</hsd:entry>
+<hsd:entry index="8">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/state/location">geometry</hsd:name>
+</hsd:entry>
+<hsd:entry index="9">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">geometry_columns</hsd:name>
+</hsd:entry>
+<hsd:entry index="10">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">int2</hsd:name>
+</hsd:entry>
+<hsd:entry index="11">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">int4</hsd:name>
+</hsd:entry>
+<hsd:entry index="12">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">name</hsd:name>
+</hsd:entry>
+<hsd:entry index="13">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">river</hsd:name>
+</hsd:entry>
+<hsd:entry index="14">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">spatial_ref_sys</hsd:name>
+</hsd:entry>
+<hsd:entry index="15">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">state</hsd:name>
+</hsd:entry>
+<hsd:entry index="16">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">text</hsd:name>
+</hsd:entry>
+<hsd:entry index="17">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">varchar</hsd:name>
+</hsd:entry>
+</hsd:type-index>
+<hsd:mapping-relevant>0 1 2 3 4 9 13 14 15</hsd:mapping-relevant>
+<hsd:types>
+<hsd:type index="0">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">alternativename</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."alternativename"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="alternativename"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>cid</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>name</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>language</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="1">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">city</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."city"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="city"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:description>Internal Id.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>name</hsd:name>
+<hsd:description>Name of the City. May be missing.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>inhabitants</hsd:name>
+<hsd:description>Number of inhabitants.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>location</hsd:name>
+<hsd:description>Point location of the City.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="5"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>function</hsd:name>
+<hsd:description>Function of the City. May be Nil.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="2">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">city_river</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."city_river"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="city_river"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:description>id of intermediary table row.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>cid</hsd:name>
+<hsd:description>Pointer to City row.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>rid</hsd:name>
+<hsd:description>Pointer to River row.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="3">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">district</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."district"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="district"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:description>id of District object</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>cid</hsd:name>
+<hsd:description>Pointer to City the District belongs to.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>name</hsd:name>
+<hsd:description>Name of District. May be missing.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>location</hsd:name>
+<hsd:description>Point location of District.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="6"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="4">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">geography_columns</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."geography_columns"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="geography_columns"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:declares>
+<hsd:property>
+<hsd:name>f_table_catalog</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="12"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_table_schema</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="12"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_table_name</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="12"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_geography_column</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="12"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>coord_dimension</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>srid</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>type</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="16"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="5">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/city/location">geometry</hsd:name>
+<hsd:constraint type="binding" value="eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty"/>
+<hsd:constraint type="geometry-metadata">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="srsText">
+<core:value value="GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]"/>
+</core:property>
+<core:property name="srs">
+<core:value value="4326"/>
+</core:property>
+<core:property name="authName">
+<core:value value="EPSG"/>
+</core:property>
+<core:property name="dimension">
+<core:value value="2"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Point"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="1111"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="6">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/district/location">geometry</hsd:name>
+<hsd:constraint type="binding" value="eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty"/>
+<hsd:constraint type="geometry-metadata">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="srsText">
+<core:value value="GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]"/>
+</core:property>
+<core:property name="srs">
+<core:value value="4326"/>
+</core:property>
+<core:property name="authName">
+<core:value value="EPSG"/>
+</core:property>
+<core:property name="dimension">
+<core:value value="2"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Point"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="1111"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="7">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/river/location">geometry</hsd:name>
+<hsd:constraint type="binding" value="eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty"/>
+<hsd:constraint type="geometry-metadata">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="srsText">
+<core:value value="GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]"/>
+</core:property>
+<core:property name="srs">
+<core:value value="4326"/>
+</core:property>
+<core:property name="authName">
+<core:value value="EPSG"/>
+</core:property>
+<core:property name="dimension">
+<core:value value="2"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Geometry"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="1111"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="8">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public/state/location">geometry</hsd:name>
+<hsd:constraint type="binding" value="eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty"/>
+<hsd:constraint type="geometry-metadata">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="srsText">
+<core:value value="GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.01745329251994328,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]"/>
+</core:property>
+<core:property name="srs">
+<core:value value="4326"/>
+</core:property>
+<core:property name="authName">
+<core:value value="EPSG"/>
+</core:property>
+<core:property name="dimension">
+<core:value value="2"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Polygon"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="1111"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="9">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">geometry_columns</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."geometry_columns"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="geometry_columns"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:declares>
+<hsd:property>
+<hsd:name>f_table_catalog</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_table_schema</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_table_name</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>f_geometry_column</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>coord_dimension</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>srid</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>type</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="10">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">int2</hsd:name>
+<hsd:constraint type="binding" value="java.lang.Short"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="5"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="11">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">int4</hsd:name>
+<hsd:constraint type="binding" value="java.lang.Integer"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="4"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="12">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">name</hsd:name>
+<hsd:constraint type="binding" value="java.lang.String"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="12"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="13">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">river</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."river"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="river"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:description>id of River object.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>name</hsd:name>
+<hsd:description>Name of River object. May be missing.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>length</hsd:name>
+<hsd:description>Length of River in km.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>location</hsd:name>
+<hsd:description>Line geometry of River.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="7"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="14">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">spatial_ref_sys</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."spatial_ref_sys"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="spatial_ref_sys"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>srid</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>srid</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>auth_name</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>auth_srid</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="11"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>srtext</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>proj4text</hsd:name>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="15">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc:public">state</hsd:name>
+<hsd:constraint type="abstract" value="false"/>
+<hsd:constraint type="has-value" value="false"/>
+<hsd:constraint type="jdbc_sqlquery">
+<core:text xml:space="preserve" xmlns:core="http://www.esdi-humboldt.eu/hale/core">SELECT * FROM "public"."state"</core:text>
+</hsd:constraint>
+<hsd:constraint type="jdbc_table">
+<core:properties xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:property name="schema">
+<core:value value="public"/>
+</core:property>
+<core:property name="usequote">
+<core:value value="true"/>
+</core:property>
+<core:property name="table">
+<core:value value="state"/>
+</core:property>
+</core:properties>
+</hsd:constraint>
+<hsd:constraint type="mappable" value="true"/>
+<hsd:constraint type="mapping-relevant" value="true"/>
+<hsd:constraint type="primary-key">
+<core:list xmlns:core="http://www.esdi-humboldt.eu/hale/core">
+<core:entry>
+<core:name>id</core:name>
+</core:entry>
+</core:list>
+</hsd:constraint>
+<hsd:declares>
+<hsd:property>
+<hsd:name>id</hsd:name>
+<hsd:description>id of State object.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="false"/>
+<hsd:propertyType index="10"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>name</hsd:name>
+<hsd:description>Name of State object. May be missing.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="17"/>
+</hsd:property>
+<hsd:property>
+<hsd:name>location</hsd:name>
+<hsd:description>Area geometry of State object.</hsd:description>
+<hsd:constraint type="cardinality" value="1..1"/>
+<hsd:constraint type="nillable" value="true"/>
+<hsd:propertyType index="8"/>
+</hsd:property>
+</hsd:declares>
+</hsd:type>
+<hsd:type index="16">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">text</hsd:name>
+<hsd:constraint type="binding" value="java.lang.String"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="12"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+<hsd:type index="17">
+<hsd:name namespace="jdbc:postgresql:simpledemo_doc">varchar</hsd:name>
+<hsd:constraint type="binding" value="java.lang.String"/>
+<hsd:constraint type="has-value" value="true"/>
+<hsd:constraint type="jdbc_sqltype" value="12"/>
+<hsd:constraint type="mapping-relevant" value="false"/>
+</hsd:type>
+</hsd:types>
+</hsd:schema>
+</hsd:schemas>

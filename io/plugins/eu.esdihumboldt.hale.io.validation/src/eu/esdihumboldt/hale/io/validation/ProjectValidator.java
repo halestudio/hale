@@ -110,11 +110,9 @@ public class ProjectValidator extends AbstractInstanceValidator {
 					boolean compatible = validatorFactory.getSupportedTypes().stream()
 							.anyMatch(type -> getContentType().isKindOf(type));
 					if (!compatible) {
-						reporter.info(new IOMessageImpl(
-								MessageFormat.format(
-										"Validator \"{0}\" skipped: cannot validate exported content type \"{1}\"",
-										validatorFactory.getIdentifier(), getContentType().getId()),
-								null));
+						reporter.info(new IOMessageImpl(MessageFormat.format(
+								"Validator \"{0}\" skipped: cannot validate exported content type \"{1}\"",
+								validatorFactory.getIdentifier(), getContentType().getId()), null));
 						continue;
 					}
 
@@ -158,6 +156,11 @@ public class ProjectValidator extends AbstractInstanceValidator {
 	@Override
 	protected String getDefaultTypeName() {
 		return null;
+	}
+
+	@Override
+	protected String getReportType() {
+		return PROVIDER_ID;
 	}
 
 }

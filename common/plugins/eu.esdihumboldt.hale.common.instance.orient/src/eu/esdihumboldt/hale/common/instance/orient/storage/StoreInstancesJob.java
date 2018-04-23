@@ -68,11 +68,16 @@ import gnu.trove.TObjectIntProcedure;
  */
 public abstract class StoreInstancesJob extends Job {
 
+	/**
+	 * Task type identifier.
+	 */
+	public static final String TASK_TYPE = "eu.esdihumboldt.hale.instance.orient.store";
+
 	private static class DefaultLog extends DefaultReporter<Message>
 			implements ReportSimpleLogSupport<Message> {
 
 		public DefaultLog(String taskName, Class<Message> messageType, boolean doLog) {
-			super(taskName, messageType, doLog);
+			super(taskName, TASK_TYPE, messageType, doLog);
 		}
 
 		@Override
@@ -361,6 +366,9 @@ public abstract class StoreInstancesJob extends Job {
 				}
 
 				report.info(new MessageImpl(msg.toString(), null));
+
+				// store info in statistics
+				report.stats().at("countPerType").at(typeName.toString()).set(count);
 
 				return true;
 			}

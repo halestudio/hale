@@ -133,8 +133,9 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		ListMultimap<String, ParameterValue> result = ArrayListMultimap.create(1, 1);
 
 		Set<JoinCondition> conditions = new HashSet<>();
-		for (ConditionPage page : pages)
+		for (ConditionPage page : pages) {
 			conditions.addAll(page.conditions);
+		}
 		JoinParameter param = new JoinParameter(types, conditions);
 
 		result.put(PARAMETER_JOIN, new ParameterValue(new ComplexValue(param)));
@@ -293,11 +294,13 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		List<? extends Entity> sourceEntities = cell.getSource().get(JOIN_TYPES);
 		List<TypeEntityDefinition> types = new ArrayList<TypeEntityDefinition>();
 		Iterator<? extends Entity> iter = sourceEntities.iterator();
-		while (iter.hasNext())
+		while (iter.hasNext()) {
 			types.add(AlignmentUtil.getTypeEntity(iter.next().getDefinition()));
+		}
 
-		if (sameTypes(this.types, types))
+		if (sameTypes(this.types, types)) {
 			return;
+		}
 
 		if (containsDuplicateType(types)) {
 			setPageComplete(false);
@@ -311,25 +314,42 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 		}
 
 		JoinParameter initialValue = null;
-		if (firstShow && !getInitialValues().isEmpty()) {
+		if (firstShow && !getInitialValues().get(PARAMETER_JOIN).isEmpty()) {
 			initialValue = getInitialValues().get(PARAMETER_JOIN).get(0).as(JoinParameter.class);
-			if (initialValue != null
-					&& (initialValue.validate() != null || !sameTypes(types, initialValue.types)))
-				initialValue = null;
+
+			if (initialValue != null) {
+				// use ordering of the initial value (needs to be modifiable)
+				List<TypeEntityDefinition> tmp = new ArrayList<>(initialValue.getTypes());
+
+				// append any type that were added, or remove types that were
+				// removed
+				tmp.retainAll(types);
+				List<TypeEntityDefinition> more = new ArrayList<>(types);
+				more.removeAll(tmp);
+				tmp.addAll(more);
+
+				types = tmp;
+
+				// apply potentially changed type list
+				initialValue = new JoinParameter(types, initialValue.getConditions());
+				if (initialValue.validate(true) != null) { // try to fix config
+					// not recoverable
+					initialValue = null;
+				}
+			}
+
 		}
 
-		for (ConditionPage page : pages)
-			page.dispose();
-		pages.clear();
-
-		if (initialValue != null) {
-			// use ordering of the initial value (needs to be modifiable)
-			types = new ArrayList<>(initialValue.types);
-		}
 		this.types = types;
 
-		if (table != null)
+		for (ConditionPage page : pages) {
+			page.dispose();
+		}
+		pages.clear();
+
+		if (table != null) {
 			table.setInput(types);
+		}
 
 		for (int i = 1; i < types.size(); i++) {
 			ConditionPage conditionPage = new ConditionPage(i);
@@ -339,7 +359,7 @@ public class JoinParameterPage extends AbstractParameterPage implements JoinFunc
 
 		if (initialValue != null) {
 			// add initial conditions
-			for (JoinCondition condition : initialValue.conditions) {
+			for (JoinCondition condition : initialValue.getConditions()) {
 				TypeEntityDefinition joinType = AlignmentUtil.getTypeEntity(condition.joinProperty);
 				int typeIndex = types.indexOf(joinType);
 				int pageIndex = typeIndex - 1;

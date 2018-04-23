@@ -106,19 +106,31 @@ public abstract class AbstractGeoInstanceWriter extends AbstractInstanceWriter
 	 */
 	protected Pair<Geometry, CRSDefinition> convertGeometry(Geometry geom, CRSDefinition sourceCrs,
 			IOReporter report) {
-		if (sourceCrs != null && sourceCrs.getCRS() != null && getTargetCRS() != null
-				&& getTargetCRS().getCRS() != null) {
-			try {
-				// TODO cache mathtransforms?
-				MathTransform transform = CRS.findMathTransform(sourceCrs.getCRS(),
-						getTargetCRS().getCRS());
-				Geometry targetGeometry = JTS.transform(geom, transform);
-				return new Pair<>(targetGeometry, getTargetCRS());
-			} catch (Exception e) {
-				if (report != null) {
-					report.error(new IOMessageImpl("Could not convert geometry to target CRS", e));
+		if (getTargetCRS() != null && getTargetCRS().getCRS() != null) {
+			if (sourceCrs != null && sourceCrs.getCRS() != null) {
+				try {
+					// TODO cache mathtransforms?
+					MathTransform transform = CRS.findMathTransform(sourceCrs.getCRS(),
+							getTargetCRS().getCRS());
+					Geometry targetGeometry = JTS.transform(geom, transform);
+					return new Pair<>(targetGeometry, getTargetCRS());
+				} catch (Exception e) {
+					if (report != null) {
+						report.error(
+								new IOMessageImpl("Could not convert geometry to target CRS", e));
+					}
+					// return original geometry
+					return new Pair<>(geom, sourceCrs);
 				}
-				// return original geometry
+			}
+			else {
+				// Report that the transformation could not performed b/c no
+				// valid source CRS was passed
+				if (report != null) {
+					report.error(new IOMessageImpl(
+							"Could not convert geometry to target CRS: No source CRS provided",
+							null));
+				}
 				return new Pair<>(geom, sourceCrs);
 			}
 		}

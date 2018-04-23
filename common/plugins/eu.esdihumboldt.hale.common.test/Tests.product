@@ -83,6 +83,7 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.interactive_instruments.xtraserver-config-util"/>
       <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
@@ -107,12 +108,14 @@
       <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.cli"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
@@ -124,6 +127,7 @@
       <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
       <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
       <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless.test"/>
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
@@ -136,6 +140,8 @@
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.referencing" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.referencing.test"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.groovy.test" fragment="true"/>
@@ -145,6 +151,7 @@
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.tasks"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
       <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
@@ -161,8 +168,11 @@
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess.test"/>
@@ -176,6 +186,7 @@
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -189,6 +200,8 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
+      <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
@@ -215,7 +228,7 @@
       <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
-      <plugin id="eu.esdihumboldt.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.test"/>
       <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
@@ -260,6 +273,7 @@
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.commons.beanutils"/>
+      <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.compress"/>

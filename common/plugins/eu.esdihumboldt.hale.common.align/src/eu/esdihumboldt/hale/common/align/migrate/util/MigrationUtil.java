@@ -21,8 +21,11 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.esdihumboldt.hale.common.align.extension.function.custom.CustomPropertyFunction;
+import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.MutableAlignment;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 
 /**
  * Migration utility methods.
@@ -91,6 +94,18 @@ public class MigrationUtil {
 			return id.substring(sepIndex + 1);
 		}
 		return id;
+	}
+
+	/**
+	 * Determines if the given cell is a direct match.
+	 * 
+	 * @param match the cell to test
+	 * @return <code>true</code> if the cell represents a direct match,
+	 *         <code>false</code> otherwise
+	 */
+	public static boolean isDirectMatch(Cell match) {
+		return match.getTransformationIdentifier().equals(RetypeFunction.ID)
+				|| match.getTransformationIdentifier().equals(RenameFunction.ID);
 	}
 
 }

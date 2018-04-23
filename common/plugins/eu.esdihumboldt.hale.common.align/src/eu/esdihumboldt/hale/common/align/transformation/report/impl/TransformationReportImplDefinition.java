@@ -30,8 +30,8 @@ import eu.esdihumboldt.hale.common.core.report.impl.AbstractReportDefinition;
  * @author Andreas Burchert
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
-public class TransformationReportImplDefinition extends
-		AbstractReportDefinition<TransformationReport, TransformationReporter> {
+public class TransformationReportImplDefinition
+		extends AbstractReportDefinition<TransformationReport, TransformationReporter> {
 
 	private static final ALogger _log = ALoggerFactory
 			.getLogger(TransformationReportImplDefinition.class);
@@ -48,7 +48,8 @@ public class TransformationReportImplDefinition extends
 	 */
 	@Override
 	protected TransformationReporter createReport(Properties props) {
-		return new PreparedTransformationReporter(props.getProperty(KEY_REPORT_TASKNAME), false);
+		return new PreparedTransformationReporter(props.getProperty(KEY_REPORT_TASKNAME),
+				props.getProperty(KEY_REPORT_TASKTYPE), false);
 	}
 
 	/**
@@ -56,7 +57,8 @@ public class TransformationReportImplDefinition extends
 	 *      java.util.Properties)
 	 */
 	@Override
-	protected TransformationReport configureReport(TransformationReporter reporter, Properties props) {
+	protected TransformationReport configureReport(TransformationReporter reporter,
+			Properties props) {
 		try {
 			AbstractReportDefinition.configureBasicReporter(reporter, props);
 		} catch (Exception e) {

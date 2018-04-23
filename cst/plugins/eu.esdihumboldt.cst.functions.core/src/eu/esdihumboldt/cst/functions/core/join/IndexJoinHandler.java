@@ -67,7 +67,7 @@ public class IndexJoinHandler
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-			throws TransformationException {
+					throws TransformationException {
 
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
@@ -78,7 +78,7 @@ public class IndexJoinHandler
 		JoinHandler fallbackHandler = new JoinHandler();
 		InstanceIndexService indexService = serviceProvider.getService(InstanceIndexService.class);
 		if (indexService == null) {
-			log.warn(MessageFormat.format(
+			log.info(MessageFormat.format(
 					"Index service not available, falling back to join handler {0}",
 					fallbackHandler.getClass().getCanonicalName()));
 			return fallbackHandler.partitionInstances(instances, transformationIdentifier, engine,
@@ -93,7 +93,7 @@ public class IndexJoinHandler
 			throw new TransformationException("Join parameter invalid: " + validation);
 		}
 
-		List<TypeEntityDefinition> types = joinParameter.types;
+		List<TypeEntityDefinition> types = joinParameter.getTypes();
 
 		JoinDefinition joinDefinition = JoinUtil.getJoinDefinition(joinParameter);
 
@@ -112,7 +112,7 @@ public class IndexJoinHandler
 				}
 
 				if (!Identifiable.is(i)) {
-					log.warn(MessageFormat.format(
+					log.info(MessageFormat.format(
 							"At least one instance does not have an ID, falling back to join handler {0}",
 							fallbackHandler.getClass().getCanonicalName()));
 					return fallbackHandler.partitionInstances(instances, transformationIdentifier,

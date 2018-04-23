@@ -36,6 +36,8 @@ import com.google.common.io.Files;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.CreateFunction;
@@ -56,6 +58,7 @@ import eu.esdihumboldt.hale.common.headless.transform.extension.TransformationSi
 import eu.esdihumboldt.hale.common.headless.transform.filter.InstanceFilterDefinition;
 import eu.esdihumboldt.hale.common.headless.transform.validate.impl.DefaultTransformedInstanceValidator;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
+import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -79,6 +82,8 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  * @author Simon Templer
  */
 public class Transformation {
+
+	private static final ALogger log = ALoggerFactory.getLogger(Transformation.class);
 
 	/**
 	 * Transform the instances provided through the given instance readers and
@@ -180,6 +185,7 @@ public class Transformation {
 			}
 		};
 		loadDataAdvisor.setServiceProvider(environment);
+		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
 
 		List<InstanceCollection> sourceList = Lists.transform(sources,
 				new Function<InstanceReader, InstanceCollection>() {
@@ -234,6 +240,7 @@ public class Transformation {
 
 		};
 		saveDataAdvisor.setServiceProvider(environment);
+		saveDataAdvisor.setActionId(InstanceIO.ACTION_SAVE_TRANSFORMED_DATA);
 
 		saveDataAdvisor.prepareProvider(target);
 		saveDataAdvisor.updateConfiguration(target);
@@ -313,7 +320,7 @@ public class Transformation {
 					});
 		}
 		else {
-			sourceToUse = sources;
+			sourceToUse = new StatsCountInstanceCollection(sources, reportHandler);
 			db = null;
 		}
 
@@ -351,8 +358,9 @@ public class Transformation {
 						targetSink.done(true);
 						return Status.CANCEL_STATUS;
 					}
-					else
+					else {
 						targetSink.done(false);
+					}
 				}
 			}
 		};
@@ -373,11 +381,25 @@ public class Transformation {
 
 			@Override
 			public void done(IJobChangeEvent event) {
-				if (!event.getResult().isOK())
-					exportJob.cancel();
+				if (!event.getResult().isOK()) {
 
-				if (db != null)
+					// log transformation job error (because it otherwise gets
+					// lost)
+					String msg = "Error during transformation";
+
+					if (event.getResult().getMessage() != null) {
+						msg = ": " + event.getResult().getMessage();
+					}
+
+					log.error(msg, event.getResult().getException());
+
+					// failing transformation is done by cancelling the export
+					exportJob.cancel();
+				}
+
+				if (db != null) {
 					db.delete();
+				}
 			}
 		});
 		// after export is done, validation should run
@@ -530,16 +552,29 @@ public class Transformation {
 //			result.cancel(false);
 //		}
 
-		// failed - try setting exception
-		if (event.getResult() != null && event.getResult().getException() != null) {
-			result.setException(event.getResult().getException());
-
-			event.getResult().getException().printStackTrace();
+		String jobName = event.getJob() != null ? event.getJob().getName() : "unknown";
+		String msg = "Error occured in job \"" + jobName + "\"";
+		if (event.getResult() != null && event.getResult().getMessage() != null) {
+			msg = msg + ": " + event.getResult().getMessage();
 		}
+
+		// try setting exception
+		if (event.getResult() != null && event.getResult().getException() != null) {
+			log.error(msg, event.getResult().getException());
+
+			if (!result.setException(event.getResult().getException())) {
+				log.error("Exception could not be set on future (already completed or cancelled)");
+			}
+			return;
+		}
+
+		log.error(msg);
 
 		// in case there was no exception or setting it failed, just state that
 		// execution was not successful
-		result.set(false);
+		if (!result.set(false)) {
+			log.error("Failure could not be set on future (already completed or cancelled)");
+		}
 	}
 
 	private static InstanceCollection applyFilter(List<InstanceCollection> sourceData,

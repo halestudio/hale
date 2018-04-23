@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Groovy Utils Tests
 Bundle-SymbolicName: eu.esdihumboldt.util.groovy.test
-Bundle-Version: 3.3.2.qualifier
-Fragment-Host: eu.esdihumboldt.util.groovy
+Bundle-Version: 3.4.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: junit.framework;version="4.8.2"
-Require-Bundle: org.kohsuke.groovy.sandbox;bundle-version="1.5.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.junit;bundle-version="4.12.0",
+ eu.esdihumboldt.util.groovy;bundle-version="3.4.0",
+ groovy;bundle-version="2.3.7"

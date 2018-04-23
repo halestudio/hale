@@ -65,6 +65,10 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.tasks.ResolvedTask;
+import eu.esdihumboldt.hale.common.tasks.Task;
+import eu.esdihumboldt.hale.common.tasks.TaskService;
+import eu.esdihumboldt.hale.common.tasks.TaskServiceListener;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.CommonSharedImages;
 import eu.esdihumboldt.hale.ui.common.function.viewer.FunctionLabelProvider;
@@ -99,6 +103,8 @@ public class AlignmentView extends AbstractMappingView {
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
 	private ISelectionListener selectionListener;
+
+	private TaskServiceListener tasksListener;
 
 	private ResizingTreeLayoutAlgorithm treeLayout;
 
@@ -305,6 +311,25 @@ public class AlignmentView extends AbstractMappingView {
 				refreshGraph();
 			}
 
+		});
+
+		TaskService taskService = PlatformUI.getWorkbench().getService(TaskService.class);
+		taskService.addListener(tasksListener = new TaskServiceListener() {
+
+			@Override
+			public void tasksRemoved(Iterable<Task<?>> tasks) {
+				refreshGraph();
+			}
+
+			@Override
+			public void tasksAdded(Iterable<Task<?>> tasks) {
+				refreshGraph();
+			}
+
+			@Override
+			public void taskUserDataChanged(ResolvedTask<?> task) {
+				refreshGraph();
+			}
 		});
 
 		// initialize compatibility checkup and display
@@ -688,7 +713,7 @@ public class AlignmentView extends AbstractMappingView {
 	private void refreshGraph() {
 
 		final Display display = PlatformUI.getWorkbench().getDisplay();
-		display.syncExec(new Runnable() {
+		display.asyncExec(new Runnable() {
 
 			@Override
 			public void run() {
@@ -730,6 +755,11 @@ public class AlignmentView extends AbstractMappingView {
 		if (selectionListener != null) {
 			getSite().getWorkbenchWindow().getSelectionService()
 					.removePostSelectionListener(selectionListener);
+		}
+
+		if (tasksListener != null) {
+			TaskService ts = PlatformUI.getWorkbench().getService(TaskService.class);
+			ts.removeListener(tasksListener);
 		}
 
 		functionLabels.dispose();

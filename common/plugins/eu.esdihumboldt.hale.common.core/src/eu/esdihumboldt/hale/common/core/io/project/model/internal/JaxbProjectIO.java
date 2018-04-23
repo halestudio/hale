@@ -92,6 +92,8 @@ public class JaxbProjectIO {
 
 		// Indent output
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		// set encoding
+		m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
 		// Specify the schema location
 //		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
 //				"http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");

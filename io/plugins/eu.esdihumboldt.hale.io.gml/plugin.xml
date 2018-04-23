@@ -172,6 +172,15 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
+               description="Ignore number of matched features reported by the WFS"
+               label="Ignore number of matched features reported by the WFS"
+               name="ignoreNumberMatched"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
                description="The identifier of the algorithm to use for the interpolation of Arc and Circle geometries"
                label="Interpolation algorithm"
                name="interpolation.algorithm"
@@ -294,6 +303,15 @@
                optional="true">
             <parameterBinding
                   class="java.lang.Integer">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Ignore number of matched features reported by the WFS"
+               label="Ignore number of matched features reported by the WFS"
+               name="ignoreNumberMatched"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
             </parameterBinding>
          </providerParameter>
          <providerParameter
@@ -463,6 +481,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -498,6 +533,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -641,6 +693,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -676,6 +745,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -792,6 +878,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -827,6 +930,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -1055,6 +1175,23 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most). 
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will 
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is 
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"
                name="instancesPerFile"
@@ -1090,6 +1227,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

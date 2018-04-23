@@ -217,4 +217,35 @@ class InstanceAccessorTest extends GroovyTestCase {
 		assertTrue instance.properties.relative.first() instanceof Instance
 	}
 
+	void testAllChildren() {
+		// build instance
+		Instance instance = new InstanceBuilder().instance {
+			name 'Max Mustermann'
+			age 31
+			address {
+				street 'Musterstrasse'
+				number 12
+				city 'Musterstadt'
+			}
+			address2 {
+				street 'Taubengasse'
+				number 13
+			}
+			address3 {
+				street 'Lalaweg'
+				number 7
+			}
+		}
+
+		def streets = instance.p.'*'.street.values()
+		assertEquals(new HashSet([
+			'Musterstrasse',
+			'Taubengasse',
+			'Lalaweg'
+		]), new HashSet(streets))
+
+		def numbers = instance.p.''.number.values()
+		assertEquals(new HashSet([7, 12, 13]), new HashSet(numbers))
+	}
+
 }

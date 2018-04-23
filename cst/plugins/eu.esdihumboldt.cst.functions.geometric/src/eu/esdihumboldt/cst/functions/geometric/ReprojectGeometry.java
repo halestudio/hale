@@ -3,8 +3,6 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.util.List;
 import java.util.Map;
 
-import net.jcip.annotations.Immutable;
-
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.geometry.MismatchedDimensionException;
@@ -31,6 +29,7 @@ import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
+import net.jcip.annotations.Immutable;
 
 /**
  * Reproject geometry function.
@@ -39,9 +38,9 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * @author Stefano Costa, GeoSolutions
  */
 @Immutable
-public class ReprojectGeometry extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		ReprojectGeometryFunction {
+public class ReprojectGeometry
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements ReprojectGeometryFunction {
 
 	@Override
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
@@ -56,8 +55,14 @@ public class ReprojectGeometry extends
 		GeometryFinder geoFind = new GeometryFinder(null);
 		traverser.traverse(inputValue, geoFind);
 		List<GeometryProperty<?>> geoms = geoFind.getGeometries();
-		CoordinateReferenceSystem sourceCRS = geoms.get(0).getCRSDefinition().getCRS();
 		Geometry sourceGeometry = geoms.get(0).getGeometry();
+
+		CRSDefinition crsDef = geoms.get(0).getCRSDefinition();
+		if (crsDef == null) {
+			throw new TransformationException(
+					"Geometry does not have an associated Coordinate Reference System");
+		}
+		CoordinateReferenceSystem sourceCRS = crsDef.getCRS();
 
 		Geometry resultGeometry = sourceGeometry;
 		CoordinateReferenceSystem targetCRS = sourceCRS;
@@ -81,13 +86,14 @@ public class ReprojectGeometry extends
 			try {
 				resultGeometry = JTS.transform(sourceGeometry, transform);
 			} catch (MismatchedDimensionException | TransformException e) {
-				throw new TransformationException("Problem on execute transformation from: "
-						+ sourceCRS + " to " + targetCRS, e);
+				throw new TransformationException(
+						"Problem on execute transformation from: " + sourceCRS + " to " + targetCRS,
+						e);
 			}
 		}
 
-		return new DefaultGeometryProperty<Geometry>(new CodeDefinition(CRS.toSRS(targetCRS),
-				targetCRS), resultGeometry);
+		return new DefaultGeometryProperty<Geometry>(
+				new CodeDefinition(CRS.toSRS(targetCRS), targetCRS), resultGeometry);
 
 	}
 
@@ -178,8 +184,9 @@ public class ReprojectGeometry extends
 									+ targetCRS);
 				}
 			} catch (FactoryException ex2) {
-				throw new TransformationException("Problem on execute transformation from: "
-						+ sourceCRS + " to " + targetCRS, ex2);
+				throw new TransformationException(
+						"Problem on execute transformation from: " + sourceCRS + " to " + targetCRS,
+						ex2);
 			}
 		}
 		return transform;

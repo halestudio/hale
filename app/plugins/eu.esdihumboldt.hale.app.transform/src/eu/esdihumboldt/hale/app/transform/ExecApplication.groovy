@@ -151,6 +151,8 @@ $baseCommand
      -stacktrace
      -trustGroovy
      -overallFilterContext
+     -statisticsOut <statistics-file>
+     -successEvaluation <file-or-URI-to-script>
 
   Sources
     You can provide multiple sources for the transformation. If the source is a
@@ -327,6 +329,16 @@ $baseCommand
 			// reports file
 				executionContext.reportsOut = new File(value)
 				lastConfigurable = null
+				break
+
+			case '-statisticsOut':
+			// statistics file
+				executionContext.statisticsFile = new File(value)
+				break
+
+			case '-successEvaluation':
+			// success evaluation script
+				executionContext.successEvaluationScript = fileOrUri(value)
 				break
 
 			case '-preset':

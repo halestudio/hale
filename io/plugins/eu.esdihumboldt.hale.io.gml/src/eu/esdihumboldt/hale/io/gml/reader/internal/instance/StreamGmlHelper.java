@@ -33,9 +33,6 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-
 import com.google.common.collect.Iterables;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -172,14 +169,25 @@ public abstract class StreamGmlHelper {
 		CRSDefinition lastCrs = crs;
 		String srsName = reader.getAttributeValue(null, "srsName");
 		if (srsName != null) {
-			try {
-				CoordinateReferenceSystem decodedCrs = CRS.decode(srsName);
-				if (decodedCrs != null) {
-					lastCrs = new CodeDefinition(srsName, decodedCrs);
+			lastCrs = CodeDefinition.tryResolve(srsName);
+
+			if (lastCrs == null && crsProvider != null) {
+				// In case the srsName value could not be resolved to a CRS, try
+				// to resolve the CRS via the crsProvider.
+				CRSDefinition unresolvedCrs = new CodeDefinition(srsName);
+				CRSDefinition resolvedCrs = crsProvider.getCRS(parentType, propertyPath,
+						unresolvedCrs);
+
+				// Only use resolvedCrs if crsProvider did not merely return
+				// unresolvedCrs unchanged
+				if (resolvedCrs != null && !resolvedCrs.equals(unresolvedCrs)) {
+					lastCrs = resolvedCrs;
 				}
-			} catch (Exception e) {
-				lastCrs = new CodeDefinition(srsName);
 			}
+
+			// If the provided CRS could not be resolved, it will be ignored
+			// here silently, so that use cases that don't need the CRS will not
+			// fail.
 		}
 
 		boolean mixed = type.getConstraint(XmlMixedFlag.class).isEnabled();
@@ -287,13 +295,14 @@ public abstract class StreamGmlHelper {
 							&& ((GeometryProperty<?>) value).getCRSDefinition() == null)) {
 						// try to resolve value of srsName attribute
 
-						CRSDefinition geometryCrs = crsProvider.getCRS(parentType, propertyPath,
-								lastCrs);
-						if (crs != null) {
+						if (lastCrs == null) {
+							lastCrs = crsProvider.getCRS(parentType, propertyPath, lastCrs);
+						}
+
+						if (lastCrs != null) {
 							Geometry geom = (value instanceof Geometry) ? ((Geometry) value)
 									: (((GeometryProperty<?>) value).getGeometry());
-							resultVals
-									.add(new DefaultGeometryProperty<Geometry>(geometryCrs, geom));
+							resultVals.add(new DefaultGeometryProperty<Geometry>(lastCrs, geom));
 							continue;
 						}
 					}

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Common Graph UI
-Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.graph
-Bundle-Version: 3.3.2.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.graph;singleton:=true
+Bundle-Version: 3.4.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.common.graph.content,
  eu.esdihumboldt.hale.ui.common.graph.figures,
  eu.esdihumboldt.hale.ui.common.graph.labels,
@@ -18,6 +18,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.exclusive,
+ de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
@@ -47,5 +48,6 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.util.graph,
  eu.esdihumboldt.hale.ui.util.graph.shapes,
  eu.esdihumboldt.util,
- net.jcip.annotations
+ net.jcip.annotations,
+ org.slf4j;version="1.7.12"
 Bundle-Activator: eu.esdihumboldt.hale.ui.common.graph.internal.GraphUIPlugin

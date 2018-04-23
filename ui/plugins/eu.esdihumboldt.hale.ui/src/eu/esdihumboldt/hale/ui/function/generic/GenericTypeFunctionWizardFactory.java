@@ -16,7 +16,10 @@
 
 package eu.esdihumboldt.hale.ui.function.generic;
 
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.ui.function.FunctionWizard;
 import eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory;
 import eu.esdihumboldt.hale.ui.selection.SchemaSelection;
@@ -44,6 +47,16 @@ public class GenericTypeFunctionWizardFactory extends AbstractGenericFunctionWiz
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.function.extension.FunctionWizardFactory#createNewWizard(eu.esdihumboldt.hale.ui.selection.SchemaSelection,
+	 *      com.google.common.collect.ListMultimap)
+	 */
+	@Override
+	public FunctionWizard createNewWizard(SchemaSelection schemaSelection,
+			ListMultimap<String, ParameterValue> parameters) {
+		return new GenericTypeFunctionWizard(schemaSelection, parameters, getFunctionId());
+	}
+
+	/**
 	 * @see FunctionWizardFactory#createEditWizard(Cell)
 	 */
 	@Override
@@ -51,5 +64,4 @@ public class GenericTypeFunctionWizardFactory extends AbstractGenericFunctionWiz
 		assert getFunctionId().equals(cell.getTransformationIdentifier());
 		return new GenericTypeFunctionWizard(cell);
 	}
-
 }

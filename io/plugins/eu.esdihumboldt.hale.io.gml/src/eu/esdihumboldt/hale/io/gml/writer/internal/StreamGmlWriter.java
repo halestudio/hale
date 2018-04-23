@@ -17,13 +17,14 @@
 package eu.esdihumboldt.hale.io.gml.writer.internal;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +46,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.geotools.gml3.GML;
 
-import com.google.common.io.Files;
 import com.vividsolutions.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -60,6 +60,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
@@ -73,6 +74,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.NoPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.SimplePartitioner;
@@ -106,7 +108,7 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.util.Pair;
-import eu.esdihumboldt.util.geometry.NumberFormatter;
+import eu.esdihumboldt.util.format.DecimalFormatUtil;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -149,15 +151,26 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
 
 	/**
-	 * The parameter name for the flag specifying if the output of geometry
+	 * The name of the parameter specifying how the output of geometry
 	 * coordinates should be formatted.
 	 */
 	public static final String PARAM_GEOMETRY_FORMAT = "geometry.write.decimalFormat";
 
 	/**
+	 * The name of the parameter specifying how the output of Double values
+	 * should be formatted.
+	 */
+	public static final String PARAM_DECIMAL_FORMAT = "xml.decimalFormat";
+
+	/**
 	 * Name of the parameter defining the instance threshold.
 	 */
 	public static final String PARAM_INSTANCES_THRESHOLD = "instancesPerFile";
+
+	/**
+	 * Name of the parameter to create separate files for each feature type
+	 */
+	public static final String PARAM_PARTITION_BY_FEATURE_TYPE = "partition.byFeatureType";
 
 	/**
 	 * Name of the parameter stating the mode to use for instance partitioning.
@@ -188,7 +201,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	/**
 	 * The XML stream writer
 	 */
-	private XMLStreamWriter writer;
+	private PrefixAwareStreamWriter writer;
 
 	/**
 	 * The GML namespace
@@ -295,7 +308,40 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
 					threshold, progress, reporter)) {
-				writeParts(parts, progress, reporter);
+				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException(e.getMessage(), e);
+			}
+		}
+		else if (isPartitionByFeatureTypeConfigured()) {
+			// Threshold currently not supported if partitioning by feature type
+
+			final Set<TypeDefinition> types = new HashSet<>();
+
+			// Map GML IDs to features types and collect types
+			final XMLInspector gadget = new XMLInspector();
+			final Map<String, TypeDefinition> idToTypeMapping = new HashMap<>();
+			try (ResourceIterator<Instance> it = getInstances().iterator()) {
+				while (it.hasNext()) {
+					Instance inst = it.next();
+					types.add(inst.getDefinition());
+					idToTypeMapping.put(gadget.getIdentity(inst), inst.getDefinition());
+				}
+			}
+
+			final Map<TypeDefinition, URI> typeToTargetMapping = new HashMap<>();
+			types.stream().forEach(t -> typeToTargetMapping.put(t, new File(
+					PerTypePartsHandler.getTargetFilename(t.getName(), getTarget().getLocation()))
+							.toURI()));
+			final PerTypePartsHandler handler = new PerTypePartsHandler(typeToTargetMapping,
+					idToTypeMapping);
+			final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
+					.fromInstances(getInstances(), types);
+
+			try {
+				writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException(e.getMessage(), e);
 			}
 		}
 		else {
@@ -335,19 +381,20 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * configured target as a base file name.<br>
 	 * <br>
 	 * Parts can only be written if the configured target is a URI to a local
-	 * file. The output files will be named after the target file, amended by a
-	 * counter. If, for example, the configured target file name is
-	 * <code>output.gml</code>, the files created by this method will be called
-	 * <code>output.0001.gml</code>, <code>output.0002.gml</code>, etc.
+	 * file.
 	 * 
 	 * @param instanceCollections the parts to write
+	 * @param handler Handler that provides the parts' file names and an XML
+	 *            writer
 	 * @param progress Progress indicator
 	 * @param reporter the reporter to use for the execution report
 	 * @throws IOException if an I/O operation fails
+	 * @throws XMLStreamException if an XML processing error occurs
 	 * @see #setTarget(LocatableOutputSupplier)
 	 */
 	protected void writeParts(Iterator<InstanceCollection> instanceCollections,
-			ProgressIndicator progress, IOReporter reporter) throws IOException {
+			MultipartHandler handler, ProgressIndicator progress, IOReporter reporter)
+			throws IOException, XMLStreamException {
 		final URI location = getTarget().getLocation();
 
 		if (location == null) {
@@ -362,30 +409,38 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		}
 
 		Path origPath = Paths.get(location).normalize();
-		String filename;
-		String extension;
-		Path targetFolder;
 		if (origPath.toFile().isDirectory()) {
 			reporter.error("Cannot write to a directory: Target must a file");
 			return;
 			// TODO Support writing to a directory; use parameter to specify
 			// file name prefix.
 		}
-		else {
-			targetFolder = origPath.getParent();
-			filename = Files.getNameWithoutExtension(origPath.toString());
-			extension = Files.getFileExtension(origPath.toString());
-		}
 
 		List<URI> filesWritten = new ArrayList<>();
-		int i = 1;
 		while (instanceCollections.hasNext()) {
-			String targetFilename = String.format("%s%s%s.%04d.%s", targetFolder.toString(),
-					File.separator, filename, i++, extension);
-			File targetFile = new File(targetFilename);
-			FileOutputStream out = new FileOutputStream(targetFile);
 			InstanceCollection instances = instanceCollections.next();
-			write(instances, out, progress, reporter);
+			String targetFilename = handler.getTargetFilename(instances, location);
+
+			File targetFile = new File(targetFilename);
+			LocatableOutputSupplier<? extends OutputStream> out = new FileIOSupplier(targetFile);
+			if (getTarget() instanceof GZipOutputSupplier) {
+				out = new GZipOutputSupplier(out);
+			}
+
+			PrefixAwareStreamWriter writer = null;
+			OutputStream os = out.getOutput();
+			try {
+				// The MultipartHandler can provide a specially decorated
+				// writer, e.g. for reference rewriting
+				writer = handler.getDecoratedWriter(createWriter(os, reporter), targetFile.toURI());
+				write(instances, writer, progress, reporter);
+			} finally {
+				os.close();
+				if (writer != null) {
+					writer.close();
+				}
+			}
+
 			filesWritten.add(targetFile.toURI());
 		}
 
@@ -444,6 +499,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	private boolean isThresholdConfigured() {
 		int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class, NO_PARTITIONING);
 		return threshold != NO_PARTITIONING && threshold > 0;
+	}
+
+	private boolean isPartitionByFeatureTypeConfigured() {
+		return getParameter(PARAM_PARTITION_BY_FEATURE_TYPE).as(Boolean.class, false);
 	}
 
 	@Override
@@ -545,7 +604,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @throws XMLStreamException if creating or configuring the
 	 *             <code>XMLStreamWriter</code> fails
 	 */
-	protected XMLStreamWriter createWriter(OutputStream outStream, IOReporter reporter)
+	protected PrefixAwareStreamWriter createWriter(OutputStream outStream, IOReporter reporter)
 			throws XMLStreamException {
 		// create and set-up a writer
 		XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
@@ -553,9 +612,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		outputFactory.setProperty("javax.xml.stream.isRepairingNamespaces", //$NON-NLS-1$
 				Boolean.valueOf(true));
 
-		// create XML stream writer with UTF-8 encoding
-		XMLStreamWriter tmpWriter = outputFactory.createXMLStreamWriter(outStream,
-				getCharset().name()); // $NON-NLS-1$
+		// create XML stream writer with specified encoding
+		PrefixAwareStreamWriter tmpWriter = new PrefixAwareStreamWriterDecorator(
+				outputFactory.createXMLStreamWriter(outStream, getCharset().name())); // $NON-NLS-1$
 
 		XmlIndex index = getXMLIndex();
 		// read the namespaces from the map containing namespaces
@@ -676,19 +735,45 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	}
 
 	/**
-	 * @return geometry write format
+	 * @return {@link DecimalFormat} to apply to geometry coordinates
 	 */
-	public String getGeometryWriteFormat() {
-		return getParameter(PARAM_GEOMETRY_FORMAT).as(String.class);
+	public DecimalFormat getCoordinateFormatter() {
+		String pattern = getParameter(PARAM_GEOMETRY_FORMAT).as(String.class);
+		if (pattern != null && pattern.trim().length() > 0) {
+			return DecimalFormatUtil.getFormatter(pattern);
+		}
+
+		return null;
 	}
 
 	/**
-	 * Set geometry write format
+	 * @return {@link DecimalFormat} to apply to {@link Double} values
+	 */
+	public DecimalFormat getDecimalFormatter() {
+		String pattern = getParameter(PARAM_DECIMAL_FORMAT).as(String.class);
+		if (pattern != null && pattern.trim().length() > 0) {
+			return DecimalFormatUtil.getFormatter(pattern);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Set the output format of geometry coordinates
 	 * 
 	 * @param format pattern in which geometry coordinates would be formatted
 	 */
 	public void setGeometryWriteFormat(String format) {
 		setParameter(PARAM_GEOMETRY_FORMAT, Value.of(format));
+	}
+
+	/**
+	 * Set the output format of {@link Double} values
+	 * 
+	 * @param format pattern in which geometry coordinates would be formatted
+	 */
+	public void setDecimalWriteFormat(String format) {
+		setParameter(PARAM_DECIMAL_FORMAT, Value.of(format));
 	}
 
 	/**
@@ -718,7 +803,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	protected void write(InstanceCollection instances, OutputStream out, ProgressIndicator progress,
 			IOReporter reporter) throws IOException {
-		XMLStreamWriter writer;
+		PrefixAwareStreamWriter writer;
 		try {
 			writer = createWriter(out, reporter);
 		} catch (XMLStreamException e) {
@@ -744,7 +829,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param progress the progress
 	 * @see #createWriter(OutputStream, IOReporter)
 	 */
-	protected void write(InstanceCollection instances, XMLStreamWriter writer,
+	protected void write(InstanceCollection instances, PrefixAwareStreamWriter writer,
 			ProgressIndicator progress, IOReporter reporter) {
 
 		this.writer = writer;
@@ -814,6 +899,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			if (documentWrapper != null) {
 				documentWrapper.startWrap(writer, reporter);
 			}
+
 			GmlWriterUtil.writeStartElement(writer, containerName);
 
 			// generate mandatory id attribute (for feature collection)
@@ -895,11 +981,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						writeMember(instance, type, reporter);
 					}
 					else {
-						reporter.warn(new IOMessageImpl(
-								MessageFormat.format(
-										"No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
-										type.getDisplayName(), containerName.getLocalPart()),
-								null));
+						reporter.warn(new IOMessageImpl(MessageFormat.format(
+								"No compatible member attribute for type {0} found in root element {1}, one instance was skipped",
+								type.getDisplayName(), containerName.getLocalPart()), null));
 					}
 
 					progress.advance(1);
@@ -1529,6 +1613,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							propType.getConstraint(ElementType.class).getDefinition()));
 				}
 			}
+			else if (getDecimalFormatter() != null && (value instanceof Double
+					|| value instanceof Float || value instanceof BigDecimal)) {
+				// Apply formatting only to decimal values, not integers
+				String representation = DecimalFormatUtil.applyFormatter((Number) value,
+						getDecimalFormatter());
+				writer.writeCharacters(
+						SimpleTypeUtil.convertToXml(representation, propDef.getPropertyType()));
+			}
 			else {
 				// write value as content
 				writer.writeCharacters(
@@ -1551,7 +1643,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 		// write geometries
 		getGeometryWriter().write(writer, geometry, property, srsName, report,
-				NumberFormatter.getFormatter(getGeometryWriteFormat()));
+				getCoordinateFormatter());
 	}
 
 	/**

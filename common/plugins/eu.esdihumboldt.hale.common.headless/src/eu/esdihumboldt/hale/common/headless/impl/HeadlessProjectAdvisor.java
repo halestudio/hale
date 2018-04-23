@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.FixedProjectInfoService;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectIO;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectReader;
 import eu.esdihumboldt.hale.common.core.io.project.extension.internal.ActionProjectFile;
@@ -157,6 +158,7 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		super();
 
 		setServiceProvider(serviceProvider);
+		setActionId(ProjectIO.ACTION_LOAD_PROJECT);
 
 		this.reportHandler = reportHandler;
 
@@ -166,14 +168,17 @@ public class HeadlessProjectAdvisor extends AbstractIOAdvisor<ProjectReader> {
 		}
 
 		sourceSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.SOURCE);
+		sourceSchemaAdvisor.setActionId(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA);
 		sourceSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_SOURCE_SCHEMA, sourceSchemaAdvisor);
 
 		targetSchemaAdvisor = new LoadSchemaAdvisor(SchemaSpaceID.TARGET);
+		targetSchemaAdvisor.setActionId(SchemaIO.ACTION_LOAD_TARGET_SCHEMA);
 		targetSchemaAdvisor.setServiceProvider(this);
 		advisors.put(SchemaIO.ACTION_LOAD_TARGET_SCHEMA, targetSchemaAdvisor);
 
 		codeListRegistry = new CodeListAdvisor();
+		codeListRegistry.setActionId(CodeListReader.ACTION_ID);
 		codeListRegistry.setServiceProvider(this);
 		advisors.put(CodeListReader.ACTION_ID, codeListRegistry);
 	}

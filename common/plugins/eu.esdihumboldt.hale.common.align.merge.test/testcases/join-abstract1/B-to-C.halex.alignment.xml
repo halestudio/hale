@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.join" id="B1B2toC1" priority="normal">
+        <source name="types">
+            <class>
+                <type name="B1" ns="B"/>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="B2" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="B1" ns="B"/>
+                </class>
+                <class>
+                    <type name="B2" ns="B"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="B1" ns="B"/>
+                        <child name="b1" ns="B"/>
+                    </property>
+                    <property>
+                        <type name="B2" ns="B"/>
+                        <child name="b1" ns="B"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+        <documentation>B1 and B2 to C1</documentation>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C6ad91c5e-9ed3-418e-a3e1-29eb49fa280c" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B"/>
+                <child name="b1" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="c1" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>
