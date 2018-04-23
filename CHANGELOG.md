@@ -40,6 +40,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Fixed Spatial Index Groovy helper function
 - Fixed that defaultSrs parameter of XML/GML readers had no effect in CLI
 - Fixed that transformation runs were being triggered without data and/or multiple times during project load
+- Fixed that compression could not be used when partitioning GML output
 
 ## [3.3.2]
 
