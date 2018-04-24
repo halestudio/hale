@@ -60,7 +60,7 @@ class DefaultSchemaMigration implements AlignmentMigration {
 
 		if (entity.propertyPath.empty) {
 			// type entity definition - yield
-			return Optional.of(typeEntity)
+			return Optional.<EntityDefinition>of(typeEntity)
 		}
 		else {
 			// property entity definition -> follow the path
