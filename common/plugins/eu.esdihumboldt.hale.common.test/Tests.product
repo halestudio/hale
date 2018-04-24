@@ -102,6 +102,7 @@
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.cst.test"/>
+      <plugin id="eu.esdihumboldt.hale.adv.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.app.transform"/>
       <plugin id="eu.esdihumboldt.hale.app.transform.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
@@ -109,6 +110,7 @@
       <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
       <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>

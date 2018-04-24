@@ -105,8 +105,19 @@
            <source>$javaSource</source>
            <target>$javaTarget</target>
                 <compilerId>groovy-eclipse-compiler</compilerId>
+                <compilerArguments>
+                	<% if (artifactId != 'eu.esdihumboldt.cst.functions.groovy') {
+						// XXX fails with a compiler error if using indy -> maybe fixed for newer compiler versions?
+                		// FIXME make configurable?
+                	 %>
+                    <indy/><!-- optional; supported by batch 2.4.12-04+ -->
+                    <% } %>
+                    <!-- <configScript>config.groovy</configScript> -->
+                </compilerArguments>
                 <verbose>true</verbose>
                 <extensions>true</extensions>
+                <!-- more detailed compiler output: -->
+                <!-- <showWarnings>true</showWarnings> -->
                 <excludeResources>
             		<excludeResource>**/*.groovy</excludeResource>
             		<!-- Exclude translation files (because they are very incomplete ATM) -->
@@ -118,24 +129,13 @@
             <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-compiler</artifactId>
-	        	<version>2.9.1-01</version>
+	        	<version>2.9.2-04</version>
 	        </dependency>
 	        <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-batch</artifactId>
-	        	<version>2.3.7-01</version>
-	        	<!-- OLD REMARK FOR GROOVY 2.1
-	        	For some reasons with the most up-to-date version
-	        	the compiled Groovy is not consistent with the
-	        	Groovy compiled in the Eclipse workspace.  
-	        	<version>2.1.8-01</version>
-	        	-->
+	        	<version>2.4.14-01</version>
 	        </dependency>
-	        <!-- dependency>
-			    <groupId>org.codehaus.groovy</groupId>
-			    <artifactId>groovy-all</artifactId>
-			    <version>2.1.8</version>
-			</dependency -->
          </dependencies>
       </plugin>
       <% } %>
