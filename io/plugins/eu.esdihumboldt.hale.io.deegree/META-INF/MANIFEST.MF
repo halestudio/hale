@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Deegree I/O
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.deegree
+Bundle-Version: 3.4.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: groovy;bundle-version="2.3.7",
+ org.deegree.core-base;bundle-version="3.4.0",
+ org.deegree.core-commons;bundle-version="3.4.0",
+ org.deegree.core-cs;bundle-version="3.4.0",
+ org.deegree.featurestore-sql;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.align;bundle-version="3.4.0"
+Import-Package: javax.vecmath;version="1.5.2",
+ org.apache.xerces.xs;version="2.9.0",
+ org.deegree.commons.tom.gml;version="3.4.0",
+ org.deegree.cs.coordinatesystems;version="3.4.0",
+ org.deegree.feature.persistence.sql;version="3.4.0",
+ org.deegree.feature.persistence.sql.config;version="3.4.0",
+ org.deegree.feature.persistence.sql.ddl;version="3.4.0",
+ org.deegree.geometry.utils;version="3.4.0",
+ org.deegree.gml.schema;version="3.4.0",
+ org.deegree.sqldialect;version="3.4.0",
+ org.deegree.sqldialect.postgis;version="3.4.0",
+ org.deegree.workspace;version="3.4.0",
+ org.eclipse.core.runtime.content,
+ org.postgis,
+ org.slf4j;version="1.7.13"
