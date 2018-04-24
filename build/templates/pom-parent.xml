@@ -10,12 +10,24 @@
   <packaging>pom</packaging>
   <name>HALE RCP Parent</name>
   
-  <!-- pluginRepositories>
-    <pluginRepository>
+  <pluginRepositories>
+    <!-- pluginRepository>
       <id>artifactory</id>
       <url>http://www.cityserver3d.de:8082/artifactory/repo</url>
+    </pluginRepository -->
+    <!-- see https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin -->
+    <pluginRepository>
+      <id>bintray</id>
+      <name>Groovy Bintray</name>
+      <url>https://dl.bintray.com/groovy/maven</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </pluginRepository>
-  </pluginRepositories -->
+  </pluginRepositories>
   
   <!-- repositories>
     <repository>
