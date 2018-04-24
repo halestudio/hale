@@ -534,6 +534,23 @@
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.XmlInstanceWriter"
@@ -729,6 +746,23 @@
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.gml.writer.CityGMLInstanceWriter"
@@ -896,6 +930,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
@@ -1176,6 +1227,23 @@
                   sample="cut"
                   sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by feature type"
+               label="Partition by feature type"
+               name="partition.byFeatureType"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
+                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
+                     partition mode is set to 'none'."> 
+               </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

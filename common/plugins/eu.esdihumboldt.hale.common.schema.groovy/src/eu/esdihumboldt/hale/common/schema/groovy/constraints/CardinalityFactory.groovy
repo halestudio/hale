@@ -50,7 +50,7 @@ class CardinalityFactory extends OptionalContextConstraintFactory<Cardinality> {
 		}
 		else if (arg instanceof Number) {
 			// defined with a single number
-			return Cardinality.get(arg, arg)
+			return Cardinality.get(arg.longValue(), arg.longValue())
 		}
 		else {
 			// defined as something else

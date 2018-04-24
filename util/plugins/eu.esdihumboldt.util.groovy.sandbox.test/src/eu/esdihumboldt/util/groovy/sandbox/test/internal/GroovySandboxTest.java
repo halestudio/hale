@@ -30,6 +30,10 @@ public class GroovySandboxTest {
 	@Before
 	public void setUp() {
 		CompilerConfiguration cc = new CompilerConfiguration();
+
+		// enable invoke dynamic support (simiar to in when scripts are created)
+		cc.getOptimizationOptions().put(CompilerConfiguration.INVOKEDYNAMIC, true);
+
 		cc.addCompilationCustomizers(new SandboxTransformer());
 		shell = new GroovyShell(cc);
 		interceptor = new RestrictiveGroovyInterceptor(Collections.<Class<?>> emptySet(),
