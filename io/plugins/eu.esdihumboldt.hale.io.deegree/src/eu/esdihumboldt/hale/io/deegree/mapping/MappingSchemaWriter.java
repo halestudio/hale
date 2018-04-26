@@ -16,12 +16,14 @@
 package eu.esdihumboldt.hale.io.deegree.mapping;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 
 /**
  * Creates a deegree SQL mapping configuration from a schema.
@@ -38,6 +40,24 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		progress.begin("Generate deegree SQL mapping", ProgressIndicator.UNKNOWN);
+		try {
+			Schema targetSchema = getSchemas().getSchemas().iterator().next();
+			// TODO configurable
+			String connectionId = "db";
+			MappingWriter writer = new MappingWriter(targetSchema, null, connectionId);
+
+			try (OutputStream out = getTarget().getOutput()) {
+				writer.saveConfig(out);
+			}
+
+			reporter.setSuccess(true);
+		} catch (Exception e) {
+			reporter.error("Error writing deegree SQL mapping", e);
+			reporter.setSuccess(false);
+		} finally {
+			progress.end();
+		}
 
 		return reporter;
 	}

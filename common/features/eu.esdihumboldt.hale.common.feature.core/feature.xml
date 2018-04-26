@@ -387,7 +387,7 @@
          unpack="false"/>
 
    <plugin
-         id="java3d.vecmath"
+         id="javax.vecmath"
          download-size="0"
          install-size="0"
          version="0.0.0"
