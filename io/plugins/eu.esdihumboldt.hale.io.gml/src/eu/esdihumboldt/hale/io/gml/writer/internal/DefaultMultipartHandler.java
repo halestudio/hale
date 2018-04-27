@@ -60,7 +60,7 @@ public class DefaultMultipartHandler implements MultipartHandler {
 			extension = xgml + "." + gz;
 		}
 		else {
-			nameWithoutExt = Files.getFileExtension(filename);
+			nameWithoutExt = Files.getNameWithoutExtension(filename);
 			extension = Files.getFileExtension(filename);
 		}
 
