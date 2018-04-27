@@ -57,6 +57,10 @@ public class TransformDataImportAdvisor extends InstanceImportAdvisor {
 	 * @return the created instance collection
 	 */
 	public InstanceCollection getInstances() {
+		if (provider == null) {
+			return null;
+		}
+
 		return provider.getInstances();
 	}
 

@@ -507,7 +507,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 	@Override
 	public boolean isPassthrough() {
-		if (isThresholdConfigured()) {
+		if (isPartitionByFeatureTypeConfigured()) {
+			return false;
+		}
+		else if (isThresholdConfigured()) {
 			InstanceCollectionPartitioner partitioner = getPartitioner(this, SimpleLog.NO_LOG);
 			return !partitioner.usesReferences();
 		}
