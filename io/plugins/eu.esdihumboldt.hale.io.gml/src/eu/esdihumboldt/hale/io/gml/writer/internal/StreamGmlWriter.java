@@ -511,6 +511,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			InstanceCollectionPartitioner partitioner = getPartitioner(this, SimpleLog.NO_LOG);
 			return !partitioner.usesReferences();
 		}
+		else if (isPartitionByFeatureTypeConfigured()) {
+			return false;
+		}
 		else {
 			return true;
 		}
