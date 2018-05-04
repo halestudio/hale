@@ -268,7 +268,7 @@ public class WorkspaceConfigurationPage extends
 		tableParent.setLayoutData(gridData);
 
 		workspaceTableViewer = new TableViewer(tableParent,
-				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		workspaceTableViewer.getControl()
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 		workspaceTableViewer.setContentProvider(ArrayContentProvider.getInstance());
