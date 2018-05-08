@@ -32,6 +32,7 @@
    </vm>
 
    <plugins>
+      <plugin id="antlr"/>
       <plugin id="aopalliance"/>
       <plugin id="bcpkix"/>
       <plugin id="bcprov"/>
@@ -53,6 +54,7 @@
       <plugin id="com.github.jnr.posix"/>
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
+      <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.healthmarketscience.jackcess"/>
@@ -65,6 +67,7 @@
       <plugin id="com.spotify.docker-client"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
+      <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.blueprints.orient-graph"/>
       <plugin id="com.tinkerpop.gremlin.groovy"/>
@@ -102,6 +105,7 @@
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.cst.test"/>
+      <plugin id="eu.esdihumboldt.hale.adv.merge"/>
       <plugin id="eu.esdihumboldt.hale.adv.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.app.transform"/>
       <plugin id="eu.esdihumboldt.hale.app.transform.test"/>
@@ -166,6 +170,8 @@
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.deegree"/>
+      <plugin id="eu.esdihumboldt.hale.io.deegree.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
@@ -247,7 +253,6 @@
       <plugin id="groovy"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
-      <plugin id="java3d.vecmath"/>
       <plugin id="javassist"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
@@ -258,12 +263,15 @@
       <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.vecmath"/>
       <plugin id="javax.ws.rs-api"/>
       <plugin id="javax.xml"/>
+      <plugin id="jaxen"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jgridshift"/>
       <plugin id="jline"/>
       <plugin id="joda-time"/>
+      <plugin id="jogl"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="net.java.dev.jsr-275"/>
@@ -271,6 +279,8 @@
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sf.ucanaccess"/>
       <plugin id="net.sourceforge.schemacrawler"/>
+      <plugin id="org.antlr.runtime"/>
+      <plugin id="org.antlr.stringtemplate"/>
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
@@ -284,6 +294,7 @@
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.math"/>
       <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
@@ -291,9 +302,12 @@
       <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
+      <plugin id="org.apache.james.apache-mime4j-core"/>
       <plugin id="org.apache.poi"/>
       <plugin id="org.apache.tika.core"/>
       <plugin id="org.apache.velocity"/>
+      <plugin id="org.apache.ws.commons.axiom.axiom-api"/>
+      <plugin id="org.apache.ws.commons.axiom.axiom-impl"/>
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
@@ -304,6 +318,7 @@
       <plugin id="org.codehaus.jackson"/>
       <plugin id="org.codehaus.jackson.mapper"/>
       <plugin id="org.codehaus.jettison.jettison"/>
+      <plugin id="org.deegree"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -406,6 +421,7 @@
       <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.postgresql.jdbc"/>
+      <plugin id="org.reflections"/>
       <plugin id="org.semanticweb.owlapi.osgi.skos"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.asm"/>

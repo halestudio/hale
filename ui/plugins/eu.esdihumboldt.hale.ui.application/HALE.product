@@ -107,6 +107,7 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
       <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.deegree"/>
    </features>
 
    <configurations>
