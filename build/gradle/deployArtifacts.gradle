@@ -221,9 +221,6 @@ String adaptHaleBundleVersion(String version) {
  * Repositories for verifying third party artifacts
  */
 repositories {
-	maven { // HALE artifactory
-		url 'http://artifactory.esdi-humboldt.eu/artifactory/libs-release/'
-	}
 	maven { // wetransform artifactory
 		url 'http://artifactory.wetransform.to/artifactory/libs-release/'
 	}
@@ -233,12 +230,6 @@ repositories {
 	jcenter()
 	maven {
 		url 'http://download.osgeo.org/webdav/geotools/'
-	}
-	maven {
-		url 'http://download.java.net/maven/2'
-	}
-	maven {
-		url 'http://repo.opengeo.org'
 	}
 }
 
