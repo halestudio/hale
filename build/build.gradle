@@ -37,8 +37,8 @@ DateFormat dateFormat = new SimpleDateFormat('YYYYMMddHHmm');
 
 gradle.taskGraph.whenReady {
 	// determine build ID
-	String buildID = System.getenv()['BUILD_ID'] // set by jenkins
-	if (buildID == null){
+	String buildID = System.getenv()['TRAVIS_BUILD_ID'] // set by Travis CI
+	if (buildID == null) {
 		buildID = dateFormat.format(calendar.getTime())
 	}
 	project.ext.buildId = buildID
@@ -266,7 +266,7 @@ def configureEnvironment() {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.10'
+    gradleVersion = '4.7'
 }
 
 task cli {

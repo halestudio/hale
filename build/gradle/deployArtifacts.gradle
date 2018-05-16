@@ -222,10 +222,10 @@ String adaptHaleBundleVersion(String version) {
  */
 repositories {
 	maven { // wetransform artifactory
-		url 'http://artifactory.wetransform.to/artifactory/libs-release/'
+		url 'https://artifactory.wetransform.to/artifactory/libs-release/'
 	}
 	maven { // wetransform artifactory (snapshots)
-		url 'http://artifactory.wetransform.to/artifactory/libs-snapshot/'
+		url 'https://artifactory.wetransform.to/artifactory/libs-snapshot/'
 	}
 	jcenter()
 	maven {
@@ -267,7 +267,7 @@ unpuzzle {
 			// instead use slf4j.api
 			replaceWith 'slf4j.api'
 		}
-		
+
 		// turn on verifying all artifacts that are not deployed
 		// (they should be resolvable through the configured repositories)
 		verifyIfNoDeploy = true
@@ -339,7 +339,7 @@ unpuzzle {
 	uploadEclipse = [
 		url: 'https://artifactory.wetransform.to/artifactory/libs-release-local',
 		snapshotUrl: 'https://artifactory.wetransform.to/artifactory/libs-snapshot-local',
-		user: project.hasProperty('wetfArtifactoryUser') ? project.getProperty('wetfArtifactoryUser') : '',
-		password: project.hasProperty('wetfArtifactoryPassword') ? project.getProperty('wetfArtifactoryPassword') : ''
+		user: project.hasProperty('wetfArtifactoryUser') ? project.getProperty('wetfArtifactoryUser') : System.getenv('WETF_ARTIFACTORY_USER'),
+		password: project.hasProperty('wetfArtifactoryPassword') ? project.getProperty('wetfArtifactoryPassword') : System.getenv('WETF_ARTIFACTORY_PASSWORD')
 	]
 }
