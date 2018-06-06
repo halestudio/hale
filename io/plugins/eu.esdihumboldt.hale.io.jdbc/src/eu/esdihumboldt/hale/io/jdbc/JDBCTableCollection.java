@@ -84,7 +84,7 @@ public class JDBCTableCollection implements InstanceCollection, LogAware {
 		 */
 		public JDBCTableIterator(CRSProvider crsProvider) {
 			super();
-			builder = new TableInstanceBuilder(crsProvider);
+			builder = new TableInstanceBuilder(crsProvider, log);
 			try {
 				connection = createConnection();
 			} catch (SQLException e) {
