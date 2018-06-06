@@ -389,6 +389,48 @@
                   type="eu.esdihumboldt.hale.common.align.model.Property">
             </input>
          </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype.description"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeSrsCodeSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeSrsCodeFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.geometrymetadata.srscode"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.geometrymetadata.srscode"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeSrsTextSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeSrsTextFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.geometrymetadata.srstext"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
+         <propertySection
+               afterSection="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.geometrymetadata.srstext"
+               class="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeGeometryDimensionSection"
+               enablesFor="1"
+               filter="eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition.geometry.TypeGeometryDimensionFilter"
+               id="eu.esdihumboldt.hale.ui.views.properties.definition.constraints.geometrymetadata.dimension"
+               tab="eu.esdihumboldt.hale.ui.views.properties.definition.propertytype">
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.PropertyDefinition">
+            </input>
+            <input
+                  type="eu.esdihumboldt.hale.common.schema.model.TypeDefinition">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
