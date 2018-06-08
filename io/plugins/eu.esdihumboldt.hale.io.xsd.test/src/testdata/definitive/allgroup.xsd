@@ -1,0 +1,12 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="items" type="ItemsType"/>
+
+  <xs:complexType name="ItemsType">
+    <xs:all minOccurs="0" maxOccurs="1">
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="id" type="xs:ID"/>
+    </xs:all>
+  </xs:complexType>
+
+</xs:schema>
