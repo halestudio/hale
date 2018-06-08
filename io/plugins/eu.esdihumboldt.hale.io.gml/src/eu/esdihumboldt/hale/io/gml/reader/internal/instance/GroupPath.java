@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.AllGroupFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 
 /**
@@ -176,17 +177,23 @@ public class GroupPath {
 		else {
 			// check last child
 			DefinitionGroup child = children.get(children.size() - 1);
-			ChildDefinition<?> property = GroupUtil
-					.findChild(child, propertyName, ignoreNamespaces);
+			ChildDefinition<?> property = GroupUtil.findChild(child, propertyName,
+					ignoreNamespaces);
 			if (property == null) {
 				return false;
 			}
 
-			if (child instanceof GroupPropertyDefinition
-					&& ((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class)
-							.isEnabled()) {
-				// group is a choice
-				return true;
+			if (child instanceof GroupPropertyDefinition) {
+				if (((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class).isEnabled()) {
+					// group is a choice
+					return true;
+				}
+				else if (((GroupPropertyDefinition) child).getConstraint(AllGroupFlag.class)
+						.isEnabled()) {
+					// TODO must check if property was added already (in an
+					// "all" group each element must not occur more than once)
+					return true; // XXX
+				}
 			}
 
 			return !strict || GroupUtil.allowAdd(null, child, property.getName());
