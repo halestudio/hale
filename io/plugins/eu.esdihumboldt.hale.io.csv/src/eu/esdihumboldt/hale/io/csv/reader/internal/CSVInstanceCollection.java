@@ -250,7 +250,7 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 				.as(String.class);
 		type = reader.getSourceSchema().getType(QName.valueOf(typeName));
 		if (type == null) {
-			String message = MessageFormat.format("Could not find type {1} in source schema",
+			String message = MessageFormat.format("Could not find type {0} in source schema",
 					typeName);
 			// can't really continue w/o type
 			throw new IllegalStateException(message);
