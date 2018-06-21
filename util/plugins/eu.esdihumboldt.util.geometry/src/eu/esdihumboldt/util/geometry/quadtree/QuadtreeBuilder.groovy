@@ -51,8 +51,11 @@ class QuadtreeBuilder<G extends Geometry, T> {
 		def gc = new GeometryFactory().createGeometryCollection(geometries)
 		def env = gc.getEnvelopeInternal()
 
-		if (envelope && !envelope.covers(env)) {
-			throw new IllegalArgumentException("Provided envelope does not cover added geometries.")
+		if (envelope) {
+			if (!envelope.covers(env)) {
+				throw new IllegalArgumentException("Provided envelope does not cover added geometries.")
+			}
+			env = envelope
 		}
 
 		def qt = new FixedBoundaryQuadtree(env, maxNodes)
