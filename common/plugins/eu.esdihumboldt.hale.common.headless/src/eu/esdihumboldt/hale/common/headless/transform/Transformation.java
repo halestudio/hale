@@ -154,56 +154,8 @@ public class Transformation {
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
 			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition) {
-		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
-
-			/**
-			 * @see IOAdvisor#prepareProvider(IOProvider)
-			 */
-			@Override
-			public void prepareProvider(InstanceReader provider) {
-				super.prepareProvider(provider);
-
-				provider.setSourceSchema(environment.getSourceSchema());
-			}
-
-			/**
-			 * @see AbstractIOAdvisor#updateConfiguration(IOProvider)
-			 */
-			@Override
-			public void updateConfiguration(InstanceReader provider) {
-				super.updateConfiguration(provider);
-
-				if (environment instanceof ProjectTransformationEnvironment) {
-					// set project CRS manager as CRS provider
-					/*
-					 * Resource based CRS settings will however not work, as the
-					 * resource identifiers will not match
-					 */
-					provider.setCRSProvider(new ProjectCRSManager(provider, null,
-							((ProjectTransformationEnvironment) environment).getProject()));
-				}
-			}
-		};
-		loadDataAdvisor.setServiceProvider(environment);
-		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
-
-		List<InstanceCollection> sourceList = Lists.transform(sources,
-				new Function<InstanceReader, InstanceCollection>() {
-
-					@Override
-					public InstanceCollection apply(@Nullable InstanceReader input) {
-						try {
-							HeadlessIO.executeProvider(input, loadDataAdvisor, null, reportHandler);
-							// XXX progress?!
-						} catch (IOException e) {
-							throw new IllegalStateException("Failed to load source data", e);
-						}
-						return input.getInstances();
-					}
-				});
-
-		// Apply Filter
-		InstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
+		InstanceCollection sourceCollection = loadSources(sources, environment, reportHandler,
+				filterDefinition);
 
 		final TransformationSink targetSink;
 		try {
@@ -253,6 +205,64 @@ public class Transformation {
 		return transform(sourceCollection, targetSink, exportJob, validationJob,
 				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
 				environment, processId);
+	}
+
+	/**
+	 * Load the given sources into a combined instance collection.
+	 * 
+	 * @param sources the source readers
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param filterDefinition the filters for the source data
+	 * @return the combined instance collection
+	 */
+	public static InstanceCollection loadSources(List<InstanceReader> sources,
+			TransformationEnvironment environment, ReportHandler reportHandler,
+			InstanceFilterDefinition filterDefinition) {
+		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
+
+			@Override
+			public void prepareProvider(InstanceReader provider) {
+				super.prepareProvider(provider);
+
+				provider.setSourceSchema(environment.getSourceSchema());
+			}
+
+			@Override
+			public void updateConfiguration(InstanceReader provider) {
+				super.updateConfiguration(provider);
+
+				if (environment instanceof ProjectTransformationEnvironment) {
+					// set project CRS manager as CRS provider
+					/*
+					 * Resource based CRS settings will however not work, as the
+					 * resource identifiers will not match
+					 */
+					provider.setCRSProvider(new ProjectCRSManager(provider, null,
+							((ProjectTransformationEnvironment) environment).getProject()));
+				}
+			}
+		};
+		loadDataAdvisor.setServiceProvider(environment);
+		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
+
+		List<InstanceCollection> sourceList = Lists.transform(sources,
+				new Function<InstanceReader, InstanceCollection>() {
+
+					@Override
+					public InstanceCollection apply(@Nullable InstanceReader input) {
+						try {
+							HeadlessIO.executeProvider(input, loadDataAdvisor, null, reportHandler);
+							// XXX progress?!
+						} catch (IOException e) {
+							throw new IllegalStateException("Failed to load source data", e);
+						}
+						return input.getInstances();
+					}
+				});
+
+		// apply Filter
+		return applyFilter(sourceList, filterDefinition);
 	}
 
 	/**
