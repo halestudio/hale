@@ -31,11 +31,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.xml.XMLConstants;
@@ -44,9 +47,18 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.geotools.geometry.jts.JTS;
 import org.geotools.gml3.GML;
+import org.geotools.referencing.CRS;
+import org.opengis.geometry.MismatchedDimensionException;
+import org.opengis.referencing.FactoryException;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.opengis.referencing.operation.TransformException;
 
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Point;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -65,20 +77,29 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.graph.reference.ReferenceGraphPartitioner;
 import eu.esdihumboldt.hale.common.instance.graph.reference.impl.XMLInspector;
+import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
+import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.util.EnumWindingOrderTypes;
 import eu.esdihumboldt.hale.common.instance.model.Group;
+import eu.esdihumboldt.hale.common.instance.model.Identifiable;
+import eu.esdihumboldt.hale.common.instance.model.IdentifiableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.ext.impl.PerTypeInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.tools.InstanceCollectionPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.NoPartitioner;
 import eu.esdihumboldt.hale.common.instance.tools.impl.SimplePartitioner;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
@@ -109,6 +130,9 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlIndex;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.format.DecimalFormatUtil;
+import eu.esdihumboldt.util.geometry.quadtree.FixedBoundaryQuadtree;
+import eu.esdihumboldt.util.geometry.quadtree.QuadtreeBuilder;
+import eu.esdihumboldt.util.geometry.quadtree.QuadtreeNodeVisitor;
 
 /**
  * Writes GML/XML using a {@link XMLStreamWriter}
@@ -171,6 +195,34 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * Name of the parameter to create separate files for each feature type
 	 */
 	public static final String PARAM_PARTITION_BY_FEATURE_TYPE = "partition.byFeatureType";
+
+	/**
+	 * Name of the parameter to separate instances by extent
+	 */
+	public static final String PARAM_PARTITION_BY_EXTENT = "partition.byExtent";
+
+	/**
+	 * Name of the parameter to specify how much instances a tile can hold at
+	 * most before it is split up
+	 */
+	public static final String PARAM_PARTITION_BY_EXTENT_MAX_NODES = "partition.byExtent.maxInstancesPerTile";
+
+	/**
+	 * Name of the parameter stating the mode to use for extent partitioning
+	 */
+	public static final String PARAM_PARTITION_BY_EXTENT_MODE = "partition.byExtent.mode";
+
+	/**
+	 * Value for extent partitioning mode to use the bounding box of the dataset
+	 * as the quadtree boundary
+	 */
+	public static final String PARTITION_BY_EXTENT_MODE_DATASET = "dataset";
+
+	/**
+	 * Value for extent partitioning mode to use the world (WGS 84) as the
+	 * quadtree boundary
+	 */
+	public static final String PARTITION_BY_EXTENT_MODE_WORLD = "world";
 
 	/**
 	 * Name of the parameter stating the mode to use for instance partitioning.
@@ -302,53 +354,233 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		init();
 
 		if (isThresholdConfigured()) {
-			InstanceCollectionPartitioner partitioner = getPartitioner(this, reporter);
-			int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class,
-					NO_PARTITIONING);
-
-			try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
-					threshold, progress, reporter)) {
-				writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
-			} catch (XMLStreamException e) {
-				throw new IOException(e.getMessage(), e);
-			}
+			partitionByThreshold(progress, reporter);
 		}
 		else if (isPartitionByFeatureTypeConfigured()) {
-			// Threshold currently not supported if partitioning by feature type
-
-			final Set<TypeDefinition> types = new HashSet<>();
-
-			// Map GML IDs to features types and collect types
-			final XMLInspector gadget = new XMLInspector();
-			final Map<String, TypeDefinition> idToTypeMapping = new HashMap<>();
-			try (ResourceIterator<Instance> it = getInstances().iterator()) {
-				while (it.hasNext()) {
-					Instance inst = it.next();
-					types.add(inst.getDefinition());
-					idToTypeMapping.put(gadget.getIdentity(inst), inst.getDefinition());
-				}
-			}
-
-			final Map<TypeDefinition, URI> typeToTargetMapping = new HashMap<>();
-			types.stream().forEach(t -> typeToTargetMapping.put(t, new File(
-					PerTypePartsHandler.getTargetFilename(t.getName(), getTarget().getLocation()))
-							.toURI()));
-			final PerTypePartsHandler handler = new PerTypePartsHandler(typeToTargetMapping,
-					idToTypeMapping);
-			final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
-					.fromInstances(getInstances(), types);
-
-			try {
-				writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
-			} catch (XMLStreamException e) {
-				throw new IOException(e.getMessage(), e);
-			}
+			partitionByFeatureType(progress, reporter);
+		}
+		else if (isPartitionByExtentConfigured()) {
+			partitionByExtent(progress, reporter);
 		}
 		else {
 			write(getInstances(), getTarget().getOutput(), progress, reporter);
 		}
 
 		return reporter;
+	}
+
+	private void partitionByExtent(ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
+		int maxNodes = getParameter(PARAM_PARTITION_BY_EXTENT_MAX_NODES).as(Integer.class, 1000);
+		String mode = getParameter(PARAM_PARTITION_BY_EXTENT_MODE).as(String.class,
+				PARTITION_BY_EXTENT_MODE_DATASET);
+
+		final SubtaskProgressIndicator qtProgress = new SubtaskProgressIndicator(progress) {
+
+			@Override
+			protected String getCombinedTaskName(String taskName, String subtaskName) {
+				return taskName + " (" + subtaskName + ")";
+			}
+
+		};
+
+		// Map for instances that either contain no or multiple geometries
+		Map<String, InstanceReference> unhandledInstances = new HashMap<>();
+
+		QuadtreeBuilder<Point, InstanceReference> builder = new QuadtreeBuilder<>();
+		try (ResourceIterator<Instance> it = getInstances().iterator()) {
+			qtProgress.begin("Build quadtree", getInstances().size());
+
+			final XMLInspector gadget = new XMLInspector();
+			int i = 0;
+			while (it.hasNext()) {
+				Instance inst = it.next();
+				InstanceReference instRef = getInstances().getReference(inst);
+
+				InstanceTraverser traverser = new DepthFirstInstanceTraverser();
+				GeometryFinder finder = new GeometryFinder(getTargetCRS());
+				traverser.traverse(inst, finder);
+				List<GeometryProperty<?>> geoms = finder.getGeometries();
+				if (geoms.isEmpty() || geoms.size() > 1) {
+					unhandledInstances.put(gadget.getIdentity(inst), instRef);
+				}
+				else {
+					GeometryProperty<?> geomProperty = geoms.get(0);
+
+					Geometry geom = geomProperty.getGeometry();
+
+					Point centroid;
+					switch (mode) {
+					case PARTITION_BY_EXTENT_MODE_WORLD:
+						CoordinateReferenceSystem sourceCrs = geomProperty.getCRSDefinition()
+								.getCRS();
+						CodeDefinition wgs84 = new CodeDefinition("EPSG:4326");
+						try {
+							MathTransform toWgs84 = CRS.findMathTransform(sourceCrs,
+									wgs84.getCRS());
+							Geometry geomWgs84 = JTS.transform(geom, toWgs84);
+							centroid = geomWgs84.getCentroid();
+						} catch (FactoryException | MismatchedDimensionException
+								| TransformException e) {
+							log.error("Unable to transform geometry to WGS 84", e);
+							throw new IllegalStateException(e.getMessage(), e);
+						}
+						break;
+					case PARTITION_BY_EXTENT_MODE_DATASET:
+						// fall through to default
+					default:
+						centroid = geom.getCentroid();
+					}
+
+					builder.add(centroid,
+							new IdentifiableInstanceReference(instRef, gadget.getIdentity(inst)));
+				}
+
+				qtProgress.advance(1);
+				if (++i % 100 == 0) {
+					qtProgress.setCurrentTask(
+							MessageFormat.format("Adding geometries ({0} instances processed)", i));
+				}
+			}
+			qtProgress.end();
+			qtProgress.begin("Building quadtree", ProgressIndicator.UNKNOWN);
+
+			FixedBoundaryQuadtree<InstanceReference> qt;
+			switch (mode) {
+			case PARTITION_BY_EXTENT_MODE_DATASET:
+				qt = builder.build(maxNodes);
+				break;
+			case PARTITION_BY_EXTENT_MODE_WORLD:
+				Envelope world = new Envelope(-180, 180, -90, 90);
+				qt = builder.build(maxNodes, world);
+				break;
+			default:
+				log.error(MessageFormat.format(
+						"Unrecognized extent partitioning mode \"{0}\", using dataset boundaries",
+						mode));
+				qt = builder.build(maxNodes);
+			}
+
+			qtProgress.end();
+
+			final Map<String, String> idToKeyMapping = new HashMap<>();
+			final Map<String, Collection<InstanceReference>> keyToRefsMapping = new HashMap<>();
+
+			// Instances without geometry or with multiple geometries
+			keyToRefsMapping.put(ExtentPartsHandler.KEY_NO_GEOMETRY, unhandledInstances.values());
+			unhandledInstances.keySet().stream()
+					.forEach(id -> idToKeyMapping.put(id, ExtentPartsHandler.KEY_NO_GEOMETRY));
+
+			buildMappings(qt, idToKeyMapping, keyToRefsMapping);
+
+			// Partition source instances based on quadtree tiles
+			Iterator<InstanceCollection> collIt = new Iterator<InstanceCollection>() {
+
+				private final Queue<String> keySet = new LinkedList<>(keyToRefsMapping.keySet());
+
+				@Override
+				public boolean hasNext() {
+					return !keySet.isEmpty();
+				}
+
+				@Override
+				public InstanceCollection next() {
+					String key = keySet.poll();
+					Collection<InstanceReference> refs = keyToRefsMapping.get(key);
+
+					InstanceCollection instColl = new DefaultInstanceCollection(refs.stream()
+							.map(ref -> getInstances().getInstance(
+									IdentifiableInstanceReference.getRootReference(ref)))
+							.collect(Collectors.toList()));
+					return new ExtentPartsHandler.TreeKeyDecorator(instColl, key);
+				}
+			};
+
+			final Map<String, URI> keyToTargetMapping = new HashMap<>();
+			keyToRefsMapping.keySet().stream().forEach(k -> keyToTargetMapping.put(k,
+					new File(ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
+							.toURI()));
+
+			final ExtentPartsHandler handler = new ExtentPartsHandler(keyToTargetMapping,
+					idToKeyMapping);
+
+			try {
+				writeParts(collIt, handler, progress, reporter);
+			} catch (XMLStreamException e) {
+				throw new IOException(e.getMessage(), e);
+			}
+
+		}
+	}
+
+	private void buildMappings(FixedBoundaryQuadtree<InstanceReference> qt,
+			final Map<String, String> idToKeyMapping,
+			final Map<String, Collection<InstanceReference>> keyToRefsMapping) {
+		QuadtreeNodeVisitor<InstanceReference> visitor = new QuadtreeNodeVisitor<InstanceReference>() {
+
+			@Override
+			public void visit(Geometry geometry, InstanceReference data, String treeKey) {
+				if (!keyToRefsMapping.containsKey(treeKey)) {
+					keyToRefsMapping.put(treeKey, new HashSet<InstanceReference>());
+				}
+				keyToRefsMapping.get(treeKey).add(data);
+				if (data instanceof Identifiable) {
+					Identifiable id = (Identifiable) data;
+					idToKeyMapping.put(id.getId().toString(), treeKey);
+				}
+				else {
+					throw new IllegalStateException("Instance reference has no ID");
+				}
+			}
+		};
+
+		qt.traverse(visitor);
+	}
+
+	private void partitionByFeatureType(ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
+		// Threshold currently not supported if partitioning by feature type
+
+		final Set<TypeDefinition> types = new HashSet<>();
+
+		// Map GML IDs to features types and collect types
+		final XMLInspector gadget = new XMLInspector();
+		final Map<String, TypeDefinition> idToTypeMapping = new HashMap<>();
+		try (ResourceIterator<Instance> it = getInstances().iterator()) {
+			while (it.hasNext()) {
+				Instance inst = it.next();
+				types.add(inst.getDefinition());
+				idToTypeMapping.put(gadget.getIdentity(inst), inst.getDefinition());
+			}
+		}
+
+		final Map<TypeDefinition, URI> typeToTargetMapping = new HashMap<>();
+		types.stream().forEach(t -> typeToTargetMapping.put(t, new File(
+				PerTypePartsHandler.getTargetFilename(t.getName(), getTarget().getLocation()))
+						.toURI()));
+		final PerTypePartsHandler handler = new PerTypePartsHandler(typeToTargetMapping,
+				idToTypeMapping);
+		final PerTypeInstanceCollection instancesPerType = PerTypeInstanceCollection
+				.fromInstances(getInstances(), types);
+
+		try {
+			writeParts(instancesPerType.collectionsIterator(), handler, progress, reporter);
+		} catch (XMLStreamException e) {
+			throw new IOException(e.getMessage(), e);
+		}
+	}
+
+	private void partitionByThreshold(ProgressIndicator progress, IOReporter reporter)
+			throws IOException {
+		InstanceCollectionPartitioner partitioner = getPartitioner(this, reporter);
+		int threshold = getParameter(PARAM_INSTANCES_THRESHOLD).as(Integer.class, NO_PARTITIONING);
+
+		try (ResourceIterator<InstanceCollection> parts = partition(partitioner, getInstances(),
+				threshold, progress, reporter)) {
+			writeParts(parts, new DefaultMultipartHandler(), progress, reporter);
+		} catch (XMLStreamException e) {
+			throw new IOException(e.getMessage(), e);
+		}
 	}
 
 	/**
@@ -503,6 +735,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 	private boolean isPartitionByFeatureTypeConfigured() {
 		return getParameter(PARAM_PARTITION_BY_FEATURE_TYPE).as(Boolean.class, false);
+	}
+
+	private boolean isPartitionByExtentConfigured() {
+		return getParameter(PARAM_PARTITION_BY_EXTENT).as(Boolean.class, false);
 	}
 
 	@Override
