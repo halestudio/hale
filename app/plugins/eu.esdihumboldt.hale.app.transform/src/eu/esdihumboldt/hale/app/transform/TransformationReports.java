@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.app.transform;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -52,6 +53,23 @@ public class TransformationReports implements ReportHandler {
 		}
 	}
 
+	/**
+	 * Create a report handler that collects the reports and in addition
+	 * delegates to another report handler.
+	 * 
+	 * @param delegate the delegate report handler
+	 */
+	public TransformationReports(@Nullable ReportHandler delegate) {
+		delegateTo = delegate;
+	}
+
+	/**
+	 * Create a report handler that collects the reports.
+	 */
+	public TransformationReports() {
+		delegateTo = null;
+	}
+
 	@Override
 	public void publishReport(Report<?> report) {
 		synchronized (reports) {
@@ -70,6 +88,13 @@ public class TransformationReports implements ReportHandler {
 	 */
 	public StatsCollector getStatistics() {
 		return new StatisticsHelper().getStatistics(reports);
+	}
+
+	/**
+	 * @return the collected reports
+	 */
+	public List<Report<?>> getReports() {
+		return Collections.unmodifiableList(reports);
 	}
 
 }
