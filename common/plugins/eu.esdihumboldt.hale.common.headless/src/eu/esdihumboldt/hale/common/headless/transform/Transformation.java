@@ -157,6 +157,32 @@ public class Transformation {
 		InstanceCollection sourceCollection = loadSources(sources, environment, reportHandler,
 				filterDefinition);
 
+		return transform(sourceCollection, target, environment, reportHandler, processId,
+				validators);
+	}
+
+	/**
+	 * Transform the instances provided by the given instance collection and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the source instance collction
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
+	 * @param validators the instance validators, may be <code>null</code> or
+	 *            empty
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 */
+	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId,
+			Collection<InstanceValidator> validators) {
+
 		final TransformationSink targetSink;
 		try {
 			targetSink = TransformationSinkExtension.getInstance()
@@ -202,9 +228,8 @@ public class Transformation {
 		if (validators != null && !validators.isEmpty()) {
 			validationJob = new ValidationJob(validators, reportHandler, target, environment);
 		}
-		return transform(sourceCollection, targetSink, exportJob, validationJob,
-				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
-				environment, processId);
+		return transform(sources, targetSink, exportJob, validationJob, environment.getAlignment(),
+				environment.getSourceSchema(), reportHandler, environment, processId);
 	}
 
 	/**
@@ -297,11 +322,12 @@ public class Transformation {
 		// only.
 		boolean useTempDatabase = false;
 		final LocalOrientDB db;
-		for (Cell cell : alignment.getActiveTypeCells())
+		for (Cell cell : alignment.getActiveTypeCells()) {
 			if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
 				useTempDatabase = true;
 				break;
 			}
+		}
 
 		// Create temporary database if necessary.
 		if (useTempDatabase) {
