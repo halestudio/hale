@@ -21,6 +21,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultAlignment;
+import eu.esdihumboldt.hale.common.headless.transform.DefaultTransformationSettings;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
@@ -90,7 +91,7 @@ public class TransformDataWizard extends Wizard {
 		Transformation.transform(rawSources, targetSink, sourceSelectionPage.getExportJob(),
 				sourceSelectionPage.getValidationJob(), alignment,
 				ss.getSchemas(SchemaSpaceID.SOURCE), DefaultReportHandler.getInstance(),
-				HaleUI.getServiceProvider(), null);
+				HaleUI.getServiceProvider(), null, new DefaultTransformationSettings());
 
 		return true;
 	}

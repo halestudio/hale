@@ -98,6 +98,7 @@ public class Transformation {
 	 *            necessary
 	 * @param validators the instance validator, may be <code>null</code> or
 	 *            empty
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -105,9 +106,10 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
-			Collection<InstanceValidator> validators) {
+			Collection<InstanceValidator> validators, TransformationSettings settings) {
 
-		return transform(sources, target, environment, reportHandler, processId, validators, null);
+		return transform(sources, target, environment, reportHandler, processId, validators, null,
+				settings);
 	}
 
 	/**
@@ -121,14 +123,15 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId) {
-		return transform(sources, target, environment, reportHandler, processId, null);
+			final ReportHandler reportHandler, Object processId, TransformationSettings settings) {
+		return transform(sources, target, environment, reportHandler, processId, null, settings);
 	}
 
 	/**
@@ -146,6 +149,7 @@ public class Transformation {
 	 *            empty
 	 * @param filterDefinition {@link InstanceFilterDefinition} object as a
 	 *            filter may be <code>null</code>
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -153,12 +157,13 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
-			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition) {
+			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition,
+			TransformationSettings settings) {
 		InstanceCollection sourceCollection = loadSources(sources, environment, reportHandler,
 				filterDefinition);
 
 		return transform(sourceCollection, target, environment, reportHandler, processId,
-				validators);
+				validators, settings);
 	}
 
 	/**
@@ -174,6 +179,7 @@ public class Transformation {
 	 *            necessary
 	 * @param validators the instance validators, may be <code>null</code> or
 	 *            empty
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -181,7 +187,7 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
-			Collection<InstanceValidator> validators) {
+			Collection<InstanceValidator> validators, TransformationSettings settings) {
 
 		final TransformationSink targetSink;
 		try {
@@ -229,7 +235,7 @@ public class Transformation {
 			validationJob = new ValidationJob(validators, reportHandler, target, environment);
 		}
 		return transform(sources, targetSink, exportJob, validationJob, environment.getAlignment(),
-				environment.getSourceSchema(), reportHandler, environment, processId);
+				environment.getSourceSchema(), reportHandler, environment, processId, settings);
 	}
 
 	/**
@@ -304,6 +310,7 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -312,7 +319,7 @@ public class Transformation {
 			final TransformationSink targetSink, final ExportJob exportJob,
 			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
 			final ReportHandler reportHandler, final ServiceProvider serviceProvider,
-			final Object processId) {
+			final Object processId, TransformationSettings settings) {
 		final SettableFuture<Boolean> result = SettableFuture.create();
 
 		final InstanceCollection sourceToUse;
@@ -320,14 +327,25 @@ public class Transformation {
 		// Check whether to create a temporary database or not.
 		// Currently do not create a temporary DB is there are Retypes/Creates
 		// only.
-		boolean useTempDatabase = false;
 		final LocalOrientDB db;
-		for (Cell cell : alignment.getActiveTypeCells()) {
-			if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
-				useTempDatabase = true;
-				break;
+		boolean useTempDatabase = settings.useTemporaryDatabase().orElseGet(() -> {
+			boolean useDb = false;
+
+			for (Cell cell : alignment.getActiveTypeCells()) {
+				/*
+				 * XXX right now the source is read for each type transformation
+				 * - does it makes sense to use the DB if there is a certain
+				 * number of type transformations?
+				 */
+
+				if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
+					useDb = true;
+					break;
+				}
 			}
-		}
+
+			return useDb;
+		});
 
 		// Create temporary database if necessary.
 		if (useTempDatabase) {
