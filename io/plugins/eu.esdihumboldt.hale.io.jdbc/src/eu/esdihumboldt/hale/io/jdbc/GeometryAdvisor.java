@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -58,11 +59,12 @@ public interface GeometryAdvisor<C> {
 	 * @param type the type definition associated to the column. It may be
 	 *            adapted by adding custom constraints, but {@link GeometryType}
 	 *            and {@link Binding} will be set by the caller
+	 * @param log the log
 	 * @return the geometry type that should be used for the
 	 *         {@link GeometryType} binding
 	 */
 	public Class<? extends Geometry> configureGeometryColumnType(C connection, BaseColumn<?> column,
-			DefaultTypeDefinition type);
+			DefaultTypeDefinition type, SimpleLog log);
 
 	/**
 	 * Convert a property to a value that can be stored in the database.
@@ -71,13 +73,14 @@ public interface GeometryAdvisor<C> {
 	 *            associated CRS definition
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
-	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition)}
+	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition, SimpleLog)}
 	 * @param connection Connection
+	 * @param log the log
 	 * @return the converted geometry that can be written to the database
 	 * @throws Exception something went wrong
 	 */
-	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType, C connection)
-			throws Exception;
+	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType, C connection,
+			SimpleLog log) throws Exception;
 
 	/**
 	 * Convert a geometry read from the database to a geometry property.
@@ -85,13 +88,14 @@ public interface GeometryAdvisor<C> {
 	 * @param geom the geometry read from the database
 	 * @param columnType the type definition of the associated geometry column
 	 *            that was previously configured using
-	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition)}
+	 *            {@link #configureGeometryColumnType(Object, BaseColumn, DefaultTypeDefinition, SimpleLog)}
 	 * @param connection The connection
 	 * @param crsProvider The CRS provider
+	 * @param log the log
 	 * @return the geometry property
 	 * @throws Exception if the conversion failed
 	 */
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			C connection, Supplier<CRSDefinition> crsProvider) throws Exception;
+			C connection, Supplier<CRSDefinition> crsProvider, SimpleLog log) throws Exception;
 
 }

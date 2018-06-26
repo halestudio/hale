@@ -37,6 +37,9 @@ import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
@@ -56,6 +59,8 @@ import schemacrawler.schema.ColumnDataType;
  */
 public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
+	private static final ALogger _log = ALoggerFactory.getLogger(PostGISGeometries.class);
+
 	@Override
 	public boolean isFixedType(ColumnDataType columnType) {
 		/*
@@ -68,17 +73,21 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(PGConnection connection,
-			BaseColumn<?> column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type, SimpleLog log) {
 		Connection con = (Connection) connection;
 
-		String columnValueName = column.getParent().getName();
+		String tableName = column.getParent().getName();
 		String geometryType = null;
 		try {
 			Statement stmt = con.createStatement();
 			// Get the srid, dimension and geometry type
+			/*
+			 * FIXME this query should also take into account the schema and
+			 * possibly the column name.
+			 */
 			ResultSet rs = stmt.executeQuery(
 					"SELECT srid,type,coord_dimension FROM geometry_columns WHERE f_table_name = "
-							+ "'" + columnValueName + "'");
+							+ "'" + tableName + "'");
 			if (rs.next()) {
 				geometryType = rs.getString("type");
 				String dimension = rs.getString("coord_dimension");
@@ -94,14 +103,21 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 							r.getString("auth_srid"), Integer.parseInt(dimension),
 							r.getString("srtext"), r.getString("auth_name"));
 					type.setConstraint(columnTypeConstraint);
+
+					log.info("Determined geometry metadata for table {0} with SRID {1}: {2}",
+							tableName, srid, columnTypeConstraint);
+				}
+				else {
+					log.warn("Could not determine SRS information for SRID " + srid);
 				}
 			}
 			else {
 				// XXX what if no SRID information is present? is that a case
 				// that may still be valid?
+				log.warn("Could not determine SRS information for table {0}", tableName);
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Error trying to retrieve geometry information for table " + tableName, e);
 		}
 
 		// In this case we have no geometry column information
@@ -136,7 +152,7 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 
 	@Override
 	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType,
-			PGConnection pgconn) throws Exception {
+			PGConnection pgconn, SimpleLog log) throws Exception {
 
 		PGgeometry pGeometry = null;
 		// Transform from sourceCRS to targetCRS
@@ -146,8 +162,9 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		CoordinateReferenceSystem targetCRS = null;
 		String authName = columnTypeMetadata.getAuthName();
 		if (authName != null && authName.equals("EPSG")) {
-			// PostGIS assumes lon/lat
-			targetCRS = CRS.decode(authName + ":" + columnTypeMetadata.getSrs(), true);
+			// PostGIS assumes lon/lat (use CodeDefinition because of cache)
+			targetCRS = new CodeDefinition(authName + ":" + columnTypeMetadata.getSrs(), true)
+					.getCRS();
 		}
 		else {
 			String wkt = columnTypeMetadata.getSrsText();
@@ -169,6 +186,11 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		// Convert the jts Geometry to postgis PGgeometry and set the SRSID
 		pGeometry = new PGgeometry(targetGeometry.toText());
 		try {
+			/*
+			 * FIXME This assumes that the code is the same as the SRID, which
+			 * often is the case, but we cannot rely on that. Should the SRID be
+			 * stored as additional information in the geometry metadata?
+			 */
 			pGeometry.getGeometry().setSrid(Integer.parseInt(columnTypeMetadata.getSrs()));
 		} catch (Exception e) {
 			// ignore
@@ -176,15 +198,10 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 		return pGeometry;
 	}
 
-	/**
-	 * 
-	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
-	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
-	 *      java.lang.Object, java.util.function.Supplier)
-	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			PGConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
+			PGConnection connection, Supplier<CRSDefinition> crsProvider, SimpleLog log)
+			throws Exception {
 
 		if (geom instanceof PGgeometry) {
 			PGgeometry pgeom = (PGgeometry) geom;
@@ -196,6 +213,10 @@ public class PostGISGeometries implements GeometryAdvisor<PGConnection> {
 			String value = pgeom.getGeometry().toString();
 			if (value.startsWith(PGgeometry.SRIDPREFIX) && value.indexOf(';') >= 0) {
 				value = value.substring(value.indexOf(';') + 1);
+
+				if (_log.isDebugEnabled()) {
+					_log.debug("SRID information found in geometry is ignored");
+				}
 			}
 
 			Geometry jtsGeom = reader.read(value);

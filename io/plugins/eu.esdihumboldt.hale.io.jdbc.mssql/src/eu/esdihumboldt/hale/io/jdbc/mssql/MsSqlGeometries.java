@@ -33,8 +33,7 @@ import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTReader;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
@@ -55,11 +54,9 @@ import schemacrawler.schema.ColumnDataType;
  */
 public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 
-	private static final ALogger log = ALoggerFactory.getLogger(MsSqlGeometries.class);
-
 	@Override
 	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType,
-			SQLServerConnection connection) throws Exception {
+			SQLServerConnection connection, SimpleLog log) throws Exception {
 
 		// We need Column Data type
 		String columnDataType = columnType.getName().getLocalPart();
@@ -137,15 +134,10 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 		return null;
 	}
 
-	/**
-	 * 
-	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
-	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
-	 *      java.lang.Object, java.util.function.Supplier)
-	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			SQLServerConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
+			SQLServerConnection connection, Supplier<CRSDefinition> crsProvider, SimpleLog log)
+			throws Exception {
 
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -258,7 +250,7 @@ public class MsSqlGeometries implements GeometryAdvisor<SQLServerConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(SQLServerConnection connection,
-			BaseColumn<?> column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type, SimpleLog log) {
 		type.setConstraint(new GeometryMetadata());
 		return Geometry.class;
 	}
