@@ -547,9 +547,61 @@
                      defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
                      sample="true"
                      sampleDescription="The exporter will create one file per target type. Local references to instances of other types 
-                     will be modified to relative references, referencing the respective output file. This setting can only be used if the
-                     partition mode is set to 'none'."> 
+                     will be modified to relative references, referencing the respective output file. This setting cannot be combined with
+                     other partitioning schemes."> 
                </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Partition by spatial extent"
+               label="Partition by spatial extent"
+               name="partition.byExtent"
+               optional="true">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="false"
+                     defaultDescription="By default all types are written to the same file (unless another partitioning scheme is active)"
+                     sample="true"
+                     sampleDescription="The exporter will create a spatial partitioning of the exported instances by adding the centroids of the
+                     geometries to a quadtree. A tile in the quadtree will be split up into four equal-sized subtiles once the configured maximum
+                     number of instances in the tile is surpassed. Local references to instances in other tiles will be modified to relative 
+                     references, referencing the respective output file. This setting cannot be combined with other partitioning schemes."> 
+               </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Value for the maximum number of instances per tile. If the number is exceeded, the tile will be split up."
+               label="Instances per tile"
+               name="partition.byExtent.maxInstancesPerTile"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="1000"
+                  defaultDescription="By default, at most 1000 instances will be put into a single tile."
+                  sample="2000">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Mode for spatial partitioning of the output"
+               label="Spatial partitioning mode"
+               name="partition.byExtent.mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="dataset">
+               </enumerationValue>
+               <enumerationValue
+                     value="world">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="dataset"
+                  defaultDescription="By default the bounding box of the exported instances will be used as the boundary of the quadtree used to do the spatial partitioning"
+                  sample="world"
+                  sampleDescription="The partitioning can also be done by cutting strictly at the threshold.">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       <provider
