@@ -389,7 +389,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 		QuadtreeBuilder<Point, InstanceReference> builder = new QuadtreeBuilder<>();
 		try (ResourceIterator<Instance> it = getInstances().iterator()) {
-			qtProgress.begin("Build quadtree", getInstances().size());
+			qtProgress.begin("Collecting geometries", getInstances().size());
 
 			final XMLInspector gadget = new XMLInspector();
 			int i = 0;
@@ -438,12 +438,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 				qtProgress.advance(1);
 				if (++i % 100 == 0) {
-					qtProgress.setCurrentTask(
-							MessageFormat.format("Adding geometries ({0} instances processed)", i));
+					qtProgress.setCurrentTask(MessageFormat.format("{0} instances processed", i));
 				}
 			}
-			qtProgress.end();
-			qtProgress.begin("Building quadtree", ProgressIndicator.UNKNOWN);
+
+			qtProgress.setCurrentTask("Building quadtree");
 
 			FixedBoundaryQuadtree<InstanceReference> qt;
 			switch (mode) {
@@ -461,7 +460,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				qt = builder.build(maxNodes);
 			}
 
-			qtProgress.end();
+			qtProgress.setCurrentTask("Performing spatial partitioning");
 
 			final Map<String, String> idToKeyMapping = new HashMap<>();
 			final Map<String, Collection<InstanceReference>> keyToRefsMapping = new HashMap<>();
@@ -503,6 +502,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			final ExtentPartsHandler handler = new ExtentPartsHandler(keyToTargetMapping,
 					idToKeyMapping);
+
+			qtProgress.end();
 
 			try {
 				writeParts(collIt, handler, progress, reporter);
