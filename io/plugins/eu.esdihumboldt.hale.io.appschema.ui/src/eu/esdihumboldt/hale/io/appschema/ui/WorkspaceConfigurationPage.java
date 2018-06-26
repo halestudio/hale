@@ -60,6 +60,7 @@ import eu.esdihumboldt.hale.io.appschema.model.WorkspaceMetadata;
 import eu.esdihumboldt.hale.io.appschema.ui.FeatureChainingConfigurationPage.ChainPage;
 import eu.esdihumboldt.hale.io.appschema.writer.AbstractAppSchemaConfigurator;
 import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingGenerator;
+import eu.esdihumboldt.hale.ui.common.viewers.CenteredImageCellLabelProvider;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 
@@ -268,7 +269,7 @@ public class WorkspaceConfigurationPage extends
 		tableParent.setLayoutData(gridData);
 
 		workspaceTableViewer = new TableViewer(tableParent,
-				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+				SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		workspaceTableViewer.getControl()
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 		workspaceTableViewer.setContentProvider(ArrayContentProvider.getInstance());
@@ -349,19 +350,8 @@ public class WorkspaceConfigurationPage extends
 		}
 	}
 
-	private class WorkspaceIsolatedLabelProvider extends ColumnLabelProvider {
+	private class WorkspaceIsolatedLabelProvider extends CenteredImageCellLabelProvider {
 
-		/**
-		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getText(java.lang.Object)
-		 */
-		@Override
-		public String getText(Object element) {
-			return null;
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.ColumnLabelProvider#getImage(java.lang.Object)
-		 */
 		@Override
 		public Image getImage(Object element) {
 			WorkspaceMetadata conf = (WorkspaceMetadata) element;
@@ -488,7 +478,7 @@ public class WorkspaceConfigurationPage extends
 		 */
 		@Override
 		protected CellEditor getCellEditor(Object element) {
-			return new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
+			return new CheckboxCellEditor(viewer.getTable());
 		}
 
 		/**
