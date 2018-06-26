@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.geom,
  de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
  org.geotools.geometry.jts;version="8.0.0",

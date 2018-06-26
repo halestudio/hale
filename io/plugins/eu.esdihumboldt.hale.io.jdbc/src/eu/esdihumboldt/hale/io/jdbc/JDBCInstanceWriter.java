@@ -524,7 +524,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter
 	 */
 	private void populateInsertStatementOrExecuteAutoIncStatement(PreparedStatement statement,
 			Set<QName> properties, Instance instance, IOReporter reporter, Connection conn)
-					throws SQLException {
+			throws SQLException {
 		TypeDefinition type = instance.getDefinition();
 
 		int index = 1;
@@ -640,7 +640,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter
 	@SuppressWarnings("unchecked")
 	private void setStatementParameter(PreparedStatement statement, int index, Object value,
 			PropertyDefinition propertyDef, int sqlType, IOReporter reporter, Connection conn)
-					throws SQLException {
+			throws SQLException {
 		if (propertyDef.getPropertyType().getConstraint(GeometryType.class).isGeometry()) {
 			// is a geometry column
 
@@ -654,7 +654,7 @@ public class JDBCInstanceWriter extends AbstractInstanceWriter
 					// XXX JTS geometry conversion needed beforehand?
 					try {
 						value = advisor.convertGeometry((GeometryProperty<?>) value,
-								propertyDef.getPropertyType(), conn);
+								propertyDef.getPropertyType(), conn, reporter);
 					} catch (Exception e) {
 						reporter.error(
 								new IOMessageImpl("Something went wrong during conversion", e));

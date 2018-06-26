@@ -61,7 +61,9 @@ import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
+import eu.esdihumboldt.hale.common.headless.transform.DefaultTransformationSettings;
 import eu.esdihumboldt.hale.common.headless.transform.Transformation;
+import eu.esdihumboldt.hale.common.headless.transform.TransformationSettings;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceValidator;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -435,9 +437,12 @@ public class ExecTransformation implements ConsoleConstants {
 	private int transform() throws InterruptedException, ExecutionException {
 		status("Running hale transformation...");
 
+		TransformationSettings settings = new DefaultTransformationSettings();
+		// TODO make settings configurable?
+
 		// run transformation
 		ListenableFuture<Boolean> res = Transformation.transform(sources, target, env,
-				reportHandler, id, validators, context.getFilters());
+				reportHandler, id, validators, context.getFilters(), settings);
 
 		boolean orgSuccess = res.get();
 
