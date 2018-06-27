@@ -191,8 +191,11 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 			// add filename augmented property
 			if (fileName != null) {
-				instance.addProperty(new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
-						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME), fileName);
+				QName propertyName = new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
+						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME);
+				if (type == null || type.getChild(propertyName) != null) {
+					instance.addProperty(propertyName, fileName);
+				}
 			}
 
 			return instance;

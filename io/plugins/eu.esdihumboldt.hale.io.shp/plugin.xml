@@ -19,6 +19,21 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.shp">
          </contentType>
+         <providerParameter
+               description="Add an attribute that contains the file name for any data loaded from a Shapefile"
+               label="File name attribute"
+               name="addFilenameAttribute"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default the attribute is added"
+                  sample="false"
+                  sampleDescription="Suppress adding the attribute">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader"
