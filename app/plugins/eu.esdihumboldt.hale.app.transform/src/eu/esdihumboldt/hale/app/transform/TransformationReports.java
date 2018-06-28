@@ -39,8 +39,11 @@ public class TransformationReports implements ReportHandler {
 
 	private final List<Report<?>> reports = new ArrayList<>();
 
+	private boolean printSummary = true;
+
 	/**
-	 * Create a report handler.
+	 * Create a report handler. By default also prints report summaries to the
+	 * console.
 	 * 
 	 * @param reportFile the optional report file to write reports to
 	 */
@@ -61,6 +64,7 @@ public class TransformationReports implements ReportHandler {
 	 */
 	public TransformationReports(@Nullable ReportHandler delegate) {
 		delegateTo = delegate;
+		printSummary = false;
 	}
 
 	/**
@@ -68,6 +72,7 @@ public class TransformationReports implements ReportHandler {
 	 */
 	public TransformationReports() {
 		delegateTo = null;
+		printSummary = false;
 	}
 
 	@Override
@@ -75,7 +80,9 @@ public class TransformationReports implements ReportHandler {
 		synchronized (reports) {
 			reports.add(report);
 		}
-		ExecUtil.printSummary(report);
+		if (isPrintSummary()) {
+			ExecUtil.printSummary(report);
+		}
 		if (delegateTo != null) {
 			delegateTo.publishReport(report);
 		}
@@ -95,6 +102,20 @@ public class TransformationReports implements ReportHandler {
 	 */
 	public List<Report<?>> getReports() {
 		return Collections.unmodifiableList(reports);
+	}
+
+	/**
+	 * @return the printSummary
+	 */
+	public boolean isPrintSummary() {
+		return printSummary;
+	}
+
+	/**
+	 * @param printSummary the printSummary to set
+	 */
+	public void setPrintSummary(boolean printSummary) {
+		this.printSummary = printSummary;
 	}
 
 }
