@@ -633,6 +633,10 @@ public class Transformation {
 
 	private static InstanceCollection applyFilter(List<InstanceCollection> sourceData,
 			InstanceFilterDefinition filterDefinition) {
+		if (filterDefinition == null) {
+			filterDefinition = new InstanceFilterDefinition();
+		}
+
 		List<InstanceCollection> filteredData = new ArrayList<InstanceCollection>();
 
 		for (int i = 0; i < sourceData.size(); i++) {
