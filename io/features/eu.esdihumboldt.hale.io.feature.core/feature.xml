@@ -169,20 +169,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.io.appschema"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.io.appschema.model.jaxb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.io.codelist.skos"
          download-size="0"
          install-size="0"

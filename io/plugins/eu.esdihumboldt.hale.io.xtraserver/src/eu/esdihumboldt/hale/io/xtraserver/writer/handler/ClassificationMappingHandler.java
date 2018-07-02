@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.align.model.functions.ClassificationMappingUt
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.service.ServiceManager;
 import eu.esdihumboldt.hale.common.lookup.LookupTable;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the {@link ClassificationMappingFunction} to a
@@ -70,7 +70,7 @@ class ClassificationMappingHandler extends AbstractPropertyTransformationHandler
 			mappingValue.qualifiedTargetPath(path);
 		}
 
-		mappingValue.value(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
+		mappingValue.value(propertyName(XtraServerMappingUtils.getSourceProperty(propertyCell)
 				.getDefinition().getPropertyPath()));
 
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
@@ -84,8 +84,7 @@ class ClassificationMappingHandler extends AbstractPropertyTransformationHandler
 			final Iterator<Value> it = valueMap.keySet().iterator();
 			while (it.hasNext()) {
 				final Value sourceValue = it.next();
-				final String targetValueStr = '\'' + valueMap.get(sourceValue).as(String.class)
-						+ '\'';
+				final String targetValueStr = '\'' + valueMap.get(sourceValue).as(String.class) + '\'';
 
 				mappingValue.keyValue(sourceValue.as(String.class), targetValueStr);
 			}

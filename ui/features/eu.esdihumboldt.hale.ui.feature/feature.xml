@@ -431,13 +431,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.doc.appschema"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.ui.functions.custom"
          download-size="0"
          install-size="0"
