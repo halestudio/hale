@@ -58,14 +58,21 @@ public class TextType implements ComplexValueType<Text, Void> {
 			result.setPrefix("core");
 			result.setAttribute("xml:space", "preserve");
 
+			String text = value.getText();
+			if (!text.isEmpty() && text.contains("\r") && !text.contains("\n")) {
+				// replace deprecated Mac OS \r line endings with \n
+				// TODO also replace \r\n endings with \n ?
+				text = text.replaceAll("\r", "\n");
+			}
+
 			StringBuilder content = new StringBuilder();
 			// wrap content in line breaks for better looks in XML
 			// if it itself contains line breaks
-			boolean wrap = !value.getText().isEmpty() && value.getText().contains("\n");
+			boolean wrap = !text.isEmpty() && text.contains("\n");
 			if (wrap) {
 				content.append('\n');
 			}
-			content.append(value.getText());
+			content.append(text);
 			if (wrap) {
 				content.append('\n');
 			}
