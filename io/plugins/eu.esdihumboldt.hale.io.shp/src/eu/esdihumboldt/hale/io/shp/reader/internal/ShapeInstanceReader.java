@@ -161,7 +161,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 				type = getSourceSchema().getType(typeName);
 			}
 			boolean matchShortParameterNames = getParameter(PARAM_MATCH_SHORT_PROPERTY_NAMES)
-					.as(Boolean.class);
+					.as(Boolean.class, false);
 			collections.put(type, new ShapesInstanceCollection(features, type, getCrsProvider(),
 					name.getLocalPart(), matchShortParameterNames));
 		}
