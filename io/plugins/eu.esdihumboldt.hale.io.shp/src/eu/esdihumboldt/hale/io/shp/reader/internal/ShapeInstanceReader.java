@@ -118,8 +118,8 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		if (defaultType == null) {
 			// check if typename was supplied w/o namespace
 			try {
-				defaultType = getSourceSchema().getType(
-						new QName(ShapefileConstants.SHAPEFILE_NS, typename));
+				defaultType = getSourceSchema()
+						.getType(new QName(ShapefileConstants.SHAPEFILE_NS, typename));
 			} catch (Exception e) {
 				// ignore
 				// TODO report?
@@ -160,9 +160,10 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 				QName typeName = new QName(ShapefileConstants.SHAPEFILE_NS, name.getLocalPart());
 				type = getSourceSchema().getType(typeName);
 			}
-
+			boolean matchShortParameterNames = getParameter(PARAM_MATCH_SHORT_PROPERTY_NAMES)
+					.as(Boolean.class);
 			collections.put(type, new ShapesInstanceCollection(features, type, getCrsProvider(),
-					name.getLocalPart()));
+					name.getLocalPart(), matchShortParameterNames));
 		}
 
 		instances = new PerTypeInstanceCollection(collections);
@@ -196,8 +197,8 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		TypeDefinition maxType = null;
 
 		// check preferred name first
-		TypeDefinition preferredType = types.getType(new QName(ShapefileConstants.SHAPEFILE_NS,
-				preferredName));
+		TypeDefinition preferredType = types
+				.getType(new QName(ShapefileConstants.SHAPEFILE_NS, preferredName));
 		if (preferredType != null) {
 			int comp = checkCompatibility(preferredType, dataType);
 			if (comp >= 100) {

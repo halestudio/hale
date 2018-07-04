@@ -57,4 +57,12 @@ public interface ShapefileConstants {
 	 */
 	public static final String PARAM_TYPENAME = "typename";
 
+	/**
+	 * Name of the parameter for {@link ShapeInstanceReader} to activate
+	 * matching of Shapefile property names to schema property names by checking
+	 * if there is exactly one schema property whose name starts with the
+	 * Shapefile property name.
+	 */
+	public static final String PARAM_MATCH_SHORT_PROPERTY_NAMES = "matchShortPropertyNames";
+
 }
