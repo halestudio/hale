@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
@@ -52,14 +53,16 @@ import eu.esdihumboldt.util.Pair;
  * @author Simon Templer
  */
 @SuppressWarnings("restriction")
-public class TypeSelectionPage extends InstanceReaderConfigurationPage implements
-		ShapefileConstants {
+public class TypeSelectionPage extends InstanceReaderConfigurationPage
+		implements ShapefileConstants {
 
 	private TypeDefinitionSelector selector;
 
 	private LocatableInputSupplier<? extends InputStream> lastSource;
 
 	private TypeDefinition lastType;
+
+	private Button matchShortPropertyNames;
 
 	private Composite page;
 
@@ -109,6 +112,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 				}
 			});
 
+			matchShortPropertyNames = new Button(page, SWT.CHECK);
+			matchShortPropertyNames.setLayoutData(
+					GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
+			matchShortPropertyNames.setText(
+					"Match shortened property names in Shapefile to target type properties");
+
 			page.layout();
 			page.pack();
 		}
@@ -125,9 +134,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 				// try to find a candidate for default selection
 				if (lastType != null) {
 					Pair<TypeDefinition, Integer> pt = ShapeInstanceReader
-							.getMostCompatibleShapeType(
-									getWizard().getProvider().getSourceSchema(), lastType, lastType
-											.getName().getLocalPart());
+							.getMostCompatibleShapeType(getWizard().getProvider().getSourceSchema(),
+									lastType, lastType.getName().getLocalPart());
 					if (pt != null) {
 						selector.setSelection(new StructuredSelection(pt.getFirst()));
 					}
@@ -217,6 +225,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		if (selector.getSelectedObject() != null) {
 			QName name = selector.getSelectedObject().getName();
 			provider.setParameter(PARAM_TYPENAME, Value.of(name.toString()));
+			provider.setParameter(PARAM_MATCH_SHORT_PROPERTY_NAMES,
+					Value.of(matchShortPropertyNames.getSelection()));
 		}
 		else {
 			return false;
