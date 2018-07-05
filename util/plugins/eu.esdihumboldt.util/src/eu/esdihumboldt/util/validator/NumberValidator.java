@@ -17,6 +17,7 @@
 package eu.esdihumboldt.util.validator;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 import org.springframework.core.convert.ConversionException;
 
@@ -53,12 +54,17 @@ public class NumberValidator extends AbstractValidator {
 		}
 
 		BigDecimal bdValue;
-		try {
-			bdValue = getObjectAs(value, BigDecimal.class);
-			if (bdValue == null)
+		if (value instanceof Collection) {
+			bdValue = BigDecimal.valueOf(((Collection<?>) value).size());
+		}
+		else {
+			try {
+				bdValue = getObjectAs(value, BigDecimal.class);
+				if (bdValue == null)
+					return "Input must be a number.";
+			} catch (ConversionException ce) {
 				return "Input must be a number.";
-		} catch (ConversionException ce) {
-			return "Input must be a number.";
+			}
 		}
 
 		switch (type) {
