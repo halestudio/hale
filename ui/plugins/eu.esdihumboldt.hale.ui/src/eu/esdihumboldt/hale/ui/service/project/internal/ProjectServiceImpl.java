@@ -1105,8 +1105,14 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 				monitor.subTask("Clear loaded instances");
 
-				// drop the existing instances
 				InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+
+				// Disable live transformation to prevent transformation runs
+				// during the source reload phase
+				boolean txWasEnabled = is.isTransformationEnabled();
+				is.setTransformationEnabled(false);
+
+				// drop the existing instances
 				is.dropInstances();
 
 				// reload the instances
@@ -1114,6 +1120,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 					if (InstanceIO.ACTION_LOAD_SOURCE_DATA.equals(conf.getActionId())) {
 						executeConfiguration(conf);
 					}
+				}
+
+				// Reactivate live transformation unless it was disabled before
+				if (txWasEnabled) {
+					is.setTransformationEnabled(true);
 				}
 
 				monitor.done();
