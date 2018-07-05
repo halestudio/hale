@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.util.validator;
 
+import java.util.Collection;
+
 /**
  * Validator for input lengths.
  * 
@@ -48,23 +50,31 @@ public class LengthValidator extends AbstractValidator {
 			return null;
 		}
 
-		String s = getObjectAs(value, String.class);
+		int valueLength;
+		if (value instanceof Collection) {
+			valueLength = ((Collection<?>) value).size();
+		}
+		else {
+			String s = getObjectAs(value, String.class);
+			valueLength = s.length();
+		}
+
 		switch (type) {
 		case MINIMUM:
-			if (s.length() >= length)
+			if (valueLength >= length)
 				return null;
 			else
-				return "Input length must at least be " + length + " but is " + s.length();
+				return "Input length must at least be " + length + " but is " + valueLength;
 		case MAXIMUM:
-			if (s.length() <= length)
+			if (valueLength <= length)
 				return null;
 			else
-				return "Input length must at most be " + length + " but is " + s.length();
+				return "Input length must at most be " + length + " but is " + valueLength;
 		case EXACT:
-			if (s.length() == length)
+			if (valueLength == length)
 				return null;
 			else
-				return "Input length must exactly be " + length + " but is " + s.length();
+				return "Input length must exactly be " + length + " but is " + valueLength;
 		default:
 			return null; // all types checked, doesn't happen
 		}
