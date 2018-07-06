@@ -123,6 +123,7 @@
          </providerParameter>
       </provider>
       <provider
+            allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.csv.reader.internal.CSVLookupReader"
             id="eu.esdihumboldt.hale.io.csv.reader.lookup"
             name="LookupTable (CSV)">
