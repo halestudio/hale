@@ -41,6 +41,7 @@
          </contentType>
       </provider>
       <provider
+            allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.xls.reader.XLSLookupTableReader"
             id="eu.esdihumboldt.hale.io.xls.reader.lookup"
             name="Lookup table (XLS/XLSX)">
