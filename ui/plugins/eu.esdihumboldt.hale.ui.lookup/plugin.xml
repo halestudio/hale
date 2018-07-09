@@ -21,6 +21,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.csv.reader.lookup">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.xls.reader.lookup">
+         </provider>
       </configPage>
    </extension>
 
