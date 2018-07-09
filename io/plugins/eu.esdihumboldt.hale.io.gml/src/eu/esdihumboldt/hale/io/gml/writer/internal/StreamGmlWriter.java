@@ -496,9 +496,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			};
 
 			final Map<String, URI> keyToTargetMapping = new HashMap<>();
-			keyToRefsMapping.keySet().stream().forEach(k -> keyToTargetMapping.put(k,
-					new File(ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
-							.toURI()));
+			keyToRefsMapping.keySet().stream()
+					.forEach(k -> keyToTargetMapping.put(k, new File(
+							ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
+									.toURI()));
 
 			final ExtentPartsHandler handler = new ExtentPartsHandler(keyToTargetMapping,
 					idToKeyMapping);
@@ -1095,8 +1096,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			if (containerDefinition == null) {
 				XmlElement containerElement = getConfiguredContainerElement(this, getXMLIndex());
-				containerDefinition = containerElement.getType();
-				containerName = containerElement.getName();
+				if (containerElement != null) {
+					containerDefinition = containerElement.getType();
+					containerName = containerElement.getName();
+				}
+				else {
+					// this is the last option, so we can throw a specific error
+					throw new IllegalStateException("Configured container element not found");
+				}
 			}
 
 			if (containerDefinition == null || containerName == null) {
