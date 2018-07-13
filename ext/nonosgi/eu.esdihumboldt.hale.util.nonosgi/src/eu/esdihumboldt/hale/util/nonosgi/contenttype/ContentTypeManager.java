@@ -196,4 +196,17 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 		// this is the platform content type manager, no specificities
 		return description;
 	}
+
+	@Override
+	public IContentType addContentType(String contentTypeIdentifier, String name, IContentType baseType)
+			throws CoreException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeContentType(String contentTypeIdentifier) throws CoreException {
+		// TODO Auto-generated method stub
+		
+	}
 }

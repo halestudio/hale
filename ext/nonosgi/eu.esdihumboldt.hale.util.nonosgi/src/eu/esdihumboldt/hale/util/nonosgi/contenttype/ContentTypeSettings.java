@@ -161,4 +161,10 @@ public class ContentTypeSettings implements IContentTypeSettings, IContentTypeIn
 		}
 	}
 
+	@Override
+	public boolean isUserDefined() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

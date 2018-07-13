@@ -62,7 +62,7 @@ public class TaskTreeComparator extends ViewerComparator {
 				return getComparator().compare(((Cell) value1).getId(), ((Cell) value2).getId());
 			}
 			else {
-				return getComparator().compare(value1, value2);
+				return getComparator().compare(value1.toString(), value2.toString());
 			}
 		}
 

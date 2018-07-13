@@ -627,4 +627,10 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		this.baseType = baseType;
 	}
 
+	@Override
+	public boolean isUserDefined() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
