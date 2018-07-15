@@ -11,3 +11,4 @@ Import-Package: eu.esdihumboldt.cst.test,
  org.junit;version="4.8.1",
  org.junit.rules;version="4.11.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.csv.test

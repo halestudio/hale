@@ -20,3 +20,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.7.10"
 Export-Package: eu.esdihumboldt.hale.common.cli,
  eu.esdihumboldt.hale.common.cli.project
+Automatic-Module-Name: eu.esdihumboldt.hale.common.cli

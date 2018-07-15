@@ -11,3 +11,4 @@ Export-Package: eu.esdihumboldt.util.groovy.sandbox,
 Import-Package: de.fhg.igd.eclipse.util.extension,
  javax.annotation,
  org.eclipse.core.runtime;version="3.4.0"
+Automatic-Module-Name: eu.esdihumboldt.util.groovy.sandbox

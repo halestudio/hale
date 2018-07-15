@@ -8,3 +8,4 @@ Fragment-Host: eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: junit.framework;version="3.8.2",
  net.jcip.annotations
+Automatic-Module-Name: eu.esdihumboldt.hale.common.schema.groovy.test

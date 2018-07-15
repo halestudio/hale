@@ -41,3 +41,4 @@ Import-Package: com.google.common.base;version="17.0.0",
 Export-Package: eu.esdihumboldt.hale.ui.functions.custom,
  eu.esdihumboldt.hale.ui.functions.custom.pages,
  eu.esdihumboldt.hale.ui.functions.custom.pages.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.custom

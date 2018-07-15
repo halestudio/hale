@@ -214,3 +214,4 @@ Export-Package: eu.esdihumboldt.hale.ui,
  eu.esdihumboldt.hale.ui.service.values.internal.handler;x-internal:=true,
  eu.esdihumboldt.hale.ui.service.values.internal.tester;x-internal:=true,
  eu.esdihumboldt.hale.ui.transformation
+Automatic-Module-Name: eu.esdihumboldt.hale.ui

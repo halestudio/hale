@@ -11,3 +11,4 @@ Require-Bundle: groovy;bundle-version="2.1.5",
 Import-Package: eu.esdihumboldt.hale.common.align.transformation.function,
  eu.esdihumboldt.util.groovy.sandbox.internal,
  org.junit;version="4.11.0"
+Automatic-Module-Name: eu.esdihumboldt.util.groovy.sandbox.test

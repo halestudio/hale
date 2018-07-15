@@ -16,3 +16,4 @@ Import-Package: com.google.common.base;version="11.0.1",
 Export-Package: eu.esdihumboldt.hale.common.lookup,
  eu.esdihumboldt.hale.common.lookup.impl,
  eu.esdihumboldt.hale.common.lookup.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.common.lookup

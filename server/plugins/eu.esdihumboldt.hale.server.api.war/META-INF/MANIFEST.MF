@@ -37,3 +37,4 @@ Require-Bundle: org.springframework.web.servlet;bundle-version="3.1.1",
  groovy;bundle-version="1.8.6"
 Export-Package: eu.esdihumboldt.hale.server.api,
  eu.esdihumboldt.hale.server.api.controller
+Automatic-Module-Name: eu.esdihumboldt.hale.server.api.war

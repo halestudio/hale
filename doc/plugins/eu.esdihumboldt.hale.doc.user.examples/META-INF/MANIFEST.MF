@@ -40,3 +40,4 @@ Export-Package: eu.esdihumboldt.hale.doc.user.examples.internal;x-internal:=true
  eu.esdihumboldt.hale.doc.user.examples.internal.extension;x-internal:=true,
  eu.esdihumboldt.hale.doc.user.examples.internal.toc;x-internal:=true
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.doc.user.examples

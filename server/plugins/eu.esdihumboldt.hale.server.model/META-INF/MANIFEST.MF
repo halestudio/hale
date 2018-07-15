@@ -7,3 +7,4 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.util.blueprints.entities;bundle-version="0.0.1";visibility:=reexport
 Export-Package: eu.esdihumboldt.hale.server.model
+Automatic-Module-Name: eu.esdihumboldt.hale.server.model

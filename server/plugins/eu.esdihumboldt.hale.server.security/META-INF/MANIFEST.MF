@@ -30,3 +30,4 @@ Import-Package: com.google.common.base;version="11.0.1",
  org.springframework.web.context.request;version="3.1.1.RELEASE",
  org.springframework.web.context.support;version="3.1.1.RELEASE"
 Require-Bundle: javax.servlet;bundle-version="2.5.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.security

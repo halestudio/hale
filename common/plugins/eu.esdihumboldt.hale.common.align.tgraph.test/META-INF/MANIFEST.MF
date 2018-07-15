@@ -24,3 +24,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.align.tgraph;bundle-version="2.5.0",
  com.tinkerpop.blueprints.core;bundle-version="2.1.0",
  com.tinkerpop.gremlin.groovy;bundle-version="2.4.0",
  com.tinkerpop.gremlin.java;bundle-version="2.4.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.tgraph.test

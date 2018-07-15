@@ -59,3 +59,4 @@ Export-Package: eu.esdihumboldt.hale.io.wfs.ui,
  eu.esdihumboldt.hale.io.wfs.ui.types
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.io.wfs.ui.internal.WFSUIPlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.io.wfs.ui

@@ -22,3 +22,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.ui.util.viewer,
  eu.esdihumboldt.util.validator
 Export-Package: eu.esdihumboldt.hale.ui.functions.numeric
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.numeric

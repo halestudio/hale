@@ -21,3 +21,4 @@ Import-Package: com.fasterxml.jackson.annotation;version="2.3.0",
  org.springframework.core.convert;version="3.1.1.RELEASE",
  schemacrawler.schema;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.test
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.test

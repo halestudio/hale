@@ -71,3 +71,4 @@ Export-Package: eu.esdihumboldt.hale.io.appschema,
  eu.esdihumboldt.hale.io.appschema.writer,
  eu.esdihumboldt.hale.io.appschema.writer.internal,
  eu.esdihumboldt.hale.io.appschema.writer.internal.mapping
+Automatic-Module-Name: eu.esdihumboldt.hale.io.appschema

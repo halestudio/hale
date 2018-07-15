@@ -48,3 +48,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
 Export-Package: eu.esdihumboldt.hale.io.xls,
  eu.esdihumboldt.hale.io.xls.reader,
  eu.esdihumboldt.hale.io.xls.writer
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xls

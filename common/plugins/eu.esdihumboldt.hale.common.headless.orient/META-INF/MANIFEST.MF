@@ -12,3 +12,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.schema.model,
  org.slf4j;version="1.7.6"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.headless.orient

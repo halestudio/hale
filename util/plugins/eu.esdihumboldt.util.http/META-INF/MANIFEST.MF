@@ -17,3 +17,4 @@ Import-Package: de.fhg.igd.slf4jplus,
 Export-Package: eu.esdihumboldt.util.http,
  eu.esdihumboldt.util.http.client,
  eu.esdihumboldt.util.http.client.fluent
+Automatic-Module-Name: eu.esdihumboldt.util.http

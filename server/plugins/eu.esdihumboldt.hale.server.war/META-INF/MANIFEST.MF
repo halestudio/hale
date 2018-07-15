@@ -24,3 +24,4 @@ Import-Package: org.eclipse.gemini.blueprint.context;version="1.0.0.RELEASE",
  org.springframework.web.context;version="3.0.0.RELEASE",
  org.springframework.web.context.support;version="3.0.0.RELEASE",
  org.springframework.web.servlet;version="3.0.0.RELEASE"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.war

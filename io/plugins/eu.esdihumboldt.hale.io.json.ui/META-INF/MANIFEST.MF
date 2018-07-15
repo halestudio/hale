@@ -25,3 +25,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.ui.util.components,
  eu.esdihumboldt.hale.ui.util.selector
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json.ui

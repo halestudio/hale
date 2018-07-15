@@ -26,3 +26,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.codehaus.groovy.modules.http-builder;bundle-version="0.6.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.templates.internal.TemplatesUIPlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.templates

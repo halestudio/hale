@@ -53,3 +53,4 @@ Export-Package: eu.esdihumboldt.hale.ui.application,
  eu.esdihumboldt.hale.ui.application.workbench,
  eu.esdihumboldt.hale.ui.application.workbench.extension
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.application

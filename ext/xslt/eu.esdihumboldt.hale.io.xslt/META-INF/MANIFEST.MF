@@ -65,3 +65,4 @@ Export-Package: eu.esdihumboldt.hale.io.xslt,
  eu.esdihumboldt.hale.io.xslt.transformations.property.rename,
  eu.esdihumboldt.hale.io.xslt.transformations.type.retype,
  eu.esdihumboldt.hale.io.xslt.xpath
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xslt

@@ -22,3 +22,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  schemacrawler.schemacrawler;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.msaccess,
  eu.esdihumboldt.hale.io.jdbc.msaccess.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess

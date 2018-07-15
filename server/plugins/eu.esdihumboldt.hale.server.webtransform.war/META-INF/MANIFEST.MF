@@ -43,3 +43,4 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
 Export-Package: eu.esdihumboldt.hale.server.webtransform.war,
  eu.esdihumboldt.hale.server.webtransform.war.components,
  eu.esdihumboldt.hale.server.webtransform.war.pages
+Automatic-Module-Name: eu.esdihumboldt.hale.server.webtransform.war

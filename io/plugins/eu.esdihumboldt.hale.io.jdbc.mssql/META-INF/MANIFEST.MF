@@ -31,3 +31,4 @@ Import-Package: com.google.common.io;version="17.0.0",
  schemacrawler.schema;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.mssql,
  eu.esdihumboldt.hale.io.jdbc.mssql.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.mssql

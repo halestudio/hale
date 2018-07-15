@@ -27,3 +27,4 @@ Export-Package: eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.common.scripting.scripts.mathematical,
  eu.esdihumboldt.hale.common.scripting.transformation
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.scripting

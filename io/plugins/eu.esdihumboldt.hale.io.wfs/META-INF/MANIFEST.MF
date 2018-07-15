@@ -54,3 +54,4 @@ Import-Package: com.google.common.base;version="15.0.0",
 Export-Package: eu.esdihumboldt.hale.io.wfs,
  eu.esdihumboldt.hale.io.wfs.capabilities,
  eu.esdihumboldt.hale.io.wfs.transactions
+Automatic-Module-Name: eu.esdihumboldt.hale.io.wfs

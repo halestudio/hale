@@ -22,3 +22,4 @@ Require-Bundle: com.vividsolutions.jts;bundle-version="1.13.0",
  eu.esdihumboldt.cst.functions.geometric;bundle-version="3.3.0",
  groovy;bundle-version="2.3.7",
  org.junit;bundle-version="4.12.0"
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.geometric.test

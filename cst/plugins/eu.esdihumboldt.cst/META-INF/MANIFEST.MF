@@ -56,3 +56,4 @@ Export-Package: eu.esdihumboldt.cst,
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst

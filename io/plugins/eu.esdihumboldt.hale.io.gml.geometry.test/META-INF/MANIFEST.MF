@@ -24,3 +24,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
  com.vividsolutions.jts;bundle-version="1.12.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.geometry.test

@@ -16,3 +16,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
 Export-Package: de.fhg.igd.mapviewer.server.tiles,
  de.fhg.igd.mapviewer.server.tiles.wizard,
  de.fhg.igd.mapviewer.server.tiles.wizard.pages
+Automatic-Module-Name: de.fhg.igd.mapviewer.server.tiles

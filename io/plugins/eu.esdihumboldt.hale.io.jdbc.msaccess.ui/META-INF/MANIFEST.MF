@@ -5,3 +5,4 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.msaccess.ui;singleton:=true
 Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc.ui;bundle-version="2.9.5"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess.ui

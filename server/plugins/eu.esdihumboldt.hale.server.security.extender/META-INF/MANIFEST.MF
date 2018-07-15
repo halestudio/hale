@@ -28,3 +28,4 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
 Bundle-ActivationPolicy: lazy
 Export-Package: eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.extender.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.server.security.extender

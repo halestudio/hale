@@ -88,3 +88,4 @@ Export-Package: eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.service.population.impl,
  eu.esdihumboldt.hale.ui.common.service.style,
  eu.esdihumboldt.hale.ui.common.viewers
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.common

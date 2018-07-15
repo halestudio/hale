@@ -44,3 +44,4 @@ Export-Package: eu.esdihumboldt.hale.ui.scripting;
    eu.esdihumboldt.hale.ui.common,
    org.eclipse.swt.widgets,
    eu.esdihumboldt.hale.ui.common.editors"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.scripting

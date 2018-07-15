@@ -14,3 +14,4 @@ Bundle-Localization: plugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: %Bundle-Vendor.0
 Bundle-Activator: org.eclipse.equinox.nonosgi.internal.registry.Activator
+Automatic-Module-Name: org.eclipse.equinox.nonosgi.registry

@@ -10,3 +10,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model
 Export-Package: eu.esdihumboldt.hale.common.service.helper.population
+Automatic-Module-Name: eu.esdihumboldt.hale.common.service.helper

@@ -13,3 +13,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.apache.commons.configuration;version="1.5.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.server.db.orient
+Automatic-Module-Name: eu.esdihumboldt.hale.server.db

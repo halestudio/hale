@@ -45,3 +45,4 @@ Export-Package: eu.esdihumboldt.cst.doc.functions,
  eu.esdihumboldt.cst.doc.functions.internal.content;x-internal:=true,
  eu.esdihumboldt.cst.doc.functions.internal.toc;x-internal:=true
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.doc.functions.dynamic

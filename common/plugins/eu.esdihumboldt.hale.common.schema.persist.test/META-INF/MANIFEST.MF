@@ -16,3 +16,4 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.util.validator,
  junit.framework;version="4.8.2",
  net.jcip.annotations
+Automatic-Module-Name: eu.esdihumboldt.hale.common.schema.persist.test

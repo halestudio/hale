@@ -20,3 +20,4 @@ Import-Package: com.google.common.io;version="15.0.0",
  org.slf4j;version="1.7.10"
 Bundle-Vendor: data harmonisation panel
 Export-Package: eu.esdihumboldt.hale.io.jdbc.ui
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.ui

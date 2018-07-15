@@ -11,3 +11,4 @@ Import-Package: de.fhg.igd.mapviewer;version="1.0.0",
  de.fhg.igd.mapviewer.view.arecalculation,
  org.jdesktop.swingx,
  org.jdesktop.swingx.mapviewer;version="1.0.0"
+Automatic-Module-Name: de.fhg.igd.mapviewer.tools.boxzoom

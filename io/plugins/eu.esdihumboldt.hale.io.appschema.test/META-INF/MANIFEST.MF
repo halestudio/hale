@@ -26,3 +26,4 @@ Import-Package: com.spotify.docker.client;version="2.4.2",
  eu.esdihumboldt.util.io,
  org.apache.commons.io,
  org.junit;version="4.11.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.appschema.test

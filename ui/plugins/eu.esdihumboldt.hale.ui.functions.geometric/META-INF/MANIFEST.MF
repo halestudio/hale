@@ -27,3 +27,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.ui.util.viewer,
  eu.esdihumboldt.util.definition,
  org.slf4j;version="1.7.12"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.geometric

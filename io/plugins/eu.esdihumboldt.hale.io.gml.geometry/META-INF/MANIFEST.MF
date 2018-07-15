@@ -36,3 +36,4 @@ Export-Package: eu.esdihumboldt.hale.io.gml.geometry,
  eu.esdihumboldt.hale.io.gml.geometry.constraint,
  eu.esdihumboldt.hale.io.gml.geometry.handler
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.geometry

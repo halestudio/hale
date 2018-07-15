@@ -11,3 +11,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.wfs;bundle-version="2.9.1",
 Import-Package: de.fhg.igd.slf4jplus,
  org.junit;version="4.11.0",
  org.slf4j;version="1.7.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.wfs.test

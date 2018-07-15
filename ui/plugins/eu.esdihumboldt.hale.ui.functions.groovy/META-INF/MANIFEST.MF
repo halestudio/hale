@@ -62,3 +62,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.ui.functions.groovy,
  eu.esdihumboldt.hale.ui.functions.groovy.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.groovy

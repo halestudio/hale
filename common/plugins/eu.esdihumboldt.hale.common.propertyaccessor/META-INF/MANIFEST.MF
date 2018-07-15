@@ -10,3 +10,4 @@ Import-Package: eu.esdihumboldt.hale.common.instance.helper,
  eu.esdihumboldt.hale.common.schema.geometry,
  eu.esdihumboldt.hale.common.schema.model
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.propertyaccessor

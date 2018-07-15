@@ -19,3 +19,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  org.springframework.context.support;version="3.1.1.RELEASE"
 Export-Package: eu.esdihumboldt.hale.common.convert
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.convert

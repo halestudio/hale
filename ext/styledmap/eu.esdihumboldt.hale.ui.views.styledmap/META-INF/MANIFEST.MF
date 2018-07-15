@@ -93,3 +93,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.styledmap,
  eu.esdihumboldt.hale.ui.views.styledmap.tool,
  eu.esdihumboldt.hale.ui.views.styledmap.util
 Bundle-Vendor: data harmonisation panel, Fraunhofer IGD
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.styledmap

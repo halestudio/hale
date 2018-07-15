@@ -23,3 +23,4 @@ Require-Bundle: org.eclipse.help;bundle-version="3.5.100",
 Export-Package: eu.esdihumboldt.hale.doc.user.ioproviders;x-internal:=true,
  eu.esdihumboldt.hale.doc.user.ioproviders.content;x-internal:=true,
  eu.esdihumboldt.hale.doc.user.ioproviders.toc;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.doc.user.ioproviders

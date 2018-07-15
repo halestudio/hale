@@ -7,3 +7,4 @@ Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.server.webapp;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.server.webapp.pages.graphics
+Automatic-Module-Name: eu.esdihumboldt.hale.server.webapp.branding.default

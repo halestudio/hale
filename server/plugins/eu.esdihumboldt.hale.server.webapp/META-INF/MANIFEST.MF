@@ -55,3 +55,4 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  wicket-bootstrap-less;bundle-version="0.8.4";visibility:=reexport,
  eu.esdihumboldt.hale.server.model;bundle-version="2.6.0",
  javax.servlet;bundle-version="2.5.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.webapp

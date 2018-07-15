@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: de.fhg.igd.swingrcp.SwingRCPPlugin
 Import-Package: org.apache.commons.logging;version="1.1.1",
  org.jdesktop.swingx.graphics
+Automatic-Module-Name: de.fhg.igd.swingrcp

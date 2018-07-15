@@ -9,3 +9,4 @@ Import-Package: com.vividsolutions.jts,
  com.vividsolutions.jts.io
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.convert.wkt

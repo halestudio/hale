@@ -12,3 +12,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
 Export-Package: eu.esdihumboldt.hale.ui.launchaction,
  eu.esdihumboldt.hale.ui.launchaction.extension,
  eu.esdihumboldt.hale.ui.launchaction.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.launchaction

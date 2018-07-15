@@ -8,3 +8,4 @@ Fragment-Host: eu.esdihumboldt.hale.ui.codelist;bundle-version="2.6.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: eu.esdihumboldt.hale.common.instance.model,
  junit.framework;version="4.8.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.codelist.test

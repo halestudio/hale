@@ -65,3 +65,4 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  eu.esdihumboldt.hale.common.instance,
  groovy;bundle-version="2.1.5"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json

@@ -82,3 +82,4 @@ Export-Package: eu.esdihumboldt.hale.common.headless,
  eu.esdihumboldt.hale.common.headless.transform.filter,
  eu.esdihumboldt.hale.common.headless.transform.validate,
  eu.esdihumboldt.hale.common.headless.transform.validate.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.common.headless

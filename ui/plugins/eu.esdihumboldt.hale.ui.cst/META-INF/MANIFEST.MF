@@ -20,3 +20,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.cst.internal.CSTUIPlugin
 Export-Package: eu.esdihumboldt.hale.ui.cst.contribution,
  eu.esdihumboldt.hale.ui.cst.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.cst

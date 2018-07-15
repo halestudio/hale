@@ -31,3 +31,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.1",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.instance
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.spatialite

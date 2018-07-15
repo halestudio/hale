@@ -34,3 +34,4 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  org.opengis.referencing;version="12.2.0",
  org.opengis.referencing.crs;version="12.2.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.instance.test

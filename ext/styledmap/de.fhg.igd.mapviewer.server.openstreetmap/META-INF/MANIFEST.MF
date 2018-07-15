@@ -12,3 +12,4 @@ Import-Package: de.fhg.igd.mapviewer;version="1.0.0",
  org.jdesktop.swingx.mapviewer,
  org.jdesktop.swingx.painter
 Export-Package: de.fhg.igd.mapviewer.server.openstreetmap;version="1.0.0"
+Automatic-Module-Name: de.fhg.igd.mapviewer.server.openstreetmap

@@ -22,3 +22,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.ui.io.config,
  eu.esdihumboldt.hale.ui.views.properties,
  eu.esdihumboldt.hale.ui.views.properties.definition
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xsd.ui

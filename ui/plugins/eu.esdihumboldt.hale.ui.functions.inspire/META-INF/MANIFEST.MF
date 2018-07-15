@@ -24,3 +24,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.hale.ui.util.wizard,
  org.eclipse.osgi.util;version="1.1.0"
 Export-Package: eu.esdihumboldt.hale.ui.functions.inspire
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.inspire

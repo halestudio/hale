@@ -69,3 +69,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: de.fhg.igd.mapviewer.view.MapviewerPlugin
+Automatic-Module-Name: de.fhg.igd.mapviewer

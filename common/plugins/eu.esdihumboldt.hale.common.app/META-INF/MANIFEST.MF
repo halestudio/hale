@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.app;bundle-version="1.3.100"
 Export-Package: eu.esdihumboldt.hale.common.app,
  eu.esdihumboldt.hale.common.app.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.common.app

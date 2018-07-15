@@ -10,3 +10,4 @@ Export-Package: eu.esdihumboldt.hale.util.nonosgi,
  eu.esdihumboldt.hale.util.nonosgi.contenttype,
  eu.esdihumboldt.hale.util.nonosgi.contenttype.describer
 Import-Package: org.slf4j;version="1.7.10"
+Automatic-Module-Name: eu.esdihumboldt.hale.util.nonosgi

@@ -34,3 +34,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.util;bundle-version="2.5.0"
 Export-Package: eu.esdihumboldt.hale.io.html
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.html

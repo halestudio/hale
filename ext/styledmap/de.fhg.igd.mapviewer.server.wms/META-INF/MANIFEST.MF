@@ -29,3 +29,4 @@ Export-Package: de.fhg.igd.mapviewer.server.wms,
  de.fhg.igd.mapviewer.server.wms.capabilities,
  de.fhg.igd.mapviewer.server.wms.overlay,
  de.fhg.igd.mapviewer.server.wms.wizard
+Automatic-Module-Name: de.fhg.igd.mapviewer.server.wms

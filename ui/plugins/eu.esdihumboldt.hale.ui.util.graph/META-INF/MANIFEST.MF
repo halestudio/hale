@@ -20,3 +20,4 @@ Import-Package: de.fhg.igd.slf4jplus,
 Export-Package: eu.esdihumboldt.hale.ui.util.graph,
  eu.esdihumboldt.hale.ui.util.graph.internal;x-internal:=true,
  eu.esdihumboldt.hale.ui.util.graph.shapes
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.util.graph

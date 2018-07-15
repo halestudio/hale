@@ -7,3 +7,4 @@ Fragment-Host: groovy;bundle-version="2.1.5"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.util.groovy.meta.extension
+Automatic-Module-Name: eu.esdihumboldt.util.groovy.meta.fragment

@@ -37,3 +37,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.report,
  eu.esdihumboldt.hale.ui.views.report.properties,
  eu.esdihumboldt.hale.ui.views.report.properties.details,
  eu.esdihumboldt.hale.ui.views.report.properties.details.extension
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.report

@@ -16,3 +16,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.7.2"
 Export-Package: eu.esdihumboldt.hale.common.instance.graph.reference,
  eu.esdihumboldt.hale.common.instance.graph.reference.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.graph

@@ -18,3 +18,4 @@ Require-Bundle: groovy;bundle-version="1.8.6",
 Export-Package: eu.esdihumboldt.hale.common.align.tgraph,
  eu.esdihumboldt.hale.common.align.tgraph.impl,
  eu.esdihumboldt.hale.common.align.tgraph.impl.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.tgraph

@@ -7,3 +7,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: eu.esdihumboldt.util.groovy.sandbox
 Require-Bundle: eu.esdihumboldt.hale.common.core
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.groovy.sandbox.enable

@@ -25,3 +25,4 @@ Require-Bundle: groovy;bundle-version="1.8.6",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
  eu.esdihumboldt.hale.functions.bgis;bundle-version="1.0.0",
  eu.esdihumboldt.hale.common.headless;bundle-version="2.5.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.app.bgis.ade

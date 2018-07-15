@@ -7,3 +7,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: com.orientechnologies.common;bundle-version="1.5.1",
  com.orientechnologies.orientdb-core;bundle-version="1.5.1"
 Import-Package: org.junit;version="4.5.0"
+Automatic-Module-Name: eu.esdihumboldt.util.orient.embedded.test

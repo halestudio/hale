@@ -27,3 +27,4 @@ Export-Package: eu.esdihumboldt.hale.common.cache;uses:="net.sf.ehcache"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.common.cache.Activator
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.cache

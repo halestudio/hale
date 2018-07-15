@@ -32,3 +32,4 @@ Bundle-Activator: eu.esdihumboldt.hale.ui.codelist.internal.CodeListUIPlugin
 Export-Package: eu.esdihumboldt.hale.ui.codelist.internal,
  eu.esdihumboldt.hale.ui.codelist.selector,
  eu.esdihumboldt.hale.ui.codelist.service
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.codelist

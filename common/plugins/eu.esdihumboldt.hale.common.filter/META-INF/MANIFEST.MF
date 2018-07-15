@@ -18,3 +18,4 @@ Export-Package: eu.esdihumboldt.hale.common.filter,
 Require-Bundle: org.geotools,
  org.opengis;bundle-version="8.0.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.filter

@@ -49,3 +49,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.util.groovy.sandbox,
  groovy;bundle-version="2.3.7"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.schema

@@ -13,3 +13,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="2.9.3",
 Import-Package: com.google.common.io;version="17.0.0",
  eu.esdihumboldt.util.io,
  org.opengis.filter;version="12.2.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.style

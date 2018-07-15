@@ -25,3 +25,4 @@ Export-Package: eu.esdihumboldt.hale.server.templates,
 Require-Bundle: groovy;bundle-version="2.1.5",
  eu.esdihumboldt.hale.server.model;bundle-version="2.7.0",
  eu.esdihumboldt.hale.server.db;bundle-version="2.7.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.templates

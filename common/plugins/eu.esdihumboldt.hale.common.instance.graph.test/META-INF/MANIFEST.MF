@@ -17,3 +17,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.test,
  org.junit;version="4.11.0",
  org.slf4j;version="1.7.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.graph.test

@@ -16,3 +16,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.springframework.security.openid;version="3.1.0.RELEASE"
 Require-Bundle: eu.esdihumboldt.hale.server.model;bundle-version="2.6.0",
  eu.esdihumboldt.hale.server.db;bundle-version="2.6.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.users

@@ -28,3 +28,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
 Export-Package: eu.esdihumboldt.hale.common.instancevalidator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instancevalidator

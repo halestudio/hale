@@ -19,3 +19,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.model,
  org.eclipse.ui.views.properties.tabbed
 Export-Package: eu.esdihumboldt.hale.ui.views.typehierarchy,
  eu.esdihumboldt.hale.ui.views.typehierarchy.properties
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.typehierarchy

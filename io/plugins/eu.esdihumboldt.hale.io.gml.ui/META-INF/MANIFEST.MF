@@ -36,3 +36,4 @@ Bundle-Activator: eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin
 Bundle-Vendor: data harmonisation panel
 Export-Package: eu.esdihumboldt.hale.io.gml.ui,
  eu.esdihumboldt.hale.io.gml.ui.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.ui

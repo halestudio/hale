@@ -16,3 +16,4 @@ Require-Bundle: com.typesafe.config;bundle-version="1.2.1"
 Export-Package: eu.esdihumboldt.hale.common.test.docker,
  eu.esdihumboldt.hale.common.test.docker.config,
  eu.esdihumboldt.hale.common.test.docker.helper
+Automatic-Module-Name: eu.esdihumboldt.hale.common.test.docker

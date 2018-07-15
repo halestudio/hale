@@ -15,3 +15,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.io.impl.internal.generated;ver
  junit.framework;version="4.8.2",
  net.jcip.annotations
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.groovy.test

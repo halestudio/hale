@@ -18,3 +18,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.jdbc.msaccess;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.5"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess.test

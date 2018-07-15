@@ -24,3 +24,4 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
  org.apache.wicket.util;bundle-version="6.2.0",
  eu.esdihumboldt.hale.server.webapp;bundle-version="2.6.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.webapp.war

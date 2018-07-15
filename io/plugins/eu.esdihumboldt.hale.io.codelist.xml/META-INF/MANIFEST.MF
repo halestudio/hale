@@ -33,3 +33,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.core,
 Export-Package: eu.esdihumboldt.hale.io.codelist.inspire.reader,
  eu.esdihumboldt.hale.io.codelist.xml.reader
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.codelist.xml

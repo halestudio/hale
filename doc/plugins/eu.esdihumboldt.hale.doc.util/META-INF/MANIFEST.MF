@@ -15,3 +15,4 @@ Export-Package: eu.esdihumboldt.hale.doc.util.content,
  eu.esdihumboldt.hale.doc.util.context,
  eu.esdihumboldt.hale.doc.util.toc
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.doc.util

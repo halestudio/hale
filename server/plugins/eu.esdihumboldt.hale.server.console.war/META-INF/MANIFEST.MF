@@ -24,4 +24,6 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
 Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
  org.apache.wicket.util;bundle-version="6.2.0",
- org.apache.wicket.spring;bundle-version="6.2.0"
+ org.apache.wicket.spring;bundle-version="6.2.0",
+ org.eclipse.osgi;bundle-version="3.13.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.console.war

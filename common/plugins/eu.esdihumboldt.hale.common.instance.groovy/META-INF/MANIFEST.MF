@@ -25,3 +25,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.7.0",
  eu.esdihumboldt.util.groovy.sandbox
 Export-Package: eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.groovy.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.groovy
