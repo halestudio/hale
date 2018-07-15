@@ -50,6 +50,14 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 	CompatibilityServiceListener compListener;
 
 	/**
+	 * @see org.eclipse.jface.action.ContributionItem#isDynamic()
+	 */
+	@Override
+	public boolean isDynamic() {
+		return true;
+	}
+
+	/**
 	 * standard constructor, retrieves the current compatibility service
 	 */
 	public CompatibilityModeComposite() {
@@ -71,6 +79,7 @@ public class CompatibilityModeComposite extends WorkbenchWindowControlContributi
 	 */
 	@Override
 	protected Control createControl(Composite parent) {
+		parent.getParent().setRedraw(true);
 
 		// initiate the composite for the compatibility elements
 		Composite comp = new Composite(parent, SWT.NONE);

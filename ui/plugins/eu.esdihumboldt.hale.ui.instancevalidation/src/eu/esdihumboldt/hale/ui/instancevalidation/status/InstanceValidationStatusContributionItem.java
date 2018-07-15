@@ -17,11 +17,10 @@
 package eu.esdihumboldt.hale.ui.instancevalidation.status;
 
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.ContributionItem;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 /**
  * Contribution item only delegating it's work to an
@@ -30,7 +29,7 @@ import org.eclipse.swt.widgets.ToolBar;
  * 
  * @author Kai Schwierczek
  */
-public class InstanceValidationStatusContributionItem extends ContributionItem {
+public class InstanceValidationStatusContributionItem extends WorkbenchWindowControlContribution {
 
 	InstanceValidationStatusAction action;
 	ActionContributionItem actionContribution;
@@ -68,23 +67,14 @@ public class InstanceValidationStatusContributionItem extends ContributionItem {
 		actionContribution = new ActionContributionItem(action);
 	}
 
+	/**
+	 * @see org.eclipse.jface.action.ControlContribution#createControl(org.eclipse.swt.widgets.Composite)
+	 */
 	@Override
-	public void fill(Composite parent) {
-		actionContribution.fill(parent);
-	}
+	protected Control createControl(Composite parent) {
+		Composite c = new Composite(parent, SWT.NONE);
+		actionContribution.fill(c);
 
-	@Override
-	public void fill(CoolBar parent, int index) {
-		actionContribution.fill(parent, index);
-	}
-
-	@Override
-	public void fill(Menu parent, int index) {
-		actionContribution.fill(parent, index);
-	}
-
-	@Override
-	public void fill(ToolBar parent, int index) {
-		actionContribution.fill(parent, index);
+		return c;
 	}
 }
