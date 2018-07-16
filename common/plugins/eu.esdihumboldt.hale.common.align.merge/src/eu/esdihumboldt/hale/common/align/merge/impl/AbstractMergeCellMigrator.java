@@ -162,7 +162,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 
 						// try to apply source contexts
 						Entity originalSource = CellUtil.getFirstEntity(originalCell.getSource());
-						applySourceContexts(newCell, originalSource, cellLog);
+						applySourceContexts(newCell, originalSource, migration, cellLog);
 
 						cells.add(newCell);
 					}
@@ -321,9 +321,11 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 	 * 
 	 * @param newCell the cell to adapt
 	 * @param originalSource the original source
+	 * @param migration the alignment migration
 	 * @param log the cell log
 	 */
-	private void applySourceContexts(MutableCell newCell, Entity originalSource, SimpleLog log) {
+	private void applySourceContexts(MutableCell newCell, Entity originalSource,
+			AlignmentMigration migration, SimpleLog log) {
 		if (originalSource != null) {
 			EntityDefinition original = originalSource.getDefinition();
 			boolean isDefault = AlignmentUtil.isDefaultEntity(original);
@@ -340,8 +342,8 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					// try to transfer contexts
 					Entity singleSource = CellUtil.getFirstEntity(newSource);
 					if (singleSource != null) {
-						EntityDefinition transferedSource = AbstractMigration
-								.translateContexts(original, singleSource.getDefinition(), log);
+						EntityDefinition transferedSource = AbstractMigration.translateContexts(
+								original, singleSource.getDefinition(), migration, log);
 						ListMultimap<String, Entity> s = ArrayListMultimap.create();
 						s.put(newSource.keySet().iterator().next(),
 								AlignmentUtil.createEntity(transferedSource));

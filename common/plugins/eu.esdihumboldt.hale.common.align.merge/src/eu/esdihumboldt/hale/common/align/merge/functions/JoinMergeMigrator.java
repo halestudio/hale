@@ -61,12 +61,12 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		case GroovyJoin.ID:
 			groovy = true;
 		case JoinFunction.ID:
-			mergeJoinSource(cell, source, match, originalCell, log, context, groovy);
+			mergeJoinSource(cell, source, match, originalCell, log, context, groovy, migration);
 			break;
 		case GroovyRetype.ID:
 			groovy = true;
 		case RetypeFunction.ID:
-			mergeRetypeSource(cell, source, match, originalCell, log, context, groovy);
+			mergeRetypeSource(cell, source, match, originalCell, log, context, groovy, migration);
 			break;
 		default:
 			// fall-back
@@ -77,11 +77,12 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 
 	@SuppressWarnings("unused")
 	private void mergeRetypeSource(MutableCell cell, EntityDefinition source, Cell match,
-			Cell originalCell, SimpleLog log, JoinContext context, boolean groovy) {
+			Cell originalCell, SimpleLog log, JoinContext context, boolean groovy,
+			AlignmentMigration migration) {
 		/*
 		 * Sources: Add all from match (should be one)
 		 */
-		addSources(cell, source, match, log, true);
+		addSources(cell, source, match, migration, log, true);
 
 		/*
 		 * Join order: Replace type with matched source
@@ -110,11 +111,12 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 
 	@SuppressWarnings("unused")
 	private void mergeJoinSource(MutableCell cell, EntityDefinition source, Cell match,
-			Cell originalCell, SimpleLog log, JoinContext context, boolean groovy) {
+			Cell originalCell, SimpleLog log, JoinContext context, boolean groovy,
+			AlignmentMigration migration) {
 		/*
 		 * Sources: Add all from match (should be at least two)
 		 */
-		addSources(cell, source, match, log, false);
+		addSources(cell, source, match, migration, log, false);
 
 		// add source that was replaced and filter/contexts were not retained
 		context.addStrippedSource(source);
@@ -156,8 +158,8 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		}
 	}
 
-	private void addSources(MutableCell cell, EntityDefinition source, Cell match, SimpleLog log,
-			boolean transferContext) {
+	private void addSources(MutableCell cell, EntityDefinition source, Cell match,
+			AlignmentMigration migration, SimpleLog log, boolean transferContext) {
 		if (match.getSource() != null) {
 			ListMultimap<String, Entity> sources = ArrayListMultimap.create(cell.getSource());
 			for (Entry<String, ? extends Entity> entry : match.getSource().entries()) {
@@ -166,7 +168,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 				if (transferContext) {
 					// transfer filter and contexts if possible
 					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
-							entity.getDefinition(), log);
+							entity.getDefinition(), migration, log);
 					entity = AlignmentUtil.createEntity(withContexts);
 				}
 

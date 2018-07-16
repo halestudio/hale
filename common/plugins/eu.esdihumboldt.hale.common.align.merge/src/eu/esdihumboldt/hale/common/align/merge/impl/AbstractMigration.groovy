@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.common.align.merge.impl
 
+import eu.esdihumboldt.hale.common.align.instance.EntityAwareFilter
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.ChildContext
@@ -59,7 +60,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (matchedEntity.present) {
 			// entity contained contexts -> translate them if possible
 
-			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), log));
+			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), this, log));
 		}
 
 		if (!matchedEntity.isPresent()) {
@@ -69,7 +70,8 @@ abstract class AbstractMigration implements AlignmentMigration {
 		return matchedEntity
 	}
 
-	static EntityDefinition translateContexts(EntityDefinition original, EntityDefinition target, SimpleLog log) {
+	static EntityDefinition translateContexts(EntityDefinition original, EntityDefinition target,
+			AlignmentMigration migration, SimpleLog log) {
 		def defaultEntity = AlignmentUtil.getAllDefaultEntity(original)
 
 		if (original.filter) {
@@ -85,15 +87,25 @@ abstract class AbstractMigration implements AlignmentMigration {
 			}
 			else {
 				// apply filter to entity
-				//TODO replacements in filter?
-				// mark unsafe if entity is not the same
+				def filter = original.filter
+
 				if (!sameEntity(original, target)) {
+					// replacements in filter if possible
+					if (filter instanceof EntityAwareFilter) {
+						def migrated = ((EntityAwareFilter) filter).migrateFilter(original, migration, log)
+						if (migrated.present) {
+							filter = migrated.get()
+							//TODO mark automatically migrated?
+						}
+					}
+
+					// mark unsafe if entity is not the same
 					log.warn("Filter condition may not be valid because the entity it is applied to has been replaced")
 				}
 
 				// add filter to match
 				target = AlignmentUtil.createEntity(target.type, target.propertyPath,
-						SchemaSpaceID.SOURCE, original.filter)
+						SchemaSpaceID.SOURCE, filter)
 			}
 		}
 
