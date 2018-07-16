@@ -20,7 +20,6 @@ import org.geotools.filter.text.cql2.CQL;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.filter.Filter;
 
-
 /**
  * CQL Filter. Two CQL filters are seen as equal if they are based on the same
  * CQL expression.
@@ -43,6 +42,16 @@ public class FilterGeoCqlImpl extends AbstractGeotoolsFilter {
 	@Override
 	protected Filter createFilter(String filterTerm) throws CQLException {
 		return CQL.toFilter(filterTerm);
+	}
+
+	@Override
+	protected String toFilterTerm(Filter filter) throws CQLException {
+		return CQL.toCQL(filter);
+	}
+
+	@Override
+	protected FilterGeoCqlImpl buildFilter(String filterTerm) throws CQLException {
+		return new FilterGeoCqlImpl(filterTerm);
 	}
 
 }

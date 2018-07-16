@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.common.filter;
 
 import static org.junit.Assert.*
-import eu.esdihumboldt.hale.common.instance.model.Filter
+
 import groovy.transform.CompileStatic
 
 /**
@@ -28,7 +28,7 @@ import groovy.transform.CompileStatic
 class ECQLFilterTest extends CQLFilterTest {
 
 	@Override
-	Filter filter(String expr) {
+	AbstractGeotoolsFilter filter(String expr) {
 		new FilterGeoECqlImpl(expr)
 	}
 }
