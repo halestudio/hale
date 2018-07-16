@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B1toC1" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B">
+                    <condition lang="ECQL">b1 &lt;&gt; 'NIL'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C41478bc9-1af8-4122-a877-bed50a5db722" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B">
+                    <condition lang="ECQL">b1 &lt;&gt; 'NIL'</condition>
+                </type>
+                <child name="b1" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="c1" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

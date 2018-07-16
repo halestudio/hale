@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="3.5.0.qualifier">
+    <name>B to C (to be migrated)</name>
+    <author>Simon Templer</author>
+    <created>2018-01-10T16:26:35.275+01:00</created>
+    <modified>2018-07-16T14:21:01.591+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/home/simon/repos/hale/common/plugins/eu.esdihumboldt.hale.common.align.merge.test/testcases/retain-condition-join/B-to-C.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">bafa16f0-75ed-44e3-a0ed-10e5410d044d</setting>
+        <setting name="source">B.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">e13b67b2-8b9a-45eb-b812-c8c675028b48</setting>
+        <setting name="source">C.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <file name="alignment.xml" location="B-to-C.halex.alignment.xml"/>
+    <file name="styles.sld" location="B-to-C.halex.styles.sld"/>
+</hale-project>
