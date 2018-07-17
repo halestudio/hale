@@ -73,4 +73,43 @@ class RetainConditionTest extends AbstractMergeCellMigratorTest {
 		})
 	}
 
+	@Test
+	void testJoinsCondition() {
+		def toMigrate = this.class.getResource('/testcases/retain-condition-join/B-to-C.halex')
+		def cellId = 'B3B5toC3'
+
+		def matching = this.class.getResource('/testcases/retain-condition-join/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+
+		assertNotNull(migrated[0].source)
+		assertEquals(4, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.definition.displayName == 'A3') {
+				// expect filter to have been propagated to A3
+				assertNotNull(filter)
+				//assertEquals('a1 <> \'NIL\'', filter.filterTerm)
+				assertEquals('a3 > 10', filter.filterTerm)
+			}
+			else {
+				// no filter should be present
+				assertNull(filter)
+			}
+		}
+
+		// there should be a message about the condition having been translated automatically
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
 }
