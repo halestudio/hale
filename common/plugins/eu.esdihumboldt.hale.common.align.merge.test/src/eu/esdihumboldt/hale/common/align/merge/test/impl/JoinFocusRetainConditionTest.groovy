@@ -17,9 +17,12 @@ package eu.esdihumboldt.hale.common.align.merge.test.impl
 
 import static org.junit.Assert.*
 
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
+import eu.esdihumboldt.hale.common.align.merge.MergeSettings
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
 import eu.esdihumboldt.hale.common.align.model.Entity
 
@@ -32,7 +35,17 @@ import eu.esdihumboldt.hale.common.align.model.Entity
  * 
  * @author Simon Templer
  */
-class RetainConditionTest extends AbstractMergeCellMigratorTest {
+class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
+
+	@BeforeClass
+	static void setup() {
+		MergeSettings.setTransferContextsToJoinFocus(true)
+	}
+
+	@AfterClass
+	static void reset() {
+		MergeSettings.setTransferContextsToJoinFocus(false)
+	}
 
 	@Test
 	void testJoinCondition() {
@@ -96,8 +109,7 @@ class RetainConditionTest extends AbstractMergeCellMigratorTest {
 			if (e.definition.definition.displayName == 'A3') {
 				// expect filter to have been propagated to A3
 				assertNotNull(filter)
-				//assertEquals('a1 <> \'NIL\'', filter.filterTerm)
-				assertEquals('a3 > 10', filter.filterTerm)
+				assertEquals('"a3" > 10', filter.filterTerm)
 			}
 			else {
 				// no filter should be present

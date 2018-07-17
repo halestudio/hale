@@ -92,7 +92,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 				if (!sameEntity(original, target)) {
 					// replacements in filter if possible
 					if (filter instanceof EntityAwareFilter) {
-						def migrated = ((EntityAwareFilter) filter).migrateFilter(original, migration, log)
+						def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, log)
 						if (migrated.present) {
 							filter = migrated.get()
 							//TODO mark automatically migrated?

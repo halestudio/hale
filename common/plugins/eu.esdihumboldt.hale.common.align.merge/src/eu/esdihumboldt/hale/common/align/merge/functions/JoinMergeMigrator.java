@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.align.merge.functions;
 
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -24,6 +25,7 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.cst.functions.groovy.GroovyRetype;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
+import eu.esdihumboldt.hale.common.align.merge.MergeSettings;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
@@ -82,7 +84,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		/*
 		 * Sources: Add all from match (should be one)
 		 */
-		addSources(cell, source, match, migration, log, true);
+		addSources(cell, source, match, migration, log, (e) -> true);
 
 		/*
 		 * Join order: Replace type with matched source
@@ -114,14 +116,6 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 			Cell originalCell, SimpleLog log, JoinContext context, boolean groovy,
 			AlignmentMigration migration) {
 		/*
-		 * Sources: Add all from match (should be at least two)
-		 */
-		addSources(cell, source, match, migration, log, false);
-
-		// add source that was replaced and filter/contexts were not retained
-		context.addStrippedSource(source);
-
-		/*
 		 * Join order: Replace type with matched sources (use match join order)
 		 */
 		JoinParameter matchParameter = CellUtil
@@ -129,6 +123,33 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		if (matchParameter != null) {
 			context.addOrderReplacement((TypeEntityDefinition) source, matchParameter.getTypes()
 					.toArray(new TypeEntityDefinition[matchParameter.getTypes().size()]));
+		}
+
+		// should context for source be transfered?
+		Predicate<EntityDefinition> transferContext = (entity) -> {
+
+			// special case handling: transfer context to Join focus
+			if (matchParameter != null && MergeSettings.isTransferContextsToJoinFocus()
+					&& !matchParameter.getTypes().isEmpty()) {
+				TypeEntityDefinition focus = matchParameter.getTypes().get(0);
+				if (entity.getPropertyPath().isEmpty()
+						&& entity.getType().equals(focus.getType())) {
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		/*
+		 * Sources: Add all from match (should be at least two)
+		 */
+		addSources(cell, source, match, migration, log, transferContext);
+
+		if (!MergeSettings.isTransferContextsToJoinFocus()) {
+			// add source that was replaced and filter/contexts were not
+			// retained
+			context.addStrippedSource(source);
 		}
 
 		// add join match to context (for match conditions)
@@ -159,13 +180,14 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 	}
 
 	private void addSources(MutableCell cell, EntityDefinition source, Cell match,
-			AlignmentMigration migration, SimpleLog log, boolean transferContext) {
+			AlignmentMigration migration, SimpleLog log,
+			Predicate<EntityDefinition> transferContext) {
 		if (match.getSource() != null) {
 			ListMultimap<String, Entity> sources = ArrayListMultimap.create(cell.getSource());
 			for (Entry<String, ? extends Entity> entry : match.getSource().entries()) {
 				Entity entity = entry.getValue();
 
-				if (transferContext) {
+				if (transferContext.test(entity.getDefinition())) {
 					// transfer filter and contexts if possible
 					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
 							entity.getDefinition(), migration, log);

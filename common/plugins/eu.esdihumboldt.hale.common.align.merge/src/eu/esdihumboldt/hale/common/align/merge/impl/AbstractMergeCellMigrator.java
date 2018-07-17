@@ -32,6 +32,7 @@ import com.google.common.collect.Multimaps;
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.hale.common.align.merge.MergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
+import eu.esdihumboldt.hale.common.align.merge.MergeSettings;
 import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
@@ -363,7 +364,6 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 
 					// XXX for now only special case handling to support
 					// XtraServer use case
-					// FIXME rather make this configurable?
 					if (applySourceContextsToJoinFocus(newCell, originalSource, migration, log)) {
 						return;
 					}
@@ -389,6 +389,10 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 	 */
 	private boolean applySourceContextsToJoinFocus(MutableCell newCell, Entity originalSource,
 			AlignmentMigration migration, SimpleLog log) {
+		if (!MergeSettings.isTransferContextsToJoinFocus()) {
+			return false;
+		}
+
 		String function = newCell.getTransformationIdentifier();
 		switch (function) {
 		case GroovyJoin.ID:
