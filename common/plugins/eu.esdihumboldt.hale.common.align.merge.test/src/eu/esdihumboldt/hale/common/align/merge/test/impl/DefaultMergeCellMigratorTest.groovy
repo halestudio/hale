@@ -459,7 +459,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// type filter
 		assertEquals(1, migrated.size())
-		filterCheck(migrated[0], "ba = 'test'")
+		filterCheck(migrated[0], "\"aa\" = 'test'")
 
 		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated[0])
@@ -583,7 +583,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 			def filter = e.definition.filter
 			if (e.definition.definition.name.localPart == 'A5') {
 				assertNotNull(filter)
-				assertEquals('ba = \'test\' and bb <> \'test\'', filter.filterTerm)
+				assertEquals('ba = \'test\' AND NOT (bb = \'test\')', filter.filterTerm)
 			}
 			else {
 				assertNull(filter)

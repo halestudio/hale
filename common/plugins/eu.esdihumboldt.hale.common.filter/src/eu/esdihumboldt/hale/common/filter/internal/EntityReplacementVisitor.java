@@ -23,6 +23,7 @@ import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.filter.expression.PropertyName;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 
@@ -54,7 +55,8 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 
 	@Override
 	public Object visit(PropertyName expression, Object extraData) {
-		Optional<EntityDefinition> resolved = resolveProperty.apply(expression);
+		Optional<EntityDefinition> resolved = resolveProperty.apply(expression)
+				.map(p -> AlignmentUtil.getAllDefaultEntity(p));
 		if (resolved.isPresent()) {
 			Optional<EntityDefinition> replace = migration.entityReplacement(resolved.get(), log);
 			if (replace.isPresent() && !resolved.get().equals(replace.get())) {
@@ -71,10 +73,13 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 
 	private String toPropertyName(EntityDefinition entityDefinition) {
 		// similar to PropertyResolver paths
-		return entityDefinition.getPropertyPath().stream()
-				.filter(c -> c.getChild().asGroup() != null)
-				.map(c -> c.getChild().getName().toString()) //
-				.collect(Collectors.joining("."));
+		String name = entityDefinition.getPropertyPath().stream()
+				.filter(c -> c.getChild().asProperty() != null).map(c -> {
+					return c.getChild().getName().getLocalPart();
+					// TODO use version w/ namespace in ambiguous cases?
+				}).collect(Collectors.joining("."));
+		// put in quotes so it is possible to parse the resulting filterTerm
+		return '"' + name + '"';
 	}
 
 }

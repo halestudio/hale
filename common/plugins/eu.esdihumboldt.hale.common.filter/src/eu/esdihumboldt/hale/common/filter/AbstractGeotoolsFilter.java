@@ -183,7 +183,8 @@ public abstract class AbstractGeotoolsFilter
 		Filter copy = (Filter) internFilter.accept(visitor, extraData);
 
 		try {
-			return Optional.of(buildFilter(toFilterTerm(copy)));
+			String filterString = toFilterTerm(copy);
+			return Optional.of(buildFilter(filterString));
 		} catch (CQLException e) {
 			log.error("Filter could not be automatically migrated", e);
 			return Optional.empty();

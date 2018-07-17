@@ -27,7 +27,9 @@ import java.util.function.Function;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimaps;
 
+import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.hale.common.align.merge.MergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.MergeIndex;
 import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
@@ -43,7 +45,10 @@ import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
@@ -351,6 +356,18 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					}
 				}
 				else {
+					// no idea where to add contexts
+					// TODO assess where filter/contexts can be best applied?
+					// -> alternative to translateContexts that handles all
+					// sources?
+
+					// XXX for now only special case handling to support
+					// XtraServer use case
+					// FIXME rather make this configurable?
+					if (applySourceContextsToJoinFocus(newCell, originalSource, migration, log)) {
+						return;
+					}
+
 					// no idea where to add contexts -> report
 					log.warn(
 							"Any conditions/contexts on the original source have been dropped because the new mapping has multiple sources and it is not clear where they should be attached: "
@@ -358,6 +375,59 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 			}
 		}
+	}
+
+	/**
+	 * Handle special case of applying source contexts to the entity that is the
+	 * Join focus.
+	 * 
+	 * @param newCell the new cell to update the sources
+	 * @param originalSource the original source
+	 * @param migration the alignment migration
+	 * @param log the operation log
+	 * @return if the method handled the context transfer
+	 */
+	private boolean applySourceContextsToJoinFocus(MutableCell newCell, Entity originalSource,
+			AlignmentMigration migration, SimpleLog log) {
+		String function = newCell.getTransformationIdentifier();
+		switch (function) {
+		case GroovyJoin.ID:
+		case JoinFunction.ID:
+			break;
+		default:
+			return false;
+		}
+
+		JoinParameter joinConfig = CellUtil.getFirstParameter(newCell, JoinFunction.PARAMETER_JOIN)
+				.as(JoinParameter.class);
+
+		if (joinConfig == null || joinConfig.getTypes() == null
+				|| joinConfig.getTypes().isEmpty()) {
+			return false;
+		}
+
+		TypeEntityDefinition focus = joinConfig.getTypes().iterator().next();
+
+		// transfer context
+		newCell.setSource(ArrayListMultimap.create(Multimaps.transformValues(newCell.getSource(),
+				new com.google.common.base.Function<Entity, Entity>() {
+
+					@Override
+					public Entity apply(Entity input) {
+						if (input.getDefinition().getPropertyPath().isEmpty()
+								&& input.getDefinition().getType().equals(focus.getType())) {
+							EntityDefinition transferedSource = AbstractMigration.translateContexts(
+									originalSource.getDefinition(), input.getDefinition(),
+									migration, log);
+							return AlignmentUtil.createEntity(transferedSource);
+						}
+						else {
+							return input;
+						}
+					}
+				})));
+
+		return true;
 	}
 
 	/**

@@ -57,7 +57,8 @@ class RetainConditionTest extends AbstractMergeCellMigratorTest {
 			if (e.definition.definition.displayName == 'A1') {
 				// expect filter to have been propagated to A1
 				assertNotNull(filter)
-				assertEquals('a1 <> \'NIL\'', filter.filterTerm)
+				//assertEquals('a1 <> \'NIL\'', filter.filterTerm)
+				assertEquals('NOT ("a1" = \'NIL\')', filter.filterTerm)
 			}
 			else {
 				// no filter should be present
