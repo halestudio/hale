@@ -855,8 +855,15 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			if (containerDefinition == null) {
 				XmlElement containerElement = getConfiguredContainerElement(this, getXMLIndex());
-				containerDefinition = containerElement.getType();
-				containerName = containerElement.getName();
+				if (containerElement != null) {
+					containerDefinition = containerElement.getType();
+					containerName = containerElement.getName();
+					container = containerElement;
+				}
+				else {
+					// this is the last option, so we can throw a specific error
+					throw new IllegalStateException("Configured container element not found");
+				}
 			}
 
 			if (containerDefinition == null || containerName == null) {
@@ -869,10 +876,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			 * 
 			 * Needed for validation based on schemaLocation attribute.
 			 */
-			if (!containerName.getNamespaceURI().equals(targetIndex.getNamespace())
+			if (container != null
+					&& !containerName.getNamespaceURI().equals(targetIndex.getNamespace())
 					&& !additionalSchemas.containsKey(containerName.getNamespaceURI())) {
 				try {
-					@SuppressWarnings("null")
 					final URI containerSchemaLoc = stripFragment(container.getLocation());
 					if (containerSchemaLoc != null) {
 						addValidationSchema(containerName.getNamespaceURI(), new Locatable() {
@@ -884,8 +891,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						}, null);
 					}
 				} catch (Exception e) {
-					reporter.error(new IOMessageImpl(
-							"Could not determine location of container definition", e));
+					reporter.error("Could not determine location of container definition", e);
 				}
 
 			}
