@@ -15,9 +15,6 @@
 
 package eu.esdihumboldt.hale.common.codelist.config;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 
@@ -54,7 +51,7 @@ public class CodeListAssociations {
 	 */
 	public void assignCodeList(EntityDefinition entity, CodeList codeList) {
 		associations.put(new DummyEntityKey(entity, true),
-				new CodeListReference(codeList.getNamespace(), codeList.getIdentifier()));
+				new CodeListReference(namespace: codeList.getNamespace(), identifier: codeList.getIdentifier()));
 	}
 
 	/**
@@ -67,7 +64,7 @@ public class CodeListAssociations {
 	public void assignCodeList(EntityDefinition entity, String codeListNamespace,
 			String codeListIdentifier) {
 		associations.put(new DummyEntityKey(entity, true),
-				new CodeListReference(codeListNamespace, codeListIdentifier));
+				new CodeListReference(namespace: codeListNamespace, identifier: codeListIdentifier));
 	}
 
 	/**
@@ -85,5 +82,4 @@ public class CodeListAssociations {
 	public Map<DummyEntityKey, CodeListReference> getAssociations() {
 		return associations;
 	}
-
 }

@@ -15,15 +15,7 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
-import java.io.File;
-import java.io.InputStream;
-import java.net.URI;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutionException;
@@ -46,7 +38,7 @@ import com.haleconnect.api.user.v1.api.LoginApi;
 import com.haleconnect.api.user.v1.api.OrganisationsApi;
 import com.haleconnect.api.user.v1.api.UsersApi;
 import com.haleconnect.api.user.v1.model.Credentials;
-import com.haleconnect.api.user.v1.model.OrganisationInfo;
+import com.haleconnect.api.user.v1.model.OrganisationInfo
 import com.haleconnect.api.user.v1.model.Token;
 import com.haleconnect.api.user.v1.model.UserInfo;
 
@@ -66,12 +58,14 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUserInfo;
 import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.project.SharingOptions;
+import groovy.transform.CompileStatic
 
 /**
  * hale connect service facade implementation
  * 
  * @author Florian Esser
  */
+@CompileStatic
 public class HaleConnectServiceImpl implements HaleConnectService, BasePathManager {
 
 	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectServiceImpl.class);
@@ -104,7 +98,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public String createProject(String name, String author, Owner owner, boolean versionControl)
-			throws HaleConnectException {
+	throws HaleConnectException {
 
 		if (!this.isLoggedIn()) {
 			throw new HaleConnectException("Not logged in");
@@ -156,7 +150,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public HaleConnectOrganisationInfo getOrganisationInfo(String orgId)
-			throws HaleConnectException {
+	throws HaleConnectException {
 
 		if (!this.isLoggedIn()) {
 			return null;
@@ -168,7 +162,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			try {
 				OrganisationInfo org = api.getOrganisation(orgId);
 				orgInfoCache.put(org.getId(),
-						new HaleConnectOrganisationInfo(org.getId(), org.getName()));
+						new HaleConnectOrganisationInfo(id: org.getId(), name: org.getName()));
 			} catch (ApiException e) {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
@@ -183,7 +177,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public HaleConnectProjectInfo getProject(Owner owner, String projectId)
-			throws HaleConnectException {
+	throws HaleConnectException {
 		BucketDetail bucketDetail;
 		try {
 			bucketDetail = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
@@ -200,7 +194,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public List<HaleConnectProjectInfo> getProjects(String contextOrganisation)
-			throws HaleConnectException {
+	throws HaleConnectException {
 		List<BucketDetail> bucketDetails;
 		try {
 			bucketDetails = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
@@ -270,8 +264,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			UsersApi api = UserServiceHelper.getUsersApi(this, this.getSession().getToken());
 			try {
 				UserInfo info = api.getProfile(userId);
-				userInfoCache.put(info.getId(), new HaleConnectUserInfo(info.getId(),
-						info.getScreenName(), info.getFullName()));
+				userInfoCache.put(info.getId(), new HaleConnectUserInfo(userId: info.getId(),
+				screenName: info.getScreenName(), fullName: info.getFullName()));
 			} catch (ApiException e) {
 				throw new HaleConnectException(e.getMessage(), e);
 			}
@@ -294,7 +288,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public LocatableInputSupplier<InputStream> loadProject(Owner owner, String projectId)
-			throws HaleConnectException {
+	throws HaleConnectException {
 
 		if (!isLoggedIn()) {
 			throw new IllegalStateException("Not logged in.");
@@ -304,11 +298,10 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		HaleConnectProjectInfo projectInfo = getProject(owner, projectId);
 		if (projectInfo == null) {
 			throw new HaleConnectException(
-					MessageFormat.format("Project does not exist: {0}", location.toString()));
+			MessageFormat.format("Project does not exist: {0}", location.toString()));
 		}
 
 		return new HaleConnectInputSupplier(location, this.getSession().getToken(), this);
-
 	}
 
 	/**
@@ -390,7 +383,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 
 		FilesApi filesApi = ProjectStoreHelper.getFilesApi(this, apiKey);
 
-//		refactor to reuse code in both sync and async methods
+		//		refactor to reuse code in both sync and async methods
 
 		SettableFuture<Boolean> future = SettableFuture.create();
 		try {
@@ -444,7 +437,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			return future.get();
 		} catch (com.haleconnect.api.projectstore.v1.ApiException e1) {
 			throw new HaleConnectException(e1.getMessage(), e1, e1.getCode(),
-					e1.getResponseHeaders());
+			e1.getResponseHeaders());
 		} catch (ExecutionException e2) {
 			Throwable t = e2.getCause();
 			if (t instanceof HaleConnectException) {
@@ -543,61 +536,61 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			final ProgressIndicator progress, final File file, final int totalWork) {
 		return new ApiCallback<Feedback>() {
 
-			AtomicLong chunkWritten = new AtomicLong(0);
-			AtomicLong bytesReported = new AtomicLong(0);
+					AtomicLong chunkWritten = new AtomicLong(0);
+					AtomicLong bytesReported = new AtomicLong(0);
 
-			@Override
-			public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
-				// not required
-			}
-
-			@Override
-			public void onFailure(com.haleconnect.api.projectstore.v1.ApiException e,
-					int statusCode, Map<String, List<String>> responseHeaders) {
-				progress.end();
-				future.setException(
-						new HaleConnectException(e.getMessage(), e, statusCode, responseHeaders));
-			}
-
-			@Override
-			public void onSuccess(Feedback result, int statusCode,
-					Map<String, List<String>> responseHeaders) {
-				if (result.getError()) {
-					log.error(MessageFormat.format("Error uploading project file \"{0}\": {1}",
-							file.getAbsolutePath(), result.getMessage()));
-					future.set(false);
-				}
-				else {
-					future.set(true);
-				}
-				progress.end();
-			}
-
-			@Override
-			public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
-				// bytesWritten contains the accumulated amount of bytes written
-				if (totalWork != ProgressIndicator.UNKNOWN) {
-					// Wait until at least 1 KiB was written
-					long chunk = chunkWritten.get();
-					chunk += bytesWritten - bytesReported.get();
-					if (chunk >= 1024) {
-						long workToReport = chunk >> 10;
-						// cannot overflow, total size in KiB
-						// is guaranteed to be < Integer.MAX_VALUE
-						progress.advance(Math.toIntExact(workToReport));
-						chunk -= workToReport << 10;
-						// chunkWritten now always < 1024
+					@Override
+					public void onDownloadProgress(long bytesRead, long contentLength, boolean done) {
+						// not required
 					}
-					chunkWritten.set(chunk);
-					bytesReported.set(bytesWritten);
-				}
-			}
-		};
+
+					@Override
+					public void onFailure(com.haleconnect.api.projectstore.v1.ApiException e,
+							int statusCode, Map<String, List<String>> responseHeaders) {
+						progress.end();
+						future.setException(
+								new HaleConnectException(e.getMessage(), e, statusCode, responseHeaders));
+					}
+
+					@Override
+					public void onSuccess(Feedback result, int statusCode,
+							Map<String, List<String>> responseHeaders) {
+						if (result.getError()) {
+							log.error(MessageFormat.format("Error uploading project file \"{0}\": {1}",
+									file.getAbsolutePath(), result.getMessage()));
+							future.set(false);
+						}
+						else {
+							future.set(true);
+						}
+						progress.end();
+					}
+
+					@Override
+					public void onUploadProgress(long bytesWritten, long contentLength, boolean done) {
+						// bytesWritten contains the accumulated amount of bytes written
+						if (totalWork != ProgressIndicator.UNKNOWN) {
+							// Wait until at least 1 KiB was written
+							long chunk = chunkWritten.get();
+							chunk += bytesWritten - bytesReported.get();
+							if (chunk >= 1024) {
+								long workToReport = chunk >> 10;
+								// cannot overflow, total size in KiB
+								// is guaranteed to be < Integer.MAX_VALUE
+								progress.advance(Math.toIntExact(workToReport));
+								chunk -= workToReport << 10;
+								// chunkWritten now always < 1024
+							}
+							chunkWritten.set(chunk);
+							bytesReported.set(bytesWritten);
+						}
+					}
+				};
 	}
 
 	@Override
 	public boolean setProjectSharingOptions(String projectId, Owner owner, SharingOptions options)
-			throws HaleConnectException {
+	throws HaleConnectException {
 		BucketsApi bucketsApi = ProjectStoreHelper.getBucketsApi(this,
 				this.getSession().getToken());
 
@@ -620,7 +613,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 
 	@Override
 	public boolean testProjectPermission(String permission, Owner owner, String projectId)
-			throws HaleConnectException {
+	throws HaleConnectException {
 		PermissionsApi api = ProjectStoreHelper.getPermissionsApi(this,
 				this.getSession().getToken());
 
@@ -644,7 +637,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean testUserPermission(String resourceType, String role, String permission)
-			throws HaleConnectException {
+	throws HaleConnectException {
 		com.haleconnect.api.user.v1.api.PermissionsApi api = UserServiceHelper
 				.getPermissionsApi(this, this.getSession().getToken());
 
@@ -668,7 +661,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 					}
 					else if (conditions instanceof List) {
 						return ((List<?>) conditions).stream()
-								.anyMatch(cond -> "organisation".equals(cond.toString()));
+								.anyMatch { cond -> "organisation".equals(cond.toString()) }
 					}
 				}
 			}
@@ -685,7 +678,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	 */
 	@Override
 	public boolean setProjectName(String projectId, Owner owner, String name)
-			throws HaleConnectException {
+	throws HaleConnectException {
 
 		// Build custom call because BucketsApi.setProjectName() is broken
 		// (does not support plain text body)

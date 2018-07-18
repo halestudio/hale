@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal;
 
-import java.util.Optional;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.haleconnect.api.user.v1.ApiClient;
@@ -30,12 +28,14 @@ import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
+import groovy.transform.CompileStatic
 
 /**
  * Helper class for the user service API
  * 
  * @author Florian Esser
  */
+@CompileStatic
 public class UserServiceHelper {
 
 	/**
@@ -136,11 +136,10 @@ public class UserServiceHelper {
 	public static PermissionsApi getPermissionsApi(String basePath, String apiKey) {
 		return new PermissionsApi(getApiClient(new BasePathResolver() {
 
-			@Override
-			public String getBasePath(String service) {
-				return basePath;
-			}
-		}, apiKey));
+					@Override
+					public String getBasePath(String service) {
+						return basePath;
+					}
+				}, apiKey));
 	}
-
 }

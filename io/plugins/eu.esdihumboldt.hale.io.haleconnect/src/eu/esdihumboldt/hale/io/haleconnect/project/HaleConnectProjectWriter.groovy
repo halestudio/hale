@@ -15,17 +15,12 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.project;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.text.MessageFormat;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.HalePlatform;
-import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -46,6 +41,7 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
 import eu.esdihumboldt.hale.io.haleconnect.Owner;
 import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
+import groovy.transform.CompileStatic
 
 /**
  * Saves a project (optonally including all related resources) as a ZIP archive
@@ -53,6 +49,7 @@ import eu.esdihumboldt.hale.io.haleconnect.OwnerType;
  * 
  * @author Florian Esser
  */
+@CompileStatic
 public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(HaleConnectProjectWriter.class);
@@ -107,7 +104,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
-			throws IOProviderConfigurationException, IOException {
+	throws IOProviderConfigurationException, IOException {
 
 		if (!haleConnect.isLoggedIn()) {
 			reporter.error("Must be logged in to hale connect to upload project.");
@@ -137,37 +134,37 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 				ownerType = OwnerType.fromJsonValue(ownerTypeParameter);
 			} catch (IllegalArgumentException e) {
 				throw new IOProviderConfigurationException(
-						MessageFormat.format("Invalid owner type: {0}", ownerTypeParameter), e);
+				MessageFormat.format("Invalid owner type: {0}", ownerTypeParameter), e);
 			}
 
 			String ownerId;
 			switch (ownerType) {
-			case USER:
-				ownerId = haleConnect.getSession().getUserId();
-				break;
-			case ORGANISATION:
-				ownerId = getParameter(ORGANISATION_ID).as(String.class);
-				if (ownerId == null) {
-					if (haleConnect.getSession().getOrganisationIds().isEmpty()) {
-						throw new IOProviderConfigurationException(MessageFormat.format(
-								"Owner type is set to ORGANISATION but user \"{0}\" is not associated with any organisation",
-								haleConnect.getSession().getUsername()));
+				case OwnerType.USER:
+					ownerId = haleConnect.getSession().getUserId();
+					break;
+				case OwnerType.ORGANISATION:
+					ownerId = getParameter(ORGANISATION_ID).as(String.class);
+					if (ownerId == null) {
+						if (haleConnect.getSession().getOrganisationIds().isEmpty()) {
+							throw new IOProviderConfigurationException(MessageFormat.format(
+							"Owner type is set to ORGANISATION but user \"{0}\" is not associated with any organisation",
+							haleConnect.getSession().getUsername()));
+						}
+						ownerId = haleConnect.getSession().getOrganisationIds().iterator().next();
 					}
-					ownerId = haleConnect.getSession().getOrganisationIds().iterator().next();
-				}
-				break;
-			default:
-				throw new IOProviderConfigurationException(
-						MessageFormat.format("Unknown owner type: {0}", ownerType));
+					break;
+				default:
+					throw new IOProviderConfigurationException(
+					MessageFormat.format("Unknown owner type: {0}", ownerType));
 			}
 
-			Owner owner = new Owner(ownerType, ownerId);
+			Owner owner = new Owner(type: ownerType, id: ownerId);
 			String projectId;
 			try {
 				projectId = haleConnect.createProject(project.getName(), project.getAuthor(), owner,
 						enableVersioning);
 				haleConnect.setProjectSharingOptions(projectId, owner,
-						new SharingOptions(publicAccess));
+						new SharingOptions(publicAccess: publicAccess));
 			} catch (HaleConnectException e) {
 				reporter.error("Error creating hale connect project", e);
 				reporter.setSuccess(false);
@@ -182,7 +179,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		}
 		else if (!HaleConnectUrnBuilder.isValidProjectUrn(location)) {
 			throw new IOProviderConfigurationException(
-					MessageFormat.format("Cannot write to location: {0}", location.toString()));
+			MessageFormat.format("Cannot write to location: {0}", location.toString()));
 		}
 		else {
 			projectUrn = location;
@@ -198,9 +195,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		// redirect project archive to temporary local file
 		File projectArchive = Files.createTempFile("hc-arc", ".zip").toFile();
 		IOReport report;
-		try (final FileOutputStream archiveStream = new FileOutputStream(projectArchive)) {
-			report = createProjectArchive(archiveStream, reporter, progress);
-		}
+		new FileOutputStream(projectArchive).withCloseable { s -> report = createProjectArchive(s, reporter, progress) }
 		if (!report.isSuccess()) {
 			// exit when creating project archive failed
 			return report;
@@ -213,13 +208,13 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 			result = haleConnect.uploadProjectFile(projectId, owner, projectArchive, progress);
 		} catch (HaleConnectException e) {
 			switch (e.getStatusCode()) {
-			case 403: /* Forbidden */
-				reporter.error(MessageFormat.format("You are not authorized to access project {0}",
-						projectId), e);
-				break;
-			default:
-				reporter.error(MessageFormat.format("Error uploading hale connect project: {0}",
-						e.getMessage()), e);
+				case 403: /* Forbidden */
+					reporter.error(MessageFormat.format("You are not authorized to access project {0}",
+					projectId), e);
+					break;
+				default:
+					reporter.error(MessageFormat.format("Error uploading hale connect project: {0}",
+					e.getMessage()), e);
 			}
 			reporter.setSuccess(false);
 			return reporter;
@@ -290,7 +285,7 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 	@Override
 	public IOReporter createReporter() {
 		if (!(haleConnect instanceof BasePathResolver)
-				|| !HaleConnectUrnBuilder.isValidProjectUrn(getTarget().getLocation())) {
+		|| !HaleConnectUrnBuilder.isValidProjectUrn(getTarget().getLocation())) {
 			return super.createReporter();
 		}
 

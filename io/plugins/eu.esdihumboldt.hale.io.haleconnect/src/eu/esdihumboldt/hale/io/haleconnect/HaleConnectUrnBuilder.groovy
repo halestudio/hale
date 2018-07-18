@@ -15,16 +15,18 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
-import java.net.URI;
 import java.text.MessageFormat;
 
 import org.apache.commons.lang.StringUtils;
+
+import groovy.transform.CompileStatic
 
 /**
  * Helper for building and decomposing hale-connect project URNs.
  * 
  * @author Florian Esser
  */
+@CompileStatic
 public class HaleConnectUrnBuilder {
 
 	/**
@@ -53,7 +55,7 @@ public class HaleConnectUrnBuilder {
 	public static Owner extractProjectOwner(URI hcUrn) {
 		String[] parts = splitProjectUrn(hcUrn);
 
-		return new Owner(OwnerType.fromJsonValue(parts[1]), parts[2]);
+		return new Owner(type: OwnerType.fromJsonValue(parts[1]), id: parts[2]);
 	}
 
 	/**
@@ -74,22 +76,22 @@ public class HaleConnectUrnBuilder {
 		}
 		else if (!SCHEME_HALECONNECT.equals(urn.getScheme().toLowerCase())) {
 			throw new IllegalArgumentException(
-					MessageFormat.format("URN must have scheme \"{0}\"", SCHEME_HALECONNECT));
+			MessageFormat.format("URN must have scheme \"{0}\"", SCHEME_HALECONNECT));
 		}
 
 		if (StringUtils.isEmpty(urn.getSchemeSpecificPart())) {
 			throw new IllegalArgumentException(
-					MessageFormat.format("Malformed URN: {0}", urn.toString()));
+			MessageFormat.format("Malformed URN: {0}", urn.toString()));
 		}
 
 		String[] parts = urn.getSchemeSpecificPart().split(":");
 		if (parts.length != 4) {
 			throw new IllegalArgumentException(
-					MessageFormat.format("Malformed URN: {0}", urn.toString()));
+			MessageFormat.format("Malformed URN: {0}", urn.toString()));
 		}
 		else if (!"project".equals(parts[0])) {
 			throw new IllegalArgumentException(
-					MessageFormat.format("No a project URN: {0}", urn.toString()));
+			MessageFormat.format("No a project URN: {0}", urn.toString()));
 		}
 		return parts;
 	}
@@ -123,5 +125,4 @@ public class HaleConnectUrnBuilder {
 		return URI.create(MessageFormat.format("{0}/transformation/{1}/{2}/{3}", basePath,
 				owner.getType().getJsonValue(), owner.getId(), projectId));
 	}
-
 }

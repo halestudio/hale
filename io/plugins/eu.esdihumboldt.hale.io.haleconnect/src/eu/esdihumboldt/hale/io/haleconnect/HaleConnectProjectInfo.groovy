@@ -15,11 +15,14 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import groovy.transform.CompileStatic
+
 /**
  * Information on a hale connect project
  * 
  * @author Florian Esser
  */
+@CompileStatic
 public class HaleConnectProjectInfo {
 
 	private final String id;
@@ -43,8 +46,8 @@ public class HaleConnectProjectInfo {
 	 *            hale connect
 	 */
 	public HaleConnectProjectInfo(String id, HaleConnectUserInfo user,
-			HaleConnectOrganisationInfo organisation, String name, String author,
-			Long lastModified) {
+	HaleConnectOrganisationInfo organisation, String name, String author,
+	Long lastModified) {
 		this.id = id;
 		this.user = user;
 		this.organisation = organisation;
@@ -93,10 +96,10 @@ public class HaleConnectProjectInfo {
 	 */
 	public Owner getOwner() {
 		if (user != null && !user.getUserId().isEmpty()) {
-			return new Owner(OwnerType.USER, user.getUserId());
+			return new Owner(type: OwnerType.USER, id: user.getUserId());
 		}
 		else if (organisation != null && !organisation.getId().isEmpty()) {
-			return new Owner(OwnerType.ORGANISATION, organisation.getId());
+			return new Owner(type: OwnerType.ORGANISATION, id: organisation.getId());
 		}
 		else {
 			throw new IllegalStateException("Unknown owner type");
@@ -155,5 +158,4 @@ public class HaleConnectProjectInfo {
 			return false;
 		return true;
 	}
-
 }

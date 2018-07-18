@@ -15,11 +15,6 @@
 
 package eu.esdihumboldt.hale.io.xsd.anytype.valuetypes;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.w3c.dom.Element;
 
 import eu.esdihumboldt.hale.common.core.io.ComplexValueType;
@@ -30,14 +25,15 @@ import eu.esdihumboldt.hale.io.xsd.XMLSchemaIO;
 import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentAssociation;
 import eu.esdihumboldt.hale.io.xsd.anytype.CustomTypeContentConfiguration;
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
+import groovy.transform.CompileStatic
 
 /**
  * Complex value definition for {@link CustomTypeContentConfiguration}.
  * 
  * @author Simon Templer
  */
-public class CustomTypeContentConfigurationType implements
-		ComplexValueType<CustomTypeContentConfiguration, Void> {
+@CompileStatic
+public class CustomTypeContentConfigurationType implements ComplexValueType<CustomTypeContentConfiguration, Void> {
 
 	@Override
 	public CustomTypeContentConfiguration fromDOM(Element fragment, Void context) {
@@ -52,7 +48,7 @@ public class CustomTypeContentConfigurationType implements
 				}
 			}
 		}
-		return new CustomTypeContentConfiguration(resultList);
+		return new CustomTypeContentConfiguration(associations: resultList);
 	}
 
 	@Override
@@ -79,5 +75,4 @@ public class CustomTypeContentConfigurationType implements
 	public Class<? extends Void> getContextType() {
 		return Void.class;
 	}
-
 }

@@ -15,21 +15,20 @@
 
 package eu.esdihumboldt.hale.common.headless.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import eu.esdihumboldt.hale.common.codelist.CodeList;
 import eu.esdihumboldt.hale.common.codelist.config.CodeListReference;
 import eu.esdihumboldt.hale.common.codelist.io.CodeListReader;
 import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
+import groovy.transform.CompileStatic
 
 /**
  * Advisor for loading code lists in headless mode.
  * 
  * @author Simon Templer
  */
-public class CodeListAdvisor extends AbstractIOAdvisor<CodeListReader>implements CodeListRegistry {
+@CompileStatic
+public class CodeListAdvisor extends AbstractIOAdvisor<CodeListReader> implements CodeListRegistry {
 
 	private final Map<CodeListReference, CodeList> codeLists = new HashMap<>();
 
@@ -38,9 +37,8 @@ public class CodeListAdvisor extends AbstractIOAdvisor<CodeListReader>implements
 		CodeList codeList = provider.getCodeList();
 
 		if (codeList != null) {
-			CodeListReference key = new CodeListReference(codeList.getNamespace(),
-					codeList.getIdentifier());
-			codeLists.put(key, codeList);
+			CodeListReference key = new CodeListReference(namespace: codeList.getNamespace(),
+			identifier: codeList.getIdentifier());
 		}
 	}
 
@@ -48,5 +46,4 @@ public class CodeListAdvisor extends AbstractIOAdvisor<CodeListReader>implements
 	public CodeList findCodeList(CodeListReference clRef) {
 		return codeLists.get(clRef);
 	}
-
 }
