@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,6 +7,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Mickael Istria (Red Hat Inc.) - [263316] regexp for file association
  *******************************************************************************/
 package eu.esdihumboldt.hale.util.nonosgi.contenttype;
 
@@ -21,13 +22,14 @@ import org.eclipse.core.runtime.content.IContentDescription;
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferenceNodeVisitor;
+import org.eclipse.core.runtime.preferences.IScopeContext;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is a sidekick for ContentTypeManager that provides mechanisms for 
+ * This class is a sidekick for ContentTypeManager that provides mechanisms for
  * creating content types from the extension registry (which ContentTypeManager
  *  is oblivious to).
  */
@@ -82,25 +84,36 @@ public class ContentTypeBuilder {
 	}
 
 	private void addFileAssociation(IConfigurationElement fileAssociationElement, ContentType target) {
-		String[] fileNames = Util.parseItems(fileAssociationElement.getAttributeAsIs("file-names")); //$NON-NLS-1$
-		for (int i = 0; i < fileNames.length; i++)
-			target.internalAddFileSpec(fileNames[i], IContentType.FILE_NAME_SPEC | ContentType.SPEC_PRE_DEFINED);
-		String[] fileExtensions = Util.parseItems(fileAssociationElement.getAttributeAsIs("file-extensions")); //$NON-NLS-1$
-		for (int i = 0; i < fileExtensions.length; i++)
-			target.internalAddFileSpec(fileExtensions[i], IContentType.FILE_EXTENSION_SPEC | ContentType.SPEC_PRE_DEFINED);
+		String[] fileNames = Util.parseItems(fileAssociationElement.getAttribute("file-names")); //$NON-NLS-1$
+		for (String fileName : fileNames)
+			target.internalAddFileSpec(fileName, IContentType.FILE_NAME_SPEC | ContentType.SPEC_PRE_DEFINED);
+		String[] fileExtensions = Util.parseItems(fileAssociationElement.getAttribute("file-extensions")); //$NON-NLS-1$
+		for (String fileExtension : fileExtensions)
+			target.internalAddFileSpec(fileExtension, IContentType.FILE_EXTENSION_SPEC | ContentType.SPEC_PRE_DEFINED);
+		String[] filePatterns = Util.parseItems(fileAssociationElement.getAttribute("file-patterns")); //$NON-NLS-1$
+		for (String filePattern : filePatterns)
+			target.internalAddFileSpec(filePattern, IContentType.FILE_PATTERN_SPEC | ContentType.SPEC_PRE_DEFINED);
 	}
 
 	/**
 	 * Builds all content types found in the extension registry.
 	 */
-	public void buildCatalog() {
+	public void buildCatalog(IScopeContext context) {
 		IConfigurationElement[] allContentTypeCEs = getConfigurationElements();
-		for (int i = 0; i < allContentTypeCEs.length; i++)
-			if (allContentTypeCEs[i].getName().equals("content-type")) //$NON-NLS-1$
-				registerContentType(allContentTypeCEs[i]);
-		for (int i = 0; i < allContentTypeCEs.length; i++)
-			if (allContentTypeCEs[i].getName().equals("file-association")) //$NON-NLS-1$
-				registerFileAssociation(allContentTypeCEs[i]);
+		for (IConfigurationElement allContentTypeCE : allContentTypeCEs)
+			if (allContentTypeCE.getName().equals("content-type")) //$NON-NLS-1$
+				registerContentType(allContentTypeCE);
+		for (String id : ContentTypeManager.getUserDefinedContentTypeIds(context)) {
+			IEclipsePreferences node = context.getNode(id);
+			catalog.addContentType(ContentType.createContentType(catalog, id,
+					node.get(ContentType.PREF_USER_DEFINED__NAME, ContentType.EMPTY_STRING),
+					(byte) 0, new String[0], new String[0], new String[0],
+					node.get(ContentType.PREF_USER_DEFINED__BASE_TYPE_ID, null), null, Collections.emptyMap(),
+					null));
+		}
+		for (IConfigurationElement allContentTypeCE : allContentTypeCEs)
+			if (allContentTypeCE.getName().equals("file-association")) //$NON-NLS-1$
+				registerFileAssociation(allContentTypeCE);
 		applyPreferences();
 	}
 
@@ -112,6 +125,7 @@ public class ContentTypeBuilder {
 			final ContentTypeCatalog localCatalog = catalog;
 			final IEclipsePreferences root = localCatalog.getManager().getPreferences();
 			root.accept(new IPreferenceNodeVisitor() {
+				@Override
 				public boolean visit(IEclipsePreferences node) {
 					if (node == root)
 						return true;
@@ -133,7 +147,7 @@ public class ContentTypeBuilder {
 	@SuppressWarnings("unchecked")
 	private ContentType createContentType(IConfigurationElement contentTypeCE) throws CoreException {
 		String namespace = contentTypeCE.getContributor().getName();
-		String simpleId = contentTypeCE.getAttributeAsIs("id"); //$NON-NLS-1$
+		String simpleId = contentTypeCE.getAttribute("id"); //$NON-NLS-1$
 		String name = contentTypeCE.getAttribute("name"); //$NON-NLS-1$
 
 		if (simpleId == null)
@@ -146,35 +160,41 @@ public class ContentTypeBuilder {
 		if (name == null)
 			missingMandatoryAttribute(ContentMessages.content_missingName, uniqueId);
 
-		byte priority = parsePriority(contentTypeCE.getAttributeAsIs("priority")); //$NON-NLS-1$);
-		String[] fileNames = Util.parseItems(contentTypeCE.getAttributeAsIs("file-names")); //$NON-NLS-1$
-		String[] fileExtensions = Util.parseItems(contentTypeCE.getAttributeAsIs("file-extensions")); //$NON-NLS-1$
-		String baseTypeId = getUniqueId(namespace, contentTypeCE.getAttributeAsIs("base-type")); //$NON-NLS-1$
-		String aliasTargetTypeId = getUniqueId(namespace, contentTypeCE.getAttributeAsIs("alias-for")); //$NON-NLS-1$		
+		byte priority = parsePriority(contentTypeCE.getAttribute("priority")); //$NON-NLS-1$ );
+		String[] fileNames = Util.parseItems(contentTypeCE.getAttribute("file-names")); //$NON-NLS-1$
+		String[] fileExtensions = Util.parseItems(contentTypeCE.getAttribute("file-extensions")); //$NON-NLS-1$
+		String[] filePatterns = Util.parseItems(contentTypeCE.getAttribute("file-patterns")); //$NON-NLS-1$
+		String baseTypeId = getUniqueId(namespace, contentTypeCE.getAttribute("base-type")); //$NON-NLS-1$
+		String aliasTargetTypeId = getUniqueId(namespace, contentTypeCE.getAttribute("alias-for")); //$NON-NLS-1$
 		IConfigurationElement[] propertyCEs = null;
-		Map defaultProperties = null;
+		Map<QualifiedName, String> defaultProperties = null;
 		if ((propertyCEs = contentTypeCE.getChildren("property")).length > 0) { //$NON-NLS-1$
-			defaultProperties = new HashMap();
-			for (int i = 0; i < propertyCEs.length; i++) {
-				String defaultValue = propertyCEs[i].getAttributeAsIs("default"); //$NON-NLS-1$
+			defaultProperties = new HashMap<>();
+			for (IConfigurationElement propertyCE : propertyCEs) {
+				String defaultValue = propertyCE.getAttribute("default"); //$NON-NLS-1$
 				if (defaultValue == null)
 					// empty string means: default value is null
 					defaultValue = ""; //$NON-NLS-1$
-				String propertyKey = propertyCEs[i].getAttributeAsIs("name"); //$NON-NLS-1$
+				String propertyKey = propertyCE.getAttribute("name"); //$NON-NLS-1$
 				QualifiedName qualifiedKey = parseQualifiedName(namespace, propertyKey);
 				if (qualifiedKey == null) {
+					if (ContentTypeManager.DEBUGGING) {
+						String message = NLS.bind(ContentMessages.content_invalidProperty, propertyKey, getUniqueId(namespace, simpleId));
+						log.error(message);
+					}
 					continue;
 				}
 				defaultProperties.put(qualifiedKey, defaultValue);
 			}
 		}
-		String defaultCharset = contentTypeCE.getAttributeAsIs("default-charset"); //$NON-NLS-1$
+		String defaultCharset = contentTypeCE.getAttribute("default-charset"); //$NON-NLS-1$
 		if (defaultCharset != null)
 			if (defaultProperties == null)
 				defaultProperties = Collections.singletonMap(IContentDescription.CHARSET, defaultCharset);
 			else if (!defaultProperties.containsKey(IContentDescription.CHARSET))
 				defaultProperties.put(IContentDescription.CHARSET, defaultCharset);
-		return ContentType.createContentType(catalog, uniqueId, name, priority, fileExtensions, fileNames, baseTypeId, aliasTargetTypeId, defaultProperties, contentTypeCE);
+		return ContentType.createContentType(catalog, uniqueId, name, priority, fileExtensions, fileNames, filePatterns,
+				baseTypeId, aliasTargetTypeId, defaultProperties, contentTypeCE);
 	}
 
 	// Store this around for performance
@@ -223,11 +243,11 @@ public class ContentTypeBuilder {
 		}
 	}
 
-	/* Adds extra file associations to existing content types. If the content 
+	/* Adds extra file associations to existing content types. If the content
 	 * type has not been added, the file association is ignored.
 	 */
 	private void registerFileAssociation(IConfigurationElement fileAssociationElement) {
-		//TODO: need to ensure the config. element is valid		
+		//TODO: need to ensure the config. element is valid
 		String contentTypeId = getUniqueId(fileAssociationElement.getContributor().getName(), fileAssociationElement.getAttribute("content-type")); //$NON-NLS-1$
 		ContentType target = catalog.internalGetContentType(contentTypeId);
 		if (target == null)

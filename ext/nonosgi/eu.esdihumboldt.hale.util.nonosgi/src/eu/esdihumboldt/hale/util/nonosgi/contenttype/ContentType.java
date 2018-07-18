@@ -35,14 +35,17 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 
 	/* A placeholder for missing/invalid binary/text describers. */
 	private class InvalidDescriber implements IContentDescriber, ITextContentDescriber {
+		@Override
 		public int describe(InputStream contents, IContentDescription description) {
 			return INVALID;
 		}
 
+		@Override
 		public int describe(Reader contents, IContentDescription description) {
 			return INVALID;
 		}
 
+		@Override
 		public QualifiedName[] getSupportedOptions() {
 			return new QualifiedName[0];
 		}
@@ -51,14 +54,24 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	final static byte ASSOCIATED_BY_EXTENSION = 2;
 	final static byte ASSOCIATED_BY_NAME = 1;
 	private static final String DESCRIBER_ELEMENT = "describer"; //$NON-NLS-1$
-	private static ArrayList EMPTY_LIST = new ArrayList(0);
+	private static ArrayList<FileSpec> EMPTY_LIST = new ArrayList<>(0);
 	private static final Object INHERITED_DESCRIBER = "INHERITED DESCRIBER"; //$NON-NLS-1$
 
 	private static final Object NO_DESCRIBER = "NO DESCRIBER"; //$NON-NLS-1$
 	final static byte NOT_ASSOCIATED = 0;
-	public final static String PREF_DEFAULT_CHARSET = "charset"; //$NON-NLS-1$	
+	public final static String PREF_DEFAULT_CHARSET = "charset"; //$NON-NLS-1$
 	public final static String PREF_FILE_EXTENSIONS = "file-extensions"; //$NON-NLS-1$
 	public final static String PREF_FILE_NAMES = "file-names"; //$NON-NLS-1$
+	/** @since 3.7 */
+	public final static String PREF_FILE_PATTERNS = "file-patterns"; //$NON-NLS-1$
+	/** @since 3.6 */
+	public static final String PREF_USER_DEFINED = "userDefined"; //$NON-NLS-1$
+	/** @since 3.6 */
+	public static final String PREF_USER_DEFINED__SEPARATOR = ","; //$NON-NLS-1$
+	/** @since 3.6 */
+	public static final String PREF_USER_DEFINED__NAME = "name"; //$NON-NLS-1$
+	/** @since 3.6 */
+	public static final String PREF_USER_DEFINED__BASE_TYPE_ID = "baseTypeId"; //$NON-NLS-1$
 	final static byte PRIORITY_HIGH = 1;
 	final static byte PRIORITY_LOW = -1;
 	final static byte PRIORITY_NORMAL = 0;
@@ -67,16 +80,17 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	final static byte STATUS_INVALID = 2;
 	final static byte STATUS_UNKNOWN = 0;
 	final static byte STATUS_VALID = 1;
+	static final String EMPTY_STRING = ""; //$NON-NLS-1$
 	private String aliasTargetId;
 	private String baseTypeId;
 	private boolean builtInAssociations = false;
 	private ContentTypeCatalog catalog;
 	private IConfigurationElement contentTypeElement;
 	private DefaultDescription defaultDescription;
-	private Map defaultProperties;
+	private Map<QualifiedName, String> defaultProperties;
 	private Object describer;
 	// we need a Cloneable list
-	private ArrayList fileSpecs = EMPTY_LIST;
+	private ArrayList<FileSpec> fileSpecs = EMPTY_LIST;
 	String id;
 	private ContentTypeManager manager;
 	private String name;
@@ -88,20 +102,26 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	// -1 means unknown
 	private byte depth = -1;
 
-	public static ContentType createContentType(ContentTypeCatalog catalog, String uniqueId, String name, byte priority, String[] fileExtensions, String[] fileNames, String baseTypeId, String aliasTargetId, Map defaultProperties, IConfigurationElement contentTypeElement) {
+	public static ContentType createContentType(ContentTypeCatalog catalog, String uniqueId, String name, byte priority,
+			String[] fileExtensions, String[] fileNames, String[] filePatterns, String baseTypeId, String aliasTargetId,
+			Map<QualifiedName, String> defaultProperties, IConfigurationElement contentTypeElement) {
 		ContentType contentType = new ContentType(catalog.getManager());
 		contentType.catalog = catalog;
 		contentType.defaultDescription = new DefaultDescription(contentType);
 		contentType.id = uniqueId;
 		contentType.name = name;
 		contentType.priority = priority;
-		if ((fileExtensions != null && fileExtensions.length > 0) || (fileNames != null && fileNames.length > 0)) {
+		if ((fileExtensions != null && fileExtensions.length > 0) || (fileNames != null && fileNames.length > 0)
+				|| (filePatterns != null && filePatterns.length > 0)) {
 			contentType.builtInAssociations = true;
-			contentType.fileSpecs = new ArrayList(fileExtensions.length + fileNames.length);
-			for (int i = 0; i < fileNames.length; i++)
-				contentType.internalAddFileSpec(fileNames[i], FILE_NAME_SPEC | SPEC_PRE_DEFINED);
-			for (int i = 0; i < fileExtensions.length; i++)
-				contentType.internalAddFileSpec(fileExtensions[i], FILE_EXTENSION_SPEC | SPEC_PRE_DEFINED);
+			contentType.fileSpecs = new ArrayList<>(fileExtensions.length + fileNames.length + filePatterns.length);
+			for (String fileName : fileNames)
+				contentType.internalAddFileSpec(fileName, FILE_NAME_SPEC | SPEC_PRE_DEFINED);
+			for (String fileExtension : fileExtensions)
+				contentType.internalAddFileSpec(fileExtension, FILE_EXTENSION_SPEC | SPEC_PRE_DEFINED);
+			for (String fileExtension : filePatterns) {
+				contentType.internalAddFileSpec(fileExtension, FILE_PATTERN_SPEC | SPEC_PRE_DEFINED);
+			}
 		}
 		contentType.defaultProperties = defaultProperties;
 		contentType.contentTypeElement = contentTypeElement;
@@ -131,18 +151,17 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		this.manager = manager;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public void addFileSpec(String fileSpec, int type) throws CoreException {
-		Assert.isLegal(type == FILE_EXTENSION_SPEC || type == FILE_NAME_SPEC, "Unknown type: " + type); //$NON-NLS-1$		
+		Assert.isLegal(type == FILE_EXTENSION_SPEC || type == FILE_NAME_SPEC || type == FILE_PATTERN_SPEC,
+				"Unknown type: " + type); //$NON-NLS-1$
 		String[] userSet;
 		synchronized (this) {
 			if (!internalAddFileSpec(fileSpec, type | SPEC_USER_DEFINED))
 				return;
 			userSet = getFileSpecs(type | IGNORE_PRE_DEFINED);
 		}
-		// persist using preferences		
+		// persist using preferences
 		Preferences contentTypeNode = manager.getPreferences().node(id);
 		String newValue = Util.toListString(userSet);
 		// we are adding stuff, newValue must be non-null
@@ -166,13 +185,18 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 			// describer seems to be buggy. just disable it (logging the reason)
 			invalidateDescriber(re);
 		} catch (Error e) {
-			// describer got some serious problem. disable it (logging the reason) and throw the error again 
+			// describer got some serious problem. disable it (logging the reason) and throw the error again
 			invalidateDescriber(e);
 			throw e;
-//		} catch (LowLevelIOException llioe) {
-//			// throw the actual exception
-//			throw llioe.getActualException();
+		} catch (LowLevelIOException llioe) {
+			// throw the actual exception
+			throw llioe.getActualException();
 		} catch (IOException ioe) {
+			// bugs 67841/ 62443  - non-low level IOException should be "ignored"
+			if (ContentTypeManager.DEBUGGING) {
+				String message = NLS.bind(ContentMessages.content_errorReadingContents, id);
+				log.error(message, ioe);
+			}
 			// we don't know what the describer would say if the exception didn't occur
 			return IContentDescriber.INDETERMINATE;
 		} finally {
@@ -181,6 +205,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return IContentDescriber.INVALID;
 	}
 
+	@Override
 	public boolean equals(Object another) {
 		if (another instanceof ContentType)
 			return id.equals(((ContentType) another).id);
@@ -193,10 +218,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return aliasTargetId;
 	}
 
-	/**
-	 * @see IContentType
-	 */
-
+	@Override
 	public IContentType getBaseType() {
 		return baseType;
 	}
@@ -209,27 +231,25 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return catalog;
 	}
 
+	@Override
 	public ContentType getContentType() {
 		return this;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public String getDefaultCharset() {
 		return getDefaultProperty(IContentDescription.CHARSET);
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public IContentDescription getDefaultDescription() {
 		return defaultDescription;
 	}
 
 	/**
-	 * Returns the default value for the given property in this content type, or <code>null</code>. 
+	 * Returns the default value for the given property in this content type, or <code>null</code>.
 	 */
+	@Override
 	public String getDefaultProperty(QualifiedName key) {
 		String propertyValue = internalGetDefaultProperty(key);
 		if ("".equals(propertyValue)) //$NON-NLS-1$
@@ -259,8 +279,13 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 					return baseType.getDescriber();
 				return (NO_DESCRIBER == tmpDescriber) ? null : (IContentDescriber) tmpDescriber;
 			}
-			final String describerValue = contentTypeElement.getAttributeAsIs(DESCRIBER_ELEMENT);
-			if (describerValue != null || contentTypeElement.getChildren(DESCRIBER_ELEMENT).length > 0)
+			final String describerValue = contentTypeElement != null
+					? contentTypeElement.getAttribute(DESCRIBER_ELEMENT)
+					: null;
+			IConfigurationElement[] childrenDescribers = contentTypeElement != null
+					? contentTypeElement.getChildren(DESCRIBER_ELEMENT)
+					: new IConfigurationElement[0];
+			if (describerValue != null || childrenDescribers.length > 0)
 				try {
 					if ("".equals(describerValue)) { //$NON-NLS-1$
 						describer = NO_DESCRIBER;
@@ -277,7 +302,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		} catch (InvalidRegistryObjectException e) {
 			/*
 			 * This should only happen if  an API call is made after the registry has changed and before
-			 * the corresponding registry change event has been broadcast.  
+			 * the corresponding registry change event has been broadcast.
 			 */
 			// the configuration element is stale - need to rebuild the catalog
 			manager.invalidate();
@@ -293,48 +318,36 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return baseType.getDescriber();
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public IContentDescription getDescriptionFor(InputStream contents, QualifiedName[] options) throws IOException {
 		return internalGetDescriptionFor(ContentTypeManager.readBuffer(contents), options);
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public IContentDescription getDescriptionFor(Reader contents, QualifiedName[] options) throws IOException {
 		return internalGetDescriptionFor(ContentTypeManager.readBuffer(contents), options);
 	}
 
-	/**
-	 * @see IContentType
-	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	public String[] getFileSpecs(int typeMask) {
 		if (fileSpecs.isEmpty())
 			return new String[0];
 		// invert the last two bits so it is easier to compare
 		typeMask ^= (IGNORE_PRE_DEFINED | IGNORE_USER_DEFINED);
-		List result = new ArrayList(fileSpecs.size());
-		for (Iterator i = fileSpecs.iterator(); i.hasNext();) {
-			FileSpec spec = (FileSpec) i.next();
+		List<String> result = new ArrayList<>(fileSpecs.size());
+		for (FileSpec spec : fileSpecs) {
 			if ((spec.getType() & typeMask) == spec.getType())
 				result.add(spec.getText());
 		}
-		return (String[]) result.toArray(new String[result.size()]);
+		return result.toArray(new String[result.size()]);
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public String getId() {
 		return id;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -343,6 +356,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return priority;
 	}
 
+	@Override
 	public IContentTypeSettings getSettings(IScopeContext context) {
 		if (context == null || context.equals(manager.getContext()))
 			return this;
@@ -368,8 +382,8 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		if (context.equals(manager.getContext()) || (typeMask & IGNORE_USER_DEFINED) != 0)
 			return hasFileSpec(text, typeMask, false);
 		String[] fileSpecs = ContentTypeSettings.getFileSpecs(context, id, typeMask);
-		for (int i = 0; i < fileSpecs.length; i++)
-			if (text.equalsIgnoreCase(fileSpecs[i]))
+		for (String fileSpec : fileSpecs)
+			if (text.equalsIgnoreCase(fileSpec))
 				return true;
 		// no user defined association... try built-in
 		return hasFileSpec(text, typeMask | IGNORE_PRE_DEFINED, false);
@@ -377,23 +391,25 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 
 	/**
 	 * Returns whether this content type has the given file spec.
-	 * 
-	 * @param text the file spec string
-	 * @param typeMask FILE_NAME_SPEC or FILE_EXTENSION_SPEC
+	 *
+	 * @param text
+	 *            the file spec string
+	 * @param typeMask
+	 *            FILE_NAME_SPEC or FILE_EXTENSION_SPEC or FILE_REGEXP_SPEC
 	 * @param strict
 	 * @return true if this file spec has already been added, false otherwise
 	 */
 	boolean hasFileSpec(String text, int typeMask, boolean strict) {
 		if (fileSpecs.isEmpty())
 			return false;
-		for (Iterator i = fileSpecs.iterator(); i.hasNext();) {
-			FileSpec spec = (FileSpec) i.next();
+		for (FileSpec spec : fileSpecs) {
 			if (spec.equals(text, typeMask, strict))
 				return true;
 		}
 		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		return id.hashCode();
 	}
@@ -409,21 +425,22 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		if ((typeMask & ContentType.SPEC_USER_DEFINED) == 0) {
 			// plug-in defined - all that is left to be done is to add it to the list
 			if (fileSpecs.isEmpty())
-				fileSpecs = new ArrayList(3);
+				fileSpecs = new ArrayList<>(3);
 			fileSpecs.add(newFileSpec);
 			return true;
 		}
-		// update file specs atomically so threads traversing the list of file specs don't have to synchronize		
-		ArrayList tmpFileSpecs = (ArrayList) fileSpecs.clone();
+		// update file specs atomically so threads traversing the list of file specs don't have to synchronize
+		@SuppressWarnings("unchecked")
+		ArrayList<FileSpec> tmpFileSpecs = (ArrayList<FileSpec>) fileSpecs.clone();
 		tmpFileSpecs.add(newFileSpec);
 		catalog.associate(this, newFileSpec.getText(), newFileSpec.getType());
-		// set the new file specs atomically 
+		// set the new file specs atomically
 		fileSpecs = tmpFileSpecs;
 		return true;
 	}
 
 	/**
-	 * Returns the default value for a property, recursively if necessary.  
+	 * Returns the default value for a property, recursively if necessary.
 	 */
 	String internalGetDefaultProperty(QualifiedName key) {
 		// a special case for charset - users can override
@@ -440,7 +457,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	 * Returns the value of a built-in property defined for this content type.
 	 */
 	String basicGetDefaultProperty(QualifiedName key) {
-		return defaultProperties == null ? null : (String) defaultProperties.get(key);
+		return defaultProperties == null ? null : defaultProperties.get(key);
 	}
 
 	BasicDescription internalGetDescriptionFor(ILazySource buffer, QualifiedName[] options) throws IOException {
@@ -482,9 +499,10 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		if (fileSpecs.isEmpty())
 			return false;
 		// we modify the list of file specs atomically so we don't interfere with threads doing traversals
-		ArrayList tmpFileSpecs = (ArrayList) fileSpecs.clone();
-		for (Iterator i = tmpFileSpecs.iterator(); i.hasNext();) {
-			FileSpec spec = (FileSpec) i.next();
+		@SuppressWarnings("unchecked")
+		ArrayList<FileSpec> tmpFileSpecs = (ArrayList<FileSpec>) fileSpecs.clone();
+		for (Iterator<FileSpec> i = tmpFileSpecs.iterator(); i.hasNext();) {
+			FileSpec spec = i.next();
 			if ((spec.getType() == typeMask) && fileSpec.equals(spec.getText())) {
 				i.remove();
 				catalog.dissociate(this, spec.getText(), spec.getType());
@@ -506,23 +524,17 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		return target != null;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public boolean isAssociatedWith(String fileName) {
 		return isAssociatedWith(fileName, manager.getContext());
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public boolean isAssociatedWith(String fileName, IScopeContext context) {
 		return internalIsAssociatedWith(fileName, context) != NOT_ASSOCIATED;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public boolean isKindOf(IContentType another) {
 		if (another == null)
 			return false;
@@ -538,23 +550,28 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 	void processPreferences(Preferences contentTypeNode) {
 		// user set default charset
 		this.userCharset = contentTypeNode.get(PREF_DEFAULT_CHARSET, null);
-		// user set file names 
+		// user set file names
 		String userSetFileNames = contentTypeNode.get(PREF_FILE_NAMES, null);
 		String[] fileNames = Util.parseItems(userSetFileNames);
-		for (int i = 0; i < fileNames.length; i++)
-			internalAddFileSpec(fileNames[i], FILE_NAME_SPEC | SPEC_USER_DEFINED);
+		for (String fileName : fileNames)
+			internalAddFileSpec(fileName, FILE_NAME_SPEC | SPEC_USER_DEFINED);
 		// user set file extensions
 		String userSetFileExtensions = contentTypeNode.get(PREF_FILE_EXTENSIONS, null);
 		String[] fileExtensions = Util.parseItems(userSetFileExtensions);
-		for (int i = 0; i < fileExtensions.length; i++)
-			internalAddFileSpec(fileExtensions[i], FILE_EXTENSION_SPEC | SPEC_USER_DEFINED);
+		for (String fileExtension : fileExtensions)
+			internalAddFileSpec(fileExtension, FILE_EXTENSION_SPEC | SPEC_USER_DEFINED);
+		// user set file name regexp
+		String userSetFileRegexp = contentTypeNode.get(PREF_FILE_PATTERNS, null);
+		String[] fileRegexps = Util.parseItems(userSetFileRegexp);
+		for (String fileRegexp : fileRegexps) {
+			internalAddFileSpec(fileRegexp, FILE_PATTERN_SPEC | SPEC_USER_DEFINED);
+		}
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public void removeFileSpec(String fileSpec, int type) throws CoreException {
-		Assert.isLegal(type == FILE_EXTENSION_SPEC || type == FILE_NAME_SPEC, "Unknown type: " + type); //$NON-NLS-1$		
+		Assert.isLegal(type == FILE_EXTENSION_SPEC || type == FILE_NAME_SPEC || type == FILE_PATTERN_SPEC,
+				"Unknown type: " + type); //$NON-NLS-1$
 		synchronized (this) {
 			if (!internalRemoveFileSpec(fileSpec, type | SPEC_USER_DEFINED))
 				return;
@@ -572,7 +589,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 			IStatus status = new Status(IStatus.ERROR, ContentMessages.OWNER_NAME, 0, message, bse);
 			throw new CoreException(status);
 		}
-		// notify listeners		
+		// notify listeners
 		manager.fireContentTypeChangeEvent(this);
 	}
 
@@ -580,9 +597,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		target = newTarget;
 	}
 
-	/**
-	 * @see IContentType
-	 */
+	@Override
 	public void setDefaultCharset(String newCharset) throws CoreException {
 		synchronized (this) {
 			// don't do anything if there is no actual change
@@ -619,6 +634,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 		this.validation = validation;
 	}
 
+	@Override
 	public String toString() {
 		return id;
 	}
@@ -629,8 +645,7 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 
 	@Override
 	public boolean isUserDefined() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.contentTypeElement == null;
 	}
 
 }
