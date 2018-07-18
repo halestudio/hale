@@ -4,7 +4,7 @@ Bundle-Name: Utilities for usage in Non-OSGi environment
 Bundle-SymbolicName: eu.esdihumboldt.hale.util.nonosgi
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.10.0"
 Export-Package: eu.esdihumboldt.hale.util.nonosgi,
  eu.esdihumboldt.hale.util.nonosgi.contenttype,
