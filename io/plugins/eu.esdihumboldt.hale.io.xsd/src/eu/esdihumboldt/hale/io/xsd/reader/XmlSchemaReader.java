@@ -107,6 +107,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
+import eu.esdihumboldt.hale.io.xsd.model.ComplexContentHasValue;
 import eu.esdihumboldt.hale.io.xsd.model.HasNotInheritableValue;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
@@ -1499,9 +1500,10 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					createAttributesFromCollection(attributeCollection, typeDef, null,
 							schemaLocation, schemaNamespace);
 				}
-				// complex content does not have a value
-				// (only if it is mixed, which can override this setting)
-				typeDef.setConstraintIfNotSet(HasValueFlag.DISABLED);
+				// complex content may have a value in certain cases
+				// (if it is mixed it definitely has, which will override this
+				// setting)
+				typeDef.setConstraintIfNotSet(new ComplexContentHasValue(typeDef));
 				// </extension>
 				// </complexContent>
 			}
@@ -1603,7 +1605,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// XXX extend group name with namespace?
 					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
 							groupName, declaringType, this.index, groupName, true);
-							// TODO add constraints?
+					// TODO add constraints?
 
 					// set metadata
 					setMetadata(property, groupRef, schemaLocation);
