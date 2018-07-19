@@ -39,8 +39,8 @@
 <repository location="http://build-artifacts.wetransform.to/p2/equinox-test/build_3"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.4.0.i20180411"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/1e1bd6c77a07c5b3792e9cca2bc859ba39601d5a/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.4.0.i20180719"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/a67b86435b6dbb5194be7cefbda7288656c3b890/updatesites/platform"/>
 </location>
 </locations>
 </target>
