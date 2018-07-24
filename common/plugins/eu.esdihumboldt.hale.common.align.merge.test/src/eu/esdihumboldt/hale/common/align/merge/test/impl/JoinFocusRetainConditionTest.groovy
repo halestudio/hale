@@ -24,7 +24,10 @@ import org.junit.Test
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.MergeSettings
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
+import eu.esdihumboldt.hale.common.align.model.CellUtil
 import eu.esdihumboldt.hale.common.align.model.Entity
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter
 
 /**
  * Test for retaining conditions during Merge.
@@ -79,6 +82,12 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 			}
 		}
 
+		JoinParameter param = CellUtil.getFirstParameter(migrated[0], JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+		assertJoinOrder(param, ['A1', 'A2'])
+
+		// there should be a condition on the join focus, also in the order
+		assertNotNull(param.types[0].filter)
+
 		// there should be a message about the condition having been translated automatically
 		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
@@ -117,11 +126,28 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 			}
 		}
 
+		JoinParameter param = CellUtil.getFirstParameter(migrated[0], JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+		assertJoinOrder(param, ['A3', 'A4', 'A5', 'A6'])
+
+		// there should be a condition on the join focus, also in the order
+		assertNotNull(param.types[0].filter)
+
 		// there should be a message about the condition having been translated automatically
 		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
 			msg.text.toLowerCase().contains('condition')
 		})
+	}
+
+	// helpers
+
+	void assertJoinOrder(JoinParameter param, List<String> expected) {
+		def names = []
+		param.types?.each { type ->
+			names << type.type.name.localPart
+		}
+
+		assertEquals(expected, names)
 	}
 
 }
