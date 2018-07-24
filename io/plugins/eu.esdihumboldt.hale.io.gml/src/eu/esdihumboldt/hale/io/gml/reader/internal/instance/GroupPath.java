@@ -176,17 +176,17 @@ public class GroupPath {
 		else {
 			// check last child
 			DefinitionGroup child = children.get(children.size() - 1);
-			ChildDefinition<?> property = GroupUtil
-					.findChild(child, propertyName, ignoreNamespaces);
+			ChildDefinition<?> property = GroupUtil.findChild(child, propertyName,
+					ignoreNamespaces);
 			if (property == null) {
 				return false;
 			}
 
-			if (child instanceof GroupPropertyDefinition
-					&& ((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class)
-							.isEnabled()) {
-				// group is a choice
-				return true;
+			if (child instanceof GroupPropertyDefinition) {
+				if (((GroupPropertyDefinition) child).getConstraint(ChoiceFlag.class).isEnabled()) {
+					// group is a choice
+					return true;
+				}
 			}
 
 			return !strict || GroupUtil.allowAdd(null, child, property.getName());

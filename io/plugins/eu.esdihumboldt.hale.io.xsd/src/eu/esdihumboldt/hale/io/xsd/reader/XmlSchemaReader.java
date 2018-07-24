@@ -32,6 +32,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaAny;
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
@@ -85,6 +86,7 @@ import eu.esdihumboldt.hale.common.schema.model.Definition;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.DisplayName;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.AllGroupFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -938,6 +940,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				sequenceGroup.setConstraint(Cardinality.get(sequence.getMinOccurs(), max));
 				// set choice constraint (no choice)
 				sequenceGroup.setConstraint(ChoiceFlag.DISABLED);
+				sequenceGroup.setConstraint(AllGroupFlag.DISABLED);
 				// set metadata
 				setMetadata(sequenceGroup, sequence, schemaLocation);
 
@@ -963,6 +966,49 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			}
 			// </sequence>
 		}
+		else if (particle instanceof XmlSchemaAll) {
+			// <all>
+			XmlSchemaAll all = (XmlSchemaAll) particle;
+
+			// create group only if necessary (all groups that appear exactly
+			// once will result in no group if not forced)
+			if (forceGroup || all.getMinOccurs() != 1 || all.getMaxOccurs() != 1) {
+				// create an all group
+				QName allName = createGroupName(declaringGroup, "all");
+				DefaultGroupPropertyDefinition allGroup = new DefaultGroupPropertyDefinition(
+						allName, declaringGroup, false);
+				// set cardinality
+				long max = (all.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+						: (all.getMaxOccurs());
+				allGroup.setConstraint(Cardinality.get(all.getMinOccurs(), max));
+				// set choice constraint (no choice)
+				allGroup.setConstraint(ChoiceFlag.DISABLED);
+				allGroup.setConstraint(AllGroupFlag.ENABLED);
+				// set metadata
+				setMetadata(allGroup, all, schemaLocation);
+
+				// use group as parent
+				declaringGroup = allGroup;
+			}
+
+			for (int j = 0; j < all.getItems().getCount(); j++) {
+				XmlSchemaObject object = all.getItems().getItem(j);
+				if (object instanceof XmlSchemaElement) {
+					// <element>
+					createPropertyFromElement((XmlSchemaElement) object, declaringGroup,
+							schemaLocation, schemaNamespace);
+					// </element>
+				}
+				else if (object instanceof XmlSchemaParticle) {
+					// contained particles, e.g. a choice
+					// content doesn't need to be grouped, it can be decided in
+					// the method
+					createPropertiesFromParticle(declaringGroup, (XmlSchemaParticle) object,
+							schemaLocation, schemaNamespace, false);
+				}
+			}
+			// </all>
+		}
 		else if (particle instanceof XmlSchemaChoice) {
 			// <choice>
 			XmlSchemaChoice choice = (XmlSchemaChoice) particle;
@@ -980,6 +1026,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			choiceGroup.setConstraint(Cardinality.get(choice.getMinOccurs(), max));
 			// set choice constraint
 			choiceGroup.setConstraint(ChoiceFlag.ENABLED);
+			choiceGroup.setConstraint(AllGroupFlag.DISABLED);
 			// set metadata
 			setMetadata(choiceGroup, choice, schemaLocation);
 

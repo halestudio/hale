@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultGroup;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -274,6 +275,53 @@ public class GmlInstanceCollectionTest {
 	}
 
 	/**
+	 * Test loading a simple XML file with one instance including an <xs:all>
+	 * group.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadAllGroup() throws Exception {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/allgroup/allgroup.xsd").toURI(),
+				getClass().getResource("/data/allgroup/allgroup.xml").toURI(), false, false, false);
+
+		ResourceIterator<Instance> it = instances.iterator();
+		try {
+			assertTrue(it.hasNext());
+
+			Instance instance = it.next();
+			assertNotNull(instance);
+
+			// all
+			Object[] all_1 = instance.getProperty(new QName("/ItemsType", "all_1"));
+			assertNotNull(all_1);
+			assertEquals(1, all_1.length);
+			DefaultGroup all = (DefaultGroup) all_1[0];
+
+			Object[] umbrella = all.getProperty(new QName("umbrella"));
+			assertNotNull(umbrella);
+			assertEquals(1, umbrella.length);
+			assertEquals("Some umbrella", umbrella[0]);
+
+			Object[] shirt = all.getProperty(new QName("shirt"));
+			assertNotNull(shirt);
+			assertEquals(1, shirt.length);
+			assertEquals("Some shirt", shirt[0]);
+
+			Object[] hat = all.getProperty(new QName("hat"));
+			assertNotNull(hat);
+			assertEquals(1, hat.length);
+			assertEquals("And hat", hat[0]);
+
+			// only one object
+			assertFalse(it.hasNext());
+		} finally {
+			it.close();
+		}
+	}
+
+	/**
 	 * Test loading a simple XML file with one instance including a choice and a
 	 * sub-choice.
 	 * 
@@ -335,7 +383,7 @@ public class GmlInstanceCollectionTest {
 		GmlInstanceCollection instances = loadInstances(
 				getClass().getResource("/data/sample_wva/wfs_va.xsd").toURI(),
 				getClass().getResource("/data/sample_wva/wfs_va_sample_namespace.gml").toURI(),
-				true, true);
+				true, true, true);
 
 		testWVAInstances(instances);
 	}
@@ -467,12 +515,12 @@ public class GmlInstanceCollectionTest {
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation,
 			boolean restrictToFeatures) throws IOException, IOProviderConfigurationException {
-		return loadInstances(schemaLocation, xmlLocation, restrictToFeatures, true);
+		return loadInstances(schemaLocation, xmlLocation, restrictToFeatures, true, true);
 	}
 
 	private GmlInstanceCollection loadInstances(URI schemaLocation, URI xmlLocation,
-			boolean restrictToFeatures, boolean ignoreNamespace)
-					throws IOException, IOProviderConfigurationException {
+			boolean restrictToFeatures, boolean ignoreNamespace, boolean strict)
+			throws IOException, IOProviderConfigurationException {
 		SchemaReader reader = new XmlSchemaReader();
 		reader.setSharedTypes(null);
 		reader.setSource(new DefaultInputSupplier(schemaLocation));
@@ -481,7 +529,7 @@ public class GmlInstanceCollectionTest {
 		Schema sourceSchema = reader.getSchema();
 
 		return new GmlInstanceCollection(new DefaultInputSupplier(xmlLocation), sourceSchema,
-				restrictToFeatures, false, true, ignoreNamespace, null, reader);
+				restrictToFeatures, false, strict, ignoreNamespace, null, reader);
 	}
 
 }

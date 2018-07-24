@@ -1,0 +1,13 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="items" type="ItemsType"/>
+
+  <xs:complexType name="ItemsType">
+    <xs:all minOccurs="0" maxOccurs="1">
+      <xs:element name="shirt" type="xs:string"/>
+      <xs:element name="hat" type="xs:string"/>
+      <xs:element name="umbrella" type="xs:string"/>
+    </xs:all>
+  </xs:complexType>
+
+</xs:schema>

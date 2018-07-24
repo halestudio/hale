@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.AllGroupFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
@@ -363,6 +364,8 @@ public class XmlSchemaReaderTest {
 		assertEquals(Cardinality.UNBOUNDED, cc.getMaxOccurs());
 		// choice flag
 		assertTrue(choice.getConstraint(ChoiceFlag.class).isEnabled());
+		// "all" group flag
+		assertFalse(choice.getConstraint(AllGroupFlag.class).isEnabled());
 		// children
 		assertEquals(3, choice.getDeclaredChildren().size());
 
@@ -379,6 +382,53 @@ public class XmlSchemaReaderTest {
 		assertNotNull(umbrella);
 
 		// TODO extend with advanced complex type tests?
+	}
+
+	/**
+	 * Test reading a simple XML schema with an "all" group and complex types.
+	 * 
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_all() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/allgroup.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location);
+		XmlIndex schema = (XmlIndex) readSchema(input);
+
+		// ItemsType
+		TypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		assertNotNull(itemsType);
+
+		assertEquals(1, itemsType.getChildren().size());
+
+		// all group
+		GroupPropertyDefinition all = itemsType.getChildren().iterator().next().asGroup();
+		assertNotNull(all);
+		// cardinality
+		Cardinality cc = all.getConstraint(Cardinality.class);
+		assertEquals(0, cc.getMinOccurs());
+		assertEquals(1, cc.getMaxOccurs());
+		// choice flag (not a choice)
+		assertFalse(all.getConstraint(ChoiceFlag.class).isEnabled());
+		// "all" group flag
+		assertTrue(all.getConstraint(AllGroupFlag.class).isEnabled());
+
+		Iterator<? extends ChildDefinition<?>> it = all.getDeclaredChildren().iterator();
+		// name
+		PropertyDefinition name = it.next().asProperty();
+		assertNotNull(name);
+		assertEquals("name", name.getName().getLocalPart());
+		Cardinality nameCard = name.getConstraint(Cardinality.class);
+		assertEquals(0, nameCard.getMinOccurs());
+		assertEquals(1, nameCard.getMaxOccurs());
+
+		// id
+		PropertyDefinition id = it.next().asProperty();
+		assertNotNull(id);
+		assertEquals("id", id.getName().getLocalPart());
+		Cardinality idCard = id.getConstraint(Cardinality.class);
+		assertEquals(1, idCard.getMinOccurs());
+		assertEquals(1, idCard.getMaxOccurs());
 	}
 
 	/**
@@ -407,6 +457,8 @@ public class XmlSchemaReaderTest {
 		assertEquals(Cardinality.UNBOUNDED, cc.getMaxOccurs());
 		// choice flag (not a choice)
 		assertFalse(sequence.getConstraint(ChoiceFlag.class).isEnabled());
+		// "all" group flag
+		assertFalse(sequence.getConstraint(AllGroupFlag.class).isEnabled());
 
 		Iterator<? extends ChildDefinition<?>> it = sequence.getDeclaredChildren().iterator();
 		// name
