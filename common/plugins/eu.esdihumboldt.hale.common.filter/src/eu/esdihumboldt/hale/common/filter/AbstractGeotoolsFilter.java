@@ -30,6 +30,8 @@ import org.opengis.filter.expression.PropertyName;
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.align.groovy.accessor.EntityAccessor;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.PathElement;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil;
 import eu.esdihumboldt.hale.common.align.instance.EntityAwareFilter;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
@@ -37,6 +39,7 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.filter.internal.EntityReplacementVisitor;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Geotools based filter. Two filters are seen as equal if they are based on the
@@ -45,6 +48,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 public abstract class AbstractGeotoolsFilter
 		implements eu.esdihumboldt.hale.common.instance.model.Filter, EntityAwareFilter {
 
@@ -211,9 +215,34 @@ public abstract class AbstractGeotoolsFilter
 		try {
 			return Optional.ofNullable(acc.toEntityDefinition());
 		} catch (IllegalStateException e) {
-			log.error("Unable to find unique reference to " + name, e);
-			// TODO instead use one of the found candidates?
-			return Optional.empty();
+			List<? extends Path<PathElement>> candidates = acc.all();
+			if (candidates.isEmpty()) {
+				log.error("Unable to find reference to {0}", name);
+				return Optional.empty();
+			}
+			else {
+				log.warn("Could not find unique reference to {0}, trying first match", name);
+
+				Path<PathElement> selected = candidates.get(0);
+
+				/*
+				 * XXX dirty hack to work around conditions in AdV
+				 * GeographicalNames alignment not being defined properly
+				 */
+				if (candidates.size() > 1) {
+					// prefer next candidate if this one is name in gml
+					// namespace
+					List<PathElement> elements = selected.getElements();
+					PathElement last = elements.get(elements.size() - 1);
+					QName lastName = last.getDefinition().getName();
+					if ("name".equals(lastName.getLocalPart()) && "http://www.opengis.net/gml/3.2"
+							.equals(lastName.getNamespaceURI())) {
+						selected = candidates.get(1);
+					}
+				}
+
+				return Optional.ofNullable(EntityAccessorUtil.createEntity(selected));
+			}
 		}
 	}
 
