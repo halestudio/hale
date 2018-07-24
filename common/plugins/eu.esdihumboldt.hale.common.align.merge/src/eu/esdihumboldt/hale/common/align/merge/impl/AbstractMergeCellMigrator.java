@@ -23,7 +23,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -45,12 +48,17 @@ import eu.esdihumboldt.hale.common.align.model.CellUtil;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
+import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter.JoinCondition;
 import eu.esdihumboldt.hale.common.align.model.impl.DefaultCell;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 
@@ -411,6 +419,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 		}
 
 		TypeEntityDefinition focus = joinConfig.getTypes().iterator().next();
+		AtomicReference<Filter> focusFilter = new AtomicReference<>();
 
 		// transfer context
 		newCell.setSource(ArrayListMultimap.create(Multimaps.transformValues(newCell.getSource(),
@@ -423,6 +432,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 							EntityDefinition transferedSource = AbstractMigration.translateContexts(
 									originalSource.getDefinition(), input.getDefinition(),
 									migration, log);
+							focusFilter.set(transferedSource.getFilter());
 							return AlignmentUtil.createEntity(transferedSource);
 						}
 						else {
@@ -431,7 +441,59 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					}
 				})));
 
+		// fix filter in order and conditions
+		// XXX only works like this because a type currently can only be present
+		// once in the source
+
+		if (focusFilter.get() != null) {
+			// order
+			List<TypeEntityDefinition> types = new ArrayList<>();
+			for (int i = 0; i < joinConfig.getTypes().size(); i++) {
+				TypeEntityDefinition type = joinConfig.getTypes().get(i);
+				if (i == 0) {
+					type = new TypeEntityDefinition(type.getDefinition(), type.getSchemaSpace(),
+							focusFilter.get());
+				}
+				types.add(type);
+			}
+
+			// conditions
+			Set<JoinCondition> conditions = joinConfig.getConditions().stream().map(c -> {
+				if (c.baseProperty.getType().equals(focus.getType())) {
+					return new JoinCondition(applyFilter(c.baseProperty, focusFilter.get()),
+							c.joinProperty);
+				}
+				else {
+					return c;
+				}
+			}).collect(Collectors.toSet());
+
+			JoinParameter newConfig = new JoinParameter(types, conditions);
+
+			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
+					.create(newCell.getTransformationParameters());
+			List<ParameterValue> joinParams = modParams.get(JoinFunction.PARAMETER_JOIN);
+			if (!joinParams.isEmpty()) {
+				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
+				if (joinParam != null) {
+					joinParams.clear();
+					joinParams.add(new ParameterValue(Value.complex(newConfig)));
+				}
+			}
+			newCell.setTransformationParameters(modParams);
+		}
+
 		return true;
+	}
+
+	private PropertyEntityDefinition applyFilter(PropertyEntityDefinition property, Filter filter) {
+		if (filter != null) {
+			return new PropertyEntityDefinition(property.getType(), property.getPropertyPath(),
+					property.getSchemaSpace(), filter);
+		}
+		else {
+			return property;
+		}
 	}
 
 	/**
