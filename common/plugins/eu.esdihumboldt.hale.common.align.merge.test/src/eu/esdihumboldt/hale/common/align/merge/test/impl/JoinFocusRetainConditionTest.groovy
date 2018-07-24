@@ -88,6 +88,11 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 		// there should be a condition on the join focus, also in the order
 		assertNotNull(param.types[0].filter)
 
+		// there should also be a filter in the condition
+		def base = param.conditions.collect { it.baseProperty }.findAll { it.type.displayName == 'A1' }.toList()
+		assertEquals(1, base.size())
+		assertNotNull(base[0].filter)
+
 		// there should be a message about the condition having been translated automatically
 		def messages = getMigrationMessages(migrated[0])
 		assertTrue(messages.any { msg ->
@@ -131,6 +136,12 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 
 		// there should be a condition on the join focus, also in the order
 		assertNotNull(param.types[0].filter)
+
+		// there should also be a filter in the condition
+		def base = param.conditions.collect { it.baseProperty }.findAll { it.type.displayName == 'A3' }.toList()
+		assertEquals(2, base.size())
+		assertNotNull(base[0].filter)
+		assertNotNull(base[1].filter)
 
 		// there should be a message about the condition having been translated automatically
 		def messages = getMigrationMessages(migrated[0])

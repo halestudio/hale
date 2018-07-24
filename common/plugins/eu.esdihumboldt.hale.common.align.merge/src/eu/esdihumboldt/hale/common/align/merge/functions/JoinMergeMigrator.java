@@ -84,7 +84,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		/*
 		 * Sources: Add all from match (should be one)
 		 */
-		addSources(cell, source, match, migration, log, (e) -> true);
+		addSources(cell, source, match, migration, log, (e) -> true, context);
 
 		/*
 		 * Join order: Replace type with matched source
@@ -144,7 +144,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 		/*
 		 * Sources: Add all from match (should be at least two)
 		 */
-		addSources(cell, source, match, migration, log, transferContext);
+		addSources(cell, source, match, migration, log, transferContext, context);
 
 		if (!MergeSettings.isTransferContextsToJoinFocus()) {
 			// add source that was replaced and filter/contexts were not
@@ -181,7 +181,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 
 	private void addSources(MutableCell cell, EntityDefinition source, Cell match,
 			AlignmentMigration migration, SimpleLog log,
-			Predicate<EntityDefinition> transferContext) {
+			Predicate<EntityDefinition> transferContext, JoinContext context) {
 		if (match.getSource() != null) {
 			ListMultimap<String, Entity> sources = ArrayListMultimap.create(cell.getSource());
 			for (Entry<String, ? extends Entity> entry : match.getSource().entries()) {
@@ -191,6 +191,9 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 					// transfer filter and contexts if possible
 					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
 							entity.getDefinition(), migration, log);
+					if (withContexts.getFilter() != null) {
+						context.addTypeFilter(withContexts.getType(), withContexts.getFilter());
+					}
 					entity = AlignmentUtil.createEntity(withContexts);
 				}
 
