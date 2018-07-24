@@ -39,15 +39,15 @@ class CrsAuthorityFactoryTest {
 		assertNotNull(CRS.decode('ADV:ETRS89_UTM32'))
 		assertNotNull(CRS.decode('ADV:ETRS89_UTM33'))
 		assertNotNull(CRS.decode('ADV:ETRS89_Lat-Lon'))
-		assertNotNull(CRS.decode('ADV:DE_DHDN_3GK2'))
-		assertNotNull(CRS.decode('ADV:DE_DHDN_3GK3'))
+		//		assertNotNull(CRS.decode('ADV:DE_DHDN_3GK2')) // Mapping removed for the time being
+		//		assertNotNull(CRS.decode('ADV:DE_DHDN_3GK3')) // Mapping removed for the time being
 		assertNotNull(CRS.decode('ADV:DE_DHHN92_NH'))
 
 		assertNotNull(CRS.decode('urn:adv:crs:etrs89_utm32'))
 		assertNotNull(CRS.decode('urn:adv:crs:etrs89_utm33'))
 		assertNotNull(CRS.decode('urn:adv:crs:etrs89_lat-lon'))
-		assertNotNull(CRS.decode('urn:adv:crs:de_dhdn_3gk2'))
-		assertNotNull(CRS.decode('urn:adv:crs:de_dhdn_3gk3'))
+		//		assertNotNull(CRS.decode('urn:adv:crs:de_dhdn_3gk2')) // Mapping removed for the time being
+		//		assertNotNull(CRS.decode('urn:adv:crs:de_dhdn_3gk3')) // Mapping removed for the time being
 		assertNotNull(CRS.decode('urn:adv:crs:de_dhhn92_nh'))
 	}
 }
