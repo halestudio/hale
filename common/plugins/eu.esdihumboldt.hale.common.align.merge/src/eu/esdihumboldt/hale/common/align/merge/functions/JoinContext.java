@@ -159,7 +159,7 @@ public class JoinContext {
 			return result;
 		}).collect(Collectors.toSet());
 		for (JoinCondition condition : migrated) {
-			if (!condition.baseProperty.equals(condition.joinProperty)) {
+			if (!condition.baseProperty.getType().equals(condition.joinProperty.getType())) {
 				// migrated condition may contain "loop" condition
 
 				cons.add(new Pair<>(condition.baseProperty, condition.joinProperty));
