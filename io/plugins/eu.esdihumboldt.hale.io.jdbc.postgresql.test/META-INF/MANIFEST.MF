@@ -4,7 +4,7 @@ Bundle-Name: PostgreSQL Database Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.postgresql.test
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.typesafe.config;version="1.2.1",
  com.vividsolutions.jts;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.13.0",

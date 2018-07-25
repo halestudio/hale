@@ -128,7 +128,7 @@ public class IdentityHashMultimap<K, V> implements Multimap<K, V> {
 
 		boolean changed = false;
 		for (V value : values) {
-			if (!val.containsKey(key)) {
+			if (!val.containsKey(value)) {
 				val.put(value, null);
 				changed = true;
 			}

@@ -4,7 +4,7 @@ Bundle-Name: HALE Server Default Users Service
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.users
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util.configuration;version="1.0.0",
  eu.esdihumboldt.hale.server.security,

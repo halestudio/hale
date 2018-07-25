@@ -4,7 +4,7 @@ Bundle-Name: Styles API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.style;singleton:=true
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.common.style.io,
  eu.esdihumboldt.hale.common.style.io.impl
 Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="2.9.3",

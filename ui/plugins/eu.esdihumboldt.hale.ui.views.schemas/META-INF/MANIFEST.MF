@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Schema Views
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.schemas;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.views.schemas,
  eu.esdihumboldt.hale.ui.views.schemas.internal;x-internal:=true
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",

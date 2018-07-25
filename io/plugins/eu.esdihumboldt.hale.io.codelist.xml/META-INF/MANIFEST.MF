@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: XML CodeList I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.io;version="1.6.0",
  com.ibm.icu.impl,
  de.fhg.igd.slf4jplus,

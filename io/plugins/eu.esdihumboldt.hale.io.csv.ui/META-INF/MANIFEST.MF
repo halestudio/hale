@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CSV Schema/Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.ui;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.ui

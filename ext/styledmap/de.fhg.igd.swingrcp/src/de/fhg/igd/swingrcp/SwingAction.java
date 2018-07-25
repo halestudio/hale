@@ -55,7 +55,7 @@ public class SwingAction extends AbstractAction {
 
 		ImageDescriptor imageDesc = action.getImageDescriptor();
 		if (imageDesc != null) {
-			ImageData imageData = imageDesc.getImageData();
+			ImageData imageData = imageDesc.getImageData(100);
 
 			if (imageData != null) {
 				BufferedImage img = SwingRCPUtilities.convertToAWT(imageData, true);

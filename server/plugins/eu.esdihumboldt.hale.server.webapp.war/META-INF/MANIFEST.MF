@@ -7,7 +7,7 @@ Web-ContextPath: /
 Webapp-Hide: true
 Bundle-Activator: eu.esdihumboldt.hale.server.webapp.war.internal.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,

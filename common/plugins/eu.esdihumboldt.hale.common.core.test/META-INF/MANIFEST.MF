@@ -4,7 +4,7 @@ Bundle-Name: HALE Core API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core.test
 Bundle-Version: 3.5.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.common.core;bundle-version="2.5.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: junit.framework;version="4.8.2",
  org.junit;version="4.5.0",
  org.junit.rules;version="4.8.1"

@@ -4,7 +4,7 @@ Bundle-Name: HALE Project Resources View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.resources;singleton:=true
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  org.eclipse.ui.forms;bundle-version="3.5.100"
