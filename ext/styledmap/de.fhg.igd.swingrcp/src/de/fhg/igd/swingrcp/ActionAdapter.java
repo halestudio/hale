@@ -78,6 +78,7 @@ public class ActionAdapter extends Action implements PropertyChangeListener {
 	/**
 	 * Set the actions icon as {@link ImageDescriptor} if possible
 	 */
+	@SuppressWarnings("deprecation")
 	private void loadImage() {
 		Object icon = action.getValue(javax.swing.Action.SMALL_ICON);
 

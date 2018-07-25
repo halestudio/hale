@@ -83,13 +83,14 @@ public class RcpActionAdapter extends Action implements PropertyChangeListener {
 	/**
 	 * Set the actions icon as {@link ImageDescriptor} if possible
 	 */
+	@SuppressWarnings("deprecation")
 	private void loadImage() {
 		Object icon = action.getValue(javax.swing.Action.SMALL_ICON);
 
 		if (icon instanceof ImageIcon) {
 			try {
-				setImageDescriptor(ImageDescriptor.createFromImageData(SwingRcpUtilities
-						.convertToSWT((ImageIcon) icon)));
+				setImageDescriptor(ImageDescriptor
+						.createFromImageData(SwingRcpUtilities.convertToSWT((ImageIcon) icon)));
 			} catch (Exception e) {
 				_log.warn("Error converting action icon", e); //$NON-NLS-1$
 			}

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Blueprint Entities
 Bundle-SymbolicName: eu.esdihumboldt.util.blueprints.entities
 Bundle-Version: 0.0.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="2.1.5";visibility:=reexport,
  com.tinkerpop.blueprints.core;bundle-version="2.5.0";visibility:=reexport,
  com.tinkerpop.blueprints.orient-graph;bundle-version="2.5.0";visibility:=reexport,

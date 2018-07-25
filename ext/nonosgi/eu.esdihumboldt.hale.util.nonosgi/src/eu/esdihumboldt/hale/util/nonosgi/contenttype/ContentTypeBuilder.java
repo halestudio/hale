@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * creating content types from the extension registry (which ContentTypeManager
  *  is oblivious to).
  */
-@SuppressWarnings({"restriction", "deprecation", "rawtypes"})
+@SuppressWarnings({"restriction"})
 public class ContentTypeBuilder {
 	
 	private static final Logger log = LoggerFactory.getLogger(ContentTypeBuilder.class);
@@ -144,7 +144,6 @@ public class ContentTypeBuilder {
 	/**
 	 * @throws CoreException if mandatory attributes are missing in the markup
 	 */
-	@SuppressWarnings("unchecked")
 	private ContentType createContentType(IConfigurationElement contentTypeCE) throws CoreException {
 		String namespace = contentTypeCE.getContributor().getName();
 		String simpleId = contentTypeCE.getAttribute("id"); //$NON-NLS-1$

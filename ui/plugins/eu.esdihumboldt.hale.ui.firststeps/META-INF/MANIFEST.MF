@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Firststeps
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.firststeps;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.ui,
  org.eclipse.help.ui,
  org.eclipse.platform,

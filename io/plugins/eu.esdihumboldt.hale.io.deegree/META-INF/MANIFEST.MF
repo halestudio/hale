@@ -17,3 +17,4 @@ Import-Package: eu.esdihumboldt.util.io,
  org.apache.xerces.xs;version="2.9.0",
  org.postgis,
  org.slf4j;version="1.7.13"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree

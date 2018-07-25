@@ -503,7 +503,6 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	private HaleConnectProjectInfo processBucketDetail(BucketDetail bucket) {
 		String author = null;
 		Long lastModified = bucket.getLastModified();
@@ -634,7 +633,6 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean testUserPermission(String resourceType, String role, String permission)
 	throws HaleConnectException {

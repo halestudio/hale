@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @see IContentType
  */
-@SuppressWarnings({"restriction", "rawtypes", "deprecation"})
+@SuppressWarnings({"restriction"})
 public final class ContentType implements IContentType, IContentTypeInfo {
 	
 	private static final Logger log = LoggerFactory.getLogger(ContentType.class);
@@ -430,7 +430,6 @@ public final class ContentType implements IContentType, IContentTypeInfo {
 			return true;
 		}
 		// update file specs atomically so threads traversing the list of file specs don't have to synchronize
-		@SuppressWarnings("unchecked")
 		ArrayList<FileSpec> tmpFileSpecs = (ArrayList<FileSpec>) fileSpecs.clone();
 		tmpFileSpecs.add(newFileSpec);
 		catalog.associate(this, newFileSpec.getText(), newFileSpec.getType());

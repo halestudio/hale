@@ -4,5 +4,5 @@ Bundle-Name: HALE Server Logback Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.logback.config
 Bundle-Version: 3.5.0.qualifier
 Fragment-Host: ch.qos.logback.classic;bundle-version="0.9.19.v20100519-1505"
-Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: eu.esdihumboldt.hale.server.logback.config

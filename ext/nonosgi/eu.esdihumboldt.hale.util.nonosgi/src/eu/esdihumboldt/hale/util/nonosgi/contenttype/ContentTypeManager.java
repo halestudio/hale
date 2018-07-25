@@ -30,6 +30,7 @@ import org.eclipse.core.runtime.preferences.*;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.service.prefs.BackingStoreException;
 
+@SuppressWarnings("restriction")
 public class ContentTypeManager extends ContentTypeMatcher implements IContentTypeManager {
 	private static class ContentTypeRegistryChangeListener implements IRegistryChangeListener {
 		@Override

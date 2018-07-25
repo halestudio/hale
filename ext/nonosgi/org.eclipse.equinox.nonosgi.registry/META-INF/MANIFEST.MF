@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: org.eclipse.equinox.nonosgi.registry
 Bundle-Version: 1.0.0
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.equinox.registry;bundle-version="3.5.0"
 Import-Package: org.eclipse.osgi.framework.util,
  org.eclipse.osgi.service.debug;version="1.2.0",

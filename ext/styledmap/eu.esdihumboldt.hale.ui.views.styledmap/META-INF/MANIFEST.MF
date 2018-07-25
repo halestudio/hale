@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.opengis,
  org.eclipse.help;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.vividsolutions.jts.geom,
  de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,

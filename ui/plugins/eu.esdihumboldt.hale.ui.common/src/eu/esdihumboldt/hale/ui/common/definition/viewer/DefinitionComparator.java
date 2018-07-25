@@ -52,7 +52,6 @@ public class DefinitionComparator extends ViewerComparator {
 	/**
 	 * @see ViewerComparator#compare(Viewer, Object, Object)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {
 		int cat1 = category(e1);

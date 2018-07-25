@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.ui.util.io.internal.StatesIfDoneProgressMonitor;
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("deprecation")
 public class ThreadProgressMonitor {
 
 	private static final ThreadLocal<LinkedList<IProgressMonitor>> threadMonitors = new ThreadLocal<LinkedList<IProgressMonitor>>();
@@ -110,8 +111,8 @@ public class ThreadProgressMonitor {
 			final IRunnableWithProgress progressOp = new IRunnableWithProgress() {
 
 				@Override
-				public void run(IProgressMonitor monitor) throws InvocationTargetException,
-						InterruptedException {
+				public void run(IProgressMonitor monitor)
+						throws InvocationTargetException, InterruptedException {
 					// create a custom progress monitor to be able to decide
 					// whether the progress is done
 					StatesIfDoneProgressMonitor cpm = new StatesIfDoneProgressMonitor(monitor);

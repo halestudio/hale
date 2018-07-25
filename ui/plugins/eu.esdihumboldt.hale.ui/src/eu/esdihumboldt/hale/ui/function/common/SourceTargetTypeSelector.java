@@ -71,7 +71,7 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 	private Cell selectedCell;
 	private final FunctionLabelProvider functionLabels = new FunctionLabelProvider();
 
-	private final ListenerList selectionChangedListeners = new ListenerList();
+	private final ListenerList<ISelectionChangedListener> selectionChangedListeners = new ListenerList<>();
 	boolean inUpdate = false;
 
 	/**
@@ -99,8 +99,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 			}
 		};
 
-		GridDataFactory selectorgd = GridDataFactory.fillDefaults().grab(true, false)
-				.hint(200, SWT.DEFAULT);
+		GridDataFactory selectorgd = GridDataFactory.fillDefaults().grab(true, false).hint(200,
+				SWT.DEFAULT);
 
 		sourceTypeSelector = new TypeEntitySelector(SchemaSpaceID.SOURCE, null, main, false);
 		selectorgd.applyTo(sourceTypeSelector.getControl());
@@ -113,8 +113,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(main.getShell()
-						.getShell(), "Select a type cell", selectedCell);
+				TypeCellSelectionDialog dialog = new TypeCellSelectionDialog(
+						main.getShell().getShell(), "Select a type cell", selectedCell);
 				if (dialog.open() == TypeCellSelectionDialog.OK) {
 					Cell selected = dialog.getObject();
 					inUpdate = true;
@@ -157,7 +157,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 	 * @param listener a selection changed listener
 	 * @param ssid the selection to add the listener to
 	 */
-	public void addSelectionChangedListener(ISelectionChangedListener listener, SchemaSpaceID ssid) {
+	public void addSelectionChangedListener(ISelectionChangedListener listener,
+			SchemaSpaceID ssid) {
 		if (ssid == SchemaSpaceID.SOURCE)
 			sourceTypeSelector.addSelectionChangedListener(listener);
 		else
@@ -270,8 +271,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 				sourceTypeSelector.showText("<multiple types>");
 			else {
 				Entity source = CellUtil.getFirstEntity(cell.getSource());
-				ISelection selection = new StructuredSelection(AlignmentUtil.getTypeEntity(source
-						.getDefinition()));
+				ISelection selection = new StructuredSelection(
+						AlignmentUtil.getTypeEntity(source.getDefinition()));
 				sourceTypeSelector.setSelection(selection);
 			}
 			// target can only be one or none
@@ -362,8 +363,8 @@ public class SourceTargetTypeSelector implements ISelectionProvider {
 	 * Fire a selection changed event to all listeners.
 	 */
 	private void fireSelectionChanged() {
-		SelectionChangedEvent event = new SelectionChangedEvent(this, new StructuredSelection(
-				getSelectedCell()));
+		SelectionChangedEvent event = new SelectionChangedEvent(this,
+				new StructuredSelection(getSelectedCell()));
 		for (Object listener : selectionChangedListeners.getListeners())
 			((ISelectionChangedListener) listener).selectionChanged(event);
 	}

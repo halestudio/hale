@@ -9,7 +9,7 @@ Bundle-Activator: eu.esdihumboldt.hale.server.internal.Activator
 Require-Bundle: org.eclipse.core.runtime,
  javax.servlet;bundle-version="2.5.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.gemini.blueprint.context;version="1.0.0.RELEASE",
  org.eclipse.jetty.servlet;version="7.5.1",
  org.eclipse.jetty.util.resource;version="7.5.1",
