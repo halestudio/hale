@@ -48,7 +48,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathFilteredTree;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public abstract class EntityDialog extends
-		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer>implements IMenuListener {
+		AbstractViewerSelectionDialog<EntityDefinition, TreeViewer> implements IMenuListener {
 
 	/**
 	 * The schema space
@@ -111,17 +111,17 @@ public abstract class EntityDialog extends
 
 				@Override
 				public void contextsAdded(Iterable<EntityDefinition> contextEntities) {
-					getViewer().refresh();
+					refreshInDisplayThread();
 				}
 
 				@Override
 				public void contextRemoved(EntityDefinition contextEntity) {
-					getViewer().refresh();
+					refreshInDisplayThread();
 				}
 
 				@Override
 				public void contextAdded(EntityDefinition contextEntity) {
-					getViewer().refresh();
+					refreshInDisplayThread();
 				}
 			});
 
@@ -138,6 +138,19 @@ public abstract class EntityDialog extends
 		}
 
 		return tree.getViewer();
+	}
+
+	/**
+	 * Refresh the tree viewer in the display thread.
+	 */
+	protected void refreshInDisplayThread() {
+		PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				getViewer().refresh();
+			}
+		});
 	}
 
 	/**
