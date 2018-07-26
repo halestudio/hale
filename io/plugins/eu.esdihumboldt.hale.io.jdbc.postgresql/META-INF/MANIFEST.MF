@@ -27,3 +27,4 @@ Import-Package: com.vividsolutions.jts,
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.postgresql

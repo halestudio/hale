@@ -55,3 +55,4 @@ Export-Package: eu.esdihumboldt.cst.functions.geometric,
  eu.esdihumboldt.cst.functions.geometric.interiorpoint,
  eu.esdihumboldt.cst.functions.geometric.join
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.geometric

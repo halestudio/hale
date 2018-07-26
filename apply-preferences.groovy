@@ -285,7 +285,9 @@ def java8 = 'platform/preferences/java8' as File
 def searchPaths = ['common', 'cst', 'io', 'server', 'doc', 'ui', 'util', 'app', 'ext/styledmap', 'ext/geom', 'ext/adv']
 
 searchPaths.each {
-  apply(java7, it as File, { !isJava8(it) } as ProjectFilter)
+  // default: Java 8
+  apply(java8, it as File, { !isJava8(it) } as ProjectFilter)
+  // Java 8
   apply(java8, it as File, isJava8 as ProjectFilter)
 }
 

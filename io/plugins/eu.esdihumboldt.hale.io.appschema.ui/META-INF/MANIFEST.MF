@@ -31,3 +31,4 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.util.io
 Export-Package: eu.esdihumboldt.hale.io.appschema.ui
 Bundle-Activator: eu.esdihumboldt.hale.io.appschema.ui.AppSchemaUIPlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.io.appschema.ui

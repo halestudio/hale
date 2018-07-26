@@ -32,3 +32,4 @@ Export-Package: eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.extension,
  eu.esdihumboldt.hale.io.jdbc.extension.internal;x-internal:=true
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc

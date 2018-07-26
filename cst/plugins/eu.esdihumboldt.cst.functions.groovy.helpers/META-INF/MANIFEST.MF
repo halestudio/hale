@@ -16,3 +16,4 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.springframework.core.convert;version="3.1.1.RELEASE"
 Export-Package: eu.esdihumboldt.cst.functions.groovy.helpers,
  eu.esdihumboldt.cst.functions.groovy.helpers.util
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.groovy.helpers

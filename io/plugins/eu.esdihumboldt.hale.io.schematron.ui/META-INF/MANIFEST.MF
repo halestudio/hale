@@ -16,3 +16,4 @@ Import-Package: eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.ui.io.config,
  eu.esdihumboldt.hale.ui.util.io
 Export-Package: eu.esdihumboldt.hale.io.schematron.ui
+Automatic-Module-Name: eu.esdihumboldt.hale.io.schematron.ui

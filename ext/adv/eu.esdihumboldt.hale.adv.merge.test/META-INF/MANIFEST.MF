@@ -14,3 +14,4 @@ Require-Bundle: eu.esdihumboldt.hale.adv.merge;bundle-version="3.3.2",
 Import-Package: com.google.common.cache;version="17.0.0",
  com.google.common.collect;version="17.0.0",
  eu.esdihumboldt.hale.common.headless.test
+Automatic-Module-Name: eu.esdihumboldt.hale.adv.merge.test

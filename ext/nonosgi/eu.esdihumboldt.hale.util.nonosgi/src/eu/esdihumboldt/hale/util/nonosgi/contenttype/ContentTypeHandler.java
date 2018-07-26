@@ -180,4 +180,10 @@ public class ContentTypeHandler implements IContentType {
 		return id;
 	}
 
+	@Override
+	public boolean isUserDefined() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

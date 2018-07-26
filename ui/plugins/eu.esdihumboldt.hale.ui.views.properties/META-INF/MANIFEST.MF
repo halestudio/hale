@@ -59,3 +59,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.properties,
  eu.esdihumboldt.hale.ui.views.properties.definition.propertydefinition,
  eu.esdihumboldt.hale.ui.views.properties.definition.typedefinition,
  eu.esdihumboldt.hale.ui.views.properties.handler
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.properties

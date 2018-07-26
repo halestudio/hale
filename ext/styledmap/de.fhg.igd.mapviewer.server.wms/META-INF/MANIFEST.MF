@@ -4,7 +4,7 @@ Bundle-Name: WMS Map Server
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.wms;singleton:=true
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.geom,
@@ -29,3 +29,4 @@ Export-Package: de.fhg.igd.mapviewer.server.wms,
  de.fhg.igd.mapviewer.server.wms.capabilities,
  de.fhg.igd.mapviewer.server.wms.overlay,
  de.fhg.igd.mapviewer.server.wms.wizard
+Automatic-Module-Name: de.fhg.igd.mapviewer.server.wms

@@ -41,7 +41,7 @@ public class SelectionProviderFacade implements ISelectionProvider {
 	/**
 	 * A list of selection listeners
 	 */
-	private ListenerList _selectionListeners = new ListenerList();
+	private final ListenerList<ISelectionChangedListener> _selectionListeners = new ListenerList<>();
 
 	private final ISelectionChangedListener selectionListener = new ISelectionChangedListener() {
 

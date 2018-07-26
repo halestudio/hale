@@ -81,3 +81,4 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  de.fhg.igd.eclipse.util,
  eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance

@@ -75,3 +75,4 @@ Export-Package: eu.esdihumboldt.hale.io.gml,
  schemas.wms,
  schemas.xlink
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml

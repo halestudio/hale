@@ -4,7 +4,7 @@ Bundle-Name: SVG Based HTML Documentation Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.html.svg.test
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.io.html.svg;bundle-version="2.8.0",
  eu.esdihumboldt.cst.test;bundle-version="2.8.0",
  groovy;bundle-version="2.1.5",
@@ -15,3 +15,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.html.svg;bundle-version="2.8.0",
  org.eclipse.core.runtime;bundle-version="3.7.0"
 Import-Package: com.google.common.io;version="15.0.0",
  junit.framework;version="4.8.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.html.svg.test

@@ -19,3 +19,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.schema.model,
  javax.annotation,
  org.slf4j;version="1.7.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.codelist.validator

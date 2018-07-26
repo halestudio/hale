@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="313">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="eu.esdihumboldt.hale.platform" sequenceNumber="319">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
@@ -11,19 +10,19 @@
 <repository location="http://build-artifacts.wetransform.to/p2/sqlite/build_7"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.sdk.ide" version="4.5.2.M20160212-1500"/>
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.5.1.v20160129-0959"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/mars-eclipse"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.14.0.v20180518-2029"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.11.0.201606061308"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.9.1.201705291011"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.14.0.v20180529-1157"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.12.0.201806010809"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.1.201705291011"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.14.0.v20180523-0937"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/photon-releases"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.8.3.v201512160634"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.8.3.v201512160556"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.9.1.v201512180746"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.11.2.v20160208-0841"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.9.0.201506060219"/>
-<unit id="org.eclipse.gef.sdk.feature.group" version="3.10.1.201508170204"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.11.2.v20160202-2102"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/mars-releases"/>
+<unit id="org.eclipse.sdk.ide" version="4.8.0.I20180611-0500"/>
+<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.8.0.v20180512-1132"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/photon-eclipse"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
@@ -38,9 +37,9 @@
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.201701051219"/>
 <repository location="http://build-artifacts.wetransform.to/p2/equinox-test/build_3"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.4.0.i20180719"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/a67b86435b6dbb5194be7cefbda7288656c3b890/updatesites/platform"/>
-</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="3.4.0.i20180726"/>
+		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/b092a25acbad2aef1c76bbadc2ded5f97449aa91/updatesites/platform"/>
+	</location>
 </locations>
 </target>

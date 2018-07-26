@@ -106,9 +106,8 @@ public abstract class AbstractDocumentTest {
 		assertEquals(2, getDb().countClass("Person")); // schema?
 		assertEquals(2, getDb().countClusterElements("Person")); // schema-less?
 
-		List<ODocument> result = getDb().query(
-				new OSQLSynchQuery<ODocument>(
-						"select * from Person where city contains (country like '%land')"));
+		List<ODocument> result = getDb().query(new OSQLSynchQuery<ODocument>(
+				"select * from Person where city contains (country like '%land')"));
 		assertEquals(1, result.size());
 		assertEquals("Peter", result.get(0).field("name"));
 
@@ -157,23 +156,21 @@ public abstract class AbstractDocumentTest {
 		createMiaAndTim();
 
 		// query
-		@SuppressWarnings("unchecked")
-		List<ODocument> result = getDb().query(
-				new ONativeSynchQuery<OQueryContextNative>(getDb(), "Person",
-						new OQueryContextNative()) {
+		List<ODocument> result = getDb().query(new ONativeSynchQuery<OQueryContextNative>(getDb(),
+				"Person", new OQueryContextNative()) {
 
-					private static final long serialVersionUID = 2603436417957747935L;
+			private static final long serialVersionUID = 2603436417957747935L;
 
-					@Override
-					public boolean filter(OQueryContextNative iRecord) {
-						return iRecord.field("city").field("name").eq("Tokio").go();
-					}
+			@Override
+			public boolean filter(OQueryContextNative iRecord) {
+				return iRecord.field("city").field("name").eq("Tokio").go();
+			}
 
-					@Override
-					public void end() {
-						// XXX wat?
-					}
-				});
+			@Override
+			public void end() {
+				// XXX wat?
+			}
+		});
 
 		assertEquals(1, result.size());
 		assertEquals("Mia", result.get(0).field("name"));
@@ -228,7 +225,8 @@ public abstract class AbstractDocumentTest {
 		ODocument docMia = new ODocument("Person");
 		docMia.field("name", "Mia");
 		docMia.field("surname", "Serenade");
-		docMia.field("city", new ODocument("City").field("name", "Tokio").field("country", "Japan"));
+		docMia.field("city",
+				new ODocument("City").field("name", "Tokio").field("country", "Japan"));
 		docMia.save();
 
 		ODocument docTim = new ODocument("Person");

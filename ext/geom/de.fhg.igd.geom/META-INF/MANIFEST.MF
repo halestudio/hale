@@ -15,3 +15,4 @@ Import-Package: com.google.common.base;version="17.0.0",
  com.vividsolutions.jts;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.13.0",
  com.vividsolutions.jts.geom.impl;version="1.13.0"
+Automatic-Module-Name: de.fhg.igd.geom

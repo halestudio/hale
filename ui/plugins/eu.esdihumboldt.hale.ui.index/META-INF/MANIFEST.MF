@@ -19,3 +19,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="3.4.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="3.4.0",
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.util.groovy;bundle-version="3.4.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.index

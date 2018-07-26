@@ -4,6 +4,6 @@ Bundle-Name: HALE Prefix Mapper
 Bundle-SymbolicName: eu.esdihumboldt.hale.prefixmapper
 Bundle-Version: 1.0.1
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.prefixmapper
 

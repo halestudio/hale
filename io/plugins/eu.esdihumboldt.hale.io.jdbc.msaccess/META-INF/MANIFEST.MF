@@ -8,7 +8,7 @@ Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.9.5"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: data harmonisation panel
 Import-Package: de.fhg.igd.slf4jplus,
@@ -22,3 +22,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  schemacrawler.schemacrawler;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.msaccess,
  eu.esdihumboldt.hale.io.jdbc.msaccess.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess

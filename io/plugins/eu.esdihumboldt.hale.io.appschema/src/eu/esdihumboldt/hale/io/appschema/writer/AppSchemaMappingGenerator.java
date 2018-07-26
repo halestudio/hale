@@ -99,9 +99,11 @@ public class AppSchemaMappingGenerator {
 	 * @param targetSchemaSpace the target schema space
 	 * @param dataStore the DataStore configuration to use
 	 * @param chainingConf the feature chaining configuration
+	 * @param workspaceConf the workspace configuration
 	 */
 	public AppSchemaMappingGenerator(Alignment alignment, SchemaSpace targetSchemaSpace,
-			DataStore dataStore, FeatureChaining chainingConf, WorkspaceConfiguration workspaceConf) {
+			DataStore dataStore, FeatureChaining chainingConf,
+			WorkspaceConfiguration workspaceConf) {
 		this.alignment = alignment;
 		this.targetSchemaSpace = targetSchemaSpace;
 		// pick the target schemas from which interpolation variables will be
@@ -259,12 +261,12 @@ public class AppSchemaMappingGenerator {
 		connectionParameters.put("workspaceName", ws.name());
 		connectionParameters.put("mappingFileName", mappingFileName);
 
-		return ResourceBuilder
-				.dataStore(dataStoreName, AppSchemaDataStore.class)
+		return ResourceBuilder.dataStore(dataStoreName, AppSchemaDataStore.class)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.DataStore.ID, dataStoreId)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.DataStore.WORKSPACE_ID, workspaceId)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.DataStore.CONNECTION_PARAMS,
-						connectionParameters).build();
+						connectionParameters)
+				.build();
 	}
 
 	/**
@@ -340,8 +342,7 @@ public class AppSchemaMappingGenerator {
 		String uri = ns.getUri();
 		String namespaceId = prefix + "_namespace";
 
-		return ResourceBuilder
-				.namespace(prefix)
+		return ResourceBuilder.namespace(prefix)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ID, namespaceId)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.URI, uri)
 				.setAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ISOLATED, isIsolated(uri))
@@ -385,12 +386,12 @@ public class AppSchemaMappingGenerator {
 				.getAttribute(eu.esdihumboldt.hale.io.geoserver.DataStore.ID);
 		eu.esdihumboldt.hale.io.geoserver.Namespace ns = getMainNamespace();
 
-		return ResourceBuilder
-				.featureType(featureTypeName)
+		return ResourceBuilder.featureType(featureTypeName)
 				.setAttribute(FeatureType.ID, featureTypeId)
 				.setAttribute(FeatureType.DATASTORE_ID, dataStoreId)
 				.setAttribute(FeatureType.NAMESPACE_ID,
-						ns.getAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ID)).build();
+						ns.getAttribute(eu.esdihumboldt.hale.io.geoserver.Namespace.ID))
+				.build();
 	}
 
 	/**
@@ -567,8 +568,8 @@ public class AppSchemaMappingGenerator {
 			try {
 				typeTransformHandler = TypeTransformationHandlerFactory.getInstance()
 						.createTypeTransformationHandler(typeTransformId);
-				FeatureTypeMapping ftMapping = typeTransformHandler.handleTypeTransformation(
-						typeCell, context);
+				FeatureTypeMapping ftMapping = typeTransformHandler
+						.handleTypeTransformation(typeCell, context);
 
 				if (ftMapping != null) {
 					Collection<? extends Cell> propertyCells = alignment.getPropertyCells(typeCell);
@@ -578,8 +579,8 @@ public class AppSchemaMappingGenerator {
 
 						try {
 							propertyTransformHandler = PropertyTransformationHandlerFactory
-									.getInstance().createPropertyTransformationHandler(
-											propertyTransformId);
+									.getInstance()
+									.createPropertyTransformationHandler(propertyTransformId);
 							propertyTransformHandler.handlePropertyTransformation(typeCell,
 									propertyCell, context);
 						} catch (UnsupportedTransformationException e) {
@@ -687,8 +688,8 @@ public class AppSchemaMappingGenerator {
 	}
 
 	private static JAXBContext createJaxbContext() throws JAXBException {
-		JAXBContext context = JAXBContext.newInstance(NET_OPENGIS_OGC_CONTEXT + ":"
-				+ APP_SCHEMA_CONTEXT);
+		JAXBContext context = JAXBContext
+				.newInstance(NET_OPENGIS_OGC_CONTEXT + ":" + APP_SCHEMA_CONTEXT);
 
 		return context;
 	}

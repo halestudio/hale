@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Style UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.style;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.style,
  eu.esdihumboldt.hale.ui.style.dialog,
  eu.esdihumboldt.hale.ui.style.editors,
@@ -65,3 +65,4 @@ Import-Package: com.google.common.collect;version="9.0.0",
  org.slf4j;version="1.5.11"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.style.internal.InstanceStylePlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.style

@@ -32,3 +32,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="3.4.0",
  eu.esdihumboldt.util;bundle-version="3.4.0",
  eu.esdihumboldt.util.groovy;bundle-version="3.4.0",
  eu.esdihumboldt.util.groovy.sandbox;bundle-version="3.4.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.index

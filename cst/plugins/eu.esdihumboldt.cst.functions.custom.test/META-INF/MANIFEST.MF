@@ -10,3 +10,4 @@ Require-Bundle: eu.esdihumboldt.cst.functions.custom;bundle-version="2.9.3",
 Import-Package: eu.esdihumboldt.hale.common.align.extension.function,
  groovy.xml;version="2.3.7",
  org.junit;version="4.11.0"
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.custom.test

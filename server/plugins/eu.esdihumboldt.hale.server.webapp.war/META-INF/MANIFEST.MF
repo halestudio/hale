@@ -7,7 +7,7 @@ Web-ContextPath: /
 Webapp-Hide: true
 Bundle-Activator: eu.esdihumboldt.hale.server.webapp.war.internal.Activator
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.server.security.extender,
  eu.esdihumboldt.hale.server.security.util,
@@ -24,3 +24,4 @@ Require-Bundle: org.apache.wicket.core;bundle-version="6.2.0",
  org.apache.wicket.request;bundle-version="6.2.0",
  org.apache.wicket.util;bundle-version="6.2.0",
  eu.esdihumboldt.hale.server.webapp;bundle-version="2.6.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.server.webapp.war

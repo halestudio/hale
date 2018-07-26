@@ -39,3 +39,4 @@ Export-Package: eu.esdihumboldt.cst.functions.core,
  eu.esdihumboldt.cst.functions.core.join,
  eu.esdihumboldt.cst.functions.core.merge
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.core

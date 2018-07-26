@@ -5,8 +5,9 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.groovy.test
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Fragment-Host: eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: eu.esdihumboldt.hale.common.align.transformation.function.impl,
  eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.test,
  junit.framework;version="4.8.2"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.groovy.test
