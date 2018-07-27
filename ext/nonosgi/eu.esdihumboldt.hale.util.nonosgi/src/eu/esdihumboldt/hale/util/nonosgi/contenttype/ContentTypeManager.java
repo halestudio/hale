@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.core.internal.content.Activator;
 import org.eclipse.core.internal.content.ContentMessages;
 import org.eclipse.core.internal.content.IContentConstants;
 import org.eclipse.core.internal.content.ILazySource;
@@ -51,8 +50,15 @@ public class ContentTypeManager extends ContentTypeMatcher implements IContentTy
 
 	public static final int BLOCK_SIZE = 0x400;
 	public static final String CONTENT_TYPE_PREF_NODE = IContentConstants.RUNTIME_NAME + IPath.SEPARATOR + "content-types"; //$NON-NLS-1$
-	private static final String OPTION_DEBUG_CONTENT_TYPES = "org.eclipse.core.contenttype/debug"; //$NON-NLS-1$;
-	static final boolean DEBUGGING = Activator.getDefault().getBooleanDebugOption(OPTION_DEBUG_CONTENT_TYPES, false);
+
+	/*
+	 * org.eclipse.core.internal.content.Activator can't be used b/c it is not being initialized.
+	 * TODO Do we need to support a config option here or is simply setting it to false fine?
+	 */
+//	private static final String OPTION_DEBUG_CONTENT_TYPES = "org.eclipse.core.contenttype/debug"; //$NON-NLS-1$;
+//	static final boolean DEBUGGING = Activator.getDefault().getBooleanDebugOption(OPTION_DEBUG_CONTENT_TYPES, false);
+	static final boolean DEBUGGING = Boolean.FALSE; 
+
 	private ContentTypeCatalog catalog;
 	private int catalogGeneration;
 
