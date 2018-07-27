@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Schema Groovy API and Utilities
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema.groovy;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 3.4.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: groovy;bundle-version="2.1.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.6.0"

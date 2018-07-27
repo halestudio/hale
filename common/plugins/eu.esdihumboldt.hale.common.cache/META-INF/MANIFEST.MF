@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Cache
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.cache;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 3.4.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.google.common.io;version="9.0.0",
  de.fhg.igd.osgi.util,

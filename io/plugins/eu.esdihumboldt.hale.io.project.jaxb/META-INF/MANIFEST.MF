@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Support for legacy HALE projects based on JAXB
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.project.jaxb;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 3.4.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.slf4jplus,

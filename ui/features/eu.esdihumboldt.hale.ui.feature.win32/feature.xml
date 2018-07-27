@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.win32"
       label="Windows specific HALE feature"
-      version="3.5.0.qualifier"
+      version="3.4.1.qualifier"
       os="win32">
 
    <license>

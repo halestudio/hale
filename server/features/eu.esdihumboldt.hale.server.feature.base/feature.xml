@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.server.feature.base"
       label="HALE server base feature"
-      version="3.5.0.qualifier">
+      version="3.4.1.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.

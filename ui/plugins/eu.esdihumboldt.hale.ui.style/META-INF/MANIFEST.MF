@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Style UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.style;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 3.4.1.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: eu.esdihumboldt.hale.ui.style,
  eu.esdihumboldt.hale.ui.style.dialog,
