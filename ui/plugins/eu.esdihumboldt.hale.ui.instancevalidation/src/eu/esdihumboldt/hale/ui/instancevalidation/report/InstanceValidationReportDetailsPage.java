@@ -56,8 +56,6 @@ import org.eclipse.ui.dialogs.FilteredTree;
 import org.eclipse.ui.dialogs.PatternFilter;
 import org.eclipse.ui.views.properties.PropertySheet;
 
-import com.google.common.collect.Iterators;
-
 import eu.esdihumboldt.hale.common.core.report.Message;
 import eu.esdihumboldt.hale.common.instance.extension.validation.report.InstanceValidationMessage;
 import eu.esdihumboldt.hale.common.instance.extension.validation.report.impl.DefaultInstanceValidationMessage;
@@ -219,7 +217,7 @@ public class InstanceValidationReportDetailsPage implements CustomReportDetailsP
 
 		if (firstPath.getLastSegment() instanceof InstanceValidationMessage) {
 			firstMessage = (InstanceValidationMessage) firstPath.getLastSegment();
-			restIter = Iterators.emptyIterator();
+			restIter = Collections.emptyIterator();
 		}
 		else {
 			Collection<InstanceValidationMessage> messages = contentProvider
