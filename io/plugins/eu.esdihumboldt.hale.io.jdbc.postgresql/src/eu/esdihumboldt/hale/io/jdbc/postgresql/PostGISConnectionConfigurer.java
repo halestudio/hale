@@ -18,19 +18,21 @@ package eu.esdihumboldt.hale.io.jdbc.postgresql;
 
 import java.sql.SQLException;
 
+import org.postgis.PGbox3d;
+import org.postgis.PGgeometry;
 import org.postgresql.PGConnection;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
-
 import eu.esdihumboldt.hale.io.jdbc.extension.ConnectionConfigurer;
 
 /**
  * Configures a connection to support PostGIS data types.
+ * 
  * @author Simon Templer
  */
 public class PostGISConnectionConfigurer implements ConnectionConfigurer<PGConnection> {
-	
+
 	private static final ALogger log = ALoggerFactory.getLogger(PostGISConnectionConfigurer.class);
 
 	/**
@@ -39,12 +41,10 @@ public class PostGISConnectionConfigurer implements ConnectionConfigurer<PGConne
 	@Override
 	public void configureConnection(PGConnection connection) {
 		try {
-			connection.addDataType("geometry",Class.forName("org.postgis.PGgeometry"));
-			connection.addDataType("box3d",Class.forName("org.postgis.PGbox3d"));
+			connection.addDataType("geometry", PGgeometry.class);
+			connection.addDataType("box3d", PGbox3d.class);
 		} catch (SQLException e) {
 			log.error("Failed to add PostGIS data types support to database connection.", e);
-		} catch (ClassNotFoundException e) {
-			log.error("Failed to load PostGIS data type classes.", e);
 		}
 	}
 
