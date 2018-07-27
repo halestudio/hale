@@ -16,5 +16,7 @@ Import-Package: eu.esdihumboldt.util.io,
  javax.vecmath;version="1.5.2",
  org.apache.xerces.xs;version="2.9.0",
  org.postgis,
- org.slf4j;version="1.7.13"
+ org.slf4j;version="1.7.13",
+ org.yaml.snakeyaml;version="1.21.0",
+ org.yaml.snakeyaml.constructor;version="1.21.0"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree
