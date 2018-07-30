@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.util
+package eu.esdihumboldt.util.config
 
 
 /**
@@ -85,6 +85,12 @@ class Config {
 			}
 		}
 
-		map[]
+		if (map != null) {
+			String name = parts.poll()
+			if (!name) {
+				throw new IllegalArgumentException('Key parts may not be empty')
+			}
+			map[name] = value
+		}
 	}
 }

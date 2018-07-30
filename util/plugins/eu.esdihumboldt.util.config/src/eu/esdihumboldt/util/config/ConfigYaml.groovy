@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.util
+package eu.esdihumboldt.util.config
 
 import java.nio.charset.StandardCharsets
 

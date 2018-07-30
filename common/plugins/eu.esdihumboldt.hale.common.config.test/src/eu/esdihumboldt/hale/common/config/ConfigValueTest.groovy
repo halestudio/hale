@@ -13,16 +13,31 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.util
+package eu.esdihumboldt.hale.common.config
 
+import static org.junit.Assert.*
+
+import org.junit.Test
+
+import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.util.config.Config
 
 /**
- * Helper for converting a Config to and from a Value.
+ * Tests for Config to/from Value conversion.
  * 
  * @author Simon Templer
  */
-class ConfigValue {
+class ConfigValueTest {
 
-	//TODO
+	@Test
+	void testConvert() {
+		def c = new Config([name: 'foo', sub: [id: 'bar', list: ['x', 'y', 'z']]])
 
+		def value = ConfigValue.fromConfig(c)
+		assertTrue(value instanceof Value)
+
+		Config newC = ConfigValue.fromValue(value)
+
+		assertEquals(c.asMap(), newC.asMap())
+	}
 }
