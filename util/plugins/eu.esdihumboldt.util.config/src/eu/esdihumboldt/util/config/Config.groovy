@@ -33,6 +33,10 @@ class Config {
 		config
 	}
 
+	public <T> Optional<T> get(String key, Class<T> asType = Object) {
+		Optional.ofNullable(getAt(key)).map { it.asType(asType) }
+	}
+
 	Object getAt(String key) {
 		if (!key) {
 			throw new IllegalArgumentException('Key may not be empty')
@@ -51,6 +55,10 @@ class Config {
 		}
 
 		value
+	}
+
+	void set(String key, Object value) {
+		putAt(key, value)
 	}
 
 	void putAt(String key, Object value) {

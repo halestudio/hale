@@ -62,4 +62,6 @@ public interface MappingConfiguration {
 	 */
 	GeometryStorageParams getGeometryStorageParameters();
 
+	// TODO validate?
+
 }
