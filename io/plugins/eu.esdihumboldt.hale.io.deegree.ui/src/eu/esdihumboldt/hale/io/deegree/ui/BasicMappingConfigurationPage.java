@@ -219,7 +219,7 @@ public class BasicMappingConfigurationPage
 		Label nameLengthLabel = new Label(database, SWT.NONE);
 		nameLengthLabel.setText("Max name length");
 		defLabel.applyTo(nameLengthLabel);
-		nameLength = new Spinner(database, SWT.NONE);
+		nameLength = new Spinner(database, SWT.BORDER);
 		nameLength.setMinimum(0);
 		nameLength.setMaximum(1000);
 		nameLength.setIncrement(1);
@@ -262,7 +262,7 @@ public class BasicMappingConfigurationPage
 		Label dimensionLabel = new Label(crs, SWT.NONE);
 		dimensionLabel.setText("Dimension");
 		defLabel.applyTo(dimensionLabel);
-		dimension = new Spinner(crs, SWT.NONE);
+		dimension = new Spinner(crs, SWT.BORDER);
 		dimension.setMinimum(0);
 		dimension.setMaximum(3);
 		dimension.setIncrement(1);
