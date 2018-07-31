@@ -35,7 +35,7 @@ class ConfigYaml {
 	 * Load a configuration from a YAML file.
 	 *
 	 * @param yamlFile the YAML file
-	 * @return the loaded configuration map
+	 * @return the loaded configuration
 	 */
 	static Config load(File yamlFile) {
 		Config result
@@ -47,7 +47,7 @@ class ConfigYaml {
 	 * Load a configuration from an input stream.
 	 *
 	 * @param input the input stream
-	 * @return the loaded configuration map
+	 * @return the loaded configuration
 	 */
 	static Config load(InputStream input) {
 		Yaml yaml = new Yaml(new SafeConstructor());
@@ -56,18 +56,62 @@ class ConfigYaml {
 	}
 
 	/**
+	 * Load a configuration from a reader.
+	 *
+	 * @param reader the reader
+	 * @return the loaded configuration
+	 */
+	static Config load(Reader reader) {
+		Yaml yaml = new Yaml(new SafeConstructor());
+		Map result = yaml.load(reader)
+		new Config(result ?: [:])
+	}
+
+	/**
+	 * Load a configuration from a string.
+	 *
+	 * @param yaml the YAML string
+	 * @return the loaded configuration
+	 */
+	static Config load(String yaml) {
+		load(new StringReader(yaml))
+	}
+
+	/**
 	 * Save configuration to a YAML file.
 	 *
+	 * @param config the configuration to save
 	 * @param yamlFile the YAML file
 	 */
-	static void save(Config config, File yamlFile) {
-		DumperOptions options = new DumperOptions()
-		// options.explicitStart = true
-		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
-		Yaml yaml = new Yaml(options);
+	static void save(Config config, File yamlFile, boolean explicitStart = false) {
 		yamlFile.withWriter(StandardCharsets.UTF_8.name()) {
-			yaml.dump(config.asMap(), it)
+			save(config, it, explicitStart)
 		}
 	}
 
+	/**
+	 * Save configuration to a writer.
+	 *
+	 * @param config the configuration to save
+	 * @param writer the target writer
+	 */
+	static void save(Config config, Writer writer, boolean explicitStart = false) {
+		DumperOptions options = new DumperOptions()
+		options.explicitStart = explicitStart
+		options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK)
+		Yaml yaml = new Yaml(options)
+		yaml.dump(config.asMap(), writer)
+	}
+
+	/**
+	 * Save configuration to a YAML string.
+	 * 
+	 * @param config the configuration to save
+	 * @return the configuration as YAML
+	 */
+	static String toString(Config config, boolean explicitStart = false) {
+		StringWriter writer = new StringWriter()
+		save(config, writer, explicitStart)
+		writer.toString()
+	}
 }

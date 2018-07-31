@@ -15,10 +15,12 @@
 
 package eu.esdihumboldt.hale.common.config
 
+import eu.esdihumboldt.hale.common.core.io.Text
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.hale.common.core.io.ValueProperties
 import eu.esdihumboldt.util.config.Config
+import eu.esdihumboldt.util.config.ConfigYaml
 
 /**
  * Helper for converting a Config to and from a Value.
@@ -28,10 +30,21 @@ import eu.esdihumboldt.util.config.Config
 class ConfigValue {
 
 	static Value fromConfig(Config config) {
-		toValue(config.asMap())
+		// prefer YAML representation (retains value types)
+		def yaml = ConfigYaml.toString(config)
+
+		return Value.complex(new Text(yaml))
+
+		// XXX representation alternative
+		// toValue(config.asMap())
 	}
 
 	static Config fromValue(Value value) {
+		Text text = value.as(Text)
+		if (text != null) {
+			return ConfigYaml.load(text.getText())
+		}
+
 		new Config(toMapList(value))
 	}
 
