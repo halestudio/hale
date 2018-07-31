@@ -39,13 +39,13 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	}
 
 	public static final String KEY_JDBC_CONNECTION_ID = "database.connectionId";
-	public static final String KEY_DATABASE_MAX_NAME_LENGTH = "database.maxNameLength";
+	public static final String KEY_DATABASE_MAX_NAME_LENGTH = "database.names.maxLength";
 
 	public static final String KEY_DATABASE_TYPE = "database.type";
 	public static final String KEY_DATABASE_VERSION = "database.version";
 
 	public static final String KEY_INTEGER_IDS = "database.useIntegerIDs";
-	public static final String KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES = "database.tables.useNamespacePrefix";
+	public static final String KEY_NAMESPACE_PREFIX = "database.names.useNamespacePrefix";
 
 	public static final String KEY_MAPPING_MODE = "featureStore.mappingMode";
 
@@ -55,18 +55,28 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 	public static final DatabaseType DEFAULT_DATABASE_TYPE = DatabaseType.PostGIS;
 	public static final MappingMode DEFAULT_MAPPING_MODE = MappingMode.relational;
-	public static final String DEFAULT_CRS_IDENTIFIER = "urn:ogc:def:crs:epsg::4326";
+	// Note: PostGIS uses lon/lat by default
+	public static final String DEFAULT_CRS_IDENTIFIER = "EPSG:4326"; // "urn:ogc:def:crs:epsg::4326";
 	public static final String DEFAULT_JDBC_CONNECTION_ID = "db";
 	public static final boolean DEFAULT_INTEGER_IDS = false;
 	public static final boolean DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES = true;
 
-	private final Config config;
+	private volatile Config config;
 
 	/**
 	 * @param config the configuration object
 	 */
 	public GenericMappingConfiguration(Config config) {
 		super();
+		this.config = config;
+	}
+
+	/**
+	 * Change the backing configuration object.
+	 * 
+	 * @param config the internal configuration object to set
+	 */
+	public void setInternalConfig(Config config) {
 		this.config = config;
 	}
 
@@ -214,18 +224,26 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 		return config.get(KEY_CRS_DIMENSION, Integer.class);
 	}
 
+	public void setDimension(Optional<Integer> dim) {
+		config.set(KEY_CRS_DIMENSION, dim.orElse(null));
+	}
+
 	public Optional<String> getSRID() {
 		return config.get(KEY_CRS_SRID, String.class);
 	}
 
+	public void setSRID(Optional<String> srid) {
+		config.set(KEY_CRS_SRID, srid.orElse(null));
+	}
+
 	@Override
 	public boolean useNamespacePrefixForTableNames() {
-		return config.get(KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES, Boolean.class)
+		return config.get(KEY_NAMESPACE_PREFIX, Boolean.class)
 				.orElse(DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES);
 	}
 
 	public void setUseNamespacePrefixForTableNames(boolean enabled) {
-		config.set(KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES, enabled);
+		config.set(KEY_NAMESPACE_PREFIX, enabled);
 	}
 
 	@Override

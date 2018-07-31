@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.config
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider
 import eu.esdihumboldt.hale.common.core.io.Value
+import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration
 import eu.esdihumboldt.util.config.Config
 
 /**
@@ -40,5 +41,15 @@ class ProviderConfig {
 
 	static void set(Config config, IOProvider provider, String configName = PARAM_GENERIC_CONFIG) {
 		provider.setParameter(configName, ConfigValue.fromConfig(config))
+	}
+
+	public static Config get(IOConfiguration conf, String configName = PARAM_GENERIC_CONFIG) {
+		Value val = conf.providerConfiguration?.get(configName)
+		if (val != null && !val.isEmpty()) {
+			ConfigValue.fromValue(val)
+		}
+		else {
+			new Config()
+		}
 	}
 }

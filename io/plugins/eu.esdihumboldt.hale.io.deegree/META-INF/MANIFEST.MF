@@ -20,3 +20,4 @@ Import-Package: eu.esdihumboldt.hale.common.config,
  org.postgis,
  org.slf4j;version="1.7.13"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree
+Export-Package: eu.esdihumboldt.hale.io.deegree.mapping

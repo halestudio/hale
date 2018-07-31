@@ -16,7 +16,6 @@
 package eu.esdihumboldt.hale.io.deegree.mapping;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
 import eu.esdihumboldt.hale.common.config.ProviderConfig;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -44,12 +43,11 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 		progress.begin("Generate deegree SQL mapping", ProgressIndicator.UNKNOWN);
 		try {
 			Schema targetSchema = getSchemas().getSchemas().iterator().next();
-			MappingConfiguration config = new GenericMappingConfiguration(ProviderConfig.get(this));
+			GenericMappingConfiguration config = new GenericMappingConfiguration(
+					ProviderConfig.get(this));
 			MappingWriter writer = new MappingWriter(targetSchema, null, config);
 
-			try (OutputStream out = getTarget().getOutput()) {
-				writer.saveConfig(out);
-			}
+			MappingAlignmentWriter.writeResult(writer, getTarget(), getContentType(), config);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
@@ -64,7 +62,7 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "deegree SQL Mapping";
+		return "deegree configuration";
 	}
 
 }

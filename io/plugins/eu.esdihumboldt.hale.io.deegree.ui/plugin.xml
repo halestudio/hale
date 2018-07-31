@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.deegree.ui.BasicMappingConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.deegree.mapping.schema">
+         </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.deegree.mapping.alignment">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>
