@@ -38,6 +38,19 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 	}
 
 	@Override
+	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+
+		GenericMappingConfiguration config = new GenericMappingConfiguration(
+				ProviderConfig.get(this));
+		try {
+			config.validate();
+		} catch (Exception e) {
+			throw new IOProviderConfigurationException(e);
+		}
+	}
+
+	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Generate deegree SQL mapping", ProgressIndicator.UNKNOWN);
