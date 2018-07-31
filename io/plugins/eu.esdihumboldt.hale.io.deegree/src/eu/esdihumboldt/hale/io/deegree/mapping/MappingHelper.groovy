@@ -43,10 +43,10 @@ class MappingHelper {
 					SQLDialect dialect = config.getSQLDialect()
 					return Math.min(dialect.maxTableNameLength, dialect.maxColumnNameLength)
 				},
-				// Namespace prefix prefix for table names TODO configurable
-				true,
-				// no integer IDs! TODO configurable
-				false)
+				// Namespace prefix prefix for table names
+				config.useNamespacePrefixForTableNames(),
+				// integer IDs
+				config.useIntegerIDs())
 		return mapper.getMappedSchema()
 	}
 

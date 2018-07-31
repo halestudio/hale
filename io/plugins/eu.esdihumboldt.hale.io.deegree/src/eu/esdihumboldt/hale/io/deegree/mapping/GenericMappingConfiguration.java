@@ -44,6 +44,9 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	public static final String KEY_DATABASE_TYPE = "database.type";
 	public static final String KEY_DATABASE_VERSION = "database.version";
 
+	public static final String KEY_INTEGER_IDS = "database.useIntegerIDs";
+	public static final String KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES = "database.tables.useNamespacePrefix";
+
 	public static final String KEY_MAPPING_MODE = "featureStore.mappingMode";
 
 	public static final String KEY_CRS_IDENTIFIER = "featureStore.crs.identifier";
@@ -54,6 +57,8 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	public static final MappingMode DEFAULT_MAPPING_MODE = MappingMode.relational;
 	public static final String DEFAULT_CRS_IDENTIFIER = "urn:ogc:def:crs:epsg::4326";
 	public static final String DEFAULT_JDBC_CONNECTION_ID = "db";
+	public static final boolean DEFAULT_INTEGER_IDS = false;
+	public static final boolean DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES = true;
 
 	private final Config config;
 
@@ -80,6 +85,9 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 		setCRSIdentifier(DEFAULT_CRS_IDENTIFIER);
 
 		setJDBCConnectionId(DEFAULT_JDBC_CONNECTION_ID);
+
+		setUseIntegerIDs(DEFAULT_INTEGER_IDS);
+		setUseNamespacePrefixForTableNames(DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES);
 	}
 
 	@Override
@@ -208,6 +216,25 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 	public Optional<String> getSRID() {
 		return config.get(KEY_CRS_SRID, String.class);
+	}
+
+	@Override
+	public boolean useNamespacePrefixForTableNames() {
+		return config.get(KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES, Boolean.class)
+				.orElse(DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES);
+	}
+
+	public void setUseNamespacePrefixForTableNames(boolean enabled) {
+		config.set(KEY_NAMESPACE_PREFIX_FOR_TABLE_NAMES, enabled);
+	}
+
+	@Override
+	public boolean useIntegerIDs() {
+		return config.get(KEY_INTEGER_IDS, Boolean.class).orElse(DEFAULT_INTEGER_IDS);
+	}
+
+	public void setUseIntegerIDs(boolean enabled) {
+		config.set(KEY_INTEGER_IDS, enabled);
 	}
 
 }

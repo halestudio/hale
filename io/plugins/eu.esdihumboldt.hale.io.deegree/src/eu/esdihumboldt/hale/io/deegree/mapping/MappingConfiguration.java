@@ -62,6 +62,45 @@ public interface MappingConfiguration {
 	 */
 	GeometryStorageParams getGeometryStorageParameters();
 
-	// TODO validate?
+	/**
+	 * Specifies if namespace prefixes should be used for table names.
+	 * 
+	 * @return <code>true</code> if namespace prefixes should be used for table
+	 *         names, <code>false</code> otherwise
+	 */
+	boolean useNamespacePrefixForTableNames();
+
+	/**
+	 * Specifies if integer identifiers should be used in the database. Usually
+	 * implies that existing IDs cannot be reused.
+	 * 
+	 * @return <code>true</code> if integer identifiers should be used,
+	 *         <code>false</code> otherwise
+	 */
+	boolean useIntegerIDs();
+
+	/**
+	 * Validate the configuration.
+	 * 
+	 * @throws Exception on a validation error
+	 */
+	default void validate() throws Exception {
+		String id = getJDBCConnectionId();
+		if (id == null || id.isEmpty()) {
+			throw new IllegalStateException("JDBC connection ID must be provided");
+		}
+
+		if (getMode() == null) {
+			throw new IllegalStateException("Mapping mode must be configured");
+		}
+
+		if (getSQLDialect() == null) {
+			throw new IllegalStateException("Database type must be configured");
+		}
+
+		if (getGeometryStorageParameters() == null) {
+			throw new IllegalStateException("FeatureStore CRS must be configured");
+		}
+	}
 
 }
