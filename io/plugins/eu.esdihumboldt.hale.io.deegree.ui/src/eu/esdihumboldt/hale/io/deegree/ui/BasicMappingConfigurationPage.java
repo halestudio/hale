@@ -274,7 +274,7 @@ public class BasicMappingConfigurationPage
 		Label sridLabel = new Label(crs, SWT.NONE);
 		sridLabel.setText("Database SRID");
 		defLabel.applyTo(sridLabel);
-		srid = new Text(crs, SWT.NONE);
+		srid = new Text(crs, SWT.SINGLE | SWT.BORDER);
 		longField.applyTo(srid);
 	}
 
