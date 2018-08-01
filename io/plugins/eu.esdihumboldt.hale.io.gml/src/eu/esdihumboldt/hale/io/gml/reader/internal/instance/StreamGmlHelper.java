@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -98,9 +99,10 @@ public abstract class StreamGmlHelper {
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
-			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
-			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
-			boolean ignoreNamespaces, IOProvider ioProvider) throws XMLStreamException {
+			Integer indexInStream, boolean strict, AtomicInteger srsDimension,
+			CRSProvider crsProvider, TypeDefinition parentType, List<QName> propertyPath,
+			boolean allowNull, boolean ignoreNamespaces, IOProvider ioProvider)
+			throws XMLStreamException {
 
 		return parseInstance(reader, type, indexInStream, strict, srsDimension, crsProvider,
 				parentType, propertyPath, allowNull, ignoreNamespaces, ioProvider, null);
@@ -134,19 +136,28 @@ public abstract class StreamGmlHelper {
 	 * @throws XMLStreamException if parsing the instance failed
 	 */
 	public static Instance parseInstance(XMLStreamReader reader, TypeDefinition type,
-			Integer indexInStream, boolean strict, Integer srsDimension, CRSProvider crsProvider,
-			TypeDefinition parentType, List<QName> propertyPath, boolean allowNull,
-			boolean ignoreNamespaces, IOProvider ioProvider, CRSDefinition crs)
+			Integer indexInStream, boolean strict, AtomicInteger srsDimension,
+			CRSProvider crsProvider, TypeDefinition parentType, List<QName> propertyPath,
+			boolean allowNull, boolean ignoreNamespaces, IOProvider ioProvider, CRSDefinition crs)
 			throws XMLStreamException {
+
+		if (srsDimension == null) {
+			// Initialize srsDimension here w/ dummy value to be passed down
+			// when parsing the instance. That way "srsDimension" attributes
+			// at the coordinate level (e.g. "pos", "posList" etc.) can be
+			// evaluated and its valued passed back up to the level where
+			// the geometry object is created.
+			srsDimension = new AtomicInteger(-1);
+		}
+
 		checkState(reader.getEventType() == XMLStreamConstants.START_ELEMENT);
 		if (propertyPath == null) {
 			propertyPath = Collections.emptyList();
 		}
 
-		if (srsDimension == null) {
-			String dim = reader.getAttributeValue(null, "srsDimension");
-			if (dim != null)
-				srsDimension = Integer.parseInt(dim);
+		String dim = reader.getAttributeValue(null, "srsDimension");
+		if (dim != null) {
+			srsDimension.set(Integer.parseInt(dim));
 		}
 
 		// extract additional settings from I/O provider
@@ -259,8 +270,9 @@ public abstract class StreamGmlHelper {
 			int defaultValue = 2;
 
 			try {
-				if (srsDimension != null) {
-					geomValue = geomFactory.createGeometry(instance, srsDimension, ioProvider);
+				if (srsDimension.get() != -1) {
+					geomValue = geomFactory.createGeometry(instance, srsDimension.get(),
+							ioProvider);
 				}
 				else {
 					// srsDimension is not set
@@ -402,7 +414,7 @@ public abstract class StreamGmlHelper {
 	 * @throws XMLStreamException if parsing the properties failed
 	 */
 	private static void parseProperties(XMLStreamReader reader, MutableGroup group, boolean strict,
-			Integer srsDimension, CRSProvider crsProvider, CRSDefinition crs,
+			AtomicInteger srsDimension, CRSProvider crsProvider, CRSDefinition crs,
 			TypeDefinition parentType, List<QName> propertyPath, boolean onlyAttributes,
 			boolean ignoreNamespaces, IOProvider ioProvider) throws XMLStreamException {
 		final MutableGroup topGroup = group;
