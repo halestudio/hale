@@ -32,14 +32,10 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
-import org.deegree.cs.coordinatesystems.ICRS;
-import org.deegree.cs.persistence.CRSManager;
 import org.deegree.feature.persistence.sql.MappedAppSchema;
 import org.deegree.feature.persistence.sql.config.SQLFeatureStoreConfigWriter;
 import org.deegree.feature.persistence.sql.ddl.DDLCreator;
 import org.deegree.feature.types.AppSchema;
-import org.deegree.sqldialect.SQLDialect;
-import org.deegree.sqldialect.postgis.PostGISDialect;
 
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
@@ -61,25 +57,23 @@ public class MappingWriter {
 	 */
 	protected final Alignment alignment;
 
-	private final String connectionId;
-
-	// TODO configurable
-	private final SQLDialect dialect = new PostGISDialect("2.0");
-
 	private MappedAppSchema mappedSchema;
+
+	private final MappingConfiguration config;
 
 	/**
 	 * Create a new mapping writer.
 	 * 
 	 * @param targetSchema the target schema
 	 * @param alignment the alignment, may be <code>null</code>
-	 * @param connectionId the connection identifier for deegree
+	 * @param config the configuration
 	 */
-	public MappingWriter(Schema targetSchema, @Nullable Alignment alignment, String connectionId) {
+	public MappingWriter(Schema targetSchema, @Nullable Alignment alignment,
+			MappingConfiguration config) {
 		super();
 		this.targetSchema = targetSchema;
 		this.alignment = alignment;
-		this.connectionId = connectionId;
+		this.config = config;
 	}
 
 	/**
@@ -101,7 +95,7 @@ public class MappingWriter {
 		XMLStreamWriter xmlWriter = XMLOutputFactory.newInstance().createXMLStreamWriter(out);
 		xmlWriter = new IndentingXMLStreamWriter(xmlWriter);
 		try {
-			configWriter.writeConfig(xmlWriter, connectionId, schemaUrls);
+			configWriter.writeConfig(xmlWriter, config.getJDBCConnectionId(), schemaUrls);
 		} finally {
 			xmlWriter.close();
 		}
@@ -114,8 +108,8 @@ public class MappingWriter {
 	 * @throws Exception if an error occurs saving the DDL
 	 */
 	public void saveDDL(OutputStream out) throws Exception {
-		List<String> ddl = new ArrayList<>(
-				Arrays.asList(DDLCreator.newInstance(getMappedSchema(), dialect).getDDL()));
+		List<String> ddl = new ArrayList<>(Arrays.asList(
+				DDLCreator.newInstance(getMappedSchema(), config.getSQLDialect()).getDDL()));
 		ddl.add("");
 		String joined = ddl.stream().collect(Collectors.joining(";\n"));
 		try (Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
@@ -131,13 +125,8 @@ public class MappingWriter {
 	 */
 	public MappedAppSchema getMappedSchema() throws Exception {
 		if (mappedSchema == null) {
-			// TODO configurable
-
-			ICRS crs = CRSManager.getCRSRef("EPSG:4326");
-			boolean blobMapping = false;
-
 			AppSchema appSchema = readApplicationSchema(targetSchema.getLocation().toString());
-			mappedSchema = mapApplicationSchema(dialect, appSchema, crs, blobMapping);
+			mappedSchema = mapApplicationSchema(appSchema, config);
 
 			// TODO adapt according to alignment?
 		}

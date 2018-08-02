@@ -16,8 +16,8 @@
 package eu.esdihumboldt.hale.io.deegree.mapping;
 
 import java.io.IOException;
-import java.io.OutputStream;
 
+import eu.esdihumboldt.hale.common.config.ProviderConfig;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -38,18 +38,29 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 	}
 
 	@Override
+	public void validate() throws IOProviderConfigurationException {
+		super.validate();
+
+		GenericMappingConfiguration config = new GenericMappingConfiguration(
+				ProviderConfig.get(this));
+		try {
+			config.validate();
+		} catch (Exception e) {
+			throw new IOProviderConfigurationException(e);
+		}
+	}
+
+	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Generate deegree SQL mapping", ProgressIndicator.UNKNOWN);
 		try {
 			Schema targetSchema = getSchemas().getSchemas().iterator().next();
-			// TODO configurable
-			String connectionId = "db";
-			MappingWriter writer = new MappingWriter(targetSchema, null, connectionId);
+			GenericMappingConfiguration config = new GenericMappingConfiguration(
+					ProviderConfig.get(this));
+			MappingWriter writer = new MappingWriter(targetSchema, null, config);
 
-			try (OutputStream out = getTarget().getOutput()) {
-				writer.saveConfig(out);
-			}
+			MappingAlignmentWriter.writeResult(writer, getTarget(), getContentType(), config);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
@@ -64,7 +75,7 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 
 	@Override
 	protected String getDefaultTypeName() {
-		return "deegree SQL Mapping";
+		return "deegree configuration";
 	}
 
 }
