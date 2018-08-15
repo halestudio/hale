@@ -338,7 +338,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 	 * @param migration the alignment migration
 	 * @param log the cell log
 	 */
-	private void applySourceContexts(MutableCell newCell, Entity originalSource,
+	protected void applySourceContexts(MutableCell newCell, Entity originalSource,
 			AlignmentMigration migration, SimpleLog log) {
 		if (originalSource != null) {
 			EntityDefinition original = originalSource.getDefinition();
