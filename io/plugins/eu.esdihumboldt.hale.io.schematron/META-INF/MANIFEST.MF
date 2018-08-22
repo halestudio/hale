@@ -20,3 +20,4 @@ Bundle-ClassPath: .,
  lib/saxon9-9.0.0.8.jar,
  lib/schema-utils-1.8.jar,
  lib/xml-resolver-1.2.jar
+Automatic-Module-Name: eu.esdihumboldt.hale.io.schematron

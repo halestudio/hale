@@ -18,3 +18,4 @@ Export-Package: eu.esdihumboldt.util.cli,
  eu.esdihumboldt.util.cli.extension.command,
  eu.esdihumboldt.util.cli.extension.group,
  eu.esdihumboldt.util.cli.impl
+Automatic-Module-Name: eu.esdihumboldt.util.cli

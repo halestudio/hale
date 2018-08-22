@@ -58,3 +58,4 @@ Import-Package: com.google.common.base;version="9.0.0",
 Export-Package: eu.esdihumboldt.hale.ui.views.mapping
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.mapping.internal.MappingViewPlugin
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.mapping

@@ -5,10 +5,11 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.app
 Bundle-Version: 3.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.app.internal.Activator
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.0"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.equinox.app;bundle-version="1.3.100"
 Export-Package: eu.esdihumboldt.hale.common.app,
  eu.esdihumboldt.hale.common.app.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.common.app

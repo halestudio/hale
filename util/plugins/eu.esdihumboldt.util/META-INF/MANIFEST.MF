@@ -31,3 +31,4 @@ Export-Package: eu.esdihumboldt.util,
  eu.esdihumboldt.util.xml
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0"
 Bundle-Vendor: wetransform GmbH
+Automatic-Module-Name: eu.esdihumboldt.util

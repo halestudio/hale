@@ -14,3 +14,4 @@ Export-Package: eu.esdihumboldt.hale.io.groovy,
 Import-Package: eu.esdihumboldt.util.groovy.sandbox,
  eu.esdihumboldt.util.io,
  org.apache.commons.io
+Automatic-Module-Name: eu.esdihumboldt.hale.io.groovy

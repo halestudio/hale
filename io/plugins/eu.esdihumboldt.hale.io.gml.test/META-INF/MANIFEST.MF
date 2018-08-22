@@ -50,3 +50,4 @@ Require-Bundle: eu.esdihumboldt.hale.io.gml;bundle-version="1.0.0",
  org.eclipse.core.runtime;bundle-version="3.11.1"
 Bundle-ClassPath: .
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.test

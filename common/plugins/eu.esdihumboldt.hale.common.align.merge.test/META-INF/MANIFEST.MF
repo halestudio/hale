@@ -29,3 +29,4 @@ Import-Package: com.google.common.cache;version="17.0.0",
  javax.annotation,
  org.geotools.filter.text.cql2;version="12.2.0.combined",
  org.slf4j;version="1.7.12"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.merge.test

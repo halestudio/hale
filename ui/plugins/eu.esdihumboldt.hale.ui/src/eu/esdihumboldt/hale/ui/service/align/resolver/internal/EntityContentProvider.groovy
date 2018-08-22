@@ -15,8 +15,6 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver.internal;
 
-import org.eclipse.jface.viewers.ArrayContentProvider
-import org.eclipse.jface.viewers.ITreeContentProvider
 import org.eclipse.jface.viewers.Viewer
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
@@ -31,7 +29,7 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 @CompileStatic
-class EntityContentProvider extends ArrayContentProvider implements ITreeContentProvider {
+class EntityContentProvider extends ArrayTreeContentProvider {
 
 	private final Map<EntityDefinition, EntityDefinition> parentChild = new IdentityHashMap<>()
 

@@ -4,7 +4,7 @@ Bundle-Name: Json I/O tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.test
 Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",
  groovy;bundle-version="2.1.5",
  org.hamcrest.core;bundle-version="1.3.0",
@@ -17,3 +17,4 @@ Import-Package: eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util.xml,
  net.jcip.annotations,
  org.junit;version="4.11.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json.test

@@ -20,6 +20,7 @@ import org.junit.Test
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
+import eu.esdihumboldt.util.config.Config
 
 /**
  * Tests for MappingWriter class.
@@ -37,8 +38,9 @@ class MappingWriterTest {
 				'http://inspire.ec.europa.eu/schemas/ps/4.0',
 				URI.create('https://inspire.ec.europa.eu/schemas/ps/4.0/ProtectedSites.xsd'))
 		Alignment alignment = null
-		String connectionId = 'db'
-		def writer = new MappingWriter(targetSchema, alignment, connectionId)
+		GenericMappingConfiguration config = new GenericMappingConfiguration(new Config())
+		config.fillDefaults()
+		def writer = new MappingWriter(targetSchema, alignment, config)
 
 		File tempFile = File.createTempFile('deegree-sql-config', '.xml')
 		tempFile.deleteOnExit()
@@ -57,8 +59,9 @@ class MappingWriterTest {
 				'http://inspire.ec.europa.eu/schemas/ps/4.0',
 				URI.create('https://inspire.ec.europa.eu/schemas/ps/4.0/ProtectedSites.xsd'))
 		Alignment alignment = null
-		String connectionId = 'db'
-		def writer = new MappingWriter(targetSchema, alignment, connectionId)
+		GenericMappingConfiguration config = new GenericMappingConfiguration(new Config())
+		config.fillDefaults()
+		def writer = new MappingWriter(targetSchema, alignment, config)
 
 		File tempFile = File.createTempFile('deegree-sql-config', '.xml')
 		tempFile.deleteOnExit()

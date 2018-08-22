@@ -18,6 +18,5 @@
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>edu.umd.cs.findbugs.plugin.eclipse.findbugsNature</nature>
 	</natures>
 </projectDescription>

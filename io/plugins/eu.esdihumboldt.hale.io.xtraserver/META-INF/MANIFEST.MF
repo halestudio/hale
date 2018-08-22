@@ -77,3 +77,4 @@ Import-Package: com.google.common.base;version="17.0.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.xtraserver.reader,
  eu.esdihumboldt.hale.io.xtraserver.writer
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xtraserver

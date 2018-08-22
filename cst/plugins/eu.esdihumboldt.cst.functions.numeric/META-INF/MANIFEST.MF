@@ -19,3 +19,4 @@ Import-Package: com.google.common.base;version="9.0.0",
 Export-Package: eu.esdihumboldt.cst.functions.numeric,
  eu.esdihumboldt.cst.functions.numeric.sequentialid
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.numeric

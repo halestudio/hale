@@ -22,7 +22,6 @@
    <windowImages/>
 
    <launcher name="hale_tests">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -89,6 +88,7 @@
       <plugin id="de.interactive_instruments.xtraserver-config-util"/>
       <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
+      <plugin id="eu.esdihumboldt.config.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
@@ -123,6 +123,8 @@
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cli"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.common.config"/>
+      <plugin id="eu.esdihumboldt.hale.common.config.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
       <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
@@ -229,6 +231,7 @@
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.cli"/>
+      <plugin id="eu.esdihumboldt.util.config"/>
       <plugin id="eu.esdihumboldt.util.geometry"/>
       <plugin id="eu.esdihumboldt.util.geometry.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
@@ -281,7 +284,9 @@
       <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.antlr.runtime"/>
       <plugin id="org.antlr.stringtemplate"/>
+      <plugin id="org.apache.batik.constants"/>
       <plugin id="org.apache.batik.css"/>
+      <plugin id="org.apache.batik.i18n"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
       <plugin id="org.apache.commons.beanutils"/>
@@ -299,6 +304,7 @@
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
       <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.felix.scr"/>
       <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
@@ -311,6 +317,7 @@
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.apache.xmlgraphics"/>
       <plugin id="org.aspectj.rt"/>
       <plugin id="org.aspectj.weaver"/>
       <plugin id="org.codehaus.castor.core"/>
@@ -327,13 +334,13 @@
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
       <plugin id="org.eclipse.e4.core.contexts"/>
       <plugin id="org.eclipse.e4.core.di"/>
       <plugin id="org.eclipse.e4.core.di.annotations"/>
       <plugin id="org.eclipse.e4.core.di.extensions"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
       <plugin id="org.eclipse.e4.core.services"/>
       <plugin id="org.eclipse.e4.emf.xpath"/>
       <plugin id="org.eclipse.e4.ui.bindings"/>
@@ -354,9 +361,10 @@
       <plugin id="org.eclipse.emf.ecore.change"/>
       <plugin id="org.eclipse.emf.ecore.xmi"/>
       <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.cm"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.console"/>
-      <plugin id="org.eclipse.equinox.ds"/>
+      <plugin id="org.eclipse.equinox.event"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.region" fragment="true"/>
       <plugin id="org.eclipse.equinox.registry"/>
@@ -365,7 +373,6 @@
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
       <plugin id="org.eclipse.equinox.util"/>
-      <plugin id="org.eclipse.equinox.weaving.aspectj"/>
       <plugin id="org.eclipse.equinox.weaving.caching"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
@@ -378,6 +385,7 @@
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
@@ -434,6 +442,7 @@
       <plugin id="org.w3c.dom.smil"/>
       <plugin id="org.w3c.dom.svg"/>
       <plugin id="org.xerial.sqlite-jdbc"/>
+      <plugin id="org.yaml.snakeyaml"/>
       <plugin id="oro"/>
       <plugin id="picocontainer"/>
       <plugin id="ru.yandex.qatools.allure.java-adaptor-api"/>
@@ -458,7 +467,6 @@
       <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />

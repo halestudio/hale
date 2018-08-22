@@ -7,3 +7,4 @@ Fragment-Host: eu.esdihumboldt.hale.io.jdbc.mssql;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.junit;version="4.12.0",
  ru.yandex.qatools.allure.annotations;version="1.5.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.mssql.test

@@ -15,3 +15,4 @@ Import-Package: de.fhg.igd.slf4jplus,
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.1.0",
  org.semanticweb.owlapi.osgi.skos;bundle-version="3.0.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.codelist.skos

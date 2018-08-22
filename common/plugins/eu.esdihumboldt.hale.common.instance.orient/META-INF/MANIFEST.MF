@@ -31,3 +31,4 @@ Import-Package: com.google.common.base;version="11.0.1",
 Export-Package: eu.esdihumboldt.hale.common.instance.orient,
  eu.esdihumboldt.hale.common.instance.orient.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.instance.orient.storage
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.orient

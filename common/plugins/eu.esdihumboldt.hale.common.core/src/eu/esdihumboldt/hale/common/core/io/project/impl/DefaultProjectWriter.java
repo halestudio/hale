@@ -42,8 +42,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
+import eu.esdihumboldt.util.io.EntryOutputStream;
 import eu.esdihumboldt.util.io.IOUtils;
-import eu.esdihumboldt.util.io.OutputStreamDecorator;
 
 /**
  * Writes a project file
@@ -51,35 +51,6 @@ import eu.esdihumboldt.util.io.OutputStreamDecorator;
  * @author Simon Templer
  */
 public class DefaultProjectWriter extends AbstractProjectWriter {
-
-	/**
-	 * Output stream for a ZIP entry
-	 */
-	private static class EntryOutputStream extends OutputStreamDecorator {
-
-		private final ZipOutputStream zip;
-
-		/**
-		 * Create an output stream for a ZIP entry
-		 * 
-		 * @param zip the ZIP output stream
-		 */
-		public EntryOutputStream(ZipOutputStream zip) {
-			super(zip);
-
-			this.zip = zip;
-		}
-
-		/**
-		 * @see OutputStreamDecorator#close()
-		 */
-		@Override
-		public void close() throws IOException {
-			// instead of closing the stream close the entry
-			zip.closeEntry();
-		}
-
-	}
 
 	/**
 	 * The configuration parameter name for detailing if project files are to be
@@ -221,16 +192,16 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 
 		if (archive) {
 			// save to archive
-			final ZipOutputStream zip = new ZipOutputStream(new BufferedOutputStream(getTarget()
-					.getOutput()));
+			final ZipOutputStream zip = new ZipOutputStream(
+					new BufferedOutputStream(getTarget().getOutput()));
 			try {
 				// write main entry
 				zip.putNextEntry(new ZipEntry(ProjectIO.PROJECT_FILE));
 				try {
 					Project.save(getProject(), new EntryOutputStream(zip));
 				} catch (Exception e) {
-					reporter.error(new IOMessageImpl("Could not save main project configuration.",
-							e));
+					reporter.error(
+							new IOMessageImpl("Could not save main project configuration.", e));
 					reporter.setSuccess(false);
 					return reporter;
 				}
@@ -272,7 +243,8 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 								};
 								file.store(target);
 							} catch (Exception e) {
-								reporter.error(new IOMessageImpl("Error saving a project file.", e));
+								reporter.error(
+										new IOMessageImpl("Error saving a project file.", e));
 								reporter.setSuccess(false);
 								return reporter;
 							}
@@ -327,8 +299,8 @@ public class DefaultProjectWriter extends AbstractProjectWriter {
 			return;
 		for (IOConfiguration resource : resources) {
 			Map<String, Value> providerConfig = resource.getProviderConfiguration();
-			URI pathUri = URI.create(providerConfig.get(ImportProvider.PARAM_SOURCE).as(
-					String.class));
+			URI pathUri = URI
+					.create(providerConfig.get(ImportProvider.PARAM_SOURCE).as(String.class));
 			// update relative URIs
 			if (!pathUri.isAbsolute()) {
 				// resolve the resource's URI

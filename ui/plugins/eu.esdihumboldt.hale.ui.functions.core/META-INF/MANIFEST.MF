@@ -67,3 +67,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert
 Export-Package: eu.esdihumboldt.hale.ui.functions.core
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.core

@@ -111,3 +111,4 @@ Export-Package: eu.esdihumboldt.hale.common.align.compatibility,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.align.transformation.service.impl
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align

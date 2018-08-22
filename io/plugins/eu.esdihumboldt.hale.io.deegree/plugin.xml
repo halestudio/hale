@@ -8,9 +8,25 @@
             class="eu.esdihumboldt.hale.io.deegree.mapping.MappingSchemaWriter"
             description="Creates a deegree SQL FeatureStore configuration for the schema"
             id="eu.esdihumboldt.hale.io.deegree.mapping.schema"
-            name="deegree SQL mapping">
+            name="deegree configuration">
          <contentType
                ref="eu.esdihumboldt.hale.io.deegree.mapping">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.deegree.archive">
+         </contentType>
+      </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.deegree.mapping.MappingAlignmentWriter"
+            description="Creates a deegree SQL FeatureStore configuration for the schema"
+            id="eu.esdihumboldt.hale.io.deegree.mapping.alignment"
+            name="deegree configuration">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.deegree.mapping">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.deegree.archive">
          </contentType>
       </provider>
    </extension>
@@ -21,6 +37,12 @@
             file-extensions="xml"
             id="eu.esdihumboldt.hale.io.deegree.mapping"
             name="deegree SQL FeatureStore configuration"
+            priority="normal">
+      </content-type>
+      <content-type
+            file-extensions="zip"
+            id="eu.esdihumboldt.hale.io.deegree.archive"
+            name="deegree configuration archive"
             priority="normal">
       </content-type>
    </extension>

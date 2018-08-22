@@ -15,9 +15,6 @@
 
 package eu.esdihumboldt.hale.io.deegree.mapping
 
-import static org.deegree.feature.types.property.GeometryPropertyType.CoordinateDimension.DIM_2
-
-import org.deegree.cs.coordinatesystems.ICRS
 import org.deegree.feature.persistence.sql.GeometryStorageParams
 import org.deegree.feature.persistence.sql.MappedAppSchema
 import org.deegree.feature.persistence.sql.mapper.AppSchemaMapper
@@ -33,19 +30,23 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class MappingHelper {
 
-	public static MappedAppSchema mapApplicationSchema(SQLDialect dialect,
-			AppSchema appSchema, ICRS crs, boolean blobMapping) {
-		String databaseSrid = dialect.getUndefinedSrid()
-		GeometryStorageParams storageParams = new GeometryStorageParams( crs, databaseSrid, DIM_2 )
+	public static MappedAppSchema mapApplicationSchema(AppSchema appSchema, MappingConfiguration config) {
+		GeometryStorageParams storageParams = config.getGeometryStorageParameters();
+
+		boolean blobMapping = config.getMode().equals(MappingMode.blob);
 
 		AppSchemaMapper mapper = new AppSchemaMapper(appSchema, blobMapping,
 				!blobMapping, storageParams,
-				// Maximum table name length - is the dialect value correct?
-				dialect.getMaxTableNameLength(),
+				// Maximum table name length
+				config.getMaxNameLength().orElseGet {
+					// fall back to dialect
+					SQLDialect dialect = config.getSQLDialect()
+					return Math.min(dialect.maxTableNameLength, dialect.maxColumnNameLength)
+				},
 				// Namespace prefix prefix for table names
-				true,
-				// no integer IDs!
-				false)
+				config.useNamespacePrefixForTableNames(),
+				// integer IDs
+				config.useIntegerIDs())
 		return mapper.getMappedSchema()
 	}
 

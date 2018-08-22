@@ -446,8 +446,8 @@ public class PropertyResolver {
 					if (currentItem.getQnames().contains(tempdef.getName())) {
 						List<QName> loops = new ArrayList<QName>();
 
-						for (int i = currentItem.getQnames().indexOf(tempdef.getName()); i < currentItem
-								.getQnames().size(); i++) {
+						for (int i = currentItem.getQnames().indexOf(
+								tempdef.getName()); i < currentItem.getQnames().size(); i++) {
 							loops.add(currentItem.getQnames().get(i));
 						}
 						currentItem.addLoopQNames(loops);
@@ -524,9 +524,11 @@ public class PropertyResolver {
 
 					// FIXME this condition is never true because LoopQNames is
 					// a list of lists
-					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
-						continue;
-					}
+
+					// XXX commenting out because this has no effect
+//					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
+//						continue;
+//					}
 
 					if (currentItem.getQnames().contains(tempdef.getName())) {
 
@@ -534,8 +536,8 @@ public class PropertyResolver {
 
 							ArrayList<QName> loops = new ArrayList<QName>();
 
-							for (int i = currentItem.getQnames().indexOf(tempdef.getName()); i < currentItem
-									.getQnames().size(); i++) {
+							for (int i = currentItem.getQnames().indexOf(
+									tempdef.getName()); i < currentItem.getQnames().size(); i++) {
 								loops.add(currentItem.getQnames().get(i));
 							}
 							currentItem.addLoopQNames(loops);
@@ -625,15 +627,17 @@ public class PropertyResolver {
 
 					// FIXME this condition is never true because LoopQNames is
 					// a list of lists
-					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
-						continue;
-					}
+
+					// XXX commenting out because this has no effect
+//					if (currentItem.getLoopQNames().contains(tempdef.getName())) {
+//						continue;
+//					}
 
 					if (currentItem.getQnames().contains(tempdef.getName())) {
 						ArrayList<QName> loops = new ArrayList<QName>();
 
-						for (int i = currentItem.getQnames().indexOf(tempdef.getName()); i < currentItem
-								.getQnames().size(); i++) {
+						for (int i = currentItem.getQnames().indexOf(
+								tempdef.getName()); i < currentItem.getQnames().size(); i++) {
 							loops.add(currentItem.getQnames().get(i));
 						}
 						currentItem.addLoopQNames(loops);

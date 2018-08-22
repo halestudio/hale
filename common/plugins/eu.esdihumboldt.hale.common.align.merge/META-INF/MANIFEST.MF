@@ -29,3 +29,4 @@ Export-Package: eu.esdihumboldt.hale.common.align.merge,
  eu.esdihumboldt.hale.common.align.merge.extension,
  eu.esdihumboldt.hale.common.align.merge.functions,
  eu.esdihumboldt.hale.common.align.merge.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.merge

@@ -44,3 +44,4 @@ Export-Package: eu.esdihumboldt.hale.io.shp,
  eu.esdihumboldt.hale.io.shp.internal;x-internal:=true,
  eu.esdihumboldt.hale.io.shp.reader.internal;x-internal:=true
 Bundle-Vendor: wetransform GmbH
+Automatic-Module-Name: eu.esdihumboldt.hale.io.shp

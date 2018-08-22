@@ -25,3 +25,4 @@ Export-Package: eu.esdihumboldt.util.geometry,
  eu.esdihumboldt.util.geometry.quadtree
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
  groovy;bundle-version="2.4.14"
+Automatic-Module-Name: eu.esdihumboldt.util.geometry

@@ -11,9 +11,13 @@ Require-Bundle: groovy;bundle-version="2.3.7",
  eu.esdihumboldt.hale.common.align;bundle-version="3.4.0",
  org.deegree;bundle-version="3.4.0",
  org.eclipse.core.runtime;bundle-version="3.11.1"
-Import-Package: eu.esdihumboldt.util.io,
+Import-Package: eu.esdihumboldt.hale.common.config,
+ eu.esdihumboldt.util.config,
+ eu.esdihumboldt.util.io,
  javax.annotation,
  javax.vecmath;version="1.5.2",
  org.apache.xerces.xs;version="2.9.0",
  org.postgis,
  org.slf4j;version="1.7.13"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree
+Export-Package: eu.esdihumboldt.hale.io.deegree.mapping

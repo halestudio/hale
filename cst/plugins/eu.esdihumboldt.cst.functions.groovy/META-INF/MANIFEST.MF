@@ -54,3 +54,4 @@ Export-Package: eu.esdihumboldt.cst.functions.groovy,
 Bundle-ClassPath: .
 Bundle-Vendor: data harmonisation panel
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.groovy

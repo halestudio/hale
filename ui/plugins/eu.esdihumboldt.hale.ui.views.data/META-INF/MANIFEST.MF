@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Data Views
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.data;singleton:=true
 Bundle-Version: 3.5.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.2",
  eu.esdihumboldt.hale.common.instance
@@ -68,3 +68,4 @@ Import-Package: com.google.common.collect;version="9.0.0",
 Export-Package: eu.esdihumboldt.hale.ui.views.data
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.data.internal.DataViewPlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.data

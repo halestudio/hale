@@ -72,8 +72,8 @@ import groovy.lang.Script;
  * @param <W> the wizard type
  * @author Simon Templer
  */
-public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyAST, W> implements
-		GroovyConstants {
+public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyAST, W>
+		implements GroovyConstants {
 
 	private static final ALogger log = ALoggerFactory.getLogger(GroovyScriptPage.class);
 
@@ -94,8 +94,9 @@ public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyA
 	 */
 	public GroovyScriptPage() {
 		super("groovyScript", PARAMETER_SCRIPT,
-		// use empty default value because we don't know in advance if the
-		// target is complex
+				// use empty default value because we don't know in advance if
+				// the
+				// target is complex
 				"",
 				// BINDING_TARGET + " {\n\t\n}",
 				new GroovyASTSourceCompiler());
@@ -180,7 +181,6 @@ public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyA
 		addGroovyErrorAnnotation(annotationModel, getDocument(), script, exception);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected boolean validate(String document) {
 		// clear annotations
@@ -297,8 +297,8 @@ public class GroovyScriptPage<W extends Wizard> extends SourceViewerPage<GroovyA
 				@Override
 				public void verifyKey(VerifyEvent event) {
 					int accelerator = SWTKeySupport.convertEventToUnmodifiedAccelerator(event);
-					KeySequence sequence = KeySequence.getInstance(SWTKeySupport
-							.convertAcceleratorToKeyStroke(accelerator));
+					KeySequence sequence = KeySequence
+							.getInstance(SWTKeySupport.convertAcceleratorToKeyStroke(accelerator));
 					if (astTrigger.equals(sequence)) {
 						GroovyASTTray.showTray(GroovyScriptPage.this, viewer);
 						event.doit = false;
