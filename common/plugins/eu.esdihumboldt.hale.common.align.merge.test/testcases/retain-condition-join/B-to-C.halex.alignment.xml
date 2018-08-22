@@ -98,4 +98,39 @@
         <parameter value="false" name="ignoreNamespaces"/>
         <parameter value="false" name="structuralRename"/>
     </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="B6toC4" priority="normal">
+        <source>
+            <class>
+                <type name="B6" ns="B">
+                    <condition lang="ECQL">b6 &lt;&gt; 10</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C4" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">_target {}</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="B6b7toC4c4" priority="normal">
+        <source>
+            <property>
+                <type name="B6" ns="B">
+                    <condition lang="ECQL">b6 &lt;&gt; 10</condition>
+                </type>
+                <child name="b3" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C4" ns="C"/>
+                <child name="c4" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
 </alignment>
