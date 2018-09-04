@@ -217,6 +217,45 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	}
 
 	/**
+	 * Copy constructor.
+	 * 
+	 * @param project the project
+	 * @param id the identifier
+	 * @param sourceSchema the source schema
+	 * @param targetSchema the target schema
+	 * @param alignment the alignment
+	 * @param exportTemplates the export templates
+	 * @param exportPresets the export presets
+	 * @param customServices the custom services
+	 */
+	protected ProjectTransformationEnvironment(Project project, String id, SchemaSpace sourceSchema,
+			SchemaSpace targetSchema, Alignment alignment,
+			Map<String, IOConfiguration> exportTemplates,
+			Map<String, IOConfiguration> exportPresets, Map<Class<?>, Object> customServices) {
+		this.project = project;
+		this.id = id;
+		this.targetSchema = targetSchema;
+		this.sourceSchema = sourceSchema;
+		this.alignment = alignment;
+
+		this.exportTemplates.putAll(exportTemplates);
+		this.exportPresets.putAll(exportPresets);
+		this.customServices.putAll(customServices);
+	}
+
+	/**
+	 * Create a copy of the transformation environment with the alignment
+	 * replaced by the given alignment.
+	 * 
+	 * @param alignment the alignment to use for the copy
+	 * @return the transformation environment
+	 */
+	public ProjectTransformationEnvironment copy(Alignment alignment) {
+		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
+				alignment, exportTemplates, exportPresets, customServices);
+	}
+
+	/**
 	 * Add a custom service to the transformation environment.
 	 * 
 	 * @param serviceInterface the service interface
