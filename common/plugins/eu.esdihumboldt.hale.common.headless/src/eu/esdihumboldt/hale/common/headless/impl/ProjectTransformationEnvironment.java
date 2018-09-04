@@ -256,6 +256,16 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	}
 
 	/**
+	 * Create a copy of the transformation environment.
+	 * 
+	 * @return the transformation environment
+	 */
+	public ProjectTransformationEnvironment copy() {
+		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
+				alignment, exportTemplates, exportPresets, customServices);
+	}
+
+	/**
 	 * Add a custom service to the transformation environment.
 	 * 
 	 * @param serviceInterface the service interface
