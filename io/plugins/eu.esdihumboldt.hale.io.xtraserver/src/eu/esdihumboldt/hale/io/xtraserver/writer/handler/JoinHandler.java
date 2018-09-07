@@ -24,8 +24,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
 import de.interactive_instruments.xtraserver.config.api.MappingJoin;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
 import de.interactive_instruments.xtraserver.config.api.MappingJoinBuilder;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -70,19 +70,29 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
 					sourceTypes);
 
+			// TODO: add nested joined tables to merged tables
+
 			final List<MappingJoin> joins = sortedConditions.stream().filter(condition -> condition
 					.getSourceTable().equals(baseTable.buildDraft().getName())).map(condition -> {
 						final MappingJoinBuilder join = new MappingJoinBuilder();
 						join.joinCondition(condition);
 
-						Optional<Condition> matchingCondition = sortedConditions.stream()
-								.filter(condition2 -> condition2.getSourceTable()
-										.equals(condition.getTargetTable()))
-								.findFirst();
+						Optional<MappingTableBuilder> t = mappingContext
+								.getTable(condition.getTargetTable());
 
-						if (matchingCondition.isPresent()) {
-							join.joinCondition(matchingCondition.get());
+						// join with connecting table
+						// TODO cant have values yet, check name for now
+						if (t.isPresent() && t.get().buildDraft().getName().contains("__")) {
+							Optional<Condition> matchingCondition = sortedConditions.stream()
+									.filter(condition2 -> condition2.getSourceTable()
+											.equals(condition.getTargetTable()))
+									.findFirst();
+
+							if (matchingCondition.isPresent()) {
+								join.joinCondition(matchingCondition.get());
+							}
 						}
+
 						join.targetPath("TODO");
 						return join.build();
 					}).collect(Collectors.toList());

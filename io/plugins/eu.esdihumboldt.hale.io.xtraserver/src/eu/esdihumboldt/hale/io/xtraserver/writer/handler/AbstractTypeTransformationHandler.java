@@ -26,6 +26,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
@@ -94,6 +95,15 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 				mappingContext.getReporter().warn(
 						"No primary key for table \"{0}\" found, assuming \"id\". (context: oid_col in FeatureType \"{1}\")",
 						tableName, mappingContext.getFeatureTypeName());
+			}
+
+			if (sourceType.getFilter() != null) {
+				try {
+					AbstractGeotoolsFilter filter = (AbstractGeotoolsFilter) sourceType.getFilter();
+					table.predicate(filter.getFilterTerm());
+				} catch (ClassCastException e) {
+					// ignore
+				}
 			}
 
 			mappingContext.addCurrentMappingTable(tableName, table);
