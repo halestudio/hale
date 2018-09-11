@@ -5,7 +5,13 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter;singleton:=true
 Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.align.groovy.accessor,
+ eu.esdihumboldt.hale.common.align.groovy.accessor.internal,
+ eu.esdihumboldt.hale.common.align.instance,
+ eu.esdihumboldt.hale.common.align.migrate,
+ eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io.supplier,
+ eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.instance.extension.filter,
  eu.esdihumboldt.hale.common.instance.helper,
  eu.esdihumboldt.hale.common.instance.model,
@@ -16,6 +22,7 @@ Bundle-ClassPath: .
 Export-Package: eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.filter.definition
 Require-Bundle: org.geotools,
- org.opengis;bundle-version="8.0.0"
+ org.opengis;bundle-version="8.0.0",
+ eu.esdihumboldt.util.groovy
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.filter

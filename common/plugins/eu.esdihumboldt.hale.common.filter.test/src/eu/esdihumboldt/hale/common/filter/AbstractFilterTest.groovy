@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 
 /**
  * Base class for filter tests providing test instances.
@@ -42,6 +43,7 @@ abstract class AbstractFilterTest {
 	private static final String defaultNs = "http://www.my.namespace"
 
 	protected Instance maxNoSchema
+	protected TypeDefinition personType
 
 	protected Schema schema
 	protected Instance max
@@ -107,7 +109,7 @@ abstract class AbstractFilterTest {
 
 		// build schema
 		schema = new SchemaBuilder().schema(defaultNs) {
-			Person {
+			personType = Person {
 				name()
 				age(Integer)
 				address(cardinality: '0..n') {

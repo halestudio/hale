@@ -59,7 +59,7 @@ public class FilterGeoECqlImpl extends AbstractGeotoolsFilter {
 		}
 
 		// Try if filterTerm can be evaluated as an Expression and if so,
-		// use it in a PropertyIsEqualTo filter. This is the same as if
+		// use it in a EqualsTrue filter. This is the same as if
 		// "= true" were added to the filter term.
 		Expression expr;
 		try {
@@ -69,6 +69,16 @@ public class FilterGeoECqlImpl extends AbstractGeotoolsFilter {
 			throw filterException;
 		}
 
+	}
+
+	@Override
+	protected String toFilterTerm(Filter filter) throws CQLException {
+		return ECQL.toCQL(filter);
+	}
+
+	@Override
+	protected FilterGeoECqlImpl buildFilter(String filterTerm) throws CQLException {
+		return new FilterGeoECqlImpl(filterTerm);
 	}
 
 }

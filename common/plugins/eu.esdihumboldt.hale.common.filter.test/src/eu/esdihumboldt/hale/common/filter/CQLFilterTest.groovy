@@ -20,8 +20,7 @@ import static org.junit.Assert.*
 import org.junit.Ignore
 import org.junit.Test
 
-import eu.esdihumboldt.hale.common.instance.model.Filter
-import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -35,8 +34,32 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class CQLFilterTest extends AbstractFilterTest {
 
-	Filter filter(String expr) {
+	AbstractGeotoolsFilter filter(String expr) {
 		new FilterGeoCqlImpl(expr)
+	}
+
+	// get references
+
+	@Test
+	void testGetReferencesSimple() {
+		def entities = filter("name = 'Max Mustermann'")
+				.getReferencedEntities(new TypeEntityDefinition(personType, null, null))
+		assertNotNull(entities)
+		assertEquals(1, entities.size())
+		assertTrue(entities[0].present)
+		assertEquals('name', entities[0].get().definition.name.localPart)
+	}
+
+	@Test
+	void testGetReferencesNested() {
+		def entities = filter("address.number > 10 AND address.number <= 12")
+				.getReferencedEntities(new TypeEntityDefinition(personType, null, null))
+		assertNotNull(entities)
+		assertEquals(1, entities.size())
+		assertTrue(entities[0].present)
+		assertEquals(2, entities[0].get().propertyPath.size())
+		assertEquals('address', entities[0].get().propertyPath[0].child.name.localPart)
+		assertEquals('number', entities[0].get().propertyPath[1].child.name.localPart)
 	}
 
 	// EQUALITY (=)
