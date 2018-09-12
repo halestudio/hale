@@ -129,8 +129,10 @@ public class CustomTypeContentHelper {
 		switch (config.getMode()) {
 		case simple:
 			applySimpleMode(propDef, propParent, config);
+			break;
 		case elements:
 			applyElementsMode(propDef, propParent, config, index);
+			break;
 		default:
 			log.error("Unrecognized custom type content mode {}", config.getMode().name());
 		}
