@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -71,6 +72,31 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 					sourceTypes);
 
 			// TODO: add nested joined tables to merged tables
+
+			List<String> sourceTables = new ArrayList<>();
+
+			sourceTables.add(baseTable.buildDraft().getName());
+
+			while (!sourceTables.isEmpty()) {
+				for (String tableName : sourceTables) {
+					final List<MappingJoin> joins = sortedConditions.stream()
+							.filter(condition -> condition.getSourceTable().equals(tableName))
+							.map(condition -> {
+								final MappingJoinBuilder join = new MappingJoinBuilder();
+								join.joinCondition(condition);
+								join.targetPath("TODO");
+								return join.build();
+							}).collect(Collectors.toList());
+
+					joins.forEach(joinPath -> {
+						mappingContext.getTable(joinPath.getTargetTable())
+								.ifPresent(targetTable -> targetTable.joinPath(joinPath));
+					});
+
+					sourceTables = joins.stream().map(st -> st.getTargetTable())
+							.collect(Collectors.toList());
+				}
+			}
 
 			final List<MappingJoin> joins = sortedConditions.stream().filter(condition -> condition
 					.getSourceTable().equals(baseTable.buildDraft().getName())).map(condition -> {

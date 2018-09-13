@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import javax.xml.namespace.QName;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMappingBuilder;
@@ -155,8 +156,8 @@ public final class MappingContext {
 			return;
 		}
 
-		this.currentMappingTables.values().stream().filter(isJoinTable())
-				.map(MappingTableBuilder::build).forEach(table -> {
+		Lists.reverse(Lists.newArrayList(this.currentMappingTables.values())).stream()
+				.filter(isJoinTable()).map(MappingTableBuilder::build).forEach(table -> {
 					if (this.currentMappingTables
 							.containsKey(table.getJoinPaths().iterator().next().getSourceTable())) {
 						this.currentMappingTables
