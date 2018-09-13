@@ -2,7 +2,26 @@
 All notable changes to this project will be documented in this file.
 See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
 
-## [Unreleased]
+## [3.4.1]
+
+### Changed
+
+- Updated GML XSD to version 3.2.2
+
+### Fixed
+
+- Fixed problems with AppSchema configuration dialog on Windows
+- Allow loading the same Excel lookup table multiple times
+- Fixed file names when partitioning by feature type in a GML export
+- Support partitioning by feature type when transforming external data
+- Support srsDimension attribute also at coordinates level
+- Fixed Compatibility Mode toolbar on Windows
+- Removed invalid AdV CRS code mappings
+- Fixed possible `NullPointerException`s in GML export, lookup tables, transformation
+- Added missing configuration page to wizard for Excel lookup tables
+- Fixed number and length validators to support value lists
+- Prevent transformation run when sampling causes reloading of source data
+- Force replacement of `\r` line endings in Groovy scripts
 
 ## [3.4.0]
 
@@ -259,7 +278,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.4.0...HEAD
+[3.4.1]: https://github.com/halestudio/hale/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/halestudio/hale/compare/3.3.2...3.4.0
 [3.3.2]: https://github.com/halestudio/hale/compare/3.3.1...3.3.2
 [3.3.1]: https://github.com/halestudio/hale/compare/3.3.0...3.3.1
