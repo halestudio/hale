@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
@@ -78,6 +77,7 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			sourceTables.add(baseTable.buildDraft().getName());
 
 			while (!sourceTables.isEmpty()) {
+				List<String> nextSourceTables = new ArrayList<>();
 				for (String tableName : sourceTables) {
 					final List<MappingJoin> joins = sortedConditions.stream()
 							.filter(condition -> condition.getSourceTable().equals(tableName))
@@ -93,40 +93,39 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 								.ifPresent(targetTable -> targetTable.joinPath(joinPath));
 					});
 
-					sourceTables = joins.stream().map(st -> st.getTargetTable())
-							.collect(Collectors.toList());
+					nextSourceTables.addAll(joins.stream().map(st -> st.getTargetTable())
+							.collect(Collectors.toList()));
 				}
+				sourceTables = nextSourceTables;
 			}
 
-			final List<MappingJoin> joins = sortedConditions.stream().filter(condition -> condition
-					.getSourceTable().equals(baseTable.buildDraft().getName())).map(condition -> {
-						final MappingJoinBuilder join = new MappingJoinBuilder();
-						join.joinCondition(condition);
-
-						Optional<MappingTableBuilder> t = mappingContext
-								.getTable(condition.getTargetTable());
-
-						// join with connecting table
-						// TODO cant have values yet, check name for now
-						if (t.isPresent() && t.get().buildDraft().getName().contains("__")) {
-							Optional<Condition> matchingCondition = sortedConditions.stream()
-									.filter(condition2 -> condition2.getSourceTable()
-											.equals(condition.getTargetTable()))
-									.findFirst();
-
-							if (matchingCondition.isPresent()) {
-								join.joinCondition(matchingCondition.get());
-							}
-						}
-
-						join.targetPath("TODO");
-						return join.build();
-					}).collect(Collectors.toList());
-
-			joins.forEach(joinPath -> {
-				mappingContext.getTable(joinPath.getTargetTable())
-						.ifPresent(targetTable -> targetTable.joinPath(joinPath));
-			});
+			/*
+			 * final List<MappingJoin> joins =
+			 * sortedConditions.stream().filter(condition -> condition
+			 * .getSourceTable().equals(baseTable.buildDraft().getName())).map(
+			 * condition -> { final MappingJoinBuilder join = new
+			 * MappingJoinBuilder(); join.joinCondition(condition);
+			 * 
+			 * Optional<MappingTableBuilder> t = mappingContext
+			 * .getTable(condition.getTargetTable());
+			 * 
+			 * // join with connecting table // TODO cant have values yet, check
+			 * name for now if (t.isPresent() &&
+			 * t.get().buildDraft().getName().contains("__")) {
+			 * Optional<Condition> matchingCondition = sortedConditions.stream()
+			 * .filter(condition2 -> condition2.getSourceTable()
+			 * .equals(condition.getTargetTable())) .findFirst();
+			 * 
+			 * if (matchingCondition.isPresent()) {
+			 * join.joinCondition(matchingCondition.get()); } }
+			 * 
+			 * join.targetPath("TODO"); return join.build();
+			 * }).collect(Collectors.toList());
+			 * 
+			 * joins.forEach(joinPath -> {
+			 * mappingContext.getTable(joinPath.getTargetTable())
+			 * .ifPresent(targetTable -> targetTable.joinPath(joinPath)); });
+			 */
 		}
 	}
 
