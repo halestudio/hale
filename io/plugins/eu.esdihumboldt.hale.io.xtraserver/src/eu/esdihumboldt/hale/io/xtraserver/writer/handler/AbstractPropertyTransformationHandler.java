@@ -155,7 +155,8 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 
 		if (targetProperty == null || (sourceProperty == null && !((this instanceof AssignHandler)
 				|| (this instanceof CustomFunctionAdvToNamespace)
-				|| (this instanceof SqlExpressionHandler)))) {
+				|| (this instanceof SqlExpressionHandler)
+				|| (this instanceof FormattedStringHandler)))) {
 			CellParentWrapper cellParentWrapper = (CellParentWrapper) propertyCell;
 			mappingContext.getReporter().warn(
 					"Cell could not be exported, source or target property is not set (Table: {0}, Source: {1}, Target: {2})",
