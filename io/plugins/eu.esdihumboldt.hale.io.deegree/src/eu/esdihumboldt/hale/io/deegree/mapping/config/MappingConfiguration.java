@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.mapping;
+package eu.esdihumboldt.hale.io.deegree.mapping.config;
 
 import java.util.Optional;
 
@@ -33,6 +33,14 @@ public interface MappingConfiguration {
 	 * @return the mapping mode
 	 */
 	MappingMode getMode();
+
+	/**
+	 * Get the mode for generating ID prefixes that should be used (for
+	 * relational mapping).
+	 * 
+	 * @return the mode for generating ID prefixes
+	 */
+	IDPrefixMode getIDPrefixMode();
 
 	/**
 	 * Get the deegree SQL dialect.

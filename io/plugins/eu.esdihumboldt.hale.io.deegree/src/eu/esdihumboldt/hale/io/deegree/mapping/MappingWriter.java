@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
@@ -35,6 +36,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.deegree.commons.xml.stax.IndentingXMLStreamWriter;
+import org.deegree.feature.persistence.sql.FeatureTypeMapping;
 import org.deegree.feature.persistence.sql.MappedAppSchema;
 import org.deegree.feature.persistence.sql.config.SQLFeatureStoreConfigWriter;
 import org.deegree.feature.persistence.sql.ddl.DDLCreator;
@@ -44,7 +46,10 @@ import org.deegree.feature.types.FeatureType;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingConfiguration;
 import eu.esdihumboldt.hale.io.deegree.mapping.model.AppSchemaDecorator;
+import eu.esdihumboldt.hale.io.deegree.mapping.model.MappedAppSchemaCopy;
+import eu.esdihumboldt.hale.io.deegree.mapping.model.ModelHelper;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 
@@ -135,12 +140,42 @@ public class MappingWriter {
 		if (mappedSchema == null) {
 			AppSchema appSchema = readApplicationSchema(targetSchema.getLocation().toString());
 			appSchema = adaptSchema(appSchema);
-			mappedSchema = mapApplicationSchema(appSchema, config);
+			MappedAppSchema tmpMapping = mapApplicationSchema(appSchema, config);
 
-			// TODO adapt according to alignment?
+			// adapt according to alignment / configuration
+			this.mappedSchema = adaptMapping(tmpMapping, config);
 		}
 
 		return mappedSchema;
+	}
+
+	/**
+	 * Adapt the given mapping based on the mapping configuration.
+	 * 
+	 * @param mapping the original mapping
+	 * @param config the mapping configuration
+	 * @return the adapted mapping
+	 */
+	private MappedAppSchema adaptMapping(MappedAppSchema mapping, MappingConfiguration config) {
+		Function<FeatureTypeMapping, String> prefixGenerator;
+		switch (config.getIDPrefixMode()) {
+		case element:
+			// use element local name plus underscore
+			prefixGenerator = (ftm) -> ftm.getFeatureType().getLocalPart() + '_';
+			break;
+		case deegree:
+		default:
+			// return unchanged
+			return mapping;
+		}
+
+		return new MappedAppSchemaCopy(mapping, fts -> {
+			return fts.map(ftm -> {
+				return ModelHelper.withFIDMapping(
+						ModelHelper.withPrefix(prefixGenerator.apply(ftm), ftm.getFidMapping()),
+						ftm);
+			});
+		});
 	}
 
 	/**
