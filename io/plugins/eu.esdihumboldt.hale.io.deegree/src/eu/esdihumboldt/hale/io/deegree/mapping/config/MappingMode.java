@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.mapping;
+package eu.esdihumboldt.hale.io.deegree.mapping.config;
 
 /**
  * Feature store mapping modes.

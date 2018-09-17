@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.deegree.mapping;
+package eu.esdihumboldt.hale.io.deegree.mapping.config;
 
 import java.util.Optional;
 
@@ -49,12 +49,15 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 	public static final String KEY_MAPPING_MODE = "featureStore.mappingMode";
 
+	public static final String KEY_ID_PREFIX_MODE = "featureStore.idPrefixMode";
+
 	public static final String KEY_CRS_IDENTIFIER = "featureStore.crs.identifier";
 	public static final String KEY_CRS_DIMENSION = "featureStore.crs.dimension";
 	public static final String KEY_CRS_SRID = "featureStore.crs.srid";
 
 	public static final DatabaseType DEFAULT_DATABASE_TYPE = DatabaseType.PostGIS;
 	public static final MappingMode DEFAULT_MAPPING_MODE = MappingMode.relational;
+	public static final IDPrefixMode DEFAULT_ID_PREFIX_MODE = IDPrefixMode.deegree;
 	// Note: PostGIS uses lon/lat by default
 	public static final String DEFAULT_CRS_IDENTIFIER = "EPSG:4326"; // "urn:ogc:def:crs:epsg::4326";
 	public static final String DEFAULT_JDBC_CONNECTION_ID = "db";
@@ -90,6 +93,8 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	public void fillDefaults() {
 		setMappingMode(DEFAULT_MAPPING_MODE);
 
+		setIDPrefixMode(DEFAULT_ID_PREFIX_MODE);
+
 		setDatabaseType(DEFAULT_DATABASE_TYPE, getDefaultVersion(DEFAULT_DATABASE_TYPE));
 
 		setCRSIdentifier(DEFAULT_CRS_IDENTIFIER);
@@ -114,6 +119,22 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	 */
 	public void setMappingMode(MappingMode mode) {
 		config.set(KEY_MAPPING_MODE, mode.name());
+	}
+
+	@Override
+	public IDPrefixMode getIDPrefixMode() {
+		return config.get(KEY_ID_PREFIX_MODE, String.class).map(IDPrefixMode::valueOf)
+				// fall-back
+				.orElse(DEFAULT_ID_PREFIX_MODE);
+	}
+
+	/**
+	 * Set the mode for generating ID prefixes.
+	 * 
+	 * @param mode the prefix ID generation mode
+	 */
+	public void setIDPrefixMode(IDPrefixMode mode) {
+		config.set(KEY_ID_PREFIX_MODE, mode.name());
 	}
 
 	@Override

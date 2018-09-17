@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration;
 
 /**
  * Creates a deegree SQL mapping configuration from a schema.

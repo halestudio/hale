@@ -20,6 +20,7 @@ import org.junit.Test
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
+import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration
 import eu.esdihumboldt.util.config.Config
 
 /**

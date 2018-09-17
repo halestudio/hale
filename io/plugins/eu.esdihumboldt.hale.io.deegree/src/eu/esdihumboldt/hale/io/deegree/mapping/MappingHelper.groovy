@@ -22,6 +22,8 @@ import org.deegree.feature.types.AppSchema
 import org.deegree.gml.schema.GMLAppSchemaReader
 import org.deegree.sqldialect.SQLDialect
 
+import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingConfiguration
+import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingMode
 import groovy.transform.CompileStatic
 
 /**
