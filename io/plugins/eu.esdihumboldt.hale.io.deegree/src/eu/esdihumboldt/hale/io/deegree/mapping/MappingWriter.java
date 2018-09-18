@@ -98,7 +98,7 @@ public class MappingWriter {
 	public void saveConfig(OutputStream out) throws Exception {
 		// XXX also takes properties with href primitive mappings
 		SQLFeatureStoreConfigWriter configWriter = new SQLFeatureStoreConfigWriter(
-				getMappedSchema());
+				getMappedSchema(), getPropertiesWithPrimitiveHref());
 
 		List<String> schemaUrls = new ArrayList<>();
 
@@ -112,6 +112,22 @@ public class MappingWriter {
 		} finally {
 			xmlWriter.close();
 		}
+	}
+
+	/**
+	 * Get the properties where a primitive mapping should be used for XLinks.
+	 * 
+	 * Note that deegree seems to only support first level properties to be
+	 * named here, that have an XLink attribute group. Also, it is not possible
+	 * to specify the relation to a feature type, which means they are used for
+	 * any feature type.
+	 * 
+	 * @return the list of qualified names of properties
+	 */
+	private List<QName> getPropertiesWithPrimitiveHref() {
+		// TODO Auto-generated method stub
+
+		return null;
 	}
 
 	/**

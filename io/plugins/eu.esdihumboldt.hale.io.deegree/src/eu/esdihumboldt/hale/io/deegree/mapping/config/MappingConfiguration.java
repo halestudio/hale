@@ -43,6 +43,13 @@ public interface MappingConfiguration {
 	IDPrefixMode getIDPrefixMode();
 
 	/**
+	 * Get the mode for determining primitive links.
+	 * 
+	 * @return the mode for determining primitive links
+	 */
+	PrimitiveLinkMode getPrimitiveLinkMode();
+
+	/**
 	 * Get the deegree SQL dialect.
 	 * 
 	 * @return the SQL dialect for the target database
