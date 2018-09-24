@@ -586,10 +586,10 @@ public class Transformation {
 		// XXX rather decide based on function declaration or anything like
 		// that?
 		switch (transformationIdentifier) {
+		// Groovy variants excluded to allow spatial index to be built and
+		// used in Groovy scripts
 		case RetypeFunction.ID: // fall through
 		case CreateFunction.ID: // fall through
-		case "eu.esdihumboldt.cst.functions.groovy.retype": // fall through
-		case "eu.esdihumboldt.cst.functions.groovy.create":
 			return true;
 		default:
 			return false;
