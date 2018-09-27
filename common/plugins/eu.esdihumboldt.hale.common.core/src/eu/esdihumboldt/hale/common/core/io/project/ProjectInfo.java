@@ -46,11 +46,11 @@ public interface ProjectInfo extends ProjectDescription {
 	public Date getModified();
 
 	/**
-	 * Get the property with the given name.
+	 * Get the setting with the given name.
 	 * 
-	 * @param name the property name
-	 * @return the property value, may be a null value but not <code>null</code>
+	 * @param name the setting name
+	 * @return the setting value, may be a null value but not <code>null</code>
 	 */
-	public Value getProperty(String name);
+	public Value getSetting(String name);
 
 }

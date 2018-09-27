@@ -344,7 +344,7 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 								}
 
 								@Override
-								public Value getProperty(String name) {
+								public Value getSetting(String name) {
 									return Value.NULL;
 								}
 							};

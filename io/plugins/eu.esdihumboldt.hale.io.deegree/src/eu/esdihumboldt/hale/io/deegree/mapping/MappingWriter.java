@@ -221,7 +221,7 @@ public class MappingWriter {
 		case codeListAssociation: // code list associations as primitive links
 			if (projectInfo != null) {
 				CodeListAssociations associations = projectInfo
-						.getProperty(CodeListAssociations.KEY_ASSOCIATIONS)
+						.getSetting(CodeListAssociations.KEY_ASSOCIATIONS)
 						.as(CodeListAssociations.class);
 
 				return associations.getAssociations().keySet().stream().map(e -> {

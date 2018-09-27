@@ -109,7 +109,7 @@ public class ProjectAccessor implements ProjectInfo {
 	}
 
 	@Override
-	public Value getProperty(String name) {
+	public Value getSetting(String name) {
 		if (projectInfo != null) {
 			return projectInfo.getProperty(name);
 		}

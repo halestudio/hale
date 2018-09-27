@@ -292,7 +292,7 @@ public class Project implements ProjectInfo, Cloneable {
 	}
 
 	@Override
-	public Value getProperty(String name) {
+	public Value getSetting(String name) {
 		Value value = getProperties().get(name);
 		return (value != null) ? (value) : (Value.NULL);
 	}
