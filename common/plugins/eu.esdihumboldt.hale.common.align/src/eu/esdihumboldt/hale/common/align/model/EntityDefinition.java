@@ -75,4 +75,19 @@ public interface EntityDefinition {
 	 */
 	public SchemaSpaceID getSchemaSpace();
 
+	/**
+	 * Get the last element in the property path.
+	 * 
+	 * @return the last path element or <code>null</code> if the path is empty
+	 */
+	default ChildContext getLastPathElement() {
+		List<ChildContext> path = getPropertyPath();
+		if (path == null || path.isEmpty()) {
+			return null;
+		}
+		else {
+			return path.get(path.size() - 1);
+		}
+	}
+
 }

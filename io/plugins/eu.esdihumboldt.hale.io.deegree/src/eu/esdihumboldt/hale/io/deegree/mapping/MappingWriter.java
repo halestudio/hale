@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -43,10 +44,22 @@ import org.deegree.feature.persistence.sql.ddl.DDLCreator;
 import org.deegree.feature.types.AppSchema;
 import org.deegree.feature.types.FeatureType;
 
+import eu.esdihumboldt.hale.common.align.helper.EntityFinder;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.schema.Classification;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceProperty;
 import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingConfiguration;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.PrimitiveLinkMode;
 import eu.esdihumboldt.hale.io.deegree.mapping.model.AppSchemaDecorator;
 import eu.esdihumboldt.hale.io.deegree.mapping.model.MappedAppSchemaCopy;
 import eu.esdihumboldt.hale.io.deegree.mapping.model.ModelHelper;
@@ -74,19 +87,23 @@ public class MappingWriter {
 
 	private final MappingConfiguration config;
 
+	private final SimpleLog log;
+
 	/**
 	 * Create a new mapping writer.
 	 * 
 	 * @param targetSchema the target schema
 	 * @param alignment the alignment, may be <code>null</code>
 	 * @param config the configuration
+	 * @param log the process log
 	 */
 	public MappingWriter(Schema targetSchema, @Nullable Alignment alignment,
-			MappingConfiguration config) {
+			MappingConfiguration config, SimpleLog log) {
 		super();
 		this.targetSchema = targetSchema;
 		this.alignment = alignment;
 		this.config = config;
+		this.log = log;
 	}
 
 	/**
@@ -96,9 +113,18 @@ public class MappingWriter {
 	 * @throws Exception if an error occurs saving the configuration
 	 */
 	public void saveConfig(OutputStream out) throws Exception {
-		// XXX also takes properties with href primitive mappings
+		Set<QName> propertiesWithPrimitiveHref = getPropertiesWithPrimitiveHref();
+		if (propertiesWithPrimitiveHref.isEmpty()) {
+			log.info("Identified no properties with primitive link");
+		}
+		else {
+			log.info("Identified the following properties with primitive links: "
+					+ propertiesWithPrimitiveHref.stream().map(QName::toString)
+							.collect(Collectors.joining(", ")));
+		}
+
 		SQLFeatureStoreConfigWriter configWriter = new SQLFeatureStoreConfigWriter(
-				getMappedSchema(), getPropertiesWithPrimitiveHref());
+				getMappedSchema(), new ArrayList<>(propertiesWithPrimitiveHref));
 
 		List<String> schemaUrls = new ArrayList<>();
 
@@ -117,17 +143,78 @@ public class MappingWriter {
 	/**
 	 * Get the properties where a primitive mapping should be used for XLinks.
 	 * 
-	 * Note that deegree seems to only support first level properties to be
-	 * named here, that have an XLink attribute group. Also, it is not possible
-	 * to specify the relation to a feature type, which means they are used for
-	 * any feature type.
+	 * Note that deegree seems to only support properties to be named here, that
+	 * have an XLink attribute group. Also, it is not possible to specify the
+	 * relation to a feature type, or the nesting within a type, which means
+	 * they apply for any feature type and at any level.
 	 * 
 	 * @return the list of qualified names of properties
 	 */
-	private List<QName> getPropertiesWithPrimitiveHref() {
-		// TODO Auto-generated method stub
+	protected Set<QName> getPropertiesWithPrimitiveHref() {
+		switch (config.getPrimitiveLinkMode()) {
+		case targetElement: // fall through
+		case inspire:
+			EntityFinder finder = new EntityFinder(e -> {
+				if (e instanceof PropertyEntityDefinition) {
+					// is a property
+					PropertyDefinition prop = ((PropertyEntityDefinition) e).getDefinition();
+					Reference ref = prop.getConstraint(Reference.class);
+					if ("href".equals(prop.getName().getLocalPart()) && ref.isReference()) {
+						// by default here we treat everything as primitive that
+						// does not have types associated
+						boolean primitive = true;
+						// -> check referenced types
+						if (ref.getReferencedTypes() != null
+								&& !ref.getReferencedTypes().isEmpty()) {
+							// concrete types referenced
+							primitive = false;
+						}
+						// -> check referenced types in a parent
+						// ReferenceProperty (e.g. gml:ReferenceType)
+						if (primitive) {
+							EntityDefinition parent = AlignmentUtil.getParent(e);
+							if (parent instanceof PropertyEntityDefinition) {
+								PropertyDefinition parentProp = ((PropertyEntityDefinition) parent)
+										.getDefinition();
+								ReferenceProperty parentRef = parentProp
+										.getConstraint(ReferenceProperty.class);
+								if (parentRef.isReference()
+										&& parentRef.getReferencedTypes() != null
+										&& !parentRef.getReferencedTypes().isEmpty()) {
+									// concrete types referenced
+									primitive = false;
+								}
+								else if (config.getPrimitiveLinkMode()
+										.equals(PrimitiveLinkMode.inspire)) {
+									// in INSPIRE mode, only mark inspire
+									// properties as primitive
+									boolean inspireProp = parentProp.getName().getNamespaceURI()
+											.contains("inspire.ec.europa.eu");
+									if (!inspireProp) {
+										primitive = false;
+									}
+								}
+							}
+						}
 
-		return null;
+						return primitive;
+					}
+				}
+
+				return false;
+			}, 5);
+
+			List<EntityDefinition> entities = finder.find(getTargetTypes().stream()
+					.map(t -> new TypeEntityDefinition(t, SchemaSpaceID.TARGET, null))
+					.collect(Collectors.toList()));
+
+			return entities.stream().map(e -> AlignmentUtil.getParent(e))
+					.map(e -> e.getDefinition().getName()).collect(Collectors.toSet());
+
+		case none: // no primitive links
+		default:
+			return new HashSet<>();
+		}
 	}
 
 	/**
@@ -201,35 +288,60 @@ public class MappingWriter {
 	 * @return the adapted schema
 	 */
 	protected AppSchema adaptSchema(AppSchema appSchema) {
+		Set<TypeDefinition> targetTypes = getTargetTypes();
+		// the feature type name corresponds to the element name
+		Set<QName> targetElements = targetTypes.stream()
+				.<XmlElement> flatMap(
+						t -> t.getConstraint(XmlElements.class).getElements().stream())
+				.map(e -> e.getName()).collect(Collectors.toSet());
+
+		return new AppSchemaDecorator(appSchema) {
+
+			@Override
+			public List<FeatureType> getFeatureTypes(String namespace, boolean includeCollections,
+					boolean includeAbstracts) {
+				List<FeatureType> fts = super.getFeatureTypes(namespace, includeCollections,
+						includeAbstracts);
+
+				return fts.stream().filter(ft -> {
+					// only accept types that are part of the mapped-to
+					// types
+					return targetElements.contains(ft.getName());
+				}).collect(Collectors.toList());
+			}
+		};
+	}
+
+	/**
+	 * Get the target feature types.
+	 * 
+	 * @return the set of types
+	 */
+	protected Set<TypeDefinition> getTargetTypes() {
 		if (alignment != null) {
-			// determine types that are mapped to
-			Set<TypeDefinition> targetTypes = alignment.getTypeCells().stream().flatMap(c -> {
+			// default behavior when alignment is present
+			// determine feature types that are mapped to
+			return alignment.getTypeCells().stream().flatMap(c -> {
 				return c.getTarget().values().stream();
-			}).map(e -> e.getDefinition().getType()).collect(Collectors.toSet());
-			// the feature type name corresponds to the element name
-			Set<QName> targetElements = targetTypes.stream()
-					.<XmlElement> flatMap(
-							t -> t.getConstraint(XmlElements.class).getElements().stream())
-					.map(e -> e.getName()).collect(Collectors.toSet());
-
-			return new AppSchemaDecorator(appSchema) {
-
-				@Override
-				public List<FeatureType> getFeatureTypes(String namespace,
-						boolean includeCollections, boolean includeAbstracts) {
-					List<FeatureType> fts = super.getFeatureTypes(namespace, includeCollections,
-							includeAbstracts);
-
-					return fts.stream().filter(ft -> {
-						// only accept types that are part of the mapped-to
-						// types
-						return targetElements.contains(ft.getName());
-					}).collect(Collectors.toList());
-				}
-			};
+			}).map(e -> e.getDefinition().getType()).filter(
+					t -> Classification.getClassification(t).equals(Classification.CONCRETE_FT))
+					.collect(Collectors.toSet());
 		}
 		else {
-			return appSchema;
+			// w/o alignment, default to mapping relevant feature types
+			Set<TypeDefinition> types = targetSchema.getMappingRelevantTypes().stream().filter(
+					t -> Classification.getClassification(t).equals(Classification.CONCRETE_FT))
+					.collect(Collectors.toSet());
+			if (types.isEmpty()) {
+				// if there are no mapping relevant feature types, use all
+				// feature types
+				return targetSchema.getTypes().stream().filter(
+						t -> Classification.getClassification(t).equals(Classification.CONCRETE_FT))
+						.collect(Collectors.toSet());
+			}
+			else {
+				return types;
+			}
 		}
 	}
 
