@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.io.deegree.mapping
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.align.model.Alignment
+import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema
 import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration
@@ -41,7 +42,7 @@ class MappingWriterTest {
 		Alignment alignment = null
 		GenericMappingConfiguration config = new GenericMappingConfiguration(new Config())
 		config.fillDefaults()
-		def writer = new MappingWriter(targetSchema, alignment, config)
+		def writer = new MappingWriter(targetSchema, alignment, null, config, SimpleLog.CONSOLE_LOG)
 
 		File tempFile = File.createTempFile('deegree-sql-config', '.xml')
 		tempFile.deleteOnExit()
@@ -62,7 +63,7 @@ class MappingWriterTest {
 		Alignment alignment = null
 		GenericMappingConfiguration config = new GenericMappingConfiguration(new Config())
 		config.fillDefaults()
-		def writer = new MappingWriter(targetSchema, alignment, config)
+		def writer = new MappingWriter(targetSchema, alignment, null, config, SimpleLog.CONSOLE_LOG)
 
 		File tempFile = File.createTempFile('deegree-sql-config', '.xml')
 		tempFile.deleteOnExit()
