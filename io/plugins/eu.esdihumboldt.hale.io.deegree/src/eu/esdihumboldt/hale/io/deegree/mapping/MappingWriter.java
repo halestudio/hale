@@ -50,6 +50,8 @@ import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
+import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.Classification;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
@@ -65,6 +67,7 @@ import eu.esdihumboldt.hale.io.deegree.mapping.model.MappedAppSchemaCopy;
 import eu.esdihumboldt.hale.io.deegree.mapping.model.ModelHelper;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
+import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 
 /**
  * Writer for deegree feature mappings based on hale schema and alignment.
@@ -89,19 +92,23 @@ public class MappingWriter {
 
 	private final SimpleLog log;
 
+	private final ProjectInfo projectInfo;
+
 	/**
 	 * Create a new mapping writer.
 	 * 
 	 * @param targetSchema the target schema
 	 * @param alignment the alignment, may be <code>null</code>
+	 * @param projectInfo the project information, may be <code>null</code>
 	 * @param config the configuration
 	 * @param log the process log
 	 */
 	public MappingWriter(Schema targetSchema, @Nullable Alignment alignment,
-			MappingConfiguration config, SimpleLog log) {
+			@Nullable ProjectInfo projectInfo, MappingConfiguration config, SimpleLog log) {
 		super();
 		this.targetSchema = targetSchema;
 		this.alignment = alignment;
+		this.projectInfo = projectInfo;
 		this.config = config;
 		this.log = log;
 	}
@@ -210,6 +217,45 @@ public class MappingWriter {
 
 			return entities.stream().map(e -> AlignmentUtil.getParent(e))
 					.map(e -> e.getDefinition().getName()).collect(Collectors.toSet());
+
+		case codeListAssociation: // code list associations as primitive links
+			if (projectInfo != null) {
+				CodeListAssociations associations = projectInfo
+						.getProperty(CodeListAssociations.KEY_ASSOCIATIONS)
+						.as(CodeListAssociations.class);
+
+				return associations.getAssociations().keySet().stream().map(e -> {
+					List<QName> names = e.getNames();
+					if (names.size() > 1) {
+						QName candidate = names.get(names.size() - 1);
+						if (!candidate.equals(XmlSchemaReader.NAME_XLINK_REF)) {
+							// in case there is an association directly at the
+							// property
+							// (though that should not be the case for
+							// gml:ReferenceTypes)
+							return candidate;
+						}
+						else {
+							if (names.size() > 2) {
+								return names.get(names.size() - 2);
+							}
+							else {
+								// can't return parent
+								return null;
+							}
+						}
+					}
+					else {
+						// can't use type name
+						return null;
+					}
+				}).filter(e -> e != null).collect(Collectors.toSet());
+			}
+			else {
+				log.error(
+						"Can't get information on code list associations for primitive links: No project information available");
+				return new HashSet<>();
+			}
 
 		case none: // no primitive links
 		default:

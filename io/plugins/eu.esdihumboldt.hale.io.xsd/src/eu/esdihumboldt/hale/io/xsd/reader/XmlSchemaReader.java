@@ -225,7 +225,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * Qualified name of the XLink reference attribute.
 	 */
-	private static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
+	public static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
 
 	/**
 	 * Name for virtual INSPIRE NilReason type with adapted enumeration.

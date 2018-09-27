@@ -22,6 +22,7 @@ import javax.annotation.Nullable;
 import org.osgi.framework.Version;
 
 import eu.esdihumboldt.hale.common.align.transformation.function.ExecutionContext;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 
@@ -105,6 +106,14 @@ public class ProjectAccessor implements ProjectInfo {
 			return projectInfo.getProjectInfo().getModified();
 		}
 		return null;
+	}
+
+	@Override
+	public Value getProperty(String name) {
+		if (projectInfo != null) {
+			return projectInfo.getProperty(name);
+		}
+		return Value.NULL;
 	}
 
 }

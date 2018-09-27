@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.model.Alignment;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
@@ -340,6 +341,11 @@ public class ExamplesContent extends AbstractVelocityContent implements Examples
 								@Override
 								public String getAuthor() {
 									return project.getAuthor();
+								}
+
+								@Override
+								public Value getProperty(String name) {
+									return Value.NULL;
 								}
 							};
 							((ProjectInfoAware) mappingDocExport).setProjectInfo(smallInfo); // project);

@@ -26,13 +26,14 @@ public enum PrimitiveLinkMode {
 	none("Don't use primitive links"),
 
 	/** Detect based on schema optional information */
-	targetElement("All except where targetElement information is found in XML Schema AppInfo"),
+	targetElement(
+			"All links except where targetElement information is found in XML Schema AppInfo"),
 
 	/** like targetElement, but only INSPIRE properties may be primitive */
-	inspire("All INSPIRE links except where targetElement information is found in XML Schema AppInfo");
+	inspire("All INSPIRE links except where targetElement information is found in XML Schema AppInfo"),
 
-	// TODO codeListAssociation("Use primitive links for properties where code
-	// lists are assigned in hale");
+	/** use code list association information */
+	codeListAssociation("All links where code lists are assigned in hale");
 
 	private final String description;
 

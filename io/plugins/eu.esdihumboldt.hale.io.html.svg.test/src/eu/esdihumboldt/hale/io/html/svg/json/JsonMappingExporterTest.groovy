@@ -22,6 +22,7 @@ import org.osgi.framework.Version
 
 import eu.esdihumboldt.cst.test.TransformationExample
 import eu.esdihumboldt.cst.test.TransformationExamples
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
@@ -60,6 +61,10 @@ class JsonMappingExporterTest extends GroovyTestCase {
 						String description = '?'
 						Date created = new Date()
 						Date modified = new Date()
+						@Override
+						Value getProperty(String name) {
+							Value.NULL
+						}
 					}
 
 			IOReport rep = exporter.execute(null)
