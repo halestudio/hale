@@ -21,7 +21,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.inspire.id.default' to a
@@ -44,7 +44,7 @@ class CustomFunctionAdvToLocalId extends FormattedStringHandler {
 	@Override
 	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
 
-		final String propertyName = propertyName(AppSchemaMappingUtils
+		final String propertyName = propertyName(XtraServerMappingUtils
 				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
 
 		final MappingValue mappingValue = new MappingValueBuilder().expression()

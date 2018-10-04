@@ -28,7 +28,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder.Valu
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.inspire.identifier' to a
@@ -54,7 +54,7 @@ class CustomFunctionAdvToIdentifier extends FormattedStringHandler {
 		final Value inspireNamespace = mappingContext
 				.getTransformationProperty(MappingContext.PROPERTY_INSPIRE_NAMESPACE);
 
-		final String propertyName = propertyName(AppSchemaMappingUtils
+		final String propertyName = propertyName(XtraServerMappingUtils
 				.getSourceProperty(propertyCell).getDefinition().getPropertyPath());
 
 		String value = "'";

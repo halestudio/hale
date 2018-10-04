@@ -165,9 +165,6 @@
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
-      <plugin id="eu.esdihumboldt.hale.io.appschema"/>
-      <plugin id="eu.esdihumboldt.hale.io.appschema.model.jaxb"/>
-      <plugin id="eu.esdihumboldt.hale.io.appschema.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>

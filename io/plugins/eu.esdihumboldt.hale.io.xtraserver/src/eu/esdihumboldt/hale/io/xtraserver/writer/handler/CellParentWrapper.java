@@ -31,8 +31,8 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.TransformationMode;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Parameter decorator, that provides access to the parent cell
@@ -79,8 +79,8 @@ public class CellParentWrapper implements Cell {
 
 	private EntityDefinition getParentCellSourceType() {
 		if (parentTypeCell.getTransformationIdentifier().equals(JoinFunction.ID)) {
-			List<ParameterValue> parameters = parentTypeCell.getTransformationParameters()
-					.get(PARAMETER_JOIN);
+			List<ParameterValue> parameters = parentTypeCell.getTransformationParameters().get(
+					PARAMETER_JOIN);
 			if (!parameters.isEmpty()) {
 				final JoinParameter joinParameter = parameters.get(0).as(JoinParameter.class);
 				return joinParameter.getTypes().iterator().next();
@@ -91,14 +91,14 @@ public class CellParentWrapper implements Cell {
 	}
 
 	/**
-	 * Returns the table name of the property cell or the parent type cell. If the
-	 * source of the alignment is not a database schema, the name of the type is
-	 * returned.
+	 * Returns the table name of the property cell or the parent type cell. If
+	 * the source of the alignment is not a database schema, the name of the
+	 * type is returned.
 	 * 
 	 * @return table name
 	 */
 	public String getTableName() {
-		final Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(wrappedCell);
+		final Property sourceProperty = XtraServerMappingUtils.getSourceProperty(wrappedCell);
 		if (sourceProperty != null) {
 			final DatabaseTable table = sourceProperty.getDefinition().getDefinition()
 					.getParentType().getConstraint(DatabaseTable.class);
