@@ -72,7 +72,8 @@ public class MappingAlignmentWriter extends AbstractAlignmentWriter {
 			Schema targetSchema = getTargetSchema().getSchemas().iterator().next();
 			GenericMappingConfiguration config = new GenericMappingConfiguration(
 					ProviderConfig.get(this));
-			MappingWriter writer = new MappingWriter(targetSchema, getAlignment(), config);
+			MappingWriter writer = new MappingWriter(targetSchema, getAlignment(), getProjectInfo(),
+					config, reporter);
 
 			writeResult(writer, getTarget(), getContentType(), config);
 

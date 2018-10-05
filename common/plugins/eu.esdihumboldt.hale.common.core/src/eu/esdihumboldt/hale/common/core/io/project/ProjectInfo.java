@@ -20,6 +20,8 @@ import java.util.Date;
 
 import org.osgi.framework.Version;
 
+import eu.esdihumboldt.hale.common.core.io.Value;
+
 /**
  * General information on a project
  * 
@@ -42,5 +44,13 @@ public interface ProjectInfo extends ProjectDescription {
 	 * @return the modified
 	 */
 	public Date getModified();
+
+	/**
+	 * Get the setting with the given name.
+	 * 
+	 * @param name the setting name
+	 * @return the setting value, may be a null value but not <code>null</code>
+	 */
+	public Value getSetting(String name);
 
 }

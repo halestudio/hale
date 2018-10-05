@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Data Harmonisation Panel
+ * Copyright (c) 2018 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,8 +10,7 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     HUMBOLDT EU Integrated Project #030962
- *     Data Harmonisation Panel <http://www.dhpanel.eu>
+ *     wetransform GmbH <http://www.wetransform.to>
  */
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.property;
@@ -19,22 +18,23 @@ package eu.esdihumboldt.hale.common.schema.model.constraint.property;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.PropertyConstraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 
 /**
- * Specifies that a property references another identifiers of other objects,
- * e.g. the {@link PrimaryKey}.
+ * Specifies that a property represents a reference, where the actual reference
+ * value is stored in a child.
  * 
- * @author Kai Schwierczek
  * @author Simon Templer
  */
 @Constraint(mutable = true)
-public class Reference implements PropertyConstraint, ReferenceLike {
+public class ReferenceProperty implements PropertyConstraint, ReferenceLike {
 
 	/**
 	 * The referenced target types. A <code>null</code> value stands for unknown
@@ -47,10 +47,12 @@ public class Reference implements PropertyConstraint, ReferenceLike {
 	 */
 	private boolean reference;
 
+	private final List<QName> valueProperty;
+
 	/**
 	 * Creates a default "reference" that references nothing.
 	 */
-	public Reference() {
+	public ReferenceProperty() {
 		this(false);
 	}
 
@@ -61,23 +63,36 @@ public class Reference implements PropertyConstraint, ReferenceLike {
 	 *            reference, w/o specifying specific target types,
 	 *            <code>false</code> if it should not be marked as reference
 	 */
-	public Reference(boolean reference) {
+	public ReferenceProperty(boolean reference) {
 		this.reference = reference;
+		this.valueProperty = null;
+	}
+
+	/**
+	 * Create a constraint representing a reference.
+	 * 
+	 * @param valuePath the path to the property that holds the actual reference
+	 *            value
+	 */
+	public ReferenceProperty(List<QName> valuePath) {
+		this.reference = true;
+		this.valueProperty = valuePath == null ? null : Collections.unmodifiableList(valuePath);
 	}
 
 	/**
 	 * Creates a reference to the specified type.
 	 * 
+	 * @param valuePath the path to the property that holds the actual reference
+	 *            value
 	 * @param targetType the type that gets referenced
 	 */
-	public Reference(TypeDefinition targetType) {
-		this();
-		addReferencedType(targetType);
+	public ReferenceProperty(List<QName> valuePath, TypeDefinition targetType) {
+		this(valuePath);
+		if (targetType != null) {
+			addReferencedType(targetType);
+		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#getReferencedTypes()
-	 */
 	@Override
 	public Collection<? extends TypeDefinition> getReferencedTypes() {
 		if (referencedTypes == null) {
@@ -88,9 +103,6 @@ public class Reference implements PropertyConstraint, ReferenceLike {
 		}
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#addReferencedType(eu.esdihumboldt.hale.common.schema.model.TypeDefinition)
-	 */
 	@Override
 	public void addReferencedType(TypeDefinition type) {
 		if (referencedTypes == null) {
@@ -100,34 +112,18 @@ public class Reference implements PropertyConstraint, ReferenceLike {
 		reference = true;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#isReference()
-	 */
 	@Override
 	public boolean isReference() {
 		return reference;
 	}
 
 	/**
-	 * Extract the identifier of a referenced object from a reference value. The
-	 * default implementation just returns the given reference.
+	 * Get the path to the property that holds the reference value.
 	 * 
-	 * @param refValue the reference
-	 * @return the identifier of the referenced object
+	 * @return the path to the property or <code>null</code>
 	 */
-	public Object extractId(Object refValue) {
-		return refValue;
-	}
-
-	/**
-	 * Converts the identifier of a referenced object to the reference value.
-	 * The default implementation just returns the given identifier.
-	 * 
-	 * @param id the identifier
-	 * @return the reference value
-	 */
-	public Object idToReference(Object id) {
-		return id;
+	public List<QName> getValueProperty() {
+		return valueProperty;
 	}
 
 }

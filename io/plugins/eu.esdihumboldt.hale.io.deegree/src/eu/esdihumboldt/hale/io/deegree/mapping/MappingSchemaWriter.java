@@ -16,10 +16,13 @@
 package eu.esdihumboldt.hale.io.deegree.mapping;
 
 import java.io.IOException;
+import java.net.URI;
 
 import eu.esdihumboldt.hale.common.config.ProviderConfig;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoAware;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
@@ -31,7 +34,9 @@ import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguratio
  * 
  * @author Simon Templer
  */
-public class MappingSchemaWriter extends AbstractSchemaWriter {
+public class MappingSchemaWriter extends AbstractSchemaWriter implements ProjectInfoAware {
+
+	private ProjectInfo projectInfo;
 
 	@Override
 	public boolean isCancelable() {
@@ -59,7 +64,8 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 			Schema targetSchema = getSchemas().getSchemas().iterator().next();
 			GenericMappingConfiguration config = new GenericMappingConfiguration(
 					ProviderConfig.get(this));
-			MappingWriter writer = new MappingWriter(targetSchema, null, config);
+			MappingWriter writer = new MappingWriter(targetSchema, null, projectInfo, config,
+					reporter);
 
 			MappingAlignmentWriter.writeResult(writer, getTarget(), getContentType(), config);
 
@@ -77,6 +83,16 @@ public class MappingSchemaWriter extends AbstractSchemaWriter {
 	@Override
 	protected String getDefaultTypeName() {
 		return "deegree configuration";
+	}
+
+	@Override
+	public void setProjectInfo(ProjectInfo projectInfo) {
+		this.projectInfo = projectInfo;
+	}
+
+	@Override
+	public void setProjectLocation(URI location) {
+		// ignore
 	}
 
 }

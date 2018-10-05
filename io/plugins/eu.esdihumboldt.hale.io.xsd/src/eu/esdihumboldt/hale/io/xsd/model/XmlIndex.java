@@ -23,6 +23,8 @@ import java.util.Map;
 import javax.xml.namespace.QName;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
@@ -62,7 +64,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * Namespaces mapped to prefixes
 	 */
-	private final Map<String, String> prefixes = new HashMap<String, String>();
+	private final BiMap<String, String> prefixes = HashBiMap.create();
 
 	/**
 	 * @see DefaultSchema#DefaultSchema(String, URI)
@@ -141,7 +143,7 @@ public class XmlIndex extends DefaultSchema {
 	/**
 	 * @return the prefixes, namespaces mapped to prefix
 	 */
-	public Map<String, String> getPrefixes() {
+	public BiMap<String, String> getPrefixes() {
 		return prefixes;
 	}
 

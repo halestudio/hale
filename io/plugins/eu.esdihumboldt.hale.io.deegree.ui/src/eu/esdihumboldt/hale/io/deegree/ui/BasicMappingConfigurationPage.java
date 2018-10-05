@@ -45,6 +45,7 @@ import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguratio
 import eu.esdihumboldt.hale.io.deegree.mapping.config.IDPrefixMode;
 import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingConfiguration;
 import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingMode;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.PrimitiveLinkMode;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
@@ -72,6 +73,8 @@ public class BasicMappingConfigurationPage
 	private StructuredViewer mode;
 
 	private StructuredViewer idPrefix;
+
+	private StructuredViewer primitiveLink;
 
 	private Spinner nameLength;
 
@@ -155,6 +158,14 @@ public class BasicMappingConfigurationPage
 			idPrefix = (IDPrefixMode) ((IStructuredSelection) idPrefixSel).getFirstElement();
 		}
 		mappingConfig.setIDPrefixMode(idPrefix);
+
+		ISelection primitiveLinkSel = primitiveLink.getSelection();
+		PrimitiveLinkMode primitiveLink = GenericMappingConfiguration.DEFAULT_PRIMITIVE_LINK_MODE;
+		if (!primitiveLinkSel.isEmpty() && primitiveLinkSel instanceof IStructuredSelection) {
+			primitiveLink = (PrimitiveLinkMode) ((IStructuredSelection) primitiveLinkSel)
+					.getFirstElement();
+		}
+		mappingConfig.setPrimitiveLinkMode(primitiveLink);
 
 		// CRS
 
@@ -245,6 +256,27 @@ public class BasicMappingConfigurationPage
 		});
 		idPrefix.setInput(IDPrefixMode.class);
 		longField.applyTo(idPrefix.getControl());
+
+		// Primitive link mode
+		Label primitiveLinkLabel = new Label(database, SWT.NONE);
+		primitiveLinkLabel.setText("Primitive links");
+		defLabel.applyTo(primitiveLinkLabel);
+		primitiveLink = new ComboViewer(database);
+		primitiveLink.setContentProvider(EnumContentProvider.getInstance());
+		primitiveLink.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof PrimitiveLinkMode) {
+					return ((PrimitiveLinkMode) element).getDescription();
+				}
+				return super.getText(element);
+			}
+
+		});
+		primitiveLink.setInput(PrimitiveLinkMode.class);
+		longField.applyTo(primitiveLink.getControl());
+		// TODO add explanation field?
 
 		// max name length
 		Label nameLengthLabel = new Label(database, SWT.NONE);
@@ -337,6 +369,8 @@ public class BasicMappingConfigurationPage
 		useIntegerIDs.setSelection(mappingConfig.useIntegerIDs());
 
 		idPrefix.setSelection(new StructuredSelection(mappingConfig.getIDPrefixMode()));
+
+		primitiveLink.setSelection(new StructuredSelection(mappingConfig.getPrimitiveLinkMode()));
 
 		// CRS
 

@@ -51,6 +51,8 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 	public static final String KEY_ID_PREFIX_MODE = "featureStore.idPrefixMode";
 
+	public static final String KEY_PRIMITIVE_LINK_MODE = "featureStore.primitiveLinkMode";
+
 	public static final String KEY_CRS_IDENTIFIER = "featureStore.crs.identifier";
 	public static final String KEY_CRS_DIMENSION = "featureStore.crs.dimension";
 	public static final String KEY_CRS_SRID = "featureStore.crs.srid";
@@ -58,6 +60,7 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	public static final DatabaseType DEFAULT_DATABASE_TYPE = DatabaseType.PostGIS;
 	public static final MappingMode DEFAULT_MAPPING_MODE = MappingMode.relational;
 	public static final IDPrefixMode DEFAULT_ID_PREFIX_MODE = IDPrefixMode.deegree;
+	public static final PrimitiveLinkMode DEFAULT_PRIMITIVE_LINK_MODE = PrimitiveLinkMode.none;
 	// Note: PostGIS uses lon/lat by default
 	public static final String DEFAULT_CRS_IDENTIFIER = "EPSG:4326"; // "urn:ogc:def:crs:epsg::4326";
 	public static final String DEFAULT_JDBC_CONNECTION_ID = "db";
@@ -94,6 +97,8 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 		setMappingMode(DEFAULT_MAPPING_MODE);
 
 		setIDPrefixMode(DEFAULT_ID_PREFIX_MODE);
+
+		setPrimitiveLinkMode(DEFAULT_PRIMITIVE_LINK_MODE);
 
 		setDatabaseType(DEFAULT_DATABASE_TYPE, getDefaultVersion(DEFAULT_DATABASE_TYPE));
 
@@ -135,6 +140,22 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	 */
 	public void setIDPrefixMode(IDPrefixMode mode) {
 		config.set(KEY_ID_PREFIX_MODE, mode.name());
+	}
+
+	@Override
+	public PrimitiveLinkMode getPrimitiveLinkMode() {
+		return config.get(KEY_PRIMITIVE_LINK_MODE, String.class).map(PrimitiveLinkMode::valueOf)
+				// fall-back
+				.orElse(DEFAULT_PRIMITIVE_LINK_MODE);
+	}
+
+	/**
+	 * Set the mode for determining primitive links.
+	 * 
+	 * @param mode the primitive link mode
+	 */
+	public void setPrimitiveLinkMode(PrimitiveLinkMode mode) {
+		config.set(KEY_PRIMITIVE_LINK_MODE, mode.name());
 	}
 
 	@Override
