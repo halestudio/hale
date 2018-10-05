@@ -18,6 +18,12 @@
 <unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.9.1.201705291011"/>
 <unit id="org.eclipse.xtext.sdk.feature.group" version="2.14.0.v20180523-0937"/>
 <repository location="http://build-artifacts.wetransform.to/p2/mirror/photon-releases"/>
+	<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.0.v20180426-1936"/>
+	<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.100.v20180301-0201"/>
+	<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.0.v20180306-0429"/>
+	<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.14.0.v20180301-0132"/>
+	<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
+	<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.sdk.ide" version="4.8.0.I20180611-0500"/>
