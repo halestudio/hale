@@ -67,7 +67,7 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				mappingContext.resolveProjectVars(pattern));
 		final int patternLength = formattedStr.length();
 
-		if (propertyCell.getSource() != null
+		if (propertyCell.getSource() != null && propertyCell.getSource().asMap().get("var") != null
 				&& !propertyCell.getSource().asMap().get("var").isEmpty()) {
 			final List<String> variables = propertyCell.getSource().asMap().get("var").stream()
 					.map(var -> propertyName(var.getDefinition().getPropertyPath()))
