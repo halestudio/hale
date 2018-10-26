@@ -77,6 +77,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 
 	private final Alignment alignment;
 
+	private final URI loadLocation;
+
 	private final Map<String, IOConfiguration> exportTemplates = new ExportConfigurationMap();
 
 	private final Map<String, IOConfiguration> exportPresets = new ExportConfigurationMap();
@@ -161,6 +163,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			throws IOException {
 		super();
 		this.id = id;
+		this.loadLocation = input.getLocation();
 
 		// load the project
 		URI location = input.getLocation();
@@ -227,16 +230,19 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 * @param exportTemplates the export templates
 	 * @param exportPresets the export presets
 	 * @param customServices the custom services
+	 * @param loadLocation the project load location
 	 */
 	protected ProjectTransformationEnvironment(Project project, String id, SchemaSpace sourceSchema,
 			SchemaSpace targetSchema, Alignment alignment,
 			Map<String, IOConfiguration> exportTemplates,
-			Map<String, IOConfiguration> exportPresets, Map<Class<?>, Object> customServices) {
+			Map<String, IOConfiguration> exportPresets, Map<Class<?>, Object> customServices,
+			URI loadLocation) {
 		this.project = project;
 		this.id = id;
 		this.targetSchema = targetSchema;
 		this.sourceSchema = sourceSchema;
 		this.alignment = alignment;
+		this.loadLocation = loadLocation;
 
 		this.exportTemplates.putAll(exportTemplates);
 		this.exportPresets.putAll(exportPresets);
@@ -252,7 +258,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	public ProjectTransformationEnvironment copy(Alignment alignment) {
 		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
-				alignment, exportTemplates, exportPresets, customServices);
+				alignment, exportTemplates, exportPresets, customServices, loadLocation);
 	}
 
 	/**
@@ -262,7 +268,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	 */
 	public ProjectTransformationEnvironment copy() {
 		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
-				alignment, exportTemplates, exportPresets, customServices);
+				alignment, exportTemplates, exportPresets, customServices, loadLocation);
 	}
 
 	/**
@@ -375,6 +381,13 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	@Override
 	public <T> T getService(Class<T> serviceInterface) {
 		return serviceProvider.getService(serviceInterface);
+	}
+
+	/**
+	 * @return the location the project was loaded from
+	 */
+	public URI getLoadLocation() {
+		return loadLocation;
 	}
 
 }
