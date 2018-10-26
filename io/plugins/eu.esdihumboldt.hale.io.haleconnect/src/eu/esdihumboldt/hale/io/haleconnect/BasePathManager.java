@@ -15,6 +15,16 @@
 
 package eu.esdihumboldt.hale.io.haleconnect;
 
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.BUCKET_SERVICE;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.HALE_CONNECT_BASE_URL_DEFAULT;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.HALE_CONNECT_PATH_CLIENT_DEFAULT;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.HALE_CONNECT_PATH_DATA_DEFAULT;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.HALE_CONNECT_PATH_PROJECTS_DEFAULT;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.HALE_CONNECT_PATH_USERS_DEFAULT;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.PROJECT_STORE;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.USER_SERVICE;
+import static eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices.WEB_CLIENT;
+
 /**
  * Interface for hale connect base path managers.
  * 
@@ -31,4 +41,26 @@ public interface BasePathManager extends BasePathResolver {
 	 * @param basePath Base path to set
 	 */
 	void setBasePath(String service, String basePath);
+
+	/**
+	 * Set the base URL for a hale connect installation, assuming it uses the
+	 * default paths for services.
+	 * 
+	 * @param baseUrl the base URL for the installation, e.g.
+	 *            {@value HaleConnectServices#HALE_CONNECT_BASE_URL_DEFAULT}
+	 */
+	default void setBaseUrl(String baseUrl) {
+		setBasePath(USER_SERVICE, baseUrl + HALE_CONNECT_PATH_USERS_DEFAULT);
+		setBasePath(BUCKET_SERVICE, baseUrl + HALE_CONNECT_PATH_DATA_DEFAULT);
+		setBasePath(PROJECT_STORE, baseUrl + HALE_CONNECT_PATH_PROJECTS_DEFAULT);
+		setBasePath(WEB_CLIENT, baseUrl + HALE_CONNECT_PATH_CLIENT_DEFAULT);
+	}
+
+	/**
+	 * Set the default base paths for using haleconnect.com
+	 */
+	default void setDefaults() {
+		setBaseUrl(HALE_CONNECT_BASE_URL_DEFAULT);
+	}
+
 }
