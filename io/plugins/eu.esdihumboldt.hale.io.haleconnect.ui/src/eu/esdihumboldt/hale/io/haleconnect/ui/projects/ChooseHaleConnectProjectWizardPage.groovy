@@ -57,7 +57,6 @@ import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUserInfo
 import eu.esdihumboldt.hale.io.haleconnect.Owner
 import eu.esdihumboldt.hale.io.haleconnect.OwnerType
-import eu.esdihumboldt.hale.io.haleconnect.ui.preferences.PreferenceInitializer
 import eu.esdihumboldt.hale.ui.HaleUI
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizard
 import eu.esdihumboldt.hale.ui.util.wizard.ConfigurationWizardPage;
@@ -136,7 +135,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 							String configuredBasePath = haleConnect.getBasePathManager()
 									.getBasePath(HaleConnectServices.PROJECT_STORE);
 							if (configuredBasePath
-							.equals(PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
+							.equals(HaleConnectServices.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
 								log.userError(
 										"Unable to connect to hale connect, please check your network connection.",
 										t);
@@ -147,7 +146,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 										MessageFormat.format(
 										"Unable to connect to hale connect, please check your network connection.\n\nNote that the configured project store base path ({0}) differs from the default value ({1}), which may also be the cause of this error.",
 										configuredBasePath,
-										PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT),
+										HaleConnectServices.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT),
 										t);
 							}
 
@@ -251,7 +250,8 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 
 		List<OwnerFilterEntry> availableFilters = new ArrayList<>();
 		availableFilters.add(NULL_FILTER);
-		availableFilters.add(new OwnerFilterEntry(owner: [new Owner(type: OwnerType.USER, id: haleConnect.getSession().getUserId())] as Owner[] , label: "My projects"));
+		availableFilters.add(new OwnerFilterEntry(owner: [
+			new Owner(type: OwnerType.USER, id: haleConnect.getSession().getUserId())] as Owner[] , label: "My projects"));
 
 		List<Owner> orgs = new ArrayList<>();
 		for (String orgId : haleConnect.getSession().getOrganisationIds()) {
@@ -435,7 +435,9 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 
 		} catch (HaleConnectException e1) {
 			log.error(e1.getMessage(), e1);
-			projects.setInput(["Error retrieving projects from hale connect."]);
+			projects.setInput([
+				"Error retrieving projects from hale connect."
+			]);
 		}
 	}
 
