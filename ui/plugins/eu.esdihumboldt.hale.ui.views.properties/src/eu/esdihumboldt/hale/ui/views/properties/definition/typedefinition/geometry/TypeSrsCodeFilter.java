@@ -36,8 +36,12 @@ public class TypeSrsCodeFilter extends DefaultDefinitionFilter {
 		if (input instanceof PropertyDefinition) {
 			def = ((PropertyDefinition) input).getPropertyType();
 		}
-		else {
+		else if (input instanceof TypeDefinition) {
 			def = (TypeDefinition) input;
+		}
+		else {
+			def = null;
+			// TODO Log?
 		}
 		if (def != null) {
 			GeometryMetadata gm = def.getConstraint(GeometryMetadata.class);
