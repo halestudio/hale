@@ -15,11 +15,16 @@
 
 package eu.esdihumboldt.cst.functions.groovy.internal;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.xml.bind.DatatypeConverter;
 
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
@@ -60,6 +65,24 @@ import groovy.transform.CompileStatic;
  */
 @CompileStatic
 public class GroovyUtil implements GroovyConstants {
+
+	/*
+	 * Digest to hash Groovy scripts
+	 */
+	private static final MessageDigest SHA_512;
+	static {
+		try {
+			SHA_512 = MessageDigest.getInstance("SHA-512");
+		} catch (NoSuchAlgorithmException e) {
+			throw new IllegalStateException("Message digest SHA-512 not available");
+		}
+	}
+
+	/*
+	 * Simple thread-local cache that associates the hash of the script String
+	 * with the compiled script.
+	 */
+	private static final ThreadLocal<Map<String, Script>> PARSED_SCRIPTS = new ThreadLocal<>();
 
 	/**
 	 * Get the script string.
@@ -116,35 +139,23 @@ public class GroovyUtil implements GroovyConstants {
 	public static Script getScript(AbstractTransformationFunction<?> function, Binding binding,
 			GroovyService service, boolean functionCached) throws TransformationException {
 		/*
-		 * The compiled script is stored in a ThreadLocal variable in the
-		 * execution context, so it needs only to be created once per
-		 * transformation thread.
+		 * The compiled script is stored in a ThreadLocal cache, so it needs to
+		 * be compiled only once per transformation thread.
 		 */
-		ThreadLocal<Script> localScript;
-		Map<Object, Object> context = (functionCached)
-				? (function.getExecutionContext().getFunctionContext())
-				: (function.getExecutionContext().getCellContext());
-		synchronized (context) {
-			Object tmp = context.get(CONTEXT_SCRIPT);
 
-			if (tmp instanceof ThreadLocal<?>) {
-				localScript = (ThreadLocal<Script>) tmp;
-			}
-			else {
-				localScript = new ThreadLocal<Script>();
-				context.put(CONTEXT_SCRIPT, localScript);
-			}
+		String script = getScriptString(function);
+		String hash = DatatypeConverter.printHexBinary(SHA_512.digest(script.getBytes()));
+
+		if (PARSED_SCRIPTS.get() == null) {
+			PARSED_SCRIPTS.set(new HashMap<>());
 		}
 
-		Script groovyScript = localScript.get();
+		Script groovyScript = PARSED_SCRIPTS.get().get(hash);
 		if (groovyScript == null) {
-			// create the script
-			String script = getScriptString(function);
-
 			groovyScript = service.parseScript(script, null);
-
-			localScript.set(groovyScript);
+			PARSED_SCRIPTS.get().put(hash, groovyScript);
 		}
+
 		groovyScript.setBinding(binding);
 		return groovyScript;
 	}
