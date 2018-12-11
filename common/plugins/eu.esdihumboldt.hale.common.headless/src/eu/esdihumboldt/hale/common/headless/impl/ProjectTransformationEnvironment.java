@@ -34,7 +34,9 @@ import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -211,6 +213,10 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			addService(ProjectInfoService.class, new FixedProjectInfoService(project, location));
 			// make code lists available
 			addService(CodeListRegistry.class, advisor.getCodeListRegistry());
+			// Make transformation service available, e.g. for inline
+			// transformations
+			addService(TransformationService.class,
+					HalePlatform.getService(TransformationService.class));
 
 			init(project);
 		}
