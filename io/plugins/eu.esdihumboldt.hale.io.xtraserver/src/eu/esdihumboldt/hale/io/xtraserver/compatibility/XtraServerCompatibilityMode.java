@@ -83,10 +83,6 @@ public class XtraServerCompatibilityMode implements CompatibilityMode {
 	 */
 	public static boolean hasFilters(final ListMultimap<String, ? extends Entity> entities) {
 		for (Entity entity : entities.values()) {
-			/*
-			 * final Filter typeFilter = entity.getDefinition().getFilter(); if
-			 * (typeFilter != null) { return true; }
-			 */
 			for (ChildContext context : entity.getDefinition().getPropertyPath()) {
 				final Condition cond = context.getCondition();
 				if (cond != null && cond.getFilter() != null) {

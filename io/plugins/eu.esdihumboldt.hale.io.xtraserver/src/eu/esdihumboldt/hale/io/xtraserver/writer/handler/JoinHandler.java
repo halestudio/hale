@@ -98,34 +98,6 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 				}
 				sourceTables = nextSourceTables;
 			}
-
-			/*
-			 * final List<MappingJoin> joins =
-			 * sortedConditions.stream().filter(condition -> condition
-			 * .getSourceTable().equals(baseTable.buildDraft().getName())).map(
-			 * condition -> { final MappingJoinBuilder join = new
-			 * MappingJoinBuilder(); join.joinCondition(condition);
-			 * 
-			 * Optional<MappingTableBuilder> t = mappingContext
-			 * .getTable(condition.getTargetTable());
-			 * 
-			 * // join with connecting table // TODO cant have values yet, check
-			 * name for now if (t.isPresent() &&
-			 * t.get().buildDraft().getName().contains("__")) {
-			 * Optional<Condition> matchingCondition = sortedConditions.stream()
-			 * .filter(condition2 -> condition2.getSourceTable()
-			 * .equals(condition.getTargetTable())) .findFirst();
-			 * 
-			 * if (matchingCondition.isPresent()) {
-			 * join.joinCondition(matchingCondition.get()); } }
-			 * 
-			 * join.targetPath("TODO"); return join.build();
-			 * }).collect(Collectors.toList());
-			 * 
-			 * joins.forEach(joinPath -> {
-			 * mappingContext.getTable(joinPath.getTargetTable())
-			 * .ifPresent(targetTable -> targetTable.joinPath(joinPath)); });
-			 */
 		}
 	}
 

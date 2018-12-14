@@ -75,7 +75,6 @@ public final class MappingContext {
 	public final static String PROPERTY_INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
 
 	private final Alignment alignment;
-	// private final ApplicationSchema applicationSchema;
 	private final Map<String, Value> transformationProperties;
 	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
 
@@ -262,7 +261,7 @@ public final class MappingContext {
 				() -> new IllegalArgumentException("Table " + tableName + " not found"));
 		final MappingTableDraft tableDraft = tableBuilder.buildDraft();
 
-		// TODO if joinPaths and no target path and multiple, set target path ->
+		// if joinPaths and no target path and multiple, set target path ->
 		// joined table
 		// if joinPaths and target path and not multiple, clear target path ->
 		// merged table
@@ -345,12 +344,6 @@ public final class MappingContext {
 				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
 				.ensureRelationNavigability().fixMultiplicity().virtualTables().transform();
 
-		/*
-		 * fannedOutmapping =
-		 * XtraServerMappingTransformer.forMapping(fannedOutmapping)
-		 * .applySchemaInfo(this.applicationSchemaUri).
-		 * ensureRelationNavigability() .transform();
-		 */
 		return fannedOutmapping;
 	}
 
