@@ -33,6 +33,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration;
 import eu.esdihumboldt.util.config.ConfigYaml;
 import eu.esdihumboldt.util.io.EntryOutputStream;
 
@@ -71,7 +72,8 @@ public class MappingAlignmentWriter extends AbstractAlignmentWriter {
 			Schema targetSchema = getTargetSchema().getSchemas().iterator().next();
 			GenericMappingConfiguration config = new GenericMappingConfiguration(
 					ProviderConfig.get(this));
-			MappingWriter writer = new MappingWriter(targetSchema, getAlignment(), config);
+			MappingWriter writer = new MappingWriter(targetSchema, getAlignment(), getProjectInfo(),
+					config, reporter);
 
 			writeResult(writer, getTarget(), getContentType(), config);
 

@@ -103,7 +103,7 @@
       <plugin id="groovy"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
-      <plugin id="java3d.vecmath"/>
+      <plugin id="javax.vecmath"/>
       <plugin id="javax.el"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.media.jai_codec"/>

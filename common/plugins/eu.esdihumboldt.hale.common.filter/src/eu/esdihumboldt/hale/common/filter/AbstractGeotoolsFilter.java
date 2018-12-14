@@ -16,13 +16,30 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
+
+import org.geotools.filter.FilterAttributeExtractor;
 import org.geotools.filter.text.cql2.CQLException;
 import org.opengis.filter.Filter;
+import org.opengis.filter.expression.PropertyName;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.EntityAccessor;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.PathElement;
+import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil;
+import eu.esdihumboldt.hale.common.align.instance.EntityAwareFilter;
+import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.filter.internal.EntityReplacementVisitor;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
  * Geotools based filter. Two filters are seen as equal if they are based on the
@@ -31,8 +48,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
  * @author Sebastian Reinhardt
  * @author Simon Templer
  */
-public abstract class AbstractGeotoolsFilter implements
-		eu.esdihumboldt.hale.common.instance.model.Filter {
+@SuppressWarnings("restriction")
+public abstract class AbstractGeotoolsFilter
+		implements eu.esdihumboldt.hale.common.instance.model.Filter, EntityAwareFilter {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeotoolsFilter.class);
 
@@ -55,13 +73,31 @@ public abstract class AbstractGeotoolsFilter implements
 	}
 
 	/**
-	 * Create the fitler from the filter term.
+	 * Create a filter instance from a filter term.
+	 * 
+	 * @param filterTerm the filter term
+	 * @return the filter
+	 * @throws CQLException if an error occurs on filter creation
+	 */
+	protected abstract AbstractGeotoolsFilter buildFilter(String filterTerm) throws CQLException;
+
+	/**
+	 * Create the filter from a filter term.
 	 * 
 	 * @param filterTerm the filter term
 	 * @return the filter
 	 * @throws CQLException if an error occurs on filter creation
 	 */
 	protected abstract Filter createFilter(String filterTerm) throws CQLException;
+
+	/**
+	 * Get the filter term from a filter object
+	 * 
+	 * @param filter the filter
+	 * @return the instance filter
+	 * @throws CQLException if an error occurs on filter creation
+	 */
+	protected abstract String toFilterTerm(Filter filter) throws CQLException;
 
 	@Override
 	public boolean match(Instance instance) {
@@ -122,6 +158,92 @@ public abstract class AbstractGeotoolsFilter implements
 		else if (!filterTerm.equals(other.filterTerm))
 			return false;
 		return true;
+	}
+
+	@Override
+	public boolean supportsMigration() {
+		return true;
+	}
+
+	@Override
+	public List<Optional<EntityDefinition>> getReferencedEntities(EntityDefinition context) {
+
+		FilterAttributeExtractor visitor = new FilterAttributeExtractor();
+		Object extraData = null;
+		internFilter.accept(visitor, extraData);
+
+		return visitor.getPropertyNameSet().stream()
+				.map(p -> resolveProperty(p, context, SimpleLog.NO_LOG))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<eu.esdihumboldt.hale.common.instance.model.Filter> migrateFilter(
+			EntityDefinition context, AlignmentMigration migration, SimpleLog log) {
+
+		EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
+				name -> resolveProperty(name, context, log), log);
+		Object extraData = null;
+		Filter copy = (Filter) internFilter.accept(visitor, extraData);
+
+		try {
+			String filterString = toFilterTerm(copy);
+			return Optional.of(buildFilter(filterString));
+		} catch (CQLException e) {
+			log.error("Filter could not be automatically migrated", e);
+			return Optional.empty();
+		}
+	}
+
+	/**
+	 * Resolve a property name based on the given context.
+	 * 
+	 * @param name the property name
+	 * @param context the entity context
+	 * @param log the operation log
+	 * @return the resolved entity definition if it could be resolved uniquely
+	 */
+	private Optional<EntityDefinition> resolveProperty(PropertyName name, EntityDefinition context,
+			SimpleLog log) {
+		List<QName> path = PropertyResolver.getQNamesFromPath(name.getPropertyName());
+
+		EntityAccessor acc = new EntityAccessor(context);
+		for (QName element : path) {
+			acc = acc.findChildren(element);
+		}
+
+		try {
+			return Optional.ofNullable(acc.toEntityDefinition());
+		} catch (IllegalStateException e) {
+			List<? extends Path<PathElement>> candidates = acc.all();
+			if (candidates.isEmpty()) {
+				log.error("Unable to find reference to {0}", name);
+				return Optional.empty();
+			}
+			else {
+				log.warn("Could not find unique reference to {0}, trying first match", name);
+
+				Path<PathElement> selected = candidates.get(0);
+
+				/*
+				 * XXX dirty hack to work around conditions in AdV
+				 * GeographicalNames alignment not being defined properly
+				 */
+				if (candidates.size() > 1) {
+					// prefer next candidate if this one is name in gml
+					// namespace
+					List<PathElement> elements = selected.getElements();
+					PathElement last = elements.get(elements.size() - 1);
+					QName lastName = last.getDefinition().getName();
+					if ("name".equals(lastName.getLocalPart()) && "http://www.opengis.net/gml/3.2"
+							.equals(lastName.getNamespaceURI())) {
+						selected = candidates.get(1);
+					}
+				}
+
+				return Optional.ofNullable(EntityAccessorUtil.createEntity(selected));
+			}
+		}
 	}
 
 }

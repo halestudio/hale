@@ -78,6 +78,17 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	private HaleConnectSession session;
 
 	/**
+	 * Default constructor.
+	 */
+	public HaleConnectServiceImpl() {
+		super();
+
+		// store default values for base paths
+		// in the UI will this will be overridden in HaleConnectUIPlugin
+		getBasePathManager().setDefaults();
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#addListener(eu.esdihumboldt.hale.io.haleconnect.HaleConnectServiceListener)
 	 */
 	@Override

@@ -203,8 +203,8 @@ public abstract class XmlTypeUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	private static boolean configureXsdSimpleType(XmlTypeDefinition type) {
-		Name typeName = new NameImpl(type.getName().getNamespaceURI(), type.getName()
-				.getLocalPart());
+		Name typeName = new NameImpl(type.getName().getNamespaceURI(),
+				type.getName().getLocalPart());
 
 		AttributeType ty = xsSchema.get(typeName);
 
@@ -276,8 +276,9 @@ public abstract class XmlTypeUtil {
 					reporter);
 		}
 		else {
-			reporter.error(new IOMessageImpl(MessageFormat.format("Unrecognized simple type {0}",
-					type.getName()), null, simpleType.getLineNumber(), simpleType.getLinePosition()));
+			reporter.error(new IOMessageImpl(
+					MessageFormat.format("Unrecognized simple type {0}", type.getName()), null,
+					simpleType.getLineNumber(), simpleType.getLinePosition()));
 		}
 	}
 
@@ -304,24 +305,25 @@ public abstract class XmlTypeUtil {
 			XmlSchemaSimpleType simpleType = restriction.getBaseType();
 
 			// create an anonymous type
-			QName anonymousName = new QName(type.getName().getNamespaceURI() + "/"
-					+ type.getName().getLocalPart(), "AnonymousSuperType"); //$NON-NLS-1$
+			QName anonymousName = new QName(
+					type.getName().getNamespaceURI() + "/" + type.getName().getLocalPart(),
+					"AnonymousSuperType"); //$NON-NLS-1$
 
 			baseTypeDef = new AnonymousXmlType(anonymousName);
 
 			XmlTypeUtil.configureSimpleType(type, simpleType, index, reporter);
 
+			// no schema location available at this point
+			final String schemaLoc = null;
+
 			// set metadata
-			XmlSchemaReader.setMetadata(type, simpleType, null); // no schema
-																	// location
-																	// available
-																	// at this
-																	// point
+			XmlSchemaReader.setMetadata(type, simpleType, schemaLoc, index);
+
 		}
 		else {
 			reporter.error(new IOMessageImpl(
-					"Simple type restriction without base type, skipping type configuration.",
-					null, restriction.getLineNumber(), restriction.getLinePosition()));
+					"Simple type restriction without base type, skipping type configuration.", null,
+					restriction.getLineNumber(), restriction.getLinePosition()));
 			return;
 		}
 
@@ -357,8 +359,8 @@ public abstract class XmlTypeUtil {
 						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaLengthFacet) {
-				validators.add(new LengthValidator(LengthValidator.Type.EXACT, Integer
-						.parseInt(facet.getValue().toString())));
+				validators.add(new LengthValidator(LengthValidator.Type.EXACT,
+						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaMaxExclusiveFacet) {
 				if (isDecimal(facet.getValue().toString())) // number or date?
@@ -379,12 +381,12 @@ public abstract class XmlTypeUtil {
 							facet.getLineNumber(), facet.getLinePosition()));
 			}
 			else if (facet instanceof XmlSchemaMaxLengthFacet) {
-				validators.add(new LengthValidator(LengthValidator.Type.MAXIMUM, Integer
-						.parseInt(facet.getValue().toString())));
+				validators.add(new LengthValidator(LengthValidator.Type.MAXIMUM,
+						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaMinLengthFacet) {
-				validators.add(new LengthValidator(LengthValidator.Type.MINIMUM, Integer
-						.parseInt(facet.getValue().toString())));
+				validators.add(new LengthValidator(LengthValidator.Type.MINIMUM,
+						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaMinExclusiveFacet) {
 				if (isDecimal(facet.getValue().toString())) // number or date?
@@ -412,15 +414,15 @@ public abstract class XmlTypeUtil {
 						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
-				reporter.info(new IOMessageImpl("White space facet not supported", null, facet
-						.getLineNumber(), facet.getLinePosition()));
+				reporter.info(new IOMessageImpl("White space facet not supported", null,
+						facet.getLineNumber(), facet.getLinePosition()));
 				// Nothing to validate according to w3.
 				// Values should be processed according to rule?
 			}
 			else {
-				reporter.error(new IOMessageImpl("Unrecognized facet: "
-						+ facet.getClass().getSimpleName(), null, facet.getLineNumber(), facet
-						.getLinePosition()));
+				reporter.error(
+						new IOMessageImpl("Unrecognized facet: " + facet.getClass().getSimpleName(),
+								null, facet.getLineNumber(), facet.getLinePosition()));
 			}
 		}
 
@@ -475,8 +477,9 @@ public abstract class XmlTypeUtil {
 			}
 			else {
 				// anonymous type
-				QName baseName = new QName(type.getName().getNamespaceURI()
-						+ "/" + type.getName().getLocalPart(), "AnonymousType"); //$NON-NLS-1$ //$NON-NLS-2$
+				QName baseName = new QName(
+						type.getName().getNamespaceURI() + "/" + type.getName().getLocalPart(), //$NON-NLS-1$
+						"AnonymousType"); //$NON-NLS-1$
 
 				elementType = new AnonymousXmlType(baseName);
 			}
@@ -533,17 +536,17 @@ public abstract class XmlTypeUtil {
 					// Here it is a xs:localSimpleTypes, name attribute is
 					// prohibited!
 					// So it always is a anonymous type.
-					QName baseName = new QName(type.getName().getNamespaceURI()
-							+ "/" + type.getName().getLocalPart(), "AnonymousType" + i); //$NON-NLS-1$ //$NON-NLS-2$
+					QName baseName = new QName(
+							type.getName().getNamespaceURI() + "/" + type.getName().getLocalPart(), //$NON-NLS-1$
+							"AnonymousType" + i); //$NON-NLS-1$
 					XmlTypeDefinition baseDef = new AnonymousXmlType(baseName);
 
 					configureSimpleType(baseDef, simpleType, index, reporter);
 					unionTypes.add(baseDef);
 				}
 				else {
-					reporter.error(new IOMessageImpl(
-							"Unrecognized base type for simple type union", null, union
-									.getLineNumber(), union.getLinePosition()));
+					reporter.error(new IOMessageImpl("Unrecognized base type for simple type union",
+							null, union.getLineNumber(), union.getLinePosition()));
 				}
 			}
 		}

@@ -37,9 +37,9 @@ import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAppInfo;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Abstract Property Transformation Handler
@@ -81,8 +81,8 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		return path.get(path.size() - 1).getChild().getName().getLocalPart();
 	}
 
-	protected static String getSingleProperty(final ListMultimap<String, ParameterValue> parameters,
-			final String name) {
+	protected static String getSingleProperty(
+			final ListMultimap<String, ParameterValue> parameters, final String name) {
 		if (parameters != null) {
 			final List<ParameterValue> parameterValues = parameters.get(name);
 			if (parameterValues != null && !parameterValues.isEmpty()) {
@@ -102,7 +102,7 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 	 */
 	private MappingValue ensureAssociationTarget(final Cell propertyCell,
 			final MappingValue lastValue) {
-		final Property targetProperty = AppSchemaMappingUtils.getTargetProperty(propertyCell);
+		final Property targetProperty = XtraServerMappingUtils.getTargetProperty(propertyCell);
 		if (targetProperty.getDefinition().getDefinition().getConstraint(Reference.class)
 				.isReference()) {
 			final String associationTargetRef = getTargetFromSchema(targetProperty);
@@ -150,17 +150,18 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 
 	@Override
 	public final MappingValue handle(final Cell propertyCell) {
-		final Property targetProperty = AppSchemaMappingUtils.getTargetProperty(propertyCell);
-		final Property sourceProperty = AppSchemaMappingUtils.getSourceProperty(propertyCell);
+		final Property targetProperty = XtraServerMappingUtils.getTargetProperty(propertyCell);
+		final Property sourceProperty = XtraServerMappingUtils.getSourceProperty(propertyCell);
 
 		if (targetProperty == null || (sourceProperty == null && !((this instanceof AssignHandler)
 				|| (this instanceof CustomFunctionAdvToNamespace)
 				|| (this instanceof SqlExpressionHandler)
 				|| (this instanceof FormattedStringHandler)))) {
 			CellParentWrapper cellParentWrapper = (CellParentWrapper) propertyCell;
-			mappingContext.getReporter().warn(
-					"Cell could not be exported, source or target property is not set (Table: {0}, Source: {1}, Target: {2})",
-					cellParentWrapper.getTableName(), sourceProperty, targetProperty);
+			mappingContext
+					.getReporter()
+					.warn("Cell could not be exported, source or target property is not set (Table: {0}, Source: {1}, Target: {2})",
+							cellParentWrapper.getTableName(), sourceProperty, targetProperty);
 			return null;
 		}
 

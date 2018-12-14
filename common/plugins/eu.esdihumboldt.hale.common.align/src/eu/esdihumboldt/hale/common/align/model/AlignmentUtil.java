@@ -49,6 +49,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -1130,6 +1131,31 @@ public abstract class AlignmentUtil {
 			List<ChildContext> result = new ArrayList<ChildContext>(parentPath);
 			result.add(context);
 			return result;
+		}
+	}
+
+	/**
+	 * Get the definition group represented by the given entity definition.
+	 * 
+	 * @param entity the entity definition
+	 * @return it's definition group
+	 */
+	public static DefinitionGroup getDefinitionGroup(EntityDefinition entity) {
+		if (entity.getPropertyPath().isEmpty()) {
+			return entity.getType();
+		}
+		else {
+			// get last path element
+			ChildDefinition<?> def = entity.getLastPathElement().getChild();
+			if (def.asProperty() != null) {
+				return def.asProperty().getPropertyType();
+			}
+			else if (def.asGroup() != null) {
+				return def.asGroup();
+			}
+			else {
+				throw new IllegalArgumentException("Unknown child definition type");
+			}
 		}
 	}
 

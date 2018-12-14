@@ -60,7 +60,6 @@ https://www.wetransform.to/services/support/
    <launcher name="HALE">
       <linux icon="/eu.esdihumboldt.hale.ui.application/images/hale.xpm"/>
       <macosx icon="/eu.esdihumboldt.hale.ui.application/images/hale.icns"/>
-      <solaris/>
       <win useIco="true">
          <ico path="/eu.esdihumboldt.hale.ui.application/images/hale.ico"/>
          <bmp/>
@@ -108,6 +107,14 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
       <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
       <feature id="eu.esdihumboldt.hale.io.feature.deegree"/>
+      <feature id="org.eclipse.equinox.core.sdk"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
    </features>
 
    <configurations>

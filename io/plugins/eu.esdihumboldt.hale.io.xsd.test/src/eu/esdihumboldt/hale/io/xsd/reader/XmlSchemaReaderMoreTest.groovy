@@ -20,11 +20,10 @@ import static org.junit.Assert.*
 
 import javax.xml.namespace.QName
 
-import org.junit.Ignore
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
-import eu.esdihumboldt.hale.common.schema.model.constraint.property.Reference
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceProperty
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAppInfo
 import eu.esdihumboldt.hale.io.xsd.model.XmlIndex
 
@@ -67,7 +66,6 @@ class XmlSchemaReaderMoreTest {
 	/**
 	 * Test if target type for inspire reference is correctly identified. 
 	 */
-	@Ignore
 	@Test
 	void testInspireReferenceAppInfo() throws Exception {
 		def location = URI.create('http://inspire.ec.europa.eu/schemas/ad/4.0/Addresses.xsd')
@@ -83,10 +81,10 @@ class XmlSchemaReaderMoreTest {
 		def address = schema.getType(new QName(ns, 'AddressType'))
 		assertNotNull(address)
 
-		def parcel = address.accessor().parcel.href.toDefinition()
+		def parcel = address.accessor().parcel.toDefinition()
 		assertNotNull(parcel)
 
-		Reference parcelRef = parcel.getConstraint(Reference)
+		ReferenceProperty parcelRef = parcel.getConstraint(ReferenceProperty)
 		assertTrue(parcelRef.isReference())
 
 		assertNotNull(parcelRef.referencedTypes)
@@ -94,11 +92,13 @@ class XmlSchemaReaderMoreTest {
 		assertEquals(1, parcelRef.referencedTypes.size())
 		assertEquals('CadastralParcelType', (parcelRef.referencedTypes as List)[0].name.localPart)
 
+		//TODO also test value property?
+
 		// address to component
-		def component = address.accessor().component.href.toDefinition()
+		def component = address.accessor().component.toDefinition()
 		assertNotNull(component)
 
-		Reference componentRef = component.getConstraint(Reference)
+		ReferenceProperty componentRef = component.getConstraint(ReferenceProperty)
 		assertTrue(componentRef.isReference())
 
 		assertNotNull(componentRef.referencedTypes)

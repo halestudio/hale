@@ -23,6 +23,7 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.SWT;
@@ -39,10 +40,12 @@ import org.eclipse.swt.widgets.Text;
 import eu.esdihumboldt.hale.common.config.ProviderConfig;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
-import eu.esdihumboldt.hale.io.deegree.mapping.GenericMappingConfiguration;
-import eu.esdihumboldt.hale.io.deegree.mapping.GenericMappingConfiguration.DatabaseType;
-import eu.esdihumboldt.hale.io.deegree.mapping.MappingConfiguration;
-import eu.esdihumboldt.hale.io.deegree.mapping.MappingMode;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.GenericMappingConfiguration.DatabaseType;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.IDPrefixMode;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingConfiguration;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.MappingMode;
+import eu.esdihumboldt.hale.io.deegree.mapping.config.PrimitiveLinkMode;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
@@ -68,6 +71,10 @@ public class BasicMappingConfigurationPage
 	private Text dbVersion;
 
 	private StructuredViewer mode;
+
+	private StructuredViewer idPrefix;
+
+	private StructuredViewer primitiveLink;
 
 	private Spinner nameLength;
 
@@ -145,6 +152,21 @@ public class BasicMappingConfigurationPage
 
 		mappingConfig.setUseIntegerIDs(useIntegerIDs.getSelection());
 
+		ISelection idPrefixSel = idPrefix.getSelection();
+		IDPrefixMode idPrefix = GenericMappingConfiguration.DEFAULT_ID_PREFIX_MODE;
+		if (!idPrefixSel.isEmpty() && idPrefixSel instanceof IStructuredSelection) {
+			idPrefix = (IDPrefixMode) ((IStructuredSelection) idPrefixSel).getFirstElement();
+		}
+		mappingConfig.setIDPrefixMode(idPrefix);
+
+		ISelection primitiveLinkSel = primitiveLink.getSelection();
+		PrimitiveLinkMode primitiveLink = GenericMappingConfiguration.DEFAULT_PRIMITIVE_LINK_MODE;
+		if (!primitiveLinkSel.isEmpty() && primitiveLinkSel instanceof IStructuredSelection) {
+			primitiveLink = (PrimitiveLinkMode) ((IStructuredSelection) primitiveLinkSel)
+					.getFirstElement();
+		}
+		mappingConfig.setPrimitiveLinkMode(primitiveLink);
+
 		// CRS
 
 		mappingConfig.setCRSIdentifier(crsRef.getText());
@@ -173,7 +195,7 @@ public class BasicMappingConfigurationPage
 
 		Group database = new Group(page, SWT.NONE);
 		database.setLayout(new GridLayout(3, false));
-		database.setText("Database");
+		database.setText("Database and mapping");
 		groupData.applyTo(database);
 
 		// connection ID
@@ -214,6 +236,47 @@ public class BasicMappingConfigurationPage
 		mode.setContentProvider(EnumContentProvider.getInstance());
 		mode.setInput(MappingMode.class);
 		longField.applyTo(mode.getControl());
+
+		// ID prefix
+		Label idPrefixLabel = new Label(database, SWT.NONE);
+		idPrefixLabel.setText("GML ID prefix");
+		defLabel.applyTo(idPrefixLabel);
+		idPrefix = new ComboViewer(database);
+		idPrefix.setContentProvider(EnumContentProvider.getInstance());
+		idPrefix.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof IDPrefixMode) {
+					return ((IDPrefixMode) element).getDescription();
+				}
+				return super.getText(element);
+			}
+
+		});
+		idPrefix.setInput(IDPrefixMode.class);
+		longField.applyTo(idPrefix.getControl());
+
+		// Primitive link mode
+		Label primitiveLinkLabel = new Label(database, SWT.NONE);
+		primitiveLinkLabel.setText("Primitive links");
+		defLabel.applyTo(primitiveLinkLabel);
+		primitiveLink = new ComboViewer(database);
+		primitiveLink.setContentProvider(EnumContentProvider.getInstance());
+		primitiveLink.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof PrimitiveLinkMode) {
+					return ((PrimitiveLinkMode) element).getDescription();
+				}
+				return super.getText(element);
+			}
+
+		});
+		primitiveLink.setInput(PrimitiveLinkMode.class);
+		longField.applyTo(primitiveLink.getControl());
+		// TODO add explanation field?
 
 		// max name length
 		Label nameLengthLabel = new Label(database, SWT.NONE);
@@ -304,6 +367,10 @@ public class BasicMappingConfigurationPage
 		useNamespacePrefix.setSelection(mappingConfig.useNamespacePrefixForTableNames());
 
 		useIntegerIDs.setSelection(mappingConfig.useIntegerIDs());
+
+		idPrefix.setSelection(new StructuredSelection(mappingConfig.getIDPrefixMode()));
+
+		primitiveLink.setSelection(new StructuredSelection(mappingConfig.getPrimitiveLinkMode()));
 
 		// CRS
 

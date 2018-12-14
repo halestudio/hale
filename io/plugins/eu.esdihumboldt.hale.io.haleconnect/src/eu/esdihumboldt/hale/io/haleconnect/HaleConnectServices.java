@@ -46,4 +46,54 @@ public interface HaleConnectServices {
 	 * Project service
 	 */
 	public static String PROJECT_SERVICE = "project-service";
+
+	/**
+	 * Default base URL of hale connect
+	 */
+	public static final String HALE_CONNECT_BASE_URL_DEFAULT = "https://haleconnect.com";
+
+	/**
+	 * Default path of the hale connect user service
+	 */
+	public static final String HALE_CONNECT_PATH_USERS_DEFAULT = "/accounts/v1";
+
+	/**
+	 * Default path of the hale connect project store
+	 */
+	public static final String HALE_CONNECT_PATH_PROJECTS_DEFAULT = "/store/projects";
+
+	/**
+	 * Default path of the hale connect bucket service
+	 */
+	public static final String HALE_CONNECT_PATH_DATA_DEFAULT = "/store/data";
+
+	/**
+	 * Default path of the hale connect web client
+	 */
+	public static final String HALE_CONNECT_PATH_CLIENT_DEFAULT = "/#";
+
+	/**
+	 * Default base path of the hale connect user service
+	 */
+	public static final String HALE_CONNECT_BASEPATH_USERS_DEFAULT = HALE_CONNECT_BASE_URL_DEFAULT
+			+ HALE_CONNECT_PATH_USERS_DEFAULT;
+
+	/**
+	 * Default base path of the hale connect project store
+	 */
+	public static final String HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT = HALE_CONNECT_BASE_URL_DEFAULT
+			+ HALE_CONNECT_PATH_PROJECTS_DEFAULT;
+
+	/**
+	 * Default base path of the hale connect bucket service
+	 */
+	public static final String HALE_CONNECT_BASEPATH_DATA_DEFAULT = HALE_CONNECT_BASE_URL_DEFAULT
+			+ HALE_CONNECT_PATH_DATA_DEFAULT;
+
+	/**
+	 * Default base path of the hale connect web client
+	 */
+	public static final String HALE_CONNECT_BASEPATH_CLIENT_DEFAULT = HALE_CONNECT_BASE_URL_DEFAULT
+			+ HALE_CONNECT_PATH_CLIENT_DEFAULT;
+
 }

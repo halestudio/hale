@@ -21,7 +21,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingValue;
 import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the custom function 'custom:alignment:adv.uom.toucum' to a
@@ -43,13 +43,14 @@ class CustomFunctionAdvToUCUM extends ClassificationMappingHandler {
 	 */
 	@Override
 	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
-		final MappingValue mappingValue = new MappingValueBuilder().classification()
-				.keyValue("urn:adv:uom:m2", "'m2'").keyValue("urn:adv:uom:m", "'m'")
+		final MappingValue mappingValue = new MappingValueBuilder()
+				.classification()
+				.keyValue("urn:adv:uom:m2", "'m2'")
+				.keyValue("urn:adv:uom:m", "'m'")
 				.keyValue("urn:adv:uom:km", "'km'")
 				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
-				.value(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
-						.getDefinition().getPropertyPath()))
-				.build();
+				.value(propertyName(XtraServerMappingUtils.getSourceProperty(propertyCell)
+						.getDefinition().getPropertyPath())).build();
 
 		return Optional.of(mappingValue);
 	}

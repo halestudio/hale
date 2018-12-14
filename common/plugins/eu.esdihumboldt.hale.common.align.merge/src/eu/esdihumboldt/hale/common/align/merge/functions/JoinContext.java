@@ -18,9 +18,11 @@ package eu.esdihumboldt.hale.common.align.merge.functions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -45,6 +47,8 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.Pair;
 
 /**
@@ -78,6 +82,12 @@ public class JoinContext {
 	private final List<Pair<Cell, String>> scripts = new ArrayList<>();
 
 	/**
+	 * Collected map of filters applied to join source types (only works because
+	 * each type can only be used once in a Join)
+	 */
+	private final Map<TypeDefinition, Filter> typeFilters = new HashMap<>();
+
+	/**
 	 * Create new context for merging the given cell.
 	 * 
 	 * @param originalCell the cell to migrate
@@ -109,7 +119,17 @@ public class JoinContext {
 				types.add(type);
 			}
 			else {
-				types.addAll(repl);
+				for (TypeEntityDefinition replacement : repl) {
+					Filter filter = typeFilters.get(replacement.getDefinition());
+					if (filter != null) {
+						// apply filter
+						types.add(new TypeEntityDefinition(replacement.getDefinition(),
+								replacement.getSchemaSpace(), filter));
+					}
+					else {
+						types.add(replacement);
+					}
+				}
 			}
 		}
 
@@ -139,7 +159,7 @@ public class JoinContext {
 			return result;
 		}).collect(Collectors.toSet());
 		for (JoinCondition condition : migrated) {
-			if (!condition.baseProperty.equals(condition.joinProperty)) {
+			if (!condition.baseProperty.getType().equals(condition.joinProperty.getType())) {
 				// migrated condition may contain "loop" condition
 
 				cons.add(new Pair<>(condition.baseProperty, condition.joinProperty));
@@ -158,7 +178,8 @@ public class JoinContext {
 		// all conditions
 		Set<JoinCondition> conditions = new HashSet<>();
 		for (Pair<PropertyEntityDefinition, PropertyEntityDefinition> condition : cons) {
-			conditions.add(new JoinCondition(condition.getFirst(), condition.getSecond()));
+			conditions.add(new JoinCondition(applyFilter(condition.getFirst()),
+					applyFilter(condition.getSecond())));
 		}
 
 		JoinParameter newParam = new JoinParameter(new ArrayList<>(types), conditions);
@@ -196,6 +217,17 @@ public class JoinContext {
 		}
 
 		newCell.setTransformationParameters(params);
+	}
+
+	private PropertyEntityDefinition applyFilter(PropertyEntityDefinition property) {
+		Filter filter = typeFilters.get(property.getType());
+		if (filter != null) {
+			return new PropertyEntityDefinition(property.getType(), property.getPropertyPath(),
+					property.getSchemaSpace(), filter);
+		}
+		else {
+			return property;
+		}
 	}
 
 	/**
@@ -277,6 +309,16 @@ public class JoinContext {
 	 */
 	public void addGroovyScript(Cell cell, String script) {
 		scripts.add(new Pair<>(cell, script));
+	}
+
+	/**
+	 * Add a filter associated to a type used in the join.
+	 * 
+	 * @param type the type
+	 * @param filter the filter associated to the type
+	 */
+	public void addTypeFilter(TypeDefinition type, Filter filter) {
+		typeFilters.put(type, filter);
 	}
 
 	/**

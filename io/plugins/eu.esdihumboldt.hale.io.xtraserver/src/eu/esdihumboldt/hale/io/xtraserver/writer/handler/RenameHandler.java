@@ -22,7 +22,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingValueBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the {@link RenameFunction} to a {@link MappingValue}
@@ -40,11 +40,11 @@ class RenameHandler extends AbstractPropertyTransformationHandler {
 	 */
 	@Override
 	public Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
-		final MappingValue mappingValue = new MappingValueBuilder().column()
+		final MappingValue mappingValue = new MappingValueBuilder()
+				.column()
 				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
-				.value(propertyName(AppSchemaMappingUtils.getSourceProperty(propertyCell)
-						.getDefinition().getPropertyPath()))
-				.build();
+				.value(propertyName(XtraServerMappingUtils.getSourceProperty(propertyCell)
+						.getDefinition().getPropertyPath())).build();
 
 		return Optional.of(mappingValue);
 	}

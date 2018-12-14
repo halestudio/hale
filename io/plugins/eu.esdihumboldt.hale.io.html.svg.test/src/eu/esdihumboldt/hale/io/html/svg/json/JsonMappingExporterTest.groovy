@@ -22,7 +22,9 @@ import org.osgi.framework.Version
 
 import eu.esdihumboldt.cst.test.TransformationExample
 import eu.esdihumboldt.cst.test.TransformationExamples
+import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo
+import eu.esdihumboldt.hale.common.core.io.report.IOMessage
 import eu.esdihumboldt.hale.common.core.io.report.IOReport
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
@@ -60,9 +62,21 @@ class JsonMappingExporterTest extends GroovyTestCase {
 						String description = '?'
 						Date created = new Date()
 						Date modified = new Date()
+						@Override
+						Value getSetting(String name) {
+							Value.NULL
+						}
 					}
 
 			IOReport rep = exporter.execute(null)
+
+			rep.errors.forEach { IOMessage m ->
+				println m.message
+				if (m.stackTrace) {
+					println m.stackTrace
+				}
+			}
+
 			assertTrue 'Export failed', rep.isSuccess()
 			assertEquals 0, rep.errors.size()
 
