@@ -942,6 +942,12 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
         into productFeaturePath
     }
 
+	new File("$productFeaturePath/HALE.p2.inf").text = '''
+instructions.configure=\
+  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:0,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
+  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);
+'''
+
     // remove platform-specific fragments from product
     // FIXME remove this once Tycho knows how to handle platform-specific
     // fragments on its own. See BUG 342890
