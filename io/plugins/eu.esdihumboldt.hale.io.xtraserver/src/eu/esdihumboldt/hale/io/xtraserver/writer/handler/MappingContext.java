@@ -301,6 +301,20 @@ public final class MappingContext {
 			if (!multiple && alreadyHasTargetPath) {
 				tableBuilder.qualifiedTargetPath(ImmutableList.of(new QName("__MERGE__")));
 			}
+			// set target path for connection table
+			if (multiple && !targetPath.isEmpty()) {
+				String connectionTable = tableDraft.getJoinPaths().iterator().next()
+						.getSourceTable();
+				final Optional<MappingTableBuilder> tableBuilder2 = getTable(connectionTable);
+				if (tableBuilder2.isPresent()) {
+					final MappingTableDraft tableDraft2 = tableBuilder2.get().buildDraft();
+					if (tableDraft2.getQualifiedTargetPath().isEmpty()
+							&& tableDraft2.getValues().isEmpty()
+							&& !tableDraft2.getJoinPaths().isEmpty()) {
+						tableBuilder2.get().qualifiedTargetPath(targetPath);
+					}
+				}
+			}
 		}
 
 		tableBuilder.value(value);
