@@ -19,6 +19,14 @@ import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.filter.FilterFactoryImpl;
+import org.geotools.filter.text.cql2.CQL;
+import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.filter.visitor.DuplicatingFilterVisitor;
+import org.opengis.filter.Filter;
+import org.opengis.filter.FilterFactory2;
+import org.opengis.filter.expression.PropertyName;
+
 import com.google.common.collect.ListMultimap;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
@@ -26,6 +34,7 @@ import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
+import eu.esdihumboldt.hale.common.filter.AbstractGeotoolsFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
 import eu.esdihumboldt.hale.io.jdbc.constraints.DatabaseTable;
@@ -96,6 +105,18 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 						tableName, mappingContext.getFeatureTypeName());
 			}
 
+			if (sourceType.getFilter() != null) {
+				try {
+					AbstractGeotoolsFilter filter = (AbstractGeotoolsFilter) sourceType.getFilter();
+					// table.predicate(filter.getFilterTerm());
+					Filter qualifiedFilter = (Filter) CQL.toFilter(filter.getFilterTerm())
+							.accept(new ResolvePropertyNamesFilterVisitor("$T$"), null);
+					table.predicate(CQL.toCQL(qualifiedFilter));
+				} catch (ClassCastException | CQLException e) {
+					// ignore
+				}
+			}
+
 			mappingContext.addCurrentMappingTable(tableName, table);
 
 			return table;
@@ -129,4 +150,19 @@ abstract class AbstractTypeTransformationHandler implements TypeTransformationHa
 
 	public abstract void doHandle(final Collection<? extends Entity> sourceTypes,
 			final Entity targetType, final Cell typeCell);
+
+	private class ResolvePropertyNamesFilterVisitor extends DuplicatingFilterVisitor {
+
+		final FilterFactory2 filterFactory = new FilterFactoryImpl();
+		final String tableName;
+
+		ResolvePropertyNamesFilterVisitor(String tableName) {
+			this.tableName = tableName;
+		}
+
+		@Override
+		public Object visit(PropertyName expression, Object extraData) {
+			return filterFactory.property(tableName + "." + expression.getPropertyName());
+		}
+	}
 }

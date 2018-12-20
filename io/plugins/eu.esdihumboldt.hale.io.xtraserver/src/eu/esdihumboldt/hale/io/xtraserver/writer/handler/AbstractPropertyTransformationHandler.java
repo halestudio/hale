@@ -153,9 +153,10 @@ abstract class AbstractPropertyTransformationHandler implements PropertyTransfor
 		final Property targetProperty = XtraServerMappingUtils.getTargetProperty(propertyCell);
 		final Property sourceProperty = XtraServerMappingUtils.getSourceProperty(propertyCell);
 
-		if (targetProperty == null
-				|| (sourceProperty == null && !((this instanceof AssignHandler)
-						|| (this instanceof CustomFunctionAdvToNamespace) || (this instanceof SqlExpressionHandler)))) {
+		if (targetProperty == null || (sourceProperty == null && !((this instanceof AssignHandler)
+				|| (this instanceof CustomFunctionAdvToNamespace)
+				|| (this instanceof SqlExpressionHandler)
+				|| (this instanceof FormattedStringHandler)))) {
 			CellParentWrapper cellParentWrapper = (CellParentWrapper) propertyCell;
 			mappingContext
 					.getReporter()

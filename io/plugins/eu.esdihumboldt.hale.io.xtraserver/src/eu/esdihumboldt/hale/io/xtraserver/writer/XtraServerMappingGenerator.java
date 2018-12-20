@@ -16,8 +16,10 @@
 package eu.esdihumboldt.hale.io.xtraserver.writer;
 
 import java.net.URI;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
@@ -68,7 +70,8 @@ public class XtraServerMappingGenerator {
 				projectInfo, projectLocation, reporter);
 		this.typeHandlerFactory = TypeTransformationHandler.createFactory(mappingContext);
 		this.propertyHandlerFactory = PropertyTransformationHandler.createFactory(mappingContext);
-		// Calculate the total work units for the progress indicator (+1 for writing the
+		// Calculate the total work units for the progress indicator (+1 for
+		// writing the
 		// file)
 		int c = 1;
 		for (final Cell typeCell : this.alignment.getActiveTypeCells()) {
@@ -84,15 +87,16 @@ public class XtraServerMappingGenerator {
 	 * @param reporter status reporter
 	 * @return the generated XtraServer Mapping
 	 * 
-	 * @throws UnsupportedTransformationException if the transformation of types or
-	 *             properties is not supported
+	 * @throws UnsupportedTransformationException if the transformation of types
+	 *             or properties is not supported
 	 */
 	public XtraServerMapping generate(final IOReporter reporter)
 			throws UnsupportedTransformationException {
 
 		for (final Cell typeCell : this.alignment.getActiveTypeCells()) {
 			final String typeTransformationIdentifier = typeCell.getTransformationIdentifier();
-			// Create FeatureTypeMapping from the type cells. The Mapping tables are created
+			// Create FeatureTypeMapping from the type cells. The Mapping tables
+			// are created
 			// and added by the Type Handlers
 			this.progress.setCurrentTask("Transforming type");
 			final TypeTransformationHandler typeHandler = typeHandlerFactory
@@ -102,7 +106,14 @@ public class XtraServerMappingGenerator {
 				this.progress.setCurrentTask(
 						"Mapping values for Feature Type " + mappingContext.getFeatureTypeName());
 				// Add MappingValues from the type cell's property cells
-				for (final Cell propertyCell : this.alignment.getPropertyCells(typeCell)) {
+				for (final Cell propertyCell : this.alignment.getPropertyCells(typeCell).stream()
+						.sorted(new Comparator<Cell>() {
+
+							@Override
+							public int compare(Cell c1, Cell c2) {
+								return c1.getPriority().compareTo(c2.getPriority());
+							}
+						}).collect(Collectors.toList())) {
 					final String propertyTransformationIdentifier = propertyCell
 							.getTransformationIdentifier();
 					final PropertyTransformationHandler propertyHandler = propertyHandlerFactory
@@ -121,8 +132,8 @@ public class XtraServerMappingGenerator {
 	}
 
 	/**
-	 * Return all property paths for which no association target could be found in
-	 * the schema.
+	 * Return all property paths for which no association target could be found
+	 * in the schema.
 	 * 
 	 * @return list of properties with missing association targets
 	 */

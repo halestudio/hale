@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.Condition;
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
-import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.PropertyTransformationHandler;
 import eu.esdihumboldt.hale.io.xtraserver.writer.handler.TypeTransformationHandler;
 
@@ -76,18 +75,14 @@ public class XtraServerCompatibilityMode implements CompatibilityMode {
 	}
 
 	/**
-	 * Returns true if Filters are found in the entity definitions or the property
-	 * paths
+	 * Returns true if Filters are found in the entity definitions or the
+	 * property paths
 	 * 
 	 * @param entities entities to check
 	 * @return true if filters are found, false otherwise
 	 */
 	public static boolean hasFilters(final ListMultimap<String, ? extends Entity> entities) {
 		for (Entity entity : entities.values()) {
-			final Filter typeFilter = entity.getDefinition().getFilter();
-			if (typeFilter != null) {
-				return true;
-			}
 			for (ChildContext context : entity.getDefinition().getPropertyPath()) {
 				final Condition cond = context.getCondition();
 				if (cond != null && cond.getFilter() != null) {

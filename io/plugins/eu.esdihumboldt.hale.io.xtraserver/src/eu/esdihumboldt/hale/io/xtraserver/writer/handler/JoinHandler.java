@@ -17,15 +17,15 @@ package eu.esdihumboldt.hale.io.xtraserver.writer.handler;
 
 import static eu.esdihumboldt.hale.common.align.model.functions.JoinFunction.PARAMETER_JOIN;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
-import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
 import de.interactive_instruments.xtraserver.config.api.MappingJoin;
+import de.interactive_instruments.xtraserver.config.api.MappingJoin.Condition;
 import de.interactive_instruments.xtraserver.config.api.MappingJoinBuilder;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
@@ -70,27 +70,34 @@ class JoinHandler extends AbstractTypeTransformationHandler {
 			final List<Condition> sortedConditions = transformSortedConditions(joinParameter,
 					sourceTypes);
 
-			final List<MappingJoin> joins = sortedConditions.stream().filter(condition -> condition
-					.getSourceTable().equals(baseTable.buildDraft().getName())).map(condition -> {
-						final MappingJoinBuilder join = new MappingJoinBuilder();
-						join.joinCondition(condition);
+			// TODO: add nested joined tables to merged tables
 
-						Optional<Condition> matchingCondition = sortedConditions.stream()
-								.filter(condition2 -> condition2.getSourceTable()
-										.equals(condition.getTargetTable()))
-								.findFirst();
+			List<String> sourceTables = new ArrayList<>();
 
-						if (matchingCondition.isPresent()) {
-							join.joinCondition(matchingCondition.get());
-						}
-						join.targetPath("TODO");
-						return join.build();
-					}).collect(Collectors.toList());
+			sourceTables.add(baseTable.buildDraft().getName());
 
-			joins.forEach(joinPath -> {
-				mappingContext.getTable(joinPath.getTargetTable())
-						.ifPresent(targetTable -> targetTable.joinPath(joinPath));
-			});
+			while (!sourceTables.isEmpty()) {
+				List<String> nextSourceTables = new ArrayList<>();
+				for (String tableName : sourceTables) {
+					final List<MappingJoin> joins = sortedConditions.stream()
+							.filter(condition -> condition.getSourceTable().equals(tableName))
+							.map(condition -> {
+								final MappingJoinBuilder join = new MappingJoinBuilder();
+								join.joinCondition(condition);
+								join.targetPath("TODO");
+								return join.build();
+							}).collect(Collectors.toList());
+
+					joins.forEach(joinPath -> {
+						mappingContext.getTable(joinPath.getTargetTable())
+								.ifPresent(targetTable -> targetTable.joinPath(joinPath));
+					});
+
+					nextSourceTables.addAll(joins.stream().map(st -> st.getTargetTable())
+							.collect(Collectors.toList()));
+				}
+				sourceTables = nextSourceTables;
+			}
 		}
 	}
 

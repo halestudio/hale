@@ -65,8 +65,9 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 		final String pattern = patterns.get(0).as(String.class);
 		final StringBuilder formattedStr = new StringBuilder(
 				mappingContext.resolveProjectVars(pattern));
+		final int patternLength = formattedStr.length();
 
-		if (propertyCell.getSource() != null
+		if (propertyCell.getSource() != null && propertyCell.getSource().asMap().get("var") != null
 				&& !propertyCell.getSource().asMap().get("var").isEmpty()) {
 			final List<String> variables = propertyCell.getSource().asMap().get("var").stream()
 					.map(var -> propertyName(var.getDefinition().getPropertyPath()))
@@ -79,7 +80,8 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				startEnd[0] = m.start(); // index of '{' character
 				startEnd[1] = m.end(); // index of '}' character
 				startEndList.add(startEnd);
-				varList.add(m.group(1)); // the variable name, without curly braces
+				varList.add(m.group(1)); // the variable name, without curly
+											// braces
 			}
 
 			List<String> missingVars = varList.stream().filter(var -> !variables.contains(var))
@@ -91,47 +93,51 @@ class FormattedStringHandler extends AbstractPropertyTransformationHandler {
 				return Optional.empty();
 			}
 
-			final StringBuilder varBuilder = new StringBuilder();
-			int idxOffset = 0;
+			if (!startEndList.isEmpty()) {
+				final StringBuilder varBuilder = new StringBuilder();
+				int idxOffset = 0;
 
-			// Add ' if string does not start with a variable definition
-			if (startEndList.get(0)[0] != 0) {
-				formattedStr.insert(0, '\'');
-				varBuilder.append(XS_CONCAT_LEFT_STR);
-				idxOffset++;
-			}
-			int firstStartIdx = startEndList.get(0)[0] + idxOffset;
-			int firstEndIdx = startEndList.get(0)[1] + idxOffset;
-			varBuilder.append(XS_VAR_PREFIX);
-			varBuilder.append(varList.get(0));
-			if (firstEndIdx - idxOffset != pattern.length()) {
-				rightConcat(varBuilder, 0, startEndList);
-				if (varList.size() == 1) {
-					formattedStr.append('\'');
+				// Add ' if string does not start with a variable definition
+				if (startEndList.get(0)[0] != 0) {
+					formattedStr.insert(0, '\'');
+					varBuilder.append(XS_CONCAT_LEFT_STR);
+					idxOffset++;
 				}
-			}
-			formattedStr.replace(firstStartIdx, firstEndIdx, varBuilder.toString());
-			idxOffset += varBuilder.length() - firstEndIdx + firstStartIdx;
-			varBuilder.setLength(0);
+				int firstStartIdx = startEndList.get(0)[0] + idxOffset;
+				int firstEndIdx = startEndList.get(0)[1] + idxOffset;
+				varBuilder.append(XS_VAR_PREFIX);
+				varBuilder.append(varList.get(0));
+				if (firstEndIdx - idxOffset != pattern.length()) {
+					rightConcat(varBuilder, 0, startEndList);
+					if (varList.size() == 1) {
+						formattedStr.append('\'');
+					}
+				}
+				formattedStr.replace(firstStartIdx, firstEndIdx, varBuilder.toString());
+				idxOffset += varBuilder.length() - firstEndIdx + firstStartIdx;
+				varBuilder.setLength(0);
 
-			if (varList.size() > 1) {
-				for (int i = 1; i < startEndList.size(); i++) {
-					final int startIdx = startEndList.get(i)[0] + idxOffset;
-					final int endIdx = startEndList.get(i)[1] + idxOffset;
-					leftConcat(varBuilder, i, startEndList);
-					varBuilder.append(XS_VAR_PREFIX);
-					varBuilder.append(varList.get(i));
-					rightConcat(varBuilder, i, startEndList);
-					formattedStr.replace(startIdx, endIdx, varBuilder.toString());
-					idxOffset += varBuilder.length() - endIdx + startIdx;
-					varBuilder.setLength(0);
-				}
-				// Remove || ' after the last variable or append ' after the last string
-				if (startEndList.get(startEndList.size() - 1)[1] == pattern.length()) {
-					formattedStr.setLength(formattedStr.length() - XS_CONCAT_RIGHT_STR.length());
-				}
-				else {
-					formattedStr.append(XS_CONCAT_LEFT_STR);
+				if (varList.size() > 1) {
+					for (int i = 1; i < startEndList.size(); i++) {
+						final int startIdx = startEndList.get(i)[0] + idxOffset;
+						final int endIdx = startEndList.get(i)[1] + idxOffset;
+						leftConcat(varBuilder, i, startEndList);
+						varBuilder.append(XS_VAR_PREFIX);
+						varBuilder.append(varList.get(i));
+						rightConcat(varBuilder, i, startEndList);
+						formattedStr.replace(startIdx, endIdx, varBuilder.toString());
+						idxOffset += varBuilder.length() - endIdx + startIdx;
+						varBuilder.setLength(0);
+					}
+					// Remove || ' after the last variable or append ' after the
+					// last string
+					if (startEndList.get(startEndList.size() - 1)[1] == patternLength) {
+						formattedStr
+								.setLength(formattedStr.length() - XS_CONCAT_RIGHT_STR.length());
+					}
+					else {
+						formattedStr.append(XS_CONCAT_LEFT_STR);
+					}
 				}
 			}
 		}
