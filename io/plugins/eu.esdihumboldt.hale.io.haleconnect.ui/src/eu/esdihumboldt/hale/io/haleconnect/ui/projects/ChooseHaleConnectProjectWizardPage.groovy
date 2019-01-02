@@ -73,6 +73,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 
 	private static final ALogger log = ALoggerFactory.getLogger(ChooseHaleConnectProjectWizardPage.class);
 	private static final OwnerFilterEntry NULL_FILTER = new OwnerFilterEntry(owner: null as Owner[], label: "All projects");
+	private static final List<String> LOADING_TABLE_INPUT = ["Loading..."]
 
 	private final HaleConnectService haleConnect;
 
@@ -94,7 +95,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 
 							synchronized (projects) {
 								Object currentInput = projects.getInput();
-								if (currentInput != null && currentInput instanceof Collection<?>) {
+								if (currentInput != null && currentInput instanceof Collection<?> && !((Collection<?>)currentInput).containsAll(LOADING_TABLE_INPUT)) {
 									@SuppressWarnings("unchecked")
 											Set<HaleConnectProjectInfo> updatedProjects = new LinkedHashSet<>(
 											(Collection<HaleConnectProjectInfo>) currentInput);
@@ -424,7 +425,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 	private void populateProjects() {
 		// Use String[] input here to allow GetProjectsCallback to differentiate
 		// between loading/error messages and actual content
-		projects.setInput(["Loading..."]);
+		projects.setInput(LOADING_TABLE_INPUT)
 		projects.getTable().setEnabled(false);
 
 		try {
