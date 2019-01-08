@@ -67,6 +67,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
@@ -365,8 +366,12 @@ public class Transformation {
 
 						@Override
 						public boolean match(Instance instance) {
-							if (instance instanceof OInstance) {
-								return ((OInstance) instance).isInserted();
+							Instance inst = (instance instanceof InstanceDecorator)
+									? InstanceDecorator.getRoot(instance)
+									: instance;
+
+							if (inst instanceof OInstance) {
+								return ((OInstance) inst).isInserted();
 							}
 							return true;
 						}
