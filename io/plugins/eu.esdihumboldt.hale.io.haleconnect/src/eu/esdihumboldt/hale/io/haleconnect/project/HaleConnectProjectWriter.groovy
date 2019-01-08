@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter.ProjectWriterMode
 import eu.esdihumboldt.hale.common.core.io.project.impl.ArchiveProjectWriter;
-import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
@@ -194,13 +193,6 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		getProject().getProperties().put(HaleConnectProjectReader.HALECONNECT_URN_PROPERTY,
 				Value.of(projectUrn.toString()));
 
-		// save current IO configurations
-		List<IOConfiguration> oldResources = new ArrayList<IOConfiguration>();
-		for (IOConfiguration config : getProject().getResources()) {
-			// clone all IO configurations to work on different objects
-			oldResources.add(config.clone());
-		}
-
 		// redirect project archive to temporary local file
 		File projectArchive = Files.createTempFile("hc-arc", ".zip").toFile();
 		IOReport report;
@@ -208,12 +200,6 @@ public class HaleConnectProjectWriter extends ArchiveProjectWriter {
 		if (!report.isSuccess()) {
 			// exit when creating project archive failed
 			return report;
-		}
-
-		// Restore previous IO configurations if we are in EXPORT mode
-		if (writerMode == ProjectWriterMode.EXPORT) {
-			getProject().getResources().clear()
-			getProject().getResources().addAll(oldResources);
 		}
 
 		String projectId = HaleConnectUrnBuilder.extractProjectId(projectUrn);

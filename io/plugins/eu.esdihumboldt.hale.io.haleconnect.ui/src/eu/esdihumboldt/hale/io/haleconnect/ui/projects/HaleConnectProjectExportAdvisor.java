@@ -39,7 +39,7 @@ public class HaleConnectProjectExportAdvisor extends DefaultIOAdvisor<HaleConnec
 
 		ProjectService projectService = getService(ProjectService.class);
 		Project project = (Project) projectService.getProjectInfo();
-		provider.setProject(project);
+		provider.setProject(project.clone());
 	}
 
 	@Override
