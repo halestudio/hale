@@ -16,7 +16,6 @@
    </launcherArgs>
 
    <launcher name="Infocenter">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -44,6 +43,7 @@
       <plugin id="commons-digester"/>
       <plugin id="concurrent"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
+      <plugin id="de.fhg.igd.geom"/>
       <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>
@@ -59,6 +59,7 @@
       <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
       <plugin id="eu.esdihumboldt.cst.functions.string"/>
       <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.convert"/>
@@ -69,13 +70,13 @@
       <plugin id="eu.esdihumboldt.hale.common.instance"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
       <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.index"/>
       <plugin id="eu.esdihumboldt.hale.common.lookup"/>
       <plugin id="eu.esdihumboldt.hale.common.schema"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
       <plugin id="eu.esdihumboldt.hale.common.schema.persist"/>
       <plugin id="eu.esdihumboldt.hale.common.scripting"/>
       <plugin id="eu.esdihumboldt.hale.doc.application"/>
-      <plugin id="eu.esdihumboldt.hale.doc.appschema"/>
       <plugin id="eu.esdihumboldt.hale.doc.user"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.ioproviders"/>
       <plugin id="eu.esdihumboldt.hale.doc.user.views.styledmap"/>
@@ -84,6 +85,7 @@
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy"/>
       <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
@@ -94,7 +96,9 @@
       <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.geometry"/>
       <plugin id="eu.esdihumboldt.util.groovy"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.http"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
@@ -103,7 +107,6 @@
       <plugin id="groovy"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
-      <plugin id="javax.vecmath"/>
       <plugin id="javax.el"/>
       <plugin id="javax.mail"/>
       <plugin id="javax.media.jai_codec"/>
@@ -111,6 +114,7 @@
       <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.vecmath"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jgridshift"/>
@@ -133,7 +137,8 @@
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.jasper.glassfish"/>
-      <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.apache.lucene.analyzers-common"/>
+      <plugin id="org.apache.lucene.analyzers-smartcn"/>
       <plugin id="org.apache.lucene.core"/>
       <plugin id="org.apache.poi"/>
       <plugin id="org.apache.velocity"/>
@@ -159,7 +164,6 @@
       <plugin id="org.eclipse.core.net.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.resources"/>
       <plugin id="org.eclipse.core.runtime"/>
-      <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.ecore"/>
@@ -185,6 +189,7 @@
       <plugin id="org.eclipse.jetty.util"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
