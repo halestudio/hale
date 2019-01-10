@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Core API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -71,3 +71,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  groovy;bundle-version="2.1.5",
  org.codehaus.castor.xml;bundle-version="1.3.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.core

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Core Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0",
  groovy;bundle-version="1.8.6"
@@ -39,3 +39,4 @@ Export-Package: eu.esdihumboldt.cst.functions.core,
  eu.esdihumboldt.cst.functions.core.join,
  eu.esdihumboldt.cst.functions.core.merge
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.core

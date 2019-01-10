@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
@@ -63,6 +64,25 @@ import eu.esdihumboldt.hale.io.shp.internal.Messages;
  */
 public class ShapeSchemaReader extends AbstractCachedSchemaReader implements ShapefileConstants {
 
+	private static final String PARAM_ADD_FILENAME_ATTRIBUTE = "addFilenameAttribute";
+
+	/**
+	 * Set if an attribute should be added that will be filled with the file
+	 * name when loading data from a Shapefile.
+	 * 
+	 * @param addFilename if a filename attribute should be added
+	 */
+	public void setAddFilenameAttribute(boolean addFilename) {
+		setParameter(PARAM_ADD_FILENAME_ATTRIBUTE, Value.of(addFilename));
+	}
+
+	/**
+	 * @return states if a filename attribute should be added
+	 */
+	public boolean isAddFilenameAttribute() {
+		return getParameter(PARAM_ADD_FILENAME_ATTRIBUTE).as(Boolean.class, true);
+	}
+
 	@Override
 	protected Schema loadFromSource(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
@@ -81,20 +101,22 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 		progress.setCurrentTask(Messages.getString("ShapeSchemaProvider.2")); //$NON-NLS-1$
 
 		// create type for augmented filename property
-		QName filenameTypeName = new QName(SHAPEFILE_AUGMENT_NS, "filenameType");
 		TypeDefinition filenameType = null;
-		if (getSharedTypes() != null) {
-			filenameType = getSharedTypes().getType(filenameTypeName);
-		}
-		if (filenameType == null) {
-			DefaultTypeDefinition fnt = new DefaultTypeDefinition(filenameTypeName);
+		if (isAddFilenameAttribute()) {
+			QName filenameTypeName = new QName(SHAPEFILE_AUGMENT_NS, "filenameType");
+			if (getSharedTypes() != null) {
+				filenameType = getSharedTypes().getType(filenameTypeName);
+			}
+			if (filenameType == null) {
+				DefaultTypeDefinition fnt = new DefaultTypeDefinition(filenameTypeName);
 
-			fnt.setConstraint(MappableFlag.DISABLED);
-			fnt.setConstraint(MappingRelevantFlag.DISABLED);
-			fnt.setConstraint(Binding.get(String.class));
-			fnt.setConstraint(HasValueFlag.ENABLED);
+				fnt.setConstraint(MappableFlag.DISABLED);
+				fnt.setConstraint(MappingRelevantFlag.DISABLED);
+				fnt.setConstraint(Binding.get(String.class));
+				fnt.setConstraint(HasValueFlag.ENABLED);
 
-			filenameType = fnt;
+				filenameType = fnt;
+			}
 		}
 
 		// build type definitions based on Schema extracted by geotools
@@ -102,8 +124,8 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 			SimpleFeatureType sft = store.getSchema(name);
 			try {
 				// create type definition
-				DefaultTypeDefinition type = new DefaultTypeDefinition(new QName(namespace, sft
-						.getName().getLocalPart()));
+				DefaultTypeDefinition type = new DefaultTypeDefinition(
+						new QName(namespace, sft.getName().getLocalPart()));
 
 				// constraints on main type
 				type.setConstraint(MappingRelevantFlag.ENABLED);
@@ -113,9 +135,9 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 				type.setConstraint(Binding.get(Instance.class));
 
 				for (AttributeDescriptor ad : sft.getAttributeDescriptors()) {
-					DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-							ad.getLocalName()), type, getTypeFromAttributeType(ad.getType(),
-							schema, namespace));
+					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+							new QName(ad.getLocalName()), type,
+							getTypeFromAttributeType(ad.getType(), schema, namespace));
 
 					// set constraints on property
 					property.setConstraint(NillableFlag.get(ad.isNillable())); // nillable
@@ -126,19 +148,22 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 				}
 
 				// add additional filename property
-//				String filename = sft.getName().getLocalPart();
-				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-						SHAPEFILE_AUGMENT_NS, AUGMENTED_PROPERTY_FILENAME), type, filenameType);
-				property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
-				property.setConstraint(NillableFlag.ENABLED);
+				if (filenameType != null) {
+//					String filename = sft.getName().getLocalPart();
+					DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+							new QName(SHAPEFILE_AUGMENT_NS, AUGMENTED_PROPERTY_FILENAME), type,
+							filenameType);
+					property.setConstraint(Cardinality.CC_EXACTLY_ONCE);
+					property.setConstraint(NillableFlag.ENABLED);
+				}
 
 				schema.addType(type);
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);
 			}
-			progress.setCurrentTask(MessageFormat.format(
-					Messages.getString("ShapeSchemaProvider.7"), //$NON-NLS-1$
-					sft.getTypeName()));
+			progress.setCurrentTask(
+					MessageFormat.format(Messages.getString("ShapeSchemaProvider.7"), //$NON-NLS-1$
+							sft.getTypeName()));
 		}
 
 		reporter.setSuccess(true);
@@ -219,7 +244,8 @@ public class ShapeSchemaReader extends AbstractCachedSchemaReader implements Sha
 	 * @return the type definition or <code>null</code> in case reading the type
 	 *         was not possible
 	 */
-	public static TypeDefinition readShapeType(LocatableInputSupplier<? extends InputStream> source) {
+	public static TypeDefinition readShapeType(
+			LocatableInputSupplier<? extends InputStream> source) {
 		ShapeSchemaReader reader = new ShapeSchemaReader();
 		reader.setSource(source);
 		try {

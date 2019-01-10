@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tasks View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.tasks;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.ui.views.properties;bundle-version="3.3.0",
@@ -33,3 +33,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.tasks
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.tasks.internal.TasksViewPlugin
 Bundle-Vendor: wetransform GmbH
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.tasks

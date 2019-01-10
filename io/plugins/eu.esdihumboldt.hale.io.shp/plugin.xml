@@ -19,6 +19,21 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.shp">
          </contentType>
+         <providerParameter
+               description="Add an attribute that contains the file name for any data loaded from a Shapefile"
+               label="File name attribute"
+               name="addFilenameAttribute"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default the attribute is added"
+                  sample="false"
+                  sampleDescription="Suppress adding the attribute">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader"
@@ -36,6 +51,23 @@
                <parameterBinding
                      class="java.lang.String">
                </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Match property names in Shapefile to target type properties by checking if there is exactly one target type 
+               		property name that starts with the Shapefile property name. If there are multiple property names in the target type
+               		that start with the Shapefile property name, the property will not be imported."
+               label="Match short property names"
+               name="matchShortPropertyNames"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default a source property will only be imported if there is an exact match to a target type property"
+                  sample="true"
+                  sampleDescription="Activate the matching of short property names">
+            </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

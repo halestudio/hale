@@ -26,7 +26,6 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectService;
 import eu.esdihumboldt.hale.io.haleconnect.HaleConnectServices;
 import eu.esdihumboldt.hale.io.haleconnect.ui.preferences.PreferenceConstants;
-import eu.esdihumboldt.hale.io.haleconnect.ui.preferences.PreferenceInitializer;
 import eu.esdihumboldt.hale.ui.HaleUI;
 
 /**
@@ -72,13 +71,13 @@ public class HaleConnectUIPlugin extends AbstractUIPlugin {
 			if (useDefaults) {
 				// Force default values
 				hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
-						PreferenceInitializer.HALE_CONNECT_BASEPATH_USERS_DEFAULT);
+						HaleConnectServices.HALE_CONNECT_BASEPATH_USERS_DEFAULT);
 				hcs.getBasePathManager().setBasePath(HaleConnectServices.BUCKET_SERVICE,
-						PreferenceInitializer.HALE_CONNECT_BASEPATH_DATA_DEFAULT);
+						HaleConnectServices.HALE_CONNECT_BASEPATH_DATA_DEFAULT);
 				hcs.getBasePathManager().setBasePath(HaleConnectServices.PROJECT_STORE,
-						PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT);
+						HaleConnectServices.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT);
 				hcs.getBasePathManager().setBasePath(HaleConnectServices.WEB_CLIENT,
-						PreferenceInitializer.HALE_CONNECT_BASEPATH_CLIENT_DEFAULT);
+						HaleConnectServices.HALE_CONNECT_BASEPATH_CLIENT_DEFAULT);
 			}
 			else {
 				hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,

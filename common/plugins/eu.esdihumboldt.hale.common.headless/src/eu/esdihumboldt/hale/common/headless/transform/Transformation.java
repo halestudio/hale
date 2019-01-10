@@ -67,6 +67,7 @@ import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
@@ -98,6 +99,7 @@ public class Transformation {
 	 *            necessary
 	 * @param validators the instance validator, may be <code>null</code> or
 	 *            empty
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -105,9 +107,10 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
-			Collection<InstanceValidator> validators) {
+			Collection<InstanceValidator> validators, TransformationSettings settings) {
 
-		return transform(sources, target, environment, reportHandler, processId, validators, null);
+		return transform(sources, target, environment, reportHandler, processId, validators, null,
+				settings);
 	}
 
 	/**
@@ -121,14 +124,15 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
 	 */
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
-			final ReportHandler reportHandler, Object processId) {
-		return transform(sources, target, environment, reportHandler, processId, null);
+			final ReportHandler reportHandler, Object processId, TransformationSettings settings) {
+		return transform(sources, target, environment, reportHandler, processId, null, settings);
 	}
 
 	/**
@@ -146,6 +150,7 @@ public class Transformation {
 	 *            empty
 	 * @param filterDefinition {@link InstanceFilterDefinition} object as a
 	 *            filter may be <code>null</code>
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -153,57 +158,37 @@ public class Transformation {
 	public static ListenableFuture<Boolean> transform(List<InstanceReader> sources,
 			InstanceWriter target, final TransformationEnvironment environment,
 			final ReportHandler reportHandler, Object processId,
-			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition) {
-		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
+			Collection<InstanceValidator> validators, InstanceFilterDefinition filterDefinition,
+			TransformationSettings settings) {
+		InstanceCollection sourceCollection = loadSources(sources, environment, reportHandler,
+				filterDefinition);
 
-			/**
-			 * @see IOAdvisor#prepareProvider(IOProvider)
-			 */
-			@Override
-			public void prepareProvider(InstanceReader provider) {
-				super.prepareProvider(provider);
+		return transform(sourceCollection, target, environment, reportHandler, processId,
+				validators, settings);
+	}
 
-				provider.setSourceSchema(environment.getSourceSchema());
-			}
-
-			/**
-			 * @see AbstractIOAdvisor#updateConfiguration(IOProvider)
-			 */
-			@Override
-			public void updateConfiguration(InstanceReader provider) {
-				super.updateConfiguration(provider);
-
-				if (environment instanceof ProjectTransformationEnvironment) {
-					// set project CRS manager as CRS provider
-					/*
-					 * Resource based CRS settings will however not work, as the
-					 * resource identifiers will not match
-					 */
-					provider.setCRSProvider(new ProjectCRSManager(provider, null,
-							((ProjectTransformationEnvironment) environment).getProject()));
-				}
-			}
-		};
-		loadDataAdvisor.setServiceProvider(environment);
-		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
-
-		List<InstanceCollection> sourceList = Lists.transform(sources,
-				new Function<InstanceReader, InstanceCollection>() {
-
-					@Override
-					public InstanceCollection apply(@Nullable InstanceReader input) {
-						try {
-							HeadlessIO.executeProvider(input, loadDataAdvisor, null, reportHandler);
-							// XXX progress?!
-						} catch (IOException e) {
-							throw new IllegalStateException("Failed to load source data", e);
-						}
-						return input.getInstances();
-					}
-				});
-
-		// Apply Filter
-		InstanceCollection sourceCollection = applyFilter(sourceList, filterDefinition);
+	/**
+	 * Transform the instances provided by the given instance collection and
+	 * supply the result to the given instance writer.
+	 * 
+	 * @param sources the source instance collction
+	 * @param target the target instance writer
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param processId the identifier for the transformation process, may be
+	 *            <code>null</code> if grouping the jobs to a job family is not
+	 *            necessary
+	 * @param validators the instance validators, may be <code>null</code> or
+	 *            empty
+	 * @param settings the transformation settings
+	 * @return the future representing the successful completion of the
+	 *         transformation (note that a successful completion doesn't
+	 *         necessary mean there weren't any internal transformation errors)
+	 */
+	public static ListenableFuture<Boolean> transform(InstanceCollection sources,
+			InstanceWriter target, final TransformationEnvironment environment,
+			final ReportHandler reportHandler, Object processId,
+			Collection<InstanceValidator> validators, TransformationSettings settings) {
 
 		final TransformationSink targetSink;
 		try {
@@ -250,9 +235,66 @@ public class Transformation {
 		if (validators != null && !validators.isEmpty()) {
 			validationJob = new ValidationJob(validators, reportHandler, target, environment);
 		}
-		return transform(sourceCollection, targetSink, exportJob, validationJob,
-				environment.getAlignment(), environment.getSourceSchema(), reportHandler,
-				environment, processId);
+		return transform(sources, targetSink, exportJob, validationJob, environment.getAlignment(),
+				environment.getSourceSchema(), reportHandler, environment, processId, settings);
+	}
+
+	/**
+	 * Load the given sources into a combined instance collection.
+	 * 
+	 * @param sources the source readers
+	 * @param environment the transformation environment
+	 * @param reportHandler the report handler
+	 * @param filterDefinition the filters for the source data
+	 * @return the combined instance collection
+	 */
+	public static InstanceCollection loadSources(List<InstanceReader> sources,
+			TransformationEnvironment environment, ReportHandler reportHandler,
+			InstanceFilterDefinition filterDefinition) {
+		final IOAdvisor<InstanceReader> loadDataAdvisor = new AbstractIOAdvisor<InstanceReader>() {
+
+			@Override
+			public void prepareProvider(InstanceReader provider) {
+				super.prepareProvider(provider);
+
+				provider.setSourceSchema(environment.getSourceSchema());
+			}
+
+			@Override
+			public void updateConfiguration(InstanceReader provider) {
+				super.updateConfiguration(provider);
+
+				if (environment instanceof ProjectTransformationEnvironment) {
+					// set project CRS manager as CRS provider
+					/*
+					 * Resource based CRS settings will however not work, as the
+					 * resource identifiers will not match
+					 */
+					provider.setCRSProvider(new ProjectCRSManager(provider, null,
+							((ProjectTransformationEnvironment) environment).getProject()));
+				}
+			}
+		};
+		loadDataAdvisor.setServiceProvider(environment);
+		loadDataAdvisor.setActionId(InstanceIO.ACTION_LOAD_SOURCE_DATA);
+
+		List<InstanceCollection> sourceList = Lists.transform(sources,
+				new Function<InstanceReader, InstanceCollection>() {
+
+					@Override
+					public InstanceCollection apply(@Nullable InstanceReader input) {
+						try {
+							HeadlessIO.executeProvider(input, loadDataAdvisor, null, reportHandler);
+							// XXX progress?!
+						} catch (IOException e) {
+							throw new IllegalStateException("Failed to load source data", e);
+						}
+						return input.getInstances();
+					}
+				});
+
+		// apply Filter
+		return applyFilter(sourceList, filterDefinition);
 	}
 
 	/**
@@ -269,6 +311,7 @@ public class Transformation {
 	 * @param processId the identifier for the transformation process, may be
 	 *            <code>null</code> if grouping the jobs to a job family is not
 	 *            necessary
+	 * @param settings the transformation settings
 	 * @return the future representing the successful completion of the
 	 *         transformation (note that a successful completion doesn't
 	 *         necessary mean there weren't any internal transformation errors)
@@ -277,7 +320,7 @@ public class Transformation {
 			final TransformationSink targetSink, final ExportJob exportJob,
 			final ValidationJob validationJob, final Alignment alignment, SchemaSpace sourceSchema,
 			final ReportHandler reportHandler, final ServiceProvider serviceProvider,
-			final Object processId) {
+			final Object processId, TransformationSettings settings) {
 		final SettableFuture<Boolean> result = SettableFuture.create();
 
 		final InstanceCollection sourceToUse;
@@ -285,13 +328,25 @@ public class Transformation {
 		// Check whether to create a temporary database or not.
 		// Currently do not create a temporary DB is there are Retypes/Creates
 		// only.
-		boolean useTempDatabase = false;
 		final LocalOrientDB db;
-		for (Cell cell : alignment.getActiveTypeCells())
-			if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
-				useTempDatabase = true;
-				break;
+		boolean useTempDatabase = settings.useTemporaryDatabase().orElseGet(() -> {
+			boolean useDb = false;
+
+			for (Cell cell : alignment.getActiveTypeCells()) {
+				/*
+				 * XXX right now the source is read for each type transformation
+				 * - does it makes sense to use the DB if there is a certain
+				 * number of type transformations?
+				 */
+
+				if (!isStreamingTypeTransformation(cell.getTransformationIdentifier())) {
+					useDb = true;
+					break;
+				}
 			}
+
+			return useDb;
+		});
 
 		// Create temporary database if necessary.
 		if (useTempDatabase) {
@@ -311,8 +366,12 @@ public class Transformation {
 
 						@Override
 						public boolean match(Instance instance) {
-							if (instance instanceof OInstance) {
-								return ((OInstance) instance).isInserted();
+							Instance inst = (instance instanceof InstanceDecorator)
+									? InstanceDecorator.getRoot(instance)
+									: instance;
+
+							if (inst instanceof OInstance) {
+								return ((OInstance) inst).isInserted();
 							}
 							return true;
 						}
@@ -532,10 +591,10 @@ public class Transformation {
 		// XXX rather decide based on function declaration or anything like
 		// that?
 		switch (transformationIdentifier) {
+		// Groovy variants excluded to allow spatial index to be built and
+		// used in Groovy scripts
 		case RetypeFunction.ID: // fall through
 		case CreateFunction.ID: // fall through
-		case "eu.esdihumboldt.cst.functions.groovy.retype": // fall through
-		case "eu.esdihumboldt.cst.functions.groovy.create":
 			return true;
 		default:
 			return false;

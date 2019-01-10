@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Schema Persistence Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema.persist.test
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.8.0",
  groovy;bundle-version="2.1.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.8.0",
@@ -16,3 +16,4 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.util.validator,
  junit.framework;version="4.8.2",
  net.jcip.annotations
+Automatic-Module-Name: eu.esdihumboldt.hale.common.schema.persist.test

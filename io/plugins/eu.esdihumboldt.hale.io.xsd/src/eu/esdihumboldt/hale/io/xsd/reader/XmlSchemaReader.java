@@ -63,6 +63,7 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
+import org.w3c.dom.Node;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -107,6 +108,7 @@ import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlIdUnique;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlMixedFlag;
 import eu.esdihumboldt.hale.io.xsd.internal.Messages;
+import eu.esdihumboldt.hale.io.xsd.model.ComplexContentHasValue;
 import eu.esdihumboldt.hale.io.xsd.model.HasNotInheritableValue;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttribute;
 import eu.esdihumboldt.hale.io.xsd.model.XmlAttributeGroup;
@@ -124,6 +126,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlGroupReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeDefinition;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.XmlTypeUtil;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementName;
+import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.ElementReferenceProperty;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappableUsingXsiType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.MappingRelevantIfFeatureType;
 import eu.esdihumboldt.hale.io.xsd.reader.internal.constraint.XLinkReference;
@@ -222,7 +225,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	/**
 	 * Qualified name of the XLink reference attribute.
 	 */
-	private static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
+	public static final QName NAME_XLINK_REF = new QName("http://www.w3.org/1999/xlink", "href");
 
 	/**
 	 * Name for virtual INSPIRE NilReason type with adapted enumeration.
@@ -1375,8 +1378,21 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * @param annotated the XML annotated object
 	 * @param schemaLocation the schema location
 	 */
-	public static void setMetadata(AbstractDefinition<?> definition, XmlSchemaAnnotated annotated,
+	public void setMetadata(AbstractDefinition<?> definition, XmlSchemaAnnotated annotated,
 			String schemaLocation) {
+		setMetadata(definition, annotated, schemaLocation, index);
+	}
+
+	/**
+	 * Set the metadata for a definition
+	 * 
+	 * @param definition the definition
+	 * @param annotated the XML annotated object
+	 * @param schemaLocation the schema location
+	 * @param index the XML index
+	 */
+	public static void setMetadata(AbstractDefinition<?> definition, XmlSchemaAnnotated annotated,
+			String schemaLocation, XmlIndex index) {
 		definition.setDescription(XMLSchemaIO.getDescription(annotated));
 
 		List<XmlSchemaAppInfo> appInfo = XMLSchemaIO.getAppInfo(annotated);
@@ -1391,9 +1407,67 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			else if (definition instanceof DefaultTypeDefinition) {
 				((DefaultTypeDefinition) definition).setConstraint(constraint);
 			}
+
+			if (definition instanceof ChildDefinition<?>) {
+				handleAppInfoTargetElement(appInfo, (ChildDefinition<?>) definition, index);
+			}
 		}
 
 		definition.setLocation(createLocationURI(schemaLocation, annotated));
+	}
+
+	/**
+	 * Handle reference information in XML Schema AppInfo.
+	 * 
+	 * @param appInfos the list of AppInfos
+	 * @param definition the property the infos are associated to
+	 * @param index the XML index
+	 */
+	private static void handleAppInfoTargetElement(List<XmlSchemaAppInfo> appInfos,
+			ChildDefinition<?> definition, XmlIndex index) {
+		Set<QName> elementNames = null;
+
+		for (final XmlSchemaAppInfo appInfo : appInfos) {
+			for (int i = 0; i < appInfo.getMarkup().getLength(); i++) {
+				final Node item = appInfo.getMarkup().item(i);
+				if ("targetElement".equals(item.getNodeName())) {
+					// TODO also check for GML namespace?
+
+					final String target = item.getTextContent();
+					String[] parts = target.split(":");
+					QName elementName = null;
+					if (parts.length == 1) {
+						elementName = new QName(parts[0]);
+					}
+					else if (parts.length == 2) {
+						Map<String, String> namespaces = index.getPrefixes().inverse();
+						String ns = namespaces.get(parts[0]);
+						elementName = new QName(ns, parts[1]);
+					}
+					if (elementName != null) {
+						if (elementNames == null) {
+							elementNames = new HashSet<>();
+						}
+
+						elementNames.add(elementName);
+					}
+				}
+			}
+		}
+
+		if (elementNames != null) {
+			List<QName> valuePath = null; // TODO take from existing reference
+											// property, if any?
+			ElementReferenceProperty constraint = new ElementReferenceProperty(index, valuePath,
+					elementNames);
+			if (definition instanceof DefaultPropertyDefinition) {
+				((DefaultPropertyDefinition) definition).setConstraint(constraint);
+			}
+			else if (definition instanceof DefaultGroupPropertyDefinition) {
+				((DefaultPropertyDefinition) definition).setConstraint(constraint);
+			}
+		}
+
 	}
 
 	/**
@@ -1499,9 +1573,10 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					createAttributesFromCollection(attributeCollection, typeDef, null,
 							schemaLocation, schemaNamespace);
 				}
-				// complex content does not have a value
-				// (only if it is mixed, which can override this setting)
-				typeDef.setConstraintIfNotSet(HasValueFlag.DISABLED);
+				// complex content may have a value in certain cases
+				// (if it is mixed it definitely has, which will override this
+				// setting)
+				typeDef.setConstraintIfNotSet(new ComplexContentHasValue(typeDef));
 				// </extension>
 				// </complexContent>
 			}
@@ -1603,7 +1678,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 					// XXX extend group name with namespace?
 					XmlAttributeGroupReferenceProperty property = new XmlAttributeGroupReferenceProperty(
 							groupName, declaringType, this.index, groupName, true);
-							// TODO add constraints?
+					// TODO add constraints?
 
 					// set metadata
 					setMetadata(property, groupRef, schemaLocation);

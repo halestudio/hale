@@ -226,7 +226,8 @@ public class TransformationWorkspace {
 		}
 
 		ListenableFuture<Boolean> result = Transformation.transform(sources, writer, env,
-				new ReportFile(reportFile), workspace.getName());
+				new ReportFile(reportFile), workspace.getName(),
+				new DefaultTransformationSettings());
 
 		Futures.addCallback(result, new FutureCallback<Boolean>() {
 

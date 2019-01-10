@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Attribute Editor Bundle
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.definition.editors;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.osgi.util,
  eu.esdihumboldt.hale.common.align.extension.function,
@@ -31,3 +31,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Export-Package: eu.esdihumboldt.hale.ui.common.definition.editors
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.common.definition.editors

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Conceptual Schema Transformer
 Bundle-SymbolicName: eu.esdihumboldt.cst;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="9.0.0",
@@ -56,3 +56,4 @@ Export-Package: eu.esdihumboldt.cst,
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst

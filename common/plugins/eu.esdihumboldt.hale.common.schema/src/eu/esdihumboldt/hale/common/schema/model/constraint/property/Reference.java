@@ -34,7 +34,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey;
  * @author Simon Templer
  */
 @Constraint(mutable = true)
-public class Reference implements PropertyConstraint {
+public class Reference implements PropertyConstraint, ReferenceLike {
 
 	/**
 	 * The referenced target types. A <code>null</code> value stands for unknown
@@ -76,10 +76,9 @@ public class Reference implements PropertyConstraint {
 	}
 
 	/**
-	 * Get the types of objects that may be associated through the reference.
-	 * 
-	 * @return the referenced types, may be <code>null</code> if unknown
+	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#getReferencedTypes()
 	 */
+	@Override
 	public Collection<? extends TypeDefinition> getReferencedTypes() {
 		if (referencedTypes == null) {
 			return null;
@@ -90,10 +89,9 @@ public class Reference implements PropertyConstraint {
 	}
 
 	/**
-	 * Add a referenced type. Marks the property explicitly as reference.
-	 * 
-	 * @param type the referenced type to add
+	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#addReferencedType(eu.esdihumboldt.hale.common.schema.model.TypeDefinition)
 	 */
+	@Override
 	public void addReferencedType(TypeDefinition type) {
 		if (referencedTypes == null) {
 			referencedTypes = new HashSet<>();
@@ -103,10 +101,9 @@ public class Reference implements PropertyConstraint {
 	}
 
 	/**
-	 * Returns whether this reference references anything.
-	 * 
-	 * @return true, if this reference references anything, false otherwise
+	 * @see eu.esdihumboldt.hale.common.schema.model.constraint.property.ReferenceLike#isReference()
 	 */
+	@Override
 	public boolean isReference() {
 		return reference;
 	}

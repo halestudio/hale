@@ -54,6 +54,9 @@ public class PartitionConfigurationPage
 	private Spinner instances;
 	private ComboViewer partitionMode;
 	private Button activatePartitioningByFeatureType;
+	private Button activatePartitioningByExtent;
+	private ComboViewer extentPartitionMode;
+	private Spinner quadtreeMaxNodes;
 
 	/**
 	 * Default constructor.
@@ -88,6 +91,26 @@ public class PartitionConfigurationPage
 			provider.setParameter(StreamGmlWriter.PARAM_INSTANCES_THRESHOLD,
 					Value.of(StreamGmlWriter.NO_PARTITIONING));
 			provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_FEATURE_TYPE, Value.of(true));
+		}
+		else if (activatePartitioningByExtent.getSelection()) {
+			provider.setParameter(StreamGmlWriter.PARAM_INSTANCES_THRESHOLD,
+					Value.of(StreamGmlWriter.NO_PARTITIONING));
+
+			int maxNodes = quadtreeMaxNodes.getSelection();
+			provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_EXTENT, Value.of(true));
+			provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_EXTENT_MAX_NODES,
+					Value.of(maxNodes));
+
+			ISelection sel = extentPartitionMode.getSelection();
+			if (!sel.isEmpty() && sel instanceof IStructuredSelection) {
+				provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_EXTENT_MODE,
+						Value.of(((IStructuredSelection) sel).getFirstElement().toString()));
+			}
+			else {
+				// use default
+				provider.setParameter(StreamGmlWriter.PARAM_PARTITION_BY_EXTENT_MODE,
+						Value.of(StreamGmlWriter.PARTITION_BY_EXTENT_MODE_DATASET));
+			}
 		}
 
 		return true;
@@ -160,6 +183,47 @@ public class PartitionConfigurationPage
 			}
 		});
 
+		Group spatialPartition = new Group(page, SWT.NONE);
+		spatialPartition.setLayout(new GridLayout(3, false));
+		spatialPartition.setText("Split by spatial extent");
+		groupData.applyTo(spatialPartition);
+
+		activatePartitioningByExtent = new Button(spatialPartition, SWT.CHECK);
+		activatePartitioningByExtent.setSelection(false);
+		activatePartitioningByExtent.addSelectionListener(new SelectionAdapter() {
+
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				update();
+			}
+		});
+
+		quadtreeMaxNodes = new Spinner(spatialPartition, SWT.BORDER);
+		quadtreeMaxNodes.setMinimum(1);
+		quadtreeMaxNodes.setMaximum(1000000);
+		quadtreeMaxNodes.setSelection(1000);
+		quadtreeMaxNodes.setIncrement(100);
+		quadtreeMaxNodes.setPageIncrement(1000);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(quadtreeMaxNodes);
+
+		Label quadtreeMaxNodesLabel = new Label(spatialPartition, SWT.NONE);
+		quadtreeMaxNodesLabel.setText("instances per tile");
+
+		Label quadtreeDesc = new Label(spatialPartition, SWT.WRAP);
+		GridDataFactory.swtDefaults().hint(400, SWT.DEFAULT).align(SWT.FILL, SWT.BEGINNING)
+				.span(3, 1).grab(true, false).applyTo(quadtreeDesc);
+		quadtreeDesc.setText(
+				"Number of instances that will be at most put into a single tile before the tile is split up.");
+
+		// extent partitioning mode
+		Label extentMode = new Label(spatialPartition, SWT.NONE);
+		extentMode.setText("Partitioning mode:");
+		GridDataFactory.swtDefaults().span(2, 1).applyTo(extentMode);
+
+		extentPartitionMode = createExtentPartitionModeSelector(spatialPartition);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+				.applyTo(extentPartitionMode.getControl());
+
 		update();
 		setPageComplete(true);
 	}
@@ -206,6 +270,43 @@ public class PartitionConfigurationPage
 	}
 
 	/**
+	 * Create an element for selecting the extent partitioning mode.
+	 * 
+	 * @param parent the parent composite
+	 * 
+	 * @return the combo viewer
+	 */
+	public static ComboViewer createExtentPartitionModeSelector(Composite parent) {
+		ComboViewer viewer = new ComboViewer(parent, SWT.READ_ONLY);
+
+		viewer.setContentProvider(ArrayContentProvider.getInstance());
+		viewer.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof String) {
+					switch (((String) element)) {
+					case StreamGmlWriter.PARTITION_BY_EXTENT_MODE_DATASET:
+						return "Partition instances based on the bounding box of the exported data set";
+					case StreamGmlWriter.PARTITION_BY_EXTENT_MODE_WORLD:
+						return "Partition instances based on world extent";
+					}
+				}
+
+				return super.getText(element);
+			}
+
+		});
+		viewer.setInput(Arrays.asList(StreamGmlWriter.PARTITION_BY_EXTENT_MODE_DATASET,
+				StreamGmlWriter.PARTITION_BY_EXTENT_MODE_WORLD));
+		// set default
+		viewer.setSelection(
+				new StructuredSelection(StreamGmlWriter.PARTITION_BY_EXTENT_MODE_DATASET));
+
+		return viewer;
+	}
+
+	/**
 	 * Apply partition mode configuration to I/O provider.
 	 * 
 	 * @param viewer the partition mode selector (see
@@ -231,10 +332,19 @@ public class PartitionConfigurationPage
 	}
 
 	private void update() {
+		activatePartitioning.setEnabled(!activatePartitioningByFeatureType.getSelection()
+				&& !activatePartitioningByExtent.getSelection());
+		activatePartitioningByFeatureType.setEnabled(!activatePartitioning.getSelection()
+				&& !activatePartitioningByExtent.getSelection());
+		activatePartitioningByExtent.setEnabled(!activatePartitioning.getSelection()
+				&& !activatePartitioningByFeatureType.getSelection());
+
 		instances.setEnabled(activatePartitioning.getSelection());
 		partitionMode.getControl().setEnabled(activatePartitioning.getSelection());
-		activatePartitioningByFeatureType.setEnabled(!activatePartitioning.getSelection());
-		activatePartitioning.setEnabled(!activatePartitioningByFeatureType.getSelection());
+		extentPartitionMode.getControl().setEnabled(activatePartitioningByExtent.getSelection());
+
+		quadtreeMaxNodes.setEnabled(activatePartitioningByExtent.getSelection());
+
 	}
 
 }

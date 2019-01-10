@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2007 IBM Corporation and others.
+ * Copyright (c) 2005, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,11 +7,13 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
+ *     Mickael Istria (Red Hat Inc.) - [263316] regexp for file association
  *******************************************************************************/
 package eu.esdihumboldt.hale.util.nonosgi.contenttype;
 
 import java.io.*;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.internal.content.ContentMessages;
 import org.eclipse.core.runtime.QualifiedName;
@@ -24,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @since 3.1
  */
-@SuppressWarnings({"restriction", "rawtypes"})
+@SuppressWarnings({"restriction"})
 public class ContentTypeMatcher implements IContentTypeMatcher {
 	
 	private static final Logger log = LoggerFactory.getLogger(ContentTypeMatcher.class);
@@ -37,18 +39,14 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		this.context = context;
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentType findContentTypeFor(InputStream contents, String fileName) throws IOException {
 		ContentTypeCatalog currentCatalog = getCatalog();
 		IContentType[] all = currentCatalog.findContentTypesFor(this, contents, fileName);
 		return all.length > 0 ? new ContentTypeHandler((ContentType) all[0], currentCatalog.getGeneration()) : null;
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentType findContentTypeFor(String fileName) {
 		// basic implementation just gets all content types
 		ContentTypeCatalog currentCatalog = getCatalog();
@@ -56,9 +54,7 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		return associated.length == 0 ? null : new ContentTypeHandler((ContentType) associated[0], currentCatalog.getGeneration());
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentType[] findContentTypesFor(InputStream contents, String fileName) throws IOException {
 		ContentTypeCatalog currentCatalog = getCatalog();
 		IContentType[] types = currentCatalog.findContentTypesFor(this, contents, fileName);
@@ -69,9 +65,7 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		return result;
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentType[] findContentTypesFor(String fileName) {
 		ContentTypeCatalog currentCatalog = getCatalog();
 		IContentType[] types = currentCatalog.findContentTypesFor(this, fileName);
@@ -86,16 +80,12 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 		return ContentTypeManager.getInstance().getCatalog();
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentDescription getDescriptionFor(InputStream contents, String fileName, QualifiedName[] options) throws IOException {
 		return getCatalog().getDescriptionFor(this, contents, fileName, options);
 	}
 
-	/**
-	 * @see IContentTypeMatcher
-	 */
+	@Override
 	public IContentDescription getDescriptionFor(Reader contents, String fileName, QualifiedName[] options) throws IOException {
 		return getCatalog().getDescriptionFor(this, contents, fileName, options);
 	}
@@ -111,27 +101,55 @@ public class ContentTypeMatcher implements IContentTypeMatcher {
 	/**
 	 * Enumerates all content types whose settings satisfy the given file spec type mask.
 	 */
-	public Collection getDirectlyAssociated(final ContentTypeCatalog catalog, final String fileSpec, final int typeMask) {
+	@SuppressWarnings("unchecked")
+	public Collection<ContentType> getDirectlyAssociated(final ContentTypeCatalog catalog, final String fileSpec, final int typeMask) {
+		if ((typeMask & (IContentType.FILE_EXTENSION_SPEC | IContentType.FILE_NAME_SPEC)) == 0) {
+			throw new IllegalArgumentException("This method only apply to name or extension based associations"); //$NON-NLS-1$
+		}
 		//TODO: make sure we include built-in associations as well
 		final IEclipsePreferences root = context.getNode(ContentTypeManager.CONTENT_TYPE_PREF_NODE);
-		final Set result = new HashSet(3);
+		final Set<ContentType> result = new HashSet<>(3);
 		try {
-			root.accept(new IPreferenceNodeVisitor() {
-				@SuppressWarnings("unchecked")
-				public boolean visit(IEclipsePreferences node) {
-					if (node == root)
-						return true;
-					String[] fileSpecs = ContentTypeSettings.getFileSpecs(node, typeMask);
-					for (int i = 0; i < fileSpecs.length; i++)
-						if (fileSpecs[i].equalsIgnoreCase(fileSpec)) {
-							ContentType associated = catalog.getContentType(node.name());
-							if (associated != null)
-								result.add(associated);
-							break;
-						}
-					return false;
-				}
+			root.accept(node -> {
+				if (node == root)
+					return true;
+				String[] fileSpecs = ContentTypeSettings.getFileSpecs(node, typeMask);
+				for (String fileSpecification : fileSpecs)
+					if (fileSpecification.equalsIgnoreCase(fileSpec)) {
+						ContentType associated = catalog.getContentType(node.name());
+						if (associated != null)
+							result.add(associated);
+						break;
+					}
+				return false;
+			});
+		} catch (BackingStoreException bse) {
+			log.error(ContentMessages.content_errorLoadingSettings, bse);
+		}
+		return result == null ? Collections.EMPTY_SET : result;
+	}
 
+	@SuppressWarnings("unchecked")
+	public Collection<? extends ContentType> getMatchingRegexpAssociated(ContentTypeCatalog catalog,
+			String fileName, final int typeMask) {
+		if ((typeMask & IContentType.FILE_PATTERN_SPEC) == 0) {
+			throw new IllegalArgumentException("This method only applies for FILE_REGEXP_SPEC."); //$NON-NLS-1$
+		}
+		final IEclipsePreferences root = context.getNode(ContentTypeManager.CONTENT_TYPE_PREF_NODE);
+		final Set<ContentType> result = new HashSet<>(3);
+		try {
+			root.accept(node -> {
+				if (node == root)
+					return true;
+				String[] fileSpecs = ContentTypeSettings.getFileSpecs(node, typeMask);
+				for (String fileSpecification : fileSpecs)
+					if (Pattern.matches(catalog.toRegexp(fileSpecification), fileName)) {
+						ContentType associated = catalog.getContentType(node.name());
+						if (associated != null)
+							result.add(associated);
+						break;
+					}
+				return false;
 			});
 		} catch (BackingStoreException bse) {
 			log.error(ContentMessages.content_errorLoadingSettings, bse);

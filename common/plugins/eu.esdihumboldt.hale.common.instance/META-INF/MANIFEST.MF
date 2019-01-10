@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.cache;version="17.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="1.6.0",
  com.google.common.primitives;version="14.0.0",
+ com.vividsolutions.jts.algorithm;version="1.13.0",
  com.vividsolutions.jts.geom,
  com.vividsolutions.jts.io,
  de.fhg.igd.eclipse.util.extension,
@@ -80,3 +81,4 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  de.fhg.igd.eclipse.util,
  eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance

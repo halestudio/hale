@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: HALE App-Schema plug-in User Guide
-Bundle-SymbolicName: eu.esdihumboldt.hale.doc.appschema;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-Vendor: data harmonisation panel
-Require-Bundle: org.eclipse.help

@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Conversion Service
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.springframework.core;bundle-version="3.0.0";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.10.0"
 Import-Package: de.fhg.igd.eclipse.util.extension,
@@ -19,3 +19,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  org.springframework.context.support;version="3.1.1.RELEASE"
 Export-Package: eu.esdihumboldt.hale.common.convert
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.convert

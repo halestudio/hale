@@ -48,6 +48,50 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty">
       </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.Coordinate">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.Polygon">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.LineString">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.LinearRing">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.MultiLineString">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.MultiPolygon">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.Point">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.MultiPoint">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.algorithm.CGAlgorithms">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.GeometryFactory">
+      </allow>
+      <allow
+            allowAll="false"
+            class="com.vividsolutions.jts.geom.GeometryCollection">
+      </allow>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.service">

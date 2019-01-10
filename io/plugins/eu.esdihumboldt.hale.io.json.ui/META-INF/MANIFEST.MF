@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JSON Export UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.ui;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
  eu.esdihumboldt.hale.ui;bundle-version="2.6.0",
@@ -25,3 +25,4 @@ Import-Package: eu.esdihumboldt.hale.common.align.extension.function,
  eu.esdihumboldt.hale.ui.util.components,
  eu.esdihumboldt.hale.ui.util.selector
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json.ui

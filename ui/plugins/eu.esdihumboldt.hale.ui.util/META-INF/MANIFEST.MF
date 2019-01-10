@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI Utilities
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.util;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text;bundle-version="3.7.1"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.action,
  eu.esdihumboldt.hale.ui.util.components,
@@ -44,3 +44,4 @@ Import-Package: com.google.common.base;version="11.0.1",
  org.eclipse.equinox.security.storage,
  org.eclipse.equinox.security.storage.provider,
  org.slf4j;version="1.5.11"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.util

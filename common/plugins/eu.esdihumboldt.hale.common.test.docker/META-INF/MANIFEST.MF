@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Docker
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.test.docker
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.test.docker.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation;version="2.3.2",
  com.spotify.docker.client;version="2.7.7",
  com.spotify.docker.client.messages;version="2.7.7",
@@ -16,3 +16,4 @@ Require-Bundle: com.typesafe.config;bundle-version="1.2.1"
 Export-Package: eu.esdihumboldt.hale.common.test.docker,
  eu.esdihumboldt.hale.common.test.docker.config,
  eu.esdihumboldt.hale.common.test.docker.helper
+Automatic-Module-Name: eu.esdihumboldt.hale.common.test.docker

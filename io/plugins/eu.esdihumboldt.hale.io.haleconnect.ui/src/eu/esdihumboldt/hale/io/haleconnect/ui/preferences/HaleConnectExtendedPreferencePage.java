@@ -81,14 +81,7 @@ public class HaleConnectExtendedPreferencePage extends FieldEditorPreferencePage
 
 		if (defaults.getBooleanValue()) {
 			// Force default values
-			hcs.getBasePathManager().setBasePath(HaleConnectServices.USER_SERVICE,
-					PreferenceInitializer.HALE_CONNECT_BASEPATH_USERS_DEFAULT);
-			hcs.getBasePathManager().setBasePath(HaleConnectServices.BUCKET_SERVICE,
-					PreferenceInitializer.HALE_CONNECT_BASEPATH_DATA_DEFAULT);
-			hcs.getBasePathManager().setBasePath(HaleConnectServices.PROJECT_STORE,
-					PreferenceInitializer.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT);
-			hcs.getBasePathManager().setBasePath(HaleConnectServices.WEB_CLIENT,
-					PreferenceInitializer.HALE_CONNECT_BASEPATH_CLIENT_DEFAULT);
+			hcs.getBasePathManager().setDefaults();
 		}
 		else {
 			// Use individually configured values

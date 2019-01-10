@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Instance Graphs
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.graph
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: com.tinkerpop.blueprints.core;bundle-version="2.5.0",
@@ -16,3 +16,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.7.2"
 Export-Package: eu.esdihumboldt.hale.common.instance.graph.reference,
  eu.esdihumboldt.hale.common.instance.graph.reference.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instance.graph

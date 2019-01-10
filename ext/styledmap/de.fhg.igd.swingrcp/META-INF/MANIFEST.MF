@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Swing RCP Bridge
 Bundle-SymbolicName: de.fhg.igd.swingrcp;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.4.1",
  org.eclipse.core.runtime;bundle-version="3.4.0"
 Export-Package: de.fhg.igd.swingrcp;version="1.0.0"
@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-Activator: de.fhg.igd.swingrcp.SwingRCPPlugin
 Import-Package: org.apache.commons.logging;version="1.1.1",
  org.jdesktop.swingx.graphics
+Automatic-Module-Name: de.fhg.igd.swingrcp

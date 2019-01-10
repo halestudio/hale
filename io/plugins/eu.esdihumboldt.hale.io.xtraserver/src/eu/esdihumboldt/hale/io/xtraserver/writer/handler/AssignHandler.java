@@ -31,6 +31,9 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.functions.AssignFunction;
+import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 
 /**
  * Transforms the {@link AssignFunction} to a {@link MappingValue}
@@ -60,8 +63,9 @@ class AssignHandler extends AbstractPropertyTransformationHandler {
 
 		final List<QName> path = buildPath(targetProperty.getDefinition().getPropertyPath());
 
-		// if nilReason is set, set xsi:nil to true
-		if (path.get(path.size() - 1).getLocalPart().equals(NIL_REASON)) {
+		// if nilReason is set and property is nillable, set xsi:nil to true
+		if (path.get(path.size() - 1).getLocalPart().equals(NIL_REASON)
+				&& isNillable(targetProperty.getDefinition())) {
 			final List<QName> nilPath = ImmutableList.<QName> builder()
 					.addAll(path.subList(0, path.size() - 1)).add(new QName(XSI_NS, "@nil"))
 					.build();
@@ -75,5 +79,17 @@ class AssignHandler extends AbstractPropertyTransformationHandler {
 				.qualifiedTargetPath(path).value(mappingContext.resolveProjectVars(value)).build();
 
 		return Optional.of(mappingValue);
+	}
+
+	private boolean isNillable(PropertyEntityDefinition definition) {
+
+		if (definition.getPropertyPath().size() > 1) {
+			final PropertyDefinition property = definition.getPropertyPath()
+					.get(definition.getPropertyPath().size() - 2).getChild().asProperty();
+			if (property != null) {
+				return property.getConstraint(NillableFlag.class).isEnabled();
+			}
+		}
+		return false;
 	}
 }

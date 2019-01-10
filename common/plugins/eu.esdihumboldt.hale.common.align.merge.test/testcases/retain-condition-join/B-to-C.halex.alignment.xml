@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="B1toC1" priority="normal">
+        <source>
+            <class>
+                <type name="B1" ns="B">
+                    <condition lang="ECQL">b1 &lt;&gt; 'NIL'</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C1" ns="C"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C41478bc9-1af8-4122-a877-bed50a5db722" priority="normal">
+        <source>
+            <property>
+                <type name="B1" ns="B">
+                    <condition lang="ECQL">b1 &lt;&gt; 'NIL'</condition>
+                </type>
+                <child name="b1" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C1" ns="C"/>
+                <child name="c1" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.join" id="B3B5toC3" priority="normal">
+        <source name="types">
+            <class>
+                <type name="B3" ns="B">
+                    <condition lang="ECQL">b3 &gt; 10</condition>
+                </type>
+            </class>
+        </source>
+        <source name="types">
+            <class>
+                <type name="B5" ns="B"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C3" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="join">
+            <jp:join-parameter xmlns:jp="http://www.esdi-humboldt.eu/hale/join">
+                <class>
+                    <type name="B3" ns="B">
+                        <condition lang="ECQL">b3 &gt; 10</condition>
+                    </type>
+                </class>
+                <class>
+                    <type name="B5" ns="B"/>
+                </class>
+                <jp:condition>
+                    <property>
+                        <type name="B3" ns="B">
+                            <condition lang="ECQL">b3 &gt; 10</condition>
+                        </type>
+                        <child name="b5" ns="B"/>
+                    </property>
+                    <property>
+                        <type name="B5" ns="B"/>
+                        <child name="b5" ns="B"/>
+                    </property>
+                </jp:condition>
+            </jp:join-parameter>
+        </complexParameter>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">_target {}</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cd8cef27f-f63f-4eb4-8fc3-aada45adc181" priority="normal">
+        <source>
+            <property>
+                <type name="B3" ns="B">
+                    <condition lang="ECQL">b3 &gt; 10</condition>
+                </type>
+                <child name="b3" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C3" ns="C"/>
+                <child name="c3" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.groovy.retype" id="B6toC4" priority="normal">
+        <source>
+            <class>
+                <type name="B6" ns="B">
+                    <condition lang="ECQL">b6 &lt;&gt; 10</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="C4" ns="C"/>
+            </class>
+        </target>
+        <complexParameter name="script">
+            <core:text xmlns:core="http://www.esdi-humboldt.eu/hale/core" xml:space="preserve">_target {}</core:text>
+        </complexParameter>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="B6b7toC4c4" priority="normal">
+        <source>
+            <property>
+                <type name="B6" ns="B">
+                    <condition lang="ECQL">b6 &lt;&gt; 10</condition>
+                </type>
+                <child name="b3" ns="B"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="C4" ns="C"/>
+                <child name="c4" ns="C"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>

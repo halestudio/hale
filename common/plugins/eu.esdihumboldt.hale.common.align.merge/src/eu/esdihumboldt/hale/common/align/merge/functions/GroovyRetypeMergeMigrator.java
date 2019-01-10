@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.align.merge.impl.DefaultMergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
+import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
@@ -99,17 +100,6 @@ public class GroovyRetypeMergeMigrator extends DefaultMergeCellMigrator {
 		// source from match
 		cell.setSource(ArrayListMultimap.create(match.getSource()));
 
-		if (source.getFilter() != null) {
-			// note about dropped filter
-			String msg = "The filter on the original source has been dropped because transfering it was not possible automatically.";
-			String filterString = FilterDefinitionManager.getInstance()
-					.asString(source.getFilter());
-			if (filterString != null) {
-				msg = msg + " The original filter was: \"" + filterString + "\".";
-			}
-			log.warn(msg);
-		}
-
 		// parameters from match
 		ListMultimap<String, ParameterValue> params = ArrayListMultimap
 				.create(match.getTransformationParameters());
@@ -179,6 +169,10 @@ public class GroovyRetypeMergeMigrator extends DefaultMergeCellMigrator {
 		}
 
 		cell.setTransformationParameters(params);
+
+		// try to apply source contexts
+		Entity originalSource = CellUtil.getFirstEntity(originalCell.getSource());
+		applySourceContexts(cell, originalSource, migration, log);
 	}
 
 	private String comment(String script) {

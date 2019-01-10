@@ -82,6 +82,9 @@ public class DefaultGroovyService implements GroovyService {
 		// TODO use a specific classloader?
 		CompilerConfiguration cc = new CompilerConfiguration();
 
+		// enable invoke dynamic support
+		cc.getOptimizationOptions().put(CompilerConfiguration.INVOKEDYNAMIC, true);
+
 		// add pre-defined imports
 		ImportCustomizer importCustomizer = new ImportCustomizer();
 

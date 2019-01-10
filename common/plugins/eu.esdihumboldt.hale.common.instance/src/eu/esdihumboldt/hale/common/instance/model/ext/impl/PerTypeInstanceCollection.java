@@ -65,6 +65,9 @@ public class PerTypeInstanceCollection extends MultiInstanceCollection
 		return collections;
 	}
 
+	/**
+	 * @return Iterator over {@link SingleTypeInstanceCollection}s
+	 */
 	public Iterator<InstanceCollection> collectionsIterator() {
 		return collections.entrySet().stream()
 				.map(e -> (InstanceCollection) new SingleTypeInstanceCollection(e.getValue(),

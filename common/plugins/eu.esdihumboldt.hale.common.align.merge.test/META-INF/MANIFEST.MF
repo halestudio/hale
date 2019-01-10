@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment Merge Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.align.merge.test
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="2.3.7",
@@ -27,4 +27,6 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  javax.annotation,
+ org.geotools.filter.text.cql2;version="12.2.0.combined",
  org.slf4j;version="1.7.12"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.align.merge.test

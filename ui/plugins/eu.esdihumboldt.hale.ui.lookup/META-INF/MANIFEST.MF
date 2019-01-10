@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Lookup Table UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.lookup;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.lookup;bundle-version="2.5.0",
  eu.esdihumboldt.hale.ui;bundle-version="2.5.0",
  org.eclipse.ui;bundle-version="3.7.0",
@@ -13,3 +13,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.lookup;bundle-version="2.5.0",
 Export-Package: eu.esdihumboldt.hale.ui.lookup
 Import-Package: com.google.common.collect;version="15.0.0",
  de.fhg.igd.slf4jplus
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.lookup

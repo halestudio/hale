@@ -21,8 +21,7 @@ import java.sql.ResultSet
 import java.sql.SQLException
 import java.util.function.Supplier
 
-import de.fhg.igd.slf4jplus.ALogger
-import de.fhg.igd.slf4jplus.ALoggerFactory
+import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
@@ -47,16 +46,17 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class TableInstanceBuilder {
 
-	private static final ALogger log = ALoggerFactory.getLogger(TableInstanceBuilder)
-	private final InstanceBuilder builder;
+	private final SimpleLog log
+	private final InstanceBuilder builder
 	private final CRSProvider crsProvider
 
 	/**
 	 * Default constructor. 
 	 */
-	public TableInstanceBuilder(CRSProvider crsProvider) {
+	public TableInstanceBuilder(CRSProvider crsProvider, SimpleLog log) {
 		super();
-		this.crsProvider=crsProvider;
+		this.crsProvider = crsProvider
+		this.log = log
 
 		builder = new InstanceBuilder(strictBinding: false)
 	}
@@ -96,7 +96,7 @@ class TableInstanceBuilder {
 							def supplier = {
 								crsProvider.getCRS(type, [property.name])
 							} as Supplier<CRSDefinition>
-							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection, supplier)
+							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection, supplier, log)
 						}
 					}
 

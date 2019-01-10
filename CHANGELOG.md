@@ -2,6 +2,42 @@
 All notable changes to this project will be documented in this file.
 See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
 
+## [3.5.0]
+
+### Added
+
+- Deegree feature store configuration export
+- GML partitioning by spatial extent
+- Support for plugin installation via update sites
+- Improved Xtraserver export
+- Migration support for join conditions and context filters
+- Support for alignments with inline transformations in headless mode
+- Added geometry metadata to Property Type section of Properties view
+- Summary in transformation reports
+- Support for matching shortened Shapefile properties
+
+### Changed
+
+- Upgraded RCP to Eclipse 4.8 (Photon)
+- Upgraded Groovy to 2.4
+- Upgraded PostgreSQL driver to 42.2.4, PostGIS driver to 2.2.1
+- Added JTS Geometry classes to Groovy white list
+
+### Removed
+
+- Moved App-Schema configuration export to external plugin
+
+### Fixed
+
+- Fixed file names when partitioning by feature type in a GML export
+- Improved performance for inline transformations where inlined transformation contains Groovy scripts
+- Prevent change of project resources paths if project is exported to hale connect
+- Prevent removal of existing source data when loading additional source data
+- Allow loading hale schema definition file even if contraint type can't be recreated
+- Ensure spatial index is always available in CLI transformations
+- Fixed listing of hale connect projects
+- Fixed application freezes on macOS
+
 ## [3.4.1]
 
 ### Changed
@@ -12,7 +48,6 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 - Fixed problems with AppSchema configuration dialog on Windows
 - Allow loading the same Excel lookup table multiple times
-- Fixed file names when partitioning by feature type in a GML export
 - Support partitioning by feature type when transforming external data
 - Support srsDimension attribute also at coordinates level
 - Fixed Compatibility Mode toolbar on Windows
@@ -278,6 +313,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
+[3.5.0]: https://github.com/halestudio/hale/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/halestudio/hale/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/halestudio/hale/compare/3.3.2...3.4.0
 [3.3.2]: https://github.com/halestudio/hale/compare/3.3.1...3.3.2

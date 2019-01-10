@@ -17,10 +17,13 @@
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -55,6 +58,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
@@ -123,13 +127,32 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 						property.getName().getLocalPart());
 
 				if (type.getChild(propertyName) == null) {
-					if (!missingProperties.contains(propertyName)) {
-						log.warn("Discarding values of property " + propertyName.getLocalPart()
-								+ " as it is not contained in the schema type.");
-						missingProperties.add(propertyName);
+					final QName currentPropertyName = propertyName;
+					List<? extends ChildDefinition<?>> candidates = new ArrayList<>();
+					if (matchShortPropertyNames) {
+						// Try to guess the property name in cases where the
+						// names in the source file are shortened versions of
+						// the target type properties
+
+						candidates = type.getChildren().stream()
+								.filter(c -> c.getName().getLocalPart()
+										.startsWith(currentPropertyName.getLocalPart()))
+								.collect(Collectors.toList());
 					}
-					// only add values for properties contained in the type
-					continue;
+					if (candidates.size() == 1) {
+						// unique child property found whose name starts with
+						// the source property's name
+						propertyName = candidates.get(0).getName();
+					}
+					else {
+						if (!missingProperties.contains(propertyName)) {
+							log.warn("Discarding values of property " + propertyName.getLocalPart()
+									+ " as it is not contained in the schema type.");
+							missingProperties.add(propertyName);
+						}
+						// only add values for properties contained in the type
+						continue;
+					}
 				}
 
 				// wrap geometry
@@ -191,8 +214,11 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 			// add filename augmented property
 			if (fileName != null) {
-				instance.addProperty(new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
-						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME), fileName);
+				QName propertyName = new QName(ShapefileConstants.SHAPEFILE_AUGMENT_NS,
+						ShapefileConstants.AUGMENTED_PROPERTY_FILENAME);
+				if (type == null || type.getChild(propertyName) != null) {
+					instance.addProperty(propertyName, fileName);
+				}
 			}
 
 			return instance;
@@ -233,6 +259,7 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 	private final TypeDefinition type;
 	private final SimpleFeatureSource source;
 	private final String fileName;
+	private final boolean matchShortPropertyNames;
 
 	/**
 	 * Cache for resolved CRSs
@@ -247,13 +274,17 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 	 * @param crsProvider CRS provider in case no CRS is specified, may be
 	 *            <code>null</code>
 	 * @param fileName the file name to store in the augmented property
+	 * @param matchShortPropertyNames if true try to check if Shapefile property
+	 *            names are shortened versions of target type property names and
+	 *            match accordingly
 	 */
 	public ShapesInstanceCollection(SimpleFeatureSource features, TypeDefinition type,
-			CRSProvider crsProvider, String fileName) {
+			CRSProvider crsProvider, String fileName, boolean matchShortPropertyNames) {
 		this.source = features;
 		this.type = type;
 		this.crsProvider = crsProvider;
 		this.fileName = fileName;
+		this.matchShortPropertyNames = matchShortPropertyNames;
 	}
 
 	/**

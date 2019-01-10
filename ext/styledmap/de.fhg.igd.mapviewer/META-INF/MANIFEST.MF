@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mapviewer
 Bundle-SymbolicName: de.fhg.igd.mapviewer;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
  com.google.common.collect,
  com.vividsolutions.jts.geom;version="1.13.0",
@@ -69,3 +69,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: de.fhg.igd.mapviewer.view.MapviewerPlugin
+Automatic-Module-Name: de.fhg.igd.mapviewer

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OrientDB transformation sink
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.headless.orient;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Vendor: data harmonisation panel
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.instance.orient;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.headless;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.9.0"
@@ -12,3 +12,4 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.schema.model,
  org.slf4j;version="1.7.6"
+Automatic-Module-Name: eu.esdihumboldt.hale.common.headless.orient

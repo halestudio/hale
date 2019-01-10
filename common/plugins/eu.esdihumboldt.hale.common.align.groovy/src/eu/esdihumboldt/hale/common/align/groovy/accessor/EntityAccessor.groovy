@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.common.align.groovy.accessor
 
+import javax.xml.namespace.QName
+
 import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.model.ChildContext
@@ -59,6 +61,19 @@ class EntityAccessor extends AbstractAccessor<PathElement> {
 	@Override
 	public EntityAccessor findChildren(String name) {
 		return (EntityAccessor) super.findChildren(name);
+	}
+
+	/**
+	 * Find the children with the qualified name.
+	 *
+	 * @param name the qualified name
+	 * @return the child accessor
+	 */
+	public EntityAccessor findChildren(QName name) {
+		if (!name.namespaceURI)
+			return findChildren(name.localPart)
+		else
+			return findChildren(name.localPart, name.namespaceURI)
 	}
 
 	/**

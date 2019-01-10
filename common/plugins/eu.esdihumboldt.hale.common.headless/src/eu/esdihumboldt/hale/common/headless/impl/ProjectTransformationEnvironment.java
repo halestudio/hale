@@ -34,7 +34,9 @@ import eu.esdihumboldt.hale.common.align.service.TransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService;
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentTransformationFunctionService;
 import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas;
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationService;
 import eu.esdihumboldt.hale.common.codelist.service.CodeListRegistry;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
@@ -76,6 +78,8 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	private final SchemaSpace targetSchema;
 
 	private final Alignment alignment;
+
+	private final URI loadLocation;
 
 	private final Map<String, IOConfiguration> exportTemplates = new ExportConfigurationMap();
 
@@ -161,6 +165,7 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			throws IOException {
 		super();
 		this.id = id;
+		this.loadLocation = input.getLocation();
 
 		// load the project
 		URI location = input.getLocation();
@@ -208,12 +213,68 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 			addService(ProjectInfoService.class, new FixedProjectInfoService(project, location));
 			// make code lists available
 			addService(CodeListRegistry.class, advisor.getCodeListRegistry());
+			// Make transformation service available, e.g. for inline
+			// transformations
+			addService(TransformationService.class,
+					HalePlatform.getService(TransformationService.class));
 
 			init(project);
 		}
 		else {
 			throw new IOException("Cannot load project, no corresponding I/O provider found.");
 		}
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * @param project the project
+	 * @param id the identifier
+	 * @param sourceSchema the source schema
+	 * @param targetSchema the target schema
+	 * @param alignment the alignment
+	 * @param exportTemplates the export templates
+	 * @param exportPresets the export presets
+	 * @param customServices the custom services
+	 * @param loadLocation the project load location
+	 */
+	protected ProjectTransformationEnvironment(Project project, String id, SchemaSpace sourceSchema,
+			SchemaSpace targetSchema, Alignment alignment,
+			Map<String, IOConfiguration> exportTemplates,
+			Map<String, IOConfiguration> exportPresets, Map<Class<?>, Object> customServices,
+			URI loadLocation) {
+		this.project = project;
+		this.id = id;
+		this.targetSchema = targetSchema;
+		this.sourceSchema = sourceSchema;
+		this.alignment = alignment;
+		this.loadLocation = loadLocation;
+
+		this.exportTemplates.putAll(exportTemplates);
+		this.exportPresets.putAll(exportPresets);
+		this.customServices.putAll(customServices);
+	}
+
+	/**
+	 * Create a copy of the transformation environment with the alignment
+	 * replaced by the given alignment.
+	 * 
+	 * @param alignment the alignment to use for the copy
+	 * @return the transformation environment
+	 */
+	public ProjectTransformationEnvironment copy(Alignment alignment) {
+		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
+				alignment, exportTemplates, exportPresets, customServices, loadLocation);
+	}
+
+	/**
+	 * Create a copy of the transformation environment.
+	 * 
+	 * @return the transformation environment
+	 */
+	public ProjectTransformationEnvironment copy() {
+		return new ProjectTransformationEnvironment(project, id, sourceSchema, targetSchema,
+				alignment, exportTemplates, exportPresets, customServices, loadLocation);
 	}
 
 	/**
@@ -326,6 +387,13 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 	@Override
 	public <T> T getService(Class<T> serviceInterface) {
 		return serviceProvider.getService(serviceInterface);
+	}
+
+	/**
+	 * @return the location the project was loaded from
+	 */
+	public URI getLoadLocation() {
+		return loadLocation;
 	}
 
 }

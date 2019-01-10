@@ -76,6 +76,15 @@ public class JsonToSchema {
 		}
 	}
 
+	protected void warn(String message, Throwable t = null) {
+		if (reporter) {
+			reporter.warn(new IOMessageImpl(message, t))
+		}
+		else {
+			log.warn(message, t)
+		}
+	}
+
 	/**
 	 * Read schemas from the given reader.
 	 * 
@@ -197,11 +206,11 @@ public class JsonToSchema {
 						Object constraint = desc.getFactory().restore(config, definition, typeProvider, classResolver)
 						definition.setConstraint(constraint)
 					} catch (Exception e) {
-						reporter.error(new IOMessageImpl("Failed to restore constraint of type $id", e))
+						error("Failed to restore constraint of type $id", e)
 					}
 				}
 				else {
-					reporter.error(new IOMessageImpl("Could not find factory for constraint with type $id"))
+					warn("Could not find factory for constraint with type $id")
 				}
 			}
 			else {

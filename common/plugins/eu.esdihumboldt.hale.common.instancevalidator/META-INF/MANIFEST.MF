@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Instance Validation
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.model,
@@ -28,3 +28,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
 Export-Package: eu.esdihumboldt.hale.common.instancevalidator
 Require-Bundle: org.eclipse.core.runtime
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instancevalidator

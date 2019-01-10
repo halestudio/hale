@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Common Graph UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.graph;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.common.graph.content,
  eu.esdihumboldt.hale.ui.common.graph.figures,
@@ -51,3 +51,4 @@ Import-Package: com.google.common.base;version="9.0.0",
  net.jcip.annotations,
  org.slf4j;version="1.7.12"
 Bundle-Activator: eu.esdihumboldt.hale.ui.common.graph.internal.GraphUIPlugin
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.common.graph

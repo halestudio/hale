@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Scripting API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.scripting;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  eu.esdihumboldt.hale.common.align
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -27,3 +27,4 @@ Export-Package: eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.common.scripting.scripts.mathematical,
  eu.esdihumboldt.hale.common.scripting.transformation
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.scripting

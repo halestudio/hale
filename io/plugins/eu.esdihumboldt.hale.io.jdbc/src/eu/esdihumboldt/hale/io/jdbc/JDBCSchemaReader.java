@@ -527,7 +527,7 @@ public class JDBCSchemaReader extends AbstractCachedSchemaReader
 			// configure geometry type
 			@SuppressWarnings("unchecked")
 			Class<? extends Geometry> geomClass = geomAdvisor
-					.configureGeometryColumnType(connection, column, type);
+					.configureGeometryColumnType(connection, column, type, reporter);
 			type.setConstraint(GeometryType.get(geomClass));
 			// always a single geometry
 			type.setConstraint(Binding.get(GeometryProperty.class));

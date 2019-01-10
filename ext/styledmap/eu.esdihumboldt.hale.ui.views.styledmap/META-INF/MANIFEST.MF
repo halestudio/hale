@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Styled Map View
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.styledmap;singleton:=true
-Bundle-Version: 3.4.1.qualifier
+Bundle-Version: 3.5.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.views.styledmap.internal.StyledMapBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.opengis,
  org.eclipse.help;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.vividsolutions.jts.geom,
  de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,
@@ -93,3 +93,4 @@ Export-Package: eu.esdihumboldt.hale.ui.views.styledmap,
  eu.esdihumboldt.hale.ui.views.styledmap.tool,
  eu.esdihumboldt.hale.ui.views.styledmap.util
 Bundle-Vendor: data harmonisation panel, Fraunhofer IGD
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.styledmap

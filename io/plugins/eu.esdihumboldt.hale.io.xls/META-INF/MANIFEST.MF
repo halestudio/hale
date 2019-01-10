@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";resolution:=optional,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -48,3 +48,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
 Export-Package: eu.esdihumboldt.hale.io.xls,
  eu.esdihumboldt.hale.io.xls.reader,
  eu.esdihumboldt.hale.io.xls.writer
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xls

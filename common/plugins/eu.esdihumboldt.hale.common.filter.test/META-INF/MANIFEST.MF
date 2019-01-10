@@ -2,12 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hale Filter API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.filter.test
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.vividsolutions.jts;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.13.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.align.instance,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
  eu.esdihumboldt.hale.common.core.io.report,
@@ -43,3 +46,4 @@ Require-Bundle: eu.esdihumboldt.hale.common.filter;bundle-version="2.5.0",
  org.hamcrest.core;bundle-version="1.3.0",
  org.opengis;bundle-version="12.2.0"
 Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.filter.test

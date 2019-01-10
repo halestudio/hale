@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Filter UI Components
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.filter;singleton:=true
-Bundle-Version: 3.4.1.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Version: 3.5.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
@@ -28,3 +28,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.geotools;bundle-version="8.0.0"
 Bundle-Activator: eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.filter

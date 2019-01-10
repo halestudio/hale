@@ -29,9 +29,11 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMapping;
 import de.interactive_instruments.xtraserver.config.api.FeatureTypeMappingBuilder;
@@ -39,7 +41,6 @@ import de.interactive_instruments.xtraserver.config.api.MappingTable;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder;
 import de.interactive_instruments.xtraserver.config.api.MappingTableBuilder.MappingTableDraft;
 import de.interactive_instruments.xtraserver.config.api.MappingValue;
-import de.interactive_instruments.xtraserver.config.api.VirtualTableBuilder;
 import de.interactive_instruments.xtraserver.config.api.XtraServerMapping;
 import de.interactive_instruments.xtraserver.config.api.XtraServerMappingBuilder;
 import de.interactive_instruments.xtraserver.config.transformer.XtraServerMappingTransformer;
@@ -74,7 +75,6 @@ public final class MappingContext {
 	public final static String PROPERTY_INSPIRE_NAMESPACE = "INSPIRE_NAMESPACE";
 
 	private final Alignment alignment;
-	// private final ApplicationSchema applicationSchema;
 	private final Map<String, Value> transformationProperties;
 	private final static Pattern projectVarPattern = Pattern.compile("\\{\\{project:([^}]+)\\}\\}");
 
@@ -82,7 +82,6 @@ public final class MappingContext {
 	private FeatureTypeMappingBuilder currentFeatureTypeMapping;
 	private String currentFeatureTypeMappingName;
 	private final Map<String, MappingTableBuilder> currentMappingTables = new LinkedHashMap<>();
-	private final Map<String, VirtualTableBuilder> currentVirtualTables = new LinkedHashMap<>();
 	private final Set<String> missingAssociationTargets = new TreeSet<String>();
 	private final URI applicationSchemaUri;
 	private final ProjectInfo projectInfo;
@@ -153,46 +152,22 @@ public final class MappingContext {
 			return;
 		}
 
-		this.currentMappingTables.values().stream().filter(isValidJoinTable())
-				.map(MappingTableBuilder::build).forEach(table -> {
+		// reset target path for merged tables
+		this.currentMappingTables.values().forEach(tableBuilder -> {
+			if (tableBuilder.buildDraft().getQualifiedTargetPath()
+					.equals(ImmutableList.of(new QName("__MERGE__")))) {
+				tableBuilder.qualifiedTargetPath(ImmutableList.of());
+			}
+		});
+
+		// connect joining tables
+		Lists.reverse(Lists.newArrayList(this.currentMappingTables.values())).stream()
+				.filter(isJoinTable()).map(MappingTableBuilder::build).forEach(table -> {
 					if (this.currentMappingTables
 							.containsKey(table.getJoinPaths().iterator().next().getSourceTable())) {
 						this.currentMappingTables
 								.get(table.getJoinPaths().iterator().next().getSourceTable())
 								.joiningTable(table);
-					}
-				});
-
-		this.currentMappingTables.values().stream().filter(isInvalidJoinTableWithoutTarget())
-				.map(MappingTableBuilder::buildDraft).forEach(table -> {
-					String primaryName = table.getJoinPaths().iterator().next().getSourceTable();
-					if (this.currentMappingTables.containsKey(primaryName)) {
-						MappingTableBuilder primaryTable = currentMappingTables.get(primaryName);
-						String virtualName = primaryTable.buildDraft().getName();
-						boolean virtualExists = currentVirtualTables.containsKey(primaryName);
-
-						VirtualTableBuilder virtualTable = currentVirtualTables.get(primaryName);
-						if (!virtualExists) {
-							virtualTable = new VirtualTableBuilder();
-							virtualTable.originalTable(primaryTable.buildDraft());
-							this.currentVirtualTables.put(primaryName, virtualTable);
-						}
-
-						if (!virtualExists) {
-							virtualName = "vrt_" + virtualName;
-						}
-
-						if (!virtualName.contains(table.getName())) {
-							virtualName += "_" + table.getName();
-							this.currentMappingTables.get(primaryName)
-									.name("$" + virtualName + "$");
-						}
-
-						virtualTable.name(virtualName);
-						virtualTable.originalTable(table);
-
-						primaryTable
-								.values(table.getAllValuesStream().collect(Collectors.toList()));
 					}
 				});
 
@@ -223,6 +198,21 @@ public final class MappingContext {
 								tableBuilder.buildDraft().getQualifiedTargetPath().get(0))));
 	}
 
+	private Predicate<MappingTableBuilder> isJoinTable() {
+		return tableBuilder -> (tableBuilder.buildDraft().isJoined()
+				&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent()
+				&& tableBuilder.buildDraft().getAllValuesStream()
+						.allMatch(value -> value.getQualifiedTargetPath().get(0)
+								.equals(tableBuilder.buildDraft().getQualifiedTargetPath().get(0))))
+				|| (!tableBuilder.buildDraft().getJoinPaths().isEmpty()
+						&& tableBuilder.buildDraft().getAllValuesStream().findFirst().isPresent()
+						&& (tableBuilder.buildDraft().getQualifiedTargetPath().isEmpty()
+								|| tableBuilder.buildDraft().getAllValuesStream()
+										.anyMatch(value -> !value.getQualifiedTargetPath().get(0)
+												.equals(tableBuilder.buildDraft()
+														.getQualifiedTargetPath().get(0)))));
+	}
+
 	/**
 	 * Returns the name of the currently processed Feature Type Mapping
 	 * 
@@ -233,8 +223,8 @@ public final class MappingContext {
 	}
 
 	/**
-	 * Return all property paths for which no association target could be found in
-	 * the schema.
+	 * Return all property paths for which no association target could be found
+	 * in the schema.
 	 * 
 	 * @return list of properties with missing association targets
 	 */
@@ -271,11 +261,21 @@ public final class MappingContext {
 				() -> new IllegalArgumentException("Table " + tableName + " not found"));
 		final MappingTableDraft tableDraft = tableBuilder.buildDraft();
 
-		if (tableDraft.getQualifiedTargetPath().isEmpty() && !tableDraft.getJoinPaths().isEmpty()
+		// if joinPaths and no target path and multiple, set target path ->
+		// joined table
+		// if joinPaths and target path and not multiple, clear target path ->
+		// merged table
+		// ignore merged tables in JaxbWriter, transform to virtual tables in
+		// transformer
+		if (!tableDraft.getJoinPaths().isEmpty()
 				&& target.getDefinition().getPropertyPath() != null) {
-			// Target is set in value mapping, check if the property is multiple and the
+			// Target is set in value mapping, check if the property is multiple
+			// and the
 			// target must be added to the table
+
+			boolean alreadyHasTargetPath = !tableDraft.getQualifiedTargetPath().isEmpty();
 			List<QName> targetPath = new ArrayList<>();
+			boolean multiple = false;
 			for (final Iterator<ChildContext> it = target.getDefinition().getPropertyPath()
 					.iterator(); it.hasNext();) {
 				final ChildContext segment = it.next();
@@ -284,8 +284,34 @@ public final class MappingContext {
 				if (property != null) {
 					final Cardinality cardinality = property.getConstraint(Cardinality.class);
 					if (cardinality.mayOccurMultipleTimes()) {
-						tableBuilder.qualifiedTargetPath(targetPath);
+
+						if (!alreadyHasTargetPath && tableDraft.getValues().isEmpty()) {
+							tableBuilder.qualifiedTargetPath(targetPath);
+						}
+						if (alreadyHasTargetPath
+								&& !targetPath.equals(tableDraft.getQualifiedTargetPath())) {
+							tableBuilder
+									.qualifiedTargetPath(ImmutableList.of(new QName("__MERGE__")));
+						}
+						multiple = true;
 						break;
+					}
+				}
+			}
+			if (!multiple && alreadyHasTargetPath) {
+				tableBuilder.qualifiedTargetPath(ImmutableList.of(new QName("__MERGE__")));
+			}
+			// set target path for connection table
+			if (multiple && !targetPath.isEmpty()) {
+				String connectionTable = tableDraft.getJoinPaths().iterator().next()
+						.getSourceTable();
+				final Optional<MappingTableBuilder> tableBuilder2 = getTable(connectionTable);
+				if (tableBuilder2.isPresent()) {
+					final MappingTableDraft tableDraft2 = tableBuilder2.get().buildDraft();
+					if (tableDraft2.getQualifiedTargetPath().isEmpty()
+							&& tableDraft2.getValues().isEmpty()
+							&& !tableDraft2.getJoinPaths().isEmpty()) {
+						tableBuilder2.get().qualifiedTargetPath(targetPath);
 					}
 				}
 			}
@@ -327,19 +353,11 @@ public final class MappingContext {
 		featureTypeMappings.values().stream().map(FeatureTypeMappingBuilder::build)
 				.forEach(xtraServerMappingBuilder::featureTypeMapping);
 
-		currentVirtualTables.values().stream().map(VirtualTableBuilder::build)
-				.forEach(xtraServerMappingBuilder::virtualTable);
-
 		XtraServerMapping fannedOutmapping = XtraServerMappingTransformer
 				.forMapping(xtraServerMappingBuilder.build())
 				.applySchemaInfo(this.applicationSchemaUri).fanOutInheritance()
-				.ensureRelationNavigability().fixMultiplicity().transform();
+				.ensureRelationNavigability().fixMultiplicity().virtualTables().transform();
 
-		/*
-		 * fannedOutmapping = XtraServerMappingTransformer.forMapping(fannedOutmapping)
-		 * .applySchemaInfo(this.applicationSchemaUri).ensureRelationNavigability()
-		 * .transform();
-		 */
 		return fannedOutmapping;
 	}
 

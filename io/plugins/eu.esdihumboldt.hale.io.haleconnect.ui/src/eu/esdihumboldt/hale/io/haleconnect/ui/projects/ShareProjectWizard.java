@@ -31,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.io.project.ProjectWriter.ProjectWriterMode;
 import eu.esdihumboldt.hale.io.haleconnect.project.HaleConnectProjectWriter;
 import eu.esdihumboldt.hale.ui.io.ExportWizard;
 import eu.esdihumboldt.hale.ui.io.IOWizard;
@@ -45,14 +46,11 @@ public class ShareProjectWizard extends ExportWizard<HaleConnectProjectWriter> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ShareProjectWizard.class);
 
-//	private final HaleConnectService haleConnect;
-
 	/**
 	 * Create the wizard
 	 */
 	public ShareProjectWizard() {
 		super(HaleConnectProjectWriter.class);
-//		this.haleConnect = HaleUI.getServiceProvider().getService(HaleConnectService.class);
 	}
 
 	@Override
@@ -67,6 +65,8 @@ public class ShareProjectWizard extends ExportWizard<HaleConnectProjectWriter> {
 
 	@Override
 	public boolean performFinish() {
+		getProvider().setWriterMode(ProjectWriterMode.EXPORT);
+
 		boolean result = super.performFinish();
 
 		if (result) {

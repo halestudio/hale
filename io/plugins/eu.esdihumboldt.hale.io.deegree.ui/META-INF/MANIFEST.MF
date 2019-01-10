@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Deegree I/O UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.deegree.ui;singleton:=true
+Bundle-Version: 3.5.0.qualifier
+Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui;bundle-version="3.109.100",
+ eu.esdihumboldt.hale.ui;bundle-version="3.5.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="3.5.0",
+ eu.esdihumboldt.hale.io.deegree;bundle-version="3.5.0"
+Import-Package: eu.esdihumboldt.hale.common.config,
+ eu.esdihumboldt.hale.ui.util.viewer,
+ eu.esdihumboldt.util.config,
+ org.deegree.commons.tom;version="3.4.2",
+ org.deegree.cs;version="3.4.2",
+ org.deegree.cs.coordinatesystems;version="3.4.2",
+ org.deegree.cs.persistence;version="3.4.2",
+ org.deegree.cs.refs.coordinatesystem;version="3.4.2"

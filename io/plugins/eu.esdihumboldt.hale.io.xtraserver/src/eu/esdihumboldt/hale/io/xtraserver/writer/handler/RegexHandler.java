@@ -28,7 +28,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.Property;
-import eu.esdihumboldt.hale.io.appschema.writer.AppSchemaMappingUtils;
+import eu.esdihumboldt.hale.io.xtraserver.writer.XtraServerMappingUtils;
 
 /**
  * Transforms the {@link RegexAnalysisFunction} to a {@link MappingValue}
@@ -46,8 +46,7 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 	 *      eu.esdihumboldt.hale.common.align.model.Property)
 	 */
 	@Override
-	protected Optional<MappingValue> doHandle(final Cell propertyCell,
-			final Property targetProperty) {
+	protected Optional<MappingValue> doHandle(final Cell propertyCell, final Property targetProperty) {
 
 		final ListMultimap<String, ParameterValue> parameters = propertyCell
 				.getTransformationParameters();
@@ -63,7 +62,7 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 		}
 		final String outputFormat = outputFormatParam.get(0).as(String.class);
 
-		final Iterator<ChildContext> it = AppSchemaMappingUtils.getSourceProperty(propertyCell)
+		final Iterator<ChildContext> it = XtraServerMappingUtils.getSourceProperty(propertyCell)
 				.getDefinition().getPropertyPath().iterator();
 		ChildContext lastItem = null;
 		while (it.hasNext()) {
@@ -75,11 +74,11 @@ class RegexHandler extends AbstractPropertyTransformationHandler {
 
 		final String regexpTargetProperty = lastItem.getChild().getName().getLocalPart();
 		// Replace {number} with escaped-escaped-escaped \\number
-		final MappingValue mappingValue = new MappingValueBuilder().expression()
+		final MappingValue mappingValue = new MappingValueBuilder()
+				.expression()
 				.qualifiedTargetPath(buildPath(targetProperty.getDefinition().getPropertyPath()))
 				.value("regexp_replace($T$." + regexpTargetProperty + ", '" + regex + "', '"
-						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\$1") + "', 'g')")
-				.build();
+						+ outputFormat.replaceAll("\\{(\\d)\\}", "\\\\$1") + "', 'g')").build();
 
 		return Optional.of(mappingValue);
 	}

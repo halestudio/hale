@@ -18,6 +18,7 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
@@ -57,7 +58,7 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 	@Override
 	public Class<? extends Geometry> configureGeometryColumnType(SQLiteConnection connection,
-			BaseColumn<?> column, DefaultTypeDefinition type) {
+			BaseColumn<?> column, DefaultTypeDefinition type, SimpleLog log) {
 		String colName = column.getName();
 		String tabName = column.getParent().getName();
 		SpatiaLiteSupport slSupport = SpatiaLiteSupportFactory.getInstance()
@@ -96,7 +97,7 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 	@Override
 	public Object convertGeometry(GeometryProperty<?> geom, TypeDefinition columnType,
-			SQLiteConnection connection) throws Exception {
+			SQLiteConnection connection, SimpleLog log) throws Exception {
 		// show error and abort if SpatiaLite is not available
 		if (!SpatiaLiteHelper.isSpatialLiteLoadedReport(connection, true)) {
 			throw new IllegalStateException("SpatiaLite module is not available");
@@ -188,15 +189,10 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 		return encodedValue;
 	}
 
-	/**
-	 * 
-	 * @see eu.esdihumboldt.hale.io.jdbc.GeometryAdvisor#convertToInstanceGeometry(java.lang.Object,
-	 *      eu.esdihumboldt.hale.common.schema.model.TypeDefinition,
-	 *      java.lang.Object, java.util.function.Supplier)
-	 */
 	@Override
 	public GeometryProperty<?> convertToInstanceGeometry(Object geom, TypeDefinition columnType,
-			SQLiteConnection connection, Supplier<CRSDefinition> crsProvider) throws Exception {
+			SQLiteConnection connection, Supplier<CRSDefinition> crsProvider, SimpleLog log)
+			throws Exception {
 		// show error and abort if SpatiaLite is not available
 		if (!SpatiaLiteHelper.isSpatialLiteLoadedReport(connection, true)) {
 			// don't throw, will prevent any data being loaded
@@ -226,7 +222,7 @@ public class SpatiaLiteGeometries implements GeometryAdvisor<SQLiteConnection> {
 
 	private Geometry decodeGeometryValue(Object geom,
 			@SuppressWarnings("unused") GeometryMetadata metadata, SQLiteConnection connection)
-					throws SQLException {
+			throws SQLException {
 		// geom parameter is a byte[] in SpatiaLite's internal BLOB format;
 		// for easy parsing with JTS, I must re-read geometry from DB in WKT or
 		// WKB format

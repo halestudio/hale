@@ -126,4 +126,10 @@ public class GeometryMetadata implements TypeConstraint {
 	public boolean isInheritable() {
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		return "GeometryMetadata [srsText=" + srsText + ", srs=" + srs + ", dimension=" + dimension
+				+ ", auth_name=" + auth_name + "]";
+	}
 }

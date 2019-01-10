@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.app.transform;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -38,8 +39,11 @@ public class TransformationReports implements ReportHandler {
 
 	private final List<Report<?>> reports = new ArrayList<>();
 
+	private boolean printSummary = true;
+
 	/**
-	 * Create a report handler.
+	 * Create a report handler. By default also prints report summaries to the
+	 * console.
 	 * 
 	 * @param reportFile the optional report file to write reports to
 	 */
@@ -52,12 +56,33 @@ public class TransformationReports implements ReportHandler {
 		}
 	}
 
+	/**
+	 * Create a report handler that collects the reports and in addition
+	 * delegates to another report handler.
+	 * 
+	 * @param delegate the delegate report handler
+	 */
+	public TransformationReports(@Nullable ReportHandler delegate) {
+		delegateTo = delegate;
+		printSummary = false;
+	}
+
+	/**
+	 * Create a report handler that collects the reports.
+	 */
+	public TransformationReports() {
+		delegateTo = null;
+		printSummary = false;
+	}
+
 	@Override
 	public void publishReport(Report<?> report) {
 		synchronized (reports) {
 			reports.add(report);
 		}
-		ExecUtil.printSummary(report);
+		if (isPrintSummary()) {
+			ExecUtil.printSummary(report);
+		}
 		if (delegateTo != null) {
 			delegateTo.publishReport(report);
 		}
@@ -70,6 +95,27 @@ public class TransformationReports implements ReportHandler {
 	 */
 	public StatsCollector getStatistics() {
 		return new StatisticsHelper().getStatistics(reports);
+	}
+
+	/**
+	 * @return the collected reports
+	 */
+	public List<Report<?>> getReports() {
+		return Collections.unmodifiableList(reports);
+	}
+
+	/**
+	 * @return the printSummary
+	 */
+	public boolean isPrintSummary() {
+		return printSummary;
+	}
+
+	/**
+	 * @param printSummary the printSummary to set
+	 */
+	public void setPrintSummary(boolean printSummary) {
+		this.printSummary = printSummary;
 	}
 
 }
