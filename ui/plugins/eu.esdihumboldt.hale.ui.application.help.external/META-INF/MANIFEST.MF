@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: External Browser for Help
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application.help.external
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.ui.application;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

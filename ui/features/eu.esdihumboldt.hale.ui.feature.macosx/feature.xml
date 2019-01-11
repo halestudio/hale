@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.macosx"
       label="Mac OS X specific HALE feature"
-      version="3.5.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="data harmonisation panel"
       os="macosx">
 

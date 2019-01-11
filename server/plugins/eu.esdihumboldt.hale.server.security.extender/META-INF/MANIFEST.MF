@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Server Security Extender
 Bundle-SymbolicName: eu.esdihumboldt.hale.server.security.extender
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.server.security.extender.internal.Activator
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
