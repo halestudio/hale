@@ -24,6 +24,18 @@ env:
     - _JAVA_OPTIONS=-Xmx6g
     - TERM=dumb
     - HALE_GRADLE_CONSOLE=plain
+notifications:
+  slack:
+    # https://docs.travis-ci.com/user/notifications/#configuring-slack-notifications
+    #
+    # Using environment variables here is not supported, unfortunately: https://github.com/travis-ci/travis-ci/issues/6387
+    # With the Travis Ruby gem, the 'secure' value can be generated like this:
+    #
+    # > travis encrypt "<team>:<token>" --add notifications.slack
+    rooms:
+      - secure: "R12tWxP/LdhD27KVukEMVEkWykw0+mT3Lx2dsOSWjxqVwlhIKZ+2RCR0Q1GD+a/bfnDDX3T5YP5zvVUr/NQi42fkMsIrU37Aj6dIXfoCD18XW6MkeQ2HrNyEHPLsTY8OfEKaNLOmb4qQPQRSfPGEaF7iCUus3ApjLbji1bBgyqI="
+    on_success: change
+    on_failure: always
 jobs:
   include:
     - stage: commit
