@@ -33,6 +33,7 @@ abstract class TransformationExamples {
 	public static final String DUPE_ASSIGN = 'dupeassign'
 	public static final String PROPERTY_JOIN = 'propjoin'
 	public static final String PROPERTY_JOIN_2 = 'propjoin2'
+	public static final String PROPERTY_JOIN_INT_FLOAT = 'propjoin_int_float'
 	public static final String JOIN_MULTI_COND_1 = 'join_multi_cond_1'
 	public static final String MERGE = 'merge'
 	public static final String MERGE2 = 'merge2'
@@ -122,6 +123,7 @@ abstract class TransformationExamples {
 		(DUPE_ASSIGN): defaultExample(DUPE_ASSIGN),
 		(PROPERTY_JOIN): defaultExample(PROPERTY_JOIN),
 		(PROPERTY_JOIN_2): defaultExample(PROPERTY_JOIN_2),
+		(PROPERTY_JOIN_INT_FLOAT): defaultExample(PROPERTY_JOIN_INT_FLOAT),
 		(JOIN_MULTI_COND_1): defaultExample(JOIN_MULTI_COND_1),
 		(SIMPLE_MERGE): defaultExample(SIMPLE_MERGE),
 		(MERGE): defaultExample(MERGE),

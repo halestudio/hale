@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:collection xmlns:tns="http://www.example.org/t2/"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.example.org/t2/ t2.xsd">
+	<tns:person id="0">
+        <name>Tom Builder</name>
+        <details>
+            <age>30</age>
+            <income>6000</income>
+            <address>
+        		<street>Main Street</street>
+        		<city>Kingsbridge</city>
+        		<zip>10463</zip>
+			</address>
+			<address>
+        		<street>Cathedral</street>
+        		<city>Kingsbridge</city>
+        		<zip>10463</zip>
+			</address>
+        </details>
+    </tns:person>
+	<tns:person id="1">
+        <name>Chester Lampwick</name>
+        <details>
+            <age>103</age>
+            <income>10</income>
+        </details>
+    </tns:person>
+</tns:collection>
