@@ -69,6 +69,20 @@ public abstract class InstanceIndexUtil {
 				// use string representation for integer numbers
 				value = value.toString();
 			}
+			else if (value instanceof Double) {
+				Double d = (Double) value;
+				if (isInteger(d)) {
+					// use string representation for integer double
+					value = Integer.toString(d.intValue());
+				}
+			}
+			else if (value instanceof Float) {
+				Float f = (Float) value;
+				if (isInteger(f)) {
+					// use string representation for integer float
+					value = Integer.toString(f.intValue());
+				}
+			}
 			else if (value instanceof BigDecimal) {
 				BigDecimal v = (BigDecimal) value;
 				if (v.scale() <= 0) {
@@ -88,4 +102,11 @@ public abstract class InstanceIndexUtil {
 		return value;
 	}
 
+	private static boolean isInteger(Double d) {
+		return Math.floor(d) == d && !Double.isNaN(d) && !Double.isInfinite(d);
+	}
+
+	private static boolean isInteger(Float f) {
+		return Math.floor(f) == f && !Float.isNaN(f) && !Float.isInfinite(f);
+	}
 }

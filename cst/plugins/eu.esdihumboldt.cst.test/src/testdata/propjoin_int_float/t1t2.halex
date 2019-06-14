@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="3.5.0.release">
+    <name>Property Join w/ comparison of int and float</name>
+    <author>Florian Esser</author>
+    <created>2019-06-06T09:33:48.653+02:00</created>
+    <modified>2019-06-06T09:37:08.454+02:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin_int_float/t1t2.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="onlyElementsMappable">true</setting>
+        <setting name="resourceId">e28225b5-d8c8-487a-bffa-39a407a2e89e</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin_int_float/t1.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.xml.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">356c58cc-7691-4def-b98b-d8a14a28e47c</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin_int_float/instance1.xml</setting>
+        <setting name="interpolation.maxError">0.1</setting>
+        <setting name="interpolation.algorithm">segment</setting>
+        <setting name="ignoreNamespaces">false</setting>
+        <setting name="paginateRequest">true</setting>
+        <setting name="featuresPerWfsRequest">1000</setting>
+        <setting name="ignoreRoot">true</setting>
+        <setting name="ignoreNumberMatched">false</setting>
+        <setting name="interpolation.grid.moveAllToGrid">false</setting>
+        <setting name="strict">false</setting>
+        <setting name="contentType">org.eclipse.core.runtime.xml</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.xsd.reader">
+        <setting name="charset">UTF-8</setting>
+        <setting name="onlyElementsMappable">true</setting>
+        <setting name="resourceId">18974a01-b703-49b3-8403-fe5b972cb579</setting>
+        <setting name="source">file:/C:/src/git/halestudio/hale/cst/plugins/eu.esdihumboldt.cst.test/src/testdata/propjoin_int_float/t2.xsd</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.xsd</setting>
+    </resource>
+    <file name="alignment.xml" location="t1t2.halex.alignment.xml"/>
+    <file name="styles.sld" location="t1t2.halex.styles.sld"/>
+</hale-project>
