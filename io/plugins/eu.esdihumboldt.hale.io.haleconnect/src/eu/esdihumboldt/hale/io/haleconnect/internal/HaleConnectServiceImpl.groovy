@@ -191,7 +191,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	throws HaleConnectException {
 		BucketDetail bucketDetail;
 		try {
-			bucketDetail = ProjectStoreHelper.getBucketsApi(this, this.getSession().getToken())
+			bucketDetail = ProjectStoreHelper.getBucketsApi(this, this.getSessionToken())
 					.getBucketInfo(owner.getType().getJsonValue(), owner.getId(), projectId);
 		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
 			throw new HaleConnectException(e.getMessage(), e);
@@ -262,6 +262,11 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		return session;
 	}
 
+	@Override
+	public String getSessionToken() {
+		return session?.token;
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.io.haleconnect.HaleConnectService#getUserInfo(java.lang.String)
 	 */
@@ -302,7 +307,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	throws HaleConnectException {
 
 		if (!isLoggedIn()) {
-			throw new IllegalStateException("Not logged in.");
+			// there may be public projects
+			// throw new IllegalStateException("Not logged in.");
 		}
 
 		URI location = HaleConnectUrnBuilder.buildProjectUrn(owner, projectId);
@@ -312,7 +318,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			MessageFormat.format("Project does not exist: {0}", location.toString()));
 		}
 
-		return new HaleConnectInputSupplier(location, this.getSession().getToken(), this);
+		return new HaleConnectInputSupplier(location, this.getSessionToken(), this);
 	}
 
 	/**

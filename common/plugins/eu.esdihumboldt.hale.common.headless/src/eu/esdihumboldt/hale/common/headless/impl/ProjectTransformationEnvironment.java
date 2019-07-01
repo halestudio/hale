@@ -58,6 +58,8 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceIO;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
+import eu.esdihumboldt.hale.io.haleconnect.HaleConnectUrnBuilder;
+import eu.esdihumboldt.hale.io.haleconnect.project.SimpleProjectReader;
 
 /**
  * Transformation environment based on a {@link Project}.
@@ -109,8 +111,12 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 				return (T) customServices.get(serviceInterface);
 			}
 
-			// FIXME global scope not supported yet
-			return projectScope.getService(serviceInterface);
+			T service = projectScope.getService(serviceInterface);
+			if (service == null) {
+				// try global via HalePlatform
+				return HalePlatform.getService(serviceInterface);
+			}
+			return service;
 		}
 	};
 
@@ -169,8 +175,17 @@ public class ProjectTransformationEnvironment implements TransformationEnvironme
 
 		// load the project
 		URI location = input.getLocation();
-		ProjectReader reader = HaleIO.findIOProvider(ProjectReader.class, input,
-				(location != null) ? (location.getPath()) : (null));
+		ProjectReader reader;
+		if (location != null
+				&& HaleConnectUrnBuilder.SCHEME_HALECONNECT.equals(location.getScheme())) {
+			// load from hale connect
+			reader = new SimpleProjectReader();
+		}
+		else {
+			// try to find reader automatically
+			reader = HaleIO.findIOProvider(ProjectReader.class, input,
+					(location != null) ? (location.getPath()) : (null));
+		}
 		if (reader != null) {
 			// configure reader
 			reader.setSource(input);
