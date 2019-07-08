@@ -30,6 +30,8 @@ import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 
 import de.fhg.igd.geom.BoundingBox
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext
@@ -55,6 +57,8 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 class GeometryHelperFunctions {
+
+	private static final ALogger log = ALoggerFactory.getLogger(GeometryHelperFunctions)
 
 	public static final String GEOM_HOLDER_DESC = 'A geometry, geometry property or instance holding a geometry'
 
@@ -250,9 +254,18 @@ class GeometryHelperFunctions {
 		if (box != null) {
 			def references = spatialIndex.retrieve(box);
 			references.each { ref ->
-				def inst = ResolvableInstanceReference.tryResolve(ref)
-				if (inst != null) {
-					result << inst
+				try {
+					def inst = ResolvableInstanceReference.tryResolve(ref)
+					if (inst != null) {
+						result << inst
+					}
+				} catch (Exception e) {
+					// don't fail, assumption is that this may happen when the
+					// same instance that is currently transformed is retrieved
+					// (one thread execution)
+
+					// still log error as we are not sure about the cause
+					log.error('Error resolving instance reference', e);
 				}
 			}
 		}
