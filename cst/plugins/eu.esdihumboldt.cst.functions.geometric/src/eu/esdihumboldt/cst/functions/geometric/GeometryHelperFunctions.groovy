@@ -18,6 +18,7 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.text.MessageFormat
 
 import javax.annotation.Nullable
+import javax.xml.namespace.QName
 
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -40,6 +41,7 @@ import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgum
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
@@ -47,8 +49,11 @@ import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -201,7 +206,9 @@ class GeometryHelperFunctions {
 	new HelperFunctionArgument("spatialIndex",
 	"The spatial index service to query, defaults to the internal spatial index"),
 	new HelperFunctionArgument("geometry",
-	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."));
+	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."),
+	new HelperFunctionArgument("types",
+	"Type or types to which the result should be restricted to, as TypeDefinitions, QNames or strings (local names)."));
 
 	/**
 	 * Query a spatial index
@@ -251,8 +258,76 @@ class GeometryHelperFunctions {
 			box.add(BoundingBox.compute(geometry));
 		}
 
+		Collection<TypeDefinition> types = null
+		if (args instanceof Map && args.types) {
+			def argTypes = args.types
+			if (! (argTypes instanceof Iterable)) {
+				argTypes = [argTypes]
+			}
+			if (argTypes.any  { !(it instanceof TypeDefinition) }) {
+				// at least one that is not yet a type definition
+				TransformationSchemas schemas = context?.serviceProvider?.getService(TransformationSchemas)
+				if (schemas) {
+					SchemaSpace ss = schemas.getSchemas(SchemaSpaceID.SOURCE)
+					types = []
+					argTypes.each { def type ->
+						if (type instanceof TypeDefinition) {
+							types << type
+						}
+						else if (type instanceof QName) {
+							def found = ss.getType(type)
+							if (found) {
+								types << found
+							}
+							else {
+								throw new IllegalArgumentException("Could not find type $type")
+							}
+						}
+						else {
+							def typeName = type as String
+							boolean found = false
+							// add all types that have a matching local name
+							ss.types.each { TypeDefinition t ->
+								if (t.name?.localPart == typeName) {
+									types << t
+									found = true
+								}
+							}
+							if (!found) {
+								//XXX wanted to also check XML element name but dependency introduces a cycle
+								//XXX instead using display name
+								ss.types.each { TypeDefinition t ->
+									if (t.displayName == typeName) {
+										types << t
+										found = true
+									}
+								}
+							}
+							if (!found) {
+								throw new IllegalArgumentException("Could not find type $typeName")
+							}
+						}
+					}
+				}
+				else {
+					throw new IllegalArgumentException('TransformationSchemas service not available to retrieve specified types')
+				}
+			}
+			else {
+				// all are already type definitions
+				types = argTypes as List
+			}
+
+		}
+
 		if (box != null) {
-			def references = spatialIndex.retrieve(box);
+			def references
+			if (types == null) {
+				references = spatialIndex.retrieve(box);
+			}
+			else {
+				references = spatialIndex.retrieve(box, types);
+			}
 			references.each { ref ->
 				try {
 					def inst = ResolvableInstanceReference.tryResolve(ref)
