@@ -38,6 +38,9 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 		PostGIS;
 	}
 
+	public static final String KEY_INCLUDE_FEATURE_COLLECTIONS = "mapping.includeFeatureCollections";
+	public static final String KEY_INCLUDE_ABSTRACT_TYPES = "mapping.includeAbstractTypes";
+
 	public static final String KEY_JDBC_CONNECTION_ID = "database.connectionId";
 	public static final String KEY_DATABASE_MAX_NAME_LENGTH = "database.names.maxLength";
 
@@ -57,6 +60,8 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 	public static final String KEY_CRS_DIMENSION = "featureStore.crs.dimension";
 	public static final String KEY_CRS_SRID = "featureStore.crs.srid";
 
+	public static final boolean DEFAULT_INCLUDE_FEATURE_COLLECTIONS = false;
+	public static final boolean DEFAULT_INCLUDE_ABSTRACT_TYPES = false;
 	public static final DatabaseType DEFAULT_DATABASE_TYPE = DatabaseType.PostGIS;
 	public static final MappingMode DEFAULT_MAPPING_MODE = MappingMode.relational;
 	public static final IDPrefixMode DEFAULT_ID_PREFIX_MODE = IDPrefixMode.deegree;
@@ -108,6 +113,9 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 		setUseIntegerIDs(DEFAULT_INTEGER_IDS);
 		setUseNamespacePrefixForTableNames(DEFAULT_NAMESPACE_PREFIX_FOR_TABLE_NAMES);
+
+		setIncludeAbstractTypes(DEFAULT_INCLUDE_ABSTRACT_TYPES);
+		setIncludeFeatureCollections(DEFAULT_INCLUDE_FEATURE_COLLECTIONS);
 	}
 
 	@Override
@@ -295,6 +303,26 @@ public class GenericMappingConfiguration implements MappingConfiguration {
 
 	public void setUseIntegerIDs(boolean enabled) {
 		config.set(KEY_INTEGER_IDS, enabled);
+	}
+
+	@Override
+	public boolean includeFeatureCollections() {
+		return config.get(KEY_INCLUDE_FEATURE_COLLECTIONS, Boolean.class)
+				.orElse(DEFAULT_INCLUDE_FEATURE_COLLECTIONS);
+	}
+
+	public void setIncludeFeatureCollections(boolean includeCollections) {
+		config.set(KEY_INCLUDE_FEATURE_COLLECTIONS, includeCollections);
+	}
+
+	@Override
+	public boolean includeAbstractTypes() {
+		return config.get(KEY_INCLUDE_ABSTRACT_TYPES, Boolean.class)
+				.orElse(DEFAULT_INCLUDE_ABSTRACT_TYPES);
+	}
+
+	public void setIncludeAbstractTypes(boolean includeAbstracts) {
+		config.set(KEY_INCLUDE_ABSTRACT_TYPES, includeAbstracts);
 	}
 
 }

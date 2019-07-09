@@ -95,6 +95,23 @@ public interface MappingConfiguration {
 	boolean useIntegerIDs();
 
 	/**
+	 * Specifies whether feature types that deegree identifies as feature
+	 * collections should be included in the mapping.
+	 * 
+	 * @return <code>true</code> if feature collections should be included,
+	 *         <code>false</code> otherwise
+	 */
+	boolean includeFeatureCollections();
+
+	/**
+	 * Specifies whether abstract types should be included in the mapping.
+	 * 
+	 * @return <code>true</code> if abstract types should be included,
+	 *         <code>false</code> otherwise
+	 */
+	boolean includeAbstractTypes();
+
+	/**
 	 * Validate the configuration.
 	 * 
 	 * @throws Exception on a validation error
