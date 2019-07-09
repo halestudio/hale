@@ -63,6 +63,8 @@ public class BasicMappingConfigurationPage
 			new Config());
 
 	private Button useIntegerIDs;
+	private Button includeAbstractTypes;
+	private Button includeFeatureCollections;
 	private Button useNamespacePrefix;
 	private Text connId;
 
@@ -151,6 +153,9 @@ public class BasicMappingConfigurationPage
 		mappingConfig.setUseNamespacePrefixForTableNames(useNamespacePrefix.getSelection());
 
 		mappingConfig.setUseIntegerIDs(useIntegerIDs.getSelection());
+
+		mappingConfig.setIncludeAbstractTypes(includeAbstractTypes.getSelection());
+		mappingConfig.setIncludeFeatureCollections(includeFeatureCollections.getSelection());
 
 		ISelection idPrefixSel = idPrefix.getSelection();
 		IDPrefixMode idPrefix = GenericMappingConfiguration.DEFAULT_ID_PREFIX_MODE;
@@ -299,6 +304,15 @@ public class BasicMappingConfigurationPage
 		useIntegerIDs = new Button(database, SWT.CHECK);
 		useIntegerIDs.setText("Use integer IDs for GML IDs");
 		GridDataFactory.swtDefaults().span(3, 1).applyTo(useIntegerIDs);
+
+		// Include feature collections / abstract types
+		includeFeatureCollections = new Button(database, SWT.CHECK);
+		includeFeatureCollections.setText("Include feature collection types");
+		GridDataFactory.swtDefaults().span(3, 1).applyTo(includeFeatureCollections);
+
+		includeAbstractTypes = new Button(database, SWT.CHECK);
+		includeAbstractTypes.setText("Include abstract types");
+		GridDataFactory.swtDefaults().span(3, 1).applyTo(includeAbstractTypes);
 
 		// CRS group
 

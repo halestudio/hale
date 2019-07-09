@@ -324,7 +324,7 @@ public class MappingWriter {
 						ModelHelper.withPrefix(prefixGenerator.apply(ftm), ftm.getFidMapping()),
 						ftm);
 			});
-		});
+		}, config.includeFeatureCollections(), config.includeAbstractTypes());
 	}
 
 	/**
@@ -346,8 +346,8 @@ public class MappingWriter {
 			@Override
 			public List<FeatureType> getFeatureTypes(String namespace, boolean includeCollections,
 					boolean includeAbstracts) {
-				List<FeatureType> fts = super.getFeatureTypes(namespace, includeCollections,
-						includeAbstracts);
+				List<FeatureType> fts = super.getFeatureTypes(namespace,
+						config.includeFeatureCollections(), config.includeAbstractTypes());
 
 				return fts.stream().filter(ft -> {
 					// only accept types that are part of the mapped-to
