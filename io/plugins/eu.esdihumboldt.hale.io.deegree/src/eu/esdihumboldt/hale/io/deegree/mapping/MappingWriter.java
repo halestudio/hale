@@ -224,6 +224,10 @@ public class MappingWriter {
 						.getSetting(CodeListAssociations.KEY_ASSOCIATIONS)
 						.as(CodeListAssociations.class);
 
+				if (associations == null) {
+					return null;
+				}
+
 				return associations.getAssociations().keySet().stream().map(e -> {
 					List<QName> names = e.getNames();
 					if (names.size() > 1) {
