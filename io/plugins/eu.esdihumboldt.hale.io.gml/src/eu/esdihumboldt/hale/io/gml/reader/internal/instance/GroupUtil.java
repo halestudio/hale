@@ -389,11 +389,7 @@ public class GroupUtil {
 
 		// check cardinality of children
 		for (ChildDefinition<?> childDef : children) {
-			if (isValidCardinality(currentGroup, childDef)) { // XXX is this
-																// correct?!
-																// should it be
-																// !isValid...
-																// instead?
+			if (!isValidCardinality(currentGroup, childDef)) {
 				return false;
 			}
 		}
