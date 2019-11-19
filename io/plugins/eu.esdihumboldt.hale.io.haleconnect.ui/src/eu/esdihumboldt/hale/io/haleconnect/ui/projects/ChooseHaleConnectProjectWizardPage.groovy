@@ -328,7 +328,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 							Owner owner = ((HaleConnectProjectInfo) element).getOwner();
 							if (owner.isUser()) {
 								try {
-									HaleConnectUserInfo user = haleConnect.getUserInfo(owner.getId());
+									HaleConnectUserInfo user = element.getUser()
 									if (!StringUtils.isEmpty(user.getFullName())) {
 										return user.getFullName();
 									}
@@ -344,12 +344,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 								}
 							}
 							else if (owner.isOrganisation()) {
-								try {
-									return haleConnect.getOrganisationInfo(owner.getId()).getName();
-								} catch (HaleConnectException e) {
-									log.error(e.getMessage(), e);
-									return MessageFormat.format("<organisation {0}>", owner.getId());
-								}
+								return element.getOrganisation()
 							}
 							else {
 								return "<unknown owner type> ID: " + owner.getId();

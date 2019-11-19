@@ -28,4 +28,14 @@ class HaleConnectUserInfo {
 	String userId
 	String screenName
 	String fullName
+
+	/**
+	 * Create a dummy user info object
+	 * 
+	 * @param userId ID of the user
+	 * @return dummy info object
+	 */
+	static HaleConnectUserInfo dummyForId(String userId) {
+		new HaleConnectUserInfo(userId: userId, screenName: "___user${userId}___", fullName: "<User ${userId}>")
+	}
 }
