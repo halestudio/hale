@@ -164,19 +164,26 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	throws HaleConnectException {
 
 		if (!this.isLoggedIn()) {
-			return null;
+			return HaleConnectOrganisationInfo.dummyForId(orgId)
 		}
 
 		if (!orgInfoCache.containsKey(orgId)) {
 			OrganisationsApi api = UserServiceHelper.getOrganisationsApi(this,
 					this.getSession().getToken());
+			HaleConnectOrganisationInfo orgInfo;
 			try {
 				OrganisationInfo org = api.getOrganisation(orgId);
-				orgInfoCache.put(org.getId(),
-						new HaleConnectOrganisationInfo(id: org.getId(), name: org.getName()));
+				orgInfo = HaleConnectOrganisationInfo.dummyForId(orgId)
 			} catch (ApiException e) {
-				throw new HaleConnectException(e.getMessage(), e);
+				if (e.code == HttpURLConnection.HTTP_NOT_FOUND) {
+					orgInfo = HaleConnectOrganisationInfo.dummyForId(orgId)
+				}
+				else {
+					throw new HaleConnectException(e.getMessage(), e);
+				}
 			}
+
+			orgInfoCache.put(orgId, orgInfo);
 		}
 
 		return orgInfoCache.get(orgId);
@@ -273,18 +280,26 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 	@Override
 	public HaleConnectUserInfo getUserInfo(String userId) throws HaleConnectException {
 		if (!this.isLoggedIn()) {
-			return null;
+			return HaleConnectUserInfo.dummyForId(userId)
 		}
 
 		if (!userInfoCache.containsKey(userId)) {
 			UsersApi api = UserServiceHelper.getUsersApi(this, this.getSession().getToken());
+
+			HaleConnectUserInfo userInfo;
 			try {
 				UserInfo info = api.getProfile(userId);
-				userInfoCache.put(info.getId(), new HaleConnectUserInfo(userId: info.getId(),
-				screenName: info.getScreenName(), fullName: info.getFullName()));
+				userInfo = new HaleConnectUserInfo(userId: info.getId(), screenName: info.getScreenName(), fullName: info.getFullName())
 			} catch (ApiException e) {
-				throw new HaleConnectException(e.getMessage(), e);
+				if (e.code == HttpURLConnection.HTTP_NOT_FOUND) {
+					userInfo = HaleConnectUserInfo.dummyForId(userId)
+				}
+				else {
+					throw new HaleConnectException(e.getMessage(), e)
+				}
 			}
+
+			userInfoCache.put(userId, userInfo)
 		}
 
 		return userInfoCache.get(userId);
@@ -531,17 +546,22 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 		}
 
 		HaleConnectUserInfo user = null;
+		String userId = bucket.getId().getUserId();
 		HaleConnectOrganisationInfo org = null;
-		try {
-			if (!StringUtils.isEmpty(bucket.getId().getUserId())) {
-				user = this.getUserInfo(bucket.getId().getUserId());
-			}
+		String orgId = bucket.getId().getOrgId();
 
-			if (!StringUtils.isEmpty(bucket.getId().getOrgId())) {
-				org = this.getOrganisationInfo(bucket.getId().getOrgId());
+		try {
+			if (!StringUtils.isEmpty(userId)) {
+				user = this.getUserInfo(userId);
+			} else if (!StringUtils.isEmpty(orgId)) {
+				org = this.getOrganisationInfo(orgId);
+			}
+			else {
+				throw new IllegalStateException("Bucket is missing both user and org id");
 			}
 		} catch (HaleConnectException e) {
 			log.error(e.getMessage(), e);
+			throw new IllegalStateException(e.getMessage(), e);
 		}
 
 		return new HaleConnectProjectInfo(bucket.getId().getTransformationproject(), user, org,

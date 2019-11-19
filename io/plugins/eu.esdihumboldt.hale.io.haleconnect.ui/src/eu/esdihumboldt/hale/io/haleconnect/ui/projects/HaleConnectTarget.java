@@ -559,8 +559,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 								// As a fallback, display dummy value that
 								// contains the orgId
-								organisations.add(new HaleConnectOrganisationInfo(orgId,
-										MessageFormat.format("<Organisation {0}>", orgId)));
+								organisations.add(HaleConnectOrganisationInfo.dummyForId(orgId));
 							}
 						}
 
