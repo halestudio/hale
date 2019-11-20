@@ -173,7 +173,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			HaleConnectOrganisationInfo orgInfo;
 			try {
 				OrganisationInfo org = api.getOrganisation(orgId);
-				orgInfo = HaleConnectOrganisationInfo.dummyForId(orgId)
+				orgInfo = new HaleConnectOrganisationInfo(id: org.id, name: org.name)
 			} catch (ApiException e) {
 				if (e.code == HttpURLConnection.HTTP_NOT_FOUND) {
 					orgInfo = HaleConnectOrganisationInfo.dummyForId(orgId)
