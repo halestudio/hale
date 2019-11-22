@@ -344,7 +344,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 								}
 							}
 							else if (owner.isOrganisation()) {
-								return element.getOrganisation()
+								return element.organisation.name
 							}
 							else {
 								return "<unknown owner type> ID: " + owner.getId();
