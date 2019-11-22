@@ -356,6 +356,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 				UserInfo shortProfile = usersApi.getProfileOfCurrentUser();
 				session = new HaleConnectSessionImpl(username, token.getToken(),
 						usersApi.getProfile(shortProfile.getId()));
+				orgInfoCache.clear()
+				userInfoCache.clear();
 				notifyLoginStateChanged();
 			}
 			else {
