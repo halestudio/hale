@@ -33,6 +33,9 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.InstanceDecorator;
+import eu.esdihumboldt.hale.common.instance.orient.OInstance;
 import eu.esdihumboldt.hale.common.instance.orient.storage.BrowseOrientInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.orient.storage.LocalOrientDB;
 import eu.esdihumboldt.hale.common.instance.orient.storage.OrientInstanceReference;
@@ -241,7 +244,24 @@ public class OrientTransformationSink extends AbstractTransformationSink {
 
 	@Override
 	public InstanceCollection getInstanceCollection() {
-		return collection;
+		return FilteredInstanceCollection.applyFilter(collection, new Filter() {
+
+			@Override
+			public boolean match(Instance instance) {
+				// If instance is an InstanceDecorator, it can't be checked
+				// whether the instance was actually inserted.
+				Instance originalInstance = instance;
+				while (originalInstance instanceof InstanceDecorator) {
+					originalInstance = ((InstanceDecorator) originalInstance).getOriginalInstance();
+				}
+
+				if (originalInstance instanceof OInstance) {
+					return ((OInstance) originalInstance).isInserted();
+				}
+
+				return true;
+			}
+		});
 	}
 
 }
