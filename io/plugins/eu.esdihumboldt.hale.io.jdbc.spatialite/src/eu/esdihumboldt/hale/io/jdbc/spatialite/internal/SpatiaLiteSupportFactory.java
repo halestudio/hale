@@ -72,7 +72,7 @@ public class SpatiaLiteSupportFactory {
 	 */
 	public SpatiaLiteSupport createSpatiaLiteSupport(SQLiteConnection connection) {
 
-		String key = connection.url();
+		String key = connection.getUrl();
 		SpatiaLiteSupport support = cache.get(key);
 		if (support != null) {
 			return support;

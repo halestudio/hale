@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hale Geopackage Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage
+Bundle-Version: 4.0.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: mil.nga.geopackage;bundle-version="3.4.0",
+ mil.nga.geopackage.core;bundle-version="3.4.0"
