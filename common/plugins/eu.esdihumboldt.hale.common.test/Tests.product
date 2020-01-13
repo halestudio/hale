@@ -22,6 +22,7 @@
    <windowImages/>
 
    <launcher name="hale_tests">
+      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -56,14 +57,22 @@
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.haleconnect.api.haleconnect-bucket-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-project-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-projectstore-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-user-api"/>
       <plugin id="com.healthmarketscience.jackcess"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.j256.ormlite"/>
       <plugin id="com.orientechnologies.common"/>
       <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
       <plugin id="com.orientechnologies.orientdb-core"/>
       <plugin id="com.orientechnologies.orientdb-enterprise"/>
       <plugin id="com.spotify.docker-client"/>
+      <plugin id="com.squareup.okhttp"/>
+      <plugin id="com.squareup.okhttp.logging-interceptor"/>
+      <plugin id="com.squareup.okio"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
       <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
@@ -171,12 +180,15 @@
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.deegree"/>
       <plugin id="eu.esdihumboldt.hale.io.deegree.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.groovy"/>
       <plugin id="eu.esdihumboldt.hale.io.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.haleconnect"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
       <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
@@ -251,6 +263,7 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
       <plugin id="javassist"/>
@@ -274,6 +287,13 @@
       <plugin id="jogl"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
+      <plugin id="mil.nga.geopackage"/>
+      <plugin id="mil.nga.oapi.features.oapi-features-json"/>
+      <plugin id="mil.nga.sf"/>
+      <plugin id="mil.nga.sf.geojson"/>
+      <plugin id="mil.nga.sf.proj"/>
+      <plugin id="mil.nga.sf.wkb"/>
+      <plugin id="mil.nga.tiff"/>
       <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
@@ -417,6 +437,7 @@
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.locationtech.proj4j"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>

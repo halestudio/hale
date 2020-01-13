@@ -1,9 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: hale Geopackage Support
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage;singleton:=true
 Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: mil.nga.geopackage;bundle-version="3.4.0",
- mil.nga.geopackage.core;bundle-version="3.4.0"
+Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="4.0.0",
+ eu.esdihumboldt.hale.common.schema.persist,
+ eu.esdihumboldt.hale.common.core;bundle-version="4.0.0",
+ org.eclipse.core.runtime;bundle-version="3.14.0",
+ groovy;bundle-version="2.4.14",
+ mil.nga.geopackage;bundle-version="3.4.0",
+ eu.esdihumboldt.hale.common.schema.groovy;bundle-version="4.0.0",
+ mil.nga.sf;bundle-version="2.0.2"
+Import-Package: com.vividsolutions.jts.awt;version="1.13.0",
+ com.vividsolutions.jts.geom;version="1.13.0",
+ eu.esdihumboldt.util.io

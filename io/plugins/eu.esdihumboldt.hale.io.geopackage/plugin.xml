@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="gpkg"
+            id="eu.esdihumboldt.hale.io.geopackage"
+            name="GeoPackage"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageSchemaReader"
+            description="Reads feature tables from a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.schema.reader"
+            name="GeoPackage Schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+      </provider>
+   </extension>
+
+</plugin>
