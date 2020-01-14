@@ -49,8 +49,7 @@ public class GeopackageSchemaReader extends AbstractCachedSchemaReader {
 
 			GeoPackage gpkg = GeoPackageManager.open(file, true);
 
-			String ns = ""; // TODO use a dedicated namespace?
-			Schema schema = new GeopackageSchemaBuilder(ns).buildSchema(gpkg, loc);
+			Schema schema = new GeopackageSchemaBuilder().buildSchema(gpkg, loc);
 
 			reporter.setSuccess(true);
 			return schema;

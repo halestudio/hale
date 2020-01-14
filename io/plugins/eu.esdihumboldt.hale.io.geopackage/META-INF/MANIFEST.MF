@@ -13,7 +13,16 @@ Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
  groovy;bundle-version="2.4.14",
  mil.nga.geopackage;bundle-version="3.4.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="4.0.0",
- mil.nga.sf;bundle-version="2.0.2"
-Import-Package: com.vividsolutions.jts.awt;version="1.13.0",
+ mil.nga.sf;bundle-version="2.0.2",
+ eu.esdihumboldt.hale.common.instance.groovy;bundle-version="4.0.0",
+ eu.esdihumboldt.util.groovy;bundle-version="4.0.0",
+ mil.nga.sf.wkb;bundle-version="2.0.2"
+Import-Package: com.google.common.cache;version="18.0.0",
+ com.vividsolutions.jts.awt;version="1.13.0",
  com.vividsolutions.jts.geom;version="1.13.0",
- eu.esdihumboldt.util.io
+ com.vividsolutions.jts.io;version="1.13.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.util.io,
+ org.opengis.referencing.crs;version="12.2.0",
+ org.slf4j;version="1.7.2"
+Export-Package: eu.esdihumboldt.hale.io.geopackage

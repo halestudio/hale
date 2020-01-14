@@ -22,6 +22,16 @@
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
       </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageInstanceReader"
+            description="Reads features from a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.instance.reader"
+            name="GeoPackage Features">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.geopackage;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.xml.namespace.QName;
@@ -36,6 +37,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
@@ -44,7 +46,9 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import mil.nga.geopackage.GeoPackage;
+import mil.nga.geopackage.core.srs.SpatialReferenceSystem;
 import mil.nga.geopackage.db.GeoPackageDataType;
+import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.features.user.FeatureColumn;
 import mil.nga.geopackage.features.user.FeatureDao;
 import mil.nga.geopackage.features.user.FeatureTable;
@@ -56,14 +60,26 @@ import mil.nga.geopackage.features.user.FeatureTable;
  */
 public class GeopackageSchemaBuilder {
 
+	/**
+	 * Default namespace for GeoPackage schemas and types.
+	 */
+	public static final String DEFAULT_NAMESPACE = "http://www.esdi-humboldt.eu/hale/gpkg";
+
 	private final String defaultNamespace;
+
+	/**
+	 * Create a new schema builder.
+	 */
+	public GeopackageSchemaBuilder() {
+		this(DEFAULT_NAMESPACE);
+	}
 
 	/**
 	 * Create a new schema builder.
 	 * 
 	 * @param defaultNamespace the default namespace for schema and types
 	 */
-	public GeopackageSchemaBuilder(String defaultNamespace) {
+	protected GeopackageSchemaBuilder(String defaultNamespace) {
 		super();
 		this.defaultNamespace = defaultNamespace;
 	}
@@ -81,14 +97,20 @@ public class GeopackageSchemaBuilder {
 		DefaultSchema schema = new DefaultSchema(defaultNamespace, location);
 
 		tables.stream().forEach(table -> {
-			FeatureDao features = gpkg.getFeatureDao(table);
-			schema.addType(buildType(features, schema));
+			try {
+				FeatureDao features = gpkg.getFeatureDao(table);
+				GeometryColumns geomColumns = gpkg.getGeometryColumnsDao().queryForTableName(table);
+				schema.addType(buildType(features, geomColumns, schema));
+			} catch (SQLException e) {
+				throw new RuntimeException(e);
+			}
 		});
 
 		return schema;
 	}
 
-	private TypeDefinition buildType(FeatureDao features, DefaultSchema schema) {
+	private TypeDefinition buildType(FeatureDao features, GeometryColumns geomColumns,
+			DefaultSchema schema) {
 		QName name = new QName(defaultNamespace, features.getTableName());
 		DefaultTypeDefinition type = new DefaultTypeDefinition(name);
 
@@ -106,7 +128,7 @@ public class GeopackageSchemaBuilder {
 			QName propertyName = new QName(columnName);
 
 			// determine property type
-			TypeDefinition propertyType = getOrCreatePropertyType(column, schema);
+			TypeDefinition propertyType = getOrCreatePropertyType(column, geomColumns, schema);
 
 			DefaultPropertyDefinition property = new DefaultPropertyDefinition(propertyName, type,
 					propertyType);
@@ -122,7 +144,8 @@ public class GeopackageSchemaBuilder {
 		return type;
 	}
 
-	private TypeDefinition getOrCreatePropertyType(FeatureColumn column, DefaultSchema schema) {
+	private TypeDefinition getOrCreatePropertyType(FeatureColumn column,
+			GeometryColumns geomColumns, DefaultSchema schema) {
 		String localName;
 
 		if (column.isGeometry()) {
@@ -171,9 +194,21 @@ public class GeopackageSchemaBuilder {
 				case POLYGON:
 					geomClass = Polygon.class;
 					break;
+				default:
+					break;
 				}
 
 				typeDef.setConstraint(GeometryType.get(geomClass));
+
+				SpatialReferenceSystem srs = geomColumns.getSrs();
+				if (srs != null) {
+					String code = String.valueOf(srs.getOrganizationCoordsysId());
+					int dimension = GeometryMetadata.UNKNOWN_DIMENSION;
+					String srsText = srs.getDefinition();
+					String auth_name = srs.getOrganization();
+					typeDef.setConstraint(
+							new GeometryMetadata(code, dimension, srsText, auth_name));
+				}
 			}
 			else {
 				GeoPackageDataType dataType = column.getDataType();
