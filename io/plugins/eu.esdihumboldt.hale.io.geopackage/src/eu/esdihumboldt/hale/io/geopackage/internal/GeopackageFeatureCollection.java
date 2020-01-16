@@ -28,8 +28,8 @@ import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import mil.nga.geopackage.features.user.FeatureDao;
-import mil.nga.geopackage.features.user.FeatureResultSet;
+import mil.nga.geopackage.user.UserDao;
+import mil.nga.geopackage.user.UserResultSet;
 
 /**
  * Instance collection based on a GeoPackage feature table.
@@ -46,7 +46,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 		private static final int ROW_LIMIT = 100;
 
-		private FeatureResultSet currentResults;
+		private UserResultSet<?, ?, ?> currentResults;
 
 		private int currentOffset = 0;
 
@@ -186,7 +186,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 	}
 
-	private final FeatureDao features;
+	private final UserDao<?, ?, ?, ?> features;
 	private final TypeDefinition type;
 	private final SimpleLog log = SimpleLog.fromLogger(logger);
 
@@ -197,7 +197,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 	 * @param features the feature DAO
 	 * @param type the type associated to the feature table
 	 */
-	public GeopackageFeatureCollection(FeatureDao features, TypeDefinition type) {
+	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features, TypeDefinition type) {
 		// FIXME is it OK to pass the DAO? e.g. related to closing the resource
 		this.features = features;
 		this.type = type;

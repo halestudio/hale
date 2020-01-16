@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import groovy.transform.CompileStatic
 import mil.nga.geopackage.features.user.FeatureResultSet
+import mil.nga.geopackage.user.UserResultSet
 
 
 /**
@@ -66,7 +67,7 @@ class TableInstanceBuilder {
 	 *   instance from
 	 * @return the created instance
 	 */
-	Instance createInstance(TypeDefinition type, FeatureResultSet row) {
+	Instance createInstance(TypeDefinition type, UserResultSet<?, ?, ?> row) {
 		// create instance
 		builder.createInstance(type) {
 			// create properties
@@ -79,8 +80,8 @@ class TableInstanceBuilder {
 					// geometry conversion
 					if (value != null) {
 						GeometryType gType = property.propertyType.getConstraint(GeometryType)
-						if (gType.isGeometry()) {
-							def geomData = row.geometry
+						if (gType.isGeometry() && row instanceof FeatureResultSet) {
+							def geomData = ((FeatureResultSet) row).geometry
 
 							// read JTS geometry from WKB
 							def jtsGeom = wkbReader.read(geomData.wkbBytes)

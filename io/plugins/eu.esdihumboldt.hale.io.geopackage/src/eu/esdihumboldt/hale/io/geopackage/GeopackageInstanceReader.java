@@ -35,6 +35,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.io.geopackage.internal.GeopackageFeatureCollection;
 import mil.nga.geopackage.GeoPackage;
+import mil.nga.geopackage.attributes.AttributesDao;
 import mil.nga.geopackage.features.user.FeatureDao;
 import mil.nga.geopackage.manager.GeoPackageManager;
 
@@ -76,30 +77,31 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 
 			// try to load each feature table
 			for (String table : gpkg.getFeatureTables()) {
-				QName defTypeName = new QName(GeopackageSchemaBuilder.DEFAULT_NAMESPACE, table);
-				TypeDefinition type = getSourceSchema().getType(defTypeName);
-				if (type != null && !type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
-					type = null; // only mapping relevant types allowed
-				}
-				if (type == null) {
-					// try to find an alternate type (e.g. a type defined in a
-					// schema not loaded from GeoPackage)
-					for (TypeDefinition candidate : getSourceSchema().getMappingRelevantTypes()) {
-						if (table.equals(candidate.getName().getLocalPart())) {
-							// local name match
-							type = candidate;
-							break;
-						}
-					}
-				}
+				TypeDefinition type = findType(table);
 
 				if (type == null) {
-					reporter.warn("For table {0} no matching schema type could be identified",
+					reporter.warn(
+							"For feature table {0} no matching schema type could be identified",
 							table);
 				}
 				else {
 					FeatureDao features = gpkg.getFeatureDao(table);
 					collections.put(type, new GeopackageFeatureCollection(features, type));
+				}
+			}
+
+			// try to load each attribute table
+			for (String table : gpkg.getAttributesTables()) {
+				TypeDefinition type = findType(table);
+
+				if (type == null) {
+					reporter.warn(
+							"For attribute table {0} no matching schema type could be identified",
+							table);
+				}
+				else {
+					AttributesDao attributes = gpkg.getAttributesDao(table);
+					collections.put(type, new GeopackageFeatureCollection(attributes, type));
 				}
 			}
 
@@ -112,6 +114,26 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 			progress.end();
 		}
 		return reporter;
+	}
+
+	private TypeDefinition findType(String table) {
+		QName defTypeName = new QName(GeopackageSchemaBuilder.DEFAULT_NAMESPACE, table);
+		TypeDefinition type = getSourceSchema().getType(defTypeName);
+		if (type != null && !type.getConstraint(MappingRelevantFlag.class).isEnabled()) {
+			type = null; // only mapping relevant types allowed
+		}
+		if (type == null) {
+			// try to find an alternate type (e.g. a type defined in a
+			// schema not loaded from GeoPackage)
+			for (TypeDefinition candidate : getSourceSchema().getMappingRelevantTypes()) {
+				if (table.equals(candidate.getName().getLocalPart())) {
+					// local name match
+					type = candidate;
+					break;
+				}
+			}
+		}
+		return type;
 	}
 
 	@Override
