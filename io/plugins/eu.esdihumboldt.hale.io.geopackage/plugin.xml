@@ -32,6 +32,16 @@
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
       </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageInstanceWriter"
+            description="Writes instances to a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.instance.writer"
+            name="GeoPackage file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>
