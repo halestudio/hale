@@ -301,6 +301,12 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 		for (String column : row.getColumnNames()) {
 			Object value = new InstanceAccessor(instance).findChildren(column).value();
 			if (value != null) {
+				UserColumn col = row.getColumn(column);
+				if (col.isPrimaryKey()) {
+					// it seems for primary key we can't set a value
+					continue;
+				}
+
 				// TODO any value processing?
 				row.setValue(column, value);
 			}
