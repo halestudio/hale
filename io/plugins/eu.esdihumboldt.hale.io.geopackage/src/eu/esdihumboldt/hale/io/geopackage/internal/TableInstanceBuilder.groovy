@@ -91,7 +91,8 @@ class TableInstanceBuilder {
 							GeometryMetadata geomMetadata = property.propertyType.getConstraint(GeometryMetadata)
 							if (geomMetadata.getAuthName() && geomMetadata.srs) {
 								// prefer code definition
-								crsDef = new CodeDefinition(geomMetadata.getAuthName() + ':' + geomMetadata.srs) //XXX axis order?
+								// always x then y (longitude first)
+								crsDef = new CodeDefinition(geomMetadata.getAuthName() + ':' + geomMetadata.srs, true)
 							}
 							else {
 								crsDef = new WKTDefinition(geomMetadata.srsText, null)

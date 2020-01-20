@@ -173,13 +173,13 @@ class GeopackageInstanceWriterTest {
 			city {
 				name 'Darmstadt'
 				population 158254
-				location( createGeometry('POINT(8.651222 49.872833)', 4326) )
+				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
 			}
 
 			city {
 				name 'München'
 				population 1471508
-				location( createGeometry('POINT(11.575556 48.137222)', 4326) )
+				location( createGeometry('POINT(48.137222 11.575556)', 4326) )
 			}
 		}
 

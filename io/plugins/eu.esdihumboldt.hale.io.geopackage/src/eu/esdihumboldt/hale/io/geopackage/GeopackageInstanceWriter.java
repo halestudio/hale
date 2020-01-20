@@ -290,7 +290,8 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 
 		if (org != null && org.equals("EPSG")) {
 			// we expect this to be available in Geotools
-			return new CodeDefinition(org + ":" + code);
+			// axis order is always x,y (longitude first)
+			return new CodeDefinition(org + ":" + code, true);
 		}
 
 		return new WKTDefinition(srs.getDefinition(), null);
