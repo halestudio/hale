@@ -19,7 +19,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -30,6 +33,7 @@ import javax.xml.namespace.QName;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
 import org.opengis.referencing.operation.MathTransform;
+import org.springframework.core.convert.ConversionException;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineString;
@@ -40,6 +44,7 @@ import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKBWriter;
 
+import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -213,7 +218,7 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 					AttributesDao attributes = geoPackage.getAttributesDao(tableName);
 					AttributesRow arow = attributes.newRow();
 
-					populateRow(arow, instance);
+					populateRow(arow, instance, reporter);
 
 					attributes.insert(arow);
 					break;
@@ -221,7 +226,7 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 					FeatureDao features = geoPackage.getFeatureDao(tableName);
 					FeatureRow frow = features.newRow();
 
-					populateRow(frow, instance);
+					populateRow(frow, instance, reporter);
 
 					// set geometry
 					String geometryColumn = features.getGeometryColumnName();
@@ -297,7 +302,7 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 		return new WKTDefinition(srs.getDefinition(), null);
 	}
 
-	private void populateRow(UserCoreRow<?, ?> row, Instance instance) {
+	private void populateRow(UserCoreRow<?, ?> row, Instance instance, SimpleLog log) {
 		for (String column : row.getColumnNames()) {
 			Object value = new InstanceAccessor(instance).findChildren(column).value();
 			if (value != null) {
@@ -307,7 +312,26 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 					continue;
 				}
 
-				// TODO any value processing?
+				// any value processing
+				try {
+					switch (col.getDataType()) {
+					case DATE:
+						// convert to LocalDate, then to String
+						LocalDate ld = ConversionUtil.getAs(value, LocalDate.class);
+						value = ld.toString();
+						break;
+					case DATETIME:
+						// convert to Instant, then to String
+						Instant inst = ConversionUtil.getAs(value, Instant.class);
+						value = inst.toString();
+					default:
+						// use as-is
+						break;
+					}
+				} catch (ConversionException e) {
+					log.error("Could not convert value to column type", e);
+				}
+
 				row.setValue(column, value);
 			}
 		}
@@ -529,7 +553,10 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 	}
 
 	private GeoPackageDataType convertDataType(Class<?> binding) {
-		// FIXME currently only limited set of data types
+		if (binding == null) {
+			// default to text
+			return GeoPackageDataType.TEXT;
+		}
 
 		if (String.class.equals(binding)) {
 			return GeoPackageDataType.TEXT;
@@ -558,8 +585,12 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 		if (byte[].class.equals(binding)) {
 			return GeoPackageDataType.BLOB;
 		}
-
-		// TODO date / dateTime
+		if (LocalDate.class.equals(binding)) {
+			return GeoPackageDataType.DATE;
+		}
+		if (Instant.class.equals(binding) || Date.class.isAssignableFrom(binding)) {
+			return GeoPackageDataType.DATETIME;
+		}
 
 		// default to text
 		return GeoPackageDataType.TEXT;
