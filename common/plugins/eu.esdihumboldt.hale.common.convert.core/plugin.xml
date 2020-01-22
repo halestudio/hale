@@ -36,6 +36,24 @@
       <converter
             class="eu.esdihumboldt.hale.common.convert.core.GStringImplToURIConverter">
       </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.InstantToDateConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToInstantConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.DateToLocalDateConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.LocalDateToDateConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.StringToInstantConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.StringToLocalDateConverter">
+      </converter>
    </extension>
 
 </plugin>

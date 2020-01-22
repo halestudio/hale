@@ -17,6 +17,8 @@ package eu.esdihumboldt.hale.io.geopackage;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -232,8 +234,18 @@ public class GeopackageSchemaBuilder {
 			else {
 				GeoPackageDataType dataType = column.getDataType();
 
-				// FIXME do not use String for date / dateTime
-				typeDef.setConstraint(Binding.get(dataType.getClassType()));
+				Class<?> binding;
+				switch (dataType) {
+				case DATETIME:
+					binding = Instant.class;
+					break;
+				case DATE:
+					binding = LocalDate.class;
+					break;
+				default:
+					binding = dataType.getClassType();
+				}
+				typeDef.setConstraint(Binding.get(binding));
 			}
 
 			return typeDef;

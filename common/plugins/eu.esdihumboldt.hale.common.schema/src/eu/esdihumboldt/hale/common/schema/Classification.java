@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.common.schema;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -106,7 +108,9 @@ public enum Classification {
 
 			if (property.getPropertyType().getConstraint(HasValueFlag.class).isEnabled()) {
 				// simple type
-				if (Number.class.isAssignableFrom(binding) || Date.class.isAssignableFrom(binding)) {
+				if (Number.class.isAssignableFrom(binding) || Date.class.isAssignableFrom(binding)
+						|| LocalDate.class.isAssignableFrom(binding)
+						|| Instant.class.isAssignableFrom(binding)) {
 					return NUMERIC_PROPERTY;
 				}
 
