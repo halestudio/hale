@@ -54,6 +54,18 @@
       <converter
             class="eu.esdihumboldt.hale.common.convert.core.StringToLocalDateConverter">
       </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.LocalDateToSqlTimestampConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.LocalDateToSqlDateConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.InstantToSqlTimestampConverter">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.common.convert.core.InstantToSqlDateConverter">
+      </converter>
    </extension>
 
 </plugin>
