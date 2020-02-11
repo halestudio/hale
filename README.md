@@ -13,10 +13,11 @@ hale studio is a desktop and server environment to analyse, transform and valida
 * Integration of data from multiple sources into harmonised, consistent data sets
 * Assessment of migration risks, mismatches, data quality
 
-![App](http://www.dhpanel.eu/images/content/hale-screenshot.jpg "hale studio's main perspective")
+![App](https://www.wetransform.to/images/halestudio/hale-complete.png "hale studio's main perspective")
 
 
 ## Features
+
 * Real-time, interactive geodata transformation and validation
 * Makes work with large and complex models easy
 * SLD-Compatible Map display
