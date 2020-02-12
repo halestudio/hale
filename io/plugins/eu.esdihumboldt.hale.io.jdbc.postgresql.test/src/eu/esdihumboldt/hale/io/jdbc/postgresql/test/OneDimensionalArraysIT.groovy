@@ -90,6 +90,7 @@ class OneDimensionalArraysIT extends AbstractDBTest {
 			_NUMERIC: BigDecimal.class, // Array as multi-occurrence property
 			VARCHAR: String.class, //
 			_VARCHAR: String.class, // Array as multi-occurrence property
+			TEXT: String.class, //
 			FLOAT8: Double.class, //
 		]);
 
