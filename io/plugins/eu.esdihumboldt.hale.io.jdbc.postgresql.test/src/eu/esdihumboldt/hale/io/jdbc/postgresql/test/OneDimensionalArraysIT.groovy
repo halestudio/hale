@@ -79,6 +79,7 @@ class OneDimensionalArraysIT extends AbstractDBTest {
 		checkBindingAndSqlType(schema, [
 			INT: Integer.class, //
 			SERIAL: Integer.class, //
+			BIGSERIAL: Long.class, //
 			INT4: Integer.class, //
 			_INT4: Integer.class, // Array as multi-occurrence property
 			BOOL: Boolean.class, //
