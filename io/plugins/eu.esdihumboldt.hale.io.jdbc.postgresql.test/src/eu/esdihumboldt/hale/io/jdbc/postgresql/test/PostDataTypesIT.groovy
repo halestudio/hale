@@ -178,10 +178,10 @@ public class PostDataTypesIT extends AbstractDBTest {
 		Map<String, Class<?>> m = new HashMap<String, Class<?>>();
 		m.put("INT", Integer.class);
 		m.put("SERIAL", Integer.class);
+		m.put("BIGSERIAL", Long.class);
 		m.put("MONEY", BigDecimal.class);
 		m.put("FLOAT", Float.class);
 		m.put("INT4", Integer.class);
-		m.put("INT8", Long.class);
 		m.put("INT8", Long.class);
 		m.put("FLOAT8", Double.class);
 		m.put("BYTEA", byte[].class);
