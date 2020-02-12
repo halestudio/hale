@@ -85,6 +85,7 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 			NUMERIC: BigDecimal.class, //
 			VARCHAR: String.class, //
 			_VARCHAR: String.class, // XXX currently array as multi-occurrence property
+			TEXT: String.class, //
 			FLOAT8: Double.class, //
 		]);
 
