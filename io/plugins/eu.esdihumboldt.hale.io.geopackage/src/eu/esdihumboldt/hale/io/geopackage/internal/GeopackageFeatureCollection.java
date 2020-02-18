@@ -44,11 +44,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 		private final TableInstanceBuilder builder;
 
-		private static final int ROW_LIMIT = 100;
-
 		private UserResultSet<?, ?, ?> currentResults;
-
-		private int currentOffset = 0;
 
 		/**
 		 * States if the row at the current cursor position was already
@@ -62,8 +58,6 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 		private boolean hasNext = false;
 
 		private boolean done = false;
-
-		private boolean checkNextChunk = false;
 
 		/**
 		 * Default constructor.
@@ -113,25 +107,14 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 				}
 
 				if (currentResults != null && !hasNext) {
-					// currentResults has been completely processed
-
-					if (checkNextChunk) {
-						// increase offset
-						currentOffset += ROW_LIMIT;
-						currentResults = null;
-					}
-					else {
-						// set iterator to done
-						close();
-					}
+					close();
 				}
 
 				if (currentResults == null) {
 					consumed = true;
+
 					// retrieve result set
-					currentResults = features.queryForChunk(ROW_LIMIT, currentOffset);
-					// check next chunk later, if current chunk was "full"
-					checkNextChunk = features.count() > currentOffset + ROW_LIMIT;
+					currentResults = features.queryForAll();
 
 					proceedToNext();
 				}
