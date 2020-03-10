@@ -52,6 +52,7 @@ public class ProjectStoreHelper {
 		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.PROJECT_STORE,
 				resolver, apiKey);
 
+		apiClient.getHttpClient().setConnectionSpecs(ApiClientHelper.buildConnectionSpec());
 		return apiClient;
 	}
 

@@ -15,7 +15,12 @@
 
 package eu.esdihumboldt.hale.io.haleconnect.internal
 
+import static com.squareup.okhttp.CipherSuite.*
+
 import java.text.MessageFormat
+
+import com.squareup.okhttp.ConnectionSpec
+import com.squareup.okhttp.TlsVersion
 
 import eu.esdihumboldt.hale.io.haleconnect.BasePathResolver
 import eu.esdihumboldt.util.http.ProxyUtil
@@ -26,6 +31,39 @@ import eu.esdihumboldt.util.http.ProxyUtil
  * @author Florian Esser
  */
 class ApiClientHelper {
+
+	/**
+	 * {@link ConnectionSpec} that uses TLS v1.2 only and is limited to cipher
+	 * suites with perfect forward security (PFS) as specified in "Technische
+	 * Richtlinie TR-02102-2, Kryptographische Verfahren: Empfehlungen und
+	 * Schlüssellängen, Teil 2 - Verwendung von Transport Layer Security"
+	 * (version 2019-01) as published by the German Federal Office for
+	 * Information Security.
+	 */
+	public static final ConnectionSpec API_CONNECTION_SPEC = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
+	.tlsVersions(TlsVersion.TLS_1_2)
+	.cipherSuites(
+	TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,
+	TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,
+	TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+	TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+	/*TLS_ECDHE_ECDSA_WITH_AES_128_CCM,*/    // TODO not supported
+	/*TLS_ECDHE_ECDSA_WITH_AES_256_CCM,*/    // by OkHttp 2.7.5
+	TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,
+	TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,
+	TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+	TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+	TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,
+	TLS_DHE_DSS_WITH_AES_256_CBC_SHA256,
+	TLS_DHE_DSS_WITH_AES_128_GCM_SHA256,
+	TLS_DHE_DSS_WITH_AES_256_GCM_SHA384,
+	TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,
+	TLS_DHE_RSA_WITH_AES_256_CBC_SHA256,
+	TLS_DHE_RSA_WITH_AES_128_GCM_SHA256,
+	TLS_DHE_RSA_WITH_AES_256_GCM_SHA384,
+	/*TLS_DHE_RSA_WITH_AES_128_CCM,*/        // TODO not supported
+	/*TLS_DHE_RSA_WITH_AES_256_CCM*/)        // by OkHttp 2.7.5
+	.build();
 
 	/**
 	 * Sets common properties for an ApiClient. Since there is no common 
@@ -73,5 +111,23 @@ class ApiClientHelper {
 			apiClient.apiKey = apiKey
 			apiClient.apiKeyPrefix = "Bearer"
 		}
+	}
+
+	/**
+	 * Build a {@link ConnectionSpec} for {@link OkHttpClient}s that uses TLS v1.2 only and
+	 * is limited to cipher suites with perfect forward security (PFS) as specified in
+	 * "Technische Richtlinie TR-02102-2 Kryptographische Verfahren: Empfehlungen und
+	 * Schlüssellängen, Teil 2 - Verwendung von Transport Layer Security" (version 2019-01)
+	 * as published by the German Federal Office for Information Security.<br>
+	 * <br>
+	 * The result can be applied to the http client of the hale connect API clients like so:<br>
+	 * <pre>
+	 *     apiClient.getHttpClient().setConnectionSpecs(ApiClientHelper.buildConnectionSpec())
+	 * </pre>
+	 *
+	 * @return Singleton list containing the connection spec
+	 */
+	static List<ConnectionSpec> buildConnectionSpec() {
+		[API_CONNECTION_SPEC]
 	}
 }
