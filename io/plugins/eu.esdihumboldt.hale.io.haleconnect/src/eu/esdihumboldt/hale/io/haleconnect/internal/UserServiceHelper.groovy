@@ -62,6 +62,7 @@ public class UserServiceHelper {
 		ApiClient apiClient = new ApiClient();
 		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.USER_SERVICE,
 				resolver, apiKey);
+		apiClient.getHttpClient().setConnectionSpecs(ApiClientHelper.buildConnectionSpec());
 
 		return apiClient;
 	}
