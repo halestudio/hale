@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
@@ -230,12 +231,9 @@ public class LimboInstanceSink extends AbstractTransformationSink {
 			return false;
 		}
 
-		/**
-		 * @see eu.esdihumboldt.hale.common.instance.model.InstanceCollection#select(eu.esdihumboldt.hale.common.instance.model.Filter)
-		 */
 		@Override
 		public InstanceCollection select(Filter filter) {
-			throw new UnsupportedOperationException();
+			return FilteredInstanceCollection.applyFilter(this, filter);
 		}
 
 	}
