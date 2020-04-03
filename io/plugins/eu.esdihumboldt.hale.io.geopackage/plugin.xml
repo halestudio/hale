@@ -41,6 +41,12 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
+         <providerParameter
+               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&lt;table name 1&gt;|&lt;WHERE clause 1||&lt;table name 2&gt;|&lt;WHERE clause 2&gt;||...&quot;"
+               label="Filters for querying the GeoPackage database"
+               name="queryFilter"
+               optional="true">
+         </providerParameter>
       </provider>
    </extension>
 

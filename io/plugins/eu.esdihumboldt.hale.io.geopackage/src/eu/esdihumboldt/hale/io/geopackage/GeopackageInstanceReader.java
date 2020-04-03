@@ -18,10 +18,15 @@ package eu.esdihumboldt.hale.io.geopackage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
+
+import org.springframework.util.StringUtils;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -46,7 +51,22 @@ import mil.nga.geopackage.manager.GeoPackageManager;
  */
 public class GeopackageInstanceReader extends AbstractInstanceReader {
 
+	/**
+	 * The name of the parameter to specify filters for querying the GeoPackage
+	 * database.
+	 */
+	public static final String PARAM_QUERY_FILTER = "queryFilter";
+
 	private InstanceCollection collection;
+
+	/**
+	 * Instantiate the GeoPackage instance reader
+	 */
+	public GeopackageInstanceReader() {
+		super();
+
+		addSupportedParameter(PARAM_QUERY_FILTER);
+	}
 
 	@Override
 	public InstanceCollection getInstances() {
@@ -63,6 +83,19 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Inspecting GeoPackage", ProgressIndicator.UNKNOWN);
 		try {
+			Map<String, String> queryFilters = new HashMap<>();
+			String queryFiltersParam = getParameter(PARAM_QUERY_FILTER).as(String.class, null);
+			if (StringUtils.hasText(queryFiltersParam)) {
+				Set<String> queryFiltersByTable = new HashSet<>(Arrays
+						.asList(StringUtils.delimitedListToStringArray(queryFiltersParam, "||")));
+				for (String queryFilterRaw : queryFiltersByTable) {
+					String[] rawSplit = StringUtils.split(queryFilterRaw, "|");
+					if (rawSplit.length == 2) {
+						queryFilters.put(rawSplit[0].toUpperCase(), rawSplit[1]);
+					}
+				}
+			}
+
 			URI loc = getSource().getLocation();
 			File file;
 			try {
@@ -86,7 +119,11 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 				}
 				else {
 					FeatureDao features = gpkg.getFeatureDao(table);
-					collections.put(type, new GeopackageFeatureCollection(features, type));
+					String where = null;
+					if (queryFilters.containsKey(table.toUpperCase())) {
+						where = queryFilters.get(table.toUpperCase());
+					}
+					collections.put(type, new GeopackageFeatureCollection(features, type, where));
 				}
 			}
 
