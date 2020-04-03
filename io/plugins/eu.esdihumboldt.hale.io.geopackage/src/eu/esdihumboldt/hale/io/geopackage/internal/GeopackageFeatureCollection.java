@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.geopackage.internal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -59,12 +60,24 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 		private boolean done = false;
 
+		private String where;
+
 		/**
 		 * Default constructor.
 		 */
 		public FeaturesIterator(/* CRSProvider crsProvider */) {
 			super();
 			builder = new TableInstanceBuilder(/* crsProvider, */log);
+		}
+
+		/**
+		 * Create filtered iterator
+		 * 
+		 * @param where WHERE clause to filter table data
+		 */
+		public FeaturesIterator(String where) {
+			this();
+			this.where = where;
 		}
 
 		@Override
@@ -114,7 +127,12 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 					consumed = true;
 
 					// retrieve result set
-					currentResults = features.queryForAll();
+					if (StringUtils.hasText(where)) {
+						currentResults = features.query(where);
+					}
+					else {
+						currentResults = features.queryForAll();
+					}
 
 					proceedToNext();
 				}
@@ -171,6 +189,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 	private final UserDao<?, ?, ?, ?> features;
 	private final TypeDefinition type;
+	private final String where;
 	private final SimpleLog log = SimpleLog.fromLogger(logger);
 
 	/**
@@ -181,9 +200,23 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 	 * @param type the type associated to the feature table
 	 */
 	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features, TypeDefinition type) {
+		this(features, type, null);
+	}
+
+	/**
+	 * Create a new filtered instance collection for features in a GeoPackage
+	 * feature table.
+	 * 
+	 * @param features the feature DAO
+	 * @param type the type associated to the feature table
+	 * @param where WHERE clause to filter table data
+	 */
+	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features, TypeDefinition type,
+			String where) {
 		// FIXME is it OK to pass the DAO? e.g. related to closing the resource
 		this.features = features;
 		this.type = type;
+		this.where = where;
 	}
 
 	@Override
@@ -203,7 +236,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 
 	@Override
 	public ResourceIterator<Instance> iterator() {
-		return new FeaturesIterator();
+		return new FeaturesIterator(where);
 	}
 
 	@Override
