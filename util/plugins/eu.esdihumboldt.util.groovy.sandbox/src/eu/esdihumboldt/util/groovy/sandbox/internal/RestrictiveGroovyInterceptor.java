@@ -31,6 +31,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.codehaus.groovy.runtime.GStringImpl;
@@ -124,6 +125,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(HashMap.class);
 		allowedClasses.add(HashSet.class);
 		allowedClasses.add(Collections.class);
+		allowedClasses.add(TreeMap.class);
 
 		// Binding classes
 		allowedClasses.add(Timestamp.class);
