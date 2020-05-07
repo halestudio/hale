@@ -118,10 +118,12 @@ public class StyledInstanceMarker extends InstanceMarker {
 		// performs a special task if the found symbolizer is a point symbolizer
 		Rule honoredRule = honorRules(context);
 		pointSymbolizer = null;
-		for (Symbolizer sym : honoredRule.symbolizers()) {
-			if (sym instanceof PointSymbolizer) {
-				pointSymbolizer = (PointSymbolizer) sym;
-				break;
+		if (honoredRule != null) {
+			for (Symbolizer sym : honoredRule.symbolizers()) {
+				if (sym instanceof PointSymbolizer) {
+					pointSymbolizer = (PointSymbolizer) sym;
+					break;
+				}
 			}
 		}
 
