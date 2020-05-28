@@ -101,7 +101,6 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
-      <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
