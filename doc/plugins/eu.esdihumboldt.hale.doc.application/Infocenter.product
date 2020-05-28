@@ -44,7 +44,6 @@
       <plugin id="concurrent"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.geom"/>
-      <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
