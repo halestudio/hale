@@ -12,7 +12,7 @@ Require-Bundle: com.tinkerpop.blueprints.core;bundle-version="2.5.0",
  com.tinkerpop.gremlin.java;bundle-version="2.5.0"
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.report,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.slf4j;version="1.7.2"
 Export-Package: eu.esdihumboldt.hale.common.instance.graph.reference,
  eu.esdihumboldt.hale.common.instance.graph.reference.impl

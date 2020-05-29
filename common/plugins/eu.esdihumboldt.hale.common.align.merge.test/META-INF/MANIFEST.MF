@@ -26,7 +26,7 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.index,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.geotools.filter.text.cql2;version="12.2.0.combined",
  org.slf4j;version="1.7.12"
 Automatic-Module-Name: eu.esdihumboldt.hale.common.align.merge.test
