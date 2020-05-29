@@ -59,7 +59,7 @@ class WebTemplateLoader {
 	@CompileStatic
 	public static void applyProxy(HTTPBuilder builder){
 
-		Proxy proxy = ProxyUtil.findProxy(builder.uri as URI)
+		java.net.Proxy proxy = ProxyUtil.findProxy(builder.uri as URI)
 
 		if (proxy != null && proxy.type() == Type.HTTP) {
 
