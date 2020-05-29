@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.geotools.factory.CommonFactoryFinder;
-import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
+import org.geotools.xml.styling.SLDParser;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;

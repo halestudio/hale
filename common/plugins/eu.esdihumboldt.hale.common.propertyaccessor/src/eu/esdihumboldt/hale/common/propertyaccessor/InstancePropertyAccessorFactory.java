@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.common.propertyaccessor;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import org.geotools.factory.Hints;
 import org.geotools.filter.expression.PropertyAccessor;
 import org.geotools.filter.expression.PropertyAccessorFactory;
+import org.geotools.util.factory.Hints;
 
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
