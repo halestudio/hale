@@ -198,7 +198,7 @@ public class RuleStylePage extends FeatureStylePage {
 				Rule rule = rules.get(i).getRule();
 
 				// set else filter
-				rule.setIsElseFilter(rule.getFilter() == null);
+				rule.setElseFilter(rule.getFilter() == null);
 
 				// TODO other rule manipulation?
 

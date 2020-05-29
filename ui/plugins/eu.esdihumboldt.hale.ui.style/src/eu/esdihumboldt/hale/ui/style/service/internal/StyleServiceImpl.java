@@ -355,7 +355,7 @@ public class StyleServiceImpl extends AbstractStyleService {
 			Rule newRule = styleBuilder
 					.createRule(newSymbolizers.toArray(new Symbolizer[newSymbolizers.size()]));
 			newRule.setFilter(rule.getFilter());
-			newRule.setIsElseFilter(rule.isElseFilter());
+			newRule.setElseFilter(rule.isElseFilter());
 			newRule.setName(rule.getName());
 			newRules.add(newRule);
 		}
