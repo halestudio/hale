@@ -36,7 +36,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.util.definition,
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.sandbox,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.slf4j;version="1.7.2",
  org.slf4j.ext;version="1.7.10",
  org.springframework.core.convert;version="3.0.0.RELEASE"

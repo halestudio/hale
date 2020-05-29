@@ -17,6 +17,6 @@ Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.instancevalidator,
  eu.esdihumboldt.hale.common.schema.model,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.slf4j;version="1.7.2"
 Automatic-Module-Name: eu.esdihumboldt.hale.common.codelist.validator

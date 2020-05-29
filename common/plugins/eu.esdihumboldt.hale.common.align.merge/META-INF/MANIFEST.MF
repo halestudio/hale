@@ -23,7 +23,7 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.definition,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.slf4j;version="1.7.12"
 Export-Package: eu.esdihumboldt.hale.common.align.merge,
  eu.esdihumboldt.hale.common.align.merge.extension,
