@@ -15,11 +15,11 @@
 
 package de.fhg.igd.geom.shape;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.CoordinateSequenceFactory;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.impl.CoordinateArraySequenceFactory;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.CoordinateSequenceFactory;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.impl.CoordinateArraySequenceFactory;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Point2D;
@@ -60,7 +60,7 @@ public class Line2D extends Shape {
 	 * @param geometryFactory the factory for JTS geometries
 	 * @return the converted LineString
 	 */
-	private com.vividsolutions.jts.geom.LineString toJTSLineString(
+	private org.locationtech.jts.geom.LineString toJTSLineString(
 			GeometryFactory geometryFactory) {
 		Coordinate[] coords = new Coordinate[this.getPoints().length];
 		for (int i = 0; i < this.getPoints().length; i++) {
@@ -68,7 +68,7 @@ public class Line2D extends Shape {
 		}
 		CoordinateSequenceFactory csf = CoordinateArraySequenceFactory.instance();
 		CoordinateSequence cs = csf.create(coords);
-		com.vividsolutions.jts.geom.LineString jts_ls = new com.vividsolutions.jts.geom.LineString(
+		org.locationtech.jts.geom.LineString jts_ls = new org.locationtech.jts.geom.LineString(
 				cs, geometryFactory);
 		return jts_ls;
 	}
@@ -81,17 +81,17 @@ public class Line2D extends Shape {
 	public Surface computeBuffer(double buffer) {
 		GeometryFactory geometryFactory = new GeometryFactory();
 		// transform to JTS LineString
-		com.vividsolutions.jts.geom.LineString jts_ls = this.toJTSLineString(geometryFactory);
+		org.locationtech.jts.geom.LineString jts_ls = this.toJTSLineString(geometryFactory);
 
 		// Buffer generation
-		com.vividsolutions.jts.geom.Geometry jts_geom = jts_ls.buffer(buffer, 3);
+		org.locationtech.jts.geom.Geometry jts_geom = jts_ls.buffer(buffer, 3);
 
 		// transfrom back to CS3D Polygon.
 		Surface result = new Surface();
-		com.vividsolutions.jts.geom.Polygon jts_poly = (com.vividsolutions.jts.geom.Polygon) jts_geom;
+		org.locationtech.jts.geom.Polygon jts_poly = (org.locationtech.jts.geom.Polygon) jts_geom;
 
 		// transform outer Shell...
-		com.vividsolutions.jts.geom.LineString jts_linering_outer = jts_poly.getExteriorRing();
+		org.locationtech.jts.geom.LineString jts_linering_outer = jts_poly.getExteriorRing();
 		Coordinate[] coords = jts_linering_outer.getCoordinates();
 		Point2D[] p2d_outer = new Point2D[coords.length];
 		for (int i = 0; i < coords.length; i++) {
@@ -105,7 +105,7 @@ public class Line2D extends Shape {
 		if (jts_poly.getNumInteriorRing() > 0) {
 			Polygon[] inner_polys = new Polygon[jts_poly.getNumInteriorRing()];
 			for (int n = 0; n < jts_poly.getNumInteriorRing(); n++) {
-				com.vividsolutions.jts.geom.LineString jts_linering_inner = jts_poly
+				org.locationtech.jts.geom.LineString jts_linering_inner = jts_poly
 						.getInteriorRingN(n);
 				coords = jts_linering_inner.getCoordinates();
 				Point2D[] p2d_inner = new Point2D[coords.length];

@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
  * Abstract geometry converter test providing access to a

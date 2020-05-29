@@ -6,7 +6,7 @@ Bundle-Version: 4.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
- com.vividsolutions.jts.geom,
+ org.locationtech.jts.geom,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.geometric.extent,
  eu.esdihumboldt.hale.common.align.transformation.function,

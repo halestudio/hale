@@ -7,7 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="1.6.0",
  com.google.common.io;version="9.0.0",
- com.vividsolutions.jts.geom,
+ org.locationtech.jts.geom,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",

@@ -19,7 +19,7 @@ Require-Bundle: eu.esdihumboldt.hale.ui,
  de.fhg.igd.mapviewer.server.tiles;bundle-version="2.9.5"
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
- com.vividsolutions.jts.geom;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.transformation.service,
  eu.esdihumboldt.hale.common.core,

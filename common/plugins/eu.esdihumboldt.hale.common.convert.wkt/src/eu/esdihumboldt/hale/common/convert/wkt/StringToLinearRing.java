@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.convert.wkt;
 
-import com.vividsolutions.jts.geom.LinearRing;
+import org.locationtech.jts.geom.LinearRing;
 
 import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverter;
 

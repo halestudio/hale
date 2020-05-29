@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * Converts a geometry to another kind of geometry

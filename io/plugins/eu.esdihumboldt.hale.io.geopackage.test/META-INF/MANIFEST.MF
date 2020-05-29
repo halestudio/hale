@@ -20,5 +20,5 @@ Require-Bundle: eu.esdihumboldt.hale.io.geopackage;bundle-version="4.0.0",
  eu.esdihumboldt.cst.functions.geometric;bundle-version="4.0.0",
  eu.esdihumboldt.util;bundle-version="4.0.0",
  org.opengis;bundle-version="12.2.0"
-Import-Package: com.vividsolutions.jts.geom;version="1.13.0",
+Import-Package: org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.slf4jplus

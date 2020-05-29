@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.convert.wkt;
 
-import com.vividsolutions.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryCollection;
 
 import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverter;
 

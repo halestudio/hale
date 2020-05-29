@@ -38,7 +38,7 @@
       <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
-      <plugin id="com.vividsolutions.jts"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
       <plugin id="concurrent"/>

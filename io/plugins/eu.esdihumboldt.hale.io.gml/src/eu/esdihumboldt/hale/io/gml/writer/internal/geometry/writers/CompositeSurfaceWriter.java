@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.writers;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 
 /**
  * Writes {@link MultiPolygon}s as CompositeSurfaces.

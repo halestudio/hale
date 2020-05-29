@@ -50,47 +50,47 @@
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.Coordinate">
+            class="org.locationtech.jts.geom.Coordinate">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.Polygon">
+            class="org.locationtech.jts.geom.Polygon">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.LineString">
+            class="org.locationtech.jts.geom.LineString">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.LinearRing">
+            class="org.locationtech.jts.geom.LinearRing">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.MultiLineString">
+            class="org.locationtech.jts.geom.MultiLineString">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.MultiPolygon">
+            class="org.locationtech.jts.geom.MultiPolygon">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.Point">
+            class="org.locationtech.jts.geom.Point">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.MultiPoint">
+            class="org.locationtech.jts.geom.MultiPoint">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.algorithm.CGAlgorithms">
+            class="org.locationtech.jts.algorithm.CGAlgorithms">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.GeometryFactory">
+            class="org.locationtech.jts.geom.GeometryFactory">
       </allow>
       <allow
             allowAll="false"
-            class="com.vividsolutions.jts.geom.GeometryCollection">
+            class="org.locationtech.jts.geom.GeometryCollection">
       </allow>
    </extension>
    <extension

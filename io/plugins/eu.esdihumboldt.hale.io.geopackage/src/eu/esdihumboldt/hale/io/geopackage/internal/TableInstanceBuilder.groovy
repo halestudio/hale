@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.geopackage.internal
 
-import com.vividsolutions.jts.io.WKBReader
+import org.locationtech.jts.io.WKBReader
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty

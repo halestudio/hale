@@ -7,8 +7,8 @@ Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.spatialite.internal.Activator
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.cache;version="17.0.0",
- com.vividsolutions.jts.geom,
- com.vividsolutions.jts.io,
+ org.locationtech.jts.geom,
+ org.locationtech.jts.io,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.instance.geometry,

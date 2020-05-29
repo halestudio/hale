@@ -16,8 +16,8 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.GeometryConverter;
 

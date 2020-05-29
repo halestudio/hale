@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.split;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Arc;
 

@@ -17,7 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation.grid;
 
 import java.math.BigDecimal;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Interpolation grid utilities.

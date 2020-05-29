@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.convert.wkt;
 
-import com.vividsolutions.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.MultiPolygon;
 
 import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverter;
 

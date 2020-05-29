@@ -580,7 +580,7 @@ Implementation of the ParameterValueDescriptor Interface for the specific parame
                   Matches a certain geometry type.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="com.vividsolutions.jts.geom.Geometry:"/>
+                  <meta.attribute kind="java" basedOn="org.locationtech.jts.geom.Geometry:"/>
                </appinfo>
             </annotation>
          </attribute>

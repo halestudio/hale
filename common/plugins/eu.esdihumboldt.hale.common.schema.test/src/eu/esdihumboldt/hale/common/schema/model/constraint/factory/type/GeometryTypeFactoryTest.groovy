@@ -34,7 +34,7 @@ class GeometryTypeFactoryTest extends AbstractPropertiesCompareConstraintFactory
 
 	void testGeom() {
 		ClassResolver classResolver = new OsgiClassResolver();
-		storeRestoreTest(GeometryType.get(classResolver.loadClass("com.vividsolutions.jts.geom.Geometry")))
+		storeRestoreTest(GeometryType.get(classResolver.loadClass("org.locationtech.jts.geom.Geometry")))
 	}
 
 	@Override

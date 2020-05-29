@@ -41,7 +41,7 @@
       <import plugin="eu.esdihumboldt.hale.common.scripting"/>
       <import plugin="eu.esdihumboldt.hale.common.align" version="2.5.0" match="greaterOrEqual"/>
       <import plugin="com.iabcinc.jmep"/>
-      <import plugin="com.vividsolutions.jts"/>
+      <import plugin="org.locationtech.jts.jts-core"/>
       <import plugin="org.opengis"/>
       <import plugin="eu.esdihumboldt.hale.common.instance.groovy" version="2.7.0" match="greaterOrEqual"/>
       <import plugin="groovy" version="2.1.5" match="greaterOrEqual"/>

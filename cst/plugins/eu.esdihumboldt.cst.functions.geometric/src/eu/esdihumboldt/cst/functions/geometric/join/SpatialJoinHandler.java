@@ -32,7 +32,7 @@ import javax.xml.namespace.QName;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Localizable;

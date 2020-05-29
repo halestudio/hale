@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.grid;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.ArcSegment;
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;

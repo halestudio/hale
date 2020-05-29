@@ -28,10 +28,10 @@ import org.opengis.referencing.operation.MathTransform;
 
 import com.google.common.io.BaseEncoding;
 import com.microsoft.sqlserver.jdbc.SQLServerConnection;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;

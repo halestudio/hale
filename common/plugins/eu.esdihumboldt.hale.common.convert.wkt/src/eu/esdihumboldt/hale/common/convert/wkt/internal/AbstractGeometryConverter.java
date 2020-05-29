@@ -18,9 +18,9 @@ package eu.esdihumboldt.hale.common.convert.wkt.internal;
 
 import org.springframework.core.convert.converter.Converter;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKTReader;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 /**
  * Converts strings to geometries

@@ -24,7 +24,7 @@
                   minOccurrence="1">
                <geometryCondition>
                   <geometryType
-                        type="com.vividsolutions.jts.geom.Point">
+                        type="org.locationtech.jts.geom.Point">
                   </geometryType>
                </geometryCondition>
             </property>

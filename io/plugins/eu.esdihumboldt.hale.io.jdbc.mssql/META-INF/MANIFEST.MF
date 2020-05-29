@@ -13,8 +13,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.io;version="17.0.0",
  com.microsoft.sqlserver.jdbc;version="4.2.0",
- com.vividsolutions.jts.geom;version="1.13.0",
- com.vividsolutions.jts.io;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
+ org.locationtech.jts.io;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,

@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.vividsolutions.jts.geom,
+Import-Package: org.locationtech.jts.geom,
  de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,
  de.fhg.igd.eclipse.util.extension,
