@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.measure.Unit;
 import javax.measure.quantity.Length;
-import javax.measure.unit.Unit;
 
 import org.geotools.referencing.CRS;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
