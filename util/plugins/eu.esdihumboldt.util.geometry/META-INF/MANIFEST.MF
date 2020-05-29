@@ -4,9 +4,9 @@ Bundle-Name: Geometry Utilities
 Bundle-SymbolicName: eu.esdihumboldt.util.geometry;singleton:=true
 Bundle-Version: 4.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.vividsolutions.jts;version="1.13.0",
- com.vividsolutions.jts.algorithm;version="1.13.0",
- com.vividsolutions.jts.geom;version="1.13.0",
+Import-Package: org.locationtech.jts;version="1.13.0",
+ org.locationtech.jts.algorithm;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util,

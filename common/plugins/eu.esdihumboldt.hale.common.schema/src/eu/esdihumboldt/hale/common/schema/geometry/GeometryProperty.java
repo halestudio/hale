@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.common.schema.geometry;
 
 import java.io.Serializable;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 

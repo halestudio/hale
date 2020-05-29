@@ -17,7 +17,7 @@ package eu.esdihumboldt.cst.functions.geometric.join;
 
 import java.util.function.BiFunction;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * Interface for functions evaluating a spatial relation between two geometries.

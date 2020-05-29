@@ -24,7 +24,7 @@ import java.net.URI;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;

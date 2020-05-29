@@ -21,7 +21,7 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.GeometryFactory;
 
 /**
  * Base class for geometry handlers.

@@ -82,7 +82,6 @@
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.typesafe.config"/>
-      <plugin id="com.vividsolutions.jts"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
@@ -439,6 +438,7 @@
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.locationtech.proj4j"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>

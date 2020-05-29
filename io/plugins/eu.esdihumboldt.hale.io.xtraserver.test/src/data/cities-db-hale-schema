@@ -380,7 +380,7 @@
 </core:property>
 </core:properties>
 </hsd:constraint>
-<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Point"/>
+<hsd:constraint type="geometry-type" value="org.locationtech.jts.geom.Point"/>
 <hsd:constraint type="has-value" value="true"/>
 <hsd:constraint type="jdbc_sqltype" value="1111"/>
 <hsd:constraint type="mapping-relevant" value="false"/>
@@ -404,7 +404,7 @@
 </core:property>
 </core:properties>
 </hsd:constraint>
-<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Point"/>
+<hsd:constraint type="geometry-type" value="org.locationtech.jts.geom.Point"/>
 <hsd:constraint type="has-value" value="true"/>
 <hsd:constraint type="jdbc_sqltype" value="1111"/>
 <hsd:constraint type="mapping-relevant" value="false"/>
@@ -428,7 +428,7 @@
 </core:property>
 </core:properties>
 </hsd:constraint>
-<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Geometry"/>
+<hsd:constraint type="geometry-type" value="org.locationtech.jts.geom.Geometry"/>
 <hsd:constraint type="has-value" value="true"/>
 <hsd:constraint type="jdbc_sqltype" value="1111"/>
 <hsd:constraint type="mapping-relevant" value="false"/>
@@ -452,7 +452,7 @@
 </core:property>
 </core:properties>
 </hsd:constraint>
-<hsd:constraint type="geometry-type" value="com.vividsolutions.jts.geom.Polygon"/>
+<hsd:constraint type="geometry-type" value="org.locationtech.jts.geom.Polygon"/>
 <hsd:constraint type="has-value" value="true"/>
 <hsd:constraint type="jdbc_sqltype" value="1111"/>
 <hsd:constraint type="mapping-relevant" value="false"/>

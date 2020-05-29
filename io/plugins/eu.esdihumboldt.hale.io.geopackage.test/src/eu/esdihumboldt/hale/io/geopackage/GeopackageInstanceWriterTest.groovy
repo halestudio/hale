@@ -28,8 +28,8 @@ import javax.xml.namespace.QName
 
 import org.junit.Test
 
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.Point
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.Point
 
 import eu.esdihumboldt.cst.functions.geometric.GeometryHelperFunctions
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator

@@ -25,9 +25,9 @@ import javax.script.ScriptException;
 import org.springframework.core.convert.ConversionException;
 
 import com.google.common.collect.ListMultimap;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.operation.buffer.BufferBuilder;
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.operation.buffer.BufferBuilder;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;

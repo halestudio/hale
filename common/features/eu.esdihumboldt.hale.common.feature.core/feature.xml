@@ -239,7 +239,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.vividsolutions.jts"
+         id="org.locationtech.jts.jts-core"
          download-size="0"
          install-size="0"
          version="0.0.0"

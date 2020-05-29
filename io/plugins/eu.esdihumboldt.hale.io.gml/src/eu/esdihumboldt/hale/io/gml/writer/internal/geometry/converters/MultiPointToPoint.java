@@ -16,9 +16,9 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.Point;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.Point;
 
 /**
  * Converts a {@link MultiPoint} to a {@link Point}

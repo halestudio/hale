@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.common.convert.wkt;
 
-import com.vividsolutions.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiLineString;
 
 import eu.esdihumboldt.hale.common.convert.wkt.internal.AbstractGeometryConverter;
 

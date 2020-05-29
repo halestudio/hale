@@ -19,7 +19,7 @@ import static eu.esdihumboldt.util.geometry.interpolation.InterpolationUtil.roun
 
 import java.text.MessageFormat;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;

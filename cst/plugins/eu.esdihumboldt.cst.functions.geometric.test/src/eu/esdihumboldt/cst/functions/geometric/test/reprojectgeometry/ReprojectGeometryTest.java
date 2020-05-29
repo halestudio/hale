@@ -16,7 +16,7 @@ import org.geotools.referencing.CRS;
 import org.junit.Test;
 import org.opengis.referencing.operation.MathTransform;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.cst.ConceptualSchemaTransformer;
 import eu.esdihumboldt.cst.test.AbstractTransformationTest;

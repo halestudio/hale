@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Represents an angle. The angle may represent an angle difference or a
@@ -61,7 +61,7 @@ public class Angle {
 	 * @return the normalized angle that p0-p1 makes with the positive x-axis.
 	 */
 	public static Angle angle(Coordinate p0, Coordinate p1) {
-		return new Angle(com.vividsolutions.jts.algorithm.Angle.angle(p0, p1));
+		return new Angle(org.locationtech.jts.algorithm.Angle.angle(p0, p1));
 	}
 
 	/**

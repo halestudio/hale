@@ -25,9 +25,9 @@ import org.junit.Test
 import ru.yandex.qatools.allure.annotations.Features
 import ru.yandex.qatools.allure.annotations.Stories
 
-import com.vividsolutions.jts.geom.Coordinate
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
 
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition

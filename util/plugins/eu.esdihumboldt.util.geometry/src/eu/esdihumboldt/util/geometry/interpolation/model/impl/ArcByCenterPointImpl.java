@@ -17,7 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation.model.impl;
 
 import java.text.MessageFormat;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 import eu.esdihumboldt.util.geometry.interpolation.model.Angle;
 import eu.esdihumboldt.util.geometry.interpolation.model.ArcByCenterPoint;
@@ -60,8 +60,8 @@ public class ArcByCenterPointImpl implements ArcByCenterPoint {
 	@Override
 	public boolean isCircle() {
 		// is a circle if the normalised angles are equal
-		return com.vividsolutions.jts.algorithm.Angle
-				.normalize(startAngle.getRadians()) == com.vividsolutions.jts.algorithm.Angle
+		return org.locationtech.jts.algorithm.Angle
+				.normalize(startAngle.getRadians()) == org.locationtech.jts.algorithm.Angle
 						.normalize(endAngle.getRadians());
 	}
 

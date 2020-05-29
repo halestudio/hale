@@ -22,7 +22,7 @@ import java.util.Map;
 
 import net.jcip.annotations.Immutable;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;

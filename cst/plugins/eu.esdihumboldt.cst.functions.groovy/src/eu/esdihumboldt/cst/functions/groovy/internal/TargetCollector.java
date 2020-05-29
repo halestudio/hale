@@ -17,7 +17,7 @@ package eu.esdihumboldt.cst.functions.groovy.internal;
 
 import java.util.ArrayList;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyTransformation;

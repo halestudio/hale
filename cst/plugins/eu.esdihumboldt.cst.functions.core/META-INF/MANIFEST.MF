@@ -8,7 +8,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0",
  groovy;bundle-version="1.8.6"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
- com.vividsolutions.jts.geom;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core,

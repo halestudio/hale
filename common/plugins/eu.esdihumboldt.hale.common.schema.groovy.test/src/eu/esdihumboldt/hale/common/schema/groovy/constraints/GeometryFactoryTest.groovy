@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import javax.xml.namespace.QName
 
-import com.vividsolutions.jts.geom.Polygon
+import org.locationtech.jts.geom.Polygon
 
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType

@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.ListMultimap;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.TopologyException;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.TopologyException;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;

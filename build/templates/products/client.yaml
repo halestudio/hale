@@ -69,7 +69,7 @@ HALE:
   - com.tinkerpop.gremlin.groovy
   - com.tinkerpop.gremlin.java
   - com.tinkerpop.pipes
-  - com.vividsolutions.jts
+  - org.locationtech.jts.jts-core
   - de.cs3d.common.metamodel
   - de.cs3d.ui.bookmarks
   - de.fhg.igd.eclipse.ui.util

@@ -72,7 +72,7 @@
       <plugin id="com.sun.jna"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.blueprints.orient-graph"/>
-      <plugin id="com.vividsolutions.jts"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>

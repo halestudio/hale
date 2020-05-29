@@ -27,7 +27,7 @@ import net.jcip.annotations.Immutable;
 import org.springframework.core.convert.ConversionException;
 
 import com.google.common.collect.ListMultimap;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;

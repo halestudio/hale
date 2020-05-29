@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.common.schema.model.constraint.type.factory;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.model.Definition;
@@ -45,7 +45,7 @@ public class GeometryTypeFactory implements ValueConstraintFactory<GeometryType>
 	@Override
 	public GeometryType restore(Value value, Definition<?> definition, TypeResolver typeIndex,
 			ClassResolver resolver) throws Exception {
-		Class<?> binding = resolver.loadClass(value.as(String.class), "com.vividsolutions.jts");
+		Class<?> binding = resolver.loadClass(value.as(String.class), "org.locationtech.jts");
 
 		if (binding == null) {
 			throw new IllegalStateException(

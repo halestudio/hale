@@ -17,7 +17,7 @@ package eu.esdihumboldt.util.geometry.quadtree;
 
 import java.util.Collection;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * Interface for a quadtree implementations

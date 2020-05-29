@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiLineStringToLineString;
 import eu.esdihumboldt.hale.io.gml.writer.internal.geometry.converters.MultiPointToPoint;
