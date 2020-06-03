@@ -418,6 +418,7 @@
             description="Assigns a value to a target property if a source property is present"
             icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.hale.align.assign.bound"
+            help="help/assignBound/help.xhtml"
             name="Assign (Bound)">
          <sourceProperties>
             <property
