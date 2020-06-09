@@ -180,7 +180,6 @@
       <plugin id="joda-time"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sourceforge.nekohtml"/>
