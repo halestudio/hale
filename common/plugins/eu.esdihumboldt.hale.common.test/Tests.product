@@ -40,6 +40,7 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
+      <plugin id="com.conversantmedia.disruptor"/>
       <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
       <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
@@ -312,6 +313,7 @@
       <plugin id="mil.nga.sf.wkb"/>
       <plugin id="mil.nga.tiff"/>
       <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.geographiclib.GeographicLib-Java"/>
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sf.ucanaccess"/>
       <plugin id="net.sourceforge.schemacrawler"/>
@@ -326,12 +328,15 @@
       <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.commons.math"/>
       <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.felix.gogo.command"/>
@@ -381,6 +386,7 @@
       <plugin id="org.eclipse.e4.ui.css.swt"/>
       <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
       <plugin id="org.eclipse.e4.ui.di"/>
+      <plugin id="org.eclipse.e4.ui.dialogs"/>
       <plugin id="org.eclipse.e4.ui.model.workbench"/>
       <plugin id="org.eclipse.e4.ui.services"/>
       <plugin id="org.eclipse.e4.ui.widgets"/>
@@ -405,7 +411,6 @@
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
-      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.equinox.weaving.caching"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
@@ -433,6 +438,8 @@
       <plugin id="org.eclipse.zest.dot.export"/>
       <plugin id="org.eclipse.zest.jface"/>
       <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.ejml.core"/>
+      <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
       <plugin id="org.glassfish.hk2.api"/>
       <plugin id="org.glassfish.hk2.locator"/>
@@ -449,7 +456,7 @@
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
-      <plugin id="org.jdom"/>
+      <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>

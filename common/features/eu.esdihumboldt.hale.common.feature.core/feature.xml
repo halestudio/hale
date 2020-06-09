@@ -618,7 +618,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.jdom"
+         id="org.jdom.2"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -803,6 +803,48 @@
 
    <plugin
          id="it.geosolutions.jaiext.warp.jt-warp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.conversantmedia.disruptor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sf.geographiclib.GeographicLib-Java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.commons-text"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.ejml.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.ejml.ddense"
          download-size="0"
          install-size="0"
          version="0.0.0"
