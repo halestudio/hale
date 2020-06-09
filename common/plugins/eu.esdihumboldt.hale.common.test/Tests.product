@@ -272,6 +272,7 @@
       <plugin id="javax.el"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.measure.unit-api"/>
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
@@ -295,7 +296,6 @@
       <plugin id="mil.nga.sf.proj"/>
       <plugin id="mil.nga.sf.wkb"/>
       <plugin id="mil.nga.tiff"/>
-      <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sf.ucanaccess"/>
@@ -471,8 +471,14 @@
       <plugin id="ru.yandex.qatools.allure.junit-adaptor"/>
       <plugin id="ru.yandex.qatools.allure.model"/>
       <plugin id="ru.yandex.qatools.properties.loader"/>
+      <plugin id="si.uom.si-quantity"/>
+      <plugin id="si.uom.si-units-java8"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
+      <plugin id="systems.uom.systems-common-java8"/>
+      <plugin id="systems.uom.systems-quantity"/>
+      <plugin id="tec.uom.lib.uom-lib-common"/>
+      <plugin id="tec.uom.se"/>
       <plugin id="xerces.xercesImpl"/>
       <plugin id="xpp3.xpp3_min"/>
    </plugins>
