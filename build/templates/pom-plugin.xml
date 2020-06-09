@@ -129,12 +129,12 @@
             <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-compiler</artifactId>
-	        	<version>2.9.2-04</version>
+	        	<version>3.6.0-03</version>
 	        </dependency>
 	        <dependency>
 	        	<groupId>org.codehaus.groovy</groupId>
 	        	<artifactId>groovy-eclipse-batch</artifactId>
-	        	<version>2.4.14-01</version>
+	        	<version>2.4.19-02</version>
 	        </dependency>
          </dependencies>
       </plugin>
