@@ -78,8 +78,7 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 					return c.getChild().getName().getLocalPart();
 					// TODO use version w/ namespace in ambiguous cases?
 				}).collect(Collectors.joining("."));
-		// put in quotes so it is possible to parse the resulting filterTerm
-		return '"' + name + '"';
+		return name;
 	}
 
 }
