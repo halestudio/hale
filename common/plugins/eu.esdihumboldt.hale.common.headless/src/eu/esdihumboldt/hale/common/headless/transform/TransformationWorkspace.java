@@ -30,6 +30,7 @@ import org.joda.time.ReadableDuration;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.MoreExecutors;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -248,7 +249,7 @@ public class TransformationWorkspace {
 					log.error("Failed to set transformation success for workspace", e);
 				}
 			}
-		});
+		}, MoreExecutors.directExecutor());
 
 		return result;
 	}

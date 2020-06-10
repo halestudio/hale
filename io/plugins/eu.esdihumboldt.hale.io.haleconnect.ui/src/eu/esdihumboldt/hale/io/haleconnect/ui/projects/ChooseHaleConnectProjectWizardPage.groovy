@@ -47,6 +47,7 @@ import org.eclipse.ui.PlatformUI
 
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.MoreExecutors
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -424,9 +425,9 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 		projects.getTable().setEnabled(false);
 
 		try {
-			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback());
+			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback(), MoreExecutors.directExecutor());
 			for (String orgId : haleConnect.getSession().getOrganisationIds()) {
-				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback());
+				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback(), MoreExecutors.directExecutor());
 			}
 
 		} catch (HaleConnectException e1) {
