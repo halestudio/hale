@@ -375,7 +375,7 @@ class GeometryHelperFunctions {
 			traverser.traverse(geometryHolder, geoFind)
 		}
 
-		List<GeometryProperty<?>> geoms = geoFind.getGeometries()
+		def geoms = (List<GeometryProperty<? extends Geometry>>)geoFind.getGeometries()
 
 		if (geoms) {
 			geoms[0]
@@ -413,7 +413,7 @@ class GeometryHelperFunctions {
 			traverser.traverse(geometryHolder, geoFind)
 		}
 
-		geoFind.getGeometries()
+		(List<GeometryProperty<? extends Geometry>>)geoFind.getGeometries()
 	}
 
 	/**
