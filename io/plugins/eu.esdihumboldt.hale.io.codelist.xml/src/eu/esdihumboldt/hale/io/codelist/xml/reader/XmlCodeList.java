@@ -101,10 +101,10 @@ public class XmlCodeList implements CodeList {
 			String id = null;
 			// determine identifier
 			try {
-				Node identifier = ((NodeList) xpath.evaluate(
-						"Dictionary/identifier", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
-				this.namespace = identifier.getAttributes()
-						.getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
+				Node identifier = ((NodeList) xpath.evaluate("Dictionary/identifier", doc, //$NON-NLS-1$
+						XPathConstants.NODESET)).item(0);
+				this.namespace = identifier.getAttributes().getNamedItem("codeSpace") //$NON-NLS-1$
+						.getTextContent();
 				id = identifier.getTextContent();
 			} catch (Throwable e) {
 				// ignore
@@ -112,8 +112,8 @@ public class XmlCodeList implements CodeList {
 
 			if (id == null) {
 				try {
-					Node identifier = ((NodeList) xpath.evaluate(
-							"Dictionary/name", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+					Node identifier = ((NodeList) xpath.evaluate("Dictionary/name", doc, //$NON-NLS-1$
+							XPathConstants.NODESET)).item(0);
 					id = identifier.getTextContent();
 				} catch (Throwable e) {
 					// ignore
@@ -132,8 +132,8 @@ public class XmlCodeList implements CodeList {
 
 			// determine description
 			try {
-				Node description = ((NodeList) xpath.evaluate(
-						"Dictionary/description", doc, XPathConstants.NODESET)).item(0); //$NON-NLS-1$
+				Node description = ((NodeList) xpath.evaluate("Dictionary/description", doc, //$NON-NLS-1$
+						XPathConstants.NODESET)).item(0);
 				this.description = description.getTextContent();
 			} catch (Throwable e) {
 				// is optional
@@ -141,8 +141,8 @@ public class XmlCodeList implements CodeList {
 			}
 
 			// determine entries
-			NodeList entries = (NodeList) xpath.evaluate(
-					"Dictionary/dictionaryEntry/Definition", doc, XPathConstants.NODESET); //$NON-NLS-1$
+			NodeList entries = (NodeList) xpath.evaluate("Dictionary/dictionaryEntry/Definition", //$NON-NLS-1$
+					doc, XPathConstants.NODESET);
 			addEntries(entries);
 
 			if (this.namespace == null) {
@@ -172,11 +172,12 @@ public class XmlCodeList implements CodeList {
 					description = child.getTextContent();
 				}
 				else if (child.getNodeName().endsWith("identifier") || //$NON-NLS-1$
-						(child.getNodeName().endsWith("name") && child.getAttributes().getNamedItem("codeSpace") != null)) { //$NON-NLS-1$ //$NON-NLS-2$
+						(child.getNodeName().endsWith("name") //$NON-NLS-1$
+								&& child.getAttributes().getNamedItem("codeSpace") != null)) { //$NON-NLS-1$
 					identifier = child.getTextContent();
 					try {
-						namespace = child.getAttributes()
-								.getNamedItem("codeSpace").getTextContent(); //$NON-NLS-1$
+						namespace = child.getAttributes().getNamedItem("codeSpace") //$NON-NLS-1$
+								.getTextContent();
 					} catch (Exception e) {
 						// optional
 					}
@@ -200,7 +201,12 @@ public class XmlCodeList implements CodeList {
 				namespace = this.namespace;
 			}
 
-			if (name != null && identifier != null) {
+			if (identifier != null) {
+				if (name == null) {
+					// default name to identifier if no name is provided
+					name = identifier;
+				}
+
 				CodeEntry entry = new CodeEntry(name, description, identifier, namespace);
 				this.entriesByName.put(name, entry);
 				this.entriesByIdentifier.put(identifier, entry);

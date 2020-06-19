@@ -176,6 +176,8 @@
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.deegree"/>
