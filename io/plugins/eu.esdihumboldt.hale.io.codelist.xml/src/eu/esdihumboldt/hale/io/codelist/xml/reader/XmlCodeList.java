@@ -171,19 +171,31 @@ public class XmlCodeList implements CodeList {
 				if (child.getNodeName().endsWith("description")) { //$NON-NLS-1$
 					description = child.getTextContent();
 				}
-				else if (child.getNodeName().endsWith("identifier") || //$NON-NLS-1$
-						(child.getNodeName().endsWith("name") //$NON-NLS-1$
-								&& child.getAttributes().getNamedItem("codeSpace") != null)) { //$NON-NLS-1$
+				else if (child.getNodeName().endsWith("identifier")) { //$NON-NLS-1$
 					identifier = child.getTextContent();
 					try {
 						namespace = child.getAttributes().getNamedItem("codeSpace") //$NON-NLS-1$
 								.getTextContent();
 					} catch (Exception e) {
 						// optional
+						namespace = null;
 					}
 				}
 				else if (child.getNodeName().endsWith("name")) { //$NON-NLS-1$
 					name = child.getTextContent();
+
+					if (identifier == null
+							&& child.getAttributes().getNamedItem("codeSpace") != null) {
+						// compensate a missing identifier if a name w/
+						// codeSpace is there
+						identifier = child.getTextContent();
+						try {
+							namespace = child.getAttributes().getNamedItem("codeSpace") //$NON-NLS-1$
+									.getTextContent();
+						} catch (Exception e) {
+							// optional
+						}
+					}
 				}
 			}
 
