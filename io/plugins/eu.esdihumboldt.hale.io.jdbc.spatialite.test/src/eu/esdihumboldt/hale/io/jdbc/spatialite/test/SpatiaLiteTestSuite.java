@@ -20,13 +20,13 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.locationtech.jts.geom.Geometry;
 import org.sqlite.SQLiteConfig;
 
 import com.google.common.io.ByteSink;
 import com.google.common.io.ByteSource;
 import com.google.common.io.Files;
 import com.google.common.io.Resources;
-import org.locationtech.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -139,6 +139,8 @@ public abstract class SpatiaLiteTestSuite {
 
 			Statement stmt = conn.createStatement();
 			stmt.executeUpdate("DELETE FROM " + SOUURCE_TYPE_LOCAL_NAME);
+			stmt.executeUpdate(
+					"DELETE FROM sqlite_sequence WHERE name = \"" + SOUURCE_TYPE_LOCAL_NAME + "\"");
 		} catch (SQLException e) {
 			throw new IOException("Could not empty target DB", e);
 		} finally {
