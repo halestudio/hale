@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.springframework.core.convert.ConversionException;
 
@@ -55,7 +56,7 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
-import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
+import eu.esdihumboldt.hale.common.instance.io.impl.AbstractGeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
@@ -95,7 +96,7 @@ import mil.nga.sf.wkb.GeometryReader;
  * 
  * @author Simon Templer
  */
-public class GeopackageInstanceWriter extends AbstractInstanceWriter {
+public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 
 	@Override
 	public boolean isPassthrough() {
@@ -200,9 +201,10 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 	 * @param instances the instances to write
 	 * @param progress the progress indicator
 	 * @param reporter the reporter
+	 * @throws SQLException if an error occurs creating a database table
 	 */
 	protected void writeInstances(GeoPackage geoPackage, InstanceCollection instances,
-			ProgressIndicator progress, IOReporter reporter) {
+			ProgressIndicator progress, IOReporter reporter) throws SQLException {
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext() && !progress.isCanceled()) {
 				Instance instance = it.next();
@@ -352,7 +354,7 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 	}
 
 	private GeopackageTableType createTableIfNecessary(GeoPackage geoPackage, String tableName,
-			TypeDefinition type, Instance instance, SimpleLog log) {
+			TypeDefinition type, Instance instance, SimpleLog log) throws SQLException {
 		if (geoPackage.getFeatureTables().contains(tableName)) {
 			// table already exists
 			return GeopackageTableType.FEATURE;
@@ -435,7 +437,7 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 	}
 
 	private long determineSrsId(GeoPackage geoPackage, PropertyDefinition geomProp,
-			Instance instance, SimpleLog log) {
+			Instance instance, SimpleLog log) throws SQLException {
 		GeometryMetadata geomMetadata = geomProp.getPropertyType()
 				.getConstraint(GeometryMetadata.class);
 
@@ -443,20 +445,26 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 		SpatialReferenceSystem srs = findSrs(geoPackage, geomMetadata.getAuthName(),
 				geomMetadata.getSrs(), geomMetadata.getSrsText(), log);
 
+		if (srs == null && geomMetadata.getSrs() != null && geomMetadata.getAuthName() != null) {
+			// try to create CRS from geometry metadata
+			CRSDefinition crs = new CodeDefinition(
+					geomMetadata.getAuthName() + ":" + geomMetadata.getSrs());
+			srs = findOrCreateSrs(geoPackage, crs, log);
+		}
+
+		if (srs == null) {
+			// determine from target CRS parameter
+			CRSDefinition crs = getTargetCRS();
+			srs = findOrCreateSrs(geoPackage, crs, log);
+		}
+
 		if (srs == null) {
 			// try to determine from example instance
 			Object geom = new InstanceAccessor(instance)
 					.findChildren(geomProp.getName().getLocalPart()).value();
 			if (geom instanceof GeometryProperty<?>) {
 				CRSDefinition crs = ((GeometryProperty<?>) geom).getCRSDefinition();
-				if (crs instanceof CodeDefinition) {
-					String code = ((CodeDefinition) crs).getCode();
-					srs = findSrs(geoPackage, null, code, null, log);
-				}
-				else if (crs instanceof WKTDefinition) {
-					String wkt = ((WKTDefinition) crs).getWkt();
-					srs = findSrs(geoPackage, null, null, wkt, log);
-				}
+				srs = findOrCreateSrs(geoPackage, crs, log);
 			}
 		}
 
@@ -464,6 +472,47 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 			return srs.getSrsId();
 		}
 		return 0;
+	}
+
+	private SpatialReferenceSystem findOrCreateSrs(GeoPackage geoPackage, CRSDefinition crs,
+			SimpleLog log) throws SQLException {
+		SpatialReferenceSystem srs = null;
+		if (crs instanceof CodeDefinition) {
+			String code = ((CodeDefinition) crs).getCode();
+			srs = findSrs(geoPackage, null, code, null, log);
+			if (srs == null) {
+				// XXX creating a CRS currently only supported for EPSG codes
+				String epsg = CodeDefinition.extractEPSGCode(code);
+				if (epsg != null) {
+					srs = createEpsgSrs(geoPackage, (CodeDefinition) crs, epsg);
+					return srs;
+				}
+			}
+		}
+		else if (crs instanceof WKTDefinition) {
+			String wkt = ((WKTDefinition) crs).getWkt();
+			srs = findSrs(geoPackage, null, null, wkt, log);
+		}
+		return srs;
+	}
+
+	private SpatialReferenceSystem createEpsgSrs(GeoPackage geoPackage, CodeDefinition crs,
+			String epsg) throws SQLException {
+		SpatialReferenceSystemDao srsDao = geoPackage.getSpatialReferenceSystemDao();
+		SpatialReferenceSystem srs = new SpatialReferenceSystem();
+		CoordinateReferenceSystem geoCrs = crs.getCRS();
+		srs.setSrsName(geoCrs.getName().toString());
+		int codeId = Integer.parseInt(epsg);
+		String wkt = geoCrs.toWKT();
+		srs.setSrsId(codeId); // XXX how to avoid clashes?
+		srs.setOrganization("EPSG");
+		srs.setOrganizationCoordsysId(codeId);
+		// XXX not sure what the difference between the definition types is
+		srs.setDefinition(wkt);
+		srs.setDefinition_12_063(wkt);
+		srs.setDescription(geoCrs.getRemarks().toString());
+		srsDao.create(srs);
+		return srs;
 	}
 
 	private SpatialReferenceSystem findSrs(GeoPackage geoPackage, String org, String code,
