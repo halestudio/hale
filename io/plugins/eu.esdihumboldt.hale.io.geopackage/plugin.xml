@@ -46,6 +46,9 @@
                label="Filters for querying the GeoPackage database"
                name="queryFilter"
                optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
          </providerParameter>
       </provider>
    </extension>
