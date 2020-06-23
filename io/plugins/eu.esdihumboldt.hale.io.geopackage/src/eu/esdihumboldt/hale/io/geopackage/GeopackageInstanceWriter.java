@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.geopackage;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URI;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -324,6 +325,19 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 						// convert to Instant, then to String
 						Instant inst = ConversionUtil.getAs(value, Instant.class);
 						value = inst.toString();
+						break;
+					case INT:
+					case INTEGER:
+					case MEDIUMINT:
+					case SMALLINT:
+					case TINYINT:
+					case REAL:
+					case FLOAT:
+					case DOUBLE:
+					case TEXT:
+						// generic conversion to data type
+						value = ConversionUtil.getAs(value, col.getDataType().getClassType());
+						break;
 					default:
 						// use as-is
 						break;
@@ -590,6 +604,11 @@ public class GeopackageInstanceWriter extends AbstractInstanceWriter {
 		}
 		if (Instant.class.equals(binding) || Date.class.isAssignableFrom(binding)) {
 			return GeoPackageDataType.DATETIME;
+		}
+		if (BigInteger.class.equals(binding)) {
+			// XXX would better be represented by text, but is used as binding
+			// in XML schemas for any integer
+			return GeoPackageDataType.INTEGER;
 		}
 
 		// default to text

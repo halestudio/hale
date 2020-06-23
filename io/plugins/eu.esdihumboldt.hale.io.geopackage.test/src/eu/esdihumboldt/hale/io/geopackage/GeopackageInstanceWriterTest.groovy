@@ -166,6 +166,58 @@ class GeopackageInstanceWriterTest {
 	}
 
 	@Test
+	void testWriteBigNumbers() {
+		Schema schema = new SchemaBuilder().schema {
+			abc {
+				a(BigInteger)
+				b(BigDecimal)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			abc {
+				a(new BigInteger('123'))
+				b(new BigDecimal('1.23'))
+			}
+
+			abc {
+				a(new BigInteger('1' + Long.MAX_VALUE))
+				b(new BigDecimal('1098491071975459529.6201509049614540479'))
+			}
+		}
+
+		withNewGeopackage(schema, instances) { file ->
+			// load instances again and test
+			def loaded = GeopackageInstanceReaderTest.loadInstances(file)
+
+			// expect 2 instances
+			assertEquals(2, loaded.size())
+
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+					def typeName = inst.getDefinition().getName().getLocalPart()
+					switch (typeName) {
+						case 'abc':
+							assert inst.p.a.value() instanceof Long
+							assert inst.p.b.value() instanceof String
+							break
+						default:
+							throw new IllegalStateException("Unexpected type $typeName")
+					}
+				}
+			}
+
+			// two instances were loaded
+			assertEquals(2, num)
+		}
+	}
+
+	@Test
 	void testWriteFeatures() {
 		Schema schema = new SchemaBuilder().schema {
 			city {
