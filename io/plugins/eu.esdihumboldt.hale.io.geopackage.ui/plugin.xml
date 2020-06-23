@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.ui.io.config.SimpleTargetCRSConfigurationPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.geopackage.instance.writer">
+         </provider>
+      </configPage>
+   </extension>
+
+</plugin>
