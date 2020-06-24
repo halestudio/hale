@@ -24,7 +24,10 @@ Import-Package: com.google.common.base;version="1.0.0",
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.io,
  org.opengis.referencing.crs;version="12.2.0",
- org.slf4j;version="1.5.11"
+ org.slf4j;version="1.5.11",
+ org.sqlite;version="3.28.0",
+ org.sqlite.core;version="3.28.0",
+ org.sqlite.jdbc3;version="3.28.0"
 Export-Package: eu.esdihumboldt.hale.io.jdbc,
  eu.esdihumboldt.hale.io.jdbc.constraints,
  eu.esdihumboldt.hale.io.jdbc.constraints.factory,
