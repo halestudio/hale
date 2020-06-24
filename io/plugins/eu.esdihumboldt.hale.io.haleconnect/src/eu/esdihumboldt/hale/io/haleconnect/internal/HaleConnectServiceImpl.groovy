@@ -23,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.google.common.util.concurrent.AbstractFuture
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.haleconnect.api.projectstore.v1.ApiCallback;
@@ -429,9 +430,7 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			progress.begin("Uploading project archive", totalWork);
 			filesApi.addFilesAsync(owner.getType().getJsonValue(), owner.getId(), projectId, file,
 					createUploadFileCallback(future, progress, file, totalWork));
-		} catch (
-
-		com.haleconnect.api.projectstore.v1.ApiException e) {
+		} catch (com.haleconnect.api.projectstore.v1.ApiException e) {
 			throw new HaleConnectException(e.getMessage(), e);
 		}
 
@@ -468,7 +467,8 @@ public class HaleConnectServiceImpl implements HaleConnectService, BasePathManag
 			filesApi.addFilesAsync(owner.getType().getJsonValue(), owner.getId(), projectId, file,
 					apiCallback);
 
-			return future.get();
+			// TODO Why does this throw an IllegalAccessError w/o the unnecessary cast?
+			return ((AbstractFuture)future).get();
 		} catch (com.haleconnect.api.projectstore.v1.ApiException e1) {
 			throw new HaleConnectException(e1.getMessage(), e1, e1.getCode(),
 			e1.getResponseHeaders());
