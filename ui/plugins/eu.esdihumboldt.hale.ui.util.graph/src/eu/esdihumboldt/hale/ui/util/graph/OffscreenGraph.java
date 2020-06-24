@@ -76,7 +76,7 @@ public abstract class OffscreenGraph {
 
 		// Workaround to draw in background -->
 		graph = new Graph(composite, SWT.NONE);
-		GraphViewer viewer = new GraphViewer(graph);
+		GraphViewer viewer = new GraphViewer(graph, SWT.NONE);
 
 		configureViewer(viewer);
 
