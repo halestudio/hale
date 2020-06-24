@@ -48,8 +48,15 @@ public class GeometryTypeFactory implements ValueConstraintFactory<GeometryType>
 		Class<?> binding = resolver.loadClass(value.as(String.class), "org.locationtech.jts");
 
 		if (binding == null) {
-			throw new IllegalStateException(
-					"Could not resolve geometry type " + value.as(String.class));
+			String s = value.as(String.class);
+			binding = resolver.loadClass(
+					s.replace("com.vividsolutions.jts", "org.locationtech.jts"),
+					"org.locationtech.jts");
+
+			if (binding == null) {
+				throw new IllegalStateException(
+						"Could not resolve geometry type " + value.as(String.class));
+			}
 		}
 
 		return GeometryType.get((Class<? extends Geometry>) binding);
