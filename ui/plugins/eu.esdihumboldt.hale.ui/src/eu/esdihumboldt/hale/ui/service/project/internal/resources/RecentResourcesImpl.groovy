@@ -166,6 +166,7 @@ class RecentResourcesImpl implements RecentResources {
 	public List<Pair<URI, IContentType>> getRecent(Iterable<? extends IContentType> contentTypes,
 			boolean restrictToFiles) {
 		getRecent(contentTypes, new Predicate<URI>() {
+					@Override
 					boolean apply(URI uri) {
 						'file' == uri.scheme
 					}
