@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.ttreeexporter;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
@@ -64,7 +65,7 @@ public class TTreeExporter implements TransformationTreeHook {
 					}
 				};
 				try {
-					GraphViewer viewer = new GraphViewer(offscreenGraph.getGraph());
+					GraphViewer viewer = new GraphViewer(offscreenGraph.getGraph(), SWT.NONE);
 					// XXX if called during transformation, the active shell may
 					// be null and run will fail!
 					new ExportGraphAction(viewer).run();
