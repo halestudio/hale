@@ -93,7 +93,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
-      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.geometry"/>

@@ -224,7 +224,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
       <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
