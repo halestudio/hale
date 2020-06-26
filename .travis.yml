@@ -93,12 +93,6 @@ jobs:
         # genisoimage is required for creating the dmg image
         - sudo apt install -y genisoimage    
     - <<: *build-hs
-      env:
-        - PLATFORM=linux PRODUCT=HALE ARCH=x86
-    - <<: *build-hs
-      env:
-        - PLATFORM=windows PRODUCT=HALE ARCH=x86
-    - <<: *build-hs
       if: branch = master
       env:
         - PLATFORM=linux PRODUCT=Infocenter ARCH=x86_64
