@@ -19,7 +19,7 @@
 		<li>The location of the <b>source data to transform</b>, either an URL or a file name. The data has to match the source schema of the project.</li>
 		<li>Configuration on <b>how and where to write the transformed data</b>.</li>
 	</ol>
-	
+
 	<h2>General usage</h2>
 	<p>You can run <i>hale studio</i> on the command line either using the <i>hale studio</i>
 		executable (i.e. HALE.exe) or using Java directly. Depending on the
@@ -168,7 +168,7 @@
 		online resources to make it loadable offline. You can also exlude any
 		source data from the project, which will be ignored for command line
 		transformation anyway.</p>
-	<div>Here are some examples on how you can provide paths to a project file on Windows: 
+	<div>Here are some examples on how you can provide paths to a project file on Windows:
 		<ul>
 			<li><code>-project C:\Hale-Project\myProject.halez</code> (absolute path)</li>
 			<li><code>-project myProject.halez</code> (relative path)</li>
@@ -210,11 +210,7 @@
 		Please take a look at the <a
 			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.ioproviders/overview/InstanceReader.html">InstanceReader
 			reference</a> to see what kind of providers are available for you and what
-		kind of configuration options they offer. <i>Please note that this
-			reference documentation is generated from the I/O providers present
-			in your local <i>hale studio</i> installation (including eventual additional
-			plugins and custom implementations), so it is <b>only available in the
-			local <i>hale studio</i> help and not in the online version on the web</b>.</i>
+		kind of configuration options they offer.
 	</p>
 	<h4>Filtering source data</h4>
 	<p>By default <i>hale studio</i> uses all data passed in as sources for the
@@ -304,11 +300,7 @@
 		Please take a look at the <a
 			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user.ioproviders/overview/InstanceWriter.html">InstanceWriter
 			reference</a> to see what kind of providers are available for you and what
-		kind of configuration options they offer. <i>Please note that this
-			reference documentation is generated from the I/O providers present
-			in your local <i>hale studio</i> installation (including eventual additional
-			plugins and custom implementations), so it is <b>only available in the
-			local <i>hale studio</i> help and not in the online version on the web</b>.</i>
+		kind of configuration options they offer. 
 	</p>
 	<h4>Validation</h4>
 	<pre class="cli"><code>-validate &lt;ID-of-target-validator&gt; [&lt;setting&gt;...]</code></pre>
@@ -322,11 +314,7 @@
 			validators</a> reference to see what kind of validators are available
 		for you and what kind of configuration options they offer. The
 		validator will by default be configured with the content type of the
-		transformation result writer. <i>Please note that this reference
-			documentation is generated from the I/O providers present in your
-			local <i>hale studio</i> installation (including eventual additional plugins and
-			custom implementations), so it is <b>only available in the local
-				<i>hale studio</i> help and not in the online version on the web</b>.
+		transformation result writer.
 		</i>
 	</p>
 	<h4>Other options</h4>
@@ -374,15 +362,15 @@ assert aggregated['eu.esdihumboldt.hale.transform'].createdPerType.any { name, c
 		</dd>
 	</dl>
 	<h2>Examples</h2>
-	<p>Here is an example on how to use the command line interface. There is a 
-	hale project named <code>toInspire.halez</code> which contains a source schema 
-	and a mapping one of the INSPIRE application schemas. The source data is contained 
-	in the <code>geographicData.shp</code> file, which is encoded in <code>UTF-8</code>. The transformed 
+	<p>Here is an example on how to use the command line interface. There is a
+	hale project named <code>toInspire.halez</code> which contains a source schema
+	and a mapping one of the INSPIRE application schemas. The source data is contained
+	in the <code>geographicData.shp</code> file, which is encoded in <code>UTF-8</code>. The transformed
 	data should be stored in <code>inspireData.gml</code> and as GML with an INSPIRE SpatialDataSet as container.</p>
 	<div>
 		Using a previously defined preset <code>SpatialDataSet</code>
 		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -Scharset UTF-8 -target inspireData.gml -preset SpatialDataSet</code></pre>
-	</div> 
+	</div>
 	<div>
 		Specifying writer and settings explicitly
 		<pre class="cli"><code><b>&gt;</b> HALE -nosplash -application hale.transform -project toInspire.halez -source geographicData.shp -Scharset UTF-8 -target inspireData.gml -providerId eu.esdihumboldt.hale.io.inspiregml.writer -Sinspire.sds.namespace http://gdi-de.org/oid/de.beispiel.namespace -Sinspire.sds.localId 10</code></pre>
