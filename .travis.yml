@@ -111,5 +111,5 @@ jobs:
         - pip install awscli
       script:
         - cd build && ./upload-site.sh
-    - stage: deploy
-        - cd build && ./build.sh deployArtifacts
+#    - stage: deploy
+#        - cd build && ./build.sh deployArtifacts
