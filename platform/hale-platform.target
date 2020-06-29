@@ -48,8 +48,8 @@
 <unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201606061308"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/4bc39f361453543022f5aa8394b35d71d6f0f350/updatesites/platform"/>
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.0.0.i20200622"/>
+<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/b66aa36daacea26b889e80f0c87e877e39a4ceff/updatesites/platform"/>
+<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.0.0.i20200629"/>
 </location>
 </locations>
 </target>
