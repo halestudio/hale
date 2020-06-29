@@ -3,6 +3,10 @@ language: java
 jdk: openjdk8
 sudo: required
 dist: bionic
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle
 services:
   - docker
 addons:
