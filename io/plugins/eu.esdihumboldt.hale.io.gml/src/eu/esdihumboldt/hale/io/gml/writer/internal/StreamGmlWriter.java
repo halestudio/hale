@@ -50,15 +50,14 @@ import javax.xml.stream.XMLStreamWriter;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.gml3.GML;
 import org.geotools.referencing.CRS;
+import org.locationtech.jts.geom.Envelope;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.Point;
 import org.opengis.geometry.MismatchedDimensionException;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
-
-import org.locationtech.jts.geom.Envelope;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.Point;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -1497,15 +1496,29 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		return null;
 	}
 
-	private boolean isFeatureCollection(XmlElement el) {
+	/**
+	 * Method to determine if an element represents a feature collection in the
+	 * context of the current writer.
+	 * 
+	 * @param el Element to check
+	 * @return true if the element is a feature collection
+	 */
+	protected boolean isFeatureCollection(XmlElement el) {
 		// TODO improve condition?
 		// FIXME working like this?!
-		return el.getName().getLocalPart().contains("FeatureCollection") && //$NON-NLS-1$
-				!el.getType().getConstraint(AbstractFlag.class).isEnabled()
+		return (el.getName().getLocalPart().contains("FeatureCollection"))
+				&& !el.getType().getConstraint(AbstractFlag.class).isEnabled()
 				&& hasChild(el.getType(), "featureMember"); //$NON-NLS-1$
 	}
 
-	private boolean hasChild(TypeDefinition type, String localName) {
+	/**
+	 * Check if a type has a child with the given local name.
+	 * 
+	 * @param type Type to search
+	 * @param localName Local name to search for
+	 * @return true if such a child exists
+	 */
+	protected boolean hasChild(TypeDefinition type, String localName) {
 		for (ChildDefinition<?> child : DefinitionUtil.getAllProperties(type)) {
 			if (localName.equals(child.getName().getLocalPart())) {
 				return true;
