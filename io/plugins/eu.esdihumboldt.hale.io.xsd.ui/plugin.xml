@@ -60,6 +60,15 @@
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.schema.presets">
+      <schema
+            description="GML application schema of CEN/TS 17268 (TN-ITS)"
+            id="eu.tn-its.spec"
+            name="CEN/TS 17268 (TN-ITS)"
+            version="2018-01">
+         <uri
+               value="http://spec.tn-its.eu/schemas/TNITS.xsd">
+         </uri>
+      </schema>
       <category
             id="de"
             name="Germany">
