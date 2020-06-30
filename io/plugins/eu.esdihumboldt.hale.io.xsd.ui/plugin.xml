@@ -60,16 +60,6 @@
    </extension>
    <extension
          point="eu.esdihumboldt.hale.ui.schema.presets">
-      <schema
-            category="de"
-            description="AAA (ATKIS, ALKIS, AFIS) Modell der Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der Bundesrepublik Deutschland (AdV)"
-            id="de.adv-online.aaa"
-            name="AAA XML Schema"
-            version="6.0">
-         <uri
-               value="http://repository.gdi-de.org/schemas/adv/nas/6.0/aaa.xsd">
-         </uri>
-      </schema>
       <category
             id="de"
             name="Germany">
