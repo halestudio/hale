@@ -904,7 +904,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * {@link #gmlNs} and {@link #targetIndex}, resets {@link #geometryWriter}
 	 * and {@link #additionalSchemas}).
 	 */
-	private void init() {
+	protected void init() {
 		// reset target index
 		targetIndex = null;
 		// reset geometry writer
