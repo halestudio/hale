@@ -69,6 +69,15 @@
                value="http://spec.tn-its.eu/schemas/TNITS.xsd">
          </uri>
       </schema>
+      <schema
+            description="Geographic MetaData (GMD) extensible markup language"
+            id="org.isotc211.schemas.gmd"
+            name="ISO/TS 19139 Geographic MetaData (GMD)"
+            version="1.0">
+         <uri
+               value="https://schemas.isotc211.org/schemas/19139/-/gmd/1.0/gmd.xsd">
+         </uri>
+      </schema>
       <category
             id="de"
             name="Germany">
