@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.regex.Pattern;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +34,9 @@ public class DefaultGroovyService implements GroovyService {
 	 * Extension point ID.
 	 */
 	private static final String ID = "eu.esdihumboldt.util.groovy.sandbox";
+
+	private static final Pattern JTS_OLD_BASE_PACKAGE = Pattern
+			.compile("com\\.vividsolutions\\.jts");
 
 	private final CopyOnWriteArraySet<GroovyServiceListener> listeners = new CopyOnWriteArraySet<GroovyServiceListener>();
 
@@ -162,7 +166,7 @@ public class DefaultGroovyService implements GroovyService {
 	private String preprocessScript(String script) {
 		// Replace all occurrences of the old JTS base package
 		// "com.vividsolutions.jts" with its new name.
-		return script.replaceAll("com\\.vividsolutions\\.jts", "org.locationtech.jts");
+		return JTS_OLD_BASE_PACKAGE.matcher(script).replaceAll("org.locationtech.jts");
 	}
 
 	@Override
