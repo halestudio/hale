@@ -1,10 +1,10 @@
 package eu.esdihumboldt.util.groovy.sandbox;
 
+import javax.annotation.Nullable;
+
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
-
-import javax.annotation.Nullable;
 
 /**
  * Groovy sandbox service interface.
