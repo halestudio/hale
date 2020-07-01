@@ -2,7 +2,52 @@
 All notable changes to this project will be documented in this file.
 See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
 
-## [Unreleased]
+## [4.0.0]
+
+### Added
+
+- Support for reading and writing GeoPackage files
+- Improved support for writing XPlanGML files ([#814](https://github.com/halestudio/hale/issues/814))
+- XPlanGML schema presets ([#799](https://github.com/halestudio/hale/issues/799))
+- Additional AAA NAS schema presets ([#615](https://github.com/halestudio/hale/issues/615))
+- TN-ITS schema preset
+- ISO 19139 GMD schema preset
+- Support for comparing Integer and Float values in a Join ([#737](https://github.com/halestudio/hale/issues/737))
+- Support for MongoDB URI scheme when automatically updating paths ([#762](https://github.com/halestudio/hale/issues/762))
+- Continuous integration with Travis CI
+- Support for loading hale connect projects in headless environment
+- Ability to filter spatial index query by type in Groovy scripts
+- New options in the deegree configuration exporter to allow inclusion of abstract and feature collection types in mappings
+- Groovy wrapper function for parsing JSON data
+- Allow use of `java.util.TreeMap` in Groovy scripts
+
+### Changed
+
+- Package OpenJDK binaries instead of Oracle ones ([#758](https://github.com/halestudio/hale/issues/758))
+- Upgrade GeoTools dependency to 21.0 ([#821](https://github.com/halestudio/hale/issues/821))
+- Upgrade RCP to Eclipse 4.15 (2020-03) ([#822](https://github.com/halestudio/hale/issues/822))
+- Limit supported TLS version in hale connect integration to v1.2 and cipher suites to those with perfect forward security
+
+### Removed
+
+- Support for 32-bit builds
+- Server product
+
+### Fixed
+
+- Fix possible deadlock when copying XML schemas with complete dependencies
+- Prevent possible `NullPointerException` in snippet service in headless environment
+- Don't fail spatial index query if an instance can't be resolved
+- Don't fail deegree export when the Primitive option `All link where code lists are assigned in hale` is selected but there are no code lists in the alignment
+- Fix for GML reader to correctly recognize certain elements ([#764](https://github.com/halestudio/hale/issues/764))
+- Fix display problems in hale connect integration ([#752](https://github.com/halestudio/hale/issues/752))
+- Fix problem with stale cache in hale connect integration
+- Fix problem in headless environment that lead to duplication of instances in the transformation output ([#774](https://github.com/halestudio/hale/issues/774))
+- Allow type filtering of `LimboInstanceSink` instance collections
+- Fix parsing of XML value lists ([#808](https://github.com/halestudio/hale/issues/808))
+- Fix rendering of target geometries with default styling ([#732](https://github.com/halestudio/hale/issues/732))
+- Fix parsing of GML dictionaries ([#824](https://github.com/halestudio/hale/issues/824))
+- Fix code list import where all XML files were being incorrectly detected as SKOS code lists
 
 ## [3.5.0]
 
@@ -315,7 +360,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/3.5.0...HEAD
+[4.0.0]: https://github.com/halestudio/hale/compare/3.5.0...4.0.0
 [3.5.0]: https://github.com/halestudio/hale/compare/3.4.1...3.5.0
 [3.4.1]: https://github.com/halestudio/hale/compare/3.4.0...3.4.1
 [3.4.0]: https://github.com/halestudio/hale/compare/3.3.2...3.4.0
