@@ -29,7 +29,7 @@ dependencies {
 	localGroovy()
 	
 	compile 'com.beust:jcommander:1.32'
-    compile 'de.undercouch:gradle-download-task:2.1.0'
+    compile 'de.undercouch:gradle-download-task:3.4.3'
     compile 'org.apache.maven:maven-embedder:3.1.1'
     compile 'org.apache.maven.wagon:wagon-http-lightweight:2.4'
     compile 'org.eclipse.tycho:org.eclipse.osgi:3.10.101.v20150820-1432'

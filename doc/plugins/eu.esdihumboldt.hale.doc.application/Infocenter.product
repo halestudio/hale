@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="3.5.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -30,6 +30,7 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
+      <plugin id="com.conversantmedia.disruptor"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
@@ -38,13 +39,12 @@
       <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
-      <plugin id="com.vividsolutions.jts"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
+      <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.geom"/>
-      <plugin id="de.fhg.igd.hale.fme.doc"/>
       <plugin id="de.fhg.igd.osgi.util"/>
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
@@ -93,7 +93,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xls"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
-      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.geometry"/>
@@ -105,10 +104,46 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="it.geosolutions.imageio-ext.geocore"/>
+      <plugin id="it.geosolutions.imageio-ext.streams"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
+      <plugin id="it.geosolutions.jaiext.affine.jt-affine"/>
+      <plugin id="it.geosolutions.jaiext.algebra.jt-algebra"/>
+      <plugin id="it.geosolutions.jaiext.bandcombine.jt-bandcombine"/>
+      <plugin id="it.geosolutions.jaiext.bandmerge.jt-bandmerge"/>
+      <plugin id="it.geosolutions.jaiext.bandselect.jt-bandselect"/>
+      <plugin id="it.geosolutions.jaiext.binarize.jt-binarize"/>
+      <plugin id="it.geosolutions.jaiext.border.jt-border"/>
+      <plugin id="it.geosolutions.jaiext.buffer.jt-buffer"/>
+      <plugin id="it.geosolutions.jaiext.classifier.jt-classifier"/>
+      <plugin id="it.geosolutions.jaiext.colorconvert.jt-colorconvert"/>
+      <plugin id="it.geosolutions.jaiext.colorindexer.jt-colorindexer"/>
+      <plugin id="it.geosolutions.jaiext.crop.jt-crop"/>
+      <plugin id="it.geosolutions.jaiext.errordiffusion.jt-errordiffusion"/>
+      <plugin id="it.geosolutions.jaiext.format.jt-format"/>
+      <plugin id="it.geosolutions.jaiext.imagefunction.jt-imagefunction"/>
+      <plugin id="it.geosolutions.jaiext.iterators.jt-iterators"/>
+      <plugin id="it.geosolutions.jaiext.lookup.jt-lookup"/>
+      <plugin id="it.geosolutions.jaiext.mosaic.jt-mosaic"/>
+      <plugin id="it.geosolutions.jaiext.nullop.jt-nullop"/>
+      <plugin id="it.geosolutions.jaiext.orderdither.jt-orderdither"/>
+      <plugin id="it.geosolutions.jaiext.piecewise.jt-piecewise"/>
+      <plugin id="it.geosolutions.jaiext.rescale.jt-rescale"/>
+      <plugin id="it.geosolutions.jaiext.rlookup.jt-rlookup"/>
+      <plugin id="it.geosolutions.jaiext.scale.jt-scale"/>
+      <plugin id="it.geosolutions.jaiext.shadedrelief.jt-shadedrelief"/>
+      <plugin id="it.geosolutions.jaiext.stats.jt-stats"/>
+      <plugin id="it.geosolutions.jaiext.translate.jt-translate"/>
+      <plugin id="it.geosolutions.jaiext.utilities.jt-utilities"/>
+      <plugin id="it.geosolutions.jaiext.vectorbin.jt-vectorbin"/>
+      <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
+      <plugin id="it.geosolutions.jaiext.zonal.jt-zonal"/>
+      <plugin id="jai.jai-imageio"/>
+      <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.measure.unit-api"/>
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
@@ -121,17 +156,20 @@
       <plugin id="jline"/>
       <plugin id="joda-time"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="net.java.dev.jsr-275"/>
       <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.geographiclib.GeographicLib-Java"/>
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
@@ -167,6 +205,7 @@
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.emf.common"/>
       <plugin id="org.eclipse.emf.ecore"/>
+      <plugin id="org.eclipse.emf.ecore.xmi"/>
       <plugin id="org.eclipse.equinox.app"/>
       <plugin id="org.eclipse.equinox.common"/>
       <plugin id="org.eclipse.equinox.http.jetty"/>
@@ -191,14 +230,17 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.xsd"/>
+      <plugin id="org.ejml.core"/>
+      <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
-      <plugin id="org.jdom"/>
+      <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>
@@ -212,10 +254,15 @@
       <plugin id="org.springframework.context"/>
       <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.transaction"/>
+      <plugin id="org.xerial.sqlite-jdbc"/>
       <plugin id="oro"/>
       <plugin id="picocontainer"/>
+      <plugin id="si.uom.si-quantity"/>
+      <plugin id="si.uom.si-units-java8"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
+      <plugin id="tec.uom.lib.uom-lib-common"/>
+      <plugin id="tec.uom.se"/>
       <plugin id="xerces.xercesImpl"/>
       <plugin id="xpp3.xpp3_min"/>
    </plugins>

@@ -77,6 +77,7 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 		checkBindingAndSqlType(schema, [
 			INT: Integer.class, //
 			SERIAL: Integer.class, //
+			BIGSERIAL: Long.class, //
 			INT4: Integer.class, //
 			_INT4: Integer.class, // XXX currently array as multi-occurrence property
 			BOOL: Boolean.class, //
@@ -84,6 +85,7 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 			NUMERIC: BigDecimal.class, //
 			VARCHAR: String.class, //
 			_VARCHAR: String.class, // XXX currently array as multi-occurrence property
+			TEXT: String.class, //
 			FLOAT8: Double.class, //
 		]);
 

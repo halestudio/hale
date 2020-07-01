@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML schema geometry support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
- com.vividsolutions.jts.geom,
+ org.locationtech.jts.geom,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.geometric.extent,
  eu.esdihumboldt.hale.common.align.transformation.function,
@@ -27,7 +27,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.util.geometry.interpolation.model,
  eu.esdihumboldt.util.geometry.interpolation.model.impl,
  eu.esdihumboldt.util.reflection,
- javax.annotation,
+ javax.annotation;version="[1.2.0,1.2.0]",
  org.geotools.gml2;version="12.2.0.combined",
  org.opengis.referencing.crs;version="8.0.0",
  org.slf4j;version="1.5.11",

@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.util.geometry.interpolation.model;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Arc represented by three points.

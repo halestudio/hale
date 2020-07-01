@@ -18,15 +18,15 @@ package eu.esdihumboldt.hale.common.instance.orient.internal;
 
 import java.io.IOException;
 
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.CoordinateSequence;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.LinearRing;
-import com.vividsolutions.jts.io.ByteOrderValues;
-import com.vividsolutions.jts.io.OutStream;
-import com.vividsolutions.jts.io.WKBConstants;
-import com.vividsolutions.jts.io.WKBWriter;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.CoordinateSequence;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.LinearRing;
+import org.locationtech.jts.io.ByteOrderValues;
+import org.locationtech.jts.io.OutStream;
+import org.locationtech.jts.io.WKBConstants;
+import org.locationtech.jts.io.WKBWriter;
 
 /**
  * WKB writer that differentiates between {@link LinearRing} and
@@ -58,8 +58,8 @@ public class ExtendedWKBWriter extends WKBWriter {
 	}
 
 	/**
-	 * @see com.vividsolutions.jts.io.WKBWriter#write(com.vividsolutions.jts.geom.Geometry,
-	 *      com.vividsolutions.jts.io.OutStream)
+	 * @see org.locationtech.jts.io.WKBWriter#write(org.locationtech.jts.geom.Geometry,
+	 *      org.locationtech.jts.io.OutStream)
 	 */
 	@Override
 	public void write(Geometry geom, OutStream os) throws IOException {

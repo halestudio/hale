@@ -27,4 +27,14 @@ import groovy.transform.*
 class HaleConnectOrganisationInfo {
 	String id
 	String name
+
+	/**
+	 * Create a dummy organisation info object
+	 * 
+	 * @param orgId ID of the organisation
+	 * @return dummy info object
+	 */
+	static HaleConnectOrganisationInfo dummyForId(String orgId) {
+		new HaleConnectOrganisationInfo(id: orgId, name: "<Organisation ${orgId}>");
+	}
 }

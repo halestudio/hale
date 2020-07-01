@@ -42,15 +42,17 @@ public class SnippetServiceImpl implements SnippetService {
 	public SnippetServiceImpl(GroovyService gs) {
 		super();
 
-		gs.addListener(new GroovyServiceListener() {
+		if (gs != null) {
+			gs.addListener(new GroovyServiceListener() {
 
-			@Override
-			public void restrictionChanged(boolean restrictionActive) {
-				synchronized (snippets) {
-					snippets.values().forEach(snippet -> snippet.invalidate());
+				@Override
+				public void restrictionChanged(boolean restrictionActive) {
+					synchronized (snippets) {
+						snippets.values().forEach(snippet -> snippet.invalidate());
+					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	@Override

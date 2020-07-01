@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE MS-SQL Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.mssql;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.mssql.internal.Activator
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="3.1.0",
@@ -13,8 +13,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.io;version="17.0.0",
  com.microsoft.sqlserver.jdbc;version="4.2.0",
- com.vividsolutions.jts.geom;version="1.13.0",
- com.vividsolutions.jts.io;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
+ org.locationtech.jts.io;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,

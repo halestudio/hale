@@ -23,9 +23,9 @@ import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
 
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.LineString
-import com.vividsolutions.jts.geom.MultiLineString
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.LineString
+import org.locationtech.jts.geom.MultiLineString
 
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.report.IOReport

@@ -33,6 +33,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.xplan.writer">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.gml.ui.InspireDatasetFeedConfigurationPage"
@@ -59,6 +62,9 @@
          <provider
                ref="eu.esdihumboldt.hale.io.inspiregml.writer">
          </provider>
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.xplan.writer">
+         </provider>
       </configPage>
       <configPage
             class="eu.esdihumboldt.hale.io.gml.ui.GmlReaderSettingsPage"
@@ -84,6 +90,13 @@
          </provider>
          <provider
                ref="eu.esdihumboldt.hale.io.wfs.fc.write-2.0">
+         </provider>
+      </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.gml.ui.XPlanGmlWriterSettingsPage"
+            order="12">
+         <provider
+               ref="eu.esdihumboldt.hale.io.gml.xplan.writer">
          </provider>
       </configPage>
    </extension>

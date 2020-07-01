@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.common.style.io.impl;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.geotools.styling.SLDTransformer;
+import org.geotools.xml.styling.SLDTransformer;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;

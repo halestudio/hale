@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="3.5.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -22,6 +22,7 @@
    <windowImages/>
 
    <launcher name="hale_tests">
+      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -39,6 +40,7 @@
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
+      <plugin id="com.conversantmedia.disruptor"/>
       <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
       <plugin id="com.fasterxml.jackson.core.jackson-core"/>
       <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
@@ -56,14 +58,22 @@
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.haleconnect.api.haleconnect-bucket-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-project-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-projectstore-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-user-api"/>
       <plugin id="com.healthmarketscience.jackcess"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.j256.ormlite"/>
       <plugin id="com.orientechnologies.common"/>
       <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
       <plugin id="com.orientechnologies.orientdb-core"/>
       <plugin id="com.orientechnologies.orientdb-enterprise"/>
       <plugin id="com.spotify.docker-client"/>
+      <plugin id="com.squareup.okhttp"/>
+      <plugin id="com.squareup.okhttp.logging-interceptor"/>
+      <plugin id="com.squareup.okio"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
       <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
@@ -73,7 +83,6 @@
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.typesafe.config"/>
-      <plugin id="com.vividsolutions.jts"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
@@ -167,16 +176,21 @@
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos"/>
       <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.deegree"/>
       <plugin id="eu.esdihumboldt.hale.io.deegree.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.groovy"/>
       <plugin id="eu.esdihumboldt.hale.io.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.haleconnect"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
       <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
       <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
@@ -210,7 +224,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
       <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
-      <plugin id="eu.esdihumboldt.hale.server.logback.config" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
@@ -251,13 +264,30 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="io.swagger.annotations"/>
+      <plugin id="it.geosolutions.imageio-ext.geocore"/>
+      <plugin id="it.geosolutions.imageio-ext.streams"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
       <plugin id="it.geosolutions.imageio-ext.utilities"/>
+      <plugin id="it.geosolutions.jaiext.algebra.jt-algebra"/>
+      <plugin id="it.geosolutions.jaiext.classifier.jt-classifier"/>
+      <plugin id="it.geosolutions.jaiext.colorconvert.jt-colorconvert"/>
+      <plugin id="it.geosolutions.jaiext.colorindexer.jt-colorindexer"/>
+      <plugin id="it.geosolutions.jaiext.iterators.jt-iterators"/>
+      <plugin id="it.geosolutions.jaiext.lookup.jt-lookup"/>
+      <plugin id="it.geosolutions.jaiext.piecewise.jt-piecewise"/>
+      <plugin id="it.geosolutions.jaiext.rlookup.jt-rlookup"/>
+      <plugin id="it.geosolutions.jaiext.shadedrelief.jt-shadedrelief"/>
+      <plugin id="it.geosolutions.jaiext.stats.jt-stats"/>
+      <plugin id="it.geosolutions.jaiext.utilities.jt-utilities"/>
+      <plugin id="it.geosolutions.jaiext.vectorbin.jt-vectorbin"/>
+      <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
       <plugin id="javassist"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.inject"/>
       <plugin id="javax.mail"/>
+      <plugin id="javax.measure.unit-api"/>
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
@@ -274,8 +304,15 @@
       <plugin id="jogl"/>
       <plugin id="jul.to.slf4j"/>
       <plugin id="log4j.over.slf4j"/>
-      <plugin id="net.java.dev.jsr-275"/>
+      <plugin id="mil.nga.geopackage"/>
+      <plugin id="mil.nga.oapi.features.oapi-features-json"/>
+      <plugin id="mil.nga.sf"/>
+      <plugin id="mil.nga.sf.geojson"/>
+      <plugin id="mil.nga.sf.proj"/>
+      <plugin id="mil.nga.sf.wkb"/>
+      <plugin id="mil.nga.tiff"/>
       <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.geographiclib.GeographicLib-Java"/>
       <plugin id="net.sf.opencsv"/>
       <plugin id="net.sf.ucanaccess"/>
       <plugin id="net.sourceforge.schemacrawler"/>
@@ -290,12 +327,15 @@
       <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.commons.math"/>
       <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.felix.gogo.command"/>
@@ -345,6 +385,7 @@
       <plugin id="org.eclipse.e4.ui.css.swt"/>
       <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
       <plugin id="org.eclipse.e4.ui.di"/>
+      <plugin id="org.eclipse.e4.ui.dialogs"/>
       <plugin id="org.eclipse.e4.ui.model.workbench"/>
       <plugin id="org.eclipse.e4.ui.services"/>
       <plugin id="org.eclipse.e4.ui.widgets"/>
@@ -369,7 +410,6 @@
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
-      <plugin id="org.eclipse.equinox.util"/>
       <plugin id="org.eclipse.equinox.weaving.caching"/>
       <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
       <plugin id="org.eclipse.gemini.blueprint.core"/>
@@ -397,6 +437,8 @@
       <plugin id="org.eclipse.zest.dot.export"/>
       <plugin id="org.eclipse.zest.jface"/>
       <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.ejml.core"/>
+      <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
       <plugin id="org.glassfish.hk2.api"/>
       <plugin id="org.glassfish.hk2.locator"/>
@@ -413,10 +455,12 @@
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
-      <plugin id="org.jdom"/>
+      <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
+      <plugin id="org.locationtech.proj4j"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>
@@ -448,8 +492,14 @@
       <plugin id="ru.yandex.qatools.allure.junit-adaptor"/>
       <plugin id="ru.yandex.qatools.allure.model"/>
       <plugin id="ru.yandex.qatools.properties.loader"/>
+      <plugin id="si.uom.si-quantity"/>
+      <plugin id="si.uom.si-units-java8"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
+      <plugin id="systems.uom.systems-common-java8"/>
+      <plugin id="systems.uom.systems-quantity"/>
+      <plugin id="tec.uom.lib.uom-lib-common"/>
+      <plugin id="tec.uom.se"/>
       <plugin id="xerces.xercesImpl"/>
       <plugin id="xpp3.xpp3_min"/>
    </plugins>

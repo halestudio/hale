@@ -45,6 +45,11 @@ import eu.esdihumboldt.hale.io.haleconnect.Owner;
 public class HaleConnectProjectReader extends ArchiveProjectReader {
 
 	/**
+	 * The provider ID
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.project.haleconnect.zip.reader";
+
+	/**
 	 * The project property name for the hale connect project ID
 	 */
 	public static final String HALECONNECT_URN_PROPERTY = "haleconnect.urn";

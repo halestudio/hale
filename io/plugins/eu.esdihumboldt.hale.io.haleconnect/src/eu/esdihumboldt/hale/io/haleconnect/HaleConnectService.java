@@ -108,6 +108,11 @@ public interface HaleConnectService {
 	HaleConnectSession getSession();
 
 	/**
+	 * @return the currently active session token or null
+	 */
+	String getSessionToken();
+
+	/**
 	 * Deletes all session information
 	 */
 	void clearSession();

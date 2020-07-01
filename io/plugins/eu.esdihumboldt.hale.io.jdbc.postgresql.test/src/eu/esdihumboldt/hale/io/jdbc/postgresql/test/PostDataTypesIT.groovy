@@ -25,9 +25,9 @@ import org.junit.Test
 import ru.yandex.qatools.allure.annotations.Features
 import ru.yandex.qatools.allure.annotations.Stories
 
-import com.vividsolutions.jts.geom.Coordinate
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
 
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
@@ -178,10 +178,10 @@ public class PostDataTypesIT extends AbstractDBTest {
 		Map<String, Class<?>> m = new HashMap<String, Class<?>>();
 		m.put("INT", Integer.class);
 		m.put("SERIAL", Integer.class);
+		m.put("BIGSERIAL", Long.class);
 		m.put("MONEY", BigDecimal.class);
 		m.put("FLOAT", Float.class);
 		m.put("INT4", Integer.class);
-		m.put("INT8", Long.class);
 		m.put("INT8", Long.class);
 		m.put("FLOAT8", Double.class);
 		m.put("BYTEA", byte[].class);

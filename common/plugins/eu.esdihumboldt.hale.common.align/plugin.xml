@@ -184,6 +184,7 @@
             cellExplanation="eu.esdihumboldt.hale.common.align.model.functions.explanations.ClassificationMappingExplanation"
             description="Map classifications"
             identifier="eu.esdihumboldt.hale.align.classification"
+            help="help/classification/help.xhtml"
             name="Classification">
          <sourceProperties>
             <property
@@ -283,6 +284,7 @@
             cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.merge.MergeMigrator"
             description="Merges multiple instances of the source type into one instance of the target type, based on one or more matching properties."
             icon="icons/merge.gif"
+            help="help/merge/help.xhtml"
             identifier="eu.esdihumboldt.hale.align.merge"
             name="Merge">
          <sourceTypes>
@@ -416,6 +418,7 @@
             description="Assigns a value to a target property if a source property is present"
             icon="icons/augmentation.gif"
             identifier="eu.esdihumboldt.hale.align.assign.bound"
+            help="help/assignBound/help.xhtml"
             name="Assign (Bound)">
          <sourceProperties>
             <property

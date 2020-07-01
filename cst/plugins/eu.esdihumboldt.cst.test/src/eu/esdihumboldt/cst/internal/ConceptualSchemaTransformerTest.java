@@ -333,6 +333,17 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 		testTransform(TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_2));
 	}
 
+	/**
+	 * Test based on a join w/ a comparison between an integer and a float
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testPropertyJoinIntFloat() throws Exception {
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_INT_FLOAT));
+	}
+
 	@Override
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();

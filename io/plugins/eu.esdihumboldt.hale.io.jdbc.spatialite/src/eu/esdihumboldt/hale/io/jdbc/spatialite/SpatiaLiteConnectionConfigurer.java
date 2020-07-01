@@ -27,7 +27,7 @@ public class SpatiaLiteConnectionConfigurer implements ConnectionConfigurer<SQLi
 	 */
 	@Override
 	public void configureConnection(SQLiteConnection connection) {
-		DB sqliteDB = connection.db();
+		DB sqliteDB = connection.getDatabase();
 		Statement stmt = null;
 		try {
 			sqliteDB.enable_load_extension(true);

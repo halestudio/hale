@@ -27,6 +27,15 @@
         <enabled>false</enabled>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+      <layout>default</layout>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
   
   <!-- repositories>
@@ -48,7 +57,7 @@
   </distributionManagement -->
 
   <properties>
-    <tycho-version>0.25.0</tycho-version>
+    <tycho-version>1.7.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <scala.version>2.10.4</scala.version>
   </properties>

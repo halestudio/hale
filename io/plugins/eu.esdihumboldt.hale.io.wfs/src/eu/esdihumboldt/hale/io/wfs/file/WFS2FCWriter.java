@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;

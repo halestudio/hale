@@ -15,11 +15,13 @@
 
 package eu.esdihumboldt.hale.io.deegree.mapping.model;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import org.deegree.feature.persistence.sql.FeatureTypeMapping;
 import org.deegree.feature.persistence.sql.MappedAppSchema;
+import org.deegree.feature.types.FeatureType;
 
 /**
  * Copy class for {@link MappedAppSchema}.
@@ -27,6 +29,9 @@ import org.deegree.feature.persistence.sql.MappedAppSchema;
  * @author Simon Templer
  */
 public class MappedAppSchemaCopy extends MappedAppSchema {
+
+	private boolean includeFeatureCollections = false;
+	private boolean includeAbstractTypes = false;
 
 	/**
 	 * Creates a copy of a {@link MappedAppSchema}.
@@ -57,6 +62,32 @@ public class MappedAppSchemaCopy extends MappedAppSchema {
 						.toArray(i -> new FeatureTypeMapping[i]),
 				ms.getBBoxMapping(), ms.getBlobMapping(), ms.getGeometryParams(), true,
 				ms.getRelationalModel(), ms.getGmlObjectTypes(), ms.getGeometryToSuperType());
+	}
+
+	/**
+	 * Creates a copy of a {@link MappedAppSchema} where all feature type
+	 * mappings can be adapted.
+	 * 
+	 * @param ms the original mapped schema
+	 * @param adaptMappings the function to adapt the mappings
+	 * @param includeFeatureCollections whether to include feature collections
+	 *            in the mapping
+	 * @param includeAbstracts whether to include abstract types in the mapping
+	 */
+	public MappedAppSchemaCopy(MappedAppSchema ms,
+			Function<Stream<? extends FeatureTypeMapping>, Stream<? extends FeatureTypeMapping>> adaptMappings,
+			boolean includeFeatureCollections, boolean includeAbstracts) {
+		this(ms, adaptMappings);
+
+		this.includeFeatureCollections = includeFeatureCollections;
+		this.includeAbstractTypes = includeAbstracts;
+	}
+
+	@Override
+	public List<FeatureType> getFeatureTypes(String namespace, boolean includeCollections,
+			boolean includeAbstracts) {
+		return super.getFeatureTypes(namespace, this.includeFeatureCollections,
+				this.includeAbstractTypes);
 	}
 
 }

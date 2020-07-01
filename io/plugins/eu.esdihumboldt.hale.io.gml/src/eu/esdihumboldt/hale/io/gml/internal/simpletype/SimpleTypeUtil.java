@@ -144,7 +144,7 @@ public class SimpleTypeUtil {
 													// binding?
 			// we are dealing with a simple type list
 			// items separated by whitespace
-			String[] elements = value.split("\\s+");
+			String[] elements = value.trim().split("\\s+");
 			ElementType elementType = type.getConstraint(ElementType.class);
 
 			Class<? extends XmlAnySimpleType> elementSimpleType = null;

@@ -22,12 +22,12 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.script.ScriptException;
 
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.operation.buffer.BufferOp;
+import org.locationtech.jts.operation.buffer.BufferParameters;
 import org.springframework.core.convert.ConversionException;
 
 import com.google.common.collect.ListMultimap;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.operation.buffer.BufferBuilder;
-import com.vividsolutions.jts.operation.buffer.BufferParameters;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -153,8 +153,8 @@ public class NetworkExpansion extends
 			Geometry new_geometry = null;
 			BufferParameters bufferParameters = new BufferParameters();
 			bufferParameters.setEndCapStyle(CAP_STYLE);
-			BufferBuilder bb = new BufferBuilder(new BufferParameters());
-			new_geometry = bb.buffer(old_geometry.getGeometry(), bufferWidth);
+			new_geometry = BufferOp.bufferOp(old_geometry.getGeometry(), bufferWidth,
+					bufferParameters);
 
 			result = new DefaultGeometryProperty<Geometry>(old_geometry.getCRSDefinition(),
 					new_geometry);

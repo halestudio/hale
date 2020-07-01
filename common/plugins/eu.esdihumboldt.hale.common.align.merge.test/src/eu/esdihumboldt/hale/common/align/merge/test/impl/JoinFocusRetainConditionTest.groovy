@@ -74,7 +74,7 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 				// expect filter to have been propagated to A1
 				assertNotNull(filter)
 				//assertEquals('a1 <> \'NIL\'', filter.filterTerm)
-				assertEquals('NOT ("a1" = \'NIL\')', filter.filterTerm)
+				assertEquals('NOT (a1 = \'NIL\')', filter.filterTerm)
 			}
 			else {
 				// no filter should be present
@@ -123,7 +123,7 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 			if (e.definition.definition.displayName == 'A3') {
 				// expect filter to have been propagated to A3
 				assertNotNull(filter)
-				assertEquals('"a3" > 10', filter.filterTerm)
+				assertEquals('a3 > 10', filter.filterTerm)
 			}
 			else {
 				// no filter should be present
@@ -173,7 +173,7 @@ class JoinFocusRetainConditionTest extends AbstractMergeCellMigratorTest {
 			if (e.definition.definition.displayName == 'A7') {
 				// expect filter to have been propagated to A7
 				assertNotNull(filter)
-				assertEquals('NOT ("a7" = 10)', filter.filterTerm)
+				assertEquals('NOT (a7 = 10)', filter.filterTerm)
 			}
 			else {
 				// no filter should be present

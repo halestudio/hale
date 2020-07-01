@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core.ui"
       label="UI Support for Core I/O Providers"
-      version="3.5.0.qualifier"
+      version="4.0.0.qualifier"
       provider-name="data harmonisation panel">
 
    <license>
@@ -88,6 +88,13 @@
 
    <plugin
          id="eu.esdihumboldt.hale.io.groovy.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.geopackage.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"

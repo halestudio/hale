@@ -18,6 +18,10 @@
 		See the <a href="../../reference/schema_elements.html">Schema
 			elements reference</a> on how each context type is displayed in the <a
 			href="../../views/schema_explorer.html">Schema Explorer</a>.
+
+		See the <a
+			href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/reference/cql_filter.html">Common Query language (CQL) reference</a>
+			for a full list of expressions and filters that can be used to define contexts.
 	</p>
 	<h2>Source schema contexts</h2>
 	<p>Types of contexts that can be defined on the source schema.</p>
@@ -27,12 +31,12 @@
 		from the context menu.
 	</p>
 	<div>
-		<img src="images/context_type_condition.png" class="fit">
+		<img src="images/context_type_condition_update.png" class="fit">
 	</div>
 	<p>Then you have to define the condition for the context. It is
 		applied to instances of the selected type.</p>
 	<div>
-		<img src="images/type_filter.png" class="fit">
+		<img src="images/type_filter_update.png" class="fit">
 	</div>
 
 	<h3>Adding a condition context to a property</h3>
@@ -48,37 +52,39 @@
 		.
 	</p>
 	<div>
-		<img src="images/property_filter.png" class="fit">
+		<img src="images/property_filter_update.png" class="fit">
 	</div>
 
 	<h3>Conditions from occurring values</h3>
 	<p>
 		You can easily create conditions on types or properties based on the values
-		found in the loaded source data.<br>When doing data analysis based
+		found in the loaded source data.<br> To view the values in the source data, navigate to the schema
+		element which contains values in the <i>Schema explorer</i> and select the <i>Occurring values</i> tab
+		in the <i>Properties</i> view. Click the icon with arrows to load the unique values occurring in the data. When doing data analysis based
 		on the <i>Occurring values</i> in the <i>Properties</i> view, you can
 		create conditions on the corresponding schema elements with just
 		one click.
 	</p>
 	<div>
-		<img src="images/occurring_values_condition.png" class="fit">
+		<img src="images/occurring_values_condition_update.png" class="fit">
 	</div>
 
 	<h3>Adding an index context to a property</h3>
 	<p>Select the property you want to add an index context to, right click and choose <i>Add index context</i>
 		from the context menu. A new index context will be created, with the first index not yet present.</p>
 	<div>
-		<img src="images/context_index.png" class="fit">
+		<img src="images/context_index_update.png" class="fit">
 	</div>
-		
+
 	<h2>Target schema contexts</h2>
 	<p>Types of contexts that can be defined on the target schema.</p>
 	<h3>Adding an instance context</h3>
 	<p>Select the property of which you need an additional instance for your mapping, right click and choose <i>Add instance context</i>
 		from the context menu to create a new instance of the property.</p>
 	<div>
-		<img src="images/context_instance.png" class="fit">
+		<img src="images/context_instance_update.png" class="fit">
 	</div>
-	
+
 	<br>
 	<!-- related concepts: schema -->
 	<div>
@@ -91,7 +97,7 @@
 			<a href="PLUGINS_ROOT/eu.esdihumboldt.hale.doc.user/html/concepts/contexts.html">Contexts</a>
 		</p>
 	</div>
-	
+
 	<!-- related reference: CQL filter -->
 	<div>
 		<br> <img

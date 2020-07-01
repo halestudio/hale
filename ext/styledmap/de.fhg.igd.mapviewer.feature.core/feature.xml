@@ -2,7 +2,7 @@
 <feature
       id="de.fhg.igd.mapviewer.feature.core"
       label="Mapviewer Core"
-      version="3.5.0.qualifier">
+      version="4.0.0.qualifier">
 
    <license>
       GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
@@ -86,7 +86,7 @@
          unpack="false"/>
 
    <plugin
-         id="com.vividsolutions.jts"
+         id="org.locationtech.jts.jts-core"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -18,18 +18,21 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.text.MessageFormat
 
 import javax.annotation.Nullable
+import javax.xml.namespace.QName
 
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.GeometryFactory
-import com.vividsolutions.jts.geom.LineString
-import com.vividsolutions.jts.geom.MultiLineString
-import com.vividsolutions.jts.geom.MultiPoint
-import com.vividsolutions.jts.geom.MultiPolygon
-import com.vividsolutions.jts.geom.Point
-import com.vividsolutions.jts.geom.Polygon
-import com.vividsolutions.jts.io.WKTReader
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.LineString
+import org.locationtech.jts.geom.MultiLineString
+import org.locationtech.jts.geom.MultiPoint
+import org.locationtech.jts.geom.MultiPolygon
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.geom.Polygon
+import org.locationtech.jts.io.WKTReader
 
 import de.fhg.igd.geom.BoundingBox
+import de.fhg.igd.slf4jplus.ALogger
+import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.cst.functions.geometric.aggregate.AggregateTransformation
 import eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPoint
 import eu.esdihumboldt.cst.functions.groovy.helper.HelperContext
@@ -38,6 +41,7 @@ import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionArgum
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.impl.HelperFunctionSpecification
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException
+import eu.esdihumboldt.hale.common.align.transformation.service.TransformationSchemas
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser
@@ -45,8 +49,11 @@ import eu.esdihumboldt.hale.common.instance.helper.InstanceTraverser
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import groovy.transform.CompileStatic
 
 /**
@@ -55,6 +62,8 @@ import groovy.transform.CompileStatic
  * @author Simon Templer
  */
 class GeometryHelperFunctions {
+
+	private static final ALogger log = ALoggerFactory.getLogger(GeometryHelperFunctions)
 
 	public static final String GEOM_HOLDER_DESC = 'A geometry, geometry property or instance holding a geometry'
 
@@ -197,7 +206,9 @@ class GeometryHelperFunctions {
 	new HelperFunctionArgument("spatialIndex",
 	"The spatial index service to query, defaults to the internal spatial index"),
 	new HelperFunctionArgument("geometry",
-	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."));
+	"Geometry, geometry property or instance holding the geometry whose bounding box is used as a spatial query."),
+	new HelperFunctionArgument("types",
+	"Type or types to which the result should be restricted to, as TypeDefinitions, QNames or strings (local names)."));
 
 	/**
 	 * Query a spatial index
@@ -247,12 +258,89 @@ class GeometryHelperFunctions {
 			box.add(BoundingBox.compute(geometry));
 		}
 
+		Collection<TypeDefinition> types = null
+		if (args instanceof Map && args.types) {
+			def argTypes = args.types
+			if (! (argTypes instanceof Iterable)) {
+				argTypes = [argTypes]
+			}
+			if (argTypes.any  { !(it instanceof TypeDefinition) }) {
+				// at least one that is not yet a type definition
+				TransformationSchemas schemas = context?.serviceProvider?.getService(TransformationSchemas)
+				if (schemas) {
+					SchemaSpace ss = schemas.getSchemas(SchemaSpaceID.SOURCE)
+					types = []
+					argTypes.each { def type ->
+						if (type instanceof TypeDefinition) {
+							types << type
+						}
+						else if (type instanceof QName) {
+							def found = ss.getType(type)
+							if (found) {
+								types << found
+							}
+							else {
+								throw new IllegalArgumentException("Could not find type $type")
+							}
+						}
+						else {
+							def typeName = type as String
+							boolean found = false
+							// add all types that have a matching local name
+							ss.types.each { TypeDefinition t ->
+								if (t.name?.localPart == typeName) {
+									types << t
+									found = true
+								}
+							}
+							if (!found) {
+								//XXX wanted to also check XML element name but dependency introduces a cycle
+								//XXX instead using display name
+								ss.types.each { TypeDefinition t ->
+									if (t.displayName == typeName) {
+										types << t
+										found = true
+									}
+								}
+							}
+							if (!found) {
+								throw new IllegalArgumentException("Could not find type $typeName")
+							}
+						}
+					}
+				}
+				else {
+					throw new IllegalArgumentException('TransformationSchemas service not available to retrieve specified types')
+				}
+			}
+			else {
+				// all are already type definitions
+				types = argTypes as List
+			}
+
+		}
+
 		if (box != null) {
-			def references = spatialIndex.retrieve(box);
+			def references
+			if (types == null) {
+				references = spatialIndex.retrieve(box);
+			}
+			else {
+				references = spatialIndex.retrieve(box, types);
+			}
 			references.each { ref ->
-				def inst = ResolvableInstanceReference.tryResolve(ref)
-				if (inst != null) {
-					result << inst
+				try {
+					def inst = ResolvableInstanceReference.tryResolve(ref)
+					if (inst != null) {
+						result << inst
+					}
+				} catch (Exception e) {
+					// don't fail, assumption is that this may happen when the
+					// same instance that is currently transformed is retrieved
+					// (one thread execution)
+
+					// still log error as we are not sure about the cause
+					log.error('Error resolving instance reference', e);
 				}
 			}
 		}
@@ -287,7 +375,7 @@ class GeometryHelperFunctions {
 			traverser.traverse(geometryHolder, geoFind)
 		}
 
-		List<GeometryProperty<?>> geoms = geoFind.getGeometries()
+		def geoms = (List<GeometryProperty<? extends Geometry>>)geoFind.getGeometries()
 
 		if (geoms) {
 			geoms[0]
@@ -325,7 +413,7 @@ class GeometryHelperFunctions {
 			traverser.traverse(geometryHolder, geoFind)
 		}
 
-		geoFind.getGeometries()
+		(List<GeometryProperty<? extends Geometry>>)geoFind.getGeometries()
 	}
 
 	/**

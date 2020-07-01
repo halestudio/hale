@@ -37,6 +37,7 @@ public class ProjectServiceHelper {
 		ApiClient apiClient = new ApiClient();
 		ApiClientHelper.setApiClientProperties(apiClient, HaleConnectServices.BUCKET_SERVICE,
 				resolver, apiKey);
+		apiClient.getHttpClient().setConnectionSpecs(ApiClientHelper.buildConnectionSpec());
 		return apiClient;
 	}
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            file-extensions="gpkg"
+            id="eu.esdihumboldt.hale.io.geopackage"
+            name="GeoPackage"
+            priority="normal">
+      </content-type>
+   </extension>
+   <extension
+         point="eu.esdihumboldt.hale.io.provider">
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageSchemaReader"
+            description="Reads feature tables from a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.schema.reader"
+            name="GeoPackage Schema">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+      </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageInstanceReader"
+            description="Reads features from a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.instance.reader"
+            name="GeoPackage Features">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+      </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.geopackage.GeopackageInstanceWriter"
+            description="Writes instances to a GeoPackage file"
+            id="eu.esdihumboldt.hale.io.geopackage.instance.writer"
+            name="GeoPackage file">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.geopackage">
+         </contentType>
+         <providerParameter
+               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&lt;table name 1&gt;|&lt;WHERE clause 1||&lt;table name 2&gt;|&lt;WHERE clause 2&gt;||...&quot;"
+               label="Filters for querying the GeoPackage database"
+               name="queryFilter"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to (only applies if the schema does not specify the CRS already)."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+      </provider>
+   </extension>
+
+</plugin>

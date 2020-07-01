@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE UI Geometry Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.geometry;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.geometry.internal.GeometryUIBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
- com.vividsolutions.jts.geom,
+ org.locationtech.jts.geom,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core.io.supplier,

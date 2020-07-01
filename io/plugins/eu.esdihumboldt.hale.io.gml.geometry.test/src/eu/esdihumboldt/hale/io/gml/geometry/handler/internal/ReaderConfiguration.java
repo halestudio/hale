@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.gml.geometry.handler.internal;
 
 import java.util.function.Consumer;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 

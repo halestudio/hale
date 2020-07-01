@@ -35,16 +35,17 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.RGB;
 import org.geotools.factory.CommonFactoryFinder;
+import org.geotools.feature.NameImpl;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.PointSymbolizer;
 import org.geotools.styling.PolygonSymbolizer;
 import org.geotools.styling.Rule;
-import org.geotools.styling.SLDParser;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
 import org.geotools.styling.Symbolizer;
+import org.geotools.xml.styling.SLDParser;
 import org.opengis.feature.type.Name;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -333,7 +334,6 @@ public class StyleServiceImpl extends AbstractStyleService {
 	 * 
 	 * @return the converted feature type style
 	 */
-	@SuppressWarnings("deprecation")
 	private FeatureTypeStyle getSelectedStyle(FeatureTypeStyle fts) {
 		List<Rule> rules = fts.rules();
 
@@ -355,13 +355,14 @@ public class StyleServiceImpl extends AbstractStyleService {
 			Rule newRule = styleBuilder
 					.createRule(newSymbolizers.toArray(new Symbolizer[newSymbolizers.size()]));
 			newRule.setFilter(rule.getFilter());
-			newRule.setIsElseFilter(rule.isElseFilter());
+			newRule.setElseFilter(rule.isElseFilter());
 			newRule.setName(rule.getName());
 			newRules.add(newRule);
 		}
 
-		// FIXME use featureTypeNames list
-		return styleBuilder.createFeatureTypeStyle(fts.getFeatureTypeName(),
+		// TODO Handle case if there is more than one featureTypeName
+		return styleBuilder.createFeatureTypeStyle(fts.featureTypeNames().stream().findFirst()
+				.orElse(new NameImpl("Feature")).getLocalPart(),
 				newRules.toArray(new Rule[newRules.size()]));
 	}
 

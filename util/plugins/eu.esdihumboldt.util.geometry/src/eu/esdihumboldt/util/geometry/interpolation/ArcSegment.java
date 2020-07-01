@@ -17,7 +17,7 @@ package eu.esdihumboldt.util.geometry.interpolation;
 
 import javax.annotation.Nullable;
 
-import com.vividsolutions.jts.geom.Coordinate;
+import org.locationtech.jts.geom.Coordinate;
 
 /**
  * Segment of an Arc used for interpolation algorithms.

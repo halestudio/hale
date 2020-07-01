@@ -56,6 +56,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.MoreExecutors;
 import com.google.common.util.concurrent.SettableFuture;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -534,7 +535,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 										"A problem occurred while contacting hale connect. Functionality may be limited.",
 										t);
 							}
-						});
+						}, MoreExecutors.directExecutor());
 
 				Thread fetchOrgInfoThread = new Thread(new Runnable() {
 
@@ -559,8 +560,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 
 								// As a fallback, display dummy value that
 								// contains the orgId
-								organisations.add(new HaleConnectOrganisationInfo(orgId,
-										MessageFormat.format("<Organisation {0}>", orgId)));
+								organisations.add(HaleConnectOrganisationInfo.dummyForId(orgId));
 							}
 						}
 

@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.io.jdbc;
 
 import java.util.function.Supplier;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;

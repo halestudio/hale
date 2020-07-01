@@ -15,11 +15,11 @@
 
 package eu.esdihumboldt.cst.functions.geometric
 
-import com.vividsolutions.jts.geom.Geometry
-import com.vividsolutions.jts.geom.GeometryCollection
-import com.vividsolutions.jts.geom.GeometryFactory
-import com.vividsolutions.jts.geom.LineString
-import com.vividsolutions.jts.geom.MultiLineString
+import org.locationtech.jts.geom.Geometry
+import org.locationtech.jts.geom.GeometryCollection
+import org.locationtech.jts.geom.GeometryFactory
+import org.locationtech.jts.geom.LineString
+import org.locationtech.jts.geom.MultiLineString
 
 import eu.esdihumboldt.cst.functions.groovy.helper.spec.SpecBuilder
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty

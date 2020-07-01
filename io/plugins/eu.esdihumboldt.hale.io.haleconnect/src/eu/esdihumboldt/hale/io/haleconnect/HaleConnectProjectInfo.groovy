@@ -51,6 +51,9 @@ public class HaleConnectProjectInfo {
 		this.id = id;
 		this.user = user;
 		this.organisation = organisation;
+		if (this.user == null && this.organisation == null) {
+			throw new IllegalArgumentException("Invalid owner information: both user and organisation are null");
+		}
 		this.name = name;
 		this.author = author;
 		this.lastModified = lastModified;

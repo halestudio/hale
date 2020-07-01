@@ -19,7 +19,7 @@ import javax.xml.namespace.QName
 
 import org.w3c.dom.Element
 
-import com.vividsolutions.jts.geom.Geometry
+import org.locationtech.jts.geom.Geometry
 
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameter
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameterType

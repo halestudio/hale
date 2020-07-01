@@ -22,7 +22,7 @@ import java.sql.Statement;
 
 import org.sqlite.SQLiteConnection;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;

@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.common.core.io.project.util;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -129,7 +130,7 @@ public class XMLPathUpdater {
 	 */
 	private static void update(File xmlResource, URI oldPath, String locationXPath,
 			boolean includeWebResources, IOReporter reporter, Map<URI, File> updates)
-					throws IOException {
+			throws IOException {
 		// every XML resource should be updated (and copied) only once
 		// so we save the currently adapted resource in a map
 		updates.put(oldPath, xmlResource);
@@ -188,33 +189,6 @@ public class XMLPathUpdater {
 				locationUri = oldPath.resolve(locationUri);
 			}
 
-			String scheme = locationUri.getScheme();
-			InputStream input = null;
-			if (scheme != null) {
-				// should the resource be included?
-				if (includeWebResources || !(scheme.equals("http") || scheme.equals("https"))) {
-					DefaultInputSupplier supplier = new DefaultInputSupplier(locationUri);
-					input = supplier.getInput();
-				}
-				else
-					continue;
-			}
-			else {
-				// file is invalid - at least report that
-				reporter.error(
-						new IOMessageImpl("Skipped resource because it cannot be loaded from "
-								+ locationUri.toString(), null));
-				continue;
-			}
-
-			// every file needs its own directory because of name conflicts
-			String filename = location;
-			if (location.contains("/"))
-				filename = location.substring(location.lastIndexOf("/") + 1);
-			filename = count + "/" + filename;
-
-			File includednewFile = null;
-
 			if (updates.containsKey(locationUri)) {
 				// if the current XML schema is already updated we have to
 				// find the relative path to this resource
@@ -222,32 +196,57 @@ public class XMLPathUpdater {
 						xmlResource.toURI());
 				locationNode.setNodeValue(relative.toString());
 			}
-			else if (input != null) {
-				// we need the directory of the file
-				File xmlResourceDir = xmlResource.getParentFile();
+			else {
+				String scheme = locationUri.getScheme();
+				if (scheme != null) {
+					// should the resource be included?
+					if (includeWebResources || !(scheme.equals("http") || scheme.equals("https"))) {
 
-				// path where the file should be copied to
-				includednewFile = new File(xmlResourceDir, filename);
-				try {
-					includednewFile.getParentFile().mkdirs();
-				} catch (SecurityException e) {
-					throw new IOException(
-							"Can not create directories " + includednewFile.getParent(), e);
+						// every file needs its own directory because of name
+						// conflicts
+						String filename = location;
+						if (location.contains("/")) {
+							filename = location.substring(location.lastIndexOf("/") + 1);
+						}
+						filename = count + "/" + filename;
+
+						File includednewFile = null;
+
+						// we need the directory of the file
+						File xmlResourceDir = xmlResource.getParentFile();
+
+						// path where the file should be copied to
+						includednewFile = new File(xmlResourceDir, filename);
+						try {
+							includednewFile.getParentFile().mkdirs();
+						} catch (SecurityException e) {
+							throw new IOException(
+									"Can not create directories " + includednewFile.getParent(), e);
+						}
+
+						DefaultInputSupplier supplier = new DefaultInputSupplier(locationUri);
+						try (InputStream input = supplier.getInput();
+								OutputStream output = new BufferedOutputStream(
+										new FileOutputStream(includednewFile))) {
+							// copy to new directory
+							ByteStreams.copy(input, output);
+						}
+
+						// set new location in the XML resource
+						locationNode.setNodeValue(filename);
+
+						update(includednewFile, locationUri, locationXPath, includeWebResources,
+								reporter, updates);
+
+						count++;
+					}
 				}
-
-				// copy to new directory
-				OutputStream output = new FileOutputStream(includednewFile);
-				ByteStreams.copy(input, output);
-				output.close();
-				input.close();
-
-				// set new location in the XML resource
-				locationNode.setNodeValue(filename);
-
-				update(includednewFile, locationUri, locationXPath, includeWebResources, reporter,
-						updates);
-
-				count++;
+				else {
+					// file is invalid - at least report that
+					reporter.error(
+							new IOMessageImpl("Skipped resource because it cannot be loaded from "
+									+ locationUri.toString(), null));
+				}
 			}
 
 			// write new XML-File

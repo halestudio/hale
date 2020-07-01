@@ -519,7 +519,7 @@ public class GraphLabelProvider extends LabelProvider
 	/**
 	 * @see IEntityConnectionStyleProvider#getTooltip(Object, Object)
 	 */
-	@Override
+	// @Override TODO Causes compile error in Eclipse
 	public IFigure getTooltip(Object src, Object dest) {
 		// default
 		return null;
@@ -528,7 +528,7 @@ public class GraphLabelProvider extends LabelProvider
 	/**
 	 * @see IEntityConnectionStyleProvider#getRouter(Object, Object)
 	 */
-	@Override
+	// @Override TODO Causes compile error in Eclipse
 	public ConnectionRouter getRouter(Object src, Object dest) {
 		// default
 		return null;

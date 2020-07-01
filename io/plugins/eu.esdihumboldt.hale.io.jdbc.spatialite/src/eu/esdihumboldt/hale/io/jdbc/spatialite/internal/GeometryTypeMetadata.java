@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.jdbc.spatialite.internal;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 /**
  * Class holding geometry type metadata (i.e. coordinate dimension, Spatial

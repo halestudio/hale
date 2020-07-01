@@ -100,7 +100,7 @@
          </property>
          <property
                name="splashCopyrightNotice"
-               value="© 2018 wetransform GmbH » www.wetransform.to">
+               value="© 2020 wetransform GmbH » www.wetransform.to">
          </property>
          <property
                name="build"
@@ -125,10 +125,6 @@
          <property
                name="aboutImage"
                value="images/hale_about.png">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
          </property>
       </product>
    </extension>

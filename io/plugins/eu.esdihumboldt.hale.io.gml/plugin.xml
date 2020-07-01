@@ -87,6 +87,20 @@
             </parameter>
          </describer>
       </content-type>
+      <content-type
+            base-type="eu.esdihumboldt.hale.io.gml"
+            file-extensions="gml"
+            id="eu.esdihumboldt.hale.io.xplangml"
+            name="XPlanGML file"
+            priority="normal">
+         <describer
+               class="eu.esdihumboldt.hale.util.nonosgi.contenttype.describer.XMLRootElementContentDescriber2">
+            <parameter
+                  name="element"
+                  value="XPlanAuszug">
+            </parameter>
+         </describer>
+      </content-type>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.provider">
@@ -1296,6 +1310,143 @@
                      will be modified to relative references, referencing the respective output file. This setting can only be used if the
                      partition mode is set to 'none'."> 
                </valueDescriptor>
+         </providerParameter>
+      </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.gml.writer.XPlanGmlInstanceWriter"
+            id="eu.esdihumboldt.hale.io.gml.xplan.writer"
+            name="XPlanGML (XPlanAuszug)">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.xplangml">
+         </contentType>
+         <providerParameter
+               optional="true"
+                  description="If geometries should be simplified (e.g. a MultiPolygon to a Polygon), if possible, before writing them."
+                  label="Simplify geometries"
+                  name="gml.geometry.simplify">
+               <parameterBinding
+                     class="java.lang.Boolean">
+               </parameterBinding>
+               <valueDescriptor
+                     default="true">
+               </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Target coordinate reference system the data should be transformed to."
+               label="Target CRS"
+               name="crs"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
+                  sample="code:EPSG:4326"
+                  sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="If the output should be pretty printed (indented)"
+               label="Pretty print"
+               name="xml.pretty"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Prefix to use for all CRS codes based on EPSG in geometry srsNames."
+               label="Custom EPSG prefix"
+               name="crs.epsg.prefix"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default the CRS code is not modified."
+                  sample="http://www.opengis.net/def/crs/EPSG/0/"
+                  sampleDescription="Make sure that all SRS names use this kind of notation. The EPSG code number is appended to the provided parameter to build the SRS name.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Unifiying the winding order of geometries, before writing them"
+               label="Unification of winding order"
+               name="geometry.unifyWindingOrder"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="clockwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="counterClokwise">
+               </enumerationValue>
+               <enumerationValue
+                     value="noChange">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="counterClockwise"
+                  defaultDescription="By default, counterClockwise is set for GML instance"
+                  sample="clockwise, noChange"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="XML ID to specify for the container element, if possible"
+               label="Container ID"
+               name="xml.containerId"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Don&apos;t encode nilReason attributes for elements that are not nil."
+               label="Omit unnecessary nilReasons"
+               name="xml.notNil.omitNilReason"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Number representation format for geometry coordinates"
+               label="Geometry coordinates number format"
+               name="geometry.write.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, geometry coordiantes are written in the standard format only."
+                  sample="000000.000"
+                  sampleDescription="Format must be given with digit 0 and decimal separator &apos;.&apos;. It states number of digits before and after decimal separator.">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Pattern for formatting decimal numbers"
+               label="Decimal number format pattern"
+               name="xml.decimalFormat"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  defaultDescription="By default no format is used, decimal values may be written in scientific notation (e.g. 6.78E9)"
+                  sample="0.000##"
+                  sampleDescription="The pattern may contain the placeholders &apos;0&apos; and &apos;#&apos; and the decimal separator &apos;.&apos; (once at most).
+                  	The pattern defines the number of digits used before and after the decimal separator. The placeholder &apos;0&apos; signifies that a digit will
+                  	always be written, even if it is a leading or trailing zero, whereas with the placeholder &apos;#&apos; the digit will only be written if it is
+                  	not a leading/trailing zero. In case the original value has more significant figures than the pattern allows for, the number will be rounded.">
+            </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

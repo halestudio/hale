@@ -19,7 +19,7 @@ package eu.esdihumboldt.hale.common.align.model.condition.impl;
 import java.util.Collection;
 import java.util.HashSet;
 
-import com.vividsolutions.jts.geom.Geometry;
+import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.align.model.Entity;
 import eu.esdihumboldt.hale.common.align.model.Type;

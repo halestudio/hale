@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<gml:Dictionary xmlns:gml="http://www.opengis.net/gml/3.2"
+	xmlns:gco="http://www.isotc211.org/2005/gco" xmlns:gmd="http://www.isotc211.org/2005/gmd"
+	xmlns:gsr="http://www.isotc211.org/2005/gsr" xmlns:gss="http://www.isotc211.org/2005/gss"
+	xmlns:gts="http://www.isotc211.org/2005/gts" xmlns:xlink="http://www.w3.org/1999/xlink"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" gml:id="RoadFeatureSourceCode"
+	xsi:schemaLocation="http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:description>Specifies the available list of enumerations for the various types source concerning road features</gml:description>
+	<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/">RoadFeatureSourceCode</gml:identifier>
+	<gml:dictionaryEntry>
+		<gml:Definition gml:id="fixedPlateRoadSign">
+			<gml:description>Fixed (permanent, often metal) road sign, with road signs as recognised under the Vienna Convention on Road Signs and Signals, 1968</gml:description>
+			<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/RoadFeatureSourceCode">fixedPlateRoadSign</gml:identifier>
+		</gml:Definition>
+	</gml:dictionaryEntry>
+	<gml:dictionaryEntry>
+		<gml:Definition gml:id="variableMessageSign">
+			<gml:description>Road sign displayed on a variable message sign or other dynamic display equipment, with road signs as recognised under the Vienna Convention on Road Signs and Signals, 1968</gml:description>
+			<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/RoadFeatureSourceCode">variableMessageSign</gml:identifier>
+		</gml:Definition>
+	</gml:dictionaryEntry>
+	<gml:dictionaryEntry>
+		<gml:Definition gml:id="temporaryRoadSign">
+			<gml:description>Temporary (non-permanent) road sign, as recognised under the Vienna Convention on Road Signs and Signals, 1968</gml:description>
+			<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/RoadFeatureSourceCode">temporaryRoadSign</gml:identifier>
+		</gml:Definition>
+	</gml:dictionaryEntry>
+	<gml:dictionaryEntry>
+		<gml:Definition gml:id="regulation">
+			<gml:description>Road traffic regulation</gml:description>
+			<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/RoadFeatureSourceCode">regulation</gml:identifier>
+		</gml:Definition>
+	</gml:dictionaryEntry>
+	<gml:dictionaryEntry>
+		<gml:Definition gml:id="otherRoadFeature">
+			<gml:description>Other road feature, not covered by the other enumerations</gml:description>
+			<gml:identifier codeSpace="http://spec.tn-its.eu/codelists/RoadFeatureSourceCode">otherRoadFeature</gml:identifier>
+		</gml:Definition>
+	</gml:dictionaryEntry>
+</gml:Dictionary>

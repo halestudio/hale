@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.util.geometry.quadtree
 
-import com.vividsolutions.jts.geom.Envelope
-import com.vividsolutions.jts.geom.Point
+import org.locationtech.jts.geom.Envelope
+import org.locationtech.jts.geom.Point
 
 import groovy.transform.CompileStatic
 

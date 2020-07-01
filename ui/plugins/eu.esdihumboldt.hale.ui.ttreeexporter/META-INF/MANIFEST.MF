@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ttreeexporter
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.ttreeexporter;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: eu.esdihumboldt.cst.extension.hooks,
  eu.esdihumboldt.hale.common.align.model.transformation.tree,

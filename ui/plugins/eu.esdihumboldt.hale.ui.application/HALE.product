@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="3.5.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="4.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
@@ -101,7 +101,6 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
-      <feature id="de.fhg.igd.hale.fme.feature"/>
       <feature id="eu.esdihumboldt.hale.platform.resources"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
@@ -113,8 +112,7 @@ https://www.wetransform.to/services/support/
       <feature id="org.eclipse.ecf.filetransfer.feature"/>
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
    </features>
 
    <configurations>

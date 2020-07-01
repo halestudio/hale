@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mapviewer
 Bundle-SymbolicName: de.fhg.igd.mapviewer;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base,
  com.google.common.collect,
- com.vividsolutions.jts.geom;version="1.13.0",
- com.vividsolutions.jts.geom.impl;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
+ org.locationtech.jts.geom.impl;version="1.13.0",
  de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,
  de.fhg.igd.eclipse.ui.util.extension.selective,
@@ -26,8 +26,8 @@ Import-Package: com.google.common.base,
  de.fhg.igd.swingrcp;version="1.0.0",
  edu.umd.cs.findbugs.annotations,
  gnu.trove,
+ javax.measure;version="1.0.0",
  javax.measure.quantity,
- javax.measure.unit,
  org.apache.commons.beanutils;version="1.7.0",
  org.apache.commons.io;version="1.4.0",
  org.apache.commons.logging;version="1.1.1",

@@ -2,11 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Instance model based on Orient DB
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.orient;singleton:=true
-Bundle-Version: 3.5.0.qualifier
+Bundle-Version: 4.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
- com.vividsolutions.jts;bundle-version="1.12.0",
+ org.locationtech.jts.jts-core;bundle-version="1.12.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",

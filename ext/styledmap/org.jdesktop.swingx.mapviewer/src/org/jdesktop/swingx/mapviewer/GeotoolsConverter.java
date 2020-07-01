@@ -24,7 +24,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.cs.AxisDirection;
 import org.opengis.referencing.operation.MathTransform;
 
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
 
 /**
  * GeotoolsConverter
@@ -37,13 +37,11 @@ public class GeotoolsConverter implements GeoConverter {
 
 	private static GeotoolsConverter INSTANCE;
 
-	@SuppressWarnings("deprecation")
-	private final ConcurrentMap<Integer, CoordinateReferenceSystem> crsMap = new MapMaker()
-			.softValues().makeMap();
+	private final ConcurrentMap<Integer, CoordinateReferenceSystem> crsMap = CacheBuilder
+			.newBuilder().softValues().<Integer, CoordinateReferenceSystem> build().asMap();
 
-	@SuppressWarnings("deprecation")
-	private final ConcurrentMap<Long, MathTransform> transforms = new MapMaker().softValues()
-			.makeMap();
+	private final ConcurrentMap<Long, MathTransform> transforms = CacheBuilder.newBuilder()
+			.softValues().<Long, MathTransform> build().asMap();
 
 	/**
 	 * Get a GeotoolsConverter instance

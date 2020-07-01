@@ -47,6 +47,7 @@ import org.eclipse.ui.PlatformUI
 
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
+import com.google.common.util.concurrent.MoreExecutors
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -328,7 +329,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 							Owner owner = ((HaleConnectProjectInfo) element).getOwner();
 							if (owner.isUser()) {
 								try {
-									HaleConnectUserInfo user = haleConnect.getUserInfo(owner.getId());
+									HaleConnectUserInfo user = element.getUser()
 									if (!StringUtils.isEmpty(user.getFullName())) {
 										return user.getFullName();
 									}
@@ -344,12 +345,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 								}
 							}
 							else if (owner.isOrganisation()) {
-								try {
-									return haleConnect.getOrganisationInfo(owner.getId()).getName();
-								} catch (HaleConnectException e) {
-									log.error(e.getMessage(), e);
-									return MessageFormat.format("<organisation {0}>", owner.getId());
-								}
+								return element.organisation.name
 							}
 							else {
 								return "<unknown owner type> ID: " + owner.getId();
@@ -429,9 +425,9 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 		projects.getTable().setEnabled(false);
 
 		try {
-			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback());
+			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback(), MoreExecutors.directExecutor());
 			for (String orgId : haleConnect.getSession().getOrganisationIds()) {
-				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback());
+				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback(), MoreExecutors.directExecutor());
 			}
 
 		} catch (HaleConnectException e1) {
