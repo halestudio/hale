@@ -159,9 +159,15 @@ public class DefaultGroovyService implements GroovyService {
 		}
 	}
 
+	private String preprocessScript(String script) {
+		// Replace all occurrences of the old JTS base package
+		// "com.vividsolutions.jts" with its new name.
+		return script.replaceAll("com\\.vividsolutions\\.jts", "org.locationtech.jts");
+	}
+
 	@Override
 	public Script parseScript(String script, Binding binding) {
-		return createShell(binding).parse(script);
+		return createShell(binding).parse(preprocessScript(script));
 	}
 
 	@Override
