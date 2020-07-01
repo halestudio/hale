@@ -61,13 +61,21 @@
    <extension
          point="eu.esdihumboldt.hale.ui.schema.presets">
       <schema
-            category="de"
-            description="AAA (ATKIS, ALKIS, AFIS) Modell der Arbeitsgemeinschaft der Vermessungsverwaltungen der Länder der Bundesrepublik Deutschland (AdV)"
-            id="de.adv-online.aaa"
-            name="AAA XML Schema"
-            version="6.0">
+            description="GML application schema of CEN/TS 17268 (TN-ITS)"
+            id="eu.tn-its.spec"
+            name="CEN/TS 17268 (TN-ITS)"
+            version="2018-01">
          <uri
-               value="http://repository.gdi-de.org/schemas/adv/nas/6.0/aaa.xsd">
+               value="http://spec.tn-its.eu/schemas/TNITS.xsd">
+         </uri>
+      </schema>
+      <schema
+            description="Geographic MetaData (GMD) extensible markup language"
+            id="org.isotc211.schemas.gmd"
+            name="ISO/TS 19139 Geographic MetaData (GMD)"
+            version="1.0">
+         <uri
+               value="https://schemas.isotc211.org/schemas/19139/-/gmd/1.0/gmd.xsd">
          </uri>
       </schema>
       <category
