@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale studio 4.0?</title>
+</head>
+<body>
+	<h1>What's new in hale studio 4.0?</h1>
+
+	<ul>
+		<li>Major updates to the documentation and help</li>
+		<li>Reader and Writer for GeoPackage</li>
+		<li>A specific Writer for XPlanGML that supports partitioning by plan</li>
+		<li>Added presets for CEN/TS 17268 (TN-ITS), ISO 19139, XPlanGML 4.0/4.1/5.0/5.1/5.2/5.3beta and GeoInfoDok 6.0.1/7.0/7.1</li>
+		<li>Enhancements for GML Dictionary Codelist handling</li>
+		<li>Support for TLS 1.2</li>
+		<li>Various bug fixes and enhancements</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#400"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>To avoid any compatibility issues when using an existing workspace, we recommend starting with a fresh one when you install
+		hale»studio 4.0. Furthermore, due to the GeoTools & JTS upgrade, the geometry bindings have changed.
+		This breaks backwards compatibility of Groovy Scripts and Alignments created in 4.0.
+		We will provide information on how you can manually backport your Groovy scripts if necessary.</p>
+
+		<p>If you are a user of the <a
+			href="https://www.wetransform.to/products/halestudiopro/"
+			target="_blank">hale studio pro</a> plugins, you need to upgrade these as well.
+			Please reach out to the Servicedesk to get the new plug-ins.
+		</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="4_0_0">
+		<tbody>
+
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="4_0_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+
+			<tr id="reader-writer-geopkg">
+				<td class="title">Reader and Writer for GeoPackage</td>
+				<td class="content">
+					<p>
+						<a
+							href="https://www.geopackage.org/"
+							target="_blank">GeoPackage</a> is the optimal, open format for delivering medium to large sized data sets to GIS users.
+						It is a single file that can store tables, vector geometries and rasters. It is extensible and can deal with simple and more detailed
+						data models well. There is even the option to add views and to store styles in a GeoPackage.
+						It doesn't have issues such as 11 character attribute limits, unknown encodings, missing or incomplete projection files, and is very fast to access.
+					</p>
+					<p>
+						For these reasons, there have been several requests to add GeoPackage to the list of supported formats for hale studio.
+						We have now added a Reader and a Writer. The Writer can create GeoPackages from scratch, including the schema and metadata.
+						This means you can even use an XML schema and then write your data to a GeoPackage.
+						However, the required model transformations to make this work in complex cases are planned for the next release.
+					</p>
+					<p>
+						This work was funded by the <a
+							href="https://www.umweltbundesamt.at/"
+							target="_blank">Umweltbundesamt Austria</a> and <a
+								href="https://www.rijkswaterstaat.nl/english"
+								target="_blank">Rijkswaterstaat Netherlands</a>,
+						and supported by the <a
+							href="https://www.eea.europa.eu/"
+							target="_blank">European Environmental Agency</a>.
+					</p>
+				</td>
+			</tr>
+
+			<tr id="xplan-gml">
+				<td class="title">XPlanGML writer and presets</td>
+				<td class="content">
+					<p>
+						XPlanung is a standard for all kinds of spatial plans that is currently implemented by thousands of agencies all across Germany.
+						To make the work with XPlanGML in hale studio easier, we have added two features - Schema Presets for all releveant XPlanGML versions,
+						and a writer that creates XPlanAuszug files without requiring manual configuration.
+						This writer furthermore supports writing the data to one file per plan object - so you will get a file that has, for example the <code>BP_Plan</code>, the <code>BP_Bereich</code>
+						and all directly or indirectly referenced objects.
+					</p>
+					<p>
+						<img src="4_0_0_images/xplan.png"></img>
+					</p>
+					<p>
+						This work was supported by the <a
+							href="https://www.xleitstelle.de/"
+							target="_blank">XLeitstelle</a>.
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+
+</body>
+</html>
