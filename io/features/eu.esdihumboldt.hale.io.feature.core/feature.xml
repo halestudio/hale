@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core"
       label="Core I/O Providers"
-      version="4.0.0.qualifier"
+      version="4.1.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
