@@ -189,6 +189,10 @@
             </topic>
             <topic href="html/reference/import/xls.html" label="XLS">
             </topic>
+            <topic href="html/reference/import/geopackage.html" label="GeoPackage">
+            </topic>
+            <topic href="html/reference/import/xplan_data.html" label="XPlanGML">
+            </topic>
             <anchor id="import"/>
          </topic>
          <topic label="Export">
@@ -210,6 +214,10 @@
             <topic href="html/reference/export/mssql.html" label="MsSQL Server">
             </topic>
             <topic href="html/reference/export/xls_data.html" label="XLS">
+            </topic>
+            <topic href="html/reference/export/geopackage.html" label="GeoPackage">
+            </topic>
+            <topic href="html/reference/export/xplan_data.html" label="XPlanGML">
             </topic>
             <topic href="html/reference/export/html_mapping.html" label="HTML mapping documentation">
                <topic href="html/reference/export/sample_documentation.html" label="Example">
