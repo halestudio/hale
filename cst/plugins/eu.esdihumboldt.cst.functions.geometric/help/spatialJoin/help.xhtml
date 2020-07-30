@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Spatial Join</title>
+</head>
+<body>
+<div id ="help">
+	<h4>Example mapping:</h4>
+	<p>
+Spatial joins can join multiple datasets together based on the spatial relationship between geometries.
+Spatial joins support the relation types contains, covered by, covers, crosses, equals, intersects, overlaps, touches, and within.<br>
+</br>
+Spatial joins are implemented based on the DE-9IM model.<br>
+</br>
+CONTAINS: Every point of the other geometry is a point of this geometry, and the interiors of the two geometries have at least one point in common. Geometries do not contain their boundary.
+if a geometry A is a subset of the points in the boundary of a geometry B, <code>B.contains(A) = false</code>.
+CONTAINS is the converse of WITHIN.<br>
+</br>
+COVERED BY: Every point of this geometry is a point of the other geometry.
+This predicate is similar to WITHIN but is more inclusive (i.e. returns true for more cases).
+COVEREDBY is the converse of COVERS<br>
+</br>
+COVERS: Every point of the other geometry is a point of this geometry. This predicate is similar to CONTAINS but is more inclusive (i.e. returns true for more cases). Unlike CONTAINS it does not distinguish between points in the boundary and in the interior of geometries. For most situations, covers should be used in preference to contains.
+COVERS is the converse of COVEREDBY.<br>
+</br>
+CROSSES: The geometries have some but not all interior points in common.<br>
+</br>
+EQUALS: Tests whether this geometry is topologically equal to the argument geometry.<br>
+</br>
+INTERSECTS: The geometries have at least one point in common.<br>
+</br>
+OVERLAPS: The geometries have at least one point each not shared by the other (or equivalently neither covers the other), they have the same dimension, and the intersection of the interiors of the two geometries has the same dimension as the geometries themselves.<br>
+</br>
+TOUCHES: The geometries have at least one point in common, but their interiors do not intersect.<br>
+</br>
+WITHIN: Every point of this geometry is a point of the other geometry, and the interiors of the two geometries have at least one point in common. The boundary of the geometry is not within the geometry.
+If a geometry A is a subset of the points in the boundary of a geometry B, <code>A.within(B) = false</code>.
+WITHIN is converse of CONTAINS<br>
+</br>
+Source:<a href="https://locationtech.github.io/jts/jts-features.html"
+	target="_blank">JTS Technical Documentation</a><br>
+	</br>
+
+		<img src="../../eu.esdihumboldt.cst.functions.geometric/help/spatialJoin/spatial_join.png" /><br>
+	</br>
+	<img src="../../eu.esdihumboldt.cst.functions.geometric/help/spatialJoin/spatial_join_mapping.png" /><br>
+</br>
+	</p>
+</div>
+</body>
+</html>
