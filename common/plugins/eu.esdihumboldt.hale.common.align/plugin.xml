@@ -241,6 +241,7 @@
             cellMigrator="eu.esdihumboldt.hale.common.align.model.functions.FormattedStringMigrator"
             description="Creates a formatted string based on a pattern and the input variables"
             icon="icons/text.png"
+            help="help/formattedString/help.xhtml"
             identifier="eu.esdihumboldt.hale.align.formattedstring"
             name="Formatted string">
          <sourceProperties>
