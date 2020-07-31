@@ -8,12 +8,12 @@
 <div id ="help">
 	<h4>Example mapping:</h4>
 	<p>
-The aggregate function combines the input source features to create MultiLineString, MultiPoint or MultiPolygon features. The aggregate function performs a check to ensure that the input features have the same source CRS. In the cases of input multi geometries, a new multi geometry is created.
+The aggregate function combines the input source features to create MultiLineString, MultiPoint or MultiPolygon geometries. The aggregate function performs a check to ensure that the input features have the same source CRS. In the cases of input multi geometries, a new multi geometry is created.
 When different input geometry types are aggregated, you will receive a warning in the transformation log but the function will combine the geometries in a generic GeometryCollection.
 In the case of lines the aggregate function tries to combine them to create a MultiLineString in which the individual lines are connected (i.e. end vertex of one line is the start vertex of the next one).
 If this is not possible there is no guaranteed order in the MultiLineString.<br>
  </br>
-The aggregate function is often used in combination with the type level merge function. This is necessary to combine the geometries to create multi features and avoid selecting just one geometry from the merged geometries.
+The aggregate function is often used in combination with the type level merge function. The use of the aggregate function is necessary to combine the geometries to create multi geometries and avoid selecting just one geometry from the merged source geometries.
  <br>
 	</br>
 		<img src="../../eu.esdihumboldt.cst.functions.geometric/help/aggregate/aggregate.png" /><br>
