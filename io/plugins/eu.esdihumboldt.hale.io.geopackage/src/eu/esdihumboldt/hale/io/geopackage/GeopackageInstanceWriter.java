@@ -510,7 +510,9 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 		// XXX not sure what the difference between the definition types is
 		srs.setDefinition(wkt);
 		srs.setDefinition_12_063(wkt);
-		srs.setDescription(geoCrs.getRemarks().toString());
+		if (geoCrs.getRemarks() != null) {
+			srs.setDescription(geoCrs.getRemarks().toString());
+		}
 		srsDao.create(srs);
 		return srs;
 	}
