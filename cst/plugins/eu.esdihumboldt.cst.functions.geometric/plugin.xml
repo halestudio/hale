@@ -86,6 +86,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.NetworkExpansionExplanation"
             description="Creates a buffer on a geometry."
             icon="icons/geometry.png"
+            help = "help/network/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
             name="Network Expansion">
          <targetProperties>
@@ -129,6 +130,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.CalculateLengthExplanation"
             description="Calculate the length of a geometry."
             icon="icons/geometry.png"
+            help = "help/CalculateLength/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
             name="Calculate Length">
          <targetProperties>
@@ -185,6 +187,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.CentroidExplanation"
             description="Calculates the centroid of a given geometry."
             icon="icons/geometry.png"
+            help = "help/centroid/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.centroid"
             name="Centroid">
          <targetProperties>
@@ -208,6 +211,7 @@
             category="eu.esdihumboldt.cst.functions.geometric"
             description="Compute geometric extent based on all input geometries. The options Bounding Box, Convex Hull and Union are possible."
             icon="icons/geometry.png"
+            help = "help/extent/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.extent"
             name="Compute Extent">
          <targetProperties>
