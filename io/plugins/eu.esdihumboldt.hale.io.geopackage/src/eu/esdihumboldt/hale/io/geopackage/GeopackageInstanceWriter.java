@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URI;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -33,10 +34,6 @@ import javax.xml.namespace.QName;
 
 import org.geotools.geometry.jts.JTS;
 import org.geotools.referencing.CRS;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.operation.MathTransform;
-import org.springframework.core.convert.ConversionException;
-
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
@@ -45,10 +42,14 @@ import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.WKBWriter;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.opengis.referencing.operation.MathTransform;
+import org.springframework.core.convert.ConversionException;
 
 import eu.esdihumboldt.hale.common.convert.ConversionUtil;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
@@ -79,7 +80,10 @@ import mil.nga.geopackage.attributes.AttributesRow;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystem;
 import mil.nga.geopackage.core.srs.SpatialReferenceSystemDao;
 import mil.nga.geopackage.db.GeoPackageDataType;
+import mil.nga.geopackage.extension.index.FeatureTableIndex;
 import mil.nga.geopackage.features.columns.GeometryColumns;
+import mil.nga.geopackage.features.index.FeatureIndexManager;
+import mil.nga.geopackage.features.index.FeatureIndexType;
 import mil.nga.geopackage.features.user.FeatureColumn;
 import mil.nga.geopackage.features.user.FeatureDao;
 import mil.nga.geopackage.features.user.FeatureRow;
@@ -97,6 +101,30 @@ import mil.nga.sf.wkb.GeometryReader;
  * @author Simon Templer
  */
 public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
+
+	/**
+	 * The identifier of the writer as registered to the I/O provider extension.
+	 */
+	public static final String ID = "eu.esdihumboldt.hale.io.geopackage.instance.writer";
+
+	/**
+	 * Parameter to define the type of spatial index to create for new tables
+	 */
+	public static final String PARAM_SPATIAL_INDEX_TYPE = "spatialindex.type";
+
+	/**
+	 * Default value assumed when spatial index type is not specified
+	 */
+	public static final String DEFAULT_SPATIAL_INDEX_TYPE = "rtree";
+
+	/**
+	 * Set the type of spatial index to create for new tables
+	 * 
+	 * @param spatialIndexType Spatial index type to use
+	 */
+	public void setSpatialIndexType(String spatialIndexType) {
+		setParameter(PARAM_SPATIAL_INDEX_TYPE, Value.of(spatialIndexType));
+	}
 
 	@Override
 	public boolean isPassthrough() {
@@ -415,6 +443,24 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 			}
 
 			geoPackage.createFeatureTableWithMetadata(geometryColumns, boundingBox, srsId, columns);
+
+			FeatureDao featureDao = geoPackage.getFeatureDao(tableName);
+			String spatialIndexType = getParameter(PARAM_SPATIAL_INDEX_TYPE).as(String.class,
+					DEFAULT_SPATIAL_INDEX_TYPE);
+			switch (spatialIndexType.toLowerCase()) {
+			case "nga":
+				createFeatureTableIndex(geoPackage, featureDao);
+				break;
+			case "rtree":
+				createRTreeIndex(geoPackage, featureDao);
+				break;
+			case "none":
+				// Do nothing
+				break;
+			default:
+				throw new IllegalArgumentException(MessageFormat.format(
+						"Unknown or unsupported spatial index type \"{0}\"", spatialIndexType));
+			}
 		}
 		else {
 			// create attributes table
@@ -434,6 +480,17 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 		}
 
 		return tableType;
+	}
+
+	private void createRTreeIndex(GeoPackage geoPackage, FeatureDao featureDao) {
+		FeatureIndexManager indexer = new FeatureIndexManager(geoPackage, featureDao);
+		indexer.setIndexLocation(FeatureIndexType.RTREE);
+		indexer.index();
+	}
+
+	private void createFeatureTableIndex(GeoPackage geoPackage, FeatureDao featureDao) {
+		FeatureTableIndex idx = new FeatureTableIndex(geoPackage, featureDao);
+		idx.index();
 	}
 
 	private long determineSrsId(GeoPackage geoPackage, PropertyDefinition geomProp,

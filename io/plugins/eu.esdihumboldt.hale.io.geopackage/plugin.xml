@@ -64,6 +64,19 @@
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Type of spatial index to use when new tables are created in the target GeoPackage file"
+               label="Type of spatial index"
+               name="spatialindex.type"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="rtree"
+                  defaultDescription="By default, an RTree Spatial Index is created">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
    </extension>
 
