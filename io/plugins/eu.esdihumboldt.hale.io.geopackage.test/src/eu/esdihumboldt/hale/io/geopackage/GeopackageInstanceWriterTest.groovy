@@ -46,6 +46,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.PrimaryKey
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
 import groovy.transform.CompileStatic
+import mil.nga.geopackage.manager.GeoPackageManager
 
 /**
  * Tests for writing instances to GeoPackage.
@@ -523,4 +524,121 @@ class GeopackageInstanceWriterTest {
 			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
 		}
 	}
+
+	@Test
+	void testNgaSpatialIndexCreation() {
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				population(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				population 158254
+				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
+			}
+
+			city {
+				name 'München'
+				population 1471508
+				location( createGeometry('POINT(48.137222 11.575556)', 4326) )
+			}
+		}
+
+		withNewGeopackage(schema, instances) { file ->
+			def loaded = GeopackageInstanceReaderTest.loadInstances(file)
+
+			def gpkg = GeoPackageManager.open(file, true)
+			assert gpkg.extensionsDao?.isTableExists()
+			assert gpkg.extensionsDao?.queryForAll().any { it.extensionName == "nga_geometry_index" }
+		} { GeopackageInstanceWriter writer ->
+			writer.setSpatialIndexType("nga")
+			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
+		}
+	}
+
+	@Test
+	void testRTreeSpatialIndexCreation() {
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				population(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				population 158254
+				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
+			}
+
+			city {
+				name 'München'
+				population 1471508
+				location( createGeometry('POINT(48.137222 11.575556)', 4326) )
+			}
+		}
+
+		withNewGeopackage(schema, instances) { file ->
+			def loaded = GeopackageInstanceReaderTest.loadInstances(file)
+
+			def gpkg = GeoPackageManager.open(file, true)
+			assert gpkg.extensionsDao?.isTableExists()
+			assert gpkg.extensionsDao?.queryForAll().any { it.extensionName == "gpkg_rtree_index" }
+		} { GeopackageInstanceWriter writer ->
+			writer.setSpatialIndexType("rtree")
+			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
+		}
+	}
+
+	@Test
+	void testNoSpatialIndexCreation() {
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				population(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				population 158254
+				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
+			}
+
+			city {
+				name 'München'
+				population 1471508
+				location( createGeometry('POINT(48.137222 11.575556)', 4326) )
+			}
+		}
+
+		withNewGeopackage(schema, instances) { file ->
+			def loaded = GeopackageInstanceReaderTest.loadInstances(file)
+
+			def gpkg = GeoPackageManager.open(file, true)
+			if (gpkg.extensionsDao?.isTableExists()) {
+				// In case the extensions table was created by some other extension,
+				// make sure that NGA and RTree extensions are not loaded
+				assert !gpkg.extensionsDao.queryForAll().any {
+					it.extensionName in [
+						"gpkg_rtree_index",
+						"nga_geometry_index"
+					]
+				}
+			}
+		} { GeopackageInstanceWriter writer ->
+			writer.setSpatialIndexType("none")
+			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
+		}
+	}
+
 }
