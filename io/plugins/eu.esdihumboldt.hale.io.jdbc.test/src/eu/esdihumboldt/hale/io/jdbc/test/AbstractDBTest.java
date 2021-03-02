@@ -286,7 +286,8 @@ public abstract class AbstractDBTest {
 				// check bindings for those data type for which expected binding
 				// is mapped.
 				if (map.containsKey(name))
-					assertEquals(map.get(name), k.getBinding());
+					assertEquals("Binding mismatch for type \"" + name + "\"", map.get(name),
+							k.getBinding());
 				else
 					fail(MessageFormat.format(
 							"No expected binding specified for type {0} (SQL type {1}) - binding is {2}",

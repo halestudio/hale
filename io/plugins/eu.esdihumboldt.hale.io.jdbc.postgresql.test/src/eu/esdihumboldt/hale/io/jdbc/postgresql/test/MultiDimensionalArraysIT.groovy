@@ -20,8 +20,6 @@ import static org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-import ru.yandex.qatools.allure.annotations.Features
-import ru.yandex.qatools.allure.annotations.Stories
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -30,6 +28,8 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest
 import groovy.sql.Sql
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
 
 /**
  * Tests for multi-dimensional arrays. Also documents the current state of support.
@@ -80,13 +80,18 @@ class MultiDimensionalArraysIT extends AbstractDBTest {
 			BIGSERIAL: Long.class, //
 			INT4: Integer.class, //
 			_INT4: Integer.class, // XXX currently array as multi-occurrence property
+			INT8: Long.class, //
+			_INT8: Long.class, //
 			BOOL: Boolean.class, //
 			DECIMAL: BigDecimal.class, //
 			NUMERIC: BigDecimal.class, //
 			VARCHAR: String.class, //
 			_VARCHAR: String.class, // XXX currently array as multi-occurrence property
 			TEXT: String.class, //
+			NAME: String.class, //
 			FLOAT8: Double.class, //
+			TIMESTAMP: java.sql.Timestamp.class, //
+			TIMESTAMPTZ: java.sql.Timestamp.class, //
 		]);
 
 		// check cardinalities
