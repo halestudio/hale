@@ -21,10 +21,6 @@ import java.sql.Date
 import java.sql.Timestamp
 
 import org.junit.Test
-
-import ru.yandex.qatools.allure.annotations.Features
-import ru.yandex.qatools.allure.annotations.Stories
-
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.GeometryFactory
@@ -41,6 +37,8 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.jdbc.test.AbstractDBTest
 import groovy.sql.Sql
+import ru.yandex.qatools.allure.annotations.Features
+import ru.yandex.qatools.allure.annotations.Stories
 
 
 /**
@@ -188,9 +186,11 @@ public class PostDataTypesIT extends AbstractDBTest {
 		m.put("BOOL", Boolean.class);
 		// m.put("BOOLEAN", Boolean.class);
 		m.put("TIMESTAMP", java.sql.Timestamp.class);
+		m.put("TIMESTAMPTZ", java.sql.Timestamp.class);
 		m.put("DATE", java.sql.Date.class);
 		m.put("VARCHAR", java.lang.String.class);
 		m.put("TEXT", java.lang.String.class);
+		m.put("NAME", java.lang.String.class);
 		m.put("NUMERIC", BigDecimal.class);
 		m.put("DECIMAL", BigDecimal.class);
 		m.put("GEOMETRY", GeometryProperty.class);
