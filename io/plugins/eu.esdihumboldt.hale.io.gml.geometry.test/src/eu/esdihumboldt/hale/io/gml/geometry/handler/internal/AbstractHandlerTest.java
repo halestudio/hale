@@ -171,6 +171,27 @@ public abstract class AbstractHandlerTest extends AbstractSVGPainterTest {
 	}
 
 	/**
+	 * Creates a geometry checker that checks for equality of the first and last
+	 * point and of the number of coordinates
+	 * 
+	 * @param start the starting point of the geometry
+	 * @param end the end point of the geometry
+	 * @param coordinateCount the number of coordinates contained in the
+	 *            geometry
+	 * @return the checker
+	 */
+	protected Consumer<Geometry> startEndChecker(Coordinate start, Coordinate end,
+			int coordinateCount) {
+		return (geom) -> {
+			assertEquals("Number of coordinates does not match", coordinateCount,
+					geom.getCoordinates().length);
+			assertTrue("Start coordinate does not match", geom.getCoordinates()[0].equals2D(start));
+			assertTrue("End coordinate does not match",
+					geom.getCoordinates()[coordinateCount - 1].equals2D(end));
+		};
+	}
+
+	/**
 	 * Check a single geometry contained in an instance (at an arbitrary path).
 	 * 
 	 * @param instance the geometry instance
