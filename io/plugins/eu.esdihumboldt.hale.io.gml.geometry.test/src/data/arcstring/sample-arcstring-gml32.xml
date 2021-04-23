@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gml:FeatureCollection gml:id="fcollection"
+	xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:hale="eu:esdihumboldt:hale:test"
+	xsi:schemaLocation="eu:esdihumboldt:hale:test geom-gml32.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd">
+	<gml:boundedBy>
+		<gml:Null></gml:Null>
+	</gml:boundedBy>
+  <gml:featureMember>
+		<hale:ArcStringProperty gml:id="ageom1">
+			<hale:geometry gml:id="LineString1" srsName="EPSG:25832">
+				<gml:posList>552400.131 5941061.830 552211.949 5941201.903 552048.407 5941370.089 551881.562 5941562.239 551735.790 5941770.827</gml:posList>
+			</hale:geometry>
+		</hale:ArcStringProperty>
+	</gml:featureMember>
+</gml:FeatureCollection>
