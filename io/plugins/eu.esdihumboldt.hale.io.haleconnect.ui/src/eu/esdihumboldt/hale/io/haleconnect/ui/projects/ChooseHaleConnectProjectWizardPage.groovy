@@ -83,6 +83,11 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 	private TableViewer projects;
 
 	private class GetProjectsCallback implements FutureCallback<List<HaleConnectProjectInfo>> {
+		String orgId
+
+		public GetProjectsCallback(String orgId) {
+			this.orgId = orgId
+		}
 
 		@Override
 		public void onSuccess(List<HaleConnectProjectInfo> result) {
@@ -125,13 +130,19 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 								return;
 							}
 
-							if (t instanceof HaleConnectException
-							&& ((HaleConnectException) t).getStatusCode() == 401) {
-								// In case of 401 (Unauthorized) the most likely cause
-								// is that the API token has expired
-								log.userError(
-										"Unable to retrieve projects from hale connect due to missing permissions. Please re-login and try again.");
-								return;
+							if (t instanceof HaleConnectException) {
+								if (((HaleConnectException) t).getStatusCode() == 401) {
+									// In case of 401 (Unauthorized) the most likely cause
+									// is that the API token has expired
+									log.userError(
+											"Unable to retrieve projects from hale connect due to missing permissions. Please re-login and try again.");
+									return;
+								}
+								else if (((HaleConnectException) t).getStatusCode() == 403) {
+									// In case of 403 (Forbidden) ignore error and only log affected organisation id
+									log.error("Could not complete request for organisation ${orgId}", t)
+									return;
+								}
 							}
 
 							String configuredBasePath = haleConnect.getBasePathManager()
@@ -425,9 +436,11 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 		projects.getTable().setEnabled(false);
 
 		try {
-			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback(), MoreExecutors.directExecutor());
+			// Check for user context (no org context)
+			Futures.addCallback(haleConnect.getProjectsAsync(null), new GetProjectsCallback('<null> (no org context)'), MoreExecutors.directExecutor());
+
 			for (String orgId : haleConnect.getSession().getOrganisationIds()) {
-				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback(), MoreExecutors.directExecutor());
+				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback(orgId), MoreExecutors.directExecutor());
 			}
 
 		} catch (HaleConnectException e1) {
