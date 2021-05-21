@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +66,7 @@ import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 import org.w3c.dom.Node;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -355,8 +357,9 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		// create group counter
 		groupCounter = new TObjectIntHashMap<String>();
 
-		Set<String> imports = new HashSet<String>();
-		imports.add(location.toString());
+		// Map schema locations to target namespaces
+		Map<String, String> imports = new HashMap<>();
+		imports.put(location.toString(), namespace);
 
 		// load XML Schema schema (for base type definitions)
 		try {
@@ -520,8 +523,8 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 * @param mainSchema states if this is a main schema and therefore elements
 	 *            declared here should be flagged mappable
 	 */
-	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema, Set<String> imports,
-			ProgressIndicator progress, boolean mainSchema) {
+	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema,
+			Map<String, String> imports, ProgressIndicator progress, boolean mainSchema) {
 		String namespace = xmlSchema.getTargetNamespace();
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
@@ -689,15 +692,26 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				XmlSchemaExternal imp = (XmlSchemaExternal) externalItems.getItem(i);
 				XmlSchema importedSchema = imp.getSchema();
 				String location = importedSchema.getSourceURI();
-				if (!(imports.contains(location))) { // only add schemas that
+				String targetNamespace = importedSchema.getTargetNamespace();
+				if (!imports.containsKey(location)) { // only add schemas that
 														// were not already
 														// added
-					imports.add(location); // place a marker in the map to
-											// prevent loading the location in
-											// the call to loadSchema
-					loadSchema(location, importedSchema, imports, progress,
-							mainSchema && imp instanceof XmlSchemaInclude);
-					// is part of main schema if it's a main schema include
+					boolean addedBefore = imports.entrySet().stream().anyMatch(e -> {
+						// Consider two schemas to be identical if their schema
+						// locations differ only in the scheme part (e.g. "http"
+						// and "https") and they have the same target namespace.
+						return targetNamespace.equals(e.getValue())
+								&& schemeIndependentEquals(location, e.getKey());
+					});
+
+					if (!addedBefore) {
+						// place a marker in the map to prevent loading the
+						// location in the call to loadSchema
+						imports.put(location, targetNamespace);
+						loadSchema(location, importedSchema, imports, progress,
+								mainSchema && imp instanceof XmlSchemaInclude);
+						// is part of main schema if it's a main schema include
+					}
 				}
 				if (imp instanceof XmlSchemaInclude) {
 					includes.add(location);
@@ -712,6 +726,21 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 
 		progress.setCurrentTask(
 				MessageFormat.format(Messages.getString("ApacheSchemaProvider.33"), namespace)); //$NON-NLS-1$
+	}
+
+	private boolean schemeIndependentEquals(String schemaLocationA, String schemaLocationB) {
+		final URI a, b;
+
+		try {
+			a = URI.create(schemaLocationA);
+			b = URI.create(schemaLocationB);
+		} catch (Throwable t) {
+			// If any of the schema locations can't be parsed as an URI, fall
+			// back to a regular equals (null-safe)
+			return Objects.equal(schemaLocationA, schemaLocationB);
+		}
+
+		return a.getSchemeSpecificPart().equals(b.getSchemeSpecificPart());
 	}
 
 	/**
