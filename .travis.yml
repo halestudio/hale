@@ -64,6 +64,7 @@ jobs:
         - sleep 10
         - sudo systemctl status docker.service
         # Pull Docker images required for integration tests
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull kartoza/postgis
         - ./build.sh integrationStage
         # Killing background sleep loop
