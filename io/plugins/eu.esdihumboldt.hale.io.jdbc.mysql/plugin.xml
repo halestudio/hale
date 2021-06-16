@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.io.jdbc.config">
+      <driver
+            class="com.mysql.cj.jdbc.Driver"
+            id="eu.esdihumboldt.hale.io.jdbc.mysql.driver"
+            name="MySQL"
+            testUri="jdbc:mysql://localhost/test"
+            uriBuilder="eu.esdihumboldt.hale.io.jdbc.mysql.MySqlUriBuilder">
+         <prefix
+               value="jdbc:mysql">
+         </prefix>
+      </driver>
+      <connection
+            configurer="eu.esdihumboldt.hale.io.jdbc.mysql.MySqlConnectionConfigurer"
+            id="eu.esdihumboldt.hale.io.jdbc.mysql"
+            type="com.mysql.cj.jdbc.JdbcConnection">
+      </connection>
+      <geometrytype
+            advisor="eu.esdihumboldt.hale.io.jdbc.mysql.MySqlGeometries"
+            connection="com.mysql.cj.jdbc.JdbcConnection"
+            id="eu.esdihumboldt.hale.io.jdbc.mysql.geometry"
+            name="geometry">
+      </geometrytype>
+   </extension>
+</plugin>

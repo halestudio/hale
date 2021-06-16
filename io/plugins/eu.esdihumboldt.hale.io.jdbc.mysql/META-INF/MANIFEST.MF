@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mysql JDBC driver
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.mysql;singleton:=true
+Bundle-Version: 4.1.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.mysql.internal.Activator
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.mysql
+Import-Package: com.mysql.cj;version="8.0.23",
+ com.mysql.cj.jdbc;version="8.0.23",
+ eu.esdihumboldt.hale.common.core.report,
+ eu.esdihumboldt.hale.common.instance.geometry,
+ eu.esdihumboldt.hale.common.instance.geometry.impl,
+ org.geotools.geometry.jts;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
+ org.locationtech.jts;version="1.16.0",
+ org.locationtech.jts.geom;version="1.16.0",
+ org.locationtech.jts.io;version="1.16.0",
+ org.opengis.referencing;version="21.0.0",
+ org.opengis.referencing.crs;version="21.0.0",
+ org.opengis.referencing.operation;version="21.0.0",
+ org.osgi.framework;version="1.3.0",
+ schemacrawler.schema;version="12.4.2"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="4.0.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="4.1.0"
+Export-Package: eu.esdihumboldt.hale.io.jdbc.mysql.internal
+Bundle-ClassPath: .
