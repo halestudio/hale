@@ -154,6 +154,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 						.createLoginDialog(Display.getCurrent().getActiveShell());
 				if (loginDialog != null && loginDialog.open() == Dialog.OK) {
 					HaleConnectLoginHandler.performLogin(loginDialog);
+					updateLoginStatus();
 					updateState();
 					prefillTargetProject();
 				}
@@ -392,11 +393,20 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	 * Update the page state.
 	 */
 	protected void updateState() {
-		updateLoginStatus();
 		updateOverwriteWarning();
 
-		setValid(haleConnect.isLoggedIn() && (ownerUser.isEnabled() || ownerOrg.isEnabled())
-				&& (newProject.getSelection() || targetProject != null));
+		boolean valid = haleConnect.isLoggedIn();
+		// Creating or updating transformation projects is only possible
+		// if the current user has sufficient permissions to create
+		// projects either in the user or in an organization context
+		valid = valid && (ownerUser.getEnabled() || ownerOrg.getEnabled());
+		if (!newProject.getSelection()) {
+			// If the option to update an existing project is selected,
+			// a target project must be selected before proceeding.
+			valid = valid && (targetProject != null);
+		}
+		setValid(valid);
+
 		if (newProject.getSelection()) {
 			controlsStackLayout.topControl = newProjectControls;
 			createNewProject = true;
@@ -411,6 +421,7 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 	@Override
 	public void onShowPage(boolean firstShow) {
 		super.onShowPage(firstShow);
+		updateLoginStatus();
 		updateState();
 	}
 
@@ -473,13 +484,18 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 		ownershipGroup.setEnabled(loggedIn);
 		enableVersioning.setEnabled(loggedIn);
 		publicAccess.setEnabled(loggedIn);
-		ownerUser.setEnabled(loggedIn);
 		includeWebResources.setEnabled(loggedIn);
 		excludeData.setEnabled(loggedIn);
 		excludeCachedResources.setEnabled(loggedIn);
 		selectProjectButton.setEnabled(loggedIn);
 		newProject.setEnabled(loggedIn);
 		updateProject.setEnabled(loggedIn);
+
+		// Disable owner buttons by default because permission checks are
+		// needed to determine if either one is allowed for the current
+		// user.
+		ownerUser.setEnabled(false);
+		ownerOrg.setEnabled(false);
 
 		if (loggedIn) {
 			loginStatusLabel
@@ -504,7 +520,6 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 				}
 			}
 
-			ownerOrg.setEnabled(false);
 			orgSelector.getCombo().setEnabled(false);
 			if (orgAllowed) {
 				final SettableFuture<List<HaleConnectOrganisationInfo>> orgsFuture = SettableFuture
@@ -525,6 +540,8 @@ public class HaleConnectTarget extends AbstractTarget<HaleConnectProjectWriter> 
 											orgSelector.setSelection(
 													new StructuredSelection(result.get(0)));
 										}
+
+										updateState();
 									}
 								});
 							}
