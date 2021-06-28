@@ -6,7 +6,8 @@ Bundle-Version: 4.1.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.eclipse.jface.text;bundle-version="3.7.1"
+ org.eclipse.jface.text;bundle-version="3.7.1",
+ org.eclipse.core.net;bundle-version="1.3.800"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.util,
@@ -31,8 +32,9 @@ Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.wizard
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.util.concurrent;version="15.0.0",
- de.fhg.igd.slf4jplus,
  de.fhg.igd.osgi.util;version="1.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.http,
  org.apache.http,

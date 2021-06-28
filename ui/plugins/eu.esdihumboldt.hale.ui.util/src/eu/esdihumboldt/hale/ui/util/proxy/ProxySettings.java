@@ -17,13 +17,20 @@
 package eu.esdihumboldt.hale.ui.util.proxy;
 
 import java.net.Authenticator;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
+import org.eclipse.core.net.proxy.IProxyData;
+import org.eclipse.core.net.proxy.IProxyService;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin;
 import eu.esdihumboldt.hale.ui.util.proxy.preferences.PreferenceConstants;
 import eu.esdihumboldt.util.http.ProxyUtil;
@@ -36,6 +43,10 @@ import eu.esdihumboldt.util.http.ProxyUtil;
 public class ProxySettings {
 
 	private static ALogger log = ALoggerFactory.getLogger(ProxySettings.class);
+
+	private static final IProxyService PROXY_SERVICE = HalePlatform.getService(IProxyService.class);
+	private static final List<String> HTTP_PROXY_TYPES = Arrays.asList(IProxyData.HTTP_PROXY_TYPE,
+			IProxyData.HTTPS_PROXY_TYPE);
 
 	/**
 	 * Install the proxy settings for them to be initialized when a proxy is
@@ -51,7 +62,11 @@ public class ProxySettings {
 
 				@Override
 				public void run() {
-					applyCurrentSettings();
+					try {
+						applyCurrentSettings();
+					} catch (CoreException e) {
+						log.error("Proxy settings could not be applied", e); //$NON-NLS-1$
+					}
 				}
 			});
 		}
@@ -59,8 +74,10 @@ public class ProxySettings {
 
 	/**
 	 * Apply the current proxy settings to the system
+	 *
+	 * @throws CoreException if the proxy settings cannot be applied
 	 */
-	public static void applyCurrentSettings() {
+	public static void applyCurrentSettings() throws CoreException {
 		// update proxy system properties
 		IPreferenceStore prefs = UIUtilitiesPlugin.getDefault().getPreferenceStore();
 		String host = prefs.getString(PreferenceConstants.CONNECTION_PROXY_HOST);
@@ -76,40 +93,27 @@ public class ProxySettings {
 			nonProxyHosts = nonProxyHosts.replaceAll(";", "|"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
+		List<IProxyData> proxyData = Arrays.asList(PROXY_SERVICE.getProxyData());
 		if (host == null || host.isEmpty()) {
-			System.clearProperty("http.proxyHost"); //$NON-NLS-1$
-			System.clearProperty("https.proxyHost"); //$NON-NLS-1$
-
-			System.clearProperty("http.proxyPort"); //$NON-NLS-1$
-			System.clearProperty("https.proxyPort"); //$NON-NLS-1$
-
-			System.clearProperty("http.nonProxyHosts"); //$NON-NLS-1$
-			// http.nonProxyHost is used also by https
-
-			System.clearProperty("http.proxyUser"); //$NON-NLS-1$
-			System.clearProperty("https.proxyUser"); //$NON-NLS-1$
-
-			System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
-			System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
+			disableProxy();
 		}
 		else {
-			System.setProperty("http.proxyHost", host); //$NON-NLS-1$
-			System.setProperty("https.proxyHost", host); //$NON-NLS-1$
+			forEachHttpProxyType(proxyData, p -> {
+				p.setHost(host);
+				p.setPort(port);
+			});
 
-			System.setProperty("http.proxyPort", String.valueOf(port)); //$NON-NLS-1$
-			System.setProperty("https.proxyPort", String.valueOf(port)); //$NON-NLS-1$
 			if (nonProxyHosts == null || nonProxyHosts.isEmpty()) {
-				System.clearProperty("http.nonProxyHosts"); //$NON-NLS-1$
+				PROXY_SERVICE.setNonProxiedHosts(new String[] {});
 			}
 			else {
-				System.setProperty("http.nonProxyHosts", nonProxyHosts); //$NON-NLS-1$
+				PROXY_SERVICE.setNonProxiedHosts(nonProxyHosts.split("\\|"));
 			}
 
 			// only check user/password if host is set
 			String proxyUser = prefs.getString(PreferenceConstants.CONNECTION_PROXY_USER);
 			if (proxyUser != null && !proxyUser.isEmpty()) {
-				System.setProperty("http.proxyUser", proxyUser); //$NON-NLS-1$
-				System.setProperty("https.proxyUser", proxyUser); //$NON-NLS-1$
+				forEachHttpProxyType(proxyData, p -> p.setUserid(proxyUser));
 
 				try {
 					String password = SecurePreferencesFactory.getDefault()
@@ -117,27 +121,41 @@ public class ProxySettings {
 							.get(PreferenceConstants.CONNECTION_PROXY_PASSWORD, null);
 
 					if (password != null) {
-						System.setProperty("http.proxyPassword", password); //$NON-NLS-1$
-						System.setProperty("https.proxyPassword", password); //$NON-NLS-1$
+						forEachHttpProxyType(proxyData, p -> p.setPassword(password));
 
 						Authenticator.setDefault(new HttpAuth(proxyUser, password));
 					}
 					else {
-						System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
-						System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
+						forEachHttpProxyType(proxyData, p -> p.setPassword(""));
 					}
 				} catch (StorageException e) {
 					log.error("Error accessing secure preferences for proxy password"); //$NON-NLS-1$
 				}
 			}
 			else {
-				System.clearProperty("http.proxyUser"); //$NON-NLS-1$
-				System.clearProperty("https.proxyUser"); //$NON-NLS-1$
-
-				System.clearProperty("http.proxyPassword"); //$NON-NLS-1$
-				System.clearProperty("https.proxyPassword"); //$NON-NLS-1$
+				forEachHttpProxyType(proxyData, p -> {
+					p.setUserid("");
+					p.setPassword("");
+				});
 			}
+
+			applyProxyData(proxyData);
 		}
 	}
 
+	private static void forEachHttpProxyType(List<IProxyData> proxyData,
+			Consumer<? super IProxyData> action) {
+		proxyData.stream().filter(p -> HTTP_PROXY_TYPES.contains(p.getType())).forEach(action);
+	}
+
+	private static void applyProxyData(List<IProxyData> proxyData) throws CoreException {
+		PROXY_SERVICE.setProxyData((IProxyData[]) proxyData.toArray());
+		PROXY_SERVICE.setProxiesEnabled(true);
+		PROXY_SERVICE.setSystemProxiesEnabled(false);
+	}
+
+	private static void disableProxy() {
+		PROXY_SERVICE.setProxiesEnabled(false);
+		PROXY_SERVICE.setSystemProxiesEnabled(false);
+	}
 }

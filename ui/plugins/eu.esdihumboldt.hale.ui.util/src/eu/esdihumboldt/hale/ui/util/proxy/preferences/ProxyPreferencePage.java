@@ -16,6 +16,7 @@
 
 package eu.esdihumboldt.hale.ui.util.proxy.preferences;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -27,6 +28,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.ui.util.components.PasswordFieldEditor;
 import eu.esdihumboldt.hale.ui.util.internal.Messages;
 import eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugin;
@@ -37,10 +40,10 @@ import eu.esdihumboldt.hale.ui.util.proxy.ProxySettings;
  * 
  * @author Michel Kraemer
  */
-public class ProxyPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+public class ProxyPreferencePage extends FieldEditorPreferencePage
+		implements IWorkbenchPreferencePage {
 
-//	private static final ALogger _log = ALoggerFactory.getLogger(ProxyPreferencePage.class);
+	private static final ALogger log = ALoggerFactory.getLogger(ProxyPreferencePage.class);
 
 	/**
 	 * Default constructor
@@ -95,7 +98,12 @@ public class ProxyPreferencePage extends FieldEditorPreferencePage implements
 			return false;
 		}
 
-		ProxySettings.applyCurrentSettings();
+		try {
+			ProxySettings.applyCurrentSettings();
+		} catch (CoreException e) {
+			log.userError("Proxy settings could not be applied", e);
+			return false;
+		}
 
 		return true;
 	}
