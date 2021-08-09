@@ -395,9 +395,11 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				//Therefore, the jre must be copied into the `Eclipse` folder of the bundled application.
 				artifactInstallPath = new File(productOutputPath.absolutePath ,"/Eclipse.app/Contents/Eclipse/${reldstpath}")
 				
-				// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
+				// Use external tar command for OSX build since the jdk to bundle with HALE, contains symbolic links.
 				// This does only work on UNIX-based systems with tar installed!
-				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
+				/During extraction, this command will strip the root folder from jdk which is usually the name of the jdk and will
+				//extract the data into the root folder starting with `Contents`. 
+				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath, '--strip-components=1']
 			    artifactInstallPath.mkdir()
 			 	try {
 				    // On windows, an IOException will be thrown here
@@ -862,12 +864,10 @@ def updateHaleIniFileWithJrePath(filepath) {
 	def indexOfVmargs = fileContent.indexOf("-vmargs")
 	
 	def updatedContent = fileContent.substring(0, indexOfVmargs)
-	.concat("-vm")
-	.concat("\n")
-	.concat("../Eclipse/jre/jdk8u282-b08/Contents/Home/jre/bin/java")
-	.concat("\n")
+	.concat("-vm\n")
+	.concat("../Eclipse/jre/Contents/Home/jre/bin/java\n")
 	.concat(fileContent.substring(indexOfVmargs, fileContent.length()))
-	
+
 	println("HALE.ini file contents changed successfully!!")
 	file.write(updatedContent)
 }
