@@ -156,7 +156,7 @@ ext {
 	]
 
 	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-	artifactsCommit = '96b81f6882f926e37b738689465d69a9c7c5f76a'
+	artifactsCommit = '6431f1d635126138b32611dcc47467a401448c8e'
 	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
