@@ -15,6 +15,7 @@
  */
 package eu.esdihumboldt.hale.ui.application;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -51,13 +52,17 @@ public class Application extends AbstractApplication<ApplicationContext> impleme
 		// install SLF4J JUL bridge
 		SLF4JBridgeHandler.install();
 
-		WKTPreferencesCRSFactory.install();
-
-		// init HSQL database
-		try {
-			CRS.decode("EPSG:4326"); //$NON-NLS-1$
-		} catch (Exception e) {
-			_log.error("Error while initializing epsg database", e); //$NON-NLS-1$
+		// Skip installing WKTPreferencesCRSFactory and CRS if the app is run in
+		// mac OS.
+		// Change is done as part of Issue: 849.
+		if (!SystemUtils.IS_OS_MAC) {
+			WKTPreferencesCRSFactory.install();
+			// init HSQL database
+			try {
+				CRS.decode("EPSG:4326"); //$NON-NLS-1$
+			} catch (Exception e) {
+				_log.error("Error while initializing epsg database", e); //$NON-NLS-1$
+			}
 		}
 
 		// find base path of the application.
