@@ -173,7 +173,7 @@ ext {
             ]
         ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`. 
 		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08` 
-		   //is being stripped and the `Contents` folder is being copied into the jre folder.
+		   //is being stripped and the `Contents` folder is being copied into jre folder.
         'macosx': [
             'cocoa': [
                 'x86_64': 'OpenJDK8U-jdk_x64_mac_openj9_macosXL_8u282b08_openj9-0.24.0.tar.gz'

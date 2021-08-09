@@ -397,8 +397,8 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				
 				// Use external tar command for OSX build since the jdk to bundle with HALE, contains symbolic links.
 				// This does only work on UNIX-based systems with tar installed!
-				/During extraction, this command will strip the root folder from jdk which is usually the name of the jdk and will
-				//extract the data into the root folder starting with `Contents`. 
+				//This command during extraction, will strip the root folder from jdk which is usually jdk name and will
+				//extract the data into root folder starting with `Contents`. 
 				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath, '--strip-components=1']
 			    artifactInstallPath.mkdir()
 			 	try {
