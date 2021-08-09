@@ -412,8 +412,10 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				} catch (ex) {
 				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
 				}
-				//update HALE.ini file with the JRE path bundled in the Eclipse.app.
-				updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
+				if (reldstpath.equals("jre")){
+					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
+					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
+				}
 			}
         }
     } else {
