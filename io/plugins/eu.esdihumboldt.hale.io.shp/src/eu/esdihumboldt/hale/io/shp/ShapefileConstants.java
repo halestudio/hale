@@ -65,4 +65,30 @@ public interface ShapefileConstants {
 	 */
 	public static final String PARAM_MATCH_SHORT_PROPERTY_NAMES = "matchShortPropertyNames";
 
+	/**
+	 * Constant for the geometry property for the shape files. Used when
+	 * exporting the data to the shape files.
+	 */
+	public static final String THE_GEOM = "the_geom";
+
+	/**
+	 * Constant for the shape file extension.
+	 */
+	public static final String SHP_EXTENSION = ".shp";
+	/**
+	 * Constant for underscore.
+	 */
+	public static final String UNDERSCORE = "_";
+
+	/**
+	 * Constant for the url. Used to create schema for shape file writer.
+	 */
+	public static final String URL_STRING = "url";
+
+	/**
+	 * Constant used to create default transaction when writing to the shape
+	 * file.
+	 */
+	public static final String CREATE_CONSTANT = "create";
+
 }
