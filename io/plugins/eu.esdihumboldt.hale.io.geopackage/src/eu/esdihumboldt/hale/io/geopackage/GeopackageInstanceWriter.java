@@ -149,6 +149,7 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		progress.begin("Generating Geopackage", ProgressIndicator.UNKNOWN);
 		InstanceCollection instances = getInstances();
 
 		GeoPackage geoPackage = null;
