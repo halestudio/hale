@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.ui.views.schemas.explorer;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -25,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationListener;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
@@ -79,6 +81,29 @@ public class ServiceSchemaExplorer {
 		schemaService.addSchemaServiceListener(schemaListener = new SchemaServiceListener() {
 
 			@Override
+			public void schemaRemoved(SchemaSpaceID spaceID) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						if (spaceID.equals(schemaSpace)) {
+							SchemaSpace schemas = schemaService.getSchemas(spaceID);
+							if (StreamSupport.stream(schemas.getSchemas().spliterator(), false)
+									.count() == 0) {
+								explorer.setSchema(null);
+							}
+							else {
+								explorer.setSchema(schemaService.getSchemas(spaceID));
+							}
+						}
+						refreshInDisplayThread();
+					}
+				});
+
+			}
+
+			@Override
 			public void schemasCleared(final SchemaSpaceID spaceID) {
 				final Display display = PlatformUI.getWorkbench().getDisplay();
 				display.syncExec(new Runnable() {
@@ -87,6 +112,7 @@ public class ServiceSchemaExplorer {
 					public void run() {
 						if (spaceID.equals(schemaSpace)) {
 							explorer.setSchema(null);
+							refreshInDisplayThread();
 						}
 					}
 				});
@@ -102,6 +128,7 @@ public class ServiceSchemaExplorer {
 						if (spaceID.equals(schemaSpace)) {
 							explorer.setSchema(schemaService.getSchemas(spaceID));
 						}
+						refreshInDisplayThread();
 					}
 				});
 			}
@@ -117,6 +144,7 @@ public class ServiceSchemaExplorer {
 						if (spaceID.equals(schemaSpace)) {
 							explorer.setSchema(schemaService.getSchemas(spaceID));
 						}
+						refreshInDisplayThread();
 					}
 				});
 			}

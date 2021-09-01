@@ -40,6 +40,15 @@ public interface SchemaServiceListener {
 	public void schemaAdded(SchemaSpaceID spaceID, Schema schema);
 
 	/**
+	 * Called when the source or target schema have been removed from the
+	 * project(resources) view.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
+	 */
+	public void schemaRemoved(SchemaSpaceID spaceID);
+
+	/**
 	 * Called when the source or target schema space have been cleared.
 	 * 
 	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}

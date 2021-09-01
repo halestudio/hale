@@ -24,7 +24,7 @@ package eu.esdihumboldt.hale.ui.io.action;
 public abstract class AbstractActionUIAdvisor<T> implements ActionUIAdvisor<T> {
 
 	@Override
-	public boolean supportsRemoval() {
+	public boolean supportsRemoval(String resourceId) {
 		return false;
 	}
 

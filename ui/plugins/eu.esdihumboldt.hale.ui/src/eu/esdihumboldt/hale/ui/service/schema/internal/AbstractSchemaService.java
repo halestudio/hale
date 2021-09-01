@@ -90,6 +90,18 @@ public abstract class AbstractSchemaService implements SchemaService {
 	}
 
 	/**
+	 * Called when a single source or a target schema has been cleared.
+	 * 
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
+	 */
+	protected void notifySchemaRemoved(SchemaSpaceID spaceID) {
+		for (SchemaServiceListener listener : listeners) {
+			listener.schemasCleared(spaceID);
+		}
+	}
+
+	/**
 	 * Called when the source or target schema space have been cleared.
 	 * 
 	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}

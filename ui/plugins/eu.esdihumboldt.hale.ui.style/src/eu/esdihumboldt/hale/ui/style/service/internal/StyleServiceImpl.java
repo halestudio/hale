@@ -116,6 +116,11 @@ public class StyleServiceImpl extends AbstractStyleService {
 			}
 
 			@Override
+			public void schemaRemoved(SchemaSpaceID spaceID) {
+				update();
+			}
+
+			@Override
 			public void schemasCleared(SchemaSpaceID spaceID) {
 				update();
 			}
@@ -465,11 +470,9 @@ public class StyleServiceImpl extends AbstractStyleService {
 		Collection<TypeDefinition> result = new ArrayList<TypeDefinition>();
 
 		// search source...
-		result.addAll(
-				findTypes(schemaService.getSchemas(SchemaSpaceID.SOURCE), qnames, localnames));
+		result.addAll(findTypes(schemaService.getSchemas(SchemaSpaceID.SOURCE), qnames, localnames));
 		// and target types
-		result.addAll(
-				findTypes(schemaService.getSchemas(SchemaSpaceID.TARGET), qnames, localnames));
+		result.addAll(findTypes(schemaService.getSchemas(SchemaSpaceID.TARGET), qnames, localnames));
 
 		return result;
 	}
