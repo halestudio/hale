@@ -689,6 +689,7 @@
             label="Source schema..."
             priority="-10"
             projectResource="true"
+            ui-advisor="eu.esdihumboldt.hale.ui.io.schema.SourceSchemaActionUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui
@@ -698,6 +699,7 @@
             label="Target schema..."
             priority="-9"
             projectResource="true"
+            ui-advisor="eu.esdihumboldt.hale.ui.io.schema.TargetSchemaActionUIAdvisor"
             wizard="eu.esdihumboldt.hale.ui.io.schema.SchemaImportWizard">
       </action-ui>
       <action-ui

@@ -17,7 +17,9 @@ package eu.esdihumboldt.hale.common.headless.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOAdvisor;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
@@ -26,7 +28,7 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaIO;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.impl.ResourceSchemaSpace;
 
 /**
  * Loads schemas and stores them in the advisor. As such an advisor instance may
@@ -36,7 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
  */
 public class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 
-	private final List<Schema> schemas = new ArrayList<Schema>();
+	private final Map<String, Schema> schemas = new HashMap<String, Schema>();
 
 	private final SchemaSpaceID ssid;
 
@@ -72,7 +74,7 @@ public class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 	@Override
 	public void handleResults(SchemaReader provider) {
 		// add loaded schema to schema space
-		schemas.add(provider.getSchema());
+		schemas.put(provider.getResourceIdentifier(), provider.getSchema());
 
 		super.handleResults(provider);
 	}
@@ -81,7 +83,7 @@ public class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 	 * @return the schemas
 	 */
 	protected List<Schema> getSchemas() {
-		return Collections.unmodifiableList(schemas);
+		return Collections.unmodifiableList(new ArrayList<>(schemas.values()));
 	}
 
 	/**
@@ -91,15 +93,14 @@ public class LoadSchemaAdvisor extends AbstractIOAdvisor<SchemaReader> {
 	 */
 	public SchemaSpace getSchema() {
 		// TODO cache?
-		DefaultSchemaSpace dss = new DefaultSchemaSpace();
+		ResourceSchemaSpace dss = new ResourceSchemaSpace();
 
 		// add all schemas
-		for (Schema schema : schemas) {
-			// load information about mapping relevant types
-			SchemaIO.loadMappingRelevantTypesConfig(schema, ssid, project);
-			dss.addSchema(schema);
+		for (Map.Entry<String, Schema> entry : schemas.entrySet()) {
+//			 load information about mapping relevant types
+			SchemaIO.loadMappingRelevantTypesConfig(entry.getValue(), ssid, project);
+			dss.addSchema(entry.getKey(), entry.getValue());
 		}
-
 		return dss;
 	}
 

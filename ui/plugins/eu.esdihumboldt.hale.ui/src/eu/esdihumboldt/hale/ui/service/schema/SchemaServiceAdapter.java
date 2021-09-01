@@ -39,6 +39,14 @@ public class SchemaServiceAdapter implements SchemaServiceListener {
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener#schemaRemoved(eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
+	 */
+	@Override
+	public void schemaRemoved(SchemaSpaceID spaceID) {
+		// override me
+	}
+
+	/**
 	 * @see SchemaServiceListener#schemasCleared(SchemaSpaceID)
 	 */
 	@Override

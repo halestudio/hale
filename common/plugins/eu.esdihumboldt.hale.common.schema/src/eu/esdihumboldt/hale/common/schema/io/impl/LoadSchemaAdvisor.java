@@ -22,7 +22,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.ConfigurationIOAdvisor;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.impl.ResourceSchemaSpace;
 
 /**
  * I/O configuration based advisor for loading schemas, that collects loaded
@@ -32,7 +32,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
  */
 public class LoadSchemaAdvisor extends ConfigurationIOAdvisor<SchemaReader> {
 
-	private final DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace();
+	private final ResourceSchemaSpace schemaSpace = new ResourceSchemaSpace();
 	private final SchemaSpaceID ssid;
 
 	/**
@@ -56,7 +56,7 @@ public class LoadSchemaAdvisor extends ConfigurationIOAdvisor<SchemaReader> {
 	 */
 	@Override
 	public void handleResults(SchemaReader provider) {
-		schemaSpace.addSchema(provider.getSchema());
+		schemaSpace.addSchema(provider.getResourceIdentifier(), provider.getSchema());
 	}
 
 	/**

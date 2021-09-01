@@ -33,7 +33,7 @@ public class SnippetUIAdvisor extends AbstractActionUIAdvisor<Snippet> {
 	}
 
 	@Override
-	public boolean supportsRemoval() {
+	public boolean supportsRemoval(String resourceId) {
 		return true;
 	}
 

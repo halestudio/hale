@@ -34,7 +34,7 @@ public class CodeListUIAdvisor extends AbstractActionUIAdvisor<CodeList> {
 	}
 
 	@Override
-	public boolean supportsRemoval() {
+	public boolean supportsRemoval(String resourceId) {
 		return true;
 	}
 
