@@ -19,20 +19,20 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
-import java.nio.file.FileSystems
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.function.Consumer
 import java.time.Instant
 import java.time.LocalDate
+import java.util.function.Consumer
+
 import org.junit.Test
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
-import org.locationtech.jts.geom.Point
-import org.locationtech.jts.geom.Polygon
 import org.locationtech.jts.geom.GeometryFactory
 import org.locationtech.jts.geom.MultiPolygon
+import org.locationtech.jts.geom.Point
+
 import eu.esdihumboldt.cst.functions.geometric.GeometryHelperFunctions
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator
@@ -53,7 +53,6 @@ import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader
 import eu.esdihumboldt.hale.io.shp.writer.ShapefileInstanceWriter
 import groovy.transform.CompileStatic
-import groovy.xml.QName
 
 class ShapefileInstanceWriterTest {
 
@@ -298,10 +297,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.population.value() == 158254
+							assert inst.p.populati.value() == 158254
 							break
 						case 'München':
-							assert inst.p.population.value() == 1471508
+							assert inst.p.populati.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -373,10 +372,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.population.value() == 158254
+							assert inst.p.populati.value() == 158254
 							break
 						case 'München':
-							assert inst.p.population.value() == 1471508
+							assert inst.p.populati.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -445,10 +444,10 @@ class ShapefileInstanceWriterTest {
 						assert name
 						switch (name) {
 							case 'Darmstadt':
-								assert inst.p.population.value() == 158254
+								assert inst.p.populati.value() == 158254
 								break
 							case 'München':
-								assert inst.p.population.value() == 1471508
+								assert inst.p.populati.value() == 1471508
 								break
 							default:
 								throw new IllegalStateException("Unexpected type $typeName")
@@ -745,10 +744,7 @@ class ShapefileInstanceWriterTest {
 
 		withNewShapefileWithReporterErrors(schema, instances) { file ->
 			// load instances again and test
-			def schemaNames = [
-				"Point",
-				"Polygon"
-			]
+			def schemaNames = ["Point", "Polygon"]
 			int num = 0
 			int abcCount = 0
 			int attrCount = 0
@@ -946,9 +942,14 @@ class ShapefileInstanceWriterTest {
 					assert a_date == aDate.toString()
 					def a_timestamp = inst.p.a_timestam.value()
 					assert a_timestamp == null
+					def ati = inst.p.ati.value()
+					assert ati != null
 					def legacy_date = inst.p.legacy_dat.value()
-
 					assert legacy_date == null
+
+					def leda = inst.p.leda.value()
+					assert leda != null
+
 
 					def the_geom = inst.p.the_geom.value()
 					assert the_geom
@@ -1011,10 +1012,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.population.value() == 158254
+							assert inst.p.populati.value() == 158254
 							break
 						case 'München':
-							assert inst.p.population.value() == 1471508
+							assert inst.p.populati.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -1027,6 +1028,247 @@ class ShapefileInstanceWriterTest {
 		} { ShapefileInstanceWriter writer ->
 			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
 		}
+	}
+
+
+	@Test
+	void testSinglePolyGeometryWithLongAttributeNamesWithSingleInstance() {
+
+		GeometryFactory gf = new GeometryFactory()
+		def poly = gf.createPolygon([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
+
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				nameInCamelCase(String)
+				name_In_snake_CamelCase(String)
+				name_in_snake_case(String)
+				name1234567(String)
+				populaon123456789(Integer)
+				snake_camelCase1234(String)
+				location(GeometryProperty)
+				myprop(String)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darms'
+				nameInCamelCase 'DarmstadtnameInCamelCase'
+				name_In_snake_CamelCase 'Darmstadt name_In_snake_CamelCase'
+				name_in_snake_case 'Darmstadt name_in_snake_case'
+				name1234567 'Darmstadt name1234567'
+				populaon123456789 158254
+				snake_camelCase1234 'snake_camelCase1234'
+				location(polyGeom)
+				myprop 'myprop'
+			}
+
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+
+			def loaded = loadInstances(file)
+
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+					def typeName = inst.getDefinition().getName().getLocalPart()
+
+					def the_geom = inst.p.the_geom.value()
+					assert the_geom
+					assert the_geom instanceof GeometryProperty
+					def crs = the_geom.getCRSDefinition()
+					assert crs
+					def jts = the_geom.geometry
+
+					assert jts instanceof MultiPolygon
+
+					def name = inst.p.name.value()
+					assert name == 'Darms'
+					def naInCaCa = inst.p.naInCaCa.value()
+					assert naInCaCa == 'DarmstadtnameInCamelCase'
+					assertEquals('DarmstadtnameInCamelCase',naInCaCa)
+
+					//truncated after 8 so 'Ca' is not in the name.
+					def naInsnCa = inst.p.naInsnCa.value()
+					assertEquals('Darmstadt name_In_snake_CamelCase',naInsnCa)
+
+					def nainsnca = inst.p.nainsnca.value()
+					assertEquals('Darmstadt name_in_snake_case',nainsnca)
+
+					def na12 = inst.p.na12.value()
+					assertEquals('Darmstadt name1234567',na12)
+
+
+					def po12 = inst.p.po12.value()
+					assertEquals(158254,po12)
+
+					def myprop = inst.p.myprop.value()
+					assertEquals('myprop',myprop)
+
+					def sncaCa12 = inst.p.sncaCa12.value()
+					assertEquals('snake_camelCase1234',sncaCa12)
+				}
+			}
+			assertEquals(1, num)
+		}
+	}
+
+
+	@Test
+	void testSinglePolyGeometryWithLongAlphanumericNamesWithMultipleInstances() {
+
+		GeometryFactory gf = new GeometryFactory()
+		def poly = gf.createPolygon([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
+
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				population123(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				population123 158254
+				location(polyGeom)
+			}
+
+			city {
+				name 'München'
+				population123 1471508
+				location( polyGeom)
+			}
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+
+			def loaded = loadInstances(file)
+
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+					def typeName = inst.getDefinition().getName().getLocalPart()
+
+					def the_geom = inst.p.the_geom.value()
+					assert the_geom
+					assert the_geom instanceof GeometryProperty
+					def crs = the_geom.getCRSDefinition()
+					assert crs
+					def jts = the_geom.geometry
+
+					assert jts instanceof MultiPolygon
+					def name = inst.p.name.value()
+					assert name
+					switch (name) {
+						case 'Darmstadt':
+							assert inst.p.po12.value() == 158254
+							break
+						case 'München':
+							assert inst.p.po12.value() == 1471508
+							break
+						default:
+							throw new IllegalStateException("Unexpected type $typeName")
+					}
+				}
+			}
+			assertEquals(2, num)
+		}
+
+	}
+
+	@Test
+	void testSinglePolyGeometryWithLongAlphanumericNamesWithMultipleInstancesWithMissingData() {
+
+		GeometryFactory gf = new GeometryFactory()
+		def poly = gf.createPolygon([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
+
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				population123(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				location(polyGeom)
+			}
+
+			city {
+				name 'München'
+				population123 1471508
+				location( polyGeom)
+			}
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+
+			def loaded = loadInstances(file)
+
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+					def typeName = inst.getDefinition().getName().getLocalPart()
+
+					def the_geom = inst.p.the_geom.value()
+					assert the_geom
+					assert the_geom instanceof GeometryProperty
+					def crs = the_geom.getCRSDefinition()
+					assert crs
+					def jts = the_geom.geometry
+
+					assert jts instanceof MultiPolygon
+					def name = inst.p.name.value()
+					assert name
+					switch (name) {
+						case 'München':
+							assert inst.p.po12.value() == 1471508
+							break
+					}
+				}
+			}
+			assertEquals(2, num)
+		}
+
 	}
 
 }
