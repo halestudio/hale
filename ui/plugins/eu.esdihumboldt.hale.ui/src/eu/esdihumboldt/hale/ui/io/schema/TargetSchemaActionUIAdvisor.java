@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.ui.io.schema;
 
-import eu.esdihumboldt.hale.common.align.model.Type;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 
@@ -40,9 +39,12 @@ public class TargetSchemaActionUIAdvisor extends AbstractSchemaActionUIAdvisor<S
 		// alignment is present, the condition will return true. However, when
 		// the alignment is mapped then the function should return false.
 		supportRemoval = !alignmentService.getAlignment().getCells().stream()
-				.anyMatch(alignmentCells -> alignmentCells.getTarget().entries().stream()
-						.anyMatch(k -> schema.getType(((Type) k.getValue()).getDefinition()
-								.getDefinition().getName()) != null));
+				.anyMatch(alignmentCells -> alignmentCells.getTarget() != null
+						? alignmentCells.getTarget().entries().stream()
+								.anyMatch(k -> schema.getType(
+										k.getValue().getDefinition().getType().getName()) != null)
+						: false);
+
 		return supportRemoval;
 	}
 
