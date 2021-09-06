@@ -22,6 +22,7 @@ import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,12 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * The identifier of the writer as registered to the I/O provider extension.
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.shp.instance.writer";
+
+	/**
+	 * Regular expression to split the camelCase, the snake_case, or the
+	 * alphanumeric string.
+	 */
+	private final String REGEX = "(?<!(^|[A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])|_|((?<=[a-zA-Z])(?=[0-9]))";
 
 	@Override
 	public boolean isPassthrough() {
@@ -270,14 +277,60 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 			if (!prop.getPropertyType().getConstraint(GeometryType.class).isGeometry()
 					&& !prop.getName().getNamespaceURI()
 							.equalsIgnoreCase(ShapefileConstants.SHAPEFILE_AUGMENT_NS)) {
-				if (instance.getProperty(prop.getName()) != null) {
-					Set<String> keySet = geometryBuilderMap.keySet();
-					for (String key : keySet) {
-						geometryBuilderMap.get(key).add(prop.getDisplayName(), binding);
-					}
+				// intentionally removing instance.getProperty(prop.getName())
+				// != null, otherwise some properties that are null here are
+				// read in step 3. This change will export all the attributes.
+				Set<String> keySet = geometryBuilderMap.keySet();
+				for (String key : keySet) {
+					String propName = truncatePropertyName(prop.getName().getLocalPart());
+					geometryBuilderMap.get(key).add(propName, binding);
 				}
 			}
 		}
+	}
+
+	/**
+	 * Method to truncate the property names up to 9 characters by splitting
+	 * them from camelCase, snake_case, or alphanumeric characters. E.g. <br/>
+	 * camelCase: caCa<br/>
+	 * snake_case: snca <br/>
+	 * alpha1234; al12 <br/>
+	 * snake_camelCase: sncaCa <br/>
+	 * snake_camelCase1234: sncaCa12 <br/>
+	 * population: populati
+	 * 
+	 * As the Shapefile DB doesn't allow more than 10 characters, the change is
+	 * required to avoid exporting null values to the columns whose name is
+	 * greater than 10 characters. This method intentionally truncates up to 9
+	 * characters to leave a room for the unexpected scenario(s) where the
+	 * truncated names might clash, then the values will be append with the
+	 * integers by the library and the null values will be exported (should be a
+	 * rare scenario).
+	 * 
+	 * @param propName property name to be truncated.
+	 * @return truncated property name with max 9 characters.
+	 */
+	private String truncatePropertyName(String propName) {
+		if (propName != null && propName.length() > 8) {
+			String[] split = propName.split(REGEX);
+			if (split.length > 1) {
+				StringBuilder propNameFormatted = new StringBuilder();
+
+				Arrays.stream(split).forEach(s -> propNameFormatted
+						.append(s.substring(0, s.length() > 2 ? 2 : s.length())));
+				propName = propNameFormatted.toString();
+				int stringLen = propName.length() > 8 ? 8 : propName.length();
+				propName = propName.substring(0, stringLen);
+			}
+			else {
+				// as it is greater than 8 but there is nothing to split. So
+				// instead of truncating it with 2 characters, truncate it with
+				// 8 characters.
+				propName = propName.substring(0, 8);
+			}
+
+		}
+		return propName;
 	}
 
 	/**
@@ -548,14 +601,13 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 		for (PropertyDefinition prop : allNonComplexProperties) {
 			if (!prop.getPropertyType().getConstraint(GeometryType.class).isGeometry()
 					&& !prop.getName().getNamespaceURI()
-							.equalsIgnoreCase(ShapefileConstants.SHAPEFILE_AUGMENT_NS)) {
+							.equalsIgnoreCase(ShapefileConstants.SHAPEFILE_AUGMENT_NS)
+					&& prop.getName().getLocalPart() != null) {
 				Object value = new InstanceAccessor(instance)
 						.findChildren(prop.getName().getLocalPart()).value();
-				if (value != null) {
-					Set<String> geometryKeys = schemaFbMap.get(localPart).keySet();
-					for (String key : geometryKeys) {
-						schemaFbMap.get(localPart).get(key).add(value);
-					}
+				Set<String> geometryKeys = schemaFbMap.get(localPart).keySet();
+				for (String key : geometryKeys) {
+					schemaFbMap.get(localPart).get(key).add(value);
 				}
 			}
 		}
