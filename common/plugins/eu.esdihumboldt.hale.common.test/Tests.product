@@ -251,6 +251,7 @@
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.end"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
