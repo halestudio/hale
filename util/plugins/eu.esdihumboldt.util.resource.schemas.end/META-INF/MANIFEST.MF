@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Bundled Environmental Noise Directive (END) Schemas
+Bundle-SymbolicName: eu.esdihumboldt.util.resource.schemas.end;singleton:=true
+Bundle-Version: 4.1.0.qualifier
+Automatic-Module-Name: eu.esdihumboldt.util.resource.schemas.end
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.schema.presets
