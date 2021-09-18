@@ -907,6 +907,24 @@
             priority="-10">
       </source>
       <source
+            class="eu.esdihumboldt.hale.ui.io.source.MultipleSchemaFilesSource"
+            description="Load a resource from a file applicable for schema reader"
+            icon="icons/file_obj.gif"
+            id="eu.esdihumboldt.hale.ui.io.source.multiplefiles"
+            name="multiple files"
+            priority="-6"
+            providerType="eu.esdihumboldt.hale.common.schema.io.SchemaReader">
+      </source>
+      <source
+            class="eu.esdihumboldt.hale.ui.io.source.MultipleInstanceFilesSource"
+            description="Load a resource from a file applicable for instance reader"
+            icon="icons/file_obj.gif"
+            id="eu.esdihumboldt.hale.ui.io.source.multiplefilesforinstance"
+            name="multiple files"
+            priority="-6"
+            providerType="eu.esdihumboldt.hale.common.instance.io.InstanceReader">
+      </source>
+      <source
             class="eu.esdihumboldt.hale.ui.io.source.URLSource"
             description="Load a resource from the web"
             icon="icons/discovery.gif"

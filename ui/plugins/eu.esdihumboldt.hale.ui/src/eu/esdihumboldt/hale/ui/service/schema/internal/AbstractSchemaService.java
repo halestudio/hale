@@ -97,7 +97,7 @@ public abstract class AbstractSchemaService implements SchemaService {
 	 */
 	protected void notifySchemaRemoved(SchemaSpaceID spaceID) {
 		for (SchemaServiceListener listener : listeners) {
-			listener.schemasCleared(spaceID);
+			listener.schemaRemoved(spaceID);
 		}
 	}
 

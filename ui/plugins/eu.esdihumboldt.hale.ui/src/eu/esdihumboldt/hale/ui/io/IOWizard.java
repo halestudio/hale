@@ -16,12 +16,17 @@
 
 package eu.esdihumboldt.hale.ui.io;
 
+import java.io.File;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -58,6 +63,9 @@ import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.FilesIOSupplier;
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.ui.io.action.ActionUI;
 import eu.esdihumboldt.hale.ui.io.action.ActionUIExtension;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
@@ -68,9 +76,7 @@ import eu.esdihumboldt.hale.ui.service.report.ReportService;
 /**
  * Abstract I/O wizard based on {@link IOProvider} descriptors
  * 
- * @param
- * 			<P>
- *            the {@link IOProvider} type used in the wizard
+ * @param <P> the {@link IOProvider} type used in the wizard
  * 
  * @author Simon Templer
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
@@ -97,6 +103,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 	private Multimap<String, AbstractConfigurationPage<? extends P, ? extends IOWizard<P>>> configPages;
 
 	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
+
+	private Queue<URI> usedLocations = null;
 
 	/**
 	 * Create an I/O wizard
@@ -518,132 +526,156 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			return false;
 		}
 
-		// create default report
-		IOReporter defReport = provider.createReporter();
-
-		// validate and execute provider
-		try {
-			// validate configuration
-			provider.validate();
-
-			ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
-			URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
-			boolean isProjectResource = false;
-			if (actionId != null) {
-				// XXX instead move project resource to action?
-				ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
-				isProjectResource = factory.isProjectResource();
-			}
-
-			// prevent loading of duplicate resources
-			if (isProjectResource && provider instanceof ImportProvider
-					&& !getProviderFactory().allowDuplicateResource()) {
-
-				String currentResource = ((ImportProvider) provider).getSource().getLocation()
-						.toString();
-				URI currentAbsolute = URI.create(currentResource);
-				if (projectLoc != null && !currentAbsolute.isAbsolute()) {
-					currentAbsolute = projectLoc.resolve(currentAbsolute);
-				}
-
-				for (IOConfiguration conf : ((Project) ps.getProjectInfo()).getResources()) {
-					Value otherResourceValue = conf.getProviderConfiguration()
-							.get(ImportProvider.PARAM_SOURCE);
-					if (otherResourceValue == null) {
-						continue;
-					}
-
-					String otherResource = otherResourceValue.as(String.class);
-					URI otherAbsolute = URI.create(otherResource);
-					if (projectLoc != null && !otherAbsolute.isAbsolute()) {
-						otherAbsolute = projectLoc.resolve(otherAbsolute);
-					}
-					String action = conf.getActionId();
-					// resource is already loaded into the project
-					if (currentAbsolute.equals(otherAbsolute) && Objects.equal(actionId, action)) {
-						// check if the resource is loaded with a provider that
-						// allows duplicates
-						boolean allowDuplicate = false;
-						IOProviderDescriptor providerFactory = IOProviderExtension.getInstance()
-								.getFactory(conf.getProviderId());
-						if (providerFactory != null) {
-							allowDuplicate = providerFactory.allowDuplicateResource();
-						}
-
-						if (!allowDuplicate) {
-							log.userError(
-									"Resource is already loaded. Loading duplicate resources is aborted!");
-							return false;
-						}
-					}
-				}
-			}
-
-			// enable provider internal caching
-			if (isProjectResource && provider instanceof CachingImportProvider) {
-				((CachingImportProvider) provider).setProvideCache();
-			}
-
-			IOReport report = execute(provider, defReport);
-
-			if (report != null) {
-				// add report to report server
-				ReportService repService = PlatformUI.getWorkbench()
-						.getService(ReportService.class);
-				repService.addReport(report);
-
-				// show message to user
-				if (report.isSuccess()) {
-					// no message, we rely on the report being shown/processed
-
-					// let advisor handle results
-					try {
-						getContainer().run(true, false, new IRunnableWithProgress() {
-
-							@Override
-							public void run(IProgressMonitor monitor)
-									throws InvocationTargetException, InterruptedException {
-								monitor.beginTask("Completing operation...",
-										IProgressMonitor.UNKNOWN);
-								try {
-									advisor.handleResults(getProvider());
-								} finally {
-									monitor.done();
-								}
-							}
-
-						});
-					} catch (InvocationTargetException e) {
-						log.userError(
-								"Error processing results:\n" + e.getCause().getLocalizedMessage(),
-								e.getCause());
-						return false;
-					} catch (Exception e) {
-						log.userError("Error processing results:\n" + e.getLocalizedMessage(), e);
-						return false;
-					}
-
-					// add to project service if necessary
-					if (isProjectResource)
-						ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
-
-					return true;
-				}
-				else {
-					// error message
-					log.userError(report.getSummary() + "\nPlease see the report for details.");
-					return false;
-				}
-			}
-			else
-				return true;
-		} catch (IOProviderConfigurationException e) {
-			// user feedback
-			log.userError(
-					"Validation of the provider configuration failed:\n" + e.getLocalizedMessage(),
-					e);
+		if (initializeUsedLocations() == null) {
+			// could not find any URIs in the provider.
 			return false;
 		}
+
+		URI uriLoc = usedLocations.poll();
+		while (uriLoc != null) {
+
+			// If multiple files were selected then for every file
+			// initialize/reset FileIOSupplier in the provider. For the first
+			// loop it will be FilesIOSupplier (or FileIOSupplier when single
+			// file is selected) and from the second loop onwards
+			// FileIOSupplier
+			if (provider instanceof ImportProvider
+					&& (((ImportProvider) provider).getSource() instanceof FilesIOSupplier
+							|| ((ImportProvider) provider).getSource() instanceof FileIOSupplier)) {
+				// always set FileIOSupplier to avoid huge impacts.
+				((ImportProvider) provider).setSource(new FileIOSupplier(new File(uriLoc)));
+			}
+			// else it is a non-file source and proceed with the code without
+			// updating the provider.
+
+			IOReporter defReport = provider.createReporter();
+
+			// validate and execute provider
+			try {
+				// validate configuration
+				provider.validate();
+
+				ProjectService ps = PlatformUI.getWorkbench().getService(ProjectService.class);
+				URI projectLoc = ps.getLoadLocation() == null ? null : ps.getLoadLocation();
+				boolean isProjectResource = false;
+				if (actionId != null) {
+					// XXX instead move project resource to action?
+					ActionUI factory = ActionUIExtension.getInstance().findActionUI(actionId);
+					isProjectResource = factory.isProjectResource();
+				}
+
+				// prevent loading of duplicate resources
+				if (isProjectResource && provider instanceof ImportProvider
+						&& !getProviderFactory().allowDuplicateResource()) {
+
+					String currentResource = ((ImportProvider) provider).getSource().getLocation()
+							.toString();
+					URI currentAbsolute = URI.create(currentResource);
+
+					if (projectLoc != null && !currentAbsolute.isAbsolute()) {
+						currentAbsolute = projectLoc.resolve(currentAbsolute);
+					}
+
+					for (IOConfiguration conf : ((Project) ps.getProjectInfo()).getResources()) {
+						Value otherResourceValue = conf.getProviderConfiguration()
+								.get(ImportProvider.PARAM_SOURCE);
+						if (otherResourceValue == null) {
+							continue;
+						}
+
+						String otherResource = otherResourceValue.as(String.class);
+						URI otherAbsolute = URI.create(otherResource);
+						if (projectLoc != null && !otherAbsolute.isAbsolute()) {
+							otherAbsolute = projectLoc.resolve(otherAbsolute);
+						}
+						String action = conf.getActionId();
+						// resource is already loaded into the project
+						if (currentAbsolute.equals(otherAbsolute)
+								&& Objects.equal(actionId, action)) {
+							// check if the resource is loaded with a provider
+							// that allows duplicates
+							boolean allowDuplicate = false;
+							IOProviderDescriptor providerFactory = IOProviderExtension.getInstance()
+									.getFactory(conf.getProviderId());
+							if (providerFactory != null) {
+								allowDuplicate = providerFactory.allowDuplicateResource();
+							}
+
+							if (!allowDuplicate) {
+								log.userError(
+										"Resource is already loaded. Loading duplicate resources is aborted!");
+								// should not proceed with the loop else
+								// duplicate resource will be uploaded.
+								return false;
+							}
+						}
+					}
+				}
+
+				// enable provider internal caching
+				if (isProjectResource && provider instanceof CachingImportProvider) {
+					((CachingImportProvider) provider).setProvideCache();
+				}
+				IOReport report = execute(provider, defReport);
+
+				if (report != null) {
+					// add report to report server
+					ReportService repService = PlatformUI.getWorkbench()
+							.getService(ReportService.class);
+					repService.addReport(report);
+
+					// show message to user
+					if (report.isSuccess()) {
+						// no message, we rely on the report being
+						// shown/processed
+
+						// let advisor handle results
+						try {
+							getContainer().run(true, false, new IRunnableWithProgress() {
+
+								@Override
+								public void run(IProgressMonitor monitor)
+										throws InvocationTargetException, InterruptedException {
+									monitor.beginTask("Completing operation...",
+											IProgressMonitor.UNKNOWN);
+									try {
+										advisor.handleResults(getProvider());
+									} finally {
+										monitor.done();
+									}
+								}
+
+							});
+						} catch (InvocationTargetException e) {
+							log.userError("Error processing results:\n"
+									+ e.getCause().getLocalizedMessage(), e.getCause());
+							return false;
+						} catch (Exception e) {
+							log.userError("Error processing results:\n" + e.getLocalizedMessage(),
+									e);
+							return false;
+						}
+
+						// add to project service if necessary
+						if (isProjectResource)
+							ps.rememberIO(actionId, getProviderFactory().getIdentifier(), provider);
+
+					}
+					else {
+						// error message
+						log.userError(report.getSummary() + "\nPlease see the report for details.");
+						return false;
+					}
+				}
+			} catch (IOProviderConfigurationException e) {
+				// user feedback
+				log.userError("Validation of the provider configuration failed:\n"
+						+ e.getLocalizedMessage(), e);
+				return false;
+			}
+			uriLoc = usedLocations.poll();
+		}
+		return true;
 	}
 
 	/**
@@ -705,7 +737,16 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 						throws InvocationTargetException, InterruptedException {
 					ATransaction trans = log.begin(defaultReporter.getTaskName());
 					try {
-						IOReport result = provider.execute(new ProgressMonitorIndicator(monitor));
+
+						IOReport result = null;
+						if (((ImportProvider) provider).getResourceIdentifier() != null) {
+							result = ((ImportProvider) provider)
+									.execute(new ProgressMonitorIndicator(monitor), null);
+						}
+						else {
+
+							result = provider.execute(new ProgressMonitorIndicator(monitor));
+						}
 						if (result != null) {
 							report.set(result);
 						}
@@ -801,6 +842,35 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 				listener.contentTypeChanged(contentType);
 			}
 		}
+	}
+
+	/**
+	 * Method to initialize used locations. It initializes usedLocations as a
+	 * list in case multiple files were selected otherwise as a single resource
+	 * in case of non-file source like HTTP/HTTPS or JDBC URIs.
+	 * 
+	 * @return the usedLocations
+	 */
+	private Queue<URI> initializeUsedLocations() {
+		List<URI> uris = new ArrayList<>();
+		if (provider instanceof ImportProvider) {
+			LocatableInputSupplier<? extends InputStream> source = ((ImportProvider) getProvider())
+					.getSource();
+			if (source instanceof FilesIOSupplier) {
+				uris = ((FilesIOSupplier) source).getUsedLocations();
+			}
+			else {
+				// non-file locations like HTTP/HTTPS or JDBC URIs or when a
+				// single file is selected.
+				URI location = ((ImportProvider) getProvider()).getSource().getLocation();
+				uris = Arrays.asList(location);
+			}
+
+			if (usedLocations == null) {
+				usedLocations = new LinkedList<>(uris);
+			}
+		}
+		return usedLocations;
 	}
 
 }

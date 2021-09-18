@@ -16,11 +16,15 @@
 package eu.esdihumboldt.hale.io.jdbc.spatialite.reader.internal;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.util.InstanceReaderDecorator;
@@ -75,6 +79,19 @@ public class SpatiaLiteInstanceReader extends InstanceReaderDecorator<JDBCInstan
 	public void setSource(LocatableInputSupplier<? extends InputStream> source) {
 		this.source = source;
 		internalProvider.setSource(new SpatiaLiteJdbcIOSupplier(new File(source.getLocation())));
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.ImportProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      java.lang.String)
+	 */
+	@Override
+	public IOReport execute(ProgressIndicator progress, String resourceIdentifier)
+			throws IOProviderConfigurationException, IOException, UnsupportedOperationException {
+		// for now loading multiple instances from SpatiaLite DB is not
+		// supported.
+		throw new UnsupportedOperationException(
+				"The operation is not supported for SpatiaLite DB multiple files!");
 	}
 
 }
