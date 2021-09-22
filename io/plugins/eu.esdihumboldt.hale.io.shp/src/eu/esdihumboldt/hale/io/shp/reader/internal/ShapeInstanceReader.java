@@ -107,24 +107,34 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		progress.setCurrentTask("Extracting shape instances");
 
 		String typename = getParameter(PARAM_TYPENAME).as(String.class);
+
+		// assign default false, otherwise will throw NPE for the test cases.
+		boolean autoDetect = getParameter(PARAM_AUTO_DETECT_SCHEMA_TYPES) != Value.NULL
+				? getParameter(PARAM_AUTO_DETECT_SCHEMA_TYPES).as(Boolean.class)
+				: false;
+
 		TypeDefinition defaultType = null;
-		if (typename != null && !typename.isEmpty()) {
-			try {
-				defaultType = getSourceSchema().getType(QName.valueOf(typename));
-			} catch (Exception e) {
-				// ignore
+//		If the autoDetect is checked then do not get the typename from the TypeSelectionPage.
+		if (!autoDetect) {
+			if (typename != null && !typename.isEmpty()) {
+				try {
+					defaultType = getSourceSchema().getType(QName.valueOf(typename));
+				} catch (Exception e) {
+					// ignore
+				}
+			}
+			if (defaultType == null) {
+				// check if typename was supplied w/o namespace
+				try {
+					defaultType = getSourceSchema()
+							.getType(new QName(ShapefileConstants.SHAPEFILE_NS, typename));
+				} catch (Exception e) {
+					// ignore
+					// TODO report?
+				}
 			}
 		}
-		if (defaultType == null) {
-			// check if typename was supplied w/o namespace
-			try {
-				defaultType = getSourceSchema()
-						.getType(new QName(ShapefileConstants.SHAPEFILE_NS, typename));
-			} catch (Exception e) {
-				// ignore
-				// TODO report?
-			}
-		}
+
 		if (defaultType == null) {
 			reporter.info(new IOMessageImpl(
 					"No type name supplied as parameter, trying to auto-detect the schema type.",

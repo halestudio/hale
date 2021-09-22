@@ -58,6 +58,12 @@ public interface ShapefileConstants {
 	public static final String PARAM_TYPENAME = "typename";
 
 	/**
+	 * Name of the parameter for {@link ShapeInstanceReader} to auto detect
+	 * schema types when selecting instances for multiple schemas.
+	 */
+	public static final String PARAM_AUTO_DETECT_SCHEMA_TYPES = "autoDetectSchemaTypes";
+
+	/**
 	 * Name of the parameter for {@link ShapeInstanceReader} to activate
 	 * matching of Shapefile property names to schema property names by checking
 	 * if there is exactly one schema property whose name starts with the

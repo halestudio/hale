@@ -75,6 +75,21 @@ public abstract class AbstractImportProvider extends AbstractIOProvider implemen
 	}
 
 	/**
+	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      java.lang.String)
+	 */
+	@SuppressWarnings("javadoc")
+	@Override
+	public IOReport execute(ProgressIndicator progress, String resourceIdentifier)
+			throws IOProviderConfigurationException, IOException, UnsupportedOperationException {
+
+		if (resourceIdentifier == null) {
+			this.resourceIdentifier = generateResourceId();
+		}
+		return super.execute(progress);
+	}
+
+	/**
 	 * Generate the unique resource identifier.
 	 * 
 	 * @return the generated resource identifier
