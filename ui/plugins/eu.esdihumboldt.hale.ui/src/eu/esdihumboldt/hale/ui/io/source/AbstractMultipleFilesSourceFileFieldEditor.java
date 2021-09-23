@@ -65,6 +65,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 	private Button historyButton;
 	private Text textField;
 	private final int validationStrategy;
+	private static final String LINE_SEPARATOR = "line.separator";
 
 	/**
 	 * @see ExtendedFileFieldEditor#ExtendedFileFieldEditor(String, String,
@@ -94,12 +95,18 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 		}
 		else if (!this.useRelative && useRelative && projectURI != null) {
 			this.useRelative = true;
-			File f = new File(getTextControl().getText());
-			URI absoluteSelected = f.toURI();
-			URI relativeSelected = IOUtils.getRelativePath(absoluteSelected, projectURI);
-			if (!relativeSelected.isAbsolute())
-				f = new File(relativeSelected.toString());
-			getTextControl().setText(f.getPath());
+			List<String> filepaths = getFilepathsAsList(getTextControl().getText().trim());
+			StringBuffer paths = new StringBuffer();
+			for (String path : filepaths) {
+				File f = new File(path);
+				URI absoluteSelected = f.toURI();
+				URI relativeSelected = IOUtils.getRelativePath(absoluteSelected, projectURI);
+				if (!relativeSelected.isAbsolute()) {
+					f = new File(relativeSelected.toString());
+					paths.append(f.getPath()).append(System.getProperty(LINE_SEPARATOR));
+				}
+			}
+			getTextControl().setText(paths.toString());
 		}
 	}
 
@@ -118,12 +125,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 		List<File> d = getFiles(f);
 		StringBuffer sb = new StringBuffer();
 		List<String> processedFiles = processFiles(d);
-		if (processedFiles.size() == 1) {
-			sb.append(processedFiles.get(0));
-		}
-		else {
-			processedFiles.forEach(k -> sb.append(k).append("\n"));
-		}
+		processedFiles.forEach(k -> sb.append(k).append(System.getProperty(LINE_SEPARATOR)));
 		return sb.toString();
 	}
 
@@ -146,7 +148,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 				URI relativeSelected = IOUtils.getRelativePath(absoluteSelected, projectURI);
 				if (!relativeSelected.isAbsolute()) {
 					File file = new File(relativeSelected.toString());
-					paths.add(file.getAbsolutePath());
+					paths.add(file.getPath());
 				}
 			});
 		}
@@ -181,9 +183,10 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 				showErrorMessage(errorMsg);
 				return false;
 			}
-			Optional<String> findAny = getFilepathsAsList(path).stream()
-					.filter(k -> ((new File(k)) == null) || !(new File(k)).isFile()).findAny();
-			if (findAny.isPresent()) {
+			Optional<String> invalidFilePath = getFilepathsAsList(path).stream()
+					.filter(k -> (resolve(new File(k)) == null) || !(resolve(new File(k))).isFile())
+					.findAny();
+			if (invalidFilePath.isPresent()) {
 				msg = getErrorMessage();
 			}
 		}
@@ -361,7 +364,8 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 											List<String> texts = processFiles(Arrays.asList(file));
 											if (texts != null) {
 												textField.append(texts.get(0));
-												textField.append("\n");
+												textField
+														.append(System.getProperty(LINE_SEPARATOR));
 												textField.setFocus();
 												valueChanged();
 											}
@@ -398,14 +402,15 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 
 	/**
 	 * // * Method to return list of filepaths from filepath string delimited by
-	 * "\n".
+	 * <code>System.getProperty(LINE_SEPARATOR)</code>.
 	 * 
-	 * @param filepaths file path string, delimited by \n.
+	 * @param filepaths file path string, delimited by
+	 *            <code>System.getProperty(LINE_SEPARATOR)</code>.
 	 * @return list of file paths after splitting.
 	 */
 	protected List<String> getFilepathsAsList(String filepaths) {
 		String stringValue = getStringValue();
-		String[] split = stringValue.split("\n");
+		String[] split = stringValue.split(System.getProperty(LINE_SEPARATOR));
 
 		List<String> collect = Arrays.asList(split).stream().filter(s -> !s.isEmpty())
 				.collect(Collectors.toList());

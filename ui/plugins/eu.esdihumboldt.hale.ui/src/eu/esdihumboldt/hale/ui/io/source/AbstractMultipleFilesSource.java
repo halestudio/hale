@@ -224,9 +224,11 @@ public abstract class AbstractMultipleFilesSource<P extends ImportProvider>
 			}
 		}
 		else {
-			for (String s : stringValues) {
-				files.add(new File(s));
-				uris.add(IOUtils.relativeFileToURI(new File(s)));
+			for (String path : stringValues) {
+				URI relativeURI = IOUtils.relativeFileToURI(new File(path));
+				File absoluteFile = new File(projectLocation.resolve(relativeURI));
+				files.add(absoluteFile);
+				uris.add(relativeURI);
 			}
 		}
 		FilesIOSupplier filesIOSupplier = new FilesIOSupplier(files, uris);

@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import eu.esdihumboldt.util.io.InputSupplier;
 import eu.esdihumboldt.util.io.OutputSupplier;
@@ -160,6 +161,15 @@ public class FilesIOSupplier
 	 */
 	public List<URI> getUsedLocations() {
 		return usedURILocations;
+	}
+
+	/**
+	 * Get the locations
+	 * 
+	 * @return the list of locations, may be <code>null</code>
+	 */
+	public List<URI> getLocations() {
+		return files.stream().map(f -> f.toURI()).collect(Collectors.toList());
 	}
 
 }

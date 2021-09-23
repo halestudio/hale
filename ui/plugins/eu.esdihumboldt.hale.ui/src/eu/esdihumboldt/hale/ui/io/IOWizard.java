@@ -104,7 +104,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 
 	private final List<IWizardPage> mainPages = new ArrayList<IWizardPage>();
 
-	private Queue<URI> usedLocations = null;
+	private Queue<URI> uriLocations = null;
 
 	/**
 	 * Create an I/O wizard
@@ -526,13 +526,18 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			return false;
 		}
 
-		if (initializeUsedLocations() == null) {
+		if (initializeUsedLocations() == null && provider instanceof ImportProvider) {
 			// could not find any URIs in the provider.
 			return false;
 		}
 
-		URI uriLoc = usedLocations.poll();
-		while (uriLoc != null) {
+		URI uriLoc = null;
+		// To avoid NPE in the case of export provider.
+		if (uriLocations != null) {
+			uriLoc = uriLocations.poll();
+		}
+		// either have to process all files or export provider
+		while (uriLoc != null || !(provider instanceof ImportProvider)) {
 
 			// If multiple files were selected then for every file
 			// initialize/reset FileIOSupplier in the provider. For the first
@@ -545,8 +550,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 				// always set FileIOSupplier to avoid huge impacts.
 				((ImportProvider) provider).setSource(new FileIOSupplier(new File(uriLoc)));
 			}
-			// else it is a non-file source and proceed with the code without
-			// updating the provider.
+			// else it is a non-file source or export provider and proceed with
+			// the code without updating the provider.
 
 			IOReporter defReport = provider.createReporter();
 
@@ -673,7 +678,12 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 						+ e.getLocalizedMessage(), e);
 				return false;
 			}
-			uriLoc = usedLocations.poll();
+			if (uriLocations != null) {
+				uriLoc = uriLocations.poll();
+			}
+			else {
+				break;
+			}
 		}
 		return true;
 	}
@@ -739,7 +749,8 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 					try {
 
 						IOReport result = null;
-						if (((ImportProvider) provider).getResourceIdentifier() != null) {
+						if ((provider instanceof ImportProvider)
+								&& ((ImportProvider) provider).getResourceIdentifier() != null) {
 							result = ((ImportProvider) provider)
 									.execute(new ProgressMonitorIndicator(monitor), null);
 						}
@@ -857,7 +868,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			LocatableInputSupplier<? extends InputStream> source = ((ImportProvider) getProvider())
 					.getSource();
 			if (source instanceof FilesIOSupplier) {
-				uris = ((FilesIOSupplier) source).getUsedLocations();
+				uris = ((FilesIOSupplier) source).getLocations();
 			}
 			else {
 				// non-file locations like HTTP/HTTPS or JDBC URIs or when a
@@ -865,12 +876,13 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 				URI location = ((ImportProvider) getProvider()).getSource().getLocation();
 				uris = Arrays.asList(location);
 			}
-
-			if (usedLocations == null) {
-				usedLocations = new LinkedList<>(uris);
-			}
+			// in case of any error dialog is shown during the import and the
+			// user again clicks on the finish then this queue won't be
+			// initialized and the dialog will close. To prevent this, the
+			// queue is initialized every time this function is called.
+			uriLocations = new LinkedList<>(uris);
 		}
-		return usedLocations;
+		return uriLocations;
 	}
 
 }

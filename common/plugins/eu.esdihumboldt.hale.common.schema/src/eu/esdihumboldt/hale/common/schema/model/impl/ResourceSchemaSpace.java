@@ -109,9 +109,11 @@ public class ResourceSchemaSpace implements SchemaSpace {
 	public TypeDefinition getType(QName name) {
 		synchronized (this) {
 			for (Schema schema : schemasMap.values()) {
-				TypeDefinition result = schema.getType(name);
-				if (result != null) {
-					return result;
+				if (schema != null) {
+					TypeDefinition result = schema.getType(name);
+					if (result != null) {
+						return result;
+					}
 				}
 			}
 
