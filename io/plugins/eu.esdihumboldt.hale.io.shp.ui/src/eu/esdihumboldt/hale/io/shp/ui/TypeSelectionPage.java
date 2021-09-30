@@ -156,7 +156,9 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 
 		LocatableInputSupplier<? extends InputStream> currentSource = getWizard().getProvider()
 				.getSource();
-		if (!currentSource.equals(lastSource)) {
+		// avoid NPE when relative path check box is selected when loading the
+		// schema.
+		if (currentSource != null && !currentSource.equals(lastSource)) {
 			// if the source has changed
 
 			lastSource = currentSource;
