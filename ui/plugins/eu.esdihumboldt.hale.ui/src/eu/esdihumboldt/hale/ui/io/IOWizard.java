@@ -644,7 +644,7 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 									monitor.beginTask("Completing operation...",
 											IProgressMonitor.UNKNOWN);
 									try {
-										advisor.handleResults(getProvider());
+										advisor.handleResults(provider);
 									} finally {
 										monitor.done();
 									}

@@ -86,17 +86,19 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 	 * @param useRelative the new value
 	 */
 	public void setUseRelativeIfPossible(boolean useRelative) {
+		List<String> filepaths = getFilepathsAsList(getTextControl().getText().trim());
+		StringBuffer paths = new StringBuffer();
 		if (this.useRelative && !useRelative) {
-			File f = new File(getTextControl().getText());
-			f = resolve(f);
-			if (f != null)
-				getTextControl().setText(f.getAbsolutePath());
+			// incase user toggles relative path check box.
+			for (String path : filepaths) {
+				File f = new File(path);
+				String absolutePath = resolve(f).getAbsolutePath();
+				paths.append(absolutePath).append(System.getProperty(LINE_SEPARATOR));
+			}
 			this.useRelative = false;
 		}
 		else if (!this.useRelative && useRelative && projectURI != null) {
 			this.useRelative = true;
-			List<String> filepaths = getFilepathsAsList(getTextControl().getText().trim());
-			StringBuffer paths = new StringBuffer();
 			for (String path : filepaths) {
 				File f = new File(path);
 				URI absoluteSelected = f.toURI();
@@ -106,8 +108,12 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 					paths.append(f.getPath()).append(System.getProperty(LINE_SEPARATOR));
 				}
 			}
-			getTextControl().setText(paths.toString());
 		}
+		getTextControl().setText(paths.toString());
+		// here it is important to trigger the value changed event otherwise,
+		// toggling relative path check box shows weird behavior and throws NPE.
+		getTextControl().setFocus();
+		valueChanged();
 	}
 
 	/**
@@ -119,7 +125,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 		List<String> filepathsAsList = getFilepathsAsList(filepaths);
 		File f = null;
 		if (filepathsAsList != null && filepathsAsList.size() > 0) {
-			f = new File(filepaths);
+			f = new File(filepathsAsList.get(0));
 			f = resolve(f);
 		}
 		List<File> d = getFiles(f);
@@ -401,7 +407,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 	}
 
 	/**
-	 * // * Method to return list of filepaths from filepath string delimited by
+	 * Method to return the list of filepaths from filepath string delimited by
 	 * <code>System.getProperty(LINE_SEPARATOR)</code>.
 	 * 
 	 * @param filepaths file path string, delimited by
@@ -409,8 +415,7 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 	 * @return list of file paths after splitting.
 	 */
 	protected List<String> getFilepathsAsList(String filepaths) {
-		String stringValue = getStringValue();
-		String[] split = stringValue.split(System.getProperty(LINE_SEPARATOR));
+		String[] split = filepaths.trim().split(System.getProperty(LINE_SEPARATOR));
 
 		List<String> collect = Arrays.asList(split).stream().filter(s -> !s.isEmpty())
 				.collect(Collectors.toList());
