@@ -369,11 +369,14 @@ public abstract class AbstractMultipleFilesSourceFileFieldEditor extends OpenFil
 										public void widgetSelected(SelectionEvent e) {
 											List<String> texts = processFiles(Arrays.asList(file));
 											if (texts != null) {
-												textField.append(texts.get(0));
-												textField
+												StringBuffer selectedFiles = new StringBuffer(
+														getTextControl().getText());
+												selectedFiles.append(texts.get(0))
 														.append(System.getProperty(LINE_SEPARATOR));
-												textField.setFocus();
+												getTextControl().setText(selectedFiles.toString());
+												getTextControl().setFocus();
 												valueChanged();
+
 											}
 										}
 									});
