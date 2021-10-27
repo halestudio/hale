@@ -18,8 +18,10 @@ package eu.esdihumboldt.hale.ui.util.io;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.content.IContentType;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -34,10 +36,9 @@ import org.eclipse.swt.widgets.FileDialog;
 public class ExtendedFileFieldEditor extends FileFieldEditor {
 
 	private String[] extensions;
-
 	private String[] names;
-
-	private int style;
+	private final int style;
+	private static final String LINE_SEPARATOR = "line.separator";
 
 	/**
 	 * Create a file field editor
@@ -115,12 +116,22 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 		if (!f.exists()) {
 			f = null;
 		}
-		File d = getFile(f);
+		List<File> d = getFiles(f);
 		if (d == null) {
 			return null;
 		}
 
-		return d.getAbsolutePath();
+		StringBuffer absolutePaths = new StringBuffer();
+		if (d.size() == 1) {
+			absolutePaths.append(d.get(0).getAbsolutePath());
+		}
+		else {
+			d.forEach(file -> {
+				absolutePaths.append(file.getAbsolutePath());
+				absolutePaths.append(System.getProperty(LINE_SEPARATOR));
+			});
+		}
+		return absolutePaths.toString();
 	}
 
 	/**
@@ -153,6 +164,47 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 	}
 
 	/**
+	 * Helper to open the file chooser dialog to select multiple files.
+	 * 
+	 * @param startingDirectory the directory to open the dialog on.
+	 * @return File List of file(s) the user selected or <code>Empty list</code>
+	 *         if they do not.
+	 */
+	protected List<File> getFiles(File startingDirectory) {
+
+		FileDialog dialog = new FileDialog(getShell(), style);
+		if (startingDirectory != null) {
+			dialog.setFileName(startingDirectory.getPath());
+		}
+		if (extensions != null) {
+			dialog.setFilterExtensions(extensions);
+		}
+		if (names != null) {
+			dialog.setFilterNames(names);
+		}
+
+		List<File> files = new ArrayList<>();
+		if (dialog.open() != null) {
+			String[] fileNames = dialog.getFileNames();
+			String filterPath = dialog.getFilterPath();
+
+			Arrays.asList(fileNames).forEach(filename -> {
+				File f = new File(filename);
+				if (f.isAbsolute()) {
+					files.add(new File(filename));
+				}
+				else if (filename != null) {
+					filename = filename.trim();
+					if (filename.length() > 0) {
+						files.add(new File(filterPath + File.separator + filename));
+					}
+				}
+			});
+		}
+		return files;
+	}
+
+	/**
 	 * Sets this file field editor's file extension filter.
 	 * 
 	 * @param extensions a list of file extension, or <code>null</code> to set
@@ -181,6 +233,10 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 	 * @param types the content types
 	 */
 	public void setContentTypes(Set<IContentType> types) {
+
+		/**
+		 * when loading for instance then enable multi selection for csv too.
+		 */
 		List<String> filters = new ArrayList<String>();
 		List<String> extensions = new ArrayList<String>();
 		for (IContentType type : types) {
@@ -211,7 +267,7 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 			}
 		}
 
-		if ((style & SWT.OPEN) != 0) {
+		if (((style & SWT.OPEN) != 0) || ((style & SWT.MULTI) != 0)) {
 			// insert filter for all supported files
 			if (extensions.size() > 1) {
 				StringBuffer supportedExtensions = new StringBuffer();
@@ -236,6 +292,21 @@ public class ExtendedFileFieldEditor extends FileFieldEditor {
 
 		setFileExtensions(extensions.toArray(new String[extensions.size()]));
 		setFilterNames(filters.toArray(new String[filters.size()]));
+	}
+
+	/**
+	 * Method to return list of filepaths from filepath string delimited by
+	 * <code>System.getProperty(LINE_SEPARATOR)</code>.
+	 * 
+	 * @return list of file paths after splitting.
+	 */
+	public List<String> getStringValues() {
+		String stringValue = getStringValue();
+		String[] split = stringValue.split(System.getProperty(LINE_SEPARATOR));
+
+		List<String> collect = Arrays.asList(split).stream().filter(s -> !s.isEmpty())
+				.collect(Collectors.toList());
+		return collect;
 	}
 
 }

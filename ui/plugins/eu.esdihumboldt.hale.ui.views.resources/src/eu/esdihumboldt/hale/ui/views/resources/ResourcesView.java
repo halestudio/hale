@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.views.resources;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,8 +26,16 @@ import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfo;
 import eu.esdihumboldt.hale.common.core.io.project.model.Resource;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
+import eu.esdihumboldt.hale.ui.service.schema.SchemaServiceListener;
 import eu.esdihumboldt.hale.ui.util.viewer.ViewerMenu;
 import eu.esdihumboldt.hale.ui.views.properties.PropertiesViewPart;
 import eu.esdihumboldt.hale.ui.views.resources.internal.ProjectToken;
@@ -42,6 +51,8 @@ public class ResourcesView extends PropertiesViewPart {
 
 	private TreeViewer viewer;
 	private ProjectServiceAdapter projectServiceListener;
+	private SchemaServiceListener ssListener;
+	private InstanceServiceAdapter isa;
 
 	@Override
 	protected void createViewControl(Composite parent) {
@@ -75,6 +86,7 @@ public class ResourcesView extends PropertiesViewPart {
 					@Override
 					public void run() {
 						viewer.update(ProjectToken.TOKEN, null);
+						updateInDisplayThread();
 					}
 				});
 			}
@@ -88,6 +100,82 @@ public class ResourcesView extends PropertiesViewPart {
 
 		new ViewerMenu(getSite(), viewer);
 		getSite().setSelectionProvider(viewer);
+
+		// adding listener to refresh the resource view when any schema,
+		// instance is added or cleared.
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
+		ssListener = new SchemaServiceListener() {
+
+			@Override
+			public void schemaRemoved(SchemaSpaceID spaceID) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						updateInDisplayThread();
+					}
+				});
+			}
+
+			@Override
+			public void schemasCleared(final SchemaSpaceID spaceID) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						updateInDisplayThread();
+					}
+				});
+			}
+
+			@Override
+			public void schemaAdded(final SchemaSpaceID spaceID, Schema schema) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						updateInDisplayThread();
+					}
+				});
+			}
+
+			@Override
+			public void mappableTypesChanged(final SchemaSpaceID spaceID,
+					Collection<? extends TypeDefinition> types) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						updateInDisplayThread();
+					}
+				});
+			}
+
+		};
+
+		ss.addSchemaServiceListener(ssListener);
+
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+		is.addListener(isa = new InstanceServiceAdapter() {
+
+			@Override
+			public void datasetChanged(DataSet type) {
+				final Display display = PlatformUI.getWorkbench().getDisplay();
+				display.syncExec(new Runnable() {
+
+					@Override
+					public void run() {
+						updateInDisplayThread();
+					}
+				});
+			}
+
+		});
+
 	}
 
 	/**
@@ -100,6 +188,7 @@ public class ResourcesView extends PropertiesViewPart {
 			@Override
 			public void run() {
 				update();
+				refreshInDisplayThread();
 			}
 		});
 	}
@@ -120,6 +209,7 @@ public class ResourcesView extends PropertiesViewPart {
 	@Override
 	public void setFocus() {
 		viewer.getTree().setFocus();
+		refreshInDisplayThread();
 	}
 
 	@Override
@@ -128,8 +218,41 @@ public class ResourcesView extends PropertiesViewPart {
 		if (projectServiceListener != null) {
 			ps.removeListener(projectServiceListener);
 		}
-
+		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
+		if (ssListener != null) {
+			ss.removeSchemaServiceListener(ssListener);
+		}
+		InstanceService is = PlatformUI.getWorkbench().getService(InstanceService.class);
+		if (isa != null) {
+			is.removeListener(isa);
+		}
 		super.dispose();
+	}
+
+	/**
+	 * Refresh tree viewer in the display thread
+	 */
+	protected void refreshInDisplayThread() {
+		if (Display.getCurrent() != null) {
+			refresh();
+		}
+		else {
+			final Display display = PlatformUI.getWorkbench().getDisplay();
+			display.syncExec(new Runnable() {
+
+				@Override
+				public void run() {
+					refresh();
+				}
+			});
+		}
+	}
+
+	/**
+	 * Refresh the tree viewer.
+	 */
+	public void refresh() {
+		viewer.refresh(true);
 	}
 
 }

@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Network expansion</title>
+</head>
+<body>
+<div id ="help">
+	<h4>General explanation</h4>
+	<p>
+The network expansion function creates a buffer around the geometry of the source data and applies it to the target data. The example 
+below shows a comparison of the unbuffered source data (left) to the buffered target data (right). <br/>
+
+<img src="../../eu.esdihumboldt.cst.functions.geometric/help/network/NetworkExpansion_Buffer_Map.png" /> <br/>
+
+<strong>Defining the buffer width</strong><br/>
+
+The buffer width can be specified either by a plain value, a mathematical expression or a groovy script.<br>
+</br>
+		<img src="../../eu.esdihumboldt.cst.functions.geometric/help/network/NetworkExpansion_ChoseParameter.png" /> <br/>
+		
+<strong>Plain value</strong><br>
+ </br>
+
+To define the buffer size using a plain value, enter the value of the desired buffer size (e.g. 500) in the function dialog.<br/>
+
+<img src="../../eu.esdihumboldt.cst.functions.geometric/help/network/NetworkExpansion_PlainValue.png" /> <br/>
+
+<strong>Mathematical expression</strong><br>
+ </br>
+To apply a mathematical expression, a variable need to be added in the first step so that it can be used in the buffer 
+width expression in the second step. In the example below the variable 'width' was added and multiplied by the value 2 to 
+create a buffer around the source geometry. <br/>
+
+<img src="../../eu.esdihumboldt.cst.functions.geometric/help/network/NetworkExpansion_Math.png" /> <br/>
+
+<strong>Groovy script</strong><br>
+ </br>
+Similar to the mathematical expression, a groovy script can be applied to create the desired buffer for the target data. <br/>
+
+	</p>
+</div>
+</body>
+</html>

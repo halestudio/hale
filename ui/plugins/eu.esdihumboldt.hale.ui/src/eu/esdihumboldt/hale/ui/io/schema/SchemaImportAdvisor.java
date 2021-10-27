@@ -68,7 +68,7 @@ public class SchemaImportAdvisor extends DefaultIOAdvisor<SchemaReader> {
 		Schema schema = provider.getSchema();
 
 		SchemaService ss = getService(SchemaService.class);
-		ss.addSchema(schema, spaceID);
+		ss.addSchema(provider.getResourceIdentifier(), schema, spaceID);
 
 		if (ss.getSchemas(spaceID).getMappingRelevantTypes().isEmpty()) {
 			// if no types are present after loading, open editor for mapping

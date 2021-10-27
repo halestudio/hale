@@ -86,6 +86,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.NetworkExpansionExplanation"
             description="Creates a buffer on a geometry."
             icon="icons/geometry.png"
+            help = "help/network/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.networkexpansion"
             name="Network Expansion">
          <targetProperties>
@@ -129,6 +130,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.CalculateLengthExplanation"
             description="Calculate the length of a geometry."
             icon="icons/geometry.png"
+            help = "help/CalculateLength/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.calculatelength"
             name="Calculate Length">
          <targetProperties>
@@ -185,6 +187,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.CentroidExplanation"
             description="Calculates the centroid of a given geometry."
             icon="icons/geometry.png"
+            help = "help/centroid/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.centroid"
             name="Centroid">
          <targetProperties>
@@ -208,6 +211,7 @@
             category="eu.esdihumboldt.cst.functions.geometric"
             description="Compute geometric extent based on all input geometries. The options Bounding Box, Convex Hull and Union are possible."
             icon="icons/geometry.png"
+            help = "help/extent/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.extent"
             name="Compute Extent">
          <targetProperties>
@@ -253,6 +257,7 @@
             category="eu.esdihumboldt.cst.functions.geometric"
             description="Aggregate similar input geometries"
             icon="icons/geometry.png"
+            help="help/aggregate/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.aggregate"
             name="Aggregate">
          <targetProperties>
@@ -325,6 +330,7 @@
             cellExplanation="eu.esdihumboldt.cst.functions.geometric.interiorpoint.InteriorPointExplanation"
             description="Computes an interior point of a geometry (up to 2D). An interior point is guaranteed to lie in the interior of the geometry, if it is possible to calculate such a point exactly. Otherwise, the point may lie on the boundary of the geometry (e.g. if the geometry is a line)."
             icon="icons/geometry.png"
+            help="help/interiorPoint/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.interiorPoint"
             name="Interior Point">
          <targetProperties>
@@ -347,6 +353,7 @@
       <typeFunction
             category="eu.esdihumboldt.cst.functions.geometric"
             icon="icons/geometry.png"
+            help="help/spatialJoin/help.xhtml"
             identifier="eu.esdihumboldt.cst.functions.geometric.spatialjoin"
             name="Spatial Join">
          <targetTypes>

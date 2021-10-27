@@ -62,7 +62,7 @@ public class RemoveResourceHandler extends AbstractHandler {
 				if (actionUI != null) {
 					IOAction action = IOActionExtension.getInstance().get(resource.getActionId());
 					ActionUIAdvisor<?> advisor = actionUI.getUIAdvisor();
-					if (advisor != null && advisor.supportsRemoval()) {
+					if (advisor != null && advisor.supportsRemoval(resource.getResourceId())) {
 						String name = null;
 						if (resource.getSource() != null) {
 							String location = resource.getSource().toString();

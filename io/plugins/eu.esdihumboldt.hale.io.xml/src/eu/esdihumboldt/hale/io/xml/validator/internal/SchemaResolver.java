@@ -63,7 +63,7 @@ public class SchemaResolver implements LSResourceResolver {
 			schemaLocation = loc.substring(0, loc.lastIndexOf("/") + 1); //$NON-NLS-1$
 		}
 
-		if (systemId.indexOf("http://") < 0) { //$NON-NLS-1$
+		if (systemId.indexOf("http://") < 0 && systemId.indexOf("https://") < 0) { //$NON-NLS-1$
 			systemId = schemaLocation + systemId;
 		}
 

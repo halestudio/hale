@@ -80,7 +80,7 @@ public class ArcStringHandler extends LineStringHandler {
 					"Arc string must be defined by at least three points");
 		}
 		List<Arc> arcs = new ArrayList<>();
-		for (int i = 0; i < coords.length - 2; i += 3) {
+		for (int i = 0; i < coords.length - 2; i += 2) {
 			Arc arc = new ArcByPointsImpl(coords[i], coords[i + 1], coords[i + 2]);
 			arcs.add(arc);
 		}

@@ -24,6 +24,7 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat
 import org.apache.maven.cli.MavenCli
 import org.yaml.snakeyaml.Yaml
+import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
  * @return the value of the 'productFile' property
@@ -390,9 +391,15 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 		    if (!Helper.buildForMac(project)) {
 		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
 		    } else {
-				// Use external tar command for OSX build since the jdk to bundle with HALE contains symbolic links
+				//It is certain that this code will run when creating build for mac.
+				//Therefore, the jre must be copied into the `Eclipse` folder of the bundled application.
+				artifactInstallPath = new File(productOutputPath.absolutePath ,"/Eclipse.app/Contents/Eclipse/${reldstpath}")
+				
+				// Use external tar command for OSX build since the jdk to bundle with HALE, contains symbolic links.
 				// This does only work on UNIX-based systems with tar installed!
-				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath]
+				//This command during extraction, will strip the root folder from jdk which is usually jdk name and will
+				//extract the data into root folder starting with `Contents`. 
+				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath, '--strip-components=1']
 			    artifactInstallPath.mkdir()
 			 	try {
 				    // On windows, an IOException will be thrown here
@@ -406,6 +413,10 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				    }
 				} catch (ex) {
 				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
+				}
+				if (reldstpath.equals("jre")){
+					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
+					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
 				}
 			}
         }
@@ -629,6 +640,11 @@ def packageClient(productOutputPath) {
 		targetDir.mkdir()
 		def tarPath = targetDir.absolutePath + '/' + packageName + '.tar.gz';
 		def packCmd =  ['tar', '--preserve-permissions', '-czf', tarPath, '--transform', "s,^\\./,$packageName/,", '.']
+		//If the build script is run on the OS X then use gtar command.
+		//Note: gtar must be installed using `brew install gnu-tar`.
+		if (Os.isFamily(Os.FAMILY_MAC)) {
+			packCmd =  ['gtar', '--preserve-permissions', '-czf', tarPath, '--transform', "s,^\\./,$packageName/,", '.']
+		}
 		def packProc = packCmd.execute(null, productOutputPath)
 		def packBuffer = new StringBuffer()
 		packProc.consumeProcessErrorStream(packBuffer)
@@ -664,6 +680,10 @@ def packageClient(productOutputPath) {
 
 		// Generate DMG image
 		def genisoCmd = ['genisoimage', '-V', "${productName} ${bundleVersion}", '-D', '-R', '-apple', '-no-pad', '-o', "${targetDir}/${packageName}.dmg", '.']
+		//create dmg file if the script is run on mac OS.
+		if (Os.isFamily(Os.FAMILY_MAC)) {
+			genisoCmd = "hdiutil create -ov -format UDZO -srcfolder ${productOutputPath.absolutePath} ${targetDir}/${packageName}.dmg"
+		}
 		def genisoProc = genisoCmd.execute(null, productOutputPath)
 		def genisoBuffer = new StringBuffer()
 		genisoProc.consumeProcessErrorStream(genisoBuffer)
@@ -826,6 +846,32 @@ def packageServer(productOutputPath) {
     }
 }
 
+/**
+ * Method executed only for OS X. 
+ * To run the HALE studio in mac, JRE must be bundled within the HALE studio app
+ * and its location must be added in the HALE.ini file.
+ * This method is a work around to modify HALE.ini file.
+ * This method reads HALE.ini file stored under "~/Eclipse.app/Contents/Eclipse/HALE.ini",
+ * then appends "-vm" arguments along with the JRE location bundled within the application.
+ * Finally, the changes are written back to the "HALE.ini" file.
+ * filepath HALE.ini file path
+ */
+def updateHaleIniFileWithJrePath(filepath) {
+
+	File file = new File(filepath)
+	def fileContent = file.getText();
+
+	def indexOfVmargs = fileContent.indexOf("-vmargs")
+	
+	def updatedContent = fileContent.substring(0, indexOfVmargs)
+	.concat("-vm\n")
+	.concat("../Eclipse/jre/Contents/Home/jre/bin/java\n")
+	.concat(fileContent.substring(indexOfVmargs, fileContent.length()))
+
+	println("HALE.ini file contents changed successfully!!")
+	file.write(updatedContent)
+}
+
 task makeProductFeatureProjectDefinition(type: Copy) {
     from Helper.resolveTemplate(project, 'plugin-project.xml')
     into new File(buildDir, 'gen.product.feature')
@@ -945,7 +991,9 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
 	new File("$productFeaturePath/HALE.p2.inf").text = '''
 instructions.configure=\
   addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:0,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
-  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);
+  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
+  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:0,name:XtraServer Plug-in for hale studio,enabled:true);\
+  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:1,name:XtraServer Plug-in for hale studio,enabled:true);
 '''
 
     // remove platform-specific fragments from product

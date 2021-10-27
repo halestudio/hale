@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Aggregate</title>
+</head>
+<body>
+<div id ="help">
+	<h4>General explanation</h4>
+	<p>
+The aggregate function combines the input source features to create MultiLineString, MultiPoint or MultiPolygon geometries. The aggregate function performs a check to ensure that the input features have the same source CRS. In the cases of input multi geometries, a new multi geometry is created.
+When different input geometry types are aggregated, you will receive a warning in the transformation log but the function will combine the geometries in a generic GeometryCollection.
+In the case of lines the aggregate function tries to combine them to create a MultiLineString in which the individual lines are connected (i.e. end vertex of one line is the start vertex of the next one).
+If this is not possible there is no guaranteed order in the MultiLineString.<br>
+ </br>
+The aggregate function is often used in combination with the type level merge function. The use of the aggregate function is necessary to combine the geometries to create multi geometries and avoid selecting just one geometry from the merged source geometries.
+ <br>
+	</br>
+		<img src="../../eu.esdihumboldt.cst.functions.geometric/help/aggregate/aggregate.png" /><br>
+	</br>
+	</p>
+</div>
+</body>
+</html>

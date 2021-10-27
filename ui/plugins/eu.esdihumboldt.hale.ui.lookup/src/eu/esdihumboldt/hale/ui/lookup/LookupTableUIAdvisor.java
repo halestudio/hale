@@ -33,7 +33,7 @@ public class LookupTableUIAdvisor extends AbstractActionUIAdvisor<LookupTableInf
 	}
 
 	@Override
-	public boolean supportsRemoval() {
+	public boolean supportsRemoval(String resourceId) {
 		return true;
 	}
 

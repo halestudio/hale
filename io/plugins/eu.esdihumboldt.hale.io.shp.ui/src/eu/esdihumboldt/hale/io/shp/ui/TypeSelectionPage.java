@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -63,6 +65,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 	private TypeDefinition lastType;
 
 	private Button matchShortPropertyNames;
+
+	/**
+	 * Button to enable auto detection of the schemas. Useful when importing
+	 * multiple source data for multiple schema files.
+	 */
+	private Button autoDetect;
 
 	private Composite page;
 
@@ -118,13 +126,39 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			matchShortPropertyNames.setText(
 					"Match shortened property names in Shapefile to target type properties");
 
+			autoDetect = new Button(page, SWT.CHECK);
+			autoDetect.setLayoutData(
+					GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
+			autoDetect.setText("Ignore Schema type selection and auto detect types");
+
+			autoDetect.addSelectionListener(new SelectionListener() {
+
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if (autoDetect.getSelection()) {
+						selector.getControl().setEnabled(false);
+					}
+					else {
+						selector.getControl().setEnabled(true);
+					}
+				}
+
+				@Override
+				public void widgetDefaultSelected(SelectionEvent e) {
+					// default selection is false.
+					selector.getControl().setEnabled(true);
+				}
+			});
+
 			page.layout();
 			page.pack();
 		}
 
 		LocatableInputSupplier<? extends InputStream> currentSource = getWizard().getProvider()
 				.getSource();
-		if (!currentSource.equals(lastSource)) {
+		// avoid NPE when relative path check box is selected when loading the
+		// schema.
+		if (currentSource != null && !currentSource.equals(lastSource)) {
 			// if the source has changed
 
 			lastSource = currentSource;
@@ -225,8 +259,11 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		if (selector.getSelectedObject() != null) {
 			QName name = selector.getSelectedObject().getName();
 			provider.setParameter(PARAM_TYPENAME, Value.of(name.toString()));
+
 			provider.setParameter(PARAM_MATCH_SHORT_PROPERTY_NAMES,
 					Value.of(matchShortPropertyNames.getSelection()));
+			provider.setParameter(PARAM_AUTO_DETECT_SCHEMA_TYPES,
+					Value.of(autoDetect.getSelection()));
 		}
 		else {
 			return false;

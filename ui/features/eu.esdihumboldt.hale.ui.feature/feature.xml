@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature"
       label="HALE application feature"
-      version="4.0.0.qualifier"
+      version="4.1.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -506,13 +506,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.index"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="eu.esdihumboldt.hale.doc.xtraserver"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -123,7 +123,7 @@ public class GmlWriterSettingsPage
 		prettyPrint = new Button(xml, SWT.CHECK);
 		prettyPrint.setText("Pretty print XML");
 		// default
-		prettyPrint.setSelection(false);
+		prettyPrint.setSelection(true);
 
 		Group geom = new Group(page, SWT.NONE);
 		geom.setLayout(new GridLayout(1, false));

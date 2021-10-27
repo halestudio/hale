@@ -22,6 +22,21 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.FormatStyle;
+import java.time.format.SignStyle;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -110,6 +125,25 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(Date.class);
 		allowedClasses.add(Locale.class);
 		// allowedClasses.add(Boolean.class);
+
+		// Java 8 date/time classes
+		allowedClasses.add(DayOfWeek.class);
+		allowedClasses.add(Month.class);
+		allowedClasses.add(Year.class);
+		allowedClasses.add(YearMonth.class);
+		allowedClasses.add(Instant.class);
+
+		allowedClasses.add(LocalDate.class);
+		allowedClasses.add(LocalDateTime.class);
+		allowedClasses.add(LocalTime.class);
+		allowedClasses.add(ZonedDateTime.class);
+		allowedClasses.add(ZoneId.class);
+
+		allowedClasses.add(DateTimeFormatter.class);
+		allowedClasses.add(DateTimeFormatterBuilder.class);
+		allowedClasses.add(FormatStyle.class);
+		allowedClasses.add(TextStyle.class);
+		allowedClasses.add(SignStyle.class);
 
 		// helper classes
 		allowedClasses.add(SimpleDateFormat.class);

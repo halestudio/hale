@@ -34,7 +34,7 @@ public class ValidatorConfigurationImportUIAdvisor
 	}
 
 	@Override
-	public boolean supportsRemoval() {
+	public boolean supportsRemoval(String resourceId) {
 		return true;
 	}
 

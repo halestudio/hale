@@ -91,6 +91,19 @@
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<element name="ArcStringProperty" substitutionGroup="gml:AbstractFeature"
+		type="hale:ArcStringPropertyType" />
+
+	<complexType name="ArcStringPropertyType">
+		<complexContent>
+			<extension base="gml:AbstractFeatureType">
+				<sequence>
+					<element name="geometry" type="gml:ArcStringType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
 
 	<element name="PolygonProperty" substitutionGroup="gml:AbstractFeature"
 		type="hale:PolygonPropertyType" />

@@ -2,8 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Geopackage support UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage.ui;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.ui,
- eu.esdihumboldt.hale.io.geopackage;bundle-version="4.0.0"
+ eu.esdihumboldt.hale.io.geopackage;bundle-version="4.0.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="4.0.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="4.0.0",
+ org.eclipse.ui;bundle-version="3.116.0",
+ eu.esdihumboldt.hale.ui.util;bundle-version="4.0.0"

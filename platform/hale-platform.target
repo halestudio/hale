@@ -47,9 +47,9 @@
 <repository location="http://build-artifacts.wetransform.to/p2/mirror/gef-legacy-releases/"/>
 <unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201606061308"/>
 </location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<repository location="http://build-artifacts.wetransform.to/hale-build-support-96b81f6/updatesites/platform"/>
-<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.0.0.i20200630"/>
-</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/f1509de425018449974ed59c4480489bd82df45f/updatesites/platform"/>
+		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.1.0.i20210309"/>
+	</location>
 </locations>
 </target>

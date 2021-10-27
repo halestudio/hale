@@ -147,7 +147,7 @@ ext {
 		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
 		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
-	
+
 	/*
 	 * List of bundles that are not platform specific, even if they are detected as such.
 	 */
@@ -156,9 +156,8 @@ ext {
 	]
 
 	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-	//artifactsCommit = '6589f561a36b8a6fe4cd6a115fdc892bbf812c68'
-	//artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
-	artifactsMirrorUrl = "http://build-artifacts.wetransform.to/hale-build-support-96b81f6"
+	artifactsCommit = '6431f1d635126138b32611dcc47467a401448c8e'
+	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
     jreArtifacts = [
@@ -172,12 +171,14 @@ ext {
             'gtk': [
                 'x86_64': 'OpenJDK8U-jre_x64_linux_hotspot_8u232b09.tar.gz'
             ]
-        ]/*, -- not available right now
+        ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`.
+		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08`
+		   //is being stripped and the `Contents` folder is being copied into jre folder.
         'macosx': [
             'cocoa': [
-                'x86_64': 'jdk-min-8u91-macosx-x64.tar.gz'
+                'x86_64': 'OpenJDK8U-jdk_x64_mac_openj9_macosXL_8u282b08_openj9-0.24.0.tar.gz'
             ]
-        ]*/
+        ]
     ]
 
     // Names of zip files containing mongodb instances (sorted by their respective platform)
@@ -239,7 +240,7 @@ configureEnvironment()
 
 def configureEnvironment() {
 	def wsMap = [win32: 'win32', linux: 'gtk', macosx: 'cocoa']
-	
+
 	def current_os = System.getProperty('os.name')
 	if (current_os.substring(0, 5).equalsIgnoreCase('linux'))
 	  current_os = 'linux'
@@ -253,7 +254,7 @@ def configureEnvironment() {
 	  current_arch = 'x86'
 	else if(current_arch == 'amd64')
 	  current_arch = 'x86_64'
-	
+
     if (!ext.properties.containsKey('osgiOS')) {
         ext.osgiOS = current_os
     }

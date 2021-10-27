@@ -7,9 +7,9 @@
 <body>
 	<h1>Transformation via the command line</h1>
 	<p>This help topic is about performing transformation of source
-		data using the command line interface provided by <i>hale studio</i>. It allows you
-		to execute transformations based on mappings defined in <i>hale studio</i>, without
-		having to use <i>hale studio</i> as desktop application, for instance to run the
+		data using the command line interface provided by <i>hale製tudio</i>. It allows you
+		to execute transformations based on mappings defined in <i>hale製tudio</i>, without
+		having to use <i>hale製tudio</i> as desktop application, for instance to run the
 		transformation automatically on a regular basis or to integrate it
 		with existing infrastructure.</p>
 	<p>The following are the basic things you need to use the command
@@ -21,33 +21,33 @@
 	</ol>
 
 	<h2>General usage</h2>
-	<p>You can run <i>hale studio</i> on the command line either using the <i>hale studio</i>
+	<p>You can run <i>hale製tudio</i> on the command line either using the <i>hale製tudio</i>
 		executable (i.e. HALE.exe) or using Java directly. Depending on the
 		operating system, behavior may be different, but in general it is
 		better to use Java directly (either use locally installed compatible
-		version of Java or the version shipped with <i>hale studio</i>), especially if you
+		version of Java or the version shipped with <i>hale製tudio</i>), especially if you
 		include the task in an automated process. The advantage of using the
-		<i>hale studio</i> executable is that it uses the Java version that is shipped with
-		<i>hale studio</i> automatically and sets some important system properties for you.
+		<i>hale製tudio</i> executable is that it uses the Java version that is shipped with
+		<i>hale製tudio</i> automatically and sets some important system properties for you.
 		The following are the commands to show the usage information of the
 		command line interface, with the executable or via Java, assuming your
-		working directory is the <i>hale studio</i> installation folder:</p>
-	<p>Running the <i>hale studio</i> executable:</p>
+		working directory is the <i>hale製tudio</i> installation folder:</p>
+	<p>Running the <i>hale製tudio</i> executable:</p>
 	<pre class="cli"><code><b>&gt;</b> <i>HALE -nosplash</i> -application hale.transform</code></pre>
 	<p>Running Java:</p>
 	<pre class="cli"><code><b>&gt;</b> <i>java -Xmx1024m -Dcache.level1.enabled=false -Dcache.level1.size=0 -Dcache.level2.enabled=false -Dcache.level2.size=0 -jar plugins\org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar</i> -application hale.transform</code></pre>
 	<p>Running the command above will show the usage information of the
 		transformation application. Please note that for the Java call, the
-		version of the launcher JAR file may change with new <i>hale studio</i> versions and
+		version of the launcher JAR file may change with new <i>hale製tudio</i> versions and
 		you should use a path delimiter appropriate for your system.</p>
 	<p>Additionally, the Java call specifies settings and system
 		properties for the Java VM. You cannot provide these settings to a
-		call to the <i>hale studio</i> executable - in that case you have to adapt the file
+		call to the <i>hale製tudio</i> executable - in that case you have to adapt the file
 		<code>HALE.ini</code>. Following is a short description of the most important
 		VM arguments:</p>
 	<ul>
 		<li style="padding-bottom: 16px;"><code>-Xmx1024m</code><br><br>This setting specifies the
-			<b>maximum heap memory</b> provided as working memory for <i>hale studio</i>. If you are
+			<b>maximum heap memory</b> provided as working memory for <i>hale製tudio</i>. If you are
 			with very large individual instances you may need to increase the
 			value. The example specifies a maximum heap space of 1024 MB.</li>
 		<li style="padding-bottom: 16px;"><code>-Dcache.level1.enabled=false
@@ -57,17 +57,17 @@
 			run into memory issues.</li>
 		<li style="padding-bottom: 16px;"><code>-Dlog.hale.level=INFO -Dlog.root.level=WARN</code><br><br>These
 			settings allow you to <b>configure the log level</b> for log events emitted
-			by <i>hale studio</i>. These log events may overlap with messages from the reports,
+			by <i>hale製tudio</i>. These log events may overlap with messages from the reports,
 			but are generally independent. <code>log.hale.level</code> controls
-			the log level for components of <i>hale studio</i>, while <code>log.root.level</code>
+			the log level for components of <i>hale製tudio</i>, while <code>log.root.level</code>
 			controls the log level for other code, such as third party libraries.
 			See the <a href="http://logback.qos.ch/manual/configuration.html"
 			target="_blank">logback documentation</a> for more information on
 			logging levels and other details about the logging configuration.</li>
-		<li style="padding-bottom: 16px;">If you need <i>hale studio</i> to <b>connect to the internet via a
+		<li style="padding-bottom: 16px;">If you need <i>hale製tudio</i> to <b>connect to the internet via a
 				proxy server</b>, you need to provide that information as system
 			properties as well. The command line interface will not read the
-			proxy settings you configured in the <i>hale studio</i> user interface.<br><br>
+			proxy settings you configured in the <i>hale製tudio</i> user interface.<br><br>
 			The following system properties can be provided to configure the proxy:
 			<ul>
 				<li><code>http.proxyHost</code> - the proxy host name or IP address</li>
@@ -96,7 +96,7 @@
 		is an <b>application argument</b>.
 	</p>
 	<p class="Note">
-		<b>Note:</b> As an alternative to using the <i>hale studio</i> application to
+		<b>Note:</b> As an alternative to using the <i>hale製tudio</i> application to
 		launch the CLI, you can use the dedicated <a
 			href="https://github.com/halestudio/hale-cli" target="_blank">hale-cli</a>.
 		With <i>hale-cli</i> a transformation is called like this:<br>
@@ -106,13 +106,13 @@
 	</p>
 	<p class="Note">
 		<b>Note:</b>
-		If using the <i>hale studio</i> executable on Windows you will probably want to add the <code>-console</code> launcher argument as well:
+		If using the <i>hale製tudio</i> executable on Windows you will probably want to add the <code>-console</code> launcher argument as well:
 		<code>HALE -nosplash -console -application hale.transform</code><br>
 		Otherwise you may get no feedback from the application (if you still get no feedback, launch via Java).
 	</p>
 	<p class="Note">
-		<b>Note:</b> If using a version of <i>hale studio</i> installed with the Windows
-		installer (or generally a version of <i>hale studio</i> that has no write access to
+		<b>Note:</b> If using a version of <i>hale製tudio</i> installed with the Windows
+		installer (or generally a version of <i>hale製tudio</i> that has no write access to
 		its directory) it is needed to specify a data location with the
 		additional launcher argument
 		<code>-data</code>
@@ -202,7 +202,7 @@
 		<code>-source</code>
 		argument for each.
 	</p>
-	<p><i>hale studio</i> will try to guess the file format and how to read it, so in
+	<p><i>hale製tudio</i> will try to guess the file format and how to read it, so in
 		most cases it will be enough to specify the location of the source
 		data. But you also have the possibility to control in detail which
 		hale data reader to use and how to configure it.</p>
@@ -213,7 +213,7 @@
 		kind of configuration options they offer.
 	</p>
 	<h4>Filtering source data</h4>
-	<p>By default <i>hale studio</i> uses all data passed in as sources for the
+	<p>By default <i>hale製tudio</i> uses all data passed in as sources for the
 		transformation. The filter options allow you to filter the source data
 		before it is passed to the transformation. This can be helpful for
 		selecting only objects actually needed for the transformation (e.g. to
@@ -284,9 +284,9 @@
 	</p>
 	<p>
 		The recommended approach is to use an export preset. You can easily
-		define it in <i>hale studio</i> with support through the UI, and save it as part of
+		define it in <i>hale製tudio</i> with support through the UI, and save it as part of
 		the project. An export preset essentially stores the configuration
-		information on how to save the data. Create it in <i>hale studio</i> via <i>File</i>&#8594;<i>Export</i>&#8594;<i>Create
+		information on how to save the data. Create it in <i>hale製tudio</i> via <i>File</i>&#8594;<i>Export</i>&#8594;<i>Create
 			custom data export...</i> in the main menu. Configure the export and
 		specify a name for the preset - this name is what you specify to use
 		the preset on the command line.
@@ -327,7 +327,7 @@
 			the validation. Use this option if you want to know in detail what
 			kind of warnings or errors may have occurred during the execution of
 			these tasks. If you find the file format hard to read, import the
-			report log into the <i>Report List</i> view in <i>hale studio</i>.
+			report log into the <i>Report List</i> view in <i>hale製tudio</i>.
 		</dd>
 		<dt><code>-stacktrace</code></dt>
 		<dd>Provide this flag to enable printing the stacktrace if

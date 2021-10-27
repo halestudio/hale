@@ -52,18 +52,21 @@ public class ResourcesLabelProvider extends StyledCellLabelProvider implements I
 		Object element = cell.getElement();
 		cell.setImage(getImage(element));
 
-		StyledString text = new StyledString(getText(element));
-
-		if (element instanceof Resource) {
-			Resource resource = (Resource) element;
-			if (resource.getContentType() != null) {
-				text.append(" (" + resource.getContentType().getName() + ")",
-						StyledString.DECORATIONS_STYLER);
+		String elementText = getText(element);
+		// avoid NPE when relative path check box selected.
+		if (elementText != null) {
+			StyledString text = new StyledString(elementText);
+			if (element instanceof Resource) {
+				Resource resource = (Resource) element;
+				if (resource.getContentType() != null) {
+					text.append(" (" + resource.getContentType().getName() + ")",
+							StyledString.DECORATIONS_STYLER);
+				}
 			}
-		}
 
-		cell.setText(text.getString());
-		cell.setStyleRanges(text.getStyleRanges());
+			cell.setText(text.getString());
+			cell.setStyleRanges(text.getStyleRanges());
+		}
 
 		super.update(cell);
 	}

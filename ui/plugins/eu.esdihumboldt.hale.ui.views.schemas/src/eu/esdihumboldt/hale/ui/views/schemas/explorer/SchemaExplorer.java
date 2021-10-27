@@ -224,6 +224,7 @@ public class SchemaExplorer {
 	public void setSchema(TypeIndex schema) {
 		this.schema = schema;
 		tree.setInput(schema);
+		refreshInDisplayThread();
 	}
 
 	/**
