@@ -83,15 +83,23 @@ public class XLSReaderTest {
 		}
 		// Check every property for their existence
 		for (String propertyName : properties) {
-			assertEquals(propertyName, schemaType.getChild(QName.valueOf(propertyName))
-					.getDisplayName());
+			assertEquals(propertyName,
+					schemaType.getChild(QName.valueOf(propertyName)).getDisplayName());
 		}
 
-		// read Instances ###
-		InstanceCollection instances = readXLSInstances("/data/simpleOneSheet.xls", 0, typeName,
-				true, schema);
+		// read Instances - not header ###
+		InstanceCollection instances = readXLSInstances("/data/simpleOneSheet.xls", 0, typeName, 1,
+				schema);
 		assertTrue(instances.hasSize());
 		assertEquals(numberOfInstances, instances.size());
+
+		// read and skip N instances ###
+		int numberOfLines = 4; // no. of lines = header + 3 instances
+		for (int i = 0; i <= numberOfLines; i++) {
+			InstanceCollection remainingInstances = readXLSInstances("/data/simpleOneSheet.xls", 0,
+					typeName, i, schema);
+			assertEquals(numberOfLines - i, remainingInstances.size());
+		}
 
 		// get Type to check property definition (schema and instance
 		// combination)
@@ -115,6 +123,48 @@ public class XLSReaderTest {
 	}
 
 	/**
+	 * Test - read a sample xls schema and data where skip is a boolean. It
+	 * simulates the previous version where the first line was either skipped
+	 * (true) or not (false)
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testBackwardCompatibilityRead() throws Exception {
+		// read Schema ###
+		Schema schema = readXLSSchema("/data/simpleOneSheet.xls", 0, typeName,
+				"java.lang.String,java.lang.String,java.lang.String");
+		int numberOfLines = 4; // no. of lines = header + 3 instances
+
+		// test backwards compatibility for simple read with skip first line as
+		// boolean
+		InstanceCollection instancesNotSkip = readXLSInstances("/data/simpleOneSheet.xls", 0,
+				typeName, false, schema);
+		InstanceCollection instancesSkipFirst = readXLSInstances("/data/simpleOneSheet.xls", 0,
+				typeName, true, schema);
+
+		assertTrue(instancesNotSkip.hasSize());
+		assertTrue(instancesSkipFirst.hasSize());
+		assertEquals(numberOfLines, instancesNotSkip.size());
+		assertEquals(numberOfLines - 1, instancesSkipFirst.size());
+
+		// test backwards compatibility for read empty sheet
+		InstanceCollection instancesSkipFirstEmptySheet = readXLSInstances("/data/blankEntries.xls",
+				0, typeName, true, schema);
+
+		assertTrue(instancesSkipFirstEmptySheet.hasSize());
+		assertEquals(numberOfLines - 1, instancesSkipFirstEmptySheet.size());
+
+		// test backwards compatibility for read multiple values
+		InstanceCollection instancesSkipFirstMultValues = readXLSInstances(
+				"/data/cmplxSheetMultipleValues.xls", 0, typeName, true, schema);
+
+		assertTrue(instancesSkipFirstMultValues.hasSize());
+		assertEquals(numberOfLines - 1, instancesSkipFirstMultValues.size());
+
+	}
+
+	/**
 	 * Test - Check empty table
 	 * 
 	 * @throws Exception , if an error occurs
@@ -124,8 +174,8 @@ public class XLSReaderTest {
 		int sheetIndex = 0;
 
 		XLSSchemaReader schemaReader = new XLSSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/data/emptyAndNormalSheet.xls").toURI()));
+		schemaReader.setSource(new DefaultInputSupplier(
+				getClass().getResource("/data/emptyAndNormalSheet.xls").toURI()));
 		schemaReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(sheetIndex));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 
@@ -157,12 +207,12 @@ public class XLSReaderTest {
 		TypeDefinition schemaType = schema.getType(QName.valueOf(typeName));
 		// Check every property for their existence
 		for (String propertyName : properties) {
-			assertEquals(propertyName, schemaType.getChild(QName.valueOf(propertyName))
-					.getDisplayName());
+			assertEquals(propertyName,
+					schemaType.getChild(QName.valueOf(propertyName)).getDisplayName());
 		}
 
 		// Instance Read ###
-		InstanceCollection instances = readXLSInstances(sourceLocation, 1, typeName, false, schema);
+		InstanceCollection instances = readXLSInstances(sourceLocation, 1, typeName, 0, schema);
 		assertTrue(instances.hasSize());
 		assertEquals(numberOfInstances, instances.size());
 
@@ -199,8 +249,8 @@ public class XLSReaderTest {
 				"java.lang.String,java.lang.String,java.lang.String");
 
 		// read instances ###
-		InstanceCollection instances = readXLSInstances("/data/blankEntries.xls", 0, typeName,
-				true, schema);
+		InstanceCollection instances = readXLSInstances("/data/blankEntries.xls", 0, typeName, 1,
+				schema);
 		// Number of instances should be the same
 		assertTrue(instances.hasSize());
 		assertEquals(numberOfInstances, instances.size());
@@ -236,7 +286,7 @@ public class XLSReaderTest {
 
 		// read instance ###
 		InstanceCollection instances = readXLSInstances("/data/cmplxSheetMultipleValues.xls", 0,
-				typeName, true, schema);
+				typeName, 1, schema);
 		// Number of instances should be the same
 		assertTrue(instances.hasSize());
 		assertEquals(numberOfInstances, instances.size());
@@ -277,8 +327,8 @@ public class XLSReaderTest {
 		assertTrue("The type is not an Integer.", binding.getBinding().equals(Integer.class));
 
 		// ### Instance
-		InstanceCollection instances = readXLSInstances("/data/simpleOneSheet.xls", 0, typeName,
-				true, schema);
+		InstanceCollection instances = readXLSInstances("/data/simpleOneSheet.xls", 0, typeName, 1,
+				schema);
 		assertTrue(instances.hasSize());
 		assertEquals(numberOfInstances, instances.size());
 
@@ -293,8 +343,8 @@ public class XLSReaderTest {
 			String paramPropertyType) throws Exception {
 
 		XLSSchemaReader schemaReader = new XLSSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(sourceLocation)
-				.toURI()));
+		schemaReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
 		schemaReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(sheetIndex));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 		schemaReader.setParameter(AbstractTableSchemaReader.PARAM_PROPERTYTYPE,
@@ -310,12 +360,29 @@ public class XLSReaderTest {
 			String typeName, boolean skipFirst, Schema sourceSchema) throws Exception {
 
 		InstanceReader instanceReader = new XLSInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(sourceLocation)
-				.toURI()));
+		instanceReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
 		instanceReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(sheetIndex));
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
-		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
-				Value.of(skipFirst));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(skipFirst));
+		instanceReader.setSourceSchema(sourceSchema);
+
+		// Test instances
+		IOReport report = instanceReader.execute(null);
+		assertTrue("Data import was not successfull.", report.isSuccess());
+
+		return instanceReader.getInstances();
+	}
+
+	private InstanceCollection readXLSInstances(String sourceLocation, int sheetIndex,
+			String typeName, int skipN, Schema sourceSchema) throws Exception {
+
+		InstanceReader instanceReader = new XLSInstanceReader();
+		instanceReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
+		instanceReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(sheetIndex));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(skipN));
 		instanceReader.setSourceSchema(sourceSchema);
 
 		// Test instances

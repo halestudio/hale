@@ -85,8 +85,21 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 
 			// initialize reader if necessary
 			if (csvReader == null) {
-				boolean skipFirst = reader.getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE)
-						.as(Boolean.class, false);
+
+				int skipN = 0;
+				Boolean skipType = reader.getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES)
+						.as(Boolean.class);
+
+				if (skipType == null) {
+					skipN = reader.getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES)
+							.as(Integer.class, 0);
+				}
+				else if (skipType) {
+					skipN = 1;
+				}
+				else {
+					skipN = 0;
+				}
 
 				try {
 					csvReader = CSVUtil.readFirst(reader);
@@ -95,9 +108,11 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 					closed = true;
 				}
 
-				if (skipFirst) {
+				if (skipN > 0) {
 					try {
-						csvReader.readNext();
+						for (int i = 1; i <= skipN; i++) {
+							csvReader.readNext();
+						}
 					} catch (IOException e) {
 						// close on error
 						close(e);

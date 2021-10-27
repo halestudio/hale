@@ -24,9 +24,9 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -48,8 +48,9 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
 public class TypeSelectionPage extends InstanceReaderConfigurationPage implements CSVConstants {
 
 	private TypeDefinitionSelector sel;
-	private Button button;
-	private Label label;
+	private Spinner skipNlinesSpinner;
+	private Label setTypeLabel;
+	private Label skipNlinesLabels;
 
 	/**
 	 * default constructor
@@ -90,8 +91,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 200;
 
-		label = new Label(page, SWT.NONE);
-		label.setText("Choose your Type:");
+		setTypeLabel = new Label(page, SWT.NONE);
+		setTypeLabel.setText("Choose your Type:");
 
 		SchemaService ss = PlatformUI.getWorkbench().getService(SchemaService.class);
 		sel = new TypeDefinitionSelector(page, "Select the corresponding schema type",
@@ -106,16 +107,20 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 				if (sel.getSelectedObject() != null) {
 					TypeDefinition type = sel.getSelectedObject();
 					CSVConfiguration conf = type.getConstraint(CSVConfiguration.class);
-					Boolean skip = conf.skipFirst();
-					button.setSelection(skip);
-					label.getParent().layout();
+					int skipNlines = conf.skipNlines();
+					skipNlinesSpinner.setSelection(skipNlines);
+					setTypeLabel.getParent().layout();
 				}
 			}
 		});
 
-		button = new Button(page, SWT.CHECK);
-		button.setText("Skip first line");
-		button.setSelection(true);
+		skipNlinesLabels = new Label(page, SWT.NONE);
+		skipNlinesLabels.setText("No. of lines to skip");
+		skipNlinesSpinner = new Spinner(page, SWT.BORDER);
+		skipNlinesSpinner.setMinimum(0);
+		skipNlinesSpinner.setMaximum(1000000);
+		skipNlinesSpinner.setIncrement(1);
+		skipNlinesSpinner.setPageIncrement(10);
 
 		page.pack();
 
@@ -125,8 +130,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
 
-		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
-				Value.of(button.getSelection()));
+		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES,
+				Value.of(skipNlinesSpinner.getSelection()));
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();

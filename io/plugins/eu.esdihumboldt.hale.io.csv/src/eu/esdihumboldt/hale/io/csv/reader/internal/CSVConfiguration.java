@@ -16,10 +16,10 @@
 
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
-import net.jcip.annotations.Immutable;
 import eu.esdihumboldt.hale.common.schema.model.Constraint;
 import eu.esdihumboldt.hale.common.schema.model.TypeConstraint;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
+import net.jcip.annotations.Immutable;
 
 /**
  * CSVConfiguration represented as TypeConstraints
@@ -36,14 +36,14 @@ public class CSVConfiguration implements TypeConstraint, CSVConstants {
 
 	private final char escape;
 
-	private final boolean skip_first_line;
+	private final int skipNlines;
 
 	/**
 	 * default constructor
 	 */
 
 	public CSVConfiguration() {
-		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE, DEFAULT_ESCAPE, false);
+		this(DEFAULT_SEPARATOR, DEFAULT_QUOTE, DEFAULT_ESCAPE, 0);
 	}
 
 	/**
@@ -54,11 +54,11 @@ public class CSVConfiguration implements TypeConstraint, CSVConstants {
 	 * @param esc the escape sign
 	 * @param skip the boolean to skip the first line or not
 	 */
-	public CSVConfiguration(char sep, char qu, char esc, boolean skip) {
+	public CSVConfiguration(char sep, char qu, char esc, int skipNlines) {
 		this.separator = sep;
 		this.quote = qu;
 		this.escape = esc;
-		this.skip_first_line = skip;
+		this.skipNlines = skipNlines;
 	}
 
 	/**
@@ -83,10 +83,10 @@ public class CSVConfiguration implements TypeConstraint, CSVConstants {
 	}
 
 	/**
-	 * @return the skip_first_line
+	 * @return the skipNlines
 	 */
-	public boolean skipFirst() {
-		return skip_first_line;
+	public int skipNlines() {
+		return skipNlines;
 	}
 
 	/**

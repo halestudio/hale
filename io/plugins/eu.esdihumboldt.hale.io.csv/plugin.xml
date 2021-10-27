@@ -53,16 +53,19 @@
                ref="eu.esdihumboldt.hale.io.csv">
          </contentType>
          <providerParameter
-               description="States if the first line in the CSV file should be skipped (e.g. because it contains the header)"
-               label="Skip first line"
+               description="States how many lines should be skipped when reading instances 
+               from a CSV file (e.g. because of the header). Also boolean values are 
+               supported for backwards compatibility. When a boolean is used, true is translated 
+               into 1 (i.e. skip the first line) and false into 0 (i.e. do not skip any lines)"
+               label="Skip N lines"
                name="skip"
                optional="true">
             <parameterBinding
-                  class="java.lang.Boolean">
+                  class="java.lang.Integer">
             </parameterBinding>
             <valueDescriptor
-                  default="false"
-                  sampleDescription="Either true or false">
+                  default="0"
+                  sampleDescription="Any integer equal or larger than 0">
             </valueDescriptor>
          </providerParameter>
          <providerParameter

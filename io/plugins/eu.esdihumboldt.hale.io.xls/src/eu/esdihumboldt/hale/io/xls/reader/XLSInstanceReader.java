@@ -84,9 +84,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean skipFirst = getParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE).as(
-				Boolean.class);
-
 		// first sheet as default
 		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
 
@@ -108,23 +105,61 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		propAr = type.getChildren().toArray(new PropertyDefinition[type.getChildren().size()]);
 		Collection<List<String>> rows = analyser.getRows();
 
-		// skip if first row is a header
-		if (!skipFirst) {
-			// otherwise first line is also an instance
-			createInstanceCollection(analyser.getHeader(), reporter);
-			line++;
+		int skipNlines = 0;
+		Boolean skipType = getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES).as(Boolean.class);
+
+		if (skipType == null) {
+
+			skipNlines = getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES).as(Integer.class);
+
+		}
+		else if (skipType) {
+
+			skipNlines = 1;
+
+		}
+		else {
+
+			skipNlines = 0;
 		}
 
-		// iterate over all rows to create the instances
-		Iterator<List<String>> allRows = rows.iterator();
-		while (allRows.hasNext()) {
-			List<String> row = allRows.next();
-			createInstanceCollection(row, reporter);
+		// do not skip any lines
+		if (skipNlines == 0) {
+
+			// also the header is retrieved
+			createInstanceCollection(analyser.getHeader(), reporter);
+
 			line++;
+
+			// iterate over all rows to create the instances
+			Iterator<List<String>> allRows = rows.iterator();
+			while (allRows.hasNext()) {
+				List<String> row = allRows.next();
+				createInstanceCollection(row, reporter);
+
+				line++;
+
+			}
+		}
+		else {
+
+			// iterate over all rows to create the instances
+			Iterator<List<String>> allRows = rows.iterator();
+			while (allRows.hasNext()) {
+				List<String> row = allRows.next();
+				if (!(skipNlines - 1 > 0)) {
+					createInstanceCollection(row, reporter);
+				}
+
+				skipNlines--;
+
+				line++;
+			}
 		}
 
 		reporter.setSuccess(true);
 		return reporter;
+
 	}
 
 	/**
