@@ -9,7 +9,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 ### Added
 
 - Support for selecting multiple files during schema and the data import
-- END-related schemas added in presets
+- END(Environmental Noise Directive)-related schemas added in presets
 - Support to remove a single schema from the project view
 - Support to export the source and the transformed data to shapefiles using geotools
 - Support for missing time zone information when parsing timestamps.
