@@ -41,7 +41,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Fix the last modified check when loading Groovy snippet from file
 - Fix failing of CRS without remarks for geopackage
 - Fix use of correct preferred bundle when loading geometry types
-- Fix to no append time zone information when writing xmlDate
+- Fix to not append time zone information when writing xmlDate
 
 ## [4.0.0]
 
