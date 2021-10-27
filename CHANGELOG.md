@@ -4,6 +4,45 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [4.1.0]
+
+### Added
+
+- Support for selecting multiple files during schema and the data import
+- END-related schemas added in presets
+- Support to remove a single schema from the project view
+- Support to export the source and the transformed data to shapefiles using geotools
+- Support for missing time zone information when parsing timestamps.
+- Support for creating a spatial index when writing GeoPackage files
+- Log into Docker Hub before starting a product build to prevent hitting rate limits for anonymous users.
+- Support for Java 8 date/time classes in Groovy
+
+### Changed
+
+- Activated XML pretty printing by default in the writer settings dialog page when exporting XML/GML
+- Change to use build-artifacts mirror instead of GitLab
+
+### Removed
+
+- xtraserver plugin
+
+### Fixed
+
+- Fix application not starting on the mac OS
+- Fix duplicate imports of the same schema when the schema locations differ only in the scheme part
+- Fix use of IProxyService to apply proxy configuration in the UI
+- Fix validity check of the hale»connect export dialog
+- Fix loading of projects in case user context is not supported
+- Fix ArcString interpolation handling
+- Fix handling of HTTPS schema locations in schema resolver
+- Fix for failing PostGIS integration tests
+- Checked name consistency for hale»studio help page
+- Fix link to the wetransform homepage
+- Fix the last modified check when loading Groovy snippet from file
+- Fix failing of CRS without remarks for geopackage
+- Fix use of correct preferred bundle when loading geometry types
+- Fix to no append time zone information when writing xmlDate
+
 ## [4.0.0]
 
 ### Added
