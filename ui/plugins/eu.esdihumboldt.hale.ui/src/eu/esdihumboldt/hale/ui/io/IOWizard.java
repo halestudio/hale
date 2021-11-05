@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.common.core.io.ProgressMonitorIndicator;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderDescriptor;
 import eu.esdihumboldt.hale.common.core.io.extension.IOProviderExtension;
+import eu.esdihumboldt.hale.common.core.io.impl.GZipEnabledImport.GZipInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.project.model.IOConfiguration;
 import eu.esdihumboldt.hale.common.core.io.project.model.Project;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -544,11 +545,21 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 			// loop it will be FilesIOSupplier (or FileIOSupplier when single
 			// file is selected) and from the second loop onwards
 			// FileIOSupplier
-			if (provider instanceof ImportProvider
-					&& (((ImportProvider) provider).getSource() instanceof FilesIOSupplier
-							|| ((ImportProvider) provider).getSource() instanceof FileIOSupplier)) {
-				// always set FileIOSupplier to avoid huge impacts.
-				((ImportProvider) provider).setSource(new FileIOSupplier(new File(uriLoc)));
+			if (provider instanceof ImportProvider) {
+				ImportProvider importProvider = (ImportProvider) provider;
+				LocatableInputSupplier<? extends InputStream> source = importProvider.getSource();
+
+				// XXX Hack to support GZip-compressed sources
+				// If other classes were used here that wrap the original input
+				// supplier, the import will likely fail
+				if (source instanceof GZipInputSupplier) {
+					source = ((GZipInputSupplier) source).getSource();
+				}
+
+				if (source instanceof FilesIOSupplier || source instanceof FileIOSupplier) {
+					// always set FileIOSupplier to avoid huge impacts.
+					importProvider.setSource(new FileIOSupplier(new File(uriLoc)));
+				}
 			}
 			// else it is a non-file source or export provider and proceed with
 			// the code without updating the provider.
@@ -867,6 +878,15 @@ public abstract class IOWizard<P extends IOProvider> extends Wizard
 		if (provider instanceof ImportProvider) {
 			LocatableInputSupplier<? extends InputStream> source = ((ImportProvider) getProvider())
 					.getSource();
+
+			// XXX Hack to handle the special case when source is a
+			// GZipInputSupplier
+			// In case of other wrapper classes, this method will only return
+			// the first selected file
+			if (source instanceof GZipInputSupplier) {
+				source = ((GZipInputSupplier) source).getSource();
+			}
+
 			if (source instanceof FilesIOSupplier) {
 				uris = ((FilesIOSupplier) source).getLocations();
 			}
