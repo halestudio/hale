@@ -17,6 +17,9 @@
 package eu.esdihumboldt.hale.io.shp.ui;
 
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.namespace.QName;
 
@@ -36,6 +39,7 @@ import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.supplier.FilesIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -65,6 +69,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 	private TypeDefinition lastType;
 
 	private Button matchShortPropertyNames;
+
+	private boolean defaultSelection = false;
 
 	/**
 	 * Button to enable auto detection of the schemas. Useful when importing
@@ -112,10 +118,33 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 					getWizard().getProvider().getSourceSchema(), null);
 			selector.getControl().setLayoutData(
 					GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
+
 			selector.addSelectionChangedListener(new ISelectionChangedListener() {
 
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
+					TypeDefinition selectedObject = selector.getSelectedObject();
+					// user selected None in the dialog box. Reset to default.
+					if (selectedObject == null) {
+						autoDetect.setSelection(true);
+						autoDetect.setEnabled(true);
+						defaultSelection = false;
+						validateSelection();
+						return;
+					}
+					if (!defaultSelection) {
+						// if the selection is changed then disable the
+						// autoDetect as the user wants to use just a single
+						// type.
+						autoDetect.setSelection(false);
+						autoDetect.setEnabled(false);
+					}
+					else {
+						// it is the first call to this listener which was
+						// triggered by the code so do not disable the
+						// autodetect.
+						defaultSelection = false;
+					}
 					validateSelection();
 				}
 			});
@@ -137,9 +166,16 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 				public void widgetSelected(SelectionEvent e) {
 					if (autoDetect.getSelection()) {
 						selector.getControl().setEnabled(false);
+						setMessage(
+								"All the types will be mapped automatically to their respective file structures.",
+								DialogPage.INFORMATION);
+						setPageComplete(true);
 					}
 					else {
 						selector.getControl().setEnabled(true);
+						// reset the message in the window asking user to select
+						// schema.
+						setMessage(null);
 					}
 				}
 
@@ -147,15 +183,26 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 				public void widgetDefaultSelected(SelectionEvent e) {
 					// default selection is false.
 					selector.getControl().setEnabled(true);
+
 				}
 			});
-
 			page.layout();
 			page.pack();
 		}
 
+		populateSelector();
+
+		setDefaultOptions();
+	}
+
+	/**
+	 * Populate selector by default based on the compatibility of the schema and
+	 * the selected data file.
+	 */
+	private void populateSelector() {
 		LocatableInputSupplier<? extends InputStream> currentSource = getWizard().getProvider()
 				.getSource();
+
 		// avoid NPE when relative path check box is selected when loading the
 		// schema.
 		if (currentSource != null && !currentSource.equals(lastSource)) {
@@ -171,12 +218,40 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 							.getMostCompatibleShapeType(getWizard().getProvider().getSourceSchema(),
 									lastType, lastType.getName().getLocalPart());
 					if (pt != null) {
+						defaultSelection = true;
 						selector.setSelection(new StructuredSelection(pt.getFirst()));
 					}
 				}
 			}
 
 			validateSelection();
+		}
+	}
+
+	/**
+	 * Set default options to the checkbox based on if the user navigated from
+	 * single file import or multiple file import.
+	 */
+	private void setDefaultOptions() {
+		// check how many data files were imported by the user.
+		List<URI> locations = null;
+		if (lastSource instanceof FilesIOSupplier) {
+			locations = ((FilesIOSupplier) lastSource).getLocations();
+		}
+		else {
+			locations = Arrays.asList(lastSource.getLocation());
+		}
+
+		if (locations != null && locations.size() > 1) {
+			// set auto detect to true as the user navigated from multiple
+			// files selection
+			autoDetect.setSelection(true);
+			selector.setSelection(StructuredSelection.EMPTY);
+		}
+		else {
+			// user navigated from single file selection
+			autoDetect.setSelection(false);
+			setMessage(null);
 		}
 	}
 
@@ -214,7 +289,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			}
 		}
 		else {
-			setMessage(null);
+			setPageComplete(true);
+			setMessage(
+					"All the types will be mapped automatically to their respective file structures.",
+					DialogPage.INFORMATION);
+
+			return;
 		}
 
 		setPageComplete(false);
@@ -256,10 +336,15 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 	 */
 	@Override
 	public boolean updateConfiguration(InstanceReader provider) {
-		if (selector.getSelectedObject() != null) {
-			QName name = selector.getSelectedObject().getName();
-			provider.setParameter(PARAM_TYPENAME, Value.of(name.toString()));
 
+		// make sure if the selection box is empty and autoDetect is checked
+		// then the user should be able to finish the wizard.
+		if ((autoDetect.getSelection() && selector.getSelectedObject() == null)
+				|| selector.getSelectedObject() != null) {
+			if (selector.getSelectedObject() != null) {
+				QName name = selector.getSelectedObject().getName();
+				provider.setParameter(PARAM_TYPENAME, Value.of(name.toString()));
+			}
 			provider.setParameter(PARAM_MATCH_SHORT_PROPERTY_NAMES,
 					Value.of(matchShortPropertyNames.getSelection()));
 			provider.setParameter(PARAM_AUTO_DETECT_SCHEMA_TYPES,
