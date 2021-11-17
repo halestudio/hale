@@ -70,8 +70,6 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 
 	private Button matchShortPropertyNames;
 
-	private boolean defaultSelection = false;
-
 	/**
 	 * Button to enable auto detection of the schemas. Useful when importing
 	 * multiple source data for multiple schema files.
@@ -114,47 +112,6 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		super.onShowPage(firstShow);
 
 		if (firstShow) {
-			selector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
-					getWizard().getProvider().getSourceSchema(), null);
-			selector.getControl().setLayoutData(
-					GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
-
-			selector.addSelectionChangedListener(new ISelectionChangedListener() {
-
-				@Override
-				public void selectionChanged(SelectionChangedEvent event) {
-					TypeDefinition selectedObject = selector.getSelectedObject();
-					// user selected None in the dialog box. Reset to default.
-					if (selectedObject == null) {
-						autoDetect.setSelection(true);
-						autoDetect.setEnabled(true);
-						defaultSelection = false;
-						validateSelection();
-						return;
-					}
-					if (!defaultSelection) {
-						// if the selection is changed then disable the
-						// autoDetect as the user wants to use just a single
-						// type.
-						autoDetect.setSelection(false);
-						autoDetect.setEnabled(false);
-					}
-					else {
-						// it is the first call to this listener which was
-						// triggered by the code so do not disable the
-						// autodetect.
-						defaultSelection = false;
-					}
-					validateSelection();
-				}
-			});
-
-			matchShortPropertyNames = new Button(page, SWT.CHECK);
-			matchShortPropertyNames.setLayoutData(
-					GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
-			matchShortPropertyNames.setText(
-					"Match shortened property names in Shapefile to target type properties");
-
 			autoDetect = new Button(page, SWT.CHECK);
 			autoDetect.setLayoutData(
 					GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
@@ -165,18 +122,31 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (autoDetect.getSelection()) {
-						selector.getControl().setEnabled(false);
 						setMessage(
 								"All the types will be mapped automatically to their respective file structures.",
 								DialogPage.INFORMATION);
+						selector.setSelection(StructuredSelection.EMPTY);
 						setPageComplete(true);
 					}
 					else {
-						selector.getControl().setEnabled(true);
 						// reset the message in the window asking user to select
 						// schema.
 						setMessage(null);
+						// if user selected just a single file then
+						// automatically select the most compatible file
+						// otherwise set the page to incomplete so that the user
+						// must select a file from the selector.
+						List<URI> locations = getNumberOfSelectedFiles();
+						if (locations.size() == 1) {
+							populateSelector(getWizard().getProvider().getSource());
+						}
+						if (selector.getSelection().isEmpty()) {
+							setPageComplete(false);
+						}
 					}
+					// reload the selector as sometimes in Mac it doesn't
+					// reflect the change.
+					selector.getControl().requestLayout();
 				}
 
 				@Override
@@ -186,20 +156,51 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 
 				}
 			});
+
+			// add some space
+			new Label(page, SWT.NONE);
+			new Label(page, SWT.NONE);
+
+			Label label = new Label(page, SWT.NONE);
+			label.setText("Schema type:");
+			selector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
+					getWizard().getProvider().getSourceSchema(), null);
+			selector.getControl().setLayoutData(
+					GridDataFactory.fillDefaults().grab(false, false).span(1, 1).create());
+
+			selector.addSelectionChangedListener(new ISelectionChangedListener() {
+
+				@Override
+				public void selectionChanged(SelectionChangedEvent event) {
+					TypeDefinition selectedObject = selector.getSelectedObject();
+					// user selected None in the dialog box. Reset to default.
+					if (selectedObject == null) {
+						autoDetect.setSelection(true);
+						autoDetect.setEnabled(true);
+						validateSelection();
+						// reload the selector as sometimes in Mac it doesn't
+						// reflect the change.
+						selector.getControl().requestLayout();
+						return;
+					}
+					// otherwise user selected an object so reset the checkbox
+					// to false.
+					autoDetect.setSelection(false);
+					validateSelection();
+					selector.getControl().requestLayout();
+				}
+			});
+
+			matchShortPropertyNames = new Button(page, SWT.CHECK);
+			matchShortPropertyNames.setLayoutData(
+					GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
+			matchShortPropertyNames.setText(
+					"Match shortened property names in Shapefile to target type properties");
+
 			page.layout();
 			page.pack();
 		}
 
-		populateSelector();
-
-		setDefaultOptions();
-	}
-
-	/**
-	 * Populate selector by default based on the compatibility of the schema and
-	 * the selected data file.
-	 */
-	private void populateSelector() {
 		LocatableInputSupplier<? extends InputStream> currentSource = getWizard().getProvider()
 				.getSource();
 
@@ -207,25 +208,34 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		// schema.
 		if (currentSource != null && !currentSource.equals(lastSource)) {
 			// if the source has changed
+			populateSelector(currentSource);
+		}
+		setDefaultOptions();
+	}
 
-			lastSource = currentSource;
-			lastType = ShapeSchemaReader.readShapeType(lastSource);
+	/**
+	 * Populate selector by default based on the compatibility of the schema and
+	 * the selected data file.
+	 * 
+	 * @param currentSource current selected source.
+	 */
+	private void populateSelector(LocatableInputSupplier<? extends InputStream> currentSource) {
+		lastSource = currentSource;
+		lastType = ShapeSchemaReader.readShapeType(lastSource);
 
-			if (selector.getSelectedObject() == null) {
-				// try to find a candidate for default selection
-				if (lastType != null) {
-					Pair<TypeDefinition, Integer> pt = ShapeInstanceReader
-							.getMostCompatibleShapeType(getWizard().getProvider().getSourceSchema(),
-									lastType, lastType.getName().getLocalPart());
-					if (pt != null) {
-						defaultSelection = true;
-						selector.setSelection(new StructuredSelection(pt.getFirst()));
-					}
+		if (selector.getSelectedObject() == null) {
+			// try to find a candidate for default selection
+			if (lastType != null) {
+				Pair<TypeDefinition, Integer> pt = ShapeInstanceReader.getMostCompatibleShapeType(
+						getWizard().getProvider().getSourceSchema(), lastType,
+						lastType.getName().getLocalPart());
+				if (pt != null) {
+					selector.setSelection(new StructuredSelection(pt.getFirst()));
 				}
 			}
-
-			validateSelection();
 		}
+
+		validateSelection();
 	}
 
 	/**
@@ -234,13 +244,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 	 */
 	private void setDefaultOptions() {
 		// check how many data files were imported by the user.
-		List<URI> locations = null;
-		if (lastSource instanceof FilesIOSupplier) {
-			locations = ((FilesIOSupplier) lastSource).getLocations();
-		}
-		else {
-			locations = Arrays.asList(lastSource.getLocation());
-		}
+		List<URI> locations = getNumberOfSelectedFiles();
 
 		if (locations != null && locations.size() > 1) {
 			// set auto detect to true as the user navigated from multiple
@@ -251,8 +255,25 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		else {
 			// user navigated from single file selection
 			autoDetect.setSelection(false);
-			setMessage(null);
 		}
+	}
+
+	/**
+	 * Method to find the list of selected files.
+	 * 
+	 * @return list of selected files.
+	 */
+	private List<URI> getNumberOfSelectedFiles() {
+		List<URI> locations = null;
+		LocatableInputSupplier<? extends InputStream> currentSource = getWizard().getProvider()
+				.getSource();
+		if (currentSource instanceof FilesIOSupplier) {
+			locations = ((FilesIOSupplier) currentSource).getLocations();
+		}
+		else {
+			locations = Arrays.asList(currentSource.getLocation());
+		}
+		return locations;
 	}
 
 	/**
@@ -324,9 +345,6 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		page.setLayout(new GridLayout(2, false));
 		GridData layoutData = new GridData();
 		layoutData.widthHint = 200;
-
-		Label label = new Label(page, SWT.NONE);
-		label.setText("Schema type:");
 
 		setPageComplete(false);
 	}
