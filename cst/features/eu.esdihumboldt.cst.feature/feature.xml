@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.cst.feature"
       label="Conceptual Schema Transformer Feature"
-      version="4.1.0.qualifier"
+      version="4.2.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 

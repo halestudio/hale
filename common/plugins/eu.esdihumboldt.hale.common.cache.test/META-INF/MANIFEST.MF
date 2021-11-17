@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Cache Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.cache.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 4.2.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.common.cache;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.junit

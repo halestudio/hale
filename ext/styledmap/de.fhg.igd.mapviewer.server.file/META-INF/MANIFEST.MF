@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Map File
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.file;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,
