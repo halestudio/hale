@@ -45,13 +45,35 @@ public interface SchemaService extends TransformationSchemas {
 	public SchemaSpace getSchemas(SchemaSpaceID spaceID);
 
 	/**
+	 * Get schema for a specified resourceId.
+	 * 
+	 * @param resourceID resource Id of the schema to find.
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
+	 * @return schema.
+	 */
+	public Schema getSchema(String resourceID, SchemaSpaceID spaceID);
+
+	/**
 	 * Add a schema to the source or target schema space.
+	 * 
+	 * @param resourceID resource id of the schema to be added.
 	 * 
 	 * @param schema the schema to add
 	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
 	 *            or {@link SchemaSpaceID#TARGET}
 	 */
-	public void addSchema(Schema schema, SchemaSpaceID spaceID);
+	public void addSchema(String resourceID, Schema schema, SchemaSpaceID spaceID);
+
+	/**
+	 * Removes a schema to the source schema space from the project view.
+	 * 
+	 * @param resourceID of the schema to be removed.
+	 * @param spaceID the schema space ID, either {@link SchemaSpaceID#SOURCE}
+	 *            or {@link SchemaSpaceID#TARGET}
+	 * @return true if the schema was removed, false otherwise.
+	 */
+	public boolean removeSchema(String resourceID, SchemaSpaceID spaceID);
 
 	/**
 	 * Removes all schemas from the source or target schema space.

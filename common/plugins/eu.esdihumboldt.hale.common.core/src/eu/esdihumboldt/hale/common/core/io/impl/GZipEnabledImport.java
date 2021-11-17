@@ -64,6 +64,12 @@ public abstract class GZipEnabledImport extends AbstractImportProvider {
 			return getLocation();
 		}
 
+		/**
+		 * @return the wrapped LocatableInputSupplier
+		 */
+		public LocatableInputSupplier<? extends InputStream> getSource() {
+			return source;
+		}
 	}
 
 	/**

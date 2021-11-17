@@ -16,8 +16,10 @@
 
 package eu.esdihumboldt.hale.common.core.io;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
@@ -62,5 +64,27 @@ public interface ImportProvider extends IOProvider {
 	 *         was not executed yet
 	 */
 	public String getResourceIdentifier();
+
+	/**
+	 * This method executes the I/O provider. It is a special case of
+	 * <code>IOProvider.execute(ProgressIndicator progress)</code> and used when
+	 * importing multiple schemas or instances. The method is overloaded with
+	 * resourceIdentifier because for every file selected by the user a new
+	 * resource identifier has to be generated so that every schema
+	 * in @link{SchemaServiceImpl} gets a new ID for the selected schema.
+	 * 
+	 * @param progress the progress indicator, may be <code>null</code>
+	 * @param resourceIdentifier identifier of the provided resource. Null if a
+	 *            new resource id needs to be generated.
+	 * @return the execution report
+	 * 
+	 * @throws IOProviderConfigurationException if the I/O provider was not
+	 *             configured properly
+	 * @throws IOException if an I/O operation fails
+	 * @throws UnsupportedOperationException if the operation to load multiple
+	 *             files is not supported.
+	 */
+	public IOReport execute(ProgressIndicator progress, String resourceIdentifier)
+			throws IOProviderConfigurationException, IOException, UnsupportedOperationException;
 
 }

@@ -64,6 +64,7 @@ jobs:
         - sleep 10
         - sudo systemctl status docker.service
         # Pull Docker images required for integration tests
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - docker pull kartoza/postgis
         - ./build.sh integrationStage
         # Killing background sleep loop
@@ -84,6 +85,7 @@ jobs:
       script:
         # Output something every minute lest Travis kills the job
         - while sleep 1m; do echo "=====[ still running after $SECONDS seconds... ]====="; done &
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
         - mkdir -p build/target
         - ./build.sh product -a ${ARCH} -o ${PLATFORM} ${ADDITIONAL_FLAGS} ${PRODUCT}
         # Killing background sleep loop

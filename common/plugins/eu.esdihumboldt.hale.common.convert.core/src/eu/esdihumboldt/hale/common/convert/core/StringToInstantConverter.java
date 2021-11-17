@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.common.convert.core;
 
 import java.time.Instant;
+import java.time.format.DateTimeParseException;
 
 import org.springframework.core.convert.converter.Converter;
 
@@ -31,7 +32,19 @@ public class StringToInstantConverter implements Converter<String, Instant> {
 		if (source == null) {
 			return null;
 		}
-		return Instant.parse(source);
-	}
 
+		Instant result;
+		try {
+			result = Instant.parse(source);
+		} catch (DateTimeParseException e) {
+			// Be lenient about missing time zone information
+			try {
+				result = Instant.parse(source + "Z");
+			} catch (Throwable t) {
+				throw e;
+			}
+		}
+
+		return result;
+	}
 }

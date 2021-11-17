@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale»studio 4.1?</title>
+</head>
+<body>
+	<h1>What's new in hale»studio 4.1?</h1>
+
+	<ul>
+		<li>Added support to select multiple files during the schema and the data import</li>
+		<li>Added support to remove a single schema from the project view</li>
+		<li>Added support to export the source and the transformed data to Shapefiles using GeoTools</li>
+		<li>Added presets for Environmental Noise Directive (END) schemas</li>
+		<li>Added support for create a spatial index when writing GeoPackage files</li>
+		<li>Various bug fixes and enhancements</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#410"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>To avoid any compatibility issues when using an existing workspace, we recommend starting with a fresh one when you install
+		hale»studio 4.1.0</p>
+		
+	<p>The development work for this release was co-funded by the European Health and Digital Executive Agency (HaDEA) under Action No 2018-EU-IA-0093.</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="4_1_0">
+		<tbody>
+
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="4_1_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+				
+			<tr id="multiple-files-import">
+				<td class="title">Import multiple files</td>
+				<td class="content">
+					<p>
+						Until now, users could import only a single source schema or a single source data file.
+						However, from this release, the user can select multiple files during the schema import
+						or when importing source data. This allows the user to save a significant amount of time
+						when working with multiple files of the same format.
+					</p>
+					<p>
+						<img src="4_1_0_images/import-multiple-files.png"></img>
+					</p>
+				</td>
+			</tr>
+
+			<tr id="Shapefiles-files-export">
+				<td class="title">Shapefile writer</td>
+				<td class="content">
+					<p>
+						This release adds the additional option to export source or transformed data as a Shapefile.
+					</p>
+					<p>
+						<img src="4_1_0_images/export-shapefile.png"></img>
+					</p>
+				</td>
+			</tr>
+
+		</tbody>
+	</table>
+</body>
+</html>

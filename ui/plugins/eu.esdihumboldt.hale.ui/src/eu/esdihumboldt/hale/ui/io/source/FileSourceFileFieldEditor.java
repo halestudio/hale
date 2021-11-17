@@ -103,10 +103,12 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 	 */
 	public void setUseRelativeIfPossible(boolean useRelative) {
 		if (this.useRelative && !useRelative) {
+			// incase user toggles relative path check box.
 			File f = new File(getTextControl().getText());
 			f = resolve(f);
-			if (f != null)
+			if (f != null) {
 				getTextControl().setText(f.getAbsolutePath());
+			}
 			this.useRelative = false;
 		}
 		else if (!this.useRelative && useRelative && projectURI != null) {
@@ -114,10 +116,15 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 			File f = new File(getTextControl().getText());
 			URI absoluteSelected = f.toURI();
 			URI relativeSelected = IOUtils.getRelativePath(absoluteSelected, projectURI);
-			if (!relativeSelected.isAbsolute())
+			if (!relativeSelected.isAbsolute()) {
 				f = new File(relativeSelected.toString());
-			getTextControl().setText(f.getPath());
+				getTextControl().setText(f.getPath());
+			}
 		}
+		// here it is important to trigger the value changed event otherwise,
+		// toggling relative path check box shows weird behavior and throws NPE.
+		getTextControl().setFocus();
+		valueChanged();
 	}
 
 	/**
@@ -125,7 +132,7 @@ public class FileSourceFileFieldEditor extends OpenFileFieldEditor {
 	 */
 	@Override
 	protected String changePressed() {
-		File f = new File(getTextControl().getText());
+		File f = new File(getTextControl().getText().trim());
 		f = resolve(f);
 		File d = getFile(f);
 

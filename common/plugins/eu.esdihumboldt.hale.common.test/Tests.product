@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.1.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -22,7 +22,6 @@
    <windowImages/>
 
    <launcher name="hale_tests">
-      <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
@@ -94,7 +93,6 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
-      <plugin id="de.interactive_instruments.xtraserver-config-util"/>
       <plugin id="de.odysseus.staxon"/>
       <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.config.test" fragment="true"/>
@@ -211,6 +209,7 @@
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.shp.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.validation"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
@@ -221,8 +220,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt"/>
       <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
-      <plugin id="eu.esdihumboldt.hale.io.xtraserver"/>
-      <plugin id="eu.esdihumboldt.hale.io.xtraserver.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
@@ -370,6 +367,7 @@
       <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.expressions"/>
       <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.draw2d"/>
       <plugin id="org.eclipse.e4.core.commands"/>
@@ -523,5 +521,12 @@
       <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

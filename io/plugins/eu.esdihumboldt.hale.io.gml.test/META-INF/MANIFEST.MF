@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.test
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",

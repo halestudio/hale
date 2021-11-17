@@ -52,6 +52,15 @@ public class OpenFileFieldEditor extends ExtendedFileFieldEditor {
 	}
 
 	/**
+	 * @see ExtendedFileFieldEditor#ExtendedFileFieldEditor(String, String,
+	 *      boolean, int, Composite, int )
+	 */
+	public OpenFileFieldEditor(String name, String labelText, boolean enforceAbsolute,
+			int validationStrategy, Composite parent, int style) {
+		super(name, labelText, enforceAbsolute, validationStrategy, parent, style);
+	}
+
+	/**
 	 * @see FileFieldEditor#FileFieldEditor(String, String, Composite)
 	 */
 	public OpenFileFieldEditor(String name, String labelText, Composite parent) {

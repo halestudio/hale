@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.impl.ResourceSchemaSpace;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
 import eu.esdihumboldt.hale.ui.service.project.internal.AbstractRemoveResourcesOperation;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -62,13 +62,30 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	/**
 	 * Maps schema space IDs to schema spaces
 	 */
-	private static final Map<SchemaSpaceID, DefaultSchemaSpace> spaces = new HashMap<SchemaSpaceID, DefaultSchemaSpace>();
+	private static final Map<SchemaSpaceID, ResourceSchemaSpace> spaces = new HashMap<SchemaSpaceID, ResourceSchemaSpace>();
 
 	/**
 	 * @see AbstractSchemaService#AbstractSchemaService(ProjectService)
 	 */
 	public SchemaServiceImpl(ProjectService projectService) {
 		super(projectService);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaService#getSchema(java.lang.String,
+	 *      eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
+	 */
+	@Override
+	public Schema getSchema(String resourceID, SchemaSpaceID spaceID) {
+		Preconditions.checkNotNull(resourceID);
+
+		synchronized (spaces) {
+			ResourceSchemaSpace space = spaces.get(spaceID);
+			if (space != null) {
+				return space.getSchemas(resourceID);
+			}
+			return null;
+		}
 	}
 
 	/**
@@ -79,9 +96,9 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 		Preconditions.checkNotNull(spaceID);
 
 		synchronized (spaces) {
-			DefaultSchemaSpace space = spaces.get(spaceID);
+			ResourceSchemaSpace space = spaces.get(spaceID);
 			if (space == null) {
-				space = new DefaultSchemaSpace();
+				space = new ResourceSchemaSpace();
 				spaces.put(spaceID, space);
 			}
 			return space;
@@ -89,19 +106,36 @@ public class SchemaServiceImpl extends AbstractSchemaService {
 	}
 
 	/**
-	 * @see SchemaService#addSchema(Schema, SchemaSpaceID)
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaService#addSchema(java.lang.String,
+	 *      eu.esdihumboldt.hale.common.schema.model.Schema,
+	 *      eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
 	 */
 	@Override
-	public void addSchema(Schema schema, SchemaSpaceID spaceID) {
+	public void addSchema(String resourceID, Schema schema, SchemaSpaceID spaceID) {
 		Preconditions.checkNotNull(spaceID);
 
 		SchemaIO.loadMappingRelevantTypesConfig(schema, spaceID, getProjectService()
 				.getConfigurationService());
 
-		DefaultSchemaSpace space = (DefaultSchemaSpace) getSchemas(spaceID);
-		space.addSchema(schema);
+		ResourceSchemaSpace space = (ResourceSchemaSpace) getSchemas(spaceID);
+		space.addSchema(resourceID, schema);
 
 		notifySchemaAdded(spaceID, schema);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.service.schema.SchemaService#removeSchema(java.lang.String,
+	 *      eu.esdihumboldt.hale.common.schema.SchemaSpaceID)
+	 */
+	@Override
+	public boolean removeSchema(String resourceID, SchemaSpaceID spaceID) {
+		Preconditions.checkNotNull(spaceID);
+
+		ResourceSchemaSpace space = (ResourceSchemaSpace) getSchemas(spaceID);
+		Schema removedSchema = space.removeSchema(resourceID);
+		notifySchemaRemoved(spaceID);
+		notifyMappableTypesChanged(spaceID, space.getTypes());
+		return removedSchema != null ? true : false;
 	}
 
 	/**

@@ -25,10 +25,11 @@ public interface ActionUIAdvisor<T> {
 
 	/**
 	 * States if resource removal is supported.
+	 * @param resourceId the resource identifier
 	 * 
 	 * @return if removal of a single resource based on its ID is supported
 	 */
-	public boolean supportsRemoval();
+	public boolean supportsRemoval(String resourceId);
 
 	/**
 	 * Remove the resource with the given ID.

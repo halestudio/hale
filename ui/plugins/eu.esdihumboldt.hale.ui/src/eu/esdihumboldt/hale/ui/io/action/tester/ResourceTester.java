@@ -61,7 +61,7 @@ public class ResourceTester extends PropertyTester {
 	private boolean testAllowRemove(Resource resource) {
 		ActionUIAdvisor<?> advisor = findAdvisor(resource.getActionId());
 		if (advisor != null) {
-			return advisor.supportsRemoval();
+			return advisor.supportsRemoval(resource.getResourceId());
 		}
 		return false;
 	}

@@ -34,7 +34,7 @@ public class FileSnippet implements Snippet {
 	private final String id;
 	private final Charset encoding;
 
-	private final long lastMod = -1;
+	private long lastMod = -1;
 	private Script lastScript = null;
 
 	/**
@@ -62,6 +62,7 @@ public class FileSnippet implements Snippet {
 		if (mod > lastMod || lastScript == null) {
 			lastScript = SnippetReaderImpl.loadSnippet(new FileIOSupplier(snippetFile), services,
 					encoding);
+			lastMod = mod;
 		}
 
 		return lastScript;

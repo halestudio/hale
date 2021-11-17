@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="eu.esdihumboldt.hale.ui.schema.presets">
+      <category
+            id="eu.esdihumboldt.util.resource.schemas.end.category"
+            name="European Noise Directive">
+      </category>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF1_5 Agglomeration Source"
+            id="eu.esdihumboldt.util.resource.schemas.presets.end.df1-5.agg"
+            name="END DF1_5 Agglomeration Source"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF1_5/AgglomerationSource/AgglomerationSource.hsd.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF1_5 Major Airport Source"
+            id="eu.esdihumboldt.util.resource.schemas.end.df1-5.mas"
+            name="END DF1_5 Major Airport Source"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF1_5/MajorAirportSource/MajorAirportSource.hsd.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF1_5 Major Railway Source"
+            id="eu.esdihumboldt.util.resource.schemas.end.schema.df1-5.mrails"
+            name="END DF1_5 Major Railway Source"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF1_5/MajorRailwaySource/MajorRailwaySource.hsd.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF1_5 Major Road Source"
+            id="eu.esdihumboldt.util.resource.schemas.end.schema.df1-5.mroads"
+            name="END DF1_5 Major Road Source"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF1_5/MajorRoadSource/MajorRoadSource.hsd.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF4_8 Agglomerations"
+            id="eu.esdihumboldt.util.resource.schemas.end.df4-8.agg"
+            name="END DF4_8 Agglomerations"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF4_8/Agglomerations/DF4_8-Agglomerations.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF4_8 Major Airports"
+            id="eu.esdihumboldt.util.resource.schemas.end.df4-8.mair"
+            name="END DF4_8 Major Airports"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF4_8/MajorAirports/DF4_8-MajorAirports.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF4_8 Major Railways"
+            id="eu.esdihumboldt.util.resource.schemas.end.df4-8.mrail"
+            name="END DF4_8 Major Railways"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF4_8/MajorRailways/DF4_8-MajorRailways.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF4_8 Major Roads"
+            id="eu.esdihumboldt.util.resource.schemas.end.df4-8.mroads"
+            name="END DF4_8 Major Roads"
+            version="1.0">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF4_8/MajorRoads/DF4_8-MajorRoads.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF7_10 Noise Action Plan Coverage Area"
+            id="eu.esdihumboldt.util.resource.schemas.end.df7-10.nap"
+            name="END DF7_10 Noise Action Plan Coverage Area"
+            version="beta">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF7_10/NoiseActionPlans/NoiseActionPlan-CoverageArea.hsd.json">
+         </uri>
+      </schema>
+      <schema
+            category="eu.esdihumboldt.util.resource.schemas.end.category"
+            description="Geopackage European Noise Directive Application Schema for DF7_10 Quiet Areas"
+            id="eu.esdihumboldt.util.resource.schemas.end.df7-10.qa"
+            name="END DF7_10 Quiet Areas"
+            version="beta">
+         <uri
+               value="https://raw.githubusercontent.com/wetransform-os/geopackage-end/018d8207556dac0f0e4977cbe2a2206cf9094d9c/DF7_10/QuietAreas/QuietAreas.hsd.json">
+         </uri>
+      </schema>
+   </extension>
+
+</plugin>

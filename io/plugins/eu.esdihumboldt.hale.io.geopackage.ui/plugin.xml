@@ -10,6 +10,13 @@
                ref="eu.esdihumboldt.hale.io.geopackage.instance.writer">
          </provider>
       </configPage>
+      <configPage
+            class="eu.esdihumboldt.hale.io.geopackage.ui.GeopackageWriterSettingsPage"
+            order="1">
+         <provider
+               ref="eu.esdihumboldt.hale.io.geopackage.instance.writer">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>

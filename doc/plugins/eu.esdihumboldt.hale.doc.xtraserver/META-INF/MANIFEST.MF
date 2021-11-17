@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: HALE XtraServer plug-in User Guide
-Bundle-SymbolicName: eu.esdihumboldt.hale.doc.xtraserver;singleton:=true
-Bundle-Version: 4.0.0.qualifier
-Bundle-Vendor: data harmonisation panel
-Require-Bundle: org.eclipse.help

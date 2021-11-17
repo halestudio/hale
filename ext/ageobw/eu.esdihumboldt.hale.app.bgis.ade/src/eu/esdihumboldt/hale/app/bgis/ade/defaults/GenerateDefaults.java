@@ -44,7 +44,7 @@ import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
-import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
+import eu.esdihumboldt.hale.common.schema.model.impl.ResourceSchemaSpace;
 
 /**
  * Generates default value mappings for BGIS CityGML ADE.
@@ -54,6 +54,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 public class GenerateDefaults implements BGISAppConstants {
 
 	private Schema schema;
+
+	private String resourceId;
 
 	private Alignment alignment;
 
@@ -96,6 +98,7 @@ public class GenerateDefaults implements BGISAppConstants {
 			throw new IllegalStateException("Failed to load schema");
 		}
 		schema = schemaReader.getSchema();
+		resourceId = schemaReader.getResourceIdentifier();
 	}
 
 	private void loadConfig() {
@@ -154,7 +157,8 @@ public class GenerateDefaults implements BGISAppConstants {
 		AlignmentWriter writer = (AlignmentWriter) factory.createExtensionObject();
 
 		// configure alignment writer
-		writer.setTargetSchema(new DefaultSchemaSpace().addSchema(schema));
+		writer.setTargetSchema(
+				new ResourceSchemaSpace().addSchema(resourceId, schema));
 		writer.setTarget(new FileIOSupplier(context.getOut()));
 		writer.setAlignment(alignment);
 

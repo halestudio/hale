@@ -84,7 +84,17 @@ public class SimpleTypeUtil {
 		if (simpleType != null) {
 			try {
 				XmlAnySimpleType simpleTypeValue = conversionService.convert(value, simpleType);
-				if (simpleTypeValue instanceof XmlDateTime) {
+				if (simpleTypeValue instanceof XmlDate) {
+					XmlDate xmlDate = (XmlDate) simpleTypeValue;
+					Calendar calendar = xmlDate.getCalendarValue();
+					GDateBuilder builder = new GDateBuilder(calendar);
+					// remove time zone as value contains no time information
+					builder.clearTimeZone();
+					GDate gdate = builder.toGDate();
+
+					xmlDate.setGDateValue(gdate);
+				}
+				else if (simpleTypeValue instanceof XmlDateTime) {
 					XmlDateTime xmlDateTime = (XmlDateTime) simpleTypeValue;
 
 					// use Zulu time to have a reproducable result
@@ -100,6 +110,7 @@ public class SimpleTypeUtil {
 
 					xmlDateTime.setGDateValue(gdate);
 				}
+
 				if (simpleTypeValue != null) {
 					return simpleTypeValue.getStringValue();
 				}

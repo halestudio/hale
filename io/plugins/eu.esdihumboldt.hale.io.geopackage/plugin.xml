@@ -42,7 +42,7 @@
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
          <providerParameter
-               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&lt;table name 1&gt;|&lt;WHERE clause 1||&lt;table name 2&gt;|&lt;WHERE clause 2&gt;||...&quot;"
+               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&amp;lt;table name 1&amp;gt;|&amp;lt;WHERE clause 1&amp;gt;||&amp;lt;table name 2&amp;gt;|&amp;lt;WHERE clause 2&amp;gt;||...&quot;"
                label="Filters for querying the GeoPackage database"
                name="queryFilter"
                optional="true">
@@ -62,6 +62,19 @@
                   defaultDescription="By default no CRS transformation is performed, the existing geometries are written with their respective CRS."
                   sample="code:EPSG:4326"
                   sampleDescription="Reference systems can be defined either as code or WKT (preceded with code: or wkt: respectively)">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Type of spatial index to use when new tables are created in the target GeoPackage file"
+               label="Type of spatial index"
+               name="spatialindex.type"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="rtree"
+                  defaultDescription="By default, an RTree Spatial Index is created">
             </valueDescriptor>
          </providerParameter>
       </provider>

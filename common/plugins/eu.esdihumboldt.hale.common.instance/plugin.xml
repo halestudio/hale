@@ -54,6 +54,18 @@
       </allow>
       <allow
             allowAll="false"
+            class="org.locationtech.jts.geom.CoordinateXY">
+      </allow>
+      <allow
+            allowAll="false"
+            class="org.locationtech.jts.geom.CoordinateXYM">
+      </allow>
+      <allow
+            allowAll="false"
+            class="org.locationtech.jts.geom.CoordinateXYZM">
+      </allow>
+      <allow
+            allowAll="false"
             class="org.locationtech.jts.geom.Polygon">
       </allow>
       <allow

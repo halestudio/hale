@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MS Access UI Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.msaccess.ui;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc.ui;bundle-version="2.9.5"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess.ui

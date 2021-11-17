@@ -181,7 +181,7 @@ public class XmlToSchema implements HaleSchemaConstants {
 					}
 				}
 				else {
-					reporter.error(new IOMessageImpl("Could not find factory for constraint with type $id"))
+					reporter.error("Could not find factory for constraint with type $id")
 				}
 			}
 			else {
