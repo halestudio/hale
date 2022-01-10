@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.ImportProvider;
@@ -36,15 +37,32 @@ public class CSVUtil implements CSVConstants {
 	/**
 	 * Reads only the first line of a given CSV file
 	 * 
-	 * @param provider provider to get the parameters from
+	 * @param provider to get the parameters from
 	 * @return a reader containing the first line of the CSV file
 	 * @throws IOException if an I/O operation fails
 	 */
+
 	public static CSVReader readFirst(ImportProvider provider) throws IOException {
+
+		return readFirst(provider, 0);
+	}
+
+	/**
+	 * This method reads/retrieves just one line, either the first after the
+	 * header or the first line after skipping "skipLines".
+	 * 
+	 * @param provider to get the parameters from
+	 * @param skipLines how many lines have to be skipped
+	 * @return a reader containing the first line after (no. of lines -
+	 *         skipLines) of the CSV file
+	 * @throws IOException
+	 */
+	public static CSVReader readFirst(ImportProvider provider, int skipLines) throws IOException {
 		Reader streamReader = new BufferedReader(
 				new InputStreamReader(provider.getSource().getInput(), provider.getCharset()));
+
 		CSVReader reader = new CSVReader(streamReader, getSep(provider), getQuote(provider),
-				getEscape(provider));
+				getEscape(provider), skipLines, CSVParser.DEFAULT_STRICT_QUOTES);
 
 		return reader;
 

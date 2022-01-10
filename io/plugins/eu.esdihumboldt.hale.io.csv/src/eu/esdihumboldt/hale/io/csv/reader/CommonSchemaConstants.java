@@ -25,7 +25,7 @@ public interface CommonSchemaConstants {
 	/**
 	 * the parameter specifying the reader setting
 	 */
-	public static final String PARAM_SKIP_FIRST_LINE = "skip";
+	public static final String PARAM_SKIP_N_LINES = "skip";
 
 	/**
 	 * Name of the parameter specifying the type name

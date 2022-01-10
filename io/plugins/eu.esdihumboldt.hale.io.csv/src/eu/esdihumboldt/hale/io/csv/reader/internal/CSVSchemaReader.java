@@ -119,7 +119,8 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			// fails if there are less or more property names or property types
 			// than the entries in the first line
 			if ((firstLine.length != properties.length && properties.length != 0)
-					|| (firstLine.length != comboSelections.length && comboSelections.length != 0)) {
+					|| (firstLine.length != comboSelections.length
+							&& comboSelections.length != 0)) {
 				fail("Not the same number of entries for property names, property types and words in the first line of the file");
 			}
 			for (int i = 0; i < comboSelections.length; i++) {
@@ -127,8 +128,8 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 				propertyType = PropertyTypeExtension.getInstance().getFactory(comboSelections[i])
 						.createExtensionObject();
 
-				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-						properties[i]), type, propertyType.getTypeDefinition());
+				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+						new QName(properties[i]), type, propertyType.getTypeDefinition());
 
 				// set constraints on property
 //				property.setConstraint(NillableFlag.DISABLED); // nillable
@@ -147,7 +148,7 @@ public class CSVSchemaReader extends AbstractTableSchemaReader implements CSVCon
 			boolean skip = Arrays.equals(properties, firstLine);
 
 			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this), CSVUtil.getQuote(this),
-					CSVUtil.getEscape(this), skip));
+					CSVUtil.getEscape(this), skip ? 1 : 0));
 
 			schema.addType(type);
 

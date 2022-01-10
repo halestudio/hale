@@ -117,21 +117,23 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 		oldNamesBuffer.deleteCharAt(oldNamesBuffer.lastIndexOf(","));
 		String oldNames = oldNamesBuffer.toString();
 		if (oldNames.equals(propNames)) {
-			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of("True"));
+			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
 		}
 		else {
-			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of("False"));
+			provider.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(0));
 		}
 		provider.setParameter(AbstractTableSchemaReader.PARAM_PROPERTY, Value.of(propNames));
 
 		for (ComboViewer combo : comboFields) {
-			comboViewerBuffer.append(((PropertyTypeFactory) ((IStructuredSelection) combo
-					.getSelection()).getFirstElement()).getIdentifier());
+			comboViewerBuffer
+					.append(((PropertyTypeFactory) ((IStructuredSelection) combo.getSelection())
+							.getFirstElement()).getIdentifier());
 			comboViewerBuffer.append(",");
 		}
 		comboViewerBuffer.deleteCharAt(comboViewerBuffer.lastIndexOf(","));
 		String combViewNames = comboViewerBuffer.toString();
-		provider.setParameter(AbstractTableSchemaReader.PARAM_PROPERTYTYPE, Value.of(combViewNames));
+		provider.setParameter(AbstractTableSchemaReader.PARAM_PROPERTYTYPE,
+				Value.of(combViewNames));
 
 		return true;
 
@@ -272,7 +274,8 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 						}
 						if (validSel.contains(false)) {
 							int j = validSel.indexOf(false) + 1;
-							setMessage("Your selection in field # " + j + " is not valid!", WARNING);
+							setMessage("Your selection in field # " + j + " is not valid!",
+									WARNING);
 						}
 						else {
 							setMessage(null);
@@ -353,8 +356,8 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 		sc = new DynamicScrolledComposite(holder, SWT.V_SCROLL);
 		sc.setExpandHorizontal(true);
 
-		sc.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200)
-				.create());
+		sc.setLayoutData(
+				GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, 200).create());
 
 		Composite page = new Composite(sc, SWT.NONE);
 		page.setLayout(new GridLayout(2, false));

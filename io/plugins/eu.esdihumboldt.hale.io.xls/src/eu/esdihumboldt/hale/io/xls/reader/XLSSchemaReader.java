@@ -132,15 +132,15 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 				PropertyType propertyType = PropertyTypeExtension.getInstance()
 						.getFactory(comboSelections[i]).createExtensionObject();
 
-				DefaultPropertyDefinition property = new DefaultPropertyDefinition(new QName(
-						properties[i]), type, propertyType.getTypeDefinition());
+				DefaultPropertyDefinition property = new DefaultPropertyDefinition(
+						new QName(properties[i]), type, propertyType.getTypeDefinition());
 				configureProperty(property);
 			}
 
-			boolean skip = Arrays.equals(properties, header.toArray(new String[0]));
+			boolean skipFirst = Arrays.equals(properties, header.toArray(new String[0]));
 
 			type.setConstraint(new CSVConfiguration(CSVUtil.getSep(this), CSVUtil.getQuote(this),
-					CSVUtil.getEscape(this), skip));
+					CSVUtil.getEscape(this), skipFirst ? 1 : 0));
 
 			schema.addType(type);
 
