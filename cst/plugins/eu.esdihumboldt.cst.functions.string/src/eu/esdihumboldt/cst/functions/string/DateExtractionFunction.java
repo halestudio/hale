@@ -29,10 +29,13 @@ public interface DateExtractionFunction {
 	public static final String ID = "eu.esdihumboldt.cst.functions.string.dateextraction";
 
 	/**
-	 * Name of the parameter specifying the date format of the source entity.<br>
+	 * Name of the parameter specifying the date format of the source
+	 * entity.<br>
 	 * See the function definition on
 	 * <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	public static final String PARAMETER_DATE_FORMAT = "dateFormat";
+
+	public static final String PARAMETER_LENIENCY = "leniency";
 
 }

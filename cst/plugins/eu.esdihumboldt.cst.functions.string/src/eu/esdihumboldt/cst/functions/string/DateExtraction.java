@@ -57,6 +57,12 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 					.format("Mandatory parameter {0} not defined", PARAMETER_DATE_FORMAT));
 		}
 
+		if (getParameters() == null || getParameters().get(PARAMETER_LENIENCY) == null
+				|| getParameters().get(PARAMETER_LENIENCY).isEmpty()) {
+			throw new TransformationException(MessageFormat
+					.format("Mandatory parameter {0} not defined", PARAMETER_LENIENCY));
+		}
+
 		String dateFormat = getParameters().get(PARAMETER_DATE_FORMAT).get(0).as(String.class);
 
 		// replace transformation variables in date format
@@ -64,6 +70,13 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+
+		// default ....
+		String leniency = getParameters().get(PARAMETER_LENIENCY).get(0).as(String.class);
+		leniency = getExecutionContext().getVariables().replaceVariables(leniency);
+		if (leniency == "false") {
+			sdf.setLenient(false);
+		}
 
 		try {
 			return sdf.parse(sourceString);
