@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Property date extraction function.
@@ -57,12 +58,6 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 					.format("Mandatory parameter {0} not defined", PARAMETER_DATE_FORMAT));
 		}
 
-		if (getParameters() == null || getParameters().get(PARAMETER_LENIENCY) == null
-				|| getParameters().get(PARAMETER_LENIENCY).isEmpty()) {
-			throw new TransformationException(MessageFormat
-					.format("Mandatory parameter {0} not defined", PARAMETER_LENIENCY));
-		}
-
 		String dateFormat = getParameters().get(PARAMETER_DATE_FORMAT).get(0).as(String.class);
 
 		// replace transformation variables in date format
@@ -71,10 +66,11 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
-		// default ....
-		String leniency = getParameters().get(PARAMETER_LENIENCY).get(0).as(String.class);
-		leniency = getExecutionContext().getVariables().replaceVariables(leniency);
-		if (leniency == "false") {
+		// by default setLenient(true)
+		boolean leniency = getOptionalParameter(PARAMETER_LENIENCY, Value.of(true))
+				.as(Boolean.class);
+
+		if (leniency == false) {
 			sdf.setLenient(false);
 		}
 

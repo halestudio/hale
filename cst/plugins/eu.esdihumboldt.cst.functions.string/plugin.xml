@@ -50,7 +50,7 @@
             </property>
          </targetProperties>
          <functionParameter
-               description="For example: yyyy-MM-dd HH:mm:ss;&#xA; see http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html for more details"
+               description="For example: yyyy-MM-dd HH:mm:ss. &#xA; See http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html for more details."
                label="Source date format"
                maxOccurrence="1"
                minOccurrence="1"
@@ -62,7 +62,7 @@
             </parameterBinding>
          </functionParameter>
          <functionParameter
-               description="Lenient parsing of dates; default is &quot;true&quot;;&#xA; see https://docs.oracle.com/javase/8/docs/api/java/text/DateFormat.html for more details"
+               description="Lenient parsing of dates, default is true.&#xA; See https://docs.oracle.com/javase/8/docs/api/java/text/DateFormat.html for more details"
                label="Leniency"
                maxOccurrence="1"
                minOccurrence="0"
