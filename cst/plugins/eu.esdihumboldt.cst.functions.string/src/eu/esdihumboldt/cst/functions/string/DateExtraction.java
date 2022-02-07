@@ -66,13 +66,11 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
 
-		// by default setLenient(true)
+		// by default leniency is true
 		boolean leniency = getOptionalParameter(PARAMETER_LENIENCY, Value.of(true))
 				.as(Boolean.class);
 
-		if (leniency == false) {
-			sdf.setLenient(false);
-		}
+		sdf.setLenient(leniency);
 
 		try {
 			return sdf.parse(sourceString);
