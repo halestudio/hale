@@ -29,10 +29,21 @@ public interface DateExtractionFunction {
 	public static final String ID = "eu.esdihumboldt.cst.functions.string.dateextraction";
 
 	/**
-	 * Name of the parameter specifying the date format of the source entity.<br>
+	 * Name of the parameter specifying the date format of the source
+	 * entity.<br>
 	 * See the function definition on
 	 * <code>eu.esdihumboldt.hale.common.align</code>.
 	 */
 	public static final String PARAMETER_DATE_FORMAT = "dateFormat";
+
+	/**
+	 * Name of the parameter specifying whether the interpretation of the date
+	 * and time of SimpleDateFormat object is to be lenient or not. With lenient
+	 * interpretation, a date such as "February 942, 1996" will be treated as
+	 * being equivalent to the 941st day after February 1, 1996. With strict
+	 * (non-lenient) interpretation, such dates will cause an exception to be
+	 * thrown. The default is lenient.
+	 */
+	public static final String PARAMETER_LENIENCY = "leniency";
 
 }

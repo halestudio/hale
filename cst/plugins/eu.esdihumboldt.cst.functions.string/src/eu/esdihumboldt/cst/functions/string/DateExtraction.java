@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
 import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
+import eu.esdihumboldt.hale.common.core.io.Value;
 
 /**
  * Property date extraction function.
@@ -64,6 +65,12 @@ public class DateExtraction extends AbstractSingleTargetPropertyTransformation<T
 
 		String sourceString = variables.values().iterator().next().getValueAs(String.class);
 		SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+
+		// by default leniency is true
+		boolean leniency = getOptionalParameter(PARAMETER_LENIENCY, Value.of(true))
+				.as(Boolean.class);
+
+		sdf.setLenient(leniency);
 
 		try {
 			return sdf.parse(sourceString);
