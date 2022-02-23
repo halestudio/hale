@@ -75,6 +75,28 @@
             </property>
          </targetProperties>
          <functionParameter
+               description="Generation sequence to use"
+               label="Sequence"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="sequence">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="overall">
+               </enumerationValue>
+               <enumerationValue
+                     value="type">
+               </enumerationValue>
+            </parameterEnumeration>
+         </functionParameter>
+         <functionParameter
+               description="Starting numerical value for the sequence"
+               label="StartValue"
+               maxOccurrence="1"
+               minOccurrence="1"
+               name="startValue">
+         </functionParameter>
+         <functionParameter
                description="Identifier prefix"
                label="Prefix"
                maxOccurrence="1"
@@ -91,21 +113,6 @@
                name="suffix">
             <parameterBinding>
             </parameterBinding>
-         </functionParameter>
-         <functionParameter
-               description="Generation sequence to use"
-               label="Sequence"
-               maxOccurrence="1"
-               minOccurrence="1"
-               name="sequence">
-            <parameterEnumeration>
-               <enumerationValue
-                     value="overall">
-               </enumerationValue>
-               <enumerationValue
-                     value="type">
-               </enumerationValue>
-            </parameterEnumeration>
          </functionParameter>
       </propertyFunction>
    </extension>

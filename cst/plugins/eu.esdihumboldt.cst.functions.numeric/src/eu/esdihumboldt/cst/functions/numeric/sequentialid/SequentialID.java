@@ -48,7 +48,6 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get parameter values
-
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
 
@@ -59,6 +58,10 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 		// assume type as default for sequence
 		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Value.of(Sequence.type.name()))
 				.as(String.class);
+
+		// get starting value for the sequence - default is 1
+		String startValue = "1";
+		startValue = getOptionalParameter(START_VALUE, Value.of("")).as(String.class);
 
 		// select appropriate context and key
 		Sequence sequence = Sequence.valueOf(sequenceStr);
@@ -85,7 +88,7 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 				id = seqValue + 1;
 			}
 			else {
-				id = START_VALUE;
+				id = Integer.parseInt(startValue);
 			}
 			context.put(key, id);
 		}
