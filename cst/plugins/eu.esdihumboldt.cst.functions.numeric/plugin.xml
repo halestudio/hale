@@ -93,7 +93,7 @@
                description="Starting numerical value for the sequence"
                label="StartValue"
                maxOccurrence="1"
-               minOccurrence="1"
+               minOccurrence="0"
                name="startValue">
             <parameterBinding
                    class="java.lang.Integer">
