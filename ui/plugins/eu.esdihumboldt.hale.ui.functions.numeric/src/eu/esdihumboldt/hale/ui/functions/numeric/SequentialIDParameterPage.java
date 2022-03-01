@@ -273,7 +273,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		}
 
 		// show example
-		if (sequence != null && prefix != null && suffix != null) {
+		if (sequence != null && prefix != null && suffix != null && startValue != null) {
 			label = new Label(page, SWT.NONE);
 			label.setText("ID Example");
 			labelLayout.applyTo(label);

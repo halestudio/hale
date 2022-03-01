@@ -95,6 +95,12 @@
                maxOccurrence="1"
                minOccurrence="1"
                name="startValue">
+            <parameterBinding
+                   class="java.lang.Integer">
+            </parameterBinding>      
+              <valueDescriptor
+                   default="1">
+              </valueDescriptor>
          </functionParameter>
          <functionParameter
                description="Identifier prefix"

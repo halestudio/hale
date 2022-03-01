@@ -50,18 +50,16 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 		// get parameter values
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
+		String startValue = getOptionalParameter(START_VALUE, Value.of("1")).as(String.class);
 
-		// replace transformation variables in prefix and suffix
+		// replace transformation variables in prefix, suffix and startValue
 		prefix = getExecutionContext().getVariables().replaceVariables(prefix);
 		suffix = getExecutionContext().getVariables().replaceVariables(suffix);
+		startValue = getExecutionContext().getVariables().replaceVariables(startValue);
 
 		// assume type as default for sequence
 		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Value.of(Sequence.type.name()))
 				.as(String.class);
-
-		// get starting value for the sequence - default is 1
-		String startValue = "1";
-		startValue = getOptionalParameter(START_VALUE, Value.of("")).as(String.class);
 
 		// select appropriate context and key
 		Sequence sequence = Sequence.valueOf(sequenceStr);
@@ -81,16 +79,21 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			break;
 		}
 
-		long id;
+		long id = 1;
 		synchronized (context) {
 			Long seqValue = (Long) context.get(key);
 			if (seqValue != null) {
 				id = seqValue + 1;
 			}
 			else {
-				id = Integer.parseInt(startValue);
+				try {
+					id = Integer.parseInt(startValue);
+					context.put(key, id);
+				} catch (Exception E) {
+					System.out.println("Error with the input value of " + startValue
+							+ ": the input value should be an integer");
+				}
 			}
-			context.put(key, id);
 		}
 
 		if (prefix.isEmpty() && suffix.isEmpty()) {
