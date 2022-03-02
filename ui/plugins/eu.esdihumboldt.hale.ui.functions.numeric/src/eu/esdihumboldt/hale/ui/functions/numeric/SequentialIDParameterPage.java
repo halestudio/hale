@@ -113,7 +113,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			result.put(PARAM_PREFIX, new ParameterValue(prefix.getText()));
 		}
 
-		result.put(START_VALUE, new ParameterValue(startValue.getText()));
+		result.put(PARAM_START_VALUE, new ParameterValue(startValue.getText()));
 
 		if (suffix != null) {
 			result.put(PARAM_SUFFIX, new ParameterValue(suffix.getText()));
@@ -240,7 +240,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		}
 
 		// specify startValue for the sequence generation
-		if (getParametersToHandle().containsKey(START_VALUE)) {
+		if (getParametersToHandle().containsKey(PARAM_START_VALUE)) {
 			label = new Label(page, SWT.NONE);
 			label.setText("StartValue");
 			labelLayout.applyTo(label);
@@ -249,7 +249,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			controlLayout.applyTo(startValue);
 
 			startValue.setText(
-					getOptionalInitialValue(START_VALUE, new ParameterValue("1")).as(String.class));
+					getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1")).as(String.class));
 
 			startValue.addModifyListener(new ModifyListener() {
 

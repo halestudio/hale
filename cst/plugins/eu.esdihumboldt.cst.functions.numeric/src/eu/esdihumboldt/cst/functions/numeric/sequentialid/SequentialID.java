@@ -50,7 +50,7 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 		// get parameter values
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
-		String startValue = getOptionalParameter(START_VALUE, Value.of("1")).as(String.class);
+		String startValue = getOptionalParameter(PARAM_START_VALUE, Value.of("1")).as(String.class);
 
 		// replace transformation variables in prefix, suffix and startValue
 		prefix = getExecutionContext().getVariables().replaceVariables(prefix);
@@ -89,9 +89,9 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 				try {
 					id = Integer.parseInt(startValue);
 					context.put(key, id);
-				} catch (Exception E) {
-					System.out.println("Error with the input value of " + startValue
-							+ ": the input value should be an integer");
+				} finally {
+					System.out.println("ERROR with the input value of startValue  " + startValue
+							+ " for ID creation: the input value should be an integer");
 				}
 			}
 		}

@@ -46,7 +46,7 @@ public interface SequentialIDConstants {
 	/**
 	 * The start value for sequences.
 	 */
-	public static final String START_VALUE = "startValue";
+	public static final String PARAM_START_VALUE = "startValue";
 
 	/**
 	 * Possible sequence types for the {@value #PARAM_SEQUENCE} parameter.
