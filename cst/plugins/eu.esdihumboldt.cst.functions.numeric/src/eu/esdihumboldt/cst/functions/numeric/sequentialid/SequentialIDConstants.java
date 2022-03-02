@@ -45,10 +45,8 @@ public interface SequentialIDConstants {
 
 	/**
 	 * The start value for sequences.
-	 * 
-	 * TODO make this configurable?
 	 */
-	public static final int START_VALUE = 1;
+	public static final String PARAM_START_VALUE = "startValue";
 
 	/**
 	 * Possible sequence types for the {@value #PARAM_SEQUENCE} parameter.

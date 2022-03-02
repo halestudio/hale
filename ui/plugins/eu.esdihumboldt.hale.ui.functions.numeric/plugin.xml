@@ -20,6 +20,9 @@
                name="sequence">
          </parameter>
          <parameter
+               name="startValue">
+         </parameter>
+         <parameter
                name="prefix">
          </parameter>
          <parameter
