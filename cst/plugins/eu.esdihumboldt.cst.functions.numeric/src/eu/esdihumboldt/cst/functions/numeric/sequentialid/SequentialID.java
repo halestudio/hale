@@ -79,19 +79,21 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			break;
 		}
 
-		long id = 1;
+		long id;
 		synchronized (context) {
 			Long seqValue = (Long) context.get(key);
 			if (seqValue != null) {
 				id = seqValue + 1;
+				context.put(key, id);
 			}
 			else {
 				try {
 					id = Integer.parseInt(startValue);
 					context.put(key, id);
-				} finally {
-					System.out.println("ERROR with the input value of startValue  " + startValue
-							+ " for ID creation: the input value should be an integer");
+				} catch (Exception e) {
+					throw new TransformationException(
+							"ERROR with the input value of startValue  " + startValue
+									+ " for ID creation: the input value should be an integer");
 				}
 			}
 		}
