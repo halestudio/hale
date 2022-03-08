@@ -34,10 +34,9 @@ import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 
-import au.com.bytecode.opencsv.CSVWriter;
-
 import com.google.common.io.Files;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -86,7 +85,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 		quote = CSVUtil.getQuote(this);
 		esc = CSVUtil.getEscape(this);
 
-		List<String> headerRow = new ArrayList<String>();
+		List<String> headerRow = new ArrayList<String>(); // empty list
 
 		// get the parameter to get the type definition
 		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
@@ -146,10 +145,12 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 	}
 
 	// write current instance to csv file
-	private void writeLine(boolean solveNestedProperties, List<String> headerRow,
-			Instance instance, CSVWriter writer) {
+	private void writeLine(boolean solveNestedProperties, List<String> headerRow, Instance instance,
+			CSVWriter writer) {
 		List<String> line = new ArrayList<String>();
-		Map<String, Object> row = super.getPropertyMap(instance, headerRow, solveNestedProperties);
+		Boolean useSchema = true;
+		Map<String, Object> row = super.getPropertyMap(instance, headerRow, useSchema,
+				solveNestedProperties);
 		for (String key : headerRow) {
 			Object entry = row.get(key);
 			line.add(getValueOfProperty(entry));
