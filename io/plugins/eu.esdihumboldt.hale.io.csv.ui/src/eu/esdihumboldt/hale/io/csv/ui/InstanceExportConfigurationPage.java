@@ -47,6 +47,7 @@ public class InstanceExportConfigurationPage
 		extends AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
 
 	private Button solveNestedProperties;
+	private Button useSchema;
 	private TypeDefinitionSelector typeSelector;
 	private Composite page;
 
@@ -103,6 +104,8 @@ public class InstanceExportConfigurationPage
 	public boolean updateConfiguration(InstanceWriter provider) {
 		provider.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
 				Value.of(solveNestedProperties.getSelection()));
+		provider.setParameter(InstanceTableIOConstants.USE_SCHEMA,
+				Value.of(useSchema.getSelection()));
 		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE,
 				Value.of(typeSelector.getSelectedObject().getName().toString()));
 		return true;
@@ -120,6 +123,10 @@ public class InstanceExportConfigurationPage
 		solveNestedProperties = new Button(page, SWT.CHECK);
 		solveNestedProperties.setText("Solve nested properties");
 		solveNestedProperties.setSelection(true);
+
+		useSchema = new Button(page, SWT.CHECK);
+		useSchema.setText("Use the source schema for the order of the exported columns");
+		useSchema.setSelection(true);
 
 		final Label label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type you want to export:");

@@ -29,6 +29,12 @@ public class InstanceTableIOConstants {
 	public static final String SOLVE_NESTED_PROPERTIES = "solveNestedProperties";
 
 	/**
+	 * Parameter for IO Provider to decide whether transformed data are written
+	 * following the order of columns present in the source schema
+	 */
+	public static final String USE_SCHEMA = "useSchema";
+
+	/**
 	 * Parameter for XLS import Provider to decide which Excel sheet should be
 	 * read. Sheet indices are 0-based.
 	 */

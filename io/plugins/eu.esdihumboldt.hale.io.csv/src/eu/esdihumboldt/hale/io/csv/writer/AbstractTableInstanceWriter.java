@@ -113,7 +113,7 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	 *         property as key
 	 */
 	protected Map<String, Object> getPropertyMap(Instance instance, List<String> headerRow,
-			Boolean useSchema, boolean solveNestedProperties) {
+			boolean useSchema, boolean solveNestedProperties) {
 		// properties of current instance
 		Iterable<QName> allProperties;
 		if (!useSchema) {
