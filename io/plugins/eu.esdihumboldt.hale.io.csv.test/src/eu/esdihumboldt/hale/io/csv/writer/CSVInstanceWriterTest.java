@@ -100,7 +100,7 @@ public class CSVInstanceWriterTest {
 
 		// Check no. of columns ###
 		int countCols = rows.get(0).length;
-		// TEST PRINT I see that, even if b1 has no values in instance1.xml,
+		// If b1 is an empty string in instance1.xml,
 		// the column is not dropped
 		System.out.print("TEST written columns " + Arrays.toString(rows.get(0)));
 		assertEquals("Not enough columns written in the output file.", numberOfColumns, countCols);

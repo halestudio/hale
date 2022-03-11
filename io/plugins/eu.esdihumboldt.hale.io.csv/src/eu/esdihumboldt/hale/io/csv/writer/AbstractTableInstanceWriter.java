@@ -54,58 +54,6 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	 * @param headerRow the current header row of the table
 	 * @param solveNestedProperties <code>true</code> if nested properties
 	 *            should be solved, otherwise <code>false</code>
-	 * @return a map of properties with string of localpart of the QName of the
-	 *         property as key
-	 */
-	protected Map<String, Object> getPropertyMap(Instance instance, List<String> headerRow,
-			boolean solveNestedProperties) {
-		// properties of current instance
-		Iterable<QName> allProperties = DefinitionUtil.getAllProperties(instance.getDefinition())
-				.stream().map(def -> def.getName()).collect(Collectors.toList());
-		// write properties to map; currently only the first property of nested
-		// properties is selected
-		Map<String, Object> row = new HashMap<String, Object>();
-		for (QName qname : allProperties) {
-
-			// get properties of the current instance
-			Object[] properties = instance.getProperty(qname);
-			if (properties != null && properties.length != 0) {
-				String cellValue = "";
-				// only the first property is evaluated
-				Object property = properties[0];
-				if (shouldBeDisplayed(property)) {
-					cellValue = qname.getLocalPart();
-				}
-
-				// if property is an OInstance or OGroup, it's a nested property
-				if (solveNestedProperties && property instanceof Group) {
-					Group nextInstance = (Group) property;
-					iterateBuild(nextInstance, qname, headerRow, row, cellValue);
-				}
-				else {
-					// add property with corresponding cellValue (localpart) to
-					// map
-					if (property instanceof Group && shouldBeDisplayed(property)) {
-						checkValue((Group) property, headerRow, row, cellValue);
-					}
-					else {
-						addProperty(headerRow, row, property, cellValue);
-					}
-
-				}
-			}
-		}
-		return row;
-	}
-
-	/**
-	 * Iterates over properties of the instance and creates a map of the given
-	 * properties
-	 * 
-	 * @param instance the Instance to check
-	 * @param headerRow the current header row of the table
-	 * @param solveNestedProperties <code>true</code> if nested properties
-	 *            should be solved, otherwise <code>false</code>
 	 * @param useSchema <code>true</code> if properties should be defined from
 	 *            the schema, otherwise <code>false</code> and properties are
 	 *            defined from the Instances

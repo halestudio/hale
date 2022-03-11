@@ -84,9 +84,10 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
-				"eu.esdihumboldt.hale.io.xls.xls");
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
 
 		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
 
@@ -126,9 +127,10 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
-				"eu.esdihumboldt.hale.io.xls.xls");
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
 
 		File tmpFile = tmpFolder.newFile("excelNotNestedProperties.xls");
 

@@ -148,7 +148,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 	private void writeLine(boolean solveNestedProperties, List<String> headerRow, Instance instance,
 			CSVWriter writer) {
 		boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-				false);
+				true);
 		List<String> line = new ArrayList<String>();
 		Map<String, Object> row = super.getPropertyMap(instance, headerRow, useSchema,
 				solveNestedProperties);

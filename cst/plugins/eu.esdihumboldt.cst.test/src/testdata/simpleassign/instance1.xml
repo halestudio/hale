@@ -4,12 +4,12 @@
  xsi:schemaLocation="http://www.example.org/t1/ t1.xsd">
     <tns:t1 id="id0">
         <a1>a10</a1>
-        <b1></b1>
+        <b1>b10</b1>
         <c1>c10</c1>
     </tns:t1>
     <tns:t1 id="id1">
         <a1>a11</a1>
-        <b1></b1>
+        <b1>b11</b1>
         <c1>c11</c1>
     </tns:t1>
 </tns:collection>
