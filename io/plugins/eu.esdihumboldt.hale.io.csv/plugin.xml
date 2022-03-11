@@ -156,7 +156,16 @@
             name="CSV file">
          <contentType
                ref="eu.esdihumboldt.hale.io.csv">
-         </contentType>
+         </contentType>        
+         <providerParameter
+               description="Use the source schema for the order and number of exported columns."
+               label="Use the source schema for the exported columns"
+               name="useSchema"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>     
          <providerParameter
                description="Schema type which instances should be exported."
                label="Export type"
