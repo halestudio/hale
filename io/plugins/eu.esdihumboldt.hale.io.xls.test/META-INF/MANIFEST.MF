@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS Instance Test
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.test
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.test;singleton:=true
 Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -12,7 +12,8 @@ Require-Bundle: org.junit,
  eu.esdihumboldt.hale.common.instance;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.0",
  eu.esdihumboldt.hale.io.xls;bundle-version="2.9.0",
- eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0"
+ eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0",
+ groovy-all;bundle-version="2.4.14"
 Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.instance.groovy,
@@ -20,6 +21,7 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.hale.io.csv.ui,
  eu.esdihumboldt.hale.io.xls.reader,
  eu.esdihumboldt.hale.io.xls.writer,
  org.apache.poi.ss.usermodel;version="3.9.0",

@@ -39,6 +39,8 @@ import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
@@ -63,6 +65,64 @@ public class XLSInstanceWriterTest {
 	@BeforeClass
 	public static void waitForServices() {
 		TestUtil.startConversionService();
+	}
+
+	/**
+	 * Test - write simple data, without nested properties and useSchema=true -
+	 * test if order/number of column persisted from original schema when in the
+	 * instance an attribute has no values
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testWriteSimpleSchemaColOrder() throws Exception {
+
+		// create an example schema with 2 attributes and an instance with a
+		// missing value
+		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
+		InstanceCollection instance = XLSInstanceWriterTestUtil
+				.createExampleInstancesNoPopulation(schema);
+
+		List<String> header = Arrays.asList("city", "name", "population");
+		List<String> firstDataRow = Arrays.asList("city", "Darmstadt", "");
+
+		// header size
+		XLSInstanceWriter writer = new XLSInstanceWriter();
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
+		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(true));
+
+		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
+
+		writer.setInstances(instance);
+		// write instances to a temporary XLS file
+		writer.setTarget(new FileIOSupplier(tmpFile));
+		writer.setContentType(contentType);
+		IOReport report = writer.execute(null);
+		assertTrue(report.isSuccess());
+
+		Workbook wb = WorkbookFactory.create(tmpFile);
+		Sheet sheet = wb.getSheetAt(0);
+
+		checkHeader(sheet, header);
+
+		checkSheetName(sheet, "pop"); // do know what is that doing??
+
+		checkFirstDataRow(sheet, firstDataRow); // check number and content of
+												// columns
+
+		Row datarow = sheet.getRow(sheet.getFirstRowNum() + 1);
+		for (Cell cell : datarow) {
+			System.out.println("TEST cell " + cell.getStringCellValue());
+			System.out.println("TEST header " + header.iterator());
+			assertEquals("The order of the columns is not equal to the original source file",
+					cell.getStringCellValue(), header.iterator()); // check the
+																	// order of
+																	// the
+																	// columns
+		}
+
 	}
 
 	/**
@@ -180,12 +240,21 @@ public class XLSInstanceWriterTest {
 	private void checkFirstDataRow(Sheet sheet, List<String> firstDataRow) {
 		Row datarow = sheet.getRow(sheet.getFirstRowNum() + 1);
 
-		assertEquals("There are not enough data cells.", firstDataRow.size(),
+		assertEquals("There are not enough data cells.", firstDataRow.size(), // check
+																				// the
+																				// no.
+																				// of
+																				// rows
 				datarow.getPhysicalNumberOfCells());
 
 		for (Cell cell : datarow) {
 			assertTrue("Not expecting data value.",
-					firstDataRow.contains(cell.getStringCellValue()));
+					firstDataRow.contains(cell.getStringCellValue())); // check
+																		// the
+																		// content
+																		// of
+																		// the
+																		// rows
 		}
 	}
 

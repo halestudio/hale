@@ -10,7 +10,10 @@ Import-Package: eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.util.groovy.sandbox,
  org.junit;version="4.8.1",
  org.junit.rules;version="4.11.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.csv.test
+Require-Bundle: eu.esdihumboldt.util.groovy;bundle-version="4.2.0",
+ groovy-all;bundle-version="2.4.14"
