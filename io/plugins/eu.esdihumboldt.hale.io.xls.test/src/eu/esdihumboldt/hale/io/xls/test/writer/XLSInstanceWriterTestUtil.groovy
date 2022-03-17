@@ -21,8 +21,8 @@ import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 
 /**
- * TODO Type description
- * @author flaminia
+ * Create a test schema and an associated instance with a missing value
+ * @author Flaminia Catalli
  */
 class XLSInstanceWriterTestUtil {
 	static Schema createExampleSchema() {

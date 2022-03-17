@@ -124,14 +124,14 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		int rowNum = 1;
 		Row row = sheet.createRow(rowNum++);
 		writeRow(row,
-				super.getPropertyMap(instance, headerRowStrings, useSchema, solveNestedProperties));
+				super.getPropertyMap(instance, headerRowStrings, solveNestedProperties, useSchema));
 
 		while (instanceIterator.hasNext()) {
 			Instance nextInst = instanceIterator.next();
 			if (nextInst.getDefinition().equals(definition)) {
 				row = sheet.createRow(rowNum++);
-				writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
-						solveNestedProperties));
+				writeRow(row, super.getPropertyMap(nextInst, headerRowStrings,
+						solveNestedProperties, useSchema));
 			}
 			else
 				remainingInstances.add(nextInst);
