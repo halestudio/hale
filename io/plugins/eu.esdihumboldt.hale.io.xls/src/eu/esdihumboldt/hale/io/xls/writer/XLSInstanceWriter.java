@@ -113,7 +113,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		headerRowStrings = new ArrayList<String>();
 
 		boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-				false);
+				true);
 
 		// all instances with equal type definitions are stored in an extra
 		// sheet
@@ -124,18 +124,20 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		int rowNum = 1;
 		Row row = sheet.createRow(rowNum++);
 		writeRow(row,
-				super.getPropertyMap(instance, headerRowStrings, solveNestedProperties, useSchema));
+				super.getPropertyMap(instance, headerRowStrings, useSchema, solveNestedProperties));
 
 		while (instanceIterator.hasNext()) {
 			Instance nextInst = instanceIterator.next();
 			if (nextInst.getDefinition().equals(definition)) {
 				row = sheet.createRow(rowNum++);
-				writeRow(row, super.getPropertyMap(nextInst, headerRowStrings,
-						solveNestedProperties, useSchema));
+				writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
+						solveNestedProperties));
 			}
 			else
 				remainingInstances.add(nextInst);
 		}
+		System.out.println(
+				"TEST in XLSInstanceWriter: before writing headerRowStrings= " + headerRowStrings);
 		writeHeaderRow(headerRow, headerRowStrings);
 		setCellStyle(sheet, headerRowStrings.size());
 		resizeSheet(sheet);
