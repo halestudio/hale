@@ -33,6 +33,7 @@
    <plugins>
       <plugin id="antlr"/>
       <plugin id="aopalliance"/>
+      <plugin id="assertj-core"/>
       <plugin id="bcpkix"/>
       <plugin id="bcprov"/>
       <plugin id="cal10n.api"/>
