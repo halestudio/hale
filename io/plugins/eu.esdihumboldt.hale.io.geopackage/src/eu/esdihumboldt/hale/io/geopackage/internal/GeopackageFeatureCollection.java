@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator;
 import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.user.UserDao;
 import mil.nga.geopackage.user.UserResultSet;
 
@@ -67,7 +68,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 		 */
 		public FeaturesIterator(/* CRSProvider crsProvider */) {
 			super();
-			builder = new TableInstanceBuilder(/* crsProvider, */log);
+			builder = new TableInstanceBuilder(/* crsProvider, */geometryColumns, log);
 		}
 
 		/**
@@ -188,6 +189,7 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 	}
 
 	private final UserDao<?, ?, ?, ?> features;
+	private final GeometryColumns geometryColumns;
 	private final TypeDefinition type;
 	private final String where;
 	private final SimpleLog log = SimpleLog.fromLogger(logger);
@@ -197,10 +199,13 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 	 * table.
 	 * 
 	 * @param features the feature DAO
+	 * @param geometryColumns the geometry columns to derive CRS information
+	 *            from
 	 * @param type the type associated to the feature table
 	 */
-	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features, TypeDefinition type) {
-		this(features, type, null);
+	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features,
+			GeometryColumns geometryColumns, TypeDefinition type) {
+		this(features, geometryColumns, type, null);
 	}
 
 	/**
@@ -208,13 +213,16 @@ public class GeopackageFeatureCollection implements InstanceCollection {
 	 * feature table.
 	 * 
 	 * @param features the feature DAO
+	 * @param geometryColumns the geometry columns to derive CRS information
+	 *            from
 	 * @param type the type associated to the feature table
 	 * @param where WHERE clause to filter table data
 	 */
-	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features, TypeDefinition type,
-			String where) {
+	public GeopackageFeatureCollection(UserDao<?, ?, ?, ?> features,
+			GeometryColumns geometryColumns, TypeDefinition type, String where) {
 		// FIXME is it OK to pass the DAO? e.g. related to closing the resource
 		this.features = features;
+		this.geometryColumns = geometryColumns;
 		this.type = type;
 		this.where = where;
 	}

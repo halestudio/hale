@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
 import eu.esdihumboldt.hale.io.geopackage.internal.GeopackageFeatureCollection;
 import mil.nga.geopackage.GeoPackage;
 import mil.nga.geopackage.attributes.AttributesDao;
+import mil.nga.geopackage.features.columns.GeometryColumns;
 import mil.nga.geopackage.features.user.FeatureDao;
 import mil.nga.geopackage.manager.GeoPackageManager;
 
@@ -119,11 +120,14 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 				}
 				else {
 					FeatureDao features = gpkg.getFeatureDao(table);
+					GeometryColumns geomColumns = gpkg.getGeometryColumnsDao()
+							.queryForTableName(table);
 					String where = null;
 					if (queryFilters.containsKey(table.toUpperCase())) {
 						where = queryFilters.get(table.toUpperCase());
 					}
-					collections.put(type, new GeopackageFeatureCollection(features, type, where));
+					collections.put(type,
+							new GeopackageFeatureCollection(features, geomColumns, type, where));
 				}
 			}
 
@@ -138,7 +142,7 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 				}
 				else {
 					AttributesDao attributes = gpkg.getAttributesDao(table);
-					collections.put(type, new GeopackageFeatureCollection(attributes, type));
+					collections.put(type, new GeopackageFeatureCollection(attributes, null, type));
 				}
 			}
 
