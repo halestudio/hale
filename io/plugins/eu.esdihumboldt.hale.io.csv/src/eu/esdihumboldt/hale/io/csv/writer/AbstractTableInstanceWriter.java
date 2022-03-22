@@ -91,7 +91,7 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 					Group nextInstance = (Group) property;
 					iterateBuild(nextInstance, qname, headerRow, row, cellValue);
 				}
-				else {
+				else if (useSchema) {
 					// add property with corresponding cellValue (localpart) to
 					// map
 					if (property instanceof Group && shouldBeDisplayed(property)) {
@@ -110,22 +110,8 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 					cellValue = qname.getLocalPart();
 				}
 
-				// if property is an OInstance or OGroup, it's a nested property
-				if (solveNestedProperties && property instanceof Group) {
-					Group nextInstance = (Group) property;
-					iterateBuild(nextInstance, qname, headerRow, row, cellValue);
-				}
-				else {
-					// add property with corresponding cellValue (localpart) to
-					// map
-					if (property instanceof Group && shouldBeDisplayed(property)) {
-						checkValue((Group) property, headerRow, row, cellValue);
-					}
-					else {
-						addProperty(headerRow, row, property, cellValue);
-					}
+				addProperty(headerRow, row, property, cellValue);
 
-				}
 			}
 		}
 		return row;

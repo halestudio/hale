@@ -165,6 +165,10 @@
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
+            <valueDescriptor
+                  default="&quot;true&quot;"
+                  defaultDescription="Defaults to &quot;true&quot;">
+            </valueDescriptor>
          </providerParameter>     
          <providerParameter
                description="Schema type which instances should be exported."
