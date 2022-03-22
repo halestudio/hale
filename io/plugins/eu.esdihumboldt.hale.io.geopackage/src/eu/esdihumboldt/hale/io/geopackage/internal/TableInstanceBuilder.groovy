@@ -41,6 +41,8 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import eu.esdihumboldt.hale.io.geopackage.GeopackageSchemaBuilder
 import groovy.transform.CompileStatic
+import mil.nga.geopackage.core.srs.SpatialReferenceSystem
+import mil.nga.geopackage.features.columns.GeometryColumns
 import mil.nga.geopackage.features.user.FeatureResultSet
 import mil.nga.geopackage.user.UserResultSet
 
@@ -59,6 +61,8 @@ class TableInstanceBuilder {
 	//	private final CRSProvider crsProvider
 	private final WKBReader wkbReader
 
+	private final GeometryColumns geomColumns
+
 	private final Map<TypeDefinition, Collection<PropertyDefinition>> cachedProperties = [:]
 	private final Map<TypeDefinition, QName> cachedGeometryProperty = [:]
 
@@ -67,9 +71,10 @@ class TableInstanceBuilder {
 	/**
 	 * Default constructor. 
 	 */
-	public TableInstanceBuilder(/*CRSProvider crsProvider, */SimpleLog log) {
+	public TableInstanceBuilder(/*CRSProvider crsProvider, */GeometryColumns geomColumns, SimpleLog log) {
 		super();
 		//		this.crsProvider = crsProvider
+		this.geomColumns = geomColumns
 		this.log = log
 
 		builder = new InstanceBuilder(
@@ -118,7 +123,7 @@ class TableInstanceBuilder {
 		}
 	}
 
-	private QName getGeometryProperty(TypeDefinition type) {
+	private QName getGeometryProperty(TypeDefinition type, final String geometryColumn) {
 		return cachedGeometryProperty.computeIfAbsent(type) { TypeDefinition t ->
 			// allow for geometry property types with choices
 			int checkLevels = 3
@@ -149,12 +154,27 @@ class TableInstanceBuilder {
 			}
 			else {
 				// select candidate
-				//XXX for now just use first one
-				def name = candidates[0].propertyPath[0].child.name
 
-				log.info("Identified property $name as geometry property for type ${type.name.localPart}")
+				// extract main property names; order matters because of traversal order for finding the candidates
+				Set<QName> names = new LinkedHashSet(candidates*.propertyPath[0]*.child*.name)
 
-				name
+				// prefer geometry column name w/o namespace
+				def preferred = new QName(geometryColumn)
+				if (names.contains(preferred)) {
+					return preferred
+				}
+
+				// otherwise prefer any with geometry column name
+				preferred = names.find { geometryColumn == it.localPart }
+
+				if (preferred == null) {
+					// otherwise use first one
+					preferred = names.iterator().next()
+				}
+
+				log.info("Identified property $preferred as geometry property for type ${type.name.localPart}")
+
+				preferred
 			}
 		}
 	}
@@ -172,34 +192,71 @@ class TableInstanceBuilder {
 		builder.createInstance(type) {
 			// create properties
 			Collection<PropertyDefinition> filteredProperties = getProperties(type)
-			QName geometryProperty = getGeometryProperty(type)
+			String geomColumn = null
+			if (row instanceof FeatureResultSet) {
+				geomColumn = ((FeatureResultSet) row).getTable().getGeometryColumn().name
+			}
+			QName geometryProperty = getGeometryProperty(type, geomColumn)
 			filteredProperties.each { PropertyDefinition property ->
 				// get property value
 				try {
-					Object value = row.getResultSet().getObject(property.name.localPart)
+					String columnName = property.name.localPart
+
+					boolean isGeometry = geometryProperty != null && geometryProperty.equals(property.getName()) && row instanceof FeatureResultSet
+					if (isGeometry) {
+						// for geometry property make sure to use geometry column
+						columnName = geomColumn
+					}
+
+					Object value = row.getResultSet().getObject(columnName)
 
 					// geometry conversion
 					if (value != null) {
-						if (geometryProperty != null && geometryProperty.equals(property.getName()) && row instanceof FeatureResultSet) {
+						if (isGeometry) {
 							def geomData = ((FeatureResultSet) row).geometry
 
 							// read JTS geometry from WKB
 							def jtsGeom = wkbReader.read(geomData.wkbBytes)
 
 							CRSDefinition crsDef = null
-							// determine CRS from schema (usually possible if the schema is the Geopackage schema)
-							GeometryMetadata geomMetadata = property.propertyType.getConstraint(GeometryMetadata)
-							if (geomMetadata.getAuthName() && geomMetadata.srs) {
-								// prefer code definition
-								// always x then y (longitude first)
-								crsDef = new CodeDefinition(geomMetadata.getAuthName() + ':' + geomMetadata.srs, true)
-							}
-							else {
-								crsDef = new WKTDefinition(geomMetadata.srsText, null)
-							}
-							def geomProp = new DefaultGeometryProperty(crsDef, jtsGeom)
 
-							//TODO also include geopackage original geometry?
+							if (geomColumns != null) {
+								// preferably determine CRS from this Geopackage file
+								SpatialReferenceSystem srs = geomColumns.getSrs();
+								if (srs != null) {
+									String code = String.valueOf(srs.getOrganizationCoordsysId());
+									String auth_name = srs.getOrganization();
+									String srsText = srs.getDefinition();
+
+									if (code && auth_name) {
+										// prefer code definition
+										// always x then y (longitude first)
+										crsDef = new CodeDefinition(auth_name + ':' + code, true)
+									}
+									else if (srsText) {
+										crsDef = new WKTDefinition(srsText, null)
+									}
+								}
+							}
+
+							if (crsDef == null) {
+								// determine CRS from schema if not possible via this file
+
+								GeometryMetadata geomMetadata = property.propertyType.getConstraint(GeometryMetadata)
+								if (geomMetadata.getAuthName() && geomMetadata.srs) {
+									// prefer code definition
+									// always x then y (longitude first)
+									crsDef = new CodeDefinition(geomMetadata.getAuthName() + ':' + geomMetadata.srs, true)
+								}
+								else if (geomMetadata.srsText != null) {
+									crsDef = new WKTDefinition(geomMetadata.srsText, null)
+								}
+								else {
+									// no CRS information in the schema
+								}
+							}
+
+							def geomProp = new DefaultGeometryProperty(crsDef, jtsGeom)
 
 							value = geomProp
 						}

@@ -258,6 +258,8 @@ class GeopackageInstanceReaderTest {
 							.isInstanceOf(Geometry)
 					assertThat(value.CRSDefinition)
 							.isNotNull()
+					assertThat(value.CRSDefinition.CRS)
+							.isNotNull()
 				} as Consumer)
 	}
 
