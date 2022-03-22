@@ -130,18 +130,20 @@ public class CSVInstanceWriterTest {
 	@Test
 	public void testWriteSimpleSchemaColOrder() throws Exception {
 
-		// create an example schema with 2 attributes and an instance with a
-		// missing value
+		// create an example schema with 3 properties and an instance with two
+		// missing values
 		Schema schema = CSVInstanceWriterTestUtil.createExampleSchema();
 		InstanceCollection instance = CSVInstanceWriterTestUtil
 				.createExampleInstancesNoPopulation(schema);
 
-		String propertyNames = "city,name,population";
-		String firstDataRow = "city,Darmstadt,";
+		String propertyNames = "name,population,country";
+		String firstDataRow = "Darmstadt,,";
 
 		// header size
-		int numberOfColumns = 3;
-		int numberOfRows = 2;
+		int numberOfColumns = 3; // counting only the properties
+									// ('name,population,country'),
+									// not the type ('city')
+		int numberOfRows = 3; // counting also the header
 		char sep = ',';
 
 		File tmpFile = tmpFolder.newFile("csvTestWriteSimpleSchema.csv");
@@ -156,10 +158,10 @@ public class CSVInstanceWriterTest {
 
 		assertEquals("Not enough rows.", numberOfRows, rows.size());
 
-		// Check no. of columns ###
+		// Check no. of columns
 		int countCols = rows.get(0).length;
 		assertEquals("Not enough columns written in the output file.", numberOfColumns, countCols);
-		// Check the order of the columns ###
+		// Check the order of the columns
 		String[] originalColumns = propertyNames.split(",");
 		int j = 0;
 		for (String s : originalColumns) {
@@ -167,8 +169,7 @@ public class CSVInstanceWriterTest {
 					rows.get(0)[j]);
 			j++;
 		}
-
-		// Check header ###
+		// Check header
 		Iterator<String[]> row = rows.iterator();
 
 		String[] header = row.next();

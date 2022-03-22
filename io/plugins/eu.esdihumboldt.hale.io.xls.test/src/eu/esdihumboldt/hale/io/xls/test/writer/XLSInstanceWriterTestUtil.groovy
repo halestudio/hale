@@ -22,6 +22,9 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
 
 /**
  * Create a test schema and an associated instance with a missing value
+ * type's name: city
+ * properties: name, population, country
+ * instance's type: city
  * @author Flaminia Catalli
  */
 class XLSInstanceWriterTestUtil {
@@ -30,6 +33,7 @@ class XLSInstanceWriterTestUtil {
 			city {
 				name(String)
 				population(Integer, cardinality: '0..1')
+				country(String)
 			}
 		}
 	}

@@ -103,6 +103,30 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 
 				}
 			}
+			else {
+				String cellValue = "";
+				Object property = null;
+				if (shouldBeDisplayed(property)) {
+					cellValue = qname.getLocalPart();
+				}
+
+				// if property is an OInstance or OGroup, it's a nested property
+				if (solveNestedProperties && property instanceof Group) {
+					Group nextInstance = (Group) property;
+					iterateBuild(nextInstance, qname, headerRow, row, cellValue);
+				}
+				else {
+					// add property with corresponding cellValue (localpart) to
+					// map
+					if (property instanceof Group && shouldBeDisplayed(property)) {
+						checkValue((Group) property, headerRow, row, cellValue);
+					}
+					else {
+						addProperty(headerRow, row, property, cellValue);
+					}
+
+				}
+			}
 		}
 		return row;
 	}

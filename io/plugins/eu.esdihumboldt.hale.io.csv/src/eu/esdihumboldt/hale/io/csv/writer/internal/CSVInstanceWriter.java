@@ -131,7 +131,6 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 		// header is only finished if all properties have been processed
 		// insert header to temp file and write it to output
-		System.out.println("TEST in CSVInstanceWriter: before writing headerRow= " + headerRow);
 		insertHeader(tempFile, getTarget().getOutput(), headerRow);
 
 		FileUtils.deleteDirectory(tempDir);

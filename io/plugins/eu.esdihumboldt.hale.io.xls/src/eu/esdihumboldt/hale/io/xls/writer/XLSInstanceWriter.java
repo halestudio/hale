@@ -136,8 +136,6 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			else
 				remainingInstances.add(nextInst);
 		}
-		System.out.println(
-				"TEST in XLSInstanceWriter: before writing headerRowStrings= " + headerRowStrings);
 		writeHeaderRow(headerRow, headerRowStrings);
 		setCellStyle(sheet, headerRowStrings.size());
 		resizeSheet(sheet);

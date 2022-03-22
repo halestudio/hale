@@ -77,14 +77,14 @@ public class XLSInstanceWriterTest {
 	@Test
 	public void testWriteSimpleSchemaColOrder() throws Exception {
 
-		// create an example schema with 2 attributes and an instance with a
-		// missing value Schema schema =
+		// create an example schema with 3 properties and an instance with two
+		// missing values
 		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		InstanceCollection instance = XLSInstanceWriterTestUtil
 				.createExampleInstancesNoPopulation(schema);
 
-		List<String> header = Arrays.asList("name", "population");
-		List<String> firstDataRow = Arrays.asList("Darmstadt", "");
+		List<String> header = Arrays.asList("name", "population", "country");
+		List<String> firstDataRow = Arrays.asList("Darmstadt", "", "");
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
@@ -104,39 +104,12 @@ public class XLSInstanceWriterTest {
 
 		Workbook wb = WorkbookFactory.create(tmpFile);
 		Sheet sheet = wb.getSheetAt(0);
-
 		Row writtenHeader = sheet.getRow(sheet.getFirstRowNum());
-		for (Cell cell : writtenHeader) {
-			System.out.println("Strings in written header " + cell.getStringCellValue());
-		}
-		checkHeader4EmptyInstances(sheet, header);
-		checkSheetName(sheet, "city");
-		// checkFirstDataRow4EmptyInstances(sheet, firstDataRow);
-//		  
-//		  // Check the order of the columns
-//		  
-//		  
-//		  
-//		  // I this case I read the cols of the first row of the instance
-//		  
-//		  // assuming "column headers" are in the first row Row header_row =
-//		  sheet.getRow(0);
-//		  
-//		  int i = 0; while (true) { Cell header_cell = header_row.getCell(i);
-//		  if (header_cell == null) { break; } String writtenHeader =
-//		  header_cell.getStringCellValue();
-//		  System.out.println("TEST written header " + writtenHeader);
-//		  assertEquals("The order of the columns is not equal to the original source file"
-//		  , writtenHeader, header.subList(i, i + 1)); i++; }
-//		  
-//		  
-//		  
-//		  int i = 0; for (Cell cell : datarow) {
-//		  System.out.println("TEST cell " + cell.getStringCellValue());
-//		  System.out.println("TEST header " + header.subList(i, i + 1));
-//		  assertEquals("The order of the columns is not equal to the original source file"
-//		  , cell.getStringCellValue(), header.subList(i, i + 1)); i++; }
 
+		checkHeader(sheet, header);
+		checkSheetName(sheet, "city");
+		checkFirstDataRow(sheet, firstDataRow);
+		checkHeaderOrder(sheet, header);
 	}
 
 	/**
@@ -243,9 +216,7 @@ public class XLSInstanceWriterTest {
 		Row header = sheet.getRow(sheet.getFirstRowNum());
 
 		assertEquals("There are not enough header cells.", headerNames.size(),
-				header.getPhysicalNumberOfCells()); // getPhysicalNumberOfCells
-													// gets only non-empty
-													// columns
+				header.getPhysicalNumberOfCells());
 
 		for (Cell cell : header) {
 			assertTrue("Not expecting header cell value.",
@@ -253,19 +224,15 @@ public class XLSInstanceWriterTest {
 		}
 	}
 
-	private void checkHeader4EmptyInstances(Sheet sheet, List<String> headerNames)
-			throws Exception {
+	private void checkHeaderOrder(Sheet sheet, List<String> headerNames) throws Exception {
 
 		Row header = sheet.getRow(sheet.getFirstRowNum());
 
-//		assertEquals("There are not enough header cells.", headerNames.size(),
-//				header.getLastCellNum());
-
 		int i = 0;
 		for (Cell cell : header) {
-			String col = headerNames.subList(i, i + 1).toString();
-			assertTrue("Not all expecting header cell values are in the XLS file.",
-					cell.getStringCellValue().contains(col));
+			assertEquals("Not same cell order as in the original schema.",
+					cell.getStringCellValue(), headerNames.get(i));
+			i++;
 		}
 	}
 
@@ -278,21 +245,6 @@ public class XLSInstanceWriterTest {
 		for (Cell cell : datarow) {
 			assertTrue("Not expecting data value.",
 					firstDataRow.contains(cell.getStringCellValue()));
-		}
-	}
-
-	private void checkFirstDataRow4EmptyInstances(Sheet sheet, List<String> firstDataRow) {
-		Row datarow = sheet.getRow(sheet.getFirstRowNum() + 1);
-
-		assertEquals("There are not enough data cells.", firstDataRow.size(),
-				datarow.getPhysicalNumberOfCells());
-
-		int i = 0;
-		for (Cell cell : datarow) {
-			String col = firstDataRow.subList(i, i + 1).toString();
-			assertTrue("Not all expected data values are in XLS file.",
-					cell.getStringCellValue().contains(col));
-			i++;
 		}
 	}
 
