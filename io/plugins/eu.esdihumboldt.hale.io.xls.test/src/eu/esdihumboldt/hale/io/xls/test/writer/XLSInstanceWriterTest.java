@@ -39,6 +39,8 @@ import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
@@ -66,6 +68,50 @@ public class XLSInstanceWriterTest {
 	}
 
 	/**
+	 * Test - write simple data, without nested properties and useSchema=true -
+	 * test if order/number of column persisted from original schema when in the
+	 * instance an attribute has no values
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testWriteSimpleSchemaColOrder() throws Exception {
+
+		// create an example schema with 3 properties and an instance with two
+		// missing values
+		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
+		InstanceCollection instance = XLSInstanceWriterTestUtil
+				.createExampleInstancesNoPopulation(schema);
+
+		List<String> header = Arrays.asList("name", "population", "country");
+		List<String> firstDataRow = Arrays.asList("Darmstadt", "", "");
+
+		// set instances to xls instance writer
+		XLSInstanceWriter writer = new XLSInstanceWriter();
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
+		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(true));
+
+		File tmpFile = tmpFolder.newFile("excelTestWriteSimpleSchema.xls");
+
+		writer.setInstances(instance);
+		// write instances to a temporary XLS file
+		writer.setTarget(new FileIOSupplier(tmpFile));
+		writer.setContentType(contentType);
+		IOReport report = writer.execute(null);
+		assertTrue(report.isSuccess());
+
+		Workbook wb = WorkbookFactory.create(tmpFile);
+		Sheet sheet = wb.getSheetAt(0);
+
+		checkHeader(sheet, header);
+		checkSheetName(sheet, "city");
+		checkFirstDataRow(sheet, firstDataRow);
+		checkHeaderOrder(sheet, header);
+	}
+
+	/**
 	 * Test - write data of complex schema and analyze result
 	 * 
 	 * @throws Exception , if an error occurs
@@ -84,9 +130,10 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
-				"eu.esdihumboldt.hale.io.xls.xls");
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
 
 		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
 
@@ -126,9 +173,10 @@ public class XLSInstanceWriterTest {
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
-		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
-				"eu.esdihumboldt.hale.io.xls.xls");
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
 
 		File tmpFile = tmpFolder.newFile("excelNotNestedProperties.xls");
 
@@ -143,7 +191,6 @@ public class XLSInstanceWriterTest {
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
-
 		checkSheetName(sheet, "person");
 
 		checkFirstDataRow(sheet, firstDataRow);
@@ -172,6 +219,18 @@ public class XLSInstanceWriterTest {
 		for (Cell cell : header) {
 			assertTrue("Not expecting header cell value.",
 					headerNames.contains(cell.getStringCellValue()));
+		}
+	}
+
+	private void checkHeaderOrder(Sheet sheet, List<String> headerNames) throws Exception {
+
+		Row header = sheet.getRow(sheet.getFirstRowNum());
+
+		int i = 0;
+		for (Cell cell : header) {
+			assertEquals("Not same cell order as in the original schema.",
+					cell.getStringCellValue(), headerNames.get(i));
+			i++;
 		}
 	}
 

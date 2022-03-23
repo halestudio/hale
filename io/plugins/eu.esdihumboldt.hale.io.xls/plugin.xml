@@ -109,6 +109,19 @@
                   class="java.lang.Integer">
             </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="Use the source schema for the order and number of exported columns."
+               label="Use the source schema for the exported columns"
+               name="useSchema"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="Defaults to true">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter"
