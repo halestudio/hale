@@ -166,8 +166,8 @@
                   class="java.lang.Boolean">
             </parameterBinding>
             <valueDescriptor
-                  default="&quot;true&quot;"
-                  defaultDescription="Defaults to &quot;true&quot;">
+                  default="true"
+                  defaultDescription="Defaults to true">
             </valueDescriptor>
          </providerParameter>     
          <providerParameter

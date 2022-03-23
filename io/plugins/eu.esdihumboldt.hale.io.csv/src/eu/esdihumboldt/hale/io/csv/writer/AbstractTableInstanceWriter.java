@@ -78,20 +78,19 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 
 			// get properties of the current instance
 			Object[] properties = instance.getProperty(qname);
-			if (properties != null && properties.length != 0) {
+			if (properties != null && properties.length != 0 && !useSchema) {
 				String cellValue = "";
 				// only the first property is evaluated
 				Object property = properties[0];
 				if (shouldBeDisplayed(property)) {
 					cellValue = qname.getLocalPart();
 				}
-
 				// if property is an OInstance or OGroup, it's a nested property
 				if (solveNestedProperties && property instanceof Group) {
 					Group nextInstance = (Group) property;
 					iterateBuild(nextInstance, qname, headerRow, row, cellValue);
 				}
-				else if (useSchema) {
+				else {
 					// add property with corresponding cellValue (localpart) to
 					// map
 					if (property instanceof Group && shouldBeDisplayed(property)) {
@@ -103,19 +102,49 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 
 				}
 			}
-			else {
-				String cellValue = "";
-				Object property = null;
-				if (shouldBeDisplayed(property)) {
-					cellValue = qname.getLocalPart();
+			else if (useSchema) {
+				if (properties != null && properties.length != 0) {
+					String cellValue = "";
+					// only the first property is evaluated
+					Object property = properties[0];
+					if (shouldBeDisplayed(property)) {
+						cellValue = qname.getLocalPart();
+					}
+
+					// if property is an OInstance or OGroup, it's a nested
+					// property
+					if (solveNestedProperties && property instanceof Group) {
+						Group nextInstance = (Group) property;
+						iterateBuild(nextInstance, qname, headerRow, row, cellValue);
+					}
+					else {
+						// add property with corresponding cellValue (localpart)
+						// to
+						// map
+						if (property instanceof Group && shouldBeDisplayed(property)) {
+							checkValue((Group) property, headerRow, row, cellValue);
+						}
+						else {
+							addProperty(headerRow, row, property, cellValue);
+						}
+					}
 				}
+				else {
+					String cellValue = "";
+					Object property = null;
+					if (shouldBeDisplayed(property)) {
+						cellValue = qname.getLocalPart();
+					}
+					addProperty(headerRow, row, property, cellValue);
+				} // close else
 
-				addProperty(headerRow, row, property, cellValue);
+			} // close else-if
 
-			}
-		}
+		} // close loop
+
 		return row;
-	}
+
+	} // close method
 
 	/**
 	 * 

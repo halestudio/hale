@@ -104,7 +104,6 @@ public class XLSInstanceWriterTest {
 
 		Workbook wb = WorkbookFactory.create(tmpFile);
 		Sheet sheet = wb.getSheetAt(0);
-		Row writtenHeader = sheet.getRow(sheet.getFirstRowNum());
 
 		checkHeader(sheet, header);
 		checkSheetName(sheet, "city");
@@ -192,7 +191,6 @@ public class XLSInstanceWriterTest {
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
-
 		checkSheetName(sheet, "person");
 
 		checkFirstDataRow(sheet, firstDataRow);
