@@ -649,6 +649,9 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 			return FeatureColumn.createPrimaryKeyColumn(primaryKeyColumn);
 		}
 		else if (property.getPropertyType().getConstraint(GeometryType.class).isGeometry()) {
+			// XXX also support cases where constraint is not available
+			// directly on this level?
+
 			// geometry column
 			Class<? extends Geometry> jtsBinding = property.getPropertyType()
 					.getConstraint(GeometryType.class).getBinding();

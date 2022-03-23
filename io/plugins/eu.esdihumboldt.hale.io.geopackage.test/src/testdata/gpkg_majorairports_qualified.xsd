@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:gpkg="http://www.esdi-humboldt.eu/hale/gpkg" elementFormDefault="qualified" targetNamespace="http://www.esdi-humboldt.eu/hale/gpkg">
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <element name="NoiseContours_majorAirportsIncludingAgglomeration_Lden" substitutionGroup="gml:AbstractFeature" type="gpkg:NoiseContours_majorAirportsIncludingAgglomeration_Lden"/>
+  <complexType name="NoiseContours_majorAirportsIncludingAgglomeration_Lden">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="measureTime_beginPosition" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="measureTime_endPosition" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="1" name="category" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="source" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="location" nillable="true" type="gml:SurfacePropertyType"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="CodelistProperties" substitutionGroup="gml:AbstractFeature" type="gpkg:CodelistProperties"/>
+  <complexType name="CodelistProperties">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="tableName" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="propertyName" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="codelist" nillable="false" type="string"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="ExposureMajorAirport" substitutionGroup="gml:AbstractFeature" type="gpkg:ExposureMajorAirport"/>
+  <complexType name="ExposureMajorAirport">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="ICAOCode" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="ESTATUnitCode" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="computationAndMeasurementMethod" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="receiverPointsInDwelling" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="referenceLink" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="true" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="DatasetDefaultProperties" substitutionGroup="gml:AbstractFeature" type="gpkg:DatasetDefaultProperties"/>
+  <complexType name="DatasetDefaultProperties">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="tableName" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="propertyName" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="attribute" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="defaultValue" nillable="true" type="string"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="Voidables" substitutionGroup="gml:AbstractFeature" type="gpkg:Voidables"/>
+  <complexType name="Voidables">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="beginLifespanVersion" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="validFrom" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="validTo" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="1" name="PrimaryTable_id" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="tableName" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="NoiseContours_majorAirportsIncludingAgglomeration_Lnight" substitutionGroup="gml:AbstractFeature" type="gpkg:NoiseContours_majorAirportsIncludingAgglomeration_Lnight"/>
+  <complexType name="NoiseContours_majorAirportsIncludingAgglomeration_Lnight">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="measureTime_beginPosition" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="1" name="measureTime_endPosition" nillable="true" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="1" name="category" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="source" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="location" nillable="true" type="gml:SurfacePropertyType"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="ExposureValue" substitutionGroup="gml:AbstractFeature" type="gpkg:ExposureValue"/>
+  <complexType name="ExposureValue">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="ICAOCode" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="ESTATUnitCode" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="exposureType" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="noiseLevel" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="exposedPeople" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="exposedArea" nillable="true" type="decimal"/>
+          <element maxOccurs="1" minOccurs="1" name="exposedDwellings" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="exposedHospitals" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="exposedSchools" nillable="true" type="integer"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="ESTATUnitReference" substitutionGroup="gml:AbstractFeature" type="gpkg:ESTATUnitReference"/>
+  <complexType name="ESTATUnitReference">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="1" name="ESTATNUTSReferenceTitle" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="ESTATNUTSReferenceLink" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="ESTATLAUReferenceTitle" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="ESTATLAUReferenceLink" nillable="true" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="id" nillable="false" type="integer"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</schema>
