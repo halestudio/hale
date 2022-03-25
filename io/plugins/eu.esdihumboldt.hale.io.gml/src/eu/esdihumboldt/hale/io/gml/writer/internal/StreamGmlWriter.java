@@ -174,6 +174,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
 
 	/**
+	 * The parameter name of the flag specifying if codespace should be
+	 * automatically added to the gml:identifier during GML export.
+	 */
+	public static final String PARAM_ADD_CODESPACE = "xml.add.codespace";
+
+	/**
 	 * The name of the parameter specifying how the output of geometry
 	 * coordinates should be formatted.
 	 */
@@ -495,10 +501,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			};
 
 			final Map<String, URI> keyToTargetMapping = new HashMap<>();
-			keyToRefsMapping.keySet().stream()
-					.forEach(k -> keyToTargetMapping.put(k, new File(
-							ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
-									.toURI()));
+			keyToRefsMapping.keySet().stream().forEach(k -> keyToTargetMapping.put(k,
+					new File(ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
+							.toURI()));
 
 			final ExtentPartsHandler handler = new ExtentPartsHandler(keyToTargetMapping,
 					idToKeyMapping);
