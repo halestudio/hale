@@ -1545,7 +1545,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 //		Name elementName = GmlWriterUtil.getElementName(type);
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-		writeProperties(instance, type, true, false, report);
+		writeProperties(instance, type, true, false, true, report);
 
 //		writer.writeEndElement(); // type element name
 	}
@@ -1557,11 +1557,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param definition the feature type
 	 * @param allowElements if element properties may be written
 	 * @param parentIsNil if the parent property is nil
+	 * @param addCodespace if codespace is automatically added
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
-			boolean parentIsNil, IOReporter report) throws XMLStreamException {
+			boolean parentIsNil, boolean addCodespace, IOReporter report)
+			throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
 
@@ -1571,12 +1573,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 		// write the attributes, as they must be handled first
 		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil,
-				report);
+				addCodespace, report);
 
 		if (allowElements) {
 			// write the elements
 			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, parentIsNil,
-					report);
+					addCodespace, report);
 		}
 	}
 
@@ -1589,11 +1591,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 *            written, <code>false</code> if element properties shall be
 	 *            written
 	 * @param parentIsNil if the parent property is nil
+	 * @param addCodespace if codespace should be automatically added
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the attributes/elements fails
 	 */
 	private void writeProperties(Group parent, Collection<? extends ChildDefinition<?>> children,
-			boolean attributes, boolean parentIsNil, IOReporter report) throws XMLStreamException {
+			boolean attributes, boolean parentIsNil, boolean addCodespace, IOReporter report)
+			throws XMLStreamException {
 		if (parent == null) {
 			return;
 		}
@@ -1601,6 +1605,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		boolean parentIsChoice = parent.getDefinition() instanceof GroupPropertyDefinition
 				&& ((GroupPropertyDefinition) parent.getDefinition())
 						.getConstraint(ChoiceFlag.class).isEnabled();
+
+		// DEBUGGING
+		if (parent.getDefinition().getIdentifier().equals("identifier")) {
+			new Object();
+		}
 
 		for (ChildDefinition<?> child : children) {
 			Object[] values = parent.getProperty(child.getName());
@@ -1622,6 +1631,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							}
 						}
 
+						// special case handling: auto add codespace
+						if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
+							if ("codeSpace".equals(propDef.getName().getLocalPart())) {
+								allowWrite = addCodespace;
+							}
+						}
+
 						// write attribute
 						if (allowWrite) {
 							// special case handling: replace incorrect
@@ -1632,6 +1648,16 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 								// a GML nilReason? (check property type and
 								// parent types)
 								writeAttribute("other:unpopulated", propDef);
+							}
+							else {
+								// default
+								writeAttribute(values[0], propDef);
+							}
+							// special case handling: automatically add
+							// codespace to gml:identifier
+							if ("addCodespace".equals(propDef.getName().getLocalPart())
+									&& "".equals(values[0])) {
+								writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
 							}
 							else {
 								// default
@@ -1687,7 +1713,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (value instanceof Group) {
 							writeProperties((Group) value,
 									DefinitionUtil.getAllChildren(child.asGroup()), attributes,
-									parentIsNil, report);
+									parentIsNil, addCodespace, report);
 						}
 						else {
 							// TODO warning/error?
@@ -1770,9 +1796,15 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				// write no elements if there is a value or only a nil reason
 				boolean writeElements = !hasValue && !hasOnlyNilReason;
 				boolean isNil = !writeElements && (!hasValue || value == null);
+				boolean isCodespace = !hasValue && !hasOnlyNilReason; // Not
+																		// sure
+																		// about
+																		// that
+																		// one
 
 				// write all children
-				writeProperties(group, group.getDefinition(), writeElements, isNil, report);
+				writeProperties(group, group.getDefinition(), writeElements, isNil, isCodespace,
+						report);
 
 				// write value
 				if (hasValue) {
