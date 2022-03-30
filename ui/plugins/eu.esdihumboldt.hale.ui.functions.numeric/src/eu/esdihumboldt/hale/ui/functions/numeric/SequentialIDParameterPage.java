@@ -91,7 +91,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 */
 	public SequentialIDParameterPage() {
 		super(FunctionUtil.getPropertyFunction(ID, HaleUI.getServiceProvider()),
-				"Please configure the identifier generation");
+				"Please configure the identifier generation" + "\n"
+						+ "StartValue should be an integer > 0");
 	}
 
 	/**
@@ -248,8 +249,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			startValue = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(startValue);
 
-			startValue.setText(
-					getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1")).as(String.class));
+			startValue.setText(getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1"))
+					.as(String.class));
 
 			startValue.addModifyListener(new ModifyListener() {
 

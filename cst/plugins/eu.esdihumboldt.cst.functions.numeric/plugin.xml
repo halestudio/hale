@@ -90,7 +90,7 @@
             </parameterEnumeration>
          </functionParameter>
          <functionParameter
-               description="Starting numerical value for the sequence"
+               description="Starting numerical value for the ID sequence"
                label="StartValue"
                maxOccurrence="1"
                minOccurrence="0"
