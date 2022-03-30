@@ -23,7 +23,9 @@ import com.google.common.collect.ListMultimap;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
 import eu.esdihumboldt.hale.common.align.transformation.function.PropertyValue;
+import eu.esdihumboldt.hale.common.align.transformation.function.TransformationException;
 import eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation;
+import eu.esdihumboldt.hale.common.align.transformation.function.impl.NoResultException;
 import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog;
 import eu.esdihumboldt.hale.common.core.io.Value;
 
@@ -44,7 +46,7 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 	protected Object evaluate(String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, PropertyValue> variables, String resultName,
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
-			TransformationLog log) throws RuntimeException {
+			TransformationLog log) throws TransformationException, NoResultException {
 		// get parameter values
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
@@ -85,23 +87,23 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			}
 			else {
 				if (Integer.parseInt(startValue) == 0) {
-					throw new RuntimeException(
-							"The starting value for ID creation should be larger than 0");
+					throw new TransformationException(
+							"ERROR: the starting value for ID creation should be larger than 0");
+					// anyways, in the UI the user cannot use 0s or special
+					// characters for startValue
 				}
 				try {
 					id = Integer.parseInt(startValue);
 				} catch (Exception e) {
-					throw new RuntimeException(
-							"ERROR with the input value of startValue  " + startValue
+					throw new TransformationException(
+							"ERROR: the input value of startValue  " + startValue
 									+ " for ID creation: the input value should be an integer");
 				}
 			}
 			context.put(key, id);
 		}
 
-		if (prefix.isEmpty() && suffix.isEmpty())
-
-		{
+		if (prefix.isEmpty() && suffix.isEmpty()) {
 			return id;
 		}
 		else {

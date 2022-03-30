@@ -91,8 +91,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 */
 	public SequentialIDParameterPage() {
 		super(FunctionUtil.getPropertyFunction(ID, HaleUI.getServiceProvider()),
-				"Please configure the identifier generation" + "\n"
-						+ "StartValue should be an integer > 0");
+				"Please configure the identifier generation");
 	}
 
 	/**
@@ -378,13 +377,22 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		String suffix = (this.suffix == null) ? ("") : (this.suffix.getText());
 		String startValue = (this.startValue == null) ? ("") : (this.startValue.getText());
 
+		String specialCharactersString = "!@#$%&*()'+,-./:;<=>?[]^_`{|}";
+
+		for (int i = 0; i < startValue.length(); i++) {
+			char ch = startValue.charAt(i);
+			if (specialCharactersString.contains(Character.toString(ch))
+					|| startValue.startsWith("0")) {
+				return "StartValue cannot have leading 0s or contain special characters";
+			}
+		}
+
 		// replace variables in prefix and suffix
 		TransformationVariables variables = new DefaultTransformationVariables(new ProjectVariables(
 				HaleUI.getServiceProvider().getService(ProjectInfoService.class)));
 
 		prefix = variables.replaceVariables(prefix);
 		suffix = variables.replaceVariables(suffix);
-		startValue = variables.replaceVariables(startValue);
 
 		return prefix + startValue + suffix;
 	}
