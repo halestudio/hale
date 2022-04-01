@@ -273,6 +273,11 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		}
 
 		// show example
+		// boolean isNumeric = startValue.toString().chars().allMatch(x ->
+		// Character.isDigit(x));
+		// boolean hasLeadingZeros = Integer.parseInt(startValue.toString()) ==
+		// 0;
+
 		if (sequence != null && prefix != null && suffix != null && startValue != null) {
 			label = new Label(page, SWT.NONE);
 			label.setText("ID Example");
@@ -298,6 +303,28 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 */
 	protected void updateStatus() {
 		boolean complete = true;
+		setErrorMessage(null);
+
+		try {
+
+			Integer.parseInt(startValue.getText());
+
+			if (startValue.getText().charAt(0) == '0') {
+				setErrorMessage(
+						"ERROR: the start value for ID creation should be an integer larger than 0!");
+				setPageComplete(false);
+				return;
+			}
+			else {
+				setErrorMessage(null);
+			}
+
+		} catch (Exception e) {
+			setErrorMessage("ERROR: the start value for ID creation should be an integer!");
+			example.setText("Cannot generate a valid example");
+			setPageComplete(false);
+			return;
+		}
 
 		if (example != null) {
 			String exampleStr = generateExample();
@@ -306,10 +333,10 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			boolean valid = validateValue(exampleStr);
 			if (!valid) {
 				complete = false;
-				setMessage("The generated identifier is not valid for the target property", ERROR);
+				setErrorMessage("The generated identifier is not valid for the target property");
 			}
 			else {
-				setMessage(null);
+				setErrorMessage(null);
 			}
 		}
 
@@ -371,21 +398,12 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 * Generate an identifier example from the current configuration.
 	 * 
 	 * @return the identifier example
+	 * @throws NumberFormatException if ID cannot be parsed as integer
 	 */
-	protected String generateExample() {
+	protected String generateExample() throws NumberFormatException {
 		String prefix = (this.prefix == null) ? ("") : (this.prefix.getText());
 		String suffix = (this.suffix == null) ? ("") : (this.suffix.getText());
 		String startValue = (this.startValue == null) ? ("") : (this.startValue.getText());
-
-		String specialCharactersString = "!@#$%&*()'+,-./:;<=>?[]^_`{|}";
-
-		for (int i = 0; i < startValue.length(); i++) {
-			char ch = startValue.charAt(i);
-			if (specialCharactersString.contains(Character.toString(ch))
-					|| startValue.startsWith("0")) {
-				return "StartValue cannot have leading 0s or contain special characters";
-			}
-		}
 
 		// replace variables in prefix and suffix
 		TransformationVariables variables = new DefaultTransformationVariables(new ProjectVariables(
@@ -394,6 +412,19 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		prefix = variables.replaceVariables(prefix);
 		suffix = variables.replaceVariables(suffix);
 
-		return prefix + startValue + suffix;
+		int ID = 0;
+
+		if (startValue != "") {
+			try {
+				ID = Integer.parseInt(startValue);
+			} catch (Exception e) {
+				return "";
+			}
+
+		}
+
+		return prefix + ID + suffix;
+
 	}
+
 }

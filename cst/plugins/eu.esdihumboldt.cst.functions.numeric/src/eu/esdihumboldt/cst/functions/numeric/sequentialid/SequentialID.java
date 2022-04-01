@@ -86,14 +86,12 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 				id = seqValue + 1;
 			}
 			else {
-				if (Integer.parseInt(startValue) == 0) {
-					throw new TransformationException(
-							"ERROR: the starting value for ID creation should be larger than 0");
-					// anyways, in the UI the user cannot use 0s or special
-					// characters for startValue
-				}
 				try {
 					id = Integer.parseInt(startValue);
+					if (id == 0) {
+						throw new TransformationException(
+								"ERROR: the starting value for ID creation should be larger than 0");
+					}
 				} catch (Exception e) {
 					throw new TransformationException(
 							"ERROR: the input value of startValue  " + startValue
