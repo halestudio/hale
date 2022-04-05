@@ -1606,11 +1606,6 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				&& ((GroupPropertyDefinition) parent.getDefinition())
 						.getConstraint(ChoiceFlag.class).isEnabled();
 
-		// DEBUGGING
-		if (parent.getDefinition().getIdentifier().equals("identifier")) {
-			new Object();
-		}
-
 		for (ChildDefinition<?> child : children) {
 			Object[] values = parent.getProperty(child.getName());
 
@@ -1631,13 +1626,6 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							}
 						}
 
-						// special case handling: auto add codespace
-						if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
-							if ("codeSpace".equals(propDef.getName().getLocalPart())) {
-								allowWrite = addCodespace;
-							}
-						}
-
 						// write attribute
 						if (allowWrite) {
 							// special case handling: replace incorrect
@@ -1653,22 +1641,35 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 								// default
 								writeAttribute(values[0], propDef);
 							}
-							// special case handling: automatically add
-							// codespace to gml:identifier
-							if ("addCodespace".equals(propDef.getName().getLocalPart())
-									&& "".equals(values[0])) {
-								writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
-							}
-							else {
-								// default
-								writeAttribute(values[0], propDef);
-							}
 						}
 
 						if (values.length > 1) {
 							// TODO warning?!
 						}
-					}
+					} // end if for nilReason
+
+					if (child.getName().getLocalPart().toString().equals("codeSpace")
+							&& values == null) {
+						boolean allowWrite = true;
+
+						// special case handling: auto add codespace
+						if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
+							if (child.getName().getLocalPart().toString().equals("codeSpace")) {
+								allowWrite = addCodespace;
+								// allowWrite = true;
+							}
+						}
+
+						// write attribute
+						if (allowWrite) {
+							// special case handling: automatically add
+							// codespace to gml:identifier
+							if (child.getName().getLocalPart().toString().equals("codeSpace")) {
+								writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
+							}
+						}
+					} // end if codespace
+
 				}
 				else if (!attributes && !isAttribute) {
 					int numValues = 0;
@@ -1719,10 +1720,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							// TODO warning/error?
 						}
 					}
-				}
-			}
-		}
-	}
+				} // if(values!=null)
+			} // if (child.asProperty!=0)
+		} // end for loop children
+
+	} // end method
 
 	/**
 	 * Write a property element.
@@ -1783,6 +1785,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			boolean hasValue = propDef.getPropertyType().getConstraint(HasValueFlag.class)
 					.isEnabled();
 
+			boolean isIdentifier = propDef.getDisplayName().equals("identifier");
+
 			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 			// handle about annotated geometries
 			if (!hasValue && pair != null) {
@@ -1796,7 +1800,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				// write no elements if there is a value or only a nil reason
 				boolean writeElements = !hasValue && !hasOnlyNilReason;
 				boolean isNil = !writeElements && (!hasValue || value == null);
-				boolean isCodespace = !hasValue && !hasOnlyNilReason; // Not
+				boolean isCodespace = isIdentifier || value == null; // Not
+																		// fully
 																		// sure
 																		// about
 																		// that
