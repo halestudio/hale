@@ -489,7 +489,7 @@
                   class="java.lang.Boolean">
             </parameterBinding>
             <valueDescriptor
-                  default="true"
+                  default="false"
                   defaultDescription="By default, the codespace is automatically added to the gml:identifier."
                   sample="false">
             </valueDescriptor>
