@@ -93,9 +93,9 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 								"ERROR: the starting value for ID creation should be larger than 0");
 					}
 				} catch (Exception e) {
-					throw new TransformationException(
-							"ERROR: the input value of startValue  " + startValue
-									+ " for ID creation: the input value should be an integer");
+					throw new TransformationException("ERROR: the input value of startValue  "
+							+ startValue
+							+ " for ID creation: the input value should be an integer larger than 0");
 				}
 			}
 			context.put(key, id);

@@ -414,7 +414,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 
 		int ID = 0;
 
-		if (startValue != "") {
+		if (startValue != null && !startValue.isEmpty()) {
 			try {
 				ID = Integer.parseInt(startValue);
 			} catch (Exception e) {
