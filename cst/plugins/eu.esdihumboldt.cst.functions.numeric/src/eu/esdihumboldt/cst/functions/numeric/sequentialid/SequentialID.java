@@ -86,16 +86,15 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 				id = seqValue + 1;
 			}
 			else {
+				if (startValue.charAt(0) == '0') {
+					throw new TransformationException(
+							"ERROR: the starting value for ID creation cannot have leading 0s or be equal to 0");
+				}
 				try {
 					id = Integer.parseInt(startValue);
-					if (id == 0) {
-						throw new TransformationException(
-								"ERROR: the starting value for ID creation should be larger than 0");
-					}
 				} catch (Exception e) {
-					throw new TransformationException("ERROR: the input value of startValue  "
-							+ startValue
-							+ " for ID creation: the input value should be an integer larger than 0");
+					throw new TransformationException(
+							"ERROR: the starting value for ID creation should be an integer larger than 0");
 				}
 			}
 			context.put(key, id);
