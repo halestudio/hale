@@ -302,21 +302,17 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 * Update the example and the page status
 	 */
 	protected void updateStatus() {
-		boolean complete = true;
 		setErrorMessage(null);
 
 		try {
 
-			Integer.parseInt(startValue.getText());
-
-			if (startValue.getText().charAt(0) == '0') {
+			int id = Integer.parseInt(startValue.getText());
+			if (id < 0) {
 				setErrorMessage(
-						"ERROR: the start value for ID creation should be an integer larger than 0!");
+						"ERROR: the start value for ID creation should be a positive integer!");
+				example.setText("Cannot generate a valid example");
 				setPageComplete(false);
 				return;
-			}
-			else {
-				setErrorMessage(null);
 			}
 
 		} catch (Exception e) {
@@ -332,7 +328,7 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 
 			boolean valid = validateValue(exampleStr);
 			if (!valid) {
-				complete = false;
+				setPageComplete(false);
 				setErrorMessage("The generated identifier is not valid for the target property");
 			}
 			else {
@@ -341,10 +337,10 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 		}
 
 		if (sequence != null && sequence.getSelection().isEmpty()) {
-			complete = false;
+			setPageComplete(false);
 		}
 
-		setPageComplete(complete);
+		setPageComplete(true);
 	}
 
 	/**
