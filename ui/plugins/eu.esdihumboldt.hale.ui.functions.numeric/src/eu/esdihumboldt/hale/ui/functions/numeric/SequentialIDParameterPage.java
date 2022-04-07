@@ -272,12 +272,6 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			infoDeco.setShowOnlyOnFocus(true);
 		}
 
-		// show example
-		// boolean isNumeric = startValue.toString().chars().allMatch(x ->
-		// Character.isDigit(x));
-		// boolean hasLeadingZeros = Integer.parseInt(startValue.toString()) ==
-		// 0;
-
 		if (sequence != null && prefix != null && suffix != null && startValue != null) {
 			label = new Label(page, SWT.NONE);
 			label.setText("ID Example");
