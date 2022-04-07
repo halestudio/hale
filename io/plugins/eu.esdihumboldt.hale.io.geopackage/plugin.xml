@@ -31,6 +31,15 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
+         <providerParameter
+               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&amp;lt;table name 1&amp;gt;|&amp;lt;WHERE clause 1&amp;gt;||&amp;lt;table name 2&amp;gt;|&amp;lt;WHERE clause 2&amp;gt;||...&quot;"
+               label="Filters for querying the GeoPackage database"
+               name="queryFilter"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
       </provider>
       <provider
             allowDuplicate="false"
@@ -41,15 +50,6 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.geopackage">
          </contentType>
-         <providerParameter
-               description="Allows to provide a WHERE clause filter for tables in the GeoPackage. One WHERE clause per table can be defined. The syntax is &quot;&amp;lt;table name 1&amp;gt;|&amp;lt;WHERE clause 1&amp;gt;||&amp;lt;table name 2&amp;gt;|&amp;lt;WHERE clause 2&amp;gt;||...&quot;"
-               label="Filters for querying the GeoPackage database"
-               name="queryFilter"
-               optional="true">
-            <parameterBinding
-                  class="java.lang.String">
-            </parameterBinding>
-         </providerParameter>
          <providerParameter
                description="Target coordinate reference system the data should be transformed to (only applies if the schema does not specify the CRS already)."
                label="Target CRS"
