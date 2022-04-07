@@ -105,7 +105,7 @@ public class GeopackageInstanceReader extends AbstractInstanceReader {
 				throw new IllegalArgumentException("Only files are supported as data source", e);
 			}
 
-			GeoPackage gpkg = GeoPackageManager.open(file, true);
+			GeoPackage gpkg = GeoPackageManager.open(file, false);
 
 			Map<TypeDefinition, InstanceCollection> collections = new HashMap<>();
 
