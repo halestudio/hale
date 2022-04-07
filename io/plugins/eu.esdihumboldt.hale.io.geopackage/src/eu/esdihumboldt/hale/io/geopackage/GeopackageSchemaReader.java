@@ -47,7 +47,7 @@ public class GeopackageSchemaReader extends AbstractCachedSchemaReader {
 				throw new IllegalArgumentException("Only files are supported as data source", e);
 			}
 
-			GeoPackage gpkg = GeoPackageManager.open(file, true);
+			GeoPackage gpkg = GeoPackageManager.open(file, false);
 
 			Schema schema = new GeopackageSchemaBuilder().buildSchema(gpkg, loc);
 
