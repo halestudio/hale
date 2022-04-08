@@ -88,10 +88,13 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			else {
 				try {
 					id = Integer.parseInt(startValue);
+					if (id < 0) {
+						throw new TransformationException(
+								"ERROR: the starting value for ID creation should be a positive integer");
+					}
 				} catch (Exception e) {
 					throw new TransformationException(
-							"ERROR with the input value of startValue  " + startValue
-									+ " for ID creation: the input value should be an integer");
+							"ERROR: the starting value for ID creation should be an integer");
 				}
 			}
 			context.put(key, id);

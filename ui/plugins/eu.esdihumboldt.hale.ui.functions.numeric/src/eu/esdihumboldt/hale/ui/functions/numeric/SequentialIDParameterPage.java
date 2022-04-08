@@ -248,8 +248,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			startValue = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(startValue);
 
-			startValue.setText(
-					getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1")).as(String.class));
+			startValue.setText(getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1"))
+					.as(String.class));
 
 			startValue.addModifyListener(new ModifyListener() {
 
@@ -272,7 +272,6 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 			infoDeco.setShowOnlyOnFocus(true);
 		}
 
-		// show example
 		if (sequence != null && prefix != null && suffix != null && startValue != null) {
 			label = new Label(page, SWT.NONE);
 			label.setText("ID Example");
@@ -297,7 +296,25 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 * Update the example and the page status
 	 */
 	protected void updateStatus() {
-		boolean complete = true;
+		setErrorMessage(null);
+
+		try {
+
+			int id = Integer.parseInt(startValue.getText());
+			if (id < 0) {
+				setErrorMessage(
+						"ERROR: the start value for ID creation should be a positive integer!");
+				example.setText("Cannot generate a valid example");
+				setPageComplete(false);
+				return;
+			}
+
+		} catch (Exception e) {
+			setErrorMessage("ERROR: the start value for ID creation should be an integer!");
+			example.setText("Cannot generate a valid example");
+			setPageComplete(false);
+			return;
+		}
 
 		if (example != null) {
 			String exampleStr = generateExample();
@@ -305,19 +322,19 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 
 			boolean valid = validateValue(exampleStr);
 			if (!valid) {
-				complete = false;
-				setMessage("The generated identifier is not valid for the target property", ERROR);
+				setPageComplete(false);
+				setErrorMessage("The generated identifier is not valid for the target property");
 			}
 			else {
-				setMessage(null);
+				setErrorMessage(null);
 			}
 		}
 
 		if (sequence != null && sequence.getSelection().isEmpty()) {
-			complete = false;
+			setPageComplete(false);
 		}
 
-		setPageComplete(complete);
+		setPageComplete(true);
 	}
 
 	/**
@@ -371,8 +388,9 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 	 * Generate an identifier example from the current configuration.
 	 * 
 	 * @return the identifier example
+	 * @throws NumberFormatException if ID cannot be parsed as integer
 	 */
-	protected String generateExample() {
+	protected String generateExample() throws NumberFormatException {
 		String prefix = (this.prefix == null) ? ("") : (this.prefix.getText());
 		String suffix = (this.suffix == null) ? ("") : (this.suffix.getText());
 		String startValue = (this.startValue == null) ? ("") : (this.startValue.getText());
@@ -383,8 +401,20 @@ public class SequentialIDParameterPage extends AbstractParameterPage
 
 		prefix = variables.replaceVariables(prefix);
 		suffix = variables.replaceVariables(suffix);
-		startValue = variables.replaceVariables(startValue);
 
-		return prefix + startValue + suffix;
+		int ID = 0;
+
+		if (startValue != null && !startValue.isEmpty()) {
+			try {
+				ID = Integer.parseInt(startValue);
+			} catch (Exception e) {
+				return "";
+			}
+
+		}
+
+		return prefix + ID + suffix;
+
 	}
+
 }
