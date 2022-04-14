@@ -144,17 +144,17 @@ public abstract class GmlWriterUtil implements GMLConstants {
 		return false;
 	}
 
-	private static QName gmlIdentifier = new QName("codeSpace");
+	// private static QName gmlIdentifier = new QName("identifier");
 
 	/**
 	 * Determines if the given parent is a gml:identifier
 	 * 
-	 * @param gmlNs the gml name space
-	 * @return if the parent is a gml:identifier
+	 * @param QName the QName
+	 * @return true if the parent is a gml:identifier
 	 */
 
-	public static boolean isGmlIdentifier(String gmlNs) {
-		if (gmlNs.equals("identifier")) {
+	public static boolean isGmlIdentifier(QName QName) {
+		if (QName.getLocalPart().equals("identifier")) {
 			return true;
 		}
 		return false;

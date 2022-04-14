@@ -1546,7 +1546,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
 		boolean isInspireType = GmlWriterUtil.isINSPIREtype(type);
-		boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(gmlNs);
+		boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(type.getName());
 
 		writeProperties(instance, type, true, false, isInspireType, parentIsGmlIdentifier, report);
 
@@ -1658,8 +1658,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						}
 					} // end if for nilReason
 
-					if (child.getName().getLocalPart().toString().equals("codeSpace")
-							&& values == null) {
+					QName gmlIdentifier = new QName("codeSpace");
+					if (child.getName().equals(gmlIdentifier) && values == null) {
 						boolean allowWrite = true;
 
 						// special case handling: auto add codespace
@@ -1795,8 +1795,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			// boolean isIdentifier =
 			// propDef.getDisplayName().equals("identifier");
+
 			boolean isInspireType = GmlWriterUtil.isINSPIREtype(propDef.getPropertyType());
-			boolean isGmlIdentifier = GmlWriterUtil.isGmlIdentifier(gmlNs);
+			boolean isGmlIdentifier = GmlWriterUtil.isGmlIdentifier(propDef.getName());
+			// boolean isGmlIdentifier =
+			// propDef.getDisplayName().equals("identifier");
 
 			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 			// handle about annotated geometries
