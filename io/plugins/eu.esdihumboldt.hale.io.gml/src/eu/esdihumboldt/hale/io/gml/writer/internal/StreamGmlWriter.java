@@ -1546,8 +1546,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
 		boolean isInspireType = GmlWriterUtil.isINSPIREtype(type);
+		boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(gmlNs);
 
-		writeProperties(instance, type, true, false, isInspireType, report);
+		writeProperties(instance, type, true, false, isInspireType, parentIsGmlIdentifier, report);
 
 //		writer.writeEndElement(); // type element name
 	}
@@ -1561,12 +1562,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param parentIsNil if the parent property is nil
 	 * @param isInspireType if true, the codespace is automatically added to the
 	 *            gml:identifier
+	 * @param parentIsGmlIdentifier if true, the codespace is automatically
+	 *            added to the gml:identifier
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
-			boolean parentIsNil, boolean isInspireType, IOReporter report)
-			throws XMLStreamException {
+			boolean parentIsNil, boolean isInspireType, boolean parentIsGmlIdentifier,
+			IOReporter report) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
 
@@ -1576,12 +1579,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 		// write the attributes, as they must be handled first
 		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil,
-				isInspireType, report);
+				isInspireType, parentIsGmlIdentifier, report);
 
 		if (allowElements) {
 			// write the elements
 			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, parentIsNil,
-					isInspireType, report);
+					isInspireType, parentIsGmlIdentifier, report);
 		}
 	}
 
@@ -1594,13 +1597,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 *            written, <code>false</code> if element properties shall be
 	 *            written
 	 * @param parentIsNil if the parent property is nil
-	 * @param addCodespace if codespace should be automatically added
+	 * @param isInspireType if the type is of type INSPIRE
+	 * @param parentIsGmlIdentifier if the parent is of type gml:identifier
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the attributes/elements fails
 	 */
 	private void writeProperties(Group parent, Collection<? extends ChildDefinition<?>> children,
-			boolean attributes, boolean parentIsNil, boolean addCodespace, IOReporter report)
-			throws XMLStreamException {
+			boolean attributes, boolean parentIsNil, boolean isInspireType,
+			boolean parentIsGmlIdentifier, IOReporter report) throws XMLStreamException {
 		if (parent == null) {
 			return;
 		}
@@ -1608,6 +1612,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		boolean parentIsChoice = parent.getDefinition() instanceof GroupPropertyDefinition
 				&& ((GroupPropertyDefinition) parent.getDefinition())
 						.getConstraint(ChoiceFlag.class).isEnabled();
+
+		boolean addCodespace = (isInspireType == true && parentIsGmlIdentifier == true) ? true
+				: false;
 
 		for (ChildDefinition<?> child : children) {
 			Object[] values = parent.getProperty(child.getName());
@@ -1657,9 +1664,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 						// special case handling: auto add codespace
 						if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
-							if (child.getName().getLocalPart().toString().equals("codeSpace")) {
-								allowWrite = addCodespace;
-							}
+
+							allowWrite = addCodespace;
 						}
 
 						// write attribute
@@ -1716,7 +1722,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (value instanceof Group) {
 							writeProperties((Group) value,
 									DefinitionUtil.getAllChildren(child.asGroup()), attributes,
-									parentIsNil, addCodespace, report);
+									parentIsNil, isInspireType, parentIsGmlIdentifier, report);
 						}
 						else {
 							// TODO warning/error?
@@ -1787,7 +1793,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			boolean hasValue = propDef.getPropertyType().getConstraint(HasValueFlag.class)
 					.isEnabled();
 
-			boolean isIdentifier = propDef.getDisplayName().equals("identifier");
+			// boolean isIdentifier =
+			// propDef.getDisplayName().equals("identifier");
+			boolean isInspireType = GmlWriterUtil.isINSPIREtype(propDef.getPropertyType());
+			boolean isGmlIdentifier = GmlWriterUtil.isGmlIdentifier(gmlNs);
 
 			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 			// handle about annotated geometries
@@ -1802,19 +1811,22 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				// write no elements if there is a value or only a nil reason
 				boolean writeElements = !hasValue && !hasOnlyNilReason;
 				boolean isNil = !writeElements && (!hasValue || value == null);
-				boolean isCodespace = isIdentifier || value == null; // Not
-																		// fully
-																		// sure
-																		// about
-																		// that
-																		// one
+				// boolean isCodespace = isIdentifier || value == null; // ?
+				// boolean isCodespace = isInspireType || isGmlIdentifier ||
+				// !hasValue;
 
-				// write all children
-				writeProperties(group, group.getDefinition(), writeElements, isNil, isCodespace,
-						report);
+				/*
+				 * // write all children writeProperties(group,
+				 * group.getDefinition(), writeElements, isNil, isInspireType,
+				 * isGmlIdentifier, report);
+				 */
 
 				// write value
 				if (hasValue) {
+					// write all children - only if parent has a valid value
+					writeProperties(group, group.getDefinition(), writeElements, isNil,
+							isInspireType, isGmlIdentifier, report);
+
 					writeElementValue(value, propDef);
 				}
 				else if (hasOnlyNilReason) {
