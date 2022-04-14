@@ -1545,7 +1545,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 //		Name elementName = GmlWriterUtil.getElementName(type);
 //		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-		writeProperties(instance, type, true, false, true, report);
+		boolean isInspireType = GmlWriterUtil.isINSPIREtype(type);
+
+		writeProperties(instance, type, true, false, isInspireType, report);
 
 //		writer.writeEndElement(); // type element name
 	}
@@ -1557,12 +1559,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param definition the feature type
 	 * @param allowElements if element properties may be written
 	 * @param parentIsNil if the parent property is nil
-	 * @param addCodespace if codespace is automatically added
+	 * @param isInspireType if true, the codespace is automatically added to the
+	 *            gml:identifier
 	 * @param report the reporter
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
-			boolean parentIsNil, boolean addCodespace, IOReporter report)
+			boolean parentIsNil, boolean isInspireType, IOReporter report)
 			throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
@@ -1573,12 +1576,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 		// write the attributes, as they must be handled first
 		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil,
-				addCodespace, report);
+				isInspireType, report);
 
 		if (allowElements) {
 			// write the elements
 			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, parentIsNil,
-					addCodespace, report);
+					isInspireType, report);
 		}
 	}
 
@@ -1656,7 +1659,6 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
 							if (child.getName().getLocalPart().toString().equals("codeSpace")) {
 								allowWrite = addCodespace;
-								// allowWrite = true;
 							}
 						}
 

@@ -130,6 +130,21 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	}
 
 	/**
+	 * Determines if the given type is an INSPIRE type
+	 * 
+	 * @param type the type definition
+	 * @return if the type is an INSPIRE type
+	 */
+	public static boolean isINSPIREtype(TypeDefinition type) {
+		if (type.getName().getNamespaceURI().startsWith("http://inspire.ec.europa.eu/schemas/")
+				|| type.getName().getNamespaceURI()
+						.startsWith("https://inspire.ec.europa.eu/schemas/")) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Determine if a given type is a feature type.
 	 * 
 	 * @param type the type definition
