@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -151,6 +152,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 
 		// Collections & Classes used by Groovy
 		allowedClasses.add(LinkedHashMap.class);
+		allowedClasses.add(LinkedHashSet.class);
 		allowedClasses.add(ArrayList.class);
 		allowedClasses.add(Range.class);
 		allowedClasses.add(GStringImpl.class);
