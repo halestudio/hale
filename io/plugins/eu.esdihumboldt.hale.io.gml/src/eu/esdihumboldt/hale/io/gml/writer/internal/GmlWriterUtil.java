@@ -132,19 +132,17 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	/**
 	 * Determines if the given type is an INSPIRE type
 	 * 
-	 * @param type the type definition
+	 * @param ProdDef the type definition
 	 * @return if the type is an INSPIRE type
 	 */
-	public static boolean isINSPIREtype(TypeDefinition type) {
-		if (type.getName().getNamespaceURI().startsWith("http://inspire.ec.europa.eu/schemas/")
-				|| type.getName().getNamespaceURI()
+	public static boolean isInspireType(PropertyDefinition propDef) {
+		if (propDef.getName().getNamespaceURI().startsWith("http://inspire.ec.europa.eu/schemas/")
+				|| propDef.getName().getNamespaceURI()
 						.startsWith("https://inspire.ec.europa.eu/schemas/")) {
 			return true;
 		}
 		return false;
 	}
-
-	// private static QName gmlIdentifier = new QName("identifier");
 
 	/**
 	 * Determines if the given parent is a gml:identifier
