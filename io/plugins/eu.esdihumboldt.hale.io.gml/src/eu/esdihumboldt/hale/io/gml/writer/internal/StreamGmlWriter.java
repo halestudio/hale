@@ -1605,12 +1605,16 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			if (child.asProperty() != null) {
 				PropertyDefinition propDef = child.asProperty();
 
-				boolean isInspireType = GmlWriterUtil.isInspireType(propDef);
-				boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(child.getName());
+				boolean isInspireType = false;
+				if (parent instanceof Instance) {
 
-				// System.out.println("isInspireType " + isInspireType);
-				// System.out.println("parentIsGmlIdentifier " +
-				// parentIsGmlIdentifier);
+					isInspireType = GmlWriterUtil
+							.isInspireType(((Instance) parent).getDefinition());
+
+				}
+
+				boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(child.getName(),
+						gmlNs);
 
 				boolean isAttribute = propDef.getConstraint(XmlAttributeFlag.class).isEnabled();
 
@@ -1647,53 +1651,26 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (values.length > 1) {
 							// TODO warning?!
 						}
-					} // end if for nilReason
+					} // end if special case for nilReason
 
+					// special case handling: automatically add codespace to
+					// gml:identifier
 					QName gmlIdentifier = new QName("codeSpace");
-					boolean allowWrite = true;
+					boolean allowWrite = false;
 
-//					if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true) && isInspireType
-//							&& parentIsGmlIdentifier) {
-//						System.out.println("pass");
-					// allowWrite = true;
+					if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true) && isInspireType
+							&& parentIsGmlIdentifier && values == null
+							&& child.getName().equals(gmlIdentifier)) {
 
-					if (child.getName().equals(gmlIdentifier) && values == null) {
 						allowWrite = true;
-					}
-					else {
-						allowWrite = false;
-					}
 
-					/*
-					 * System.out.
-					 * println("propDef.getName().getNamespaceURI() " +
-					 * propDef.getName().getNamespaceURI());
-					 * 
-					 * System.out.println("isInspireType " + isInspireType);
-					 * 
-					 * System.out.println( "child.getName().getLocalPart() " +
-					 * child.getName().getLocalPart());
-					 * 
-					 * System.out.println("parentIsGmlIdentifier " +
-					 * parentIsGmlIdentifier);
-					 */
-
-					// special case handling: auto add codespace
-					/*
-					 * if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class,
-					 * true) && isInspireType && parentIsGmlIdentifier) {
-					 * System.out.println("pass"); allowWrite = true; }
-					 */
-					/*
-					 * else { allowWrite = false; }
-					 */
-					// write attribute
-					if (allowWrite) {
-						// special case handling: automatically add
-						// codespace to gml:identifier
-						writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
-					}
-//					} // end if add codespace
+						// write attribute
+						if (allowWrite) {
+							// special case handling: automatically add
+							// codespace to gml:identifier
+							writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
+						}
+					} // end if special case add codespace
 
 				}
 				else if (!attributes && !isAttribute) {
