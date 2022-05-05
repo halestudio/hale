@@ -13,8 +13,10 @@ Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.align;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.9.0"
-Import-Package: eu.esdihumboldt.hale.common.instance.model,
+Import-Package: eu.esdihumboldt.hale.common.instance.groovy,
+ eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util.xml,
  net.jcip.annotations,
- org.junit;version="4.11.0"
+ org.junit;version="4.11.0",
+ org.slf4j;version="1.7.2"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.json.test

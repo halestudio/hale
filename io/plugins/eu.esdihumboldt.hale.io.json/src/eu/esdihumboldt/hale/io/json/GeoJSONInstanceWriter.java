@@ -22,19 +22,32 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
-import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 
 /**
  * Writes instances as GeoJSON.
  * 
  * @author Kai Schwierczek
  */
-public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
+//public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
+public class GeoJSONInstanceWriter extends JsonInstanceWriter {
 
 	/**
 	 * Parameter name for the default geometry association.
+	 * 
+	 * @deprecated as of release 4.2.0 because we don't use geometry
+	 *             configuration for geoJson and export the data in WG84 format.
+	 *             As geoJson expects WGS 84 with lon/lat (see
+	 *             https://tools.ietf.org/html/rfc7946)
 	 */
+	@Deprecated
 	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
+
+	/**
+	 * @param geoJson use geoJson feature when exporting to geoJson
+	 */
+	public GeoJSONInstanceWriter() {
+		super(true);
+	}
 
 	@Override
 	public boolean isCancelable() {
@@ -45,12 +58,9 @@ public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Generating GeoJSON", ProgressIndicator.UNKNOWN);
-		try {
-			JacksonMapper mapper = new JacksonMapper();
-			GeoJSONConfig config = getParameter(PARAM_GEOMETRY_CONFIG).as(GeoJSONConfig.class,
-					new GeoJSONConfig());
-			mapper.streamWriteGeoJSONCollection(getTarget(), getInstances(), config, reporter);
 
+		try {
+			writeInstanceCollectionToJson(getInstances(), reporter);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl("Error generating GeoJSON file", e));
@@ -58,7 +68,6 @@ public class GeoJSONInstanceWriter extends AbstractInstanceWriter {
 		} finally {
 			progress.end();
 		}
-
 		return reporter;
 	}
 
