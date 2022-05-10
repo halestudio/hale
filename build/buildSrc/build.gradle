@@ -19,7 +19,7 @@
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
 repositories {
-	jcenter()
+	mavenCentral()
 	maven { // Sonatype snapshots (for custom unpuzzle)
 		url 'http://oss.sonatype.org/content/repositories/snapshots/'
 	}
