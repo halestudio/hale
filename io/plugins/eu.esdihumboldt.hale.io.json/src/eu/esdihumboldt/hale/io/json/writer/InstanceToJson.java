@@ -339,9 +339,11 @@ public class InstanceToJson implements InstanceJsonConstants {
 		jsonGen.writeFieldName("@namespaces");
 		jsonGen.writeStartObject();
 
-		for (Entry<String, String> entry : namespaces.getNamespaces().entrySet()) {
-			if (!entry.getKey().isEmpty() || !entry.getValue().isEmpty()) {
-				jsonGen.writeStringField(entry.getKey(), entry.getValue());
+		if (namespaces.getNamespaces() != null) {
+			for (Entry<String, String> entry : namespaces.getNamespaces().entrySet()) {
+				if (!entry.getKey().isEmpty() || !entry.getValue().isEmpty()) {
+					jsonGen.writeStringField(entry.getKey(), entry.getValue());
+				}
 			}
 		}
 

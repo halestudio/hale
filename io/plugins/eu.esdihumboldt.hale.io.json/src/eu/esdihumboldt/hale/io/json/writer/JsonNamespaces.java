@@ -22,7 +22,7 @@ import java.util.Optional;
  * 
  * @author Simon Templer
  */
-public abstract class JsonNamespaces extends NamespaceManager implements InstanceJsonConstants {
+public abstract class JsonNamespaces implements NamespaceManager, InstanceJsonConstants {
 
 	/**
 	 * Constructor.

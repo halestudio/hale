@@ -38,8 +38,8 @@ import eu.esdihumboldt.hale.io.json.writer.InstanceToJson;
  */
 public class JsonInstanceWriter extends AbstractInstanceWriter {
 
-	InstanceToJson instanceToJson;
-	boolean useGeoJsonFeatures = false;
+	private final InstanceToJson instanceToJson;
+	private final boolean useGeoJsonFeatures;
 
 	/**
 	 * By default do not use geoJson features for the output.
@@ -58,7 +58,7 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	 */
 	public JsonInstanceWriter(boolean useGeoJsonFeatures) {
 		this.useGeoJsonFeatures = useGeoJsonFeatures;
-		instanceToJson = new InstanceToJson(useGeoJsonFeatures);
+		instanceToJson = new InstanceToJson(this.useGeoJsonFeatures);
 	}
 
 	@Override
@@ -69,13 +69,14 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-		progress.begin("Generating JSON", ProgressIndicator.UNKNOWN);
+		progress.begin("Generating " + getDefaultTypeName(), ProgressIndicator.UNKNOWN);
 
 		try {
 			writeInstanceCollectionToJson(getInstances(), reporter);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
-			reporter.error(new IOMessageImpl("Error generating JSON file", e));
+			reporter.error(new IOMessageImpl(
+					String.format("Error generating %s file", getDefaultTypeName()), e));
 			reporter.setSuccess(false);
 		} finally {
 			progress.end();
