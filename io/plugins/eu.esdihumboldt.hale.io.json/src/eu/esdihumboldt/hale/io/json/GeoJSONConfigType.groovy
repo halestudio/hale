@@ -32,7 +32,11 @@ import groovy.xml.dom.DOMCategory
  * Complex value type for {@link GeoJSONConfig}.
  * 
  * @author Simon Templer
+ * @deprecated as of release 4.2.0 this class is deprecated because
+ *             {@link InstanceToJson} is used to export the data into GeoJson
+ *             format.
  */
+@Deprecated
 @CompileStatic
 public class GeoJSONConfigType implements ComplexValueType<GeoJSONConfig, Object> {
 

@@ -27,7 +27,11 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
  * {@link GeoJSONConfig} parameter descriptor.
  * 
  * @author Simon Templer
+ * @deprecated as of release 4.2.0 this class is deprecated because
+ *             {@link InstanceToJson} is used to export the data into GeoJson
+ *             format.
  */
+@Deprecated
 public class GeoJSONConfigDescriptor extends AbstractParameterValueDescriptor {
 
 	/**
@@ -46,7 +50,8 @@ public class GeoJSONConfigDescriptor extends AbstractParameterValueDescriptor {
 				//
 				geometry(namespace: 'http://www.example.com/namespace')
 			}
-			type2 = StandingWater { //
+			type2 = StandingWater {
+				//
 				the_geom() //
 			}
 		}

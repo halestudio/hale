@@ -84,7 +84,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 * @param geoJson if the output should be valid GeoJson output
 	 */
 	public InstanceToJson(boolean geoJson) {
-		this(geoJson, new NamespaceManager() /* new JsonNamespaces() */, 7);
+		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, 7);
 	}
 
 	/**
@@ -190,18 +190,6 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 * @param instance the instance to write
 	 * @param log the log
 	 * @throws IOException
-	 */
-//	public void writeInstance(JsonGenerator jsonGen, Instance instance, SimpleLog log)
-//			throws IOException {
-//		writeInstance(jsonGen, instance, Placement.ROOT, log);
-//	}
-
-	/**
-	 * 
-	 * @param jsonGen json generator
-	 * @param instance instance
-	 * @param log logger
-	 * @throws IOException exception
 	 */
 	public void writeInstance(JsonGenerator jsonGen, Instance instance, SimpleLog log)
 			throws IOException {
