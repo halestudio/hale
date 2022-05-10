@@ -27,6 +27,8 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.persist.hsd.MergeSchemas;
 import eu.esdihumboldt.util.groovy.json.JsonStreamBuilder;
 
 /**
@@ -49,7 +51,12 @@ public class HaleSchemaWriterJson extends AbstractSchemaWriter {
 				Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
 			// create DOM
 			JsonStreamBuilder builder = new JsonStreamBuilder(writer, true);
-			new SchemaToJson().schemasToJson(builder, getSchemas().getSchemas(), null);
+
+			// by default merge all schemas TODO make configurable?
+			Iterable<? extends Schema> schemas = MergeSchemas.merge(getSchemas().getSchemas(),
+					true);
+
+			new SchemaToJson().schemasToJson(builder, schemas, null);
 
 			reporter.setSuccess(true);
 		} catch (Exception e) {
