@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.schema.io.impl.AbstractSchemaWriter;
+import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
 
 /**
@@ -53,7 +54,12 @@ public class HaleSchemaWriter extends AbstractSchemaWriter {
 		try (OutputStream out = getTarget().getOutput()) {
 			// create DOM
 			NSDOMBuilder builder = SchemaToXml.createBuilder();
-			Element root = new SchemaToXml().schemasToXml(builder, getSchemas().getSchemas());
+
+			// by default merge all schemas TODO make configurable?
+			Iterable<? extends Schema> schemas = MergeSchemas.merge(getSchemas().getSchemas(),
+					true);
+
+			Element root = new SchemaToXml().schemasToXml(builder, schemas);
 
 			// configure transformer for serialization
 			Transformer transformer = TransformerFactory.newInstance().newTransformer();

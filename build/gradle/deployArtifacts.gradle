@@ -227,7 +227,7 @@ repositories {
 	maven { // wetransform artifactory (snapshots)
 		url 'https://artifactory.wetransform.to/artifactory/libs-snapshot/'
 	}
-	jcenter()
+	mavenCentral()
 	maven {
 		url 'https://repo.osgeo.org/repository/release/'
 	}
