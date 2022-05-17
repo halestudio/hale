@@ -590,7 +590,8 @@ class ShapefileInstanceWriterTest {
 			assertEquals(2, num)
 		}
 	}
-	//test case for multiple schema for multiple geometries.
+
+	//test case for multiple schema for multiple geometries where all geometries are present in all the instances.
 	@Test
 	void testWriteMultiSchemasWithMultiGeom() {
 		GeometryFactory gf = new GeometryFactory()
@@ -630,7 +631,7 @@ class ShapefileInstanceWriterTest {
 				a('Text')
 				b(3.14)
 				c(42)
-				location( createGeometry('POINT(49.872833 8.651222)', 4326))
+				location( createGeometry('POINT(52.872833 9.651222)', 4326))
 				locat(polyGeom)
 			}
 
@@ -638,7 +639,7 @@ class ShapefileInstanceWriterTest {
 				a('More text')
 				b(1.52)
 				c(23)
-				location(createGeometry('POINT(48.137222 11.575556)', 4326))
+				location(createGeometry('POINT(55.137222 10.575556)', 4326))
 				locat(polyGeom)
 			}
 		}
@@ -690,6 +691,179 @@ class ShapefileInstanceWriterTest {
 			assertEquals(2, attrCount)
 		}
 	}
+
+	//test case for multiple schema with where each instance of source data has only one geometry but different geometry types.
+	@Test
+	void testWriteMultiSchemasWithDifferentGeometryTypes() {
+		GeometryFactory gf = new GeometryFactory()
+		def poly = gf.createPolygon([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
+
+		def lineString= gf.createLineString([
+			new Coordinate(0, 0),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 0)] as Coordinate[])
+		def lineStringGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), lineString)
+
+		def lineString2= gf.createLineString([
+			new Coordinate(0, 1),
+			new Coordinate(1, 0),
+			new Coordinate(1, 1),
+			new Coordinate(0, 1),
+			new Coordinate(0, 1)] as Coordinate[])
+		def lineStringGeom2 = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), lineString)
+
+
+		Schema schema = new SchemaBuilder().schema {
+			attr1 {
+				col1()
+				col2()
+				locationPoint(GeometryProperty)
+				geomMultiPolygon(GeometryProperty)
+			}
+			abc {
+				a(String)
+				b(Double)
+				c(Long)
+				locationPoint(GeometryProperty)
+				geomMultiPolygon(GeometryProperty)
+				geomMultiLineString(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			attr1 {
+				col1('Value 1 with point')
+				col2('Value 2 with point')
+				locationPoint( createGeometry('POINT(49.872833 8.651222)', 4326) )
+			}
+
+			attr1 {
+				col1('Value 1 with Multipolygon')
+				col2('Value 2 with Multipolygon')
+				geomMultiPolygon(polyGeom)
+			}
+
+			abc {
+				a('Text with point geometry')
+				b(11.14)
+				c(11)
+				locationPoint( createGeometry('POINT(52.872833 9.651222)', 4326))
+			}
+
+			abc {
+				a('More text with multipolygon geometry')
+				b(22.52)
+				c(22)
+				geomMultiPolygon(polyGeom)
+			}
+
+			abc {
+				a('More text with MultiLineString geometry')
+				b(333.52)
+				c(333)
+				geomMultiLineString(lineStringGeom)
+			}
+
+			abc {
+				a('More text with MultiLineString geometry')
+				b(333.52)
+				c(333)
+				geomMultiLineString(lineStringGeom2)
+			}
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+			def schemaNames = [
+				"attr1_Point",
+				"attr1_Polygon",
+				"abc_Point",
+				"abc_Polygon",
+				"abc_LineString"
+			]
+			int num = 0
+			int abcCount = 0
+			int attrCount = 0
+			int attr1PointCount = 0
+			int attr1PolygonCount = 0
+			int abcPointCount = 0
+			int abcMultiPolygonCount = 0
+			int abcMultiLineStringCount = 0
+
+			for (schemaName in schemaNames) {
+				def loaded = loadInstances(file, schemaName)
+				loaded.iterator().withCloseable {
+					while (it.hasNext()) {
+						Instance inst = it.next()
+						num++
+
+						// test instance
+						def typeName = inst.getDefinition().getName().getLocalPart()
+						if(typeName.contains("attr1")) {
+							attrCount++
+							def the_geom = inst.p.the_geom.value()
+							assert the_geom
+							assert the_geom instanceof GeometryProperty
+
+							if(schemaName.contains("attr1_Point")) {
+								attr1PointCount++
+								assert inst.p.col1.value() == 'Value 1 with point'
+								assert inst.p.col2.value() == 'Value 2 with point'
+								assert ((GeometryProperty) the_geom).getGeometry().geometryType.equalsIgnoreCase("POINT")
+							} else {
+								attr1PolygonCount++
+								assert inst.p.col1.value() == 'Value 1 with Multipolygon'
+								assert inst.p.col2.value() == 'Value 2 with Multipolygon'
+								assert ((GeometryProperty) the_geom).getGeometry().geometryType.equalsIgnoreCase("MultiPolygon")
+							}
+						}
+						else if(typeName.contains("abc")) {
+							abcCount++
+							def the_geom = inst.p.the_geom.value()
+							assert the_geom
+							assert the_geom instanceof GeometryProperty
+							if(schemaName.contains("abc_Point")) {
+								abcPointCount++
+								assert inst.p.a.value() == 'Text with point geometry'
+								assert inst.p.b.value() == 11.14
+								assert inst.p.c.value() == 11
+								assert ((GeometryProperty) the_geom).getGeometry().geometryType.equalsIgnoreCase("Point")
+							} else if(schemaName.contains("abc_Polygon")) {
+								abcMultiPolygonCount++
+								assert inst.p.a.value() == 'More text with multipolygon geometry'
+								assert inst.p.b.value() == 22.52
+								assert inst.p.c.value() == 22
+								assert ((GeometryProperty) the_geom).getGeometry().geometryType.equalsIgnoreCase("MultiPolygon")
+							} else if(schemaName.contains("abc_LineString")) {
+								abcMultiLineStringCount++
+								assert inst.p.a.value() == 'More text with MultiLineString geometry'
+								assert inst.p.b.value() == 333.52
+								assert inst.p.c.value() == 333
+								assert ((GeometryProperty) the_geom).getGeometry().geometryType.equalsIgnoreCase("MultiLineString")
+							}
+						}
+					}
+				}
+			}
+			assertEquals(6, num)
+			assertEquals(4, abcCount)
+			assertEquals(2, attrCount)
+			assertEquals(1, attr1PointCount)
+			assertEquals(1, attr1PolygonCount)
+			assertEquals(1, abcPointCount)
+			assertEquals(1, abcMultiPolygonCount)
+			assertEquals(2, abcMultiLineStringCount)
+		}
+	}
+
 
 
 	//test case for multiple schema for multiple geometries with one schema missing the geometry property.
