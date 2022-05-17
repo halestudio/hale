@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.IgnoreOrderFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
@@ -382,6 +383,44 @@ public class XmlSchemaReaderTest {
 	}
 
 	/**
+	 * Test reading a simple XML schema with an "all" group and complex types.
+	 * 
+	 * @throws Exception if reading the schema fails
+	 */
+	@Test
+	public void testRead_definitive_all() throws Exception {
+		URI location = getClass().getResource("/testdata/definitive/allgroup.xsd").toURI();
+		LocatableInputSupplier<? extends InputStream> input = new DefaultInputSupplier(location);
+		XmlIndex schema = (XmlIndex) readSchema(input);
+
+		// ItemsType
+		TypeDefinition itemsType = schema.getType(new QName("ItemsType"));
+		assertNotNull(itemsType);
+
+		// Ignore order flag must be set b/c of <xs:all> group
+		assertTrue(itemsType.getConstraint(IgnoreOrderFlag.class).isEnabled());
+
+		assertEquals(2, itemsType.getChildren().size());
+
+		Iterator<? extends ChildDefinition<?>> it = itemsType.getDeclaredChildren().iterator();
+		// name
+		PropertyDefinition name = it.next().asProperty();
+		assertNotNull(name);
+		assertEquals("name", name.getName().getLocalPart());
+		Cardinality nameCard = name.getConstraint(Cardinality.class);
+		assertEquals(0, nameCard.getMinOccurs());
+		assertEquals(1, nameCard.getMaxOccurs());
+
+		// id
+		PropertyDefinition id = it.next().asProperty();
+		assertNotNull(id);
+		assertEquals("id", id.getName().getLocalPart());
+		Cardinality idCard = id.getConstraint(Cardinality.class);
+		assertEquals(1, idCard.getMinOccurs());
+		assertEquals(1, idCard.getMaxOccurs());
+	}
+
+	/**
 	 * Test reading a simple XML schema with sequences that have to be grouped.
 	 * 
 	 * @throws Exception if reading the schema fails
@@ -395,6 +434,9 @@ public class XmlSchemaReaderTest {
 		// ItemsType
 		TypeDefinition itemsType = schema.getType(new QName("ItemsType"));
 		assertNotNull(itemsType);
+
+		// Ignore order flag must not be set
+		assertFalse(itemsType.getConstraint(IgnoreOrderFlag.class).isEnabled());
 
 		assertEquals(1, itemsType.getChildren().size());
 
