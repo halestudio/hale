@@ -283,7 +283,9 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				Set<String> keySet = geometryBuilderMap.keySet();
 				for (String key : keySet) {
 					String propName = truncatePropertyName(prop.getName().getLocalPart());
-					geometryBuilderMap.get(key).add(propName, binding);
+					if (geometryBuilderMap.get(key).get(propName) == null) {
+						geometryBuilderMap.get(key).add(propName, binding);
+					}
 				}
 			}
 		}
