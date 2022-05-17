@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="allgroup.xsd">
+	<umbrella>Some umbrella</umbrella>
+	<hat>And hat</hat>
+	<shirt>Some shirt</shirt>
+</items>
