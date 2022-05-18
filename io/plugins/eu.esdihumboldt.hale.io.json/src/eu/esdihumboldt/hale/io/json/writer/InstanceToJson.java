@@ -57,6 +57,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFl
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.util.Pair;
+import eu.esdihumboldt.util.geometry.WindingOrder;
 
 /**
  * Class to generate instance to JSON.
@@ -189,7 +190,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 * @param jsonGen the Json generator
 	 * @param instance the instance to write
 	 * @param log the log
-	 * @throws IOException
+	 * @throws IOException IOException
 	 */
 	public void writeInstance(JsonGenerator jsonGen, Instance instance, SimpleLog log)
 			throws IOException {
@@ -477,9 +478,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 							writeValue(jsonGen, realValues.iterator().next(), log);
 						}
 					}
-
 				}
-
 			}
 		}
 	}
@@ -634,8 +633,11 @@ public class InstanceToJson implements InstanceJsonConstants {
 			}
 		}
 
-		// TODO respect winding order: SPEC says "exterior rings are
-		// counterclockwise, and holes are clockwise"
+		// correct winding order as per right-hand rule, i.e.,
+		// exterior rings are counterclockwise, and holes are
+		// clockwise.
+		geom = WindingOrder.unifyWindingOrder(geomProp.getGeometry(), true,
+				geomProp.getCRSDefinition().getCRS());
 
 		// FIXME what to do in case of an invalid geometry?
 
@@ -687,5 +689,4 @@ public class InstanceToJson implements InstanceJsonConstants {
 		writer.close();
 		return writer.toString();
 	}
-
 }
