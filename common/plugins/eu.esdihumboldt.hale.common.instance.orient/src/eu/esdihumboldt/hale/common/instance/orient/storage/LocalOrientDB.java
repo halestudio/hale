@@ -213,15 +213,21 @@ public class LocalOrientDB {
 	public void clear() {
 		dbLock.writeLock().lock();
 		try {
+			System.out.println("pass try");
 			@SuppressWarnings("resource")
 			ODatabaseDocumentTx db = new ODatabaseDocumentTx(dbURI).open("admin", "admin");
+			System.out.println("pass new db");
 			// delete the database if it already exists
 			db.drop();
+			System.out.println("pass drop");
 			// create the database
 			db.create();
+			System.out.println("pass create");
 			db.close();
+			System.out.println("pass close");
 		} finally {
 			dbLock.writeLock().unlock();
+			System.out.println("pass unlock");
 		}
 	}
 
