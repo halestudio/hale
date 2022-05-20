@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -43,6 +42,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
@@ -99,55 +99,60 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 
 		// get all instances of the selected Type
 		InstanceCollection instances = getInstanceCollection(selectedTypeName);
-		Iterator<Instance> instanceIterator = instances.iterator();
-		Instance instance = null;
-		try {
-			instance = instanceIterator.next();
-		} catch (NoSuchElementException e) {
-			reporter.error(new IOMessageImpl("There are no instances for the selected type.", e));
+		// use ResourceIterator<Instance> in a try block because is closable -
+		// avoid infinite
+		// cleaning project after exporting data
+		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
+			Instance instance = null;
+			try {
+				instance = instanceIterator.next();
+			} catch (NoSuchElementException e) {
+				reporter.error(
+						new IOMessageImpl("There are no instances for the selected type.", e));
+				return reporter;
+			}
+
+			List<Instance> remainingInstances = new ArrayList<Instance>();
+
+			headerRowStrings = new ArrayList<String>();
+
+			boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
+					true);
+
+			// all instances with equal type definitions are stored in an extra
+			// sheet
+			TypeDefinition definition = instance.getDefinition();
+
+			Sheet sheet = wb.createSheet(definition.getDisplayName());
+			Row headerRow = sheet.createRow(0);
+			int rowNum = 1;
+			Row row = sheet.createRow(rowNum++);
+			writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
+					solveNestedProperties));
+
+			while (instanceIterator.hasNext()) {
+				Instance nextInst = instanceIterator.next();
+				if (nextInst.getDefinition().equals(definition)) {
+					row = sheet.createRow(rowNum++);
+					writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
+							solveNestedProperties));
+				}
+				else
+					remainingInstances.add(nextInst);
+			}
+			writeHeaderRow(headerRow, headerRowStrings);
+			setCellStyle(sheet, headerRowStrings.size());
+			resizeSheet(sheet);
+
+			// write file
+			FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());
+			wb.write(out);
+			out.close();
+
+			reporter.setSuccess(true);
 			return reporter;
 		}
-
-		List<Instance> remainingInstances = new ArrayList<Instance>();
-
-		headerRowStrings = new ArrayList<String>();
-
-		boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-				true);
-
-		// all instances with equal type definitions are stored in an extra
-		// sheet
-		TypeDefinition definition = instance.getDefinition();
-
-		Sheet sheet = wb.createSheet(definition.getDisplayName());
-		Row headerRow = sheet.createRow(0);
-		int rowNum = 1;
-		Row row = sheet.createRow(rowNum++);
-		writeRow(row,
-				super.getPropertyMap(instance, headerRowStrings, useSchema, solveNestedProperties));
-
-		while (instanceIterator.hasNext()) {
-			Instance nextInst = instanceIterator.next();
-			if (nextInst.getDefinition().equals(definition)) {
-				row = sheet.createRow(rowNum++);
-				writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
-						solveNestedProperties));
-			}
-			else
-				remainingInstances.add(nextInst);
-		}
-		writeHeaderRow(headerRow, headerRowStrings);
-		setCellStyle(sheet, headerRowStrings.size());
-		resizeSheet(sheet);
-
-		// write file
-		FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());
-		wb.write(out);
-		out.close();
-
-		reporter.setSuccess(true);
-		return reporter;
-	}
+	} // close try-iterator
 
 	@Override
 	public boolean isPassthrough() {

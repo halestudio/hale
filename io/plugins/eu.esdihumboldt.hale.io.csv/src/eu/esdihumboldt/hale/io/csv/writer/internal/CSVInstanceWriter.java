@@ -97,7 +97,9 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 		// get all instances of the selected Type
 		InstanceCollection instances = getInstanceCollection(selectedTypeName);
-		// Iterator<Instance> instanceIterator = instances.iterator();
+		// use ResourceIterator<Instance> in a try block because is closable -
+		// avoid infinite
+		// cleaning project after exporting data
 		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
 			Instance instance = null;
 			try {
@@ -119,11 +121,6 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			File tempDir = Files.createTempDir();
 			File tempFile = new File(tempDir, "tempInstances.csv");
 
-			// write instances to csv file (without header)
-			// FileOutputStream fileOut = new FileOutputStream(tempFile);
-			// OutputStreamWriter streamWriter = new
-			// OutputStreamWriter(fileOut);
-
 			// try to be sure resources are all closed after try-block
 			try (CSVWriter writer = new CSVWriter(
 					new OutputStreamWriter(new FileOutputStream(tempFile)), sep, quote, esc);) {
@@ -137,22 +134,6 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 					}
 				}
 			}
-
-			/*
-			 * CSVWriter writer = new CSVWriter(streamWriter, sep, quote, esc);
-			 * writeLine(solveNestedProperties, headerRow, instance, writer);
-			 * 
-			 * while (instanceIterator.hasNext()) { Instance nextInst =
-			 * instanceIterator.next(); if
-			 * (nextInst.getDefinition().equals(definition)) {
-			 * writeLine(solveNestedProperties, headerRow, nextInst, writer); }
-			 * }
-			 */
-
-			// fileOut.close();
-			// streamWriter.close();
-
-			// writer.close();
 
 			// header is only finished if all properties have been processed
 			// insert header to temp file and write it to output
@@ -217,9 +198,6 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			while ((thisLine = in.readLine()) != null) {
 				out.println(thisLine);
 			}
-			// out.flush();
-			// out.close();
-			// in.close();
 
 			source.delete();
 		}
