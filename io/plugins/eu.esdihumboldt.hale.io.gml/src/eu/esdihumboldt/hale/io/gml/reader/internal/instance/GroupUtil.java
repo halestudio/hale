@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality;
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.IgnoreOrderFlag;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
 
 /**
@@ -511,8 +512,10 @@ public class GroupUtil {
 			// type
 			TypeDefinition typeDef = (TypeDefinition) def;
 
-			// check order
-			if (!allowAddCheckOrder(group, propertyName, typeDef)) {
+			// check order unless IgnoreOrderFlag is set (e.g. in case of an
+			// <xs:all> group)
+			if (!typeDef.getConstraint(IgnoreOrderFlag.class).isEnabled()
+					&& !allowAddCheckOrder(group, propertyName, typeDef)) {
 				return false;
 			}
 

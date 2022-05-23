@@ -33,6 +33,7 @@ import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAnnotated;
 import org.apache.ws.commons.schema.XmlSchemaAny;
 import org.apache.ws.commons.schema.XmlSchemaAppInfo;
@@ -94,6 +95,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Enumeration;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.common.schema.model.constraint.type.IgnoreOrderFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappableFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
 import eu.esdihumboldt.hale.common.schema.model.impl.AbstractDefinition;
@@ -993,6 +995,59 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				}
 			}
 			// </sequence>
+		}
+		else if (particle instanceof XmlSchemaAll) {
+			// <all>
+			XmlSchemaAll all = (XmlSchemaAll) particle;
+
+			// Declaring group must be the type, <all> groups can't be
+			// children of other groups.
+			if (!(declaringGroup instanceof XmlTypeDefinition)) {
+				reporter.error(
+						"<xs:all> groups that are not immediate children of a type definition are not allowed.");
+				return;
+			}
+
+			XmlTypeDefinition type = (XmlTypeDefinition) declaringGroup;
+			type.setConstraint(IgnoreOrderFlag.ENABLED);
+
+			// create group only if necessary (sequences that appear exactly
+			// once will result in no group if not forced)
+			if (forceGroup || all.getMinOccurs() != 1 || all.getMaxOccurs() != 1) {
+				// create a sequence group
+				QName sequenceName = createGroupName(declaringGroup, "all");
+				DefaultGroupPropertyDefinition sequenceGroup = new DefaultGroupPropertyDefinition(
+						sequenceName, declaringGroup, false);
+				// set cardinality
+				long max = (all.getMaxOccurs() == Long.MAX_VALUE) ? (Cardinality.UNBOUNDED)
+						: (all.getMaxOccurs());
+				sequenceGroup.setConstraint(Cardinality.get(all.getMinOccurs(), max));
+				// set choice constraint (no choice)
+				sequenceGroup.setConstraint(ChoiceFlag.DISABLED);
+				// set metadata
+				setMetadata(sequenceGroup, all, schemaLocation);
+
+				// use group as parent
+				declaringGroup = sequenceGroup;
+			}
+
+			for (int j = 0; j < all.getItems().getCount(); j++) {
+				XmlSchemaObject object = all.getItems().getItem(j);
+				if (object instanceof XmlSchemaElement) {
+					// <element>
+					createPropertyFromElement((XmlSchemaElement) object, declaringGroup,
+							schemaLocation, schemaNamespace);
+					// </element>
+				}
+				else if (object instanceof XmlSchemaParticle) {
+					// contained particles, e.g. a choice
+					// content doesn't need to be grouped, it can be decided in
+					// the method
+					createPropertiesFromParticle(declaringGroup, (XmlSchemaParticle) object,
+							schemaLocation, schemaNamespace, false);
+				}
+			}
+			// </all>
 		}
 		else if (particle instanceof XmlSchemaChoice) {
 			// <choice>
