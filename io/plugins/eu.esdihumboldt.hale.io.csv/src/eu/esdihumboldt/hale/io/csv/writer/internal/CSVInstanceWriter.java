@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -44,6 +43,7 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVUtil;
@@ -97,44 +97,51 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 		// get all instances of the selected Type
 		InstanceCollection instances = getInstanceCollection(selectedTypeName);
-		Iterator<Instance> instanceIterator = instances.iterator();
-		Instance instance = null;
-		try {
-			instance = instanceIterator.next();
-		} catch (NoSuchElementException e) {
-			reporter.error(new IOMessageImpl("There are no instances for the selected type.", e));
-			return reporter;
-		}
-
-		// get definition of current instance (only this properties with this
-		// definition type will be written to csv file)
-		TypeDefinition definition = instance.getDefinition();
-
-		// first csv file doesn't have a header row, so it' necessary to write
-		// it to a temp directory
-		File tempDir = Files.createTempDir();
-		File tempFile = new File(tempDir, "tempInstances.csv");
-
-		// write instances to csv file (without header)
-		CSVWriter writer = new CSVWriter(new OutputStreamWriter(new FileOutputStream(tempFile)),
-				sep, quote, esc);
-		writeLine(solveNestedProperties, headerRow, instance, writer);
-
-		while (instanceIterator.hasNext()) {
-			Instance nextInst = instanceIterator.next();
-			if (nextInst.getDefinition().equals(definition)) {
-
-				writeLine(solveNestedProperties, headerRow, nextInst, writer);
+		// use ResourceIterator<Instance> in a try block because is closable -
+		// avoid infinite
+		// cleaning project after exporting data
+		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
+			Instance instance = null;
+			try {
+				instance = instanceIterator.next();
+			} catch (NoSuchElementException e) {
+				reporter.error(
+						new IOMessageImpl("There are no instances for the selected type.", e));
+				return reporter;
 			}
+
+			// get definition of current instance (only this properties with
+			// this
+			// definition type will be written to csv file)
+			TypeDefinition definition = instance.getDefinition();
+
+			// first csv file doesn't have a header row, so it' necessary to
+			// write
+			// it to a temp directory
+			File tempDir = Files.createTempDir();
+			File tempFile = new File(tempDir, "tempInstances.csv");
+
+			// write instances to csv file (without header)
+			// try to be sure resources are all closed after try-block
+			try (CSVWriter writer = new CSVWriter(
+					new OutputStreamWriter(new FileOutputStream(tempFile)), sep, quote, esc);) {
+				writeLine(solveNestedProperties, headerRow, instance, writer);
+
+				while (instanceIterator.hasNext()) {
+					Instance nextInst = instanceIterator.next();
+					if (nextInst.getDefinition().equals(definition)) {
+
+						writeLine(solveNestedProperties, headerRow, nextInst, writer);
+					}
+				}
+			}
+
+			// header is only finished if all properties have been processed
+			// insert header to temp file and write it to output
+			insertHeader(tempFile, getTarget().getOutput(), headerRow);
+
+			FileUtils.deleteDirectory(tempDir);
 		}
-		writer.close();
-
-		// header is only finished if all properties have been processed
-		// insert header to temp file and write it to output
-		insertHeader(tempFile, getTarget().getOutput(), headerRow);
-
-		FileUtils.deleteDirectory(tempDir);
-
 		reporter.setSuccess(true);
 		return reporter;
 	}
@@ -173,30 +180,28 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 		String line = "";
 
-		FileInputStream fis = new FileInputStream(source);
-		BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-		PrintWriter out = new PrintWriter(dest);
+		try (FileInputStream fis = new FileInputStream(source);
+				BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+				PrintWriter out = new PrintWriter(dest);) {
 
-		for (String entry : header) {
-			line += entry;
-			line += sep;
+			for (String entry : header) {
+				line += entry;
+				line += sep;
+			}
+
+			// remove last separator
+			line = line.substring(0, line.lastIndexOf(sep));
+
+			out.println(line);
+
+			String thisLine = "";
+
+			while ((thisLine = in.readLine()) != null) {
+				out.println(thisLine);
+			}
+
+			source.delete();
 		}
-
-		// remove last separator
-		line = line.substring(0, line.lastIndexOf(sep));
-
-		out.println(line);
-
-		String thisLine = "";
-
-		while ((thisLine = in.readLine()) != null) {
-			out.println(thisLine);
-		}
-		out.flush();
-		out.close();
-		in.close();
-
-		source.delete();
 	}
 
 	private String getValueOfProperty(Object property) {
