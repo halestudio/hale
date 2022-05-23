@@ -121,6 +121,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			File tempDir = Files.createTempDir();
 			File tempFile = new File(tempDir, "tempInstances.csv");
 
+			// write instances to csv file (without header)
 			// try to be sure resources are all closed after try-block
 			try (CSVWriter writer = new CSVWriter(
 					new OutputStreamWriter(new FileOutputStream(tempFile)), sep, quote, esc);) {

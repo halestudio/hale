@@ -144,10 +144,11 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			setCellStyle(sheet, headerRowStrings.size());
 			resizeSheet(sheet);
 
-			// write file
-			FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());
-			wb.write(out);
-			out.close();
+			// write file and be sure to close resource with try-block
+			try (FileOutputStream out = new FileOutputStream(
+					getTarget().getLocation().getPath());) {
+				wb.write(out);
+			}
 
 			reporter.setSuccess(true);
 			return reporter;
