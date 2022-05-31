@@ -1612,7 +1612,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							.isInspireType(((Instance) parent).getDefinition());
 
 				}
-
+				// checking if the parent of the codeSpace is a gml:identifier -
+				// gml:identifier is in turn a child of the featureType
 				boolean parentIsGmlIdentifier = GmlWriterUtil.isGmlIdentifier(child.getName(),
 						gmlNs);
 
@@ -1698,8 +1699,6 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							&& parentIsGmlIdentifier) {
 
 						// write attribute
-						// special case handling: automatically add
-						// codespace to gml:identifier
 						writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
 					} // end if special case add codespace
 				}
