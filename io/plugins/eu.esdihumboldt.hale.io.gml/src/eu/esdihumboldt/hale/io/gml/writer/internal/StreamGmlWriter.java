@@ -1653,25 +1653,6 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						}
 					} // end if special case for nilReason
 
-					// special case handling: automatically add codespace to
-					// gml:identifier
-					QName gmlIdentifier = new QName("codeSpace");
-					boolean allowWrite = false;
-
-					if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true) && isInspireType
-							&& parentIsGmlIdentifier && values == null
-							&& child.getName().equals(gmlIdentifier)) {
-
-						allowWrite = true;
-
-						// write attribute
-						if (allowWrite) {
-							// special case handling: automatically add
-							// codespace to gml:identifier
-							writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
-						}
-					} // end if special case add codespace
-
 				}
 				else if (!attributes && !isAttribute) {
 					int numValues = 0;
@@ -1707,6 +1688,20 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							}
 						}
 					}
+
+				}
+				else {
+					// special case handling: automatically add codespace to
+					// gml:identifier
+
+					if (getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true) && isInspireType
+							&& parentIsGmlIdentifier) {
+
+						// write attribute
+						// special case handling: automatically add
+						// codespace to gml:identifier
+						writeAttribute("http://inspire.ec.europa.eu/ids", propDef);
+					} // end if special case add codespace
 				}
 			}
 			else if (child.asGroup() != null) {
