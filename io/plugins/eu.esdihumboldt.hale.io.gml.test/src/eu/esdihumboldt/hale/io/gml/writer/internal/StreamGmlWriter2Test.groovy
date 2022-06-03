@@ -15,14 +15,13 @@
 
 package eu.esdihumboldt.hale.io.gml.writer.internal
 
-import static org.junit.Assert.assertEquals
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
+
+import java.util.function.Consumer
 
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
-
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.LineString
 import org.locationtech.jts.geom.MultiLineString
@@ -66,6 +65,102 @@ class StreamGmlWriter2Test {
 	@BeforeClass
 	public static void initAll() {
 		TestUtil.startConversionService();
+	}
+
+	/**
+	 * Test if a codespace attribute is automatically added to a GML identifier within an INSPIRE type.
+	 * @throws Exception
+	 */
+	@Test
+	public void testInspireCodespaceAutoAdd() throws Exception {
+		// load schema
+		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
+
+		// create instance
+		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
+			identifier('myid')
+		}
+
+		// write file and load instance again
+		Instance loaded = writeValidateAndLoad(instance, schema, false, false, { writer ->
+			// enable adding code space automagically (Note: this is also the default!)
+			writer.setParameter(StreamGmlWriter.PARAM_ADD_CODESPACE, Value.TRUE)
+		})
+
+		def codeSpace = loaded.p.identifier.codeSpace.value()
+		assertEquals(StreamGmlWriter.INSPIRE_IDENTIFIER_CODESPACE, codeSpace?.toString())
+	}
+
+	/**
+	 * Test that the behavior to add a codespace attribute automatically to a GML identifier within an INSPIRE type is enabled by default.
+	 * @throws Exception
+	 */
+	@Test
+	public void testInspireCodespaceAutoAddDefault() throws Exception {
+		// load schema
+		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
+
+		// create instance
+		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
+			identifier('myid')
+		}
+
+		// write file and load instance again
+		Instance loaded = writeValidateAndLoad(instance, schema, false, false, null)
+
+		def codeSpace = loaded.p.identifier.codeSpace.value()
+		assertEquals(StreamGmlWriter.INSPIRE_IDENTIFIER_CODESPACE, codeSpace?.toString())
+	}
+
+	/**
+	 * Test that a codespace attribute of a GML identifier within an INSPIRE type is not overridden.
+	 * @throws Exception
+	 */
+	@Test
+	public void testInspireCodespaceAutoAddNoOverride() throws Exception {
+		// load schema
+		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
+
+		// create instance
+		def mycs = "iknowbetter"
+		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
+			identifier('myid') {
+				codeSpace(mycs)
+			}
+		}
+
+		// write file and load instance again
+		Instance loaded = writeValidateAndLoad(instance, schema, false, false, { writer ->
+			// enable adding code space automagically (Note: this is also the default!)
+			writer.setParameter(StreamGmlWriter.PARAM_ADD_CODESPACE, Value.TRUE)
+		})
+
+		def codeSpace = loaded.p.identifier.codeSpace.value()
+		assertEquals(mycs, codeSpace?.toString())
+	}
+
+	/**
+	 * Test that no codespace attribute is added automatically to a GML identifier with an INSPIRE type when this is not enabled.
+	 * @throws Exception
+	 */
+	@Test
+	public void testInspireCodespaceNoAutoAdd() throws Exception {
+		// load schema
+		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
+
+		// create instance
+		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
+			identifier('myid')
+		}
+
+		// write file and load instance again
+		Instance loaded = writeValidateAndLoad(instance, schema, false, false, { writer ->
+			// disable adding code space automagically
+			writer.setParameter(StreamGmlWriter.PARAM_ADD_CODESPACE, Value.FALSE)
+		})
+
+		def codeSpace = loaded.p.identifier.codeSpace.value()
+		assertNull(codeSpace)
 	}
 
 	/**
@@ -208,11 +303,15 @@ class StreamGmlWriter2Test {
 	}
 
 	@CompileStatic
-	private Instance writeValidateAndLoad(Instance instance, Schema schema, boolean expectWriteFail = false) {
+	private Instance writeValidateAndLoad(Instance instance, Schema schema, boolean expectWriteFail = false,
+			boolean mustValidate = true, Consumer<InstanceWriter> adaptWriter = null) {
 		// write to file
 		InstanceWriter writer = new GmlInstanceWriter()
 		writer.setParameter(GmlInstanceWriter.PARAM_PRETTY_PRINT, Value.of((Boolean)true))
 		writer.setParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER, Value.simple('noChanges'))
+		if (adaptWriter != null) {
+			adaptWriter.accept(writer);
+		}
 		writer.setInstances(new DefaultInstanceCollection([instance]))
 		DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace()
 		schemaSpace.addSchema(schema)
@@ -234,7 +333,9 @@ class StreamGmlWriter2Test {
 		System.out.println(outFile.getAbsolutePath());
 
 		IOReport valReport = StreamGmlWriterTest.validate(outFile.toURI(), validationSchemas)
-		assertTrue("Expected GML output to be valid", valReport.isSuccess())
+		if (mustValidate) {
+			assertTrue("Expected GML output to be valid", valReport.isSuccess())
+		}
 
 		// load file
 		InstanceCollection loaded = StreamGmlWriterTest.loadGML(outFile.toURI(), schema)
