@@ -75,7 +75,6 @@ class StreamGmlWriter2Test {
 	public void testInspireCodespaceAutoAdd() throws Exception {
 		// load schema
 		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
-
 		// create instance
 		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
 			identifier('myid')
@@ -92,6 +91,35 @@ class StreamGmlWriter2Test {
 	}
 
 	/**
+	 * Test if a codespace attribute is NOT added to a GML identifier when this is NOT within an INSPIRE type.
+	 * @throws Exception
+	 */
+	@Test
+	public void testNotInspireCodespaceNotAdd() throws Exception {
+		// load non-INSPIRE schema
+		Schema schema = loadSchema(URI.create("http://schemas.opengis.net/gml/3.2.1/topology.xsd"))
+
+		// create instance
+		Instance instance = new InstanceBuilder(types: schema).AbstractTopologyType {
+			identifier('myid')
+		}
+		//Instance instance = new InstanceBuilder(types: schema).instance { name null }
+		//.GovernmentalServiceType {
+		//	identifier('myid')
+		//}
+
+		// write file and load instance again
+		Instance loaded = writeValidateAndLoad(instance, schema, false, false, { writer ->
+			// enable adding code space automagically (Note: this is also the default!)
+			writer.setParameter(StreamGmlWriter.PARAM_ADD_CODESPACE, Value.TRUE)
+		})
+
+
+		def codeSpace = loaded.p.identifier.codeSpace.value()
+		assertNull(codeSpace)
+	}
+
+	/**
 	 * Test that the behavior to add a codespace attribute automatically to a GML identifier within an INSPIRE type is enabled by default.
 	 * @throws Exception
 	 */
@@ -99,6 +127,7 @@ class StreamGmlWriter2Test {
 	public void testInspireCodespaceAutoAddDefault() throws Exception {
 		// load schema
 		Schema schema = loadSchema(URI.create("https://inspire.ec.europa.eu/schemas/us-govserv/4.0/GovernmentalServices.xsd"))
+		System.out.print("Schema " + schema);
 
 		// create instance
 		Instance instance = new InstanceBuilder(types: schema).GovernmentalServiceType {
@@ -317,6 +346,7 @@ class StreamGmlWriter2Test {
 		schemaSpace.addSchema(schema)
 		writer.setTargetSchema(schemaSpace)
 		File outFile = File.createTempFile('gml-writer', '.gml')
+		println outFile.absolutePath
 		writer.setTarget(new FileIOSupplier(outFile))
 
 		IOReport report = writer.execute(null); // new LogProgressIndicator());
