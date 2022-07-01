@@ -97,16 +97,12 @@ class StreamGmlWriter2Test {
 	@Test
 	public void testNotInspireCodespaceNotAdd() throws Exception {
 		// load non-INSPIRE schema
-		Schema schema = loadSchema(URI.create("http://schemas.opengis.net/gml/3.2.1/topology.xsd"))
+		Schema schema = loadSchema(URI.create("http://schemas.opengis.net/om/2.0/observation.xsd"))
 
 		// create instance
-		Instance instance = new InstanceBuilder(types: schema).AbstractTopologyType {
+		Instance instance = new InstanceBuilder(types: schema).OM_ObservationType {
 			identifier('myid')
 		}
-		//Instance instance = new InstanceBuilder(types: schema).instance { name null }
-		//.GovernmentalServiceType {
-		//	identifier('myid')
-		//}
 
 		// write file and load instance again
 		Instance loaded = writeValidateAndLoad(instance, schema, false, false, { writer ->
