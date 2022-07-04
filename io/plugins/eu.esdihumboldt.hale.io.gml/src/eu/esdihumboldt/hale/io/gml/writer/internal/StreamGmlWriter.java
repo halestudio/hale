@@ -143,6 +143,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		implements XmlWriterBase, GMLConstants {
 
 	/**
+	 * Codespace to use for GML identifiers in INSPIRE.
+	 */
+	public static final String INSPIRE_IDENTIFIER_CODESPACE = "http://inspire.ec.europa.eu/ids";
+
+	/**
 	 * Schema instance namespace (for specifying schema locations)
 	 */
 	public static final String SCHEMA_INSTANCE_NS = XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI; // $NON-NLS-1$
@@ -172,6 +177,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * be omitted if an element is not nil.
 	 */
 	public static final String PARAM_OMIT_NIL_REASON = "xml.notNil.omitNilReason";
+
+	/**
+	 * The parameter name of the flag specifying if codespace should be
+	 * automatically added to the gml:identifier during GML export.
+	 */
+	public static final String PARAM_ADD_CODESPACE = "xml.add.codespace";
 
 	/**
 	 * The name of the parameter specifying how the output of geometry
@@ -248,6 +259,11 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * Value for threshold parameter to deactivate partitioning.
 	 */
 	public static final int NO_PARTITIONING = 0;
+
+	/**
+	 * Name of the codeSpace attribute in GML identifiers.
+	 */
+	private static final QName NAME_IDENTIFIER_CODESPACE = new QName("codeSpace");
 
 	/**
 	 * The XML stream writer
@@ -495,10 +511,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			};
 
 			final Map<String, URI> keyToTargetMapping = new HashMap<>();
-			keyToRefsMapping.keySet().stream()
-					.forEach(k -> keyToTargetMapping.put(k, new File(
-							ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
-									.toURI()));
+			keyToRefsMapping.keySet().stream().forEach(k -> keyToTargetMapping.put(k,
+					new File(ExtentPartsHandler.getTargetFilename(k, getTarget().getLocation()))
+							.toURI()));
 
 			final ExtentPartsHandler handler = new ExtentPartsHandler(keyToTargetMapping,
 					idToKeyMapping);
@@ -1537,12 +1552,10 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 */
 	protected void writeMember(Instance instance, TypeDefinition type, IOReporter report)
 			throws XMLStreamException {
-//		Name elementName = GmlWriterUtil.getElementName(type);
-//		writer.writeStartElement(elementName.getNamespaceURI(), elementName.getLocalPart());
 
-		writeProperties(instance, type, true, false, report);
+		boolean isInspireType = GmlWriterUtil.isInspireType(type);
 
-//		writer.writeEndElement(); // type element name
+		writeProperties(instance, type, true, false, report, isInspireType, false);
 	}
 
 	/**
@@ -1553,10 +1566,15 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param allowElements if element properties may be written
 	 * @param parentIsNil if the parent property is nil
 	 * @param report the reporter
+	 * @param withinInspireType if the properties are contained within an
+	 *            INSPIRE feature type
+	 * @param parentIsGmlIdentifier if the parent of the properties is a GML
+	 *            identifier element
 	 * @throws XMLStreamException if writing the properties fails
 	 */
 	private void writeProperties(Group group, DefinitionGroup definition, boolean allowElements,
-			boolean parentIsNil, IOReporter report) throws XMLStreamException {
+			boolean parentIsNil, IOReporter report, boolean withinInspireType,
+			boolean parentIsGmlIdentifier) throws XMLStreamException {
 		// eventually generate mandatory ID that is not set
 		GmlWriterUtil.writeRequiredID(writer, definition, group, true);
 
@@ -1565,13 +1583,13 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 		// structure! (e.g. including groups)
 
 		// write the attributes, as they must be handled first
-		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil,
-				report);
+		writeProperties(group, DefinitionUtil.getAllChildren(definition), true, parentIsNil, report,
+				withinInspireType, parentIsGmlIdentifier);
 
 		if (allowElements) {
 			// write the elements
 			writeProperties(group, DefinitionUtil.getAllChildren(definition), false, parentIsNil,
-					report);
+					report, withinInspireType, parentIsGmlIdentifier);
 		}
 	}
 
@@ -1585,10 +1603,15 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 *            written
 	 * @param parentIsNil if the parent property is nil
 	 * @param report the reporter
+	 * @param withinInspireType if the properties are contained within an
+	 *            INSPIRE feature type
+	 * @param parentIsGmlIdentifier if the parent of the properties is a GML
+	 *            identifier element
 	 * @throws XMLStreamException if writing the attributes/elements fails
 	 */
 	private void writeProperties(Group parent, Collection<? extends ChildDefinition<?>> children,
-			boolean attributes, boolean parentIsNil, IOReporter report) throws XMLStreamException {
+			boolean attributes, boolean parentIsNil, IOReporter report, boolean withinInspireType,
+			boolean parentIsGmlIdentifier) throws XMLStreamException {
 		if (parent == null) {
 			return;
 		}
@@ -1602,6 +1625,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			if (child.asProperty() != null) {
 				PropertyDefinition propDef = child.asProperty();
+
 				boolean isAttribute = propDef.getConstraint(XmlAttributeFlag.class).isEnabled();
 
 				if (attributes && isAttribute) {
@@ -1637,14 +1661,28 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (values.length > 1) {
 							// TODO warning?!
 						}
+					} // end if special case for nilReason
+					else {
+						// no value for attribute provided
+
+						// special case handling: automatically add codespace to
+						// gml:identifier within INSPIRE feature type
+						if (withinInspireType && parentIsGmlIdentifier
+								&& child.getName().equals(NAME_IDENTIFIER_CODESPACE)
+								&& getParameter(PARAM_ADD_CODESPACE).as(Boolean.class, true)) {
+
+							// write attribute
+							writeAttribute(INSPIRE_IDENTIFIER_CODESPACE, propDef);
+						} // end if special case add codespace
 					}
+
 				}
 				else if (!attributes && !isAttribute) {
 					int numValues = 0;
 					if (values != null) {
 						// write element
 						for (Object value : values) {
-							writeElement(value, propDef, report);
+							writeElement(value, propDef, report, withinInspireType);
 						}
 						numValues = values.length;
 					}
@@ -1658,7 +1696,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 								// nillable element
 								for (int i = numValues; i < cardinality.getMinOccurs(); i++) {
 									// write nil element
-									writeElement(null, propDef, report);
+									writeElement(null, propDef, report, withinInspireType);
 								}
 							}
 							else {
@@ -1673,6 +1711,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 							}
 						}
 					}
+
 				}
 			}
 			else if (child.asGroup() != null) {
@@ -1682,16 +1721,17 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						if (value instanceof Group) {
 							writeProperties((Group) value,
 									DefinitionUtil.getAllChildren(child.asGroup()), attributes,
-									parentIsNil, report);
+									parentIsNil, report, withinInspireType, false);
 						}
 						else {
 							// TODO warning/error?
 						}
 					}
-				}
-			}
-		}
-	}
+				} // if(values!=null)
+			} // if (child.asProperty!=0)
+		} // end for loop children
+
+	} // end method
 
 	/**
 	 * Write a property element.
@@ -1699,10 +1739,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param value the element value
 	 * @param propDef the property definition
 	 * @param report the reporter
+	 * @param withinInspireType if the element is contained within an INSPIRE
+	 *            feature type
 	 * @throws XMLStreamException if writing the element fails
 	 */
-	private void writeElement(Object value, PropertyDefinition propDef, IOReporter report)
-			throws XMLStreamException {
+	private void writeElement(Object value, PropertyDefinition propDef, IOReporter report,
+			boolean withinInspireType) throws XMLStreamException {
 		Group group = null;
 		if (value instanceof Group) {
 			group = (Group) value;
@@ -1752,6 +1794,9 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			boolean hasValue = propDef.getPropertyType().getConstraint(HasValueFlag.class)
 					.isEnabled();
 
+			// checking if this element is a gml:identifier
+			boolean isGmlIdentifier = GmlWriterUtil.isGmlIdentifier(propDef.getName(), gmlNs);
+
 			Pair<Geometry, CRSDefinition> pair = extractGeometry(value, true, report);
 			// handle about annotated geometries
 			if (!hasValue && pair != null) {
@@ -1767,7 +1812,8 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 				boolean isNil = !writeElements && (!hasValue || value == null);
 
 				// write all children
-				writeProperties(group, group.getDefinition(), writeElements, isNil, report);
+				writeProperties(group, group.getDefinition(), writeElements, isNil, report,
+						withinInspireType, isGmlIdentifier);
 
 				// write value
 				if (hasValue) {
