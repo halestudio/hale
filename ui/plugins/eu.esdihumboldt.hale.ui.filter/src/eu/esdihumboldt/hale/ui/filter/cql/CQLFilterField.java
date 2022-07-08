@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Display;
 import org.geotools.filter.text.cql2.CQLException;
 
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
+import eu.esdihumboldt.hale.common.align.model.ChildContext;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.filter.FilterGeoECqlImpl;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
@@ -95,10 +96,21 @@ public class CQLFilterField extends TypeFilterField {
 				&& dialog.getObject().getType().getName().toString().length() >= 1) {
 			StringBuilder var = new StringBuilder();
 			for (int i = 0; i < dialog.getObject().getPropertyPath().size(); i++) {
-				if (i != 0)
-					var.append(".");
-				var.append(dialog.getObject().getPropertyPath().get(i).getChild().getName()
-						.getLocalPart().toString());
+				ChildContext child = dialog.getObject().getPropertyPath().get(i);
+				if (child.getChild().asGroup() != null) {
+					var.append(""); // filtering-out the
+									// GroupPropertyDefinitions
+				}
+				else {
+					if (i == 0) {
+						var.append(dialog.getObject().getPropertyPath().get(i).getChild().getName()
+								.getLocalPart().toString());
+					}
+					else {
+						var.append("." + dialog.getObject().getPropertyPath().get(i).getChild()
+								.getName().getLocalPart().toString());
+					}
+				}
 			}
 			return var.toString();
 		}
