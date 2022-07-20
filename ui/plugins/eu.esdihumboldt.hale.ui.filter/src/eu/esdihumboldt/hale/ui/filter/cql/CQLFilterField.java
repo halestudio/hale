@@ -97,21 +97,17 @@ public class CQLFilterField extends TypeFilterField {
 			StringBuilder var = new StringBuilder();
 			for (int i = 0; i < dialog.getObject().getPropertyPath().size(); i++) {
 				ChildContext child = dialog.getObject().getPropertyPath().get(i);
-				if (child.getChild().asGroup() != null) {
-					var.append(""); // filtering-out the
-									// GroupPropertyDefinitions
+
+				if (child.getChild().asGroup() == null) {
+					if (i != 0)
+						var.append(".");
+					var.append(dialog.getObject().getPropertyPath().get(i).getChild().getName()
+							.getLocalPart().toString());
+
 				}
-				else {
-					if (i == 0) {
-						var.append(dialog.getObject().getPropertyPath().get(i).getChild().getName()
-								.getLocalPart().toString());
-					}
-					else {
-						var.append("." + dialog.getObject().getPropertyPath().get(i).getChild()
-								.getName().getLocalPart().toString());
-					}
-				}
+
 			}
+
 			return var.toString();
 		}
 		else
