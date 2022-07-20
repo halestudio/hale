@@ -92,6 +92,7 @@ public class CQLFilterField extends TypeFilterField {
 				Display.getCurrent().getActiveShell(), ssid, type, Messages.FeatureFilterField_7,
 				null);
 
+		String stringVar = null;
 		if (dialog.open() == PropertyDefinitionDialog.OK && dialog.getObject() != null
 				&& dialog.getObject().getType().getName().toString().length() >= 1) {
 			StringBuilder var = new StringBuilder();
@@ -99,16 +100,18 @@ public class CQLFilterField extends TypeFilterField {
 				ChildContext child = dialog.getObject().getPropertyPath().get(i);
 
 				if (child.getChild().asGroup() == null) {
-					if (i != 0)
+					if (i != 0 && !stringVar.isEmpty())
 						var.append(".");
 					var.append(dialog.getObject().getPropertyPath().get(i).getChild().getName()
 							.getLocalPart().toString());
 
 				}
 
+				stringVar = var.toString();
+
 			}
 
-			return var.toString();
+			return stringVar;
 		}
 		else
 			return null;
