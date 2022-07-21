@@ -62,6 +62,7 @@ public class GmlWriterSettingsPage
 	private Button enableDecimalFormat;
 	private Text decimalFormat;
 	private Label decimalFormatExample;
+	private Button addCodespace;
 
 	/**
 	 * Default constructor
@@ -98,6 +99,8 @@ public class GmlWriterSettingsPage
 				Value.of(simplify.getSelection()));
 		provider.setParameter(StreamGmlWriter.PARAM_OMIT_NIL_REASON,
 				Value.of(nilReason.getSelection()));
+		provider.setParameter(StreamGmlWriter.PARAM_ADD_CODESPACE,
+				Value.of(addCodespace.getSelection()));
 
 		if (enableCoordinateFormat.getSelection()) {
 			provider.setGeometryWriteFormat(coordinateFormat.getText().trim());
@@ -147,6 +150,16 @@ public class GmlWriterSettingsPage
 		nilReason.setText("Omit nilReason attributes for elements that are not nil");
 		// default
 		nilReason.setSelection(true);
+
+		Group codespace = new Group(page, SWT.NONE);
+		codespace.setLayout(new GridLayout(1, false));
+		codespace.setText("addCodespace");
+		groupData.applyTo(codespace);
+
+		addCodespace = new Button(codespace, SWT.CHECK);
+		addCodespace.setText("Automatically fill-in the codespace attribute");
+		// default
+		addCodespace.setSelection(true);
 
 		Group writeFormat = new Group(page, SWT.NONE);
 		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(writeFormat);

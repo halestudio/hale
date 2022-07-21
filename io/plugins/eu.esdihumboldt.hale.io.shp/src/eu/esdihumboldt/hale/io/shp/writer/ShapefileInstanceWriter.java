@@ -107,7 +107,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 			writeInstances(instances, progress, reporter, location);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
-			reporter.error(new IOMessageImpl(e.getLocalizedMessage(), e));
+			reporter.error(new IOMessageImpl(e.getMessage(), e));
 			reporter.setSuccess(false);
 			reporter.setSummary("Saving instances to Shapefile failed.");
 		} finally {
@@ -188,16 +188,16 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				TypeDefinition type = instance.getDefinition();
 
 				String localPart = type.getName().getLocalPart();
-				if (schemaBuilderMap.get(localPart) == null) {
-					Map<String, SimpleFeatureTypeBuilder> geometryBuilderMap = new HashMap<String, SimpleFeatureTypeBuilder>();
-					writeGeometrySchema(instance, localPart, geometryBuilderMap,
-							missingGeomsForSchemas);
+				Map<String, SimpleFeatureTypeBuilder> geometryBuilderMap = schemaBuilderMap
+						.computeIfAbsent(localPart,
+								k -> new HashMap<String, SimpleFeatureTypeBuilder>());
 
-					// add rest of the properties to the
-					// SimpleFeatureTypeBuilder.
-					writePropertiesSchema(instance, type, geometryBuilderMap);
-					schemaBuilderMap.put(localPart, geometryBuilderMap);
-				}
+				writeGeometrySchema(instance, localPart, geometryBuilderMap,
+						missingGeomsForSchemas);
+				// add rest of the properties to the
+				// SimpleFeatureTypeBuilder.
+				writePropertiesSchema(instance, type, geometryBuilderMap);
+				schemaBuilderMap.put(localPart, geometryBuilderMap);
 				// else nothing to do as the schema definition is already
 				// present.
 			}
@@ -283,35 +283,38 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				Set<String> keySet = geometryBuilderMap.keySet();
 				for (String key : keySet) {
 					String propName = truncatePropertyName(prop.getName().getLocalPart());
-					geometryBuilderMap.get(key).add(propName, binding);
+					if (geometryBuilderMap.get(key).get(propName) == null) {
+						geometryBuilderMap.get(key).add(propName, binding);
+					}
 				}
 			}
 		}
 	}
 
 	/**
-	 * Method to truncate the property names up to 9 characters by splitting
+	 * Method to truncate the property names up to 10 characters by splitting
 	 * them from camelCase, snake_case, or alphanumeric characters. E.g. <br/>
 	 * camelCase: caCa<br/>
 	 * snake_case: snca <br/>
 	 * alpha1234; al12 <br/>
 	 * snake_camelCase: sncaCa <br/>
 	 * snake_camelCase1234: sncaCa12 <br/>
-	 * population: populati
+	 * population: population
 	 * 
 	 * As the Shapefile DB doesn't allow more than 10 characters, the change is
 	 * required to avoid exporting null values to the columns whose name is
-	 * greater than 10 characters. This method intentionally truncates up to 9
+	 * greater than 10 characters. This method intentionally truncates to 8
 	 * characters to leave a room for the unexpected scenario(s) where the
-	 * truncated names might clash, then the values will be append with the
+	 * truncated names might clash, then the values will be appended with the
 	 * integers by the library and the null values will be exported (should be a
 	 * rare scenario).
 	 * 
 	 * @param propName property name to be truncated.
-	 * @return truncated property name with max 9 characters.
+	 * @return unchanged property name if <= 10 chars long or truncated property
+	 *         name with max 9 characters.
 	 */
 	private String truncatePropertyName(String propName) {
-		if (propName != null && propName.length() > 8) {
+		if (propName != null && propName.length() > 10) {
 			String[] split = propName.split(REGEX);
 			if (split.length > 1) {
 				StringBuilder propNameFormatted = new StringBuilder();
@@ -323,7 +326,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				propName = propName.substring(0, stringLen);
 			}
 			else {
-				// as it is greater than 8 but there is nothing to split. So
+				// as it is greater than 10 but there is nothing to split. So
 				// instead of truncating it with 2 characters, truncate it with
 				// 8 characters.
 				propName = propName.substring(0, 8);
@@ -543,18 +546,22 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					writePropertiesInstanceData(schemaFbMap, instance, type, localPart);
 
 					// create list of simple features.
-					Set<String> geometryKeys = schemaFbMap.get(localPart).keySet();
-					for (String key : geometryKeys) {
+					// fix in case geometries have multiple geometry types but
+					// single geometry in data. So, always extract geometries
+					// from instance and update to schema. Otherwise the data
+					// will be updated to all the geometries
+					List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
+					for (GeometryProperty<?> geoProp : geoms) {
+						String key = geoProp.getGeometry().getGeometryType();
 						SimpleFeature feature = schemaFbMap.get(localPart).get(key)
 								.buildFeature(null);
 						schemaFeaturesMap
 								.computeIfAbsent(localPart,
 										k -> new HashMap<String, List<SimpleFeature>>())
-								.computeIfAbsent(key, k1 -> new ArrayList<>()).add(feature);
+								.computeIfAbsent(key, k1 -> new ArrayList<SimpleFeature>())
+								.add(feature);
 					}
 				}
-				// else the schema was deleted as there wasn't any geometry in
-				// it.
 			}
 		}
 		return schemaFeaturesMap;
@@ -574,13 +581,8 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 			String localPart) {
 		List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
 
-		if (geoms.size() > 1) {
-			for (GeometryProperty<?> geoProp : geoms) {
-				addGeometryData(reporter, schemaFbMap, localPart, geoProp);
-			}
-		}
-		else if (!geoms.isEmpty()) {
-			addGeometryData(reporter, schemaFbMap, localPart, geoms.get(0));
+		for (GeometryProperty<?> geoProp : geoms) {
+			addGeometryData(reporter, schemaFbMap, localPart, geoProp);
 		}
 	}
 
@@ -605,9 +607,11 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					&& prop.getName().getLocalPart() != null) {
 				Object value = new InstanceAccessor(instance)
 						.findChildren(prop.getName().getLocalPart()).value();
-				Set<String> geometryKeys = schemaFbMap.get(localPart).keySet();
-				for (String key : geometryKeys) {
-					schemaFbMap.get(localPart).get(key).add(value);
+				List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
+				// add value by traversing geometryType from instance
+				for (GeometryProperty<?> geoProp : geoms) {
+					String geometryType = geoProp.getGeometry().getGeometryType();
+					schemaFbMap.get(localPart).get(geometryType).add(value);
 				}
 			}
 		}

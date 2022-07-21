@@ -41,16 +41,6 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
-         <providerParameter
-               optional="false"
-               valueDescriptor="eu.esdihumboldt.hale.io.json.GeoJSONConfigDescriptor"
-                  description="Holds the information which properties hold the default geometry of an object."
-                  label="Default geometries"
-                  name="geojson.geometry.config">
-               <parameterComplexValue
-                     ref="eu.esdihumboldt.hale.io.json.geojsonconfig">
-               </parameterComplexValue>
-         </providerParameter>
       </provider>
    </extension>
    <extension

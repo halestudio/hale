@@ -481,6 +481,20 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Automatically add codespace to gml:identifier during GML export."
+               label="Add codespace to gml:identifier"
+               name="xml.add.codespace"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default, the codespace is automatically added to the gml:identifier."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
                name="geometry.write.decimalFormat"
@@ -745,6 +759,20 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Automatically add codespace to gml:identifier during GML export."
+               label="Add codespace to gml:identifier"
+               name="xml.add.codespace"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, the codespace is automatically added to the gml:identifier."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Number representation format for geometry coordinates"
                label="Geometry coordinates number format"
                name="geometry.write.decimalFormat"
@@ -926,6 +954,20 @@
             <valueDescriptor
                   default="true"
                   defaultDescription="By default, nilReason attributes are omitted for elements that are not nil."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Automatically add codespace to gml:identifier during GML export."
+               label="Add codespace to gml:identifier"
+               name="xml.add.codespace"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, the codespace is automatically added to the gml:identifier."
                   sample="false">
             </valueDescriptor>
          </providerParameter>
