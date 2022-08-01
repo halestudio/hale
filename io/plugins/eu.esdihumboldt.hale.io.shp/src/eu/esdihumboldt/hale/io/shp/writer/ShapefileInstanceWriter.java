@@ -292,28 +292,29 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	}
 
 	/**
-	 * Method to truncate the property names up to 9 characters by splitting
+	 * Method to truncate the property names up to 10 characters by splitting
 	 * them from camelCase, snake_case, or alphanumeric characters. E.g. <br/>
 	 * camelCase: caCa<br/>
 	 * snake_case: snca <br/>
 	 * alpha1234; al12 <br/>
 	 * snake_camelCase: sncaCa <br/>
 	 * snake_camelCase1234: sncaCa12 <br/>
-	 * population: populati
+	 * population: population
 	 * 
 	 * As the Shapefile DB doesn't allow more than 10 characters, the change is
 	 * required to avoid exporting null values to the columns whose name is
-	 * greater than 10 characters. This method intentionally truncates up to 9
+	 * greater than 10 characters. This method intentionally truncates to 8
 	 * characters to leave a room for the unexpected scenario(s) where the
-	 * truncated names might clash, then the values will be append with the
+	 * truncated names might clash, then the values will be appended with the
 	 * integers by the library and the null values will be exported (should be a
 	 * rare scenario).
 	 * 
 	 * @param propName property name to be truncated.
-	 * @return truncated property name with max 9 characters.
+	 * @return unchanged property name if <= 10 chars long or truncated property
+	 *         name with max 9 characters.
 	 */
 	private String truncatePropertyName(String propName) {
-		if (propName != null && propName.length() > 8) {
+		if (propName != null && propName.length() > 10) {
 			String[] split = propName.split(REGEX);
 			if (split.length > 1) {
 				StringBuilder propNameFormatted = new StringBuilder();
@@ -325,7 +326,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				propName = propName.substring(0, stringLen);
 			}
 			else {
-				// as it is greater than 8 but there is nothing to split. So
+				// as it is greater than 10 but there is nothing to split. So
 				// instead of truncating it with 2 characters, truncate it with
 				// 8 characters.
 				propName = propName.substring(0, 8);

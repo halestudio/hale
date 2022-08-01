@@ -297,10 +297,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.populati.value() == 158254
+							assert inst.p.population.value() == 158254
 							break
 						case 'München':
-							assert inst.p.populati.value() == 1471508
+							assert inst.p.population.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -372,10 +372,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.populati.value() == 158254
+							assert inst.p.population.value() == 158254
 							break
 						case 'München':
-							assert inst.p.populati.value() == 1471508
+							assert inst.p.population.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -444,10 +444,10 @@ class ShapefileInstanceWriterTest {
 						assert name
 						switch (name) {
 							case 'Darmstadt':
-								assert inst.p.populati.value() == 158254
+								assert inst.p.population.value() == 158254
 								break
 							case 'München':
-								assert inst.p.populati.value() == 1471508
+								assert inst.p.population.value() == 1471508
 								break
 							default:
 								throw new IllegalStateException("Unexpected type $typeName")
@@ -1186,10 +1186,10 @@ class ShapefileInstanceWriterTest {
 					assert name
 					switch (name) {
 						case 'Darmstadt':
-							assert inst.p.populati.value() == 158254
+							assert inst.p.population.value() == 158254
 							break
 						case 'München':
-							assert inst.p.populati.value() == 1471508
+							assert inst.p.population.value() == 1471508
 							break
 						default:
 							throw new IllegalStateException("Unexpected type $typeName")
@@ -1224,7 +1224,8 @@ class ShapefileInstanceWriterTest {
 				name_In_snake_CamelCase(String)
 				name_in_snake_case(String)
 				name1234567(String)
-				populaon123456789(Integer)
+				population(Integer)
+				population123456789(Integer)
 				snake_camelCase1234(String)
 				location(GeometryProperty)
 				myprop(String)
@@ -1238,7 +1239,8 @@ class ShapefileInstanceWriterTest {
 				name_In_snake_CamelCase 'Darmstadt name_In_snake_CamelCase'
 				name_in_snake_case 'Darmstadt name_in_snake_case'
 				name1234567 'Darmstadt name1234567'
-				populaon123456789 158254
+				population123456789 158254
+				population 269745
 				snake_camelCase1234 'snake_camelCase1234'
 				location(polyGeom)
 				myprop 'myprop'
@@ -1285,9 +1287,11 @@ class ShapefileInstanceWriterTest {
 					def na12 = inst.p.na12.value()
 					assertEquals('Darmstadt name1234567',na12)
 
-
 					def po12 = inst.p.po12.value()
 					assertEquals(158254,po12)
+
+					def population = inst.p.population.value()
+					assertEquals(269745, population)
 
 					def myprop = inst.p.myprop.value()
 					assertEquals('myprop',myprop)
