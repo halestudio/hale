@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.functions.groovy.GroovyMergePage;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
@@ -109,6 +110,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 	}
 
+	static boolean isMerge = false;
+
 	/**
 	 * Create a tool item for displaying the source or target type structure in
 	 * the dialog tray.
@@ -120,6 +123,10 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 	 */
 	public static void createToolItem(ToolBar bar, final HaleWizardPage<?> page,
 			final SchemaSpaceID schemaSpace, final TypeProvider types) {
+
+		if (page instanceof GroovyMergePage) {
+			isMerge = true;
+		}
 
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 		switch (schemaSpace) {
@@ -169,6 +176,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 		this.types = types;
 		this.schemaSpace = schemaSpace;
+
 	}
 
 	@Override
@@ -371,7 +379,6 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		boolean hasPropDef = false;
 		StringBuilder access = new StringBuilder();
 
-		boolean RetypeOrMerge = false;
 		// determine parent type
 		if (path.getFirstSegment() instanceof TypeDefinition) {
 			// types are the top level elements
@@ -396,7 +403,6 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 			}
 			else {
 				// assuming Retype/Merge
-				RetypeOrMerge = true;
 				access.append(GroovyConstants.BINDING_SOURCE);
 			}
 		}
@@ -479,7 +485,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 			StringBuilder example = new StringBuilder();
 
 			boolean canOccurMultipleTimes = false;
-			if (path.getFirstSegment() instanceof TypeDefinition || RetypeOrMerge == true) {
+			if (path.getFirstSegment() instanceof TypeDefinition || isMerge) {
 				canOccurMultipleTimes = true;
 			}
 			/*
