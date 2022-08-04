@@ -40,7 +40,6 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  */
 public class JoinTypeStructureTray extends TypeStructureTray {
 
-	private static boolean isMerge = false;
 	private ParameterValue param = null;
 
 	/**
@@ -53,7 +52,7 @@ public class JoinTypeStructureTray extends TypeStructureTray {
 	 */
 	public JoinTypeStructureTray(ParameterValue param, TypeProvider types,
 			SchemaSpaceID schemaSpace) {
-		super(types, schemaSpace, isMerge);
+		super(types, schemaSpace, false);
 		this.param = param;
 
 	}
