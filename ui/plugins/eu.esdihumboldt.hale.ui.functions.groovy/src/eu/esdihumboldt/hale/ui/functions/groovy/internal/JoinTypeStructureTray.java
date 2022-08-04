@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.ui.util.viewer.tree.TreePathProviderAdapter;
  */
 public class JoinTypeStructureTray extends TypeStructureTray {
 
+	private static boolean isMerge = false;
 	private ParameterValue param = null;
 
 	/**
@@ -50,8 +51,9 @@ public class JoinTypeStructureTray extends TypeStructureTray {
 	 * @param types the type provider
 	 * @param schemaSpace the schema space
 	 */
-	public JoinTypeStructureTray(ParameterValue param, TypeProvider types, SchemaSpaceID schemaSpace) {
-		super(types, schemaSpace);
+	public JoinTypeStructureTray(ParameterValue param, TypeProvider types,
+			SchemaSpaceID schemaSpace) {
+		super(types, schemaSpace, isMerge);
 		this.param = param;
 
 	}
@@ -70,8 +72,8 @@ public class JoinTypeStructureTray extends TypeStructureTray {
 
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 
-		item.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_SOURCE_SCHEMA));
+		item.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_SOURCE_SCHEMA));
 		item.setToolTipText("Show source structure");
 
 		item.addSelectionListener(new SelectionAdapter() {

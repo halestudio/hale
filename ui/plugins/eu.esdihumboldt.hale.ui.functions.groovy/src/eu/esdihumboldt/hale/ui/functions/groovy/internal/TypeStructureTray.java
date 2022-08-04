@@ -110,8 +110,6 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 	}
 
-	static boolean isMerge = false;
-
 	/**
 	 * Create a tool item for displaying the source or target type structure in
 	 * the dialog tray.
@@ -123,10 +121,6 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 	 */
 	public static void createToolItem(ToolBar bar, final HaleWizardPage<?> page,
 			final SchemaSpaceID schemaSpace, final TypeProvider types) {
-
-		if (page instanceof GroovyMergePage) {
-			isMerge = true;
-		}
 
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 		switch (schemaSpace) {
@@ -153,7 +147,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 						dialog.closeTray();
 					}
 
-					dialog.openTray(new TypeStructureTray(types, schemaSpace));
+					dialog.openTray(new TypeStructureTray(types, schemaSpace,
+							page instanceof GroovyMergePage));
 				}
 				else {
 					// TODO show dialog instead?
@@ -164,16 +159,19 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 	private final TypeProvider types;
 	private final SchemaSpaceID schemaSpace;
+	private final boolean isMerge;
 
 	/**
 	 * Create a type structure tray.
 	 * 
 	 * @param types the type provider
 	 * @param schemaSpace the schema space
+	 * @param isMerge is a Groovy Retype Merge
 	 */
-	public TypeStructureTray(TypeProvider types, SchemaSpaceID schemaSpace) {
+	public TypeStructureTray(TypeProvider types, SchemaSpaceID schemaSpace, boolean isMerge) {
 		super();
 
+		this.isMerge = isMerge;
 		this.types = types;
 		this.schemaSpace = schemaSpace;
 
