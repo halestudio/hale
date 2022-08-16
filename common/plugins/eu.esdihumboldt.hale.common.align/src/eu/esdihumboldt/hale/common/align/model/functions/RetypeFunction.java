@@ -28,4 +28,9 @@ public interface RetypeFunction {
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.retype";
 
+	/**
+	 * Parameter to skip root properties in structural rename.
+	 */
+	public static final String PARAMETER_SKIP_ROOT_PROPERTIES = "skipRootProperty";
+
 }
