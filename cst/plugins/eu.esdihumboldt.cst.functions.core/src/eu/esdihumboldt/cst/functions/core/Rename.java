@@ -19,15 +19,14 @@ package eu.esdihumboldt.cst.functions.core;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import net.jcip.annotations.Immutable;
-
+import org.locationtech.jts.geom.Geometry;
 import org.springframework.core.convert.ConversionException;
 
 import com.google.common.collect.ListMultimap;
-import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -52,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.ElementType;
+import net.jcip.annotations.Immutable;
 
 /**
  * Property rename function.
@@ -119,7 +119,28 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 * @return the transformed value (or group/instance) or NO_MATCH
 	 */
 	public static Object structuralRename(Object source, ChildDefinition<?> targetDefinition,
-			boolean allowIgnoreNamespaces, InstanceFactory instanceFactory, boolean copyGeometries) {
+			boolean allowIgnoreNamespaces, InstanceFactory instanceFactory,
+			boolean copyGeometries) {
+		return structuralRename(source, targetDefinition, allowIgnoreNamespaces, instanceFactory,
+				copyGeometries, null);
+	}
+
+	/**
+	 * Performs a structural rename on the given source object to the given
+	 * target definition.
+	 * 
+	 * @param source the source value (or group/instance)
+	 * @param targetDefinition the target definition
+	 * @param allowIgnoreNamespaces if for the structure comparison, namespaces
+	 *            may be ignored
+	 * @param instanceFactory the instance factory
+	 * @param copyGeometries specifies if geometry objects should be copied
+	 * @param skipChildren a set of direct children to skip or <code>null</code>
+	 * @return the transformed value (or group/instance) or NO_MATCH
+	 */
+	public static Object structuralRename(Object source, ChildDefinition<?> targetDefinition,
+			boolean allowIgnoreNamespaces, InstanceFactory instanceFactory, boolean copyGeometries,
+			Set<QName> skipChildren) {
 		if (!(source instanceof Group)) {
 			// source simple value
 			if (targetDefinition.asProperty() != null) {
@@ -130,7 +151,8 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 
 					if (propertyType.getChildren().isEmpty()) {
 						// simple value
-						return convertValue(source, targetDefinition.asProperty().getPropertyType());
+						return convertValue(source,
+								targetDefinition.asProperty().getPropertyType());
 					}
 					else {
 						// instance with value
@@ -155,20 +177,20 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				// source has value
 				if (propertyType.getChildren().isEmpty()) {
 					// simple value
-					return convertValue(((Instance) source).getValue(), targetDefinition
-							.asProperty().getPropertyType());
+					return convertValue(((Instance) source).getValue(),
+							targetDefinition.asProperty().getPropertyType());
 				}
 				else {
 					// instance with value
-					MutableInstance instance = instanceFactory.createInstance(targetDefinition
-							.asProperty().getPropertyType());
+					MutableInstance instance = instanceFactory
+							.createInstance(targetDefinition.asProperty().getPropertyType());
 					instance.setDataSet(DataSet.TRANSFORMED);
 					if (copyGeometries || !isGeometry(((Instance) source).getValue())) {
 						instance.setValue(convertValue(((Instance) source).getValue(),
 								targetDefinition.asProperty().getPropertyType()));
 					}
 					renameChildren((Group) source, instance, targetDefinition,
-							allowIgnoreNamespaces, instanceFactory, copyGeometries);
+							allowIgnoreNamespaces, instanceFactory, copyGeometries, skipChildren);
 					return instance;
 				}
 			}
@@ -178,11 +200,11 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 					return Result.NO_MATCH; // no match possible
 				else {
 					// instance with no value set
-					MutableInstance instance = instanceFactory.createInstance(targetDefinition
-							.asProperty().getPropertyType());
+					MutableInstance instance = instanceFactory
+							.createInstance(targetDefinition.asProperty().getPropertyType());
 					instance.setDataSet(DataSet.TRANSFORMED);
 					if (renameChildren((Group) source, instance, targetDefinition,
-							allowIgnoreNamespaces, instanceFactory, copyGeometries))
+							allowIgnoreNamespaces, instanceFactory, copyGeometries, skipChildren))
 						return instance;
 					else
 						return Result.NO_MATCH; // no child matched and no value
@@ -199,7 +221,7 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 				// group
 				MutableGroup group = new DefaultGroup(targetDefinition.asGroup());
 				if (renameChildren((Group) source, group, targetDefinition, allowIgnoreNamespaces,
-						instanceFactory, copyGeometries))
+						instanceFactory, copyGeometries, skipChildren))
 					return group;
 				else
 					return Result.NO_MATCH; // no child matched and no value
@@ -257,36 +279,40 @@ public class Rename extends AbstractSingleTargetPropertyTransformation<Transform
 	 *            may be ignored
 	 * @param instanceFactory the instance factory
 	 * @param copyGeometries specifies if geometry objects should be copied
+	 * @param skipChildren a set of direct children to skip or <code>null</code>
 	 * @return true, if any property could be matched to the targetDefinition
 	 */
 	private static boolean renameChildren(Group source, MutableGroup target,
 			ChildDefinition<?> targetDefinition, boolean allowIgnoreNamespaces,
-			InstanceFactory instanceFactory, boolean copyGeometries) {
+			InstanceFactory instanceFactory, boolean copyGeometries, Set<QName> skipChildren) {
 		boolean matchedChild = false;
 		// walk over all source property names
 		for (QName sourcePropertyName : source.getPropertyNames()) {
-			// find property name in target definition
-			ChildDefinition<?> targetDefinitionChild = DefinitionUtil.getChild(targetDefinition,
-					sourcePropertyName);
+			if (skipChildren == null || !skipChildren.contains(sourcePropertyName)) {
 
-			if (targetDefinitionChild == null && allowIgnoreNamespaces) {
-				// no corresponding target found
-				// but we have the option to switch to another namespace
-				targetDefinitionChild = DefinitionUtil.getChild(targetDefinition,
-						sourcePropertyName, true);
-			}
+				// find property name in target definition
+				ChildDefinition<?> targetDefinitionChild = DefinitionUtil.getChild(targetDefinition,
+						sourcePropertyName);
 
-			if (targetDefinitionChild != null) {
-				Object[] sourceProperties = source.getProperty(sourcePropertyName);
-				// walk over all source property values
-				for (Object sourceProperty : sourceProperties) {
-					// try to match them
-					Object result = structuralRename(sourceProperty, targetDefinitionChild,
-							allowIgnoreNamespaces, instanceFactory, copyGeometries);
-					if (result != Result.NO_MATCH) {
-						// found match!
-						target.addProperty(targetDefinitionChild.getName(), result);
-						matchedChild = true;
+				if (targetDefinitionChild == null && allowIgnoreNamespaces) {
+					// no corresponding target found
+					// but we have the option to switch to another namespace
+					targetDefinitionChild = DefinitionUtil.getChild(targetDefinition,
+							sourcePropertyName, true);
+				}
+
+				if (targetDefinitionChild != null) {
+					Object[] sourceProperties = source.getProperty(sourcePropertyName);
+					// walk over all source property values
+					for (Object sourceProperty : sourceProperties) {
+						// try to match them
+						Object result = structuralRename(sourceProperty, targetDefinitionChild,
+								allowIgnoreNamespaces, instanceFactory, copyGeometries);
+						if (result != Result.NO_MATCH) {
+							// found match!
+							target.addProperty(targetDefinitionChild.getName(), result);
+							matchedChild = true;
+						}
 					}
 				}
 			}
