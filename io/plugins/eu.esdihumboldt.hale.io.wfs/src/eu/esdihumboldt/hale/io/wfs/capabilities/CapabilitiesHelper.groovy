@@ -25,6 +25,7 @@ import com.google.common.base.Splitter
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.io.wfs.WFSVersion
+import groovy.xml.XmlSlurper
 
 
 /**

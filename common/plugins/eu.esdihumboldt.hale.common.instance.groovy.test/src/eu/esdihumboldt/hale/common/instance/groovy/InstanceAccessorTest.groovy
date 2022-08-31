@@ -20,6 +20,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.test.GroovyTestCase
 
 
 /**
@@ -247,5 +248,4 @@ class InstanceAccessorTest extends GroovyTestCase {
 		def numbers = instance.p.''.number.values()
 		assertEquals(new HashSet([7, 12, 13]), new HashSet(numbers))
 	}
-
 }

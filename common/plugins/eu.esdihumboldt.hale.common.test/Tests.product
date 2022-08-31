@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.2.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.2.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
@@ -9,8 +9,7 @@
    <launcherArgs>
       <programArgs>-consoleLog -clean
       </programArgs>
-      <vmArgs>-Xmx1200M
--Dosgi.framework.extensions=org.eclipse.equinox.weaving.hook
+      <vmArgs>-Xmx6000M
 -Daj.weaving.verbose=true
 -Dorg.aspectj.weaver.showWeaveInfo=true
 -Dorg.aspectj.osgi.verbose=true
@@ -48,6 +47,7 @@
       <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
       <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
       <plugin id="com.github.albfernandez.javadbf"/>
+      <plugin id="com.github.jnr.a64asm"/>
       <plugin id="com.github.jnr.constants"/>
       <plugin id="com.github.jnr.enxio"/>
       <plugin id="com.github.jnr.ffi"/>
@@ -76,15 +76,54 @@
       <plugin id="com.squareup.okhttp"/>
       <plugin id="com.squareup.okhttp.logging-interceptor"/>
       <plugin id="com.squareup.okio"/>
+      <plugin id="com.sun.istack.commons-runtime"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
       <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.blueprints.orient-graph"/>
-      <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.typesafe.config"/>
+      <plugin id="com.vladsch.flexmark"/>
+      <plugin id="com.vladsch.flexmark.all"/>
+      <plugin id="com.vladsch.flexmark.ext-abbreviation"/>
+      <plugin id="com.vladsch.flexmark.ext-admonition"/>
+      <plugin id="com.vladsch.flexmark.ext-anchorlink"/>
+      <plugin id="com.vladsch.flexmark.ext-aside"/>
+      <plugin id="com.vladsch.flexmark.ext-attributes"/>
+      <plugin id="com.vladsch.flexmark.ext-autolink"/>
+      <plugin id="com.vladsch.flexmark.ext-definition"/>
+      <plugin id="com.vladsch.flexmark.ext-emoji"/>
+      <plugin id="com.vladsch.flexmark.ext-enumerated-reference"/>
+      <plugin id="com.vladsch.flexmark.ext-escaped-character"/>
+      <plugin id="com.vladsch.flexmark.ext-footnotes"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-issues"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-strikethrough"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-tasklist"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-users"/>
+      <plugin id="com.vladsch.flexmark.ext-gitlab"/>
+      <plugin id="com.vladsch.flexmark.ext-ins"/>
+      <plugin id="com.vladsch.flexmark.ext-superscript"/>
+      <plugin id="com.vladsch.flexmark.ext-tables"/>
+      <plugin id="com.vladsch.flexmark.ext-toc"/>
+      <plugin id="com.vladsch.flexmark.ext-typographic"/>
+      <plugin id="com.vladsch.flexmark.ext-wikilink"/>
+      <plugin id="com.vladsch.flexmark.profile-pegdown"/>
+      <plugin id="com.vladsch.flexmark.util"/>
+      <plugin id="com.vladsch.flexmark.util-ast"/>
+      <plugin id="com.vladsch.flexmark.util-builder"/>
+      <plugin id="com.vladsch.flexmark.util-collection"/>
+      <plugin id="com.vladsch.flexmark.util-data"/>
+      <plugin id="com.vladsch.flexmark.util-dependency"/>
+      <plugin id="com.vladsch.flexmark.util-format"/>
+      <plugin id="com.vladsch.flexmark.util-html"/>
+      <plugin id="com.vladsch.flexmark.util-misc"/>
+      <plugin id="com.vladsch.flexmark.util-options"/>
+      <plugin id="com.vladsch.flexmark.util-sequence"/>
+      <plugin id="com.vladsch.flexmark.util-visitor"/>
+      <plugin id="com.vladsch.flexmark.youtrack-converter"/>
+      <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
@@ -126,8 +165,6 @@
       <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
       <plugin id="eu.esdihumboldt.hale.common.align.merge.test"/>
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.tgraph"/>
-      <plugin id="eu.esdihumboldt.hale.common.align.tgraph.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
       <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
@@ -225,8 +262,6 @@
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.io.xslt"/>
-      <plugin id="eu.esdihumboldt.hale.io.xslt.test"/>
       <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
       <plugin id="eu.esdihumboldt.hale.ui"/>
       <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
@@ -270,6 +305,16 @@
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
       <plugin id="io.prometheus.simpleclient"/>
+      <plugin id="groovy-ant"/>
+      <plugin id="groovy-cli-picocli"/>
+      <plugin id="groovy-console"/>
+      <plugin id="groovy-datetime"/>
+      <plugin id="groovy-json"/>
+      <plugin id="groovy-nio"/>
+      <plugin id="groovy-sql"/>
+      <plugin id="groovy-templates"/>
+      <plugin id="groovy-test"/>
+      <plugin id="groovy-xml"/>
       <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
       <plugin id="it.geosolutions.imageio-ext.streams"/>
@@ -288,6 +333,8 @@
       <plugin id="it.geosolutions.jaiext.utilities.jt-utilities"/>
       <plugin id="it.geosolutions.jaiext.vectorbin.jt-vectorbin"/>
       <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
+      <plugin id="jai.jai-codec"/>
+      <plugin id="jai.jai-imageio"/>
       <plugin id="javassist"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
@@ -309,6 +356,7 @@
       <plugin id="joda-time"/>
       <plugin id="jogl"/>
       <plugin id="jul.to.slf4j"/>
+      <plugin id="junit"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="mil.nga.geopackage"/>
       <plugin id="mil.nga.oapi.features.oapi-features-json"/>
@@ -399,6 +447,7 @@
       <plugin id="org.eclipse.e4.ui.workbench"/>
       <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
       <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt.cocoa" fragment="true"/>
       <plugin id="org.eclipse.e4.ui.workbench.swt"/>
       <plugin id="org.eclipse.e4.ui.workbench3"/>
       <plugin id="org.eclipse.emf.common"/>
@@ -414,6 +463,7 @@
       <plugin id="org.eclipse.equinox.region" fragment="true"/>
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
@@ -438,6 +488,7 @@
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.xsd"/>
       <plugin id="org.eclipse.zest.core"/>
@@ -451,6 +502,8 @@
       <plugin id="org.glassfish.hk2.locator"/>
       <plugin id="org.glassfish.hk2.osgi-resource-locator"/>
       <plugin id="org.glassfish.hk2.utils"/>
+      <plugin id="org.glassfish.jaxb.runtime"/>
+      <plugin id="org.glassfish.jaxb.txw2"/>
       <plugin id="org.glassfish.jersey.bundles.repackaged.jersey-guava"/>
       <plugin id="org.glassfish.jersey.connectors.jersey-apache-connector"/>
       <plugin id="org.glassfish.jersey.core.jersey-client"/>
@@ -465,6 +518,7 @@
       <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
+      <plugin id="org.jvnet.staxex.stax-ex"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.locationtech.proj4j"/>
@@ -473,10 +527,9 @@
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>
       <plugin id="org.objectweb.asm.util-5"/>
+      <plugin id="org.nibor.autolink"/>
+      <plugin id="org.objectweb.asm-9"/>
       <plugin id="org.opengis"/>
-      <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
-      <plugin id="org.pegdown"/>
       <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.reflections"/>
       <plugin id="org.semanticweb.owlapi.osgi.skos"/>
@@ -493,6 +546,7 @@
       <plugin id="org.xerial.sqlite-jdbc"/>
       <plugin id="org.yaml.snakeyaml"/>
       <plugin id="oro"/>
+      <plugin id="picocli"/>
       <plugin id="picocontainer"/>
       <plugin id="ru.yandex.qatools.allure.java-adaptor-api"/>
       <plugin id="ru.yandex.qatools.allure.java-annotations"/>
@@ -523,7 +577,7 @@
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
-      <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="false" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
       <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />

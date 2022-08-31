@@ -16,4 +16,4 @@ Import-Package: eu.esdihumboldt.cst.test,
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.csv.test
 Require-Bundle: eu.esdihumboldt.util.groovy;bundle-version="4.2.0",
- groovy;bundle-version="2.4.14"
+ groovy;bundle-version="4.0.1"

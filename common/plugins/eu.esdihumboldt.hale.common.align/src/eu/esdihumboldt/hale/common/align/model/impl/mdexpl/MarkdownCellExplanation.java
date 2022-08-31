@@ -31,10 +31,13 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import org.pegdown.Extensions;
-import org.pegdown.PegDownProcessor;
-
 import com.google.common.collect.ListMultimap;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.profile.pegdown.Extensions;
+import com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter;
+import com.vladsch.flexmark.util.ast.Document;
+import com.vladsch.flexmark.util.data.DataHolder;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
@@ -58,10 +61,14 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 
 	private static final ALogger log = ALoggerFactory.getLogger(MarkdownCellExplanation.class);
 
-	private final PegDownProcessor pegdown = new PegDownProcessor(Extensions.AUTOLINKS | //
-			Extensions.HARDWRAPS | //
-			Extensions.SMARTYPANTS | //
-			Extensions.TABLES);
+	final private static DataHolder OPTIONS = PegdownOptionsAdapter.flexmarkOptions(true,
+			Extensions.AUTOLINKS | //
+					Extensions.HARDWRAPS | //
+					Extensions.SMARTYPANTS | //
+					Extensions.TABLES);
+
+	static final Parser PARSER = Parser.builder(OPTIONS).build();
+	static final HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build();
 
 	private final TemplateEngine engine = new GStringTemplateEngine();
 
@@ -148,7 +155,8 @@ public abstract class MarkdownCellExplanation extends AbstractCellExplanation {
 						.toString();
 
 				if (html) {
-					explanation = pegdown.markdownToHtml(explanation);
+					Document doc = PARSER.parse(explanation);
+					explanation = RENDERER.render(doc);
 				}
 
 				return explanation;

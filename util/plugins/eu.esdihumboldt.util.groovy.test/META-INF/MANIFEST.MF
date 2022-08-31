@@ -7,5 +7,8 @@ Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.12.0",
  eu.esdihumboldt.util.groovy;bundle-version="3.4.0",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1",
+ groovy-json;bundle-version="4.0.1",
+ groovy-test;bundle-version="4.0.1"
 Automatic-Module-Name: eu.esdihumboldt.util.groovy.test

@@ -30,6 +30,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
 import eu.esdihumboldt.hale.io.html.svg.mapping.json.JsonMappingExporter
 import groovy.json.JsonSlurper
+import groovy.test.GroovyTestCase
 
 
 /**

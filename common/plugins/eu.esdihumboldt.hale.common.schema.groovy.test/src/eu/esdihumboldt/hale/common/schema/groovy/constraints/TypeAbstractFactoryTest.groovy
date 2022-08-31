@@ -16,8 +16,8 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
-
 
 /**
  * Tests creation of {@link AbstractFlag} constraints w/ {@link TypeAbstractFactory}.

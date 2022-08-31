@@ -70,6 +70,7 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  org.codehaus.jackson;bundle-version="1.8.5",
  org.codehaus.jackson.mapper,
  eu.esdihumboldt.hale.common.instance,
- groovy;bundle-version="2.1.5"
+ groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.json

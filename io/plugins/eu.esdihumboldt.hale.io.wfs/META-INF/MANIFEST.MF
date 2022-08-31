@@ -7,7 +7,8 @@ Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.io.gml;bundle-version="2.9.0",
  org.eclipse.core.runtime;bundle-version="3.10.0",
- groovy;bundle-version="2.3.7",
+ groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1",
  eu.esdihumboldt.util;bundle-version="3.2.0"
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="17.0.0",

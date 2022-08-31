@@ -15,12 +15,6 @@
 
 package eu.esdihumboldt.util.groovy.xml
 
-import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
-import groovy.xml.DOMBuilder
-import groovy.xml.QName
-import groovy.xml.dom.DOMCategory
-
 import javax.xml.transform.OutputKeys
 import javax.xml.transform.Transformer
 import javax.xml.transform.TransformerFactory
@@ -29,6 +23,12 @@ import javax.xml.transform.stream.StreamResult
 
 import org.w3c.dom.Element
 import org.w3c.dom.Node
+
+import groovy.namespace.QName
+import groovy.test.GroovyTestCase
+import groovy.transform.CompileStatic
+import groovy.xml.DOMBuilder
+import groovy.xml.dom.DOMCategory
 
 
 /**

@@ -72,7 +72,6 @@ import org.codehaus.groovy.ast.stmt.ExpressionStatement
 import org.codehaus.groovy.ast.stmt.ForStatement
 import org.codehaus.groovy.ast.stmt.IfStatement
 import org.codehaus.groovy.ast.stmt.ReturnStatement
-import org.codehaus.groovy.ast.stmt.Statement
 import org.codehaus.groovy.ast.stmt.SwitchStatement
 import org.codehaus.groovy.ast.stmt.SynchronizedStatement
 import org.codehaus.groovy.ast.stmt.ThrowStatement
@@ -196,7 +195,7 @@ abstract class AbstractASTTreeVisitor<N> extends ClassCodeVisitorSupport {
 		addNode(node, TryCatchStatement, { super.visitTryCatchFinally(it) });
 	}
 
-	protected void visitEmptyStatement(EmptyStatement node) {
+	public void visitEmptyStatement(EmptyStatement node) {
 		addNode(node, EmptyStatement, { super.visitEmptyStatement(it) });
 	}
 
@@ -393,7 +392,7 @@ abstract class AbstractASTTreeVisitor<N> extends ClassCodeVisitorSupport {
 		addNode(node, BytecodeExpression, { super.visitBytecodeExpression(it) });
 	}
 
-	protected void visitListOfExpressions(List<? extends Expression> list) {
+	public void visitListOfExpressions(List<? extends Expression> list) {
 		list.each { Expression node ->
 			if (node instanceof NamedArgumentListExpression ) {
 				addNode(node, NamedArgumentListExpression, { it.visit(this) });

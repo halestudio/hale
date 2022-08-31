@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.common.schema.groovy
 
 import eu.esdihumboldt.hale.common.schema.model.Definition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
+import groovy.test.GroovyTestCase
 
 
 

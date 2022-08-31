@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Groovy Meta Class Extension Fragment
 Bundle-SymbolicName: eu.esdihumboldt.util.groovy.meta.fragment
 Bundle-Version: 4.2.0.qualifier
-Fragment-Host: groovy;bundle-version="2.1.5"
+Fragment-Host:  groovy;bundle-version="4.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.util.groovy.meta.extension

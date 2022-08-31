@@ -47,6 +47,7 @@ import eu.esdihumboldt.hale.common.schema.persist.hsd.HaleSchemaWriter
 import eu.esdihumboldt.hale.common.test.TestUtil
 import eu.esdihumboldt.util.validator.EnumerationValidator
 import eu.esdihumboldt.util.validator.Validator
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 
 

@@ -6,7 +6,10 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.app.transform;bundle-version="2.9.0",
- groovy;bundle-version="2.1.5",
+ groovy;bundle-version="4.0.1",
+ groovy-json;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1",
+ groovy-test;bundle-version="4.0.1",
  org.eclipse.equinox.app;bundle-version="1.3.100"
 Import-Package: eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.app,

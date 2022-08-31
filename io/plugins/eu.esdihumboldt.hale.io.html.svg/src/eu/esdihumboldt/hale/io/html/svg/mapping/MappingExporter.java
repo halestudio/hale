@@ -85,7 +85,8 @@ public class MappingExporter extends AbstractAlignmentWriter {
 		Map<String, Object> binding = new HashMap<>();
 		binding.put("json", jsonWriter.toString());
 		String title = (getProjectInfo() != null && getProjectInfo().getName() != null)
-				? getProjectInfo().getName() : "Mapping documentation";
+				? getProjectInfo().getName()
+				: "Mapping documentation";
 		binding.put("title", title);
 		binding.put("languages", languageJson);
 		binding.put("halejsVersion", HALEJS_VERSION);

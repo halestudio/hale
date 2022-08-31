@@ -45,8 +45,10 @@ Export-Package: eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.model.impl.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.schema.paths,
  eu.esdihumboldt.hale.common.schema.paths.internal;x-internal:=true
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
- eu.esdihumboldt.util.groovy.sandbox,
- groovy;bundle-version="2.3.7"
+Require-Bundle: groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1",
+ groovy-test;bundle-version="4.0.1",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ eu.esdihumboldt.util.groovy.sandbox
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.schema

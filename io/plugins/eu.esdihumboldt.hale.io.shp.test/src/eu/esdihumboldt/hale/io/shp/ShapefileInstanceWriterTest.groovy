@@ -309,7 +309,6 @@ class ShapefileInstanceWriterTest {
 			}
 			assertEquals(2, num)
 		}
-
 	}
 
 	@Test
@@ -321,7 +320,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -384,7 +384,6 @@ class ShapefileInstanceWriterTest {
 			}
 			assertEquals(2, num)
 		}
-
 	}
 
 	@Test
@@ -395,7 +394,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -414,7 +414,6 @@ class ShapefileInstanceWriterTest {
 				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
 				loc(polyGeom )
 			}
-
 		}
 
 		withNewShapefile(schema, instances) { file ->
@@ -457,7 +456,6 @@ class ShapefileInstanceWriterTest {
 			}
 			assertEquals(2, num)
 		}
-
 	}
 
 	@Test
@@ -533,8 +531,6 @@ class ShapefileInstanceWriterTest {
 						}
 					}
 				}
-
-
 			}
 			assertEquals(3, num)
 			assertEquals(2, abcCount)
@@ -600,7 +596,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -683,8 +680,6 @@ class ShapefileInstanceWriterTest {
 						}
 					}
 				}
-
-
 			}
 			assertEquals(6, num)
 			assertEquals(4, abcCount)
@@ -701,7 +696,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		def lineString= gf.createLineString([
@@ -709,7 +705,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def lineStringGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), lineString)
 
 		def lineString2= gf.createLineString([
@@ -717,7 +714,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 1)] as Coordinate[])
+			new Coordinate(0, 1)
+		] as Coordinate[])
 		def lineStringGeom2 = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), lineString)
 
 
@@ -875,7 +873,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 
@@ -940,8 +939,6 @@ class ShapefileInstanceWriterTest {
 						assert the_geom instanceof GeometryProperty
 					}
 				}
-
-
 			}
 			assertEquals(4, num)
 			assertEquals(4, abcCount)
@@ -957,7 +954,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -1058,8 +1056,6 @@ class ShapefileInstanceWriterTest {
 						}
 					}
 				}
-
-
 			}
 			assertEquals(8, num)
 			assertEquals(4, xyzCount)
@@ -1214,7 +1210,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -1245,7 +1242,6 @@ class ShapefileInstanceWriterTest {
 				location(polyGeom)
 				myprop 'myprop'
 			}
-
 		}
 
 		withNewShapefile(schema, instances) { file ->
@@ -1314,7 +1310,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -1377,7 +1374,6 @@ class ShapefileInstanceWriterTest {
 			}
 			assertEquals(2, num)
 		}
-
 	}
 
 	@Test
@@ -1389,7 +1385,8 @@ class ShapefileInstanceWriterTest {
 			new Coordinate(1, 0),
 			new Coordinate(1, 1),
 			new Coordinate(0, 1),
-			new Coordinate(0, 0)] as Coordinate[])
+			new Coordinate(0, 0)
+		] as Coordinate[])
 		def polyGeom = new DefaultGeometryProperty<Geometry>(new CodeDefinition("EPSG:4326", null), poly)
 
 		Schema schema = new SchemaBuilder().schema {
@@ -1446,7 +1443,5 @@ class ShapefileInstanceWriterTest {
 			}
 			assertEquals(2, num)
 		}
-
 	}
-
 }

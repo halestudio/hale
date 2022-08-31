@@ -40,7 +40,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.util.groovy.xml.NSDOMBuilder;
-import groovy.util.GroovyTestCase;
+import groovy.test.GroovyTestCase;
 
 /**
  * Base class for {@link ValueConstraintFactory} tests.

@@ -17,10 +17,6 @@ package eu.esdihumboldt.hale.ui.templates.webtemplates
 
 import java.net.Proxy.Type
 
-import org.apache.http.auth.AuthScope
-import org.apache.http.auth.Credentials
-import org.apache.http.auth.UsernamePasswordCredentials
-
 import eu.esdihumboldt.hale.ui.templates.internal.TemplatesUIPlugin
 import eu.esdihumboldt.hale.ui.templates.preferences.WebTemplatesPreferences
 import eu.esdihumboldt.util.http.ProxyUtil
@@ -70,10 +66,9 @@ class WebTemplateLoader {
 			boolean useProxyAuth = userName != null && !userName.isEmpty();
 
 			if(useProxyAuth){
-
-				Credentials cred = new UsernamePasswordCredentials(userName, password);
-
-				builder.getClient().getCredentialsProvider().setCredentials(new AuthScope(proxyAddress.getHostName(),proxyAddress.getPort()),cred)
+				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Proxy-Authorization
+				String basicAuthCredentials = Base64.getEncoder().encodeToString(String.format("%s:%s", userName,password).getBytes());
+				builder.setHeaders(['Proxy-Authorization' : "Basic " + basicAuthCredentials])
 			}
 
 			builder.setProxy(proxyAddress.getHostName(), proxyAddress.getPort(), "http")

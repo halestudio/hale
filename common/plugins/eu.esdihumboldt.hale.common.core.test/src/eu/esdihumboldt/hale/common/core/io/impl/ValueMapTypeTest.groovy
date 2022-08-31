@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.core.io.HaleIO
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.ValueList
 import eu.esdihumboldt.hale.common.core.io.ValueMap
+import groovy.test.GroovyTestCase
 
 
 /**
