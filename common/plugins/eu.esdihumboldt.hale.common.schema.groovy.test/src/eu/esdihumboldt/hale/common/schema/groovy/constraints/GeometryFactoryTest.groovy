@@ -22,8 +22,8 @@ import org.locationtech.jts.geom.Polygon
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
-
 
 /**
  * Tests creation of {@link GeometryType} constraints w/ {@link GeometryFactory}.

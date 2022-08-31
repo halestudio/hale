@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph
 
-import com.tinkerpop.blueprints.Vertex
-import com.tinkerpop.gremlin.groovy.Gremlin
+import org.apache.tinkerpop.gremlin.structure.Vertex
+import org.apache.tinkerpop.gremlin.util.Gremlin
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition
@@ -93,5 +93,4 @@ class TGraphHelpers implements TGraphConstants {
 			}
 		}
 	}
-
 }

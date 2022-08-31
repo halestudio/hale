@@ -17,9 +17,10 @@ package eu.esdihumboldt.hale.io.xslt.transformations.base;
 
 import javax.xml.namespace.QName
 
+import org.apache.tinkerpop.gremlin.structure.Vertex
+
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.Multimap
-import com.tinkerpop.blueprints.Vertex
 
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants
@@ -71,7 +72,7 @@ abstract class AbstractTransformationTraverser implements TGraphConstants {
 		// determine correct order for children
 		for (ChildDefinition<?> child : DefinitionUtil.getAllChildren(parent)) {
 			if (child.asProperty() != null &&
-			child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
+					child.asProperty().getConstraint(XmlAttributeFlag.class).isEnabled()) {
 				// child is an XML attribute
 				// and must be handled first
 				childNames.add(0, child.getName());
@@ -136,5 +137,4 @@ abstract class AbstractTransformationTraverser implements TGraphConstants {
 	 * @param node the target node
 	 */
 	protected abstract void visitProperty(Vertex node);
-
 }

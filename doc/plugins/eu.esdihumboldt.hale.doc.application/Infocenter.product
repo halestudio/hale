@@ -163,7 +163,6 @@
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.configuration"/>
-      <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
@@ -245,8 +244,6 @@
       <plugin id="org.objectweb.asm.tree-5"/>
       <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
-      <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.beans"/>

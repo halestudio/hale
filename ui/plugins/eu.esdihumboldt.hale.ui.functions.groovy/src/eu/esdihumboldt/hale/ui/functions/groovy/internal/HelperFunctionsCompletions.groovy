@@ -27,7 +27,6 @@ import org.eclipse.swt.graphics.Image
 import com.google.common.base.Splitter
 import com.google.common.collect.Lists
 import com.tinkerpop.blueprints.Vertex
-import com.tinkerpop.gremlin.groovy.Gremlin
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -52,9 +51,9 @@ import groovy.transform.CompileStatic
 @SuppressWarnings("restriction")
 public class HelperFunctionsCompletions implements GroovyCompletionProposals, ASTGraphConstants {
 
-	static {
-		Gremlin.load()
-	}
+	//	static {
+	//		Gremlin.load()
+	//	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(HelperFunctionsCompletions)
 
@@ -137,7 +136,6 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 							return createProposals(new Category(pathList), offset, prefix)
 						}
 					}
-
 				}
 			}
 		}
@@ -237,5 +235,4 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 			return false
 		}
 	}
-
 }

@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.io.xslt.transformations.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tinkerpop.blueprints.Vertex;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;

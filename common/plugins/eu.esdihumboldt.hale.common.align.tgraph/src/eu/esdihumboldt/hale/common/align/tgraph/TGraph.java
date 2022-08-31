@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph;
 
-import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Vertex;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
 
 /**
  * Transformation graph interface.

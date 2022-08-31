@@ -18,7 +18,6 @@ package eu.esdihumboldt.util.geometry.quadtree
 import static org.junit.Assert.*
 
 import org.junit.Test
-
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Envelope
 import org.locationtech.jts.geom.Geometry
@@ -72,7 +71,14 @@ class QuadtreeTest {
 		qt = b.build(3)
 		qt.traverse(visitor)
 		assertEquals(6, keys.size())
-		['011', '011021', '011023', '012', '013', '014'].each { assertTrue(keys.contains(it)) }
+		[
+			'011',
+			'011021',
+			'011023',
+			'012',
+			'013',
+			'014'
+		].each { assertTrue(keys.contains(it)) }
 		assertEquals(0, qt.getSubtree('011').nodes.size())
 		assertEquals(1, qt.getSubtree('011021').nodes.size())
 		verifyPoint(qt.getSubtree('011021').nodes[0], 0.1d, 0.1d, 0.001d)
@@ -118,7 +124,7 @@ class QuadtreeTest {
 	}
 
 	private verifyPoint(QuadtreeNode node, double expectedX, double expectedY, double delta) {
-		Point p = node.geom
+		Point p = (Point) node.geom
 		assertEquals(expectedX, p.x, delta)
 		assertEquals(expectedY, p.y, delta)
 	}

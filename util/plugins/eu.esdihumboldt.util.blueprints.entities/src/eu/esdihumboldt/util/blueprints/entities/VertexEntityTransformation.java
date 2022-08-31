@@ -49,12 +49,12 @@ import org.codehaus.groovy.ast.stmt.ExpressionStatement;
 import org.codehaus.groovy.ast.stmt.IfStatement;
 import org.codehaus.groovy.ast.stmt.ReturnStatement;
 import org.codehaus.groovy.ast.stmt.Statement;
+import org.codehaus.groovy.ast.tools.GeneralUtils;
 import org.codehaus.groovy.control.CompilePhase;
 import org.codehaus.groovy.control.SourceUnit;
 import org.codehaus.groovy.syntax.Token;
 import org.codehaus.groovy.syntax.Types;
 import org.codehaus.groovy.transform.ASTTransformation;
-import org.codehaus.groovy.transform.AbstractASTTransformUtil;
 import org.codehaus.groovy.transform.GroovyASTTransformation;
 
 import com.tinkerpop.blueprints.Graph;
@@ -157,7 +157,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 			Map<String, Expression> initialExpressions = new HashMap<>();
 
 			// get all non-static properties
-			List<PropertyNode> properties = AbstractASTTransformUtil.getInstanceProperties(clazz);
+			List<PropertyNode> properties = GeneralUtils.getInstanceProperties(clazz);
 			List<PropertyNode> newProperties = new ArrayList<>();
 			for (PropertyNode property : properties) {
 				// TODO check for "transient" properties?
@@ -278,7 +278,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 		// reset graph field
 		// > g = null
-		code.addStatement(AbstractASTTransformUtil.assignStatement(new FieldExpression(graphField),
+		code.addStatement(GeneralUtils.assignS(new FieldExpression(graphField),
 				new ConstantExpression(null)));
 
 		return new MethodNode("delete", Modifier.PUBLIC, ClassHelper.VOID_TYPE, new Parameter[0],
@@ -309,22 +309,20 @@ public class VertexEntityTransformation implements ASTTransformation {
 		VariableExpression vertex = new VariableExpression("vertex");
 		// id (local variable)
 		VariableExpression id = new VariableExpression("id");
-		code.addStatement(AbstractASTTransformUtil.declStatement(id, new ConstantExpression(null)));
+		code.addStatement(GeneralUtils.declS(id, new ConstantExpression(null)));
 
 		// id = OrientGraph.CLASS_PREFIX + entityName
-		Statement orientBlock = AbstractASTTransformUtil.assignStatement(id, new BinaryExpression(
+		Statement orientBlock = GeneralUtils.assignS(id, new BinaryExpression(
 				new ConstantExpression(OrientGraph.CLASS_PREFIX), TOKEN_PLUS, entityName));
 		// > if (graph instanceof OrientGraph) {
 		// > id = OrientGraph.CLASS_PREFIX + entityName
 		// > }
-		code.addStatement(
-				new IfStatement(AbstractASTTransformUtil.isInstanceOf(graph, ORIENT_GRAPH_CLASS),
-						orientBlock, new EmptyStatement()));
+		code.addStatement(new IfStatement(GeneralUtils.isInstanceOfX(graph, ORIENT_GRAPH_CLASS),
+				orientBlock, new EmptyStatement()));
 
 		// > vertex = graph.addVertex(id)
-		Statement assignVertex = AbstractASTTransformUtil.declStatement(vertex,
-				new MethodCallExpression(graph, new ConstantExpression("addVertex"),
-						new ArgumentListExpression(id)));
+		Statement assignVertex = GeneralUtils.declS(vertex, new MethodCallExpression(graph,
+				new ConstantExpression("addVertex"), new ArgumentListExpression(id)));
 		code.addStatement(assignVertex);
 
 		// set initial values on vertex
@@ -376,9 +374,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		args.addExpression(new VariableExpression("graph"));
 		args.addExpression(entityName);
 		args.addExpression(typeProperty);
-		code.addStatement(
-				AbstractASTTransformUtil.declStatement(vertices, new StaticMethodCallExpression(
-						VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_FIND_ALL, args)));
+		code.addStatement(GeneralUtils.declS(vertices, new StaticMethodCallExpression(
+				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_FIND_ALL, args)));
 
 		/*
 		 * return new IterableDelegate(vertices, EntityClass, graph)
@@ -434,9 +431,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		args.addExpression(typeProperty);
 		args.addExpression(new ConstantExpression(propertyName));
 		args.addExpression(new VariableExpression("value"));
-		code.addStatement(
-				AbstractASTTransformUtil.declStatement(vertices, new StaticMethodCallExpression(
-						VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_FIND_BY, args)));
+		code.addStatement(GeneralUtils.declS(vertices, new StaticMethodCallExpression(
+				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_FIND_BY, args)));
 		/*
 		 * return new IterableDelegate(vertices, EntityClass, graph)
 		 */
@@ -448,8 +444,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		code.addStatement(new ReturnStatement(
 				new ConstructorCallExpression(VE_ITERABLE_DELEGATE_CLASS, createDelegateArgs)));
 
-		return new MethodNode(methodName,
-				Modifier.STATIC | Modifier.PUBLIC, returnType, new Parameter[] {
+		return new MethodNode(
+				methodName, Modifier.STATIC | Modifier.PUBLIC, returnType, new Parameter[] {
 						new Parameter(GRAPH_CLASS, "graph"), new Parameter(propertyType, "value") },
 				new ClassNode[0], code);
 	}
@@ -469,9 +465,9 @@ public class VertexEntityTransformation implements ASTTransformation {
 
 		// def vertex = graph.getVertex(id)
 		VariableExpression vertex = new VariableExpression("vertex");
-		code.addStatement(AbstractASTTransformUtil.declStatement(vertex,
-				new MethodCallExpression(new VariableExpression("graph"), "getVertex",
-						new ArgumentListExpression(new VariableExpression("id")))));
+		code.addStatement(
+				GeneralUtils.declS(vertex, new MethodCallExpression(new VariableExpression("graph"),
+						"getVertex", new ArgumentListExpression(new VariableExpression("id")))));
 
 		/*
 		 * return new EntityClass(vertex, graph)
@@ -483,8 +479,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		Statement returnNull = new ReturnStatement(new ConstantExpression(null));
 
 		// if (vertex == null) ... else ...
-		code.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(vertex),
-				returnNull, returnEntity));
+		code.addStatement(
+				new IfStatement(GeneralUtils.equalsNullX(vertex), returnNull, returnEntity));
 
 		return new MethodNode("getById", Modifier.STATIC | Modifier.PUBLIC, clazz,
 				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
@@ -527,9 +523,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		args.addExpression(typeProperty);
 		args.addExpression(new ConstantExpression(propertyName));
 		args.addExpression(new VariableExpression("value"));
-		code.addStatement(
-				AbstractASTTransformUtil.declStatement(vertex, new StaticMethodCallExpression(
-						VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_GET_BY, args)));
+		code.addStatement(GeneralUtils.declS(vertex, new StaticMethodCallExpression(
+				VE_DELEGATES_CLASS, VertexEntityDelegates.METHOD_GET_BY, args)));
 		/*
 		 * return new EntityClass(vertex, graph)
 		 */
@@ -540,8 +535,8 @@ public class VertexEntityTransformation implements ASTTransformation {
 		Statement returnNull = new ReturnStatement(new ConstantExpression(null));
 
 		// if (vertex == null) ... else ...
-		code.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(vertex),
-				returnNull, returnEntity));
+		code.addStatement(
+				new IfStatement(GeneralUtils.equalsNullX(vertex), returnNull, returnEntity));
 
 		return new MethodNode(methodName, Modifier.STATIC | Modifier.PUBLIC, clazz,
 				new Parameter[] { new Parameter(GRAPH_CLASS, "graph"),
@@ -577,11 +572,11 @@ public class VertexEntityTransformation implements ASTTransformation {
 		}
 		else {
 			// > this.v = vertex
-			block.addStatement(AbstractASTTransformUtil.assignStatement(
-					new FieldExpression(vertexField), new VariableExpression("vertex")));
+			block.addStatement(GeneralUtils.assignS(new FieldExpression(vertexField),
+					new VariableExpression("vertex")));
 			// > this.g = graph
-			block.addStatement(AbstractASTTransformUtil.assignStatement(
-					new FieldExpression(graphField), new VariableExpression("graph")));
+			block.addStatement(GeneralUtils.assignS(new FieldExpression(graphField),
+					new VariableExpression("graph")));
 		}
 
 		// vertex.setProperty(typeProperty, entityName)
@@ -591,7 +586,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 		// > if (!(graph instanceof OrientGraph))
 		// > this.v.setProperty(typeProperty, entityName)
 		block.addStatement(new IfStatement(
-				new NotExpression(AbstractASTTransformUtil.isInstanceOf(graph, ORIENT_GRAPH_CLASS)),
+				new NotExpression(GeneralUtils.isInstanceOfX(graph, ORIENT_GRAPH_CLASS)),
 				notOrientStatement, new EmptyStatement()));
 
 		return new ConstructorNode(Modifier.PUBLIC, new Parameter[] {
@@ -639,8 +634,7 @@ public class VertexEntityTransformation implements ASTTransformation {
 				new MethodCallExpression(new FieldExpression(vertexField), "removeProperty",
 						new ArgumentListExpression(new ConstantExpression(name))));
 
-		block.addStatement(
-				new IfStatement(AbstractASTTransformUtil.equalsNullExpr(value), ifNull, ifNotNull));
+		block.addStatement(new IfStatement(GeneralUtils.equalsNullX(value), ifNull, ifNotNull));
 
 		return block;
 	}
@@ -657,14 +651,14 @@ public class VertexEntityTransformation implements ASTTransformation {
 		 */
 		ArgumentListExpression args = new ArgumentListExpression();
 		args.addExpression(new ConstantExpression(name));
-		block.addStatement(AbstractASTTransformUtil.declStatement(tmpValue,
+		block.addStatement(GeneralUtils.declS(tmpValue,
 				new MethodCallExpression(new FieldExpression(vertexField), "getProperty", args)));
 
 		if (ClassHelper.isPrimitiveType(propertyType) && initialExpression != null) {
 			// if the class is a primitive, we must do a null check here
 
 			// if (tmp == null) return <initial-value>
-			block.addStatement(new IfStatement(AbstractASTTransformUtil.equalsNullExpr(tmpValue),
+			block.addStatement(new IfStatement(GeneralUtils.equalsNullX(tmpValue),
 					new ReturnStatement(initialExpression), new EmptyStatement()));
 		}
 

@@ -16,8 +16,8 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
-
 
 /**
  * Tests creation of {@link Cardinality} constraints w/ {@link CardinalityFactory}.

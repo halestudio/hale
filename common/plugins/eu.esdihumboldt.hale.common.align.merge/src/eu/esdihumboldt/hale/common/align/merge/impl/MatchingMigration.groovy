@@ -42,8 +42,8 @@ class MatchingMigration extends AbstractMigration {
 	}
 
 	protected Optional<EntityDefinition> findMatch(EntityDefinition entity) {
-		findMatches(entity).flatMap({ List<EntityDefinition> list ->
-			list ? Optional.ofNullable(list[0]) : Optional.empty()
+		findMatches(entity).flatMap({ list ->
+			list ? Optional.ofNullable(((List<EntityDefinition>)list)[0]) : Optional.empty()
 		} as Function)
 	}
 

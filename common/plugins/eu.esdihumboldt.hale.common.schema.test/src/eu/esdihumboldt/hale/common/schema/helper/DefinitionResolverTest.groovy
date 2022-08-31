@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.paths.DefinitionResolver
 import eu.esdihumboldt.util.groovy.paths.Path
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 

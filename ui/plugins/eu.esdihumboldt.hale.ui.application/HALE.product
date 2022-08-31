@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="4.2.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="4.2.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="true">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
@@ -43,11 +43,6 @@ https://www.wetransform.to/services/support/
 -Dcache.level2.size=0
          <argsX86>-Xmx1000m</argsX86>
          <argsX86_64>-Xmx2g</argsX86_64>
-         <argsPPC>-Xmx1000m</argsPPC>
-         <argsIA_64>-Xmx1000m</argsIA_64>
-         <argsIA_64_32>-Xmx1000m</argsIA_64_32>
-         <argsPA_RISC>-Xmx1000m</argsPA_RISC>
-         <argsSPARC>-Xmx1000m</argsSPARC>
       </vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
@@ -92,10 +87,8 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.ui.feature.macosx"/>
       <feature id="eu.esdihumboldt.hale.common.feature.orient"/>
       <feature id="eu.esdihumboldt.cst.feature"/>
-      <feature id="eu.esdihumboldt.hale.io.xslt.feature"/>
       <feature id="eu.esdihumboldt.hale.io.feature.core.ui"/>
       <feature id="eu.esdihumboldt.hale.io.feature.legacy"/>
-      <feature id="eu.esdihumboldt.hale.io.xslt.feature.ui"/>
       <feature id="eu.esdihumboldt.hale.ui.views.styledmap.feature"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html.ui"/>
       <feature id="eu.esdihumboldt.hale.io.feature.core"/>
@@ -113,6 +106,8 @@ https://www.wetransform.to/services/support/
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
+      <feature id="eu.esdihumboldt.hale.platform.deegree" installMode="root"/>
+      <feature id="de.fhg.igd.mapviewer.feature.core" installMode="root"/>
    </features>
 
    <configurations>

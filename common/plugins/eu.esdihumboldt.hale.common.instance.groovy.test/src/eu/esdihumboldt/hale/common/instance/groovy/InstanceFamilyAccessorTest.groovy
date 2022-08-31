@@ -21,6 +21,7 @@ import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.test.TestUtil
+import groovy.test.GroovyTestCase
 
 
 /**
@@ -46,7 +47,6 @@ class InstanceFamilyAccessorTest extends GroovyTestCase {
 				name()
 				age(Integer)
 				addressId(cardinality: '0..n') {
-
 				}
 			}
 
@@ -122,5 +122,4 @@ class InstanceFamilyAccessorTest extends GroovyTestCase {
 		assertEquals 2, family.links.Address.p.id.list().size()
 		assertEquals 2, family.children().Address.accessor().id.list().size()
 	}
-
 }

@@ -181,7 +181,8 @@ public class GenerateTemplates {
 			Set<String> relevantNamespaces = new HashSet<>()
 
 			// which namespaces are relevant? TODO make configurable?
-			if (schemas.size() == 1) { // currently only include direct imports for single schema projects
+			if (schemas.size() == 1) {
+				// currently only include direct imports for single schema projects
 				schemas.each {
 					relevantNamespaces.addAll(it.directImports as Set)
 				}
@@ -191,7 +192,7 @@ public class GenerateTemplates {
 
 			// determine relevant types
 			relevantTypes = new LinkedHashSet<>()
-			def mainTypes = new LinkedHashSet<>()
+			Set<TypeDefinition> mainTypes = new LinkedHashSet<>()
 
 			loadedSchemas.each { loadedSchema ->
 				for (def t : loadedSchema.types) {
@@ -289,7 +290,7 @@ public class GenerateTemplates {
 	 */
 	private static boolean isFeatureType(TypeDefinition type) {
 		if ("AbstractFeatureType".equals(type.getName().getLocalPart())
-		&& type.getName().getNamespaceURI().startsWith(GMLConstants.GML_NAMESPACE_CORE)) {
+				&& type.getName().getNamespaceURI().startsWith(GMLConstants.GML_NAMESPACE_CORE)) {
 			return true;
 		}
 

@@ -17,10 +17,11 @@ package eu.esdihumboldt.hale.common.align.tgraph.impl.internal;
 
 import java.util.Set;
 
+import org.apache.tinkerpop.gremlin.structure.Edge;
+import org.apache.tinkerpop.gremlin.structure.Graph;
+import org.apache.tinkerpop.gremlin.structure.Vertex;
+
 import com.google.common.collect.SetMultimap;
-import com.tinkerpop.blueprints.Edge;
-import com.tinkerpop.blueprints.Graph;
-import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
@@ -56,7 +57,7 @@ public class TGraphFactory implements TGraphConstants {
 		SetMultimap<String, String> connections = graphVisitor.getAllConnections();
 		Set<String> ids = graphVisitor.getAllIds();
 
-		Graph graph = new TinkerGraph();
+		Graph graph = (Graph) new TinkerGraph();
 
 		// add nodes to the graph
 		for (String key : ids) {
@@ -68,8 +69,8 @@ public class TGraphFactory implements TGraphConstants {
 
 		for (String key : connections.keySet()) {
 			for (String value : connections.get(key)) {
-				Vertex targetSide = graph.getVertex(key);
-				Vertex sourceSide = graph.getVertex(value);
+				Vertex targetSide = graph.addVertex(key);
+				Vertex sourceSide = graph.addVertex(value);
 
 				TransformationNode targetSideNode = graphVisitor.getNode(key);
 				TransformationNode sourceSideNode = graphVisitor.getNode(value);
@@ -78,20 +79,23 @@ public class TGraphFactory implements TGraphConstants {
 				if (sourceSideNode instanceof SourceNode && targetSideNode instanceof SourceNode) {
 					edgeLabel = EDGE_CHILD;
 				}
-				else if (sourceSideNode instanceof SourceNode && targetSideNode instanceof CellNode) {
+				else if (sourceSideNode instanceof SourceNode
+						&& targetSideNode instanceof CellNode) {
 					edgeLabel = EDGE_VARIABLE;
 				}
-				else if (sourceSideNode instanceof CellNode && targetSideNode instanceof GroupNode) {
+				else if (sourceSideNode instanceof CellNode
+						&& targetSideNode instanceof GroupNode) {
 					edgeLabel = EDGE_RESULT;
 				}
-				else if (sourceSideNode instanceof GroupNode && targetSideNode instanceof GroupNode) {
+				else if (sourceSideNode instanceof GroupNode
+						&& targetSideNode instanceof GroupNode) {
 					edgeLabel = EDGE_PARENT;
 				}
 				else {
 					throw new IllegalStateException("Invalid relation in transformation tree");
 				}
 
-				Edge edge = graph.addEdge(null, sourceSide, targetSide, edgeLabel);
+				Edge edge = (Edge) graph.edges(null, sourceSide, targetSide, edgeLabel);
 				setEdgeProperties(edge, sourceSideNode, targetSideNode);
 			}
 		}
@@ -130,7 +134,7 @@ public class TGraphFactory implements TGraphConstants {
 	private static void setEdgeProperties(Edge edge, SourceNode sourceSideNode,
 			CellNode targetSideNode) {
 		// do nothing
-		edge.setProperty(P_VAR_NAMES, targetSideNode.getSourceNames(sourceSideNode));
+		edge.property(P_VAR_NAMES, targetSideNode.getSourceNames(sourceSideNode));
 	}
 
 	@SuppressWarnings("unused")
@@ -153,7 +157,7 @@ public class TGraphFactory implements TGraphConstants {
 	 * @param vertex the vertex to update
 	 */
 	private static void setVertexProperties(Vertex vertex, TransformationNode node) {
-		vertex.setProperty(P_ORG_NODE, node);
+		vertex.property(P_ORG_NODE, node);
 		if (node instanceof CellNode) {
 			setVertexProperties(vertex, (CellNode) node);
 		}
@@ -166,17 +170,17 @@ public class TGraphFactory implements TGraphConstants {
 	}
 
 	private static void setVertexProperties(Vertex vertex, CellNode node) {
-		vertex.setProperty(P_TYPE, NodeType.Cell);
-		vertex.setProperty(P_CELL, node.getCell());
+		vertex.property(P_TYPE, NodeType.Cell);
+		vertex.property(P_CELL, node.getCell());
 	}
 
 	private static void setVertexProperties(Vertex vertex, SourceNode node) {
-		vertex.setProperty(P_TYPE, NodeType.Source);
-		vertex.setProperty(P_ENTITY, node.getEntityDefinition());
+		vertex.property(P_TYPE, NodeType.Source);
+		vertex.property(P_ENTITY, node.getEntityDefinition());
 	}
 
 	private static void setVertexProperties(Vertex vertex, GroupNode node) {
-		vertex.setProperty(P_TYPE, NodeType.Target);
+		vertex.property(P_TYPE, NodeType.Target);
 		if (node instanceof TargetNode) {
 			setVertexProperties(vertex, (TargetNode) node);
 		}
@@ -186,7 +190,7 @@ public class TGraphFactory implements TGraphConstants {
 	}
 
 	private static void setVertexProperties(Vertex vertex, TargetNode node) {
-		vertex.setProperty(P_ENTITY, node.getEntityDefinition());
+		vertex.property(P_ENTITY, node.getEntityDefinition());
 	}
 
 	private static void setVertexProperties(Vertex vertex, TransformationTree node) {
@@ -194,7 +198,7 @@ public class TGraphFactory implements TGraphConstants {
 		// TODO also include the filter
 		TypeEntityDefinition ted = new TypeEntityDefinition(node.getType(), SchemaSpaceID.TARGET,
 				null);
-		vertex.setProperty(P_ENTITY, ted);
+		vertex.property(P_ENTITY, ted);
 	}
 
 }

@@ -17,11 +17,6 @@
 
 package eu.esdihumboldt.util.groovy.xml
 
-import groovy.transform.CompileStatic
-import groovy.xml.DOMBuilder
-import groovy.xml.FactorySupport
-import groovy.xml.QName
-
 import javax.xml.parsers.DocumentBuilder
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
@@ -30,6 +25,11 @@ import org.w3c.dom.Document
 import org.w3c.dom.Element
 
 import com.google.common.collect.ImmutableMap
+
+import groovy.namespace.QName
+import groovy.transform.CompileStatic
+import groovy.xml.DOMBuilder
+import groovy.xml.FactorySupport
 
 
 /**
