@@ -15,13 +15,14 @@
 
 package eu.esdihumboldt.hale.ui.util.groovy.ast
 
-import groovy.transform.CompileStatic
-
 import org.codehaus.groovy.ast.expr.ClosureExpression
 import org.codehaus.groovy.ast.stmt.BlockStatement
 
 import com.tinkerpop.blueprints.Direction
 import com.tinkerpop.blueprints.Vertex
+
+import groovy.test.GroovyTestCase
+import groovy.transform.CompileStatic
 
 
 

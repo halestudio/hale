@@ -8,7 +8,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.5.0",
  de.fhg.igd.eclipse.util;bundle-version="1.0.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.1.0",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1"
 Import-Package: eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.io.validation,

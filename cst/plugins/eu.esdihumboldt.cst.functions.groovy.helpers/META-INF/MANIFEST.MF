@@ -6,7 +6,8 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.cst.functions.groovy;bundle-version="2.9.3",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="4.0.1",
+ groovy-json;bundle-version="4.0.1"
 Import-Package: com.google.common.base;version="17.0.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.model,

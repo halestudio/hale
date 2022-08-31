@@ -16,8 +16,8 @@
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
+import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
-
 
 /**
  * Tests creation of {@link NillableFlag} constraints w/ {@link NillableFactory}.

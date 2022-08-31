@@ -13,6 +13,7 @@ Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.util.http.client,
  eu.esdihumboldt.util.io,
  eu.esdihumboldt.util.metrics,
+ groovy.text;version="4.0.1",
  net.sf.ehcache,
  net.sf.ehcache.config,
  net.sf.ehcache.store,
@@ -23,7 +24,8 @@ Import-Package: com.google.common.io;version="9.0.0",
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.3.3",
  org.apache.httpcomponents.httpcore;bundle-version="4.3.2",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- groovy;bundle-version="2.1.5"
+ groovy;bundle-version="4.0.1",
+ groovy-test;bundle-version="4.0.1"
 Export-Package: eu.esdihumboldt.hale.common.cache;uses:="net.sf.ehcache"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.common.cache.Activator

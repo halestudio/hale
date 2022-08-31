@@ -24,6 +24,7 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeT
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
+import groovy.test.GroovyTestCase
 
 
 /**

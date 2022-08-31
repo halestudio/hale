@@ -15,6 +15,8 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.wfs
 
+import groovy.xml.XmlSlurper
+
 /**
  * Helper class for parsing WFS GetFeature requests
  * 

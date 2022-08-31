@@ -93,10 +93,13 @@ class TableInstanceBuilder {
 							}
 						}
 						if (gac.advisor != null) {
-							def supplier = {
+							Supplier<CRSDefinition> supplier = {
 								crsProvider.getCRS(type, [property.name])
 							} as Supplier<CRSDefinition>
-							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection, supplier, log)
+							//							value = gac.advisor.convertToInstanceGeometry(value, property.propertyType, connection, supplier, log)
+							// try with groovy apache 4.0.4
+							// search why groovy 4.0.1 has problem doing type check for java classes?
+							value = ((GeometryAdvisor<Connection> )gac.advisor).convertToInstanceGeometry(value, property.propertyType, connection, supplier, log)
 						}
 					}
 

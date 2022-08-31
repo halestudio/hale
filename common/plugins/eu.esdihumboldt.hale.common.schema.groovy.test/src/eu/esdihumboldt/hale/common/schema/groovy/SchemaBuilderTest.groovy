@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
+import groovy.test.GroovyTestCase
 
 
 /**
@@ -431,5 +432,4 @@ class SchemaBuilderTest extends GroovyTestCase {
 		assertEquals 'description', desc.name.localPart
 		assertEquals NillableFlag.ENABLED, desc.getConstraint(NillableFlag)
 	}
-
 }

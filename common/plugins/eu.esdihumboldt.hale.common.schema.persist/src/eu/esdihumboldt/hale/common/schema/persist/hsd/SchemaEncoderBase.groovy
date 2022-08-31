@@ -23,7 +23,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.factory.TypeReference
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintExtension
 import eu.esdihumboldt.hale.common.schema.model.constraint.factory.extension.ValueConstraintFactoryDescriptor
 import eu.esdihumboldt.util.Pair
-import groovy.transform.CompileStatic
 
 
 /**
@@ -31,11 +30,9 @@ import groovy.transform.CompileStatic
  * 
  * @author Simon Templer
  */
-@CompileStatic
 abstract class SchemaEncoderBase {
 
-	static final Comparator<String> nullStringComparator = {
-		String s1, String s2 ->
+	static final Comparator<String> nullStringComparator = { s1, s2 ->
 		if (s1 == s2) {
 			0
 		}
@@ -46,7 +43,7 @@ abstract class SchemaEncoderBase {
 			1
 		}
 		else {
-			s1 <=> s2
+			(String) s1 <=> (String) s2
 		}
 	} as Comparator
 
@@ -71,9 +68,8 @@ abstract class SchemaEncoderBase {
 	 * @return the list of types (sorted)
 	 */
 	List<TypeDefinition> getSchemaTypes(Schema schema) {
-		def types = []
+		def types = [] as ArrayList<TypeDefinition>
 		types.addAll(schema.types)
-		// sort to have a reproducible order (e.g. for versioning)
 		types.sort(true)
 	}
 
@@ -85,12 +81,12 @@ abstract class SchemaEncoderBase {
 	 */
 	List<Pair<String, Value>> getConstraints(Definition<?> d, TypeReferenceBuilder refBuilder) {
 		// constraints
+
 		Collection<Pair<String, Value>> constraints = d.explicitConstraints.findResults { def constraint ->
 			// get value constraint factory, if possible
 			ValueConstraintFactoryDescriptor desc = ValueConstraintExtension.INSTANCE.getForConstraint(constraint)
 			if (desc != null && desc.factory != null) {
-				// determine value representation of constraint
-				Value value = desc.factory.store(constraint, refBuilder)
+				Value value = desc.factory.store( constraint, refBuilder)
 				String id = desc.id
 				new Pair<String, Value>(id, value)
 			}
@@ -103,5 +99,4 @@ abstract class SchemaEncoderBase {
 			nullStringComparator.compare(p1.first, p2.first)
 		}
 	}
-
 }

@@ -149,8 +149,6 @@ HALE:
   - eu.esdihumboldt.hale.io.xml@0
   - eu.esdihumboldt.hale.io.xsd@0
   - eu.esdihumboldt.hale.io.xsd.ui
-  - eu.esdihumboldt.hale.io.xslt
-  - eu.esdihumboldt.hale.io.xslt.ui
   - eu.esdihumboldt.hale.prefixmapper
   - eu.esdihumboldt.hale.ui
   - eu.esdihumboldt.hale.ui.application

@@ -7,8 +7,10 @@ Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  eu.esdihumboldt.hale.common.app;bundle-version="2.8.0",
- groovy;bundle-version="2.1.5",
- eu.esdihumboldt.hale.common.core;bundle-version="2.8.0"
+ eu.esdihumboldt.hale.common.core;bundle-version="2.8.0",
+ groovy;bundle-version="4.0.1",
+ groovy-xml;bundle-version="4.0.1",
+ groovy-json;bundle-version="4.0.1"
 Export-Package: eu.esdihumboldt.hale.common.inspire.apps.templates,
  eu.esdihumboldt.hale.common.inspire.codelists,
  eu.esdihumboldt.hale.common.inspire.schemas

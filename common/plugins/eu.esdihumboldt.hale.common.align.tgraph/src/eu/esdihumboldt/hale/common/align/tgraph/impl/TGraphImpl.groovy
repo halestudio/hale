@@ -15,18 +15,17 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph.impl
 
-import com.tinkerpop.blueprints.Direction
-import com.tinkerpop.blueprints.Edge
-import com.tinkerpop.blueprints.Graph
-import com.tinkerpop.blueprints.Vertex
-import com.tinkerpop.blueprints.util.ElementHelper
+import org.apache.tinkerpop.gremlin.structure.Direction
+import org.apache.tinkerpop.gremlin.structure.Edge
+import org.apache.tinkerpop.gremlin.structure.Graph
+import org.apache.tinkerpop.gremlin.structure.Vertex
+import org.apache.tinkerpop.gremlin.structure.util.ElementHelper
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.TransformationTree
 import eu.esdihumboldt.hale.common.align.service.FunctionService
 import eu.esdihumboldt.hale.common.align.tgraph.TGraph
 import eu.esdihumboldt.hale.common.align.tgraph.TGraphHelpers
-import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.impl.internal.TGraphFactory
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 
@@ -88,7 +87,8 @@ class TGraphImpl implements TGraph {
 
 		graph.V(P_TYPE, NodeType.Target) // find target nodes
 				.filter{
-					it.inE(EDGE_RESULT).count() > 1} // with more than one cell attached
+					it.inE(EDGE_RESULT).count() > 1
+				} // with more than one cell attached
 				.inE(EDGE_RESULT) // and get the incoming result edges
 				.sideEffect{
 					// for each of those edges
@@ -108,41 +108,41 @@ class TGraphImpl implements TGraph {
 
 					// remove the original edge
 					graph.removeEdge(it)
-					
+
 					/*
-					 * Proxy cardinalities
-					 */
-					
+			 * Proxy cardinalities
+			 */
+
 					/*
-					 * First attempt was to set the entity cardinality on the
-					 * proxies and an cardinality of 0..1 for the proxied node.
-					 * This has the advantage that context matching can be
-					 * performed separately for the proxies if the entity may
-					 * occur multiple times.
-					 * However, this poses a problem when the proxied node has
-					 * children - they would be reduced to the new parent's
-					 * cardinality.
-					 * Moving the cardinality to the proxies must instead
-					 * involve duplicating the whole associated subgraph with
-					 * eventually also introducing proxies on the source side. 
-					 */
+			 * First attempt was to set the entity cardinality on the
+			 * proxies and an cardinality of 0..1 for the proxied node.
+			 * This has the advantage that context matching can be
+			 * performed separately for the proxies if the entity may
+			 * occur multiple times.
+			 * However, this poses a problem when the proxied node has
+			 * children - they would be reduced to the new parent's
+			 * cardinality.
+			 * Moving the cardinality to the proxies must instead
+			 * involve duplicating the whole associated subgraph with
+			 * eventually also introducing proxies on the source side. 
+			 */
 					// set a single cardinality on the proxied vertex
-//					Vertex proxied = it.getVertex(Direction.IN)
-//					proxied.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL);
+					//					Vertex proxied = it.getVertex(Direction.IN)
+					//					proxied.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL);
 					// and set the entity cardinality on the proxy
 					//assert proxied.entity()
-//					proxy.setProperty(P_CARDINALITY,
-//						proxied.entity().getDefinition().getConstraint(Cardinality))
-					
+					//					proxy.setProperty(P_CARDINALITY,
+					//						proxied.entity().getDefinition().getConstraint(Cardinality))
+
 					/*
-					 * The alternative used now is to keep the cardinality of the
-					 * proxied node as is and use a cardinality of 0..1 for the
-					 * proxies. This means the context is defined by the proxied
-					 * node and children can be handled normally.
-					 * Through this the possibilities in context matching are
-					 * more limited than with the first approach, but can be made
-					 * to work much easier for the cases it covers.
-					 */
+			 * The alternative used now is to keep the cardinality of the
+			 * proxied node as is and use a cardinality of 0..1 for the
+			 * proxies. This means the context is defined by the proxied
+			 * node and children can be handled normally.
+			 * Through this the possibilities in context matching are
+			 * more limited than with the first approach, but can be made
+			 * to work much easier for the cases it covers.
+			 */
 					proxy.setProperty(P_CARDINALITY, Cardinality.CC_OPTIONAL)
 				}.iterate() // actually traverse the graph
 
@@ -189,7 +189,7 @@ class TGraphImpl implements TGraph {
 		 */
 		def paths = target.in(EDGES_CORE).loop(1){
 			it.object.inE(EDGES_CORE).hasNext() && // loop while there is an incoming edge
-			it.object != parentContext // but don't continue once the parent context was reached
+					it.object != parentContext // but don't continue once the parent context was reached
 		}.path.toList()
 
 		// reverse paths so they start with source (type) nodes
@@ -279,11 +279,11 @@ class TGraphImpl implements TGraph {
 			// no context may be also valid, e.g. for assignments
 			// the context then is the same as the parent context
 			context = parentContext
-			
+
 			//XXX debug
 			println "No context for node $target, using parent context"
 		}
-		
+
 		//XXX debug
 		println "Selected candidate: $context"
 
@@ -429,7 +429,8 @@ class TGraphImpl implements TGraph {
 			it[0]
 		}.toSet()
 
-		for (outgoing in source.out(EDGES_CORE)) { // ignore context edges
+		for (outgoing in source.out(EDGES_CORE)) {
+			// ignore context edges
 			if (!targets.contains(outgoing)) {
 				/*
 				 * If the outgoing node is not contained in the targets, there
@@ -454,5 +455,4 @@ class TGraphImpl implements TGraph {
 
 		return true
 	}
-
 }

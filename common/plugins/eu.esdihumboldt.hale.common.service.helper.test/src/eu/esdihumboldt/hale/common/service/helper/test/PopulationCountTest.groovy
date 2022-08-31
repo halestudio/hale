@@ -14,6 +14,7 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.service.helper.test.dummy.Population
 import eu.esdihumboldt.hale.common.service.helper.test.dummy.PopulationContainer
+import groovy.test.GroovyTestCase
 
 /**
  * Test for Entity Population Count
@@ -140,7 +141,6 @@ class PopulationCountTest extends GroovyTestCase {
 		verifyPopulation(baseProp2,1,1);
 		PropertyEntityDefinition baseProp2Item = baseProp2.accessor().item as PropertyEntityDefinition
 		verifyPopulation(baseProp2Item,1,1);
-
 	}
 
 
@@ -300,7 +300,6 @@ class PopulationCountTest extends GroovyTestCase {
 		verifyPopulation(propFilterAddress2.accessor().street as PropertyEntityDefinition,3,3)
 		verifyPopulation(propFilterAddress2.accessor().number as PropertyEntityDefinition,3,3)
 		verifyPopulation(propFilterAddress2.accessor().city as PropertyEntityDefinition,3,3)
-
 	}
 
 	private void addToPopulation(EntityDefinition entityDef){
@@ -315,6 +314,5 @@ class PopulationCountTest extends GroovyTestCase {
 		assertEquals overallCount, pop.getOverallCount();
 		assertEquals parentCount, pop.getParentsCount();
 	}
-
 }
 

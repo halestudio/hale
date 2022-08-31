@@ -9,3 +9,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: junit.framework;version="3.8.2",
  net.jcip.annotations
 Automatic-Module-Name: eu.esdihumboldt.hale.common.schema.groovy.test
+Require-Bundle: groovy-test;bundle-version="4.0.1"

@@ -19,9 +19,13 @@ import java.time.Instant
 import java.time.format.DateTimeFormatter
 import java.util.Map.Entry
 
-import org.pegdown.Extensions
-import org.pegdown.PegDownProcessor
 import org.w3c.dom.Element
+
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.profile.pegdown.Extensions;
+import com.vladsch.flexmark.profile.pegdown.PegdownOptionsAdapter
+import com.vladsch.flexmark.util.data.DataHolder;
 
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionDefinition
 import eu.esdihumboldt.hale.common.align.extension.function.FunctionParameterDefinition
@@ -55,10 +59,10 @@ import groovy.transform.TypeCheckingMode
  */
 @CompileStatic
 class AlignmentJson {
-	
+
 	public static String cellExplanation(Cell cell, CellExplanation explanation, ServiceProvider services,
-		Locale locale = Locale.getDefault()) {
-		
+			Locale locale = Locale.getDefault()) {
+
 		String exp = null
 		if (explanation) {
 			exp = explanation.getExplanationAsHtml(cell, services, locale)
@@ -87,14 +91,14 @@ class AlignmentJson {
 			return value.getStringRepresentation()
 		}
 	}
-	
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	static Set<Locale> alignmentInfoJSON(Alignment alignment, JsonStreamBuilder json,
-		ServiceProvider services, ProjectInfo project, CellJsonExtension ext,
-		ValueRepresentation valueRep, Locale locale, SchemaSpace sourceSchemas, SchemaSpace targetSchemas) {
-		
+			ServiceProvider services, ProjectInfo project, CellJsonExtension ext,
+			ValueRepresentation valueRep, Locale locale, SchemaSpace sourceSchemas, SchemaSpace targetSchemas) {
+
 		Set<Locale> collectedLocales = new HashSet<>()
-		
+
 		json {
 			json.export {
 				json.timestamp DateTimeFormatter.ISO_INSTANT.format(Instant.now())
@@ -145,7 +149,7 @@ class AlignmentJson {
 				}
 			}
 		}
-		
+
 		collectedLocales
 	}
 
@@ -162,11 +166,11 @@ class AlignmentJson {
 	 * Create a JSON representation from a cell.
 	 */
 	public static Set<Locale> cellInfoJSON(Cell cell, JsonStreamBuilder json, ServiceProvider services,
-		CellJsonExtension ext = null, ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
-		
+			CellJsonExtension ext = null, ValueRepresentation valueRep = null, Locale locale = Locale.getDefault()) {
+
 		// collect locale content is available for
 		Set<Locale> collectedLocales = new HashSet<>()
-		
+
 		// collect cell information
 
 		// get the associated function
@@ -225,7 +229,7 @@ class AlignmentJson {
 				json 'targets', []
 			}
 
-			
+
 			if (function?.explanation) {
 				def explLocales = function.explanation.getSupportedLocales()
 				if (explLocales) {
@@ -248,7 +252,7 @@ class AlignmentJson {
 				ext.augmentCellJson(cell, json)
 			}
 		}
-		
+
 		collectedLocales
 	}
 
@@ -337,7 +341,7 @@ class AlignmentJson {
 
 		result
 	}
-	
+
 	/**
 	 * Convert markdown (pegdown) to HTML.
 	 *
@@ -346,7 +350,7 @@ class AlignmentJson {
 	 */
 	@CompileStatic(TypeCheckingMode.SKIP)
 	public static String markdownToHtml(String text) {
-		new PegDownProcessor(
+		DataHolder OPTIONS = PegdownOptionsAdapter.flexmarkOptions(true,
 				Extensions.AUTOLINKS |
 				Extensions.SUPPRESS_ALL_HTML |
 				Extensions.HARDWRAPS |
@@ -354,8 +358,11 @@ class AlignmentJson {
 				Extensions.TABLES |
 				Extensions.FENCED_CODE_BLOCKS |
 				Extensions.STRIKETHROUGH |
-				Extensions.DEFINITIONS).
-				markdownToHtml(text);
-	}
+				Extensions.DEFINITIONS)
 
+		Parser PARSER = Parser.builder(OPTIONS).build()
+		HtmlRenderer RENDERER = HtmlRenderer.builder(OPTIONS).build()
+
+		return RENDERER.render(PARSER.parse(text))
+	}
 }
