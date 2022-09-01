@@ -50,8 +50,9 @@ public class JoinTypeStructureTray extends TypeStructureTray {
 	 * @param types the type provider
 	 * @param schemaSpace the schema space
 	 */
-	public JoinTypeStructureTray(ParameterValue param, TypeProvider types, SchemaSpaceID schemaSpace) {
-		super(types, schemaSpace);
+	public JoinTypeStructureTray(ParameterValue param, TypeProvider types,
+			SchemaSpaceID schemaSpace) {
+		super(types, schemaSpace, false);
 		this.param = param;
 
 	}
@@ -70,8 +71,8 @@ public class JoinTypeStructureTray extends TypeStructureTray {
 
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 
-		item.setImage(CommonSharedImages.getImageRegistry().get(
-				CommonSharedImages.IMG_SOURCE_SCHEMA));
+		item.setImage(
+				CommonSharedImages.getImageRegistry().get(CommonSharedImages.IMG_SOURCE_SCHEMA));
 		item.setToolTipText("Show source structure");
 
 		item.addSelectionListener(new SelectionAdapter() {

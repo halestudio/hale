@@ -75,6 +75,19 @@
                   default="true">
             </valueDescriptor>
          </functionParameter>
+         <functionParameter
+               deprecated="false"
+               description="Skip the given root property in structural rename"
+               label="Skip root property"
+               maxOccurrence="n"
+               minOccurrence="0"
+               name="skipRootProperty"
+               scriptable="false"
+               valueDescriptor="eu.esdihumboldt.hale.common.core.parameter.QNameParameterValueDescriptor">
+            <parameterComplexValue
+                  ref="qualified-name">
+            </parameterComplexValue>
+         </functionParameter>
       </typeFunction>
       <propertyFunction
             category="eu.esdihumboldt.hale.align.general"
