@@ -42,6 +42,17 @@
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
       </provider>
+      <provider
+            class="eu.esdihumboldt.hale.io.json.TopoJSONInstanceWriter"
+            id="eu.esdihumboldt.hale.io.topojson.writer"
+            name="TopoJSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+      </provider>
    </extension>
    <extension
          point="eu.esdihumboldt.hale.io.complexvalue">
@@ -53,5 +64,5 @@
             type="eu.esdihumboldt.hale.io.json.GeoJSONConfig">
       </complexValue>
    </extension>
-
+   
 </plugin>

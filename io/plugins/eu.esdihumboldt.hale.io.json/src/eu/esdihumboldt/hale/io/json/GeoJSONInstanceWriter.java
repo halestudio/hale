@@ -35,9 +35,10 @@ public class GeoJSONInstanceWriter extends JsonInstanceWriter {
 
 	/**
 	 * @param geoJson use geoJson feature when exporting to geoJson
+	 * @param topoJson use topoJson feature when exporting to topoJson
 	 */
 	public GeoJSONInstanceWriter() {
-		super(true);
+		super(true, false);
 	}
 
 	@Override

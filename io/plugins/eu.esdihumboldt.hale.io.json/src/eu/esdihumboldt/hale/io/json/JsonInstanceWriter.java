@@ -40,12 +40,13 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 
 	private final InstanceToJson instanceToJson;
 	private final boolean useGeoJsonFeatures;
+	private final boolean useTopoJsonFeatures;
 
 	/**
-	 * By default do not use geoJson features for the output.
+	 * By default do not use geoJson or topoJson features for the output.
 	 */
 	public JsonInstanceWriter() {
-		this(false);
+		this(false, false);
 	}
 
 	/**
@@ -55,10 +56,12 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	 * specific feature type: http://wiki.geojson.org/GeoJSON_draft_version_6
 	 *
 	 * @param useGeoJsonFeatures if the output should be valid GeoJson output
+	 * @param useTopoJsonFeatures if the output should be valid TopoJson output
 	 */
-	public JsonInstanceWriter(boolean useGeoJsonFeatures) {
+	public JsonInstanceWriter(boolean useGeoJsonFeatures, boolean useTopoJsonFeatures) {
 		this.useGeoJsonFeatures = useGeoJsonFeatures;
-		instanceToJson = new InstanceToJson(this.useGeoJsonFeatures);
+		this.useTopoJsonFeatures = useTopoJsonFeatures;
+		instanceToJson = new InstanceToJson(this.useGeoJsonFeatures, this.useTopoJsonFeatures);
 	}
 
 	@Override

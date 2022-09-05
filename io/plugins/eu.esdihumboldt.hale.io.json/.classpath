@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="lib" path="/Users/flaminia/Desktop/topojson-j-master/topojson_j.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

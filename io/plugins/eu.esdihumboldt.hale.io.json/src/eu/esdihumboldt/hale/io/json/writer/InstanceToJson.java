@@ -69,6 +69,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	private final GeometryJSON geometryJson;
 	private final NamespaceManager namespaces;
 	private final boolean useGeoJsonFeatures;
+	private final boolean useTopoJsonFeatures;
 
 	// GeoJson expects WGS 84 with lon/lat (see
 	// https://tools.ietf.org/html/rfc7946)
@@ -83,21 +84,26 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 * specific feature type: http://wiki.geojson.org/GeoJSON_draft_version_6
 	 *
 	 * @param geoJson if the output should be valid GeoJson output
+	 * @param topoJson if the output should be valid TopoJson output
 	 */
-	public InstanceToJson(boolean geoJson) {
-		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, 7);
+	public InstanceToJson(boolean geoJson, boolean topoJson) {
+		this(geoJson, topoJson,
+				new IgnoreNamespaces() /* new JsonNamespaces() */, 7);
 	}
 
 	/**
 	 *
 	 * @param geoJson geojson
+	 * @param topoJson topojson
 	 * @param namespaces namespace
 	 * @param decimals the number of decimals to use when encoding floating
 	 *            point numbers
 	 */
-	public InstanceToJson(boolean geoJson, NamespaceManager namespaces, int decimals) {
+	public InstanceToJson(boolean geoJson, boolean topoJson, NamespaceManager namespaces,
+			int decimals) {
 		super();
 		this.useGeoJsonFeatures = geoJson;
+		this.useTopoJsonFeatures = topoJson;
 		this.namespaces = namespaces;
 		this.geometryJson = new GeometryJSON(decimals);
 
@@ -147,7 +153,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	public void writeCollection(JsonGenerator jsonGen, InstanceCollection instances, SimpleLog log)
 			throws IOException {
 
-		if (useGeoJsonFeatures) {
+		if (useGeoJsonFeatures || useTopoJsonFeatures) {
 			// GeoJson
 
 			jsonGen.writeStartObject();
@@ -174,7 +180,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 		}
 		jsonGen.writeEndArray();
 
-		if (useGeoJsonFeatures) {
+		if (useGeoJsonFeatures || useTopoJsonFeatures) {
 			// namespaces -> this is done at the end to be sure to have all
 			// namespace prefixes
 			writeNamespaces(jsonGen);
@@ -236,7 +242,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 			// value may only be written directly if placement is value
 			writeValue(jsonGen, instance.getValue(), log);
 		}
-		else {
+		else if (useGeoJsonFeatures) {
 			boolean geoJson = useGeoJsonFeatures && !Placement.VALUE.equals(placement);
 
 			jsonGen.writeStartObject();
@@ -304,6 +310,11 @@ public class InstanceToJson implements InstanceJsonConstants {
 			}
 
 			jsonGen.writeEndObject();
+		}
+		else {
+			boolean topoJson = (useTopoJsonFeatures && !Placement.VALUE.equals(placement));
+			// TODO: insert part related to topoJson
+
 		}
 	}
 
