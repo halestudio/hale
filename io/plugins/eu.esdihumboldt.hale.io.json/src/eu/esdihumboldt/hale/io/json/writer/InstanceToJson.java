@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.geometry.WindingOrder;
+import json.topojson.topology.Topology;
 
 /**
  * Class to generate instance to JSON.
@@ -153,7 +154,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	public void writeCollection(JsonGenerator jsonGen, InstanceCollection instances, SimpleLog log)
 			throws IOException {
 
-		if (useGeoJsonFeatures || useTopoJsonFeatures) {
+		if (useGeoJsonFeatures) { // TODO: add case of useTopoJsonFeatures
 			// GeoJson
 
 			jsonGen.writeStartObject();
@@ -313,9 +314,31 @@ public class InstanceToJson implements InstanceJsonConstants {
 		}
 		else {
 			boolean topoJson = (useTopoJsonFeatures && !Placement.VALUE.equals(placement));
-			// TODO: insert part related to topoJson
+			// TODO: insert logic related to topoJson
+			// 1. extract a Feature Collection
+			// 2. which is input for FeatureCollectionToTopology model
+			// * (a modification of the original shpToTopology)
+			// 3. that outputs a topology
+			// 4. that is used by shpToTopojason to get a json
+			// 5. and finally shpToTopojasonFile writes the file
+
+			// * Modifications are:
+			// i) value input is a Feature Collection
+
+			if (topoJson) {
+				final String outString;
+				Object value = instance.getValue();
+
+				if (value instanceof InstanceCollection) {
+
+					Topology aTopology = json.topojson.api.TopojsonApi.FeatureCollectionToTopology(
+							(InstanceCollection) value, targetCrs, outString);
+				}
+
+			}
 
 		}
+
 	}
 
 	/**
