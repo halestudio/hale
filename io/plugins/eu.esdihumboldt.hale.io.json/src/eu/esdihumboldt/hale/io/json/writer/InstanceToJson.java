@@ -58,6 +58,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.geometry.WindingOrder;
+import json.geojson.FeatureCollection;
 import json.topojson.topology.Topology;
 
 /**
@@ -191,6 +192,19 @@ public class InstanceToJson implements InstanceJsonConstants {
 		}
 	}
 
+	public FeatureCollection createCollection(InstanceCollection instances, SimpleLog log) {
+		FeatureCollection featCollection = new FeatureCollection();
+		// iterate through Instances
+		try (ResourceIterator<Instance> itInstance = instances.iterator()) {
+			while (itInstance.hasNext()) {
+				Instance instance = itInstance.next();
+				// featCollection.
+				// featCollection: look how json.geojson library works --> fill-
+				// in featCollection with instances and return it
+			}
+		}
+	}
+
 	/**
 	 * Write an instance to Json.
 	 *
@@ -320,8 +334,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 			// * (a modification of the original shpToTopology)
 			// 3. that outputs a topology
 			// 4. that is used by shpToTopojason to get a json
-			// 5. and finally shpToTopojasonFile writes the file
-
+			// 5. and finally shpToTopojasonFile writes the file (or string)
 			// * Modifications are:
 			// i) value input is a Feature Collection
 
@@ -330,6 +343,9 @@ public class InstanceToJson implements InstanceJsonConstants {
 				Object value = instance.getValue();
 
 				if (value instanceof InstanceCollection) {
+
+					// use my new method to pass from an InstanceCollection to
+					// a FeatureCollection
 
 					Topology aTopology = json.topojson.api.TopojsonApi.FeatureCollectionToTopology(
 							(InstanceCollection) value, targetCrs, outString);
