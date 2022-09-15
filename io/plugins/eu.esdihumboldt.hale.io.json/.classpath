@@ -5,5 +5,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry kind="lib" path="/Users/flaminia/Desktop/topojson-j-master/topojson_j_modified.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/eu.esdihumboldt.hale.io.shp"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

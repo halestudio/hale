@@ -28,7 +28,8 @@ public class GroovyMergePage extends GroovyRetypePage {
 	public GroovyMergePage() {
 		super();
 
-		setDescription("Specify a Groovy script to build a target instance from a merged source instance");
+		setDescription(
+				"Specify a Groovy script to build a target instance from a merged source instance");
 	}
 
 	@Override

@@ -58,8 +58,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.geometry.WindingOrder;
-import json.geojson.FeatureCollection;
-import json.topojson.topology.Topology;
 
 /**
  * Class to generate instance to JSON.
@@ -192,18 +190,18 @@ public class InstanceToJson implements InstanceJsonConstants {
 		}
 	}
 
-	public FeatureCollection createCollection(InstanceCollection instances, SimpleLog log) {
-		FeatureCollection featCollection = new FeatureCollection();
-		// iterate through Instances
-		try (ResourceIterator<Instance> itInstance = instances.iterator()) {
-			while (itInstance.hasNext()) {
-				Instance instance = itInstance.next();
-				// featCollection.
-				// featCollection: look how json.geojson library works --> fill-
-				// in featCollection with instances and return it
-			}
-		}
-	}
+//	public FeatureCollection createCollection(InstanceCollection instances, SimpleLog log) {
+//		FeatureCollection featCollection = new FeatureCollection();
+//		// iterate through Instances
+//		try (ResourceIterator<Instance> itInstance = instances.iterator()) {
+//			while (itInstance.hasNext()) {
+//				Instance instance = itInstance.next();
+//				// featCollection.
+//				// featCollection: look how json.geojson library works --> fill-
+//				// in featCollection with instances and return it
+//			}
+//		}
+//	}
 
 	/**
 	 * Write an instance to Json.
@@ -328,28 +326,10 @@ public class InstanceToJson implements InstanceJsonConstants {
 		}
 		else {
 			boolean topoJson = (useTopoJsonFeatures && !Placement.VALUE.equals(placement));
-			// TODO: insert logic related to topoJson
-			// 1. extract a Feature Collection
-			// 2. which is input for FeatureCollectionToTopology model
-			// * (a modification of the original shpToTopology)
-			// 3. that outputs a topology
-			// 4. that is used by shpToTopojason to get a json
-			// 5. and finally shpToTopojasonFile writes the file (or string)
-			// * Modifications are:
-			// i) value input is a Feature Collection
 
 			if (topoJson) {
-				final String outString;
-				Object value = instance.getValue();
 
-				if (value instanceof InstanceCollection) {
-
-					// use my new method to pass from an InstanceCollection to
-					// a FeatureCollection
-
-					Topology aTopology = json.topojson.api.TopojsonApi.FeatureCollectionToTopology(
-							(InstanceCollection) value, targetCrs, outString);
-				}
+				// TODO: revert to original file and remove topoJson
 
 			}
 

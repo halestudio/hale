@@ -138,7 +138,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * 
 	 */
 
-	protected void writeInstances(InstanceCollection instances, ProgressIndicator progress,
+	public void writeInstances(InstanceCollection instances, ProgressIndicator progress,
 			IOReporter reporter, URI location) throws IOException {
 
 		// in all the variables, outer Map is for tracking multiple schemas and

@@ -15,12 +15,33 @@
 
 package eu.esdihumboldt.hale.io.json;
 
+import java.io.IOException;
+import java.net.URI;
+
+import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
+import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
+import eu.esdihumboldt.hale.common.core.io.report.IOReport;
+import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
+import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
+import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
+import eu.esdihumboldt.hale.io.shp.writer.ShapefileInstanceWriter;
+import json.topojson.api.TopojsonApi;
+
 /**
  * Writes instances as TopoJSON.
  * 
  * @author Flaminia Catalli
  */
 public class TopoJSONInstanceWriter extends JsonInstanceWriter {
+
+	private final CRSDefinition targetCrs = new CodeDefinition("EPSG:4326", true); // TODO:
+																					// check
+																					// if
+																					// CRS
+																					// is
+																					// correct
 
 //	/**
 //	 * Parameter name for the default geometry association.
@@ -34,10 +55,8 @@ public class TopoJSONInstanceWriter extends JsonInstanceWriter {
 //	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
 
 	/**
-	 * @param geoJson use geoJson feature when exporting to geoJson
-	 * @param topoJson use topoJson feature when exporting to topoJson
+	 * By default do not use geoJson or topoJson features for the output.
 	 */
-
 	public TopoJSONInstanceWriter() {
 		super(false, true);
 	}
@@ -45,6 +64,65 @@ public class TopoJSONInstanceWriter extends JsonInstanceWriter {
 	@Override
 	protected String getDefaultTypeName() {
 		return "TopoJSON";
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.io.json.JsonInstanceWriter#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
+	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
+	 */
+	@Override
+	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
+			throws IOProviderConfigurationException, IOException {
+
+		progress.begin("Generating " + getDefaultTypeName(), ProgressIndicator.UNKNOWN);
+
+		try {
+			// 1. write instances into a shape file
+			// 2. convert the shape file into topoJson
+			URI location = getTarget().getLocation();
+			InstanceCollection instances = getInstances();
+			writeInstanceCollectionToShp(instances, progress, reporter, location);
+			writeShpfileToTopojson(getTarget().toString(), targetCrs.toString(), location.getPath(),
+					"", 1, 4, false);
+			reporter.setSuccess(true);
+		} catch (Exception e) {
+			reporter.error(new IOMessageImpl(
+					String.format("Error generating %s file", getDefaultTypeName()), e));
+			reporter.setSuccess(false);
+		} finally {
+			progress.end();
+		}
+		return reporter;
+
+	}
+
+	private void writeInstanceCollectionToShp(InstanceCollection instances,
+			ProgressIndicator progress, IOReporter reporter, URI location) {
+
+		ShapefileInstanceWriter writer = new ShapefileInstanceWriter();
+		try {
+			System.out.println("entered");
+			writer.writeInstances(instances, progress, reporter, location);
+		} catch (IOException e) {
+			reporter.error(new IOMessageImpl(String.format("Error generating shape file"), e));
+			reporter.setSuccess(false);
+		} finally {
+			progress.end();
+		}
+
+	}
+
+	private void writeShpfileToTopojson(String iFileNameInput, String iCoordinateSystem,
+			String iFileOuput, String iTopoName, int iKink, int iQuantizeDigit, boolean iCompress) {
+
+		try {
+			TopojsonApi.shpToTopojsonFile(iFileNameInput, iCoordinateSystem, iFileOuput, iTopoName,
+					iKink, iQuantizeDigit, iCompress);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
