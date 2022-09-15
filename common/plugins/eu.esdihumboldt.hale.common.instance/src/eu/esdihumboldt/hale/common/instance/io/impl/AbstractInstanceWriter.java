@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.SchemaSpace;
  */
 public abstract class AbstractInstanceWriter extends GZipEnabledExport implements InstanceWriter {
 
-	private static InstanceCollection instances;
+	private InstanceCollection instances;
 
 	private SchemaSpace targetSchema;
 
@@ -100,7 +100,7 @@ public abstract class AbstractInstanceWriter extends GZipEnabledExport implement
 	/**
 	 * @return the instances
 	 */
-	public static InstanceCollection getInstances() {
+	protected InstanceCollection getInstances() {
 		return instances;
 	}
 
