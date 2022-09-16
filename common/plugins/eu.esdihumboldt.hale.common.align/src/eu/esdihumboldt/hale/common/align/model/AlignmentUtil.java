@@ -560,6 +560,7 @@ public abstract class AlignmentUtil {
 		}
 		else {
 			return path.get(path.size() - 1).getContextName();
+			// System.out.println("path context " + path);
 		}
 	}
 
@@ -759,6 +760,7 @@ public abstract class AlignmentUtil {
 		MutableInstance dummy = new DefaultInstance(null, null);
 		// add value as property
 		dummy.addProperty(new QName("value"), value);
+		System.out.println("dummy value" + dummy);
 		// add parent value as property
 		if (parent != null) {
 			dummy.addProperty(new QName("parent"), parent);

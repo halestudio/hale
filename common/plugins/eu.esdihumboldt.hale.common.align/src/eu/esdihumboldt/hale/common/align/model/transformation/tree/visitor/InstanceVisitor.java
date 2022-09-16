@@ -242,6 +242,7 @@ public class InstanceVisitor extends AbstractSourceToTargetVisitor {
 					}
 
 					values = matchedValues.toArray();
+					System.out.println("matched values" + values);
 				}
 
 				// (named contexts not allowed)
