@@ -153,7 +153,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	public void writeCollection(JsonGenerator jsonGen, InstanceCollection instances, SimpleLog log)
 			throws IOException {
 
-		if (useGeoJsonFeatures) {
+		if (useGeoJsonFeatures) { // TODO: add case of useTopoJsonFeatures
 			// GeoJson
 
 			jsonGen.writeStartObject();
@@ -189,6 +189,19 @@ public class InstanceToJson implements InstanceJsonConstants {
 			jsonGen.writeEndObject();
 		}
 	}
+
+//	public FeatureCollection createCollection(InstanceCollection instances, SimpleLog log) {
+//		FeatureCollection featCollection = new FeatureCollection();
+//		// iterate through Instances
+//		try (ResourceIterator<Instance> itInstance = instances.iterator()) {
+//			while (itInstance.hasNext()) {
+//				Instance instance = itInstance.next();
+//				// featCollection.
+//				// featCollection: look how json.geojson library works --> fill-
+//				// in featCollection with instances and return it
+//			}
+//		}
+//	}
 
 	/**
 	 * Write an instance to Json.

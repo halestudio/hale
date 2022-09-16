@@ -77,11 +77,15 @@ public class TopoJSONInstanceWriter extends JsonInstanceWriter {
 
 		progress.begin("Generating " + getDefaultTypeName(), ProgressIndicator.UNKNOWN);
 
+		URI location = getTarget().getLocation();
+		InstanceCollection instances = getInstances();
+		writeInstanceCollectionToShp(instances, progress, reporter, location);
+
 		try {
 			// 1. write instances into a shape file
 			// 2. convert the shape file into topoJson
-			URI location = getTarget().getLocation();
-			InstanceCollection instances = getInstances();
+			// URI location = getTarget().getLocation();
+			// InstanceCollection instances = getInstances();
 			writeInstanceCollectionToShp(instances, progress, reporter, location);
 			writeShpfileToTopojson(getTarget().toString(), targetCrs.toString(), location.getPath(),
 					"", 1, 4, false);

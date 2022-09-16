@@ -1,5 +1,4 @@
 /*
-
  * Copyright (c) 2012 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
