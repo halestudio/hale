@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.json;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -78,17 +79,17 @@ public class TopoJSONInstanceWriter extends JsonInstanceWriter {
 		progress.begin("Generating " + getDefaultTypeName(), ProgressIndicator.UNKNOWN);
 
 		URI location = getTarget().getLocation();
+		File shpFile = File.createTempFile("intermediate_shape_file", ".shp");
 		InstanceCollection instances = getInstances();
-		writeInstanceCollectionToShp(instances, progress, reporter, location);
 
 		try {
 			// 1. write instances into a shape file
 			// 2. convert the shape file into topoJson
 			// URI location = getTarget().getLocation();
 			// InstanceCollection instances = getInstances();
-			writeInstanceCollectionToShp(instances, progress, reporter, location);
-			writeShpfileToTopojson(getTarget().toString(), targetCrs.toString(), location.getPath(),
-					"", 1, 4, false);
+			writeInstanceCollectionToShp(instances, progress, reporter, shpFile.toURI());
+			writeShpfileToTopojson(shpFile.getAbsolutePath(), targetCrs.toString(),
+					new File(location).getAbsolutePath(), "test", 1, 4, false);
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(
@@ -109,7 +110,7 @@ public class TopoJSONInstanceWriter extends JsonInstanceWriter {
 			System.out.println("entered");
 			writer.writeInstances(instances, progress, reporter, location);
 		} catch (IOException e) {
-			reporter.error(new IOMessageImpl(String.format("Error generating shape file"), e));
+			reporter.error(new IOMessageImpl(String.format("Error generating Shapefile"), e));
 			reporter.setSuccess(false);
 		} finally {
 			progress.end();
