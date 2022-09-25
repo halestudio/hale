@@ -39,6 +39,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stax.StAXResult;
 
 import org.geotools.gml2.SrsSyntax;
+import org.locationtech.jts.geom.Geometry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -46,7 +47,6 @@ import org.xml.sax.SAXException;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
-import org.locationtech.jts.geom.Geometry;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -195,8 +195,8 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 		if (result != null)
 			return result;
 
-		throw new IllegalStateException(MessageFormat.format(
-				"Element {0} not found in the schema.", "SpatialDataSet"));
+		throw new IllegalStateException(
+				MessageFormat.format("Element {0} not found in the schema.", "SpatialDataSet"));
 	}
 
 	@Override
@@ -262,16 +262,16 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 		writer.writeStartElement(metadataName.getNamespaceURI(), metadataName.getLocalPart());
 
 		// retrieve metadata element (if any)
-		Element metadataElement = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_DOM).as(
-				Element.class);
+		Element metadataElement = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_DOM)
+				.as(Element.class);
 
 		// metadata from file (if any)
 		if (metadataElement == null) {
-			String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_FILE).as(
-					String.class);
+			String metadataFile = getParameter(PARAM_SPATIAL_DATA_SET_METADATA_FILE)
+					.as(String.class);
 			if (metadataFile != null && !metadataFile.isEmpty()) {
-				try (InputStream input = new BufferedInputStream(new FileInputStream(new File(
-						metadataFile)))) {
+				try (InputStream input = new BufferedInputStream(
+						new FileInputStream(new File(metadataFile)))) {
 					metadataElement = findMetadata(input, reporter);
 				} catch (IOException e) {
 					reporter.warn(new IOMessageImpl("Could not load specified metadata file.", e));
@@ -317,11 +317,12 @@ public class InspireInstanceWriter extends GmlInstanceWriter {
 			result = (Element) nl.item(0);
 		else if (nl.getLength() == 0)
 			reporter.warn(new IOMessageImpl(
-					"Couldn't include specified metadata file, no MD_Metadata element found.", null));
+					"Couldn't include specified metadata file, no MD_Metadata element found.",
+					null));
 		else {
 			// XXX Maybe ask the user somehow? Or better not include it?
-			reporter.warn(new IOMessageImpl(
-					"Found multiple MD_Metadata elements. Using first one.", null));
+			reporter.warn(new IOMessageImpl("Found multiple MD_Metadata elements. Using first one.",
+					null));
 			result = (Element) nl.item(0);
 		}
 

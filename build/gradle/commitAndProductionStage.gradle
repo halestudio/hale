@@ -887,130 +887,134 @@ task makeProductFeatureProjectDefinition(type: Copy) {
  * environment variable in order to let subsequent tasks know about the
  * path to the new temporary product file.
  */
-task makeProductFile << {
-    // check environment variables
-	if (project.ext.has('productFile')) {
-		// if a product file is given, prefer it over any productType/productName properties
-	} else if ((project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) ||
-        (!project.ext.properties.containsKey("productType") && project.ext.properties.containsKey("productName"))) {
-        throw new IllegalStateException("Please specify the parameters 'productType' and 'productName'")
-    } else if (!project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) {
-        // make sure 'productFile' is given instead
-        getProductFile()
-    } else {
-        def productType = project.ext.productType
-        def productName = project.ext.productName
-
-        // load product definition
-        def productDefsFile = Helper.resolveTemplate(project, "products/${productType}.yaml")
-        if (!productDefsFile.exists()) {
-            throw new IllegalStateException("Unknown product type: ${productType}")
-        }
-        def productDefs = new Yaml().load(productDefsFile.newReader())
-
-        // parse product definition (e.g. process 'Extends' directives, etc.)
-        def productDef = makeProductDef(productDefs, productName)
-
-        // add target version to product definition (so it can be
-        // used in the product template)
-        productDef['Version'] = formatBundleVersion(project.version) //TODO check if this method defined in updateSite.gradle is accessible
-
-        // parse plugins and add start levels to product definition
-        def startLevels = []
-        def plugins = []
-        productDef['Plugins'].each { p ->
-            def at = p.indexOf('@')
-            if (at >= 0) {
-                def name = p.substring(0, at)
-                def level = p.substring(at + 1)
-                startLevels << [
-                    'Name': name,
-                    'StartLevel': level
-                ]
-                p = name
-            }
-            plugins << p
-        }
-        productDef['Plugins'] = plugins
-        productDef['StartLevels'] = startLevels
-
-        if (!productDef.containsKey('AboutImagePath')) {
-            productDef['AboutImagePath'] = null
-        }
-        if (!productDef.containsKey('WinIco')) {
-            productDef['WinIco'] = null
-        }
-
-        // render product template using the parsed product definition
-        def productFileTemp = new File(buildDir, 'temp.product')
-        renderTemplate(Helper.resolveTemplate(project, 'products/template.product'), productFileTemp, productDef)
-
-        // set environment variable to the path to the new temporary
-        // product file, so subsequent tasks can use it
-        project.ext.productFile = productFileTemp.path
-
-		// set tag from product definition
-		project.ext.tag = productDef['Tag']
-
-        // set global variables for additional files so
-        // subsequent tasks can use it
-        // if (productDef['IncludeMongoDB'] != null) {
-        //     project.ext.includeMongoDB = productDef['IncludeMongoDB']
-        // }
-        // if (productDef['IncludeTranscoder'] != null) {
-        //     project.ext.includeTranscoder = productDef['IncludeTranscoder']
-        // }
-        if (productDef['AdditionalFiles'] != null) {
-            project.ext.additionalFilesToPackage = productDef['AdditionalFiles']
-        }
-    }
+task makeProductFile {
+	doLast {
+	    // check environment variables
+		if (project.ext.has('productFile')) {
+			// if a product file is given, prefer it over any productType/productName properties
+		} else if ((project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) ||
+	        (!project.ext.properties.containsKey("productType") && project.ext.properties.containsKey("productName"))) {
+	        throw new IllegalStateException("Please specify the parameters 'productType' and 'productName'")
+	    } else if (!project.ext.properties.containsKey("productType") && !project.ext.properties.containsKey("productName")) {
+	        // make sure 'productFile' is given instead
+	        getProductFile()
+	    } else {
+	        def productType = project.ext.productType
+	        def productName = project.ext.productName
+	
+	        // load product definition
+	        def productDefsFile = Helper.resolveTemplate(project, "products/${productType}.yaml")
+	        if (!productDefsFile.exists()) {
+	            throw new IllegalStateException("Unknown product type: ${productType}")
+	        }
+	        def productDefs = new Yaml().load(productDefsFile.newReader())
+	
+	        // parse product definition (e.g. process 'Extends' directives, etc.)
+	        def productDef = makeProductDef(productDefs, productName)
+	
+	        // add target version to product definition (so it can be
+	        // used in the product template)
+	        productDef['Version'] = formatBundleVersion(project.version) //TODO check if this method defined in updateSite.gradle is accessible
+	
+	        // parse plugins and add start levels to product definition
+	        def startLevels = []
+	        def plugins = []
+	        productDef['Plugins'].each { p ->
+	            def at = p.indexOf('@')
+	            if (at >= 0) {
+	                def name = p.substring(0, at)
+	                def level = p.substring(at + 1)
+	                startLevels << [
+	                    'Name': name,
+	                    'StartLevel': level
+	                ]
+	                p = name
+	            }
+	            plugins << p
+	        }
+	        productDef['Plugins'] = plugins
+	        productDef['StartLevels'] = startLevels
+	
+	        if (!productDef.containsKey('AboutImagePath')) {
+	            productDef['AboutImagePath'] = null
+	        }
+	        if (!productDef.containsKey('WinIco')) {
+	            productDef['WinIco'] = null
+	        }
+	
+	        // render product template using the parsed product definition
+	        def productFileTemp = new File(buildDir, 'temp.product')
+	        renderTemplate(Helper.resolveTemplate(project, 'products/template.product'), productFileTemp, productDef)
+	
+	        // set environment variable to the path to the new temporary
+	        // product file, so subsequent tasks can use it
+	        project.ext.productFile = productFileTemp.path
+	
+			// set tag from product definition
+			project.ext.tag = productDef['Tag']
+	
+	        // set global variables for additional files so
+	        // subsequent tasks can use it
+	        // if (productDef['IncludeMongoDB'] != null) {
+	        //     project.ext.includeMongoDB = productDef['IncludeMongoDB']
+	        // }
+	        // if (productDef['IncludeTranscoder'] != null) {
+	        //     project.ext.includeTranscoder = productDef['IncludeTranscoder']
+	        // }
+	        if (productDef['AdditionalFiles'] != null) {
+	            project.ext.additionalFilesToPackage = productDef['AdditionalFiles']
+	        }
+	    }
+	}
 }
 
-task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makeProductFeatureProjectDefinition ]) << {
-    def pg = new PomGenerator(project)
-
-    //create pom.xml
-    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-    pg.makePomFileWithPackaging(productFeaturePath.name, '1.0.0', false, false, 'eclipse-repository',
-            'pom-product.xml', productFeaturePath)
-
-    // create build.properties
-    def productFile = getProductFile()
-    new File(productFeaturePath, 'build.properties').withWriter {
-        it << "bin.includes = ${productFile}\n"
-    }
-
-    def shortProductFile = new File(productFile).name
-    pg.generateParentPomFile([ (productFeaturePath.name): [ 'path': productFeaturePath ] ])
-    project.delete(fileTree(dir: productFeaturePath, include: '*.product'))
-    copy {
-        from productFile
-        into productFeaturePath
-    }
-
-	new File("$productFeaturePath/HALE.p2.inf").text = '''
-instructions.configure=\
-  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:0,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
-  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
-  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:0,name:XtraServer Plug-in for hale studio,enabled:true);\
-  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:1,name:XtraServer Plug-in for hale studio,enabled:true);
-'''
-
-    // remove platform-specific fragments from product
-    // FIXME remove this once Tycho knows how to handle platform-specific
-    // fragments on its own. See BUG 342890
-    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=342890
-    def dstProductFile = new File(productFeaturePath, shortProductFile)
-    filterPlatformSpecificFragments(dstProductFile)
-
-    // replace relative paths to launcher icons by absolute ones
-    // Note: the icon paths are usually specified as relative paths to
-    // resources in a bundle. Therefore the paths contain the bundle's symbolic
-    // name. Eclipse PDE knows how to handle that, but Tycho doesn't. Tycho
-    // expects the icon path point to a local file (i.e. a relative or absolute
-    // file path). Hence, we have to replace the symbolic name by an absolute
-    // file path on our own.
-    replaceIconPaths(dstProductFile)
+task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makeProductFeatureProjectDefinition ]) {
+	doLast {
+	    def pg = new PomGenerator(project)
+	
+	    //create pom.xml
+	    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
+	    pg.makePomFileWithPackaging(productFeaturePath.name, '1.0.0', false, false, 'eclipse-repository',
+	            'pom-product.xml', productFeaturePath)
+	
+	    // create build.properties
+	    def productFile = getProductFile()
+	    new File(productFeaturePath, 'build.properties').withWriter {
+	        it << "bin.includes = ${productFile}\n"
+	    }
+	
+	    def shortProductFile = new File(productFile).name
+	    pg.generateParentPomFile([ (productFeaturePath.name): [ 'path': productFeaturePath ] ])
+	    project.delete(fileTree(dir: productFeaturePath, include: '*.product'))
+	    copy {
+	        from productFile
+	        into productFeaturePath
+	    }
+	
+		new File("$productFeaturePath/HALE.p2.inf").text = '''
+	instructions.configure=\
+	  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:0,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
+	  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
+	  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:0,name:XtraServer Plug-in for hale studio,enabled:true);\
+	  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:1,name:XtraServer Plug-in for hale studio,enabled:true);
+	'''
+	
+	    // remove platform-specific fragments from product
+	    // FIXME remove this once Tycho knows how to handle platform-specific
+	    // fragments on its own. See BUG 342890
+	    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=342890
+	    def dstProductFile = new File(productFeaturePath, shortProductFile)
+	    filterPlatformSpecificFragments(dstProductFile)
+	
+	    // replace relative paths to launcher icons by absolute ones
+	    // Note: the icon paths are usually specified as relative paths to
+	    // resources in a bundle. Therefore the paths contain the bundle's symbolic
+	    // name. Eclipse PDE knows how to handle that, but Tycho doesn't. Tycho
+	    // expects the icon path point to a local file (i.e. a relative or absolute
+	    // file path). Hence, we have to replace the symbolic name by an absolute
+	    // file path on our own.
+	    replaceIconPaths(dstProductFile)
+	}	
 }
 
 /**
@@ -1020,56 +1024,77 @@ instructions.configure=\
  * 'templates/products/server.yaml'). Alternatively you can specify
  * a path to a product file manually with the 'productFile' property.
  */
-task buildProduct(dependsOn: createProductFeature) << {
-    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
-    if (res != 0) {
-        throw new RuntimeException("Maven failed with exit code ${res}")
-    }
-
-    // extract zip file which has been created by Tycho
-    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
-            project.ext.osgiWS + '.' + project.ext.osgiArch
-    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
-    def productOutputPath = new File(buildDir, getProductUid())
-    project.delete(productOutputPath)
-    println('Extracting product ...')
-    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
-
-    // Include JRE if available for this platform
-    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
-
-    // Include additional files
-    // if (project.ext.includeMongoDB) {
-    //     includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
-    // }
-    if (productContainsHaleIOBundles()) {
-        includeAdditionalFiles(project.ext.spatialiteArtifacts, 'spatialite', productOutputPath, '', 'Spatialite')
-    }
-    if (!project.ext.additionalFilesToPackage.isEmpty()) {
-        println('Copying additional files ...')
-        project.ext.additionalFilesToPackage.each { af ->
-            project.copy {
-                from Helper.resolveTemplate(project, 'additional_files')
-				include af
-                into productOutputPath
-            }
-        }
-    }
-
-	updateAboutInfo(productOutputPath)
+task buildProduct(dependsOn: createProductFeature) {
+	doFirst{
+	def projectRoot = project.ext.rootDir.path
+//		System.setProperty("maven.multiModuleProjectDirectory", projectDir);
+//		System.setProperty("maven.multiModuleProjectDirectory", projectRoot);
+		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
+	}	
+	doLast {
+		println '+++++++++++++++++ lets see'
+		def projectRoot = project.ext.rootDir.path
+//		System.setProperty("maven.multiModuleProjectDirectory", projectDir);
+//		System.setProperty("maven.multiModuleProjectDirectory", projectRoot);
+		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
+		println ('++++++++++++ workingDir: ' + projectRoot)
+		def origBasedir = System.getProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY );
+		println ('++++++++++++ origBasedir: ' + origBasedir)
+	    def res = new MavenCli().doMain([ '-e', '-X', 'package' ] as String[], project.ext.rootDir.path , System.out, System.err)
+//		def res = new MavenCli().doMain(new String[] { "-Dmaven.multiModuleProjectDirectory=" + projectRoot, "-e", "package" }, project.ext.rootDir.path , System.out, System.err)
+		
+		println '+++++ after doMain'
+	    if (res != 0) {
+	        throw new RuntimeException("Maven failed with exit code ${res}")
+	    }
+	
+	    // extract zip file which has been created by Tycho
+	    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
+	            project.ext.osgiWS + '.' + project.ext.osgiArch
+	    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
+	    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+	    def productOutputPath = new File(buildDir, getProductUid())
+	    project.delete(productOutputPath)
+	    println('Extracting product ...')
+	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
+	
+	    // Include JRE if available for this platform
+	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
+	
+	    // Include additional files
+	    // if (project.ext.includeMongoDB) {
+	    //     includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
+	    // }
+	    if (productContainsHaleIOBundles()) {
+	        includeAdditionalFiles(project.ext.spatialiteArtifacts, 'spatialite', productOutputPath, '', 'Spatialite')
+	    }
+	    if (!project.ext.additionalFilesToPackage.isEmpty()) {
+	        println('Copying additional files ...')
+	        project.ext.additionalFilesToPackage.each { af ->
+	            project.copy {
+	                from Helper.resolveTemplate(project, 'additional_files')
+					include af
+	                into productOutputPath
+	            }
+	        }
+	    }
+	
+		updateAboutInfo(productOutputPath)
+	}	
 }
 
 /**
  * Packages a built product.
  */
-task packageProduct(dependsOn: buildProduct) << {
-	def productOutputPath = new File(buildDir, getProductUid())
-
-	if (productContainsUIBundles()) {
-		packageClient(productOutputPath)
-	} else {
-		packageServer(productOutputPath)
+task packageProduct(dependsOn: buildProduct) {
+	doLast {
+		def productOutputPath = new File(buildDir, getProductUid())
+	
+		if (productContainsUIBundles()) {
+			packageClient(productOutputPath)
+		} else {
+			packageServer(productOutputPath)
+		}
 	}
 }
 
@@ -1149,16 +1174,20 @@ def runTests(args = []) {
  * Runs the OSGi unit tests. This method does not fail the build if one
  * unit test fails.
  */
-task runUnitTests(dependsOn: buildProduct) << {
-	runTests(['-unit'])
+task runUnitTests(dependsOn: buildProduct) {
+	doLast {
+		runTests(['-unit'])
+	}
 }
 
 /**
  * Runs the OSGi unit and integration tests. This method does not fail the build if one
  * unit test fails.
  */
-task runAllTests(dependsOn: buildProduct) << {
-	runTests(['-unit', '-integration'])
+task runAllTests(dependsOn: buildProduct) {
+	doLast {
+		runTests(['-unit', '-integration'])
+	}	
 }
 
 /**
