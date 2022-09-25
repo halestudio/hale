@@ -34,14 +34,16 @@ import ch.parren.jdepchk.JDepChk
  * Just needs compiled classes, so the whole update site is probably
  * a slightly excessive task dependency.
  */
-task checkDependencies(dependsOn: buildUpdateSite) << {
-    def res_strings = new BundleParser(project).getParsedBundles().collect { b ->
-        JDepChk.main([
-            '-r', 'depchk/arch.jdep',
-            '-c', b.value.path.path + '/target/classes',
-            '--use-asm-checker', // slower but checks attributes
-        ] as String[])
-    }
+task checkDependencies(dependsOn: buildUpdateSite) {
+	doLast {
+	    def res_strings = new BundleParser(project).getParsedBundles().collect { b ->
+	        JDepChk.main([
+	            '-r', 'depchk/arch.jdep',
+	            '-c', b.value.path.path + '/target/classes',
+	            '--use-asm-checker', // slower but checks attributes
+	        ] as String[])
+	    }
+	}	
 }
 
 commitStage.dependsOn(checkDependencies)

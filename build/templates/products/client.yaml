@@ -102,7 +102,6 @@ HALE:
   - eu.esdihumboldt.cst.functions.string
   - eu.esdihumboldt.hale.common.align@0
   - eu.esdihumboldt.hale.common.align.groovy
-  - eu.esdihumboldt.hale.common.align.tgraph
   - eu.esdihumboldt.hale.common.app
   - eu.esdihumboldt.hale.common.cache
   - eu.esdihumboldt.hale.common.codelist
@@ -353,8 +352,6 @@ HALE:
   - org.mortbay.jetty.server
   - org.mortbay.jetty.util
   - org.opengis
-  - org.parboiled.core
-  - org.parboiled.java
   - org.postgresql.jdbc4
   - slf4j.api
   - org.springframework.aop@0
@@ -368,7 +365,6 @@ HALE:
   - org.w3c.dom.events
   - org.w3c.dom.smil
   - org.w3c.dom.svg
-  - pegdown
   - relaxngDatatype
   - schemacrawler.core
   - slf4j.ext
@@ -380,5 +376,3 @@ AGeoBw:
 #  - -Xmx1600M
   Plugins:
   - eu.esdihumboldt.hale.ui.util.bbr
-  - eu.esdihumboldt.hale.functions.bgis
-  - eu.esdihumboldt.hale.app.bgis.ade
