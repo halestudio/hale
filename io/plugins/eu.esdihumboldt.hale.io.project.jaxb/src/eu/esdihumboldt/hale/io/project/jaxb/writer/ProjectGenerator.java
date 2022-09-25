@@ -19,9 +19,9 @@ import java.io.File;
 import java.net.URI;
 
 import javax.swing.GroupLayout.Alignment;
-import javax.xml.bind.JAXBException;
 
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
+import jakarta.xml.bind.JAXBException;
 
 /**
  * The {@link ProjectGenerator} serializes all project info to an xml file. The

@@ -16,8 +16,6 @@
 
 package eu.esdihumboldt.hale.prefixmapper;
 
-import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
-
 /**
  * Custom namespace prefix mapper.
  * 

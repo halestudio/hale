@@ -23,10 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FilenameUtils;
@@ -61,6 +57,11 @@ import eu.esdihumboldt.hale.io.project.jaxb.generated.ConfigSection;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.HaleProject;
 import eu.esdihumboldt.hale.io.project.jaxb.generated.ObjectFactory;
 import eu.esdihumboldt.hale.io.project.jaxb.internal.Messages;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**
  * The project parser reads a given project XML file and populates a
@@ -141,8 +142,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			} catch (IllegalArgumentException e) {
 				file = null;
 			}
-			String basePath = (file == null) ? (new File(".").getAbsolutePath()) : (FilenameUtils
-					.getFullPath(file.getAbsolutePath()));
+			String basePath = (file == null) ? (new File(".").getAbsolutePath())
+					: (FilenameUtils.getFullPath(file.getAbsolutePath()));
 
 			// Unmarshal the project file
 			JAXBContext jc;
@@ -150,7 +151,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			try {
 				jc = JAXBContext.newInstance(PROJECT_CONTEXT, ObjectFactory.class.getClassLoader());
 				Unmarshaller u = jc.createUnmarshaller();
-				u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+				u.setEventHandler(new DefaultValidationEventHandler());
 				root = u.unmarshal(new StreamSource(getSource().getInput()), HaleProject.class);
 			} catch (JAXBException e) {
 				reporter.error(new IOMessageImpl(
@@ -220,8 +221,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			for (ConfigData data : section.getData()) {
 				// TODO check if this is compatible with
 				// NamespaceConfigurationItem
-				project.getProperties()
-						.put(prefix + "/" + data.getKey(), Value.of(data.getValue()));
+				project.getProperties().put(prefix + "/" + data.getKey(),
+						Value.of(data.getValue()));
 			}
 		}
 	}
@@ -343,7 +344,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			// : (file.getAbsolutePath()));
 			// if (ct == null) {
 			// report.error(new IOMessageImpl(
-			// "Could not load instance data at {0}, the content type could not be identified.",
+			// "Could not load instance data at {0}, the content type could not
+			// be identified.",
 			// null, source));
 			// return;
 			// }
@@ -351,7 +353,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			// InstanceReader.class, ct, null);
 			// if (irf == null) {
 			// report.error(new IOMessageImpl(
-			// "Could not load instance data at {0}, no matching I/O provider could be found.",
+			// "Could not load instance data at {0}, no matching I/O provider
+			// could be found.",
 			// null, source));
 			// return;
 			// }
@@ -406,12 +409,13 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			// }
 			//
 			// alignmentService.addOrUpdateAlignment(alignment);
-			//				log.info("Number of loaded cells: " + alignmentService.getAlignment().getMap().size()); //$NON-NLS-1$
+			// log.info("Number of loaded cells: " +
+			// alignmentService.getAlignment().getMap().size()); //$NON-NLS-1$
 			// } catch (Exception e) {
 			// // continue
-			//				String message = "Mapping could not be loaded";  //$NON-NLS-1$
+			// String message = "Mapping could not be loaded"; //$NON-NLS-1$
 			// log.error(message, e);
-			//				errors.add(message + ": " + e.getMessage()); //$NON-NLS-1$
+			// errors.add(message + ": " + e.getMessage()); //$NON-NLS-1$
 			// alignmentService.cleanModel();
 			// }
 		}
@@ -438,7 +442,7 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 			// styleService.addStyles(stylesLoc.toURL());
 			// } catch (Exception e) {
 			// // continue
-			//					String message = "Error loading SLD from " + path;  //$NON-NLS-1$
+			// String message = "Error loading SLD from " + path; //$NON-NLS-1$
 			// _log.error(message, e);
 			// errors.add(message);
 			// styleService.clearStyles();
@@ -465,8 +469,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		// TaskService taskService = (TaskService)
 		// PlatformUI.getWorkbench().getService(TaskService.class);
 		//
-		//		monitor.subTask(Messages.ProjectParser_17); //$NON-NLS-1$
-		//		ATransaction taskTrans = _log.begin("Loading tasks"); //$NON-NLS-1$
+		// monitor.subTask(Messages.ProjectParser_17); //$NON-NLS-1$
+		// ATransaction taskTrans = _log.begin("Loading tasks"); //$NON-NLS-1$
 		// try {
 		// taskService.clearUserTasks();
 		// TaskStatus status = project.getTaskStatus();
@@ -478,8 +482,8 @@ public class ProjectParser extends AbstractImportProvider implements ProjectRead
 		// for (String identifier : task.getContextIdentifier()) {
 		// Definition definition = schemaService.getDefinition(identifier);
 		// if (definition == null) {
-		//								throw new IllegalStateException("Unknown identifier " +  //$NON-NLS-1$
-		//										identifier + ", failed to load task."); //$NON-NLS-1$
+		// throw new IllegalStateException("Unknown identifier " + //$NON-NLS-1$
+		// identifier + ", failed to load task."); //$NON-NLS-1$
 		// }
 		// else {
 		// definitions.add(definition);

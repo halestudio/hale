@@ -37,7 +37,7 @@ class Runner extends GroupCommand {
 	final String shortDescription = 'hale command line utility'
 
 	int run(String[] args) {
-		CommandContext context = new ContextImpl(baseCommand, null)
+		CommandContext context = new ContextImpl(baseCommand: this.baseCommand, commandName: null)
 
 		File outFile = null
 		File errFile = null
@@ -116,5 +116,4 @@ class Runner extends GroupCommand {
 			}
 		}
 	}
-
 }
