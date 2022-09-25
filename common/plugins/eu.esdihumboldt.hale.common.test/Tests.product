@@ -346,6 +346,7 @@
       <plugin id="javax.media.jai_imageio"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.transaction-api"/>
       <plugin id="javax.vecmath"/>
       <plugin id="javax.ws.rs-api"/>
       <plugin id="javax.xml"/>

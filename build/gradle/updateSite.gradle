@@ -54,121 +54,128 @@ String formatBundleVersion(String version) {
  * order to update all projects.
  * The feature will include all workspace bundles.
  */
-task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition) << {
-	if (project.hasProperty('customUpdateSiteFeatureId')) {
-		// an existing feature should provide the update site
-		// determine feature version
-		def feature = new BundleParser(project).getParsedFeatures()[project.ext.customUpdateSiteFeatureId]
-		if (feature) {
-			project.ext.updateSiteFeatureVersion = feature.version
+task createUpdateSiteFeature(dependsOn: createUpdateSiteFeatureProjectDefinition) {
+	doLast {
+		if (project.hasProperty('customUpdateSiteFeatureId')) {
+			// an existing feature should provide the update site
+			// determine feature version
+			def feature = new BundleParser(project).getParsedFeatures()[project.ext.customUpdateSiteFeatureId]
+			if (feature) {
+				project.ext.updateSiteFeatureVersion = feature.version
+			}
+			else {
+				throw new IllegalStateException("Feature ${project.ext.customUpdateSiteFeatureId} for update site not found.")
+			}
 		}
 		else {
-			throw new IllegalStateException("Feature ${project.ext.customUpdateSiteFeatureId} for update site not found.")
-		}
-	}
-	else {
-		// generate overall feature
-		def featureId = project.ext.generatedUpdateSiteFeatureId
-		def featureLabel = project.ext.generatedUpdateSiteFeatureLabel
-		def featureVersion = project.version
+			// generate overall feature
+			def featureId = project.ext.generatedUpdateSiteFeatureId
+			def featureLabel = project.ext.generatedUpdateSiteFeatureLabel
+			def featureVersion = project.version
+			
+			project.ext.updateSiteFeatureVersion = featureVersion
 		
-		project.ext.updateSiteFeatureVersion = featureVersion
+		    // create pom.xml
+		    def updateSiteFeaturePath = createUpdateSiteFeatureProjectDefinition.destinationDir
+		    new PomGenerator(project).makePluginPomFileWithPackaging(featureId, featureVersion, false,
+		            false, 'eclipse-feature', updateSiteFeaturePath, [isJavaProject: false])
+		
+		    // create build.properties
+		    new File(updateSiteFeaturePath, 'build.properties').withWriter {
+		        it << "bin.includes = feature.xml\n"
+		    }
+		
+		    new File(updateSiteFeaturePath, 'feature.xml').withWriter { w ->
+		        def xml = new MarkupBuilder(w)
+		        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
+		        xml.feature('id': featureId, 'label': featureLabel, 'version': formatBundleVersion(featureVersion)) {
+					def bundleParser = new BundleParser(project)
+		            // add workspace plugins
+		            bundleParser.getParsedBundles().each {
+		                plugin('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
+		                // source bundle
+		                if (it.value.isJavaProject || it.value.needsGroovy || it.value.needsScala) {
+		                    plugin('id': it.key + '.source', 'version': '0.0.0')
+		                }
+		            }
 	
-	    // create pom.xml
-	    def updateSiteFeaturePath = createUpdateSiteFeatureProjectDefinition.destinationDir
-	    new PomGenerator(project).makePluginPomFileWithPackaging(featureId, featureVersion, false,
-	            false, 'eclipse-feature', updateSiteFeaturePath, [isJavaProject: false])
-	
-	    // create build.properties
-	    new File(updateSiteFeaturePath, 'build.properties').withWriter {
-	        it << "bin.includes = feature.xml\n"
-	    }
-	
-	    new File(updateSiteFeaturePath, 'feature.xml').withWriter { w ->
-	        def xml = new MarkupBuilder(w)
-	        xml.mkp.xmlDeclaration(version: '1.0', encoding: 'utf-8')
-	        xml.feature('id': featureId, 'label': featureLabel, 'version': formatBundleVersion(featureVersion)) {
-				def bundleParser = new BundleParser(project)
-	            // add workspace plugins
-	            bundleParser.getParsedBundles().each {
-	                plugin('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
-	                // source bundle
-	                if (it.value.isJavaProject || it.value.needsGroovy || it.value.needsScala) {
-	                    plugin('id': it.key + '.source', 'version': '0.0.0')
-	                }
-	            }
-
-				// include features
-				bundleParser.getParsedFeatures().each {
-					includes('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
-				}
-	        }
-	    }
-	}
+					// include features
+					bundleParser.getParsedFeatures().each {
+						includes('id': it.key, 'version': '0.0.0') // no version because real version (with qualifier) not known
+					}
+		        }
+		    }
+		}
+	}	
 }
 
 /**
  * Build bundles and assemble update site.
  */
-task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) << {
-    def pg = new PomGenerator(project)
-
-	def featureId = project.hasProperty('customUpdateSiteFeatureId') ? project.ext.customUpdateSiteFeatureId : project.ext.generatedUpdateSiteFeatureId
-	def featureVersion = project.ext.updateSiteFeatureVersion
+task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) {
+	
+    doLast {
+		def pg = new PomGenerator(project)
+	
+		def featureId = project.hasProperty('customUpdateSiteFeatureId') ? project.ext.customUpdateSiteFeatureId : project.ext.generatedUpdateSiteFeatureId
+		def featureVersion = project.ext.updateSiteFeatureVersion
+			
+		def updateSiteId = featureId + '.site'
+		def updateSiteVersion = featureVersion
 		
-	def updateSiteId = featureId + '.site'
-	def updateSiteVersion = featureVersion
+	    // create pom file
+	    def updateSitePath = new File(buildDir, 'gen.site')
+		
+		// allways clear working folder
+		updateSitePath.deleteDir()
+	    updateSitePath.mkdirs()
+		
+	    pg.makePomFileWithPackaging(updateSiteId, updateSiteVersion, false, false, 'eclipse-repository',
+	            'pom-repository.xml', updateSitePath)
 	
-    // create pom file
-    def updateSitePath = new File(buildDir, 'gen.site')
+	    // create category.xml
+	    new File(updateSitePath, 'category.xml').withWriter { w ->
+	        def template = new GStringTemplateEngine().createTemplate(Helper.resolveTemplate(project, 'category.xml'))
+	        def result = template.make([
+				// custom or generated feature
+	            'featureId': featureId,
+	            'version': '0.0.0'
+	        ]).toString()
+	        w << result
+	    }
 	
-	// allways clear working folder
-	updateSitePath.deleteDir()
-    updateSitePath.mkdirs()
-	
-    pg.makePomFileWithPackaging(updateSiteId, updateSiteVersion, false, false, 'eclipse-repository',
-            'pom-repository.xml', updateSitePath)
-
-    // create category.xml
-    new File(updateSitePath, 'category.xml').withWriter { w ->
-        def template = new GStringTemplateEngine().createTemplate(Helper.resolveTemplate(project, 'category.xml'))
-        def result = template.make([
-			// custom or generated feature
-            'featureId': featureId,
-            'version': '0.0.0'
-        ]).toString()
-        w << result
-    }
-
-    // generate parent pom file and add update site module(s)
-	def parentPomConfig = [
-        (updateSitePath.name): [
-            'version': updateSiteVersion,
-            'path': updateSitePath
-        ]
-    ]
-	if (!project.hasProperty('customUpdateSiteFeatureId')) {
-		// include generated feature path if no custom feature is used
-		parentPomConfig[createUpdateSiteFeatureProjectDefinition.destinationDir.name] = [
-			'version': featureVersion,
-			'path': createUpdateSiteFeatureProjectDefinition.destinationDir
-		]
-	}
-    pg.generateParentPomFile(parentPomConfig)
-
-    // build update site
-    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
-    if (res != 0) {
-        throw new RuntimeException("Maven failed with exit code ${res}")
-    }
+	    // generate parent pom file and add update site module(s)
+		def parentPomConfig = [
+	        (updateSitePath.name): [
+	            'version': updateSiteVersion,
+	            'path': updateSitePath
+	        ]
+	    ]
+		if (!project.hasProperty('customUpdateSiteFeatureId')) {
+			// include generated feature path if no custom feature is used
+			parentPomConfig[createUpdateSiteFeatureProjectDefinition.destinationDir.name] = [
+				'version': featureVersion,
+				'path': createUpdateSiteFeatureProjectDefinition.destinationDir
+			]
+		}
+	    pg.generateParentPomFile(parentPomConfig)
+		
+	    // build update site
+	    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
+	    if (res != 0) {
+	        throw new RuntimeException("Maven failed with exit code ${res}")
+	    }
+    }	
 }
 
-task packageUpdateSite(dependsOn: buildUpdateSite) << {
-	copy {
-		from (new File(buildDir, 'gen.site/target')) {
-			include "*.zip"
+task packageUpdateSite(dependsOn: buildUpdateSite) {
+	doLast {
+		copy {
+			from (new File(buildDir, 'gen.site/target')) {
+				include "*.zip"
+			}
+			into 'target/'
+			includeEmptyDirs = false
 		}
-		into 'target/'
-		includeEmptyDirs = false
-	}
+	}	
 }

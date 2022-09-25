@@ -22,12 +22,14 @@
  * Generate pom.xml files for all bundles, the target platform bundle and
  * the root project
  */
-task generatePomFiles << {
-    def pg = new PomGenerator(project)
-
-    // generate pom files for all bundles
-    pg.generatePomFiles()
-
-    // generate parent pom file
-    pg.generateParentPomFile()
+task generatePomFiles {
+	doLast {
+	    def pg = new PomGenerator(project)
+	
+	    // generate pom files for all bundles
+	    pg.generatePomFiles()
+	
+	    // generate parent pom file
+	    pg.generateParentPomFile()
+	}	
 }
