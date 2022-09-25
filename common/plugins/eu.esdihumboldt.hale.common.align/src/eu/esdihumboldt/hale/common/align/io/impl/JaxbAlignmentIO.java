@@ -21,10 +21,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentToJaxb;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.JaxbToAlignment;
@@ -41,6 +37,9 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * Save or load an alignment
@@ -97,7 +96,7 @@ public class JaxbAlignmentIO {
 	 */
 	public static void addBaseAlignment(MutableAlignment alignment, URI newBase,
 			URI projectLocation, TypeIndex sourceTypes, TypeIndex targetTypes, IOReporter reporter)
-					throws IOException {
+			throws IOException {
 		JaxbToAlignment.addBaseAlignment(alignment, newBase, projectLocation, sourceTypes,
 				targetTypes, reporter);
 	}

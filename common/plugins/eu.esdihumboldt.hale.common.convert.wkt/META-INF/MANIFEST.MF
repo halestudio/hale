@@ -7,6 +7,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.locationtech.jts,
  org.locationtech.jts.geom,
  org.locationtech.jts.io
-Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0"
+Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0",
+ org.springframework.spring-core;bundle-version="5.2.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.convert.wkt

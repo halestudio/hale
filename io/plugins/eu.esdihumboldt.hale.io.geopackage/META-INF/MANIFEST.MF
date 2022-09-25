@@ -18,7 +18,8 @@ Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
  eu.esdihumboldt.util.groovy;bundle-version="4.0.0",
  mil.nga.sf.wkb;bundle-version="2.0.2",
  com.j256.ormlite;bundle-version="5.1.0",
- eu.esdihumboldt.hale.common.convert;bundle-version="4.0.0"
+ eu.esdihumboldt.hale.common.convert;bundle-version="4.0.0",
+ org.springframework.spring-core;bundle-version="5.2.0"
 Import-Package: com.google.common.cache;version="18.0.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.align.helper,

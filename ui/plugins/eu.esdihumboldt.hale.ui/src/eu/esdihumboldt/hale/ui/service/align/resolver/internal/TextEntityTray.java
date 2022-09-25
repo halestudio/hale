@@ -15,9 +15,6 @@
 
 package eu.esdihumboldt.hale.ui.service.align.resolver.internal;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -36,6 +33,9 @@ import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType;
 import groovy.xml.XmlUtil;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * Dialog tray that displays details on a JAXB entity that could not be resolved

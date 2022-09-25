@@ -77,7 +77,7 @@ import eu.esdihumboldt.util.http.client.fluent.FluentProxyUtil;
  */
 @SuppressWarnings("restriction")
 public abstract class AbstractWFSWriter<T extends StreamGmlWriter> extends
-		GeoInstanceWriterDecorator<T>implements WFSWriter, WFSConstants, UserPasswordCredentials {
+		GeoInstanceWriterDecorator<T> implements WFSWriter, WFSConstants, UserPasswordCredentials {
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractWFSWriter.class);
 

@@ -25,6 +25,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  org.eclipse.osgi.util,
  org.osgi.framework,
  org.slf4j;version="1.5.11"
-Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100"
+Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
+ jakarta.xml.bind-api;bundle-version="4.0.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.project.jaxb

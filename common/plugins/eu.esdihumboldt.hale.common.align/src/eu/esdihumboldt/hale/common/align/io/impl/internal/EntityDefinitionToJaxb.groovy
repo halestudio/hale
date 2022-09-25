@@ -15,20 +15,19 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl.internal
 
-import javax.xml.bind.JAXBElement
-
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ChildContextType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ConditionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PropertyType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ClassType.Type
 import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.instance.model.Filter
+import jakarta.xml.bind.JAXBElement
 
 
 
