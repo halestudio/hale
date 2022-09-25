@@ -15,10 +15,6 @@
 
 package eu.esdihumboldt.hale.common.align.io.impl;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -36,6 +32,10 @@ import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 
 /**
  * Helper class for converting EntityDefinitions to DOM (and back) using the
@@ -67,7 +67,7 @@ public class DOMEntityDefinitionHelper {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(new jakarta.xml.bind.helpers.DefaultValidationEventHandler());
 
 			JAXBElement<ClassType> root = u.unmarshal(fragment, ClassType.class);
 
@@ -94,7 +94,7 @@ public class DOMEntityDefinitionHelper {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(new jakarta.xml.bind.helpers.DefaultValidationEventHandler());
 
 			JAXBElement<PropertyType> root = u.unmarshal(fragment, PropertyType.class);
 

@@ -32,3 +32,4 @@ Import-Package: de.fhg.igd.osgi.util,
 Export-Package: eu.esdihumboldt.hale.common.test
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.test
+Require-Bundle: jakarta.xml.bind-api;bundle-version="4.0.0"
