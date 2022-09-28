@@ -80,6 +80,8 @@ import eu.esdihumboldt.util.Pair;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -157,7 +159,7 @@ public class JaxbToAlignment
 		Unmarshaller u = jc.createUnmarshaller();
 
 		// it will debug problems while unmarshalling
-		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+		u.setEventHandler(new DefaultValidationEventHandler());
 
 		try {
 			root = u.unmarshal(new StreamSource(in), AlignmentType.class);

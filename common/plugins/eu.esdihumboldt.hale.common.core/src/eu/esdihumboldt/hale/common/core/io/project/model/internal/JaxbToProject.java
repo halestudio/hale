@@ -19,7 +19,6 @@ import java.net.URI;
 import java.util.Date;
 import java.util.Map;
 
-import javax.xml.bind.JAXBElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.osgi.framework.Version;
@@ -36,6 +35,7 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.Proj
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ProjectType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.PropertyType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ValueType;
+import jakarta.xml.bind.JAXBElement;
 
 /**
  * Converts a JAXB {@link ProjectType} to a {@link Project}.
@@ -75,8 +75,8 @@ public class JaxbToProject {
 		}
 
 		for (ProjectFileType file : project.getFile()) {
-			result.getProjectFiles().add(
-					new ProjectFileInfo(file.getName(), URI.create(file.getLocation())));
+			result.getProjectFiles()
+					.add(new ProjectFileInfo(file.getName(), URI.create(file.getLocation())));
 		}
 
 		for (JAXBElement<?> property : project.getAbstractProperty()) {
