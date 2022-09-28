@@ -16,6 +16,8 @@
 
 package eu.esdihumboldt.hale.prefixmapper;
 
+import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
+
 /**
  * Custom namespace prefix mapper.
  * 

@@ -22,10 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 
 import eu.esdihumboldt.hale.io.oml.internal.goml.align.Cell;
@@ -80,6 +76,10 @@ import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueClassType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueConditionType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueExprType;
 import eu.esdihumboldt.hale.io.oml.internal.model.rdf.IAbout;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 
 /**
  * This class implements methods for marshalling HUMBOLDT OML Objects to XML.
@@ -138,9 +138,12 @@ public class OmlRdfGenerator {
 		m.setProperty(Marshaller.JAXB_SCHEMA_LOCATION,
 				"http://knowledgeweb.semanticweb.org/heterogeneity/alignment align.xsd");
 
-		m.marshal(new JAXBElement(
-				new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment",
-						"Alignment", "align"), AlignmentType.class, aType), new File(xmlPath));
+		m.marshal(
+				new JAXBElement(
+						new QName("http://knowledgeweb.semanticweb.org/heterogeneity/alignment",
+								"Alignment", "align"),
+						AlignmentType.class, aType),
+				new File(xmlPath));
 		/*
 		 * try { URLConnection connection = new URL("file", null,
 		 * xmlPath).openConnection(); connection.setDoOutput(true);
@@ -463,8 +466,8 @@ public class OmlRdfGenerator {
 				// instantiate as PropertyType
 				Property property = (Property) entity;
 				PropertyType pType = getPropertyType(property);
-				eType = new JAXBElement<PropertyType>(new QName(
-						"http://www.omwg.org/TR/d7/ontology/alignment", "Property"),
+				eType = new JAXBElement<PropertyType>(
+						new QName("http://www.omwg.org/TR/d7/ontology/alignment", "Property"),
 						PropertyType.class, pType);
 
 			}
@@ -473,9 +476,9 @@ public class OmlRdfGenerator {
 				FeatureClass feature = (FeatureClass) entity;
 				ClassType cType = getClassType(feature);
 
-				eType = new JAXBElement<ClassType>(new QName(
-						"http://www.omwg.org/TR/d7/ontology/alignment", "Class"), ClassType.class,
-						cType);
+				eType = new JAXBElement<ClassType>(
+						new QName("http://www.omwg.org/TR/d7/ontology/alignment", "Class"),
+						ClassType.class, cType);
 			}
 			else if (entity instanceof Relation) {
 				// instantiate as RelationType
@@ -513,16 +516,16 @@ public class OmlRdfGenerator {
 				cType.setTransf(getTransf(feature.getTransformation()));
 			}
 			if (feature.getAttributeTypeCondition() != null) {
-				cType.getAttributeTypeCondition().addAll(
-						getConditions(feature.getAttributeTypeCondition()));
+				cType.getAttributeTypeCondition()
+						.addAll(getConditions(feature.getAttributeTypeCondition()));
 			}
 			if (feature.getAttributeValueCondition() != null) {
-				cType.getAttributeValueCondition().addAll(
-						getConditions(feature.getAttributeValueCondition()));
+				cType.getAttributeValueCondition()
+						.addAll(getConditions(feature.getAttributeValueCondition()));
 			}
 			if (feature.getAttributeOccurenceCondition() != null) {
-				cType.getAttributeOccurenceCondition().addAll(
-						getConditions(feature.getAttributeOccurenceCondition()));
+				cType.getAttributeOccurenceCondition()
+						.addAll(getConditions(feature.getAttributeOccurenceCondition()));
 			}
 		}
 		return cType;
@@ -616,7 +619,8 @@ public class OmlRdfGenerator {
 		return null;
 	}
 
-	private Collection<? extends ValueExprType> getJAXBValueExpressions(List<IValueExpression> value) {
+	private Collection<? extends ValueExprType> getJAXBValueExpressions(
+			List<IValueExpression> value) {
 		List<ValueExprType> vExpressions = new ArrayList<ValueExprType>(value.size());
 		Iterator<?> iterator = value.iterator();
 		ValueExprType veType;
@@ -811,18 +815,18 @@ public class OmlRdfGenerator {
 				// set property collection or single property
 				if (((ComposedProperty) property).getCollection().size() > 1) {
 					// set collection
-					propCompType.setCollection(getPropertyCollection(((ComposedProperty) property)
-							.getCollection()));
+					propCompType.setCollection(
+							getPropertyCollection(((ComposedProperty) property).getCollection()));
 				}
 				else if (((ComposedProperty) property).getCollection().size() == 1) {
 					// set single property
-					propCompType.setProperty(getPropertyType(((ComposedProperty) property)
-							.getCollection().get(0)));
+					propCompType.setProperty(
+							getPropertyType(((ComposedProperty) property).getCollection().get(0)));
 				}
 
 				// set PropertyOperatorType
-				propCompType.setOperator(getOperatorType(((ComposedProperty) property)
-						.getPropertyOperatorType()));
+				propCompType.setOperator(
+						getOperatorType(((ComposedProperty) property).getPropertyOperatorType()));
 				pType.setPropertyComposition(propCompType);
 			}
 
@@ -830,8 +834,8 @@ public class OmlRdfGenerator {
 				pType.setTransf(getTransf(property.getTransformation()));
 			}
 			if (property.getDomainRestriction() != null) {
-				pType.getDomainRestriction().addAll(
-						getDomainRestrictionTypes(property.getDomainRestriction()));
+				pType.getDomainRestriction()
+						.addAll(getDomainRestrictionTypes(property.getDomainRestriction()));
 			}
 			if (property.getTypeCondition() != null) {
 				pType.getTypeCondition().addAll(property.getTypeCondition());
@@ -858,17 +862,17 @@ public class OmlRdfGenerator {
 			eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType propertyOperatorType) {
 		if (propertyOperatorType != null) {
 			// TODO clear mapping
-			if (propertyOperatorType
-					.equals(eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.AND))
+			if (propertyOperatorType.equals(
+					eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.AND))
 				return PropertyOperatorType.INTERSECTION;
-			if ((propertyOperatorType
-					.equals(eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.OR)))
+			if ((propertyOperatorType.equals(
+					eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.OR)))
 				return PropertyOperatorType.UNION;
-			if ((propertyOperatorType
-					.equals(eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST)))
+			if ((propertyOperatorType.equals(
+					eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST)))
 				return PropertyOperatorType.FIRST;
-			if ((propertyOperatorType
-					.equals(eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT)))
+			if ((propertyOperatorType.equals(
+					eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT)))
 				return PropertyOperatorType.NEXT;
 		}
 		return null;
@@ -915,8 +919,8 @@ public class OmlRdfGenerator {
 			// TODO clear with MdV
 			if (relation.getDomainRestriction() != null
 					&& relation.getDomainRestriction().get(0) != null) {
-				relType.setDomainRestriction(getDomainRestrictionType(relation
-						.getDomainRestriction().get(0)));
+				relType.setDomainRestriction(
+						getDomainRestrictionType(relation.getDomainRestriction().get(0)));
 			}
 			// TODO clear with MdV
 			relType.setPipe(null);
@@ -927,8 +931,8 @@ public class OmlRdfGenerator {
 			relType.setRelationComposition(null);
 			if (relation.getRangeRestriction() != null
 					&& relation.getRangeRestriction().get(0) != null) {
-				relType.setRangeRestriction(getRangeRestrictionType(relation.getRangeRestriction()
-						.get(0)));
+				relType.setRangeRestriction(
+						getRangeRestrictionType(relation.getRangeRestriction().get(0)));
 			}
 			if (relation.getTransformation() != null) {
 				relType.setTransf(getTransf(relation.getTransformation()));

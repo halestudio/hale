@@ -22,7 +22,8 @@ repositories {
 	mavenLocal()
 	mavenCentral()
 	maven { // Sonatype snapshots (for custom unpuzzle)
-		url 'https://oss.sonatype.org/content/repositories/snapshots/'
+		url 'http://oss.sonatype.org/content/repositories/snapshots/'
+		allowInsecureProtocol = true
 	}
 }
 

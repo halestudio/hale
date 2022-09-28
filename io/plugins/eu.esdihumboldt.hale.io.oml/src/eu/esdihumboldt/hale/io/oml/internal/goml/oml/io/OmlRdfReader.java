@@ -27,9 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
@@ -83,6 +80,10 @@ import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueClassType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueConditionType;
 import eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.ValueExprType;
 import eu.esdihumboldt.hale.io.oml.internal.model.rdf.IAbout;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**
  * This class reads the OML Rdf Document into Java Object.
@@ -144,7 +145,7 @@ public class OmlRdfReader {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(new DefaultValidationEventHandler());
 
 			root = u.unmarshal(new StreamSource(rdfFile.openStream()), AlignmentType.class);
 
@@ -425,18 +426,18 @@ public class OmlRdfReader {
 				if (propCompType.getCollection() != null
 						&& propCompType.getCollection().getItem().size() > 0) {
 					// set collection
-					((ComposedProperty) entity).setCollection(getPropertyCollection(propCompType
-							.getCollection()));
+					((ComposedProperty) entity)
+							.setCollection(getPropertyCollection(propCompType.getCollection()));
 				}
 				else if (propCompType.getProperty() != null) {
 					// set Property
-					((ComposedProperty) entity).getCollection().add(
-							getProperty(propCompType.getProperty()));
+					((ComposedProperty) entity).getCollection()
+							.add(getProperty(propCompType.getProperty()));
 				}
 				else if (propCompType.getRelation() != null) {
 					// set Relation
-					((ComposedProperty) entity).setRelation(getOMLRelation(propCompType
-							.getRelation()));
+					((ComposedProperty) entity)
+							.setRelation(getOMLRelation(propCompType.getRelation()));
 				}
 				// set ComposedProperty specific members
 			}
@@ -451,8 +452,8 @@ public class OmlRdfReader {
 			PropertyType propertyType = ((PropertyType) entityType);
 			// set domainRestriction
 			if (propertyType.getDomainRestriction() != null) {
-				((Property) entity).setDomainRestriction(getDomainRestriction(propertyType
-						.getDomainRestriction()));
+				((Property) entity).setDomainRestriction(
+						getDomainRestriction(propertyType.getDomainRestriction()));
 			}
 			// set typeCondition
 			if (propertyType.getTypeCondition() != null) {
@@ -460,8 +461,8 @@ public class OmlRdfReader {
 			}
 			// set value conditions
 			if (propertyType.getValueCondition() != null) {
-				((Property) entity).setValueCondition(getValueCondition(propertyType
-						.getValueCondition()));
+				((Property) entity)
+						.setValueCondition(getValueCondition(propertyType.getValueCondition()));
 			}
 
 		}
@@ -474,19 +475,19 @@ public class OmlRdfReader {
 			entity = new FeatureClass(about);
 			// set attribute occurence conditions if exist
 			if (cType.getAttributeOccurenceCondition() != null) {
-				((FeatureClass) entity).setAttributeOccurenceCondition(getRestrictions(cType
-						.getAttributeOccurenceCondition()));
+				((FeatureClass) entity).setAttributeOccurenceCondition(
+						getRestrictions(cType.getAttributeOccurenceCondition()));
 			}
 
 			// set attribute type conditions if exist
 			if (cType.getAttributeTypeCondition() != null) {
-				((FeatureClass) entity).setAttributeTypeCondition(getRestrictions(cType
-						.getAttributeTypeCondition()));
+				((FeatureClass) entity).setAttributeTypeCondition(
+						getRestrictions(cType.getAttributeTypeCondition()));
 			}
 			// set attribute value conditions if exist
 			if (cType.getAttributeValueCondition() != null) {
-				((FeatureClass) entity).setAttributeValueCondition(getRestrictions(cType
-						.getAttributeValueCondition()));
+				((FeatureClass) entity).setAttributeValueCondition(
+						getRestrictions(cType.getAttributeValueCondition()));
 			}
 		}
 		else {
@@ -528,8 +529,8 @@ public class OmlRdfReader {
 			}
 			// set domain restriction
 			if (relation.getDomainRestriction() != null) {
-				FeatureClass domainRestriction = getDomainRestriction(relation
-						.getDomainRestriction());
+				FeatureClass domainRestriction = getDomainRestriction(
+						relation.getDomainRestriction());
 				ArrayList<FeatureClass> domainRestrictions = new ArrayList<FeatureClass>();
 				domainRestrictions.add(domainRestriction);
 				omlRelation.setDomainRestriction(domainRestrictions);
@@ -545,8 +546,8 @@ public class OmlRdfReader {
 			}
 			// set Range Restriction
 			if (relation.getRangeRestriction() != null) {
-				FeatureClass omlRangeRestriction = getRangeRestriction(relation
-						.getRangeRestriction());
+				FeatureClass omlRangeRestriction = getRangeRestriction(
+						relation.getRangeRestriction());
 				List<FeatureClass> omlRangeRestrictions = new ArrayList<FeatureClass>();
 				omlRangeRestrictions.add(omlRangeRestriction);
 				omlRelation.setRangeRestriction(omlRangeRestrictions);
@@ -574,13 +575,13 @@ public class OmlRdfReader {
 			// set collection of properties and/or relation
 			if (pcType.getCollection() != null && pcType.getCollection().getItem() != null) {
 				// set collection
-				((ComposedProperty) omlProperty).setCollection(getPropertyCollection(pcType
-						.getCollection()));
+				((ComposedProperty) omlProperty)
+						.setCollection(getPropertyCollection(pcType.getCollection()));
 			}
 			else if (pcType.getProperty() != null) {
 				// set a single property
-				((ComposedProperty) omlProperty).getCollection().add(
-						getProperty(pcType.getProperty()));
+				((ComposedProperty) omlProperty).getCollection()
+						.add(getProperty(pcType.getProperty()));
 			}
 			if (pcType.getRelation() != null) {
 				// set relation
@@ -712,18 +713,18 @@ public class OmlRdfReader {
 				fClass.setAbout(fAbout);
 				// set attributeValueCondition list
 				if (clazz.getAttributeValueCondition() != null) {
-					fClass.setAttributeValueCondition(getRestrictions(clazz
-							.getAttributeValueCondition()));
+					fClass.setAttributeValueCondition(
+							getRestrictions(clazz.getAttributeValueCondition()));
 				}
 				// set attributeTypeCondition list
 				if (clazz.getAttributeTypeCondition() != null) {
-					fClass.setAttributeTypeCondition(getRestrictions(clazz
-							.getAttributeTypeCondition()));
+					fClass.setAttributeTypeCondition(
+							getRestrictions(clazz.getAttributeTypeCondition()));
 				}
 				// set attributeOccurenceCondition
 				if (clazz.getAttributeOccurenceCondition() != null) {
-					fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-							.getAttributeOccurenceCondition()));
+					fClass.setAttributeOccurenceCondition(
+							getRestrictions(clazz.getAttributeOccurenceCondition()));
 				}
 				// set label list
 				if (clazz.getLabel() != null) {
@@ -761,18 +762,18 @@ public class OmlRdfReader {
 				fClass.setAbout(fAbout);
 				// set attributeValueCondition list
 				if (clazz.getAttributeValueCondition() != null) {
-					fClass.setAttributeValueCondition(getRestrictions(clazz
-							.getAttributeValueCondition()));
+					fClass.setAttributeValueCondition(
+							getRestrictions(clazz.getAttributeValueCondition()));
 				}
 				// set attributeTypeCondition list
 				if (clazz.getAttributeTypeCondition() != null) {
-					fClass.setAttributeTypeCondition(getRestrictions(clazz
-							.getAttributeTypeCondition()));
+					fClass.setAttributeTypeCondition(
+							getRestrictions(clazz.getAttributeTypeCondition()));
 				}
 				// set attributeOccurenceCondition
 				if (clazz.getAttributeOccurenceCondition() != null) {
-					fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-							.getAttributeOccurenceCondition()));
+					fClass.setAttributeOccurenceCondition(
+							getRestrictions(clazz.getAttributeOccurenceCondition()));
 				}
 				// set label list
 				if (clazz.getLabel() != null) {
@@ -805,12 +806,12 @@ public class OmlRdfReader {
 	 * 
 	 * } } return properties; }
 	 *//**
-	 * Converts the instance of the JAXB-based property type to the
-	 * simple/non composed property
-	 * 
-	 * @param propType
-	 * @return
-	 */
+		 * Converts the instance of the JAXB-based property type to the
+		 * simple/non composed property
+		 * 
+		 * @param propType
+		 * @return
+		 */
 	/*
 	 * private Property getSimpleProperty(PropertyType propType) { Property
 	 * property = null; if (propType != null) { IAbout about = new
@@ -839,17 +840,17 @@ public class OmlRdfReader {
 	private PropertyOperatorType getOperator(
 			eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType operator) {
 		if (operator != null) {
-			if (operator
-					.equals(eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.INTERSECTION))
+			if (operator.equals(
+					eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.INTERSECTION))
 				return eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.AND;
-			if (operator
-					.equals(eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.UNION))
+			if (operator.equals(
+					eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.UNION))
 				return eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.OR;
-			if (operator
-					.equals(eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.FIRST))
+			if (operator.equals(
+					eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.FIRST))
 				return eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.FIRST;
-			if (operator
-					.equals(eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.NEXT))
+			if (operator.equals(
+					eu.esdihumboldt.hale.io.oml.internal.model.generated.oml.PropertyOperatorType.NEXT))
 				return eu.esdihumboldt.hale.io.oml.internal.goml.omwg.ComposedProperty.PropertyOperatorType.NEXT;
 
 		}
@@ -911,7 +912,7 @@ public class OmlRdfReader {
 	 * @return
 	 */
 	private List<FeatureClass> getDomainRestriction(
-	// TODO discuss the propertytype-field
+			// TODO discuss the propertytype-field
 			List<DomainRestrictionType> domainRestriction) {
 		List<FeatureClass> classes = new ArrayList<FeatureClass>(domainRestriction.size());
 		DomainRestrictionType restriction = null;
@@ -930,17 +931,18 @@ public class OmlRdfReader {
 			fClass.setAbout(fAbout);
 			// set attributeValueCondition list
 			if (clazz.getAttributeValueCondition() != null) {
-				fClass.setAttributeValueCondition(getRestrictions(clazz
-						.getAttributeValueCondition()));
+				fClass.setAttributeValueCondition(
+						getRestrictions(clazz.getAttributeValueCondition()));
 			}
 			// set attributeTypeCondition list
 			if (clazz.getAttributeTypeCondition() != null) {
-				fClass.setAttributeTypeCondition(getRestrictions(clazz.getAttributeTypeCondition()));
+				fClass.setAttributeTypeCondition(
+						getRestrictions(clazz.getAttributeTypeCondition()));
 			}
 			// set attributeOccurenceCondition
 			if (clazz.getAttributeOccurenceCondition() != null) {
-				fClass.setAttributeOccurenceCondition(getRestrictions(clazz
-						.getAttributeOccurenceCondition()));
+				fClass.setAttributeOccurenceCondition(
+						getRestrictions(clazz.getAttributeOccurenceCondition()));
 			}
 			classes.add(fClass);
 		}
@@ -1016,7 +1018,8 @@ public class OmlRdfReader {
 		while (iterator.hasNext()) {
 			ValueConditionType condition = iterator.next();
 			// get List<ValueExpressionType>
-			if (condition.getRestriction() != null && condition.getRestriction().getValue() != null) {
+			if (condition.getRestriction() != null
+					&& condition.getRestriction().getValue() != null) {
 				valueExpr = condition.getRestriction().getValue();
 			}
 

@@ -18,8 +18,6 @@ package eu.esdihumboldt.hale.common.core.io.project;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.Unmarshaller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -33,6 +31,8 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOCo
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ObjectFactory;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**

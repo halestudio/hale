@@ -14,9 +14,9 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.common.core.service,
  eu.esdihumboldt.util.reflection,
  org.slf4j;version="1.5.11",
- org.springframework.beans.factory;version="3.0.0.RELEASE",
- org.springframework.beans.factory.config;version="3.0.0.RELEASE",
- org.springframework.context.support;version="3.1.1.RELEASE"
+ org.springframework.beans.factory;version="5.2.0",
+ org.springframework.beans.factory.config;version="5.2.0",
+ org.springframework.context.support;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.common.convert
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.convert

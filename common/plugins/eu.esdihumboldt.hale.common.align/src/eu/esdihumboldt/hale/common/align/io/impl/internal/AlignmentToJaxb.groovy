@@ -17,8 +17,6 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal
 
 import java.util.Map.Entry
 
-import javax.xml.bind.JAXBElement
-
 import com.google.common.collect.ListMultimap
 import com.google.common.collect.MultimapBuilder
 
@@ -52,6 +50,7 @@ import eu.esdihumboldt.hale.common.core.io.PathUpdate
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import jakarta.xml.bind.JAXBElement
 
 
 
