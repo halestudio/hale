@@ -15,13 +15,12 @@
  */
 package eu.esdihumboldt.hale.io.oml;
 
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.io.oml.internal.goml.oml.io.OmlRdfGenerator;
 import eu.esdihumboldt.hale.prefixmapper.NamespacePrefixMapperImpl;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.PropertyException;
 
 /**
  * @author Thorsten Reitz

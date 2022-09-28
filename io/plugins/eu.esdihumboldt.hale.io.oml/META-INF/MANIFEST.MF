@@ -33,7 +33,9 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.opengis.feature;version="8.0.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
- eu.esdihumboldt.hale.common.core
+ eu.esdihumboldt.hale.common.core,
+ jakarta.xml.bind-api;bundle-version="4.0.0",
+ com.sun.xml.bind.jaxb-impl;bundle-version="4.0.1"
 Export-Package: eu.esdihumboldt.hale.io.oml,
  eu.esdihumboldt.hale.io.oml.internal.goml.align,
  eu.esdihumboldt.hale.io.oml.internal.goml.oml.ext,
