@@ -171,6 +171,9 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(NumberFormat.class);
 		allowedClasses.add(DecimalFormat.class);
 		allowedClasses.add(DecimalFormatSymbols.class);
+		
+		// Exception classes
+		allowedClasses.add(Throwable.class);
 
 		// Google collect
 		allowedPackages.add(new AllowedPrefix("com.google.common.collect", true));
