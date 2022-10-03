@@ -9,11 +9,11 @@ Require-Bundle: eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.6.0",
  groovy;bundle-version="4.0.1",
  groovy-test;bundle-version="4.0.1",
  eu.esdihumboldt.hale.common.align;bundle-version="2.6.0",
- eu.esdihumboldt.hale.common.schema;bundle-version="2.6.0"
+ eu.esdihumboldt.hale.common.schema;bundle-version="2.6.0",
+ org.junit;bundle-version="4.13.0"
 Import-Package: eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.0",
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.util.groovy.paths,
- junit.framework;version="4.8.2",
  net.jcip.annotations
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.align.groovy.test
