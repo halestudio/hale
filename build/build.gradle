@@ -127,7 +127,8 @@ ext {
 		'eu.esdihumboldt.hale.io.xslt.feature',
 		'eu.esdihumboldt.hale.io.xslt.feature.ui',
 		'eu.esdihumboldt.hale.io.xslt.test',
-		'eu.esdihumboldt.hale.io.xslt.ui'
+		'eu.esdihumboldt.hale.io.xslt.ui',
+		'eu.esdihumboldt.hale.app.transform.test'
 	]
 
 	// bundles or fragments that are required additionally for compilation
