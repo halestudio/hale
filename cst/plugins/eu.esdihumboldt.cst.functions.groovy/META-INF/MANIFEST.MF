@@ -6,8 +6,6 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
- org.locationtech.jts.awt;version="1.13.0",
- org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.geom,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -37,9 +35,11 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.util.groovy.builder,
  eu.esdihumboldt.util.groovy.sandbox,
  javax.annotation;version="[1.2.0,1.2.0]",
+ org.locationtech.jts.awt;version="1.13.0",
+ org.locationtech.jts.geom;version="1.13.0",
  org.slf4j;version="1.7.2",
  org.slf4j.ext;version="1.7.10",
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
  groovy;bundle-version="4.0.1",

@@ -25,7 +25,7 @@ Export-Package: eu.esdihumboldt.hale.ui.filter,
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.eclipse.ui;bundle-version="3.6.2",
  eu.esdihumboldt.hale.common.instance,
- org.geotools;bundle-version="8.0.0"
+ org.geotools;bundle-version="21.0.0"
 Bundle-Activator: eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.filter

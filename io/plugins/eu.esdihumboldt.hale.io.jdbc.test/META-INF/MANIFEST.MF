@@ -18,7 +18,7 @@ Import-Package: com.fasterxml.jackson.annotation;version="2.3.0",
  eu.esdihumboldt.hale.common.test,
  eu.esdihumboldt.hale.common.test.docker.config,
  org.junit;version="4.11.0",
- org.springframework.core.convert;version="3.1.1.RELEASE",
+ org.springframework.core.convert;version="5.2.0",
  schemacrawler.schema;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.test
 Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.test

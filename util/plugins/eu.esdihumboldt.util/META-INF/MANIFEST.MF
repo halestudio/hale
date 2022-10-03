@@ -12,12 +12,12 @@ Import-Package: com.google.common.base;version="9.0.0",
  net.jcip.annotations,
  org.apache.commons.io,
  org.apache.commons.lang;version="2.4.0",
- org.apache.xmlbeans.impl.regex,
+ org.apache.xmlbeans.impl.regex;version="5.1.1",
  org.osgi.framework;version="1.5.0",
  org.slf4j;version="1.5.11",
- org.springframework.core.convert,
- org.springframework.core.convert.support;version="3.1.1.RELEASE",
- org.springframework.util
+ org.springframework.core.convert;version="5.2.0",
+ org.springframework.core.convert.support;version="5.2.0",
+ org.springframework.util;version="5.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.util.internal.Activator
 Export-Package: eu.esdihumboldt.util,
