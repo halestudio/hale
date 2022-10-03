@@ -31,7 +31,7 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.io.xsd.reader,
- org.junit,
+ org.junit;version="4.13.0",
  org.opengis.referencing;version="12.2.0",
  org.opengis.referencing.crs;version="12.2.0"
 Bundle-Vendor: data harmonisation panel

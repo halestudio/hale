@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.2.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.2.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="false">
+
 
    <configIni use="default">
    </configIni>
@@ -20,11 +21,13 @@
 
    <windowImages/>
 
+
    <launcher name="hale_tests">
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -57,6 +60,7 @@
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
       <plugin id="com.github.wetransform-os.topojson-j"/>
+      <plugin id="com.github.virtuald.curvesapi"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
@@ -79,6 +83,7 @@
       <plugin id="com.sun.istack.commons-runtime"/>
       <plugin id="com.sun.jna"/>
       <plugin id="com.sun.xml.bind.jaxb-core"/>
+      <plugin id="com.sun.xml.bind.jaxb-impl"/>
       <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.blueprints.orient-graph"/>
@@ -123,6 +128,7 @@
       <plugin id="com.vladsch.flexmark.util-sequence"/>
       <plugin id="com.vladsch.flexmark.util-visitor"/>
       <plugin id="com.vladsch.flexmark.youtrack-converter"/>
+      <plugin id="com.zaxxer.SparseBitSet"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
@@ -278,7 +284,6 @@
       <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
       <plugin id="eu.esdihumboldt.util"/>
       <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
-      <plugin id="eu.esdihumboldt.util.blueprints.entities.test"/>
       <plugin id="eu.esdihumboldt.util.cli"/>
       <plugin id="eu.esdihumboldt.util.config"/>
       <plugin id="eu.esdihumboldt.util.geometry"/>
@@ -335,6 +340,9 @@
       <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
       <plugin id="jai.jai-codec"/>
       <plugin id="jai.jai-imageio"/>
+      <plugin id="jakarta.activation-api"/>
+      <plugin id="jakarta.xml.bind-api"/>
+      <plugin id="jakarta.xml.bind.jakarta.xml.bind-api-test"/>
       <plugin id="javassist"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
@@ -350,6 +358,7 @@
       <plugin id="javax.vecmath"/>
       <plugin id="javax.ws.rs-api"/>
       <plugin id="javax.xml"/>
+      <plugin id="jaxb-api"/>
       <plugin id="jaxen"/>
       <plugin id="jcl.over.slf4j"/>
       <plugin id="jgridshift"/>
@@ -357,7 +366,6 @@
       <plugin id="joda-time"/>
       <plugin id="jogl"/>
       <plugin id="jul.to.slf4j"/>
-      <plugin id="junit"/>
       <plugin id="log4j.over.slf4j"/>
       <plugin id="mil.nga.geopackage"/>
       <plugin id="mil.nga.oapi.features.oapi-features-json"/>
@@ -382,6 +390,10 @@
       <plugin id="org.apache.commons.cli"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-codec"/>
+      <plugin id="org.apache.commons.commons-collections4"/>
+      <plugin id="org.apache.commons.commons-compress"/>
+      <plugin id="org.apache.commons.commons-io"/>
       <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.configuration"/>
@@ -392,6 +404,7 @@
       <plugin id="org.apache.commons.lang3"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.commons.math"/>
+      <plugin id="org.apache.commons.math3"/>
       <plugin id="org.apache.commons.pool"/>
       <plugin id="org.apache.felix.gogo.command"/>
       <plugin id="org.apache.felix.gogo.runtime"/>
@@ -401,7 +414,9 @@
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.james.apache-mime4j-core"/>
+      <plugin id="org.apache.logging.log4j.api"/>
       <plugin id="org.apache.poi"/>
+      <plugin id="org.apache.poi.ooxml-lite"/>
       <plugin id="org.apache.tika.core"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.axiom.axiom-api"/>
@@ -540,6 +555,12 @@
       <plugin id="org.springframework.context"/>
       <plugin id="org.springframework.core"/>
       <plugin id="org.springframework.expression"/>
+      <plugin id="org.springframework.spring-aop"/>
+      <plugin id="org.springframework.spring-beans"/>
+      <plugin id="org.springframework.spring-context"/>
+      <plugin id="org.springframework.spring-context-support"/>
+      <plugin id="org.springframework.spring-core"/>
+      <plugin id="org.springframework.spring-expression"/>
       <plugin id="org.w3c.css.sac"/>
       <plugin id="org.w3c.dom.events"/>
       <plugin id="org.w3c.dom.smil"/>

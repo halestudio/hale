@@ -5,6 +5,6 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.cache.test
 Bundle-Version: 4.2.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.common.cache;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.junit
+Import-Package: org.junit;version="4.13.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.cache.test
