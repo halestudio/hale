@@ -21,8 +21,8 @@ Import-Package: de.fhg.igd.slf4jplus,
 Bundle-ClassPath: .
 Export-Package: eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.filter.definition
-Require-Bundle: org.geotools,
- org.opengis;bundle-version="8.0.0",
- eu.esdihumboldt.util.groovy
+Require-Bundle: org.opengis;bundle-version="8.0.0",
+ eu.esdihumboldt.util.groovy,
+ org.geotools;bundle-version="21.0.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.filter

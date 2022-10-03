@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  com.google.common.collect;version="1.0.0",
  com.google.common.io;version="17.0.0",
- org.locationtech.jts.geom,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -43,11 +42,12 @@ Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  net.jcip.annotations,
  org.apache.commons.io;version="2.4.0",
  org.eclipse.osgi.util;version="1.1.0",
- org.geotools.data,
+ org.geotools.data;version="21.0.0.combined",
+ org.locationtech.jts.geom,
  org.opengis.feature.simple,
  org.opengis.feature.type,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Require-Bundle: eu.esdihumboldt.hale.common.instance,
  org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.common.convert.wkt;bundle-version="2.5.0"

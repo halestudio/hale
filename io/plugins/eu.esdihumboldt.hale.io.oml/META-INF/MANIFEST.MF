@@ -6,7 +6,6 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.io;version="9.0.0",
- com.sun.xml.bind.marshaller;version="2.1.7",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.geometric,
  eu.esdihumboldt.cst.functions.inspire,
@@ -30,6 +29,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
  eu.esdihumboldt.util.io,
  org.apache.log4j,
+ org.glassfish.jaxb.core.marshaller;version="4.0.1",
  org.opengis.feature;version="8.0.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
