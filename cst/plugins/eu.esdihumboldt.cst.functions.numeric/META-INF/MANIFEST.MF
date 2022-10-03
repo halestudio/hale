@@ -15,7 +15,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.instance.model,
  eu.esdihumboldt.hale.common.schema.model,
  net.jcip.annotations,
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.numeric,
  eu.esdihumboldt.cst.functions.numeric.sequentialid
 Bundle-Vendor: data harmonisation panel

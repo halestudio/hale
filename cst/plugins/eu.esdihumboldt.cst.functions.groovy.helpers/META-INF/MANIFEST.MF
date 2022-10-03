@@ -14,7 +14,7 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.util.groovy.collector,
  javax.annotation;version="[1.2.0,1.2.0]",
- org.springframework.core.convert;version="3.1.1.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.groovy.helpers,
  eu.esdihumboldt.cst.functions.groovy.helpers.util
 Automatic-Module-Name: eu.esdihumboldt.cst.functions.groovy.helpers

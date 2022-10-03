@@ -21,7 +21,7 @@ Import-Package: com.google.common.base,
  groovy.lang,
  org.codehaus.groovy.control;version="4.0.1",
  org.slf4j,
- org.springframework.core.convert
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.common.scripting.scripts.groovy,
  eu.esdihumboldt.hale.common.scripting.scripts.mathematical,

@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.xls;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 
@@ -38,7 +39,7 @@ public class XLSUtil {
 		if (cell == null)
 			return null;
 
-		if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+		if (cell.getCellType() == CellType.BLANK) {
 			// do this check here as the evaluator seems to return null on a
 			// blank
 			return null;
@@ -46,12 +47,13 @@ public class XLSUtil {
 
 		CellValue value = evaluator.evaluate(cell);
 
-		switch (value.getCellType()) {
-		case Cell.CELL_TYPE_BLANK:
+		if (CellType.BLANK.equals(value.getCellType())) {
 			return null;
-		case Cell.CELL_TYPE_BOOLEAN:
+		}
+		else if (CellType.BOOLEAN.equals(value.getCellType())) {
 			return String.valueOf(value.getBooleanValue());
-		case Cell.CELL_TYPE_NUMERIC:
+		}
+		else if (CellType.NUMERIC.equals(value.getCellType())) {
 			// number formatting
 			double number = value.getNumberValue();
 			if (number == Math.floor(number)) {
@@ -59,13 +61,14 @@ public class XLSUtil {
 				return String.valueOf((int) number);
 			}
 			return String.valueOf(value.getNumberValue());
-		case Cell.CELL_TYPE_STRING:
+		}
+		else if (CellType.STRING.equals(value.getCellType())) {
 			return value.getStringValue();
-		case Cell.CELL_TYPE_FORMULA:
-			// will not happen as we used the evaluator
-		case Cell.CELL_TYPE_ERROR:
+		}
+		else {
+//			if (CellType.FORMULA.equals(value.getCellType()))
+			// if (CellType.ERROR.equals(value.getCellType()))
 			// fall through
-		default:
 			return null;
 		}
 	}

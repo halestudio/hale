@@ -6,11 +6,11 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.6.2",
  org.eclipse.core.runtime;bundle-version="3.6.0",
- eu.esdihumboldt.hale.ui
+ eu.esdihumboldt.hale.ui,
+ org.apache.poi;bundle-version="5.2.3"
 Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="9.0.0",
- org.locationtech.jts.geom,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.osgi.util;version="1.0.0",
@@ -45,11 +45,9 @@ Import-Package: au.com.bytecode.opencsv;version="2.3.0",
  eu.esdihumboldt.hale.ui.util.components,
  eu.esdihumboldt.hale.ui.util.selector,
  eu.esdihumboldt.util.io,
- org.apache.poi.hssf.usermodel;version="3.9.0",
- org.apache.poi.ss.usermodel;version="3.9.0",
- org.apache.poi.xssf.usermodel;version="3.9.0",
+ org.locationtech.jts.geom,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.io.csv.ui
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.csv.ui

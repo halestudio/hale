@@ -19,7 +19,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.io.xls,
  eu.esdihumboldt.hale.io.xls.writer,
  eu.esdihumboldt.util.io,
- org.apache.poi.hssf;version="3.9.0",
- org.apache.poi.ss.usermodel;version="3.9.0",
+ org.apache.poi.hssf;version="5.2.3",
+ org.apache.poi.ss.usermodel;version="5.2.3",
  org.slf4j;version="1.5.11"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.xls.ui

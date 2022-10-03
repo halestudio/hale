@@ -65,6 +65,6 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.util.wizard,
  eu.esdihumboldt.util.groovy.paths,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.ui.functions.core
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.core

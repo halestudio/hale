@@ -15,8 +15,10 @@
 
 package eu.esdihumboldt.hale.io.xls;
 
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -38,10 +40,10 @@ public class XLSCellStyles {
 		Font headerFont = workbook.createFont();
 		DataFormat df = workbook.createDataFormat();
 		// use bold font
-		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerFont.setBold(true);
 		headerStyle.setFont(headerFont);
 		// set a medium border
-		headerStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		headerStyle.setBorderBottom(BorderStyle.MEDIUM);
 		// set cell data format to text
 		headerStyle.setDataFormat(df.getFormat("@"));
 
@@ -59,9 +61,9 @@ public class XLSCellStyles {
 		CellStyle cellStyle = workbook.createCellStyle();
 		DataFormat df = workbook.createDataFormat();
 		// set thin border around the cell
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
 		// set cell data format to text
 		cellStyle.setDataFormat(df.getFormat("@"));
 		// display multiple lines
@@ -89,15 +91,15 @@ public class XLSCellStyles {
 		CellStyle highlightStyle = workbook.createCellStyle();
 		DataFormat df = workbook.createDataFormat();
 		// set thin border around the cell
-		highlightStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		highlightStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		highlightStyle.setBorderRight(CellStyle.BORDER_THIN);
+		highlightStyle.setBorderBottom(BorderStyle.THIN);
+		highlightStyle.setBorderLeft(BorderStyle.THIN);
+		highlightStyle.setBorderRight(BorderStyle.THIN);
 		// set cell data format to text
 		highlightStyle.setDataFormat(df.getFormat("@"));
 		// display multiple lines
 		highlightStyle.setWrapText(true);
 		highlightStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-		highlightStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		highlightStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
 		if (strikeOut) {
 			Font disabledTypeFont = workbook.createFont();
