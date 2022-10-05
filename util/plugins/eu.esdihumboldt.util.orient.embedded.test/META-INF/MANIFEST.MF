@@ -5,6 +5,6 @@ Bundle-SymbolicName: eu.esdihumboldt.util.orient.embedded.test
 Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: com.orientechnologies.common;bundle-version="1.5.1",
- com.orientechnologies.orientdb-core;bundle-version="1.5.1"
-Import-Package: org.junit;version="4.5.0"
+ com.orientechnologies.orientdb-core;bundle-version="1.5.1",
+ org.junit;bundle-version="4.13.0"
 Automatic-Module-Name: eu.esdihumboldt.util.orient.embedded.test

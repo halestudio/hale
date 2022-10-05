@@ -6,4 +6,4 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Fragment-Host: eu.esdihumboldt.hale.io.codelist.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.junit;version="4.12.0"
+Require-Bundle: org.junit;bundle-version="4.13.0"

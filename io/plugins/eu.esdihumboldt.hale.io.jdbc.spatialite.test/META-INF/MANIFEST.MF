@@ -9,7 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.io;version="17.0.0",
  eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.test,
- org.junit;version="4.11.0",
  org.sqlite;version="3.28.0",
  ru.yandex.qatools.allure.annotations;version="1.5.0"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.spatialite.test
+Require-Bundle: org.junit;bundle-version="4.13.0"

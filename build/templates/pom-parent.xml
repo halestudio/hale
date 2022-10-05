@@ -50,9 +50,12 @@
   </distributionManagement -->
 
   <properties>
-    <tycho-version>2.6.0</tycho-version>
+    <tycho-version>3.0.0</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--     <scala.version>2.10.4</scala.version> -->
+	<maven.compiler.target>18</maven.compiler.target>
+    <maven.compiler.source>18</maven.compiler.source>
+    <maven.compiler.release />
     <scala.version>2.15.2</scala.version>
   </properties>
   
@@ -115,6 +118,16 @@
               <goal>plugin-source</goal>
             </goals>
           </execution>
+          <!-- https://github.com/eclipse-tycho/tycho/blob/master/RELEASE_NOTES.md#tycho-source-feature-generation-moved-from-tycho-extras-to-tycho-core -->
+		  <execution>
+			<id>feature-source</id>
+				<goals>
+		    		<goal>feature-source</goal>
+				</goals>
+				<configuration>
+					<!-- put your configuration here -->
+				</configuration>
+ 		  </execution>
         </executions>
       </plugin>
       <% } %>

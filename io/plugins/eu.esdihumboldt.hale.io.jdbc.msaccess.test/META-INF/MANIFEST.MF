@@ -9,12 +9,12 @@ Import-Package: com.google.common.io;version="17.0.0",
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.common.instance.model,
  net.ucanaccess.jdbc;version="3.0.6",
- org.junit,
  org.slf4j;version="1.7.10",
  ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc.msaccess;bundle-version="2.9.5",
  eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.5",
- eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.5"
+ eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.5",
+ org.junit;bundle-version="4.13.0"
 Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.msaccess.test
