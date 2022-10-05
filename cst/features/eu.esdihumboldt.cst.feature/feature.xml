@@ -25,7 +25,6 @@
       <import plugin="de.fhg.igd.eclipse.util"/>
       <import plugin="de.fhg.igd.osgi.util"/>
       <import plugin="de.fhg.igd.slf4jplus"/>
-      <import plugin="eu.esdihumboldt.hale.common.align"/>
       <import plugin="eu.esdihumboldt.hale.common.convert"/>
       <import plugin="eu.esdihumboldt.hale.common.core"/>
       <import plugin="eu.esdihumboldt.hale.common.filter"/>
@@ -34,9 +33,6 @@
       <import plugin="eu.esdihumboldt.util"/>
       <import plugin="findbugsAnnotations"/>
       <import plugin="org.slf4j.api"/>
-      <import plugin="org.springframework.core"/>
-      <import plugin="eu.esdihumboldt.hale.common.align" version="2.2.0" match="greaterOrEqual"/>
-      <import plugin="groovy" version="1.8.6" match="greaterOrEqual"/>
       <import plugin="eu.esdihumboldt.hale.common.lookup"/>
       <import plugin="eu.esdihumboldt.hale.common.scripting"/>
       <import plugin="eu.esdihumboldt.hale.common.align" version="2.5.0" match="greaterOrEqual"/>
@@ -49,6 +45,7 @@
       <import plugin="eu.esdihumboldt.hale.common.instance.orient"/>
       <import plugin="eu.esdihumboldt.util.groovy"/>
       <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.springframework.spring-core"/>
    </requires>
 
    <plugin

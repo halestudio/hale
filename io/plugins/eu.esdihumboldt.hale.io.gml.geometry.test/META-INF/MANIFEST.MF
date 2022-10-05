@@ -13,7 +13,6 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.util.geometry.interpolation.split,
  eu.esdihumboldt.util.svg.test,
  javax.annotation;version="[1.2.0,1.2.0]",
- org.junit;version="4.8.2",
  org.osgi.framework;version="1.6.0",
  ru.yandex.qatools.allure.annotations;version="1.5.0"
 Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
@@ -22,6 +21,7 @@ Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
- org.locationtech.jts.jts-core;bundle-version="1.12.0"
+ org.locationtech.jts.jts-core;bundle-version="1.12.0",
+ org.junit;bundle-version="4.13.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.geometry.test

@@ -39,10 +39,6 @@
       <import
             class="eu.esdihumboldt.cst.functions.groovy.helpers.util.Collector">
       </import>
-      <allow
-            allowAll="true"
-            class="groovy.json.internal.LazyMap">
-      </allow>
    </extension>
 
 </plugin>

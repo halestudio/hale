@@ -3,14 +3,13 @@
 
 <product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="4.2.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="false">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
       <programArgs>-consoleLog -clean
       </programArgs>
-      <vmArgs>-Xmx6000M
+      <vmArgs>-Xmx10000M
 -Daj.weaving.verbose=true
 -Dorg.aspectj.weaver.showWeaveInfo=true
 -Dorg.aspectj.osgi.verbose=true
@@ -21,13 +20,11 @@
 
    <windowImages/>
 
-
    <launcher name="hale_tests">
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <vm>
    </vm>
@@ -173,7 +170,6 @@
       <plugin id="eu.esdihumboldt.hale.common.align.test"/>
       <plugin id="eu.esdihumboldt.hale.common.app"/>
       <plugin id="eu.esdihumboldt.hale.common.cache"/>
-      <plugin id="eu.esdihumboldt.hale.common.cache.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.cli"/>
       <plugin id="eu.esdihumboldt.hale.common.codelist"/>
       <plugin id="eu.esdihumboldt.hale.common.config"/>

@@ -36,13 +36,6 @@
          unpack="false"/>
 
    <plugin
-         id="eu.esdihumboldt.hale.common.cache"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="eu.esdihumboldt.hale.common.convert"
          download-size="0"
          install-size="0"
@@ -1510,6 +1503,13 @@
 
    <plugin
          id="org.apache.logging.log4j.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.common.cache"
          download-size="0"
          install-size="0"
          version="0.0.0"

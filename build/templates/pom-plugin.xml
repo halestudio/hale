@@ -89,8 +89,8 @@
         </executions>
         <configuration>
           <jvmArgs>
-            <jvmArg>-Xms512m</jvmArg>
-            <jvmArg>-Xmx1024m</jvmArg>
+            <jvmArg>-Xms25G</jvmArg>
+            <jvmArg>-Xmx25G</jvmArg>
           </jvmArgs>
           <scalaVersion>\${scala.version}</scalaVersion>
         </configuration>
