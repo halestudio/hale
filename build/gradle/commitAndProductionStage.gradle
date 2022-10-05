@@ -1037,11 +1037,11 @@ task buildProduct(dependsOn: createProductFeature) {
 		def projectRoot = project.ext.rootDir.path
 //		System.setProperty("maven.multiModuleProjectDirectory", projectDir);
 //		System.setProperty("maven.multiModuleProjectDirectory", projectRoot);
-		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
+//		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
 		println ('++++++++++++ workingDir: ' + projectRoot)
 		def origBasedir = System.getProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY );
 		println ('++++++++++++ origBasedir: ' + origBasedir)
-	    def res = new MavenCli().doMain([ '-e', '-X', 'package' ] as String[], project.ext.rootDir.path , System.out, System.err)
+	    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path , System.out, System.err)
 //		def res = new MavenCli().doMain(new String[] { "-Dmaven.multiModuleProjectDirectory=" + projectRoot, "-e", "package" }, project.ext.rootDir.path , System.out, System.err)
 		
 		println '+++++ after doMain'
@@ -1053,12 +1053,18 @@ task buildProduct(dependsOn: createProductFeature) {
 	    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
 	            project.ext.osgiWS + '.' + project.ext.osgiArch
 	    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-	    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
+	    println("+++++++++++ makeProductFeatureProjectDefinition: ${makeProductFeatureProjectDefinition}")
+	    println("+++++++++++ productFeaturePath: ${productFeaturePath}")
+		println("+++++++++++ target/products/${tychoOutputProductName}.zip")
+		def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+		println("+++++++++++ file(Paths.get(tychoOutputProductZip: ${tychoOutputProductZip}")
+	    
 	    def productOutputPath = new File(buildDir, getProductUid())
 	    project.delete(productOutputPath)
 	    println('Extracting product ...')
 	    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
 	    println("+++++++++++ productOutputPath: ${productOutputPath}")
+	    
 	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
 		println('++++++++ unziped the product ...')
 	    // Include JRE if available for this platform
