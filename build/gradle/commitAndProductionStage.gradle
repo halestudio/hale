@@ -366,6 +366,7 @@ def replaceIconPaths(productFile) {
  * and unzips them to 'reldstpath'. Prints 'name' to the console.
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
+	println("++++++++++++ includeAdditionalFiles")
     if (artifacts.containsKey(project.ext.osgiOS) && artifacts[project.ext.osgiOS].containsKey(project.ext.osgiWS) &&
             artifacts[project.ext.osgiOS][project.ext.osgiWS].containsKey(project.ext.osgiArch)) {
         // Download artifact
@@ -1052,12 +1053,14 @@ task buildProduct(dependsOn: createProductFeature) {
 	    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
 	            project.ext.osgiWS + '.' + project.ext.osgiArch
 	    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-	    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+	    def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
 	    def productOutputPath = new File(buildDir, getProductUid())
 	    project.delete(productOutputPath)
 	    println('Extracting product ...')
+	    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
+	    println("+++++++++++ productOutputPath: ${productOutputPath}")
 	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
-	
+		println('++++++++ unziped the product ...')
 	    // Include JRE if available for this platform
 	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 	

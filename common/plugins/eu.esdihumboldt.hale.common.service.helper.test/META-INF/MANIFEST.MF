@@ -7,12 +7,12 @@ Bundle-Vendor: wetransform GmbH
 Fragment-Host: eu.esdihumboldt.hale.common.service.helper;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="4.0.1",
- groovy-test;bundle-version="4.0.1"
+ groovy-test;bundle-version="4.0.1",
+ org.junit;bundle-version="4.13.0"
 Import-Package: eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.filter,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.groovy,
- eu.esdihumboldt.util.groovy.paths,
- org.junit;version="4.12.0"
+ eu.esdihumboldt.util.groovy.paths
 Automatic-Module-Name: eu.esdihumboldt.hale.common.service.helper.test

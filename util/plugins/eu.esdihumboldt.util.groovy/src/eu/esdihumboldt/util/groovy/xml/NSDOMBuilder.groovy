@@ -217,6 +217,7 @@ class NSDOMBuilder extends DOMBuilder {
 		}
 	}
 
+	@Override
 	protected Object createNode(Object name, Map attributes) {
 		super.createNode(name, filterAttributes(attributes))
 	}

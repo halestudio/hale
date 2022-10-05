@@ -231,7 +231,6 @@
       <plugin id="org.ejml.core"/>
       <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
-      <plugin id="org.hamcrest.core"/>
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>

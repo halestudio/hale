@@ -10,8 +10,6 @@ Import-Package: com.google.common.cache;version="17.0.0",
  eu.esdihumboldt.util.svg.test,
  org.geotools.referencing;version="21.0.0.combined",
  org.hamcrest.core;version="1.3.0",
- org.junit;version="4.12.0",
- org.junit.runner;version="4.12.0",
- org.junit.runners;version="4.12.0",
  ru.yandex.qatools.allure.annotations;version="1.5.0"
 Automatic-Module-Name: eu.esdihumboldt.util.geometry.test
+Require-Bundle: org.junit;bundle-version="4.13.0"
