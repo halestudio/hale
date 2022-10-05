@@ -367,6 +367,8 @@ def replaceIconPaths(productFile) {
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
 	println("++++++++++++ includeAdditionalFiles")
+	println("++++++++++++ reldstpath: ${reldstpath}")
+	println("++++++++++++ artifacts: ${artifacts}")
     if (artifacts.containsKey(project.ext.osgiOS) && artifacts[project.ext.osgiOS].containsKey(project.ext.osgiWS) &&
             artifacts[project.ext.osgiOS][project.ext.osgiWS].containsKey(project.ext.osgiArch)) {
         // Download artifact
@@ -390,7 +392,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
             ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
         } else {
 		    if (!Helper.buildForMac(project)) {
-		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+		        ant.gunzip(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
 		    } else {
 				//It is certain that this code will run when creating build for mac.
 				//Therefore, the jre must be copied into the `Eclipse` folder of the bundled application.
@@ -400,7 +402,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				// This does only work on UNIX-based systems with tar installed!
 				//This command during extraction, will strip the root folder from jdk which is usually jdk name and will
 				//extract the data into root folder starting with `Contents`. 
-				def command = ['tar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath, '--strip-components=1']
+				def command = ['gtar', '--preserve-permissions','-xzf', artifactZipPath.absolutePath, '--strip-components=1']
 			    artifactInstallPath.mkdir()
 			 	try {
 				    // On windows, an IOException will be thrown here
@@ -493,6 +495,7 @@ void updateAboutInfo(productOutputPath) {
  * Creates an installable package for the client
  */
 def packageClient(productOutputPath) {
+	println("+++++++ Helper.buildForWindows(project): ${Helper.buildForWindows(project)}")
     if (Helper.buildForWindows(project)) {
 		boolean packageAsZip = project.hasProperty('noInstaller') && project.ext.noInstaller
 
@@ -1018,6 +1021,7 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
 	}	
 }
 
+
 /**
  * Builds a product. Uses the product specified with the properties
  * 'productType' (either 'client' or 'server') and 'productName' (one of
@@ -1056,7 +1060,7 @@ task buildProduct(dependsOn: createProductFeature) {
 	    println("+++++++++++ makeProductFeatureProjectDefinition: ${makeProductFeatureProjectDefinition}")
 	    println("+++++++++++ productFeaturePath: ${productFeaturePath}")
 		println("+++++++++++ target/products/${tychoOutputProductName}.zip")
-		def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+		def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
 		println("+++++++++++ file(Paths.get(tychoOutputProductZip: ${tychoOutputProductZip}")
 	    
 	    def productOutputPath = new File(buildDir, getProductUid())
@@ -1065,7 +1069,9 @@ task buildProduct(dependsOn: createProductFeature) {
 	    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
 	    println("+++++++++++ productOutputPath: ${productOutputPath}")
 	    
-	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
+	    ant.gunzip(src: tychoOutputProductZip, dest: "${productOutputPath}.tar")
+		ant.untar(src: "${productOutputPath}.tar", dest: productOutputPath)
+//	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
 		println('++++++++ unziped the product ...')
 	    // Include JRE if available for this platform
 	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
