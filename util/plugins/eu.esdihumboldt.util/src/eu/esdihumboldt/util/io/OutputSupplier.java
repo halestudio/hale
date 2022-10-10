@@ -23,6 +23,7 @@ import java.io.IOException;
  * @author Simon Templer
  * @param <T> the output sink type
  */
+@FunctionalInterface
 public interface OutputSupplier<T> {
 
 	/**

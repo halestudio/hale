@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.io.json;
 
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -98,6 +100,31 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 
 		try (BufferedWriter writer = new BufferedWriter(
 				new OutputStreamWriter(out.getOutput(), Charset.forName("UTF-8")))) {
+
+			InstanceToJson.<Void> withJsonGenerator(writer, true, json -> {
+				try {
+					instanceToJson.writeCollection(json, instanceCollection, reporter);
+				} catch (Exception e) {
+					throw new IllegalStateException(e);
+				}
+				return null;
+			});
+		}
+	}
+
+	/**
+	 * Method to write collection of instances to tmp output file
+	 * 
+	 * @param instanceCollection the collection of instances
+	 * @param reporter the reporter
+	 * @param jsonFile the tmp out file
+	 * @throws Exception if writer instance fails
+	 */
+	public void writeInstanceCollectionToJsonFile(InstanceCollection instanceCollection,
+			File jsonFile, IOReporter reporter) throws Exception {
+
+		try (BufferedWriter writer = new BufferedWriter(
+				new OutputStreamWriter(new FileOutputStream(jsonFile)))) {
 
 			InstanceToJson.<Void> withJsonGenerator(writer, true, json -> {
 				try {

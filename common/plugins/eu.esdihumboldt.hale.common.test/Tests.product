@@ -47,6 +47,7 @@
       <plugin id="com.fasterxml.jackson.datatype.jackson-datatype-guava"/>
       <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
       <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+      <plugin id="com.github.albfernandez.javadbf"/>
       <plugin id="com.github.jnr.constants"/>
       <plugin id="com.github.jnr.enxio"/>
       <plugin id="com.github.jnr.ffi"/>
@@ -55,6 +56,7 @@
       <plugin id="com.github.jnr.posix"/>
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
+      <plugin id="com.github.wetransform-os.topojson-j"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
@@ -206,6 +208,8 @@
       <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.pb"/>
+      <plugin id="eu.esdihumboldt.hale.io.pb.test"/>
       <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron"/>
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
@@ -460,6 +464,7 @@
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.locationtech.proj4j"/>
+      <plugin id="org.lz4.lz4-java"/>
       <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>
