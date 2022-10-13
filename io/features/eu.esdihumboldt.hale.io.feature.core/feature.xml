@@ -343,4 +343,25 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="com.github.albfernandez.javadbf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.github.wetransform-os.topojson-j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.lz4.lz4-java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
