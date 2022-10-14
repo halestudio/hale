@@ -44,12 +44,14 @@ import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.Name;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
@@ -70,7 +72,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
 /**
- * Class to write features into shape files.
+ * Class to write features into Shapefiles.
  * 
  * @author Kapil Agnihotri
  */
@@ -102,9 +104,24 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 			throws IOProviderConfigurationException, IOException {
 		progress.begin("Generating Shapefile", ProgressIndicator.UNKNOWN);
 		InstanceCollection instances = getInstances();
+		List<String> filesWritten;
 		try {
 			URI location = getTarget().getLocation();
-			writeInstances(instances, progress, reporter, location);
+			String filePath = Paths.get(location).getParent().toString();
+
+			filesWritten = writeInstances(instances, progress, reporter, location);
+
+			if (filesWritten.size() > 1) {
+				List<URI> uris = filesWritten.stream().map(f -> {
+					File file = new File(filePath + "/" + f + ShapefileConstants.SHP_EXTENSION);
+					return file.toURI();
+				}).collect(Collectors.toList());
+
+				// Reset the target property so that a caller can find out which
+				// files were created.
+				setTarget(new MultiLocationOutputSupplier(uris));
+			}
+
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
@@ -134,11 +151,12 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * @param reporter the reporter.
 	 * @param location file path URI.
 	 * 
+	 * @return List of file names that were written (without suffixes)
+	 * 
 	 * @throws IOException exception in any.
 	 * 
 	 */
-
-	protected void writeInstances(InstanceCollection instances, ProgressIndicator progress,
+	protected List<String> writeInstances(InstanceCollection instances, ProgressIndicator progress,
 			IOReporter reporter, URI location) throws IOException {
 
 		// in all the variables, outer Map is for tracking multiple schemas and
@@ -152,7 +170,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 		Map<String, Map<String, List<SimpleFeature>>> schemaFeaturesMap = createFeatures(instances,
 				progress, reporter, schemaFtMap);
 
-		writeToFile(schemaDataStoreMap, schemaFtMap, schemaFeaturesMap);
+		return writeToFile(schemaDataStoreMap, schemaFtMap, schemaFeaturesMap);
 	}
 
 	/**
@@ -648,11 +666,15 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * @param schemaFtMap used as a template to describe the file contents.
 	 * @param schemaFeaturesMap for each schema, each geom list of features to
 	 *            be written to the shape file.
+	 * @return List of file names that were written (without suffixes)
 	 * @throws IOException if any.
 	 */
-	private void writeToFile(Map<String, Map<String, ShapefileDataStore>> schemaDataStoreMap,
+	private List<String> writeToFile(
+			Map<String, Map<String, ShapefileDataStore>> schemaDataStoreMap,
 			Map<String, Map<String, SimpleFeatureType>> schemaFtMap,
 			Map<String, Map<String, List<SimpleFeature>>> schemaFeaturesMap) throws IOException {
+
+		List<String> filesWritten = new ArrayList<String>();
 
 		// extract each schema
 		for (Entry<String, Map<String, ShapefileDataStore>> schemaEntry : schemaDataStoreMap
@@ -662,7 +684,14 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 			for (Entry<String, ShapefileDataStore> geomEntry : schemaEntry.getValue().entrySet()) {
 				Transaction transaction = new DefaultTransaction(
 						ShapefileConstants.CREATE_CONSTANT);
-				String typeName = geomEntry.getValue().getTypeNames()[0];
+
+				ShapefileDataStore dataStore = geomEntry.getValue();
+				String typeName = dataStore.getTypeNames()[0];
+				for (Name name : dataStore.getNames()) {
+					// The local part of the Name contains the file name of the
+					// ShapefileDataStore (without suffix)
+					filesWritten.add(name.getLocalPart());
+				}
 
 				SimpleFeatureSource geomSpecificFeatureSource = geomEntry.getValue()
 						.getFeatureSource(typeName);
@@ -691,6 +720,8 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				}
 			}
 		}
+
+		return filesWritten;
 	}
 
 }
