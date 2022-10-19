@@ -17,20 +17,18 @@ package eu.esdihumboldt.hale.common.convert.core;
 
 import java.time.LocalDate;
 
-import org.springframework.core.convert.converter.Converter;
-
 /**
  * Convert a {@link String} to a {@link LocalDate}.
  * 
  * @author Simon Templer
  */
-public class StringToLocalDateConverter implements Converter<String, LocalDate> {
+public class StringToLocalDateConverter extends AbstractStringToDateTimeTypeConverter<LocalDate> {
 
+	/**
+	 * @see eu.esdihumboldt.hale.common.convert.core.AbstractStringToDateTimeTypeConverter#parse(java.lang.String)
+	 */
 	@Override
-	public LocalDate convert(String source) {
-		if (source == null) {
-			return null;
-		}
+	protected LocalDate parse(String source) {
 		return LocalDate.parse(source);
 	}
 
