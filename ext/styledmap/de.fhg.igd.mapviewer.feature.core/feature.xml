@@ -106,4 +106,18 @@
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="eu.esdihumboldt.util.metrics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="io.prometheus.simpleclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

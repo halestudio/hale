@@ -117,11 +117,10 @@ public class Request {
 		try {
 			// this will throw up in non-OSGi environments
 			cacheDir = PlatformUtil.getInstanceLocation();
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			cacheEnabled = false;
 		}
-		
+
 		if (cacheEnabled) {
 			try {
 				if (cacheDir == null) {
@@ -259,6 +258,9 @@ public class Request {
 		InputStream in;
 
 		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			// close connection
+			response.close();
+
 			// fall back to URL.openStream
 			in = uri.toURL().openStream();
 		}
@@ -299,7 +301,8 @@ public class Request {
 		CloseableHttpClient client = clients.get(proxy);
 
 		if (client == null) {
-			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
+			String clientName = "hale-request-" + proxy.toString();
+			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(clientName);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
 
 			// set timeouts
@@ -335,8 +338,11 @@ public class Request {
 			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout)
 					.setConnectTimeout(connectTimeout).build();
 
-			client = builder.setDefaultRequestConfig(requestConfig)
-					.setDefaultSocketConfig(socketconfig).build();
+			builder.setDefaultRequestConfig(requestConfig).setDefaultSocketConfig(socketconfig);
+
+			// customizable behavior
+
+			client = builder.build();
 
 			clients.put(proxy, client);
 		}

@@ -253,6 +253,7 @@
       <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
       <plugin id="eu.esdihumboldt.util.groovy.test"/>
       <plugin id="eu.esdihumboldt.util.http"/>
+      <plugin id="eu.esdihumboldt.util.metrics"/>
       <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
@@ -266,6 +267,7 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="io.prometheus.simpleclient"/>
       <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
       <plugin id="it.geosolutions.imageio-ext.streams"/>
