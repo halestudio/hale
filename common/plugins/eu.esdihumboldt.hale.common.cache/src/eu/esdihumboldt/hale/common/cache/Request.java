@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -301,9 +302,44 @@ public class Request {
 		CloseableHttpClient client = clients.get(proxy);
 
 		if (client == null) {
+			Integer maxConnections = null; // use default
+			Integer maxPerRoute = null; // use default
+
+			// customizable behavior for connection manager
+			try {
+				String maxStr = System.getenv("HALE_REQUEST_MAX_CONNECTIONS");
+				if (maxStr != null) {
+					maxConnections = Integer.parseInt(maxStr);
+				}
+
+				String maxRouteStr = System.getenv("HALE_REQUEST_MAX_CONNECTIONS_PER_ROUTE");
+				if (maxRouteStr != null) {
+					maxPerRoute = Integer.parseInt(maxRouteStr);
+				}
+			} catch (Exception e) {
+				log.error("Error trying to apply custom HTTP client settings", e);
+			}
+
 			String clientName = "hale-request-" + proxy.toString();
-			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(clientName);
+			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(clientName,
+					maxConnections, maxPerRoute);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
+
+			// customizable behavior for client
+			try {
+				String evictExpiredStr = System.getenv("HALE_REQUEST_EVICT_EXPIRED");
+				if (evictExpiredStr != null && Boolean.parseBoolean(evictExpiredStr)) {
+					builder.evictExpiredConnections();
+				}
+
+				String evictIdleStr = System.getenv("HALE_REQUEST_EVICT_IDLE_MINUTES");
+				if (evictIdleStr != null) {
+					long minutes = Long.parseLong(evictIdleStr);
+					builder.evictIdleConnections(minutes, TimeUnit.MINUTES);
+				}
+			} catch (Exception e) {
+				log.error("Error trying to apply custom HTTP client settings", e);
+			}
 
 			// set timeouts
 
@@ -339,8 +375,6 @@ public class Request {
 					.setConnectTimeout(connectTimeout).build();
 
 			builder.setDefaultRequestConfig(requestConfig).setDefaultSocketConfig(socketconfig);
-
-			// customizable behavior
 
 			client = builder.build();
 
