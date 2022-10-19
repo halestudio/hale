@@ -20,6 +20,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
+import eu.esdihumboldt.util.http.client.metrics.PoolingHttpClientConnectionManagerMetrics;
+import eu.esdihumboldt.util.metrics.CollectorRegistryService;
+
 /**
  * HTTP client utilities
  * 
@@ -30,21 +33,31 @@ public class ClientUtil {
 	/**
 	 * Create a thread safe HTTP client
 	 * 
+	 * @param clientName the client name the metrics should be labeled with
+	 * 
 	 * @return the created HTTP client
 	 */
-	public static CloseableHttpClient createThreadSafeHttpClient() {
+	public static CloseableHttpClient createThreadSafeHttpClient(String clientName) {
 		// create HTTP client
-		return threadSafeHttpClientBuilder().build();
+		return threadSafeHttpClientBuilder(clientName).build();
 	}
 
 	/**
 	 * Create a thread safe HTTP client
 	 * 
+	 * @param clientName the client name the metrics should be labeled with
+	 * 
 	 * @return the created HTTP client
 	 */
-	public static HttpClientBuilder threadSafeHttpClientBuilder() {
+	public static HttpClientBuilder threadSafeHttpClientBuilder(String clientName) {
 		// create HTTP client builder
 		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+
+		if (clientName != null) {
+			PoolingHttpClientConnectionManagerMetrics.install(cm, clientName,
+					CollectorRegistryService.DEFAULT);
+		}
+
 		return HttpClientBuilder.create().setConnectionManager(cm);
 	}
 
