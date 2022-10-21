@@ -34,7 +34,7 @@ public class GeoJSONInstanceWriter extends JsonInstanceWriter {
 	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
 
 	/**
-	 * @param geoJson use geoJson feature when exporting to geoJson
+	 * Default constructor.
 	 */
 	public GeoJSONInstanceWriter() {
 		super(true);

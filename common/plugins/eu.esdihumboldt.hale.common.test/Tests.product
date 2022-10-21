@@ -215,6 +215,8 @@
       <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.shp.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.topojson"/>
+      <plugin id="eu.esdihumboldt.hale.io.topojson.test"/>
       <plugin id="eu.esdihumboldt.hale.io.validation"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>

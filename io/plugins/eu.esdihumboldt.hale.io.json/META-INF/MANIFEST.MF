@@ -70,13 +70,6 @@ Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  org.codehaus.jackson;bundle-version="1.8.5",
  org.codehaus.jackson.mapper,
  eu.esdihumboldt.hale.common.instance,
- groovy;bundle-version="2.1.5",
- org.apache.commons.lang3;bundle-version="3.8.1",
- com.google.gson;bundle-version="2.6.2",
- eu.esdihumboldt.hale.io.shp;bundle-version="4.2.0",
- org.opengis,
- com.github.albfernandez.javadbf;bundle-version="1.13.2",
- com.github.wetransform-os.topojson-j;bundle-version="1.0.0",
- org.lz4.lz4-java;bundle-version="1.4.1"
+ groovy;bundle-version="2.1.5"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.json

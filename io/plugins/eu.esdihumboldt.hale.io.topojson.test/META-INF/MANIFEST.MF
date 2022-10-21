@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Topojson Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.topojson.test
+Bundle-Version: 4.2.0.qualifier
+Bundle-Vendor: wetransform GmbH
+Automatic-Module-Name: eu.esdihumboldt.hale.io.topojson.test
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.io.topojson;bundle-version="4.2.0",
+ groovy;bundle-version="2.4.14",
+ eu.esdihumboldt.cst.functions.geometric;bundle-version="4.2.0",
+ org.junit;bundle-version="4.13.0",
+ eu.esdihumboldt.hale.common.core;bundle-version="4.2.0",
+ eu.esdihumboldt.hale.common.schema;bundle-version="4.2.0",
+ eu.esdihumboldt.hale.common.instance;bundle-version="4.2.0",
+ org.locationtech.jts.jts-core;bundle-version="1.16.0",
+ eu.esdihumboldt.hale.common.schema.groovy;bundle-version="4.2.0",
+ eu.esdihumboldt.hale.common.instance.groovy;bundle-version="4.2.0",
+ org.opengis;bundle-version="21.0.0",
+ org.eclipse.core.runtime;bundle-version="3.17.100"
+Import-Package: de.fhg.igd.slf4jplus,
+ org.slf4j;version="1.7.2"

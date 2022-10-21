@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json;
+package eu.esdihumboldt.hale.io.topojson;
 
 import java.io.File;
 import java.io.IOException;
@@ -92,10 +92,6 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 		return "TopoJSON";
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.io.json.JsonInstanceWriter#execute(eu.esdihumboldt.hale.common.core.io.ProgressIndicator,
-	 *      eu.esdihumboldt.hale.common.core.io.report.IOReporter)
-	 */
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
