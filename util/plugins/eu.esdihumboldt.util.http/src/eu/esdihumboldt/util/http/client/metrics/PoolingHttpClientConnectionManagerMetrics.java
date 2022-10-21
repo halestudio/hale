@@ -72,23 +72,28 @@ public class PoolingHttpClientConnectionManagerMetrics extends Collector
 	}
 
 	private static final String METER_TOTAL_MAX_DESC = "The configured maximum number of allowed persistent connections for all routes.";
-	private static final String METER_TOTAL_MAX = "httpcomponents.httpclient.pool.total.max";
-	private static final String METER_TOTAL_CONNECTIONS_DESC = "The number of persistent and leased connections for all routes.";
-	private static final String METER_TOTAL_CONNECTIONS = "httpcomponents.httpclient.pool.total.connections";
-	private static final String METER_TOTAL_PENDING_DESC = "The number of connection requests being blocked awaiting a free connection for all routes.";
-	private static final String METER_TOTAL_PENDING = "httpcomponents.httpclient.pool.total.pending";
-	private static final String METER_DEFAULT_MAX_PER_ROUTE_DESC = "The configured default maximum number of allowed persistent connections per route.";
-	private static final String METER_DEFAULT_MAX_PER_ROUTE = "httpcomponents.httpclient.pool.route.max.default";
+	private static final String METER_TOTAL_MAX = "httpcomponents_httpclient_pool_total_max";
 
-	private static final String METER_HOSTS_CONNECTIONS_ACTIVE = "httpcomponents.httpclient.pool.hosts.active";
+	private static final String METER_TOTAL_CONNECTIONS_DESC = "The number of persistent and leased connections for all routes.";
+	private static final String METER_TOTAL_CONNECTIONS = "httpcomponents_httpclient_pool_total_connections";
+
+	private static final String METER_TOTAL_PENDING_DESC = "The number of connection requests being blocked awaiting a free connection for all routes.";
+	private static final String METER_TOTAL_PENDING = "httpcomponents_httpclient_pool_total_pending";
+
+	private static final String METER_DEFAULT_MAX_PER_ROUTE_DESC = "The configured default maximum number of allowed persistent connections per route.";
+	private static final String METER_DEFAULT_MAX_PER_ROUTE = "httpcomponents_httpclient_pool_route_max_default";
+
+	private static final String METER_HOSTS_CONNECTIONS_ACTIVE = "httpcomponents_httpclient_pool_hosts_active";
 	private static final String METER_HOSTS_CONNECTIONS_ACTIVE_DESC = "The number of different target hosts for which connections are active.";
 
 	private static final String METER_HOST_MAX_DESC = "The configured maximum number of allowed persistent connections for all routes for a specific target host.";
-	private static final String METER_HOST_MAX = "httpcomponents.httpclient.pool.host.max";
+	private static final String METER_HOST_MAX = "httpcomponents_httpclient_pool_host_max";
+
 	private static final String METER_HOST_CONNECTIONS_DESC = "The number of persistent and leased connections for all routes for a specific target host.";
-	private static final String METER_HOST_CONNECTIONS = "httpcomponents.httpclient.pool.host.connections";
+	private static final String METER_HOST_CONNECTIONS = "httpcomponents_httpclient_pool_host_connections";
+
 	private static final String METER_HOST_PENDING_DESC = "The number of connection requests being blocked awaiting a free connection for all routes for a specific target host.";
-	private static final String METER_HOST_PENDING = "httpcomponents.httpclient.pool.host.pending";
+	private static final String METER_HOST_PENDING = "httpcomponents_httpclient_pool_host_pending";
 
 	private static final String LABEL_CLIENT_NAME = "httpclient";
 	private static final String LABEL_CONNECTIONS_STATE = "state";
