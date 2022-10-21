@@ -50,7 +50,7 @@ public class ClientUtil {
 	 * @return the created HTTP client
 	 */
 	public static HttpClientBuilder threadSafeHttpClientBuilder(String clientName) {
-		return threadSafeHttpClientBuilder(clientName, null, null);
+		return threadSafeHttpClientBuilder(clientName, null, null, false);
 	}
 
 	/**
@@ -61,16 +61,19 @@ public class ClientUtil {
 	 *            <code>null</code> to use the default (20)
 	 * @param maxConnPerRoute the maximum number of connections per route or
 	 *            <code>null</code> to use the default (2)
+	 * @param enablePerHostMetrics if metrics that include information on routes
+	 *            per individual host should be collected (if metric collection
+	 *            is enabled)
 	 * 
 	 * @return the created HTTP client
 	 */
 	public static HttpClientBuilder threadSafeHttpClientBuilder(String clientName,
-			Integer maxConnections, Integer maxConnPerRoute) {
+			Integer maxConnections, Integer maxConnPerRoute, boolean enablePerHostMetrics) {
 		// create HTTP client builder
 		PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
 
 		if (clientName != null) {
-			PoolingHttpClientConnectionManagerMetrics.install(cm, clientName,
+			PoolingHttpClientConnectionManagerMetrics.install(cm, clientName, enablePerHostMetrics,
 					CollectorRegistryService.DEFAULT);
 		}
 

@@ -304,6 +304,7 @@ public class Request {
 		if (client == null) {
 			Integer maxConnections = null; // use default
 			Integer maxPerRoute = null; // use default
+			boolean perHostMetrics = false;
 
 			// customizable behavior for connection manager
 			try {
@@ -316,13 +317,18 @@ public class Request {
 				if (maxRouteStr != null) {
 					maxPerRoute = Integer.parseInt(maxRouteStr);
 				}
+
+				String perHostMetricsStr = System.getenv("HALE_REQUEST_PER_HOST_METRICS");
+				if (perHostMetricsStr != null) {
+					perHostMetrics = Boolean.parseBoolean(perHostMetricsStr);
+				}
 			} catch (Exception e) {
 				log.error("Error trying to apply custom HTTP client settings", e);
 			}
 
 			String clientName = "hale-request-" + proxy.toString();
 			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(clientName,
-					maxConnections, maxPerRoute);
+					maxConnections, maxPerRoute, perHostMetrics);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
 
 			// customizable behavior for client
