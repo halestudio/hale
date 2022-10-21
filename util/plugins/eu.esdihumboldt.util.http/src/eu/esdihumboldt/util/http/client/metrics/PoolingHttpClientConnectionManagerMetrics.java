@@ -116,19 +116,16 @@ public class PoolingHttpClientConnectionManagerMetrics extends Collector
 				LABEL_CLIENT_NAME_ONLY);
 		max.addMetric(clientNameOnly, stats.getMax());
 
-		GaugeMetricFamily available = new GaugeMetricFamily(METER_TOTAL_CONNECTIONS,
+		GaugeMetricFamily total = new GaugeMetricFamily(METER_TOTAL_CONNECTIONS,
 				METER_TOTAL_CONNECTIONS_DESC, LABEL_CLIENT_NAME_AND_STATE);
-		available.addMetric(clientNameAndAvailable, stats.getAvailable());
-
-		GaugeMetricFamily leased = new GaugeMetricFamily(METER_TOTAL_CONNECTIONS,
-				METER_TOTAL_CONNECTIONS_DESC, LABEL_CLIENT_NAME_AND_STATE);
-		leased.addMetric(clientNameAndLeased, stats.getLeased());
+		total.addMetric(clientNameAndAvailable, stats.getAvailable());
+		total.addMetric(clientNameAndLeased, stats.getLeased());
 
 		GaugeMetricFamily maxRoute = new GaugeMetricFamily(METER_DEFAULT_MAX_PER_ROUTE,
 				METER_DEFAULT_MAX_PER_ROUTE_DESC, LABEL_CLIENT_NAME_ONLY);
 		maxRoute.addMetric(clientNameOnly, connectionManager.getDefaultMaxPerRoute());
 
-		return ImmutableList.of(pending, max, available, leased, maxRoute);
+		return ImmutableList.of(pending, max, total, maxRoute);
 	}
 
 	@Override
