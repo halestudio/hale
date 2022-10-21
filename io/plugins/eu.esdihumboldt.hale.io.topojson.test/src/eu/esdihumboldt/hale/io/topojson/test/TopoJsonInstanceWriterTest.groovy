@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.test
+package eu.esdihumboldt.hale.io.topojson.test
 
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertTrue
@@ -35,7 +35,7 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
-import eu.esdihumboldt.hale.io.json.TopoJsonInstanceWriter
+import eu.esdihumboldt.hale.io.topojson.TopoJsonInstanceWriter
 import groovy.json.JsonSlurper
 import groovy.transform.CompileStatic
 
