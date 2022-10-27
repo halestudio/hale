@@ -392,7 +392,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
             ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
         } else {
 		    if (!Helper.buildForMac(project)) {
-		        ant.gunzip(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
 		    } else {
 				//It is certain that this code will run when creating build for mac.
 				//Therefore, the jre must be copied into the `Eclipse` folder of the bundled application.
@@ -417,10 +417,10 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				} catch (ex) {
 				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
 				}
-				if (reldstpath.equals("jre")){
-					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
-					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
-				}
+//				if (reldstpath.equals("jre")){
+//					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
+//					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
+//				}
 			}
         }
     } else {
@@ -1060,21 +1060,28 @@ task buildProduct(dependsOn: createProductFeature) {
 	    println("+++++++++++ makeProductFeatureProjectDefinition: ${makeProductFeatureProjectDefinition}")
 	    println("+++++++++++ productFeaturePath: ${productFeaturePath}")
 		println("+++++++++++ target/products/${tychoOutputProductName}.zip")
-		def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
-		println("+++++++++++ file(Paths.get(tychoOutputProductZip: ${tychoOutputProductZip}")
-	    
-	    def productOutputPath = new File(buildDir, getProductUid())
-	    project.delete(productOutputPath)
-	    println('Extracting product ...')
-	    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
-	    println("+++++++++++ productOutputPath: ${productOutputPath}")
-	    
-	    ant.gunzip(src: tychoOutputProductZip, dest: "${productOutputPath}.tar")
-		ant.untar(src: "${productOutputPath}.tar", dest: productOutputPath)
-//	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
-		println('++++++++ unziped the product ...')
+		def productOutputPath = new File(buildDir, getProductUid())
+		if (Helper.buildForWindows(project)) {
+			def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
+			project.delete(productOutputPath)
+			ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
+			println('++++++++ unziped the product for windows...')
+		} else {
+			def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
+			println("+++++++++++ file(Paths.get(tychoOutputProductZip: ${tychoOutputProductZip}")
+			project.delete("${productOutputPath}.tar")
+			project.delete(productOutputPath)
+		    println('Extracting product ...')
+		    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
+		    println("+++++++++++ productOutputPath: ${productOutputPath}")
+		    
+		    ant.gunzip(src: tychoOutputProductZip, dest: "${productOutputPath}.tar")
+			ant.untar(src: "${productOutputPath}.tar", dest: productOutputPath)
+	//	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
+			println('++++++++ unziped the product ...')
+		}
 	    // Include JRE if available for this platform
-	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
+//	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 	
 	    // Include additional files
 	    // if (project.ext.includeMongoDB) {
