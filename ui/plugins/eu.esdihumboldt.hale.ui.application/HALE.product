@@ -41,6 +41,8 @@ https://www.wetransform.to/services/support/
 -Dcache.level1.size=0
 -Dcache.level2.enabled=false
 -Dcache.level2.size=0
+--add-exports java.base/sun.nio.ch=ALL-UNNAMED 
+--add-exports java.base/jdk.internal.ref=ALL-UNNAMED
          <argsX86>-Xmx1000m</argsX86>
          <argsX86_64>-Xmx2g</argsX86_64>
       </vmArgs>
@@ -61,8 +63,10 @@ https://www.wetransform.to/services/support/
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
    </plugins>

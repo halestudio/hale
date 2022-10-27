@@ -21,5 +21,6 @@ Require-Bundle: org.locationtech.jts.jts-core;bundle-version="1.13.0",
  eu.esdihumboldt.cst.functions.geometric;bundle-version="3.3.0",
  groovy;bundle-version="4.0.1",
  org.junit;bundle-version="4.12.0",
- org.geotools;bundle-version="21.0.0"
+ org.geotools;bundle-version="21.0.0",
+ com.sun.xml.bind.jaxb-impl;bundle-version="4.0.1"
 Automatic-Module-Name: eu.esdihumboldt.cst.functions.geometric.test
