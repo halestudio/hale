@@ -43,7 +43,7 @@ Import-Package: com.google.common.base;version="9.0.0",
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.7.0",
  groovy;bundle-version="4.0.1",
- org.kohsuke.groovy.sandbox;bundle-version="1.5.0",
+ eu.esdihumboldt.util.groovy.sandbox;bundle-version="4.2.0",
  org.eclipse.core.runtime;bundle-version="3.10.0",
  jakarta.xml.bind-api;bundle-version="4.0.0"
 Export-Package: eu.esdihumboldt.cst.functions.groovy,

@@ -412,7 +412,6 @@
       <plugin id="org.apache.james.apache-mime4j-core"/>
       <plugin id="org.apache.logging.log4j.api"/>
       <plugin id="org.apache.poi"/>
-      <plugin id="org.apache.poi.ooxml-lite"/>
       <plugin id="org.apache.tika.core"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.axiom.axiom-api"/>
@@ -514,6 +513,7 @@
       <plugin id="org.glassfish.hk2.locator"/>
       <plugin id="org.glassfish.hk2.osgi-resource-locator"/>
       <plugin id="org.glassfish.hk2.utils"/>
+      <plugin id="org.glassfish.jaxb.core"/>
       <plugin id="org.glassfish.jaxb.runtime"/>
       <plugin id="org.glassfish.jaxb.txw2"/>
       <plugin id="org.glassfish.jersey.bundles.repackaged.jersey-guava"/>

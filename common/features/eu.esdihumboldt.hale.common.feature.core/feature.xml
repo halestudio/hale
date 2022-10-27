@@ -1453,13 +1453,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.poi.ooxml-lite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="com.github.virtuald.curvesapi"
          download-size="0"
          install-size="0"
@@ -1510,6 +1503,20 @@
 
    <plugin
          id="eu.esdihumboldt.hale.common.cache"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.glassfish.jaxb.runtime"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.glassfish.jaxb.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
