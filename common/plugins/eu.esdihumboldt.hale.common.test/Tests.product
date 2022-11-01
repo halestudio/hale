@@ -56,8 +56,8 @@
       <plugin id="com.github.jnr.posix"/>
       <plugin id="com.github.jnr.unixsocket"/>
       <plugin id="com.github.jnr.x86asm"/>
-      <plugin id="com.github.wetransform-os.topojson-j"/>
       <plugin id="com.github.virtuald.curvesapi"/>
+      <plugin id="com.github.wetransform-os.topojson-j"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
@@ -306,7 +306,6 @@
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
-      <plugin id="io.prometheus.simpleclient"/>
       <plugin id="groovy-ant" fragment="true"/>
       <plugin id="groovy-cli-commons" fragment="true"/>
       <plugin id="groovy-cli-picocli" fragment="true"/>
@@ -319,6 +318,7 @@
       <plugin id="groovy-templates" fragment="true"/>
       <plugin id="groovy-test" fragment="true"/>
       <plugin id="groovy-xml" fragment="true"/>
+      <plugin id="io.prometheus.simpleclient"/>
       <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
       <plugin id="it.geosolutions.imageio-ext.streams"/>
@@ -538,12 +538,12 @@
       <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.locationtech.proj4j"/>
       <plugin id="org.lz4.lz4-java"/>
+      <plugin id="org.nibor.autolink"/>
       <plugin id="org.objectweb.asm-5"/>
+      <plugin id="org.objectweb.asm-9"/>
       <plugin id="org.objectweb.asm.analysis-5"/>
       <plugin id="org.objectweb.asm.tree-5"/>
       <plugin id="org.objectweb.asm.util-5"/>
-      <plugin id="org.nibor.autolink"/>
-      <plugin id="org.objectweb.asm-9"/>
       <plugin id="org.opengis"/>
       <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.reflections"/>

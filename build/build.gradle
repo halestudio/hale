@@ -170,7 +170,7 @@ ext {
 	]
 
 	// URL to the directory containing mirrored artifacts (Maven, JRE, ...)
-	artifactsCommit = '6431f1d635126138b32611dcc47467a401448c8e'
+	artifactsCommit = 'bd66c96f48e3975313c518cca6401b33394b31ed'
 	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
     // Names of zip files containing Java Runtimes (sorted by their respective platform)
@@ -178,19 +178,19 @@ ext {
         'win32': [
             'win32': [
                 'x86': 'OpenJDK8U-jre_x86-32_windows_hotspot_8u232b09.tar.gz',
-                'x86_64': 'OpenJDK8U-jre_x64_windows_hotspot_8u232b09.tar.gz'
+                'x86_64': 'OpenJDK17U-jre_x64_windows_hotspot_17.0.5_8.zip'
             ]
         ],
         'linux': [
             'gtk': [
-                'x86_64': 'OpenJDK8U-jre_x64_linux_hotspot_8u232b09.tar.gz'
+                'x86_64': 'OpenJDK17U-jre_x64_linux_hotspot_17.0.5_8.tar.gz'
             ]
         ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`. 
 		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08` 
 		   //is being stripped and the `Contents` folder is being copied into jre folder.
         'macosx': [
             'cocoa': [
-                'x86_64': 'OpenJDK8U-jdk_x64_mac_openj9_macosXL_8u282b08_openj9-0.24.0.tar.gz'
+                'x86_64': 'OpenJDK17U-jre_x64_mac_hotspot_17.0.5_8.tar.gz'
             ]
         ]
     ]

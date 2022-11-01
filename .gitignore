@@ -39,3 +39,4 @@ Thumbs.db
 
 #.gitignore
 *.hprof
+*.tycho-consumer-pom.xml
