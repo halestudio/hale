@@ -4,7 +4,7 @@ Bundle-Name: Groovy Sandbox
 Bundle-SymbolicName: eu.esdihumboldt.util.groovy.sandbox;singleton:=true
 Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle:  groovy;bundle-version="4.0.1",
+Require-Bundle:  groovy;bundle-version="2.5.19",
  org.kohsuke.groovy.sandbox;bundle-version="1.5.0"
 Export-Package: eu.esdihumboldt.util.groovy.sandbox,
  eu.esdihumboldt.util.groovy.sandbox.internal;x-internal:=true

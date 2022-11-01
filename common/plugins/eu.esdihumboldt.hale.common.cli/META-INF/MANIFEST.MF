@@ -5,8 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.cli;singleton:=true
 Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: groovy;bundle-version="4.0.1",
- groovy-cli-picocli;bundle-version="4.0.1",
+Require-Bundle: groovy;bundle-version="2.5.19",
  eu.esdihumboldt.util.cli;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.5",
  eu.esdihumboldt.hale.common.headless;bundle-version="2.9.5",

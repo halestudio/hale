@@ -19,7 +19,6 @@ Import-Package: com.google.common.base,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.util.groovy.sandbox,
  groovy.lang,
- org.codehaus.groovy.control;version="4.0.1",
  org.slf4j,
  org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.common.scripting,

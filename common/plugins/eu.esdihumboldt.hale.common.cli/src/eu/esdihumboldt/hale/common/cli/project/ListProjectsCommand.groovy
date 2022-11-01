@@ -21,7 +21,6 @@ import java.nio.file.Paths
 import eu.esdihumboldt.hale.common.core.report.ReportHandler
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment
 import eu.esdihumboldt.util.cli.CommandContext
-import groovy.cli.internal.OptionAccessor
 import groovy.transform.CompileStatic
 
 @CompileStatic

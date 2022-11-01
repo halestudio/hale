@@ -23,3 +23,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.util.validator
 Export-Package: eu.esdihumboldt.hale.ui.functions.numeric
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.numeric
+Bundle-Vendor: data harmonisation panel

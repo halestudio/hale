@@ -14,7 +14,6 @@ import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.service.helper.test.dummy.Population
 import eu.esdihumboldt.hale.common.service.helper.test.dummy.PopulationContainer
-import groovy.test.GroovyTestCase
 
 /**
  * Test for Entity Population Count

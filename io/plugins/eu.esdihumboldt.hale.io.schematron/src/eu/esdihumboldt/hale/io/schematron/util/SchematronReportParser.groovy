@@ -20,8 +20,7 @@ import java.text.MessageFormat
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl
 import groovy.transform.CompileDynamic
-import groovy.xml.XmlSlurper
-import groovy.xml.slurpersupport.GPathResult
+import groovy.util.slurpersupport.GPathResult
 
 /**
  * Simple parser for SRVL reports to extract failed assertion messages

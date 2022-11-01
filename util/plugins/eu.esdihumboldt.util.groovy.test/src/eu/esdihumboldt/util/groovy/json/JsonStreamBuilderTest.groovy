@@ -15,7 +15,6 @@
  */
 package eu.esdihumboldt.util.groovy.json
 
-import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 
 /**

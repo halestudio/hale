@@ -65,8 +65,8 @@ public class CastorAlignmentIO {
 	 * @throws IOException if loading of base alignments failed
 	 */
 	public static MutableAlignment load(InputStream in, IOReporter reporter, TypeIndex sourceTypes,
-			TypeIndex targetTypes, PathUpdate updater) throws MappingException, MarshalException,
-			ValidationException, IOException {
+			TypeIndex targetTypes, PathUpdate updater)
+			throws MappingException, MarshalException, ValidationException, IOException {
 		AlignmentBean bean = AlignmentBean.load(in, reporter);
 		return bean.createAlignment(reporter, sourceTypes, targetTypes, updater);
 	}
@@ -108,8 +108,8 @@ public class CastorAlignmentIO {
 		AlignmentBean bean = new AlignmentBean(alignment, pathUpdate);
 
 		Mapping mapping = new Mapping(AlignmentBean.class.getClassLoader());
-		mapping.loadMapping(new InputSource(AlignmentBean.class
-				.getResourceAsStream("AlignmentBean.xml")));
+		mapping.loadMapping(
+				new InputSource(AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
 
 		XMLContext context = new XMLContext();
 		context.setProperty("org.exolab.castor.indent", true); // enable

@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AbstractFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag
-import groovy.test.GroovyTestCase
 
 
 /**

@@ -25,7 +25,6 @@ import de.fhg.igd.slf4jplus.ALoggerFactory
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import groovy.xml.XmlSlurper
 
 
 /**

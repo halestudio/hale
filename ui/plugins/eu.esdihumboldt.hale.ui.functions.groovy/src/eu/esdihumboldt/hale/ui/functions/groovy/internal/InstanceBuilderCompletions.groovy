@@ -37,6 +37,7 @@ import org.eclipse.jface.text.contentassist.ICompletionProposal
 import org.eclipse.swt.graphics.Image
 
 import com.tinkerpop.blueprints.Vertex
+import com.tinkerpop.gremlin.groovy.Gremlin
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -62,9 +63,9 @@ import groovy.transform.CompileStatic
 @SuppressWarnings("restriction")
 public abstract class InstanceBuilderCompletions implements GroovyCompletionProposals, ASTGraphConstants {
 
-	//	static {
-	//		Gremlin.load()
-	//	}
+	static {
+		Gremlin.load()
+	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(InstanceBuilderCompletions)
 

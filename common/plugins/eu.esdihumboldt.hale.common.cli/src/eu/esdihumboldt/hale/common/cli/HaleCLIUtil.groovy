@@ -21,7 +21,6 @@ import org.joda.time.format.PeriodFormat
 import eu.esdihumboldt.hale.common.core.report.Report
 import eu.esdihumboldt.hale.common.core.report.ReportHandler
 import eu.esdihumboldt.hale.common.headless.report.ReportFile
-import groovy.cli.internal.OptionAccessor
 import groovy.cli.picocli.CliBuilder
 import groovy.transform.CompileStatic
 
