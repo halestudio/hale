@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Deegree I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.deegree.ui;singleton:=true
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Automatic-Module-Name: eu.esdihumboldt.hale.io.deegree.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.109.100",
