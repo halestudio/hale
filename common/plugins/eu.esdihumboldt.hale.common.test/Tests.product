@@ -84,6 +84,7 @@
       <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.blueprints.orient-graph"/>
+      <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
       <plugin id="com.typesafe.config"/>
@@ -306,16 +307,18 @@
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
       <plugin id="io.prometheus.simpleclient"/>
-      <plugin id="groovy-ant"/>
-      <plugin id="groovy-cli-picocli"/>
-      <plugin id="groovy-console"/>
-      <plugin id="groovy-datetime"/>
-      <plugin id="groovy-json"/>
-      <plugin id="groovy-nio"/>
-      <plugin id="groovy-sql"/>
-      <plugin id="groovy-templates"/>
-      <plugin id="groovy-test"/>
-      <plugin id="groovy-xml"/>
+      <plugin id="groovy-ant" fragment="true"/>
+      <plugin id="groovy-cli-commons" fragment="true"/>
+      <plugin id="groovy-cli-picocli" fragment="true"/>
+      <plugin id="groovy-console" fragment="true"/>
+      <plugin id="groovy-datetime" fragment="true"/>
+      <plugin id="groovy-json" fragment="true"/>
+      <plugin id="groovy-jsr223" fragment="true"/>
+      <plugin id="groovy-nio" fragment="true"/>
+      <plugin id="groovy-sql" fragment="true"/>
+      <plugin id="groovy-templates" fragment="true"/>
+      <plugin id="groovy-test" fragment="true"/>
+      <plugin id="groovy-xml" fragment="true"/>
       <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
       <plugin id="it.geosolutions.imageio-ext.streams"/>

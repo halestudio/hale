@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 import java.nio.file.Files
-import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Instant
 import java.time.LocalDate
@@ -175,11 +174,11 @@ class ShapefileInstanceWriterTest {
 
 
 
-	@CompileStatic
+	//@CompileStatic
 	static void withNewShapefile(Schema schema, InstanceCollection instances, Consumer<File> handler,
 			Consumer<ShapefileInstanceWriter> configurator = null) {
-		Path tmpDir = Files.createTempDirectory("ShapefileTest")
-		Path tmpFile = Files.createTempFile(tmpDir,'new', '.shp')
+		def tmpDir = Files.createTempDirectory("ShapefileTest")
+		def tmpFile = Files.createTempFile(tmpDir,'new', '.shp')
 
 		try {
 			println "Temporary file is $tmpFile"
@@ -190,11 +189,11 @@ class ShapefileInstanceWriterTest {
 		}
 	}
 
-	@CompileStatic
+	//@CompileStatic
 	static void withNewShapefileWithReporterErrors(Schema schema, InstanceCollection instances, Consumer<File> handler,
 			Consumer<ShapefileInstanceWriter> configurator = null) {
-		Path tmpDir = Files.createTempDirectory("ShapefileTest")
-		Path tmpFile = Files.createTempFile(tmpDir,'new', '.shp')
+		def tmpDir = Files.createTempDirectory("ShapefileTest")
+		def tmpFile = Files.createTempFile(tmpDir,'new', '.shp')
 
 		try {
 			println "Temporary file is $tmpFile"

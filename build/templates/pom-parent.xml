@@ -16,10 +16,23 @@
       <url>http://www.cityserver3d.de:8082/artifactory/repo</url>
     </pluginRepository -->
     <!-- see https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin -->
+     
     <pluginRepository>
 	    <id>groovy-plugins-release</id>
 	    <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
   	</pluginRepository>
+  	
+    <pluginRepository>
+      <id>bintray</id>
+      <name>Groovy Bintray</name>
+      <url>https://dl.bintray.com/groovy/maven</url>
+      <releases>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
     <pluginRepository>
       <id>central</id>
       <name>Central Repository</name>
@@ -50,11 +63,13 @@
   </distributionManagement -->
 
   <properties>
-    <tycho-version>3.0.0</tycho-version>
+      <tycho-version>3.0.0</tycho-version> 
+    <!-- <tycho-version>2.7.0</tycho-version> --> 
+    <!-- <tycho-version>2.7.5</tycho-version> -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--     <scala.version>2.10.4</scala.version> -->
-	<maven.compiler.target>18</maven.compiler.target>
-    <maven.compiler.source>18</maven.compiler.source>
+	<maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.release />
     <scala.version>2.15.2</scala.version>
   </properties>

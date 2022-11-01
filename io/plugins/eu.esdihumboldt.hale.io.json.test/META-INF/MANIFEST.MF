@@ -6,8 +6,7 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",
- groovy;bundle-version="4.0.1",
- groovy-json;bundle-version="4.0.1",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.0",

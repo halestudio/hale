@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.3.0",
  org.apache.velocity;bundle-version="1.6.2",
  de.fhg.igd.slf4jplus,
- groovy;bundle-version="4.0.1"
+ groovy;bundle-version="2.5.19"
 Export-Package: eu.esdihumboldt.hale.io.haleconnect.ui,
  eu.esdihumboldt.hale.io.haleconnect.ui.preferences,
  eu.esdihumboldt.hale.io.haleconnect.ui.projects

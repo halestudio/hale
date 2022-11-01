@@ -6,7 +6,7 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  org.opengis,
- groovy;bundle-version="4.0.1",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.instance;bundle-version="3.3.0",
  eu.esdihumboldt.hale.common.schema,
  org.geotools;bundle-version="21.0.0"
@@ -43,7 +43,6 @@ Import-Package: com.google.common.base;version="17.0.0",
  eu.esdihumboldt.util.geometry,
  eu.esdihumboldt.util.groovy.xml,
  eu.esdihumboldt.util.xml,
- groovy.xml.dom;version="4.0.1",
  javax.annotation;version="[1.2.0,1.2.0]",
  net.jcip.annotations,
  org.apache.commons.lang;version="2.6.0",

@@ -417,10 +417,10 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				} catch (ex) {
 				    throw new IllegalStateException("Unable to unpack ${name} - The MacOSX build requires a UNIX-based system with tar installed:\n${ex.toString()}")
 				}
-//				if (reldstpath.equals("jre")){
-//					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
-//					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
-//				}
+				if (reldstpath.equals("jre")){
+					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
+					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
+				}
 			}
         }
     } else {
@@ -869,7 +869,7 @@ def updateHaleIniFileWithJrePath(filepath) {
 	
 	def updatedContent = fileContent.substring(0, indexOfVmargs)
 	.concat("-vm\n")
-	.concat("../Eclipse/jre/Contents/Home/jre/bin/java\n")
+	.concat("../Eclipse/jre/Contents/Home/bin/java\n")
 	.concat(fileContent.substring(indexOfVmargs, fileContent.length()))
 
 	println("HALE.ini file contents changed successfully!!")
@@ -1081,7 +1081,7 @@ task buildProduct(dependsOn: createProductFeature) {
 			println('++++++++ unziped the product ...')
 		}
 	    // Include JRE if available for this platform
-//	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
+	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 	
 	    // Include additional files
 	    // if (project.ext.includeMongoDB) {

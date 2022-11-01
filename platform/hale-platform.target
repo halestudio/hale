@@ -48,8 +48,8 @@
 		<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202203220819"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="file:/Users/kapil/workspace/hale-platform/hale-platform/build/updatesite989898java17/"/>
-		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.1.0.i202210271557"/>
+		<repository location="file:/Users/kapil/workspace/hale-platform/hale-platform/build/updatesite--adsf565645643534/"/>
+		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.1.0.i202210281721"/>
 	</location>
 </locations>
 </target>

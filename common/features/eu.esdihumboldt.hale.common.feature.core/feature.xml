@@ -338,13 +338,6 @@
          unpack="false"/>
 
    <plugin
-         id="jline"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="jgridshift"
          download-size="0"
          install-size="0"
@@ -1517,6 +1510,28 @@
 
    <plugin
          id="org.glassfish.jaxb.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.tinkerpop.gremlin.groovy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy-jsr223"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="jline"
          download-size="0"
          install-size="0"
          version="0.0.0"
