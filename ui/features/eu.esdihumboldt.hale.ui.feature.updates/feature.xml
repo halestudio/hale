@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.updates"
       label="Software Updates Feature"
-      version="4.2.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="data harmonisation panel">
 
    <license>

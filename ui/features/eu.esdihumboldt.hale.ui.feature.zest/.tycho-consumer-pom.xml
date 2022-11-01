@@ -5,12 +5,12 @@
   <parent>
     <groupId>eu.esdihumboldt</groupId>
     <artifactId>rcp-parent</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <relativePath>../../..</relativePath>
   </parent>
   <groupId>eu.esdihumboldt</groupId>
   <artifactId>eu.esdihumboldt.hale.ui.feature.zest</artifactId>
-  <version>4.2.0-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
   <build>
     <plugins>
