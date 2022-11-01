@@ -366,9 +366,6 @@ def replaceIconPaths(productFile) {
  * and unzips them to 'reldstpath'. Prints 'name' to the console.
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
-	println("++++++++++++ includeAdditionalFiles")
-	println("++++++++++++ reldstpath: ${reldstpath}")
-	println("++++++++++++ artifacts: ${artifacts}")
     if (artifacts.containsKey(project.ext.osgiOS) && artifacts[project.ext.osgiOS].containsKey(project.ext.osgiWS) &&
             artifacts[project.ext.osgiOS][project.ext.osgiWS].containsKey(project.ext.osgiArch)) {
         // Download artifact
@@ -495,7 +492,6 @@ void updateAboutInfo(productOutputPath) {
  * Creates an installable package for the client
  */
 def packageClient(productOutputPath) {
-	println("+++++++ Helper.buildForWindows(project): ${Helper.buildForWindows(project)}")
     if (Helper.buildForWindows(project)) {
 		boolean packageAsZip = project.hasProperty('noInstaller') && project.ext.noInstaller
 
@@ -1032,23 +1028,12 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
 task buildProduct(dependsOn: createProductFeature) {
 	doFirst{
 	def projectRoot = project.ext.rootDir.path
-//		System.setProperty("maven.multiModuleProjectDirectory", projectDir);
-//		System.setProperty("maven.multiModuleProjectDirectory", projectRoot);
 		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
 	}	
 	doLast {
-		println '+++++++++++++++++ lets see'
 		def projectRoot = project.ext.rootDir.path
-//		System.setProperty("maven.multiModuleProjectDirectory", projectDir);
-//		System.setProperty("maven.multiModuleProjectDirectory", projectRoot);
-//		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
-		println ('++++++++++++ workingDir: ' + projectRoot)
 		def origBasedir = System.getProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY );
-		println ('++++++++++++ origBasedir: ' + origBasedir)
 	    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path , System.out, System.err)
-//		def res = new MavenCli().doMain(new String[] { "-Dmaven.multiModuleProjectDirectory=" + projectRoot, "-e", "package" }, project.ext.rootDir.path , System.out, System.err)
-		
-		println '+++++ after doMain'
 	    if (res != 0) {
 	        throw new RuntimeException("Maven failed with exit code ${res}")
 	    }
@@ -1057,36 +1042,28 @@ task buildProduct(dependsOn: createProductFeature) {
 	    def tychoOutputProductName = getProductUid() + '-' + project.ext.osgiOS + '.' +
 	            project.ext.osgiWS + '.' + project.ext.osgiArch
 	    def productFeaturePath = makeProductFeatureProjectDefinition.destinationDir
-	    println("+++++++++++ makeProductFeatureProjectDefinition: ${makeProductFeatureProjectDefinition}")
-	    println("+++++++++++ productFeaturePath: ${productFeaturePath}")
-		println("+++++++++++ target/products/${tychoOutputProductName}.zip")
 		def productOutputPath = new File(buildDir, getProductUid())
 		if (Helper.buildForWindows(project)) {
 			def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.zip")
 			project.delete(productOutputPath)
 			ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
-			println('++++++++ unziped the product for windows...')
 		} else {
 			def tychoOutputProductZip = new File(productFeaturePath, "target/products/${tychoOutputProductName}.tar.gz")
-			println("+++++++++++ file(Paths.get(tychoOutputProductZip: ${tychoOutputProductZip}")
 			project.delete("${productOutputPath}.tar")
 			project.delete(productOutputPath)
 		    println('Extracting product ...')
-		    println("+++++++++++ tychoOutputProductZip: ${tychoOutputProductZip}")
-		    println("+++++++++++ productOutputPath: ${productOutputPath}")
 		    
 		    ant.gunzip(src: tychoOutputProductZip, dest: "${productOutputPath}.tar")
 			ant.untar(src: "${productOutputPath}.tar", dest: productOutputPath)
 	//	    ant.unzip(src: tychoOutputProductZip, dest: productOutputPath)
-			println('++++++++ unziped the product ...')
 		}
 	    // Include JRE if available for this platform
 	    includeAdditionalFiles(project.ext.jreArtifacts, 'jre', productOutputPath, 'jre', 'JRE')
 	
 	    // Include additional files
-	    // if (project.ext.includeMongoDB) {
-	    //     includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
-	    // }
+	     if (project.ext.includeMongoDB) {
+	         includeAdditionalFiles(project.ext.mongodbArtifacts, 'mongodb', productOutputPath, 'mongodb', 'MongoDB')
+	     }
 	    if (productContainsHaleIOBundles()) {
 	        includeAdditionalFiles(project.ext.spatialiteArtifacts, 'spatialite', productOutputPath, '', 'Spatialite')
 	    }

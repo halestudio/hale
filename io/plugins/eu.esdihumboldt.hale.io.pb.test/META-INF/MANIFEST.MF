@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Protocol Buffer I/O tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.pb.test
-Bundle-Version: 4.2.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: eu.esdihuboldt.hale.io.pb.test

@@ -5,12 +5,12 @@
   <parent>
     <groupId>eu.esdihumboldt</groupId>
     <artifactId>rcp-parent</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <relativePath>../../..</relativePath>
   </parent>
   <groupId>eu.esdihumboldt</groupId>
   <artifactId>eu.esdihumboldt.hale.ui.functions.custom</artifactId>
-  <version>4.2.0-SNAPSHOT</version>
+  <version>5.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <properties>
     <doc.output.folder>${project.build.directory}/gen-doc/</doc.output.folder>
@@ -19,7 +19,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>de.fhg.igd.geom</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.groovy.sandbox</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -43,7 +43,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.align</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.convert</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.core</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -67,7 +67,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.filter</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -75,7 +75,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.instance</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -83,7 +83,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.schema</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -91,7 +91,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -99,7 +99,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -107,7 +107,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.doc.functions</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -115,7 +115,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.core</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -123,7 +123,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.instance.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -131,7 +131,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.instance.index</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -139,7 +139,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.lookup</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -147,7 +147,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.scripting</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -155,7 +155,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.custom</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -163,7 +163,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -171,7 +171,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.geometric</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -179,7 +179,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.numeric</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -187,7 +187,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.geometry</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -195,7 +195,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -203,7 +203,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.cst.functions.string</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -211,7 +211,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.schema.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -219,7 +219,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.util.nonosgi</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -227,7 +227,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.align.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -235,7 +235,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.groovy.meta.extension</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -243,7 +243,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.cache</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -251,7 +251,15 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.http</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
+      <type>eclipse-plugin</type>
+      <scope>compile</scope>
+      <optional>false</optional>
+    </dependency>
+    <dependency>
+      <groupId>eu.esdihumboldt</groupId>
+      <artifactId>eu.esdihumboldt.util.metrics</artifactId>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -259,7 +267,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.codelist</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -267,7 +275,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.convert.wkt</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -275,7 +283,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.util.resource</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -283,7 +291,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.headless</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -291,7 +299,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.instance.orient</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -299,7 +307,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.instancevalidator</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -307,7 +315,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.haleconnect</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -315,7 +323,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.xsd</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -323,7 +331,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.schema.persist</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -331,7 +339,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.service.helper</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -339,7 +347,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.common.tasks</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -347,7 +355,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.csv</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -355,7 +363,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.csv.ui</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -363,7 +371,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -371,7 +379,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.xls</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -379,7 +387,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.common</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -387,7 +395,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.lookup</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -395,7 +403,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.util</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -403,7 +411,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.gml.geometry</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -411,7 +419,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.io.validation</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -419,7 +427,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.common.graph</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -427,7 +435,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.filter</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -435,7 +443,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.geometry</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -443,7 +451,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.codelist</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -451,7 +459,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.common.definition.editors</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -459,7 +467,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.scripting</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -467,7 +475,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.util.graph</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -475,7 +483,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.functions.core</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -483,7 +491,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.util.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
@@ -491,7 +499,7 @@
     <dependency>
       <groupId>eu.esdihumboldt</groupId>
       <artifactId>eu.esdihumboldt.hale.ui.functions.groovy</artifactId>
-      <version>4.2.0-SNAPSHOT</version>
+      <version>5.0.0-SNAPSHOT</version>
       <type>eclipse-plugin</type>
       <scope>compile</scope>
       <optional>false</optional>
