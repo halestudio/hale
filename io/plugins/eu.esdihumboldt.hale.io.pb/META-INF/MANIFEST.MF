@@ -15,8 +15,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.instance,
  eu.esdihumboldt.hale.common.instance.orient;bundle-version="4.2.0",
  org.eclipse.core.contenttype;bundle-version="3.7.600",
  eu.esdihumboldt.hale.util.nonosgi;bundle-version="4.2.0",
- eu.esdihumboldt.hale.common.instancevalidator;bundle-version="4.2.0",
- eu.esdihumboldt.hale.io.pb
+ eu.esdihumboldt.hale.common.instancevalidator;bundle-version="4.2.0"
 Import-Package: eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.util.io,
  org.eclipse.core.runtime.content

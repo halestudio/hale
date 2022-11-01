@@ -8,9 +8,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: eu.esdihuboldt.hale.io.pb.test
 Require-Bundle: eu.esdihumboldt.hale.io.pb;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.instance,
- eu.esdihumboldt.hale.common.core;bundle-version="4.2.0"
+ eu.esdihumboldt.hale.common.core;bundle-version="4.2.0",
+ org.junit;bundle-version="4.13.0"
 Import-Package: eu.esdihumboldt.util.io,
  org.json.simple;version="1.1.0",
- org.junit;version="4.11.0",
  org.slf4j;version="1.7.2"
 
