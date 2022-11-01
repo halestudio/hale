@@ -14,6 +14,8 @@ HALE:
   - -Dcache.level2.size=0
   - -XX:MinHeapFreeRatio=40
   - -XX:MaxHeapFreeRatio=55
+  - -add-exports java.base/sun.nio.ch=ALL-UNNAMED 
+  - -add-exports java.base/jdk.internal.ref=ALL-UNNAMED
   WinIco: /eu.esdihumboldt.hale.ui.application/images/hale.ico
   Plugins:
   - EDU.oswego.cs.dl.util.concurrent

@@ -6,8 +6,7 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Fragment-Host: eu.esdihumboldt.hale.common.service.helper;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: groovy;bundle-version="4.0.1",
- groovy-test;bundle-version="4.0.1",
+Require-Bundle: groovy;bundle-version="2.5.19",
  org.junit;bundle-version="4.13.0"
 Import-Package: eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.filter,

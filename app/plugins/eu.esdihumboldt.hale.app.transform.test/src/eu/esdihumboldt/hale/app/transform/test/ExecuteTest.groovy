@@ -19,10 +19,8 @@ import eu.esdihumboldt.hale.app.transform.ExecApplication
 import eu.esdihumboldt.hale.common.app.ApplicationUtil
 import eu.esdihumboldt.hale.common.test.TestUtil
 import groovy.json.JsonSlurper
-import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
-import groovy.xml.XmlSlurper
 
 
 

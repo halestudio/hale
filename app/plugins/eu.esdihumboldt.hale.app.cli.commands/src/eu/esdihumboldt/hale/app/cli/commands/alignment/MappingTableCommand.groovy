@@ -26,7 +26,6 @@ import eu.esdihumboldt.hale.common.core.report.ReportHandler
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment
 import eu.esdihumboldt.hale.io.xls.writer.XLSAlignmentMappingWriter
 import eu.esdihumboldt.util.cli.CommandContext
-import groovy.cli.internal.OptionAccessor
 import groovy.transform.CompileStatic
 
 /**

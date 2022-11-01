@@ -15,7 +15,6 @@
 
 package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
-import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 
 /**

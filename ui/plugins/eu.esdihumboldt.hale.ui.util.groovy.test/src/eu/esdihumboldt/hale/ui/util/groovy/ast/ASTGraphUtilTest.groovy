@@ -21,7 +21,6 @@ import org.codehaus.groovy.ast.stmt.BlockStatement
 import com.tinkerpop.blueprints.Direction
 import com.tinkerpop.blueprints.Vertex
 
-import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 
 

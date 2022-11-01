@@ -24,7 +24,6 @@ import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations;
 import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociationsType;
 import eu.esdihumboldt.hale.common.codelist.config.CodeListReference;
 import eu.esdihumboldt.hale.common.codelist.config.DummyEntityKey;
-import groovy.test.GroovyTestCase
 import groovy.transform.CompileStatic
 
 /**

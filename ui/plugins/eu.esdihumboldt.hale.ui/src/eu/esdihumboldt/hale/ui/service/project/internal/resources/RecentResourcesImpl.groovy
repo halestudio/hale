@@ -193,7 +193,7 @@ class RecentResourcesImpl implements RecentResources {
 	@CompileStatic(TypeCheckingMode.SKIP)
 	void load(InputStream input) {
 		def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-		Element root = builder.parse(input).getDocumentElement()
+		Element root = builder.parse(input).documentElement
 
 		use (DOMCategory) {
 			// locations
