@@ -419,7 +419,8 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
 				}
 				if (reldstpath.equals("jre")){
 					//update HALE.ini file with the JRE path bundled in the Eclipse.app.
-					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/HALE.ini")
+					def launcherName=  getProductLauncher()
+					updateHaleIniFileWithJrePath(productOutputPath.absolutePath + "/Eclipse.app/Contents/Eclipse/${launcherName}.ini")
 				}
 			}
         }
