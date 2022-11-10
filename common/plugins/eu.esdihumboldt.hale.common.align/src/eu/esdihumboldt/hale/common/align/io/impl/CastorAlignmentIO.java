@@ -112,6 +112,12 @@ public class CastorAlignmentIO {
 				new InputSource(AlignmentBean.class.getResourceAsStream("AlignmentBean.xml")));
 
 		XMLContext context = new XMLContext();
+		// to prevent java.lang.RuntimeException: [Missing message
+		// conf.failedInstantiateSerializer]
+		// at
+		// org.exolab.castor.xml.BaseXercesJDK5Serializer.<init>(BaseXercesJDK5Serializer.java:53)
+		context.setProperty(org.castor.xml.XMLProperties.SERIALIZER_FACTORY,
+				org.exolab.castor.xml.XercesXMLSerializerFactory.class.getName());
 		context.setProperty("org.exolab.castor.indent", true); // enable
 																// indentation
 																// for
@@ -119,6 +125,7 @@ public class CastorAlignmentIO {
 																// project files
 																// should be
 																// very small
+
 		context.addMapping(mapping);
 		Marshaller marshaller = context.createMarshaller();
 //		marshaller.setEncoding("UTF-8"); XXX not possible using the XMLContext but UTF-8 seems to be default, see http://jira.codehaus.org/browse/CASTOR-2846

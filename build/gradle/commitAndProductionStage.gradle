@@ -1107,6 +1107,7 @@ task packageProduct(dependsOn: buildProduct) {
  */
 def runTests(args = []) {
 	def productOutputPath = new File(buildDir, getProductUid())
+	//def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def testReportDir = project.file('target/testReports')
 	testReportDir.mkdirs()
@@ -1120,7 +1121,7 @@ def runTests(args = []) {
 	outFile.delete()
 	errFile.delete()
 	reportFile.delete()
-
+	
 	// make launcher executable
 	ant.chmod(file: launcherFile, perm:'a+x')
 	// make JRE executable (linux)
