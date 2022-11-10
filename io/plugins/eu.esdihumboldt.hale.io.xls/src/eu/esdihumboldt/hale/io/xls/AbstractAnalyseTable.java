@@ -19,12 +19,15 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URI;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  * Do analysis on simple Excel tables.
@@ -56,7 +59,18 @@ public abstract class AbstractAnalyseTable {
 		InputStream inp = new BufferedInputStream(location.toURL().openStream());
 
 		try {
-			Workbook wb = WorkbookFactory.create(inp);
+//			https://poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
+			Workbook wb;
+			if (location.getPath().contains(".xls")) {
+				try (POIFSFileSystem fs = new POIFSFileSystem(inp)) {
+					wb = new HSSFWorkbook(fs.getRoot(), true);
+				}
+			}
+			else {
+				OPCPackage pkg = OPCPackage.open(inp);
+				wb = new XSSFWorkbook(pkg);
+			}
+
 			Sheet sheet = wb.getSheetAt(sheetNum);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
 

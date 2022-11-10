@@ -38,6 +38,8 @@ Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";reso
  eu.esdihumboldt.util.io,
  org.apache.poi.hssf.usermodel;version="5.2.3",
  org.apache.poi.openxml4j.exceptions;version="5.2.3",
+ org.apache.poi.openxml4j.opc;version="5.2.3",
+ org.apache.poi.poifs.filesystem;version="5.2.3",
  org.apache.poi.ss.usermodel;version="5.2.3",
  org.apache.poi.xssf.usermodel;version="5.2.3",
  org.springframework.core.convert;version="5.2.0",

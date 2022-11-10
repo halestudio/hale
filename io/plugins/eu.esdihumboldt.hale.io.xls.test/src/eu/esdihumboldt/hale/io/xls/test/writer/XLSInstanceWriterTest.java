@@ -22,11 +22,12 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -102,7 +103,11 @@ public class XLSInstanceWriterTest {
 		IOReport report = writer.execute(null);
 		assertTrue(report.isSuccess());
 
-		Workbook wb = WorkbookFactory.create(tmpFile);
+		Workbook wb;
+//		https: // poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
+		try (POIFSFileSystem fs = new POIFSFileSystem(tmpFile)) {
+			wb = new HSSFWorkbook(fs.getRoot(), true);
+		}
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
@@ -144,7 +149,11 @@ public class XLSInstanceWriterTest {
 		IOReport report = writer.execute(null);
 		assertTrue(report.isSuccess());
 
-		Workbook wb = WorkbookFactory.create(tmpFile);
+		Workbook wb;
+//		https: // poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
+		try (POIFSFileSystem fs = new POIFSFileSystem(tmpFile)) {
+			wb = new HSSFWorkbook(fs.getRoot(), true);
+		}
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
@@ -187,7 +196,11 @@ public class XLSInstanceWriterTest {
 		IOReport report = writer.execute(null);
 		assertTrue(report.isSuccess());
 
-		Workbook wb = WorkbookFactory.create(tmpFile);
+		Workbook wb;
+//		https: // poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
+		try (POIFSFileSystem fs = new POIFSFileSystem(tmpFile)) {
+			wb = new HSSFWorkbook(fs.getRoot(), true);
+		}
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
