@@ -140,7 +140,6 @@
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
       <plugin id="de.odysseus.staxon"/>
-      <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.config.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
@@ -245,9 +244,7 @@
       <plugin id="eu.esdihumboldt.hale.io.jdbc.test"/>
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.json.test"/>
-      <plugin id="eu.esdihumboldt.hale.io.oml"/>
       <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
-      <plugin id="eu.esdihumboldt.hale.io.oml.test"/>
       <plugin id="eu.esdihumboldt.hale.io.pb"/>
       <plugin id="eu.esdihumboldt.hale.io.pb.test"/>
       <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
@@ -394,7 +391,6 @@
       <plugin id="org.apache.commons.commons-compress"/>
       <plugin id="org.apache.commons.commons-io"/>
       <plugin id="org.apache.commons.commons-text"/>
-      <plugin id="org.apache.commons.compress"/>
       <plugin id="org.apache.commons.configuration"/>
       <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
@@ -478,7 +474,6 @@
       <plugin id="org.eclipse.equinox.registry"/>
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
-      <plugin id="org.eclipse.equinox.security.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.equinox.simpleconfigurator"/>
       <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
       <plugin id="org.eclipse.equinox.weaving.caching"/>
@@ -496,10 +491,6 @@
       <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.swt"/>
       <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
@@ -533,27 +524,16 @@
       <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
-      <plugin id="org.jvnet.staxex.stax-ex"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.locationtech.jts.jts-core"/>
       <plugin id="org.locationtech.proj4j"/>
       <plugin id="org.lz4.lz4-java"/>
       <plugin id="org.nibor.autolink"/>
-      <plugin id="org.objectweb.asm-5"/>
       <plugin id="org.objectweb.asm-9"/>
-      <plugin id="org.objectweb.asm.analysis-5"/>
-      <plugin id="org.objectweb.asm.tree-5"/>
-      <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
       <plugin id="org.postgresql.jdbc"/>
       <plugin id="org.reflections"/>
       <plugin id="org.semanticweb.owlapi.osgi.skos"/>
-      <plugin id="org.springframework.aop"/>
-      <plugin id="org.springframework.asm"/>
-      <plugin id="org.springframework.beans"/>
-      <plugin id="org.springframework.context"/>
-      <plugin id="org.springframework.core"/>
-      <plugin id="org.springframework.expression"/>
       <plugin id="org.springframework.spring-aop"/>
       <plugin id="org.springframework.spring-beans"/>
       <plugin id="org.springframework.spring-context"/>
@@ -601,10 +581,6 @@
       <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="false" startLevel="2" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
-      <plugin id="org.springframework.aop" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.beans" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.context" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.core" autoStart="true" startLevel="0" />
    </configurations>
 
    <preferencesInfo>
