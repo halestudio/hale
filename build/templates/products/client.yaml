@@ -8,10 +8,13 @@ HALE:
   LauncherName: HALE
   ProgramArgs: -nl en_GB -clean -name "HUMBOLDT Alignment Editor" --launcher.defaultAction openFile
   VmArgs:
+  - -Xmx800m
+  - -XX:MaxPermSize=128m
   - -Dcache.level1.enabled=false
   - -Dcache.level1.size=0
   - -Dcache.level2.enabled=false
   - -Dcache.level2.size=0
+  - -Xms256M
   - -XX:MinHeapFreeRatio=40
   - -XX:MaxHeapFreeRatio=55
   - -add-exports java.base/sun.nio.ch=ALL-UNNAMED 
