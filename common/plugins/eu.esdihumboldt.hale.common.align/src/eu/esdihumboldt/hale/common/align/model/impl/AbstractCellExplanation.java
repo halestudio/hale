@@ -343,6 +343,9 @@ public abstract class AbstractCellExplanation implements CellExplanation {
 		PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(
 				clazz.getClassLoader());
 		String pkg = clazz.getPackage().getName().replaceAll("\\.", "/");
+
+//		PathMatchingResourcePatternResolver doesn't pick up files with wild card for unknown reason and needs to be investigated
+
 		String pattern = pkg + "/" + baseName + "*." + suffix;
 		return Arrays.stream(resolver.getResources(pattern)).map(resource -> {
 			String fileName = resource.getFilename();

@@ -210,7 +210,6 @@
       <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.common.tasks"/>
       <plugin id="eu.esdihumboldt.hale.common.test"/>
-      <plugin id="eu.esdihumboldt.hale.common.test.allure"/>
       <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
       <plugin id="eu.esdihumboldt.hale.doc.util"/>
       <plugin id="eu.esdihumboldt.hale.instance.test"/>
@@ -489,6 +488,7 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.osgi.util"/>
       <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
@@ -549,7 +549,6 @@
       <plugin id="ru.yandex.qatools.allure.java-adaptor-api"/>
       <plugin id="ru.yandex.qatools.allure.java-annotations"/>
       <plugin id="ru.yandex.qatools.allure.java-aspects"/>
-      <plugin id="ru.yandex.qatools.allure.junit-adaptor"/>
       <plugin id="ru.yandex.qatools.allure.model"/>
       <plugin id="ru.yandex.qatools.properties.loader"/>
       <plugin id="si.uom.si-quantity"/>
