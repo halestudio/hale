@@ -27,7 +27,6 @@ import java.util.function.Consumer
 import javax.xml.namespace.QName
 
 import org.junit.Test
-
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.Point
 
@@ -186,12 +185,13 @@ class GeopackageInstanceWriterTest {
 
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			abc {
-				a(new BigInteger('123'))
+				a((new BigInteger('123')).intValue())
 				b(new BigDecimal('1.23'))
 			}
 
 			abc {
-				a(new BigInteger('1' + Long.MAX_VALUE))
+
+				a((new BigInteger('1' + Long.MAX_VALUE)).intValue())
 				b(new BigDecimal('1098491071975459529.6201509049614540479'))
 			}
 		}
@@ -640,5 +640,4 @@ class GeopackageInstanceWriterTest {
 			writer.setTargetCRS(new CodeDefinition('EPSG:25832'))
 		}
 	}
-
 }
