@@ -61,7 +61,7 @@ public abstract class AbstractAnalyseTable {
 		try {
 //			https://poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
 			Workbook wb;
-			if (location.getPath().contains(".xls")) {
+			if (location.getPath().toLowerCase().endsWith(".xls")) {
 				try (POIFSFileSystem fs = new POIFSFileSystem(inp)) {
 					wb = new HSSFWorkbook(fs.getRoot(), true);
 				}
