@@ -36,7 +36,7 @@ class MappingWriterTest {
 	 * Simple test that checks if a configuration can be successfully written.
 	 */
 	@Test
-	@Ignore("ignoring for the moment to run the tests")
+	@Ignore("deegree export currently not working due to Java update")
 	void testSuccessSaveConfig() {
 		Schema targetSchema = new DefaultSchema(
 				'http://inspire.ec.europa.eu/schemas/ps/4.0',
@@ -58,7 +58,7 @@ class MappingWriterTest {
 	 * Simple test that checks if a DDL can be successfully written.
 	 */
 	@Test
-	@Ignore("ignoring for the moment to run the tests")
+	@Ignore("deegree export currently not working due to Java update")
 	void testSuccessSaveDDL() {
 		Schema targetSchema = new DefaultSchema(
 				'http://inspire.ec.europa.eu/schemas/ps/4.0',
