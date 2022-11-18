@@ -131,7 +131,12 @@ ext {
 		'eu.esdihumboldt.hale.common.cache.test',
 		'eu.esdihumboldt.util.blueprints.entities.test',
 		'eu.esdihumboldt.hale.io.oml',
-		'eu.esdihumboldt.hale.io.oml.test'
+		'eu.esdihumboldt.hale.io.oml.test',
+		// exclude them because org.deegree needs to be updated with jaxb dependencies
+		'eu.esdihumboldt.hale.io.deegree',
+		'eu.esdihumboldt.hale.io.deegree.ui',
+		'eu.esdihumboldt.hale.io.deegree.test',
+		'eu.esdihumboldt.hale.io.feature.deegree'
 	]
 
 	// bundles or fragments that are required additionally for compilation
