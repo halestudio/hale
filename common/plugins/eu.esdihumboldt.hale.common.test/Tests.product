@@ -219,8 +219,6 @@
       <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.csv"/>
       <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
-      <plugin id="eu.esdihumboldt.hale.io.deegree"/>
-      <plugin id="eu.esdihumboldt.hale.io.deegree.test" fragment="true"/>
       <plugin id="eu.esdihumboldt.hale.io.geopackage"/>
       <plugin id="eu.esdihumboldt.hale.io.geopackage.test"/>
       <plugin id="eu.esdihumboldt.hale.io.gml"/>

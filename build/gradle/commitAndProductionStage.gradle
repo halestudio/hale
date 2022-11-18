@@ -1107,7 +1107,6 @@ task packageProduct(dependsOn: buildProduct) {
  */
 def runTests(args = []) {
 	def productOutputPath = new File(buildDir, getProductUid())
-	//def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def launcherName = project.ext.testProductLauncher?:'eclipse'
 	def testReportDir = project.file('target/testReports')
 	testReportDir.mkdirs()

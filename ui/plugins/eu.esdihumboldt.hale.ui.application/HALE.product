@@ -100,7 +100,6 @@ https://www.wetransform.to/services/support/
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
       <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
-      <feature id="eu.esdihumboldt.hale.io.feature.deegree"/>
       <feature id="org.eclipse.equinox.core.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
