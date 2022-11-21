@@ -160,6 +160,7 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) {
 		}
 	    pg.generateParentPomFile(parentPomConfig)
 		
+		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
 	    // build update site
 	    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
 	    if (res != 0) {

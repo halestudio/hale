@@ -1031,12 +1031,11 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
  */
 task buildProduct(dependsOn: createProductFeature) {
 	doFirst{
-	def projectRoot = project.ext.rootDir.path
+		def projectRoot = project.ext.rootDir.path
 		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
 	}	
 	doLast {
 		def projectRoot = project.ext.rootDir.path
-		def origBasedir = System.getProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY );
 	    def res = new MavenCli().doMain([ '-e', 'package' ] as String[], project.ext.rootDir.path , System.out, System.err)
 	    if (res != 0) {
 	        throw new RuntimeException("Maven failed with exit code ${res}")
