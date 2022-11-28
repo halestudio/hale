@@ -12,25 +12,6 @@
 <repository location="http://build-artifacts.wetransform.to/p2/sqlite/build_7"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.21.0.v20200205-0529"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.100.v20200303-1901"/>
-<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.11.2.v20200224-0816"/>
-<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.11.2.v20200224-0816"/>
-<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.12.2.201912020813"/>
-<unit id="org.eclipse.xtext.sdk.feature.group" version="2.21.0.v20200302-1509"/>
-<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.500.v20200217-1548"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.300.v20191023-2007"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.700.v20200217-0016"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient45.feature.feature.group" version="1.0.300.v20200217-0016"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.200.v20191024-1546"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.15.0.v20200217-1230"/>
-<unit id="org.eclipse.sdk.ide" version="4.15.0.I20200305-0155"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-eclipse/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
 <unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
 <repository location="http://build-artifacts.wetransform.to/p2/slf4jplus/import"/>
@@ -50,6 +31,21 @@
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/fb75991068d88e6ca76df7bbee252e759c7179f3/updatesites/platform"/>
 		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="4.1.0.i20221117"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="https://download.eclipse.org/eclipse/updates/4.24/"/>
+		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.24.0.v20220420-0901"/>
+		<unit id="org.eclipse.sdk.ide" version="4.24.0.I20220607-0700"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="https://download.eclipse.org/releases/2022-06"/>
+		<unit id="org.eclipse.ecf.core.feature.group" version="3.14.33.v20220224-2257"/>
+		<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.13.0.v20220519-1115"/>
+		<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.13.0.v20220519-1115"/>
+		<unit id="org.eclipse.emf.sdk.feature.group" version="2.30.0.v20220516-1117"/>
+		<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.400.v20220516-2155"/>
+		<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.14.2.202204130739"/>
+		<unit id="org.eclipse.xtext.sdk.feature.group" version="2.27.0.v20220530-0508"/>
 	</location>
 </locations>
 </target>
