@@ -36,6 +36,16 @@
 		<repository location="https://download.eclipse.org/eclipse/updates/4.24/"/>
 		<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.24.0.v20220420-0901"/>
 		<unit id="org.eclipse.sdk.ide" version="4.24.0.I20220607-0700"/>
+		<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.6.1.v20211005-1944"/>
+		<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.6.1.v20211005-1944"/>
+		<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.1800.v20220215-0126"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient5.feature.feature.group" version="1.1.600.v20220215-0126"/>
+		<unit id="org.eclipse.ecf.filetransfer.httpclient5.feature.source.feature.group" version="1.1.600.v20220215-0126"/>
+		<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="1.2.1100.v20220210-1157"/>
+		<unit id="org.eclipse.equinox.p2.sdk.feature.group" version="3.11.1600.v20220518-1326"/>
+		<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.400.v20220516-2155"/>
+		<unit id="org.eclipse.swt.tools.feature.feature.group" version="3.108.500.v20220423-0849"/>
+		<unit id="org.eclipse.swt.tools.feature.source.feature.group" version="3.108.500.v20220423-0849"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://download.eclipse.org/releases/2022-06"/>
