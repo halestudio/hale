@@ -73,7 +73,7 @@ import groovy.transform.CompileStatic
 public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<HaleConnectProjectConfig> {
 
 	private static final ALogger log = ALoggerFactory.getLogger(ChooseHaleConnectProjectWizardPage.class);
-	private static final OwnerFilterEntry NULL_FILTER = new OwnerFilterEntry(owner: null as Owner[], label: "All projects");
+	private static final OwnerFilterEntry NULL_FILTER = new OwnerFilterEntry(owner: null , label: "All projects");
 	private static final List<String> LOADING_TABLE_INPUT = ["Loading..."]
 
 	private final HaleConnectService haleConnect;
@@ -148,7 +148,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 							String configuredBasePath = haleConnect.getBasePathManager()
 									.getBasePath(HaleConnectServices.PROJECT_STORE);
 							if (configuredBasePath
-							.equals(HaleConnectServices.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
+									.equals(HaleConnectServices.HALE_CONNECT_BASEPATH_PROJECTS_DEFAULT)) {
 								log.userError(
 										"Unable to connect to hale connect, please check your network connection.",
 										t);
@@ -263,15 +263,14 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 
 		List<OwnerFilterEntry> availableFilters = new ArrayList<>();
 		availableFilters.add(NULL_FILTER);
-		availableFilters.add(new OwnerFilterEntry(owner: [
-			new Owner(type: OwnerType.USER, id: haleConnect.getSession().getUserId())] as Owner[] , label: "My projects"));
+		availableFilters.add(new OwnerFilterEntry(owner: Arrays.asList(new Owner(type: OwnerType.USER, id: haleConnect.getSession().getUserId())), label: "My projects"));
 
 		List<Owner> orgs = new ArrayList<>();
 		for (String orgId : haleConnect.getSession().getOrganisationIds()) {
 			orgs.add(new Owner(type: OwnerType.ORGANISATION, id: orgId));
 		}
 		if (!orgs.isEmpty()) {
-			availableFilters.add(new OwnerFilterEntry(owner: orgs.toArray([] as Owner[]), label: "My organisations' projects"));
+			availableFilters.add(new OwnerFilterEntry(owner: orgs, label: "My organisations' projects"));
 		}
 
 		ownerFilter.setInput(availableFilters);
@@ -394,7 +393,7 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 									projectFilter.clearOwnerFilter();
 								}
 								else {
-									projectFilter.filterByOwners(Arrays.asList(selectedFilter.getOwner()));
+									projectFilter.filterByOwners(selectedFilter.getOwner());
 								}
 							}
 						}
@@ -442,7 +441,6 @@ public class ChooseHaleConnectProjectWizardPage extends ConfigurationWizardPage<
 			for (String orgId : haleConnect.getSession().getOrganisationIds()) {
 				Futures.addCallback(haleConnect.getProjectsAsync(orgId), new GetProjectsCallback(orgId), MoreExecutors.directExecutor());
 			}
-
 		} catch (HaleConnectException e1) {
 			log.error(e1.getMessage(), e1);
 			projects.setInput([
