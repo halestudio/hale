@@ -17,9 +17,12 @@ package eu.esdihumboldt.hale.io.haleconnect.ui.projects
 
 import eu.esdihumboldt.hale.io.haleconnect.Owner
 import groovy.transform.Immutable
-
 /**
  * Entry in the owner filter dropdown of LoadHaleConnectProjectWizardPage
+ *
+ * After migration to java17, if this class is marked as @Immutable then 
+ * at runtime an exception is thrown indicating that clone() is not applicable to Owner class.
+ * Therefore, using @Canonical which provides similar functionality but immutability. 
  * 
  * @author Florian Esser
  */
@@ -28,7 +31,7 @@ class OwnerFilterEntry {
 	/**
 	 * Owner or owners to display if this entry is selected
 	 */
-	Owner[] owner
+	List<Owner> owner
 
 	/**
 	 * Label for the dropdown entry
