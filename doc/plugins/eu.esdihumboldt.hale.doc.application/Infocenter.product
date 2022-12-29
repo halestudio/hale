@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.0.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
@@ -34,7 +34,6 @@
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
-      <plugin id="com.ibm.icu"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
       <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
@@ -139,6 +138,7 @@
       <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
       <plugin id="it.geosolutions.jaiext.zonal.jt-zonal"/>
       <plugin id="jai.jai-imageio"/>
+      <plugin id="jakarta.servlet-api"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.mail"/>
@@ -146,8 +146,6 @@
       <plugin id="javax.media.jai_codec"/>
       <plugin id="javax.media.jai_core"/>
       <plugin id="javax.media.jai_imageio"/>
-      <plugin id="javax.servlet"/>
-      <plugin id="javax.servlet.jsp"/>
       <plugin id="javax.vecmath"/>
       <plugin id="javax.xml"/>
       <plugin id="jcl.over.slf4j"/>
@@ -172,7 +170,6 @@
       <plugin id="org.apache.httpcomponents.fluent-hc"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
-      <plugin id="org.apache.jasper.glassfish"/>
       <plugin id="org.apache.lucene.analyzers-common"/>
       <plugin id="org.apache.lucene.analyzers-smartcn"/>
       <plugin id="org.apache.lucene.core"/>
@@ -209,7 +206,6 @@
       <plugin id="org.eclipse.equinox.http.jetty"/>
       <plugin id="org.eclipse.equinox.http.registry"/>
       <plugin id="org.eclipse.equinox.http.servlet"/>
-      <plugin id="org.eclipse.equinox.jsp.jasper"/>
       <plugin id="org.eclipse.equinox.jsp.jasper.registry"/>
       <plugin id="org.eclipse.equinox.preferences"/>
       <plugin id="org.eclipse.equinox.registry"/>
