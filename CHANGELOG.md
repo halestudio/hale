@@ -4,6 +4,45 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [5.0.0]
+
+### Added
+- Support for Java 17
+- Support for Groovy 2.5
+- Support to configure details on HTTP client max connections and connection eviction via environment variables
+- Support collecting metrics on Request class HTTP clients 
+- Support for TopoJSON as a format for exporting data
+- Support to get list of Shapefile names
+- Support for XPlanGML 5.4 and XPlanGML 6.0 schema preset
+- Support to allow excluding root properties from structural Retype
+- Support to automatically add the codespace for INSPIRE feature types
+- Support for `xs:all` to the XML Schema Reader
+- Support to specify initial value during "Generate sequential ID" function
+- Support to read CRS information from Geopackage file rather than reading it from the schema
+- Enhanced support for loading XML/GML schema resembling Geopackage structure so that no information is lost
+- Support to specify leniency when using DateExtraction function 
+- Support to skip n-lines when reading csv and xls files
+ 
+### Changed
+- Merge schemas for HSD export as XML or Json to one schema to work around the restriction that only single schema can be imported from HSD file
+
+### Removed
+- Deegree workspace configuration generation has been removed since it requires further work to integrate updated dependencies that are compatible with Java 17
+
+### Fixed
+- Fix to check for a null date when converting a string to any form of date and/or time
+- Fix to add exception message to the transformation log 
+- Fix to propose one single variable or a list during Groovy merge
+- Fix to remove group property definitions from path when using Add condition on context function
+- Fix to not truncate Shapefile attributes if their length is less than 10 characters
+- Fix to correct the winding order as counterclockwise based
+on the right-hand rule when exporting data in Json format
+- Fix to preserve original order of columns during CSV export
+- Fix to clean progress bar when opening a new project after exporting in CSV and XLS
+- Fix to handle NPE when exporting multiple geometries to Shapefiles
+- Fix to apply queryFilter when reading Geopackage files instead of writing them
+- Fix to allow loading Geopackage files with non standard file extension
+
 ## [4.1.0]
 
 ### Added
