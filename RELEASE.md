@@ -9,9 +9,9 @@ Before proceeding with the release steps
 
 Create a new branch from the master:
 
-1. Create a PR to update the [CHANGELOG.md](https://github.com/kapil-agnihotri/hale/blob/master/CHANGELOG.md)
+1. Create a PR to update the [CHANGELOG.md](https://github.com/halestudio/hale/blob/master/CHANGELOG.md#change-log)
 2. Create a PR to update [what's new page](https://github.com/halestudio/hale/tree/master/doc/plugins/eu.esdihumboldt.hale.doc.user/html/new) by creating a new `<release-tag>.xhtml` page.
-3. Once the PRs are merged to the master, update the Infocenter container, so that [what's new page in the documentation](http://help.halestudio.org/latest/index.jsp?topic=%2Feu.esdihumboldt.hale.doc.user%2Fhtml%2Fnew%2F4_1_0.xhtml&cp%3D0_1_0) is updated to show the latest release information. Then proceed with the steps for a HALE release.
+3. Once the PRs are merged to the master, update the [Infocenter container](https://github.com/halestudio/hale/blob/fb07374fdd4e5078ccbc2074fd8a13bd48982e58/doc/plugins/eu.esdihumboldt.hale.doc.user/toc.xml#L17), so that [what's new page in the documentation](http://help.halestudio.org/latest/index.jsp?topic=%2Feu.esdihumboldt.hale.doc.user%2Fhtml%2Fnew%2F4_1_0.xhtml&cp%3D0_1_0) is updated to show the latest release information. Then proceed with the steps for a HALE release.
 
 Steps for a HALE release
 ========================
