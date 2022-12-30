@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale»studio 5.0?</title>
+</head>
+<body>
+	<h1>What's new in hale»studio 5.0?</h1>
+
+	<ul>
+		<li>Updated hale studio runtime to Java 17 from Java 8</li>
+		<li>Updated Groovy from 2.4 to 2.5</li>
+		<li>Added support to export data to Protocol Buffer File format</li>
+		<li>Added support to export transformed data to TopoJSON file format</li>
+		<li>Added presets for XPlanGML 5.4 and XPlanGML 6.0 schemas</li>
+		<li>Added support to skip n-lines when reading csv and xls files</li>
+		<li>Various bug fixes and enhancements</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#500"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>To avoid any compatibility issues when using an existing workspace, we recommend starting with a fresh one when you install
+		hale»studio 5.0.0</p>
+		
+	<p>The development work for this release was co-funded by the European Health and Digital Executive Agency (HaDEA) under Action No 2018-EU-IA-0093.</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="5_0_0">
+		<tbody>
+
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="5_0_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+				
+			<tr id="java-17">
+				<td class="title">Migrated hale»studio from Java 8 to Java 17</td>
+				<td class="content">
+					<p>
+						Until now, hale»studio used Java 8 as its runtime but from this release hale»studio 
+						runtime is migrated to use Java 17 and also all other related libraries are updated 
+						to be compatible with Java 17.
+					</p>
+					<p>
+						<img src="5_0_0_images/java17.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="groovy-2_5">
+				<td class="title">Updated hale»studio's Groovy version to 2.5</td>
+				<td class="content">
+					<p>
+						Another major migration was to update Groovy from Groovy 2.4 to Groovy 2.5. This migration
+						was necessary as a part of Java 17 migration.
+					</p>
+					<p>
+						<img src="5_0_0_images/groovy2_5.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="topojson-writer">
+				<td class="title">TopoJSON writer</td>
+				<td class="content">
+					<p>
+						This release adds the additional option to export source or transformed data in TopoJSON format.
+					</p>
+					<p>
+						<img src="5_0_0_images/topojson.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="sequential-id">
+				<td class="title">Initial value to sequential ID</td>
+				<td class="content">
+					<p>
+						This release add a support to provide initial value during sequential ID generation function
+						which users were not able to do until now.
+					</p>
+					<p>
+						<img src="5_0_0_images/initial-value-to-sequential-id.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="column-ordering-csv-export">
+				<td class="title">Preserve original column order in CSV export</td>
+				<td class="content">
+					<p>
+						This release also adds a fix to preserve the original column order when exporting data 
+						in CSV format. A new check box is added that can toggle this functionality.
+					</p>
+					<p>
+						<img src="5_0_0_images/csv-preserve-original-column-order.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="skip-lines">
+				<td class="title">Skip lines when reading CSV file</td>
+				<td class="content">
+					<p>
+						This release adds an additional option to skip <code>n</code> number of lines when reading CSV files.
+					</p>
+					<p>
+						<img src="5_0_0_images/csv-skip-n-lines.png"></img>
+					</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

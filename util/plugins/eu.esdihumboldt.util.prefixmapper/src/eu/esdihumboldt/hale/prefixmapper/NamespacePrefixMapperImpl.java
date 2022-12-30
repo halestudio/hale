@@ -16,7 +16,7 @@
 
 package eu.esdihumboldt.hale.prefixmapper;
 
-import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
+import org.glassfish.jaxb.runtime.marshaller.NamespacePrefixMapper;
 
 /**
  * Custom namespace prefix mapper.
@@ -26,7 +26,8 @@ import com.sun.xml.internal.bind.marshaller.NamespacePrefixMapper;
 public class NamespacePrefixMapperImpl extends NamespacePrefixMapper {
 
 	@Override
-	public String getPreferredPrefix(String namespaceUri, String suggestion, boolean requirePrefix) {
+	public String getPreferredPrefix(String namespaceUri, String suggestion,
+			boolean requirePrefix) {
 		// I want this namespace to be mapped to "wps"
 		if ("http://www.opengis.net/wps/1.0.0".equals(namespaceUri))
 			return "wps";

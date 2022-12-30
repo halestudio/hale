@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Groovy Instance API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.groovy;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="11.0.1",
@@ -19,9 +19,9 @@ Import-Package: com.google.common.base;version="11.0.1",
  eu.esdihumboldt.util.groovy.paths,
  net.jcip.annotations,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.1.1.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.7.0",
- groovy;bundle-version="2.1.5",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.util.groovy.sandbox
 Export-Package: eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.groovy.internal;x-internal:=true

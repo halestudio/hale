@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE MS-SQL Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.mssql;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.mssql.internal.Activator
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="3.1.0",
@@ -13,16 +13,16 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.io;version="17.0.0",
  com.microsoft.sqlserver.jdbc;version="4.2.0",
- org.locationtech.jts.geom;version="1.13.0",
- org.locationtech.jts.io;version="1.13.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
  eu.esdihumboldt.hale.common.schema.persist,
  eu.esdihumboldt.util.io,
  microsoft.sql;version="4.2.0",
- org.geotools.geometry.jts;version="12.2.0.combined",
- org.geotools.referencing;version="12.2.0.combined",
+ org.geotools.geometry.jts;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
+ org.locationtech.jts.geom;version="1.13.0",
+ org.locationtech.jts.io;version="1.13.0",
  org.opengis.referencing;version="12.2.0",
  org.opengis.referencing.crs;version="12.2.0",
  org.opengis.referencing.operation;version="12.2.0",

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions Tests
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: data harmonisation panel
 Import-Package: eu.esdihumboldt.cst.test,
@@ -17,9 +17,13 @@ Require-Bundle: org.locationtech.jts.jts-core;bundle-version="1.13.0",
  eu.esdihumboldt.hale.common.align;bundle-version="2.9.2",
  eu.esdihumboldt.cst;bundle-version="2.9.0",
  org.opengis;bundle-version="12.2.0",
- org.geotools;bundle-version="12.2.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="3.3.0",
  eu.esdihumboldt.cst.functions.geometric;bundle-version="3.3.0",
- groovy;bundle-version="2.3.7",
- org.junit;bundle-version="4.12.0"
+ groovy;bundle-version="2.5.19",
+ org.junit;bundle-version="4.12.0",
+ org.geotools;bundle-version="21.0.0",
+ com.sun.xml.bind.jaxb-impl;bundle-version="4.0.1",
+ org.codehaus.castor.core;bundle-version="1.4.1",
+ org.codehaus.castor.xml;bundle-version="1.4.1",
+ xerces.xercesImpl;bundle-version="2.12.2"
 Automatic-Module-Name: eu.esdihumboldt.cst.functions.geometric.test

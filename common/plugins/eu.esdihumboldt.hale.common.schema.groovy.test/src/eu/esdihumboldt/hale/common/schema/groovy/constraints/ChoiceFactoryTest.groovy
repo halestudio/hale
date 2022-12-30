@@ -18,7 +18,6 @@ package eu.esdihumboldt.hale.common.schema.groovy.constraints
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag
 import groovy.transform.CompileStatic
 
-
 /**
  * Tests creation of {@link ChoiceFlag} constraints w/ {@link ChoiceFactory}.
  * 

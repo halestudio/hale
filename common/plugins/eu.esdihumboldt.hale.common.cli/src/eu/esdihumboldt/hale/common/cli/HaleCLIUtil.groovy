@@ -21,6 +21,7 @@ import org.joda.time.format.PeriodFormat
 import eu.esdihumboldt.hale.common.core.report.Report
 import eu.esdihumboldt.hale.common.core.report.ReportHandler
 import eu.esdihumboldt.hale.common.headless.report.ReportFile
+import groovy.cli.picocli.CliBuilder
 import groovy.transform.CompileStatic
 
 class HaleCLIUtil {
@@ -69,7 +70,7 @@ class HaleCLIUtil {
 
 	@CompileStatic
 	static ReportHandler createReportHandler(File reportFile = null) {
-		final ReportHandler delegateTo
+		ReportHandler delegateTo
 		if (reportFile) {
 			delegateTo = new ReportFile(reportFile)
 		}
@@ -87,5 +88,4 @@ class HaleCLIUtil {
 					}
 				}
 	}
-
 }

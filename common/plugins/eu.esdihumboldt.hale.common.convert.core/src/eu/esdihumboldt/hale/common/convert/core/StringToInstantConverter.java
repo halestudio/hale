@@ -18,21 +18,15 @@ package eu.esdihumboldt.hale.common.convert.core;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
-import org.springframework.core.convert.converter.Converter;
-
 /**
  * Convert a {@link String} to a {@link Instant}.
  * 
  * @author Simon Templer
  */
-public class StringToInstantConverter implements Converter<String, Instant> {
+public class StringToInstantConverter extends AbstractStringToDateTimeTypeConverter<Instant> {
 
 	@Override
-	public Instant convert(String source) {
-		if (source == null) {
-			return null;
-		}
-
+	protected Instant parse(String source) {
 		Instant result;
 		try {
 			result = Instant.parse(source);

@@ -25,6 +25,7 @@ import com.tinkerpop.blueprints.impls.tg.TinkerGraph
 import com.tinkerpop.blueprints.impls.tg.TinkerGraphFactory
 
 import eu.esdihumboldt.util.blueprints.entities.NonUniqueResultException
+import groovy.test.GroovyTestCase
 
 
 /**

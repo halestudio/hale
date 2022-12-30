@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormat;
@@ -86,19 +87,21 @@ public class XLSLookupTableWriter extends AbstractLookupExport {
 		CellStyle headerStyle = workbook.createCellStyle();
 		Font headerFont = workbook.createFont();
 		// use bold font
-		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+//		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerFont.setBold(true);
 		headerStyle.setFont(headerFont);
 		// set a medium border
-		headerStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+//		headerStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
+		headerStyle.setBorderBottom(BorderStyle.MEDIUM);
 		// set cell data format to text
 		headerStyle.setDataFormat(df.getFormat("@"));
 
 		// create cell style
 		CellStyle rowStyle = workbook.createCellStyle();
 		// set thin border around the cell
-		rowStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		rowStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		rowStyle.setBorderRight(CellStyle.BORDER_THIN);
+		rowStyle.setBorderBottom(BorderStyle.THIN);
+		rowStyle.setBorderLeft(BorderStyle.THIN);
+		rowStyle.setBorderRight(BorderStyle.THIN);
 		// set cell data format to text
 		rowStyle.setDataFormat(df.getFormat("@"));
 		// display multiple lines
@@ -111,13 +114,13 @@ public class XLSLookupTableWriter extends AbstractLookupExport {
 		// write header
 		row = sheet.createRow(rownum++);
 		cell = row.createCell(0);
-		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(
-				String.class));
+		cell.setCellValue(
+				getParameter(LookupTableExportConstants.PARAM_SOURCE_COLUMN).as(String.class));
 		cell.setCellStyle(headerStyle);
 
 		cell = row.createCell(1);
-		cell.setCellValue(getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(
-				String.class));
+		cell.setCellValue(
+				getParameter(LookupTableExportConstants.PARAM_TARGET_COLUMN).as(String.class));
 		cell.setCellStyle(headerStyle);
 
 		for (Value key : table.keySet()) {

@@ -17,6 +17,8 @@ HALE:
   - -Xms256M
   - -XX:MinHeapFreeRatio=40
   - -XX:MaxHeapFreeRatio=55
+  - --add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+  - --add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
   WinIco: /eu.esdihumboldt.hale.ui.application/images/hale.ico
   Plugins:
   - EDU.oswego.cs.dl.util.concurrent
@@ -102,7 +104,6 @@ HALE:
   - eu.esdihumboldt.cst.functions.string
   - eu.esdihumboldt.hale.common.align@0
   - eu.esdihumboldt.hale.common.align.groovy
-  - eu.esdihumboldt.hale.common.align.tgraph
   - eu.esdihumboldt.hale.common.app
   - eu.esdihumboldt.hale.common.cache
   - eu.esdihumboldt.hale.common.codelist
@@ -149,8 +150,6 @@ HALE:
   - eu.esdihumboldt.hale.io.xml@0
   - eu.esdihumboldt.hale.io.xsd@0
   - eu.esdihumboldt.hale.io.xsd.ui
-  - eu.esdihumboldt.hale.io.xslt
-  - eu.esdihumboldt.hale.io.xslt.ui
   - eu.esdihumboldt.hale.prefixmapper
   - eu.esdihumboldt.hale.ui
   - eu.esdihumboldt.hale.ui.application
@@ -355,8 +354,6 @@ HALE:
   - org.mortbay.jetty.server
   - org.mortbay.jetty.util
   - org.opengis
-  - org.parboiled.core
-  - org.parboiled.java
   - org.postgresql.jdbc4
   - slf4j.api
   - org.springframework.aop@0
@@ -370,7 +367,6 @@ HALE:
   - org.w3c.dom.events
   - org.w3c.dom.smil
   - org.w3c.dom.svg
-  - pegdown
   - relaxngDatatype
   - schemacrawler.core
   - slf4j.ext
@@ -382,5 +378,3 @@ AGeoBw:
 #  - -Xmx1600M
   Plugins:
   - eu.esdihumboldt.hale.ui.util.bbr
-  - eu.esdihumboldt.hale.functions.bgis
-  - eu.esdihumboldt.hale.app.bgis.ade

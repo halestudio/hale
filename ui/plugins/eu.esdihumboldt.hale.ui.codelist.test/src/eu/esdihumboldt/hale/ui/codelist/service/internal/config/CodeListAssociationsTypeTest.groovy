@@ -15,16 +15,16 @@
 
 package eu.esdihumboldt.hale.ui.codelist.service.internal.config
 
+import javax.xml.namespace.QName
+import javax.xml.parsers.DocumentBuilderFactory
+
+import org.w3c.dom.Element
+
 import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociations;
 import eu.esdihumboldt.hale.common.codelist.config.CodeListAssociationsType;
 import eu.esdihumboldt.hale.common.codelist.config.CodeListReference;
 import eu.esdihumboldt.hale.common.codelist.config.DummyEntityKey;
 import groovy.transform.CompileStatic
-
-import javax.xml.namespace.QName
-import javax.xml.parsers.DocumentBuilderFactory
-
-import org.w3c.dom.Element
 
 /**
  * Tests for converting {@link CodeListAssociations} to DOM and back.

@@ -79,9 +79,17 @@ public class CSVInstanceReaderTest {
 		}
 
 		// read Instances ###
-		InstanceCollection instances = readCSVInstances("/data/test1.csv", typeName, true, schema,
+		InstanceCollection instances = readCSVInstances("/data/test1.csv", typeName, 1, schema,
 				null, null, null);
 		assertEquals(numberOfInstances, collectionSize(instances));
+
+		// read and skip N instances ###
+		int numberOfLines = 3; // no. of lines = header + 2 instances
+		for (int i = 0; i <= numberOfLines; i++) {
+			InstanceCollection remainingInstances = readCSVInstances("/data/test1.csv", typeName, i,
+					schema, null, null, null);
+			assertEquals(numberOfLines - i, collectionSize(remainingInstances));
+		}
 
 		// get Type to check property definition (schema and instance
 		// combination)
@@ -102,6 +110,32 @@ public class CSVInstanceReaderTest {
 			assertTrue(value[0] instanceof String);
 		}
 
+	}
+
+	/**
+	 * Test - read a sample csv schema and data where skip is a boolean. It
+	 * simulates the previous version where the first line was either skipped
+	 * (true) or not (false)
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testBackwardCompatibilityRead() throws Exception {
+		String typeName = "location";
+		// read Schema ###
+		Schema schema = readCSVSchema("/data/test1.csv", typeName,
+				"java.lang.String,java.lang.String,java.lang.String,java.lang.String",
+				"Name,Xcoord,Ycoord,id", null, null, null);
+
+		// test backward compatibility with skip first line as boolean
+		int numberOfLines = 3; // no. of lines = header + 2 instances
+		InstanceCollection instancesNotSkip = readCSVInstances("/data/test1.csv", typeName, false,
+				schema, null, null, null);
+		assertEquals(numberOfLines, collectionSize(instancesNotSkip));
+
+		InstanceCollection instancesSkipFirst = readCSVInstances("/data/test1.csv", typeName, true,
+				schema, null, null, null);
+		assertEquals(numberOfLines - 1, collectionSize(instancesSkipFirst));
 	}
 
 	/**
@@ -180,8 +214,8 @@ public class CSVInstanceReaderTest {
 		}
 
 		// read Instances ###
-		InstanceCollection instances = readCSVInstances("/data/test4-commadecimal.csv", typeName,
-				true, schema, ";", null, null, ",");
+		InstanceCollection instances = readCSVInstances("/data/test4-commadecimal.csv", typeName, 1,
+				schema, ";", null, null, ",");
 		assertEquals(numberOfInstances, collectionSize(instances));
 
 		// get Type to check property definition (schema and instance
@@ -227,7 +261,7 @@ public class CSVInstanceReaderTest {
 
 	private Schema readCSVSchema(String sourceLocation, String typeName, String paramPropertyType,
 			String propertyNames, String seperator, String quote, String escape, String decimal)
-					throws Exception {
+			throws Exception {
 
 		CSVSchemaReader schemaReader = new CSVSchemaReader();
 		schemaReader.setSource(
@@ -246,9 +280,17 @@ public class CSVInstanceReaderTest {
 		return schemaReader.getSchema();
 	}
 
+	private InstanceCollection readCSVInstances(String sourceLocation, String typeName, int skipN,
+			Schema sourceSchema, String seperator, String quote, String escape) throws Exception {
+
+		return readCSVInstances(sourceLocation, typeName, skipN, sourceSchema, seperator, quote,
+				escape, null);
+	}
+
 	private InstanceCollection readCSVInstances(String sourceLocation, String typeName,
 			boolean skipFirst, Schema sourceSchema, String seperator, String quote, String escape)
-					throws Exception {
+			throws Exception {
+
 		return readCSVInstances(sourceLocation, typeName, skipFirst, sourceSchema, seperator, quote,
 				escape, null);
 	}
@@ -261,8 +303,30 @@ public class CSVInstanceReaderTest {
 		instanceReader.setSource(
 				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
-		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE,
-				Value.of(skipFirst));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(skipFirst));
+		instanceReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, Value.of(seperator));
+		instanceReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
+		instanceReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));
+		instanceReader.setParameter(CSVSchemaReader.PARAM_DECIMAL, Value.of(decimal));
+
+		instanceReader.setSourceSchema(sourceSchema);
+
+		// Test instances
+		IOReport report = instanceReader.execute(null);
+		assertTrue("Data import was not successfull.", report.isSuccess());
+
+		return instanceReader.getInstances();
+	}
+
+	private InstanceCollection readCSVInstances(String sourceLocation, String typeName, int skipN,
+			Schema sourceSchema, String seperator, String quote, String escape, String decimal)
+			throws Exception {
+
+		InstanceReader instanceReader = new CSVInstanceReader();
+		instanceReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(skipN));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, Value.of(seperator));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
 		instanceReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));

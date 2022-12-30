@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Cache
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.cache;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.io;version="9.0.0",
  de.fhg.igd.osgi.util,
@@ -12,6 +12,7 @@ Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.util.http,
  eu.esdihumboldt.util.http.client,
  eu.esdihumboldt.util.io,
+ eu.esdihumboldt.util.metrics,
  net.sf.ehcache,
  net.sf.ehcache.config,
  net.sf.ehcache.store,
@@ -22,9 +23,9 @@ Import-Package: com.google.common.io;version="9.0.0",
 Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.3.3",
  org.apache.httpcomponents.httpcore;bundle-version="4.3.2",
  org.eclipse.core.runtime;bundle-version="3.7.0",
- groovy;bundle-version="2.1.5"
-Export-Package: eu.esdihumboldt.hale.common.cache;uses:="net.sf.ehcache"
+ groovy;bundle-version="2.5.19"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.common.cache.Activator
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.cache
+Export-Package: eu.esdihumboldt.hale.common.cache

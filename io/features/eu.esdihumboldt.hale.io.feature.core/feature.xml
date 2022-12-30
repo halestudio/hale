@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.core"
       label="Core I/O Providers"
-      version="4.1.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -93,13 +93,6 @@
 
    <plugin
          id="net.sf.opencsv"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.poi"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -338,6 +331,47 @@
 
    <plugin
          id="com.j256.ormlite"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.github.albfernandez.javadbf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.github.wetransform-os.topojson-j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.lz4.lz4-java"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.pb"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.topojson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+   <plugin
+         id="javax.transaction-api"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -25,7 +25,6 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
 import eu.esdihumboldt.hale.io.html.svg.mapping.MappingExporter
 import groovy.transform.CompileStatic
-import groovy.transform.TypeChecked
 
 
 /**

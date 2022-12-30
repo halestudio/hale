@@ -19,9 +19,9 @@ import javax.xml.namespace.QName
 import javax.xml.stream.XMLStreamException
 
 import org.apache.commons.lang.StringEscapeUtils
+import org.apache.tinkerpop.gremlin.structure.Vertex
 
 import com.google.common.collect.ArrayListMultimap
-import com.tinkerpop.blueprints.Vertex
 
 import de.fhg.igd.slf4jplus.ALogger
 import de.fhg.igd.slf4jplus.ALoggerFactory
@@ -136,7 +136,7 @@ class RetypeTraverser extends AbstractTransformationTraverser implements XsltCon
 		final int targetMaxNum;
 
 		if (node.definition().asProperty() &&
-		node.definition().asProperty().getConstraint(XmlAttributeFlag).enabled) {
+				node.definition().asProperty().getConstraint(XmlAttributeFlag).enabled) {
 			// attribute
 			attribute = true
 			targetMaxNum = 1

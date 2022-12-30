@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: hale Geopackage Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
@@ -10,7 +10,7 @@ Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
  eu.esdihumboldt.hale.common.schema.persist,
  eu.esdihumboldt.hale.common.core;bundle-version="4.0.0",
  org.eclipse.core.runtime;bundle-version="3.14.0",
- groovy;bundle-version="2.4.14",
+ groovy;bundle-version="2.5.19",
  mil.nga.geopackage;bundle-version="3.4.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="4.0.0",
  mil.nga.sf;bundle-version="2.0.2",
@@ -18,15 +18,19 @@ Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0",
  eu.esdihumboldt.util.groovy;bundle-version="4.0.0",
  mil.nga.sf.wkb;bundle-version="2.0.2",
  com.j256.ormlite;bundle-version="5.1.0",
- eu.esdihumboldt.hale.common.convert;bundle-version="4.0.0"
+ eu.esdihumboldt.hale.common.convert;bundle-version="4.0.0",
+ org.springframework.spring-core;bundle-version="5.2.0"
 Import-Package: com.google.common.cache;version="18.0.0",
+ de.fhg.igd.slf4jplus,
+ eu.esdihumboldt.hale.common.align.helper,
+ eu.esdihumboldt.hale.common.align.model,
+ eu.esdihumboldt.util.io,
+ mil.nga.sf.proj;version="3.0.2",
+ org.geotools.geometry.jts;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
  org.locationtech.jts.awt;version="1.13.0",
  org.locationtech.jts.geom;version="1.13.0",
  org.locationtech.jts.io;version="1.13.0",
- de.fhg.igd.slf4jplus,
- eu.esdihumboldt.util.io,
- org.geotools.geometry.jts;version="12.2.0.combined",
- org.geotools.referencing;version="12.2.0.combined",
  org.opengis.metadata;version="12.2.0",
  org.opengis.referencing;version="12.2.0",
  org.opengis.referencing.crs;version="12.2.0",

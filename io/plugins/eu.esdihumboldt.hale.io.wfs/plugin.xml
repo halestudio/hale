@@ -272,6 +272,20 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Automatically add codespace to gml:identifier during GML export."
+               label="Add codespace to gml:identifier"
+               name="xml.add.codespace"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, the codespace is automatically added to the gml:identifier."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                description="Skip counting features to allow direct streaming"
                label="Skip counting features"
                name="skipFeatureCount"
@@ -421,6 +435,20 @@
                   sample="false">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Automatically add codespace to gml:identifier during GML export."
+               label="Add codespace to gml:identifier"
+               name="xml.add.codespace"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="true"
+                  defaultDescription="By default, the codespace is automatically added to the gml:identifier."
+                  sample="false">
+            </valueDescriptor>
+         </providerParameter>   
          <providerParameter
                description="Guiding value for instances per file. The number will be exceeded only in cases where there are too many inter-related instances that cannot be separated."
                label="Instances per file"

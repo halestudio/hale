@@ -2,18 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Groovy Helper Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.groovy.helpers;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.cst.functions.groovy;bundle-version="2.9.3",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="2.5.19"
 Import-Package: com.google.common.base;version="17.0.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.util.groovy.collector,
  javax.annotation;version="[1.2.0,1.2.0]",
- org.springframework.core.convert;version="3.1.1.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.groovy.helpers,
  eu.esdihumboldt.cst.functions.groovy.helpers.util
 Automatic-Module-Name: eu.esdihumboldt.cst.functions.groovy.helpers

@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Converters
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.core;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="2.5.19",
+ org.springframework.spring-core;bundle-version="5.2.0"
 Import-Package: com.google.common.collect;version="17.0.0",
  org.joda.time,
  org.joda.time.base;version="2.1.0"

@@ -2,18 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE PostgreSQL Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.postgresql;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.postgresql.internal.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.locationtech.jts,
- org.locationtech.jts.geom,
- de.fhg.igd.slf4jplus,
+Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.core.report,
  eu.esdihumboldt.hale.common.instance.geometry,
  eu.esdihumboldt.hale.common.instance.geometry.impl,
- org.geotools.geometry.jts;version="8.0.0",
- org.geotools.referencing;version="8.0.0",
+ org.geotools.geometry.jts;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
+ org.locationtech.jts,
+ org.locationtech.jts.geom,
  org.opengis.geometry;version="8.0.0",
  org.opengis.referencing;version="8.0.0",
  org.opengis.referencing.crs;version="8.0.0",

@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -117,11 +118,10 @@ public class Request {
 		try {
 			// this will throw up in non-OSGi environments
 			cacheDir = PlatformUtil.getInstanceLocation();
-		}
-		catch (Throwable t) {
+		} catch (Throwable t) {
 			cacheEnabled = false;
 		}
-		
+
 		if (cacheEnabled) {
 			try {
 				if (cacheDir == null) {
@@ -259,6 +259,9 @@ public class Request {
 		InputStream in;
 
 		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			// close connection
+			response.close();
+
 			// fall back to URL.openStream
 			in = uri.toURL().openStream();
 		}
@@ -299,8 +302,50 @@ public class Request {
 		CloseableHttpClient client = clients.get(proxy);
 
 		if (client == null) {
-			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
+			Integer maxConnections = null; // use default
+			Integer maxPerRoute = null; // use default
+			boolean perHostMetrics = false;
+
+			// customizable behavior for connection manager
+			try {
+				String maxStr = System.getenv("HALE_REQUEST_MAX_CONNECTIONS");
+				if (maxStr != null) {
+					maxConnections = Integer.parseInt(maxStr);
+				}
+
+				String maxRouteStr = System.getenv("HALE_REQUEST_MAX_CONNECTIONS_PER_ROUTE");
+				if (maxRouteStr != null) {
+					maxPerRoute = Integer.parseInt(maxRouteStr);
+				}
+
+				String perHostMetricsStr = System.getenv("HALE_REQUEST_PER_HOST_METRICS");
+				if (perHostMetricsStr != null) {
+					perHostMetrics = Boolean.parseBoolean(perHostMetricsStr);
+				}
+			} catch (Exception e) {
+				log.error("Error trying to apply custom HTTP client settings", e);
+			}
+
+			String clientName = "hale-request-" + proxy.toString();
+			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(clientName,
+					maxConnections, maxPerRoute, perHostMetrics);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
+
+			// customizable behavior for client
+			try {
+				String evictExpiredStr = System.getenv("HALE_REQUEST_EVICT_EXPIRED");
+				if (evictExpiredStr != null && Boolean.parseBoolean(evictExpiredStr)) {
+					builder.evictExpiredConnections();
+				}
+
+				String evictIdleStr = System.getenv("HALE_REQUEST_EVICT_IDLE_MINUTES");
+				if (evictIdleStr != null) {
+					long minutes = Long.parseLong(evictIdleStr);
+					builder.evictIdleConnections(minutes, TimeUnit.MINUTES);
+				}
+			} catch (Exception e) {
+				log.error("Error trying to apply custom HTTP client settings", e);
+			}
 
 			// set timeouts
 
@@ -335,8 +380,9 @@ public class Request {
 			RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(socketTimeout)
 					.setConnectTimeout(connectTimeout).build();
 
-			client = builder.setDefaultRequestConfig(requestConfig)
-					.setDefaultSocketConfig(socketconfig).build();
+			builder.setDefaultRequestConfig(requestConfig).setDefaultSocketConfig(socketconfig);
+
+			client = builder.build();
 
 			clients.put(proxy, client);
 		}

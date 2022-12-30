@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: hale CLI API
 Bundle-SymbolicName: eu.esdihumboldt.util.cli;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension,
@@ -10,7 +10,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  javax.annotation;version="[1.2.0,1.2.0]",
  org.slf4j;version="1.7.10"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.11.1",
- groovy;bundle-version="2.3.7"
+ groovy;bundle-version="2.5.19"
 Export-Package: eu.esdihumboldt.util.cli,
  eu.esdihumboldt.util.cli.bash,
  eu.esdihumboldt.util.cli.bash.internal;x-internal:=true,

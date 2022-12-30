@@ -72,6 +72,7 @@ import eu.esdihumboldt.hale.ui.common.definition.viewer.SchemaPatternFilter;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.StyledDefinitionLabelProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypeDefinitionContentProvider;
 import eu.esdihumboldt.hale.ui.common.definition.viewer.TypePropertyContentProvider;
+import eu.esdihumboldt.hale.ui.functions.groovy.GroovyMergePage;
 import eu.esdihumboldt.hale.ui.util.IColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovyColorManager;
 import eu.esdihumboldt.hale.ui.util.groovy.GroovySourceViewerUtil;
@@ -124,13 +125,13 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		ToolItem item = new ToolItem(bar, SWT.PUSH);
 		switch (schemaSpace) {
 		case SOURCE:
-			item.setImage(CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_SOURCE_SCHEMA));
+			item.setImage(CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_SOURCE_SCHEMA));
 			item.setToolTipText("Show source structure");
 			break;
 		case TARGET:
-			item.setImage(CommonSharedImages.getImageRegistry().get(
-					CommonSharedImages.IMG_TARGET_SCHEMA));
+			item.setImage(CommonSharedImages.getImageRegistry()
+					.get(CommonSharedImages.IMG_TARGET_SCHEMA));
 			item.setToolTipText("Show target structure");
 			break;
 		}
@@ -146,7 +147,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 						dialog.closeTray();
 					}
 
-					dialog.openTray(new TypeStructureTray(types, schemaSpace));
+					dialog.openTray(new TypeStructureTray(types, schemaSpace,
+							page instanceof GroovyMergePage));
 				}
 				else {
 					// TODO show dialog instead?
@@ -157,18 +159,22 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 	private final TypeProvider types;
 	private final SchemaSpaceID schemaSpace;
+	private final boolean isMerge;
 
 	/**
 	 * Create a type structure tray.
 	 * 
 	 * @param types the type provider
 	 * @param schemaSpace the schema space
+	 * @param isMerge is a Groovy Retype Merge
 	 */
-	public TypeStructureTray(TypeProvider types, SchemaSpaceID schemaSpace) {
+	public TypeStructureTray(TypeProvider types, SchemaSpaceID schemaSpace, boolean isMerge) {
 		super();
 
+		this.isMerge = isMerge;
 		this.types = types;
 		this.schemaSpace = schemaSpace;
+
 	}
 
 	@Override
@@ -195,8 +201,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		// create tree viewer
 		PatternFilter patternFilter = new SchemaPatternFilter();
 		patternFilter.setIncludeLeadingWildcard(true);
-		final FilteredTree filteredTree = new TreePathFilteredTree(page, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
+		final FilteredTree filteredTree = new TreePathFilteredTree(page,
+				SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter, true);
 
 		TreeViewer tree = filteredTree.getViewer();
 		tree.setUseHashlookup(true);
@@ -235,15 +241,17 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 		}
 
 		// source viewer
-		final SourceViewer viewer = new SourceViewer(page, null, SWT.MULTI | SWT.BORDER
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
+		final SourceViewer viewer = new SourceViewer(page, null,
+				SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.READ_ONLY);
 
 		final IColorManager colorManager = new GroovyColorManager();
 		SourceViewerConfiguration configuration = new SimpleGroovySourceViewerConfiguration(
-				colorManager, ImmutableList.of(BINDING_TARGET, BINDING_BUILDER, BINDING_INDEX,
-						BINDING_SOURCE, BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE, BINDING_CELL,
-						BINDING_LOG, BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
-						BINDING_TRANSFORMATION_CONTEXT), null);
+				colorManager,
+				ImmutableList.of(BINDING_TARGET, BINDING_BUILDER, BINDING_INDEX, BINDING_SOURCE,
+						BINDING_SOURCE_TYPES, BINDING_TARGET_TYPE, BINDING_CELL, BINDING_LOG,
+						BINDING_CELL_CONTEXT, BINDING_FUNCTION_CONTEXT,
+						BINDING_TRANSFORMATION_CONTEXT),
+				null);
 		viewer.configure(configuration);
 
 		GridDataFactory.fillDefaults().grab(true, false).hint(200, 130)
@@ -399,8 +407,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 
 		// is a property or list of inputs referenced -> use accessor
 		boolean propertyOrList = path.getSegmentCount() > startIndex
-				|| (path.getLastSegment() instanceof ChildDefinition<?> && canOccureMultipleTimes((ChildDefinition<?>) path
-						.getLastSegment()));
+				|| (path.getLastSegment() instanceof ChildDefinition<?>
+						&& canOccureMultipleTimes((ChildDefinition<?>) path.getLastSegment()));
 		if (!propertyOrList) {
 			if (parent instanceof TypeDefinition && canHaveValue((TypeDefinition) parent)) {
 				if (!DefinitionUtil.hasChildren((Definition<?>) path.getLastSegment())) {
@@ -475,7 +483,7 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 			StringBuilder example = new StringBuilder();
 
 			boolean canOccurMultipleTimes = false;
-			if (path.getFirstSegment() instanceof TypeDefinition) {
+			if (path.getFirstSegment() instanceof TypeDefinition || isMerge) {
 				canOccurMultipleTimes = true;
 			}
 			/*
@@ -484,8 +492,8 @@ public class TypeStructureTray extends DialogTray implements GroovyConstants {
 			 */
 			for (int i = path.getSegmentCount() - 1; i >= 0 && !canOccurMultipleTimes; i--) {
 				if (path.getSegment(i) instanceof ChildDefinition<?>) {
-					canOccurMultipleTimes = canOccureMultipleTimes((ChildDefinition<?>) path
-							.getSegment(i));
+					canOccurMultipleTimes = canOccureMultipleTimes(
+							(ChildDefinition<?>) path.getSegment(i));
 				}
 			}
 

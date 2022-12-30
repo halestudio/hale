@@ -46,7 +46,6 @@ class InstanceFamilyAccessorTest extends GroovyTestCase {
 				name()
 				age(Integer)
 				addressId(cardinality: '0..n') {
-
 				}
 			}
 
@@ -122,5 +121,4 @@ class InstanceFamilyAccessorTest extends GroovyTestCase {
 		assertEquals 2, family.links.Address.p.id.list().size()
 		assertEquals 2, family.children().Address.accessor().id.list().size()
 	}
-
 }

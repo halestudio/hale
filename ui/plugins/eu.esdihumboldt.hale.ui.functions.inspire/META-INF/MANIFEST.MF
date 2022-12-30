@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Inspire
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.inspire;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
  com.google.guava;bundle-version="9.0.0",
@@ -25,3 +25,4 @@ Import-Package: de.fhg.igd.eclipse.util.extension.simple,
  org.eclipse.osgi.util;version="1.1.0"
 Export-Package: eu.esdihumboldt.hale.ui.functions.inspire
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.inspire
+Bundle-Vendor: data harmonisation panel

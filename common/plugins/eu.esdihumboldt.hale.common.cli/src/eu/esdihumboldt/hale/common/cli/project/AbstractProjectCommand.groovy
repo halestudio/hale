@@ -24,6 +24,7 @@ import eu.esdihumboldt.util.cli.CLIUtil
 import eu.esdihumboldt.util.cli.Command
 import eu.esdihumboldt.util.cli.CommandContext
 import eu.esdihumboldt.util.cli.bash.BashCompletion
+import groovy.cli.picocli.CliBuilder
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
 
@@ -183,5 +184,4 @@ abstract class AbstractProjectCommand<T> implements Command {
 			null
 		}
 	}
-
 }

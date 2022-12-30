@@ -24,10 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Element;
@@ -81,6 +77,11 @@ import eu.esdihumboldt.hale.common.core.service.ServiceProvider;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.util.Pair;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**
  * Converts an {@link AlignmentType} loaded with JAXB to a
@@ -158,7 +159,7 @@ public class JaxbToAlignment
 		Unmarshaller u = jc.createUnmarshaller();
 
 		// it will debug problems while unmarshalling
-		u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+		u.setEventHandler(new DefaultValidationEventHandler());
 
 		try {
 			root = u.unmarshal(new StreamSource(in), AlignmentType.class);

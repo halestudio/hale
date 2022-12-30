@@ -21,13 +21,19 @@ import java.util.Map;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.json.writer.InstanceToJson;
 
 /**
  * Object holding information about default geometries of types to use for the
  * GeoJSON export.
  * 
  * @author Kai Schwierczek
+ * 
+ * @deprecated as of release 4.2.0 this class is deprecated because
+ *             {@link InstanceToJson} is used to export the data into GeoJson or
+ *             Json format.
  */
+@Deprecated
 public class GeoJSONConfig {
 
 	private final Map<TypeDefinition, PropertyEntityDefinition> defaultGeometries = new HashMap<>();

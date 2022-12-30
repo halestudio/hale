@@ -2,7 +2,7 @@
 <feature
       id="de.fhg.igd.mapviewer.feature.core"
       label="Mapviewer Core"
-      version="4.1.0.qualifier">
+      version="5.0.0.qualifier">
 
    <license>
       GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
@@ -101,6 +101,20 @@
 
    <plugin
          id="de.fhg.igd.geom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.metrics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="io.prometheus.simpleclient"
          download-size="0"
          install-size="0"
          version="0.0.0"

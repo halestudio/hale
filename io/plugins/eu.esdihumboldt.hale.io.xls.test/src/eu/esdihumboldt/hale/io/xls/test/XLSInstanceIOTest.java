@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
-import junit.framework.TestCase;
-
 import org.eclipse.core.runtime.content.IContentType;
 import org.junit.Test;
 
@@ -26,6 +24,7 @@ import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 import eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
+import junit.framework.TestCase;
 
 /**
  * Tests for reading and writing instances in XLS file format
@@ -55,8 +54,8 @@ public class XLSInstanceIOTest extends TestCase {
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
 		InstanceCollection instances = XLSInstanceWriterTestExamples.createInstanceCollection();
-		IContentType contentType = HalePlatform.getContentTypeManager().getContentType(
-				"eu.esdihumboldt.hale.io.xls.xls");
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		File tempDir = Files.createTempDir();
 		File tempFile = new File(tempDir, "data.xls");
@@ -78,8 +77,8 @@ public class XLSInstanceIOTest extends TestCase {
 		schemaReader.setContentType(contentType);
 		schemaReader.setSource(new FileIOSupplier(tempFile));
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
-		schemaReader
-				.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		schemaReader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
+				Value.of(false));
 		schemaReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(0));
 		try {
 			IOReport report = schemaReader.execute(null);
@@ -89,10 +88,11 @@ public class XLSInstanceIOTest extends TestCase {
 		}
 		Schema schema = schemaReader.getSchema();
 
-		// read the instances form the temporary XLS file
+		// read the instances from the temporary XLS file - test SKIP_N_LINES as
+		// integer
 		XLSInstanceReader reader = new XLSInstanceReader();
 		reader.setSourceSchema(schema);
-		reader.setParameter(CommonSchemaConstants.PARAM_SKIP_FIRST_LINE, Value.of(true));
+		reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
 		reader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
 		reader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		// read sheet with index 0 since there is only one sheet
@@ -107,6 +107,27 @@ public class XLSInstanceIOTest extends TestCase {
 		}
 		// compare size of instance collection
 		InstanceCollection inst = reader.getInstances();
+		assertEquals(4, inst.size());
+
+		// read the instances from the temporary XLS file - test SKIP_N_LINES as
+		// boolean (backward compatibility)
+		reader = new XLSInstanceReader();
+		reader.setSourceSchema(schema);
+		reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(true));
+		reader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("ItemType"));
+		reader.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		// read sheet with index 0 since there is only one sheet
+		reader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(0));
+		reader.setContentType(contentType);
+		reader.setSource(new FileIOSupplier(tempFile));
+		try {
+			IOReport report = reader.execute(null);
+			assertTrue(report.isSuccess());
+		} catch (IOProviderConfigurationException | IOException e) {
+			fail("Execution of xls instance reader failed.");
+		}
+		// compare size of instance collection
+		inst = reader.getInstances();
 		assertEquals(4, inst.size());
 
 		// check if instance collection contains current instance

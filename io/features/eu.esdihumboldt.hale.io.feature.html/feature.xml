@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.html"
       label="HTML Export Feature"
-      version="4.1.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -15,56 +15,6 @@
          download-size="0"
          install-size="0"
          version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.pegdown"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.parboiled.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm-5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.analysis-5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.tree-5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.objectweb.asm.util-5"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.parboiled.java"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         fragment="true"
          unpack="false"/>
 
    <plugin

@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.common.feature.base"
       label="Equinox base feature"
-      version="4.1.0.qualifier">
+      version="5.0.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
@@ -66,13 +66,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.gemini.blueprint.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.gemini.blueprint.extender"
          download-size="0"
          install-size="0"
@@ -81,55 +74,6 @@
 
    <plugin
          id="org.eclipse.gemini.blueprint.io"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.aop"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.asm"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.beans"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.context"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.expression"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.transaction"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.springframework.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -179,6 +123,34 @@
 
    <plugin
          id="org.tukaani.xz"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gemini.blueprint.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="xerces.xercesImpl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.codehaus.castor.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.codehaus.castor.xml"
          download-size="0"
          install-size="0"
          version="0.0.0"

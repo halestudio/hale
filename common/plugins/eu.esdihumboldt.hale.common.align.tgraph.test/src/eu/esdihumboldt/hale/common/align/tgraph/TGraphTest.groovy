@@ -15,8 +15,9 @@
 
 package eu.esdihumboldt.hale.common.align.tgraph
 
-import com.tinkerpop.blueprints.Vertex
-import com.tinkerpop.gremlin.groovy.Gremlin
+
+import org.apache.tinkerpop.gremlin.structure.Vertex
+import org.apache.tinkerpop.gremlin.util.Gremlin
 
 import eu.esdihumboldt.cst.test.TransformationExample
 import eu.esdihumboldt.cst.test.TransformationExamples
@@ -26,8 +27,8 @@ import eu.esdihumboldt.hale.common.align.model.transformation.tree.Transformatio
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.impl.TransformationTreeImpl
 import eu.esdihumboldt.hale.common.align.model.transformation.tree.visitor.TreeToGraphVisitor
 import eu.esdihumboldt.hale.common.align.service.impl.AlignmentFunctionService
-import eu.esdihumboldt.hale.common.align.tgraph.TGraphConstants.NodeType
 import eu.esdihumboldt.hale.common.align.tgraph.impl.TGraphImpl
+import groovy.test.GroovyTestCase
 
 
 /**
@@ -699,5 +700,4 @@ class TGraphTest extends GroovyTestCase implements TGraphConstants {
 		// create the transformation graph
 		new TGraphImpl(tree, functionService)
 	}
-
 }

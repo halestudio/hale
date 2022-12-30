@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Common UI Utilities
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="15.0.0",
- org.locationtech.jts.geom,
  de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.exclusive,
  de.fhg.igd.eclipse.util.extension.simple,
@@ -49,17 +48,18 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.eclipse.help,
  org.eclipse.jface.text,
  org.eclipse.jface.text.source,
- org.geotools.factory,
- org.geotools.filter.text.cql2,
- org.geotools.map.legend;version="12.2.0.combined",
- org.geotools.metadata;version="12.2.0.combined",
- org.geotools.metadata.iso;version="12.2.0.combined",
- org.geotools.metadata.iso.citation,
- org.geotools.referencing,
- org.geotools.referencing.factory;version="8.0.0.M1",
- org.geotools.styling;version="12.2.0.combined",
- org.geotools.util,
+ org.geotools.factory;version="21.0.0.combined",
+ org.geotools.filter.text.cql2;version="21.0.0.combined",
+ org.geotools.map.legend;version="21.0.0.combined",
+ org.geotools.metadata;version="21.0.0.combined",
+ org.geotools.metadata.iso;version="21.0.0.combined",
+ org.geotools.metadata.iso.citation;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
+ org.geotools.referencing.factory;version="21.0.0.combined",
+ org.geotools.styling;version="21.0.0.combined",
+ org.geotools.util;version="21.0.0.combined",
  org.geotools.util.factory;version="21.0.0.combined",
+ org.locationtech.jts.geom,
  org.opengis.feature.simple;version="12.2.0",
  org.opengis.feature.type,
  org.opengis.filter,
@@ -68,7 +68,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  org.opengis.referencing.crs,
  org.opengis.util,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert
+ org.springframework.core.convert;version="5.2.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: eu.esdihumboldt.hale.ui.common.internal.CommonUIPlugin
 Export-Package: eu.esdihumboldt.hale.ui.common,

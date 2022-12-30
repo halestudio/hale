@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect;version="9.0.0",
  com.google.common.io;version="1.6.0",
- org.locationtech.jts.geom,
  de.fhg.igd.osgi.util;version="1.0.0",
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.geometry,
@@ -26,6 +25,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.common.schema.model.impl,
  eu.esdihumboldt.hale.common.test,
+ eu.esdihumboldt.hale.io.gml.geometry,
  eu.esdihumboldt.hale.io.xml.validator,
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
@@ -35,19 +35,20 @@ Import-Package: com.google.common.base;version="9.0.0",
  gnu.trove,
  org.apache.ws.commons.schema,
  org.apache.ws.commons.schema.constants,
- org.junit;version="4.5.0",
+ org.hamcrest.core;version="1.3.0",
+ org.locationtech.jts.geom,
  org.osgi.framework;version="1.6.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: eu.esdihumboldt.hale.io.gml;bundle-version="1.0.0",
- org.geotools;bundle-version="2.6.4",
+ org.geotools;bundle-version="21.0.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.xml,
  eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0",
  org.opengis;bundle-version="8.0.0",
- groovy;bundle-version="2.3.7",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.9.5",
- org.hamcrest.core;bundle-version="1.3.0",
- org.eclipse.core.runtime;bundle-version="3.11.1"
+ org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.junit;bundle-version="4.13.0"
 Bundle-ClassPath: .
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.test

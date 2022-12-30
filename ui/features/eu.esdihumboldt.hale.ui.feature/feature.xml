@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature"
       label="HALE application feature"
-      version="4.1.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -383,20 +383,6 @@
 
    <plugin
          id="eu.esdihumboldt.hale.ui.codelist.inspire"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.codehaus.groovy.modules.http-builder"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="net.sourceforge.nekohtml"
          download-size="0"
          install-size="0"
          version="0.0.0"

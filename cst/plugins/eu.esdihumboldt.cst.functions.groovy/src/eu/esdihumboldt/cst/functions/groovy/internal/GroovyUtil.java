@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.xml.bind.DatatypeConverter;
-
 import eu.esdihumboldt.cst.MultiValue;
 import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.helper.DefaultHelperContext;
@@ -57,6 +55,7 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 import groovy.transform.CompileStatic;
+import jakarta.xml.bind.DatatypeConverter;
 
 /**
  * Groovy function utilities.

@@ -137,7 +137,6 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 							return createProposals(new Category(pathList), offset, prefix)
 						}
 					}
-
 				}
 			}
 		}
@@ -237,5 +236,4 @@ public class HelperFunctionsCompletions implements GroovyCompletionProposals, AS
 			return false
 		}
 	}
-
 }

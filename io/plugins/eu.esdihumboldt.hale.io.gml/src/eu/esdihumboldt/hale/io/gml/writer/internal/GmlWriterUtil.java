@@ -130,6 +130,43 @@ public abstract class GmlWriterUtil implements GMLConstants {
 	}
 
 	/**
+	 * Determines if the given type is an INSPIRE type
+	 * 
+	 * @param type the type definition
+	 * @return if the type is an INSPIRE type
+	 */
+	public static boolean isInspireType(TypeDefinition type) {
+		while (type != null) {
+
+			if (type.getName().getNamespaceURI().startsWith("http://inspire.ec.europa.eu/schemas/")
+					|| type.getName().getNamespaceURI()
+							.startsWith("https://inspire.ec.europa.eu/schemas/")) {
+				return true;
+			}
+
+			type = type.getSuperType();
+
+		}
+		return false;
+	}
+
+	/**
+	 * Determines if the given parent is a gml:identifier
+	 * 
+	 * @param qname the QName
+	 * @param gmlNs the gml name space
+	 * @return true if the parent is a gml:identifier
+	 */
+
+	public static boolean isGmlIdentifier(QName qname, String gmlNs) {
+		if (qname.getNamespaceURI() != null && qname.getLocalPart().equals("identifier")
+				&& qname.getNamespaceURI().equals(gmlNs)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Determine if a given type is a feature type.
 	 * 
 	 * @param type the type definition

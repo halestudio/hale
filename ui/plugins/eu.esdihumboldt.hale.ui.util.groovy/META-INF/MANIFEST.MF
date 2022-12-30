@@ -2,13 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Simple Groovy Source Viewer Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.util.groovy;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.ui.util.groovy.internal.GroovyUIPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text;bundle-version="3.7.1",
- groovy;bundle-version="2.1.5",
- com.tinkerpop.blueprints.core;bundle-version="2.4.0"
+ groovy;bundle-version="2.5.19",
+ com.tinkerpop.blueprints.core;bundle-version="2.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.ui.util.groovy,

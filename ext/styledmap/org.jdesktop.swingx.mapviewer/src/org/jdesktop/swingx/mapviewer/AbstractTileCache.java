@@ -92,7 +92,7 @@ public abstract class AbstractTileCache implements TileCache {
 		CloseableHttpClient client = clients.get(proxy);
 
 		if (client == null) {
-			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder();
+			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(null);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
 
 			client = builder.build();

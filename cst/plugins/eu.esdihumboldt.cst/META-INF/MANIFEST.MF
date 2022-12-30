@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Conceptual Schema Transformer
 Bundle-SymbolicName: eu.esdihumboldt.cst;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="11.0.1",
  com.google.common.collect;version="9.0.0",
@@ -47,7 +47,7 @@ Import-Package: com.google.common.base;version="11.0.1",
  gnu.trove,
  net.jcip.annotations,
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst,
  eu.esdihumboldt.cst.extension.hooks,
  eu.esdihumboldt.cst.extension.hooks.internal;x-internal:=true,

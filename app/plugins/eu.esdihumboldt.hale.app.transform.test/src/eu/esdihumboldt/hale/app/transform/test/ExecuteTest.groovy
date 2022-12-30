@@ -1079,5 +1079,4 @@ assert aggregated['eu.esdihumboldt.hale.instance.validation.internal'].report.wa
 
 		return res
 	}
-
 }

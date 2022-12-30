@@ -17,28 +17,26 @@ package eu.esdihumboldt.hale.common.align.io.impl.internal
 
 import java.util.Map.Entry
 
-import javax.xml.bind.JAXBElement
-
 import com.google.common.collect.ListMultimap
 import com.google.common.collect.MultimapBuilder
 
 import eu.esdihumboldt.hale.common.align.extension.annotation.AnnotationExtension
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AbstractParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AnnotationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CellType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ComplexParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.CustomFunctionType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.DocumentationType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
+import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.Transformation
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.NamedEntityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ObjectFactory
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ParameterType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.PriorityType
 import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.TransformationModeType
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.AlignmentType.Base
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.DisableFor
-import eu.esdihumboldt.hale.common.align.io.impl.internal.generated.ModifierType.Transformation
 import eu.esdihumboldt.hale.common.align.model.Alignment
 import eu.esdihumboldt.hale.common.align.model.BaseAlignmentCell
 import eu.esdihumboldt.hale.common.align.model.Cell
@@ -52,6 +50,7 @@ import eu.esdihumboldt.hale.common.core.io.PathUpdate
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter
 import groovy.transform.CompileStatic
 import groovy.transform.TypeCheckingMode
+import jakarta.xml.bind.JAXBElement
 
 
 
@@ -68,8 +67,8 @@ class AlignmentToJaxb {
 	private final IOReporter reporter
 	private final ObjectFactory of = new ObjectFactory()
 	private final PathUpdate pathUpdate
-	
-	private final Comparator<String> nullStringComparator = { String s1, String s2 ->
+
+	private final Comparator<String> nullStringComparator = { s1, s2 ->
 		if (s1 == s2) {
 			0
 		}
@@ -80,7 +79,7 @@ class AlignmentToJaxb {
 			1
 		}
 		else {
-			s1 <=> s2
+			(String) s1 <=> (String) s2
 		}
 	} as Comparator
 
@@ -107,13 +106,13 @@ class AlignmentToJaxb {
 		alignment.baseAlignments.sort().collect(align.base) {
 			new Base(prefix: it.key, location: pathUpdate.findLocation(it.value, true, false, true))
 		}
-		
+
 		alignment.customPropertyFunctions.sort().collect(align.customFunction) {
 			def cft = new CustomFunctionType()
-			
+
 			def element = HaleIO.getComplexElement(it.value)
 			cft.setAny(element)
-			
+
 			cft
 		}
 
@@ -124,7 +123,7 @@ class AlignmentToJaxb {
 			}
 			addModifier(cell, align);
 		}
-		
+
 		// sort cells
 		align.cellOrModifier.sort(CellOrModifierComparator.instance)
 
@@ -147,7 +146,7 @@ class AlignmentToJaxb {
 				mode = null
 			}
 		}
-		
+
 		if (mode || disabledFor) {
 			ModifierType modifier = new ModifierType()
 			modifier.cell = cell.id
@@ -241,7 +240,7 @@ class AlignmentToJaxb {
 		else {
 			// complex value or element
 			return of.createComplexParameter(
-			new ComplexParameterType(name: name, any: value.getDOMRepresentation()))
+					new ComplexParameterType(name: name, any: value.getDOMRepresentation()))
 		}
 	}
 
@@ -254,16 +253,15 @@ class AlignmentToJaxb {
 		// create the entity object
 		switch (entity) {
 			case Type:
-			result.abstractEntity = EntityDefinitionToJaxb.convert(((Type)entity).definition);
-			break
+				result.abstractEntity = EntityDefinitionToJaxb.convert(((Type)entity).definition);
+				break
 			case Property:
-			result.abstractEntity = EntityDefinitionToJaxb.convert(((Property)entity).definition);
-			break
+				result.abstractEntity = EntityDefinitionToJaxb.convert(((Property)entity).definition);
+				break
 			default:
-			throw new IllegalArgumentException("Illegal entity ${entity.class}")
+				throw new IllegalArgumentException("Illegal entity ${entity.class}")
 		}
 
 		return result
 	}
-
 }

@@ -29,7 +29,8 @@ import groovy.transform.CompileStatic
 class SpecBuilder extends BuilderBase {
 
 	public static Specification newSpec(Map attributes, Closure args = null) {
-		def argList = [attributes]
+		def argList = []
+		argList.add(attributes)
 		if (args != null) {
 			argList << args
 		}

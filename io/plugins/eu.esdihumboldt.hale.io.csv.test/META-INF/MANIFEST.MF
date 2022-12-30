@@ -2,13 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSV Schema/Instance I/O Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.io.csv;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.core,
+ eu.esdihumboldt.hale.common.instance.groovy,
+ eu.esdihumboldt.hale.common.schema.groovy,
  eu.esdihumboldt.hale.common.test,
- org.junit;version="4.8.1",
+ eu.esdihumboldt.util.groovy.sandbox,
  org.junit.rules;version="4.11.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.csv.test
+Require-Bundle: eu.esdihumboldt.util.groovy;bundle-version="4.2.0",
+ groovy;bundle-version="2.5.19",
+ org.junit;bundle-version="4.13.0"

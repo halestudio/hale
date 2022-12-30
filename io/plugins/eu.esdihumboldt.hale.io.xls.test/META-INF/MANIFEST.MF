@@ -1,18 +1,19 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS Instance Test
-Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.test;singleton:=true
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit,
- groovy;bundle-version="2.1.5",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.0",
  eu.esdihumboldt.hale.io.csv;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.0",
  eu.esdihumboldt.hale.io.xls;bundle-version="2.9.0",
- eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0"
+ eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0",
+ groovy;bundle-version="2.5.19"
 Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.cst.test,
  eu.esdihumboldt.hale.common.instance.groovy,
@@ -22,7 +23,9 @@ Import-Package: com.google.common.io;version="15.0.0",
  eu.esdihumboldt.hale.common.test,
  eu.esdihumboldt.hale.io.xls.reader,
  eu.esdihumboldt.hale.io.xls.writer,
- org.apache.poi.ss.usermodel;version="3.9.0",
+ org.apache.poi.hssf.usermodel;version="5.2.3",
+ org.apache.poi.poifs.filesystem;version="5.2.3",
+ org.apache.poi.ss.usermodel;version="5.2.3",
  org.eclipse.core.runtime;version="3.4.0",
  org.eclipse.core.runtime.content
 Automatic-Module-Name: eu.esdihumboldt.hale.io.xls.test

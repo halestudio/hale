@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="4.1.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -163,7 +163,6 @@
       <plugin id="org.apache.commons.collections"/>
       <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.configuration"/>
-      <plugin id="org.apache.commons.dbcp"/>
       <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
@@ -232,7 +231,6 @@
       <plugin id="org.ejml.core"/>
       <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
-      <plugin id="org.hamcrest.core"/>
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
@@ -245,8 +243,6 @@
       <plugin id="org.objectweb.asm.tree-5"/>
       <plugin id="org.objectweb.asm.util-5"/>
       <plugin id="org.opengis"/>
-      <plugin id="org.parboiled.core"/>
-      <plugin id="org.parboiled.java" fragment="true"/>
       <plugin id="org.pegdown"/>
       <plugin id="org.springframework.aop"/>
       <plugin id="org.springframework.beans"/>

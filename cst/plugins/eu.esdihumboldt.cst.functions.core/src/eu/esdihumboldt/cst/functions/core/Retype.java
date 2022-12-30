@@ -16,12 +16,16 @@
 
 package eu.esdihumboldt.cst.functions.core;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import net.jcip.annotations.Immutable;
+import com.google.common.collect.ListMultimap;
+
 import eu.esdihumboldt.hale.common.align.model.Cell;
+import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.functions.RenameFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.RetypeFunction;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -34,6 +38,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
+import net.jcip.annotations.Immutable;
 
 /**
  * Simple 1:1 retype. In addition supports structural rename for properties.
@@ -41,8 +46,8 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
  * @author Simon Templer
  */
 @Immutable
-public class Retype extends AbstractTypeTransformation<TransformationEngine> implements
-		RetypeFunction {
+public class Retype extends AbstractTypeTransformation<TransformationEngine>
+		implements RetypeFunction {
 
 	@Override
 	public void execute(String transformationIdentifier, TransformationEngine engine,
@@ -58,7 +63,7 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 		if (structuralRename) {
 			boolean ignoreNamespaces = getOptionalParameter(
 					RenameFunction.PARAMETER_IGNORE_NAMESPACES, Value.of(false)).as(Boolean.class,
-					false);
+							false);
 			boolean copyGeometries = getOptionalParameter(RenameFunction.PARAMETER_COPY_GEOMETRIES,
 					Value.of(true)).as(Boolean.class);
 			target = doStructuralRename(getSource(), targetType, ignoreNamespaces, copyGeometries,
@@ -73,12 +78,21 @@ public class Retype extends AbstractTypeTransformation<TransformationEngine> imp
 
 	private MutableInstance doStructuralRename(FamilyInstance source, TypeDefinition targetType,
 			boolean ignoreNamespaces, boolean copyGeometries, TransformationLog log) {
+		ListMultimap<String, ParameterValue> params = getParameters();
+
+		Set<QName> skipProperties = new HashSet<>();
+		if (params != null && !params.isEmpty()) {
+			for (ParameterValue value : params.get(PARAMETER_SKIP_ROOT_PROPERTIES)) {
+				skipProperties.add(value.as(QName.class));
+			}
+		}
+
 		// create a dummy child definition for the structural rename
 		PropertyDefinition dummyProp = new DefaultPropertyDefinition(new QName("dummyProp"),
 				new DefaultTypeDefinition(new QName("dummyType")), targetType);
 
 		Object result = Rename.structuralRename(source, dummyProp, ignoreNamespaces,
-				getInstanceFactory(), copyGeometries);
+				getInstanceFactory(), copyGeometries, skipProperties);
 		if (result instanceof MutableInstance) {
 			return ((MutableInstance) result);
 		}

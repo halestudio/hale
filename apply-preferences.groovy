@@ -268,8 +268,10 @@ def isJava8 = { File projectDir ->
       def fileContent = classpathFile.text
       def java7cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
       def java8cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
-      if (fileContent.contains(java7cp)) {
-        classpathFile.text = fileContent.replace(java7cp, java8cp)
+      def java17cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17'
+      def java18cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-18'
+      if (fileContent.contains(java8cp)) {
+        classpathFile.text = fileContent.replace(java8cp, java18cp)
       }
     }
   }
@@ -277,20 +279,59 @@ def isJava8 = { File projectDir ->
   match
 }
 
+// filter that detects Java 8 projects and updates the classpath setting
+def isJava18 = { File projectDir ->
+  File manifestFile = new File(new File(projectDir, 'META-INF'), 'MANIFEST.MF')
+  boolean match = false
+  if (manifestFile.exists()) {
+    manifestFile.withInputStream {
+      def manifest = new Manifest(it)
+      def attributes = manifest.getMainAttributes()
+      def env = attributes.getValue('Bundle-RequiredExecutionEnvironment')
+      match = (env == 'JavaSE-1.8')
+    }
+  }
+  
+  if (match) {
+    // update to Java 8 -> also replace classpath setting
+    // XXX kind of a hack to do it in the filter
+    File classpathFile = new File(projectDir, '.classpath')
+    if (classpathFile.exists()) {
+      def fileContent = classpathFile.text
+      def java7cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7'
+      def java8cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+      def java17cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17'
+      def java18cp = 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-18'
+      if (fileContent.contains(java18cp)) {
+        classpathFile.text = fileContent.replace(java18cp, java17cp)
+      }
+    }
+  }
+
+  match
+}
 
 // apply preferences to projects
 
 def java7 = 'platform/preferences/java7' as File
 def java8 = 'platform/preferences/java8' as File
+def java17 = 'platform/preferences/java17' as File
+def java18 = 'platform/preferences/java18' as File
 def searchPaths = ['common', 'cst', 'io', 'server', 'doc', 'ui', 'util', 'app', 'ext/styledmap', 'ext/geom', 'ext/adv']
 
 searchPaths.each {
-  // default: Java 8
-  apply(java8, it as File, { !isJava8(it) } as ProjectFilter)
-  // Java 8
-  apply(java8, it as File, isJava8 as ProjectFilter)
+    // default: Java 8
+  apply(java17, it as File, { !isJava18(it) } as ProjectFilter)
+  // Java 17
+  apply(java17, it as File, isJava18 as ProjectFilter)
 }
 
+//searchPaths.each {
+    // default: Java 8
+//  apply(java18, it as File, { !isJava8(it) } as ProjectFilter)
+  // Java 8
+//  apply(java18, it as File, isJava8 as ProjectFilter)
+//}
 
 // external contributions w/ different project settings
 

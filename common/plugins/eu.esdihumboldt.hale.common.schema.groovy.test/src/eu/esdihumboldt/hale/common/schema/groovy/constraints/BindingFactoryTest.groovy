@@ -17,7 +17,6 @@ package eu.esdihumboldt.hale.common.schema.groovy.constraints
 
 import groovy.transform.CompileStatic
 
-
 /**
  * Tests creation of {@link Binding} constraints w/ {@link BindingFactory}.
  * 

@@ -48,13 +48,14 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 			PropertyEntityDefinition resultProperty, Map<String, String> executionParameters,
 			TransformationLog log) throws TransformationException, NoResultException {
 		// get parameter values
-
 		String prefix = getOptionalParameter(PARAM_PREFIX, Value.of("")).as(String.class);
 		String suffix = getOptionalParameter(PARAM_SUFFIX, Value.of("")).as(String.class);
+		String startValue = getOptionalParameter(PARAM_START_VALUE, Value.of("1")).as(String.class);
 
-		// replace transformation variables in prefix and suffix
+		// replace transformation variables in prefix, suffix and startValue
 		prefix = getExecutionContext().getVariables().replaceVariables(prefix);
 		suffix = getExecutionContext().getVariables().replaceVariables(suffix);
+		startValue = getExecutionContext().getVariables().replaceVariables(startValue);
 
 		// assume type as default for sequence
 		String sequenceStr = getOptionalParameter(PARAM_SEQUENCE, Value.of(Sequence.type.name()))
@@ -85,7 +86,16 @@ public class SequentialID extends AbstractSingleTargetPropertyTransformation<Tra
 				id = seqValue + 1;
 			}
 			else {
-				id = START_VALUE;
+				try {
+					id = Integer.parseInt(startValue);
+					if (id < 0) {
+						throw new TransformationException(
+								"ERROR: the starting value for ID creation should be a positive integer");
+					}
+				} catch (Exception e) {
+					throw new TransformationException(
+							"ERROR: the starting value for ID creation should be an integer");
+				}
 			}
 			context.put(key, id);
 		}

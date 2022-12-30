@@ -164,8 +164,11 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w, false, true)
 			json {
-				json { json { a 1
-					} }
+				json {
+					json {
+						a 1
+					}
+				}
 				json {
 					b 2
 					c { d 3 }
@@ -180,8 +183,11 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 		new StringWriter().with { w ->
 			def json = new JsonStreamBuilder( w, true, true)
 			json {
-				json { json { a 1
-					} }
+				json {
+					json {
+						a 1
+					}
+				}
 				json {
 					b 2
 					c { d 3 }
@@ -221,7 +227,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			json {
 				a {
 					//
-					b { //
+					b {
+						//
 						c 1 //
 					} //
 				} //
@@ -237,7 +244,8 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			json {
 				a {
 					//
-					b { //
+					b {
+						//
 						c 1 //
 					} //
 				} //
@@ -538,7 +546,6 @@ class JsonStreamBuilderTest extends GroovyTestCase {
 			def json = new JsonStreamBuilder( w )
 			json.content {
 				'list[]' {
-
 				}
 				'list[]'(another:[a:[1, 2, 3]])
 			}

@@ -2,11 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Instance API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.instance.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.instance;bundle-version="2.5.0",
- org.geotools;bundle-version="8.0.0",
- eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0"
+ org.geotools;bundle-version="21.0.0",
+ eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0",
+ org.springframework.spring-core;bundle-version="5.2.0",
+ org.junit;bundle-version="4.13.0"
 Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.io,
@@ -30,7 +32,6 @@ Import-Package: de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.io.xsd.constraint,
  eu.esdihumboldt.hale.io.xsd.model,
  eu.esdihumboldt.hale.io.xsd.reader,
- org.junit,
  org.opengis.referencing;version="12.2.0",
  org.opengis.referencing.crs;version="12.2.0"
 Bundle-Vendor: data harmonisation panel

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Configuration utilities tests
 Bundle-SymbolicName: eu.esdihumboldt.config.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Fragment-Host: eu.esdihumboldt.util.config;bundle-version="3.5.0"
 Automatic-Module-Name: eu.esdihumboldt.config.test
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Custom transformation functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.custom;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: eu.esdihumboldt.hale.common.align.custom,
@@ -10,18 +10,24 @@ Export-Package: eu.esdihumboldt.hale.common.align.custom,
  eu.esdihumboldt.hale.common.align.custom.internal;x-internal:=true
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.9.2",
  eu.esdihumboldt.cst.functions.groovy;bundle-version="2.9.0",
- groovy;bundle-version="2.3.7",
  eu.esdihumboldt.hale.common.core;bundle-version="2.9.1",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.2",
  eu.esdihumboldt.hale.common.instance;bundle-version="2.9.1",
- eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.9.1"
+ groovy;bundle-version="2.5.19",
+ eu.esdihumboldt.hale.common.instance.groovy;bundle-version="2.9.1",
+ com.vladsch.flexmark;bundle-version="0.64.0",
+ com.vladsch.flexmark.profile-pegdown;bundle-version="0.64.0",
+ com.vladsch.flexmark.util;bundle-version="0.64.0",
+ com.vladsch.flexmark.util-data;bundle-version="0.64.0",
+ com.vladsch.flexmark.util-misc;bundle-version="0.64.0",
+ com.vladsch.flexmark.util-ast;bundle-version="0.64.0",
+ com.vladsch.flexmark.util-sequence;bundle-version="0.64.0"
 Import-Package: com.google.common.collect;version="17.0.0",
  de.fhg.igd.eclipse.util.extension.simple,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.util.groovy.sandbox,
  eu.esdihumboldt.util.groovy.xml,
  javax.annotation;version="[1.2.0,1.2.0]",
- org.pegdown;version="1.6.0",
  org.slf4j;version="1.7.10",
- org.springframework.core.io;version="3.1.1.RELEASE"
+ org.springframework.core.io;version="5.2.0"
 Automatic-Module-Name: eu.esdihumboldt.cst.functions.custom

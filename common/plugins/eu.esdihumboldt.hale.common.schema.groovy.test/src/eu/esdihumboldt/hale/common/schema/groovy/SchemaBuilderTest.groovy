@@ -431,5 +431,4 @@ class SchemaBuilderTest extends GroovyTestCase {
 		assertEquals 'description', desc.name.localPart
 		assertEquals NillableFlag.ENABLED, desc.getConstraint(NillableFlag)
 	}
-
 }

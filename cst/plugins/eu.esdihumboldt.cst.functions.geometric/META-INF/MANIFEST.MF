@@ -2,20 +2,17 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Geometric Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.geometric;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0",
  org.opengis,
- org.geotools,
- groovy;bundle-version="2.3.7",
+ groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.instance;bundle-version="3.3.0",
- eu.esdihumboldt.hale.common.schema
+ eu.esdihumboldt.hale.common.schema,
+ org.geotools;bundle-version="21.0.0"
 Import-Package: com.google.common.base;version="17.0.0",
  com.google.common.collect;version="9.0.0",
  com.iabcinc.jmep,
- org.locationtech.jts.geom,
- org.locationtech.jts.io;version="1.13.0",
- org.locationtech.jts.operation.buffer,
  de.fhg.igd.geom,
  de.fhg.igd.slf4jplus,
  eu.esdihumboldt.cst.functions.core,
@@ -49,9 +46,12 @@ Import-Package: com.google.common.base;version="17.0.0",
  javax.annotation;version="[1.2.0,1.2.0]",
  net.jcip.annotations,
  org.apache.commons.lang;version="2.6.0",
+ org.locationtech.jts.geom,
+ org.locationtech.jts.io;version="1.13.0",
+ org.locationtech.jts.operation.buffer,
  org.opengis.referencing.crs,
  org.slf4j;version="1.7.2",
- org.springframework.core.convert
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.geometric,
  eu.esdihumboldt.cst.functions.geometric.extent,
  eu.esdihumboldt.cst.functions.geometric.interiorpoint,

@@ -16,17 +16,12 @@
       <url>http://www.cityserver3d.de:8082/artifactory/repo</url>
     </pluginRepository -->
     <!-- see https://github.com/groovy/groovy-eclipse/wiki/Groovy-Eclipse-Maven-plugin -->
+     
     <pluginRepository>
-      <id>bintray</id>
-      <name>Groovy Bintray</name>
-      <url>https://dl.bintray.com/groovy/maven</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
+	    <id>groovy-plugins-release</id>
+	    <url>https://groovy.jfrog.io/artifactory/plugins-release</url>
+  	</pluginRepository>
+  	
     <pluginRepository>
       <id>central</id>
       <name>Central Repository</name>
@@ -57,9 +52,15 @@
   </distributionManagement -->
 
   <properties>
-    <tycho-version>1.7.0</tycho-version>
+      <tycho-version>3.0.1</tycho-version> 
+    <!-- <tycho-version>2.7.0</tycho-version> --> 
+    <!-- <tycho-version>2.7.5</tycho-version> -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <scala.version>2.10.4</scala.version>
+<!--     <scala.version>2.10.4</scala.version> -->
+	<maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.release />
+    <scala.version>2.15.2</scala.version>
   </properties>
   
   <modules>
@@ -121,6 +122,16 @@
               <goal>plugin-source</goal>
             </goals>
           </execution>
+          <!-- https://github.com/eclipse-tycho/tycho/blob/master/RELEASE_NOTES.md#tycho-source-feature-generation-moved-from-tycho-extras-to-tycho-core -->
+		  <execution>
+			<id>feature-source</id>
+				<goals>
+		    		<goal>feature-source</goal>
+				</goals>
+				<configuration>
+					<!-- put your configuration here -->
+				</configuration>
+ 		  </execution>
         </executions>
       </plugin>
       <% } %>

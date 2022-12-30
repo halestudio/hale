@@ -15,10 +15,6 @@
 
 package eu.esdihumboldt.hale.common.core.io.project;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -33,6 +29,11 @@ import eu.esdihumboldt.hale.common.core.io.project.model.internal.JaxbToProject;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.ProjectToJaxb;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.IOConfigurationType;
 import eu.esdihumboldt.hale.common.core.io.project.model.internal.generated.ObjectFactory;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
+import jakarta.xml.bind.helpers.DefaultValidationEventHandler;
 
 /**
  * Helper class for converting {@link IOConfiguration} to DOM (and back) using
@@ -62,10 +63,10 @@ public class DOMProjectHelper {
 			Unmarshaller u = jc.createUnmarshaller();
 
 			// it will debug problems while unmarshalling
-			u.setEventHandler(new javax.xml.bind.helpers.DefaultValidationEventHandler());
+			u.setEventHandler(new DefaultValidationEventHandler());
 
-			JAXBElement<IOConfigurationType> root = u
-					.unmarshal(fragment, IOConfigurationType.class);
+			JAXBElement<IOConfigurationType> root = u.unmarshal(fragment,
+					IOConfigurationType.class);
 
 			return JaxbToProject.toIOConfiguration(root.getValue());
 		} catch (Exception e) {
@@ -81,8 +82,8 @@ public class DOMProjectHelper {
 	 * @return the created element or <code>null</code> in case of an exception
 	 */
 	public static Element configurationToDOM(IOConfiguration config) {
-		return jaxbElementToDOM(new ObjectFactory().createConfiguration(ProjectToJaxb
-				.toIOConfigurationType(config)));
+		return jaxbElementToDOM(new ObjectFactory()
+				.createConfiguration(ProjectToJaxb.toIOConfigurationType(config)));
 	}
 
 	private static Element jaxbElementToDOM(Object jaxbElement) {

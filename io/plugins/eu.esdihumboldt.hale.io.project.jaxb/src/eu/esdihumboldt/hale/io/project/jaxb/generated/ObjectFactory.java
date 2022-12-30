@@ -7,10 +7,11 @@
 
 package eu.esdihumboldt.hale.io.project.jaxb.generated;
 
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElementDecl;
-import javax.xml.bind.annotation.XmlRegistry;
 import javax.xml.namespace.QName;
+
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.annotation.XmlElementDecl;
+import jakarta.xml.bind.annotation.XmlRegistry;
 
 /**
  * This object contains factory methods for each Java content interface and Java
@@ -110,7 +111,8 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}
+	 * Create an instance of {@link JAXBElement }{@code <}{@link String
+	 * }{@code >}
 	 * 
 	 */
 	@XmlElementDecl(namespace = "", name = "ContextElement")
@@ -168,7 +170,8 @@ public class ObjectFactory {
 	}
 
 	/**
-	 * Create an instance of {@link JAXBElement }{@code <}{@link Styles }{@code >}
+	 * Create an instance of {@link JAXBElement }{@code <}{@link Styles
+	 * }{@code >}
 	 * 
 	 */
 	@XmlElementDecl(namespace = "", name = "Styles")

@@ -2,13 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CST Core Functions
 Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0",
- groovy;bundle-version="1.8.6"
+ groovy;bundle-version="2.5.19"
 Import-Package: com.google.common.base;version="9.0.0",
  com.google.common.collect,
- org.locationtech.jts.geom;version="1.13.0",
  de.fhg.igd.osgi.util;version="1.0.0",
  eu.esdihumboldt.hale.common.convert,
  eu.esdihumboldt.hale.common.core,
@@ -34,7 +33,8 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.util,
  eu.esdihumboldt.util.groovy.paths,
  net.jcip.annotations,
- org.springframework.core.convert
+ org.locationtech.jts.geom;version="1.13.0",
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.core,
  eu.esdihumboldt.cst.functions.core.join,
  eu.esdihumboldt.cst.functions.core.merge

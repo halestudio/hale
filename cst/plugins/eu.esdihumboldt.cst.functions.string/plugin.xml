@@ -50,8 +50,8 @@
             </property>
          </targetProperties>
          <functionParameter
-               description="For example &quot;yyyy-MM-dd HH:mm:ss&quot;&#xA;(see http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html)"
-               label="Date format"
+               description="For example: yyyy-MM-dd HH:mm:ss. &#xA; See http://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html for more details."
+               label="Source date format"
                maxOccurrence="1"
                minOccurrence="1"
                name="dateFormat">
@@ -60,6 +60,19 @@
                      class="eu.esdihumboldt.cst.functions.string.DateExtractionFormatValidator">
                </validator>
             </parameterBinding>
+         </functionParameter>
+         <functionParameter
+               description="Lenient parsing of dates, default is true.&#xA; See https://docs.oracle.com/javase/8/docs/api/java/text/DateFormat.html for more details"
+               label="Leniency"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="leniency">
+             <parameterBinding
+                   class="java.lang.Boolean">
+            </parameterBinding>
+             <valueDescriptor
+                   default="true">
+             </valueDescriptor>
          </functionParameter>
       </propertyFunction>
       <propertyFunction

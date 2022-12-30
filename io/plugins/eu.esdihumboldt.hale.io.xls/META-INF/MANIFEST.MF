@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XLS/Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";resolution:=optional,
  de.fhg.igd.eclipse.util.extension,
@@ -36,12 +36,14 @@ Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";reso
  eu.esdihumboldt.hale.io.csv.writer,
  eu.esdihumboldt.hale.io.xsd.reader.internal,
  eu.esdihumboldt.util.io,
- org.apache.poi.hssf.usermodel;version="3.9.0",
- org.apache.poi.openxml4j.exceptions;version="3.9.0",
- org.apache.poi.ss.usermodel;version="3.9.0",
- org.apache.poi.xssf.usermodel;version="3.9.0",
- org.springframework.core.convert;version="3.1.1.RELEASE",
- org.springframework.core.convert.support;version="3.1.1.RELEASE"
+ org.apache.poi.hssf.usermodel;version="5.2.3",
+ org.apache.poi.openxml4j.exceptions;version="5.2.3",
+ org.apache.poi.openxml4j.opc;version="5.2.3",
+ org.apache.poi.poifs.filesystem;version="5.2.3",
+ org.apache.poi.ss.usermodel;version="5.2.3",
+ org.apache.poi.xssf.usermodel;version="5.2.3",
+ org.springframework.core.convert;version="5.2.0",
+ org.springframework.core.convert.support;version="5.2.0"
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.align

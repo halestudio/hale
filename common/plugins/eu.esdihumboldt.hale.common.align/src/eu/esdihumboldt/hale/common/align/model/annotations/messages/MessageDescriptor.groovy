@@ -98,8 +98,8 @@ public class MessageDescriptor implements AnnotationDescriptor<Message> {
 			for (Element comment in comments) {
 				Value commentValue = DOMValueUtil.fromTag(comment)
 				if (commentValue != null) {
-					Comment.fromValue(commentValue).ifPresent({ Comment c ->
-						msg.addComment(c)
+					Comment.fromValue(commentValue).ifPresent({ c ->
+						msg.addComment((Comment) c)
 					} as Consumer)
 				}
 			}
@@ -170,5 +170,4 @@ public class MessageDescriptor implements AnnotationDescriptor<Message> {
 	public Message create() {
 		return new Message();
 	}
-
 }

@@ -19,27 +19,39 @@
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
 repositories {
-	jcenter()
+	mavenCentral()
 	maven { // Sonatype snapshots (for custom unpuzzle)
 		url 'http://oss.sonatype.org/content/repositories/snapshots/'
+		allowInsecureProtocol = true
 	}
 }
 
+//configurations {
+//	mavenEmbedder
+//}
+
 dependencies {
 	localGroovy()
+	implementation 'com.beust:jcommander:1.32'
+	implementation 'de.undercouch:gradle-download-task:3.4.3'
+	implementation 'org.apache.maven:maven-embedder:3.6.0'
+	implementation 'org.apache.maven:maven-compat:3.6.0'
+	implementation 'org.slf4j:slf4j-simple:1.7.30'
+	implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
+	implementation 'org.eclipse.aether:aether-transport-wagon:1.1.0'
+	implementation 'org.apache.maven.wagon:wagon-http:3.5.2'
+	implementation 'org.apache.maven.wagon:wagon-provider-api:3.5.2'
+	implementation 'org.apache.maven.wagon:wagon-http-lightweight:3.5.2'
+	implementation 'org.eclipse.tycho:org.eclipse.osgi:3.13.0.v20180226-1711'
+	implementation group: 'org.apache.maven.resolver', name: 'maven-resolver-api', version: '1.8.2'
+	implementation 'org.yaml:snakeyaml:1.13'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
 	
-	compile 'com.beust:jcommander:1.32'
-    compile 'de.undercouch:gradle-download-task:3.4.3'
-    compile 'org.apache.maven:maven-embedder:3.1.1'
-    compile 'org.apache.maven.wagon:wagon-http-lightweight:2.4'
-    compile 'org.eclipse.tycho:org.eclipse.osgi:3.10.101.v20150820-1432'
-    compile 'org.eclipse.aether:aether-connector-wagon:0.9.0.M2'
-    compile 'org.yaml:snakeyaml:1.13'
-	compile 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
-	
-	compile 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
+	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
+	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+		
 }
 
 configurations.all {

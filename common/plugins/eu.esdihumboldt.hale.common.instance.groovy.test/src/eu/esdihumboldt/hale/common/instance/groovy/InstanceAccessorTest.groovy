@@ -247,5 +247,4 @@ class InstanceAccessorTest extends GroovyTestCase {
 		def numbers = instance.p.''.number.values()
 		assertEquals(new HashSet([7, 12, 13]), new HashSet(numbers))
 	}
-
 }

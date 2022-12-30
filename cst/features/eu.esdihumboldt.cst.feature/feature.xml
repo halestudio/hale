@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.cst.feature"
       label="Conceptual Schema Transformer Feature"
-      version="4.1.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
@@ -25,7 +25,6 @@
       <import plugin="de.fhg.igd.eclipse.util"/>
       <import plugin="de.fhg.igd.osgi.util"/>
       <import plugin="de.fhg.igd.slf4jplus"/>
-      <import plugin="eu.esdihumboldt.hale.common.align"/>
       <import plugin="eu.esdihumboldt.hale.common.convert"/>
       <import plugin="eu.esdihumboldt.hale.common.core"/>
       <import plugin="eu.esdihumboldt.hale.common.filter"/>
@@ -34,9 +33,6 @@
       <import plugin="eu.esdihumboldt.util"/>
       <import plugin="findbugsAnnotations"/>
       <import plugin="org.slf4j.api"/>
-      <import plugin="org.springframework.core"/>
-      <import plugin="eu.esdihumboldt.hale.common.align" version="2.2.0" match="greaterOrEqual"/>
-      <import plugin="groovy" version="1.8.6" match="greaterOrEqual"/>
       <import plugin="eu.esdihumboldt.hale.common.lookup"/>
       <import plugin="eu.esdihumboldt.hale.common.scripting"/>
       <import plugin="eu.esdihumboldt.hale.common.align" version="2.5.0" match="greaterOrEqual"/>
@@ -49,6 +45,7 @@
       <import plugin="eu.esdihumboldt.hale.common.instance.orient"/>
       <import plugin="eu.esdihumboldt.util.groovy"/>
       <import plugin="org.apache.commons.codec"/>
+      <import plugin="org.springframework.spring-core"/>
    </requires>
 
    <plugin
@@ -129,6 +126,34 @@
 
    <plugin
          id="eu.esdihumboldt.cst.functions.collector"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy-xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy-templates"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="groovy-json"
          download-size="0"
          install-size="0"
          version="0.0.0"

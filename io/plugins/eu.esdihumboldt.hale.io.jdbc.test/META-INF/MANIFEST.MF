@@ -2,14 +2,15 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.test
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.schema;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.schema.persist;bundle-version="2.9.0",
  eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.instance,
- eu.esdihumboldt.hale.io.json.test;bundle-version="2.9.0"
+ eu.esdihumboldt.hale.io.json.test;bundle-version="2.9.0",
+ org.junit;bundle-version="4.13.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.annotation;version="2.3.0",
  com.spotify.docker.client;version="2.4.2",
@@ -17,8 +18,7 @@ Import-Package: com.fasterxml.jackson.annotation;version="2.3.0",
  com.typesafe.config;version="1.2.1",
  eu.esdihumboldt.hale.common.test,
  eu.esdihumboldt.hale.common.test.docker.config,
- org.junit;version="4.11.0",
- org.springframework.core.convert;version="3.1.1.RELEASE",
+ org.springframework.core.convert;version="5.2.0",
  schemacrawler.schema;version="12.4.2"
 Export-Package: eu.esdihumboldt.hale.io.jdbc.test
 Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.test

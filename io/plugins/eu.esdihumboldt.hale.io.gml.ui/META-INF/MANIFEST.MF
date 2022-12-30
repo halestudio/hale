@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.ui;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.2.0",
@@ -10,7 +10,7 @@ Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.2.0",
  org.eclipse.ui;bundle-version="3.5.1",
  org.eclipse.core.runtime;bundle-version="3.5.0",
- org.geotools;bundle-version="2.6.4",
+ org.geotools;bundle-version="21.0.0",
  org.opengis;bundle-version="8.0.0"
 Import-Package: com.google.common.io;version="1.6.0",
  org.locationtech.jts,

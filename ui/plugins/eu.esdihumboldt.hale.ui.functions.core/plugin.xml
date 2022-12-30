@@ -113,5 +113,29 @@
                name="value">
          </parameter>
       </propertyParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.functions.core.RetypeSkipPropertiesParameterPage"
+            function="eu.esdihumboldt.hale.align.retype"
+            id="eu.esdihumboldt.hale.align.retype.skipRootProperty"
+            order="10">
+         <parameter
+               name="skipRootProperty">
+         </parameter>
+      </typeParameterPage>
+      <typeParameterPage
+            class="eu.esdihumboldt.hale.ui.function.generic.pages.GenericParameterPage"
+            function="eu.esdihumboldt.hale.align.retype"
+            id="eu.esdihumboldt.hale.align.retype.generic"
+            order="0">
+         <parameter
+               name="structuralRename">
+         </parameter>
+         <parameter
+               name="ignoreNamespaces">
+         </parameter>
+         <parameter
+               name="copyGeometries">
+         </parameter>
+      </typeParameterPage>
    </extension>
 </plugin>

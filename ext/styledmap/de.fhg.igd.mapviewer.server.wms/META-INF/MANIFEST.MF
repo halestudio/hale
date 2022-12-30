@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WMS Map Server
 Bundle-SymbolicName: de.fhg.igd.mapviewer.server.wms;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,
@@ -16,7 +16,7 @@ Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.util.http,
  org.apache.commons.logging,
- org.geotools.referencing,
+ org.geotools.referencing;version="21.0.0.combined",
  org.jdesktop.swingx.graphics,
  org.jdesktop.swingx.mapviewer;version="1.0.0",
  org.jdesktop.swingx.mapviewer.empty;version="1.0.0",

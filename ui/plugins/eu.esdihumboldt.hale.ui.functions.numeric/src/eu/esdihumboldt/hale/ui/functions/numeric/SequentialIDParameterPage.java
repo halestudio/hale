@@ -68,8 +68,8 @@ import eu.esdihumboldt.util.validator.Validator;
  * 
  * @author Simon Templer
  */
-public class SequentialIDParameterPage extends AbstractParameterPage implements
-		SequentialIDConstants {
+public class SequentialIDParameterPage extends AbstractParameterPage
+		implements SequentialIDConstants {
 
 	private ComboViewer sequence;
 
@@ -77,11 +77,13 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 
 	private Text suffix;
 
+	private Text startValue;
+
 	private Label example;
 
 	private ControlDecoration exampleDecoration;
 
-	private ProjectVariablesContentProposalProvider contentProposalProvider = new ProjectVariablesContentProposalProvider(
+	private final ProjectVariablesContentProposalProvider contentProposalProvider = new ProjectVariablesContentProposalProvider(
 			true);
 
 	/**
@@ -110,6 +112,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 		if (prefix != null) {
 			result.put(PARAM_PREFIX, new ParameterValue(prefix.getText()));
 		}
+
+		result.put(PARAM_START_VALUE, new ParameterValue(startValue.getText()));
 
 		if (suffix != null) {
 			result.put(PARAM_SUFFIX, new ParameterValue(suffix.getText()));
@@ -180,8 +184,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			prefix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(prefix);
 
-			prefix.setText(getOptionalInitialValue(PARAM_PREFIX, new ParameterValue("")).as(
-					String.class));
+			prefix.setText(
+					getOptionalInitialValue(PARAM_PREFIX, new ParameterValue("")).as(String.class));
 
 			prefix.addModifyListener(new ModifyListener() {
 
@@ -212,8 +216,8 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			suffix = new Text(page, SWT.SINGLE | SWT.BORDER);
 			controlLayout.applyTo(suffix);
 
-			suffix.setText(getOptionalInitialValue(PARAM_SUFFIX, new ParameterValue("")).as(
-					String.class));
+			suffix.setText(
+					getOptionalInitialValue(PARAM_SUFFIX, new ParameterValue("")).as(String.class));
 
 			suffix.addModifyListener(new ModifyListener() {
 
@@ -235,10 +239,42 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 			infoDeco.setShowOnlyOnFocus(true);
 		}
 
-		// show example
-		if (sequence != null && prefix != null && suffix != null) {
+		// specify startValue for the sequence generation
+		if (getParametersToHandle().containsKey(PARAM_START_VALUE)) {
 			label = new Label(page, SWT.NONE);
-			label.setText("Example");
+			label.setText("StartValue");
+			labelLayout.applyTo(label);
+
+			startValue = new Text(page, SWT.SINGLE | SWT.BORDER);
+			controlLayout.applyTo(startValue);
+
+			startValue.setText(getOptionalInitialValue(PARAM_START_VALUE, new ParameterValue("1"))
+					.as(String.class));
+
+			startValue.addModifyListener(new ModifyListener() {
+
+				@Override
+				public void modifyText(ModifyEvent e) {
+					updateStatus();
+				}
+			});
+
+			ContentProposalAdapter adapter = new ContentProposalAdapter(startValue,
+					new TextContentAdapter(), contentProposalProvider,
+					ProjectVariablesContentProposalProvider.CTRL_SPACE, new char[] { '{' });
+			adapter.setAutoActivationDelay(0);
+
+			final ControlDecoration infoDeco = new ControlDecoration(startValue,
+					SWT.TOP | SWT.LEFT);
+			infoDeco.setDescriptionText("Type Ctrl+Space for project variable content assistance");
+			infoDeco.setImage(FieldDecorationRegistry.getDefault()
+					.getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+			infoDeco.setShowOnlyOnFocus(true);
+		}
+
+		if (sequence != null && prefix != null && suffix != null && startValue != null) {
+			label = new Label(page, SWT.NONE);
+			label.setText("ID Example");
 			labelLayout.applyTo(label);
 
 			example = new Label(page, SWT.NONE);
@@ -260,7 +296,25 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	 * Update the example and the page status
 	 */
 	protected void updateStatus() {
-		boolean complete = true;
+		setErrorMessage(null);
+
+		try {
+
+			int id = Integer.parseInt(startValue.getText());
+			if (id < 0) {
+				setErrorMessage(
+						"ERROR: the start value for ID creation should be a positive integer!");
+				example.setText("Cannot generate a valid example");
+				setPageComplete(false);
+				return;
+			}
+
+		} catch (Exception e) {
+			setErrorMessage("ERROR: the start value for ID creation should be an integer!");
+			example.setText("Cannot generate a valid example");
+			setPageComplete(false);
+			return;
+		}
 
 		if (example != null) {
 			String exampleStr = generateExample();
@@ -268,19 +322,19 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 
 			boolean valid = validateValue(exampleStr);
 			if (!valid) {
-				complete = false;
-				setMessage("The generated identifier is not valid for the target property", ERROR);
+				setPageComplete(false);
+				setErrorMessage("The generated identifier is not valid for the target property");
 			}
 			else {
-				setMessage(null);
+				setErrorMessage(null);
 			}
 		}
 
 		if (sequence != null && sequence.getSelection().isEmpty()) {
-			complete = false;
+			setPageComplete(false);
 		}
 
-		setPageComplete(complete);
+		setPageComplete(true);
 	}
 
 	/**
@@ -334,10 +388,12 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 	 * Generate an identifier example from the current configuration.
 	 * 
 	 * @return the identifier example
+	 * @throws NumberFormatException if ID cannot be parsed as integer
 	 */
-	protected String generateExample() {
+	protected String generateExample() throws NumberFormatException {
 		String prefix = (this.prefix == null) ? ("") : (this.prefix.getText());
 		String suffix = (this.suffix == null) ? ("") : (this.suffix.getText());
+		String startValue = (this.startValue == null) ? ("") : (this.startValue.getText());
 
 		// replace variables in prefix and suffix
 		TransformationVariables variables = new DefaultTransformationVariables(new ProjectVariables(
@@ -346,6 +402,19 @@ public class SequentialIDParameterPage extends AbstractParameterPage implements
 		prefix = variables.replaceVariables(prefix);
 		suffix = variables.replaceVariables(suffix);
 
-		return prefix + START_VALUE + suffix;
+		int ID = 0;
+
+		if (startValue != null && !startValue.isEmpty()) {
+			try {
+				ID = Integer.parseInt(startValue);
+			} catch (Exception e) {
+				return "";
+			}
+
+		}
+
+		return prefix + ID + suffix;
+
 	}
+
 }

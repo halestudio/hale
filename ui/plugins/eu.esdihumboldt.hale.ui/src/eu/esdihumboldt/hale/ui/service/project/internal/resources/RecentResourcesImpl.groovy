@@ -189,6 +189,7 @@ class RecentResourcesImpl implements RecentResources {
 		result
 	}
 
+
 	@CompileStatic(TypeCheckingMode.SKIP)
 	void load(InputStream input) {
 		def builder = DocumentBuilderFactory.newInstance().newDocumentBuilder()

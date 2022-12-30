@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: TileMapKit
 Bundle-SymbolicName: org.jdesktop.swingx.mapviewer;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: .
 Export-Package: org.jdesktop.swingx.mapviewer;version="1.0.0";
@@ -26,8 +26,8 @@ Import-Package: com.google.common.cache;version="27.0.0",
  org.apache.http.client,
  org.apache.http.client.methods,
  org.apache.http.impl.client,
- org.geotools.geometry,
- org.geotools.referencing,
+ org.geotools.geometry;version="21.0.0.combined",
+ org.geotools.referencing;version="21.0.0.combined",
  org.opengis.geometry,
  org.opengis.referencing,
  org.opengis.referencing.crs,

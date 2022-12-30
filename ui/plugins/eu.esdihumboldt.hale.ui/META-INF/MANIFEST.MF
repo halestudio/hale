@@ -2,24 +2,27 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Main UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.1",
- org.geotools;bundle-version="2.6.4",
+ org.geotools;bundle-version="21.0.0",
  org.eclipse.core.expressions;bundle-version="3.4.200",
  eu.esdihumboldt.hale.common.align,
  org.opengis;bundle-version="8.0.0",
  eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.common.instance,
- groovy;bundle-version="2.1.5",
- com.orientechnologies.orientdb-core;bundle-version="1.5.1"
+ groovy;bundle-version="2.5.19",
+ com.orientechnologies.orientdb-core;bundle-version="1.5.1",
+ jakarta.xml.bind-api;bundle-version="4.0.0",
+ org.codehaus.castor.core;bundle-version="1.4.1",
+ org.codehaus.castor.xml;bundle-version="1.4.1",
+ xerces.xercesImpl;bundle-version="2.12.2"
 Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="1.6.0",
  com.google.common.io;version="1.6.0",
  com.google.common.util.concurrent;version="15.0.0",
  com.ibm.icu.text;version="4.4.2.1",
- org.locationtech.jts.geom,
  de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,
  de.fhg.igd.eclipse.util.extension,
@@ -32,7 +35,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.cst.functions.groovy,
  eu.esdihumboldt.cst.internal,
  eu.esdihumboldt.hale.common.align.custom,
- eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.0",
+ eu.esdihumboldt.hale.common.align.io.impl.internal.generated;version="2.9.5",
  eu.esdihumboldt.hale.common.align.model,
  eu.esdihumboldt.hale.common.align.model.impl,
  eu.esdihumboldt.hale.common.align.transformation.report,
@@ -133,6 +136,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.eclipse.zest.layouts.algorithms,
  org.joda.time;version="2.1.0",
  org.joda.time.base;version="2.1.0",
+ org.locationtech.jts.geom,
  org.slf4j;version="1.5.11",
  si.uom
 Bundle-ActivationPolicy: lazy

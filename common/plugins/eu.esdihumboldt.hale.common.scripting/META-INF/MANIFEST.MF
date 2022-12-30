@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Scripting API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.scripting;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  eu.esdihumboldt.hale.common.align
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -19,9 +19,8 @@ Import-Package: com.google.common.base,
  eu.esdihumboldt.hale.common.schema.model,
  eu.esdihumboldt.util.groovy.sandbox,
  groovy.lang,
- org.codehaus.groovy.control,
  org.slf4j,
- org.springframework.core.convert
+ org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.common.scripting,
  eu.esdihumboldt.hale.common.scripting.scripts.groovy,
  eu.esdihumboldt.hale.common.scripting.scripts.mathematical,

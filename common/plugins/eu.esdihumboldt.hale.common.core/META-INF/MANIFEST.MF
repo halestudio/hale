@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Core API
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core;singleton:=true
-Bundle-Version: 4.1.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.core.internal.CoreBundle
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -17,6 +17,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  de.fhg.igd.slf4jplus,
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.hale.common.cache,
+ eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.common.core.io.project.model.internal.generated;version="2.9.0",
  eu.esdihumboldt.hale.util.nonosgi,
  eu.esdihumboldt.hale.util.nonosgi.contenttype.describer,
@@ -36,11 +37,10 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.apache.http.client,
  org.apache.http.impl,
  org.apache.http.impl.client,
- org.exolab.castor.core.exceptions;version="1.1.2",
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.5.11",
- org.springframework.core.convert;version="3.1.1.RELEASE",
- org.springframework.util;version="3.0.0.RELEASE"
+ org.springframework.core.convert;version="5.2.0",
+ org.springframework.util;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.internal;x-internal:=true,
  eu.esdihumboldt.hale.common.core.io,
@@ -70,9 +70,12 @@ Export-Package: eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.hale.common.core.service.cleanup.impl,
  eu.esdihumboldt.hale.common.core.service.internal;x-internal:=true
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
- groovy;bundle-version="2.1.5",
- org.codehaus.castor.xml;bundle-version="1.3.0",
+ groovy;bundle-version="2.5.19",
+ org.codehaus.castor.xml;bundle-version="1.4.1",
+ org.codehaus.castor.core;bundle-version="1.4.1",
+ xerces.xercesImpl;bundle-version="2.12.2",
  tec.uom.se;bundle-version="1.0.8",
- si.uom.si-quantity;bundle-version="0.7.1"
+ si.uom.si-quantity;bundle-version="0.7.1",
+ jakarta.xml.bind-api;bundle-version="4.0.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.core
