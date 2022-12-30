@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test for MS SQL feature
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.mssql.test
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.io.jdbc.mssql;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: ru.yandex.qatools.allure.annotations;version="1.5.0"

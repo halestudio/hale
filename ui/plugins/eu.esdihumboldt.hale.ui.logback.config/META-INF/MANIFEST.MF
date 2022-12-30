@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Logback Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.logback.config
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Fragment-Host: ch.qos.logback.classic;bundle-version="0.9.19.v20100519-1505"
 Bundle-RequiredExecutionEnvironment: OSGi/Minimum-1.2
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.logback.config
