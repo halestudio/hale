@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alignment XSLT Export
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.xslt;singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="11.0.1",
