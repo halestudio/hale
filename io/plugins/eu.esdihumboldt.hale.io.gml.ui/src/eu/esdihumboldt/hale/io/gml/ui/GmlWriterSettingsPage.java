@@ -250,7 +250,7 @@ public class GmlWriterSettingsPage
 		coordinateFormatWarning.setText(
 				"Reducing the number of significant figures of the coordinates may result in the inadvertent\n" //
 						+ "duplication of points. Resulting invalid geometries (e.g. a polygon that has less than three\n" //
-						+ "distinct points) will not be fixed or warned about by hale studio.");
+						+ "distinct points) will not be fixed or warned about by hale»studio.");
 		coordinateFormatWarning
 				.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED));
 		coordinateFormatWarning.setVisible(false);
