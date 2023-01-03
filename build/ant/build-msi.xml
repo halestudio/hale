@@ -148,7 +148,7 @@
 		                              components which shall
 		                              be installed
 		-->
-		<script language="javascript"><![CDATA[
+		<script language="javascript" classpath="${loc}/nashorn-core-15.4.jar:${loc}/asm-9.4.jar:${loc}/asm-commons-9.4.jar:${loc}/asm-tree-9.4.jar:${loc}/asm-util-9.4.jar"><![CDATA[
 			var File = java.io.File;
 			
 			//counters for unique identifiers
@@ -316,7 +316,7 @@
 		]]></script>
 		
 		<!-- create short version from version property -->
-		<script language="javascript"><![CDATA[
+		<script language="javascript" classpath="${loc}/nashorn-core-15.4.jar:${loc}/asm-9.4.jar:${loc}/asm-commons-9.4.jar:${loc}/asm-tree-9.4.jar:${loc}/asm-util-9.4.jar"><![CDATA[
 			var version = project.getProperty("version");
 			var shortversion = "";
 			// make Nashorn and Rhino happy - http://stackoverflow.com/questions/29211960/nashorn-and-rhino-splitting-strings-by-whitespace-regexp
@@ -337,7 +337,7 @@
 		
 		<!-- get relative path to the folder where the source
 			 files are located -->
-		<script language="javascript"><![CDATA[
+		<script language="javascript" classpath="${loc}/nashorn-core-15.4.jar:${loc}/asm-9.4.jar:${loc}/asm-commons-9.4.jar:${loc}/asm-tree-9.4.jar:${loc}/asm-util-9.4.jar"><![CDATA[
 			var src = project.getProperty("src");
 			var relsrc = src.substring(src.lastIndexOf('\\') + 1);
 			project.setProperty("relsrc", relsrc);
