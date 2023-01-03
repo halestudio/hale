@@ -67,7 +67,7 @@ public class NotSupportedTranslator implements FunctionTranslator {
 		}
 
 		reporter.error(new IOMessageImpl(
-				"The function '" + id + "' is not supported in this hale studio version", null));
+				"The function '" + id + "' is not supported in this hale»studio version", null));
 
 		return params;
 	}

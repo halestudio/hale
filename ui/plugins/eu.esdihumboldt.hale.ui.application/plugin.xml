@@ -56,7 +56,7 @@
    </extension>
    <extension
          id="eu.esdihumboldt.hale.ui.application"
-         name="hale studio"
+         name="hale»studio"
          point="org.eclipse.core.runtime.applications">
       <application
             cardinality="singleton-global"
@@ -73,10 +73,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="eu.esdihumboldt.hale.ui.application"
-            name="hale studio">
+            name="hale»studio">
          <property
                name="appName"
-               value="hale studio">
+               value="hale»studio">
          </property>
          <property
                name="windowImages"
@@ -84,11 +84,11 @@
          </property>
          <property
                name="aboutText"
-               value="hale studio&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;https://www.wetransform.to/products/halestudio/&#x0A;&#x0A;Forum:&#x0A;https://discuss.wetransform.to/&#x0A;&#x0A;News:&#x0A;https://www.wetransform.to/category/news/&#x0A;&#x0A;Get professional support:&#x0A;https://www.wetransform.to/services/support/">
+               value="hale»studio&#x0A;&#x0A;Version ___version___&#x0A;&#x0A;Build ___build___&#x0A;Revision ___revision___&#x0A;&#x0A;Project page:&#x0A;https://www.wetransform.to/products/halestudio/&#x0A;&#x0A;Forum:&#x0A;https://discuss.wetransform.to/&#x0A;&#x0A;News:&#x0A;https://www.wetransform.to/category/news/&#x0A;&#x0A;Get professional support:&#x0A;https://www.wetransform.to/services/support/">
          </property>
          <property
                name="introTitle"
-               value="hale studio">
+               value="hale»studio">
          </property>
          <property
                name="introBrandingImage"
