@@ -103,7 +103,7 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 			if (compared < 0) {
 				// project is newer than HALE
 				String message = MessageFormat.format(
-						"The version of hale studio the loaded project was created with ({1}) is newer than this version of hale studio ({0}). Consider updating to avoid possible information loss or unexpected behavior.",
+						"The version of hale»studio the loaded project was created with ({1}) is newer than this version of hale»studio ({0}). Consider updating to avoid possible information loss or unexpected behavior.",
 						haleVersion, projectVersion);
 				// report
 				reporter.warn(new IOMessageImpl(message, null));
@@ -113,8 +113,8 @@ public abstract class AbstractProjectReader extends AbstractImportProvider
 			else if (compared == 0 && HalePlatform.isSnapshotVersion()) {
 				// same version, but used version is a SNAPSHOT version
 				reporter.warn(new IOMessageImpl(MessageFormat.format(
-						"You are using a SNAPSHOT version of hale studio {0} to load a project of the same version. "
-								+ "Thus there is the possibility that in the loaded project there are hale studio features used that are not yet supported by your SNAPSHOT.",
+						"You are using a SNAPSHOT version of hale»studio {0} to load a project of the same version. "
+								+ "Thus there is the possibility that in the loaded project there are hale»studio features used that are not yet supported by your SNAPSHOT.",
 						haleVersion), null));
 			}
 		}

@@ -12,7 +12,7 @@ project = {
 
 	ext {
 		// The title of the win32 installer
-	    win32InstallerTitle = 'hale studio'
+	    win32InstallerTitle = 'hale»studio'
 
 	    // The GUID used by the win32 installer for product upgrades (must never change!)
 	    win32InstallerUpgradeGUID = '6b6151c0-e3f9-11de-8a39-0800200c9a66'

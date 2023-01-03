@@ -937,7 +937,7 @@
          point="org.eclipse.ui.views">
       <category
             id="eu.esdihumboldt.hale.ui"
-            name="hale studio">
+            name="hale»studio">
       </category>
    </extension>
    <extension
