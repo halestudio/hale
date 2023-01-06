@@ -436,7 +436,8 @@ on the right-hand rule when exporting data in Json format
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/halestudio/hale/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/halestudio/hale/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/halestudio/hale/compare/3.5.0...4.0.0
 [3.5.0]: https://github.com/halestudio/hale/compare/3.4.1...3.5.0
