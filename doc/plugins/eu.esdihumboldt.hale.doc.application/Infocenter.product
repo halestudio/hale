@@ -24,8 +24,13 @@
    <vm>
    </vm>
 
+
    <plugins>
       <plugin id="aopalliance"/>
+      <plugin id="asm"/>
+      <plugin id="asm.asm-analysis"/>
+      <plugin id="asm.asm-tree"/>
+      <plugin id="asm.asm-util"/>
       <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
@@ -35,10 +40,39 @@
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
       <plugin id="com.ibm.icu"/>
+      <plugin id="com.sun.istack.commons-runtime"/>
+      <plugin id="com.sun.xml.bind.jaxb-core"/>
       <plugin id="com.tinkerpop.blueprints.core"/>
-      <plugin id="com.tinkerpop.gremlin.groovy"/>
       <plugin id="com.tinkerpop.gremlin.java"/>
       <plugin id="com.tinkerpop.pipes"/>
+      <plugin id="com.vladsch.flexmark"/>
+      <plugin id="com.vladsch.flexmark.ext-abbreviation"/>
+      <plugin id="com.vladsch.flexmark.ext-anchorlink"/>
+      <plugin id="com.vladsch.flexmark.ext-autolink"/>
+      <plugin id="com.vladsch.flexmark.ext-definition"/>
+      <plugin id="com.vladsch.flexmark.ext-escaped-character"/>
+      <plugin id="com.vladsch.flexmark.ext-footnotes"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-strikethrough"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-tasklist"/>
+      <plugin id="com.vladsch.flexmark.ext-ins"/>
+      <plugin id="com.vladsch.flexmark.ext-superscript"/>
+      <plugin id="com.vladsch.flexmark.ext-tables"/>
+      <plugin id="com.vladsch.flexmark.ext-toc"/>
+      <plugin id="com.vladsch.flexmark.ext-typographic"/>
+      <plugin id="com.vladsch.flexmark.ext-wikilink"/>
+      <plugin id="com.vladsch.flexmark.profile-pegdown"/>
+      <plugin id="com.vladsch.flexmark.util"/>
+      <plugin id="com.vladsch.flexmark.util-ast"/>
+      <plugin id="com.vladsch.flexmark.util-builder"/>
+      <plugin id="com.vladsch.flexmark.util-collection"/>
+      <plugin id="com.vladsch.flexmark.util-data"/>
+      <plugin id="com.vladsch.flexmark.util-dependency"/>
+      <plugin id="com.vladsch.flexmark.util-format"/>
+      <plugin id="com.vladsch.flexmark.util-html"/>
+      <plugin id="com.vladsch.flexmark.util-misc"/>
+      <plugin id="com.vladsch.flexmark.util-options"/>
+      <plugin id="com.vladsch.flexmark.util-sequence"/>
+      <plugin id="com.vladsch.flexmark.util-visitor"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
       <plugin id="commons-httpclient"/>
@@ -49,7 +83,6 @@
       <plugin id="de.fhg.igd.slf4jplus"/>
       <plugin id="de.fhg.igd.slf4jplus.logback"/>
       <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
-      <plugin id="dom4j"/>
       <plugin id="eu.esdihumboldt.cst"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions"/>
       <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
@@ -89,7 +122,6 @@
       <plugin id="eu.esdihumboldt.hale.io.json"/>
       <plugin id="eu.esdihumboldt.hale.io.shp"/>
       <plugin id="eu.esdihumboldt.hale.io.wfs"/>
-      <plugin id="eu.esdihumboldt.hale.io.xls"/>
       <plugin id="eu.esdihumboldt.hale.io.xml"/>
       <plugin id="eu.esdihumboldt.hale.io.xsd"/>
       <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
@@ -99,10 +131,13 @@
       <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
       <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
       <plugin id="eu.esdihumboldt.util.http"/>
+      <plugin id="eu.esdihumboldt.util.metrics"/>
       <plugin id="eu.esdihumboldt.util.resource"/>
       <plugin id="findbugsAnnotations"/>
       <plugin id="gnu.trove"/>
       <plugin id="groovy"/>
+      <plugin id="groovy-xml" fragment="true"/>
+      <plugin id="io.prometheus.simpleclient"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
       <plugin id="it.geosolutions.imageio-ext.streams"/>
       <plugin id="it.geosolutions.imageio-ext.tiff"/>
@@ -139,6 +174,8 @@
       <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
       <plugin id="it.geosolutions.jaiext.zonal.jt-zonal"/>
       <plugin id="jai.jai-imageio"/>
+      <plugin id="jakarta.activation-api"/>
+      <plugin id="jakarta.xml.bind-api"/>
       <plugin id="javax.annotation.extensions" fragment="true"/>
       <plugin id="javax.el"/>
       <plugin id="javax.mail"/>
@@ -173,10 +210,10 @@
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
       <plugin id="org.apache.jasper.glassfish"/>
+      <plugin id="org.apache.logging.log4j.api"/>
       <plugin id="org.apache.lucene.analyzers-common"/>
       <plugin id="org.apache.lucene.analyzers-smartcn"/>
       <plugin id="org.apache.lucene.core"/>
-      <plugin id="org.apache.poi"/>
       <plugin id="org.apache.velocity"/>
       <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
       <plugin id="org.apache.xml.commons-resolver"/>
@@ -231,6 +268,9 @@
       <plugin id="org.ejml.core"/>
       <plugin id="org.ejml.ddense"/>
       <plugin id="org.geotools"/>
+      <plugin id="org.glassfish.jaxb.core"/>
+      <plugin id="org.glassfish.jaxb.runtime"/>
+      <plugin id="org.hamcrest.core"/>
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
@@ -238,17 +278,15 @@
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.locationtech.jts.jts-core"/>
-      <plugin id="org.objectweb.asm-5"/>
-      <plugin id="org.objectweb.asm.analysis-5"/>
-      <plugin id="org.objectweb.asm.tree-5"/>
-      <plugin id="org.objectweb.asm.util-5"/>
+      <plugin id="org.nibor.autolink"/>
+      <plugin id="org.objectweb.asm"/>
+      <plugin id="org.objectweb.asm-9"/>
       <plugin id="org.opengis"/>
-      <plugin id="org.pegdown"/>
-      <plugin id="org.springframework.aop"/>
-      <plugin id="org.springframework.beans"/>
-      <plugin id="org.springframework.context"/>
-      <plugin id="org.springframework.core"/>
-      <plugin id="org.springframework.transaction"/>
+      <plugin id="org.springframework.spring-aop"/>
+      <plugin id="org.springframework.spring-beans"/>
+      <plugin id="org.springframework.spring-context"/>
+      <plugin id="org.springframework.spring-core"/>
+      <plugin id="org.springframework.spring-expression"/>
       <plugin id="org.xerial.sqlite-jdbc"/>
       <plugin id="oro"/>
       <plugin id="picocontainer"/>
@@ -268,5 +306,12 @@
       <plugin id="org.eclipse.help.base" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.webapp" autoStart="true" startLevel="0" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>
