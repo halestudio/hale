@@ -149,7 +149,7 @@ public class ProxySettings {
 	}
 
 	private static void applyProxyData(List<IProxyData> proxyData) throws CoreException {
-		PROXY_SERVICE.setProxyData((IProxyData[]) proxyData.toArray());
+		PROXY_SERVICE.setProxyData(proxyData.toArray(new IProxyData[0]));
 		PROXY_SERVICE.setProxiesEnabled(true);
 		PROXY_SERVICE.setSystemProxiesEnabled(false);
 	}
