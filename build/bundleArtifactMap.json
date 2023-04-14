@@ -703,9 +703,9 @@
     },
     "groovy": {
         "group": "org.codehaus.groovy",
-        "name": "groovy-all",
+        "name": "groovy",
         "versions": {
-            "2.3.7.i20150413": "2.3.7"
+            "2.5.19.i20221102": "2.5.19"
         }
     },
     "com.fasterxml.jackson.datatype.jackson-datatype-guava": {
