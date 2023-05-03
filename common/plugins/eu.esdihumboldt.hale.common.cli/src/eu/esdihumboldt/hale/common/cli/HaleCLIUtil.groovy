@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.core.report.Report
 import eu.esdihumboldt.hale.common.core.report.ReportHandler
 import eu.esdihumboldt.hale.common.headless.report.ReportFile
 import groovy.cli.picocli.CliBuilder
+import groovy.cli.picocli.OptionAccessor
 import groovy.transform.CompileStatic
 
 class HaleCLIUtil {
