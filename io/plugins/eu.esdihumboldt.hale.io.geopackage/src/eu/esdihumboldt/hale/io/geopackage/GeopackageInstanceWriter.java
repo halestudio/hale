@@ -118,12 +118,29 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 	public static final String DEFAULT_SPATIAL_INDEX_TYPE = "rtree";
 
 	/**
+	 * The parameter name for the flag specifying if tables should be created
+	 * for all mapping-relevant types, even if they're empty. Defaults to
+	 * <code>false</code>.
+	 */
+	public static final String PARAM_CREATE_EMPTY_TABLES = "createEmptyTables";
+
+	/**
 	 * Set the type of spatial index to create for new tables
 	 * 
 	 * @param spatialIndexType Spatial index type to use
 	 */
 	public void setSpatialIndexType(String spatialIndexType) {
 		setParameter(PARAM_SPATIAL_INDEX_TYPE, Value.of(spatialIndexType));
+	}
+
+	/**
+	 * Set if tables should be created for all mapping-relevant types, even if
+	 * they're empty.
+	 * 
+	 * @param createEmptyTables True to create empty tables
+	 */
+	public void setCreateEmptyTables(boolean createEmptyTables) {
+		setParameter(PARAM_CREATE_EMPTY_TABLES, Value.of(createEmptyTables));
 	}
 
 	@Override
@@ -197,6 +214,16 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 				 * writeInstances(geoPackage, instances.select(new
 				 * TypeFilter(td)), progress, reporter); }
 				 */
+			}
+
+			// Create tables for empty types last to make sure that for all
+			// non-empty types SRS information from the instances is available
+			// during table creation
+			if (getParameter(PARAM_CREATE_EMPTY_TABLES).as(Boolean.class, false)) {
+				for (TypeDefinition td : getTargetSchema().getMappingRelevantTypes()) {
+					String tableName = td.getName().getLocalPart();
+					createTableIfNecessary(geoPackage, tableName, td, null, reporter);
+				}
 			}
 
 //			connection.commit();
@@ -516,7 +543,7 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 			srs = findOrCreateSrs(geoPackage, crs, log);
 		}
 
-		if (srs == null) {
+		if (srs == null && instance != null) {
 			// try to determine from example instance
 			Object geom = new InstanceAccessor(instance)
 					.findChildren(geomProp.getName().getLocalPart()).value();
