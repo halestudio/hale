@@ -45,6 +45,7 @@ public class GeopackageWriterSettingsPage extends
 
 	private ComboViewer spatialIndexType;
 	private Button createEmptyTables;
+	private Button overwriteTarget;
 
 	/**
 	 * Default constructor
@@ -105,6 +106,7 @@ public class GeopackageWriterSettingsPage extends
 		provider.setSpatialIndexType(indexType.getParameterValue());
 
 		provider.setCreateEmptyTables(createEmptyTables.getSelection());
+		provider.setOverwriteTargetFile(overwriteTarget.getSelection());
 
 		return true;
 	}
@@ -116,6 +118,16 @@ public class GeopackageWriterSettingsPage extends
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 		GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
+
+		Group fileGroup = new Group(page, SWT.NONE);
+		fileGroup.setText("File settings");
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(fileGroup);
+		groupData.applyTo(fileGroup);
+		overwriteTarget = new Button(fileGroup, SWT.CHECK);
+
+		Label overwriteTargetLabel = new Label(fileGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(overwriteTargetLabel);
+		overwriteTargetLabel.setText("Overwrite target file if it exists");
 
 		Group tableGroup = new Group(page, SWT.NONE);
 		tableGroup.setText("Table generation settings");
