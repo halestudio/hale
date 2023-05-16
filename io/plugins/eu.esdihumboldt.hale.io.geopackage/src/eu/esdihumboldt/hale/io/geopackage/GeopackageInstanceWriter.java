@@ -125,6 +125,12 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 	public static final String PARAM_CREATE_EMPTY_TABLES = "createEmptyTables";
 
 	/**
+	 * The parameter name for the flag specifying if the target file should be
+	 * overwritten if it exists. Defaults to <code>false</code>.
+	 */
+	public static final String PARAM_OVERWRITE_TARGET_FILE = "overwriteTargetFile";
+
+	/**
 	 * Set the type of spatial index to create for new tables
 	 * 
 	 * @param spatialIndexType Spatial index type to use
@@ -141,6 +147,15 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 	 */
 	public void setCreateEmptyTables(boolean createEmptyTables) {
 		setParameter(PARAM_CREATE_EMPTY_TABLES, Value.of(createEmptyTables));
+	}
+
+	/**
+	 * Set if the target GeoPackage file should be overwritten if it exists.
+	 * 
+	 * @param overwriteTargetFile True to overwrite the target file if it exists
+	 */
+	public void setOverwriteTargetFile(boolean overwriteTargetFile) {
+		setParameter(PARAM_OVERWRITE_TARGET_FILE, Value.of(overwriteTargetFile));
 	}
 
 	@Override
@@ -180,8 +195,10 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 				throw new IllegalArgumentException("Only files are supported as data source", e);
 			}
 
-			if (file.exists() && file.length() == 0L) {
-				// convenience for overwriting empty existing file
+			boolean overwriteTargetFile = getParameter(PARAM_OVERWRITE_TARGET_FILE)
+					.as(Boolean.class, false);
+			if (file.exists() && (file.length() == 0L || overwriteTargetFile)) {
+				// overwrite empty existing file or if requested via setting
 				file.delete();
 			}
 			if (!file.exists()) {
