@@ -90,6 +90,19 @@
                   class="java.lang.Boolean">
             </parameterBinding>
          </providerParameter>
+         <providerParameter
+               description="Overwrite target GeoPackage file if it exists"
+               label="Overwrite target file"
+               name="overwriteTargetFile"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
       </provider>
    </extension>
 
