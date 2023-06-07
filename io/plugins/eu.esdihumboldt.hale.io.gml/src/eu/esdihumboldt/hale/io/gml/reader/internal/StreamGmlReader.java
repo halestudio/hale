@@ -19,8 +19,6 @@ package eu.esdihumboldt.hale.io.gml.reader.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
-import de.fhg.igd.slf4jplus.ALogger;
-import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
@@ -41,8 +39,6 @@ import eu.esdihumboldt.hale.io.gml.reader.internal.wfs.WfsBackedGmlInstanceColle
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class StreamGmlReader extends AbstractInstanceReader {
-
-	private final ALogger log = ALoggerFactory.getLogger(StreamGmlReader.class);
 
 	/**
 	 * The name of the parameter specifying if the root element should be
@@ -168,6 +164,13 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			if (query != null && scheme != null
 					&& query.toLowerCase().contains("request=getfeature")
 					&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+
+				// for testing
+//				if (tmpDownloadDirPath == null) {
+//					tmpDownloadDirPath = Files.createTempDirectory("wfsDownloads").toFile()
+//							.getAbsolutePath();
+//					System.out.println("++++++ tmpDownloadDirPath: " + tmpDownloadDirPath);
+//				}
 
 				// check if WFS is reachable and responds?
 				if (tmpDownloadDirPath != null) {
