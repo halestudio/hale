@@ -15,16 +15,19 @@
 
 package eu.esdihumboldt.hale.io.gml.reader.internal.wfs;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 
@@ -108,6 +111,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 	private final CRSProvider crsProvider;
 	private final boolean ignoreNamespaces;
 	private final IOProvider ioProvider;
+	private final String tmpdir;
 
 	/**
 	 * Create a GML instance collection based on the given WFS source.
@@ -140,6 +144,42 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			boolean ignoreNamespaces, CRSProvider crsProvider, IOProvider provider,
 			int featuresPerRequest, boolean ignoreNumberMatched) throws URISyntaxException {
 
+		this(source, sourceSchema, restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
+				crsProvider, provider, featuresPerRequest, ignoreNumberMatched, null);
+	}
+
+	/**
+	 * Create a GML instance collection based on the given WFS source.
+	 * 
+	 * @param source the source
+	 * @param sourceSchema the source schema
+	 * @param restrictToFeatures if only instances that are GML features shall
+	 *            be loaded
+	 * @param ignoreRoot if the root element should be ignored for creating
+	 *            instances even if it is recognized as an allowed instance type
+	 * @param strict if associating elements with properties should be done
+	 *            strictly according to the schema, otherwise a fall-back is
+	 *            used trying to populate values also on invalid property paths
+	 * @param ignoreNamespaces if parsing of the XML instances should allow
+	 *            types and properties with namespaces that differ from those
+	 *            defined in the schema
+	 * @param crsProvider CRS provider in case no CRS is specified, may be
+	 *            <code>null</code>
+	 * @param provider the I/O provider to get values
+	 * @param featuresPerRequest Number of features to retrieve at most with one
+	 *            WFS GetFeature request, or {@value #UNLIMITED} to disable
+	 *            pagination
+	 * @param ignoreNumberMatched If featuresPerRequest is set, ignore the
+	 *            number of matches reported by the WFS
+	 * @param tmpDirPath tmp dir path to download all wfs files
+	 * @throws URISyntaxException thrown if the WFS request URL cannot be
+	 *             generated from the source location URI
+	 */
+	public WfsBackedGmlInstanceCollection(LocatableInputSupplier<? extends InputStream> source,
+			TypeIndex sourceSchema, boolean restrictToFeatures, boolean ignoreRoot, boolean strict,
+			boolean ignoreNamespaces, CRSProvider crsProvider, IOProvider provider,
+			int featuresPerRequest, boolean ignoreNumberMatched, String tmpDirPath)
+			throws URISyntaxException {
 		this.sourceSchema = sourceSchema;
 		this.restrictToFeatures = restrictToFeatures;
 		this.ignoreRoot = ignoreRoot;
@@ -150,6 +190,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 		this.primordialUri = source.getLocation();
 
+		this.tmpdir = tmpDirPath;
 		// Build base URI from original location by removing STARTINDEX and
 		// MAXFEATURES/COUNT parameters if present
 		URIBuilder builder = new URIBuilder(primordialUri);
@@ -412,6 +453,24 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				throw new IllegalStateException(e.getMessage(), e);
 			}
 
+			// Download all the files into a folder for Bucket service
+			if (tmpdir != null) {
+				try {
+					URL url = nextUri.toURL();
+					StringBuilder fileName = new StringBuilder(tmpdir);
+					fileName.append("/").append(url.getPath().replaceAll("/", "."))
+							.append(totalFeaturesProcessed).append(".gml");
+
+					// TODO: may be download files in a thread
+					File downloadFile = new File(fileName.toString());
+					nextUri = downloadFile.toURI();
+					FileUtils.copyURLToFile(url, downloadFile);
+				} catch (IOException e) {
+					log.error(MessageFormat.format("Unable to download WFS request: {0}",
+							e.getMessage()), e);
+				}
+
+			}
 			log.debug(MessageFormat.format("Creating new iterator for URL \"{0}\"",
 					nextUri.toString()));
 

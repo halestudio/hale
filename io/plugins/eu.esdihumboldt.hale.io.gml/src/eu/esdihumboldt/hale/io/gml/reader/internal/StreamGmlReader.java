@@ -76,6 +76,12 @@ public class StreamGmlReader extends AbstractInstanceReader {
 	public static final String PARAM_FEATURES_PER_WFS_REQUEST = "featuresPerWfsRequest";
 
 	/**
+	 * The parameter with temporary downlaod path passed from bucket-service to
+	 * download wfs files directly to it instead of processing wfs as instances
+	 */
+	public static final String PARAM_TMP_DIR_PATH = "tmpDirPath";
+
+	/**
 	 * The name of the parameter specifying if hale should ignore the total
 	 * number of features reported by the WFS.
 	 */
@@ -115,6 +121,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 		addSupportedParameter(PARAM_IGNORE_NAMESPACES);
 		addSupportedParameter(PARAM_PAGINATE_REQUEST);
 		addSupportedParameter(PARAM_FEATURES_PER_WFS_REQUEST);
+		addSupportedParameter(PARAM_TMP_DIR_PATH);
 	}
 
 	/**
@@ -135,6 +142,7 @@ public class StreamGmlReader extends AbstractInstanceReader {
 					.as(Boolean.class, false);
 
 			int featuresPerRequest;
+			String tmpDownloadDirPath = null;
 			if (paginateRequest) {
 				featuresPerRequest = getParameter(PARAM_FEATURES_PER_WFS_REQUEST).as(Integer.class,
 						1000);
@@ -142,6 +150,8 @@ public class StreamGmlReader extends AbstractInstanceReader {
 			else {
 				featuresPerRequest = WfsBackedGmlInstanceCollection.UNLIMITED;
 			}
+
+			tmpDownloadDirPath = getParameter(PARAM_TMP_DIR_PATH).getStringRepresentation();
 
 			LocatableInputSupplier<? extends InputStream> source = getSource();
 			String scheme = null;
@@ -155,11 +165,25 @@ public class StreamGmlReader extends AbstractInstanceReader {
 					&& query.toLowerCase().contains("request=getfeature")
 					&& (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
 
-				// check if WFS is reachable and responds?
+				// for testing
+//				if (tmpDownloadDirPath == null) {
+//					tmpDownloadDirPath = Files.createTempDirectory("wfsDownloads").toFile()
+//							.getAbsolutePath();
+//					System.out.println("++++++ tmpDownloadDirPath: " + tmpDownloadDirPath);
+//				}
 
-				instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
-						restrictToFeatures, ignoreRoot, strict, ignoreNamespaces, getCrsProvider(),
-						this, featuresPerRequest, ignoreNumberMatched);
+				// check if WFS is reachable and responds?
+				if (tmpDownloadDirPath != null) {
+					instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
+							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
+							getCrsProvider(), this, featuresPerRequest, ignoreNumberMatched,
+							tmpDownloadDirPath);
+				}
+				else {
+					instances = new WfsBackedGmlInstanceCollection(getSource(), getSourceSchema(),
+							restrictToFeatures, ignoreRoot, strict, ignoreNamespaces,
+							getCrsProvider(), this, featuresPerRequest, ignoreNumberMatched);
+				}
 			}
 			else {
 				instances = new GmlInstanceCollection(getSource(), getSourceSchema(),
