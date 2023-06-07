@@ -112,8 +112,7 @@ public class GmlReaderSettingsPage
 
 		Group wfsGroup = new Group(page, SWT.NONE);
 		wfsGroup.setText("WFS requests");
-		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false)
-				.applyTo(wfsGroup);
+		GridLayoutFactory.swtDefaults().numColumns(2).equalWidth(false).applyTo(wfsGroup);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(wfsGroup);
 
 		requestPaginationEnabled = new Button(wfsGroup, SWT.CHECK);
