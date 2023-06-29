@@ -25,6 +25,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.util.function.Consumer
 
+import org.geotools.data.shapefile.ShapefileDataStore
 import org.junit.Test
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
@@ -100,7 +101,7 @@ class ShapefileInstanceWriterTest {
 		String filenameOnly = Paths.get(location).getFileName().toString();
 
 		filenameOnly = filenameOnly.substring(0, filenameOnly.lastIndexOf("."));
-		String filename = filePath + "/" + filenameOnly + "_" + additionalName + ".shp";
+		String filename = filePath + "/" + filenameOnly + "_" + additionalName + ShapefileConstants.SHP_EXTENSION;
 		file = new File(filename)
 		Schema schema = loadSchema(file)
 
@@ -114,9 +115,10 @@ class ShapefileInstanceWriterTest {
 		assertTrue(report.isSuccess())
 		assertTrue(report.getErrors().isEmpty())
 
+		testCpgFileAgainstRelatedSpapefile(file)
+
 		return reader.getInstances();
 	}
-
 
 	/**
 	 * Write an instance collection to a Shapefile.
@@ -184,8 +186,22 @@ class ShapefileInstanceWriterTest {
 			println "Temporary file is $tmpFile"
 			writeInstances(tmpFile.toFile(), schema, instances, configurator)
 			handler.accept(tmpFile.toFile())
+
+			testCpgFileAgainstRelatedSpapefile(tmpFile.toFile())
 		} finally {
 			tmpDir.deleteDir()
+		}
+	}
+
+	private static testCpgFileAgainstRelatedSpapefile(File shpFile) {
+		ShapefileDataStore store = new ShapefileDataStore(shpFile.toURL());
+		String cpgFilePath = shpFile.getAbsolutePath().replace(ShapefileConstants.SHP_EXTENSION, ShapefileConstants.CPG_EXTENSION)
+
+		def cpgFile = new File(cpgFilePath)
+		if (cpgFile.exists()) {
+			assertTrue(store.getCharset().toString().equals(cpgFile.text))
+		} else {
+			println("File not found.")
 		}
 	}
 
@@ -199,6 +215,8 @@ class ShapefileInstanceWriterTest {
 			println "Temporary file is $tmpFile"
 			writeInstancesWithReporterErrors(tmpFile.toFile(), schema, instances, configurator)
 			handler.accept(tmpFile.toFile())
+
+			testCpgFileAgainstRelatedSpapefile(tmpFile.toFile())
 		} finally {
 			tmpDir.deleteDir()
 		}
@@ -240,6 +258,7 @@ class ShapefileInstanceWriterTest {
 					num++
 				}
 			}
+
 			// 593 instances were loaded
 			assertEquals(593, num)
 		}

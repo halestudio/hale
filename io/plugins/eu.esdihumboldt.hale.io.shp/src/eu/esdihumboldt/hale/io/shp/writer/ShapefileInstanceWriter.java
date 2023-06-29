@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.shp.writer;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URI;
@@ -120,6 +121,11 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				// Reset the target property so that a caller can find out which
 				// files were created.
 				setTarget(new MultiLocationOutputSupplier(uris));
+			}
+
+			for (String f : filesWritten) {
+				String cpgFileName = filePath + "/" + f + ShapefileConstants.CPG_EXTENSION;
+				writeCodePageFile(cpgFileName);
 			}
 
 			reporter.setSuccess(true);
@@ -722,6 +728,37 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 		}
 
 		return filesWritten;
+	}
+
+	/**
+	 * Create the CPG file starting from the Shapefile
+	 * 
+	 * @param cpgFilePath Path of the file to be written with just one line of
+	 *            the encoding
+	 * @throws IOException exception in any.
+	 */
+	public void writeCodePageFile(String cpgFilePath) throws IOException {
+		File cpgFile = new File(cpgFilePath);
+		FileWriter fileWriter = new FileWriter(cpgFile);
+
+		ShapefileDataStore store = new ShapefileDataStore(
+				new File(cpgFilePath.replace(ShapefileConstants.CPG_EXTENSION,
+						ShapefileConstants.SHP_EXTENSION)).toURL());
+
+		try {
+			fileWriter.write(store.getCharset() != null ? store.getCharset().toString()
+					: getDefaultCharset().toString());
+		} catch (IOException e) {
+			throw new IOException("An error occurred while writing the CPG file: " + cpgFilePath
+					+ " " + e.getMessage());
+		} finally {
+			try {
+				fileWriter.close();
+			} catch (IOException e) {
+				throw new IOException("An error occurred while trying to close the CPG file: "
+						+ cpgFilePath + " " + e.getMessage());
+			}
+		}
 	}
 
 }
