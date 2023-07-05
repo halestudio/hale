@@ -26,6 +26,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.util.function.Consumer
 
+import org.geotools.data.shapefile.ShapefileDataStore
 import org.junit.Test
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
