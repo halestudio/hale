@@ -81,6 +81,12 @@ public interface ShapefileConstants {
 	 * Constant for the shape file extension.
 	 */
 	public static final String SHP_EXTENSION = ".shp";
+
+	/**
+	 * Constant for the CPG file extension.
+	 */
+	public static final String CPG_EXTENSION = ".cpg";
+
 	/**
 	 * Constant for underscore.
 	 */
