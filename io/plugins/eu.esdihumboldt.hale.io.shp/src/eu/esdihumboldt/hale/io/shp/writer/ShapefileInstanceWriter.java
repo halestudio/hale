@@ -461,6 +461,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				ShapefileDataStore newDataStore;
 
 				newDataStore = (ShapefileDataStore) dataStoreFactory.createNewDataStore(params);
+				newDataStore.setCharset(getCharset());
 				newDataStore.createSchema(geometryEntry.getValue());
 				schemaDataStoreMap
 						.computeIfAbsent(schemaEntry.getKey(),
