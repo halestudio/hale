@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" type="text/css" href="new.css" />
+<title>What's new in hale»studio 5.0.1?</title>
+</head>
+<body>
+	<h1>What's new in hale»studio 5.0.1?</h1>
+
+	<ul>
+		<li>Added an option to overwrite content in Geopackage Writer instead of appending content</li>
+		<li>Added a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types</li>
+	</ul>
+
+	<p>
+		For a full list of changes, please check out the <a
+			href="https://github.com/halestudio/hale/blob/master/CHANGELOG.md#501"
+			target="_blank">changelog on GitHub</a>
+	</p>
+
+	<p>To avoid any compatibility issues when using an existing workspace, we recommend starting with a fresh one when you install
+		hale»studio 5.0.1</p>
+		
+	<p>The development work for this release was co-funded by the European Health and Digital Executive Agency (HaDEA) under Action No 2018-EU-IA-0093.</p>
+
+	<table border="0" cellpadding="15" cellspacing="0" class="news" id="5_0_0">
+		<tbody>
+
+			<!-- New features -->
+			<tr>
+				<td class="section" colspan="2" id="5_0_0_Features" rowspan="1"><h2>New features</h2></td>
+			</tr>
+		
+			<tr id="geopackage-writer">
+				<td class="title">Overwrite content in Geopackage Writer</td>
+				<td class="content">
+					<p>
+						This release add a parameter to the GeoPackage writer that allow overwriting the target file if it exists. The parameter is disabled by default so that data is appended to an existing file unless overwriting is explicitly requested.
+					</p>
+					<p>
+						<img src="5_0_1_images/geopackage-writer.png"></img>
+					</p>
+				</td>
+			</tr>
+			<tr id="geopackage-parameter">
+				<td class="title">Parameter to the GeoPackage writer</td>
+				<td class="content">
+					<p>
+						This release add a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types, even if they have no instances.
+					</p>
+					<p>
+						<img src="5_0_1_images/geopackage-parameter.png"></img>
+					</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>
