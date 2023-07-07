@@ -4,6 +4,19 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [5.0.1]
+
+### Added
+- Add an option to overwrite content in Geopackage Writer instead of appending content
+- Add a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types
+- Add the creation of a .cpg file when a .shp file is beeing exported
+ 
+### Fixed
+- Fix the Commons Text security vulnerability
+- Fix to Proxy settings to be able to contact update sites when Proxy usage is required
+- Fix the automation of the build process
+
+
 ## [5.0.0]
 
 ### Added
