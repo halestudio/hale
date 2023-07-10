@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
@@ -43,6 +44,8 @@ public class GeopackageWriterSettingsPage extends
 		AbstractConfigurationPage<GeopackageInstanceWriter, IOWizard<GeopackageInstanceWriter>> {
 
 	private ComboViewer spatialIndexType;
+	private Button createEmptyTables;
+	private Button overwriteTarget;
 
 	/**
 	 * Default constructor
@@ -102,6 +105,9 @@ public class GeopackageWriterSettingsPage extends
 		}
 		provider.setSpatialIndexType(indexType.getParameterValue());
 
+		provider.setCreateEmptyTables(createEmptyTables.getSelection());
+		provider.setOverwriteTargetFile(overwriteTarget.getSelection());
+
 		return true;
 	}
 
@@ -112,6 +118,26 @@ public class GeopackageWriterSettingsPage extends
 	protected void createContent(Composite page) {
 		page.setLayout(new GridLayout(1, false));
 		GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
+
+		Group fileGroup = new Group(page, SWT.NONE);
+		fileGroup.setText("File settings");
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(fileGroup);
+		groupData.applyTo(fileGroup);
+		overwriteTarget = new Button(fileGroup, SWT.CHECK);
+
+		Label overwriteTargetLabel = new Label(fileGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(overwriteTargetLabel);
+		overwriteTargetLabel.setText("Overwrite target file if it exists");
+
+		Group tableGroup = new Group(page, SWT.NONE);
+		tableGroup.setText("Table generation settings");
+		GridLayoutFactory.swtDefaults().numColumns(2).applyTo(tableGroup);
+		groupData.applyTo(tableGroup);
+		createEmptyTables = new Button(tableGroup, SWT.CHECK);
+
+		Label createEmptyTablesLabel = new Label(tableGroup, SWT.NONE);
+		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).applyTo(createEmptyTablesLabel);
+		createEmptyTablesLabel.setText("Also create tables for types that have no instances");
 
 		Group spatialIndexGroup = new Group(page, SWT.NONE);
 		spatialIndexGroup.setText("Spatial index");

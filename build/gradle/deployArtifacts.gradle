@@ -41,17 +41,17 @@ project.afterEvaluate {
 def findBndPlatformArtifactMapping(java.util.jar.Manifest manifest) {
 	 def group, name, version
 
-	 if (manifest?.attr?.getValue('BndPlatform-MergedArtifacts')) {
+	 if (manifest?.mainAttributes?.getValue('BndPlatform-MergedArtifacts')) {
 		// use first artifact of merged artifacts
-		group = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Group')
-		name = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Name')
-		version = manifest?.attr?.getValue('BndPlatform-MergedArtifact-1-Version')
+		group = manifest?.mainAttributes?.getValue('BndPlatform-MergedArtifact-1-Group')
+		name = manifest?.mainAttributes?.getValue('BndPlatform-MergedArtifact-1-Name')
+		version = manifest?.mainAttributes?.getValue('BndPlatform-MergedArtifact-1-Version')
 	}
 	else {
 		// use single original artifacts
-		group = manifest?.attr?.getValue('BndPlatform-ArtifactGroup')
-		name = manifest?.attr?.getValue('BndPlatform-ArtifactName')
-		version = manifest?.attr?.getValue('BndPlatform-ArtifactVersion')
+		group = manifest?.mainAttributes?.getValue('BndPlatform-ArtifactGroup')
+		name = manifest?.mainAttributes?.getValue('BndPlatform-ArtifactName')
+		version = manifest?.mainAttributes?.getValue('BndPlatform-ArtifactVersion')
 	}
 
 	if (name && group && version) {
@@ -69,7 +69,7 @@ def findBndPlatformArtifactMapping(java.util.jar.Manifest manifest) {
 def findOtherMergedParts(java.util.jar.Manifest manifest) {
 	def result = []
 
-	def artifacts = manifest?.attr?.getValue('BndPlatform-MergedArtifacts')
+	def artifacts = manifest?.mainAttributes?.getValue('BndPlatform-MergedArtifacts')
 	if (artifacts) {
 		def number = artifacts as int
 		for (int i = 1; i < number; i++) {
@@ -77,9 +77,9 @@ def findOtherMergedParts(java.util.jar.Manifest manifest) {
 		  
 			int index = i+1
 		  
-			def group = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Group")
-			def name = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Name")
-			def version = manifest?.attr?.getValue("BndPlatform-MergedArtifact-${index}-Version")
+			def group = manifest?.mainAttributes?.getValue("BndPlatform-MergedArtifact-${index}-Group")
+			def name = manifest?.mainAttributes?.getValue("BndPlatform-MergedArtifact-${index}-Name")
+			def version = manifest?.mainAttributes?.getValue("BndPlatform-MergedArtifact-${index}-Version")
 		  
 			if (name && group && version) {
 				  result << [name: name, group: group, version: version]
@@ -94,7 +94,7 @@ def findOtherMergedParts(java.util.jar.Manifest manifest) {
  * Add additional dependencies defined in the manifest.
  */
 void addMoreDependencies(def pom, java.util.jar.Manifest manifest) {
-	def deps = manifest?.attr?.getValue('Unpuzzle-AddDependencies')
+	def deps = manifest?.mainAttributes?.getValue('Unpuzzle-AddDependencies')
 	if (deps) {
 		deps.split(',').each { depStr ->
 			def parts = depStr.split(';')
@@ -277,23 +277,34 @@ unpuzzle {
 		
 		// artifact configuration applied to all artifacts
 		all {
+			/*
+			 * XXX Unpuzzle does not remove extra whitespace from names of required bundles.
+			 * This may lead to a warning like this for a dependency:
+			 * [warn] Creating artifact configuration for missing dependency
+			 *
+			 * To work around this, we trim the name here.
+			 * If a mapping of the dependency is required, this can only happen via the
+			 * bundleArtifactMap.json file, since the POM is not available for the dependency.
+			 */
+			name = name.trim()
+
 			// put HALE bundles in a separate group
 			if (name.startsWith('eu.esdihumboldt')) {
 				group = 'eu.esdihumboldt.hale'
 			}
-		  
+
 			// replace some bundles with already available Maven artifacts
 			def mapping
 		  
 			// determine Maven Artifact based on bnd-platform information in bundle
 			mapping = findBndPlatformArtifactMapping(pom.manifest)
-		  
+
 			// use bundleArtifactMap as fall-back
 			if (!mapping) {
 				def bundleArtifactMap = new groovy.json.JsonSlurper().parse(file('bundleArtifactMap.json'))
 				mapping = bundleArtifactMap[name]
 			}
-		  
+
 			if (mapping) {
 				// check if there is a variant of the mapping to be applied
 				// -> determine major version
@@ -333,7 +344,7 @@ unpuzzle {
 				// for HALE-built bundles, adapt version number as SNAPSHOT/release
 				version = adaptHaleBundleVersion(version)
 			}
-			
+
 			// add custom dependencies defined in manifest
 			addMoreDependencies(pom, pom.manifest)
 		}

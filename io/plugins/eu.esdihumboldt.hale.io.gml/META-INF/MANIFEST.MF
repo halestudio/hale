@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml;singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.geotools;bundle-version="21.0.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.2.0",
@@ -52,6 +52,7 @@ Import-Package: com.google.common.base,
  eu.esdihumboldt.util.http.client,
  eu.esdihumboldt.util.io,
  javax.annotation;version="[1.2.0,1.2.0]",
+ org.apache.commons.io;version="2.11.0",
  org.apache.http;version="4.3.3",
  org.apache.http.client.utils;version="4.3.6",
  org.joda.time.format;version="2.3.0",
