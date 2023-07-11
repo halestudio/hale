@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.writer;
+package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
 import java.io.StringWriter;

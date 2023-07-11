@@ -13,28 +13,24 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.writer;
+package eu.esdihumboldt.hale.io.json.internal;
 
 /**
- * Constants used to generate JSON from instances.
+ * Enum used to generate JSON from instances.
  * 
  * @author Simon Templer
  */
-public interface InstanceJsonConstants {
-
+public enum Placement {
 	/**
-	 * see http://wiki.geojson.org/GeoJSON_draft_version_6
+	 * The element is the root of the Json document.
 	 */
-	public static final String NAMESPACE_GEOJSON = "http://geojson.org/ns#";
-
+	ROOT,
 	/**
-	 * see http://wiki.geojson.org/GeoJSON_draft_version_6
+	 * The element is a member in a GeoJson FeatureCollection.
 	 */
-	public static final String NAMESPACE_INSTANCE_JSON = "http://wetransform.to/hale/json/instance";
-
+	MEMBER,
 	/**
-	 * see http://wiki.geojson.org/GeoJSON_draft_version_6
+	 * The element is a value within a property.
 	 */
-	public static final String PREFIX_INSTANCE_JSON = "hj";
-
+	VALUE;
 }
