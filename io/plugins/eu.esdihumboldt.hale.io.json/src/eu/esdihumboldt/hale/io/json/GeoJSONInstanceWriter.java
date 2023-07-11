@@ -23,17 +23,6 @@ package eu.esdihumboldt.hale.io.json;
 public class GeoJSONInstanceWriter extends JsonInstanceWriter {
 
 	/**
-	 * Parameter name for the default geometry association.
-	 * 
-	 * @deprecated as of release 4.2.0 because we don't use geometry
-	 *             configuration for geoJson and export the data in WG84 format.
-	 *             As geoJson expects WGS 84 with lon/lat (see
-	 *             https://tools.ietf.org/html/rfc7946)
-	 */
-	@Deprecated
-	public static final String PARAM_GEOMETRY_CONFIG = "geojson.geometry.config";
-
-	/**
 	 * Default constructor.
 	 */
 	public GeoJSONInstanceWriter() {
