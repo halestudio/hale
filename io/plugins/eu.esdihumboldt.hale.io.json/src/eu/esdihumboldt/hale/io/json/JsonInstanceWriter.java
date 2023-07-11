@@ -84,7 +84,6 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 			progress.end();
 		}
 		return reporter;
-
 	}
 
 	/**

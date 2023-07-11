@@ -42,6 +42,19 @@
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
       </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.json.JsonInstanceReader"
+            description="Read JSON/GeoJSON"
+            id="eu.esdihumboldt.hale.io.json.reader"
+            name="JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>
