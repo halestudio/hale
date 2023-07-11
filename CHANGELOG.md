@@ -4,6 +4,19 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## [Unreleased]
 
+## [5.0.1]
+
+### Added
+- Add an option to overwrite content in Geopackage Writer instead of appending content
+- Add a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types
+- Add the creation of a .cpg file when a .shp file is beeing exported
+ 
+### Fixed
+- Fix the Commons Text security vulnerability
+- Fix to Proxy settings to be able to contact update sites when Proxy usage is required
+- Fix the automation of the build process
+
+
 ## [5.0.0]
 
 ### Added
@@ -436,7 +449,8 @@ on the right-hand rule when exporting data in Json format
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/4.1.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/5.0.0...HEAD
+[5.0.0]: https://github.com/halestudio/hale/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/halestudio/hale/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/halestudio/hale/compare/3.5.0...4.0.0
 [3.5.0]: https://github.com/halestudio/hale/compare/3.4.1...3.5.0

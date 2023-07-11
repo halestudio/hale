@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="5.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="5.1.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
       <text>
-         hale studio
+         hale»studio
 
 Version ___version___
 
@@ -32,7 +32,7 @@ https://www.wetransform.to/services/support/
 
    <launcherArgs>
       <programArgs>-clean
--name &quot;hale studio&quot;
+-name &quot;hale»studio&quot;
 --launcher.defaultAction openFile
       </programArgs>
       <vmArgs>-Dsun.net.client.defaultConnectTimeout=10000

@@ -47,7 +47,7 @@ dependencies {
 	implementation 'org.yaml:snakeyaml:1.13'
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
 	
-	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.23-SNAPSHOT', {
+	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.24-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'

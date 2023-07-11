@@ -354,7 +354,7 @@ public class SelectCRSDialog extends TitleAreaDialog implements IPropertyChangeL
 		wktWarning = new Label(group, SWT.NONE);
 		wktWarning.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		wktWarning.setText("Please be aware that this WKT definition does not contain Bursa-Wolf\n"
-				+ "parameters in the DATUM definition. Therefore, hale studio may not be able\n"
+				+ "parameters in the DATUM definition. Therefore, hale»studio may not be able\n"
 				+ "to perform accurate coordinate transformations when a datum shift is involved.\n"
 				+ "If you intend to perform coordinate transformations with a datum shift,\n"
 				+ "please provide the Bursa-Wolf parameters (TOWGS84) or provide an appropriate\n"
