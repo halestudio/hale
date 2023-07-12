@@ -14,9 +14,10 @@
  */
 package eu.esdihumboldt.hale.io.json.internal
 
-import org.codehaus.jackson.JsonNode
-import org.codehaus.jackson.node.ObjectNode
 import org.geotools.geojson.geom.GeometryJSON
+
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
@@ -142,16 +143,16 @@ class JsonInstanceBuilder {
 
 				if (value.isValueNode()) {
 					if (value.isBoolean()) {
-						value.booleanValue
+						value.booleanValue()
 					}
 					else if (value.isTextual()) {
-						value.textValue
+						value.textValue()
 					}
 					//FIXME add all other cases
 					else {
 						// unhandled type
 						// TODO log warning/error?
-						value.toString()
+						value.asText()
 					}
 				}
 				else {

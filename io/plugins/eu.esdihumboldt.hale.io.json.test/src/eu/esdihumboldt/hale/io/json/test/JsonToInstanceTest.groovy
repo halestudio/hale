@@ -17,10 +17,11 @@ package eu.esdihumboldt.hale.io.json.test
 
 import static org.assertj.core.api.Assertions.*
 
-import org.codehaus.jackson.JsonParser
-import org.codehaus.jackson.JsonToken
-import org.codehaus.jackson.map.ObjectMapper
 import org.junit.Test
+
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken
+import com.fasterxml.jackson.databind.ObjectMapper
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.model.Instance

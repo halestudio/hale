@@ -21,11 +21,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.JsonParser;
-import org.codehaus.jackson.JsonToken;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
@@ -181,7 +181,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 		JsonNode typeNode = fields.get("type");
 		JsonNode geomNode = fields.get("geometry");
 		JsonNode propNode = fields.get("properties");
-		boolean hasFt = typeNode != null && "Feature".equals(typeNode.getTextValue());
+		boolean hasFt = typeNode != null && "Feature".equals(typeNode.textValue());
 		boolean hasGeometry = geomNode != null && geomNode.isObject();
 		boolean hasProperties = propNode != null && propNode.isObject();
 
@@ -218,7 +218,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 					: null;
 			Map<String, JsonNode> properties = new HashMap<>();
 			if (props != null) {
-				Iterator<Entry<String, JsonNode>> it = props.getFields();
+				Iterator<Entry<String, JsonNode>> it = props.fields();
 				while (it.hasNext()) {
 					Entry<String, JsonNode> entry = it.next();
 					properties.put(entry.getKey(), entry.getValue());
