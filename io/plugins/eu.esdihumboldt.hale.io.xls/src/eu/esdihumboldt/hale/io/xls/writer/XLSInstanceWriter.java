@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xls.writer;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
  */
 public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 
-	private Workbook wb;
+	private Workbook workbook;
 
 	private CellStyle headerStyle;
 	private CellStyle cellStyle;
@@ -73,86 +74,118 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
 
+		boolean emptyFeatureTypes = getParameter(InstanceTableIOConstants.EXPORT_EMPTY_FEATURETYPES)
+				.as(Boolean.class, false);
+
 		// get the parameter to get the type definition
 		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
-		QName selectedTypeName = null;
+		ArrayList<QName> selectedFeatureTypes = new ArrayList<>();
 
-		if (exportType != null && !exportType.equals("") && !exportType.equals(" ")) {
-			selectedTypeName = QName.valueOf(exportType);
+		String[] array = exportType.split(",");
+		for (String input : array) {
+
+			selectedFeatureTypes.add(QName.valueOf(input));
+
 		}
 
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
-			wb = new HSSFWorkbook();
+			workbook = new HSSFWorkbook();
 		}
 		// write xlsx file
 		else if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xlsx")) {
-			wb = new XSSFWorkbook();
+			workbook = new XSSFWorkbook();
 		}
 		else {
 			reporter.error(new IOMessageImpl("Content type is invalid!", null));
 			return reporter;
 		}
 
-		cellStyle = XLSCellStyles.getNormalStyle(wb, false);
-		headerStyle = XLSCellStyles.getHeaderStyle(wb);
-
-		// get all instances of the selected Type
-		InstanceCollection instances = getInstanceCollection(selectedTypeName);
-		// use ResourceIterator<Instance> in a try block because is closable -
-		// avoid infinite
-		// cleaning project after exporting data
-		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
-			Instance instance = null;
-			try {
-				instance = instanceIterator.next();
-			} catch (NoSuchElementException e) {
-				reporter.error(
-						new IOMessageImpl("There are no instances for the selected type.", e));
-				return reporter;
+		// write file and be sure to close resource with try-block
+		if (new File(getTarget().getLocation().getPath()).exists()) {
+			// Remove all existing sheets
+			while (workbook.getNumberOfSheets() > 0) {
+				workbook.removeSheetAt(0);
 			}
-
-			List<Instance> remainingInstances = new ArrayList<Instance>();
-
-			headerRowStrings = new ArrayList<String>();
-
-			boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-					true);
-
-			// all instances with equal type definitions are stored in an extra
-			// sheet
-			TypeDefinition definition = instance.getDefinition();
-
-			Sheet sheet = wb.createSheet(definition.getDisplayName());
-			Row headerRow = sheet.createRow(0);
-			int rowNum = 1;
-			Row row = sheet.createRow(rowNum++);
-			writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
-					solveNestedProperties));
-
-			while (instanceIterator.hasNext()) {
-				Instance nextInst = instanceIterator.next();
-				if (nextInst.getDefinition().equals(definition)) {
-					row = sheet.createRow(rowNum++);
-					writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
-							solveNestedProperties));
-				}
-				else
-					remainingInstances.add(nextInst);
-			}
-			writeHeaderRow(headerRow, headerRowStrings);
-			setCellStyle(sheet, headerRowStrings.size());
-			resizeSheet(sheet);
-
-			// write file and be sure to close resource with try-block
-			try (FileOutputStream out = new FileOutputStream(
-					getTarget().getLocation().getPath());) {
-				wb.write(out);
-			}
-
-			reporter.setSuccess(true);
-			return reporter;
 		}
+
+		cellStyle = XLSCellStyles.getNormalStyle(workbook, false);
+		headerStyle = XLSCellStyles.getHeaderStyle(workbook);
+
+		List<Instance> remainingInstances = new ArrayList<Instance>();
+		for (QName selectedTypeName : selectedFeatureTypes) {
+
+			// get all instances of the selected Type
+			InstanceCollection instances = getInstanceCollection(selectedTypeName);
+			// use ResourceIterator<Instance> in a try block because is closable
+			// -
+			// avoid infinite
+			// cleaning project after exporting data
+			try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
+				Instance instance = null;
+				try {
+					instance = instanceIterator.next();
+				} catch (NoSuchElementException e) {
+//					reporter.error(
+//							new IOMessageImpl("There are no instances for the selected type.", e));
+//					return reporter;
+
+					if (!emptyFeatureTypes) {
+						Sheet sheet = workbook.createSheet(selectedTypeName.getLocalPart());
+						sheet.createRow(0);
+						resizeSheet(sheet);
+					}
+
+					continue;
+				}
+
+				headerRowStrings = new ArrayList<String>();
+
+				boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA)
+						.as(Boolean.class, true);
+
+				// all instances with equal type definitions are stored in an
+				// extra
+				// sheet
+				TypeDefinition definition = instance.getDefinition();
+
+				Sheet sheet;
+				try {
+					sheet = workbook.createSheet(definition.getDisplayName());
+
+					Row headerRow = sheet.createRow(0);
+					int rowNum = 1;
+					Row row = sheet.createRow(rowNum++);
+					writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
+							solveNestedProperties));
+
+					while (instanceIterator.hasNext()) {
+						Instance nextInst = instanceIterator.next();
+						if (nextInst.getDefinition().equals(definition)) {
+							row = sheet.createRow(rowNum++);
+							writeRow(row, super.getPropertyMap(nextInst, headerRowStrings,
+									useSchema, solveNestedProperties));
+						}
+						else
+							remainingInstances.add(nextInst);
+					}
+
+					writeHeaderRow(headerRow, headerRowStrings);
+					setCellStyle(sheet, headerRowStrings.size());
+					resizeSheet(sheet);
+				} catch (Exception e) {
+					continue;
+				}
+
+			}
+		}
+
+		try (FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());) {
+			workbook.write(out);
+		}
+
+		reporter.setSuccess(true);
+		return reporter;
 	} // close try-iterator
 
 	@Override
