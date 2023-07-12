@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -157,9 +158,7 @@ public class XLSInstanceWriterTest {
 		Sheet sheet = wb.getSheetAt(0);
 
 		checkHeader(sheet, header);
-
 		checkSheetName(sheet, "person");
-
 		checkFirstDataRow(sheet, firstDataRow);
 	}
 
@@ -207,6 +206,49 @@ public class XLSInstanceWriterTest {
 		checkSheetName(sheet, "person");
 
 		checkFirstDataRow(sheet, firstDataRow);
+	}
+
+	/**
+	 * Test - write data of complex schema and analyze result
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testExportMultiFeatureToExcel() throws Exception {
+		ArrayList<InstanceCollection> examples = new ArrayList<>();
+		TransformationExample example = TransformationExamples
+				.getExample(TransformationExamples.SIMPLE_COMPLEX);
+		TransformationExample example2 = TransformationExamples
+				.getExample(TransformationExamples.CARDINALITY_MOVE);
+		examples.add(example.getTargetInstances());
+		examples.add(example2.getTargetInstances());
+
+		// set instances to xls instance writer
+		XLSInstanceWriter writer = new XLSInstanceWriter();
+		IContentType contentType = HalePlatform.getContentTypeManager()
+				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
+		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.EXPORT_EMPTY_FEATURETYPES, Value.of(true));
+
+		File tmpFile = tmpFolder.newFile("excelWith2Sheets.xls");
+		// write instances to a temporary XLS file
+		writer.setTarget(new FileIOSupplier(tmpFile));
+		writer.setContentType(contentType);
+
+		for (InstanceCollection instanceCollection : examples) {
+			writer.setInstances(instanceCollection);
+		}
+		System.out.println("XLSInstanceWriterTest.testExportMultiFeatureToExcel()");
+
+		IOReport report = writer.execute(null);
+		Workbook wb;
+//		https: // poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
+		try (POIFSFileSystem fs = new POIFSFileSystem(tmpFile)) {
+			wb = new HSSFWorkbook(fs.getRoot(), true);
+		}
+		int sheetNumber = wb.getNumberOfSheets();
+		assertEquals(examples.size(), sheetNumber);
 	}
 
 	/**

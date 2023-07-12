@@ -46,10 +46,10 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 public class InstanceExportConfigurationPage
 		extends AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
 
-	private Button solveNestedProperties;
-	private Button useSchema;
+	protected Button solveNestedProperties;
+	protected Button useSchema;
 	private TypeDefinitionSelector typeSelector;
-	private Composite page;
+	protected Composite page;
 
 	private final ViewerFilter validTypesToSelect = new ViewerFilter() {
 

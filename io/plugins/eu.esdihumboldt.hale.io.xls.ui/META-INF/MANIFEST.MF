@@ -5,7 +5,8 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.ui;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- eu.esdihumboldt.hale.ui
+ eu.esdihumboldt.hale.ui,
+ eu.esdihumboldt.hale.common.instance
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.slf4jplus,
@@ -13,7 +14,10 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.common.core.io.project.model,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.instance.io,
+ eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.schema.io,
+ eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,
  eu.esdihumboldt.hale.io.csv,
  eu.esdihumboldt.hale.io.csv.ui,
  eu.esdihumboldt.hale.io.xls,
