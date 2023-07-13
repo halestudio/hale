@@ -18,11 +18,13 @@ import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceUtil;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
+import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 import eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader;
+import eu.esdihumboldt.hale.io.xls.test.writer.XLSInstanceWriterTestUtil;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
 import junit.framework.TestCase;
 
@@ -57,10 +59,20 @@ public class XLSInstanceIOTest extends TestCase {
 		IContentType contentType = HalePlatform.getContentTypeManager()
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
+				Value.of(false));
+		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("ItemType"));
+
 		File tempDir = Files.createTempDir();
 		File tempFile = new File(tempDir, "data.xls");
 		writer.setInstances(instances);
 		try {
+			Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
+			DefaultSchemaSpace ss = new DefaultSchemaSpace();
+			ss.addSchema(schema);
+			writer.setTargetSchema(ss);
+
 			// write instances to a temporary XLS file
 			writer.setTarget(new FileIOSupplier(tempFile));
 			writer.setContentType(contentType);

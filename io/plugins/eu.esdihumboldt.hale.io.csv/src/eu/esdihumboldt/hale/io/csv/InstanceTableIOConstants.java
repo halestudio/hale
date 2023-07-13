@@ -48,6 +48,6 @@ public class InstanceTableIOConstants {
 	/**
 	 * Parameter for exporting empty feature types to XLS Export
 	 */
-	public static final String EXPORT_EMPTY_FEATURETYPES = "emptyFeatureTypes";
+	public static final String EXPORT_IGNORE_EMPTY_FEATURETYPES = "ignoreEmptyFeaturetypes";
 
 }

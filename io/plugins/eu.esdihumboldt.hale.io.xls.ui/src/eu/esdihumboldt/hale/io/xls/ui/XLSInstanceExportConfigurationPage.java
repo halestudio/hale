@@ -41,18 +41,18 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
-import eu.esdihumboldt.hale.io.csv.ui.InstanceExportConfigurationPage;
+import eu.esdihumboldt.hale.io.csv.ui.CommonInstanceExportConfigurationPage;
 
 /**
  * Configuration page for exporting Excel
  * 
  * @author Emanuela Epure
  */
-public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurationPage {
+public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConfigurationPage {
 
 	private CheckboxTableViewer featureTypeTable;
 	private Button selectAll = null;
-	private Button exportEmptyData = null;
+	private Button ignoreEmptyFeaturetypes = null;
 	private Group chooseFeatureTypes;
 	private Table table;
 
@@ -60,7 +60,9 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 	 * 
 	 */
 	public XLSInstanceExportConfigurationPage() {
-		super();
+		super("xlsInstanceExport.configPage");
+		setTitle("Additonal Export Options");
+		setDescription("Select if nested properties should be solved and a type");
 	}
 
 	/**
@@ -68,17 +70,7 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		this.page = page;
-
-		page.setLayout(new GridLayout(1, false));
-
-		solveNestedProperties = new Button(page, SWT.CHECK);
-		solveNestedProperties.setText("Solve nested properties");
-		solveNestedProperties.setSelection(true);
-
-		useSchema = new Button(page, SWT.CHECK);
-		useSchema.setText("Use the source schema for the order of the exported columns");
-		useSchema.setSelection(true);
+		super.createContent(page);
 
 		GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
 		chooseFeatureTypes = new Group(page, SWT.NONE);
@@ -99,17 +91,18 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
 
-			exportEmptyData = new Button(chooseFeatureTypes, SWT.CHECK);
-			exportEmptyData.setText("Ignore feature types without data");
-			exportEmptyData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+			ignoreEmptyFeaturetypes = new Button(chooseFeatureTypes, SWT.CHECK);
+			ignoreEmptyFeaturetypes.setText("Ignore feature types without data");
+			ignoreEmptyFeaturetypes
+					.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
-			exportEmptyData.addSelectionListener(new SelectionAdapter() {
+			ignoreEmptyFeaturetypes.addSelectionListener(new SelectionAdapter() {
 
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 				}
 			});
-			exportEmptyData.setSelection(false);
+			ignoreEmptyFeaturetypes.setSelection(false);
 
 			selectAll = new Button(chooseFeatureTypes, SWT.CHECK);
 			selectAll.setText("Select all");
@@ -129,8 +122,8 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
 			table.setHeaderVisible(false);
 			table.setLinesVisible(false);
-			table.setBackground(
-					PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_GRAY));
+			table.setBackground(PlatformUI.getWorkbench().getDisplay()
+					.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 			GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
 			groupData.applyTo(table);
 
@@ -154,7 +147,6 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 			}
 
 			featureTypeTable.setInput(relevantTypes);
-
 			featureTypeTable.addCheckStateListener(new ICheckStateListener() {
 
 				@Override
@@ -179,13 +171,10 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 	 */
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
-		provider.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
-				Value.of(solveNestedProperties.getSelection()));
-		provider.setParameter(InstanceTableIOConstants.USE_SCHEMA,
-				Value.of(useSchema.getSelection()));
+		super.updateConfiguration(provider);
 
-		provider.setParameter(InstanceTableIOConstants.EXPORT_EMPTY_FEATURETYPES,
-				Value.of(exportEmptyData.getSelection()));
+		provider.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
+				Value.of(ignoreEmptyFeaturetypes.getSelection()));
 
 		Object[] elements = featureTypeTable.getCheckedElements();
 		String param = "";
@@ -195,6 +184,24 @@ public class XLSInstanceExportConfigurationPage extends InstanceExportConfigurat
 		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of(param));
 
 		return true;
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#enable()
+	 */
+	@Override
+	public void enable() {
+		// TODO Auto-generated method stub
+
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage#disable()
+	 */
+	@Override
+	public void disable() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -74,19 +74,8 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
 
-		boolean emptyFeatureTypes = getParameter(InstanceTableIOConstants.EXPORT_EMPTY_FEATURETYPES)
-				.as(Boolean.class, false);
-
-		// get the parameter to get the type definition
-		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
-		ArrayList<QName> selectedFeatureTypes = new ArrayList<>();
-
-		String[] array = exportType.split(",");
-		for (String input : array) {
-
-			selectedFeatureTypes.add(QName.valueOf(input));
-
-		}
+		boolean ignoreEmptyFeaturetypes = getParameter(
+				InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES).as(Boolean.class, false);
 
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
@@ -112,71 +101,21 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		cellStyle = XLSCellStyles.getNormalStyle(workbook, false);
 		headerStyle = XLSCellStyles.getHeaderStyle(workbook);
 
-		List<Instance> remainingInstances = new ArrayList<Instance>();
-		for (QName selectedTypeName : selectedFeatureTypes) {
+		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
+		ArrayList<QName> selectedFeatureTypes = new ArrayList<>();
 
-			// get all instances of the selected Type
-			InstanceCollection instances = getInstanceCollection(selectedTypeName);
-			// use ResourceIterator<Instance> in a try block because is closable
-			// -
-			// avoid infinite
-			// cleaning project after exporting data
-			try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
-				Instance instance = null;
-				try {
-					instance = instanceIterator.next();
-				} catch (NoSuchElementException e) {
-//					reporter.error(
-//							new IOMessageImpl("There are no instances for the selected type.", e));
-//					return reporter;
+		if (exportType != null) {
+			String[] splitExportType = exportType.split(",");
+			for (String featureType : splitExportType) {
 
-					if (!emptyFeatureTypes) {
-						Sheet sheet = workbook.createSheet(selectedTypeName.getLocalPart());
-						sheet.createRow(0);
-						resizeSheet(sheet);
-					}
+				selectedFeatureTypes.add(QName.valueOf(featureType));
+			}
 
-					continue;
-				}
-
-				headerRowStrings = new ArrayList<String>();
-
-				boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA)
-						.as(Boolean.class, true);
-
-				// all instances with equal type definitions are stored in an
-				// extra
-				// sheet
-				TypeDefinition definition = instance.getDefinition();
-
-				Sheet sheet;
-				try {
-					sheet = workbook.createSheet(definition.getDisplayName());
-
-					Row headerRow = sheet.createRow(0);
-					int rowNum = 1;
-					Row row = sheet.createRow(rowNum++);
-					writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
-							solveNestedProperties));
-
-					while (instanceIterator.hasNext()) {
-						Instance nextInst = instanceIterator.next();
-						if (nextInst.getDefinition().equals(definition)) {
-							row = sheet.createRow(rowNum++);
-							writeRow(row, super.getPropertyMap(nextInst, headerRowStrings,
-									useSchema, solveNestedProperties));
-						}
-						else
-							remainingInstances.add(nextInst);
-					}
-
-					writeHeaderRow(headerRow, headerRowStrings);
-					setCellStyle(sheet, headerRowStrings.size());
-					resizeSheet(sheet);
-				} catch (Exception e) {
-					continue;
-				}
-
+			for (QName selectedTypeName : selectedFeatureTypes) {
+				// get all instances of the selected Type
+				InstanceCollection instances = getInstanceCollection(selectedTypeName);
+				addSheetByQName(solveNestedProperties, ignoreEmptyFeaturetypes, selectedTypeName,
+						instances);
 			}
 		}
 
@@ -187,6 +126,71 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		reporter.setSuccess(true);
 		return reporter;
 	} // close try-iterator
+
+	/**
+	 * @param solveNestedProperties : Solve nested properties
+	 * @param ignoreEmptyFeaturetypes don't add empty feature types to excel
+	 * @param selectedTypeName selected feature type
+	 * @param instances InstanceCollection available
+	 */
+	private void addSheetByQName(boolean solveNestedProperties, boolean ignoreEmptyFeaturetypes,
+			QName selectedTypeName, InstanceCollection instances) {
+
+		// use ResourceIterator<Instance> in a try block because is closable
+		// -
+		// avoid infinite
+		// cleaning project after exporting data
+		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
+			Instance instance = null;
+			try {
+				instance = instanceIterator.next();
+			} catch (NoSuchElementException e) {
+				if (!ignoreEmptyFeaturetypes) {
+					Sheet sheet = workbook.createSheet(selectedTypeName.getLocalPart());
+					sheet.createRow(0);
+					resizeSheet(sheet);
+				}
+				return;
+			}
+
+			headerRowStrings = new ArrayList<String>();
+
+			boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
+					true);
+
+			// all instances with equal type definitions are stored in an
+			// extra
+			// sheet
+			TypeDefinition definition = instance.getDefinition();
+
+			Sheet sheet;
+			try {
+				sheet = workbook.createSheet(definition.getDisplayName());
+
+				Row headerRow = sheet.createRow(0);
+				int rowNum = 1;
+				Row row = sheet.createRow(rowNum++);
+				writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
+						solveNestedProperties));
+
+				while (instanceIterator.hasNext()) {
+					Instance nextInst = instanceIterator.next();
+					if (nextInst.getDefinition().equals(definition)) {
+						row = sheet.createRow(rowNum++);
+						writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
+								solveNestedProperties));
+					}
+				}
+
+				writeHeaderRow(headerRow, headerRowStrings);
+				setCellStyle(sheet, headerRowStrings.size());
+				resizeSheet(sheet);
+			} catch (Exception e) {
+				return;
+			}
+
+		}
+	}
 
 	@Override
 	public boolean isPassthrough() {
