@@ -25,6 +25,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.util.function.Consumer
 
+import org.geotools.data.shapefile.ShapefileDataStore
 import org.junit.Test
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.Geometry
@@ -100,7 +101,7 @@ class ShapefileInstanceWriterTest {
 		String filenameOnly = Paths.get(location).getFileName().toString();
 
 		filenameOnly = filenameOnly.substring(0, filenameOnly.lastIndexOf("."));
-		String filename = filePath + "/" + filenameOnly + "_" + additionalName + ".shp";
+		String filename = filePath + "/" + filenameOnly + "_" + additionalName + ShapefileConstants.SHP_EXTENSION;
 		file = new File(filename)
 		Schema schema = loadSchema(file)
 
@@ -114,9 +115,10 @@ class ShapefileInstanceWriterTest {
 		assertTrue(report.isSuccess())
 		assertTrue(report.getErrors().isEmpty())
 
+		testCpgFileAgainstRelatedShapefile(file)
+
 		return reader.getInstances();
 	}
-
 
 	/**
 	 * Write an instance collection to a Shapefile.
@@ -183,9 +185,23 @@ class ShapefileInstanceWriterTest {
 		try {
 			println "Temporary file is $tmpFile"
 			writeInstances(tmpFile.toFile(), schema, instances, configurator)
+			testCpgFileAgainstRelatedShapefile(tmpFile.toFile())
+
 			handler.accept(tmpFile.toFile())
 		} finally {
 			tmpDir.deleteDir()
+		}
+	}
+
+	private static testCpgFileAgainstRelatedShapefile(File shpFile) {
+		ShapefileInstanceWriter shapefileInstanceWriter = new ShapefileInstanceWriter()
+		String cpgFilePath = shpFile.getAbsolutePath().replace(ShapefileConstants.SHP_EXTENSION, ShapefileConstants.CPG_EXTENSION)
+
+		def cpgFile = new File(cpgFilePath)
+		if (cpgFile.exists()) {
+			assertTrue(shapefileInstanceWriter.getCharset().toString().equals(cpgFile.text))
+		} else {
+			println("File not found.")
 		}
 	}
 
@@ -198,6 +214,8 @@ class ShapefileInstanceWriterTest {
 		try {
 			println "Temporary file is $tmpFile"
 			writeInstancesWithReporterErrors(tmpFile.toFile(), schema, instances, configurator)
+			testCpgFileAgainstRelatedShapefile(tmpFile.toFile())
+
 			handler.accept(tmpFile.toFile())
 		} finally {
 			tmpDir.deleteDir()
@@ -240,6 +258,7 @@ class ShapefileInstanceWriterTest {
 					num++
 				}
 			}
+
 			// 593 instances were loaded
 			assertEquals(593, num)
 		}
@@ -276,6 +295,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -293,8 +313,10 @@ class ShapefileInstanceWriterTest {
 					def jts = the_geom.geometry
 					assert jts instanceof Point
 					def name = inst.p.name.value()
-					assert name
-					switch (name) {
+
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
 						case 'Darmstadt':
 							assert inst.p.population.value() == 158254
 							break
@@ -302,7 +324,7 @@ class ShapefileInstanceWriterTest {
 							assert inst.p.population.value() == 1471508
 							break
 						default:
-							throw new IllegalStateException("Unexpected type $typeName")
+							throw new IllegalStateException("Unexpected type $decodedName")
 					}
 				}
 			}
@@ -349,6 +371,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -368,8 +391,9 @@ class ShapefileInstanceWriterTest {
 
 					assert jts instanceof MultiPolygon
 					def name = inst.p.name.value()
-					assert name
-					switch (name) {
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
 						case 'Darmstadt':
 							assert inst.p.population.value() == 158254
 							break
@@ -377,7 +401,7 @@ class ShapefileInstanceWriterTest {
 							assert inst.p.population.value() == 1471508
 							break
 						default:
-							throw new IllegalStateException("Unexpected type $typeName")
+							throw new IllegalStateException("Unexpected type $decodedName")
 					}
 				}
 			}
@@ -422,6 +446,7 @@ class ShapefileInstanceWriterTest {
 			int num = 0
 			for (geom in geomNames) {
 				def loaded = loadInstances(file, geom)
+				ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 				loaded.iterator().withCloseable {
 					while (it.hasNext()) {
@@ -439,8 +464,9 @@ class ShapefileInstanceWriterTest {
 						def jts = the_geom.geometry
 						assert jts
 						def name = inst.p.name.value()
-						assert name
-						switch (name) {
+						String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+						assert decodedName
+						switch (decodedName) {
 							case 'Darmstadt':
 								assert inst.p.population.value() == 158254
 								break
@@ -448,7 +474,7 @@ class ShapefileInstanceWriterTest {
 								assert inst.p.population.value() == 1471508
 								break
 							default:
-								throw new IllegalStateException("Unexpected type $typeName")
+								throw new IllegalStateException("Unexpected type $decodedName")
 						}
 					}
 				}
@@ -1158,6 +1184,7 @@ class ShapefileInstanceWriterTest {
 		withNewShapefile(schema, instances) { file ->
 			// load instances again and test
 			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -1178,8 +1205,9 @@ class ShapefileInstanceWriterTest {
 					def jts = geom.geometry
 					assert jts instanceof Point
 					def name = inst.p.name.value()
-					assert name
-					switch (name) {
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
 						case 'Darmstadt':
 							assert inst.p.population.value() == 158254
 							break
@@ -1187,7 +1215,7 @@ class ShapefileInstanceWriterTest {
 							assert inst.p.population.value() == 1471508
 							break
 						default:
-							throw new IllegalStateException("Unexpected type $typeName")
+							throw new IllegalStateException("Unexpected type $decodedName")
 					}
 				}
 			}
@@ -1339,6 +1367,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -1358,8 +1387,9 @@ class ShapefileInstanceWriterTest {
 
 					assert jts instanceof MultiPolygon
 					def name = inst.p.name.value()
-					assert name
-					switch (name) {
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
 						case 'Darmstadt':
 							assert inst.p.po12.value() == 158254
 							break
@@ -1367,7 +1397,7 @@ class ShapefileInstanceWriterTest {
 							assert inst.p.po12.value() == 1471508
 							break
 						default:
-							throw new IllegalStateException("Unexpected type $typeName")
+							throw new IllegalStateException("Unexpected type $decodedName")
 					}
 				}
 			}
@@ -1413,6 +1443,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -1432,8 +1463,9 @@ class ShapefileInstanceWriterTest {
 
 					assert jts instanceof MultiPolygon
 					def name = inst.p.name.value()
-					assert name
-					switch (name) {
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
 						case 'München':
 							assert inst.p.po12.value() == 1471508
 							break

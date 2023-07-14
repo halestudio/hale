@@ -77,6 +77,32 @@
                   defaultDescription="By default, an RTree Spatial Index is created">
             </valueDescriptor>
          </providerParameter>
+         <providerParameter
+               description="Generate tables for types that have no instances"
+               label="Create empty tables"
+               name="createEmptyTables"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Overwrite target GeoPackage file if it exists"
+               label="Overwrite target file"
+               name="overwriteTargetFile"
+               optional="true">
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default this option is disabled">
+            </valueDescriptor>
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+         </providerParameter>
       </provider>
    </extension>
 

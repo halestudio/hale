@@ -106,8 +106,8 @@ public class SpatiaLiteHelper {
 			if (!result) {
 				String msg = "The SpatiaLite extension for SQLite (mod_spatialite) could not be loaded. "
 						+ "This means that it is not possible to properly load or store geometries from/to SQLite.\n\n"
-						+ "Please check the hale studio help on how to make it available:\n"
-						+ "hale studio User Guide > Reference > Supported formats > Import > SQLite and SpatiaLite";
+						+ "Please check the hale»studio help on how to make it available:\n"
+						+ "hale»studio User Guide > Reference > Supported formats > Import > SQLite and SpatiaLite";
 				if (error) {
 					log.userError(msg);
 				}

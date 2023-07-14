@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.legacy"
       label="Legacy I/O providers"
-      version="5.0.0.qualifier"
+      version="5.0.1.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 
