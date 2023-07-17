@@ -24,7 +24,7 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
-import eu.esdihumboldt.hale.io.json.writer.InstanceToJson
+import eu.esdihumboldt.hale.io.json.internal.InstanceToJson
 import groovy.json.JsonSlurper
 
 class InstanceToJsonTest {
