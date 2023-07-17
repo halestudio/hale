@@ -371,7 +371,7 @@
 			</and>
         </condition>
 		<property name="deploymentSpecificWxsInclude" value="" />
-		<replace file="${build}/${wxs.file.config}.wxs" token="@{DEPLOYMENTSPECIFICWXS}" value="${deploymentSpecificWxsInclude}" />
+		<replace file="${build}/${wxs.file.config}.wxs" token="@{DEPLOYMENTSPECIFICWXS}" value="${deploymentSpecificWxsInclude}" encoding="UTF-8"/>
 		
 		<!-- compile MSI file -->
 		<!-- Example call: "C:\Program Files (x86)\WiX Toolset v3.9\bin\candle.exe" -nologo -arch x64 -out .\ WixProduct.wxs WixUI_Product.wxs -->
@@ -419,18 +419,18 @@
 	<target name="wxs.replace">
 		<echo message="Replacing placeholders in WXS file: ${filename}" />
 		
-		<replace file="${filename}" token="@{SHORTVERSION}" value="${shortversion}" />
-		<replace file="${filename}" token="@{SHORTNAME}" value="${shortName}" />
-		<replace file="${filename}" token="@{LANGID}" value="${langid}" />
-		<replace file="${filename}" token="@{PROGRAMFILESFOLDER}" value="${ProgramFilesFolder}" />
-		<replace file="${filename}" token="@{DIRECTORIES}" value="${directories}" />
-		<replace file="${filename}" token="@{COMPONENTS}" value="${components}" />
-		<replace file="${filename}" token="@{ROOTCOMPONENTS}" value="${rootcomponents}" />
-		<replace file="${filename}" token="@{COMPONENTREFS}" value="${componentrefs}" />
-		<replace file="${filename}" token="@{SRC}" value="${relsrc}" />
-		<replace file="${filename}" token="@{BUILDID}" value="${buildId}" />
-		<replace file="${filename}" token="@{TITLE}" value="${title}" />
-		<replace file="${filename}" token="@{GUID.UPGRADECODE}" value="${GUID.UpgradeCode}" />
-		<replace file="${filename}" token="@{GUID.APPLICATIONSHORTCUT}" value="${GUID.ApplicationShortcut}" />
+		<replace file="${filename}" token="@{SHORTVERSION}" value="${shortversion}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{SHORTNAME}" value="${shortName}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{LANGID}" value="${langid}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{PROGRAMFILESFOLDER}" value="${ProgramFilesFolder}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{DIRECTORIES}" value="${directories}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{COMPONENTS}" value="${components}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{ROOTCOMPONENTS}" value="${rootcomponents}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{COMPONENTREFS}" value="${componentrefs}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{SRC}" value="${relsrc}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{BUILDID}" value="${buildId}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{TITLE}" value="${title}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{GUID.UPGRADECODE}" value="${GUID.UpgradeCode}" encoding="UTF-8"/>
+		<replace file="${filename}" token="@{GUID.APPLICATIONSHORTCUT}" value="${GUID.ApplicationShortcut}" encoding="UTF-8"/>
 	</target>
 </project>
