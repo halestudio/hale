@@ -286,7 +286,7 @@ def filterPlatformSpecificFragments(productFile) {
 	}
 
     // overwrite product file
-    productFile.write(productFileContents)
+    productFile.write(productFileContents, 'UTF-8')
 }
 
 /**
@@ -358,7 +358,7 @@ def replaceIconPaths(productFile) {
     }
 
     // overwrite product file
-    productFile.write(productFileContents)
+    productFile.write(productFileContents, 'UTF-8')
 }
 
 /*
