@@ -42,16 +42,19 @@
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
       </provider>
-   </extension>
-   <extension
-         point="eu.esdihumboldt.hale.io.complexvalue">
-      <complexValue
-            descriptor="eu.esdihumboldt.hale.io.json.GeoJSONConfigType"
-            id="eu.esdihumboldt.hale.io.json.geojsonconfig"
-            name="config"
-            namespace="http://www.esdi-humboldt.eu/hale/geojson"
-            type="eu.esdihumboldt.hale.io.json.GeoJSONConfig">
-      </complexValue>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.json.JsonInstanceReader"
+            description="Read JSON/GeoJSON"
+            id="eu.esdihumboldt.hale.io.json.reader"
+            name="JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+      </provider>
    </extension>
 
 </plugin>

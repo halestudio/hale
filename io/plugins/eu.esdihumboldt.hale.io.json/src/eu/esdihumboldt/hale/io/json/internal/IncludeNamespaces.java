@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.writer;
+package eu.esdihumboldt.hale.io.json.internal;
 
 import java.util.Collections;
 import java.util.Map;
@@ -66,7 +66,7 @@ public class IncludeNamespaces implements NamespaceManager {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#getPrefix(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#getPrefix(java.lang.String)
 	 */
 	@Override
 	public String getPrefix(String namespace) {
@@ -74,7 +74,7 @@ public class IncludeNamespaces implements NamespaceManager {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#addNamespace(java.lang.String,
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#addNamespace(java.lang.String,
 	 *      java.util.Optional)
 	 */
 	@Override
@@ -125,7 +125,7 @@ public class IncludeNamespaces implements NamespaceManager {
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#setPrefix(java.lang.String,
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#setPrefix(java.lang.String,
 	 *      java.lang.String)
 	 */
 	@Override

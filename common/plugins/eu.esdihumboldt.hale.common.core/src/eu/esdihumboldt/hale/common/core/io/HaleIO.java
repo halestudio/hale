@@ -209,21 +209,41 @@ public abstract class HaleIO {
 
 		List<IContentType> results = new ArrayList<IContentType>();
 
+		IContentType highestScoreMatch = null;
+		long highestScore = 0;
+
 		if (filename != null && !filename.isEmpty()) {
 			// test file extension
 			String lowerFile = filename.toLowerCase();
+
 			for (IContentType type : types) {
 				String[] extensions = type.getFileSpecs(IContentType.FILE_EXTENSION_SPEC);
 				boolean match = false;
 				for (int i = 0; i < extensions.length && !match; i++) {
 					if (lowerFile.endsWith("." + extensions[i].toLowerCase())) {
 						match = true;
+
+						// determine score based on how many dots are contained
+						// in the extension (e.g. `gml.gz` has a score of 1 and
+						// is considered a match with a high score)
+						long extensionScore = extensions[i].chars().filter(ch -> ch == '.').count();
+						if (extensionScore > highestScore) {
+							highestScoreMatch = type;
+							highestScore = extensionScore;
+						}
 					}
 				}
 				if (match) {
 					results.add(type);
 				}
 			}
+		}
+
+		if (results.size() > 1 && highestScoreMatch != null) {
+			// if there are multiple results based on extension, use the
+			// available match with the highest score.
+			results.clear();
+			results.add(highestScoreMatch);
 		}
 
 		if ((results.isEmpty() || results.size() > 1) && in != null) {
@@ -322,9 +342,7 @@ public abstract class HaleIO {
 	/**
 	 * Find an I/O provider factory
 	 * 
-	 * @param
-	 * 			<P>
-	 *            the provider interface type
+	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param contentType the content type the provider must match, may be
@@ -366,9 +384,7 @@ public abstract class HaleIO {
 	/**
 	 * Creates an I/O provider instance
 	 * 
-	 * @param
-	 * 			<P>
-	 *            the provider interface type
+	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param contentType the content type the provider must match, may be
@@ -399,9 +415,7 @@ public abstract class HaleIO {
 	/**
 	 * Find the content type for the given input
 	 * 
-	 * @param
-	 * 			<P>
-	 *            the provider interface type
+	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>
@@ -435,9 +449,7 @@ public abstract class HaleIO {
 	/**
 	 * Find an I/O provider instance for the given input
 	 * 
-	 * @param
-	 * 			<P>
-	 *            the provider interface type
+	 * @param <P> the provider interface type
 	 * 
 	 * @param providerType the provider type, usually an interface
 	 * @param in the input supplier to use for testing, may be <code>null</code>

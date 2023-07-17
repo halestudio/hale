@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.writer;
+package eu.esdihumboldt.hale.io.json.internal;
 
 import java.util.Map;
 import java.util.Optional;
@@ -31,7 +31,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 * This method will not set any prefix to the namespace and will simply do
 	 * nothing when called
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#setPrefix(java.lang.String,
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#setPrefix(java.lang.String,
 	 *      java.lang.String)
 	 */
 	@Override
@@ -43,7 +43,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 * This is the overridden method and will always return an empty string for
 	 * the prefix
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#getPrefix(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#getPrefix(java.lang.String)
 	 */
 	@Override
 	public String getPrefix(String namespace) {
@@ -55,7 +55,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 * This method will not add any desired prefix to the namespace and will
 	 * ignore the call
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#addNamespace(java.lang.String,
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#addNamespace(java.lang.String,
 	 *      java.util.Optional)
 	 */
 	@Override
@@ -71,7 +71,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 *
 	 * @param prefixes a map of namespaces to prefixes
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#addPrefixes(java.util.Map)
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#addPrefixes(java.util.Map)
 	 */
 	@Override
 	public void addPrefixes(Map<String, String> prefixes) {
@@ -82,7 +82,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 * Return null as we don't want to add any namespace. The caller should
 	 * handle null checks.
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#getNamespaces()
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#getNamespaces()
 	 */
 	@Override
 	public Map<String, String> getNamespaces() {
@@ -93,7 +93,7 @@ public class IgnoreNamespaces implements NamespaceManager {
 	 * Return null as we don't want to add any namespace. The caller should
 	 * handle null checks.
 	 * 
-	 * @see eu.esdihumboldt.hale.io.json.writer.NamespaceManager#getNamespace(java.lang.String)
+	 * @see eu.esdihumboldt.hale.io.json.internal.NamespaceManager#getNamespace(java.lang.String)
 	 */
 	@Override
 	public Optional<String> getNamespace(String prefix) {
