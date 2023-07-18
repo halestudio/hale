@@ -9,7 +9,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 ### Added
 - Add an option to overwrite content in Geopackage Writer instead of appending content
 - Add a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types
-- Add the creation of a .cpg file when a .shp file is beeing exported
+- Create a code page (.cpg) file when exporting a Shapefile
  
 ### Fixed
 - Fix the Commons Text security vulnerability
