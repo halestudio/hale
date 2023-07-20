@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.writer;
+package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -28,13 +28,13 @@ import java.util.function.Function;
 
 import javax.xml.namespace.QName;
 
-import org.codehaus.jackson.JsonFactory;
-import org.codehaus.jackson.JsonGenerator;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.referencing.operation.MathTransform;
 
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 

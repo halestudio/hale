@@ -22,6 +22,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.core.parameter,
  eu.esdihumboldt.hale.common.core.report,
+ eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.io,
  eu.esdihumboldt.hale.common.instance.io.impl,
  eu.esdihumboldt.hale.common.instance.model,
@@ -61,13 +62,13 @@ Import-Package: com.google.common.base;version="1.6.0",
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.io.json,
- eu.esdihumboldt.hale.io.json.writer
+ eu.esdihumboldt.hale.io.json.internal
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  de.fhg.igd.eclipse.util,
- org.codehaus.jackson.mapper;bundle-version="1.9.13",
- org.codehaus.jackson;bundle-version="1.9.13",
  eu.esdihumboldt.hale.common.instance,
- groovy;bundle-version="2.5.19"
+ groovy;bundle-version="2.5.19",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="2.13.4",
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.13.4"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.io.json
