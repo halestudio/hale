@@ -92,6 +92,7 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Add all the exported types separated by &quot;,&quot; to the excel to be exported"
                label="Type name"
                name="typename"
                optional="false"
@@ -120,6 +121,19 @@
             <valueDescriptor
                   default="true"
                   defaultDescription="Defaults to true">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Ignore feature types without data to be added to the exported Excel"
+               label="Ignore feature types without data"
+               name="ignoreEmptyFeaturetypes"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+             <valueDescriptor
+                  default="false"
+                  defaultDescription="Defaults to false">
             </valueDescriptor>
          </providerParameter>
       </provider>

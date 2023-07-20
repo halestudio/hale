@@ -18,7 +18,7 @@
          </provider>
       </configPage>
       <configPage
-            class="eu.esdihumboldt.hale.io.csv.ui.InstanceExportConfigurationPage"
+            class="eu.esdihumboldt.hale.io.xls.ui.XLSInstanceExportConfigurationPage"
             order="0">
          <provider
                ref="eu.esdihumboldt.hale.io.xls.writer.instance">

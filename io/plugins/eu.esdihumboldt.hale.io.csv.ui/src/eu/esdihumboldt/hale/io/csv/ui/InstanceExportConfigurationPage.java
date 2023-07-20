@@ -21,8 +21,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -34,8 +32,6 @@ import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
-import eu.esdihumboldt.hale.ui.io.IOWizard;
-import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
@@ -43,13 +39,9 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  * 
  * @author Patrick Lieb
  */
-public class InstanceExportConfigurationPage
-		extends AbstractConfigurationPage<InstanceWriter, IOWizard<InstanceWriter>> {
+public class InstanceExportConfigurationPage extends CommonInstanceExportConfigurationPage {
 
-	private Button solveNestedProperties;
-	private Button useSchema;
 	private TypeDefinitionSelector typeSelector;
-	private Composite page;
 
 	private final ViewerFilter validTypesToSelect = new ViewerFilter() {
 
@@ -102,10 +94,7 @@ public class InstanceExportConfigurationPage
 	 */
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
-		provider.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES,
-				Value.of(solveNestedProperties.getSelection()));
-		provider.setParameter(InstanceTableIOConstants.USE_SCHEMA,
-				Value.of(useSchema.getSelection()));
+		super.updateConfiguration(provider);
 		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE,
 				Value.of(typeSelector.getSelectedObject().getName().toString()));
 		return true;
@@ -116,17 +105,7 @@ public class InstanceExportConfigurationPage
 	 */
 	@Override
 	protected void createContent(Composite page) {
-		this.page = page;
-
-		page.setLayout(new GridLayout(1, false));
-
-		solveNestedProperties = new Button(page, SWT.CHECK);
-		solveNestedProperties.setText("Solve nested properties");
-		solveNestedProperties.setSelection(true);
-
-		useSchema = new Button(page, SWT.CHECK);
-		useSchema.setText("Use the source schema for the order of the exported columns");
-		useSchema.setSelection(true);
+		super.createContent(page);
 
 		final Label label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type you want to export:");
