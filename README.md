@@ -37,8 +37,8 @@ To contribute please check the [contribution guidelines](CONTRIBUTING.md) and re
 
 ## System Requirements
 
-* Windows XP/Vista/7/8 32bit or 64bit
-* MacOS X 10.5
+* Windows XP/Vista/7/8/10/11 32bit or 64bit
+* MacOS X 10.5+
 * Linux 
 * 4 GB RAM recommended
 
