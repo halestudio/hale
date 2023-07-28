@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.internal;
+package eu.esdihumboldt.hale.io.json.reader;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,13 +32,17 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.io.json.internal.JsonInstanceBuilder;
+import eu.esdihumboldt.hale.io.json.internal.JsonInstanceConstants;
+import eu.esdihumboldt.hale.io.json.writer.IgnoreNamespaces;
+import eu.esdihumboldt.hale.io.json.writer.NamespaceManager;
 
 /**
  * Class to read instances from JSON.
  * 
  * @author Simon Templer
  */
-public class JsonToInstance implements InstanceJsonConstants {
+public class JsonToInstance implements JsonInstanceConstants {
 
 	private final NamespaceManager namespaces;
 	private final boolean expectGeoJson;

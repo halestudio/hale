@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.internal;
+package eu.esdihumboldt.hale.io.json.writer;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -56,6 +56,9 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.property.ChoiceFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.AugmentedValueFlag;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.HasValueFlag;
+import eu.esdihumboldt.hale.io.json.internal.JsonInstanceConstants;
+import eu.esdihumboldt.hale.io.json.internal.Placement;
+import eu.esdihumboldt.hale.io.json.internal.TransformCache;
 import eu.esdihumboldt.util.Pair;
 import eu.esdihumboldt.util.geometry.WindingOrder;
 
@@ -64,7 +67,7 @@ import eu.esdihumboldt.util.geometry.WindingOrder;
  * 
  * @author Simon Templer
  */
-public class InstanceToJson implements InstanceJsonConstants {
+public class InstanceToJson implements JsonInstanceConstants {
 
 	private final GeometryJSON geometryJson;
 	private final NamespaceManager namespaces;

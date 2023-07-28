@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 wetransform GmbH
+ * Copyright (c) 2013 Data Harmonisation Panel
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -10,27 +10,30 @@
  * along with this distribution. If not, see <http://www.gnu.org/licenses/>.
  * 
  * Contributors:
- *     wetransform GmbH <http://www.wetransform.to>
+ *     Data Harmonisation Panel <http://www.dhpanel.eu>
  */
 
-package eu.esdihumboldt.hale.io.json.internal;
+package eu.esdihumboldt.hale.io.json.writer;
 
-import java.util.Optional;
+import eu.esdihumboldt.hale.io.json.JsonInstanceWriter;
 
 /**
- * Namespace used in generating JSON from instances.
+ * Writes instances as GeoJSON.
  * 
- * @author Simon Templer
+ * @author Kai Schwierczek
  */
-public abstract class JsonNamespaces implements NamespaceManager, InstanceJsonConstants {
+public class GeoJSONInstanceWriter extends JsonInstanceWriter {
 
 	/**
-	 * Constructor.
+	 * Default constructor.
 	 */
-	public JsonNamespaces() {
-		super();
+	public GeoJSONInstanceWriter() {
+		super(true);
+	}
 
-		addNamespace(NAMESPACE_INSTANCE_JSON, Optional.of(PREFIX_INSTANCE_JSON));
+	@Override
+	protected String getDefaultTypeName() {
+		return "GeoJSON";
 	}
 
 }

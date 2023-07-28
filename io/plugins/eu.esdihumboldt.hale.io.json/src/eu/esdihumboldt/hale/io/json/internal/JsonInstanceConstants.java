@@ -15,12 +15,14 @@
 
 package eu.esdihumboldt.hale.io.json.internal;
 
+import eu.esdihumboldt.hale.io.json.JsonInstanceReader;
+
 /**
  * Constants used to generate JSON from instances.
  * 
  * @author Simon Templer
  */
-public interface InstanceJsonConstants {
+public interface JsonInstanceConstants {
 
 	/**
 	 * see http://wiki.geojson.org/GeoJSON_draft_version_6
@@ -36,5 +38,24 @@ public interface InstanceJsonConstants {
 	 * see http://wiki.geojson.org/GeoJSON_draft_version_6
 	 */
 	public static final String PREFIX_INSTANCE_JSON = "hj";
+
+	/**
+	 * Name of the parameter specifying the type name
+	 */
+	public static String PARAM_TYPENAME = "typename";
+
+	/**
+	 * Name of the parameter for {@link JsonInstanceReader} to auto detect
+	 * schema types when selecting instances for multiple schemas.
+	 */
+	public static final String PARAM_AUTO_DETECT_SCHEMA_TYPES = "autoDetectSchemaTypes";
+
+	/**
+	 * Name of the parameter for {@link JsonInstanceReader} to activate matching
+	 * of json property names to schema property names by checking if there is
+	 * exactly one schema property whose name starts with the json property
+	 * name.
+	 */
+	public static final String PARAM_MATCH_SHORT_PROPERTY_NAMES = "matchShortPropertyNames";
 
 }

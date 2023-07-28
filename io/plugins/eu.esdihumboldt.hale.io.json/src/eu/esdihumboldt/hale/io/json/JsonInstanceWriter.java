@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.io.json.internal.InstanceToJson;
+import eu.esdihumboldt.hale.io.json.writer.InstanceToJson;
 
 /**
  * Writes instances as JSON.

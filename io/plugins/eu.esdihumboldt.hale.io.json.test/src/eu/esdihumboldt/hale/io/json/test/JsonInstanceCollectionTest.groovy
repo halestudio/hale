@@ -24,11 +24,12 @@ import org.junit.Test
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.json.internal.JsonInstanceCollection
-import eu.esdihumboldt.hale.io.json.internal.JsonToInstance
+import eu.esdihumboldt.hale.io.json.reader.JsonToInstance
 import eu.esdihumboldt.util.io.StringInputSupplier
 
 /**
@@ -45,6 +46,7 @@ class JsonInstanceCollectionTest {
 		simpleType = SimpleType {
 			id(String)
 			name(String)
+			geometry(GeometryProperty)
 		}
 	}
 
@@ -58,29 +60,29 @@ class JsonInstanceCollectionTest {
   "features": [
     {
       "type": "Feature",
-      "geometry": {
-        "type": "LineString",
-        "coordinates": [
-          [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
-        ]
-      },
       "properties": {
         "id": "line",
-        "name": "Line feature"
+        "name": "Line feature",
+		"geometry": {
+	        "type": "LineString",
+	        "coordinates": [
+	          [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+	        ]
+      }
       }
     },
     {
       "type": "Feature",
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [
-          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
-            [100.0, 1.0], [100.0, 0.0] ]
-        ]
-      },
       "properties": {
         "id": "poly",
-        "name": "Polygon feature"
+        "name": "Polygon feature",
+		"geometry": {
+	        "type": "Polygon",
+	        "coordinates": [
+	          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+	            [100.0, 1.0], [100.0, 0.0] ]
+	        ]
+	      }	
       }
     }
   ]
@@ -138,7 +140,9 @@ class JsonInstanceCollectionTest {
     },
     "properties": {
       "id": "line",
-      "name": "Line feature"
+      "name": "Line feature",
+	  "geom" : {"type":"MultiPolygon","coordinates":[[[[8.7959897,49.975944],[8.7960823,49.9759079],[8.7958611,49.9755884],[8.7958741,49.9754369],[8.7960504,49.9754394],[8.7963574,49.9753247],[8.7978263,49.9747766],[8.79809,49.9748239],[8.7989398,49.9744998],[8.7990762,49.974392],[8.7994221,49.9745296],[8.7995683,49.9745878],[8.7997145,49.9746521],[8.7986201,49.9750836],[8.7985447,49.9751133],[8.797687,49.9754516],[8.7964701,49.9758961],[8.796438,49.9759395],[8.796394,49.9759811],[8.7959897,49.975944]]]]}
+      
     }
   },
   {

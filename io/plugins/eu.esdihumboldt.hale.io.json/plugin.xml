@@ -32,7 +32,7 @@
          </contentType>
       </provider>
       <provider
-            class="eu.esdihumboldt.hale.io.json.GeoJSONInstanceWriter"
+            class="eu.esdihumboldt.hale.io.json.writer.GeoJSONInstanceWriter"
             id="eu.esdihumboldt.hale.io.geojson.writer"
             name="GeoJSON">
          <contentType

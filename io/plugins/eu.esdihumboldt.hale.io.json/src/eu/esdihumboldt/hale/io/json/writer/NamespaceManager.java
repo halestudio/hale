@@ -13,7 +13,7 @@
  *     wetransform GmbH <http://www.wetransform.to>
  */
 
-package eu.esdihumboldt.hale.io.json.internal;
+package eu.esdihumboldt.hale.io.json.writer;
 
 import java.util.Map;
 import java.util.Optional;
