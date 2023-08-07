@@ -458,8 +458,10 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 				try {
 					URL url = nextUri.toURL();
 					StringBuilder fileName = new StringBuilder(tmpdir);
-					fileName.append("/").append(url.getPath().replaceAll("/", "."))
-							.append(totalFeaturesProcessed).append(".gml");
+
+					fileName.append("/")
+							.append(url.getPath().substring(url.getPath().lastIndexOf("/") + 1))
+							.append("_").append(totalFeaturesProcessed).append(".gml");
 
 					// TODO: may be download files in a thread
 					File downloadFile = new File(fileName.toString());
