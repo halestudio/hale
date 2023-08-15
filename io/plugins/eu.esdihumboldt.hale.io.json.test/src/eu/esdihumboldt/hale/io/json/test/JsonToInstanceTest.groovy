@@ -54,7 +54,7 @@ class JsonToInstanceTest {
   "text": "This is a test text"
 }'''
 
-		def instance = readInstance(json, type)
+		def instance = readInstance(json, type, null)
 
 		assertThat(instance.p.text.value()).isEqualTo('This is a test text')
 	}
@@ -75,7 +75,7 @@ class JsonToInstanceTest {
   "value": true
 }'''
 
-		def instance = readInstance(json, type)
+		def instance = readInstance(json, type, null)
 
 		assertThat(instance.p.value.value()).isEqualTo(true)
 	}
@@ -96,7 +96,7 @@ class JsonToInstanceTest {
   "number": 12
 }'''
 
-		def instance = readInstance(json, type)
+		def instance = readInstance(json, type, null)
 
 		assertThat(instance.p.number.value()).isEqualTo(12)
 	}
@@ -117,13 +117,69 @@ class JsonToInstanceTest {
   "number": 12.34
 }'''
 
-		def instance = readInstance(json, type)
+		def instance = readInstance(json, type, null)
 
 		def value = instance.p.number.value()
 		double expected = 12.34
 		assertThat(value)
 				.asInstanceOf(InstanceOfAssertFactories.DOUBLE)
 				.isEqualTo(expected, within(0.001))
+	}
+
+	/**
+	 * Test reading an instance and specifying the type via the <code>@type</code> field.
+	 */
+	@Test
+	void testSpecifyType() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				text(String)
+			}
+
+			OtherType {
+				text(String)
+			}
+		}
+
+		def json = '''{
+  "@type": "OtherType",
+  "text": "This is a test text"
+}'''
+
+		def instance = readInstance(json, type, schema)
+
+		assertThat(instance.p.text.value()).isEqualTo('This is a test text')
+		assertThat(instance.getDefinition().name.localPart).isEqualTo('OtherType')
+	}
+
+	/**
+	 * Test reading an instance and specifying the type via the <code>@type</code> field.
+	 */
+	@Test
+	void testSpecifyTypeGeojson() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				text(String)
+			}
+
+			OtherType {
+				text(String)
+			}
+		}
+
+		def json = '''{
+  "@type": "OtherType",
+  "properties": {
+    "text": "This is a test text"
+  }
+}'''
+
+		def instance = readInstance(json, type, schema, true)
+
+		assertThat(instance.p.text.value()).isEqualTo('This is a test text')
+		assertThat(instance.getDefinition().name.localPart).isEqualTo('OtherType')
 	}
 
 	/*
@@ -144,8 +200,8 @@ class JsonToInstanceTest {
 	 * @param expectGeoJson if the JSON object is expected to be in GeoJSON encoding
 	 * @return the parsed instance
 	 */
-	Instance readInstance(String json, TypeDefinition type, boolean expectGeoJson = false) {
-		def translate = new JsonToInstance(expectGeoJson, type, SimpleLog.CONSOLE_LOG)
+	Instance readInstance(String json, TypeDefinition type, Schema schema, boolean expectGeoJson = false) {
+		def translate = new JsonToInstance(expectGeoJson, type, schema, SimpleLog.CONSOLE_LOG)
 		JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json)
 		assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT)
 		translate.readInstance(parser)

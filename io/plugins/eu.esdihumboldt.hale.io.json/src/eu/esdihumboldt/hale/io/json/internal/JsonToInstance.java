@@ -16,10 +16,16 @@
 package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -32,6 +38,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Class to read instances from JSON.
@@ -50,6 +57,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 	private final CRSDefinition sourceCrs = new CodeDefinition("EPSG:4326", true);
 
 	private final TypeDefinition featureType;
+	private final TypeIndex schema;
 	private final SimpleLog log;
 
 	/**
@@ -57,9 +65,12 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 * @param expectGeoJson if the input is expected to be GeoJson
 	 * @param featureType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, SimpleLog log) {
-		this(expectGeoJson, featureType, log,
+	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, TypeIndex schema,
+			SimpleLog log) {
+		this(expectGeoJson, featureType, schema, log,
 				new IgnoreNamespaces() /* new JsonNamespaces() */);
 	}
 
@@ -68,15 +79,18 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 * @param expectGeoJson if the input is expected to be GeoJson
 	 * @param featureType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
 	 * @param namespaces the namespace manager
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, SimpleLog log,
-			NamespaceManager namespaces) {
+	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, TypeIndex schema,
+			SimpleLog log, NamespaceManager namespaces) {
 		super();
 		this.expectGeoJson = expectGeoJson;
 		this.namespaces = namespaces;
 		this.featureType = featureType;
 		this.log = log;
+		this.schema = schema;
 
 		this.builder = new JsonInstanceBuilder(log, namespaces);
 
@@ -195,9 +209,6 @@ public class JsonToInstance implements InstanceJsonConstants {
 			isGeoJson = hasFt && (hasGeometry || hasProperties);
 		}
 
-		// move on to next token (beginning of next instance)
-		parser.nextToken();
-
 		// determine schema type
 
 		/*
@@ -207,6 +218,48 @@ public class JsonToInstance implements InstanceJsonConstants {
 		 * the data was written with InstanceToJson)
 		 */
 		TypeDefinition type = featureType;
+
+		if (schema != null) {
+			JsonNode typeField = fields.get("@type");
+			if (typeField != null && typeField.isTextual()) {
+				QName typeName = extractName(typeField.textValue());
+
+				if (typeName != null) {
+					// look for exact match
+					TypeDefinition candidate = schema.getType(typeName);
+					if (candidate == null) {
+						// look for local part match
+						List<TypeDefinition> candidates = schema.getMappingRelevantTypes().stream()
+								.filter(t -> typeName.getLocalPart()
+										.equals(t.getName().getLocalPart()))
+								.collect(Collectors.toList());
+						if (candidates.size() == 1) {
+							candidate = candidates.get(0);
+						}
+						else if (candidates.size() > 1) {
+							// sort by namespace URI to consistently use same
+							// type
+							candidate = candidates.stream()
+									.sorted(Comparator.<TypeDefinition, String> comparing(
+											t -> t.getName().getNamespaceURI()))
+									.findFirst().get();
+
+							log.warn(
+									"Multiple candidates matching the local name of type name {0}, choosing {1}",
+									typeName, candidate.getName());
+						}
+					}
+
+					if (candidate != null) {
+						// override default type
+						type = candidate;
+					}
+				}
+			}
+		}
+
+		// move on to next token (beginning of next instance)
+		parser.nextToken();
 
 		// create instance
 
@@ -230,6 +283,35 @@ public class JsonToInstance implements InstanceJsonConstants {
 		else {
 			// generic JSON instance
 			return builder.buildInstance(type, null, fields);
+		}
+	}
+
+	/**
+	 * Extract a qualified name from a text representation with an optional
+	 * namespace prefix.
+	 * 
+	 * @param text the text representation of the name
+	 * @return the qualified name
+	 */
+	private QName extractName(String text) {
+		if (text == null) {
+			return null;
+
+		}
+		int firstSep = text.indexOf(':');
+		if (firstSep >= 0 && firstSep + 1 < text.length()) {
+			String prefix = text.substring(0, firstSep);
+			String name = text.substring(firstSep + 1);
+			Optional<String> namespace = namespaces.getNamespace(prefix);
+			if (namespace.isPresent()) {
+				return new QName(namespace.get(), name, prefix);
+			}
+			else {
+				return new QName(name);
+			}
+		}
+		else {
+			return new QName(text);
 		}
 	}
 

@@ -66,7 +66,7 @@ public class JsonInstanceReader extends AbstractInstanceReader {
 			TypeDefinition type = getSourceSchema().getMappingRelevantTypes().stream().findFirst()
 					.orElse(null);
 
-			JsonToInstance translator = new JsonToInstance(expectGeoJson, type,
+			JsonToInstance translator = new JsonToInstance(expectGeoJson, type, getSourceSchema(),
 					SimpleLog.fromLogger(log));
 			instances = new JsonInstanceCollection(translator, getSource(), getCharset());
 
