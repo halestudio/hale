@@ -138,33 +138,38 @@ class JsonInstanceBuilder {
 			if (type.getConstraint(HasValueFlag)) {
 				// handle simple value
 
-				//TODO conversion necessary?
-				//TODO support for specific types needed? (e.g. dates, timestamps, etc.)
-
-				if (value.isValueNode()) {
-					if (value.isBoolean()) {
-						value.booleanValue()
-					}
-					else if (value.isTextual()) {
-						value.textValue()
-					}
-					//FIXME add all other cases
-					else {
-						// unhandled type
-						// TODO log warning/error?
-						value.asText()
-					}
-				}
-				else {
-					//XXX what to do in this case? For now use string representation
-					value.toString()
-				}
+				extractNodeValue(value)
 			}
 		}
 		else {
 			//FIXME handle complex properties?
 			//XXX for now ignore
 			null
+		}
+	}
+
+	private extractNodeValue(JsonNode value) {
+		//TODO conversion necessary?
+		//TODO support for specific types needed? (e.g. dates, timestamps, etc.)
+
+		if (value.isValueNode()) {
+			if (value.isBoolean()) {
+				value.booleanValue()
+			} else if (value.isTextual()) {
+				value.textValue()
+			} else if (value.isNumber()) {
+				value.numberValue()
+			}
+			//FIXME add all other cases
+			else {
+				// unhandled type
+				// TODO log warning/error?
+				value.asText()
+			}
+		}
+		else {
+			//XXX what to do in this case? For now use string representation
+			value.toString()
 		}
 	}
 
