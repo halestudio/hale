@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.json.test
 
 import static org.assertj.core.api.Assertions.*
 
+import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.Test
 
 import com.fasterxml.jackson.core.JsonParser
@@ -58,9 +59,76 @@ class JsonToInstanceTest {
 		assertThat(instance.p.text.value()).isEqualTo('This is a test text')
 	}
 
+	/**
+	 * Test reading a boolean property.
+	 */
+	@Test
+	void testReadBoolean() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				value(Boolean)
+			}
+		}
+
+		def json = '''{
+  "value": true
+}'''
+
+		def instance = readInstance(json, type)
+
+		assertThat(instance.p.value.value()).isEqualTo(true)
+	}
+
+	/**
+	 * Test reading a numeric integer property.
+	 */
+	@Test
+	void testReadInteger() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				number(Integer)
+			}
+		}
+
+		def json = '''{
+  "number": 12
+}'''
+
+		def instance = readInstance(json, type)
+
+		assertThat(instance.p.number.value()).isEqualTo(12)
+	}
+
+	/**
+	 * Test reading a numeric floating point property.
+	 */
+	@Test
+	void testReadDouble() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				number(Double)
+			}
+		}
+
+		def json = '''{
+  "number": 12.34
+}'''
+
+		def instance = readInstance(json, type)
+
+		def value = instance.p.number.value()
+		double expected = 12.34
+		assertThat(value)
+				.asInstanceOf(InstanceOfAssertFactories.DOUBLE)
+				.isEqualTo(expected, within(0.001))
+	}
+
 	/*
 	 * FIXME add additional tests for specific cases:
-	 * - different Json value types (boolean, numeric, etc.)
+	 * - complex properties / arrays
 	 * - geometries
 	 * - any specific bindings that should be supported?
 	 * Later:
