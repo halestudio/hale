@@ -95,7 +95,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testReadFeatureCollection() {
-		def translate = new JsonToInstance(true, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(true, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 		def collection = new JsonInstanceCollection(translate, new StringInputSupplier(testDataSimpleFc, charset), charset)
 		collection.iterator().withCloseable {
 			def count = 0
@@ -114,7 +114,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testSkipFeatureCollection() {
-		def translate = new JsonToInstance(true, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(true, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 		def collection = new JsonInstanceCollection(translate, new StringInputSupplier(testDataSimpleFc, charset), charset)
 		collection.iterator().withCloseable {
 			def count = 0
@@ -130,7 +130,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testReadGeoJsonArray() {
-		def translate = new JsonToInstance(true, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(true, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 
 		def testData = '''
 [
@@ -181,7 +181,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testReadJsonArray() {
-		def translate = new JsonToInstance(false, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(false, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 
 		def testData = '''
 [
@@ -226,7 +226,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testReadSingleObject() {
-		def translate = new JsonToInstance(JsonReadMode.singleObject, false, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(JsonReadMode.singleObject, false, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 
 		def testData = '''
 {
@@ -258,7 +258,7 @@ class JsonInstanceCollectionTest {
 
 	@Test
 	void testReadFirstArray() {
-		def translate = new JsonToInstance(JsonReadMode.firstArray, false, simpleType, null, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(JsonReadMode.firstArray, false, simpleType, false, null, SimpleLog.CONSOLE_LOG)
 
 		def testData = '''
 {

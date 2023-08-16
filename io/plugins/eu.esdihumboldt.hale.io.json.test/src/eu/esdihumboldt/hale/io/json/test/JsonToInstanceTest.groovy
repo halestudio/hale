@@ -469,7 +469,7 @@ class JsonToInstanceTest {
 	 * @return the parsed instance
 	 */
 	Instance readInstance(String json, TypeDefinition type, Schema schema, boolean expectGeoJson = false) {
-		def translate = new JsonToInstance(expectGeoJson, type, schema, SimpleLog.CONSOLE_LOG)
+		def translate = new JsonToInstance(expectGeoJson, type, false, schema, SimpleLog.CONSOLE_LOG)
 		JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(json)
 		assertThat(parser.nextToken()).isEqualTo(JsonToken.START_OBJECT)
 		translate.readInstance(parser)

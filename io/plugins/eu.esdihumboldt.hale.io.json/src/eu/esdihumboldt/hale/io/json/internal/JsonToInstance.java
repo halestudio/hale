@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -56,56 +57,74 @@ public class JsonToInstance implements InstanceJsonConstants {
 	// https://tools.ietf.org/html/rfc7946)
 	private final CRSDefinition sourceCrs = new CodeDefinition("EPSG:4326", true);
 
-	private final TypeDefinition featureType;
+	private final TypeDefinition defaultType;
 	private final TypeIndex schema;
 	private final SimpleLog log;
 	private final JsonReadMode mode;
+	private final boolean forceDefault;
 
 	/**
 	 * 
 	 * @param expectGeoJson if the input is expected to be GeoJson
-	 * @param featureType the feature type to use for all features or
+	 * @param defaultType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
 	 * @param schema if a schema is specified, the feature type may be
 	 *            determined based on the schema
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, TypeIndex schema,
-			SimpleLog log) {
-		this(JsonReadMode.auto, expectGeoJson, featureType, schema, log);
+	public JsonToInstance(boolean expectGeoJson, TypeDefinition defaultType, boolean forceDefault,
+			TypeIndex schema, SimpleLog log) {
+		this(JsonReadMode.auto, expectGeoJson, defaultType, forceDefault, schema, log);
 	}
 
 	/**
 	 * 
+	 * @param mode the mode for reading the Json, supporting different kinds of
+	 *            document structures
 	 * @param expectGeoJson if the input is expected to be GeoJson
-	 * @param featureType the feature type to use for all features or
+	 * @param defaultType the default type to use for all features or
 	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
 	 * @param schema if a schema is specified, the feature type may be
 	 *            determined based on the schema
 	 */
-	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition featureType,
-			TypeIndex schema, SimpleLog log) {
-		this(mode, expectGeoJson, featureType, schema, log,
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition defaultType,
+			boolean forceDefault, TypeIndex schema, SimpleLog log) {
+		this(mode, expectGeoJson, defaultType, forceDefault, schema, log,
 				new IgnoreNamespaces() /* new JsonNamespaces() */);
 	}
 
 	/**
 	 *
+	 * @param mode the mode for reading the Json, supporting different kinds of
+	 *            document structures
 	 * @param expectGeoJson if the input is expected to be GeoJson
-	 * @param featureType the feature type to use for all features or
+	 * @param defaultType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
 	 * @param schema if a schema is specified, the feature type may be
 	 *            determined based on the schema
 	 * @param namespaces the namespace manager
 	 */
-	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition featureType,
-			TypeIndex schema, SimpleLog log, NamespaceManager namespaces) {
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition defaultType,
+			boolean forceDefault, TypeIndex schema, SimpleLog log, NamespaceManager namespaces) {
 		super();
+
+		if (defaultType == null && forceDefault) {
+			throw new IllegalStateException(
+					"Default type needs to be specified when forcing to use default type");
+		}
+
 		this.expectGeoJson = expectGeoJson;
 		this.namespaces = namespaces;
-		this.featureType = featureType;
+		this.defaultType = (defaultType != null) ? defaultType : determineDefaultType(schema, log);
 		this.log = log;
 		this.schema = schema;
 		this.mode = mode;
+		this.forceDefault = forceDefault;
 
 		this.builder = new JsonInstanceBuilder(log, namespaces, sourceCrs);
 
@@ -113,6 +132,35 @@ public class JsonToInstance implements InstanceJsonConstants {
 			// XXX should GeoJson namespace be the namespace w/o prefix?
 //      namespaces.setPrefix(NAMESPACE_GEOJSON, "");
 		}
+	}
+
+	/**
+	 * Determine default type if none is specified.
+	 * 
+	 * Note: This functionality should be removed once any kind of
+	 * auto-detection based on the actual content is implemented.
+	 */
+	private static TypeDefinition determineDefaultType(TypeIndex schema, SimpleLog log) {
+		if (schema == null) {
+			return null;
+		}
+
+		Collection<? extends TypeDefinition> candidates = schema.getMappingRelevantTypes();
+		if (!candidates.isEmpty()) {
+			if (candidates.size() > 1) {
+				// sort to have a reproducable behavior what the chosen type is
+				return candidates.stream()
+						.sorted(Comparator
+								.<TypeDefinition, String> comparing(t -> t.getName().toString()))
+						.findFirst().get();
+			}
+			else {
+				return candidates.iterator().next();
+			}
+
+		}
+
+		return null;
 	}
 
 	/**
@@ -270,9 +318,9 @@ public class JsonToInstance implements InstanceJsonConstants {
 		 * form of type detection (e.g. using the information in @type in case
 		 * the data was written with InstanceToJson)
 		 */
-		TypeDefinition type = featureType;
+		TypeDefinition type = defaultType;
 
-		if (schema != null) {
+		if (!forceDefault && schema != null) {
 			JsonNode typeField = fields.get("@type");
 			if (typeField != null && typeField.isTextual()) {
 				QName typeName = extractName(typeField.textValue());
