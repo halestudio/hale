@@ -451,11 +451,196 @@ class JsonToInstanceTest {
 				} as Consumer)
 	}
 
+	/**
+	 * Test reading a Json object with nested properties.
+	 */
+	@Test
+	void testReadComplex() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			def nameType = NameType {
+				en(String)
+				de(String)
+			}
+
+			type = TestType {
+				id(String)
+				name(nameType)
+			}
+		}
+
+		def json = '''{
+  "id": "test",
+  "name": {
+    "en": "corn",
+    "de": "Mais"
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def id = instance.p.id.value()
+		assertThat(id).isEqualTo('test')
+
+		def name = instance.p.name.first()
+		assertThat(name).isInstanceOf(Instance)
+
+		assertThat(name.p.en.value()).isEqualTo('corn')
+		assertThat(name.p.de.value()).isEqualTo('Mais')
+	}
+
+	/**
+	 * Test reading a Json object with multiple layers of nested properties.
+	 */
+	@Test
+	void testReadComplexNested() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				product {
+					name {
+						en(String)
+						de(String)
+					}
+				}
+			}
+		}
+
+		def json = '''{
+  "product": {
+    "name": {
+      "en": "corn",
+      "de": "Mais"
+    }
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def product = instance.p.product.first()
+		assertThat(product).isInstanceOf(Instance)
+
+		def name = product.p.name.first()
+		assertThat(name).isInstanceOf(Instance)
+
+		assertThat(name.p.en.value()).isEqualTo('corn')
+		assertThat(name.p.de.value()).isEqualTo('Mais')
+	}
+
+	/**
+	 * Test reading a Json object with a simple array property.
+	 */
+	@Test
+	void testReadSimpleArray() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				item(cardinality: '1..n', String)
+			}
+		}
+
+		def json = '''{
+  "item": [
+    "foo",
+    "bar"
+  ]
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		List values = instance.p.item.values()
+		assertThat(values).containsExactly('foo', 'bar')
+	}
+
+	/**
+	 * Test reading a Json object with multiple layers of nested properties.
+	 */
+	@Test
+	void testReadArrayNested() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				product(cardinality: '0..n') {
+					name {
+						en(String)
+						de(String)
+					}
+				}
+			}
+		}
+
+		def json = '''{
+  "product": [
+    {
+      "name": {
+        "en": "corn",
+        "de": "Mais"
+      }
+    },
+    {
+      "name": {
+        "en": "cucumber",
+        "de": "Grüne Banane"
+      }
+    }
+  ]
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		List products = instance.p.product.list()
+		assertThat(products).hasSize(2)
+
+		assertThat(products[0].p.name.en.value()).isEqualTo('corn')
+		assertThat(products[0].p.name.de.value()).isEqualTo('Mais')
+
+		assertThat(products[1].p.name.en.value()).isEqualTo('cucumber')
+		assertThat(products[1].p.name.de.value()).isEqualTo('Grüne Banane')
+	}
+
+	/**
+	 * Test reading a Json object with multiple layers of nested properties.
+	 */
+	@Test
+	void testReadSimpleChoice() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				product(cardinality: '0..n') {
+					_(choice: true) {
+						name_en(String)
+						name_de(String)
+					}
+				}
+			}
+		}
+
+		def json = '''{
+  "product": [
+    {
+      "name_de": "Mais"
+    },
+    {
+      "name_en": "cucumber"
+    }
+  ]
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		List products = instance.p.product.list()
+		assertThat(products).hasSize(2)
+
+		assertThat(products[0].p.name_de.value()).isEqualTo('Mais')
+		assertThat(products[0].p.name_en.value()).isNull()
+
+		assertThat(products[1].p.name_de.value()).isNull()
+		assertThat(products[1].p.name_en.value()).isEqualTo('cucumber')
+	}
+
 	/*
 	 * TODO add additional tests for specific cases:
-	 * - complex properties / arrays
 	 * - any specific bindings that should be supported?
-	 * Later:
 	 */
 
 	// helper methods

@@ -14,6 +14,8 @@
  */
 package eu.esdihumboldt.hale.io.json.internal
 
+import java.util.Map.Entry
+
 import javax.xml.namespace.QName
 
 import org.geotools.geojson.geom.GeometryJSON
@@ -65,7 +67,11 @@ class JsonInstanceBuilder {
 		this.geometryJson = new GeometryJSON()
 		this.defaultCrs = defaultCrs
 
-		builder = new InstanceBuilder(
+		builder = createBuilder()
+	}
+
+	protected InstanceBuilder createBuilder() {
+		new InstanceBuilder(
 				strictBinding: false,
 				strictValueFlags: false // allow setting values even if no value is expected (mainly for use with XML schema and geometries)
 				)
@@ -80,6 +86,19 @@ class JsonInstanceBuilder {
 	 * @return the created instance
 	 */
 	public Instance buildInstance(TypeDefinition type, ObjectNode geom,
+			Map<String, JsonNode> properties) {
+		buildInstance(builder, type, geom, properties)
+	}
+
+	/**
+	 * Build an instance of the given type.
+	 *
+	 * @param type the type definition or <code>null</code> if without schema
+	 * @param geom a dedicated (GeoJson) geometry object or <code>null</code>
+	 * @param properties map of properties or <code>null</code>
+	 * @return the created instance
+	 */
+	protected Instance buildInstance(InstanceBuilder builder, TypeDefinition type, ObjectNode geom,
 			Map<String, JsonNode> properties) {
 		if (type == null) {
 			// TODO implement schema-less mode
@@ -123,7 +142,7 @@ class JsonInstanceBuilder {
 				else {
 					if (value.isArray()) {
 						// add each value
-						def iterator = value.getElements()
+						def iterator = value.elements()
 						while (iterator.hasNext()) {
 							JsonNode item = iterator.next()
 							def itemValue = translateValue(item, property)
@@ -221,9 +240,26 @@ class JsonInstanceBuilder {
 			}
 		}
 		else {
-			//FIXME handle complex properties?
-			//XXX for now ignore
-			null
+			// handle complex properties
+
+			ObjectNode fields = (value != null && value.isObject()) ? (ObjectNode) value
+					: null;
+			Map<String, JsonNode> properties = new HashMap<>();
+			if (fields != null) {
+				Iterator<Entry<String, JsonNode>> it = fields.fields();
+				while (it.hasNext()) {
+					Entry<String, JsonNode> entry = it.next();
+					properties.put(entry.getKey(), entry.getValue());
+				}
+
+				// build instance with new builder instance
+				buildInstance(createBuilder(), property.propertyType, null, properties)
+			}
+			else {
+				// not an object
+				//TODO throw/report error if not null?
+				null
+			}
 		}
 	}
 
