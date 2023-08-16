@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.*
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 
+import javax.xml.namespace.QName
+
 import org.junit.Test
 
 import eu.esdihumboldt.hale.common.core.io.impl.LogProgressIndicator
@@ -43,8 +45,14 @@ class JsonInstanceReaderTest {
 	// simple type and schema used in some tests
 	TypeDefinition simpleType
 
+	TypeDefinition altType
+
 	Schema simpleSchema = new SchemaBuilder().schema {
 		simpleType = SimpleType {
+			text(String)
+		}
+		altType = AltType {
+			id(String)
 			text(String)
 		}
 	}
@@ -107,6 +115,105 @@ class JsonInstanceReaderTest {
 
 			// test expected feature count
 			assertThat(count).isEqualTo(1)
+		}
+	}
+
+	@Test
+	void testReadDefaultType() {
+		def reader = simpleJsonReader(testDataSimple)
+
+		def typeName = QName.valueOf('SimpleType')
+		reader.setDefaultType(typeName)
+
+		def collection = execute(reader)
+		collection.iterator().withCloseable {
+			def count = 0
+			while (it.hasNext()) {
+				def instance = it.next()
+
+				assertThat(instance.definition.name).isEqualTo(typeName)
+				checkSimpleInstance(instance, count)
+
+				count++
+			}
+
+			// test expected feature count
+			assertThat(count).isEqualTo(2)
+		}
+	}
+
+	@Test
+	void testReadDefaultTypeOverride() {
+		def testData = '''
+[
+  {
+    "text": "foo",
+    "@type": "AltType"
+  },
+  {
+    "@type": "AltType",
+    "text": "bar"
+  }
+]
+'''
+		def reader = simpleJsonReader(testData)
+
+		def typeName = QName.valueOf('SimpleType')
+		reader.setDefaultType(typeName)
+
+		def expectedTypeName = QName.valueOf('AltType')
+
+		def collection = execute(reader)
+		collection.iterator().withCloseable {
+			def count = 0
+			while (it.hasNext()) {
+				def instance = it.next()
+
+				assertThat(instance.definition.name).isEqualTo(expectedTypeName)
+				checkSimpleInstance(instance, count)
+
+				count++
+			}
+
+			// test expected feature count
+			assertThat(count).isEqualTo(2)
+		}
+	}
+
+	@Test
+	void testReadForceDefaultType() {
+		def testData = '''
+[
+  {
+    "text": "foo",
+    "@type": "AltType"
+  },
+  {
+    "@type": "AltType",
+    "text": "bar"
+  }
+]
+'''
+		def reader = simpleJsonReader(testData)
+
+		def typeName = QName.valueOf('SimpleType')
+		reader.setDefaultType(typeName)
+		reader.setForceDefaultType(true)
+
+		def collection = execute(reader)
+		collection.iterator().withCloseable {
+			def count = 0
+			while (it.hasNext()) {
+				def instance = it.next()
+
+				assertThat(instance.definition.name).isEqualTo(typeName)
+				checkSimpleInstance(instance, count)
+
+				count++
+			}
+
+			// test expected feature count
+			assertThat(count).isEqualTo(2)
 		}
 	}
 
