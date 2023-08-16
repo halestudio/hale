@@ -16,7 +16,8 @@ Require-Bundle: eu.esdihumboldt.hale.io.json;bundle-version="2.9.0",
  org.junit;bundle-version="4.13.0",
  eu.esdihumboldt.hale.common.align.groovy;bundle-version="2.9.0",
  com.fasterxml.jackson.core.jackson-core;bundle-version="2.13.4",
- com.fasterxml.jackson.core.jackson-databind;bundle-version="2.13.4"
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.13.4",
+ org.eclipse.core.runtime;bundle-version="3.17.100"
 Import-Package: de.fhg.igd.slf4jplus,
  eu.esdihumboldt.hale.common.instance.groovy,
  eu.esdihumboldt.hale.common.instance.model,
