@@ -21,6 +21,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -110,6 +111,13 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 		final Label label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type you want to export:");
 
+		Label separatorLabel = new Label(page, SWT.NONE);
+		separatorLabel.setText("Warning! Feature types with no data are not selectable");
+
+		// Set the text colour of the label to yellow
+		Color greyLabel = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+		separatorLabel.setForeground(greyLabel);
+
 		page.pack();
 
 		// wait for selected type
@@ -132,9 +140,6 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 				public void selectionChanged(SelectionChangedEvent event) {
 					setPageComplete(!(event.getSelection().isEmpty()));
 					if (typeSelector.getSelectedObject() != null) {
-						// TypeDefinition type =
-						// typeSelector.getSelectedObject();
-						// label.getParent().layout();
 						page.layout();
 						page.pack();
 					}
