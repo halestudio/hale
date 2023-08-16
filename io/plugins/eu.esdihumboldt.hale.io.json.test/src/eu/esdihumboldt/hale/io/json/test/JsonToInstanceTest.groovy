@@ -17,8 +17,15 @@ package eu.esdihumboldt.hale.io.json.test
 
 import static org.assertj.core.api.Assertions.*
 
+import java.util.function.Consumer
+
 import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.Test
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.LineString
+import org.locationtech.jts.geom.MultiPoint
+import org.locationtech.jts.geom.Point
+import org.locationtech.jts.geom.Polygon
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
@@ -26,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -182,10 +190,270 @@ class JsonToInstanceTest {
 		assertThat(instance.getDefinition().name.localPart).isEqualTo('OtherType')
 	}
 
+	/**
+	 * Test reading a GeoJson object with a point geometry.
+	 */
+	@Test
+	void testReadPointGeoJson() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geometry": {
+    "type": "Point",
+    "coordinates": [30, 10]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(Point)
+
+					// coordinates
+					assertThat(p.geometry.coordinates)
+							.containsExactly(new Coordinate(30, 10))
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a Json object with a point geometry property.
+	 */
+	@Test
+	void testReadPoint() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geom": {
+    "type": "Point",
+    "coordinates": [30, 10]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(Point)
+
+					// coordinates
+					assertThat(p.geometry.coordinates)
+							.containsExactly(new Coordinate(30, 10))
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a Json object with a line string geometry property.
+	 */
+	@Test
+	void testReadLineString() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geom": {
+    "type": "LineString",
+    "coordinates": [
+      [30, 10], [10, 30], [40, 40]
+    ]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(LineString)
+
+					// coordinates
+					assertThat(p.geometry.coordinates)
+							.containsExactly(new Coordinate(30, 10), new Coordinate(10, 30), new Coordinate(40, 40))
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a Json object with a simple polygon geometry property (no holes).
+	 */
+	@Test
+	void testReadSimplePolygon() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geom": {
+    "type": "Polygon",
+    "coordinates": [
+      [[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]
+    ]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(Polygon)
+
+					// shell
+					assertThat((p.geometry as Polygon).shell.coordinates)
+							.containsExactly(new Coordinate(30, 10), new Coordinate(40, 40), new Coordinate(20, 40), new Coordinate(10, 20), new Coordinate(30, 10))
+					// holes
+					assertThat((p.geometry as Polygon).holes).isNullOrEmpty()
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a Json object with a polygon geometry property where the polygon has a hole.
+	 */
+	@Test
+	void testReadPolygonWithHole() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geom": {
+    "type": "Polygon",
+    "coordinates": [
+      [[35, 10], [45, 45], [15, 40], [10, 20], [35, 10]],
+      [[20, 30], [35, 35], [30, 20], [20, 30]]
+    ]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(Polygon)
+
+					// shell
+					assertThat((p.geometry as Polygon).shell.coordinates)
+							.containsExactly(new Coordinate(35, 10), new Coordinate(45, 45), new Coordinate(15, 40), new Coordinate(10, 20), new Coordinate(35, 10))
+					// hole
+					assertThat((p.geometry as Polygon).holes).hasSize(1)
+					assertThat((p.geometry as Polygon).holes[0].coordinates)
+							.containsExactly(new Coordinate(20, 30), new Coordinate(35, 35), new Coordinate(30, 20), new Coordinate(20, 30))
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a Json object with a point geometry property.
+	 */
+	@Test
+	void testReadMultiPoint() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				geom(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "geom": {
+    "type": "MultiPoint",
+    "coordinates": [
+      [10, 40], [40, 30], [20, 20], [30, 10]
+    ]
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.geom.value()
+		assertThat(value)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					// CRS is present
+					assertThat(p.CRSDefinition)
+							.isNotNull()
+
+					// geometry type
+					assertThat(p.geometry)
+							.isNotNull()
+							.isInstanceOf(MultiPoint)
+
+					// coordinates
+					assertThat(p.geometry.coordinates)
+							.containsExactly(new Coordinate(10, 40), new Coordinate(40, 30), new Coordinate(20, 20), new Coordinate(30, 10))
+				} as Consumer)
+	}
+
 	/*
-	 * FIXME add additional tests for specific cases:
+	 * TODO add additional tests for specific cases:
 	 * - complex properties / arrays
-	 * - geometries
 	 * - any specific bindings that should be supported?
 	 * Later:
 	 */

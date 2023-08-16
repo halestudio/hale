@@ -92,7 +92,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 		this.log = log;
 		this.schema = schema;
 
-		this.builder = new JsonInstanceBuilder(log, namespaces);
+		this.builder = new JsonInstanceBuilder(log, namespaces, sourceCrs);
 
 		if (expectGeoJson) {
 			// XXX should GeoJson namespace be the namespace w/o prefix?

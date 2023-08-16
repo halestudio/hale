@@ -14,14 +14,23 @@
  */
 package eu.esdihumboldt.hale.io.json.internal
 
+import javax.xml.namespace.QName
+
 import org.geotools.geojson.geom.GeometryJSON
+import org.locationtech.jts.geom.Geometry
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 
+import eu.esdihumboldt.hale.common.align.helper.EntityFinder
+import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
+import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
+import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.DefinitionGroup
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
@@ -41,16 +50,20 @@ class JsonInstanceBuilder {
 	private final InstanceBuilder builder
 	private final GeometryJSON geometryJson
 	private final NamespaceManager namespaces
+	private final CRSDefinition defaultCrs
+
+	private final Map<TypeDefinition, QName> cachedGeometryProperty = [:]
 
 	/**
 	 * Default constructor.
 	 * @param namespaces 
 	 */
-	public JsonInstanceBuilder(SimpleLog log, NamespaceManager namespaces) {
+	public JsonInstanceBuilder(SimpleLog log, NamespaceManager namespaces, CRSDefinition defaultCrs) {
 		super();
 		this.log = log
 		this.namespaces = namespaces
 		this.geometryJson = new GeometryJSON()
+		this.defaultCrs = defaultCrs
 
 		builder = new InstanceBuilder(
 				strictBinding: false,
@@ -73,15 +86,29 @@ class JsonInstanceBuilder {
 			throw new UnsupportedOperationException("Schema-less mode not implemented yet");
 		}
 
-		/*
-		 * TODO Handle explicitly provided geometry:
-		 * 
-		 * 1. Determine geometry property in type that should be used
-		 * 
-		 * 2. Process value for identified property (XXX takes precedence over otherwise provided value? or should it be dropped if there is a value in properties)
-		 */
-
 		return builder.createInstance(type) {
+			/*
+			 * Handle explicitly provided geometry:
+			 *
+			 * 1. Determine geometry property in type that should be used
+			 *
+			 * 2. Process value for identified property (and skip property in further processing)
+			 */
+			Set<QName> skipProperty = new HashSet<>()
+			if (geom != null) {
+				QName geomProperty = getGeometryProperty(type)
+				if (geomProperty != null) {
+					GeometryProperty value = translateGeometry(geom)
+					if (value != null) {
+						builder.createProperty(geomProperty.localPart, geomProperty.namespaceURI, value)
+						skipProperty.add(geomProperty)
+					}
+				}
+				else {
+					log.error("Could not identify geometry property for type {0}", type.name)
+				}
+			}
+
 			properties.each { name, value ->
 				// determine property
 				//TODO also support groups/choices etc.?
@@ -89,6 +116,9 @@ class JsonInstanceBuilder {
 
 				if (property == null) {
 					log.warn("Could not find property with name {0} in type {1}", name, type.name)
+				}
+				else if (skipProperty.contains(property.name)) {
+					log.warn("Skipping value for property  {0} in type {1}", name, type.name)
 				}
 				else {
 					if (value.isArray()) {
@@ -124,6 +154,55 @@ class JsonInstanceBuilder {
 		def candidate = properties.find { it.name.localPart == name }
 
 		candidate
+	}
+
+	private QName getGeometryProperty(TypeDefinition type) {
+		return cachedGeometryProperty.computeIfAbsent(type) { TypeDefinition t ->
+			// allow for geometry property types with choices
+			int checkLevels = 3
+
+			// create finder for geometry properties
+			EntityFinder finder = new EntityFinder({ EntityDefinition entity ->
+				// determine if the property classifies as
+				if (entity.getDefinition() instanceof PropertyDefinition) {
+					def propertyType = ((PropertyDefinition) entity.getDefinition()).getPropertyType()
+
+					boolean isGeometry = propertyType.getConstraint(GeometryType).isGeometry()
+					if (isGeometry) {
+						return true
+					}
+				}
+
+				false
+			}, checkLevels)
+
+			def parents = DefinitionUtil.getAllProperties(type).collect { PropertyDefinition p ->
+				AlignmentUtil.createEntityFromDefinitions(type, [p], SchemaSpaceID.SOURCE, null)
+			}
+
+			def candidates = finder.find(parents)
+
+			if (candidates.empty) {
+				null
+			}
+			else {
+				// select candidate
+
+				// extract main property names; order matters because of traversal order for finding the candidates
+				Set<QName> names = new LinkedHashSet(candidates*.propertyPath[0]*.child*.name)
+
+				def preferred = null //XXX are there any ways we could prefer one candidate over the other?
+
+				if (preferred == null) {
+					// otherwise use first one
+					preferred = names.iterator().next()
+				}
+
+				log.info("Identified property $preferred as geometry property for type ${type.name.localPart}")
+
+				preferred
+			}
+		}
 	}
 
 	public Object translateValue(JsonNode value, PropertyDefinition property) {
@@ -174,8 +253,17 @@ class JsonInstanceBuilder {
 	}
 
 	public GeometryProperty translateGeometry(JsonNode value) {
-		//TODO implement geometry parsing using Geotools functionality
-		//XXX for now return null
-		null
+		//TODO check if this is a valid geometry node?
+
+		// geometry json works on a Json string, so encode again
+		String geomJson = value.toString()
+
+		Geometry geom = geometryJson.read(geomJson)
+		if (geom != null) {
+			new DefaultGeometryProperty(defaultCrs, geom)
+		}
+		else {
+			null
+		}
 	}
 }

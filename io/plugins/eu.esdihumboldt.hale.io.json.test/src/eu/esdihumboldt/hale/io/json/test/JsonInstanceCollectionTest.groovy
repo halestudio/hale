@@ -19,11 +19,15 @@ import static org.assertj.core.api.Assertions.*
 
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
+import java.util.function.Consumer
 
 import org.junit.Test
+import org.locationtech.jts.geom.LineString
+import org.locationtech.jts.geom.Polygon
 
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.model.Instance
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
@@ -45,6 +49,7 @@ class JsonInstanceCollectionTest {
 		simpleType = SimpleType {
 			id(String)
 			name(String)
+			geometry(GeometryProperty)
 		}
 	}
 
@@ -230,13 +235,21 @@ class JsonInstanceCollectionTest {
 
 		def id = instance.p.id.value()
 		def name = instance.p.name.value()
+		def geometry = instance.p.geometry.value()
 
 		def expectedId = index == 0 ? "line" : "poly"
 		def expectedName = index == 0 ? "Line feature" : "Polygon feature"
+		def expectedGeomClass = index == 0 ? LineString : Polygon
 
 		assertThat(id).isEqualTo(expectedId)
 		assertThat(name).isEqualTo(expectedName)
 
-		//FIXME also check geometry (also requires extending schema)
+		assertThat(geometry)
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
+				.satisfies({ GeometryProperty p ->
+					assertThat(p.CRSDefinition).isNotNull()
+					assertThat(p.geometry).isInstanceOf(expectedGeomClass)
+				} as Consumer)
 	}
 }
