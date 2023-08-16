@@ -74,9 +74,6 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
 
-		boolean ignoreEmptyFeaturetypes = getParameter(
-				InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES).as(Boolean.class, false);
-
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
 			workbook = new HSSFWorkbook();
@@ -114,8 +111,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			for (QName selectedTypeName : selectedFeatureTypes) {
 				// get all instances of the selected Type
 				InstanceCollection instances = getInstanceCollection(selectedTypeName);
-				addSheetByQName(solveNestedProperties, ignoreEmptyFeaturetypes, selectedTypeName,
-						instances);
+				addSheetByQName(solveNestedProperties, selectedTypeName, instances);
 			}
 		}
 
@@ -124,17 +120,17 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		}
 
 		reporter.setSuccess(true);
+
 		return reporter;
 	} // close try-iterator
 
 	/**
 	 * @param solveNestedProperties : Solve nested properties
-	 * @param ignoreEmptyFeaturetypes don't add empty feature types to excel
 	 * @param selectedTypeName selected feature type
 	 * @param instances InstanceCollection available
 	 */
-	private void addSheetByQName(boolean solveNestedProperties, boolean ignoreEmptyFeaturetypes,
-			QName selectedTypeName, InstanceCollection instances) {
+	private void addSheetByQName(boolean solveNestedProperties, QName selectedTypeName,
+			InstanceCollection instances) {
 
 		// use ResourceIterator<Instance> in a try block because is closable
 		// -
@@ -145,11 +141,6 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			try {
 				instance = instanceIterator.next();
 			} catch (NoSuchElementException e) {
-				if (!ignoreEmptyFeaturetypes) {
-					Sheet sheet = workbook.createSheet(selectedTypeName.getLocalPart());
-					sheet.createRow(0);
-					resizeSheet(sheet);
-				}
 				return;
 			}
 
