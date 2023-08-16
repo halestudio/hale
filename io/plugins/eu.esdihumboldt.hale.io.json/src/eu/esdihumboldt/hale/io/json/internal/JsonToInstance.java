@@ -59,6 +59,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 	private final TypeDefinition featureType;
 	private final TypeIndex schema;
 	private final SimpleLog log;
+	private final JsonReadMode mode;
 
 	/**
 	 * 
@@ -70,7 +71,20 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 */
 	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, TypeIndex schema,
 			SimpleLog log) {
-		this(expectGeoJson, featureType, schema, log,
+		this(JsonReadMode.auto, expectGeoJson, featureType, schema, log);
+	}
+
+	/**
+	 * 
+	 * @param expectGeoJson if the input is expected to be GeoJson
+	 * @param featureType the feature type to use for all features or
+	 *            <code>null</code>
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
+	 */
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition featureType,
+			TypeIndex schema, SimpleLog log) {
+		this(mode, expectGeoJson, featureType, schema, log,
 				new IgnoreNamespaces() /* new JsonNamespaces() */);
 	}
 
@@ -83,14 +97,15 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 *            determined based on the schema
 	 * @param namespaces the namespace manager
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, TypeIndex schema,
-			SimpleLog log, NamespaceManager namespaces) {
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition featureType,
+			TypeIndex schema, SimpleLog log, NamespaceManager namespaces) {
 		super();
 		this.expectGeoJson = expectGeoJson;
 		this.namespaces = namespaces;
 		this.featureType = featureType;
 		this.log = log;
 		this.schema = schema;
+		this.mode = mode;
 
 		this.builder = new JsonInstanceBuilder(log, namespaces, sourceCrs);
 
@@ -114,32 +129,55 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 * @param parser the JSON parser
 	 */
 	public void init(JsonParser parser) throws JsonParseException, IOException {
-		// proceed to first object
-
 		JsonToken start = parser.nextToken();
-		switch (start) {
-		case START_ARRAY:
-			// collection is an array, nothing to do
-			break;
-		case START_OBJECT:
-			// expecting feature collection
-			// -> move to "features" array
-			proceedToField("features", parser);
-			if (parser.getCurrentToken() != JsonToken.FIELD_NAME) {
-				throw new IllegalStateException(
-						"Did not find field \"features\" in FeatureCollection");
+
+		// proceed to first object
+		switch (mode) {
+		case auto:
+			// auto-detect if array or FeatureCollection
+
+			switch (start) {
+			case START_ARRAY:
+				// collection is an array, nothing to do
+				break;
+			case START_OBJECT:
+				// expecting feature collection
+				// -> move to "features" array
+				proceedToField("features", parser);
+				if (parser.getCurrentToken() != JsonToken.FIELD_NAME) {
+					throw new IllegalStateException(
+							"Did not find field \"features\" in FeatureCollection");
+				}
+
+				// proceed to array start
+				if (parser.nextToken() != JsonToken.START_ARRAY) {
+					throw new IllegalStateException("\"features\" expected to be an array");
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected start token " + start);
 			}
 
-			// proceed to array start
-			if (parser.nextToken() != JsonToken.START_ARRAY) {
-				throw new IllegalStateException("\"features\" expected to be an array");
+			parser.nextToken(); // move to value start
+			break;
+		case singleObject:
+			// read single object
+			if (start != JsonToken.START_OBJECT) {
+				throw new IllegalStateException("Json does not start with object");
 			}
+			break;
+		case firstArray:
+			// use first array encountered
+			proceedToArray(parser);
+			if (parser.getCurrentToken() != JsonToken.START_ARRAY) {
+				// no array found
+				throw new IllegalStateException("No Json array found");
+			}
+			parser.nextToken(); // move to value start
 			break;
 		default:
-			throw new IllegalStateException("Unexpected start token " + start);
+			throw new IllegalStateException("Unrecognized read mode " + mode);
 		}
-
-		parser.nextToken(); // move to value start
 	}
 
 	private void proceedToField(String fieldName, JsonParser parser)
@@ -154,6 +192,21 @@ public class JsonToInstance implements InstanceJsonConstants {
 			else if (current == JsonToken.START_ARRAY || current == JsonToken.START_OBJECT) {
 				// skip child arrays and objects
 				parser.skipChildren();
+			}
+		}
+	}
+
+	/**
+	 * Proceed to the first array found.
+	 * 
+	 * @param parser the Json parser
+	 */
+	private void proceedToArray(JsonParser parser) throws JsonParseException, IOException {
+		while (parser.nextToken() != null) {
+			JsonToken current = parser.getCurrentToken();
+			if (current == JsonToken.START_ARRAY) {
+				// found array
+				return;
 			}
 		}
 	}

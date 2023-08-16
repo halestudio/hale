@@ -32,6 +32,7 @@ import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.io.json.internal.JsonInstanceCollection
+import eu.esdihumboldt.hale.io.json.internal.JsonReadMode
 import eu.esdihumboldt.hale.io.json.internal.JsonToInstance
 import eu.esdihumboldt.util.io.StringInputSupplier
 
@@ -206,6 +207,87 @@ class JsonInstanceCollectionTest {
     "name": "Polygon feature"
   }
 ]
+'''
+		def collection = new JsonInstanceCollection(translate, new StringInputSupplier(testData, charset), charset)
+		collection.iterator().withCloseable {
+			def count = 0
+			while (it.hasNext()) {
+				def instance = it.next()
+
+				checkSimpleInstance(instance, count)
+
+				count++
+			}
+
+			// test expected feature count
+			assertThat(count).isEqualTo(2)
+		}
+	}
+
+	@Test
+	void testReadSingleObject() {
+		def translate = new JsonToInstance(JsonReadMode.singleObject, false, simpleType, null, SimpleLog.CONSOLE_LOG)
+
+		def testData = '''
+{
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [
+      [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+    ]
+  },
+  "id": "line",
+  "name": "Line feature"
+}
+'''
+		def collection = new JsonInstanceCollection(translate, new StringInputSupplier(testData, charset), charset)
+		collection.iterator().withCloseable {
+			def count = 0
+			while (it.hasNext()) {
+				def instance = it.next()
+
+				checkSimpleInstance(instance, count)
+
+				count++
+			}
+
+			// test expected feature count
+			assertThat(count).isEqualTo(1)
+		}
+	}
+
+	@Test
+	void testReadFirstArray() {
+		def translate = new JsonToInstance(JsonReadMode.firstArray, false, simpleType, null, SimpleLog.CONSOLE_LOG)
+
+		def testData = '''
+{
+  "metadata": "foo",
+  "objects": [
+    {
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]
+        ]
+      },
+      "id": "line",
+      "name": "Line feature"
+    },
+    {
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [ [100.0, 0.0], [101.0, 0.0], [101.0, 1.0],
+            [100.0, 1.0], [100.0, 0.0] ]
+        ]
+      },
+      "id": "poly",
+      "name": "Polygon feature"
+    }
+  ],
+  "more": "bar"
+}
 '''
 		def collection = new JsonInstanceCollection(translate, new StringInputSupplier(testData, charset), charset)
 		collection.iterator().withCloseable {

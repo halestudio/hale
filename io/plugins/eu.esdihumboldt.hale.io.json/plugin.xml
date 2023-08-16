@@ -54,6 +54,29 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
+         <providerParameter
+               description="Mode for reading Json structure"
+               label="Read mode"
+               name="mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="auto">
+               </enumerationValue>
+               <enumerationValue
+                     value="singleObject">
+               </enumerationValue>
+               <enumerationValue
+                     value="firstArray">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="auto"
+                  defaultDescription="Load objects from a Json array or a GeoJson FeatureCollection"
+                  sample="singleObject"
+                  sampleDescription="When the source file is only a single object at its root, use this mode">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
    </extension>
 
