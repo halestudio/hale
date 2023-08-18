@@ -169,7 +169,7 @@ class ShapefileInstanceWriterTest {
 		IOReport report = writer.execute(new LogProgressIndicator())
 
 		assertTrue(report.isSuccess())
-		assertFalse(report.getErrors().isEmpty())
+		assertFalse(report.getWarnings().isEmpty())
 
 		return report;
 	}
