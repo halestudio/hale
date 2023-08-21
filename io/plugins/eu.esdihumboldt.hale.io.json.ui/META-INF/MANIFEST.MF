@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ui
+Bundle-Name: JSON Schema/Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
- org.eclipse.ui;bundle-version="3.7.0",
+Bundle-Version: 5.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.ui;bundle-version="3.6.2",
  eu.esdihumboldt.hale.io.json;bundle-version="5.1.0",
  eu.esdihumboldt.hale.ui.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.hale.common.core.io,
  eu.esdihumboldt.hale.common.core.io.impl,
@@ -25,4 +25,6 @@ Import-Package: com.google.common.io;version="9.0.0",
  eu.esdihumboldt.hale.ui.util.io,
  eu.esdihumboldt.hale.ui.util.selector,
  eu.esdihumboldt.util
-Automatic-Module-Name: eu.esdihumboldt.hale.io.json.ui.singleton.true
+Export-Package: eu.esdihumboldt.hale.io.json.ui
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json.ui
