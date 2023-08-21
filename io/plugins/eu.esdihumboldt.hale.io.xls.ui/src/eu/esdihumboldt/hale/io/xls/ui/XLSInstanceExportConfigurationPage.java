@@ -15,10 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xls.ui;
 
-import java.util.NoSuchElementException;
 import java.util.Set;
-
-import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -43,9 +40,6 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instance.model.Instance;
-import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.ui.CommonInstanceExportConfigurationPage;
@@ -239,33 +233,6 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	public void disable() {
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * @param instances InstanceCollection
-	 * @return boolean true if the instance has at least one properties
-	 */
-	protected boolean extractedSelectableTypeDefinition(InstanceCollection instances) {
-		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
-			Instance instance = null;
-			try {
-				instance = instanceIterator.next();
-				Iterable<QName> allProperties = instance.getPropertyNames();
-
-				for (QName qname : allProperties) {
-
-					// get properties of the current instance
-					Object[] properties = instance.getProperty(qname);
-					if (properties != null && properties.length != 0) {
-						return true;
-					}
-				}
-			} catch (NoSuchElementException e) {
-				return false;
-			}
-
-		}
-		return false;
 	}
 
 }
