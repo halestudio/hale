@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ui
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.json.ui
+Bundle-Version: 1.0.0.qualifier
+Automatic-Module-Name: eu.esdihumboldt.hale.io.json.ui
+Bundle-RequiredExecutionEnvironment: JavaSE-17
