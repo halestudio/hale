@@ -45,4 +45,11 @@ public enum JsonReadMode {
 		this.label = label;
 	}
 
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
 }
