@@ -393,8 +393,14 @@ class InstanceBuilder extends BuilderBase {
 					value = params[0]
 				}
 
-				// create instance
-				return createInstanceAndValue(property.propertyType, value)
+				if (value instanceof Instance) {
+					// allow providing an instance as value
+					return value
+				}
+				else {
+					// create instance
+					return createInstanceAndValue(property.propertyType, value)
+				}
 			}
 			else {
 				// normal property value

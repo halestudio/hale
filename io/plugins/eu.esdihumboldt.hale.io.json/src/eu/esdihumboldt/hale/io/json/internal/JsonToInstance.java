@@ -16,10 +16,17 @@
 package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -32,6 +39,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 
 /**
  * Class to read instances from JSON.
@@ -49,41 +57,110 @@ public class JsonToInstance implements InstanceJsonConstants {
 	// https://tools.ietf.org/html/rfc7946)
 	private final CRSDefinition sourceCrs = new CodeDefinition("EPSG:4326", true);
 
-	private final TypeDefinition featureType;
+	private final TypeDefinition defaultType;
+	private final TypeIndex schema;
 	private final SimpleLog log;
+	private final JsonReadMode mode;
+	private final boolean forceDefault;
 
 	/**
 	 * 
 	 * @param expectGeoJson if the input is expected to be GeoJson
-	 * @param featureType the feature type to use for all features or
+	 * @param defaultType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, SimpleLog log) {
-		this(expectGeoJson, featureType, log,
+	public JsonToInstance(boolean expectGeoJson, TypeDefinition defaultType, boolean forceDefault,
+			TypeIndex schema, SimpleLog log) {
+		this(JsonReadMode.auto, expectGeoJson, defaultType, forceDefault, schema, log);
+	}
+
+	/**
+	 * 
+	 * @param mode the mode for reading the Json, supporting different kinds of
+	 *            document structures
+	 * @param expectGeoJson if the input is expected to be GeoJson
+	 * @param defaultType the default type to use for all features or
+	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
+	 */
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition defaultType,
+			boolean forceDefault, TypeIndex schema, SimpleLog log) {
+		this(mode, expectGeoJson, defaultType, forceDefault, schema, log,
 				new IgnoreNamespaces() /* new JsonNamespaces() */);
 	}
 
 	/**
 	 *
+	 * @param mode the mode for reading the Json, supporting different kinds of
+	 *            document structures
 	 * @param expectGeoJson if the input is expected to be GeoJson
-	 * @param featureType the feature type to use for all features or
+	 * @param defaultType the feature type to use for all features or
 	 *            <code>null</code>
+	 * @param forceDefault if the default type should be always used (disables
+	 *            other mechanisms to determine the type)
+	 * @param schema if a schema is specified, the feature type may be
+	 *            determined based on the schema
 	 * @param namespaces the namespace manager
 	 */
-	public JsonToInstance(boolean expectGeoJson, TypeDefinition featureType, SimpleLog log,
-			NamespaceManager namespaces) {
+	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition defaultType,
+			boolean forceDefault, TypeIndex schema, SimpleLog log, NamespaceManager namespaces) {
 		super();
+
+		if (defaultType == null && forceDefault) {
+			throw new IllegalStateException(
+					"Default type needs to be specified when forcing to use default type");
+		}
+
 		this.expectGeoJson = expectGeoJson;
 		this.namespaces = namespaces;
-		this.featureType = featureType;
+		this.defaultType = (defaultType != null) ? defaultType : determineDefaultType(schema, log);
 		this.log = log;
+		this.schema = schema;
+		this.mode = mode;
+		this.forceDefault = forceDefault;
 
-		this.builder = new JsonInstanceBuilder(log, namespaces);
+		this.builder = new JsonInstanceBuilder(log, namespaces, sourceCrs);
 
 		if (expectGeoJson) {
 			// XXX should GeoJson namespace be the namespace w/o prefix?
 //      namespaces.setPrefix(NAMESPACE_GEOJSON, "");
 		}
+	}
+
+	/**
+	 * Determine default type if none is specified.
+	 * 
+	 * Note: This functionality should be removed once any kind of
+	 * auto-detection based on the actual content is implemented.
+	 */
+	private static TypeDefinition determineDefaultType(TypeIndex schema, SimpleLog log) {
+		if (schema == null) {
+			return null;
+		}
+
+		Collection<? extends TypeDefinition> candidates = schema.getMappingRelevantTypes();
+		if (!candidates.isEmpty()) {
+			if (candidates.size() > 1) {
+				// sort to have a reproducable behavior what the chosen type is
+				return candidates.stream()
+						.sorted(Comparator
+								.<TypeDefinition, String> comparing(t -> t.getName().toString()))
+						.findFirst().get();
+			}
+			else {
+				return candidates.iterator().next();
+			}
+
+		}
+
+		return null;
 	}
 
 	/**
@@ -100,32 +177,55 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 * @param parser the JSON parser
 	 */
 	public void init(JsonParser parser) throws JsonParseException, IOException {
-		// proceed to first object
-
 		JsonToken start = parser.nextToken();
-		switch (start) {
-		case START_ARRAY:
-			// collection is an array, nothing to do
-			break;
-		case START_OBJECT:
-			// expecting feature collection
-			// -> move to "features" array
-			proceedToField("features", parser);
-			if (parser.getCurrentToken() != JsonToken.FIELD_NAME) {
-				throw new IllegalStateException(
-						"Did not find field \"features\" in FeatureCollection");
+
+		// proceed to first object
+		switch (mode) {
+		case auto:
+			// auto-detect if array or FeatureCollection
+
+			switch (start) {
+			case START_ARRAY:
+				// collection is an array, nothing to do
+				break;
+			case START_OBJECT:
+				// expecting feature collection
+				// -> move to "features" array
+				proceedToField("features", parser);
+				if (parser.getCurrentToken() != JsonToken.FIELD_NAME) {
+					throw new IllegalStateException(
+							"Did not find field \"features\" in FeatureCollection");
+				}
+
+				// proceed to array start
+				if (parser.nextToken() != JsonToken.START_ARRAY) {
+					throw new IllegalStateException("\"features\" expected to be an array");
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected start token " + start);
 			}
 
-			// proceed to array start
-			if (parser.nextToken() != JsonToken.START_ARRAY) {
-				throw new IllegalStateException("\"features\" expected to be an array");
+			parser.nextToken(); // move to value start
+			break;
+		case singleObject:
+			// read single object
+			if (start != JsonToken.START_OBJECT) {
+				throw new IllegalStateException("Json does not start with object");
 			}
+			break;
+		case firstArray:
+			// use first array encountered
+			proceedToArray(parser);
+			if (parser.getCurrentToken() != JsonToken.START_ARRAY) {
+				// no array found
+				throw new IllegalStateException("No Json array found");
+			}
+			parser.nextToken(); // move to value start
 			break;
 		default:
-			throw new IllegalStateException("Unexpected start token " + start);
+			throw new IllegalStateException("Unrecognized read mode " + mode);
 		}
-
-		parser.nextToken(); // move to value start
 	}
 
 	private void proceedToField(String fieldName, JsonParser parser)
@@ -140,6 +240,21 @@ public class JsonToInstance implements InstanceJsonConstants {
 			else if (current == JsonToken.START_ARRAY || current == JsonToken.START_OBJECT) {
 				// skip child arrays and objects
 				parser.skipChildren();
+			}
+		}
+	}
+
+	/**
+	 * Proceed to the first array found.
+	 * 
+	 * @param parser the Json parser
+	 */
+	private void proceedToArray(JsonParser parser) throws JsonParseException, IOException {
+		while (parser.nextToken() != null) {
+			JsonToken current = parser.getCurrentToken();
+			if (current == JsonToken.START_ARRAY) {
+				// found array
+				return;
 			}
 		}
 	}
@@ -195,9 +310,6 @@ public class JsonToInstance implements InstanceJsonConstants {
 			isGeoJson = hasFt && (hasGeometry || hasProperties);
 		}
 
-		// move on to next token (beginning of next instance)
-		parser.nextToken();
-
 		// determine schema type
 
 		/*
@@ -206,7 +318,49 @@ public class JsonToInstance implements InstanceJsonConstants {
 		 * form of type detection (e.g. using the information in @type in case
 		 * the data was written with InstanceToJson)
 		 */
-		TypeDefinition type = featureType;
+		TypeDefinition type = defaultType;
+
+		if (!forceDefault && schema != null) {
+			JsonNode typeField = fields.get("@type");
+			if (typeField != null && typeField.isTextual()) {
+				QName typeName = extractName(typeField.textValue());
+
+				if (typeName != null) {
+					// look for exact match
+					TypeDefinition candidate = schema.getType(typeName);
+					if (candidate == null) {
+						// look for local part match
+						List<TypeDefinition> candidates = schema.getMappingRelevantTypes().stream()
+								.filter(t -> typeName.getLocalPart()
+										.equals(t.getName().getLocalPart()))
+								.collect(Collectors.toList());
+						if (candidates.size() == 1) {
+							candidate = candidates.get(0);
+						}
+						else if (candidates.size() > 1) {
+							// sort by namespace URI to consistently use same
+							// type
+							candidate = candidates.stream()
+									.sorted(Comparator.<TypeDefinition, String> comparing(
+											t -> t.getName().getNamespaceURI()))
+									.findFirst().get();
+
+							log.warn(
+									"Multiple candidates matching the local name of type name {0}, choosing {1}",
+									typeName, candidate.getName());
+						}
+					}
+
+					if (candidate != null) {
+						// override default type
+						type = candidate;
+					}
+				}
+			}
+		}
+
+		// move on to next token (beginning of next instance)
+		parser.nextToken();
 
 		// create instance
 
@@ -230,6 +384,35 @@ public class JsonToInstance implements InstanceJsonConstants {
 		else {
 			// generic JSON instance
 			return builder.buildInstance(type, null, fields);
+		}
+	}
+
+	/**
+	 * Extract a qualified name from a text representation with an optional
+	 * namespace prefix.
+	 * 
+	 * @param text the text representation of the name
+	 * @return the qualified name
+	 */
+	private QName extractName(String text) {
+		if (text == null) {
+			return null;
+
+		}
+		int firstSep = text.indexOf(':');
+		if (firstSep >= 0 && firstSep + 1 < text.length()) {
+			String prefix = text.substring(0, firstSep);
+			String name = text.substring(firstSep + 1);
+			Optional<String> namespace = namespaces.getNamespace(prefix);
+			if (namespace.isPresent()) {
+				return new QName(namespace.get(), name, prefix);
+			}
+			else {
+				return new QName(name);
+			}
+		}
+		else {
+			return new QName(text);
 		}
 	}
 
