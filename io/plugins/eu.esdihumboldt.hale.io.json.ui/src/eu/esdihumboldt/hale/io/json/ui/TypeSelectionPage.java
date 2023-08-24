@@ -15,10 +15,6 @@
 
 package eu.esdihumboldt.hale.io.json.ui;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.List;
-
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.dialogs.DialogPage;
@@ -41,8 +37,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
-import eu.esdihumboldt.hale.common.core.io.Value;
-import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.json.JsonInstanceReader;
@@ -59,7 +53,6 @@ import eu.esdihumboldt.hale.ui.util.viewer.EnumContentProvider;
  * 
  * @author Emanuela Epure
  */
-@SuppressWarnings("restriction")
 public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 
 	private Composite page;
