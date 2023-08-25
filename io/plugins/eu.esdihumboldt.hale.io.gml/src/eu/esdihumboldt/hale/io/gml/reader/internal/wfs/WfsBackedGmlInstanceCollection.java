@@ -621,6 +621,9 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		public void skip() {
 			if (iterator.hasNext()) {
 				iterator.skip();
+				// increase counter of processed instances (important for WFS
+				// paging)
+				totalFeaturesProcessed++;
 			}
 			else {
 				proceedOrClose();
