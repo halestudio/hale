@@ -26,7 +26,7 @@ public enum JsonReadMode {
 	 * Auto detection of mode to use (limited to FeatureCollection and Json
 	 * array).
 	 */
-	auto("Auto-detection (supports GeoJson FeatureCollection and Json array)"),
+	auto("Auto-detection (supports GeoJson FeatureCollection and root Json array)"),
 	/**
 	 * Json is a single object.
 	 */

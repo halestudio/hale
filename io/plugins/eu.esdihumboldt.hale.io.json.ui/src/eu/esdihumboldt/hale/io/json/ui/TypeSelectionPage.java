@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 wetransform GmbH
+ * Copyright (c) 2022 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
  * available under the terms of the GNU Lesser General Public License as
@@ -23,6 +23,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -101,26 +102,28 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 	}
 
 	/**
-	 * Validate the current selection. {@link #onShowPage(boolean)} must have been
-	 * called first to set {@link #lastType}.
+	 * Validate the current selection.
 	 */
 	protected void validateSelection() {
 		TypeDefinition selected = selectorFeatureTypes.getSelectedObject();
-		ISelection readModeOrderComboSelection = readModeOrderCombo.getSelection();
+		JsonReadMode selMode = getSelectedReadMode();
 		boolean forceSelection = forceUsageOfDefaultSelectedType.getSelection();
 
-		if (!readModeOrderComboSelection.isEmpty()) {
-			if ((selected != null && forceSelection) || (selected == null && !forceSelection)) {
+		if (selMode != null) {
+			if (selected != null || !forceSelection) {
 				setPageComplete(true);
-				setMessage("All the types will be mapped automatically to the selected feature types",
-						DialogPage.INFORMATION);
-			} else {
-				setPageComplete(false);
-				setMessage("Select one feature type", DialogPage.INFORMATION);
+				setMessage("File structure: " + selMode.label, DialogPage.INFORMATION);
 			}
-		} else {
+			else {
+				// if forcing using the default type is enabled, a type needs to
+				// be selected
+				setPageComplete(false);
+				setMessage("Select the feature type to use", DialogPage.WARNING);
+			}
+		}
+		else {
 			setPageComplete(false);
-			setMessage("Select the most appropriate read mode", DialogPage.INFORMATION);
+			setMessage("What kind of structure has your file?", DialogPage.INFORMATION);
 		}
 
 		return;
@@ -169,16 +172,18 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 		new Label(page, SWT.NONE);
 
 		forceUsageOfDefaultSelectedType = new Button(page, SWT.CHECK);
+		forceUsageOfDefaultSelectedType.setLayoutData(
+				GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
 		forceUsageOfDefaultSelectedType
-				.setLayoutData(GridDataFactory.fillDefaults().grab(false, false).span(2, 1).create());
-		forceUsageOfDefaultSelectedType.setText("Force usage of the default type to be used for all instances");
+				.setText("Force usage of the default type to be used for all instances");
 
 		forceUsageOfDefaultSelectedType.addSelectionListener(new SelectionListener() {
 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (!forceUsageOfDefaultSelectedType.getSelection()) {
-					setMessage("All the types will be mapped automatically to the selected feature type.",
+					setMessage(
+							"All the types will be mapped automatically to the selected feature type.",
 							DialogPage.INFORMATION);
 					selectorFeatureTypes.setSelection(StructuredSelection.EMPTY);
 				}
@@ -213,10 +218,11 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 		super.onShowPage(firstShow);
 
 		if (firstShow) {
-			selectorFeatureTypes = new TypeDefinitionSelector(page, "Select the corresponding feature type",
+			selectorFeatureTypes = new TypeDefinitionSelector(page,
+					"Select the corresponding feature type",
 					getWizard().getProvider().getSourceSchema(), null);
-			selectorFeatureTypes.getControl()
-					.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create());
+			selectorFeatureTypes.getControl().setLayoutData(
+					GridDataFactory.fillDefaults().grab(true, false).span(2, 1).create());
 
 			selectorFeatureTypes.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -231,6 +237,14 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 		}
 	}
 
+	private JsonReadMode getSelectedReadMode() {
+		ISelection selection = readModeOrderCombo.getSelection();
+		if (selection instanceof IStructuredSelection && !selection.isEmpty()) {
+			return (JsonReadMode) ((IStructuredSelection) selection).getFirstElement();
+		}
+		return null;
+	}
+
 	/**
 	 * @see IOWizardPage#updateConfiguration(IOProvider)
 	 */
@@ -238,23 +252,25 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage {
 	public boolean updateConfiguration(InstanceReader provider) {
 		JsonInstanceReader jsonInstanceReader = (JsonInstanceReader) provider;
 
-		if (readModeOrderCombo.getSelection() != null) {
-			jsonInstanceReader.setReadMode((JsonReadMode)readModeOrderCombo.getElementAt(0));
+		JsonReadMode selMode = getSelectedReadMode();
+		if (selMode == null) {
+			selMode = JsonReadMode.auto;
 		}
+		jsonInstanceReader.setReadMode(selMode);
 
-		jsonInstanceReader.setForceDefaultType(forceUsageOfDefaultSelectedType.getSelection());
+		boolean forceDefault = forceUsageOfDefaultSelectedType.getSelection();
+		jsonInstanceReader.setForceDefaultType(forceDefault);
 
-		// make sure if the selection box is empty and autoDetect is not checked
-		// then the user should be able to finish the wizard.
-		if ((!forceUsageOfDefaultSelectedType.getSelection() && selectorFeatureTypes.getSelectedObject() == null)
-				|| (forceUsageOfDefaultSelectedType.getSelection()
-						&& selectorFeatureTypes.getSelectedObject() != null)) {
-			if (selectorFeatureTypes.getSelectedObject() != null) {
-				QName name = selectorFeatureTypes.getSelectedObject().getName();
-				jsonInstanceReader.setDefaultType(name);
+		if (selectorFeatureTypes.getSelectedObject() != null) {
+			QName name = selectorFeatureTypes.getSelectedObject().getName();
+			jsonInstanceReader.setDefaultType(name);
+		}
+		else {
+			jsonInstanceReader.setDefaultType(null);
+			if (forceDefault) {
+				// a type needs to be selected if it is to be forced
+				return false;
 			}
-		} else {
-			return false;
 		}
 
 		return true;
