@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.gml.reader.internal
 
 import static org.junit.Assert.*;
 
+import org.junit.Ignore
 import org.junit.Test
 import org.opengis.referencing.crs.CoordinateReferenceSystem
 
@@ -26,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
+import eu.esdihumboldt.hale.common.instance.model.ext.InstanceIterator
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty
 import eu.esdihumboldt.hale.common.schema.model.Schema
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader
@@ -98,6 +100,44 @@ class StreamGmlReaderTest {
 			assertEquals("4326", crs.getIdentifiers().iterator().next().getCode());
 		}
 	}
+
+	@Ignore
+	@Test
+	public void testSkipWfs() {
+		/*
+		 * FIXME relies on external resources that are not guaranteed to exist and is thus not enabled for automated testing.
+		 * Better would be a test that could mock the WFS responses (e.g. a mock service running w/ testcontainers)
+		 */
+		def schemaUrl = 'https://test.haleconnect.de/ows/services/org.325.bf74352b-36e7-4711-9aca-bdec2658ef68_wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType'
+		def dataUrl = 'https://test.haleconnect.de/ows/services/org.325.bf74352b-36e7-4711-9aca-bdec2658ef68_wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&NAMESPACES=xmlns%28ex%2Ceu%3Aesdihumboldt%3Ahale%3Aexample%29&TYPENAMES=ex%3ARiver'
+		def paging = 100
+		def expected = 982
+
+		def schema = loadSchema(URI.create(schemaUrl))
+
+		Map<String, String> params = [
+			(StreamGmlReader.PARAM_FEATURES_PER_WFS_REQUEST): paging as String,
+			(StreamGmlReader.PARAM_PAGINATE_REQUEST): 'true'
+		]
+
+		def instances = loadGml(URI.create(dataUrl), schema, params)
+
+		int count = 0
+		instances.iterator().withCloseable { it ->
+			while (it.hasNext()) {
+				((InstanceIterator) it).skip()
+				count++
+				if (count % 100 == 0) {
+					println("$count instances skipped")
+				}
+			}
+		}
+
+		println("$count instances skipped")
+		assertEquals(expected, count)
+	}
+
+	// helpers
 
 	Schema loadSchema(URI schemaLocation) throws Exception {
 		def schemaReader = new XmlSchemaReader()

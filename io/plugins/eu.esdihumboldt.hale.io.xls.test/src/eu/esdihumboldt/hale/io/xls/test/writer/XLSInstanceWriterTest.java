@@ -96,8 +96,6 @@ public class XLSInstanceWriterTest {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(true));
-		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
-				Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("city"));
 
 		File tmpFile = tmpFolder.newFile("excelTestWriteSimpleSchema.xls");
@@ -148,8 +146,6 @@ public class XLSInstanceWriterTest {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(true));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
-		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
-				Value.of(true));
 		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("person"));
 
 		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
@@ -200,8 +196,6 @@ public class XLSInstanceWriterTest {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
-		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
-				Value.of(true));
 		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("person"));
 
 		File tmpFile = tmpFolder.newFile("excelNotNestedProperties.xls");
@@ -252,8 +246,6 @@ public class XLSInstanceWriterTest {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
-		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
-				Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("person" + "," + "t1"));
 
 		File tmpFile = tmpFolder.newFile("excelWith2Sheets.xls");

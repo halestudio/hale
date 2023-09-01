@@ -15,12 +15,15 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
+import java.util.Set;
+
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
@@ -28,7 +31,6 @@ import org.eclipse.ui.PlatformUI;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
-import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
@@ -49,17 +51,22 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 		public boolean select(Viewer viewer, Object parentElement, Object element) {
 			if (!(element instanceof TypeDefinition))
 				return false;
-			InstanceService ins = PlatformUI.getWorkbench().getService(InstanceService.class);
-			// select all source type which has at least one instance
-			if (!ins.getInstances(DataSet.SOURCE).select(new TypeFilter((TypeDefinition) element))
-					.isEmpty()) {
+
+			InstanceService instanceService = PlatformUI.getWorkbench()
+					.getService(InstanceService.class);
+
+			Set<TypeDefinition> instanceSourceTypes = instanceService
+					.getInstanceTypes(DataSet.SOURCE);
+			if (instanceSourceTypes.contains(element)) {
 				return true;
 			}
-			// select all type which has at least one transformed instance
-			if (!ins.getInstances(DataSet.TRANSFORMED)
-					.select(new TypeFilter((TypeDefinition) element)).isEmpty()) {
+
+			Set<TypeDefinition> instanceTransformedTypes = instanceService
+					.getInstanceTypes(DataSet.TRANSFORMED);
+			if (instanceTransformedTypes.contains(element)) {
 				return true;
 			}
+
 			return false;
 		}
 	};
@@ -110,6 +117,14 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 		final Label label = new Label(page, SWT.NONE);
 		label.setText("Choose your Type you want to export:");
 
+		Label separatorLabel = new Label(page, SWT.NONE);
+		separatorLabel.setText("Warning! Feature types with no data are not selectable");
+
+		// Set the text colour of the label to yellow
+		Color greyLabel = PlatformUI.getWorkbench().getDisplay()
+				.getSystemColor(SWT.COLOR_DARK_GRAY);
+		separatorLabel.setForeground(greyLabel);
+
 		page.pack();
 
 		// wait for selected type
@@ -132,9 +147,6 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 				public void selectionChanged(SelectionChangedEvent event) {
 					setPageComplete(!(event.getSelection().isEmpty()));
 					if (typeSelector.getSelectedObject() != null) {
-						// TypeDefinition type =
-						// typeSelector.getSelectedObject();
-						// label.getParent().layout();
 						page.layout();
 						page.pack();
 					}

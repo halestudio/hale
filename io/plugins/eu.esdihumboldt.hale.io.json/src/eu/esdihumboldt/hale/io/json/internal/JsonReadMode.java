@@ -26,7 +26,7 @@ public enum JsonReadMode {
 	 * Auto detection of mode to use (limited to FeatureCollection and Json
 	 * array).
 	 */
-	auto("Auto-detection (supports GeoJson FeatureCollection and Json array)"),
+	auto("Auto-detection (supports GeoJson FeatureCollection and root Json array)"),
 	/**
 	 * Json is a single object.
 	 */
@@ -43,6 +43,13 @@ public enum JsonReadMode {
 
 	private JsonReadMode(String label) {
 		this.label = label;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
 	}
 
 }

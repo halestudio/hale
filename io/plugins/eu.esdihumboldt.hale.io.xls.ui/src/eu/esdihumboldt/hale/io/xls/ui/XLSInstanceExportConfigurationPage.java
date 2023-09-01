@@ -15,33 +15,35 @@
 
 package eu.esdihumboldt.hale.io.xls.ui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import javax.xml.namespace.QName;
+import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
+import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.ui.CommonInstanceExportConfigurationPage;
+import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
  * Configuration page for exporting Excel
@@ -52,7 +54,6 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 
 	private CheckboxTableViewer featureTypeTable;
 	private Button selectAll = null;
-	private Button ignoreEmptyFeaturetypes = null;
 	private Group chooseFeatureTypes;
 	private Table table;
 
@@ -91,19 +92,6 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
 
-			ignoreEmptyFeaturetypes = new Button(chooseFeatureTypes, SWT.CHECK);
-			ignoreEmptyFeaturetypes.setText("Ignore feature types without data");
-			ignoreEmptyFeaturetypes
-					.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-			ignoreEmptyFeaturetypes.addSelectionListener(new SelectionAdapter() {
-
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-				}
-			});
-			ignoreEmptyFeaturetypes.setSelection(false);
-
 			selectAll = new Button(chooseFeatureTypes, SWT.CHECK);
 			selectAll.setText("Select all");
 			selectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
@@ -118,6 +106,14 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 					setPageComplete(validate());
 				}
 			});
+
+			Label separatorLabel = new Label(page, SWT.NONE);
+			separatorLabel.setText("Warning! Feature types with no data are not selectable");
+
+			// Set the text colour of the label to yellow
+			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
+					.getSystemColor(SWT.COLOR_DARK_GRAY);
+			separatorLabel.setForeground(greyLabel);
 
 			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
 			table.setHeaderVisible(false);
@@ -138,22 +134,60 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 			});
 			featureTypeTable.setContentProvider(ArrayContentProvider.getInstance());
 
-			Collection<? extends TypeDefinition> relevantTypes = getWizard().getProvider()
-					.getTargetSchema().getMappingRelevantTypes();
+			featureTypeTable.setInput(
+					getWizard().getProvider().getTargetSchema().getMappingRelevantTypes());
 
-			ArrayList<QName> tableContent = new ArrayList<>();
-			for (TypeDefinition typeDefinition : relevantTypes) {
-				tableContent.add(typeDefinition.getName());
-			}
-
-			featureTypeTable.setInput(relevantTypes);
 			featureTypeTable.addCheckStateListener(new ICheckStateListener() {
 
 				@Override
 				public void checkStateChanged(CheckStateChangedEvent event) {
+					// Programmatic action to toggle the state
+					selectAll.setSelection(
+							featureTypeTable.getCheckedElements().length == featureTypeTable
+									.getTable().getItemCount());
+
 					page.layout();
 					page.pack();
 					setPageComplete(validate());
+				}
+			});
+
+			featureTypeTable.setCheckStateProvider(new ICheckStateProvider() {
+
+				@Override
+				public boolean isChecked(Object element) {
+					if (!(element instanceof TypeDefinition))
+						return false;
+					return checkboxState(element);
+				}
+
+				@Override
+				public boolean isGrayed(Object element) {
+					if (!(element instanceof TypeDefinition))
+						return false;
+					return checkboxState(element);
+				}
+
+				/**
+				 * @param element
+				 * @return true if the button cannot be selected
+				 */
+				private boolean checkboxState(Object element) {
+					InstanceService instanceService = PlatformUI.getWorkbench()
+							.getService(InstanceService.class);
+
+					Set<TypeDefinition> instanceSourceTypes = instanceService
+							.getInstanceTypes(DataSet.SOURCE);
+					if (instanceSourceTypes.contains(element)) {
+						return false;
+					}
+
+					Set<TypeDefinition> instanceTransformedTypes = instanceService
+							.getInstanceTypes(DataSet.TRANSFORMED);
+					if (instanceTransformedTypes.contains(element)) {
+						return false;
+					}
+					return true;
 				}
 			});
 
@@ -172,9 +206,6 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	@Override
 	public boolean updateConfiguration(InstanceWriter provider) {
 		super.updateConfiguration(provider);
-
-		provider.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
-				Value.of(ignoreEmptyFeaturetypes.getSelection()));
 
 		Object[] elements = featureTypeTable.getCheckedElements();
 		String param = "";
