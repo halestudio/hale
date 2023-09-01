@@ -15,17 +15,29 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ICheckStateProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -33,7 +45,6 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
-import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
@@ -43,33 +54,10 @@ import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
  */
 public class InstanceExportConfigurationPage extends CommonInstanceExportConfigurationPage {
 
-	private TypeDefinitionSelector typeSelector;
-
-	private final ViewerFilter validTypesToSelect = new ViewerFilter() {
-
-		@Override
-		public boolean select(Viewer viewer, Object parentElement, Object element) {
-			if (!(element instanceof TypeDefinition))
-				return false;
-
-			InstanceService instanceService = PlatformUI.getWorkbench()
-					.getService(InstanceService.class);
-
-			Set<TypeDefinition> instanceSourceTypes = instanceService
-					.getInstanceTypes(DataSet.SOURCE);
-			if (instanceSourceTypes.contains(element)) {
-				return true;
-			}
-
-			Set<TypeDefinition> instanceTransformedTypes = instanceService
-					.getInstanceTypes(DataSet.TRANSFORMED);
-			if (instanceTransformedTypes.contains(element)) {
-				return true;
-			}
-
-			return false;
-		}
-	};
+	private CheckboxTableViewer featureTypeTable;
+	private Button selectAll = null;
+	private Group chooseFeatureTypes;
+	private Table table;
 
 	/**
 	 * 
@@ -97,33 +85,17 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 	}
 
 	/**
-	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
-	 */
-	@Override
-	public boolean updateConfiguration(InstanceWriter provider) {
-		super.updateConfiguration(provider);
-		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE,
-				Value.of(typeSelector.getSelectedObject().getName().toString()));
-		return true;
-	}
-
-	/**
 	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#createContent(org.eclipse.swt.widgets.Composite)
 	 */
 	@Override
 	protected void createContent(Composite page) {
 		super.createContent(page);
 
-		final Label label = new Label(page, SWT.NONE);
-		label.setText("Choose your Type you want to export:");
-
-		Label separatorLabel = new Label(page, SWT.NONE);
-		separatorLabel.setText("Warning! Feature types with no data are not selectable");
-
-		// Set the text colour of the label to yellow
-		Color greyLabel = PlatformUI.getWorkbench().getDisplay()
-				.getSystemColor(SWT.COLOR_DARK_GRAY);
-		separatorLabel.setForeground(greyLabel);
+		GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
+		chooseFeatureTypes = new Group(page, SWT.NONE);
+		chooseFeatureTypes.setLayout(new GridLayout(1, false));
+		chooseFeatureTypes.setText("Choose your Type you want to export");
+		groupData.applyTo(chooseFeatureTypes);
 
 		page.pack();
 
@@ -134,26 +106,132 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 	@Override
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
-			ViewerFilter[] filters = { validTypesToSelect };
 
-			typeSelector = new TypeDefinitionSelector(page, "Select the corresponding schema type",
-					getWizard().getProvider().getTargetSchema(), filters);
+			selectAll = new Button(chooseFeatureTypes, SWT.CHECK);
+			selectAll.setText("Select all");
+			selectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 
-			typeSelector.getControl().setLayoutData(
-					GridDataFactory.fillDefaults().grab(true, false).span(1, 1).create());
-			typeSelector.addSelectionChangedListener(new ISelectionChangedListener() {
+			selectAll.addSelectionListener(new SelectionAdapter() {
 
 				@Override
-				public void selectionChanged(SelectionChangedEvent event) {
-					setPageComplete(!(event.getSelection().isEmpty()));
-					if (typeSelector.getSelectedObject() != null) {
-						page.layout();
-						page.pack();
+				public void widgetSelected(SelectionEvent e) {
+					featureTypeTable.setAllChecked(((Button) e.getSource()).getSelection());
+					page.layout();
+					page.pack();
+					setPageComplete(validate());
+				}
+			});
+
+			Label separatorLabel = new Label(page, SWT.NONE);
+			separatorLabel.setText("Warning! Feature types with no data are not selectable");
+
+			// Set the text colour of the label to yellow
+			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
+					.getSystemColor(SWT.COLOR_DARK_GRAY);
+			separatorLabel.setForeground(greyLabel);
+
+			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
+			table.setHeaderVisible(false);
+			table.setLinesVisible(false);
+			table.setBackground(PlatformUI.getWorkbench().getDisplay()
+					.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+			GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
+			groupData.applyTo(table);
+
+			featureTypeTable = new CheckboxTableViewer(table);
+			featureTypeTable.setLabelProvider(new LabelProvider() {
+
+				@Override
+				public String getText(Object element) {
+					return ((TypeDefinition) element).getDisplayName();
+				}
+
+			});
+			featureTypeTable.setContentProvider(ArrayContentProvider.getInstance());
+
+			featureTypeTable.setInput(
+					getWizard().getProvider().getTargetSchema().getMappingRelevantTypes());
+
+			featureTypeTable.addCheckStateListener(new ICheckStateListener() {
+
+				@Override
+				public void checkStateChanged(CheckStateChangedEvent event) {
+					// Programmatic action to toggle the state
+					selectAll.setSelection(
+							featureTypeTable.getCheckedElements().length == featureTypeTable
+									.getTable().getItemCount());
+
+					page.layout();
+					page.pack();
+					setPageComplete(validate());
+				}
+			});
+
+			featureTypeTable.setCheckStateProvider(new ICheckStateProvider() {
+
+				@Override
+				public boolean isChecked(Object element) {
+					if (!(element instanceof TypeDefinition))
+						return false;
+					return checkboxState(element);
+				}
+
+				@Override
+				public boolean isGrayed(Object element) {
+					if (!(element instanceof TypeDefinition))
+						return false;
+					return checkboxState(element);
+				}
+
+				/**
+				 * @param element
+				 * @return true if the button cannot be selected
+				 */
+				private boolean checkboxState(Object element) {
+					InstanceService instanceService = PlatformUI.getWorkbench()
+							.getService(InstanceService.class);
+
+					Set<TypeDefinition> instanceSourceTypes = instanceService
+							.getInstanceTypes(DataSet.SOURCE);
+					if (instanceSourceTypes.contains(element)) {
+						return false;
 					}
+
+					Set<TypeDefinition> instanceTransformedTypes = instanceService
+							.getInstanceTypes(DataSet.TRANSFORMED);
+					if (instanceTransformedTypes.contains(element)) {
+						return false;
+					}
+					return true;
 				}
 			});
 		}
 		page.layout();
 		page.pack();
 	}
+
+	private boolean validate() {
+		return (featureTypeTable.getCheckedElements().length > 0);
+	}
+
+	/**
+	 * @see eu.esdihumboldt.hale.ui.io.IOWizardPage#updateConfiguration(eu.esdihumboldt.hale.common.core.io.IOProvider)
+	 */
+	@Override
+	public boolean updateConfiguration(InstanceWriter provider) {
+		super.updateConfiguration(provider);
+
+		List<Object> sourceList = new ArrayList<>(
+				Arrays.asList(featureTypeTable.getCheckedElements()));
+		sourceList.removeAll(Arrays.asList(featureTypeTable.getGrayedElements()));
+
+		String param = "";
+		for (Object el : sourceList) {
+			param = param + ((TypeDefinition) el).getName().toString() + ",";
+		}
+		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of(param));
+
+		return true;
+	}
+
 }

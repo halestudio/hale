@@ -45,4 +45,19 @@ public class InstanceTableIOConstants {
 	 */
 	public static final String EXPORT_TYPE = "selectedExportType";
 
+	/**
+	 * Constant for underscore.
+	 */
+	public static final String UNDERSCORE = "_";
+
+	/**
+	 * Constant for the shape file extension.
+	 */
+	public static final String CSV_EXTENSION = ".csv";
+
+	/**
+	 * Constant for the url. Used to create schema for shape file writer.
+	 */
+	public static final String URL_STRING = "url";
+
 }
