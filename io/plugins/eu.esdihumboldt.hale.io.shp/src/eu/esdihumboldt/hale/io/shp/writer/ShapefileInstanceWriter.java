@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -128,7 +129,9 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				String cpgFileName = filePath + "/" + f + ShapefileConstants.CPG_EXTENSION;
 				writeCodePageFile(cpgFileName);
 			}
-
+			if (filesWritten.isEmpty()) {
+				reporter.warn("No file has been exported because there was no geometry found.");
+			}
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
@@ -206,7 +209,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 
 		Map<String, Map<String, SimpleFeatureTypeBuilder>> schemaBuilderMap = new HashMap<String, Map<String, SimpleFeatureTypeBuilder>>();
 
-		List<String> missingGeomsForSchemas = new ArrayList<String>();
+		LinkedHashSet<String> missingGeomsForSchemas = new LinkedHashSet<String>();
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext() && !progress.isCanceled()) {
 				Instance instance = it.next();
@@ -234,7 +237,6 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 
 			if (missingGeomsForSchemas.contains(schemaEntry.getKey())) {
 				reporter.warn("No geometry found for " + schemaEntry.getKey());
-				continue;
 			}
 
 			for (Entry<String, SimpleFeatureTypeBuilder> geometryEntry : schemaEntry.getValue()
@@ -264,7 +266,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 */
 	private void writeGeometrySchema(Instance instance, String localPart,
 			Map<String, SimpleFeatureTypeBuilder> geometryBuilderMap,
-			List<String> missingGeomsForSchemas) {
+			LinkedHashSet<String> missingGeomsForSchemas) {
 		Geometry geom = null;
 
 		List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);

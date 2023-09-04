@@ -1025,8 +1025,6 @@ class ShapefileInstanceWriterTest {
 				a('More text')
 				b(1.52)
 				c(23)
-				location(createGeometry('POINT(48.137222 11.575556)', 4326))
-				locat(polyGeom)
 			}
 
 			xyz {
@@ -1082,9 +1080,9 @@ class ShapefileInstanceWriterTest {
 					}
 				}
 			}
-			assertEquals(8, num)
+			assertEquals(6, num)
 			assertEquals(4, xyzCount)
-			assertEquals(4, abcCount)
+			assertEquals(2, abcCount)
 			//			assertEquals(2, attrCount)
 		}
 	}

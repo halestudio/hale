@@ -165,9 +165,9 @@ public class SimpleTargetCRSConfigurationPage<P extends GeoInstanceWriter, W ext
 			separatorLabel.setText("Warning! Feature types with no geometry will not be exported");
 
 			// Set the text colour of the label to yellow
-			Color yellow = PlatformUI.getWorkbench().getDisplay()
+			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
 					.getSystemColor(SWT.COLOR_DARK_GRAY);
-			separatorLabel.setForeground(yellow);
+			separatorLabel.setForeground(greyLabel);
 		}
 
 		// only update on first show
