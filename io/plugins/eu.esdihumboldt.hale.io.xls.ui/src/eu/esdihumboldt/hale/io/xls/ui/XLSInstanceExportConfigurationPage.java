@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.io.xls.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -207,9 +210,12 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	public boolean updateConfiguration(InstanceWriter provider) {
 		super.updateConfiguration(provider);
 
-		Object[] elements = featureTypeTable.getCheckedElements();
+		List<Object> sourceList = new ArrayList<>(
+				Arrays.asList(featureTypeTable.getCheckedElements()));
+		sourceList.removeAll(Arrays.asList(featureTypeTable.getGrayedElements()));
+
 		String param = "";
-		for (Object el : elements) {
+		for (Object el : sourceList) {
 			param = param + ((TypeDefinition) el).getName().toString() + ",";
 		}
 		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of(param));
