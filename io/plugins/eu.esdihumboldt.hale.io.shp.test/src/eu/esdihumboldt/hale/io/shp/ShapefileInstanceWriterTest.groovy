@@ -333,6 +333,75 @@ class ShapefileInstanceWriterTest {
 	}
 
 	@Test
+	void testSingleGeometryWithMissingProperties() {
+
+		Schema schema = new SchemaBuilder().schema {
+			city {
+				name(String)
+				region(String)
+				population(Integer)
+				location(GeometryProperty)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			city {
+				name 'Darmstadt'
+				location( createGeometry('POINT(49.872833 8.651222)', 4326) )
+			}
+
+			city {
+				name 'München'
+				region 'Bavaria'
+				population 1471508
+				location( createGeometry('POINT(48.137222 11.575556)', 4326) )
+			}
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+
+			def loaded = loadInstances(file)
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+					def typeName = inst.getDefinition().getName().getLocalPart()
+					def the_geom = inst.p.the_geom.value()
+					assert the_geom
+					assert the_geom instanceof GeometryProperty
+					def crs = the_geom.getCRSDefinition()
+					assert crs
+					def jts = the_geom.geometry
+					assert jts instanceof Point
+					def name = inst.p.name.value()
+
+					String decodedName = new String(name.getBytes(shapeFileDataStore.getCharset()));
+					assert decodedName
+					switch (decodedName) {
+						case 'Darmstadt':
+							assert inst.p.population.value() == null
+							assert inst.p.region.value() == null
+							break
+						case 'München':
+							assert inst.p.population.value() == 1471508
+							assert inst.p.region.value() == 'Bavaria'
+							break
+						default:
+							throw new IllegalStateException("Unexpected type $decodedName")
+					}
+				}
+			}
+			assertEquals(2, num)
+		}
+	}
+
+	@Test
 	void testSinglePolyGeometry() {
 
 		GeometryFactory gf = new GeometryFactory()
