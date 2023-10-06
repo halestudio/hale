@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1151,6 +1152,45 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 
 			}
 
+			// get additional schema location from all the imports
+			// for all the instances
+			ResourceIterator<Instance> resourceIterator = instances.iterator();
+			DefaultInstanceCollection itInstancenew = new DefaultInstanceCollection(
+					new ArrayList<Instance>());
+			try {
+				Set<String> schemasToBeAdded = new LinkedHashSet<String>();
+				while (resourceIterator.hasNext() && !progress.isCanceled()) {
+					Instance instance = resourceIterator.next();
+					itInstancenew.add(instance);
+
+					TypeDefinition type = instance.getDefinition();
+					if (!type.getName().getNamespaceURI().equals(targetIndex.getNamespace())
+							&& !additionalSchemas.containsKey(type.getName().getNamespaceURI())) {
+
+						schemasToBeAdded.add(type.getName().getNamespaceURI());
+					}
+				}
+
+				if (!schemasToBeAdded.isEmpty()) {
+					for (String namespaceToBeAdded : schemasToBeAdded) {
+						targetIndex.getSchemaImports().entrySet().stream()
+								.filter(entry -> namespaceToBeAdded.equals(entry.getValue()))
+								.findFirst().ifPresent(entry -> {
+									try {
+										URI instanceSchemaLoc = stripFragment(
+												new URI(entry.getKey()));
+										addValidationSchema(namespaceToBeAdded,
+												() -> instanceSchemaLoc, null);
+									} catch (URISyntaxException e) {
+										reporter.error("Invalid URI syntax: " + e.getMessage());
+									}
+								});
+					}
+				}
+			} finally {
+				resourceIterator.close();
+			}
+
 			// additional schema namespace prefixes
 			for (Entry<String, String> schemaNs : additionalSchemaPrefixes.entrySet()) {
 				GmlWriterUtil.addNamespace(writer, schemaNs.getKey(), schemaNs.getValue());
@@ -1202,7 +1242,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			writeAdditionalElements(writer, containerDefinition, reporter);
 
 			// write the instances
-			ResourceIterator<Instance> itInstance = instances.iterator();
+			ResourceIterator<Instance> itInstance = itInstancenew.iterator();
 			try {
 				Map<TypeDefinition, DefinitionPath> paths = new HashMap<TypeDefinition, DefinitionPath>();
 
@@ -1988,4 +2028,5 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	protected EnumWindingOrderTypes getDefaultWindingOrder() {
 		return EnumWindingOrderTypes.counterClockwise;
 	}
+
 }

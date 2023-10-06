@@ -21,7 +21,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -360,8 +359,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		groupCounter = new TObjectIntHashMap<String>();
 
 		// Map schema locations to target namespaces
-		Map<String, String> imports = new HashMap<>();
-		imports.put(location.toString(), namespace);
+		index.getSchemaImports().put(location.toString(), namespace);
 
 		// load XML Schema schema (for base type definitions)
 		try {
@@ -384,7 +382,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 			_log.error("Exception while loading XML Schema schema", e);
 		}
 
-		loadSchema(location.toString(), xmlSchema, imports, progress, true);
+		loadSchema(location.toString(), xmlSchema, progress, true);
 
 		groupCounter.clear();
 
@@ -526,7 +524,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 	 *            declared here should be flagged mappable
 	 */
 	protected void loadSchema(String schemaLocation, XmlSchema xmlSchema,
-			Map<String, String> imports, ProgressIndicator progress, boolean mainSchema) {
+			ProgressIndicator progress, boolean mainSchema) {
 		String namespace = xmlSchema.getTargetNamespace();
 		if (namespace == null) {
 			namespace = XMLConstants.NULL_NS_URI;
@@ -695,22 +693,29 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 				XmlSchema importedSchema = imp.getSchema();
 				String location = importedSchema.getSourceURI();
 				String targetNamespace = importedSchema.getTargetNamespace();
-				if (!imports.containsKey(location)) { // only add schemas that
-														// were not already
-														// added
-					boolean addedBefore = imports.entrySet().stream().anyMatch(e -> {
-						// Consider two schemas to be identical if their schema
-						// locations differ only in the scheme part (e.g. "http"
-						// and "https") and they have the same target namespace.
-						return targetNamespace.equals(e.getValue())
-								&& schemeIndependentEquals(location, e.getKey());
-					});
+				if (!index.getSchemaImports().containsKey(location)) { // only
+																		// add
+					// schemas
+					// that
+					// were not already
+					// added
+					boolean addedBefore = index.getSchemaImports().entrySet().stream()
+							.anyMatch(e -> {
+								// Consider two schemas to be identical if their
+								// schema
+								// locations differ only in the scheme part
+								// (e.g. "http"
+								// and "https") and they have the same target
+								// namespace.
+								return targetNamespace.equals(e.getValue())
+										&& schemeIndependentEquals(location, e.getKey());
+							});
 
 					if (!addedBefore) {
 						// place a marker in the map to prevent loading the
 						// location in the call to loadSchema
-						imports.put(location, targetNamespace);
-						loadSchema(location, importedSchema, imports, progress,
+						index.getSchemaImports().put(location, targetNamespace);
+						loadSchema(location, importedSchema, progress,
 								mainSchema && imp instanceof XmlSchemaInclude);
 						// is part of main schema if it's a main schema include
 					}
