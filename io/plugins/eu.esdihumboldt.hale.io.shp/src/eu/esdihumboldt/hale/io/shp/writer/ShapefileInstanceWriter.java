@@ -641,8 +641,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					if (geoProp.getGeometry() != null) {
 						String geometryType = geoProp.getGeometry().getGeometryType();
 						if (schemaFbMap.get(localPart) != null
-								&& schemaFbMap.get(localPart).get(geometryType) != null
-								&& value != null) {
+								&& schemaFbMap.get(localPart).get(geometryType) != null) {
 							schemaFbMap.get(localPart).get(geometryType).add(value);
 						}
 					}
