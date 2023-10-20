@@ -41,6 +41,7 @@ Import-Package: com.orientechnologies.orient.core.db.record;version="1.5.1";reso
  org.apache.poi.openxml4j.opc;version="5.2.3",
  org.apache.poi.poifs.filesystem;version="5.2.3",
  org.apache.poi.ss.usermodel;version="5.2.3",
+ org.apache.poi.ss.util;version="5.2.3",
  org.apache.poi.xssf.usermodel;version="5.2.3",
  org.springframework.core.convert;version="5.2.0",
  org.springframework.core.convert.support;version="5.2.0"

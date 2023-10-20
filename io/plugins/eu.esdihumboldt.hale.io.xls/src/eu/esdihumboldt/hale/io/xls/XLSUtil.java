@@ -19,6 +19,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * General utilities when working with Excel files.
@@ -35,9 +38,18 @@ public class XLSUtil {
 	 * @param evaluator the formula evaluator
 	 * @return the cell text
 	 */
-	public static String extractText(Cell cell, FormulaEvaluator evaluator) {
+	public static String extractText(Cell cell, FormulaEvaluator evaluator, Sheet sheet) {
 		if (cell == null)
 			return null;
+
+		if (isCellPartOfMergedRegion(cell, sheet)) {
+			// Get the merged region
+			CellRangeAddress mergedRegion = getMergedRegion(cell, sheet);
+
+			// Get the first cell of the merged region (top-left cell)
+			Row mergedRow = sheet.getRow(mergedRegion.getFirstRow());
+			cell = mergedRow.getCell(mergedRegion.getFirstColumn());
+		}
 
 		if (cell.getCellType() == CellType.BLANK) {
 			// do this check here as the evaluator seems to return null on a
@@ -71,6 +83,26 @@ public class XLSUtil {
 			// fall through
 			return null;
 		}
+	}
+
+	private static boolean isCellPartOfMergedRegion(Cell cell, Sheet sheet) {
+		for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+			CellRangeAddress region = sheet.getMergedRegion(i);
+			if (region.isInRange(cell.getRowIndex(), cell.getColumnIndex())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static CellRangeAddress getMergedRegion(Cell cell, Sheet sheet) {
+		for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+			CellRangeAddress region = sheet.getMergedRegion(i);
+			if (region.isInRange(cell.getRowIndex(), cell.getColumnIndex())) {
+				return region;
+			}
+		}
+		return null;
 	}
 
 }
