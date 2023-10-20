@@ -113,13 +113,19 @@ public abstract class AbstractAnalyseTable {
 	 */
 	protected void analyseHeader(Sheet sheet) {
 		Row header = sheet.getRow(0);
+		if (header != null) {
 
-		// identify columns
-		for (int i = header.getFirstCellNum(); i < header.getLastCellNum(); i++) {
-			Cell cell = header.getCell(i);
-			String text = extractText(cell);
-
-			headerCell(i, text);
+			// identify columns
+			int count = 0;
+			for (int i = header.getFirstCellNum(); i < header.getLastCellNum(); i++) {
+				Cell cell = header.getCell(i);
+				String text = extractText(cell, sheet);
+				// cell cannot be empty to extract the text
+				if (text != null) {
+					headerCell(count, text);
+					count++;
+				}
+			}
 		}
 	}
 
@@ -138,7 +144,9 @@ public abstract class AbstractAnalyseTable {
 		// for each row starting from the second
 		for (int i = 1; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
-			analyseRow(i, row);
+			if (row != null) {
+				analyseRow(i, row, sheet);
+			}
 		}
 	}
 
@@ -148,8 +156,9 @@ public abstract class AbstractAnalyseTable {
 	 * @param num the row number (starting from one as the header row is handled
 	 *            separately)
 	 * @param row the table row
+	 * @param sheet the sheet
 	 */
-	protected abstract void analyseRow(int num, Row row);
+	protected abstract void analyseRow(int num, Row row, Sheet sheet);
 
 	/**
 	 * Extract the text from a given cell. Formulas are evaluated, for blank or
@@ -158,8 +167,8 @@ public abstract class AbstractAnalyseTable {
 	 * @param cell the cell
 	 * @return the cell text
 	 */
-	protected String extractText(Cell cell) {
-		return XLSUtil.extractText(cell, evaluator);
+	protected String extractText(Cell cell, Sheet sheet) {
+		return XLSUtil.extractText(cell, evaluator, sheet);
 	}
 
 }
