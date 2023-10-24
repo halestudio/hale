@@ -170,7 +170,7 @@ public class JsonInstanceCollection implements InstanceCollection2 {
 
 	}
 
-	private final JsonToInstance translator;
+	private final JsonInstanceProcessor<Instance> translator;
 
 	private Boolean empty;
 
@@ -185,7 +185,7 @@ public class JsonInstanceCollection implements InstanceCollection2 {
 	 * @param input the input to load
 	 * @param charset the character set to use for reading the input
 	 */
-	public JsonInstanceCollection(JsonToInstance translator,
+	public JsonInstanceCollection(JsonInstanceProcessor<Instance> translator,
 			InputSupplier<? extends InputStream> input, Charset charset) {
 		super();
 		this.translator = translator;
