@@ -29,9 +29,11 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.parameter.AbstractParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
+import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.json.internal.JsonInstanceCollection;
+import eu.esdihumboldt.hale.io.json.internal.JsonInstanceProcessor;
 import eu.esdihumboldt.hale.io.json.internal.JsonReadMode;
 import eu.esdihumboldt.hale.io.json.internal.JsonToInstance;
 
@@ -113,8 +115,9 @@ public class JsonInstanceReader extends AbstractInstanceReader {
 				type = getSourceSchema().getType(defaultTypeName);
 			}
 
-			JsonToInstance translator = new JsonToInstance(getReadMode(), expectGeoJson, type,
-					isForceDefaultType(), getSourceSchema(), SimpleLog.fromLogger(log));
+			JsonInstanceProcessor<Instance> translator = new JsonToInstance(getReadMode(),
+					expectGeoJson, type, isForceDefaultType(), getSourceSchema(),
+					SimpleLog.fromLogger(log));
 			instances = new JsonInstanceCollection(translator, getSource(), getCharset());
 
 			reporter.setSuccess(true);
