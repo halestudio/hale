@@ -133,7 +133,12 @@ public interface SimpleLog {
 	 * @param args the pattern arguments
 	 */
 	default void warn(String pattern, Object... args) {
-		warn(MessageFormat.format(pattern, args));
+		String message = MessageFormat.format(pattern, args);
+		Throwable error = null;
+		if (args != null && args[args.length - 1] instanceof Throwable) {
+			error = (Throwable) args[args.length - 1];
+		}
+		warn(message, error);
 	}
 
 	void error(String message, Throwable e);
@@ -149,7 +154,12 @@ public interface SimpleLog {
 	 * @param args the pattern arguments
 	 */
 	default void error(String pattern, Object... args) {
-		error(MessageFormat.format(pattern, args));
+		String message = MessageFormat.format(pattern, args);
+		Throwable error = null;
+		if (args != null && args[args.length - 1] instanceof Throwable) {
+			error = (Throwable) args[args.length - 1];
+		}
+		error(message, error);
 	}
 
 	void info(String message, Throwable e);
@@ -166,7 +176,12 @@ public interface SimpleLog {
 	 * @param args the pattern arguments
 	 */
 	default void info(String pattern, Object... args) {
-		info(MessageFormat.format(pattern, args));
+		String message = MessageFormat.format(pattern, args);
+		Throwable error = null;
+		if (args != null && args[args.length - 1] instanceof Throwable) {
+			error = (Throwable) args[args.length - 1];
+		}
+		info(message, error);
 	}
 
 }

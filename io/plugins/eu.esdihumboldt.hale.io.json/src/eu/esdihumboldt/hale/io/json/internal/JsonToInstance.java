@@ -227,6 +227,18 @@ public class JsonToInstance extends AbstractJsonInstanceProcessor<Instance>
 	 * @return the qualified name
 	 */
 	private QName extractName(String text) {
+		return JsonToInstance.extractName(text, namespaces);
+	}
+
+	/**
+	 * Extract a qualified name from a text representation with an optional
+	 * namespace prefix.
+	 * 
+	 * @param text the text representation of the name
+	 * @param namespaces the namespace manager
+	 * @return the qualified name
+	 */
+	public static QName extractName(String text, NamespaceManager namespaces) {
 		if (text == null) {
 			return null;
 
