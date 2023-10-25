@@ -29,7 +29,14 @@ import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -53,9 +60,7 @@ import eu.esdihumboldt.util.io.IOUtils;
 /**
  * File import source
  * 
- * @param
- * 			<P>
- *            the supported {@link IOProvider} type
+ * @param <P> the supported {@link IOProvider} type
  * 
  * @author Simon Templer
  * @since 2.5
@@ -71,6 +76,8 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 	 * The set of supported content types
 	 */
 	private Set<IContentType> supportedTypes;
+
+	private ComboViewer types;
 
 	private URI projectLocation;
 
@@ -105,11 +112,44 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				if (event.getProperty().equals(FieldEditor.IS_VALID)) {
+					updateContentTypeList();
 					updateState(true);
 				}
 				else if (event.getProperty().equals(FieldEditor.VALUE)) {
+					updateContentTypeList();
 					updateState(true);
 				}
+			}
+		});
+
+		// types combo
+
+		// label
+		Label typeLabel = new Label(parent, SWT.NONE);
+		typeLabel.setText("Content type");
+
+		types = new ComboViewer(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		types.getControl().setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 3, 1));
+		types.setContentProvider(ArrayContentProvider.getInstance());
+		types.setLabelProvider(new LabelProvider() {
+
+			@Override
+			public String getText(Object element) {
+				if (element instanceof IContentType) {
+					return ((IContentType) element).getName();
+				}
+				return super.getText(element);
+			}
+
+		});
+		types.setInput(supportedTypes);
+
+		// process selection changes
+		types.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				updateState(true);
 			}
 		});
 
@@ -145,6 +185,36 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		updateState(true);
 	}
 
+	private void updateContentTypeList() {
+		// determine content type
+		if (sourceFile.isValid()) {
+			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(supportedTypes,
+					getSource(), sourceFile.getStringValue());
+			types.setInput(filteredTypes);
+
+			if (types.getSelection().isEmpty() && !filteredTypes.isEmpty()) {
+				types.setSelection(new StructuredSelection(filteredTypes.iterator().next()));
+			}
+		}
+	}
+
+	/**
+	 * @see AbstractProviderSource#updateState(boolean)
+	 */
+	@Override
+	protected void updateState(boolean updateContentType) {
+		boolean enableSelection = sourceFile.isValid();
+
+		types.getControl().setEnabled(enableSelection);
+
+		if (!enableSelection && types.getSelection() != null && !types.getSelection().isEmpty()) {
+			types.setSelection(new StructuredSelection());
+			updateContentType = true;
+		}
+
+		super.updateState(updateContentType);
+	}
+
 	/**
 	 * @see AbstractProviderSource#updateContentType()
 	 */
@@ -153,11 +223,10 @@ public class FileSource<P extends ImportProvider> extends AbstractProviderSource
 		IContentType contentType = null;
 
 		if (sourceFile.isValid()) {
-			// determine content type
-			Collection<IContentType> filteredTypes = HaleIO.findContentTypesFor(supportedTypes,
-					getSource(), sourceFile.getStringValue());
-			if (!filteredTypes.isEmpty()) {
-				contentType = filteredTypes.iterator().next();
+			ISelection typeSel = types.getSelection();
+
+			if (!typeSel.isEmpty() && typeSel instanceof IStructuredSelection) {
+				contentType = (IContentType) ((IStructuredSelection) typeSel).getFirstElement();
 			}
 		}
 

@@ -16,9 +16,14 @@
 package eu.esdihumboldt.hale.io.json.internal;
 
 import java.io.IOException;
+import java.io.Reader;
+import java.util.function.Consumer;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Interface for classes processing individual instances coming from Json.
@@ -27,6 +32,42 @@ import com.fasterxml.jackson.core.JsonParser;
  * @param <T> the result type per instance
  */
 public interface JsonInstanceProcessor<T> {
+
+	/**
+	 * Process Json instances.
+	 * 
+	 * @param <T> the processing result type per instance
+	 * @param json the Json reader
+	 * @param processor the instance processor
+	 * @param handler a handler for individual instance processing results, may
+	 *            be <code>null</code>
+	 * @param limit the maximum limit of instances to process, negative for no
+	 *            limit
+	 * 
+	 * @throws JsonParseException if the Json cannot be parsed
+	 * @throws IOException if an error occurs processing the Json
+	 */
+	static <T> void process(final Reader json, final JsonInstanceProcessor<T> processor,
+			final Consumer<T> handler, final int limit) throws JsonParseException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonFactory jsonFactory = mapper.getFactory();
+		try (JsonParser parser = jsonFactory.createParser(json)) {
+			processor.init(parser);
+
+			int num = 0;
+
+			while (parser.getCurrentToken() == JsonToken.START_OBJECT) {
+				num++;
+				if (limit < 0 || limit <= num) {
+					T instance = processor.readInstance(parser);
+					if (handler != null) {
+						handler.accept(instance);
+					}
+				}
+			}
+		}
+
+	}
 
 	/**
 	 * Initialize the parser to point at the right position to start reading
