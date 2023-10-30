@@ -17,6 +17,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.jdesktop.swingx.mapviewer.DefaultTileFactory.TileRunner;
 
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.util.http.ProxyUtil;
 import eu.esdihumboldt.util.http.client.ClientProxyUtil;
 import eu.esdihumboldt.util.http.client.ClientUtil;
@@ -94,6 +95,10 @@ public abstract class AbstractTileCache implements TileCache {
 		if (client == null) {
 			HttpClientBuilder builder = ClientUtil.threadSafeHttpClientBuilder(null);
 			builder = ClientProxyUtil.applyProxy(builder, proxy);
+			// Set user agent according to RFC 9110
+			// tile.openstreetmap.org will return HTTP 403 if no user agent is
+			// sent in the requests
+			builder.setUserAgent("hale-studio/" + HalePlatform.getCoreVersion().toString());
 
 			client = builder.build();
 
