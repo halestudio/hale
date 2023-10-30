@@ -60,7 +60,7 @@ public abstract class AbstractTileCache implements TileCache {
 	 */
 	@SuppressWarnings("javadoc")
 	protected InputStream openInputStream(URI uri) throws IllegalStateException, IOException {
-		if (!uri.getScheme().equals("http")) {
+		if (!uri.getScheme().startsWith("http")) {
 			// open non-http uris (e.g. filesystem, jar entry)
 			return uri.toURL().openStream();
 		}
