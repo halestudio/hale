@@ -85,7 +85,20 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 * @param geoJson if the output should be valid GeoJson output
 	 */
 	public InstanceToJson(boolean geoJson) {
+
 		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, 7);
+	}
+
+	/**
+	 *
+	 * Note: The GeoJson output follows the RFC SPEC but extends it similar to
+	 * the draft version 6 by attributes for namespace prefix definitions and
+	 * specific feature type: http://wiki.geojson.org/GeoJSON_draft_version_6
+	 *
+	 * @param geoJson if the output should be valid GeoJson output
+	 */
+	public InstanceToJson(boolean geoJson, int decimals) {
+		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, decimals);
 	}
 
 	/**
