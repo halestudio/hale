@@ -30,6 +30,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
+         <providerParameter
+               description="Number of decimal places to display."
+               label="Number of decimal places"
+               name="eu.esdihumboldt.hale.io.json.numOfDecimalPlaces">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="7"
+                  defaultDescription="Default decimal places to 7">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.json.GeoJSONInstanceWriter"
