@@ -125,7 +125,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	} // close try-iterator
 
 	/**
-	 * @param solveNestedProperties : Solve nested properties
+	 * @param solveNestedProperties : Add nested properties
 	 * @param selectedTypeName selected feature type
 	 * @param instances InstanceCollection available
 	 */
