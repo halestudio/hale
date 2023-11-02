@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.io.json.internal.JsonToInstance
  * 
  * @author Simon Templer
  */
+@SuppressWarnings("restriction")
 class JsonToInstanceTest {
 
 	/**
@@ -229,6 +230,142 @@ class JsonToInstanceTest {
 					assertThat(p.geometry.coordinates)
 							.containsExactly(new Coordinate(30, 10))
 				} as Consumer)
+	}
+
+	/**
+	 * Test reading nested properties including a geometry.
+	 */
+	@Test
+	void testReadNestedGeometry() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				some(String)
+				nested {
+					name(String)
+					geometry(GeometryProperty)
+				}
+			}
+		}
+
+		def json = '''{
+  "some": "string",
+  "nested": {
+    "name": "MyPoint",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [30, 10]
+    }
+  }
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.nested.value()
+		assertThat(value)
+				.isNull()
+
+		def inst = instance.p.nested.first()
+		assertThat(inst)
+				.isNotNull()
+				.isInstanceOf(Instance)
+				.satisfies({ Instance nested ->
+					// name is present
+					assertThat(nested.p.name.value())
+							.isEqualTo("MyPoint")
+
+					assertThat(nested.p.geometry.value())
+							.isNotNull()
+							.isInstanceOf(GeometryProperty)
+							.satisfies({ GeometryProperty p ->
+								// CRS is present
+								assertThat(p.CRSDefinition)
+										.isNotNull()
+
+								// geometry type
+								assertThat(p.geometry)
+										.isNotNull()
+										.isInstanceOf(Point)
+
+								// coordinates
+								assertThat(p.geometry.coordinates)
+										.containsExactly(new Coordinate(30, 10))
+							} as Consumer)
+				} as Consumer)
+	}
+
+	/**
+	 * Test reading a GeoJson object including a nested geometry property.
+	 */
+	@Test
+	void testReadNestedGeometryGeoJson() {
+		TypeDefinition type
+		Schema schema = new SchemaBuilder().schema {
+			type = TestType {
+				some(String)
+				nested {
+					name(String)
+					geometry(GeometryProperty)
+				}
+				the_main_geometry(GeometryProperty)
+			}
+		}
+
+		def json = '''{
+  "type": "Feature",
+  "properties": {
+    "some": "string",
+    "nested": {
+      "name": "MyPoint",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [30, 10]
+      }
+    }
+  },
+  "geometry": {
+    "type": "Point",
+    "coordinates": [30, 10]
+  } 
+}'''
+
+		def instance = readInstance(json, type, null, true)
+
+		def value = instance.p.nested.value()
+		assertThat(value)
+				.isNull()
+
+		def inst = instance.p.nested.first()
+		assertThat(inst)
+				.isNotNull()
+				.isInstanceOf(Instance)
+				.satisfies({ Instance nested ->
+					// name is present
+					assertThat(nested.p.name.value())
+							.isEqualTo("MyPoint")
+
+					assertThat(nested.p.geometry.value())
+							.isNotNull()
+							.isInstanceOf(GeometryProperty)
+							.satisfies({ GeometryProperty p ->
+								// CRS is present
+								assertThat(p.CRSDefinition)
+										.isNotNull()
+
+								// geometry type
+								assertThat(p.geometry)
+										.isNotNull()
+										.isInstanceOf(Point)
+
+								// coordinates
+								assertThat(p.geometry.coordinates)
+										.containsExactly(new Coordinate(30, 10))
+							} as Consumer)
+				} as Consumer)
+
+		assertThat(instance.p.the_main_geometry.value())
+				.isNotNull()
+				.isInstanceOf(GeometryProperty)
 	}
 
 	/**
