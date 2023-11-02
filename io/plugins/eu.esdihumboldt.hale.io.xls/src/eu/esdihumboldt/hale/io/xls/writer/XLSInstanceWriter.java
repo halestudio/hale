@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,11 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
@@ -70,6 +73,13 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+
+		Collection<? extends TypeDefinition> exportTypes = getTypesToExport(reporter);
+
+		if (exportTypes.isEmpty()) {
+			reporter.error("No schema types to export");
+			return reporter;
+		}
 
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
@@ -98,21 +108,12 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		cellStyle = XLSCellStyles.getNormalStyle(workbook, false);
 		headerStyle = XLSCellStyles.getHeaderStyle(workbook);
 
-		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
-		ArrayList<QName> selectedFeatureTypes = new ArrayList<>();
-
-		if (exportType != null) {
-			String[] splitExportType = exportType.split(",");
-			for (String featureType : splitExportType) {
-
-				selectedFeatureTypes.add(QName.valueOf(featureType));
-			}
-
-			for (QName selectedTypeName : selectedFeatureTypes) {
-				// get all instances of the selected Type
-				InstanceCollection instances = getInstanceCollection(selectedTypeName);
-				addSheetByQName(solveNestedProperties, selectedTypeName, instances);
-			}
+		// TODO refactor to only traverse instance collection once by creating
+		// sheets on demand?
+		for (TypeDefinition type : exportTypes) {
+			// get all instances of the selected Type
+			InstanceCollection instances = getInstances().select(new TypeFilter(type));
+			addSheetByQName(solveNestedProperties, instances);
 		}
 
 		try (FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());) {
@@ -125,12 +126,52 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	} // close try-iterator
 
 	/**
-	 * @param solveNestedProperties : Add nested properties
-	 * @param selectedTypeName selected feature type
+	 * @param reporter an optional reporter
+	 * @return the types to export
+	 */
+	private Collection<? extends TypeDefinition> getTypesToExport(SimpleLog reporter) {
+		String exportTypes = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
+
+		if (exportTypes != null) {
+			List<TypeDefinition> types = new ArrayList<TypeDefinition>();
+			String[] splitExportType = exportTypes.split(",");
+			for (String featureType : splitExportType) {
+				QName typeName = QName.valueOf(featureType);
+				TypeDefinition type = getTargetSchema().getType(typeName);
+
+				if (type == null) {
+					// try matching local name
+					type = getTargetSchema().getMappingRelevantTypes().stream()
+							.filter(t -> typeName.getLocalPart().equals(t.getName().getLocalPart()))
+							.findFirst().orElse(null);
+				}
+
+				if (type == null) {
+					// try matching display name
+					type = getTargetSchema().getMappingRelevantTypes().stream()
+							.filter(t -> typeName.getLocalPart().equals(t.getDisplayName()))
+							.findFirst().orElse(null);
+				}
+
+				if (type != null) {
+					types.add(type);
+				}
+				else if (reporter != null) {
+					reporter.error("Could not find type with name {0}", typeName);
+				}
+			}
+			return types;
+		}
+
+		// fall-back for no configuration
+		return getTargetSchema().getMappingRelevantTypes();
+	}
+
+	/**
+	 * @param solveNestedProperties if nested properties should be added
 	 * @param instances InstanceCollection available
 	 */
-	private void addSheetByQName(boolean solveNestedProperties, QName selectedTypeName,
-			InstanceCollection instances) {
+	private void addSheetByQName(boolean solveNestedProperties, InstanceCollection instances) {
 
 		// use ResourceIterator<Instance> in a try block because is closable
 		// -
@@ -185,7 +226,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 
 	@Override
 	public boolean isPassthrough() {
-		return true;
+		return getTypesToExport(null).size() < 2;
 	}
 
 	/**
@@ -193,7 +234,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "XLS file";
+		return "Excel file";
 	}
 
 	private void writeHeaderRow(Row row, List<String> cells) {
