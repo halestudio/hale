@@ -15,8 +15,9 @@
 
 package eu.esdihumboldt.hale.io.xls.ui;
 
+import java.io.InputStream;
+
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,9 +25,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
+import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
 
@@ -35,8 +40,11 @@ import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
  * 
  * @author Patrick Lieb
  */
-public class XLSInstanceImportConfigurationPage extends
-		AbstractConfigurationPage<InstanceReader, InstanceImportWizard> {
+public class XLSInstanceImportConfigurationPage
+		extends AbstractConfigurationPage<InstanceReader, InstanceImportWizard> {
+
+	private static final ALogger log = ALoggerFactory
+			.getLogger(XLSInstanceImportConfigurationPage.class);
 
 	private Combo sheetSelection;
 
@@ -82,8 +90,10 @@ public class XLSInstanceImportConfigurationPage extends
 			setErrorMessage(null);
 		}
 
-		try {
-			Workbook wb = WorkbookFactory.create(getWizard().getProvider().getSource().getInput());
+		try (InputStream input = getWizard().getProvider().getSource().getInput()) {
+			Workbook wb = AbstractAnalyseTable.loadWorkbook(input,
+					getWizard().getProvider().getSource().getLocation(),
+					ReaderSettings.isXlsxContentType(getWizard().getContentType()));
 			int numberOfSheets = wb.getNumberOfSheets();
 			String[] items = new String[numberOfSheets];
 			for (int i = 0; i < numberOfSheets; i++) {
@@ -91,6 +101,7 @@ public class XLSInstanceImportConfigurationPage extends
 			}
 			sheetSelection.setItems(items);
 		} catch (Exception e) {
+			log.error("Error loading Excel file", e);
 			setErrorMessage("Cannot load Excel file!");
 			setPageComplete(false);
 			return;

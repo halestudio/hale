@@ -56,7 +56,7 @@
             allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader"
             id="eu.esdihumboldt.hale.io.xls.reader.schema"
-            name="XLS file">
+            name="Excel file">
          <contentType
                ref="eu.esdihumboldt.hale.io.xls.xls">
          </contentType>
@@ -68,7 +68,7 @@
             allowDuplicate="true"
             class="eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader"
             id="eu.esdihumboldt.hale.io.xls.reader.instance"
-            name="XLS file">
+            name="Excel file">
          <contentType
                ref="eu.esdihumboldt.hale.io.xls.xls">
          </contentType>
@@ -76,10 +76,7 @@
                ref="eu.esdihumboldt.hale.io.xls.xlsx">
          </contentType>
          <providerParameter
-               description="States how many lines should be skipped when reading instances 
-               from a XLS file (e.g. because of the header). Also boolean values are 
-               supported for backwards compatibility. When a boolean is used, true is translated 
-               into 1 (i.e. skip the first line) and false into 0 (i.e. do not skip any lines)"
+               description="Setting to skip a certain number of lines when readin data. Useful if there are header rows."
                label="Skip N lines"
                name="skip"
                optional="true">
@@ -88,24 +85,29 @@
             </parameterBinding>
             <valueDescriptor
                   default="0"
+                  defaultDescription="Assume there is no header row and read all lines as data"
                   sampleDescription="Any integer equal or larger than 0">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Add all the exported types separated by &quot;,&quot; to the excel to be exported"
+               description="Type name(s) to use for loaded sheets. When multiple sheets are loaded you can provide type names separated by comma in order of the sheets. If no type name association is configured the reader tries to determine a type based on the sheet name."
                label="Type name"
                name="typename"
-               optional="false"
+               optional="true"
                valueDescriptor="eu.esdihumboldt.hale.io.csv.TypenameParameterDescriptor">
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+            <valueDescriptor
+                  sample="{http://namespace.example.com}name"
+                  sampleDescription="Notation of a type name is an optional namespace in curly braces followed by the local name.">
+            </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Index of the sheet to import. 0 is the index of the first sheet."
+               description="Index of the sheet to import. 0 is the index of the first sheet. Required if not using option to load multiple sheets."
                label="Sheet index"
                name="sheetIndex"
-               optional="false">
+               optional="true">
             <parameterBinding
                   class="java.lang.Integer">
             </parameterBinding>
@@ -124,23 +126,36 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Ignore feature types without data to be added to the exported Excel"
-               label="Ignore feature types without data"
-               name="ignoreEmptyFeaturetypes"
+               description="Enable loading multiple sheets instead of a single one. If this is enabled the setting on the sheet index does not have any effect."
+               label="Load multiple sheets"
+               name="multiSheet"
                optional="true">
             <parameterBinding
                   class="java.lang.Boolean">
             </parameterBinding>
-             <valueDescriptor
+            <valueDescriptor
                   default="false"
-                  defaultDescription="Defaults to false">
+                  defaultDescription="Default is to only load one sheet for backwards compatibility."
+                  sample="true"
+                  sampleDescription="Enable loading multiple sheets.">
             </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Settings for loading instances from sheets. Overrides general settings provided in other parameters for the configured sheets."
+               label="Sheet settings"
+               name="sheetSettings"
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.io.xls.reader.SheetSettingsValueDescriptor">
+            <parameterComplexValue
+                  ref="list">
+            </parameterComplexValue>
          </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter"
+            description="Write instance to an Excel table"
             id="eu.esdihumboldt.hale.io.xls.writer.instance"
-            name="XLS file">
+            name="Excel file">
          <contentType
                ref="eu.esdihumboldt.hale.io.xls.xls">
          </contentType>
@@ -156,6 +171,19 @@
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+         </providerParameter>
+         <providerParameter
+               description="Ignore feature types without data to be added to the exported Excel"
+               label="Ignore feature types without data"
+               name="ignoreEmptyFeaturetypes"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="Defaults to false">
+            </valueDescriptor>
          </providerParameter>
       </provider>
       </extension>

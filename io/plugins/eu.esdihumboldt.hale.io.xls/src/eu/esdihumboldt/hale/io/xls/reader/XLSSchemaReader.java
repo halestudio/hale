@@ -80,7 +80,8 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 		AnalyseXLSSchemaTable analyser;
 
 		try {
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
+			analyser = new AnalyseXLSSchemaTable(getSource(),
+					ReaderSettings.isXlsxContentType(getContentType()), sheetNum);
 			header = analyser.getHeader();
 
 			// create type definition

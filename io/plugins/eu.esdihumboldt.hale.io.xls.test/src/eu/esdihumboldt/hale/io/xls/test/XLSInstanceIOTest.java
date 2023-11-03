@@ -24,7 +24,6 @@ import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 import eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader;
-import eu.esdihumboldt.hale.io.xls.test.writer.XLSInstanceWriterTestUtil;
 import eu.esdihumboldt.hale.io.xls.writer.XLSInstanceWriter;
 import junit.framework.TestCase;
 
@@ -66,7 +65,7 @@ public class XLSInstanceIOTest extends TestCase {
 		File tempFile = new File(tempDir, "data.xls");
 		writer.setInstances(instances);
 		try {
-			Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
+			Schema schema = XLSInstanceWriterTestExamples.createSchema();
 			DefaultSchemaSpace ss = new DefaultSchemaSpace();
 			ss.addSchema(schema);
 			writer.setTargetSchema(ss);

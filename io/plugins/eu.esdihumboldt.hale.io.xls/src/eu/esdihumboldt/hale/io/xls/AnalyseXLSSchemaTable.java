@@ -15,7 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xls;
 
-import java.net.URI;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
+
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Analyse xls/xlsx schema files
@@ -38,17 +40,18 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	/**
 	 * Default constructor
 	 * 
-	 * @param location the location of the Excel file
+	 * @param source the source to load the file from
 	 * @param sheetNum number of the sheet in Excel file (0-based)
 	 * 
 	 * @throws Exception thrown if the analysis fails
 	 */
-	public AnalyseXLSSchemaTable(URI location, int sheetNum) throws Exception {
+	public AnalyseXLSSchemaTable(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
+			int sheetNum) throws Exception {
 
 		header = new ArrayList<String>();
 		rows = new HashMap<Integer, List<String>>();
 
-		analyse(location, sheetNum);
+		analyse(source, xlsx, sheetNum);
 	}
 
 	/**
