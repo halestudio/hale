@@ -16,10 +16,12 @@
 package eu.esdihumboldt.hale.io.xls;
 
 import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
@@ -28,6 +30,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
 /**
  * Do analysis on simple Excel tables.
@@ -41,35 +45,27 @@ public abstract class AbstractAnalyseTable {
 	/**
 	 * Load table to analyse from an Excel file (first sheet).
 	 * 
-	 * @param location the file location
+	 * @param source the source to load the file from
 	 * @throws Exception if an error occurs loading the file
 	 */
-	protected void analyse(URI location) throws Exception {
-		analyse(location, 0);
+	protected void analyse(LocatableInputSupplier<InputStream> source, boolean xlsx)
+			throws Exception {
+		analyse(source, xlsx, 0);
 	}
 
 	/**
 	 * Load table to analyse from an Excel file.
 	 * 
-	 * @param location the file location
+	 * @param source the source to load the file from
 	 * @param sheetNum number of the sheet that should be loaded (0-based)
 	 * @throws Exception if an error occurs loading the file
 	 */
-	protected void analyse(URI location, int sheetNum) throws Exception {
-		InputStream inp = new BufferedInputStream(location.toURL().openStream());
-
-		try {
+	protected void analyse(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
+			int sheetNum) throws Exception {
+		try (InputStream inp = new BufferedInputStream(source.getInput());) {
 //			https://poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
-			Workbook wb;
-			if (location.getPath().toLowerCase().endsWith(".xls")) {
-				try (POIFSFileSystem fs = new POIFSFileSystem(inp)) {
-					wb = new HSSFWorkbook(fs.getRoot(), true);
-				}
-			}
-			else {
-				OPCPackage pkg = OPCPackage.open(inp);
-				wb = new XSSFWorkbook(pkg);
-			}
+			URI location = source.getLocation();
+			Workbook wb = loadWorkbook(inp, location, xlsx);
 
 			Sheet sheet = wb.getSheetAt(sheetNum);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
@@ -82,9 +78,31 @@ public abstract class AbstractAnalyseTable {
 		} finally {
 			// reset evaluator reference
 			evaluator = null;
+		}
+	}
 
-			// unclear whether the POI API closes the stream
-			inp.close();
+	/**
+	 * Load a workbook from a stream.
+	 * 
+	 * @param input the input stream to load
+	 * @param location an optional location that can be used to determine the
+	 *            file type
+	 * @param xlsx if the file should be loaded as XLSX file
+	 * @return the loaded workbook
+	 * @throws IOException if an error occurs reading the file
+	 * @throws InvalidFormatException if file has an invalid format when
+	 *             attempting to load as OpenXML file
+	 */
+	public static Workbook loadWorkbook(InputStream input, URI location, boolean xlsx)
+			throws IOException, InvalidFormatException {
+		if (location != null && !xlsx && location.getPath().toLowerCase().endsWith(".xls")) {
+			try (POIFSFileSystem fs = new POIFSFileSystem(input)) {
+				return new HSSFWorkbook(fs.getRoot(), true);
+			}
+		}
+		else {
+			OPCPackage pkg = OPCPackage.open(input);
+			return new XSSFWorkbook(pkg);
 		}
 	}
 

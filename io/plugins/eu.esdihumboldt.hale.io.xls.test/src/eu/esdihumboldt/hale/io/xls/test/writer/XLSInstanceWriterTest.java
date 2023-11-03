@@ -153,9 +153,8 @@ public class XLSInstanceWriterTest {
 		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
 
 		writer.setInstances(example.getSourceInstances());
-		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		DefaultSchemaSpace ss = new DefaultSchemaSpace();
-		ss.addSchema(schema);
+		ss.addSchema(example.getSourceSchema());
 		writer.setTargetSchema(ss);
 		// write instances to a temporary XLS file
 		writer.setTarget(new FileIOSupplier(tmpFile));
@@ -203,9 +202,8 @@ public class XLSInstanceWriterTest {
 		File tmpFile = tmpFolder.newFile("excelNotNestedProperties.xls");
 
 		writer.setInstances(example.getSourceInstances());
-		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		DefaultSchemaSpace ss = new DefaultSchemaSpace();
-		ss.addSchema(schema);
+		ss.addSchema(example.getSourceSchema());
 		writer.setTargetSchema(ss);
 		// write instances to a temporary XLS file
 		writer.setTarget(new FileIOSupplier(tmpFile));

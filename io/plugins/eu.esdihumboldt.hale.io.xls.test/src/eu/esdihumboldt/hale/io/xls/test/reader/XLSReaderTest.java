@@ -15,9 +15,14 @@
 
 package eu.esdihumboldt.hale.io.xls.test.reader;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.namespace.QName;
 
@@ -25,11 +30,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
+import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -38,6 +45,8 @@ import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
+import eu.esdihumboldt.hale.io.xls.reader.SheetSettings;
 import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 import eu.esdihumboldt.hale.io.xls.reader.XLSSchemaReader;
 
@@ -339,6 +348,165 @@ public class XLSReaderTest {
 		assertTrue(value[0] instanceof Integer);
 	}
 
+	/**
+	 * Read an Excel file with multiple sheets detecting the associated types
+	 * based on the sheet name.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetDetectType() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// skip one line
+			reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
+		});
+
+		XLSReaderTestUtil.verifyMultiSheetExample(instances, false);
+	}
+
+	/**
+	 * Read an Excel file with multiple sheets setting the type mapping with the
+	 * type names parameter based on index.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetTypeNames() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// skip one line
+			reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
+
+			// Note: we swap the tables to make sure auto-detection based on the
+			// name is not used
+			reader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of("person,city"));
+		});
+
+		XLSReaderTestUtil.verifyMultiSheetExample(instances, true);
+	}
+
+	/**
+	 * Read an Excel file with multiple sheets specifying types explicitly via
+	 * sheet settings identified by sheet name.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetTypeSettingsNamed() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		ValueList settings = new ValueList();
+
+		// Note: we swap the tables to make sure auto-detection based on the
+		// name is not used
+
+		SheetSettings personTypeSettings = new SheetSettings("city", null);
+		personTypeSettings.setTypeName(QName.valueOf("person"));
+		settings.add(personTypeSettings.toValue());
+
+		SheetSettings cityTypeSettings = new SheetSettings("person", null);
+		cityTypeSettings.setTypeName(QName.valueOf("city"));
+		settings.add(cityTypeSettings.toValue());
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// skip one line
+			reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
+			// settings
+			reader.setParameter(ReaderSettings.PARAMETER_SHEET_SETTINGS, settings.toValue());
+		});
+
+		XLSReaderTestUtil.verifyMultiSheetExample(instances, true);
+	}
+
+	/**
+	 * Read an Excel file with multiple sheets specifying types explicitly via
+	 * sheet settings identified by sheet index.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetTypeSettingsIndex() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		ValueList settings = new ValueList();
+
+		// Note: we swap the tables to make sure auto-detection based on the
+		// name is not used
+
+		SheetSettings personTypeSettings = new SheetSettings(null, 0);
+		personTypeSettings.setTypeName(QName.valueOf("person"));
+		settings.add(personTypeSettings.toValue());
+
+		SheetSettings cityTypeSettings = new SheetSettings(null, 1);
+		cityTypeSettings.setTypeName(QName.valueOf("city"));
+		settings.add(cityTypeSettings.toValue());
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// skip one line
+			reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
+			// settings
+			reader.setParameter(ReaderSettings.PARAMETER_SHEET_SETTINGS, settings.toValue());
+		});
+
+		XLSReaderTestUtil.verifyMultiSheetExample(instances, true);
+	}
+
+	/**
+	 * Read an Excel file with multiple sheets specifying types explicitly via
+	 * sheet settings identified by sheet index.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetTypeSkipSettings() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		ValueList settings = new ValueList();
+
+		SheetSettings cityTypeSettings = new SheetSettings(null, 0);
+		cityTypeSettings.setTypeName(QName.valueOf("city"));
+		cityTypeSettings.setSkipSheet(true);
+		settings.add(cityTypeSettings.toValue());
+
+		SheetSettings personTypeSettings = new SheetSettings(null, 1);
+		personTypeSettings.setTypeName(QName.valueOf("person"));
+		personTypeSettings.setSkipLines(2);
+		settings.add(personTypeSettings.toValue());
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// skip one line
+			reader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(1));
+			// settings
+			reader.setParameter(ReaderSettings.PARAMETER_SHEET_SETTINGS, settings.toValue());
+		});
+
+		List<Instance> persons = new ArrayList<>();
+
+		try (ResourceIterator<Instance> it = instances.iterator()) {
+			while (it.hasNext()) {
+				persons.add(it.next());
+			}
+		}
+
+		// only Yoda should be contained
+		assertThat(persons).hasSize(1).allSatisfy(XLSReaderTestUtil::verifyYoda);
+	}
+
+	// helpers
+
 	private Schema readXLSSchema(String sourceLocation, int sheetIndex, String typeName,
 			String paramPropertyType) throws Exception {
 
@@ -384,6 +552,25 @@ public class XLSReaderTest {
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 		instanceReader.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES, Value.of(skipN));
 		instanceReader.setSourceSchema(sourceSchema);
+
+		// Test instances
+		IOReport report = instanceReader.execute(null);
+		assertTrue("Data import was not successfull.", report.isSuccess());
+
+		return instanceReader.getInstances();
+	}
+
+	private InstanceCollection readXLSInstances(String sourceLocation, Schema sourceSchema,
+			Consumer<XLSInstanceReader> configureReader) throws Exception {
+		XLSInstanceReader instanceReader = new XLSInstanceReader();
+		instanceReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
+		instanceReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
+		instanceReader.setSourceSchema(sourceSchema);
+
+		if (configureReader != null) {
+			configureReader.accept(instanceReader);
+		}
 
 		// Test instances
 		IOReport report = instanceReader.execute(null);
