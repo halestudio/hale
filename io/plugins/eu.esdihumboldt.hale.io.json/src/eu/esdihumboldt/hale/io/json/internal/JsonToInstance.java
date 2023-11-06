@@ -15,22 +15,15 @@
 
 package eu.esdihumboldt.hale.io.json.internal;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -46,10 +39,10 @@ import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
  * 
  * @author Simon Templer
  */
-public class JsonToInstance implements InstanceJsonConstants {
+public class JsonToInstance extends AbstractJsonInstanceProcessor<Instance>
+		implements InstanceJsonConstants {
 
 	private final NamespaceManager namespaces;
-	private final boolean expectGeoJson;
 
 	private final JsonInstanceBuilder builder;
 
@@ -60,7 +53,6 @@ public class JsonToInstance implements InstanceJsonConstants {
 	private final TypeDefinition defaultType;
 	private final TypeIndex schema;
 	private final SimpleLog log;
-	private final JsonReadMode mode;
 	private final boolean forceDefault;
 
 	/**
@@ -111,19 +103,17 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 */
 	public JsonToInstance(JsonReadMode mode, boolean expectGeoJson, TypeDefinition defaultType,
 			boolean forceDefault, TypeIndex schema, SimpleLog log, NamespaceManager namespaces) {
-		super();
+		super(mode, expectGeoJson);
 
 		if (defaultType == null && forceDefault) {
 			throw new IllegalStateException(
 					"Default type needs to be specified when forcing to use default type");
 		}
 
-		this.expectGeoJson = expectGeoJson;
 		this.namespaces = namespaces;
 		this.defaultType = (defaultType != null) ? defaultType : determineDefaultType(schema, log);
 		this.log = log;
 		this.schema = schema;
-		this.mode = mode;
 		this.forceDefault = forceDefault;
 
 		this.builder = new JsonInstanceBuilder(log, namespaces, sourceCrs);
@@ -171,145 +161,12 @@ public class JsonToInstance implements InstanceJsonConstants {
 	}
 
 	/**
-	 * Initialize the parser to point at the right position to start reading
-	 * instances.
-	 * 
-	 * @param parser the JSON parser
+	 * @see eu.esdihumboldt.hale.io.json.internal.AbstractJsonInstanceProcessor#processInstance(java.util.Map,
+	 *      com.fasterxml.jackson.databind.node.ObjectNode, java.util.Map)
 	 */
-	public void init(JsonParser parser) throws JsonParseException, IOException {
-		JsonToken start = parser.nextToken();
-
-		// proceed to first object
-		switch (mode) {
-		case auto:
-			// auto-detect if array or FeatureCollection
-
-			switch (start) {
-			case START_ARRAY:
-				// collection is an array, nothing to do
-				break;
-			case START_OBJECT:
-				// expecting feature collection
-				// -> move to "features" array
-				proceedToField("features", parser);
-				if (parser.getCurrentToken() != JsonToken.FIELD_NAME) {
-					throw new IllegalStateException(
-							"Did not find field \"features\" in FeatureCollection");
-				}
-
-				// proceed to array start
-				if (parser.nextToken() != JsonToken.START_ARRAY) {
-					throw new IllegalStateException("\"features\" expected to be an array");
-				}
-				break;
-			default:
-				throw new IllegalStateException("Unexpected start token " + start);
-			}
-
-			parser.nextToken(); // move to value start
-			break;
-		case singleObject:
-			// read single object
-			if (start != JsonToken.START_OBJECT) {
-				throw new IllegalStateException("Json does not start with object");
-			}
-			break;
-		case firstArray:
-			// use first array encountered
-			proceedToArray(parser);
-			if (parser.getCurrentToken() != JsonToken.START_ARRAY) {
-				// no array found
-				throw new IllegalStateException("No Json array found");
-			}
-			parser.nextToken(); // move to value start
-			break;
-		default:
-			throw new IllegalStateException("Unrecognized read mode " + mode);
-		}
-	}
-
-	private void proceedToField(String fieldName, JsonParser parser)
-			throws JsonParseException, IOException {
-		while (parser.nextToken() != null) {
-			JsonToken current = parser.getCurrentToken();
-			if (current == JsonToken.FIELD_NAME && fieldName.equals(parser.getCurrentName())) {
-				// found field name
-				return;
-			}
-
-			else if (current == JsonToken.START_ARRAY || current == JsonToken.START_OBJECT) {
-				// skip child arrays and objects
-				parser.skipChildren();
-			}
-		}
-	}
-
-	/**
-	 * Proceed to the first array found.
-	 * 
-	 * @param parser the Json parser
-	 */
-	private void proceedToArray(JsonParser parser) throws JsonParseException, IOException {
-		while (parser.nextToken() != null) {
-			JsonToken current = parser.getCurrentToken();
-			if (current == JsonToken.START_ARRAY) {
-				// found array
-				return;
-			}
-		}
-	}
-
-	/**
-	 * Read a single instance from the given parser. It is expected that the
-	 * current position of the parser is at the start of an object.
-	 * 
-	 * @param parser the JSON parser
-	 * @return the parsed instance
-	 * @throws IOException if parsing the JSON fails
-	 */
-	public Instance readInstance(JsonParser parser) throws IOException {
-		JsonToken current = parser.getCurrentToken();
-
-		if (current != JsonToken.START_OBJECT) {
-			throw new IllegalStateException(
-					"Read instance: Expected object start but found " + current);
-		}
-
-		/*
-		 * Note: It would be nice to use the streaming API to process the
-		 * complete JSON, but in that case we would rely for some things on
-		 * information being provided in a certain order, which we can't rely
-		 * on.
-		 * 
-		 * Example cases where order does matter:
-		 * 
-		 * - detecting if GeoJson is used
-		 * 
-		 * - determining a schema type automatically (based on @type field or
-		 * event structure) [not done yet]
-		 */
-		Map<String, JsonNode> fields = readFieldsAsTree(parser);
-
-		boolean isGeoJson = false;
-
-		// for GeoJson expect type = Feature
-		JsonNode typeNode = fields.get("type");
-		JsonNode geomNode = fields.get("geometry");
-		JsonNode propNode = fields.get("properties");
-		boolean hasFt = typeNode != null && "Feature".equals(typeNode.textValue());
-		boolean hasGeometry = geomNode != null && geomNode.isObject();
-		boolean hasProperties = propNode != null && propNode.isObject();
-
-		if (expectGeoJson) {
-			// if we expect GeoJson, one of the conditions is enough
-			isGeoJson = hasFt || hasGeometry || hasProperties;
-		}
-		else {
-			// if we do not expect it there should be at least the type and one
-			// of the other fields defined
-			isGeoJson = hasFt && (hasGeometry || hasProperties);
-		}
-
+	@Override
+	protected Instance processInstance(Map<String, JsonNode> fields, ObjectNode geom,
+			Map<String, JsonNode> properties) {
 		// determine schema type
 
 		/*
@@ -359,32 +216,7 @@ public class JsonToInstance implements InstanceJsonConstants {
 			}
 		}
 
-		// move on to next token (beginning of next instance)
-		parser.nextToken();
-
-		// create instance
-
-		if (isGeoJson) {
-			// build from GeoJson feature structure
-			ObjectNode geom = (geomNode != null && geomNode.isObject()) ? (ObjectNode) geomNode
-					: null;
-			ObjectNode props = (propNode != null && propNode.isObject()) ? (ObjectNode) propNode
-					: null;
-			Map<String, JsonNode> properties = new HashMap<>();
-			if (props != null) {
-				Iterator<Entry<String, JsonNode>> it = props.fields();
-				while (it.hasNext()) {
-					Entry<String, JsonNode> entry = it.next();
-					properties.put(entry.getKey(), entry.getValue());
-				}
-			}
-
-			return builder.buildInstance(type, geom, properties);
-		}
-		else {
-			// generic JSON instance
-			return builder.buildInstance(type, null, fields);
-		}
+		return builder.buildInstance(type, geom, properties);
 	}
 
 	/**
@@ -395,6 +227,18 @@ public class JsonToInstance implements InstanceJsonConstants {
 	 * @return the qualified name
 	 */
 	private QName extractName(String text) {
+		return JsonToInstance.extractName(text, namespaces);
+	}
+
+	/**
+	 * Extract a qualified name from a text representation with an optional
+	 * namespace prefix.
+	 * 
+	 * @param text the text representation of the name
+	 * @param namespaces the namespace manager
+	 * @return the qualified name
+	 */
+	public static QName extractName(String text, NamespaceManager namespaces) {
 		if (text == null) {
 			return null;
 
@@ -413,53 +257,6 @@ public class JsonToInstance implements InstanceJsonConstants {
 		}
 		else {
 			return new QName(text);
-		}
-	}
-
-	/**
-	 * Read the fields of the current object as Json nodes.
-	 * 
-	 * @param parser the JSON parser
-	 * @return the map of field names and and values as nodes
-	 * @throws IOException if parsing the JSON fails
-	 */
-	private Map<String, JsonNode> readFieldsAsTree(JsonParser parser) throws IOException {
-		Map<String, JsonNode> fields = new HashMap<>();
-		while (parser.nextToken() != JsonToken.END_OBJECT) {
-			if (parser.getCurrentToken() == JsonToken.FIELD_NAME) {
-				parser.nextToken();
-			}
-
-			fields.put(parser.getCurrentName(), parser.readValueAsTree());
-
-			// FIXME where is the token after reading as tree?!
-		}
-		return fields;
-	}
-
-	/**
-	 * Skip a field value in the JSON parser.
-	 * 
-	 * @param parser the JSON parser
-	 * @throws IOException if parsing the JSON fails
-	 */
-	public void skipValue(JsonParser parser) throws IOException {
-		JsonToken current = parser.getCurrentToken();
-
-		if (current == JsonToken.FIELD_NAME) {
-			// skip field name
-			current = parser.nextToken();
-		}
-
-		if (current == JsonToken.START_ARRAY || current == JsonToken.START_OBJECT) {
-			// skip child arrays and objects
-			parser.skipChildren();
-			// skip end token
-			parser.nextToken();
-		}
-		else {
-			// skip value or end token
-			parser.nextToken();
 		}
 	}
 

@@ -73,8 +73,15 @@ public class MergeSchemas {
 	public static Iterable<? extends Schema> merge(Iterable<? extends Schema> schemas,
 			boolean mergeAll) {
 		// count namespaces
-		Map<String, Long> counts = Streams.stream(schemas).map(schema -> schema.getNamespace())
-				.collect(Collectors.groupingBy(e -> e, Collectors.counting()));
+		Map<String, Long> counts = Streams.stream(schemas).map(schema -> {
+			String ns = schema.getNamespace();
+			if (ns == null) {
+				// replace null with empty string -> counting fails for null
+				// values
+				ns = "";
+			}
+			return ns;
+		}).collect(Collectors.groupingBy(e -> e, Collectors.counting()));
 
 		if (mergeAll) {
 			// we merge to one namespace
@@ -85,6 +92,9 @@ public class MergeSchemas {
 			}
 			else {
 				namespace = DEFAULT_COMBINED_NAMESPACE;
+			}
+			if ("".equals(namespace)) {
+				namespace = null;
 			}
 
 			Schema schema = new MergedSchema(namespace, schemas);

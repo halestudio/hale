@@ -19,6 +19,7 @@ Require-Bundle: org.jdesktop.swingx;bundle-version="1.0.0"
 Import-Package: com.google.common.cache;version="27.0.0",
  com.google.common.collect;version="9.0.0",
  edu.umd.cs.findbugs.annotations,
+ eu.esdihumboldt.hale.common.core,
  eu.esdihumboldt.util.http,
  eu.esdihumboldt.util.http.client,
  org.apache.commons.logging;version="1.1.1",
@@ -33,6 +34,7 @@ Import-Package: com.google.common.cache;version="27.0.0",
  org.opengis.referencing.crs,
  org.opengis.referencing.cs,
  org.opengis.referencing.operation,
- org.opengis.util
+ org.opengis.util,
+ org.osgi.framework;version="1.9.0"
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.jdesktop.swingx.mapviewer

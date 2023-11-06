@@ -30,6 +30,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
+         <providerParameter
+               description="Number of decimal places to display."
+               label="Number of decimal places"
+               name="eu.esdihumboldt.hale.io.json.numOfDecimalPlaces">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="7"
+                  defaultDescription="Default decimal places to 7">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.json.GeoJSONInstanceWriter"
@@ -101,6 +113,42 @@
             <parameterBinding
                   class="java.lang.String">
             </parameterBinding>
+         </providerParameter>
+      </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.json.JsonSchemaReader"
+            description="Reads Json data and derives a schema from it"
+            id="eu.esdihumboldt.hale.io.json.reader.dataschema"
+            name="Schema from JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+         <providerParameter
+               description="Mode for reading Json structure"
+               label="Read mode"
+               name="mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="auto">
+               </enumerationValue>
+               <enumerationValue
+                     value="singleObject">
+               </enumerationValue>
+               <enumerationValue
+                     value="firstArray">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="auto"
+                  defaultDescription="Load objects from a Json array or a GeoJson FeatureCollection"
+                  sample="singleObject"
+                  sampleDescription="When the source file is only a single object at its root, use this mode">
+            </valueDescriptor>
          </providerParameter>
       </provider>
    </extension>

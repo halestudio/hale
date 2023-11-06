@@ -30,7 +30,7 @@ public class DefaultTileFactory implements TileFactory {
 
 	private static final Log log = LogFactory.getLog(DefaultTileFactory.class);
 
-	private int threadPoolSize = 4;
+	private int threadPoolSize = 2;
 	private ExecutorService service;
 
 	private final TileProvider provider;
