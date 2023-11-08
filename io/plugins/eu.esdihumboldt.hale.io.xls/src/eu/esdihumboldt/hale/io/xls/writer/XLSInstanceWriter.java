@@ -51,6 +51,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
 import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
+import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 
 /**
  * Instance export provider for xls files
@@ -137,21 +138,8 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			String[] splitExportType = exportTypes.split(",");
 			for (String featureType : splitExportType) {
 				QName typeName = QName.valueOf(featureType);
-				TypeDefinition type = getTargetSchema().getType(typeName);
-
-				if (type == null) {
-					// try matching local name
-					type = getTargetSchema().getMappingRelevantTypes().stream()
-							.filter(t -> typeName.getLocalPart().equals(t.getName().getLocalPart()))
-							.findFirst().orElse(null);
-				}
-
-				if (type == null) {
-					// try matching display name
-					type = getTargetSchema().getMappingRelevantTypes().stream()
-							.filter(t -> typeName.getLocalPart().equals(t.getDisplayName()))
-							.findFirst().orElse(null);
-				}
+				TypeDefinition type = XLSInstanceReader.matchTypeByName(typeName,
+						getTargetSchema());
 
 				if (type != null) {
 					types.add(type);

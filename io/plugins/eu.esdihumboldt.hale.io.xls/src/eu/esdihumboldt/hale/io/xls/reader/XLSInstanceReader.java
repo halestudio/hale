@@ -40,6 +40,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
@@ -107,6 +108,36 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		return reporter;
 	}
 
+	/**
+	 * Try to match the given type name to a schema type based on the name.
+	 * Prefers a full match of the qualified name but also test for display name
+	 * and local name matching the provided local name.
+	 * 
+	 * @param typeName the type name to match
+	 * @param schema the schema to check
+	 * @return the matched type or <code>null</code>
+	 */
+	public static TypeDefinition matchTypeByName(QName typeName, TypeIndex schema) {
+		TypeDefinition type = schema.getType(typeName);
+
+		if (type == null) {
+			// try matching display name (since this is used when writing to
+			// Excel)
+			type = schema.getMappingRelevantTypes().stream()
+					.filter(t -> typeName.getLocalPart().equals(t.getDisplayName())).findFirst()
+					.orElse(null);
+		}
+
+		if (type == null) {
+			// try matching local name
+			type = schema.getMappingRelevantTypes().stream()
+					.filter(t -> typeName.getLocalPart().equals(t.getName().getLocalPart()))
+					.findFirst().orElse(null);
+		}
+
+		return type;
+	}
+
 	private void loadSheet(SheetInfo sheet, IOReporter reporter) throws Exception {
 		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(getSource(),
 				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex());
@@ -119,33 +150,13 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		}
 		if (type == null) {
 			// look for match based on sheet name
-			String localName;
 			QName qname = null;
 			try {
 				qname = QName.valueOf(sheet.getName());
-				localName = qname.getLocalPart();
 			} catch (Exception e) {
-				localName = sheet.getName();
+				qname = new QName(sheet.getName());
 			}
-			final String flName = localName;
-
-			// exact name
-			if (qname != null) {
-				type = getSourceSchema().getType(qname);
-			}
-
-			if (type == null) {
-				// try display name (since this is used when writing to Excel)
-				getSourceSchema().getMappingRelevantTypes().stream()
-						.filter(t -> flName.equals(t.getDisplayName())).findFirst().orElse(null);
-			}
-
-			if (type == null) {
-				// try local name
-				getSourceSchema().getMappingRelevantTypes().stream()
-						.filter(t -> flName.equals(t.getName().getLocalPart())).findFirst()
-						.orElse(null);
-			}
+			type = matchTypeByName(qname, getSourceSchema());
 		}
 
 		// get property definitions
