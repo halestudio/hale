@@ -204,10 +204,12 @@ public class ReaderSettings {
 			// writer
 			String typeNames = reader.getParameter(CommonSchemaConstants.PARAM_TYPENAME)
 					.as(String.class);
-			String[] typeNamesParts = typeNames.split(",");
-			for (int i = 0; i < typeNamesParts.length && i < sheets.size(); i++) {
-				QName typeName = QName.valueOf(typeNamesParts[i]);
-				sheets.get(i).getSettings().setTypeName(typeName);
+			if (typeNames != null) {
+				String[] typeNamesParts = typeNames.split(",");
+				for (int i = 0; i < typeNamesParts.length && i < sheets.size(); i++) {
+					QName typeName = QName.valueOf(typeNamesParts[i]);
+					sheets.get(i).getSettings().setTypeName(typeName);
+				}
 			}
 		}
 		else {
