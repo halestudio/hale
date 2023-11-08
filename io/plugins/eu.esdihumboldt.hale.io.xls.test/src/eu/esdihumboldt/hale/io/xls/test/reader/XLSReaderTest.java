@@ -429,6 +429,42 @@ public class XLSReaderTest {
 
 	/**
 	 * Read an Excel file with multiple sheets specifying types explicitly via
+	 * sheet settings identified by sheet name. How many lines are to be skipped
+	 * is configured individually per sheet.
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testReadMultiSheetTypeSettingsNamedNoGeneralSkip() throws Exception {
+		Schema schema = XLSReaderTestUtil.createMultiSheetExampleSchema();
+
+		ValueList settings = new ValueList();
+
+		// Note: we swap the tables to make sure auto-detection based on the
+		// name is not used
+
+		SheetSettings personTypeSettings = new SheetSettings("city", null);
+		personTypeSettings.setTypeName(QName.valueOf("person"));
+		personTypeSettings.setSkipLines(1);
+		settings.add(personTypeSettings.toValue());
+
+		SheetSettings cityTypeSettings = new SheetSettings("person", null);
+		cityTypeSettings.setTypeName(QName.valueOf("city"));
+		cityTypeSettings.setSkipLines(1);
+		settings.add(cityTypeSettings.toValue());
+
+		InstanceCollection instances = readXLSInstances("/data/multisheet.xlsx", schema, reader -> {
+			// enable multi sheet loading
+			reader.setParameter(ReaderSettings.PARAMETER_MULTI_SHEET, Value.of(true));
+			// settings
+			reader.setParameter(ReaderSettings.PARAMETER_SHEET_SETTINGS, settings.toValue());
+		});
+
+		XLSReaderTestUtil.verifyMultiSheetExample(instances, true);
+	}
+
+	/**
+	 * Read an Excel file with multiple sheets specifying types explicitly via
 	 * sheet settings identified by sheet index.
 	 * 
 	 * @throws Exception if an error occurs
