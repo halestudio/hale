@@ -182,7 +182,7 @@ public class ReaderSettings {
 
 		if (skipType == null) {
 			skipNlines = reader.getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES)
-					.as(Integer.class);
+					.as(Integer.class, 0);
 		}
 		else if (skipType) {
 			skipNlines = 1;
