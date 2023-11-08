@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.xls.test.writer;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -42,6 +43,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.impl.MultiInstanceCollection;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace;
@@ -151,9 +153,8 @@ public class XLSInstanceWriterTest {
 		File tmpFile = tmpFolder.newFile("excelTestWriteComplexSchema.xls");
 
 		writer.setInstances(example.getSourceInstances());
-		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		DefaultSchemaSpace ss = new DefaultSchemaSpace();
-		ss.addSchema(schema);
+		ss.addSchema(example.getSourceSchema());
 		writer.setTargetSchema(ss);
 		// write instances to a temporary XLS file
 		writer.setTarget(new FileIOSupplier(tmpFile));
@@ -201,9 +202,8 @@ public class XLSInstanceWriterTest {
 		File tmpFile = tmpFolder.newFile("excelNotNestedProperties.xls");
 
 		writer.setInstances(example.getSourceInstances());
-		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		DefaultSchemaSpace ss = new DefaultSchemaSpace();
-		ss.addSchema(schema);
+		ss.addSchema(example.getSourceSchema());
 		writer.setTargetSchema(ss);
 		// write instances to a temporary XLS file
 		writer.setTarget(new FileIOSupplier(tmpFile));
@@ -237,8 +237,10 @@ public class XLSInstanceWriterTest {
 				.getExample(TransformationExamples.SIMPLE_COMPLEX);
 		TransformationExample example2 = TransformationExamples
 				.getExample(TransformationExamples.CARDINALITY_MERGE_1);
-		examples.add(example.getTargetInstances());
-		examples.add(example2.getTargetInstances());
+		// collect instance collections - need to be in memory because they will
+		// be iterated over twice
+		examples.add(new DefaultInstanceCollection(example.getTargetInstances()));
+		examples.add(new DefaultInstanceCollection(example2.getTargetInstances()));
 
 		// set instances to xls instance writer
 		XLSInstanceWriter writer = new XLSInstanceWriter();
@@ -246,16 +248,17 @@ public class XLSInstanceWriterTest {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(false));
-		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("person" + "," + "t1"));
+		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE,
+				Value.of("{http://www.example.org/t2/}PersonType,{http://www.example.org/t2/}T2"));
 
 		File tmpFile = tmpFolder.newFile("excelWith2Sheets.xls");
 		// write instances to a temporary XLS file
 		writer.setTarget(new FileIOSupplier(tmpFile));
 		writer.setContentType(contentType);
 
-		Schema schema = XLSInstanceWriterTestUtil.createExampleSchema();
 		DefaultSchemaSpace ss = new DefaultSchemaSpace();
-		ss.addSchema(schema);
+		ss.addSchema(example.getTargetSchema());
+		ss.addSchema(example2.getTargetSchema());
 		writer.setTargetSchema(ss);
 
 		InstanceCollection multiInstanceCollection = new MultiInstanceCollection(examples);
@@ -270,8 +273,11 @@ public class XLSInstanceWriterTest {
 			wb = new HSSFWorkbook(fs.getRoot(), true);
 		}
 		int sheetNumber = wb.getNumberOfSheets();
-		Sheet sheet = wb.getSheetAt(0);
-		assertEquals(1, sheetNumber);
+		assertEquals(2, sheetNumber);
+		Sheet sheet1 = wb.getSheetAt(0);
+		assertNotNull(sheet1.getRow(0));
+		Sheet sheet2 = wb.getSheetAt(1);
+		assertNotNull(sheet2.getRow(0));
 		tmpFolder.delete();
 	}
 

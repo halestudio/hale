@@ -86,7 +86,7 @@ public class CommonInstanceExportConfigurationPage
 		page.setLayout(new GridLayout(1, false));
 
 		solveNestedProperties = new Button(page, SWT.CHECK);
-		solveNestedProperties.setText("Solve nested properties");
+		solveNestedProperties.setText("Add nested properties");
 		solveNestedProperties.setSelection(true);
 
 		useSchema = new Button(page, SWT.CHECK);

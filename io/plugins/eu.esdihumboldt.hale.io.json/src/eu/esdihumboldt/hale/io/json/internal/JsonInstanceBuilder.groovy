@@ -207,10 +207,23 @@ class JsonInstanceBuilder {
 			else {
 				// select candidate
 
+				// prefer paths with length one
+				def mainCandidates = candidates.findAll { it.propertyPath.size() == 1 }
+				if (!mainCandidates.empty) {
+					candidates = mainCandidates
+				}
+
 				// extract main property names; order matters because of traversal order for finding the candidates
 				Set<QName> names = new LinkedHashSet(candidates*.propertyPath[0]*.child*.name)
 
-				def preferred = null //XXX are there any ways we could prefer one candidate over the other?
+				QName preferred = null
+
+				// prefer by name
+				if (preferred == null) preferred = names.find { it.localPart == 'geometry' }
+				if (preferred == null) preferred = names.find { it.localPart == 'geom' }
+				if (preferred == null) preferred = names.find { it.localPart == 'the_geom' }
+
+				// are there any other ways we could prefer one candidate over the other?
 
 				if (preferred == null) {
 					// otherwise use first one

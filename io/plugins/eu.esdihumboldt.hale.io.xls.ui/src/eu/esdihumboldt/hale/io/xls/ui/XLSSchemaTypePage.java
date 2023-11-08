@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.xls.ui;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 
@@ -22,7 +23,6 @@ import org.apache.poi.hssf.OldExcelFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -33,11 +33,15 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.ui.DefaultSchemaTypePage;
+import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 
 /**
  * Schema type configuration page for loading xls/xlsx schema files. Adds a
@@ -47,6 +51,8 @@ import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
  * 
  */
 public class XLSSchemaTypePage extends DefaultSchemaTypePage {
+
+	private static final ALogger log = ALoggerFactory.getLogger(XLSSchemaTypePage.class);
 
 	private int sheetNum = 0;
 	private Combo sheet;
@@ -150,8 +156,9 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 			sheetNum = 0;
 		}
 
-		try {
-			Workbook wb = WorkbookFactory.create(getWizard().getProvider().getSource().getInput());
+		try (InputStream input = getWizard().getProvider().getSource().getInput()) {
+			Workbook wb = AbstractAnalyseTable.loadWorkbook(input, newLocation,
+					ReaderSettings.isXlsxContentType(getWizard().getContentType()));
 
 			int numberOfSheets = wb.getNumberOfSheets();
 			if (sheetNum >= numberOfSheets) {
@@ -185,9 +192,11 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 			// the setup is not in a valid state
 			clearPage();
 			clearSuperPage();
-			setErrorMessage("Old excel format detected (format 5.0/7.0 (BIFF5)). Please convert the excel file to BIFF8 from Excel versions 97/2000/XP/2003.");
+			setErrorMessage(
+					"Old excel format detected (format 5.0/7.0 (BIFF5)). Please convert the excel file to BIFF8 from Excel versions 97/2000/XP/2003.");
 			setPageComplete(false);
 		} catch (Exception e) {
+			log.error("Error loading Excel file", e);
 			clearPage();
 			clearSuperPage();
 			setErrorMessage("Excel file cannot be loaded!");
@@ -223,8 +232,9 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 	private void update(int sheetNum) throws Exception {
 
 		// if the sheet is empty an Exception occurs
-		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(getWizard().getProvider()
-				.getSource().getLocation(), sheetNum);
+		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(
+				getWizard().getProvider().getSource(),
+				ReaderSettings.isXlsxContentType(getWizard().getContentType()), sheetNum);
 
 		setHeader(analyser.getHeader().toArray(new String[0]));
 

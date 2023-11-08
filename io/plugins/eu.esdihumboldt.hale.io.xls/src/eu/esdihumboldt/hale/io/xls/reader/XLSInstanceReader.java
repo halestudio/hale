@@ -37,13 +37,14 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstance;
 import eu.esdihumboldt.hale.common.instance.model.impl.DefaultInstanceCollection;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
-import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
-import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings.SheetInfo;
 
 /**
  * Read source data of xls instance files (based on the
@@ -54,15 +55,6 @@ import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
 public class XLSInstanceReader extends AbstractInstanceReader {
 
 	private DefaultInstanceCollection instances;
-	private PropertyDefinition[] propAr;
-	private TypeDefinition type;
-	private AnalyseXLSSchemaTable analyser;
-
-	// only needed for correct error description
-	private int line = 0;
-
-	// first sheet as default
-	private int sheetNum = 0;
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
@@ -83,51 +75,105 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
-
-		// first sheet as default
-		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
-
-		instances = new DefaultInstanceCollection(new ArrayList<Instance>());
-
+		progress.begin("Load Excel file", ProgressIndicator.UNKNOWN);
 		try {
-			// analyze the excel sheet to get all information
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
+			ReaderSettings settings = ReaderSettings.load(this);
+			Collection<? extends SheetInfo> sheets = settings.getSheetsToRead();
+			if (sheets.isEmpty()) {
+				reporter.info("No sheets to load");
+				reporter.setSuccess(true);
+				return reporter;
+			}
+
+			// instance collection where all instances are collected
+			instances = new DefaultInstanceCollection(new ArrayList<Instance>());
+
+			boolean failed = false;
+			for (SheetInfo sheet : sheets) {
+				try {
+					loadSheet(sheet, reporter);
+				} catch (Exception e) {
+					failed = true;
+					reporter.error("Reading the excel sheet {0} at index {1} failed",
+							sheet.getName(), sheet.getIndex(), e);
+				}
+			}
+
+			reporter.setSuccess(!failed);
 		} catch (Exception e) {
-			reporter.error(new IOMessageImpl("Reading the excel sheet has failed", e));
-			return reporter;
+			reporter.error("Reading the excel file failed", e);
+		} finally {
+			progress.end();
 		}
+		return reporter;
+	}
+
+	/**
+	 * Try to match the given type name to a schema type based on the name.
+	 * Prefers a full match of the qualified name but also test for display name
+	 * and local name matching the provided local name.
+	 * 
+	 * @param typeName the type name to match
+	 * @param schema the schema to check
+	 * @return the matched type or <code>null</code>
+	 */
+	public static TypeDefinition matchTypeByName(QName typeName, TypeIndex schema) {
+		TypeDefinition type = schema.getType(typeName);
+
+		if (type == null) {
+			// try matching display name (since this is used when writing to
+			// Excel)
+			type = schema.getMappingRelevantTypes().stream()
+					.filter(t -> typeName.getLocalPart().equals(t.getDisplayName())).findFirst()
+					.orElse(null);
+		}
+
+		if (type == null) {
+			// try matching local name
+			type = schema.getMappingRelevantTypes().stream()
+					.filter(t -> typeName.getLocalPart().equals(t.getName().getLocalPart()))
+					.findFirst().orElse(null);
+		}
+
+		return type;
+	}
+
+	private void loadSheet(SheetInfo sheet, IOReporter reporter) throws Exception {
+		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(getSource(),
+				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex());
 
 		// get type definition of the schema
-		type = getSourceSchema().getType(
-				QName.valueOf(getParameter(CommonSchemaConstants.PARAM_TYPENAME).as(String.class)));
+		QName typeName = sheet.getSettings().getTypeName();
+		TypeDefinition type = null;
+		if (typeName != null) {
+			type = getSourceSchema().getType(typeName);
+		}
+		if (type == null) {
+			// look for match based on sheet name
+			QName qname = null;
+			try {
+				qname = QName.valueOf(sheet.getName());
+			} catch (Exception e) {
+				qname = new QName(sheet.getName());
+			}
+			type = matchTypeByName(qname, getSourceSchema());
+		}
 
-		// get property definition
-		propAr = type.getChildren().toArray(new PropertyDefinition[type.getChildren().size()]);
+		// get property definitions
+		Collection<? extends PropertyDefinition> children = DefinitionUtil.getAllProperties(type);
+		PropertyDefinition[] propAr = children.toArray(new PropertyDefinition[children.size()]);
 		Collection<List<String>> rows = analyser.getRows();
 
-		int skipNlines = 0;
-		Boolean skipType = getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES).as(Boolean.class);
+		int line = 0;
+		int skipNlines = sheet.getSettings().getSkipLines() != null
+				? sheet.getSettings().getSkipLines()
+				: 0;
 
-		if (skipType == null) {
+		if (skipNlines <= 0) {
+			// do not skip any lines
 
-			skipNlines = getParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES).as(Integer.class);
-
-		}
-		else if (skipType) {
-
-			skipNlines = 1;
-
-		}
-		else {
-
-			skipNlines = 0;
-		}
-
-		// do not skip any lines
-		if (skipNlines == 0) {
-
-			// also the header is retrieved
-			createInstanceCollection(analyser.getHeader(), reporter);
+			// the header row is added as instance
+			addInstanceForRow(analyser.getHeader(), type, propAr, line, reporter);
 
 			line++;
 
@@ -135,20 +181,18 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 			Iterator<List<String>> allRows = rows.iterator();
 			while (allRows.hasNext()) {
 				List<String> row = allRows.next();
-				createInstanceCollection(row, reporter);
+				addInstanceForRow(row, type, propAr, line, reporter);
 
 				line++;
-
 			}
 		}
 		else {
-
 			// iterate over all rows to create the instances
 			Iterator<List<String>> allRows = rows.iterator();
 			while (allRows.hasNext()) {
 				List<String> row = allRows.next();
 				if (!(skipNlines - 1 > 0)) {
-					createInstanceCollection(row, reporter);
+					addInstanceForRow(row, type, propAr, line, reporter);
 				}
 
 				skipNlines--;
@@ -156,10 +200,6 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 				line++;
 			}
 		}
-
-		reporter.setSuccess(true);
-		return reporter;
-
 	}
 
 	/**
@@ -172,7 +212,8 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	 *            implemented yet)</b>
 	 **/
 	@SuppressWarnings("javadoc")
-	private void createInstanceCollection(List<String> row, IOReporter reporter) {
+	private void addInstanceForRow(List<String> row, TypeDefinition type,
+			PropertyDefinition[] propAr, int line, IOReporter reporter) {
 		MutableInstance instance = new DefaultInstance(type, null);
 
 //		int propertyIndex = 0;
@@ -216,12 +257,9 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		instances.add(instance);
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider#getDefaultTypeName()
-	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "XLS Instance Reader";
+		return "Excel file";
 	}
 
 }
