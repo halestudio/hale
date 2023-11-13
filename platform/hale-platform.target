@@ -48,8 +48,8 @@
 		<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202203220819"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/556667e05ea86da8d32e6aade07489e7872806bc/updatesites/platform"/>
-		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="5.0.0.i202310282027"/>
+		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/7e9960b2eb198eff1d17ef72348d4495850de255/updatesites/platform"/>
+		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="5.0.0.i20231129"/>
 	</location>
 </locations>
 </target>

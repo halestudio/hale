@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.1.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.1.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
@@ -24,18 +24,18 @@
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="aopalliance"/>
       <plugin id="asm"/>
       <plugin id="asm.asm-analysis"/>
       <plugin id="asm.asm-tree"/>
       <plugin id="asm.asm-util"/>
-      <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
       <plugin id="com.conversantmedia.disruptor"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-core"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
       <plugin id="com.google.guava"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.iabcinc.jmep"/>
@@ -198,9 +198,9 @@
       <plugin id="net.sourceforge.schemacrawler"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-io"/>
       <plugin id="org.apache.commons.commons-text"/>
       <plugin id="org.apache.commons.configuration"/>
-      <plugin id="org.apache.commons.io"/>
       <plugin id="org.apache.commons.jxpath"/>
       <plugin id="org.apache.commons.lang"/>
       <plugin id="org.apache.commons.lang3"/>

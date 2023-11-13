@@ -35,7 +35,6 @@
       <plugin id="assertj-core"/>
       <plugin id="bcpkix"/>
       <plugin id="bcprov"/>
-      <plugin id="cal10n.api"/>
       <plugin id="ch.qos.logback.classic"/>
       <plugin id="ch.qos.logback.core"/>
       <plugin id="colt"/>
