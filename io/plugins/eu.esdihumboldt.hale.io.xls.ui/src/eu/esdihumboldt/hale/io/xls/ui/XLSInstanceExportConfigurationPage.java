@@ -25,18 +25,15 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
-import org.eclipse.jface.viewers.ICheckStateProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
@@ -59,6 +56,7 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	private Button selectAll = null;
 	private Group chooseFeatureTypes;
 	private Table table;
+	private Button ignoreEmptyFeaturetypes = null;
 
 	/**
 	 * 
@@ -95,6 +93,11 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 	protected void onShowPage(boolean firstShow) {
 		if (firstShow) {
 
+			ignoreEmptyFeaturetypes = new Button(chooseFeatureTypes, SWT.CHECK);
+			ignoreEmptyFeaturetypes.setText("Exclude feature types without data");
+			ignoreEmptyFeaturetypes
+					.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+
 			selectAll = new Button(chooseFeatureTypes, SWT.CHECK);
 			selectAll.setText("Select all");
 			selectAll.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
@@ -110,14 +113,6 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 				}
 			});
 
-			Label separatorLabel = new Label(page, SWT.NONE);
-			separatorLabel.setText("Warning! Feature types with no data are not selectable");
-
-			// Set the text colour of the label to yellow
-			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
-					.getSystemColor(SWT.COLOR_DARK_GRAY);
-			separatorLabel.setForeground(greyLabel);
-
 			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
 			table.setHeaderVisible(false);
 			table.setLinesVisible(false);
@@ -131,6 +126,9 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 
 				@Override
 				public String getText(Object element) {
+					if ((element instanceof TypeDefinition) && hasNoData(element))
+						return ((TypeDefinition) element).getDisplayName() + " [no data]";
+
 					return ((TypeDefinition) element).getDisplayName();
 				}
 
@@ -155,48 +153,30 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 				}
 			});
 
-			featureTypeTable.setCheckStateProvider(new ICheckStateProvider() {
-
-				@Override
-				public boolean isChecked(Object element) {
-					if (!(element instanceof TypeDefinition))
-						return false;
-					return checkboxState(element);
-				}
-
-				@Override
-				public boolean isGrayed(Object element) {
-					if (!(element instanceof TypeDefinition))
-						return false;
-					return checkboxState(element);
-				}
-
-				/**
-				 * @param element
-				 * @return true if the button cannot be selected
-				 */
-				private boolean checkboxState(Object element) {
-					InstanceService instanceService = PlatformUI.getWorkbench()
-							.getService(InstanceService.class);
-
-					Set<TypeDefinition> instanceSourceTypes = instanceService
-							.getInstanceTypes(DataSet.SOURCE);
-					if (instanceSourceTypes.contains(element)) {
-						return false;
-					}
-
-					Set<TypeDefinition> instanceTransformedTypes = instanceService
-							.getInstanceTypes(DataSet.TRANSFORMED);
-					if (instanceTransformedTypes.contains(element)) {
-						return false;
-					}
-					return true;
-				}
-			});
-
 			page.layout();
 			page.pack();
 		}
+	}
+
+	/**
+	 * @param element element to be checked if has data
+	 * @return true if the element has no data
+	 */
+	private boolean hasNoData(Object element) {
+		InstanceService instanceService = PlatformUI.getWorkbench()
+				.getService(InstanceService.class);
+
+		Set<TypeDefinition> instanceSourceTypes = instanceService.getInstanceTypes(DataSet.SOURCE);
+		if (instanceSourceTypes.contains(element)) {
+			return false;
+		}
+
+		Set<TypeDefinition> instanceTransformedTypes = instanceService
+				.getInstanceTypes(DataSet.TRANSFORMED);
+		if (instanceTransformedTypes.contains(element)) {
+			return false;
+		}
+		return true;
 	}
 
 	private boolean validate() {
@@ -219,6 +199,8 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 			param = param + ((TypeDefinition) el).getName().toString() + ",";
 		}
 		provider.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of(param));
+		provider.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
+				Value.of(ignoreEmptyFeaturetypes.getSelection()));
 
 		return true;
 	}

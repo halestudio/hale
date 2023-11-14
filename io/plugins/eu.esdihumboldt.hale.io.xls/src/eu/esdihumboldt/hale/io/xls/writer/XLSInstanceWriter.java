@@ -82,9 +82,6 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 			return reporter;
 		}
 
-		boolean solveNestedProperties = getParameter(
-				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
-
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
 			workbook = new HSSFWorkbook();
@@ -114,7 +111,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		for (TypeDefinition type : exportTypes) {
 			// get all instances of the selected Type
 			InstanceCollection instances = getInstances().select(new TypeFilter(type));
-			addSheetByQName(solveNestedProperties, instances);
+			addSheetByQName(type, instances);
 		}
 
 		try (FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());) {
@@ -156,10 +153,17 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	}
 
 	/**
-	 * @param solveNestedProperties if nested properties should be added
+	 * @param selectedTypeName selected QName
 	 * @param instances InstanceCollection available
 	 */
-	private void addSheetByQName(boolean solveNestedProperties, InstanceCollection instances) {
+	private void addSheetByQName(TypeDefinition selectedTypeName, InstanceCollection instances) {
+
+		boolean solveNestedProperties = getParameter(
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
+		boolean ignoreEmptyFeaturetypes = getParameter(
+				InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES).as(Boolean.class, false);
+		boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
+				true);
 
 		// use ResourceIterator<Instance> in a try block because is closable
 		// -
@@ -167,16 +171,21 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		// cleaning project after exporting data
 		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
 			Instance instance = null;
+
+			headerRowStrings = new ArrayList<String>();
 			try {
 				instance = instanceIterator.next();
 			} catch (NoSuchElementException e) {
+				if (!ignoreEmptyFeaturetypes) {
+					Sheet sheet = workbook.createSheet(selectedTypeName.getDisplayName());
+					Row headerRow = sheet.createRow(0);
+					super.getPropertyMap(selectedTypeName, headerRowStrings);
+					writeHeaderRow(headerRow, headerRowStrings);
+					setCellStyle(sheet, headerRowStrings.size());
+					resizeSheet(sheet);
+				}
 				return;
 			}
-
-			headerRowStrings = new ArrayList<String>();
-
-			boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-					true);
 
 			// all instances with equal type definitions are stored in an
 			// extra
@@ -191,14 +200,14 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 				int rowNum = 1;
 				Row row = sheet.createRow(rowNum++);
 				writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
-						solveNestedProperties));
+						solveNestedProperties), headerRowStrings);
 
 				while (instanceIterator.hasNext()) {
 					Instance nextInst = instanceIterator.next();
 					if (nextInst.getDefinition().equals(definition)) {
 						row = sheet.createRow(rowNum++);
 						writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
-								solveNestedProperties));
+								solveNestedProperties), headerRowStrings);
 					}
 				}
 
@@ -233,7 +242,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		}
 	}
 
-	private void writeRow(Row row, Map<String, Object> tableRow) {
+	private void writeRow(Row row, Map<String, Object> tableRow, List<String> headerRowStrings) {
 		for (int k = 0; k < headerRowStrings.size(); k++) {
 			Cell cell = row.createCell(k);
 //			cell.setCellStyle(cellStyle);

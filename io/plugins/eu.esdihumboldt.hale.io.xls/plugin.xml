@@ -173,8 +173,8 @@
             </parameterBinding>
          </providerParameter>
          <providerParameter
-               description="Ignore feature types without data to be added to the exported Excel"
-               label="Ignore feature types without data"
+               description="Exclude feature types without data to be added to the exported Excel"
+               label="Exclude feature types without data"
                name="ignoreEmptyFeaturetypes"
                optional="true">
             <parameterBinding
