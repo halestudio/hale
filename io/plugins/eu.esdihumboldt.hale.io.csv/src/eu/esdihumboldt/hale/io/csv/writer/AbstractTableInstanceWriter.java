@@ -147,6 +147,34 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	} // close method
 
 	/**
+	 * Iterates over properties of the type definition and creates a map of the
+	 * given properties
+	 * 
+	 * @param definition given type to check
+	 * @param headerRow the current header row of the table
+	 * @return a map of properties with string of localpart of the QName of the
+	 *         property as key
+	 */
+	protected Map<String, Object> getPropertyMap(TypeDefinition definition,
+			List<String> headerRow) {
+		Iterable<QName> allProperties = DefinitionUtil.getAllProperties(definition).stream()
+				.map(def -> def.getName()).collect(Collectors.toList());
+		Map<String, Object> row = new HashMap<String, Object>();
+		for (QName qname : allProperties) {
+
+			String cellValue = "";
+			Object property = null;
+			if (shouldBeDisplayed(property)) {
+				cellValue = qname.getLocalPart();
+			}
+			addProperty(headerRow, row, property, cellValue);
+
+		}
+
+		return row;
+	}
+
+	/**
 	 * 
 	 * @param instance the actual instance
 	 * @param qNameOfTheInstance the qname of the instance
