@@ -34,14 +34,15 @@ import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
+import eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage;
 
 /**
  * Configuration page for the instance export provider of Excel files
  * 
  * @author Patrick Lieb
  */
-public class XLSInstanceImportConfigurationPage
-		extends AbstractConfigurationPage<InstanceReader, InstanceImportWizard> {
+
+public class XLSInstanceImportConfigurationPage extends TypeSelectionPage {
 
 	private static final ALogger log = ALoggerFactory
 			.getLogger(XLSInstanceImportConfigurationPage.class);
@@ -52,9 +53,8 @@ public class XLSInstanceImportConfigurationPage
 	 * Default Constructor
 	 */
 	public XLSInstanceImportConfigurationPage() {
-		super("xls.instance.import.sheet.selection");
 		setTitle("Sheet selection");
-		setDescription("Select sheet to import instances");
+		setDescription("Select sheet to import instances, your Type and Data reading setting");
 	}
 
 	/**
@@ -63,21 +63,16 @@ public class XLSInstanceImportConfigurationPage
 	@Override
 	protected void createContent(Composite page) {
 
-		page.setLayout(new GridLayout(1, false));
+		page.setLayout(new GridLayout(2, false));
 
-		Composite menu = new Composite(page, SWT.NONE);
-		menu.setLayout(new GridLayout(2, false));
-
-		GridDataFactory.fillDefaults().grab(true, false).applyTo(menu);
-
-		Label sheetLabel = new Label(menu, SWT.None);
+		Label sheetLabel = new Label(page, SWT.None);
 		sheetLabel.setText("Select sheet");
 
-		sheetSelection = new Combo(menu, SWT.DROP_DOWN | SWT.READ_ONLY);
+		sheetSelection = new Combo(page, SWT.DROP_DOWN | SWT.READ_ONLY);
 		GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
 				.applyTo(sheetSelection);
 
-		setPageComplete(false);
+		super.createContent(page);
 	}
 
 	/**
@@ -108,7 +103,7 @@ public class XLSInstanceImportConfigurationPage
 		}
 		super.onShowPage(firstShow);
 		sheetSelection.select(0);
-		setPageComplete(true);
+		setPageComplete(false);
 	}
 
 	/**
@@ -118,7 +113,8 @@ public class XLSInstanceImportConfigurationPage
 	public boolean updateConfiguration(InstanceReader provider) {
 		provider.setParameter(InstanceTableIOConstants.SHEET_INDEX,
 				Value.of(sheetSelection.getSelectionIndex()));
-		return true;
+
+		return super.updateConfiguration(provider);
 	}
 
 	/**

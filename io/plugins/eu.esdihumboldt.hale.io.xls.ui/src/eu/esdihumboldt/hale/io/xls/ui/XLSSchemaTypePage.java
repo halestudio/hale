@@ -107,7 +107,7 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 				} catch (Exception e) {
 					setPageComplete(false);
 					clearSuperPage();
-					setErrorMessage("The sheet is empty!");
+					setErrorMessage("The sheet is empty or the header is not valid!");
 				}
 
 			}
@@ -123,7 +123,7 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 				} catch (Exception e1) {
 					setPageComplete(false);
 					clearSuperPage();
-					setErrorMessage("The sheet is empty!");
+					setErrorMessage("The sheet is empty or the header is not valid!");
 				}
 			}
 
@@ -166,11 +166,12 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 			}
 			ArrayList<String> items = new ArrayList<String>();
 			for (int i = 0; i < numberOfSheets; i++) {
-				items.add(wb.getSheetAt(i).getSheetName());
 				// only add items if there is a header (no empty sheet)
 				Row row = wb.getSheetAt(i).getRow(0);
-				if (row == null && newLocation != null && !newLocation.equals(oldLocation)) {
-					sheetNum++;
+				items.add(wb.getSheetAt(i).getSheetName());
+				if (row != null) {
+					update(i);
+					sheetNum = i;
 				}
 			}
 
@@ -190,18 +191,23 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 
 		} catch (OldExcelFormatException e) {
 			// the setup is not in a valid state
-			clearPage();
-			clearSuperPage();
 			setErrorMessage(
 					"Old excel format detected (format 5.0/7.0 (BIFF5)). Please convert the excel file to BIFF8 from Excel versions 97/2000/XP/2003.");
-			setPageComplete(false);
+			clearFromException();
 		} catch (Exception e) {
 			log.error("Error loading Excel file", e);
-			clearPage();
-			clearSuperPage();
 			setErrorMessage("Excel file cannot be loaded!");
-			setPageComplete(false);
+			clearFromException();
 		}
+	}
+
+	/**
+	 * clear page and super page
+	 */
+	private void clearFromException() {
+		clearPage();
+		clearSuperPage();
+		setPageComplete(false);
 	}
 
 	/**

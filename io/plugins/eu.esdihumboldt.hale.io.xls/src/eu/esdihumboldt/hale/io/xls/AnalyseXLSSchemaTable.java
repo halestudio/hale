@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableInputSupplier;
 
@@ -60,8 +61,9 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 */
 	@Override
 	protected void headerCell(int num, String text) {
-		if (num == header.size())
+		if (num == header.size()) {
 			header.add(text);
+		}
 		header.set(num, text);
 	}
 
@@ -70,12 +72,14 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 *      org.apache.poi.ss.usermodel.Row)
 	 */
 	@Override
-	protected void analyseRow(int num, Row row) {
+	protected void analyseRow(int num, Row row, Sheet sheet) {
 		List<String> rowContent = new ArrayList<String>();
 		for (int i = 0; i < row.getLastCellNum(); i++) {
-			rowContent.add(extractText(row.getCell(i)));
+			rowContent.add(extractText(row.getCell(i), sheet));
 		}
-		rows.put(num, rowContent);
+		if (!rowContent.isEmpty() && rowContent.stream().anyMatch(text -> text != null)) {
+			rows.put(num, rowContent);
+		}
 	}
 
 	/**
