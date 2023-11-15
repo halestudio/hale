@@ -86,7 +86,7 @@ public class CellNodeValidator extends AbstractTargetToSourceVisitor {
 					}
 				}
 				else {
-					log.error("Source node for entity not found.");
+					log.error("Source node for entity '" + entity.toString() + "' not found.");
 				}
 			}
 		}
