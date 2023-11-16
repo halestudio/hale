@@ -17,6 +17,8 @@ Require-Bundle: eu.esdihumboldt.hale.io.topojson;bundle-version="4.2.0",
  eu.esdihumboldt.hale.common.schema.groovy;bundle-version="4.2.0",
  eu.esdihumboldt.hale.common.instance.groovy;bundle-version="4.2.0",
  org.opengis;bundle-version="21.0.0",
- org.eclipse.core.runtime;bundle-version="3.17.100"
+ org.eclipse.core.runtime;bundle-version="3.17.100",
+ com.fasterxml.jackson.core.jackson-core;bundle-version="2.13.4",
+ com.fasterxml.jackson.core.jackson-databind;bundle-version="2.13.4"
 Import-Package: de.fhg.igd.slf4jplus,
  org.slf4j;version="1.7.2"
