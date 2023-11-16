@@ -20,11 +20,26 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -38,6 +53,8 @@ import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.io.shp.writer.ShapefileInstanceWriter;
+import json.tools.Compress;
+import json.tools.Toolbox;
 import json.topojson.api.TopojsonApi;
 
 /**
@@ -86,6 +103,7 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 	private static final String TARGET_CRS_CODE = "EPSG:4326";
 
 	private final CRSDefinition targetCrs = new CodeDefinition(TARGET_CRS_CODE, true);
+	private static final ALogger log = ALoggerFactory.getLogger(TopoJsonInstanceWriter.class);
 
 	@Override
 	protected String getDefaultTypeName() {
@@ -169,10 +187,130 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 
 	private void convertShapefileToTopoJson(String shapefilePath,
 			CoordinateReferenceSystem sourceCrs, String targetPath, String topologyName, int kink,
-			int quantizeDigit, boolean compressOutput) throws IOException {
+			int quantizeDigit, boolean compressOutput) throws Exception {
 
-		TopojsonApi.shpToTopojsonFile(shapefilePath, sourceCrs, targetPath, topologyName, kink,
+		// DBFExtractor is using DBFReader, which converts all the dates from
+		// hh:mm:ss into 00:00:00
+		String aJson = TopojsonApi.shpToTopojson(shapefilePath, sourceCrs, topologyName, kink,
 				quantizeDigit, compressOutput);
+		try {
+			// Parse JSON string
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode jsonNode = mapper.readTree(aJson);
+
+			// Replace "\u0000" values with null recursively
+			replaceUnwantedCharacters(jsonNode);
+
+			// Convert modified JSON node back to string
+			String modifiedJsonString = mapper.writeValueAsString(jsonNode);
+
+			if (compressOutput) {
+				Toolbox.writeFile(targetPath, Compress.compressB64(modifiedJsonString));
+			}
+			else {
+				Toolbox.writeFile(targetPath, modifiedJsonString);
+			}
+
+		} catch (Exception e) {
+			throw new Exception(e);
+		}
+	}
+
+	/**
+	 * @param node to replace the unwanted characters
+	 * @return the clean node
+	 */
+	public static JsonNode replaceUnwantedCharacters(JsonNode node) {
+		if (node.isObject()) {
+			ObjectNode objectNode = (ObjectNode) node;
+			objectNode.fields().forEachRemaining(entry -> {
+				JsonNode value = entry.getValue();
+				if (value.isTextual()) {
+
+					String textValue = value.textValue();
+					if (textValue.contains("\u0000")) {
+						if (textValue.replaceAll("\u0000", "").isEmpty()) {
+							objectNode.put(entry.getKey(), (String) null);
+						}
+						else {
+							objectNode.put(entry.getKey(), textValue.replaceAll("\u0000", ""));
+						}
+					}
+					else {
+						// Step 1: Parse the string into java.util.Date
+						try {
+							Date wrongDateFormat = parseStringToDate(textValue,
+									"EEE MMM dd HH:mm:ss z yyyy", true);
+
+							if (wrongDateFormat != null) {
+								// Step 2: Convert java.util.Date to
+								// java.time.Instant
+								Instant instant = wrongDateFormat.toInstant();
+
+								// Step 3: Convert java.time.Instant to
+								// java.time.LocalDateTime
+								LocalDateTime localDateTime;
+								if (wrongDateFormat.toString().contains("CET")) {
+									// Convert the Date object to LocalDateTime
+									localDateTime = LocalDateTime
+											.ofInstant(wrongDateFormat.toInstant(), ZoneOffset.UTC);
+
+								}
+								else {
+									localDateTime = instant.atZone(ZoneId.systemDefault())
+											.toLocalDateTime();
+								}
+
+								// Get the year from LocalDateTime
+								int year = localDateTime.getYear();
+								if (year == 2) {
+									objectNode.put(entry.getKey(), (String) null);
+								}
+								else {
+									// Create a DateTimeFormatter object with
+									// the desired format
+									DateTimeFormatter formatter = DateTimeFormatter
+											.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+									objectNode.put(entry.getKey(), localDateTime.format(formatter));
+								}
+
+							}
+							else {
+								objectNode.put(entry.getKey(), textValue);
+							}
+
+						} catch (Exception e) {
+							log.error("Failed to parse the string " + textValue, e);
+							objectNode.put(entry.getKey(), (String) null);
+						}
+
+					}
+				}
+				else {
+					replaceUnwantedCharacters(value);
+				}
+			});
+		}
+		else if (node.isArray()) {
+			for (JsonNode arrayElement : node) {
+				replaceUnwantedCharacters(arrayElement);
+			}
+		}
+
+		return node;
+	}
+
+	private static Date parseStringToDate(String dateString, String pattern, boolean setGMT) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
+		if (setGMT) {
+			dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+		}
+		try {
+			return dateFormat.parse(dateString);
+		} catch (ParseException e) {
+			return null;
+		}
 	}
 
 	/**
