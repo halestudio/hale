@@ -59,6 +59,8 @@ public class XLSInstanceIOTest extends TestCase {
 				.getContentType("eu.esdihumboldt.hale.io.xls.xls");
 		writer.setParameter(InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES, Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.USE_SCHEMA, Value.of(true));
+		writer.setParameter(InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES,
+				Value.of(false));
 		writer.setParameter(InstanceTableIOConstants.EXPORT_TYPE, Value.of("ItemType"));
 
 		File tempDir = Files.createTempDir();
