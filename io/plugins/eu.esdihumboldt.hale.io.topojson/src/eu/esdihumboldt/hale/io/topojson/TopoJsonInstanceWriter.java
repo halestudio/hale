@@ -26,7 +26,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -236,12 +235,18 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 							objectNode.put(entry.getKey(), textValue.replaceAll("\u0000", ""));
 						}
 					}
+					else if (textValue.equals("null")) {
+						objectNode.put(entry.getKey(), (String) null);
+					}
 					else {
 						// Step 1: Parse the string into java.util.Date
 						try {
 							Date wrongDateFormat = parseStringToDate(textValue,
 									"EEE MMM dd HH:mm:ss z yyyy", true);
 
+							if (wrongDateFormat == null) {
+								wrongDateFormat = parseStringToDate(textValue, "yyyy-mm-dd", true);
+							}
 							if (wrongDateFormat != null) {
 								// Step 2: Convert java.util.Date to
 								// java.time.Instant
@@ -268,11 +273,11 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 								}
 								else {
 									// Create a DateTimeFormatter object with
-									// the desired format
-									DateTimeFormatter formatter = DateTimeFormatter
-											.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+//									// the desired format
+//									DateTimeFormatter formatter = DateTimeFormatter
+//											.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
-									objectNode.put(entry.getKey(), localDateTime.format(formatter));
+									objectNode.put(entry.getKey(), textValue);
 								}
 
 							}
