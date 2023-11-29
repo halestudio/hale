@@ -59,30 +59,23 @@ public class XLSUtil {
 
 		CellValue value = evaluator.evaluate(cell);
 
-		if (CellType.BLANK.equals(value.getCellType())) {
+		switch (value.getCellType()) {
+		case BLANK:
 			return null;
-		}
-		else if (CellType.BOOLEAN.equals(value.getCellType())) {
+		case BOOLEAN:
 			return String.valueOf(value.getBooleanValue());
-		}
-		else if (CellType.NUMERIC.equals(value.getCellType())) {
-			// number formatting
+		case NUMERIC:
 			double number = value.getNumberValue();
 			if (number == Math.floor(number)) {
-				// it's an integer
 				return String.valueOf((int) number);
 			}
 			return String.valueOf(value.getNumberValue());
-		}
-		else if (CellType.STRING.equals(value.getCellType())) {
+		case STRING:
 			return value.getStringValue();
-		}
-		else {
-//			if (CellType.FORMULA.equals(value.getCellType()))
-			// if (CellType.ERROR.equals(value.getCellType()))
-			// fall through
+		default:
 			return null;
 		}
+
 	}
 
 	private static boolean isCellPartOfMergedRegion(Cell cell, Sheet sheet) {
