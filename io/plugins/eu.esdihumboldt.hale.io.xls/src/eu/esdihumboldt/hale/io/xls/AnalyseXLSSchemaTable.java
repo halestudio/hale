@@ -18,9 +18,8 @@ package eu.esdihumboldt.hale.io.xls;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,7 +35,7 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 
 	private final List<String> header;
 
-	private final Map<Integer, List<String>> rows;
+	private final LinkedHashMap<Integer, List<String>> rows;
 
 	/**
 	 * Default constructor
@@ -47,12 +46,12 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 * @throws Exception thrown if the analysis fails
 	 */
 	public AnalyseXLSSchemaTable(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
-			int sheetNum) throws Exception {
+			int sheetNum, int skipNlines) throws Exception {
 
 		header = new ArrayList<String>();
-		rows = new HashMap<Integer, List<String>>();
+		rows = new LinkedHashMap<Integer, List<String>>();
 
-		analyse(source, xlsx, sheetNum);
+		analyse(source, xlsx, sheetNum, skipNlines);
 	}
 
 	/**
@@ -73,12 +72,18 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 */
 	@Override
 	protected void analyseRow(int num, Row row, Sheet sheet) {
-		List<String> rowContent = new ArrayList<String>();
-		for (int i = 0; i < row.getLastCellNum(); i++) {
-			rowContent.add(extractText(row.getCell(i), sheet));
+		if (row != null) {
+			List<String> rowContent = new ArrayList<String>();
+			for (int i = 0; i < row.getLastCellNum(); i++) {
+				rowContent.add(extractText(row.getCell(i), sheet));
+			}
+			if (!rowContent.isEmpty()
+					&& !rowContent.stream().allMatch(s -> s == null || s.isEmpty())) {
+				rows.put(num, rowContent);
+			}
 		}
-		if (!rowContent.isEmpty() && rowContent.stream().anyMatch(text -> text != null)) {
-			rows.put(num, rowContent);
+		else {
+			rows.put(num, null);
 		}
 	}
 

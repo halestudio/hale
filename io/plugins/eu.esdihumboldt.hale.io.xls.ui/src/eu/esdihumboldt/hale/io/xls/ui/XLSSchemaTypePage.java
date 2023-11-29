@@ -235,12 +235,13 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 	}
 
 	// update whole page with current sheet number
+	// no lines should be skipped
 	private void update(int sheetNum) throws Exception {
 
 		// if the sheet is empty an Exception occurs
 		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(
 				getWizard().getProvider().getSource(),
-				ReaderSettings.isXlsxContentType(getWizard().getContentType()), sheetNum);
+				ReaderSettings.isXlsxContentType(getWizard().getContentType()), sheetNum, 0);
 
 		setHeader(analyser.getHeader().toArray(new String[0]));
 
