@@ -227,7 +227,19 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 				if (value.isTextual()) {
 
 					String textValue = value.textValue();
-					if (textValue.contains("\u0000")) {
+
+					if (isNumeric(textValue)) {
+						if (textValue.contains(".")) {
+							objectNode.put(entry.getKey(), Double.parseDouble(textValue));
+						}
+						else {
+							objectNode.put(entry.getKey(), Integer.parseInt(textValue));
+						}
+					}
+					else if (isBoolean(textValue)) {
+						objectNode.put(entry.getKey(), Boolean.parseBoolean(textValue));
+					}
+					else if (textValue.contains("\u0000")) {
 						if (textValue.replaceAll("\u0000", "").isEmpty()) {
 							objectNode.put(entry.getKey(), (String) null);
 						}
@@ -316,6 +328,24 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 		} catch (ParseException e) {
 			return null;
 		}
+	}
+
+	public static boolean isNumeric(String str) {
+		try {
+			if (str.contains(".")) {
+				Double.parseDouble(str);
+			}
+			else {
+				Integer.parseInt(str);
+			}
+			return true;
+		} catch (NumberFormatException e) {
+			return false;
+		}
+	}
+
+	public static boolean isBoolean(String str) {
+		return "true".equalsIgnoreCase(str) || "false".equalsIgnoreCase(str);
 	}
 
 	/**

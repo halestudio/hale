@@ -56,10 +56,13 @@ class TopoJsonInstanceWriterTest {
 	// schema with types for testing
 	Schema schema = new SchemaBuilder().schema {
 		SimpleType {
-			id(String)
+			id(Integer)
 			name(String)
 			label(String)
 			date(LocalDate)
+			fiin(Integer)
+			fido(Double)
+			fibo(Boolean)
 			geometry(GeometryProperty)
 		}
 	}
@@ -109,37 +112,50 @@ class TopoJsonInstanceWriterTest {
 	public void testWriteTopoJson() {
 		def aDate = LocalDate.of(2023, 11, 28)
 		def badDate = null
+		int i1 = 1;
 
 		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
 			SimpleType {
-				id '1'
+				id(1)
 				name 'Area 1'
 				label 'Label 1'
 				date(aDate)
+				fiin(1)
+				fido(1.2)
+				fibo(true)
 				geometry(createGeometry('POLYGON ((10 10, 20 10, 20 20, 10 20, 10 10))', 4326))
 			}
 
 			SimpleType {
-				id '2'
+				id(2)
 				name '\u0000\u0000\u0000'
 				label null
 				date null
+				fiin(-1)
+				fido(-1.2)
+				fibo(false)
 				geometry(createGeometry('POLYGON ((20 10, 40 10, 40 20, 20 20, 20 10))', 4326))
 			}
 
 			SimpleType {
-				id '3'
+				id(3)
 				name 'Area 3\u0000\u0000\u0000'
 				label '\u0000\u0000\u0000'
 				date null
+				fiin(123)
+				fido(12.3)
+				fibo(null)
 				geometry(createGeometry('POLYGON ((20 10, 40 10, 40 20, 20 20, 20 10))', 4326))
 			}
 
 			SimpleType {
-				id '4'
+				id(4)
 				name 'Area 4\u0000'
 				label 'null'
 				date badDate
+				fiin(null)
+				fido(null)
+				fibo()
 				geometry(createGeometry('POLYGON ((20 10, 40 10, 40 20, 20 20, 20 10))', 4326))
 			}
 		}
@@ -159,9 +175,12 @@ class TopoJsonInstanceWriterTest {
 			assertEquals(0, json.objects.Topology.geometries[0].id)
 			assertEquals('Polygon', json.objects.Topology.geometries[0].type)
 			assertEquals('Area 1', json.objects.Topology.geometries[0].'properties'.name)
-			assertEquals('1', json.objects.Topology.geometries[0].'properties'.id)
+			assertEquals(1, json.objects.Topology.geometries[0].'properties'.id)
 			assertEquals('Label 1', json.objects.Topology.geometries[0].'properties'.label)
 			assertEquals("2023-11-28", json.objects.Topology.geometries[0].'properties'.date)
+			assertEquals(1, json.objects.Topology.geometries[0].'properties'.fiin)
+			assertEquals(1.2, json.objects.Topology.geometries[0].'properties'.fido)
+			assertEquals(true, json.objects.Topology.geometries[0].'properties'.fibo)
 			assertEquals(1, json.objects.Topology.geometries[0].arcs.size())
 			assertEquals(2, json.objects.Topology.geometries[0].arcs[0].size())
 			assertEquals([0, 1], json.objects.Topology.geometries[0].arcs[0])
@@ -169,9 +188,12 @@ class TopoJsonInstanceWriterTest {
 			assertEquals(1, json.objects.Topology.geometries[1].id)
 			assertEquals('Polygon', json.objects.Topology.geometries[1].type)
 			assertNull(json.objects.Topology.geometries[1].'properties'.name)
-			assertEquals('2', json.objects.Topology.geometries[1].'properties'.id)
+			assertEquals(2, json.objects.Topology.geometries[1].'properties'.id)
 			assertNull(json.objects.Topology.geometries[1].'properties'.label)
 			assertNull(json.objects.Topology.geometries[1].'properties'.date)
+			assertEquals(-1, json.objects.Topology.geometries[1].'properties'.fiin)
+			assertEquals(-1.2, json.objects.Topology.geometries[1].'properties'.fido)
+			assertEquals(false, json.objects.Topology.geometries[1].'properties'.fibo)
 			assertEquals(1, json.objects.Topology.geometries[1].arcs.size())
 			assertEquals(3, json.objects.Topology.geometries[1].arcs[0].size())
 			assertEquals([-1, 2, 3], json.objects.Topology.geometries[1].arcs[0])
@@ -179,9 +201,15 @@ class TopoJsonInstanceWriterTest {
 			assertEquals('Area 3', json.objects.Topology.geometries[2].'properties'.name)
 			assertNull(json.objects.Topology.geometries[2].'properties'.label)
 			assertNull(json.objects.Topology.geometries[2].'properties'.date)
+			assertEquals(123, json.objects.Topology.geometries[2].'properties'.fiin)
+			assertEquals(12.3, json.objects.Topology.geometries[2].'properties'.fido)
+			assertNull(json.objects.Topology.geometries[2].'properties'.fibo)
 
 			assertNull(json.objects.Topology.geometries[3].'properties'.label)
 			assertNull(json.objects.Topology.geometries[3].'properties'.date)
+			assertNull(json.objects.Topology.geometries[3].'properties'.fiin)
+			assertNull(json.objects.Topology.geometries[3].'properties'.fido)
+			assertNull(json.objects.Topology.geometries[3].'properties'.fibo)
 		}
 	}
 }
