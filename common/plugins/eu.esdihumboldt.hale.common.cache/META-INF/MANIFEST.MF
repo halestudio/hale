@@ -20,8 +20,8 @@ Import-Package: com.google.common.io;version="9.0.0",
  org.apache.log4j,
  org.osgi.framework,
  org.slf4j;version="1.5.11"
-Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.3.3",
- org.apache.httpcomponents.httpcore;bundle-version="4.3.2",
+Require-Bundle: org.apache.httpcomponents.httpclient;bundle-version="4.5.13",
+ org.apache.httpcomponents.httpcore;bundle-version="4.4.13",
  org.eclipse.core.runtime;bundle-version="3.7.0",
  groovy;bundle-version="2.5.19"
 Bundle-ActivationPolicy: lazy

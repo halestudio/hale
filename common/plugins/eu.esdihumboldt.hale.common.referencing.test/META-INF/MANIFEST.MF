@@ -6,7 +6,7 @@ Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: groovy;bundle-version="2.5.19",
- org.geotools;bundle-version="21.0.0",
- org.opengis;bundle-version="12.2.0",
+ org.geotools;bundle-version="29.1.0",
+ org.opengis;bundle-version="29.1.0",
  org.junit;bundle-version="4.12.0"
 Automatic-Module-Name: eu.esdihumboldt.hale.common.referencing.test

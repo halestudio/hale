@@ -59,6 +59,7 @@
       <plugin id="com.github.wetransform-os.topojson-j"/>
       <plugin id="com.google.gson"/>
       <plugin id="com.google.guava"/>
+      <plugin id="com.google.re2j"/>
       <plugin id="com.googlecode.json-simple"/>
       <plugin id="com.haleconnect.api.haleconnect-bucket-api"/>
       <plugin id="com.haleconnect.api.haleconnect-project-api"/>
@@ -128,7 +129,6 @@
       <plugin id="com.zaxxer.SparseBitSet"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
-      <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
       <plugin id="de.fhg.igd.eclipse.ui.util"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
@@ -311,6 +311,7 @@
       <plugin id="groovy-templates" fragment="true"/>
       <plugin id="groovy-test" fragment="true"/>
       <plugin id="groovy-xml" fragment="true"/>
+      <plugin id="io.airlift.aircompressor"/>
       <plugin id="io.prometheus.simpleclient"/>
       <plugin id="io.swagger.annotations"/>
       <plugin id="it.geosolutions.imageio-ext.geocore"/>
@@ -325,11 +326,14 @@
       <plugin id="it.geosolutions.jaiext.lookup.jt-lookup"/>
       <plugin id="it.geosolutions.jaiext.piecewise.jt-piecewise"/>
       <plugin id="it.geosolutions.jaiext.rlookup.jt-rlookup"/>
+      <plugin id="it.geosolutions.jaiext.scale.jt-scale"/>
       <plugin id="it.geosolutions.jaiext.shadedrelief.jt-shadedrelief"/>
       <plugin id="it.geosolutions.jaiext.stats.jt-stats"/>
+      <plugin id="it.geosolutions.jaiext.translate.jt-translate"/>
       <plugin id="it.geosolutions.jaiext.utilities.jt-utilities"/>
       <plugin id="it.geosolutions.jaiext.vectorbin.jt-vectorbin"/>
       <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
+      <plugin id="it.geosolutions.jgridshift.core"/>
       <plugin id="jai.jai-codec"/>
       <plugin id="jai.jai-imageio"/>
       <plugin id="jakarta.activation-api"/>
@@ -415,6 +419,7 @@
       <plugin id="org.apache.xml.resolver"/>
       <plugin id="org.apache.xmlbeans"/>
       <plugin id="org.apache.xmlgraphics"/>
+      <plugin id="org.apiguardian.api"/>
       <plugin id="org.aspectj.rt"/>
       <plugin id="org.aspectj.weaver"/>
       <plugin id="org.codehaus.castor.core"/>
@@ -515,7 +520,6 @@
       <plugin id="org.iq80.snappy"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
-      <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
@@ -548,16 +552,14 @@
       <plugin id="ru.yandex.qatools.allure.java-aspects"/>
       <plugin id="ru.yandex.qatools.allure.model"/>
       <plugin id="ru.yandex.qatools.properties.loader"/>
+      <plugin id="si-units"/>
       <plugin id="si.uom.si-quantity"/>
-      <plugin id="si.uom.si-units-java8"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
-      <plugin id="systems.uom.systems-common-java8"/>
-      <plugin id="systems.uom.systems-quantity"/>
-      <plugin id="tec.uom.lib.uom-lib-common"/>
-      <plugin id="tec.uom.se"/>
+      <plugin id="systems-common"/>
+      <plugin id="tech.units.indriya"/>
+      <plugin id="uom-lib-common"/>
       <plugin id="xerces.xercesImpl"/>
-      <plugin id="xpp3.xpp3_min"/>
    </plugins>
 
    <configurations>

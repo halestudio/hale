@@ -289,13 +289,6 @@
          unpack="false"/>
 
    <plugin
-         id="commons-httpclient"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="it.geosolutions.imageio-ext.tiff"
          download-size="0"
          install-size="0"
@@ -338,7 +331,7 @@
          unpack="false"/>
 
    <plugin
-         id="jgridshift"
+         id="it.geosolutions.jgridshift.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -436,13 +429,6 @@
          unpack="false"/>
 
    <plugin
-         id="xpp3.xpp3_min"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="xerces.xercesImpl"
          download-size="0"
          install-size="0"
@@ -521,13 +507,6 @@
 
    <plugin
          id="org.hsqldb.hsqldb"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jdom.2"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -753,42 +732,7 @@
          unpack="false"/>
 
    <plugin
-         id="systems.uom.systems-common-java8"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="tec.uom.se"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="si.uom.si-quantity"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="tec.uom.lib.uom-lib-common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="si.uom.si-units-java8"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="systems.uom.systems-quantity"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -1532,6 +1476,48 @@
 
    <plugin
          id="jline"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.re2j"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="si-units"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="tech.units.indriya"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apiguardian.api"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="uom-lib-common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="systems-common"
          download-size="0"
          install-size="0"
          version="0.0.0"

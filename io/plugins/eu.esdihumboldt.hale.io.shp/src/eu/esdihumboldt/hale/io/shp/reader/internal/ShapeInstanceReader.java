@@ -98,9 +98,6 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
-//		DataStore store = new ShapefileDataStoreFactory().createDataStore(location.toURL());
-//		DataStore store = FileDataStoreFinder.getDataStore(getSource().getLocation().toURL());
-
 		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL());
 		store.setCharset(getCharset());
 
@@ -179,6 +176,7 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		instances = new PerTypeInstanceCollection(collections);
 
 		reporter.setSuccess(true);
+		store.dispose();
 		return reporter;
 	}
 

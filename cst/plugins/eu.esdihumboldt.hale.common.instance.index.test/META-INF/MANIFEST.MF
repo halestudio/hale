@@ -5,7 +5,7 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.common.instance.index.test
 Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.junit;bundle-version="4.12.0",
+Require-Bundle: org.junit;bundle-version="4.13.0",
  eu.esdihumboldt.hale.common.instance.index,
  eu.esdihumboldt.hale.common.schema,
  eu.esdihumboldt.hale.common.align,

@@ -96,15 +96,15 @@ public class ExtendedWKBReader {
 
 	private static final String INVALID_GEOM_TYPE_MSG = "Invalid geometry type encountered in ";
 
-	private GeometryFactory factory;
-	private CoordinateSequenceFactory csFactory;
-	private PrecisionModel precisionModel;
+	private final GeometryFactory factory;
+	private final CoordinateSequenceFactory csFactory;
+	private final PrecisionModel precisionModel;
 	// default dimension - will be set on read
 	private int inputDimension = 2;
 	private boolean hasSRID = false;
 //	private int SRID = 0;
-	private boolean isRepairRings = false;
-	private ByteOrderDataInStream dis = new ByteOrderDataInStream();
+	private final boolean isRepairRings = false;
+	private final ByteOrderDataInStream dis = new ByteOrderDataInStream();
 	private double[] ordValues;
 
 	/**
@@ -228,25 +228,25 @@ public class ExtendedWKBReader {
 		return g;
 	}
 
-	private Point readPoint() throws IOException {
+	private Point readPoint() throws IOException, ParseException {
 		CoordinateSequence pts = readCoordinateSequence(1);
 		return factory.createPoint(pts);
 	}
 
-	private LineString readLineString() throws IOException {
+	private LineString readLineString() throws IOException, ParseException {
 		int size = dis.readInt();
 		CoordinateSequence pts = readCoordinateSequence(size);
 		return factory.createLineString(pts);
 	}
 
-	private LinearRing readLinearRing() throws IOException {
+	private LinearRing readLinearRing() throws IOException, ParseException {
 		int size = dis.readInt();
 		CoordinateSequence pts = readCoordinateSequenceRing(size);
 		return factory.createLinearRing(pts);
 	}
 
 	@SuppressWarnings("null")
-	private Polygon readPolygon() throws IOException {
+	private Polygon readPolygon() throws IOException, ParseException {
 		int numRings = dis.readInt();
 		LinearRing[] holes = null;
 		if (numRings > 1)
@@ -304,7 +304,7 @@ public class ExtendedWKBReader {
 		return factory.createGeometryCollection(geoms);
 	}
 
-	private CoordinateSequence readCoordinateSequence(int size) throws IOException {
+	private CoordinateSequence readCoordinateSequence(int size) throws IOException, ParseException {
 		CoordinateSequence seq = csFactory.create(size, inputDimension);
 		int targetDim = seq.getDimension();
 		if (targetDim > inputDimension)
@@ -318,7 +318,8 @@ public class ExtendedWKBReader {
 		return seq;
 	}
 
-	private CoordinateSequence readCoordinateSequenceRing(int size) throws IOException {
+	private CoordinateSequence readCoordinateSequenceRing(int size)
+			throws IOException, ParseException {
 		CoordinateSequence seq = readCoordinateSequence(size);
 		if (!isRepairRings)
 			return seq;
@@ -333,7 +334,7 @@ public class ExtendedWKBReader {
 	 * 
 	 * @throws IOException if an error occurs reading the coordinate
 	 */
-	private void readCoordinate() throws IOException {
+	private void readCoordinate() throws IOException, ParseException {
 		for (int i = 0; i < inputDimension; i++) {
 			if (i <= 1) {
 				ordValues[i] = precisionModel.makePrecise(dis.readDouble());
