@@ -4,11 +4,11 @@ Bundle-Name: GML/XML Instance I/O
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml;singleton:=true
 Bundle-Version: 5.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.geotools;bundle-version="21.0.0",
+Require-Bundle: org.geotools;bundle-version="29.1.0",
  eu.esdihumboldt.hale.common.core;bundle-version="2.2.0",
  eu.esdihumboldt.hale.common.convert;bundle-version="2.2.0",
  org.eclipse.core.contenttype;bundle-version="3.4.100",
- org.opengis;bundle-version="8.0.0",
+ org.opengis;bundle-version="29.1.0",
  groovy;bundle-version="2.5.19",
  eu.esdihumboldt.hale.common.instance;bundle-version="3.2.0",
  eu.esdihumboldt.hale.common.instance.graph;bundle-version="3.3.0",

@@ -20,7 +20,6 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.common.schema.model.constraint,
  eu.esdihumboldt.util,
  net.jcip.annotations,
- org.apache.commons.codec.binary;version="1.5.0",
  org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.cst.functions.inspire,
  eu.esdihumboldt.cst.functions.inspire.data

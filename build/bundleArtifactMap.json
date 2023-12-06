@@ -484,13 +484,6 @@
             "2.3.2.i20150413": "2.3.2"
         }
     },
-    "commons-httpclient": {
-        "group": "commons-httpclient",
-        "name": "commons-httpclient",
-        "versions": {
-            "3.1.0.i20150413": "3.1"
-        }
-    },
     "org.apache.commons.compress": {
         "group": "org.apache.commons",
         "name": "commons-compress",
@@ -1217,13 +1210,6 @@
         "name": "args4j",
         "versions": {
             "2.0.16.i20150413": "2.0.16"
-        }
-    },
-    "xpp3.xpp3_min": {
-        "group": "xpp3",
-        "name": "xpp3_min",
-        "versions": {
-            "1.1.4.c-i20150413": "1.1.4c"
         }
     },
     "org.eclipse.xsd": {
