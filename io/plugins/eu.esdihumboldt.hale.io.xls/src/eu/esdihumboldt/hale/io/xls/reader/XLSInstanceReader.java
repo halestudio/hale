@@ -139,8 +139,12 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	}
 
 	private void loadSheet(SheetInfo sheet, IOReporter reporter) throws Exception {
+		int skipNlines = sheet.getSettings().getSkipLines() != null
+				? sheet.getSettings().getSkipLines()
+				: 0;
+
 		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(getSource(),
-				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex());
+				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex(), skipNlines);
 
 		// get type definition of the schema
 		QName typeName = sheet.getSettings().getTypeName();
@@ -165,40 +169,15 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		Collection<List<String>> rows = analyser.getRows();
 
 		int line = 0;
-		int skipNlines = sheet.getSettings().getSkipLines() != null
-				? sheet.getSettings().getSkipLines()
-				: 0;
 
-		if (skipNlines <= 0) {
-			// do not skip any lines
-
-			// the header row is added as instance
-			addInstanceForRow(analyser.getHeader(), type, propAr, line, reporter);
-
-			line++;
-
-			// iterate over all rows to create the instances
-			Iterator<List<String>> allRows = rows.iterator();
-			while (allRows.hasNext()) {
-				List<String> row = allRows.next();
+		// iterate over all rows to create the instances
+		Iterator<List<String>> allRows = rows.iterator();
+		while (allRows.hasNext()) {
+			List<String> row = allRows.next();
+			if (row != null && !row.stream().allMatch(s -> s == null || s.isEmpty())) {
 				addInstanceForRow(row, type, propAr, line, reporter);
-
-				line++;
 			}
-		}
-		else {
-			// iterate over all rows to create the instances
-			Iterator<List<String>> allRows = rows.iterator();
-			while (allRows.hasNext()) {
-				List<String> row = allRows.next();
-				if (!(skipNlines - 1 > 0)) {
-					addInstanceForRow(row, type, propAr, line, reporter);
-				}
-
-				skipNlines--;
-
-				line++;
-			}
+			line++;
 		}
 	}
 
@@ -215,6 +194,9 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	private void addInstanceForRow(List<String> row, TypeDefinition type,
 			PropertyDefinition[] propAr, int line, IOReporter reporter) {
 		MutableInstance instance = new DefaultInstance(type, null);
+		if (row == null) {
+			return;
+		}
 
 //		int propertyIndex = 0;
 		for (int index = 0; index < propAr.length; index++) {

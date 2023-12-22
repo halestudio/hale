@@ -50,7 +50,7 @@ public abstract class AbstractAnalyseTable {
 	 */
 	protected void analyse(LocatableInputSupplier<InputStream> source, boolean xlsx)
 			throws Exception {
-		analyse(source, xlsx, 0);
+		analyse(source, xlsx, 0, 0);
 	}
 
 	/**
@@ -58,10 +58,11 @@ public abstract class AbstractAnalyseTable {
 	 * 
 	 * @param source the source to load the file from
 	 * @param sheetNum number of the sheet that should be loaded (0-based)
+	 * @param skipNlines number of lines to skip
 	 * @throws Exception if an error occurs loading the file
 	 */
 	protected void analyse(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
-			int sheetNum) throws Exception {
+			int sheetNum, int skipNlines) throws Exception {
 		try (InputStream inp = new BufferedInputStream(source.getInput());) {
 //			https://poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
 			URI location = source.getLocation();
@@ -70,11 +71,11 @@ public abstract class AbstractAnalyseTable {
 			Sheet sheet = wb.getSheetAt(sheetNum);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
-			// the first row represents the header
+			// the first might row represents the header
 			analyseHeader(sheet);
 
 			// load configuration entries
-			analyseContent(sheet);
+			analyseContent(sheet, skipNlines);
 		} finally {
 			// reset evaluator reference
 			evaluator = null;
@@ -136,17 +137,16 @@ public abstract class AbstractAnalyseTable {
 	protected abstract void headerCell(int num, String text);
 
 	/**
-	 * Analyse the table content.
+	 * Analyse the table content if skipNlines <=0 that don't analyse first row,
+	 * which has already been analyse into the header else analyse starting with
+	 * the skip line
 	 * 
 	 * @param sheet the table sheet
 	 */
-	private void analyseContent(Sheet sheet) {
-		// for each row starting from the second
-		for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+	private void analyseContent(Sheet sheet, int skipNlines) {
+		for (int i = skipNlines; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
-			if (row != null) {
-				analyseRow(i, row, sheet);
-			}
+			analyseRow(i, row, sheet);
 		}
 	}
 

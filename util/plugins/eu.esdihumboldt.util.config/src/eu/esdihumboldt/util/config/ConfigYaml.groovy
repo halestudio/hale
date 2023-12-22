@@ -18,6 +18,7 @@ package eu.esdihumboldt.util.config
 import java.nio.charset.StandardCharsets
 
 import org.yaml.snakeyaml.DumperOptions
+import org.yaml.snakeyaml.LoaderOptions
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.constructor.SafeConstructor
 
@@ -50,7 +51,8 @@ class ConfigYaml {
 	 * @return the loaded configuration
 	 */
 	static Config load(InputStream input) {
-		Yaml yaml = new Yaml(new SafeConstructor());
+		LoaderOptions loadOptions = new LoaderOptions();
+		Yaml yaml = new Yaml(new SafeConstructor(loadOptions));
 		Map result = yaml.load(input)
 		new Config(result ?: [:])
 	}
@@ -62,7 +64,8 @@ class ConfigYaml {
 	 * @return the loaded configuration
 	 */
 	static Config load(Reader reader) {
-		Yaml yaml = new Yaml(new SafeConstructor());
+		LoaderOptions loadOptions = new LoaderOptions();
+		Yaml yaml = new Yaml(new SafeConstructor(loadOptions));
 		Map result = yaml.load(reader)
 		new Config(result ?: [:])
 	}

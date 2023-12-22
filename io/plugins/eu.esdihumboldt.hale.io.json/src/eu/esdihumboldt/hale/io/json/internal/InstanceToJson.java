@@ -86,7 +86,7 @@ public class InstanceToJson implements InstanceJsonConstants {
 	 */
 	public InstanceToJson(boolean geoJson) {
 
-		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, 7);
+		this(geoJson, new IgnoreNamespaces() /* new JsonNamespaces() */, 20);
 	}
 
 	/**
