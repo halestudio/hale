@@ -35,6 +35,7 @@ public class SheetSettings {
 	private QName typeName;
 	private Boolean skipSheet;
 	private Integer skipLines;
+	private String dateTimeFormatterDefault;
 
 	/**
 	 * Create sheet settings
@@ -84,6 +85,13 @@ public class SheetSettings {
 	}
 
 	/**
+	 * @return the dateTimeFormatterDefault
+	 */
+	public String getDateTimeFormatterDefault() {
+		return dateTimeFormatterDefault;
+	}
+
+	/**
 	 * @param typeName the typeName to set
 	 */
 	public void setTypeName(QName typeName) {
@@ -102,6 +110,13 @@ public class SheetSettings {
 	 */
 	public void setSkipLines(Integer skipLines) {
 		this.skipLines = skipLines;
+	}
+
+	/**
+	 * @param dateTimeFormatterDefault the dateTimeFormatterDefault to set
+	 */
+	public void setDateTimeFormatterDefault(String dateTimeFormatterDefault) {
+		this.dateTimeFormatterDefault = dateTimeFormatterDefault;
 	}
 
 	/**
@@ -126,6 +141,9 @@ public class SheetSettings {
 		if (skipLines != null) {
 			props.put("skipLines", Value.of(skipLines));
 		}
+		if (dateTimeFormatterDefault != null) {
+			props.put("dateTime", Value.of(dateTimeFormatterDefault));
+		}
 		return props.toValue();
 	}
 
@@ -143,12 +161,15 @@ public class SheetSettings {
 			QName typeName = props.getSafe("typeName").as(QName.class);
 			Boolean skipSheet = props.getSafe("skipSheet").as(Boolean.class);
 			Integer skipLines = props.getSafe("skipLines").as(Integer.class);
+			String dateTimeFormatterDefault = props.getSafe("dateTimeFormatterDefault")
+					.as(String.class);
 
 			SheetSettings settings = new SheetSettings(identifiedByName, identifiedByIndex);
 
 			settings.setTypeName(typeName);
 			settings.setSkipSheet(skipSheet);
 			settings.setSkipLines(skipLines);
+			settings.setDateTimeFormatterDefault(dateTimeFormatterDefault);
 
 			return Optional.of(settings);
 		}

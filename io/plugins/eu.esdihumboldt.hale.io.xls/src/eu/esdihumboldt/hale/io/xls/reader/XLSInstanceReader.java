@@ -57,6 +57,15 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	private DefaultInstanceCollection instances;
 
 	/**
+	 * Default constructor.
+	 */
+	public XLSInstanceReader() {
+		super();
+
+		addSupportedParameter(ReaderSettings.PARAMETER_DATE_FORMAT);
+	}
+
+	/**
 	 * @see eu.esdihumboldt.hale.common.instance.io.InstanceReader#getInstances()
 	 */
 	@Override
@@ -142,9 +151,11 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 		int skipNlines = sheet.getSettings().getSkipLines() != null
 				? sheet.getSettings().getSkipLines()
 				: 0;
+		String dateTime = sheet.getSettings().getDateTimeFormatterDefault();
 
 		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(getSource(),
-				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex(), skipNlines);
+				ReaderSettings.isXlsxContentType(getContentType()), sheet.getIndex(), skipNlines,
+				dateTime);
 
 		// get type definition of the schema
 		QName typeName = sheet.getSettings().getTypeName();

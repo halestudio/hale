@@ -18,9 +18,14 @@ package eu.esdihumboldt.hale.io.xls.test.reader;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -128,7 +133,6 @@ public class XLSReaderTest {
 			assertEquals(dataFirstColumn[i], value[0]);
 			assertTrue(value[0] instanceof String);
 		}
-
 	}
 
 	/**
@@ -613,6 +617,113 @@ public class XLSReaderTest {
 		assertTrue("Data import was not successfull.", report.isSuccess());
 
 		return instanceReader.getInstances();
+	}
+
+	/**
+	 * Test - read a sample xls schema and data from same file and sheet (simple
+	 * io test). Check the type, check the properties, check the values of the
+	 * properties, check the datatype of the properties
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+//	public void testReadSimpleWithDate() throws Exception {
+//		String typeName = "item";
+//		String[] properties = { "number", "name", "desc", "date" };
+//		String[] dataFirstColumn = { "1234", "Glasses", "Pair of", "12.12.2023" };
+//		String dateFormatter = "dd.mm.yyyy";
+//		String sourceLocation = "/data/simpleOneSheetDate.xls";
+//
+//		// read Schema ###
+//		Schema schema = readXLSSchemaDate(sourceLocation, 0, typeName, dateFormatter,
+//				"java.lang.String,java.lang.String,java.lang.String,java.lang.String");
+//		// read Instances - not header ###
+//		InstanceCollection instances = readXLSInstances("/data/simpleOneSheetDate.xls", 0, typeName,
+//				1, schema);
+//
+//		// Check the values of the first (type) instance
+//		Iterator<Instance> instanceIt = instances.iterator();
+//		while (instanceIt.hasNext()) {
+//			Instance instance = instanceIt.next();
+//
+//			Object[] value = instance.getProperty(QName.valueOf(properties[properties.length - 1]));
+//			String dateString = (String) value[0];
+//			assertTrue(isStringDate(dateString, dateFormatter));
+//		}
+//	}
+
+	public void testReadSimpleWithDate() throws Exception {
+		// Define test data
+		String typeName = "item";
+		String[] properties = { "number", "name", "desc", "date" };
+		String[] dataFirstColumn = { "1234", "Glasses", "Pair of", "12.12.2023" };
+		String dateFormatter = "dd.MM.yyyy";
+		String sourceLocation = "/data/simpleOneSheetDate.xls";
+
+		// Read Schema
+		Schema schema = readXLSSchemaDate(sourceLocation, 0, typeName, dateFormatter,
+				"java.lang.String,java.lang.String,java.lang.String,java.lang.String");
+
+		// Read Instances (without header)
+		InstanceCollection instances = readXLSInstances("/data/simpleOneSheetDate.xls", 0, typeName,
+				1, schema);
+
+		// Check the values of the date property in each instance
+		Iterator<Instance> instanceIt = instances.iterator();
+		while (instanceIt.hasNext()) {
+			Instance instance = instanceIt.next();
+			// Get the value of the date property
+			Object[] value = instance.getProperty(QName.valueOf(properties[properties.length - 1]));
+
+			// Ensure the value is not null
+			assertNotNull("Date property value is null", value);
+
+			// Ensure the value is an array with at least one element
+			assertTrue("Date property value is not an array or is empty", value.length > 0);
+
+			// Check the date string format
+			String dateString = (String) value[0];
+			assertTrue("Date string format is incorrect: " + dateString,
+					isStringDate(dateString, dateFormatter));
+		}
+
+	}
+
+	private Schema readXLSSchemaDate(String sourceLocation, int sheetIndex, String typeName,
+			String dateFormatter, String paramPropertyType) throws Exception {
+
+		XLSSchemaReader schemaReader = new XLSSchemaReader();
+		schemaReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
+		schemaReader.setParameter(InstanceTableIOConstants.SHEET_INDEX, Value.of(sheetIndex));
+		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
+		schemaReader.setParameter(AbstractTableSchemaReader.PARAM_PROPERTYTYPE,
+				Value.of(paramPropertyType));
+		schemaReader.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT, Value.of(dateFormatter));
+
+		IOReport report = schemaReader.execute(null);
+		assertTrue("Schema import was not successfull.", report.isSuccess());
+
+		return schemaReader.getSchema();
+	}
+
+	/**
+	 * @param input String
+	 * @param dateFormatter date formatter
+	 * @return true is the input String is of type Date
+	 */
+	public boolean isStringDate(String input, String dateFormatter) {
+		// Define the date format you expect
+		SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatter);
+		dateFormat.setLenient(false); // Disable lenient parsing
+
+		try {
+			// Try parsing the input string as a date
+			Date parsedDate = dateFormat.parse(input);
+			return true; // Parsing successful, input is a valid date
+		} catch (ParseException e) {
+			return false; // Parsing failed, input is not a valid date
+		}
 	}
 
 }
