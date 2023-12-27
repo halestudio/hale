@@ -15,9 +15,16 @@
 
 package eu.esdihumboldt.hale.io.xls;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Date;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -36,9 +43,12 @@ public class XLSUtil {
 	 * 
 	 * @param cell the cell
 	 * @param evaluator the formula evaluator
+	 * @param sheet to extract the text
+	 * @param dateTimeFormatter to convert the date into
 	 * @return the cell text
 	 */
-	public static String extractText(Cell cell, FormulaEvaluator evaluator, Sheet sheet) {
+	public static String extractText(Cell cell, FormulaEvaluator evaluator, Sheet sheet,
+			DateTimeFormatter dateTimeFormatter) {
 		if (cell == null)
 			return null;
 
@@ -65,11 +75,31 @@ public class XLSUtil {
 		case BOOLEAN:
 			return String.valueOf(value.getBooleanValue());
 		case NUMERIC:
-			double number = value.getNumberValue();
-			if (number == Math.floor(number)) {
-				return String.valueOf((int) number);
+			if (DateUtil.isCellDateFormatted(cell)) {
+				// Get the date value from the cell
+				Date dateCellValue = cell.getDateCellValue();
+
+				// Convert java.util.Date to java.time.LocalDateTime
+				LocalDateTime localDateTime = dateCellValue.toInstant()
+						.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+				// Define a DateTimeFormatter with a specific pattern
+				if (dateTimeFormatter == null) {
+					dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+				}
+				// Format LocalDateTime using DateTimeFormatter
+				String formattedDate = localDateTime.format(dateTimeFormatter);
+
+				return formattedDate;
 			}
-			return String.valueOf(value.getNumberValue());
+			else {
+				double number = value.getNumberValue();
+				if (number == Math.floor(number)) {
+					return String.valueOf((int) number);
+				}
+
+				return String.valueOf(value.getNumberValue());
+			}
 		case STRING:
 			return value.getStringValue();
 		default:

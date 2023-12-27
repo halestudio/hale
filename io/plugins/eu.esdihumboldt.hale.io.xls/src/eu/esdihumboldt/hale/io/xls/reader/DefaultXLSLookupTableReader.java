@@ -58,11 +58,10 @@ public class DefaultXLSLookupTableReader {
 			Row currentRow = sheet.getRow(row);
 			if (currentRow != null) {
 				String value = XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator,
-						sheet);
+						sheet, null);
 				if (value != null && (!ignoreEmptyStrings || !value.isEmpty())) {
-					map.put(Value.of(
-							XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator, sheet)),
-							Value.of(value));
+					map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator,
+							sheet, null)), Value.of(value));
 				}
 			}
 		}

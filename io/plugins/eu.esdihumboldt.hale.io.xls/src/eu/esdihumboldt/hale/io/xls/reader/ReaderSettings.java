@@ -54,6 +54,12 @@ public class ReaderSettings {
 	public static final String PARAMETER_SHEET_SETTINGS = "sheetSettings";
 
 	/**
+	 * Parameter for the reader specifying how values imported from Date cells
+	 * should be formatted.
+	 */
+	public static final String PARAMETER_DATE_FORMAT = "dateTimeFormatterDefault";
+
+	/**
 	 * Collect information and settings on a single sheet.
 	 */
 	public static class SheetInfo {
@@ -96,6 +102,9 @@ public class ReaderSettings {
 			}
 			if (settings.getSkipLines() != null) {
 				this.settings.setSkipLines(settings.getSkipLines());
+			}
+			if (settings.getDateTimeFormatterDefault() != null) {
+				this.settings.setDateTimeFormatterDefault(settings.getDateTimeFormatterDefault());
 			}
 		}
 
@@ -190,9 +199,14 @@ public class ReaderSettings {
 		else {
 			skipNlines = 0;
 		}
+
+		// read dateFormat
+		String dateFormatString = reader.getParameter(PARAMETER_DATE_FORMAT).as(String.class);
+
 		// apply to all sheets as default
 		for (SheetInfo sheet : sheets) {
 			sheet.getSettings().setSkipLines(skipNlines);
+			sheet.getSettings().setDateTimeFormatterDefault(dateFormatString);
 		}
 
 		// determine if multi sheet mode, defaults to false for backwards
