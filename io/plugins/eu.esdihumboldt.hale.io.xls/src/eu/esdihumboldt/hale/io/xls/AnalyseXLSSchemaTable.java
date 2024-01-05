@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.xls;
 
 import java.io.InputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -41,17 +42,20 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 * Default constructor
 	 * 
 	 * @param source the source to load the file from
+	 * @param xlsx
 	 * @param sheetNum number of the sheet in Excel file (0-based)
+	 * @param skipNlines
+	 * @param dateTime
 	 * 
 	 * @throws Exception thrown if the analysis fails
 	 */
 	public AnalyseXLSSchemaTable(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
-			int sheetNum, int skipNlines) throws Exception {
+			int sheetNum, int skipNlines, String dateTime) throws Exception {
 
 		header = new ArrayList<String>();
 		rows = new LinkedHashMap<Integer, List<String>>();
 
-		analyse(source, xlsx, sheetNum, skipNlines);
+		analyse(source, xlsx, sheetNum, skipNlines, dateTime);
 	}
 
 	/**
@@ -71,11 +75,11 @@ public class AnalyseXLSSchemaTable extends AbstractAnalyseTable {
 	 *      org.apache.poi.ss.usermodel.Row)
 	 */
 	@Override
-	protected void analyseRow(int num, Row row, Sheet sheet) {
+	protected void analyseRow(int num, Row row, Sheet sheet, DateTimeFormatter dateTimeFormatter) {
 		if (row != null) {
 			List<String> rowContent = new ArrayList<String>();
 			for (int i = 0; i < row.getLastCellNum(); i++) {
-				rowContent.add(extractText(row.getCell(i), sheet));
+				rowContent.add(extractText(row.getCell(i), sheet, dateTimeFormatter));
 			}
 			if (!rowContent.isEmpty()
 					&& !rowContent.stream().allMatch(s -> s == null || s.isEmpty())) {

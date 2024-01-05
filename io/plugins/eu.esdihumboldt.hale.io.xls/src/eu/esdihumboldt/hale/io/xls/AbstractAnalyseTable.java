@@ -19,6 +19,7 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -46,36 +47,43 @@ public abstract class AbstractAnalyseTable {
 	 * Load table to analyse from an Excel file (first sheet).
 	 * 
 	 * @param source the source to load the file from
+	 * @param xlsx
 	 * @throws Exception if an error occurs loading the file
 	 */
 	protected void analyse(LocatableInputSupplier<InputStream> source, boolean xlsx)
 			throws Exception {
-		analyse(source, xlsx, 0, 0);
+		analyse(source, xlsx, 0, 0, null);
 	}
 
 	/**
 	 * Load table to analyse from an Excel file.
 	 * 
 	 * @param source the source to load the file from
+	 * @param isXlsx if the file should be loaded as XLSX file
 	 * @param sheetNum number of the sheet that should be loaded (0-based)
 	 * @param skipNlines number of lines to skip
+	 * @param dateTime
 	 * @throws Exception if an error occurs loading the file
 	 */
-	protected void analyse(LocatableInputSupplier<? extends InputStream> source, boolean xlsx,
-			int sheetNum, int skipNlines) throws Exception {
+	protected void analyse(LocatableInputSupplier<? extends InputStream> source, boolean isXlsx,
+			int sheetNum, int skipNlines, String dateTime) throws Exception {
 		try (InputStream inp = new BufferedInputStream(source.getInput());) {
 //			https://poi.apache.org/components/spreadsheet/quick-guide.html#FileInputStream
 			URI location = source.getLocation();
-			Workbook wb = loadWorkbook(inp, location, xlsx);
+			Workbook wb = loadWorkbook(inp, location, isXlsx);
 
 			Sheet sheet = wb.getSheetAt(sheetNum);
 			evaluator = wb.getCreationHelper().createFormulaEvaluator();
 
+			DateTimeFormatter dateFormatter = null;
+			if (dateTime != null) {
+				dateFormatter = DateTimeFormatter.ofPattern(dateTime);
+			}
 			// the first might row represents the header
-			analyseHeader(sheet);
+			analyseHeader(sheet, dateFormatter);
 
 			// load configuration entries
-			analyseContent(sheet, skipNlines);
+			analyseContent(sheet, skipNlines, dateFormatter);
 		} finally {
 			// reset evaluator reference
 			evaluator = null;
@@ -88,15 +96,15 @@ public abstract class AbstractAnalyseTable {
 	 * @param input the input stream to load
 	 * @param location an optional location that can be used to determine the
 	 *            file type
-	 * @param xlsx if the file should be loaded as XLSX file
+	 * @param isXlsx if the file should be loaded as XLSX file
 	 * @return the loaded workbook
 	 * @throws IOException if an error occurs reading the file
 	 * @throws InvalidFormatException if file has an invalid format when
 	 *             attempting to load as OpenXML file
 	 */
-	public static Workbook loadWorkbook(InputStream input, URI location, boolean xlsx)
+	public static Workbook loadWorkbook(InputStream input, URI location, boolean isXlsx)
 			throws IOException, InvalidFormatException {
-		if (location != null && !xlsx && location.getPath().toLowerCase().endsWith(".xls")) {
+		if (location != null && !isXlsx && location.getPath().toLowerCase().endsWith(".xls")) {
 			try (POIFSFileSystem fs = new POIFSFileSystem(input)) {
 				return new HSSFWorkbook(fs.getRoot(), true);
 			}
@@ -111,8 +119,9 @@ public abstract class AbstractAnalyseTable {
 	 * Analyzes the table header.
 	 * 
 	 * @param sheet the table sheet
+	 * @param dateTimeFormatter
 	 */
-	protected void analyseHeader(Sheet sheet) {
+	protected void analyseHeader(Sheet sheet, DateTimeFormatter dateTimeFormatter) {
 		Row header = sheet.getRow(0);
 		if (header != null) {
 
@@ -120,7 +129,7 @@ public abstract class AbstractAnalyseTable {
 			int count = 0;
 			for (int i = header.getFirstCellNum(); i < header.getLastCellNum(); i++) {
 				Cell cell = header.getCell(i);
-				String text = extractText(cell, sheet);
+				String text = extractText(cell, sheet, dateTimeFormatter);
 				// cell cannot be empty to extract the text
 				if (text != null) {
 					headerCell(count, text);
@@ -142,11 +151,13 @@ public abstract class AbstractAnalyseTable {
 	 * the skip line
 	 * 
 	 * @param sheet the table sheet
+	 * @param skipNlines
+	 * @param dateTimeFormatter
 	 */
-	private void analyseContent(Sheet sheet, int skipNlines) {
+	private void analyseContent(Sheet sheet, int skipNlines, DateTimeFormatter dateTimeFormatter) {
 		for (int i = skipNlines; i <= sheet.getLastRowNum(); i++) {
 			Row row = sheet.getRow(i);
-			analyseRow(i, row, sheet);
+			analyseRow(i, row, sheet, dateTimeFormatter);
 		}
 	}
 
@@ -157,18 +168,22 @@ public abstract class AbstractAnalyseTable {
 	 *            separately)
 	 * @param row the table row
 	 * @param sheet the sheet
+	 * @param dateTimeFormatter
 	 */
-	protected abstract void analyseRow(int num, Row row, Sheet sheet);
+	protected abstract void analyseRow(int num, Row row, Sheet sheet,
+			DateTimeFormatter dateTimeFormatter);
 
 	/**
 	 * Extract the text from a given cell. Formulas are evaluated, for blank or
 	 * error cells <code>null</code> is returned
 	 * 
 	 * @param cell the cell
+	 * @param sheet to extract text
+	 * @param dateTimeFormatter to convert the date into
 	 * @return the cell text
 	 */
-	protected String extractText(Cell cell, Sheet sheet) {
-		return XLSUtil.extractText(cell, evaluator, sheet);
+	protected String extractText(Cell cell, Sheet sheet, DateTimeFormatter dateTimeFormatter) {
+		return XLSUtil.extractText(cell, evaluator, sheet, dateTimeFormatter);
 	}
 
 }

@@ -241,7 +241,7 @@ public class XLSSchemaTypePage extends DefaultSchemaTypePage {
 		// if the sheet is empty an Exception occurs
 		AnalyseXLSSchemaTable analyser = new AnalyseXLSSchemaTable(
 				getWizard().getProvider().getSource(),
-				ReaderSettings.isXlsxContentType(getWizard().getContentType()), sheetNum, 0);
+				ReaderSettings.isXlsxContentType(getWizard().getContentType()), sheetNum, 0, null);
 
 		setHeader(analyser.getHeader().toArray(new String[0]));
 
