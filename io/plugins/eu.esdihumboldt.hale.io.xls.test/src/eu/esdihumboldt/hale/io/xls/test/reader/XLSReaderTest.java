@@ -627,31 +627,6 @@ public class XLSReaderTest {
 	 * @throws Exception , if an error occurs
 	 */
 	@Test
-//	public void testReadSimpleWithDate() throws Exception {
-//		String typeName = "item";
-//		String[] properties = { "number", "name", "desc", "date" };
-//		String[] dataFirstColumn = { "1234", "Glasses", "Pair of", "12.12.2023" };
-//		String dateFormatter = "dd.mm.yyyy";
-//		String sourceLocation = "/data/simpleOneSheetDate.xls";
-//
-//		// read Schema ###
-//		Schema schema = readXLSSchemaDate(sourceLocation, 0, typeName, dateFormatter,
-//				"java.lang.String,java.lang.String,java.lang.String,java.lang.String");
-//		// read Instances - not header ###
-//		InstanceCollection instances = readXLSInstances("/data/simpleOneSheetDate.xls", 0, typeName,
-//				1, schema);
-//
-//		// Check the values of the first (type) instance
-//		Iterator<Instance> instanceIt = instances.iterator();
-//		while (instanceIt.hasNext()) {
-//			Instance instance = instanceIt.next();
-//
-//			Object[] value = instance.getProperty(QName.valueOf(properties[properties.length - 1]));
-//			String dateString = (String) value[0];
-//			assertTrue(isStringDate(dateString, dateFormatter));
-//		}
-//	}
-
 	public void testReadSimpleWithDate() throws Exception {
 		// Define test data
 		String typeName = "item";
