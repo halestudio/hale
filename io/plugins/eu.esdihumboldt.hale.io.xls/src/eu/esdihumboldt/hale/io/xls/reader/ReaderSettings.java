@@ -33,6 +33,7 @@ import org.eclipse.core.runtime.content.IContentType;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.io.ValueList;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 
@@ -52,12 +53,6 @@ public class ReaderSettings {
 	 * Parameter with detailed settings per sheet.
 	 */
 	public static final String PARAMETER_SHEET_SETTINGS = "sheetSettings";
-
-	/**
-	 * Parameter for the reader specifying how values imported from Date cells
-	 * should be formatted.
-	 */
-	public static final String PARAMETER_DATE_FORMAT = "dateTimeFormatterDefault";
 
 	/**
 	 * Collect information and settings on a single sheet.
@@ -201,7 +196,8 @@ public class ReaderSettings {
 		}
 
 		// read dateFormat
-		String dateFormatString = reader.getParameter(PARAMETER_DATE_FORMAT).as(String.class);
+		String dateFormatString = reader.getParameter(CSVConstants.PARAMETER_DATE_FORMAT)
+				.as(String.class);
 
 		// apply to all sheets as default
 		for (SheetInfo sheet : sheets) {
