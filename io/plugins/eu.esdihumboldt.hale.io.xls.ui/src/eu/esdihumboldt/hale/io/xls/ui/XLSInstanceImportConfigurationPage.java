@@ -30,11 +30,9 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
+import eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage;
 import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
-import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
-import eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage;
 
 /**
  * Configuration page for the instance export provider of Excel files
