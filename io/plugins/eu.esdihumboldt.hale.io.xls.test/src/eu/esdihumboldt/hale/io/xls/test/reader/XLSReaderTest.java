@@ -48,6 +48,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
 import eu.esdihumboldt.hale.common.test.TestUtil;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader;
 import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
@@ -674,7 +675,7 @@ public class XLSReaderTest {
 		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
 		schemaReader.setParameter(AbstractTableSchemaReader.PARAM_PROPERTYTYPE,
 				Value.of(paramPropertyType));
-		schemaReader.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT, Value.of(dateFormatter));
+		schemaReader.setParameter(CSVConstants.PARAMETER_DATE_FORMAT, Value.of(dateFormatter));
 
 		IOReport report = schemaReader.execute(null);
 		assertTrue("Schema import was not successfull.", report.isSuccess());

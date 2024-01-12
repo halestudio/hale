@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.io.xls.ui;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -30,11 +32,9 @@ import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
+import eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage;
 import eu.esdihumboldt.hale.io.xls.AbstractAnalyseTable;
 import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
-import eu.esdihumboldt.hale.ui.io.config.AbstractConfigurationPage;
-import eu.esdihumboldt.hale.ui.io.instance.InstanceImportWizard;
-import eu.esdihumboldt.hale.io.csv.ui.TypeSelectionPage;
 
 /**
  * Configuration page for the instance export provider of Excel files
@@ -75,12 +75,21 @@ public class XLSInstanceImportConfigurationPage extends TypeSelectionPage {
 		super.createContent(page);
 	}
 
+	@Override
+	protected List<String> createDatePatternsList() {
+		return Arrays.asList(
+				// Standard date formats
+				"yyyy-MM-dd", "yy-MM-dd", "dd-MM-yyyy", "MM-dd-yyyy", "yyyy/MM/dd", "dd/MM/yyyy",
+				"dd/MMM/yyyy", "MM/dd/yyyy", "yyyy.MM.dd", "dd.MM.yyyy", "MM.dd.yyyy", "yyyyMMdd",
+				// Custom date format
+				"MMMM d, yyyy", TypeSelectionPage.CUSTOM_FORMAT_LABEL);
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
-
 		if (!firstShow) {
 			setErrorMessage(null);
 		}
@@ -102,7 +111,11 @@ public class XLSInstanceImportConfigurationPage extends TypeSelectionPage {
 			return;
 		}
 		super.onShowPage(firstShow);
+
+		dateFormatterLabel
+				.setText("Format for imported date values\r\n(values are represented as strings)");
 		sheetSelection.select(0);
+
 		setPageComplete(false);
 	}
 
