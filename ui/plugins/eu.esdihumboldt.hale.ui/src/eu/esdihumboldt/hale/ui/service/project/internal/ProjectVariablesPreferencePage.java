@@ -138,18 +138,18 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 				InputDialog dialog = new InputDialog(display.getActiveShell(), "Add new variable",
 						"Please enter the name of the variable to add", "", new IInputValidator() {
 
-					@Override
-					public String isValid(String newText) {
-						if (newText == null || newText.isEmpty()) {
-							return "Variable name must not be empty";
-						}
-						else if (variables.containsKey(newText)) {
-							return "Variable already exists";
-						}
+							@Override
+							public String isValid(String newText) {
+								if (newText == null || newText.isEmpty()) {
+									return "Variable name must not be empty";
+								}
+								else if (variables.containsKey(newText)) {
+									return "Variable already exists";
+								}
 
-						return null;
-					}
-				});
+								return null;
+							}
+						});
 				if (dialog.open() == InputDialog.OK) {
 					String varName = dialog.getValue();
 					if (varName != null) {
@@ -205,6 +205,8 @@ public class ProjectVariablesPreferencePage extends PreferencePage
 						c.dispose();
 					}
 					variables.remove(varName);
+					varControls.remove(varName);
+
 					updateLayout();
 					changed = true;
 				}
