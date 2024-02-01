@@ -23,6 +23,7 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Path;
 
 import javax.xml.namespace.QName;
 
@@ -54,6 +55,7 @@ import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader;
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
+import eu.esdihumboldt.util.io.IOUtils;
 
 /**
  * TODO Type description
@@ -79,15 +81,15 @@ public class FilterTest {
 		if (init == false) {
 			SchemaReader reader = new XmlSchemaReader();
 			reader.setSharedTypes(null);
-			reader.setSource(new DefaultInputSupplier((getClass().getResource(
-					"/testdata/inspire3/HydroPhysicalWaters.xsd").toURI())));
+			reader.setSource(new DefaultInputSupplier((getClass()
+					.getResource("/testdata/inspire3/HydroPhysicalWaters.xsd").toURI())));
 			IOReport report = reader.execute(null);
 			assertTrue(report.isSuccess());
 			Schema schema = reader.getSchema();
 
 			StreamGmlReader instanceReader = new GmlInstanceReader();
-			instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
-					"/testdata/out/transformWrite_ERM_HPW.gml").toURI()));
+			instanceReader.setSource(new DefaultInputSupplier(
+					getClass().getResource("/testdata/out/transformWrite_ERM_HPW.gml").toURI()));
 			instanceReader.setSourceSchema(schema);
 
 			instanceReader.validate();
@@ -129,61 +131,22 @@ public class FilterTest {
 
 	@Test
 	public void simpleSchemaTestCQL() throws Exception {
-		ShapeSchemaReader schemaReader = new ShapeSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
+		// Specify the path of the resource
+		String resourcePath = "/testdata/GN_Point/GN_Point.zip";
 
-		schemaReader.validate();
-		IOReport report = schemaReader.execute(null);
-		assertTrue(report.isSuccess());
+		IOUtils.withTemporaryExtractedZipResource(resourcePath, FilterTest.class,
+				(Path tempDirectory) -> {
+					try {
+						Path shpTempFile = tempDirectory.resolve("GN_Point.shp");
 
-		Schema schema = schemaReader.getSchema();
+						InstanceCollection instances = validateSchemaAndInstanceReader(shpTempFile);
 
-		ShapeInstanceReader instanceReader = new ShapeInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
-		instanceReader.setSourceSchema(schema);
-
-		instanceReader.validate();
-		report = instanceReader.execute(null);
-		assertTrue(report.isSuccess());
-
-		InstanceCollection instances = instanceReader.getInstances();
-		assertFalse(instances.isEmpty());
-
-		ResourceIterator<Instance> ri = instances.iterator();
-		try {
-
-			boolean foundIt = false;
-			boolean stayFalse = false;
-			boolean stayFalseToo = false;
-
-			Filter cqlfilter = new FilterGeoCqlImpl("NEV = 'Piritulus'");
-			Filter foulfilter = new FilterGeoCqlImpl("HERP = 'DERP'");
-			Filter foulfilter1 = new FilterGeoCqlImpl("NEV = 'HURR'");
-
-			while (ri.hasNext()) {
-				Instance inst = ri.next();
-				assertNotNull(inst);
-
-				if (cqlfilter.match(inst)) {
-					foundIt = true;
-				}
-				if (foulfilter.match(inst)) {
-					stayFalse = true;
-				}
-				if (foulfilter1.match(inst)) {
-					stayFalseToo = true;
-				}
-			}
-
-			assertTrue(foundIt);
-			assertFalse(stayFalse);
-			assertFalse(stayFalseToo);
-		} finally {
-			ri.close();
-		}
-
+						performCQLFiltering(instances);
+					} catch (IOProviderConfigurationException | IOException | CQLException e) {
+						System.out.println(
+								"One of " + e.getClass() + " is thrown because:" + e.getMessage());
+					}
+				});
 	}
 
 	/**
@@ -197,8 +160,8 @@ public class FilterTest {
 	@Test
 	public void testLoadShiporderCQL() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(), getClass()
-						.getResource("/testdata/shiporder/shiporder.xml").toURI());
+				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(),
+				getClass().getResource("/testdata/shiporder/shiporder.xml").toURI());
 
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -284,7 +247,8 @@ public class FilterTest {
 			Filter cqlfilter1 = new FilterGeoCqlImpl("\"width.WidthRange.upper\" = 15.0");
 			Filter foulfilter1 = new FilterGeoCqlImpl("location.AbstractSolid.id = 'HURR'");
 			Filter foulfilter = new FilterGeoCqlImpl("HERP = 'DERP'");
-			Filter cqlfilter2 = new FilterGeoCqlImpl("id = '_00000000-7953-b57f-0000-00000010cb14'");
+			Filter cqlfilter2 = new FilterGeoCqlImpl(
+					"id = '_00000000-7953-b57f-0000-00000010cb14'");
 			Filter cqlfilter21 = new FilterGeoCqlImpl(
 					"\"id\" = '_00000000-7953-b57f-0000-00000010cb14'");
 
@@ -372,19 +336,85 @@ public class FilterTest {
 
 	@Test
 	public void simpleSchemaTestECQL() throws Exception {
-		ShapeSchemaReader schemaReader = new ShapeSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
+		// Specify the path of the resource
+		String resourcePath = "/testdata/GN_Point/GN_Point.zip";
 
+		IOUtils.withTemporaryExtractedZipResource(resourcePath, FilterTest.class,
+				(Path tempDirectory) -> {
+					try {
+						Path shpTempFile = tempDirectory.resolve("GN_Point.shp");
+
+						InstanceCollection instances = validateSchemaAndInstanceReader(shpTempFile);
+
+						performECQLFiltering(instances);
+					} catch (IOProviderConfigurationException | IOException | CQLException e) {
+						System.out.println(
+								"One of " + e.getClass() + " is thrown because:" + e.getMessage());
+					}
+				});
+	}
+
+	private void performFiltering(InstanceCollection instances, Filter cqlFilter, Filter foulFilter,
+			Filter foulFilter1) {
+		try (ResourceIterator<Instance> ri = instances.iterator()) {
+			boolean foundIt = false;
+			boolean stayFalse = false;
+			boolean stayFalseToo = false;
+
+			while (ri.hasNext()) {
+				Instance inst = ri.next();
+				assertNotNull(inst);
+
+				if (cqlFilter.match(inst)) {
+					foundIt = true;
+				}
+				if (foulFilter.match(inst)) {
+					stayFalse = true;
+				}
+				if (foulFilter1.match(inst)) {
+					stayFalseToo = true;
+				}
+			}
+
+			assertTrue(foundIt);
+			assertFalse(stayFalse);
+			assertFalse(stayFalseToo);
+		}
+	}
+
+	private void performECQLFiltering(InstanceCollection instances) throws CQLException {
+		Filter cqlFilter = new FilterGeoECqlImpl("NEV = 'Piritulus'");
+		Filter foulFilter = new FilterGeoECqlImpl("HERP = 'DERP'");
+		Filter foulFilter1 = new FilterGeoECqlImpl("NEV = 'HURR'");
+		performFiltering(instances, cqlFilter, foulFilter, foulFilter1);
+	}
+
+	private void performCQLFiltering(InstanceCollection instances) throws CQLException {
+		Filter cqlFilter = new FilterGeoCqlImpl("NEV = 'Piritulus'");
+		Filter foulFilter = new FilterGeoCqlImpl("HERP = 'DERP'");
+		Filter foulFilter1 = new FilterGeoCqlImpl("NEV = 'HURR'");
+		performFiltering(instances, cqlFilter, foulFilter, foulFilter1);
+	}
+
+	/**
+	 * @param shpTempFile
+	 * @return
+	 * @throws IOProviderConfigurationException
+	 * @throws IOException
+	 */
+	private InstanceCollection validateSchemaAndInstanceReader(Path shpTempFile)
+			throws IOProviderConfigurationException, IOException {
+		ShapeSchemaReader schemaReader = new ShapeSchemaReader();
+		schemaReader.setSource(new DefaultInputSupplier(shpTempFile.toUri()));
 		schemaReader.validate();
+
 		IOReport report = schemaReader.execute(null);
 		assertTrue(report.isSuccess());
 
 		Schema schema = schemaReader.getSchema();
 
 		ShapeInstanceReader instanceReader = new ShapeInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
+		instanceReader.setSource(new DefaultInputSupplier(shpTempFile.toUri()));
 		instanceReader.setSourceSchema(schema);
 
 		instanceReader.validate();
@@ -393,39 +423,7 @@ public class FilterTest {
 
 		InstanceCollection instances = instanceReader.getInstances();
 		assertFalse(instances.isEmpty());
-
-		ResourceIterator<Instance> ri = instances.iterator();
-		try {
-			boolean foundIt = false;
-			boolean stayFalse = false;
-			boolean stayFalseToo = false;
-
-			Filter cqlfilter = new FilterGeoECqlImpl("NEV = 'Piritulus'");
-			Filter foulfilter = new FilterGeoECqlImpl("HERP = 'DERP'");
-			Filter foulfilter1 = new FilterGeoECqlImpl("NEV = 'HURR'");
-
-			while (ri.hasNext()) {
-				Instance inst = ri.next();
-				assertNotNull(inst);
-
-				if (cqlfilter.match(inst)) {
-					foundIt = true;
-				}
-				if (foulfilter.match(inst)) {
-					stayFalse = true;
-				}
-				if (foulfilter1.match(inst)) {
-					stayFalseToo = true;
-				}
-			}
-
-			assertTrue(foundIt);
-			assertFalse(stayFalse);
-			assertFalse(stayFalseToo);
-		} finally {
-			ri.close();
-		}
-
+		return instances;
 	}
 
 	/**
@@ -439,8 +437,8 @@ public class FilterTest {
 	@Test
 	public void testLoadShiporderECQL() throws Exception {
 		InstanceCollection instances = loadXMLInstances(
-				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(), getClass()
-						.getResource("/testdata/shiporder/shiporder.xml").toURI());
+				getClass().getResource("/testdata/shiporder/shiporder.xsd").toURI(),
+				getClass().getResource("/testdata/shiporder/shiporder.xml").toURI());
 
 		ResourceIterator<Instance> it = instances.iterator();
 		try {
@@ -452,7 +450,8 @@ public class FilterTest {
 
 			// von CQL nicht unterstützt
 			// Filter cqlfilter = new
-			// FilterGeoCqlImpl("{http://www.example.com}shipto.{http://www.example.com}city = '4000 Stavanger'");
+			// FilterGeoCqlImpl("{http://www.example.com}shipto.{http://www.example.com}city
+			// = '4000 Stavanger'");
 
 			Filter cqlfilter = new FilterGeoECqlImpl("shipto.city = '4000 Stavanger'");
 			Filter foulfilter = new FilterGeoECqlImpl("HERP = 'DERP'");

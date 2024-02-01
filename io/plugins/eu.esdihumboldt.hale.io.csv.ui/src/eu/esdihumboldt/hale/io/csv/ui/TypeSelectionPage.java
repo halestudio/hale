@@ -16,17 +16,25 @@
 
 package eu.esdihumboldt.hale.io.csv.ui;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.namespace.QName;
 
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 
 import eu.esdihumboldt.hale.common.core.io.Value;
@@ -36,6 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -47,10 +56,18 @@ import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
  */
 public class TypeSelectionPage extends InstanceReaderConfigurationPage implements CSVConstants {
 
+	/**
+	 * Parameter for the the custom date label
+	 */
+	private static final String CUSTOM_FORMAT_LABEL = "Custom format";
+
 	private TypeDefinitionSelector sel;
 	private Spinner skipNlinesSpinner;
 	private Label setTypeLabel;
 	private Label skipNlinesLabels;
+	private ComboViewer dateFormatterCombo;
+	private Text customFormat;
+	private Label labelCustomFormat;
 
 	/**
 	 * default constructor
@@ -122,9 +139,60 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		skipNlinesSpinner.setIncrement(1);
 		skipNlinesSpinner.setPageIncrement(10);
 
+//		create date formatter combo
+		Label dateFormatterLabel = new Label(page, SWT.NONE);
+		dateFormatterLabel.setText("Format for imported date values");
+		dateFormatterCombo = new ComboViewer(page, SWT.READ_ONLY);
+		dateFormatterCombo.setContentProvider(ArrayContentProvider.getInstance());
+		List<String> list = createDatePatternsList();
+		dateFormatterCombo.setInput(list);
+		dateFormatterCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+				if (selection.size() > 0 && labelCustomFormat != null && customFormat != null) {
+					String currentSelection = (String) selection.getFirstElement();
+					if (currentSelection.equals(CUSTOM_FORMAT_LABEL)) {
+						// show the custom formatting label/text widget
+						labelCustomFormat.setVisible(true);
+						customFormat.setVisible(true);
+					}
+					else {
+						// hide the custom formatting label/text widget
+						labelCustomFormat.setVisible(false);
+						customFormat.setVisible(false);
+					}
+				}
+			}
+		});
+		dateFormatterCombo.setSelection(new StructuredSelection(list.get(0)));
+
+		// add label and text area for a custom formatting
+		labelCustomFormat = new Label(page, SWT.NONE);
+		labelCustomFormat.setText("Custom date format:");
+		labelCustomFormat
+				.setLayoutData(GridDataFactory.swtDefaults().align(SWT.END, SWT.CENTER).create());
+
+		customFormat = new Text(page, SWT.BORDER | SWT.SINGLE);
+		customFormat.setLayoutData(GridDataFactory.swtDefaults().align(SWT.FILL, SWT.CENTER)
+				.grab(true, false).create());
+
+		labelCustomFormat.setVisible(false);
+		customFormat.setVisible(false);
+
 		page.pack();
 
 		setPageComplete(false);
+	}
+
+	private List<String> createDatePatternsList() {
+		return Arrays.asList(
+				// Standard date formats
+				"yyyy-MM-dd", "yy-MM-dd", "dd-MM-yyyy", "MM-dd-yyyy", "yyyy/MM/dd", "dd/MM/yyyy",
+				"dd/MMM/yyyy", "MM/dd/yyyy", "yyyy.MM.dd", "dd.MM.yyyy", "MM.dd.yyyy", "yyyyMMdd",
+				// Custom date format
+				"MMMM d, yyyy", CUSTOM_FORMAT_LABEL);
 	}
 
 	@Override
@@ -132,6 +200,16 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 
 		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES,
 				Value.of(skipNlinesSpinner.getSelection()));
+
+		if (customFormat.isVisible()) {
+			provider.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT,
+					Value.of(customFormat.getText()));
+		}
+		else {
+			provider.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT,
+					Value.of(dateFormatterCombo.getSelection()));
+		}
+
 		if (sel.getSelectedObject() != null) {
 			QName name = sel.getSelectedObject().getName();
 			String param_name = name.toString();

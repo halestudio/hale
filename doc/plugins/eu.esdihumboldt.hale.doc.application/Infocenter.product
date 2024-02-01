@@ -75,7 +75,6 @@
       <plugin id="com.vladsch.flexmark.util-visitor"/>
       <plugin id="commons-beanutils.commons-beanutils-core"/>
       <plugin id="commons-digester"/>
-      <plugin id="commons-httpclient"/>
       <plugin id="concurrent"/>
       <plugin id="de.fhg.igd.eclipse.util"/>
       <plugin id="de.fhg.igd.geom"/>
@@ -274,7 +273,6 @@
       <plugin id="org.hsqldb.hsqldb"/>
       <plugin id="org.jaitools.jt-utils"/>
       <plugin id="org.jaitools.jt-zonalstats"/>
-      <plugin id="org.jdom.2"/>
       <plugin id="org.junit"/>
       <plugin id="org.kohsuke.groovy.sandbox"/>
       <plugin id="org.locationtech.jts.jts-core"/>
@@ -290,14 +288,9 @@
       <plugin id="org.xerial.sqlite-jdbc"/>
       <plugin id="oro"/>
       <plugin id="picocontainer"/>
-      <plugin id="si.uom.si-quantity"/>
-      <plugin id="si.uom.si-units-java8"/>
       <plugin id="slf4j.api"/>
       <plugin id="slf4j.ext"/>
-      <plugin id="tec.uom.lib.uom-lib-common"/>
-      <plugin id="tec.uom.se"/>
       <plugin id="xerces.xercesImpl"/>
-      <plugin id="xpp3.xpp3_min"/>
    </plugins>
 
    <configurations>

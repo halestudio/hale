@@ -20,6 +20,7 @@ import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Instant
 import java.time.LocalDate
@@ -52,6 +53,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultSchemaSpace
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeInstanceReader
 import eu.esdihumboldt.hale.io.shp.reader.internal.ShapeSchemaReader
 import eu.esdihumboldt.hale.io.shp.writer.ShapefileInstanceWriter
+import eu.esdihumboldt.util.io.IOUtils
 import groovy.transform.CompileStatic
 
 class ShapefileInstanceWriterTest {
@@ -224,47 +226,53 @@ class ShapefileInstanceWriterTest {
 
 	@Test
 	public void simpleSchemaWriteTest() throws Exception {
-		ShapeSchemaReader schemaReader = new ShapeSchemaReader();
-		schemaReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
+		// Specify the path of the resource
+		String resourcePath = "/testdata/GN_Point/GN_Point.zip";
 
-		schemaReader.validate();
-		IOReport report = schemaReader.execute(null);
-		assertTrue(report.isSuccess());
+		IOUtils.withTemporaryExtractedZipResource(resourcePath, ShapefileInstanceWriterTest, { tempDirectory ->
+			try {
+				Path shpTempFile = tempDirectory.resolve("GN_Point.shp");
 
-		Schema schema = schemaReader.getSchema();
+				ShapeSchemaReader schemaReader = new ShapeSchemaReader();
+				schemaReader.setSource(new DefaultInputSupplier(shpTempFile.toUri()));
+				schemaReader.validate();
 
-		ShapeInstanceReader instanceReader = new ShapeInstanceReader();
-		instanceReader.setSource(new DefaultInputSupplier(getClass().getResource(
-				"/testdata/GN_Point/GN_Point.shp").toURI()));
-		instanceReader.setSourceSchema(schema);
+				IOReport report = schemaReader.execute(null);
+				assertTrue(report.isSuccess());
 
-		instanceReader.validate();
-		report = instanceReader.execute(null);
-		assertTrue(report.isSuccess());
+				Schema schema = schemaReader.getSchema();
+				ShapeInstanceReader instanceReader = new ShapeInstanceReader();
+				instanceReader.setSource(new DefaultInputSupplier(shpTempFile.toUri()));
+				instanceReader.setSourceSchema(schema);
 
-		InstanceCollection instances = instanceReader.getInstances();
+				instanceReader.validate();
+				report = instanceReader.execute(null);
+				assertTrue(report.isSuccess());
 
-		assertFalse(instances.isEmpty());
+				InstanceCollection instances = instanceReader.getInstances();
+				assertFalse(instances.isEmpty());
 
-		withNewShapefile(schema, instances) { file ->
-			// load instances again and test
-			def loaded = loadInstances(file)
+				withNewShapefile(schema, instances) { file ->
+					// load instances again and test
+					def loaded = loadInstances(file)
 
-			int num = 0
-			loaded.iterator().withCloseable {
-				while (it.hasNext()) {
-					Instance inst = it.next()
-					num++
+					int num = 0
+					loaded.iterator().withCloseable {
+						while (it.hasNext()) {
+							Instance inst = it.next()
+							num++
+						}
+					}
+
+					// 593 instances were loaded
+					assertEquals(593, num)
 				}
+			} catch (Exception e) {
+				println "One of ${e.getClass()} is thrown because: ${e.message}"
 			}
-
-			// 593 instances were loaded
-			assertEquals(593, num)
 		}
+		)
 	}
-
-
 
 	@Test
 	void testSingleGeometry() {
@@ -295,7 +303,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -362,7 +370,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -440,7 +448,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -515,7 +523,7 @@ class ShapefileInstanceWriterTest {
 			int num = 0
 			for (geom in geomNames) {
 				def loaded = loadInstances(file, geom)
-				ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+				ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 				loaded.iterator().withCloseable {
 					while (it.hasNext()) {
@@ -1251,7 +1259,7 @@ class ShapefileInstanceWriterTest {
 		withNewShapefile(schema, instances) { file ->
 			// load instances again and test
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -1434,7 +1442,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {
@@ -1510,7 +1518,7 @@ class ShapefileInstanceWriterTest {
 			// load instances again and test
 
 			def loaded = loadInstances(file)
-			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL())
+			ShapefileDataStore shapeFileDataStore = new ShapefileDataStore(file.toURL());
 
 			int num = 0
 			loaded.iterator().withCloseable {

@@ -417,5 +417,4 @@ class CQLFilterTest extends AbstractFilterTest {
 		assertTrue(filter("moreDates TEQUALS 2000-12-24T12:00:00Z").match(max))
 		assertFalse(filter("moreDates TEQUALS 2016-12-01T12:00:00Z").match(max))
 	}
-
 }
