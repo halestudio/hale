@@ -1,8 +1,41 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
 
 ## [Unreleased]
+
+## [5.1.0]
+
+### Added
+- Support for reading multiple sheets from an Excel file simultaneously
+- Enable exporting of multiple feature types to Excel
+- Allow loading Excel which contains blank rows and sheets for schema and source data. Instances are not added for blank entries
+- Add predefined and custom formatters for Date cells in Excel import
+- Enable exporting feature types with no data in Excel
+- Align Excel with CSV export wizard
+- Prefer properties with short paths as GeoJSON geometry property
+- Add wizard page to select the read mode for GeoJSON/JSON
+- Support for importing data from JSON files, enhancing the versatility of data import options
+- Support extracting from JSON schema, providing users with greater flexibility in handling JSON data structures
+- Improve the export to Shapefiles including feature types with no geometry
+- Support adding multiple selections of feature types to be exported to CSV
+- Replace default map with OpenStreetMap
+- Add Boolean and Java Pattern class to Groovy restriction whitelist
+- When exporting data as Json or GeoJson, now up to 20 decimal places are retained in Geometry coordinates.
+
+## Maintenance
+- Update Geotools to version 29.1
+- Update dependencies in hale-platform to resolve security issues
+- Fix for the Windows installer
+
+### Fixed
+- Exclude empty rows from instance creation
+- Fix shift of attribute values for empty cells in Shapefile export
+- Fix TopoJSON encoding
+- Fix endless loop when skipping instances in paginated WFS request
+- Fix exporting HSD schemas for schemas with no namespace
+- Fix Type selection broken on custom export config
 
 ## [5.0.1]
 
@@ -10,12 +43,11 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Add an option to overwrite content in Geopackage Writer instead of appending content
 - Add a parameter to the GeoPackage writer that allows creating tables for all mapping-relevant target types
 - Create a code page (.cpg) file when exporting a Shapefile
- 
+
 ### Fixed
 - Fix the Commons Text security vulnerability
 - Fix to Proxy settings to be able to contact update sites when Proxy usage is required
 - Fix the automation of the build process
-
 
 ## [5.0.0]
 
@@ -23,7 +55,7 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Support for Java 17
 - Support for Groovy 2.5
 - Support to configure details on HTTP client max connections and connection eviction via environment variables
-- Support collecting metrics on Request class HTTP clients 
+- Support collecting metrics on Request class HTTP clients
 - Support for TopoJSON as a format for exporting data
 - Support to get list of Shapefile names
 - Support for XPlanGML 5.4 and XPlanGML 6.0 schema preset
@@ -33,9 +65,9 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Support to specify initial value during "Generate sequential ID" function
 - Support to read CRS information from Geopackage file rather than reading it from the schema
 - Enhanced support for loading XML/GML schema resembling Geopackage structure so that no information is lost
-- Support to specify leniency when using DateExtraction function 
+- Support to specify leniency when using DateExtraction function
 - Support to skip n-lines when reading csv and xls files
- 
+
 ### Changed
 - Merge schemas for HSD export as XML or Json to one schema to work around the restriction that only single schema can be imported from HSD file
 
@@ -44,12 +76,12 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ### Fixed
 - Fix to check for a null date when converting a string to any form of date and/or time
-- Fix to add exception message to the transformation log 
+- Fix to add exception message to the transformation log
 - Fix to propose one single variable or a list during Groovy merge
 - Fix to remove group property definitions from path when using Add condition on context function
 - Fix to not truncate Shapefile attributes if their length is less than 10 characters
 - Fix to correct the winding order as counterclockwise based
-on the right-hand rule when exporting data in Json format
+  on the right-hand rule when exporting data in Json format
 - Fix to preserve original order of columns during CSV export
 - Fix to clean progress bar when opening a new project after exporting in CSV and XLS
 - Fix to handle NPE when exporting multiple geometries to Shapefiles
@@ -59,7 +91,6 @@ on the right-hand rule when exporting data in Json format
 ## [4.1.0]
 
 ### Added
-
 - Support for selecting multiple files during schema and the data import
 - END-related schemas added in presets
 - Support to remove a single schema from the project view
@@ -69,15 +100,12 @@ on the right-hand rule when exporting data in Json format
 - Support for Java 8 date/time classes in Groovy
 
 ### Changed
-
 - Activated XML pretty printing by default in the writer settings dialog page when exporting XML/GML
 
 ### Removed
-
 - xtraserver plugin
 
 ### Fixed
-
 - Fix application not starting on macOS
 - Fix duplicate imports of the same schema when the schema locations differ only in the scheme part
 - Fix use of IProxyService to apply proxy configuration in the UI
@@ -94,7 +122,6 @@ on the right-hand rule when exporting data in Json format
 ## [4.0.0]
 
 ### Added
-
 - Support for reading and writing GeoPackage files
 - Improved support for writing XPlanGML files ([#814](https://github.com/halestudio/hale/issues/814))
 - XPlanGML schema presets ([#799](https://github.com/halestudio/hale/issues/799))
@@ -111,19 +138,16 @@ on the right-hand rule when exporting data in Json format
 - Allow use of `java.util.TreeMap` in Groovy scripts
 
 ### Changed
-
 - Package OpenJDK binaries instead of Oracle ones ([#758](https://github.com/halestudio/hale/issues/758))
 - Upgrade GeoTools dependency to 21.0 ([#821](https://github.com/halestudio/hale/issues/821))
 - Upgrade RCP to Eclipse 4.15 (2020-03) ([#822](https://github.com/halestudio/hale/issues/822))
 - Limit supported TLS version in hale connect integration to v1.2 and cipher suites to those with perfect forward security
 
 ### Removed
-
 - Support for 32-bit builds
 - Server product
 
 ### Fixed
-
 - Fix possible deadlock when copying XML schemas with complete dependencies
 - Prevent possible `NullPointerException` in snippet service in headless environment
 - Don't fail spatial index query if an instance can't be resolved
@@ -141,7 +165,6 @@ on the right-hand rule when exporting data in Json format
 ## [3.5.0]
 
 ### Added
-
 - Deegree feature store configuration export
 - GML partitioning by spatial extent
 - Support for plugin installation via update sites
@@ -153,7 +176,6 @@ on the right-hand rule when exporting data in Json format
 - Support for matching shortened Shapefile properties
 
 ### Changed
-
 - Upgraded RCP to Eclipse 4.8 (Photon)
 - Upgraded Groovy to 2.4
 - Upgraded PostgreSQL driver to 42.2.4, PostGIS driver to 2.2.1
@@ -164,7 +186,6 @@ on the right-hand rule when exporting data in Json format
 - Moved App-Schema configuration export to external plugin
 
 ### Fixed
-
 - Fixed file names when partitioning by feature type in a GML export
 - Improved performance for inline transformations where inlined transformation contains Groovy scripts
 - Prevent change of project resources paths if project is exported to hale connect
@@ -177,11 +198,9 @@ on the right-hand rule when exporting data in Json format
 ## [3.4.1]
 
 ### Changed
-
 - Updated GML XSD to version 3.2.2
 
 ### Fixed
-
 - Fixed problems with AppSchema configuration dialog on Windows
 - Allow loading the same Excel lookup table multiple times
 - Support partitioning by feature type when transforming external data
@@ -197,7 +216,6 @@ on the right-hand rule when exporting data in Json format
 ## [3.4.0]
 
 ### Added
-
 - Support for isolated workspaces to App-Schema plugin
 - XtraServer configuration plugin
 - Support for merging alignments and viewing related tasks
@@ -213,7 +231,6 @@ on the right-hand rule when exporting data in Json format
 - Support to access the same property on all children in Groovy scripts
 
 ### Changed
-
 - Allow ".txt" extension for CSV files
 - Preserve annotations, ID and re-use existing functions parameters when replacing a cell
 - Retain Join configuration when adding/removing types
@@ -221,7 +238,6 @@ on the right-hand rule when exporting data in Json format
 - Added warning to CRS selection dialog if WKT does not contain Bursa-Wolf parameters
 
 ### Fixed
-
 - Fixed hale connect integration when using a proxy
 - Fixed hale connect project list and versioning support
 - Fixed hale connect integration if user is a member of multiple organisations
@@ -238,7 +254,6 @@ on the right-hand rule when exporting data in Json format
 ## [3.3.2]
 
 ### Added
-
 - Instance index to improve execution of Merge and Join transformations
 - Enhanced CRS detection when parsing GML files
 - When importing a shapefile resource, prefill character set dialog with encoding read from accompanying `.cpg` file
@@ -247,7 +262,6 @@ on the right-hand rule when exporting data in Json format
 - Support for ECQL expressions in filters and condition contexts
 
 ### Changed
-
 - Partitioning modes `none`, `cut` and `related` for GML output
 - Support for `noNamespaceSchemaLocation` in GML output
 - Support for loading XLS files multiple times
@@ -257,7 +271,6 @@ on the right-hand rule when exporting data in Json format
 - Updated default hale connect endpoints
 
 ### Fixed
-
 - Fixed opening a project file on launch (e.g. via double-clicking from a file explorer)
 - Allow removing a previously assigned code list
 - Fixed automatic resource path update to also work with URIs w/ a query part
@@ -269,18 +282,16 @@ on the right-hand rule when exporting data in Json format
 ## [3.3.1]
 
 ### Added
-
 - Support for saving changes directly to hale connect
 - Support for partitioning GML output to multiple files
 - Support for table type `MATERIALIZED VIEW` when importing a PostgreSQL database schema
-- Check for remote changes when sharing project to hale connect  
+- Check for remote changes when sharing project to hale connect
 - Support for `Double` columns for the CSV reader
 - GML reader parameters `ignoreMappingRelevant` and `suppressParsingGeometry`
 - Property constraint `CodeListAssociation`
 - Type constraint `MappingRelevantIfFeatureType`
 
 ### Fixed
-
 - Opening projects that have MS Access database resources
 - `IndexOutOfBoundsException` when calling Groovy helper functions
 - Do not add `STARTINDEX` parameter to non-paginated WFS `GetFeature` requests
@@ -292,7 +303,6 @@ on the right-hand rule when exporting data in Json format
 ## [3.3.0]
 
 ### Added
-
 - Integration with the online collaboration platform hale connect: log in to hale connect, import shared transformation projects and upload projects.
 - Spatial Index for instances with geometries that can be queried via the new Groovy geometry helper "spatialIndexQuery"
 - Spatial Join transformation function: join instances based on the spatial relation of their geometry properties
@@ -302,13 +312,11 @@ on the right-hand rule when exporting data in Json format
 - DMG image for macOS installation
 
 ### Changed
-
 - Application title is now "hale studio"
 - "Load project from templates..." has been removed in favour of hale connect integration
 - Cached schema definition is now used always if loading source fails
 
 ### Fixed
-
 - Fixed content assistance in RegEx Analysis function
 - Fixed resource copying in hale Project Archive writer
 - Fixed links on About screen
@@ -317,7 +325,6 @@ on the right-hand rule when exporting data in Json format
 ## [3.2.0]
 
 ### Added
-
 - Added support for several Arc-based GML geometry types to be interpolated when read: Arc, ArcString, Circle, CircleByCenterPoint. The interpolation is based on one of two algorithms that can be selected on import.
 - Project Validator that validates exported instances based on validator configuration (e.g. rules or schemas) imported into the project
 - New transformation function `Assign collected values` allows the assignment of all values collected by a Groovy transformation function. The new function automatically converts collected values to references if the target property takes references.
@@ -329,7 +336,6 @@ on the right-hand rule when exporting data in Json format
 - The `InstanceResolver` interface has been extended to allow resolving multiple references at once. Implementations can use this to optimize resolving of multiple references
 
 ### Changed
-
 - The HTML documentation that can be generated for an alignment is now much more performant for large mappings due to lazy loading and rendering
 - The Merge function now uses an iterative approach for merging instances which allows for processing more data in a Merge
 - Allow using `SimpleDateFormat` and `UUID` classes in groovy scripts by default
@@ -337,18 +343,15 @@ on the right-hand rule when exporting data in Json format
 - When a CSV files has more columns than defined in the schema, this is now a warning, not an error
 
 ### Fixed
-
 - Deselecting in a type selector could lead to an exception
 - Removed CRS selection dialog and UI dependency from MS SQL plugin
 - Schema selection configuration for JDBC driver is optional
 - Fixed wrong tooltip in Mapping view
 - Fixed error when loading hale schema definitions in respect to schema elements w/ primitive bindings
 
-
 ## [3.1.0]
 
 ### Added
-
 - Support reading from and writing to MS SQL databases
 - Instance counts are now calculated for condition and index contexts as well
 - You can now hide optional properties in the schema explorer
@@ -361,18 +364,15 @@ on the right-hand rule when exporting data in Json format
 - Added extension point for custom validators for the hale pre-encoding validation
 
 ### Changed
-
 - GML encoding: Automatic conversion of polygon geometries to line geometries when there are no possibilities to encode a surface has been changed to produce a *LineString* for a *Polygon* and a *MultiLineString* for a *MultiPolygon*
 - The contents of XML Alignment files now are sorted where possible, to have a reproducable encoding for the same mapping and a nice diff when used in version control
 - The contents of Hale Schema Definition files now are sorted where possible, to have a reproducable encoding for the same schema and a nice diff when used in version control
 - When reading GML geometries composite 2D geometries (e.g. CompositeSurface, Surface with multiple patches, CompositeCurve, etc.) are now by default combined to a single geometry if possible
 
 ### Removed
-
 - File based databases can no longer be loaded via *From database* - instead use *From file*
 
 ### Fixed
-
 - Using a previously as Hale Schema Definition file exported database schema as source schema when loading data from the database now properly supports loading the geometries
 - Using the value `unpopulated` for GML *nilReason* attributes does not conform to the GML specification. The proposal to use this value has been changed to `other:unpopulated` to conform with the specification. Also, when encoding GML, `unpopulated` will be replaced by `other:unpopulated` where encountered in *nilReason* attributes to support mappings created in previous versions
 - Fixed error in instance partitioning for WFS-T upload when encountering unresolvable references
@@ -385,7 +385,6 @@ on the right-hand rule when exporting data in Json format
 - When exporting data to XML files include root element schema in schema location attribute
 
 ### Deprecated
-
 - Deprecated old style HTML mapping documentation, instead use the new HTML+SVG mapping documentation
 - Deprecated INSPIRE 3.0 specific mapping functions (INSPIRE Identifier and Geographical Name), instead map to sub-properties individually
 
@@ -449,7 +448,9 @@ on the right-hand rule when exporting data in Json format
 
 Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/5.0.0...HEAD
+[Unreleased]: https://github.com/halestudio/hale/compare/5.1.0...HEAD
+[5.1.0]: https://github.com/halestudio/hale/compare/5.0.1...5.1.0
+[5.0.1]: https://github.com/halestudio/hale/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/halestudio/hale/compare/4.1.0...5.0.0
 [4.1.0]: https://github.com/halestudio/hale/compare/4.0.0...4.1.0
 [4.0.0]: https://github.com/halestudio/hale/compare/3.5.0...4.0.0
