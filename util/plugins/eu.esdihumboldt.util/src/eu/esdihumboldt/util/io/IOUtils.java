@@ -26,8 +26,11 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -251,6 +254,46 @@ public final class IOUtils {
 		int exp = (int) (Math.log(bytes) / Math.log(unit));
 		String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
 		return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+	}
+
+	/**
+	 * Extract a ZIP resource to a temporary directory and perform an action.
+	 *
+	 * @param resourcePath The path to the ZIP resource.
+	 * @param processorClass The class containing the processor method.
+	 * @param processFolder The function that performs an action on the contents
+	 *            of the temporary extraction directory.
+	 * @throws IOException If an I/O error occurs.
+	 */
+	public static void withTemporaryExtractedZipResource(String resourcePath,
+			Class<?> processorClass, Consumer<Path> processFolder) throws IOException {
+
+		Path tempDirectory = java.nio.file.Files.createTempDirectory("extracted-zip");
+
+		try (InputStream inputStream = processorClass.getResourceAsStream(resourcePath)) {
+			// Specify the destination path in the temporary directory
+			Path destinationPath = tempDirectory.resolve("source.zip");
+
+			// Copy the resource to the temporary directory
+			java.nio.file.Files.copy(inputStream, destinationPath,
+					StandardCopyOption.REPLACE_EXISTING);
+
+			// Extract zip file
+			try (InputStream zip = java.nio.file.Files.newInputStream(destinationPath)) {
+				IOUtils.extract(tempDirectory.toFile(), zip);
+			}
+
+			// Perform the action on the contents of the temporary directory
+			processFolder.accept(tempDirectory);
+		} finally {
+			// Delete the temporary directory at the end
+			try {
+				java.nio.file.Files.walk(tempDirectory).sorted(Comparator.reverseOrder())
+						.map(Path::toFile).forEach(File::delete);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

@@ -44,6 +44,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
+import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
