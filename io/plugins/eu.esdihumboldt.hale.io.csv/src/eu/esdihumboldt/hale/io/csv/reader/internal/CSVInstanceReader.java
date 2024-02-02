@@ -28,6 +28,7 @@ import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.io.csv.CSVFileIO;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 
 /**
  * Reads instances from a CSVfile
@@ -37,6 +38,15 @@ import eu.esdihumboldt.hale.io.csv.CSVFileIO;
 public class CSVInstanceReader extends AbstractInstanceReader {
 
 	private InstanceCollection instances;
+
+	/**
+	 * Default constructor.
+	 */
+	public CSVInstanceReader() {
+		super();
+
+		addSupportedParameter(CSVConstants.PARAMETER_DATE_FORMAT);
+	}
 
 	/**
 	 * @see IOProvider#isCancelable()

@@ -42,6 +42,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.Binding;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.xls.AnalyseXLSSchemaTable;
 import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings.SheetInfo;
@@ -62,7 +63,7 @@ public class XLSInstanceReader extends AbstractInstanceReader {
 	public XLSInstanceReader() {
 		super();
 
-		addSupportedParameter(ReaderSettings.PARAMETER_DATE_FORMAT);
+		addSupportedParameter(CSVConstants.PARAMETER_DATE_FORMAT);
 	}
 
 	/**
