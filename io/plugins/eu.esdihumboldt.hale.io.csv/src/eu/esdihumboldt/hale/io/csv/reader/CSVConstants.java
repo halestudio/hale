@@ -64,4 +64,10 @@ public interface CSVConstants {
 	 */
 	public static final char DEFAULT_DECIMAL = '.';
 
+	/**
+	 * Parameter for the reader specifying how values imported from Date cells
+	 * should be formatted.
+	 */
+	public static final String PARAMETER_DATE_FORMAT = "dateTimeFormatterDefault";
+
 }

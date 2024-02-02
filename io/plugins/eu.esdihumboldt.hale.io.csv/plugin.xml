@@ -69,6 +69,19 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
+               description="Date Time Formatter specifying how values imported from Date cells should be imported"
+               label="Date Time Formatter"
+               name="dateTimeFormatterDefault"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+            <valueDescriptor
+                  default="dd.mm.yyyy"
+                  defaultDescription="Default to dd.mm.yyyy">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
                label="Type name"
                name="typename"
                optional="false"

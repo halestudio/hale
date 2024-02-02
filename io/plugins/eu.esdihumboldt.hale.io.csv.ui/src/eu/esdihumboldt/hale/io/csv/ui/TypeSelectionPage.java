@@ -44,7 +44,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
-import eu.esdihumboldt.hale.io.xls.reader.ReaderSettings;
 import eu.esdihumboldt.hale.ui.common.definition.selector.TypeDefinitionSelector;
 import eu.esdihumboldt.hale.ui.io.instance.InstanceReaderConfigurationPage;
 import eu.esdihumboldt.hale.ui.service.schema.SchemaService;
@@ -202,11 +201,11 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 				Value.of(skipNlinesSpinner.getSelection()));
 
 		if (customFormat.isVisible()) {
-			provider.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT,
-					Value.of(customFormat.getText()));
+			provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT, Value.of(customFormat
+					.getText().replace("mm", "MM").replace("DD", "dd").replace("YYYY", "yyyy")));
 		}
 		else {
-			provider.setParameter(ReaderSettings.PARAMETER_DATE_FORMAT,
+			provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT,
 					Value.of(dateFormatterCombo.getSelection()));
 		}
 
