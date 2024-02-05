@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="SabcT" priority="normal">
+        <source>
+            <class>
+                <type name="S" ns="S">
+                    <condition lang="ECQL">a &lt;&gt; '100' AND (b = '1000' OR b = '1001') AND c IS NOT NULL</condition>
+                </type>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T" ns="T"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="C5a797cd6-1a6b-4692-ad14-115fd819a068" priority="normal">
+        <source>
+            <property>
+                <type name="S" ns="S"/>
+                <child name="a" ns="S"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T" ns="T"/>
+                <child name="a" ns="T"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Cda0bda4c-63b9-4120-ad93-df726cbad7d6" priority="normal">
+        <source>
+            <property>
+                <type name="S" ns="S"/>
+                <child name="b" ns="S"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T" ns="T"/>
+                <child name="b" ns="T"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.rename" id="Ce600b8bf-fdd8-447b-aa31-074fd48b431e" priority="normal">
+        <source>
+            <property>
+                <type name="S" ns="S"/>
+                <child name="c" ns="S"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T" ns="T"/>
+                <child name="c" ns="T"/>
+            </property>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+</alignment>
