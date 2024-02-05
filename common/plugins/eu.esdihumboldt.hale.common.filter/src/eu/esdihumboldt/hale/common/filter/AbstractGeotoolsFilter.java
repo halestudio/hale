@@ -16,15 +16,22 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FilterAttributeExtractor;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.util.factory.GeoTools;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
+import org.opengis.filter.Or;
 import org.opengis.filter.expression.PropertyName;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -34,11 +41,13 @@ import eu.esdihumboldt.hale.common.align.groovy.accessor.PathElement;
 import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil;
 import eu.esdihumboldt.hale.common.align.instance.EntityAwareFilter;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.filter.internal.EntityReplacementVisitor;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
@@ -51,6 +60,10 @@ import eu.esdihumboldt.util.groovy.paths.Path;
 @SuppressWarnings("restriction")
 public abstract class AbstractGeotoolsFilter
 		implements eu.esdihumboldt.hale.common.instance.model.Filter, EntityAwareFilter {
+
+	private static enum SplitType {
+		AND, OR
+	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeotoolsFilter.class);
 
@@ -179,20 +192,138 @@ public abstract class AbstractGeotoolsFilter
 
 	@Override
 	public Optional<eu.esdihumboldt.hale.common.instance.model.Filter> migrateFilter(
-			EntityDefinition context, AlignmentMigration migration, SimpleLog log) {
+			EntityDefinition context, EntityMatch targetMatch, AlignmentMigration migration,
+			TypeDefinition preferRoot, SimpleLog log) {
+		// determine how to split filter
+		boolean join = targetMatch.isMatchPartOfJoin();
+		SplitType splitType = join ? SplitType.AND : SplitType.OR;
 
-		EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
-				name -> resolveProperty(name, context, log), log);
-		Object extraData = null;
-		Filter copy = (Filter) internFilter.accept(visitor, extraData);
+		// split filter
+		List<Filter> filterParts = splitFilter(internFilter, splitType);
+
+		// migrate each filter part
+		List<Filter> acceptedParts = new ArrayList<>();
+		for (Filter part : filterParts) {
+			EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
+					name -> resolveProperty(name, context, log), preferRoot, log);
+			Object extraData = null;
+			Filter copy = (Filter) part.accept(visitor, extraData);
+
+			/*
+			 * Determine if part is relevant. Only accept filter parts that are
+			 * not exclusively updated with other types than `preferRoot`. (This
+			 * is used to handle the different types from a Join individually,
+			 * also for properties that are mapped in the same context)
+			 * 
+			 * TODO is usage of preferRoot OK or should we have an additional
+			 * parameter to control this behavior?
+			 * 
+			 * Inform about parts that are dropped
+			 */
+			TypeDefinition focusType = preferRoot;
+			String messagePrefix = (focusType == null) ? "" : focusType.getDisplayName() + ": ";
+			if (visitor.isAllMismatches(focusType)) {
+				// drop if there were no successful replacements at all
+				if (filterParts.size() == 1) {
+					try {
+						log.warn(
+								"{0}The filter \"{1}\" was removed because no matches for the respective properties were found",
+								messagePrefix, toFilterTerm(part));
+					} catch (CQLException e) {
+						log.error(
+								"{0}The filter was removed because no matches for the respective properties were found; error converting filter to string",
+								messagePrefix, e);
+					}
+				}
+				else {
+					try {
+						log.warn(
+								"{0}The filter operand \"{1}\" part of the filter''s {2} condition was removed because no matches for the respective properties were found",
+								messagePrefix, toFilterTerm(part), splitType);
+					} catch (CQLException e) {
+						log.error(
+								"{0}A filter operand part of the filter's {1} condition was removed because no matches for the respective properties were found; error converting filter part to string",
+								messagePrefix, splitType, e);
+					}
+				}
+			}
+			else {
+				acceptedParts.add(copy);
+
+				// log if there are replacements that don't match the focus type
+				if (focusType != null) {
+					List<EntityDefinition> otherReplacements = visitor.getReplacements().stream()
+							.filter(entity -> !focusType.equals(entity.getType())).toList();
+					if (!otherReplacements.isEmpty()) {
+						try {
+							log.warn(
+									"{0}The filter operand \"{1}\" part of the filter''s {3} condition contains references related to other types than {2}",
+									messagePrefix, toFilterTerm(part), focusType.getDisplayName(),
+									splitType);
+						} catch (CQLException e) {
+							log.error(
+									"{0}A filter operand part of the filter's {2} condition contains references related to other types than {1}; error converting filter part to string",
+									messagePrefix, focusType.getDisplayName(), splitType, e);
+						}
+					}
+				}
+			}
+		}
+
+		if (acceptedParts.isEmpty()) {
+			return Optional.empty();
+		}
+
+		// combine accepted filter parts
+		Filter combined;
+		switch (splitType) {
+		case AND:
+			combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
+					.and(acceptedParts);
+			break;
+		case OR:
+			combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
+					.or(acceptedParts);
+			break;
+		default:
+			throw new IllegalStateException("Unsupported filter split type " + splitType);
+		}
 
 		try {
-			String filterString = toFilterTerm(copy);
+			String filterString = toFilterTerm(combined);
 			return Optional.of(buildFilter(filterString));
 		} catch (CQLException e) {
 			log.error("Filter could not be automatically migrated", e);
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Split a filter into separate AND or OR conditions.
+	 * 
+	 * @param filter the filter to split
+	 * @param splitType on which operation to split
+	 * @return the split filters as list
+	 */
+	private List<Filter> splitFilter(Filter filter, SplitType splitType) {
+		List<Filter> result = new ArrayList<>();
+
+		Deque<Filter> toCheck = new LinkedList<>();
+		toCheck.add(filter);
+		while (!toCheck.isEmpty()) {
+			Filter f = toCheck.poll();
+			if (SplitType.AND.equals(splitType) && f instanceof And) {
+				toCheck.addAll(((And) f).getChildren());
+			}
+			else if (SplitType.OR.equals(splitType) && f instanceof Or) {
+				toCheck.addAll(((Or) f).getChildren());
+			}
+			else {
+				result.add(f);
+			}
+		}
+
+		return result;
 	}
 
 	/**
