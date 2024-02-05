@@ -25,6 +25,7 @@ import com.google.common.collect.Multimaps;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
@@ -60,9 +61,9 @@ public class DefaultCellMigrator implements CellMigrator {
 			public Entity transformEntry(String key, Entity value) {
 				EntityDefinition org = value.getDefinition();
 
-				Optional<EntityDefinition> replace = migration.entityReplacement(org, cellLog);
+				Optional<EntityMatch> replace = migration.entityReplacement(org, cellLog);
 
-				EntityDefinition entity = replace.orElse(org);
+				EntityDefinition entity = replace.map(m -> m.getMatch()).orElse(org);
 				// FIXME what about null replacements / removals?
 
 				if (!Objects.equal(entity, org)) {

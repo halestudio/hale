@@ -23,6 +23,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -80,14 +81,17 @@ public class JoinMigrator extends DefaultCellMigrator {
 			AlignmentMigration migration, MigrationOptions options, SimpleLog log) {
 
 		List<TypeEntityDefinition> types = joinParam.getTypes().stream().map(type -> {
-			return (TypeEntityDefinition) migration.entityReplacement(type, log).orElse(type);
+			return (TypeEntityDefinition) migration.entityReplacement(type, log)
+					.map(EntityMatch::getMatch).orElse(type);
 		}).collect(Collectors.toList());
 
 		Set<JoinCondition> conditions = joinParam.getConditions().stream().map(condition -> {
 			PropertyEntityDefinition baseProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.baseProperty, log).orElse(condition.baseProperty);
+					.entityReplacement(condition.baseProperty, log).map(EntityMatch::getMatch)
+					.orElse(condition.baseProperty);
 			PropertyEntityDefinition joinProperty = (PropertyEntityDefinition) migration
-					.entityReplacement(condition.joinProperty, log).orElse(condition.joinProperty);
+					.entityReplacement(condition.joinProperty, log).map(EntityMatch::getMatch)
+					.orElse(condition.joinProperty);
 			JoinCondition result = new JoinCondition(baseProperty, joinProperty);
 			return result;
 		}).collect(Collectors.toSet());

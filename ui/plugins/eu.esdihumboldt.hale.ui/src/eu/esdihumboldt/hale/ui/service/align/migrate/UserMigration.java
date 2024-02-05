@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.ui.service.align.migrate;
 import java.util.Optional;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.Property;
 import eu.esdihumboldt.hale.common.align.model.Type;
@@ -25,6 +26,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 
@@ -53,21 +55,22 @@ public class UserMigration implements AlignmentMigration {
 	}
 
 	@Override
-	public Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
+	public Optional<EntityMatch> entityReplacement(EntityDefinition entity,
+			TypeDefinition preferRoot, SimpleLog log) {
 
 		// use functionality from entity resolver
 		if (entity instanceof TypeEntityDefinition) {
 			EntityDefinition candidate = entity;
 			Type type = UserFallbackEntityResolver.resolveType((TypeEntityDefinition) entity,
 					candidate, schemaSpace);
-			return Optional.ofNullable(type).map(e -> e.getDefinition());
+			return Optional.ofNullable(type).map(e -> EntityMatch.of(e.getDefinition()));
 		}
 		else if (entity instanceof PropertyEntityDefinition) {
 			EntityDefinition candidate = entity;
 			candidate = EntityCandidates.find((PropertyEntityDefinition) entity);
 			Property property = UserFallbackEntityResolver
 					.resolveProperty((PropertyEntityDefinition) entity, candidate, schemaSpace);
-			return Optional.ofNullable(property).map(e -> e.getDefinition());
+			return Optional.ofNullable(property).map(e -> EntityMatch.of(e.getDefinition()));
 		}
 		else {
 			log.error("Unrecognised entity type: " + entity.getClass());

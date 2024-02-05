@@ -27,6 +27,7 @@ import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigrationNameLookupSupport;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
@@ -106,7 +107,8 @@ public class MergeMigrator extends DefaultCellMigrator {
 			return value;
 		}
 
-		Optional<EntityDefinition> replacement = migration.entityReplacement(entity, log);
+		Optional<EntityDefinition> replacement = migration.entityReplacement(entity, log)
+				.map(EntityMatch::getMatch);
 		if (replacement.isPresent()) {
 			return convertProperty(value, replacement.get(), log);
 		}
