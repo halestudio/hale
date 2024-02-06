@@ -258,6 +258,10 @@ public abstract class AbstractGeotoolsFilter
 			}
 		}
 
+		if (acceptedParts.isEmpty()) {
+			return Optional.empty();
+		}
+
 		// combine accepted filter parts
 		Filter combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
 				.and(acceptedParts);

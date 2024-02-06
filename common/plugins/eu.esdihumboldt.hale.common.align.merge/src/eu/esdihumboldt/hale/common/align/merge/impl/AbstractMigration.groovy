@@ -99,6 +99,11 @@ abstract class AbstractMigration implements AlignmentMigration {
 							filter = migrated.get()
 							//TODO mark automatically migrated?
 						}
+						else {
+							// drop filter (should have been documented by migrateFilter call above)
+							//TODO discern between filter dropped vs. error when migrating filter? (see AbstractGeotoolsFilter#migrateFilter)
+							filter = null
+						}
 					}
 
 					// mark unsafe if entity is not the same

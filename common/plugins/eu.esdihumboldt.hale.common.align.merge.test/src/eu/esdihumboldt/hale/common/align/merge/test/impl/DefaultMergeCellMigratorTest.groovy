@@ -583,7 +583,8 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 			def filter = e.definition.filter
 			if (e.definition.definition.name.localPart == 'A5') {
 				assertNotNull(filter)
-				assertEquals('ba = \'test\' AND NOT (bb = \'test\')', filter.filterTerm)
+				// assertEquals('ba = \'test\' AND NOT (bb = \'test\')', filter.filterTerm)
+				assertEquals('ba = \'test\' and bb <> \'test\'', filter.filterTerm)
 			}
 			else {
 				assertNull(filter)
