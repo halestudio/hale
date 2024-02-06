@@ -20,7 +20,9 @@ import static eu.esdihumboldt.hale.common.align.migrate.util.MigrationUtil.isDir
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
@@ -60,6 +62,7 @@ import eu.esdihumboldt.hale.common.core.io.Value;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType;
 
 /**
@@ -155,8 +158,8 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						AlignmentMigration cellMigration = new AbstractMigration() {
 
 							@Override
-							protected Optional<EntityDefinition> findMatch(
-									EntityDefinition entity) {
+							protected Optional<EntityDefinition> findMatch(EntityDefinition entity,
+									TypeDefinition preferRoot) {
 								Entity target = CellUtil.getFirstEntity(originalCell.getTarget());
 								if (target != null) {
 									return Optional.ofNullable(target.getDefinition());
@@ -357,7 +360,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					Entity singleSource = CellUtil.getFirstEntity(newSource);
 					if (singleSource != null) {
 						EntityDefinition transferedSource = AbstractMigration.translateContexts(
-								original, singleSource.getDefinition(), migration, log);
+								original, singleSource.getDefinition(), migration, null, log);
 						ListMultimap<String, Entity> s = ArrayListMultimap.create();
 						s.put(newSource.keySet().iterator().next(),
 								AlignmentUtil.createEntity(transferedSource));
@@ -371,8 +374,16 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					// sources?
 
 					// XXX for now only special case handling to support
-					// XtraServer use case
+					// XtraServer use case - if not enabled, continue
 					if (applySourceContextsToJoinFocus(newCell, originalSource, migration, log)) {
+						return;
+					}
+
+					/*
+					 * Generic handling of source contexts for Join that tries
+					 * to split filters and apply parts to each source type.
+					 */
+					if (applySourceContextsToJoin(newCell, originalSource, migration, log)) {
 						return;
 					}
 
@@ -383,6 +394,107 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 				}
 			}
 		}
+	}
+
+	/**
+	 * Apply source conditions to joined types.
+	 * 
+	 * @param newCell the new cell to update the sources
+	 * @param originalSource the original source
+	 * @param migration the alignment migration
+	 * @param log the operation log
+	 * @return if the method handled the context transfer
+	 */
+	private boolean applySourceContextsToJoin(MutableCell newCell, Entity originalSource,
+			AlignmentMigration migration, SimpleLog log) {
+		String function = newCell.getTransformationIdentifier();
+		switch (function) {
+		case GroovyJoin.ID:
+		case JoinFunction.ID:
+			break;
+		default:
+			return false;
+		}
+
+		JoinParameter joinConfig = CellUtil.getFirstParameter(newCell, JoinFunction.PARAMETER_JOIN)
+				.as(JoinParameter.class);
+
+		if (joinConfig == null || joinConfig.getTypes() == null
+				|| joinConfig.getTypes().isEmpty()) {
+			return false;
+		}
+
+		List<TypeDefinition> joinTypes = joinConfig.getTypes().stream()
+				.map(TypeEntityDefinition::getDefinition).toList();
+		Map<TypeDefinition, Filter> joinTypeFilters = new HashMap<TypeDefinition, Filter>();
+
+		// transfer context for each Join source type
+		newCell.setSource(ArrayListMultimap.create(Multimaps.transformValues(newCell.getSource(),
+				new com.google.common.base.Function<Entity, Entity>() {
+
+					@Override
+					public Entity apply(Entity input) {
+						TypeDefinition inputType = input.getDefinition().getType();
+						if (input.getDefinition().getPropertyPath().isEmpty()
+								&& joinTypes.contains(inputType)) {
+							EntityDefinition transferedSource = AbstractMigration.translateContexts(
+									originalSource.getDefinition(), input.getDefinition(),
+									migration, inputType, log);
+							joinTypeFilters.put(inputType, transferedSource.getFilter());
+							return AlignmentUtil.createEntity(transferedSource);
+						}
+						else {
+							return input;
+						}
+					}
+				})));
+
+		// fix filter in order and conditions
+		// XXX only works like this because a type currently can only be present
+		// once in the source
+		if (!joinTypeFilters.isEmpty()) {
+			// order
+			List<TypeEntityDefinition> types = new ArrayList<>();
+			for (int i = 0; i < joinConfig.getTypes().size(); i++) {
+				TypeEntityDefinition type = joinConfig.getTypes().get(i);
+				Filter filter = joinTypeFilters.get(type.getType());
+				if (filter != null) {
+					type = new TypeEntityDefinition(type.getDefinition(), type.getSchemaSpace(),
+							filter);
+				}
+				types.add(type);
+			}
+
+			// conditions
+			Set<JoinCondition> conditions = joinConfig.getConditions().stream().map(c -> {
+				Filter baseFilter = joinTypeFilters.get(c.baseProperty.getType());
+				Filter joinFilter = joinTypeFilters.get(c.joinProperty.getType());
+
+				if (baseFilter != null || joinFilter != null) {
+					return new JoinCondition(applyFilter(c.baseProperty, baseFilter),
+							applyFilter(c.joinProperty, joinFilter));
+				}
+				else {
+					return c;
+				}
+			}).collect(Collectors.toSet());
+
+			JoinParameter newConfig = new JoinParameter(types, conditions);
+
+			ListMultimap<String, ParameterValue> modParams = ArrayListMultimap
+					.create(newCell.getTransformationParameters());
+			List<ParameterValue> joinParams = modParams.get(JoinFunction.PARAMETER_JOIN);
+			if (!joinParams.isEmpty()) {
+				JoinParameter joinParam = joinParams.get(0).as(JoinParameter.class);
+				if (joinParam != null) {
+					joinParams.clear();
+					joinParams.add(new ParameterValue(Value.complex(newConfig)));
+				}
+			}
+			newCell.setTransformationParameters(modParams);
+		}
+
+		return true;
 	}
 
 	/**
@@ -431,7 +543,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 								&& input.getDefinition().getType().equals(focus.getType())) {
 							EntityDefinition transferedSource = AbstractMigration.translateContexts(
 									originalSource.getDefinition(), input.getDefinition(),
-									migration, log);
+									migration, focus.getType(), log);
 							focusFilter.set(transferedSource.getFilter());
 							return AlignmentUtil.createEntity(transferedSource);
 						}

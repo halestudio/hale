@@ -25,6 +25,7 @@ import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.service.align.resolver.UserFallbackEntityResolver;
 import eu.esdihumboldt.hale.ui.service.align.resolver.internal.EntityCandidates;
 
@@ -53,7 +54,8 @@ public class UserMigration implements AlignmentMigration {
 	}
 
 	@Override
-	public Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
+	public Optional<EntityDefinition> entityReplacement(EntityDefinition entity,
+			TypeDefinition preferRoot, SimpleLog log) {
 
 		// use functionality from entity resolver
 		if (entity instanceof TypeEntityDefinition) {

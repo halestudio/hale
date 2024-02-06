@@ -190,7 +190,7 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 				if (transferContext.test(entity.getDefinition())) {
 					// transfer filter and contexts if possible
 					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
-							entity.getDefinition(), migration, log);
+							entity.getDefinition(), migration, null, log);
 					if (withContexts.getFilter() != null) {
 						context.addTypeFilter(withContexts.getType(), withContexts.getFilter());
 					}

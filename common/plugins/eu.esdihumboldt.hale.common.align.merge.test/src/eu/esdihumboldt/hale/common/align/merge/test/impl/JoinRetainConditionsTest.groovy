@@ -21,6 +21,9 @@ import org.junit.Test
 
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO
 import eu.esdihumboldt.hale.common.align.merge.test.AbstractMergeCellMigratorTest
+import eu.esdihumboldt.hale.common.align.model.CellUtil
+import eu.esdihumboldt.hale.common.align.model.Entity
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter
 
 /**
@@ -45,37 +48,79 @@ class JoinRetainConditionsTest extends AbstractMergeCellMigratorTest {
 		assertEquals(1, migrated.size())
 		JaxbAlignmentIO.printCell(migrated[0], System.out)
 
-		/*
-		 assertNotNull(migrated[0].source)
-		 assertEquals(2, migrated[0].source.size())
-		 Collection<? extends Entity> source = migrated[0].source.values()
-		 ((Collection<Entity>) source).each { e ->
-		 def filter = e.definition.filter
-		 if (e.definition.definition.displayName == 'A1') {
-		 // expect filter to have been propagated to A1
-		 assertNotNull(filter)
-		 //assertEquals('a1 <> \'NIL\'', filter.filterTerm)
-		 assertEquals('NOT (a1 = \'NIL\')', filter.filterTerm)
-		 }
-		 else {
-		 // no filter should be present
-		 assertNull(filter)
-		 }
-		 }
-		 JoinParameter param = CellUtil.getFirstParameter(migrated[0], JoinFunction.PARAMETER_JOIN).as(JoinParameter)
-		 assertJoinOrder(param, ['A1', 'A2'])
-		 // there should be a condition on the join focus, also in the order
-		 assertNotNull(param.types[0].filter)
-		 // there should also be a filter in the condition
-		 def base = param.conditions.collect { it.baseProperty }.findAll { it.type.displayName == 'A1' }.toList()
-		 assertEquals(1, base.size())
-		 assertNotNull(base[0].filter)
-		 // there should be a message about the condition having been translated automatically
-		 def messages = getMigrationMessages(migrated[0])
-		 assertTrue(messages.any { msg ->
-		 msg.text.toLowerCase().contains('condition')
-		 })
-		 */
+		def expectedFilterA = 'NOT (a = \'100\')'
+		def expectedFilterB = '(b IN (\'1000\',\'1001\'))'
+		def expectedFilterC = 'NOT (c IS NULL)'
+
+		assertNotNull(migrated[0].source)
+		assertEquals(3, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.definition.displayName == 'A') {
+				// expect filter part to have been propagated to A
+				assertNotNull(filter)
+				assertEquals(expectedFilterA, filter.filterTerm)
+			}
+			else if (e.definition.definition.displayName == 'B') {
+				// expect filter part to have been propagated to A
+				assertNotNull(filter)
+				assertEquals(expectedFilterB, filter.filterTerm)
+			}
+			else if (e.definition.definition.displayName == 'C') {
+				// expect filter part to have been propagated to A
+				assertNotNull(filter)
+				assertEquals(expectedFilterC, filter.filterTerm)
+			}
+			else {
+				fail('Unexpected entity')
+			}
+		}
+		JoinParameter param = CellUtil.getFirstParameter(migrated[0], JoinFunction.PARAMETER_JOIN).as(JoinParameter)
+		assertJoinOrder(param, ['A', 'B', 'C'])
+
+		// there should be a condition on all join types, also in the order
+		def filter = param.types[0].filter
+		assertNotNull(filter)
+		assertEquals(expectedFilterA, filter.filterTerm)
+
+		filter = param.types[1].filter
+		assertNotNull(filter)
+		assertEquals(expectedFilterB, filter.filterTerm)
+
+		filter = param.types[2].filter
+		assertNotNull(filter)
+		assertEquals(expectedFilterC, filter.filterTerm)
+
+		// there should also be a filter in the condition for each type
+
+		// base properties
+		def base = param.conditions.collect { it.baseProperty }.findAll { it.type.displayName == 'A' }.toList()
+		assertEquals(1, base.size())
+		assertNotNull(base[0].filter)
+		assertEquals(expectedFilterA, base[0].filter.filterTerm)
+
+		base = param.conditions.collect { it.baseProperty }.findAll { it.type.displayName == 'B' }.toList()
+		assertEquals(1, base.size())
+		assertNotNull(base[0].filter)
+		assertEquals(expectedFilterB, base[0].filter.filterTerm)
+
+		// join properties
+		def join = param.conditions.collect { it.joinProperty }.findAll { it.type.displayName == 'B' }.toList()
+		assertEquals(1, join.size())
+		assertNotNull(join[0].filter)
+		assertEquals(expectedFilterB, join[0].filter.filterTerm)
+
+		join = param.conditions.collect { it.joinProperty }.findAll { it.type.displayName == 'C' }.toList()
+		assertEquals(1, join.size())
+		assertNotNull(join[0].filter)
+		assertEquals(expectedFilterC, join[0].filter.filterTerm)
+
+		// there should be a message about the condition having been translated automatically
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
 	}
 
 	// helpers

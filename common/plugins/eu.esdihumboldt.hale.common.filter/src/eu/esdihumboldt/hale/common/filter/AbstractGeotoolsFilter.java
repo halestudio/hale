@@ -16,14 +16,20 @@
 
 package eu.esdihumboldt.hale.common.filter;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.filter.FilterAttributeExtractor;
 import org.geotools.filter.text.cql2.CQLException;
+import org.geotools.util.factory.GeoTools;
+import org.opengis.filter.And;
 import org.opengis.filter.Filter;
 import org.opengis.filter.expression.PropertyName;
 
@@ -39,6 +45,7 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.filter.internal.EntityReplacementVisitor;
 import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.util.groovy.paths.Path;
 
 /**
@@ -179,20 +186,113 @@ public abstract class AbstractGeotoolsFilter
 
 	@Override
 	public Optional<eu.esdihumboldt.hale.common.instance.model.Filter> migrateFilter(
-			EntityDefinition context, AlignmentMigration migration, SimpleLog log) {
+			EntityDefinition context, AlignmentMigration migration, TypeDefinition preferRoot,
+			SimpleLog log) {
+		// split filter (AND operands)
+		List<Filter> andParts = splitAnd(internFilter);
 
-		EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
-				name -> resolveProperty(name, context, log), log);
-		Object extraData = null;
-		Filter copy = (Filter) internFilter.accept(visitor, extraData);
+		// migrate each filter part
+		List<Filter> acceptedParts = new ArrayList<>();
+		for (Filter part : andParts) {
+			EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
+					name -> resolveProperty(name, context, log), preferRoot, log);
+			Object extraData = null;
+			Filter copy = (Filter) part.accept(visitor, extraData);
+
+			/*
+			 * Determine if part is relevant. Only accept filter parts that are
+			 * not exclusively updated with other types than `preferRoot`. (This
+			 * is used to handle the different types from a Join individually)
+			 * 
+			 * TODO is usage of preferRoot OK or should we have an additional
+			 * parameter to control this behavior?
+			 * 
+			 * Inform about parts that are dropped)
+			 */
+			TypeDefinition focusType = preferRoot;
+			String messagePrefix = (focusType == null) ? "" : focusType.getDisplayName() + ": ";
+			if (visitor.isAllMismatches(focusType)) {
+				// drop if there were no successful replacements at all
+				if (andParts.size() == 1) {
+					try {
+						log.warn(
+								"{0}The filter \"{1}\" was removed because no matches for the respective properties were found",
+								messagePrefix, toFilterTerm(part));
+					} catch (CQLException e) {
+						log.error(
+								"{0}The filter was removed because no matches for the respective properties were found; error converting filter to string",
+								messagePrefix, e);
+					}
+				}
+				else {
+					try {
+						log.warn(
+								"{0}The filter operand \"{1}\" part of the filter''s AND condition was removed because no matches for the respective properties were found",
+								messagePrefix, toFilterTerm(part));
+					} catch (CQLException e) {
+						log.error(
+								"{0}A filter operand part of the filter's AND condition was removed because no matches for the respective properties were found; error converting filter part to string",
+								messagePrefix, e);
+					}
+				}
+			}
+			else {
+				acceptedParts.add(copy);
+
+				// log if there are replacements that don't match the focus type
+				if (focusType != null) {
+					List<EntityDefinition> otherReplacements = visitor.getReplacements().stream()
+							.filter(entity -> !focusType.equals(entity.getType())).toList();
+					if (!otherReplacements.isEmpty()) {
+						try {
+							log.warn(
+									"{0}The filter operand \"{1}\" part of the filter''s AND condition contains references related to other types than {2}",
+									messagePrefix, toFilterTerm(part), focusType.getDisplayName());
+						} catch (CQLException e) {
+							log.error(
+									"{0}A filter operand part of the filter's AND condition contains references related to other types than {1}; error converting filter part to string",
+									messagePrefix, focusType.getDisplayName(), e);
+						}
+					}
+				}
+			}
+		}
+
+		// combine accepted filter parts
+		Filter combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
+				.and(acceptedParts);
 
 		try {
-			String filterString = toFilterTerm(copy);
+			String filterString = toFilterTerm(combined);
 			return Optional.of(buildFilter(filterString));
 		} catch (CQLException e) {
 			log.error("Filter could not be automatically migrated", e);
 			return Optional.empty();
 		}
+	}
+
+	/**
+	 * Split a filter into separate AND conditions.
+	 * 
+	 * @param filter the filter to split
+	 * @return the split filters as list
+	 */
+	private List<Filter> splitAnd(Filter filter) {
+		List<Filter> result = new ArrayList<>();
+
+		Deque<Filter> toCheck = new LinkedList<>();
+		toCheck.add(filter);
+		while (!toCheck.isEmpty()) {
+			Filter f = toCheck.poll();
+			if (f instanceof And) {
+				toCheck.addAll(((And) f).getChildren());
+			}
+			else {
+				result.add(f);
+			}
+		}
+
+		return result;
 	}
 
 	/**

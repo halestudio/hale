@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Filter;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Extended filter interface for filters aware of referenced entities.
@@ -42,7 +43,7 @@ public interface EntityAwareFilter extends Filter {
 
 	/**
 	 * States if the filter supports migration via
-	 * {@link #migrateFilter(EntityDefinition, AlignmentMigration, SimpleLog)}
+	 * {@link #migrateFilter(EntityDefinition, AlignmentMigration, TypeDefinition, SimpleLog)}
 	 * 
 	 * @return <code>true</code> if migration is supported, <code>false</code>
 	 *         otherwise
@@ -55,10 +56,12 @@ public interface EntityAwareFilter extends Filter {
 	 * 
 	 * @param context the entity context
 	 * @param migration the alignment migration
+	 * @param preferRoot hint on which entity to prefer if there are multiple
+	 *            matches
 	 * @param log the operation log
 	 * @return the migrated filter, if migration is possible
 	 */
 	Optional<Filter> migrateFilter(EntityDefinition context, AlignmentMigration migration,
-			SimpleLog log);
+			TypeDefinition preferRoot, SimpleLog log);
 
 }

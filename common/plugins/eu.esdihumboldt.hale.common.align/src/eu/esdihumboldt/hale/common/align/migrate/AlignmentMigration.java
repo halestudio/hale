@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Interface describing an alignment migration.
@@ -34,6 +35,20 @@ public interface AlignmentMigration {
 	 * @param log the migration process log (may be cell specific)
 	 * @return the replacement entity, if the entity should be replaced
 	 */
-	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log);
+	default Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
+		return entityReplacement(entity, null, log);
+	}
+
+	/**
+	 * Yields a replacement for an entity existing in a given alignment.
+	 * 
+	 * @param entity the entity to replace
+	 * @param preferRoot hint on which entity to prefer if there are multiple
+	 *            matches
+	 * @param log the migration process log (may be cell specific)
+	 * @return the replacement entity, if the entity should be replaced
+	 */
+	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, TypeDefinition preferRoot,
+			SimpleLog log);
 
 }

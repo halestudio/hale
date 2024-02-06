@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import groovy.transform.CompileStatic;;;
 
 /**
@@ -41,10 +42,28 @@ class MatchingMigration extends AbstractMigration {
 		this.reverse = reverse
 	}
 
-	protected Optional<EntityDefinition> findMatch(EntityDefinition entity) {
+	@Override
+	protected Optional<EntityDefinition> findMatch(EntityDefinition entity, TypeDefinition preferRoot) {
 		findMatches(entity).flatMap({ list ->
-			list ? Optional.ofNullable(((List<EntityDefinition>)list)[0]) : Optional.empty()
+			findPreferredCandidate((List<EntityDefinition>)list, preferRoot)
 		} as Function)
+	}
+
+	private Optional<EntityDefinition> findPreferredCandidate(Collection<EntityDefinition> entities, TypeDefinition preferRoot) {
+		if (entities.empty) {
+			return Optional.empty()
+		}
+
+		/*
+		 * Note: preferRoot is used here to for example pick a specific type from a Join cell's sources 
+		 */
+		def firstPreferred = entities.find { EntityDefinition it -> it.type == preferRoot }
+		if (firstPreferred) {
+			Optional.of(firstPreferred)
+		}
+		else {
+			Optional.of(entities.iterator().next())
+		}
 	}
 
 	public Optional<List<EntityDefinition>> findMatches(EntityDefinition entity) {

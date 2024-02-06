@@ -26,6 +26,7 @@ import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import groovy.transform.CompileStatic
 
@@ -40,18 +41,19 @@ abstract class AbstractMigration implements AlignmentMigration {
 	/**
 	 * Find a match for the given entity
 	 * @param entity the entity
+	 * @param preferRoot hint on which entity to prefer if there are multiple matches
 	 * @return the match if found
 	 */
-	protected abstract Optional<EntityDefinition> findMatch(EntityDefinition entity);
+	protected abstract Optional<EntityDefinition> findMatch(EntityDefinition entity, TypeDefinition preferRoot);
 
 	@Override
-	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
+	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, TypeDefinition preferRoot, SimpleLog log) {
 		EntityDefinition defaultEntity = AlignmentUtil.getAllDefaultEntity(entity)
-		Optional<EntityDefinition> matchedEntity = findMatch(defaultEntity)
+		Optional<EntityDefinition> matchedEntity = findMatch(defaultEntity, preferRoot)
 
 		// special case handling
 		if (!matchedEntity.isPresent()) {
-			matchedEntity = findParentMatch(defaultEntity)
+			matchedEntity = findParentMatch(defaultEntity, preferRoot)
 			if (matchedEntity.present) {
 				log.warn "Inaccurate match of $entity to ${matchedEntity.get()} via parent entity"
 			}
@@ -60,7 +62,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (matchedEntity.present) {
 			// entity contained contexts -> translate them if possible
 
-			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), this, log));
+			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), this, preferRoot, log));
 		}
 
 		if (!matchedEntity.isPresent()) {
@@ -71,7 +73,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 	}
 
 	static EntityDefinition translateContexts(EntityDefinition original, EntityDefinition target,
-			AlignmentMigration migration, SimpleLog log) {
+			AlignmentMigration migration, TypeDefinition preferRoot, SimpleLog log) {
 		def defaultEntity = AlignmentUtil.getAllDefaultEntity(original)
 
 		if (original.filter) {
@@ -92,7 +94,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 				if (!sameEntity(original, target)) {
 					// replacements in filter if possible
 					if (filter instanceof EntityAwareFilter) {
-						def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, log)
+						def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, preferRoot, log)
 						if (migrated.present) {
 							filter = migrated.get()
 							//TODO mark automatically migrated?
@@ -206,10 +208,10 @@ abstract class AbstractMigration implements AlignmentMigration {
 		}
 	}
 
-	protected Optional<EntityDefinition> findParentMatch(EntityDefinition entity) {
+	protected Optional<EntityDefinition> findParentMatch(EntityDefinition entity, TypeDefinition preferRoot) {
 		//XXX only allow parent matches for specific cases right now
 		if (!(entity.definition instanceof PropertyDefinition) ||
-		!((PropertyDefinition) entity.definition).propertyType.getConstraint(GeometryType).isGeometry()) {
+				!((PropertyDefinition) entity.definition).propertyType.getConstraint(GeometryType).isGeometry()) {
 			// not a geometry
 			return Optional.empty()
 		}
@@ -217,7 +219,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		while (entity != null) {
 			entity = AlignmentUtil.getParent(entity)
 
-			def matchedEntity = findMatch(entity);
+			def matchedEntity = findMatch(entity, preferRoot);
 			if (matchedEntity.present) {
 				return matchedEntity
 			}
@@ -225,5 +227,4 @@ abstract class AbstractMigration implements AlignmentMigration {
 
 		return Optional.empty()
 	}
-
 }

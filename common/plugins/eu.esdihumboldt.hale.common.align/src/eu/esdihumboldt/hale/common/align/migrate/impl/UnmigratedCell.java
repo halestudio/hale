@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.MutableCellDecorator;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Decorator for a {@link MutableCell} that allows to do lazy migration.
@@ -82,7 +83,7 @@ public class UnmigratedCell extends MutableCellDecorator {
 
 			@Override
 			public Optional<EntityDefinition> entityReplacement(EntityDefinition entity,
-					SimpleLog log) {
+					TypeDefinition preferRoot, SimpleLog log) {
 				return Optional.ofNullable(joinedMappings.get(entity));
 			}
 
