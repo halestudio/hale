@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.common.align.io.AlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.CastorAlignmentIO;
 import eu.esdihumboldt.hale.common.align.io.impl.JaxbAlignmentIO;
 import eu.esdihumboldt.hale.common.align.model.Alignment;
+import eu.esdihumboldt.hale.common.core.io.HaleIO;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.PathUpdate;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
@@ -44,7 +45,9 @@ import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.DefaultIOReporter;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
+import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
+import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeIndex;
 import eu.esdihumboldt.hale.io.gml.reader.internal.XmlInstanceReader;
@@ -59,7 +62,7 @@ import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
 public class TestUtil {
 
 	/**
-	 * Loads the specified XML Schema.
+	 * Loads the specified schema.
 	 * 
 	 * @param location the URI specifying the location of the schema
 	 * @return the loaded schema
@@ -71,7 +74,11 @@ public class TestUtil {
 			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
-		XmlSchemaReader reader = new XmlSchemaReader();
+		SchemaReader reader = HaleIO.findIOProvider(SchemaReader.class, input, location.getPath());
+		if (reader == null) {
+			// assume XML schema as default
+			reader = new XmlSchemaReader();
+		}
 		reader.setSharedTypes(new DefaultTypeIndex());
 		reader.setSource(input);
 
@@ -120,10 +127,10 @@ public class TestUtil {
 	}
 
 	/**
-	 * Loads an instance collection from the specified XML file with the given
+	 * Loads an instance collection from the specified file with the given
 	 * source types.
 	 * 
-	 * @param location the URI specifying the location of the xml instance file
+	 * @param location the URI specifying the location of the instance file
 	 * @param types the type index
 	 * @return the loaded instance collection
 	 * @throws IOException if loading the instance failed
@@ -134,7 +141,12 @@ public class TestUtil {
 			throws IOProviderConfigurationException, IOException {
 		DefaultInputSupplier input = new DefaultInputSupplier(location);
 
-		XmlInstanceReader instanceReader = new XmlInstanceReader();
+		InstanceReader instanceReader = HaleIO.findIOProvider(InstanceReader.class, input,
+				location.getPath());
+		if (instanceReader == null) {
+			// assume XML as default
+			instanceReader = new XmlInstanceReader();
+		}
 		instanceReader.setSource(input);
 		instanceReader.setSourceSchema(types);
 		IOReport report = instanceReader.execute(null);
