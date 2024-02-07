@@ -344,6 +344,50 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 				TransformationExamples.getExample(TransformationExamples.PROPERTY_JOIN_INT_FLOAT));
 	}
 
+	/**
+	 * Test a Join that has the innerJoin flag enabled.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testInnerJoin() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.INNER_JOIN));
+	}
+
+	/**
+	 * Test a Join that has the innerJoin flag enabled. Multiple types are
+	 * joined to the join focus, not joins at second level.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testInnerJoinFirstLevel() throws Exception {
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.INNER_JOIN_FIRST_LEVEL));
+	}
+
+	/**
+	 * Test a Join that has the innerJoin flag enabled. Conditions are bound to
+	 * some of the joined types.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testInnerJoinConditions() throws Exception {
+		testTransform(
+				TransformationExamples.getExample(TransformationExamples.INNER_JOIN_CONDITIONS));
+	}
+
+	/**
+	 * Test a Join that does not have the innerJoin flag enabled.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
+	public void testJoin() throws Exception {
+		testTransform(TransformationExamples.getExample(TransformationExamples.JOIN));
+	}
+
 	@Override
 	protected List<Instance> transformData(TransformationExample example) throws Exception {
 		ConceptualSchemaTransformer transformer = new ConceptualSchemaTransformer();

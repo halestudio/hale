@@ -29,6 +29,12 @@ public interface JoinFunction {
 	public static final String PARAMETER_JOIN = "join";
 
 	/**
+	 * Name of the parameter that specifies if an inner join should be
+	 * performed.
+	 */
+	public static final String PARAMETER_INNER_JOIN = "innerJoin";
+
+	/**
 	 * the join function Id
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.align.join";

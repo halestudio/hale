@@ -36,7 +36,7 @@ import eu.esdihumboldt.hale.common.instance.index.IndexedPropertyValue;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilterResourceIteratorAdapter;
 
 /**
  * Iterator used by {@link IndexJoinHandler}
@@ -44,21 +44,21 @@ import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAd
  * @author Florian Esser
  */
 class IndexJoinIterator
-		extends GenericResourceIteratorAdapter<ResolvableInstanceReference, FamilyInstance> {
+		extends FilterResourceIteratorAdapter<ResolvableInstanceReference, FamilyInstance> {
 
 	private final JoinDefinition joinDefinition;
 	private final InstanceIndexService index;
 
+	private final boolean innerJoin;
+
 	protected IndexJoinIterator(Collection<ResolvableInstanceReference> startInstances,
-			JoinDefinition joinDefinition, InstanceIndexService index) {
+			JoinDefinition joinDefinition, InstanceIndexService index, boolean innerJoin) {
 		super(startInstances.iterator());
 		this.joinDefinition = joinDefinition;
 		this.index = index;
+		this.innerJoin = innerJoin;
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
-	 */
 	@Override
 	protected FamilyInstance convert(ResolvableInstanceReference next) {
 		FamilyInstance base = new FamilyInstanceImpl(next.resolve());
@@ -66,16 +66,21 @@ class IndexJoinIterator
 		FamilyInstance[] currentInstances = new FamilyInstance[joinDefinition.directParent.length];
 		currentInstances[0] = base;
 
-		join(currentInstances, 0);
+		if (!join(currentInstances, 0)) {
+			// skip this instance
+			return null;
+		}
 
 		return base;
 	}
 
 	/**
 	 * Joins all direct children of the given type to currentInstances.
+	 * 
+	 * @return if the instance should be skipped
 	 */
 	@SuppressWarnings("javadoc")
-	private void join(FamilyInstance[] currentInstances, int currentType) {
+	private boolean join(FamilyInstance[] currentInstances, int currentType) {
 		// Join all types that are direct children of the last type.
 		for (int i = currentType + 1; i < joinDefinition.directParent.length; i++) {
 			if (joinDefinition.directParent[i] == currentType) {
@@ -148,12 +153,21 @@ class IndexJoinIterator
 						child = new FamilyInstanceImpl(ref.resolve());
 						parent.addChild(child);
 						currentInstances[i] = child;
-						join(currentInstances, i);
+						if (!join(currentInstances, i)) {
+							return false;
+						}
 					}
 					currentInstances[i] = null;
 				}
+				else {
+					if (innerJoin) {
+						return false;
+					}
+				}
 			}
 		}
+
+		return true;
 	}
 
 	/**
