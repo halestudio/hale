@@ -118,14 +118,9 @@ public class AdvCrsAuthorityFactory extends AbstractAuthorityFactory
 		addCodeMapping("ETRS89_UTM33", "EPSG:25833");
 		addCodeMapping("ETRS89_Lat-Lon", "EPSG:4258");
 		addCodeMapping("DE_DHHN92_NH", "EPSG:5783");
+		addCodeMapping("DE_DHHN2016_NH", "EPSG:7837");
 
-		// EPSG:7837 is not available in EPSG registry version 7.9.0
-		// which is shipped with GeoTools 12.2. See also
-		// https://github.com/halestudio/hale/issues/573
-		//
-		// addEpsgMapping("DE_DHHN2016_NH", "EPSG:7837");
-		
-		//XXX These mappings provided by AdV don't seem to be correct
+		// XXX These mappings provided by AdV don't seem to be correct
 		// It seems there is currently no matching EPSG code and the
 		// definitions would have to be provided via WKT instead.
 		//
