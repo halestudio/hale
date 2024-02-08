@@ -224,14 +224,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 		provider.setParameter(CommonSchemaConstants.PARAM_SKIP_N_LINES,
 				Value.of(skipNlinesSpinner.getSelection()));
 
-		if (customFormat.isVisible()) {
-
-			if (customFormat.getText().isBlank()) {
-				return false;
-			}
-
-			provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT,
-					Value.of(customFormat.getText()));
+		if (customFormat.isVisible() && customFormat.getText().isBlank()) {
+			return false;
 		}
 		else {
 			// Get the selection from the combo viewer
@@ -241,6 +235,10 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage implement
 			if (selectedValue.equals("")) {
 				// The empty string is selected
 				provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT, null);
+			}
+			else if (selectedValue.equals(CUSTOM_FORMAT_LABEL)) {
+				provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT,
+						Value.of(customFormat.getText()));
 			}
 			else {
 				provider.setParameter(CSVConstants.PARAMETER_DATE_FORMAT,
