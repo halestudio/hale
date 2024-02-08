@@ -192,8 +192,12 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 					DateFormat.getDateTimeInstance(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
 					new SimpleDateFormat("MM/dd/yy HH:mm:ss"),
 					new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"),
+					new SimpleDateFormat("MM-dd-yy HH:mm:ss"),
 					new SimpleDateFormat("MM-dd-yyyy HH:mm:ss"),
-					new SimpleDateFormat("MM-dd-yy HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd"),
+					new SimpleDateFormat("dd-MM-yy HH:mm:ss"),
+					new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"),
+					new SimpleDateFormat("dd/MM/yy HH:mm:ss"),
+					new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd"),
 					new SimpleDateFormat("dd/MM/yyyy"), new SimpleDateFormat("dd/MMM/yyyy"),
 					new SimpleDateFormat("MM/dd/yy"), new SimpleDateFormat("MM/dd/yyyy"),
 					new SimpleDateFormat("yyyy/MM/dd"), new SimpleDateFormat("MM-dd-yyyy"),
@@ -201,10 +205,11 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 					new SimpleDateFormat("dd-MM-yyyy"), new SimpleDateFormat("yyyy.MM.dd"),
 					new SimpleDateFormat("dd.MM.yyyy"), new SimpleDateFormat("MM.dd.yyyy"),
 					new SimpleDateFormat("yyyyMMdd"), new SimpleDateFormat("MMMM d, yyyy"),
-					new SimpleDateFormat("yy-MM"), new SimpleDateFormat("yyyy-MM"),
-					new SimpleDateFormat("MM-yy"), new SimpleDateFormat("MM-yyyy"),
+					new SimpleDateFormat("MMMM dd, yyyy"), new SimpleDateFormat("yy-MM"),
+					new SimpleDateFormat("yyyy-MM"), new SimpleDateFormat("MM-yy"),
+					new SimpleDateFormat("MM-yyyy"),
 					// Add more date formats as needed
-			};
+					new SimpleDateFormat(dateTime) };
 
 			for (DateFormat dateFormat : dateFormats) {
 				try {
@@ -229,7 +234,7 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 					// Parsing failed with this format, try the next one
 				}
 			}
-			return null;
+			return dateString;
 		}
 
 		private Object convertValue(String part, PropertyDefinition property) {
