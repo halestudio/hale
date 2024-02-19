@@ -29,10 +29,11 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
+import org.locationtech.jts.geom.Geometry;
+
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Multimap;
-import org.locationtech.jts.geom.Geometry;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Localizable;
@@ -40,6 +41,7 @@ import eu.esdihumboldt.cst.functions.geometric.join.SpatialJoinParameter.Spatial
 import eu.esdihumboldt.cst.functions.geometric.join.SpatialRelationEvaluator.StandardRelation;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
+import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -56,7 +58,7 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilterResourceIteratorAdapter;
 import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 
 /**
@@ -142,12 +144,19 @@ public class SpatialJoinHandler implements InstanceHandler<TransformationEngine>
 			iterator.close();
 		}
 
-		return new SpatialJoinIterator(instances, startInstances, directParent, services,
-				joinTable);
+		boolean innerJoin = false; // default to false if not specified
+		List<ParameterValue> innerJoinValues = transformationParameters
+				.get(JoinFunction.PARAMETER_INNER_JOIN);
+		if (!innerJoinValues.isEmpty()) {
+			innerJoin = innerJoinValues.get(0).as(Boolean.class, innerJoin);
+		}
+
+		return new SpatialJoinIterator(instances, startInstances, directParent, services, joinTable,
+				innerJoin);
 	}
 
 	private class SpatialJoinIterator
-			extends GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
+			extends FilterResourceIteratorAdapter<InstanceReference, FamilyInstance> {
 
 		private final InstanceCollection instances;
 		// type -> direct-parent
@@ -156,15 +165,19 @@ public class SpatialJoinHandler implements InstanceHandler<TransformationEngine>
 		private final ServiceProvider provider;
 		private final Map<Integer, Multimap<Integer, SpatialJoinCondition>> joinTable;
 
+		private final boolean innerJoin;
+
 		protected SpatialJoinIterator(InstanceCollection instances,
 				Collection<InstanceReference> startInstances, int[] parent,
 				ServiceProvider provider,
-				Map<Integer, Multimap<Integer, SpatialJoinCondition>> joinTable) {
+				Map<Integer, Multimap<Integer, SpatialJoinCondition>> joinTable,
+				boolean innerJoin) {
 			super(startInstances.iterator());
 			this.instances = instances;
 			this.parent = parent;
 			this.provider = provider;
 			this.joinTable = joinTable;
+			this.innerJoin = innerJoin;
 		}
 
 		/**
@@ -176,13 +189,20 @@ public class SpatialJoinHandler implements InstanceHandler<TransformationEngine>
 			FamilyInstance[] currentInstances = new FamilyInstance[parent.length];
 			currentInstances[0] = base;
 
-			join(currentInstances, 0);
+			if (!join(currentInstances, 0)) {
+				// skip this instance
+				return null;
+			}
 
 			return base;
 		}
 
-		// Joins all direct children of the given type to currentInstances.
-		private void join(FamilyInstance[] currentInstances, int currentType) {
+		/**
+		 * Joins all direct children of the given type to currentInstances.
+		 * 
+		 * @return if the instance should be skipped
+		 */
+		private boolean join(FamilyInstance[] currentInstances, int currentType) {
 			@SuppressWarnings("unchecked")
 			SpatialIndexService<Localizable, Localizable> index = provider
 					.getService(SpatialIndexService.class);
@@ -281,13 +301,24 @@ public class SpatialJoinHandler implements InstanceHandler<TransformationEngine>
 							FamilyInstance child = new FamilyInstanceImpl(inst);
 							parent.addChild(child);
 							currentInstances[i] = child;
-							join(currentInstances, i);
+							if (!join(currentInstances, i)) {
+								return false;
+							}
 						}
 						currentInstances[i] = null;
 					}
+					else {
+						if (innerJoin) {
+							// no instances for this link
+							return false;
+						}
+					}
 				}
 			}
+
+			return true;
 		}
+
 	}
 
 	/**
