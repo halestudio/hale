@@ -379,6 +379,24 @@
                scriptable="false">
             <parameterBinding></parameterBinding>
          </functionParameter>
+         <functionParameter
+               deprecated="false"
+               description="If enabled a result is created only if all Join conditions are met"
+               label="Inner Join"
+               maxOccurrence="1"
+               minOccurrence="0"
+               name="innerJoin"
+               scriptable="false">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="Default behavior is that a result is created for every instance of the Join&apos;s focus type"
+                  sample="true"
+                  sampleDescription="Only create a result from the Join if there are linked instances for all Join conditions">
+            </valueDescriptor>
+         </functionParameter>
       </typeFunction>
    </extension>
    <extension
