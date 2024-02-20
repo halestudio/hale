@@ -569,16 +569,16 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				TypeDefinition type = instance.getDefinition();
 				String localPart = type.getName().getLocalPart();
 				if (schemaFtMap.containsKey(localPart)) {
-					writeGeometryInstanceData(reporter, schemaFbMap, instance, localPart);
+					List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
+					writeGeometryInstanceData(reporter, schemaFbMap, geoms, localPart);
 					// add data for the rest of the properties.
-					writePropertiesInstanceData(schemaFbMap, instance, type, localPart);
+					writePropertiesInstanceData(schemaFbMap, instance, type, localPart, geoms);
 
 					// create list of simple features.
 					// fix in case geometries have multiple geometry types but
 					// single geometry in data. So, always extract geometries
 					// from instance and update to schema. Otherwise the data
 					// will be updated to all the geometries
-					List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
 					for (GeometryProperty<?> geoProp : geoms) {
 						String key = geoProp.getGeometry().getGeometryType();
 						SimpleFeature feature = schemaFbMap.get(localPart).get(key)
@@ -600,15 +600,13 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * 
 	 * @param reporter reporter.
 	 * @param schemaFbMap map of feature builder to write the data to.
-	 * @param instance instance
+	 * @param geoms from traversing the instance to find geometries
 	 * @param localPart local part of <code>QName</code> which tracks multiple
 	 *            schemas.
 	 */
 	private void writeGeometryInstanceData(IOReporter reporter,
-			Map<String, Map<String, SimpleFeatureBuilder>> schemaFbMap, Instance instance,
-			String localPart) {
-		List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
-
+			Map<String, Map<String, SimpleFeatureBuilder>> schemaFbMap,
+			List<GeometryProperty<?>> geoms, String localPart) {
 		for (GeometryProperty<?> geoProp : geoms) {
 			addGeometryData(reporter, schemaFbMap, localPart, geoProp);
 		}
@@ -622,10 +620,11 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * @param type type definition.
 	 * @param localPart local part of <code>QName</code> which tracks multiple
 	 *            schemas.
+	 * @param geoms from traversing the instance to find geometries
 	 */
 	private void writePropertiesInstanceData(
 			Map<String, Map<String, SimpleFeatureBuilder>> schemaFbMap, Instance instance,
-			TypeDefinition type, String localPart) {
+			TypeDefinition type, String localPart, List<GeometryProperty<?>> geoms) {
 		Collection<? extends PropertyDefinition> allNonComplexProperties = getNonComplexProperties(
 				type);
 		for (PropertyDefinition prop : allNonComplexProperties) {
@@ -635,17 +634,16 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					&& prop.getName().getLocalPart() != null) {
 				Object value = new InstanceAccessor(instance)
 						.findChildren(prop.getName().getLocalPart()).value();
-				List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
-				// add value by traversing geometryType from instance
-				for (GeometryProperty<?> geoProp : geoms) {
-					if (geoProp.getGeometry() != null) {
-						String geometryType = geoProp.getGeometry().getGeometryType();
-						if (schemaFbMap.get(localPart) != null
-								&& schemaFbMap.get(localPart).get(geometryType) != null) {
-							schemaFbMap.get(localPart).get(geometryType).add(value);
+				if (schemaFbMap.get(localPart) != null && value != null) {
+					// add value by traversing geometryType from instance
+					for (GeometryProperty<?> geoProp : geoms) {
+						if (geoProp.getGeometry() != null) {
+							String geometryType = geoProp.getGeometry().getGeometryType();
+							if (schemaFbMap.get(localPart).get(geometryType) != null) {
+								schemaFbMap.get(localPart).get(geometryType).add(value);
+							}
 						}
 					}
-
 				}
 			}
 		}
