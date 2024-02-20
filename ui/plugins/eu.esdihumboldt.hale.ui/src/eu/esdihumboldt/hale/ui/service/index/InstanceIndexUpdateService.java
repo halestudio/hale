@@ -24,5 +24,9 @@ import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;
  * @author Florian Esser
  */
 public interface InstanceIndexUpdateService extends AlignmentServiceListener {
-	// no extensions
+
+	/**
+	 * Called when source instances are cleared
+	 */
+	void instancesCleared();
 }

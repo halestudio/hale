@@ -57,6 +57,11 @@ public class InstanceIndexUpdateServiceImpl implements InstanceIndexUpdateServic
 	}
 
 	@Override
+	public void instancesCleared() {
+		getIndexService().clearIndexedValues();
+	}
+
+	@Override
 	public void alignmentCleared() {
 		getIndexService().clearAll();
 	}
