@@ -70,6 +70,7 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.service.population.PopulationService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.index.InstanceIndexUpdateService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.internal.AbstractInstanceService;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -104,10 +105,10 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 */
 	public static final OrientInstanceService getInstance(SchemaService schemaService,
 			ProjectService projectService, AlignmentService alignmentService,
-			GroovyService groovyService) {
+			GroovyService groovyService, InstanceIndexUpdateService indexUpdateService) {
 		if (instance == null) {
 			instance = new OrientInstanceService(schemaService, projectService, alignmentService,
-					groovyService);
+					groovyService, indexUpdateService);
 		}
 		return instance;
 	}
@@ -138,8 +139,9 @@ public class OrientInstanceService extends AbstractInstanceService {
 	 * @param groovyService the groovy service
 	 */
 	private OrientInstanceService(SchemaService schemaService, ProjectService projectService,
-			AlignmentService alignmentService, GroovyService groovyService) {
-		super(projectService, alignmentService, groovyService);
+			AlignmentService alignmentService, GroovyService groovyService,
+			InstanceIndexUpdateService indexUpdateService) {
+		super(projectService, alignmentService, groovyService, indexUpdateService);
 
 		this.schemaService = schemaService;
 

@@ -138,7 +138,8 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 					locator.getService(SchemaService.class),
 					locator.getService(ProjectService.class),
 					locator.getService(AlignmentService.class),
-					locator.getService(GroovyService.class));
+					locator.getService(GroovyService.class),
+					locator.getService(InstanceIndexUpdateService.class));
 
 			// Add a listener to close all InstanceProcessors when source data
 			// is cleared
