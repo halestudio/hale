@@ -134,6 +134,15 @@ public class IndexMergeHandler
 			}
 		}
 
+		if (mergeConfig.keyProperties.isEmpty()) {
+			// Without key properties, the instance index will be empty
+			//
+			// TODO Is there a better solution, e.g. finding a way to populate
+			// the instance index even though there is no merge key?
+			return fallbackHandler.partitionInstances(instances, transformationIdentifier, engine,
+					transformationParameters, executionParameters, log);
+		}
+
 		// Querying the index will yield a result over all instances. We must,
 		// however, be able to operate only on the given input instances instead
 		// of all instances.

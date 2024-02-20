@@ -72,6 +72,19 @@ public class JoinExplanation extends AbstractCellExplanation implements JoinFunc
 			}
 			sb.append('\n');
 
+			// inner join
+
+			boolean innerJoin = CellUtil.getFirstParameter(cell, PARAMETER_INNER_JOIN)
+					.as(Boolean.class, false);
+			if (innerJoin) {
+				sb.append(getMessage("innerjoin", locale));
+			}
+			else {
+				sb.append(MessageFormat.format(getMessage("leftjoin", locale),
+						formatEntity(join.getTypes().get(0), html, false, locale)));
+			}
+			sb.append("\n\n");
+
 			// finalize
 
 			String explanation = sb.toString();

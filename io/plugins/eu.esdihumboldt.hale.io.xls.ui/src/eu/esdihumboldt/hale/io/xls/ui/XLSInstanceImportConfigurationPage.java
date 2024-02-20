@@ -16,6 +16,8 @@
 package eu.esdihumboldt.hale.io.xls.ui;
 
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -73,12 +75,21 @@ public class XLSInstanceImportConfigurationPage extends TypeSelectionPage {
 		super.createContent(page);
 	}
 
+	@Override
+	protected List<String> createDatePatternsList() {
+		return Arrays.asList(
+				// Standard date formats
+				"yyyy-MM-dd", "yy-MM-dd", "dd-MM-yyyy", "MM-dd-yyyy", "yyyy/MM/dd", "dd/MM/yyyy",
+				"dd/MMM/yyyy", "MM/dd/yyyy", "yyyy.MM.dd", "dd.MM.yyyy", "MM.dd.yyyy", "yyyyMMdd",
+				// Custom date format
+				"MMMM d, yyyy", TypeSelectionPage.CUSTOM_FORMAT_LABEL);
+	}
+
 	/**
 	 * @see eu.esdihumboldt.hale.ui.HaleWizardPage#onShowPage(boolean)
 	 */
 	@Override
 	protected void onShowPage(boolean firstShow) {
-
 		if (!firstShow) {
 			setErrorMessage(null);
 		}
@@ -100,7 +111,11 @@ public class XLSInstanceImportConfigurationPage extends TypeSelectionPage {
 			return;
 		}
 		super.onShowPage(firstShow);
+
+		dateFormatterLabel
+				.setText("Format for imported date values\r\n(values are represented as strings)");
 		sheetSelection.select(0);
+
 		setPageComplete(false);
 	}
 

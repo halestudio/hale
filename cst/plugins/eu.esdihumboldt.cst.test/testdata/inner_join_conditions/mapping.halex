@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="5.1.0.qualifier">
+    <name>mapping</name>
+    <author>hale</author>
+    <created>2024-02-07T10:28:58.718+01:00</created>
+    <modified>2024-02-07T13:02:59.850+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/home/simon/repos/hale/cst/plugins/eu.esdihumboldt.cst.test/testdata/inner_join_conditions/mapping.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">ec2ec25e-5940-4b91-8ccd-9ea9455a3dbc</setting>
+        <setting name="source">source-schema.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">646e49d6-a2f9-462c-8bfb-e6a2a47abef1</setting>
+        <setting name="source">target-schema.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.instancebuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">95bd5843-dfc0-43be-a901-03e7b843d44a</setting>
+        <setting name="source">source-instances.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.instancebuilder</setting>
+    </resource>
+    <file name="alignment.xml" location="mapping.halex.alignment.xml"/>
+    <file name="styles.sld" location="mapping.halex.styles.sld"/>
+</hale-project>

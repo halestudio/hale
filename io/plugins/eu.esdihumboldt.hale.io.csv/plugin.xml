@@ -69,7 +69,7 @@
             </valueDescriptor>
          </providerParameter>
          <providerParameter
-               description="Date Time Formatter specifying how values imported from Date cells should be imported"
+               description="Specify the format for importing String values that represent a Date"
                label="Date Time Formatter"
                name="dateTimeFormatterDefault"
                optional="true">

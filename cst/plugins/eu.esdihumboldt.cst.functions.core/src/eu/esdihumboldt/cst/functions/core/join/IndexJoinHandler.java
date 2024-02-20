@@ -67,7 +67,7 @@ public class IndexJoinHandler
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-					throws TransformationException {
+			throws TransformationException {
 
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
@@ -122,7 +122,13 @@ public class IndexJoinHandler
 			}
 		}
 
-		return new IndexJoinIterator(startInstances, joinDefinition, indexService);
+		boolean innerJoin = false; // default to false if not specified
+		List<ParameterValue> innerJoinValues = transformationParameters.get(PARAMETER_INNER_JOIN);
+		if (!innerJoinValues.isEmpty()) {
+			innerJoin = innerJoinValues.get(0).as(Boolean.class, innerJoin);
+		}
+
+		return new IndexJoinIterator(startInstances, joinDefinition, indexService, innerJoin);
 	}
 
 	/**

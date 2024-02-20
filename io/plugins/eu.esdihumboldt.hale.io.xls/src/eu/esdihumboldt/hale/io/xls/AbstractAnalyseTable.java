@@ -119,7 +119,7 @@ public abstract class AbstractAnalyseTable {
 	 * Analyzes the table header.
 	 * 
 	 * @param sheet the table sheet
-	 * @param dateTimeFormatter
+	 * @param dateTimeFormatter date formatter
 	 */
 	protected void analyseHeader(Sheet sheet, DateTimeFormatter dateTimeFormatter) {
 		Row header = sheet.getRow(0);
@@ -151,8 +151,8 @@ public abstract class AbstractAnalyseTable {
 	 * the skip line
 	 * 
 	 * @param sheet the table sheet
-	 * @param skipNlines
-	 * @param dateTimeFormatter
+	 * @param skipNlines skip N lines
+	 * @param dateTimeFormatter date formatter
 	 */
 	private void analyseContent(Sheet sheet, int skipNlines, DateTimeFormatter dateTimeFormatter) {
 		for (int i = skipNlines; i <= sheet.getLastRowNum(); i++) {
@@ -168,7 +168,7 @@ public abstract class AbstractAnalyseTable {
 	 *            separately)
 	 * @param row the table row
 	 * @param sheet the sheet
-	 * @param dateTimeFormatter
+	 * @param dateTimeFormatter date formatter
 	 */
 	protected abstract void analyseRow(int num, Row row, Sheet sheet,
 			DateTimeFormatter dateTimeFormatter);
