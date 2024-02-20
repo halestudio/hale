@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.core.io.project.ProjectVariables;
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceAdapter;
+import eu.esdihumboldt.hale.ui.service.index.InstanceIndexUpdateService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceListener;
 import eu.esdihumboldt.hale.ui.service.project.ProjectService;
@@ -47,6 +48,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 	private final AlignmentService alignmentService;
 	private final ProjectService projectService;
+	private final InstanceIndexUpdateService indexUpdateService;
 
 	private boolean liveTransform = true; // TODO where to store the
 											// configuration? project?
@@ -62,16 +64,18 @@ public abstract class AbstractInstanceService implements InstanceService {
 	 * @param groovyService the groovy service
 	 */
 	public AbstractInstanceService(ProjectService projectService, AlignmentService alignmentService,
-			GroovyService groovyService) {
+			GroovyService groovyService, InstanceIndexUpdateService indexUpdateService) {
 		super();
 
 		this.alignmentService = alignmentService;
 		this.projectService = projectService;
+		this.indexUpdateService = indexUpdateService;
 
 		projectService.addListener(new ProjectServiceAdapter() {
 
 			@Override
 			public void onClean() {
+				indexUpdateService.instancesCleared();
 				clearInstances();
 			}
 
@@ -89,11 +93,13 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 			@Override
 			public void alignmentCleared() {
+				indexUpdateService.alignmentCleared();
 				clearTransformedInstances();
 			}
 
 			@Override
 			public void cellsRemoved(Iterable<Cell> cells) {
+				indexUpdateService.cellsRemoved(cells);
 				/*
 				 * TODO analyze cell if it is a type or property mapping
 				 * property mapping: retransform based on related type mappings
@@ -105,6 +111,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 			@Override
 			public void cellsReplaced(Map<? extends Cell, ? extends Cell> cells) {
+				indexUpdateService.cellsReplaced(cells);
 				/*
 				 * TODO only retransform with relevant cells (i.e. create a view
 				 * on the alignment)
@@ -114,6 +121,7 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 			@Override
 			public void cellsAdded(Iterable<Cell> cells) {
+				indexUpdateService.cellsAdded(cells);
 				/*
 				 * TODO only retransform with relevant cells (i.e. create a view
 				 * on the alignment)
@@ -123,16 +131,19 @@ public abstract class AbstractInstanceService implements InstanceService {
 
 			@Override
 			public void customFunctionsChanged() {
+				indexUpdateService.customFunctionsChanged();
 				retransform();
 			}
 
 			@Override
 			public void alignmentChanged() {
+				indexUpdateService.alignmentChanged();
 				retransform();
 			}
 
 			@Override
 			public void cellsPropertyChanged(Iterable<Cell> cells, String propertyName) {
+				indexUpdateService.cellsPropertyChanged(cells, propertyName);
 				/*
 				 * TODO only retransform with relevant cells (i.e. create a view
 				 * on the alignment)
