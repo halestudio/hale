@@ -12,13 +12,13 @@
  * Contributors:
  *     wetransform GmbH <http://www.wetransform.to>
  */
-package eu.esdihumboldt.hale.ui.index.internal;
+package eu.esdihumboldt.hale.ui.service.index.internal;
 
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.PlatformUI;
 
-import eu.esdihumboldt.hale.ui.index.InstanceIndexUpdateService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.index.InstanceIndexUpdateService;
 
 /**
  * Early startup plugin to add an {@link InstanceIndexUpdateService} listener to

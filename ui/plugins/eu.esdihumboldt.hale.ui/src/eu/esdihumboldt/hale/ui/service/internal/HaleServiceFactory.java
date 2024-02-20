@@ -45,6 +45,8 @@ import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceIm
 import eu.esdihumboldt.hale.ui.service.entity.internal.EntityDefinitionServiceUndoSupport;
 import eu.esdihumboldt.hale.ui.service.geometry.ProjectGeometrySchemaService;
 import eu.esdihumboldt.hale.ui.service.groovy.internal.PreferencesGroovyService;
+import eu.esdihumboldt.hale.ui.service.index.InstanceIndexUpdateService;
+import eu.esdihumboldt.hale.ui.service.index.internal.InstanceIndexUpdateServiceImpl;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceServiceAdapter;
 import eu.esdihumboldt.hale.ui.service.instance.internal.orient.OrientInstanceService;
@@ -121,6 +123,10 @@ public class HaleServiceFactory extends AbstractServiceFactory {
 		if (GroovyService.class.equals(serviceInterface)) {
 			return new PreferencesGroovyService(locator.getService(ProjectService.class),
 					locator.getService(AlignmentService.class));
+		}
+
+		if (InstanceIndexUpdateService.class.equals(serviceInterface)) {
+			return new InstanceIndexUpdateServiceImpl(HaleUI.getServiceProvider());
 		}
 
 		if (InstanceSampleService.class.equals(serviceInterface)) {

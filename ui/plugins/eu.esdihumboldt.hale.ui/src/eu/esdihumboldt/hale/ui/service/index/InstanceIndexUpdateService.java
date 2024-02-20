@@ -12,7 +12,7 @@
  * Contributors:
  *     wetransform GmbH <http://www.wetransform.to>
  */
-package eu.esdihumboldt.hale.ui.index;
+package eu.esdihumboldt.hale.ui.service.index;
 
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentServiceListener;

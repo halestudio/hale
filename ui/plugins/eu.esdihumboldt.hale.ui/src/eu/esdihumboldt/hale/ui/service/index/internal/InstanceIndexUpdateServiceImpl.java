@@ -12,7 +12,7 @@
  * Contributors:
  *     wetransform GmbH <http://www.wetransform.to>
  */
-package eu.esdihumboldt.hale.ui.index.internal;
+package eu.esdihumboldt.hale.ui.service.index.internal;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,8 +33,8 @@ import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
-import eu.esdihumboldt.hale.ui.index.InstanceIndexUpdateService;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.service.index.InstanceIndexUpdateService;
 import eu.esdihumboldt.hale.ui.service.instance.InstanceService;
 
 /**
