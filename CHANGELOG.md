@@ -23,6 +23,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Replace default map with OpenStreetMap
 - Add Boolean and Java Pattern class to Groovy restriction whitelist
 - When exporting data as Json or GeoJson, now up to 20 decimal places are retained in Geometry coordinates.
+- Extend Join functions with optional behavior as "inner joins" where a result is only created if all join conditions are met
+- Update offline versions of INSPIRE schemas to 2024.1.2
 
 ## Maintenance
 - Update Geotools to version 29.1
@@ -36,6 +38,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 - Fix endless loop when skipping instances in paginated WFS request
 - Fix exporting HSD schemas for schemas with no namespace
 - Fix Type selection broken on custom export config
+- Fix an issue that prevented the more performant index based Join and Merge implementations from being used
+- Fix for index based Merge for cases where no Merge key is used
 
 ## [5.0.1]
 
