@@ -18,7 +18,7 @@ project = {
 	    win32InstallerUpgradeGUID = '6b6151c0-e3f9-11de-8a39-0800200c9a66'
 
 	    // The GUID for the shortcuts the installer will create
-	    win32InstallerShortcutGUID = '76ed8ea0-e3f9-11de-8a39-0800200c9a66'
+	    win32InstallerShortcutGUID = '751b51b5-cad0-4385-ac36-c20ffe114a75'
 
 	    // Name of the Windows service
 	    serviceName = 'HALE Server'

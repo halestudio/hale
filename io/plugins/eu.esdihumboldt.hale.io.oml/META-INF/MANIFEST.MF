@@ -30,7 +30,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.util.io,
  org.apache.log4j,
  org.glassfish.jaxb.core.marshaller;version="4.0.1",
- org.opengis.feature;version="8.0.0",
+ org.opengis.feature;version="29.1.0",
  org.slf4j;version="1.5.11"
 Require-Bundle: org.eclipse.core.contenttype;bundle-version="3.4.100",
  eu.esdihumboldt.hale.common.core,

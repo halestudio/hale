@@ -18,12 +18,16 @@ package eu.esdihumboldt.hale.io.csv.writer.internal;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -76,27 +80,77 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean solveNestedProperties = getParameter(
-				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
-		// XXX what does "solve nested properties" mean?
-
 		// get separation, quote and escape sign
 		sep = CSVUtil.getSep(this);
 		quote = CSVUtil.getQuote(this);
 		esc = CSVUtil.getEscape(this);
 
-		List<String> headerRow = new ArrayList<String>(); // empty list
-
-		// get the parameter to get the type definition
 		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
-		QName selectedTypeName = null;
+		ArrayList<QName> selectedFeatureTypes = new ArrayList<>();
 
-		if (exportType != null && !exportType.equals("") && !exportType.equals(" ")) {
-			selectedTypeName = QName.valueOf(exportType);
+		if (exportType != null) {
+			String[] splitExportType = exportType.split(",");
+			for (String featureType : splitExportType) {
+				selectedFeatureTypes.add(QName.valueOf(featureType));
+			}
+
+			for (QName selectedTypeName : selectedFeatureTypes) {
+				// get all instances of the selected Type
+				InstanceCollection instances = getInstanceCollection(selectedTypeName);
+
+				if (selectedFeatureTypes.size() != 1 && getTarget().getLocation() != null) {
+					URI location = getTarget().getLocation();
+
+					String filePath = Paths.get(location).getParent().toString();
+					String baseFilename = Paths.get(location).getFileName().toString();
+					baseFilename = baseFilename.substring(0, baseFilename.lastIndexOf("."));
+					String filenameWithType = filePath + FileSystems.getDefault().getSeparator()
+							+ baseFilename + InstanceTableIOConstants.UNDERSCORE
+							+ selectedTypeName.getLocalPart()
+							+ InstanceTableIOConstants.CSV_EXTENSION;
+
+					File outputFile = new File(filenameWithType);
+					try (FileOutputStream fos = new FileOutputStream(filePath)) {
+						addCSVFileByQName(reporter, new FileOutputStream(outputFile), instances);
+						fos.close();
+					} catch (FileNotFoundException fnfe) {
+						reporter.error(new IOMessageImpl("Cannot create csv file", fnfe));
+						reporter.setSuccess(false);
+						return reporter;
+					}
+				}
+				else {
+					try (OutputStream os = getTarget().getOutput()) {
+						addCSVFileByQName(reporter, os, instances);
+						os.close();
+					} catch (FileNotFoundException fnfe) {
+						reporter.error(new IOMessageImpl("Cannot create csv file", fnfe));
+						reporter.setSuccess(false);
+						return reporter;
+					}
+				}
+			}
 		}
 
-		// get all instances of the selected Type
-		InstanceCollection instances = getInstanceCollection(selectedTypeName);
+		reporter.setSuccess(true);
+		return reporter;
+	}
+
+	/**
+	 * @param reporter
+	 * @param outputStream
+	 * @param selectedTypeName
+	 * @param instances InstanceCollection available
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void addCSVFileByQName(IOReporter reporter, OutputStream outputStream,
+			InstanceCollection instances) throws IOException, FileNotFoundException {
+
+		boolean solveNestedProperties = getParameter(
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
+
+		List<String> headerRow = new ArrayList<String>(); // empty list
 		// use ResourceIterator<Instance> in a try block because is closable -
 		// avoid infinite
 		// cleaning project after exporting data
@@ -105,9 +159,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			try {
 				instance = instanceIterator.next();
 			} catch (NoSuchElementException e) {
-				reporter.error(
-						new IOMessageImpl("There are no instances for the selected type.", e));
-				return reporter;
+				return;
 			}
 
 			// get definition of current instance (only this properties with
@@ -119,7 +171,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 			// write
 			// it to a temp directory
 			File tempDir = Files.createTempDir();
-			File tempFile = new File(tempDir, "tempInstances.csv");
+			File tempFile = new File(tempDir, "_tempInstances.csv");
 
 			// write instances to csv file (without header)
 			// try to be sure resources are all closed after try-block
@@ -138,12 +190,10 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 			// header is only finished if all properties have been processed
 			// insert header to temp file and write it to output
-			insertHeader(tempFile, getTarget().getOutput(), headerRow);
-
+			insertHeader(tempFile, outputStream, headerRow);
+			outputStream.close();
 			FileUtils.deleteDirectory(tempDir);
 		}
-		reporter.setSuccess(true);
-		return reporter;
 	}
 
 	@Override

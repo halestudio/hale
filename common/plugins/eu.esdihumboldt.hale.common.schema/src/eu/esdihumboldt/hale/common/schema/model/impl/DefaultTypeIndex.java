@@ -18,8 +18,8 @@ package eu.esdihumboldt.hale.common.schema.model.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,7 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantF
  */
 public class DefaultTypeIndex implements TypeIndex {
 
-	private final Map<QName, TypeDefinition> types = new HashMap<QName, TypeDefinition>();
+	private final Map<QName, TypeDefinition> types = new LinkedHashMap<QName, TypeDefinition>();
 	private Set<TypeDefinition> mappingRelevantTypes;
 
 	/**
@@ -87,7 +87,7 @@ public class DefaultTypeIndex implements TypeIndex {
 	public Collection<? extends TypeDefinition> getMappingRelevantTypes() {
 		synchronized (this) {
 			if (mappingRelevantTypes == null) {
-				mappingRelevantTypes = new HashSet<TypeDefinition>();
+				mappingRelevantTypes = new LinkedHashSet<TypeDefinition>();
 				for (TypeDefinition type : types.values()) {
 					if (type.getConstraint(MappingRelevantFlag.class).isEnabled()
 							&& type.getConstraint(MappableFlag.class).isEnabled()) {

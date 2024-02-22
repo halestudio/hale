@@ -65,7 +65,7 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			String transformationIdentifier, TransformationEngine engine,
 			ListMultimap<String, ParameterValue> transformationParameters,
 			Map<String, String> executionParameters, TransformationLog log)
-					throws TransformationException {
+			throws TransformationException {
 		if (transformationParameters == null
 				|| !transformationParameters.containsKey(PARAMETER_JOIN)
 				|| transformationParameters.get(PARAMETER_JOIN).isEmpty()) {
@@ -121,7 +121,13 @@ public class JoinHandler implements InstanceHandler<TransformationEngine>, JoinF
 			iterator.close();
 		}
 
+		boolean innerJoin = false; // default to false if not specified
+		List<ParameterValue> innerJoinValues = transformationParameters.get(PARAMETER_INNER_JOIN);
+		if (!innerJoinValues.isEmpty()) {
+			innerJoin = innerJoinValues.get(0).as(Boolean.class, innerJoin);
+		}
+
 		return new JoinIterator(instances, startInstances, joinDefinition.directParent, index,
-				joinDefinition.joinTable, valueProcessor);
+				joinDefinition.joinTable, valueProcessor, innerJoin);
 	}
 }

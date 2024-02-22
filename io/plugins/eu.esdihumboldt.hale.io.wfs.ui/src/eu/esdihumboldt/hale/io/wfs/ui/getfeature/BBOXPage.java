@@ -141,11 +141,10 @@ public class BBOXPage extends ConfigurationWizardPage<WFSGetFeatureConfig> {
 	private void updateMap(WFSCapabilities caps) {
 		CustomTileMapServer tileServer = new CustomTileMapServer();
 
-		// use Stamen Terrain as default map here
-		tileServer.setUrlPattern("http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg");
-		tileServer.setAttributionText(
-				"Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.");
-		tileServer.setZoomLevel(16);
+		// use OpenStreetMap as default map here
+		tileServer.setUrlPattern("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
+		tileServer.setAttributionText("Map tiles by OpenStreetMap, under CC BY-SA 2.0");
+		tileServer.setZoomLevel(20);
 
 		MapServer server = tileServer;
 

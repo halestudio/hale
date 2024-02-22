@@ -181,13 +181,21 @@ public class CustomTileMapServerFactory implements MapServerFactoryCollection {
 		// check if any Map Server is configured?
 		if (CustomTileMapServer.getConfigurationNames().length > 0) {
 			for (String name : CustomTileMapServer.getConfigurationNames()) {
-				results.add(new CustomTileFactory(name));
+				if (name.equals("Stamen Terrain")) {
+					// Stamen Tiles were discontinued on 2023-10-31
+					CustomTileMapServer.removeConfiguration(name);
+				}
+				else {
+					results.add(new CustomTileFactory(name));
+				}
 			}
 		}
-		else {
+
+		if (results.isEmpty()) {
 			// no, then add default one.
 			results.add(addDefault());
 		}
+
 		return results;
 	}
 
@@ -208,11 +216,10 @@ public class CustomTileMapServerFactory implements MapServerFactoryCollection {
 	private MapServer addDefaultServer() {
 		CustomTileMapServer server = new CustomTileMapServer();
 
-		server.setName("Stamen Terrain");
-		server.setUrlPattern("http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg");
-		server.setZoomLevel(16);
-		server.setAttributionText(
-				"Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.");
+		server.setName("OpenStreetMap");
+		server.setUrlPattern("https://tile.openstreetmap.org/{z}/{x}/{y}.png");
+		server.setZoomLevel(20);
+		server.setAttributionText("Map tiles by OpenStreetMap, under CC BY-SA 2.0");
 
 		server.save();
 		return server;

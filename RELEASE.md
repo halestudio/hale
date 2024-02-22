@@ -56,6 +56,8 @@ On master branch:
 
 After the release
 =================
-1. Create Windows installer
+1. Create Windows installer.
+Prerequisites: install Wix Toolset v.3.11 [available here](https://github.com/wixtoolset/wix3/releases/tag/wix3112rtm)
+Then run `build.bat product -o windows -a x86_64 HALE` from the root directory.
 2. Draft a new release for the latest release at https://github.com/halestudio/hale/releases and publish it.
 3. Update [download page](https://github.com/wetransform/www.wetransform.to/blob/deploy/app/downloads/index.html) so that the latest builds are available for download from https://www.wetransform.to/downloads/

@@ -15,7 +15,9 @@
       <anchor id="resources"/>
    </topic>
    <topic label="What&apos;s new?">
-    <topic href="html/new/5_0_1.xhtml" label="New in 5.0.1">
+      <topic href="html/new/5_1_0.xhtml" label="New in 5.1.0">
+      </topic>
+      <topic href="html/new/5_0_1.xhtml" label="New in 5.0.1">
       </topic>
       <topic href="html/new/5_0_0.xhtml" label="New in 5.0">
       </topic>
@@ -206,7 +208,7 @@
             </topic>
             <anchor id="import"/>
          </topic>
-         <topic label="Export">
+         <topic href="html/reference/export/export.html" label="Export">
             <anchor id="export-start"/>
             <topic href="html/reference/export/xml_data.html" label="XML">
             </topic>

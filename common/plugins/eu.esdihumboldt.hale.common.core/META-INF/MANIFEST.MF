@@ -74,8 +74,6 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.codehaus.castor.xml;bundle-version="1.4.1",
  org.codehaus.castor.core;bundle-version="1.4.1",
  xerces.xercesImpl;bundle-version="2.12.2",
- tec.uom.se;bundle-version="1.0.8",
- si.uom.si-quantity;bundle-version="0.7.1",
  jakarta.xml.bind-api;bundle-version="4.0.0"
 Bundle-Vendor: data harmonisation panel
 Automatic-Module-Name: eu.esdihumboldt.hale.common.core

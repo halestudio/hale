@@ -39,6 +39,7 @@ import eu.esdihumboldt.hale.common.schema.model.impl.DefaultTypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.PropertyType;
 import eu.esdihumboldt.hale.io.csv.PropertyTypeExtension;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.AbstractTableSchemaReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVConfiguration;
@@ -72,6 +73,7 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 			throws IOProviderConfigurationException, IOException {
 
 		sheetNum = getParameter(InstanceTableIOConstants.SHEET_INDEX).as(int.class, 0);
+		String dateTime = getParameter(CSVConstants.PARAMETER_DATE_FORMAT).as(String.class);
 
 		progress.begin("Load XLS/XLSX schema", ProgressIndicator.UNKNOWN);
 
@@ -80,7 +82,8 @@ public class XLSSchemaReader extends AbstractTableSchemaReader {
 		AnalyseXLSSchemaTable analyser;
 
 		try {
-			analyser = new AnalyseXLSSchemaTable(getSource().getLocation(), sheetNum);
+			analyser = new AnalyseXLSSchemaTable(getSource(),
+					ReaderSettings.isXlsxContentType(getContentType()), sheetNum, 0, dateTime);
 			header = analyser.getHeader();
 
 			// create type definition

@@ -15,10 +15,20 @@
 
 package eu.esdihumboldt.hale.io.xls;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Date;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * General utilities when working with Excel files.
@@ -33,11 +43,23 @@ public class XLSUtil {
 	 * 
 	 * @param cell the cell
 	 * @param evaluator the formula evaluator
+	 * @param sheet to extract the text
+	 * @param dateTimeFormatter to convert the date into
 	 * @return the cell text
 	 */
-	public static String extractText(Cell cell, FormulaEvaluator evaluator) {
+	public static String extractText(Cell cell, FormulaEvaluator evaluator, Sheet sheet,
+			DateTimeFormatter dateTimeFormatter) {
 		if (cell == null)
 			return null;
+
+		if (isCellPartOfMergedRegion(cell, sheet)) {
+			// Get the merged region
+			CellRangeAddress mergedRegion = getMergedRegion(cell, sheet);
+
+			// Get the first cell of the merged region (top-left cell)
+			Row mergedRow = sheet.getRow(mergedRegion.getFirstRow());
+			cell = mergedRow.getCell(mergedRegion.getFirstColumn());
+		}
 
 		if (cell.getCellType() == CellType.BLANK) {
 			// do this check here as the evaluator seems to return null on a
@@ -47,30 +69,63 @@ public class XLSUtil {
 
 		CellValue value = evaluator.evaluate(cell);
 
-		if (CellType.BLANK.equals(value.getCellType())) {
+		switch (value.getCellType()) {
+		case BLANK:
 			return null;
-		}
-		else if (CellType.BOOLEAN.equals(value.getCellType())) {
+		case BOOLEAN:
 			return String.valueOf(value.getBooleanValue());
-		}
-		else if (CellType.NUMERIC.equals(value.getCellType())) {
-			// number formatting
-			double number = value.getNumberValue();
-			if (number == Math.floor(number)) {
-				// it's an integer
-				return String.valueOf((int) number);
+		case NUMERIC:
+			if (DateUtil.isCellDateFormatted(cell)) {
+				// Get the date value from the cell
+				Date dateCellValue = cell.getDateCellValue();
+
+				// Convert java.util.Date to java.time.LocalDateTime
+				LocalDateTime localDateTime = dateCellValue.toInstant()
+						.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+				// Define a DateTimeFormatter with a specific pattern
+				if (dateTimeFormatter == null) {
+					dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+				}
+				// Format LocalDateTime using DateTimeFormatter
+				String formattedDate = localDateTime.format(dateTimeFormatter);
+
+				return formattedDate;
 			}
-			return String.valueOf(value.getNumberValue());
-		}
-		else if (CellType.STRING.equals(value.getCellType())) {
+			else {
+				double number = value.getNumberValue();
+				if (number == Math.floor(number)) {
+					return String.valueOf((int) number);
+				}
+
+				return String.valueOf(value.getNumberValue());
+			}
+		case STRING:
 			return value.getStringValue();
-		}
-		else {
-//			if (CellType.FORMULA.equals(value.getCellType()))
-			// if (CellType.ERROR.equals(value.getCellType()))
-			// fall through
+		default:
 			return null;
 		}
+
+	}
+
+	private static boolean isCellPartOfMergedRegion(Cell cell, Sheet sheet) {
+		for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+			CellRangeAddress region = sheet.getMergedRegion(i);
+			if (region.isInRange(cell.getRowIndex(), cell.getColumnIndex())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static CellRangeAddress getMergedRegion(Cell cell, Sheet sheet) {
+		for (int i = 0; i < sheet.getNumMergedRegions(); i++) {
+			CellRangeAddress region = sheet.getMergedRegion(i);
+			if (region.isInRange(cell.getRowIndex(), cell.getColumnIndex())) {
+				return region;
+			}
+		}
+		return null;
 	}
 
 }

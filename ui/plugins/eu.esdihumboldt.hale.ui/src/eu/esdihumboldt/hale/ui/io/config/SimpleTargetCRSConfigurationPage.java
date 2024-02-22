@@ -22,10 +22,12 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.PlatformUI;
 import org.geotools.referencing.CRS;
 
 import eu.esdihumboldt.hale.common.core.io.IOProvider;
@@ -49,6 +51,7 @@ public class SimpleTargetCRSConfigurationPage<P extends GeoInstanceWriter, W ext
 	private Button checkConvert;
 	private Button selectCrs;
 	private CRSDefinition crsDef;
+	private boolean showWarning = false;
 
 	/**
 	 * Default constructor.
@@ -56,10 +59,29 @@ public class SimpleTargetCRSConfigurationPage<P extends GeoInstanceWriter, W ext
 	public SimpleTargetCRSConfigurationPage() {
 		super("targetCRS");
 
+		setDefaultDescription();
+	}
+
+	/**
+	 * method to be called from different constructors
+	 */
+	private void setDefaultDescription() {
 		setTitle("Coordinate reference system");
 		setDescription("Configure the target coordinate reference system");
 
 		setPageComplete(false);
+	}
+
+	/**
+	 * @param showWarning parameter that shows the warning of exporting feature
+	 *            types without geometry
+	 */
+	public SimpleTargetCRSConfigurationPage(boolean showWarning) {
+		super("targetCRS");
+
+		this.showWarning = showWarning;
+
+		setDefaultDescription();
 	}
 
 	@Override
@@ -137,6 +159,16 @@ public class SimpleTargetCRSConfigurationPage<P extends GeoInstanceWriter, W ext
 			}
 
 		});
+
+		if (showWarning) {
+			Label separatorLabel = new Label(page, SWT.NONE);
+			separatorLabel.setText("Warning! Feature types with no geometry will not be exported");
+
+			// Set the text colour of the label to yellow
+			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
+					.getSystemColor(SWT.COLOR_DARK_GRAY);
+			separatorLabel.setForeground(greyLabel);
+		}
 
 		// only update on first show
 		// update();

@@ -30,6 +30,18 @@
          <contentType
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
+         <providerParameter
+               description="Number of decimal places to display."
+               label="Number of decimal places"
+               name="eu.esdihumboldt.hale.io.json.numOfDecimalPlaces">
+            <parameterBinding
+                  class="java.lang.Integer">
+            </parameterBinding>
+            <valueDescriptor
+                  default="7"
+                  defaultDescription="Default decimal places to 7">
+            </valueDescriptor>
+         </providerParameter>
       </provider>
       <provider
             class="eu.esdihumboldt.hale.io.json.GeoJSONInstanceWriter"
@@ -42,16 +54,103 @@
                ref="eu.esdihumboldt.hale.io.json.gzip">
          </contentType>
       </provider>
-   </extension>
-   <extension
-         point="eu.esdihumboldt.hale.io.complexvalue">
-      <complexValue
-            descriptor="eu.esdihumboldt.hale.io.json.GeoJSONConfigType"
-            id="eu.esdihumboldt.hale.io.json.geojsonconfig"
-            name="config"
-            namespace="http://www.esdi-humboldt.eu/hale/geojson"
-            type="eu.esdihumboldt.hale.io.json.GeoJSONConfig">
-      </complexValue>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.json.JsonInstanceReader"
+            description="Read JSON/GeoJSON"
+            id="eu.esdihumboldt.hale.io.json.reader"
+            name="JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+         <providerParameter
+               description="Mode for reading Json structure"
+               label="Read mode"
+               name="mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="auto">
+               </enumerationValue>
+               <enumerationValue
+                     value="singleObject">
+               </enumerationValue>
+               <enumerationValue
+                     value="firstArray">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="auto"
+                  defaultDescription="Load objects from a Json array or a GeoJson FeatureCollection"
+                  sample="singleObject"
+                  sampleDescription="When the source file is only a single object at its root, use this mode">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Always use default type for all objects read"
+               label="Force default type"
+               name="forceDefaultType"
+               optional="true">
+            <parameterBinding
+                  class="java.lang.Boolean">
+            </parameterBinding>
+            <valueDescriptor
+                  default="false"
+                  defaultDescription="By default allow other mechanism to determine an instance type"
+                  sample="true"
+                  sampleDescription="Use the configured default type for all instances read">
+            </valueDescriptor>
+         </providerParameter>
+         <providerParameter
+               description="Name of the default type to use for read Json objects"
+               label="Default type"
+               name="defaultType"
+               optional="true"
+               valueDescriptor="eu.esdihumboldt.hale.io.json.JsonInstanceReader.DefaultTypeParameterDescriptor">
+            <parameterBinding
+                  class="java.lang.String">
+            </parameterBinding>
+         </providerParameter>
+      </provider>
+      <provider
+            allowDuplicate="false"
+            class="eu.esdihumboldt.hale.io.json.JsonSchemaReader"
+            description="Reads Json data and derives a schema from it"
+            id="eu.esdihumboldt.hale.io.json.reader.dataschema"
+            name="Schema from JSON">
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json">
+         </contentType>
+         <contentType
+               ref="eu.esdihumboldt.hale.io.json.gzip">
+         </contentType>
+         <providerParameter
+               description="Mode for reading Json structure"
+               label="Read mode"
+               name="mode"
+               optional="true">
+            <parameterEnumeration>
+               <enumerationValue
+                     value="auto">
+               </enumerationValue>
+               <enumerationValue
+                     value="singleObject">
+               </enumerationValue>
+               <enumerationValue
+                     value="firstArray">
+               </enumerationValue>
+            </parameterEnumeration>
+            <valueDescriptor
+                  default="auto"
+                  defaultDescription="Load objects from a Json array or a GeoJson FeatureCollection"
+                  sample="singleObject"
+                  sampleDescription="When the source file is only a single object at its root, use this mode">
+            </valueDescriptor>
+         </providerParameter>
+      </provider>
    </extension>
 
 </plugin>

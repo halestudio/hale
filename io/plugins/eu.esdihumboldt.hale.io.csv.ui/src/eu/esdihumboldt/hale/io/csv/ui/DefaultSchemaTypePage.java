@@ -423,7 +423,7 @@ public class DefaultSchemaTypePage extends SchemaReaderConfigurationPage {
 	 */
 	private void showMessage() {
 		if (header == null || header.length == 0)
-			setErrorMessage("The file contains no data");
+			setErrorMessage("The file contains no data or not valid data");
 		else if (!sfe.isValid())
 			setErrorMessage("Please enter a valid Type Name");
 		else if (!isValid)

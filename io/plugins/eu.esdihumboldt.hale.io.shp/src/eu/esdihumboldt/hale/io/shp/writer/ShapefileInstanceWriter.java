@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -118,7 +119,8 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					return file.toURI();
 				}).collect(Collectors.toList());
 
-				// Reset the target property so that a caller can find out which
+				// Reset the target property so that a caller can find out
+				// which
 				// files were created.
 				setTarget(new MultiLocationOutputSupplier(uris));
 			}
@@ -127,7 +129,9 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				String cpgFileName = filePath + "/" + f + ShapefileConstants.CPG_EXTENSION;
 				writeCodePageFile(cpgFileName);
 			}
-
+			if (filesWritten.isEmpty()) {
+				reporter.warn("No file has been exported because there was no geometry found.");
+			}
 			reporter.setSuccess(true);
 		} catch (Exception e) {
 			reporter.error(new IOMessageImpl(e.getMessage(), e));
@@ -152,7 +156,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * 3. create features <br>
 	 * 4. write the feature data to the Shapefile.
 	 * 
-	 * @param instances instance to write to.
+	 * @param instanceCollection instance to write to.
 	 * @param progress the progress indicator.
 	 * @param reporter the reporter.
 	 * @param location file path URI.
@@ -162,19 +166,19 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * @throws IOException exception in any.
 	 * 
 	 */
-	protected List<String> writeInstances(InstanceCollection instances, ProgressIndicator progress,
-			IOReporter reporter, URI location) throws IOException {
+	protected List<String> writeInstances(InstanceCollection instanceCollection,
+			ProgressIndicator progress, IOReporter reporter, URI location) throws IOException {
 
 		// in all the variables, outer Map is for tracking multiple schemas and
 		// inner Map for multiple geometries.
-		Map<String, Map<String, SimpleFeatureType>> schemaFtMap = createFeatureType(instances,
-				progress, reporter);
+		Map<String, Map<String, SimpleFeatureType>> schemaFtMap = createFeatureType(
+				instanceCollection, progress, reporter);
 
 		Map<String, Map<String, ShapefileDataStore>> schemaDataStoreMap = createSchema(location,
 				schemaFtMap);
 
-		Map<String, Map<String, List<SimpleFeature>>> schemaFeaturesMap = createFeatures(instances,
-				progress, reporter, schemaFtMap);
+		Map<String, Map<String, List<SimpleFeature>>> schemaFeaturesMap = createFeatures(
+				instanceCollection, progress, reporter, schemaFtMap);
 
 		return writeToFile(schemaDataStoreMap, schemaFtMap, schemaFeaturesMap);
 	}
@@ -205,7 +209,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 
 		Map<String, Map<String, SimpleFeatureTypeBuilder>> schemaBuilderMap = new HashMap<String, Map<String, SimpleFeatureTypeBuilder>>();
 
-		List<String> missingGeomsForSchemas = new ArrayList<String>();
+		LinkedHashSet<String> missingGeomsForSchemas = new LinkedHashSet<String>();
 		try (ResourceIterator<Instance> it = instances.iterator()) {
 			while (it.hasNext() && !progress.isCanceled()) {
 				Instance instance = it.next();
@@ -226,13 +230,15 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				// present.
 			}
 		}
-		for (String localPart : missingGeomsForSchemas) {
-			reporter.error(
-					"Cannot create Shapefile for Schema: " + localPart + " as no Geometry found!!");
-		}
+
 		// create SimpleFeatureType from SimpleFeatureTypeBuilder.
 		for (Entry<String, Map<String, SimpleFeatureTypeBuilder>> schemaEntry : schemaBuilderMap
 				.entrySet()) {
+
+			if (missingGeomsForSchemas.contains(schemaEntry.getKey())) {
+				reporter.warn("No geometry found for " + schemaEntry.getKey());
+			}
+
 			for (Entry<String, SimpleFeatureTypeBuilder> geometryEntry : schemaEntry.getValue()
 					.entrySet()) {
 				SimpleFeatureType buildFeatureType = geometryEntry.getValue().buildFeatureType();
@@ -260,7 +266,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 */
 	private void writeGeometrySchema(Instance instance, String localPart,
 			Map<String, SimpleFeatureTypeBuilder> geometryBuilderMap,
-			List<String> missingGeomsForSchemas) {
+			LinkedHashSet<String> missingGeomsForSchemas) {
 		Geometry geom = null;
 
 		List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
@@ -439,9 +445,6 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	private Map<String, Map<String, ShapefileDataStore>> createSchema(URI location,
 			Map<String, Map<String, SimpleFeatureType>> schemaSftMap) throws IOException {
 
-		if (schemaSftMap.isEmpty()) {
-			throw new IOException("Cannot export to the shape file as no Geometry found!!");
-		}
 		Map<String, Map<String, ShapefileDataStore>> schemaDataStoreMap = new HashMap<String, Map<String, ShapefileDataStore>>();
 
 		// logic to create file name based on the multiple schemas and/or
@@ -635,8 +638,14 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
 				// add value by traversing geometryType from instance
 				for (GeometryProperty<?> geoProp : geoms) {
-					String geometryType = geoProp.getGeometry().getGeometryType();
-					schemaFbMap.get(localPart).get(geometryType).add(value);
+					if (geoProp.getGeometry() != null) {
+						String geometryType = geoProp.getGeometry().getGeometryType();
+						if (schemaFbMap.get(localPart) != null
+								&& schemaFbMap.get(localPart).get(geometryType) != null) {
+							schemaFbMap.get(localPart).get(geometryType).add(value);
+						}
+					}
+
 				}
 			}
 		}

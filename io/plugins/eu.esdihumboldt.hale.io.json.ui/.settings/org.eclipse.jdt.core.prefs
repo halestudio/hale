@@ -1,5 +1,5 @@
-#Updated from default preferences 28 Oct 2022, 08:10:29
-#Fri Oct 28 08:10:29 CEST 2022
+#Updated from default preferences Aug 24, 2023 2:24:31 PM
+#Thu Aug 24 14:24:31 CEST 2023
 eclipse.preferences.version=1
 org.eclipse.jdt.core.builder.cleanOutputFolder=clean
 org.eclipse.jdt.core.builder.duplicateResourceTask=warning
@@ -121,7 +121,6 @@ org.eclipse.jdt.core.formatter.alignment_for_arguments_in_explicit_constructor_c
 org.eclipse.jdt.core.formatter.alignment_for_arguments_in_method_invocation=16
 org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression=16
 org.eclipse.jdt.core.formatter.alignment_for_assignment=0
-org.eclipse.jdt.core.formatter.alignment_for_binary_expression=16
 org.eclipse.jdt.core.formatter.alignment_for_bitwise_operator=16
 org.eclipse.jdt.core.formatter.alignment_for_compact_if=16
 org.eclipse.jdt.core.formatter.alignment_for_conditional_expression=80
@@ -226,7 +225,6 @@ org.eclipse.jdt.core.formatter.insert_space_after_and_in_type_parameter=insert
 org.eclipse.jdt.core.formatter.insert_space_after_assignment_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_after_at_in_annotation=do not insert
 org.eclipse.jdt.core.formatter.insert_space_after_at_in_annotation_type_declaration=do not insert
-org.eclipse.jdt.core.formatter.insert_space_after_binary_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_after_bitwise_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_after_closing_angle_bracket_in_type_arguments=insert
 org.eclipse.jdt.core.formatter.insert_space_after_closing_angle_bracket_in_type_parameters=insert
@@ -294,7 +292,6 @@ org.eclipse.jdt.core.formatter.insert_space_before_additive_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_before_and_in_type_parameter=insert
 org.eclipse.jdt.core.formatter.insert_space_before_assignment_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_before_at_in_annotation_type_declaration=insert
-org.eclipse.jdt.core.formatter.insert_space_before_binary_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_before_bitwise_operator=insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_parameterized_type_reference=do not insert
 org.eclipse.jdt.core.formatter.insert_space_before_closing_angle_bracket_in_type_arguments=do not insert
@@ -413,7 +410,6 @@ org.eclipse.jdt.core.formatter.tabulation.size=4
 org.eclipse.jdt.core.formatter.use_on_off_tags=false
 org.eclipse.jdt.core.formatter.use_tabs_only_for_leading_indentations=false
 org.eclipse.jdt.core.formatter.wrap_before_additive_operator=true
-org.eclipse.jdt.core.formatter.wrap_before_binary_operator=true
 org.eclipse.jdt.core.formatter.wrap_before_bitwise_operator=true
 org.eclipse.jdt.core.formatter.wrap_before_logical_operator=true
 org.eclipse.jdt.core.formatter.wrap_before_multiplicative_operator=true

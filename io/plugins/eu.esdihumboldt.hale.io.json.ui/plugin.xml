@@ -3,6 +3,13 @@
 <plugin>
    <extension
          point="eu.esdihumboldt.hale.ui.io.config">
+      <configPage
+            class="eu.esdihumboldt.hale.io.json.ui.TypeSelectionPage"
+            order="0">
+         <provider
+               ref="eu.esdihumboldt.hale.io.json.reader">
+         </provider>
+      </configPage>
    </extension>
 
 </plugin>

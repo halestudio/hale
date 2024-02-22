@@ -15,10 +15,12 @@
 
 package eu.esdihumboldt.hale.io.xls.writer;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +42,16 @@ import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator;
+import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.io.csv.InstanceTableIOConstants;
 import eu.esdihumboldt.hale.io.csv.writer.AbstractTableInstanceWriter;
 import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
+import eu.esdihumboldt.hale.io.xls.reader.XLSInstanceReader;
 
 /**
  * Instance export provider for xls files
@@ -55,7 +60,7 @@ import eu.esdihumboldt.hale.io.xls.XLSCellStyles;
  */
 public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 
-	private Workbook wb;
+	private Workbook workbook;
 
 	private CellStyle headerStyle;
 	private CellStyle cellStyle;
@@ -70,94 +75,155 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
 
-		boolean solveNestedProperties = getParameter(
-				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
+		Collection<? extends TypeDefinition> exportTypes = getTypesToExport(reporter);
 
-		// get the parameter to get the type definition
-		String exportType = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
-		QName selectedTypeName = null;
-
-		if (exportType != null && !exportType.equals("") && !exportType.equals(" ")) {
-			selectedTypeName = QName.valueOf(exportType);
+		if (exportTypes.isEmpty()) {
+			reporter.error("No schema types to export");
+			return reporter;
 		}
 
 		// write xls file
 		if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xls")) {
-			wb = new HSSFWorkbook();
+			workbook = new HSSFWorkbook();
 		}
 		// write xlsx file
 		else if (getContentType().getId().equals("eu.esdihumboldt.hale.io.xls.xlsx")) {
-			wb = new XSSFWorkbook();
+			workbook = new XSSFWorkbook();
 		}
 		else {
 			reporter.error(new IOMessageImpl("Content type is invalid!", null));
 			return reporter;
 		}
 
-		cellStyle = XLSCellStyles.getNormalStyle(wb, false);
-		headerStyle = XLSCellStyles.getHeaderStyle(wb);
+		// write file and be sure to close resource with try-block
+		if (new File(getTarget().getLocation().getPath()).exists()) {
+			// Remove all existing sheets
+			while (workbook.getNumberOfSheets() > 0) {
+				workbook.removeSheetAt(0);
+			}
+		}
 
-		// get all instances of the selected Type
-		InstanceCollection instances = getInstanceCollection(selectedTypeName);
-		// use ResourceIterator<Instance> in a try block because is closable -
+		cellStyle = XLSCellStyles.getNormalStyle(workbook, false);
+		headerStyle = XLSCellStyles.getHeaderStyle(workbook);
+
+		// TODO refactor to only traverse instance collection once by creating
+		// sheets on demand?
+		for (TypeDefinition type : exportTypes) {
+			// get all instances of the selected Type
+			InstanceCollection instances = getInstances().select(new TypeFilter(type));
+			addSheetByQName(type, instances);
+		}
+
+		try (FileOutputStream out = new FileOutputStream(getTarget().getLocation().getPath());) {
+			workbook.write(out);
+		}
+
+		reporter.setSuccess(true);
+
+		return reporter;
+	} // close try-iterator
+
+	/**
+	 * @param reporter an optional reporter
+	 * @return the types to export
+	 */
+	private Collection<? extends TypeDefinition> getTypesToExport(SimpleLog reporter) {
+		String exportTypes = getParameter(InstanceTableIOConstants.EXPORT_TYPE).as(String.class);
+
+		if (exportTypes != null) {
+			List<TypeDefinition> types = new ArrayList<TypeDefinition>();
+			String[] splitExportType = exportTypes.split(",");
+			for (String featureType : splitExportType) {
+				QName typeName = QName.valueOf(featureType);
+				TypeDefinition type = XLSInstanceReader.matchTypeByName(typeName,
+						getTargetSchema());
+
+				if (type != null) {
+					types.add(type);
+				}
+				else if (reporter != null) {
+					reporter.error("Could not find type with name {0}", typeName);
+				}
+			}
+			return types;
+		}
+
+		// fall-back for no configuration
+		return getTargetSchema().getMappingRelevantTypes();
+	}
+
+	/**
+	 * @param selectedTypeName selected QName
+	 * @param instances InstanceCollection available
+	 */
+	private void addSheetByQName(TypeDefinition selectedTypeName, InstanceCollection instances) {
+
+		boolean solveNestedProperties = getParameter(
+				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);
+		boolean ignoreEmptyFeaturetypes = getParameter(
+				InstanceTableIOConstants.EXPORT_IGNORE_EMPTY_FEATURETYPES).as(Boolean.class, false);
+		boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
+				true);
+
+		// use ResourceIterator<Instance> in a try block because is closable
+		// -
 		// avoid infinite
 		// cleaning project after exporting data
 		try (ResourceIterator<Instance> instanceIterator = instances.iterator();) {
 			Instance instance = null;
+
+			headerRowStrings = new ArrayList<String>();
 			try {
 				instance = instanceIterator.next();
 			} catch (NoSuchElementException e) {
-				reporter.error(
-						new IOMessageImpl("There are no instances for the selected type.", e));
-				return reporter;
+				if (!ignoreEmptyFeaturetypes) {
+					Sheet sheet = workbook.createSheet(selectedTypeName.getDisplayName());
+					Row headerRow = sheet.createRow(0);
+					super.getPropertyMap(selectedTypeName, headerRowStrings);
+					writeHeaderRow(headerRow, headerRowStrings);
+					setCellStyle(sheet, headerRowStrings.size());
+					resizeSheet(sheet);
+				}
+				return;
 			}
 
-			List<Instance> remainingInstances = new ArrayList<Instance>();
-
-			headerRowStrings = new ArrayList<String>();
-
-			boolean useSchema = getParameter(InstanceTableIOConstants.USE_SCHEMA).as(Boolean.class,
-					true);
-
-			// all instances with equal type definitions are stored in an extra
+			// all instances with equal type definitions are stored in an
+			// extra
 			// sheet
 			TypeDefinition definition = instance.getDefinition();
 
-			Sheet sheet = wb.createSheet(definition.getDisplayName());
-			Row headerRow = sheet.createRow(0);
-			int rowNum = 1;
-			Row row = sheet.createRow(rowNum++);
-			writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
-					solveNestedProperties));
+			Sheet sheet;
+			try {
+				sheet = workbook.createSheet(definition.getDisplayName());
 
-			while (instanceIterator.hasNext()) {
-				Instance nextInst = instanceIterator.next();
-				if (nextInst.getDefinition().equals(definition)) {
-					row = sheet.createRow(rowNum++);
-					writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
-							solveNestedProperties));
+				Row headerRow = sheet.createRow(0);
+				int rowNum = 1;
+				Row row = sheet.createRow(rowNum++);
+				writeRow(row, super.getPropertyMap(instance, headerRowStrings, useSchema,
+						solveNestedProperties), headerRowStrings);
+
+				while (instanceIterator.hasNext()) {
+					Instance nextInst = instanceIterator.next();
+					if (nextInst.getDefinition().equals(definition)) {
+						row = sheet.createRow(rowNum++);
+						writeRow(row, super.getPropertyMap(nextInst, headerRowStrings, useSchema,
+								solveNestedProperties), headerRowStrings);
+					}
 				}
-				else
-					remainingInstances.add(nextInst);
-			}
-			writeHeaderRow(headerRow, headerRowStrings);
-			setCellStyle(sheet, headerRowStrings.size());
-			resizeSheet(sheet);
 
-			// write file and be sure to close resource with try-block
-			try (FileOutputStream out = new FileOutputStream(
-					getTarget().getLocation().getPath());) {
-				wb.write(out);
+				writeHeaderRow(headerRow, headerRowStrings);
+				setCellStyle(sheet, headerRowStrings.size());
+				resizeSheet(sheet);
+			} catch (Exception e) {
+				return;
 			}
 
-			reporter.setSuccess(true);
-			return reporter;
 		}
-	} // close try-iterator
+	}
 
 	@Override
 	public boolean isPassthrough() {
-		return true;
+		return getTypesToExport(null).size() < 2;
 	}
 
 	/**
@@ -165,7 +231,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 	 */
 	@Override
 	protected String getDefaultTypeName() {
-		return "XLS file";
+		return "Excel file";
 	}
 
 	private void writeHeaderRow(Row row, List<String> cells) {
@@ -176,7 +242,7 @@ public class XLSInstanceWriter extends AbstractTableInstanceWriter {
 		}
 	}
 
-	private void writeRow(Row row, Map<String, Object> tableRow) {
+	private void writeRow(Row row, Map<String, Object> tableRow, List<String> headerRowStrings) {
 		for (int k = 0; k < headerRowStrings.size(); k++) {
 			Cell cell = row.createCell(k);
 //			cell.setCellStyle(cellStyle);

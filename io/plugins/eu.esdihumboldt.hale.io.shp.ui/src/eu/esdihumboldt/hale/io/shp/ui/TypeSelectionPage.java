@@ -63,11 +63,8 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		implements ShapefileConstants {
 
 	private TypeDefinitionSelector selector;
-
 	private LocatableInputSupplier<? extends InputStream> lastSource;
-
 	private TypeDefinition lastType;
-
 	private Button matchShortPropertyNames;
 
 	/**

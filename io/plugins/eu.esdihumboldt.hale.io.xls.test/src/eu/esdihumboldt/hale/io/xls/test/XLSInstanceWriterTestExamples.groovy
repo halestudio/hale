@@ -15,6 +15,9 @@
 
 package eu.esdihumboldt.hale.io.xls.test
 
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.schema.groovy.SchemaBuilder
@@ -25,6 +28,11 @@ class XLSInstanceWriterTestExamples {
 	static InstanceCollection createInstanceCollection(){
 
 		Schema schema = createSchema()
+
+		// Declare a date in the "dd/mm/yyyy" format
+		def dateString1 = "25/12/2023"
+		def dateFormat1 = new SimpleDateFormat("dd/MM/yyyy")
+		def date1 = dateFormat1.parse(dateString1)
 
 		// create the instance collection
 		// concrete types are only strings, since the test is not able to choose the correct type in wizard
@@ -59,6 +67,7 @@ class XLSInstanceWriterTestExamples {
 				name('other')
 				number('1')
 				description('other type')
+				date(date1)
 			}
 		}
 	}
@@ -91,9 +100,9 @@ class XLSInstanceWriterTestExamples {
 				name(String)
 				number(String)
 				description(String)
+				date(LocalDate)
 			}
 		}
 		return schema;
 	}
-
 }

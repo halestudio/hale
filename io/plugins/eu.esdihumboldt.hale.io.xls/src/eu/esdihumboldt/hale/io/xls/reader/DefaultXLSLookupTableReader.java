@@ -57,10 +57,11 @@ public class DefaultXLSLookupTableReader {
 		for (; row < sheet.getPhysicalNumberOfRows(); row++) {
 			Row currentRow = sheet.getRow(row);
 			if (currentRow != null) {
-				String value = XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator);
+				String value = XLSUtil.extractText(currentRow.getCell(valueColumn), evaluator,
+						sheet, null);
 				if (value != null && (!ignoreEmptyStrings || !value.isEmpty())) {
-					map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator)),
-							Value.of(value));
+					map.put(Value.of(XLSUtil.extractText(currentRow.getCell(keyColumn), evaluator,
+							sheet, null)), Value.of(value));
 				}
 			}
 		}

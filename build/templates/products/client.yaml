@@ -27,7 +27,6 @@ HALE:
   - asm-tree
   - asm-util
   - au.com.bytecode.opencsv
-  - cal10n.api
   - cern.colt
   - ch.qos.logback.classic
   - ch.qos.logback.core

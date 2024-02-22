@@ -112,6 +112,11 @@ abstract class TransformationExamples {
 
 	public static final String XSL_XPATH_1 = 'xpath1'
 
+	public static final String INNER_JOIN = 'inner_join'
+	public static final String INNER_JOIN_FIRST_LEVEL = 'inner_join_first_level'
+	public static final String INNER_JOIN_CONDITIONS = 'inner_join_conditions'
+	public static final String JOIN = 'join'
+
 	/**
 	 * Internal example map.
 	 */
@@ -225,7 +230,13 @@ abstract class TransformationExamples {
 		(CM_NESTED_6): defaultExample(CM_NESTED_6),
 
 		// XSL only examples
-		(XSL_XPATH_1): defaultExample(XSL_XPATH_1)
+		(XSL_XPATH_1): defaultExample(XSL_XPATH_1),
+
+		// builder based examples
+		(INNER_JOIN): builderExample(INNER_JOIN),
+		(INNER_JOIN_FIRST_LEVEL): builderExample(INNER_JOIN_FIRST_LEVEL),
+		(INNER_JOIN_CONDITIONS): builderExample(INNER_JOIN_CONDITIONS),
+		(JOIN): builderExample(JOIN)
 	];
 
 	static def defaultExample(String folder) {
@@ -237,6 +248,19 @@ abstract class TransformationExamples {
 			transformedData: "/testdata/${folder}/instance2.xml",
 			containerNamespace: null,
 			containerName: 'collection'
+		]
+	}
+
+	static def builderExample(String folder) {
+		[
+			sourceSchema: "/testdata/${folder}/source-schema.groovy",
+			targetSchema: "/testdata/${folder}/target-schema.groovy",
+			alignment: "/testdata/${folder}/mapping.halex.alignment.xml",
+			sourceData: "/testdata/${folder}/source-instances.groovy",
+			transformedData: "/testdata/${folder}/target-instances.groovy",
+			// not relevant:
+			containerNamespace: null,
+			containerName: null
 		]
 	}
 

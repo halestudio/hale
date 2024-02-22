@@ -32,14 +32,14 @@ import eu.esdihumboldt.hale.common.instance.model.FamilyInstance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.InstanceReference;
 import eu.esdihumboldt.hale.common.instance.model.ResolvableInstanceReference;
-import eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter;
+import eu.esdihumboldt.hale.common.instance.model.impl.FilterResourceIteratorAdapter;
 
 /**
  * Iterator used by {@link JoinHandler}
  * 
  * @author Florian Esser
  */
-class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, FamilyInstance> {
+class JoinIterator extends FilterResourceIteratorAdapter<InstanceReference, FamilyInstance> {
 
 	private final InstanceCollection instances;
 // type -> direct-parent
@@ -51,35 +51,43 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 
 	private final ValueProcessor valueProcessor;
 
+	private final boolean innerJoin;
+
 	protected JoinIterator(InstanceCollection instances,
 			Collection<InstanceReference> startInstances, int[] parent,
 			Map<PropertyEntityDefinition, Multimap<Object, InstanceReference>> index,
-			Map<Integer, Multimap<Integer, JoinCondition>> joinTable,
-			ValueProcessor valueProcessor) {
+			Map<Integer, Multimap<Integer, JoinCondition>> joinTable, ValueProcessor valueProcessor,
+			boolean innerJoin) {
 		super(startInstances.iterator());
 		this.instances = instances;
 		this.parent = parent;
 		this.index = index;
 		this.joinTable = joinTable;
 		this.valueProcessor = valueProcessor;
+		this.innerJoin = innerJoin;
+
 	}
 
-	/**
-	 * @see eu.esdihumboldt.hale.common.instance.model.impl.GenericResourceIteratorAdapter#convert(java.lang.Object)
-	 */
 	@Override
 	protected FamilyInstance convert(InstanceReference next) {
 		FamilyInstance base = new FamilyInstanceImpl(instances.getInstance(next));
 		FamilyInstance[] currentInstances = new FamilyInstance[parent.length];
 		currentInstances[0] = base;
 
-		join(currentInstances, 0);
+		if (!join(currentInstances, 0)) {
+			// skip this instance
+			return null;
+		}
 
 		return base;
 	}
 
-// Joins all direct children of the given type to currentInstances.
-	private void join(FamilyInstance[] currentInstances, int currentType) {
+	/**
+	 * Joins all direct children of the given type to currentInstances.
+	 * 
+	 * @return if the instance should be skipped
+	 */
+	private boolean join(FamilyInstance[] currentInstances, int currentType) {
 // Join all types that are direct children of the last type.
 		for (int i = currentType + 1; i < parent.length; i++) {
 			if (parent[i] == currentType) {
@@ -140,12 +148,22 @@ class JoinIterator extends GenericResourceIteratorAdapter<InstanceReference, Fam
 						}
 						parent.addChild(child);
 						currentInstances[i] = child;
-						join(currentInstances, i);
+						if (!join(currentInstances, i)) {
+							return false;
+						}
 					}
 					currentInstances[i] = null;
 				}
+				else {
+					if (innerJoin) {
+						// no instances for this link
+						return false;
+					}
+				}
 			}
 		}
+
+		return true;
 	}
 
 	/**

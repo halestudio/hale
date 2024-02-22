@@ -16,8 +16,16 @@
 package eu.esdihumboldt.hale.io.csv.reader.internal;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.MessageFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -174,10 +182,70 @@ public class CSVInstanceCollection implements InstanceCollection, InstanceCollec
 			return instance;
 		}
 
+		/**
+		 * @param dateString String date
+		 * @param dateTime date time parameter
+		 * @return Date
+		 */
+		public String parseDate(String dateString, String dateTime) {
+			DateFormat[] dateFormats = { DateFormat.getDateInstance(),
+					DateFormat.getDateTimeInstance(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"),
+					new SimpleDateFormat("MM/dd/yy HH:mm:ss"),
+					new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"),
+					new SimpleDateFormat("MM-dd-yy HH:mm:ss"),
+					new SimpleDateFormat("MM-dd-yyyy HH:mm:ss"),
+					new SimpleDateFormat("dd-MM-yy HH:mm:ss"),
+					new SimpleDateFormat("dd-MM-yyyy HH:mm:ss"),
+					new SimpleDateFormat("dd/MM/yy HH:mm:ss"),
+					new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"), new SimpleDateFormat("yyyy-MM-dd"),
+					new SimpleDateFormat("dd/MM/yyyy"), new SimpleDateFormat("dd/MMM/yyyy"),
+					new SimpleDateFormat("MM/dd/yy"), new SimpleDateFormat("MM/dd/yyyy"),
+					new SimpleDateFormat("yyyy/MM/dd"), new SimpleDateFormat("MM-dd-yyyy"),
+					new SimpleDateFormat("MM-dd-yy"), new SimpleDateFormat("yy-MM-dd"),
+					new SimpleDateFormat("dd-MM-yyyy"), new SimpleDateFormat("yyyy.MM.dd"),
+					new SimpleDateFormat("dd.MM.yyyy"), new SimpleDateFormat("MM.dd.yyyy"),
+					new SimpleDateFormat("yyyyMMdd"), new SimpleDateFormat("MMMM d, yyyy"),
+					new SimpleDateFormat("MMMM dd, yyyy"), new SimpleDateFormat("yy-MM"),
+					new SimpleDateFormat("yyyy-MM"), new SimpleDateFormat("MM-yy"),
+					new SimpleDateFormat("MM-yyyy"),
+					// Add more date formats as needed
+					new SimpleDateFormat(dateTime) };
+
+			for (DateFormat dateFormat : dateFormats) {
+				try {
+					dateFormat.setLenient(false); // Disable lenient parsing
+					Date dateCellValue = dateFormat.parse(dateString);
+
+					// Convert java.util.Date to java.time.LocalDateTime
+					LocalDateTime localDateTime = dateCellValue.toInstant()
+							.atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+					DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(dateTime);
+
+					// Define a DateTimeFormatter with a specific pattern
+					if (dateTimeFormatter == null) {
+						dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT);
+					}
+
+					// If parsing succeeds, break out of the loop
+					// Format LocalDateTime using DateTimeFormatter
+					return localDateTime.format(dateTimeFormatter);
+				} catch (ParseException e) {
+					// Parsing failed with this format, try the next one
+				}
+			}
+			return dateString;
+		}
+
 		private Object convertValue(String part, PropertyDefinition property) {
 			if (part == null || part.isEmpty()) {
 				// FIXME make this configurable?
 				return null;
+			}
+
+			String dateTime = reader.getParameter(CSVUtil.PARAMETER_DATE_FORMAT).as(String.class);
+			if (dateTime != null && !part.isEmpty()) {
+				part = parseDate(part, dateTime);
 			}
 
 			Binding binding = property.getPropertyType().getConstraint(Binding.class);

@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import org.codehaus.groovy.runtime.GStringImpl;
 import org.codehaus.groovy.runtime.InvokerHelper;
@@ -125,7 +126,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(Math.class);
 		allowedClasses.add(Date.class);
 		allowedClasses.add(Locale.class);
-		// allowedClasses.add(Boolean.class);
+		allowedClasses.add(Boolean.class);
 
 		// Java 8 date/time classes
 		allowedClasses.add(DayOfWeek.class);
@@ -145,6 +146,9 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(FormatStyle.class);
 		allowedClasses.add(TextStyle.class);
 		allowedClasses.add(SignStyle.class);
+
+		// regular expressions
+		allowedClasses.add(Pattern.class);
 
 		// helper classes
 		allowedClasses.add(SimpleDateFormat.class);
@@ -171,7 +175,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(NumberFormat.class);
 		allowedClasses.add(DecimalFormat.class);
 		allowedClasses.add(DecimalFormatSymbols.class);
-		
+
 		// Exception classes
 		allowedClasses.add(Throwable.class);
 

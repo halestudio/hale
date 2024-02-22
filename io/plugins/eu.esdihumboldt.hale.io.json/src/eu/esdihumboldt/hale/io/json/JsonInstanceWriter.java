@@ -31,7 +31,7 @@ import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.LocatableOutputSupplier;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
-import eu.esdihumboldt.hale.io.json.writer.InstanceToJson;
+import eu.esdihumboldt.hale.io.json.internal.InstanceToJson;
 
 /**
  * Writes instances as JSON.
@@ -40,7 +40,7 @@ import eu.esdihumboldt.hale.io.json.writer.InstanceToJson;
  */
 public class JsonInstanceWriter extends AbstractInstanceWriter {
 
-	private final InstanceToJson instanceToJson;
+	private InstanceToJson instanceToJson;
 	private final boolean useGeoJsonFeatures;
 
 	/**
@@ -60,7 +60,6 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	 */
 	public JsonInstanceWriter(boolean useGeoJsonFeatures) {
 		this.useGeoJsonFeatures = useGeoJsonFeatures;
-		instanceToJson = new InstanceToJson(this.useGeoJsonFeatures);
 	}
 
 	@Override
@@ -71,6 +70,14 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 	@Override
 	protected IOReport execute(ProgressIndicator progress, IOReporter reporter)
 			throws IOProviderConfigurationException, IOException {
+		Integer numOfDecimalPlaces = getParameter("numOfDecimalPlaces").as(Integer.class);
+		if (numOfDecimalPlaces != null) {
+			instanceToJson = new InstanceToJson(this.useGeoJsonFeatures,
+					numOfDecimalPlaces.intValue());
+		}
+		else {
+			instanceToJson = new InstanceToJson(this.useGeoJsonFeatures);
+		}
 		progress.begin("Generating " + getDefaultTypeName(), ProgressIndicator.UNKNOWN);
 
 		try {
@@ -84,7 +91,6 @@ public class JsonInstanceWriter extends AbstractInstanceWriter {
 			progress.end();
 		}
 		return reporter;
-
 	}
 
 	/**

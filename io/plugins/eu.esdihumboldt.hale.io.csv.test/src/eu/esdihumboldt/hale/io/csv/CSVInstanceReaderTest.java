@@ -16,7 +16,13 @@
 package eu.esdihumboldt.hale.io.csv;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
 
 import javax.xml.namespace.QName;
 
@@ -35,6 +41,7 @@ import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.hale.io.csv.reader.CSVConstants;
 import eu.esdihumboldt.hale.io.csv.reader.CommonSchemaConstants;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVInstanceReader;
 import eu.esdihumboldt.hale.io.csv.reader.internal.CSVSchemaReader;
@@ -238,6 +245,67 @@ public class CSVInstanceReaderTest {
 
 	}
 
+	/**
+	 * Test - read a sample csv schema and data.
+	 * 
+	 * @throws Exception , if an error occurs
+	 */
+	@Test
+	public void testReadSimpleWithDate() throws Exception {
+
+		String typeName = "location";
+		String[] properties = { "Name", "Xcoord", "Ycoord", "date" };
+		String[] dataFirstColumn = { "test", "12", "16", "1.02.2023" };
+		String dateFormatter = "dd.MM.yyyy";
+		String sourceLocation = "/data/test3.csv";
+		// read Schema ###
+		Schema schema = readCSVSchemaDate(sourceLocation, typeName,
+				"java.lang.String,java.lang.String,java.lang.String,java.lang.String",
+				"Name,Xcoord,Ycoord,date", null, null, null, null, dateFormatter);
+
+		// read Instances ###
+		InstanceCollection instances = readCSVInstances(sourceLocation, typeName, 1, schema, null,
+				null, null);
+
+		// Check the values of the date property in each instance
+		Iterator<Instance> instanceIt = instances.iterator();
+		while (instanceIt.hasNext()) {
+			Instance instance = instanceIt.next();
+			// Get the value of the date property
+			Object[] value = instance.getProperty(QName.valueOf(properties[properties.length - 1]));
+
+			// Ensure the value is not null
+			assertNotNull("Date property value is null", value);
+
+			// Ensure the value is an array with at least one element
+			assertTrue("Date property value is not an array or is empty", value.length > 0);
+
+			// Check the date string format
+			String dateString = (String) value[0];
+			assertTrue("Date string format is incorrect: " + dateString,
+					isStringDate(dateString, dateFormatter));
+		}
+	}
+
+	/**
+	 * @param input String
+	 * @param dateFormatter date formatter
+	 * @return true is the input String is of type Date
+	 */
+	public boolean isStringDate(String input, String dateFormatter) {
+		// Define the date format you expect
+		SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatter);
+		dateFormat.setLenient(false); // Disable lenient parsing
+
+		try {
+			// Try parsing the input string as a date
+			Date parsedDate = dateFormat.parse(input);
+			return true; // Parsing successful, input is a valid date
+		} catch (ParseException e) {
+			return false; // Parsing failed, input is not a valid date
+		}
+	}
+
 	private int collectionSize(InstanceCollection instances) {
 		if (instances.hasSize()) {
 			return instances.size();
@@ -273,6 +341,28 @@ public class CSVInstanceReaderTest {
 		schemaReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));
 		schemaReader.setParameter(CSVSchemaReader.PARAM_DECIMAL, Value.of(decimal));
+
+		IOReport report = schemaReader.execute(new LogProgressIndicator());
+		assertTrue(report.isSuccess());
+
+		return schemaReader.getSchema();
+	}
+
+	private Schema readCSVSchemaDate(String sourceLocation, String typeName,
+			String paramPropertyType, String propertyNames, String seperator, String quote,
+			String escape, String decimal, String dateFormatter) throws Exception {
+
+		CSVSchemaReader schemaReader = new CSVSchemaReader();
+		schemaReader.setSource(
+				new DefaultInputSupplier(getClass().getResource(sourceLocation).toURI()));
+		schemaReader.setParameter(CommonSchemaConstants.PARAM_TYPENAME, Value.of(typeName));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTY, Value.of(propertyNames));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_PROPERTYTYPE, Value.of(paramPropertyType));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_SEPARATOR, Value.of(seperator));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_QUOTE, Value.of(quote));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_ESCAPE, Value.of(escape));
+		schemaReader.setParameter(CSVSchemaReader.PARAM_DECIMAL, Value.of(decimal));
+		schemaReader.setParameter(CSVConstants.PARAMETER_DATE_FORMAT, Value.of(dateFormatter));
 
 		IOReport report = schemaReader.execute(new LogProgressIndicator());
 		assertTrue(report.isSuccess());
