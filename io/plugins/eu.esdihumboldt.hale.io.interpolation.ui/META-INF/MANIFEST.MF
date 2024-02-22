@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Interpolation UI Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.interpolation.ui;singleton:=true
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Require-Bundle: org.eclipse.core.runtime,
  eu.esdihumboldt.hale.ui;bundle-version="3.1.0",

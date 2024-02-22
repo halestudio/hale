@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Application Support
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.app
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-Activator: eu.esdihumboldt.hale.common.app.internal.Activator
 Bundle-Vendor: data harmonisation panel
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

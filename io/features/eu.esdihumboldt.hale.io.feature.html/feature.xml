@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.html"
       label="HTML Export Feature"
-      version="5.0.1.qualifier"
+      version="5.1.0.qualifier"
       provider-name="data harmonisation panel"
       plugin="eu.esdihumboldt.hale.ui.application">
 

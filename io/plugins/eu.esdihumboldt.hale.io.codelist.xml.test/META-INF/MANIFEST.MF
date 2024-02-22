@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: XML Codelist Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.codelist.xml.test
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.1.0.qualifier
 Bundle-Vendor: wetransform GmbH
 Fragment-Host: eu.esdihumboldt.hale.io.codelist.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
