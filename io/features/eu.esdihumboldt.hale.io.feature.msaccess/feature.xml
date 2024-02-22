@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.msaccess"
       label="Hale MS Access Support"
-      version="5.1.0.qualifier"
+      version="5.2.0.qualifier"
       provider-name="wetransfom GmbH"
       plugin="eu.esdihumboldt.hale.ui.application">
 
