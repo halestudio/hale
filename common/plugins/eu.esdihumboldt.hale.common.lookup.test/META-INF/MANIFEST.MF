@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Lookup Table Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.lookup.test
-Bundle-Version: 5.1.0.qualifier
+Bundle-Version: 5.2.0.qualifier
 Bundle-Vendor: data harmonisation panel
 Fragment-Host: eu.esdihumboldt.hale.common.lookup;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
