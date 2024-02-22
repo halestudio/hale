@@ -8,10 +8,6 @@
       Licenses of the individual features and plug-ins apply.
    </license>
 
-   <includes
-         id="eu.esdihumboldt.hale.platform.resources"
-         version="0.0.0"/>
-
    <plugin
          id="eu.esdihumboldt.util.resource"
          download-size="0"
@@ -34,6 +30,62 @@
 
    <plugin
          id="eu.esdihumboldt.util.resource.schemas.end"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.codelists.inspire"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.codelists.inspire.accept-xml"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.featureconcepts.inspire"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.schemas.inspire"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.schemas.opengis.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.schemas.portele.de"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.schemas.repository.gdi-de.org"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.resource.w3.org"
          download-size="0"
          install-size="0"
          version="0.0.0"
