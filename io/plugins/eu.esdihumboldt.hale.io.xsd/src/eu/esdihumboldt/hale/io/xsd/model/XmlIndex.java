@@ -67,6 +67,11 @@ public class XmlIndex extends DefaultSchema {
 	private final BiMap<String, String> prefixes = HashBiMap.create();
 
 	/**
+	 * Schema imports
+	 */
+	private final Map<String, String> schemaImports = new HashMap<>();
+
+	/**
 	 * @see DefaultSchema#DefaultSchema(String, URI)
 	 */
 	public XmlIndex(String namespace, URI location) {
@@ -147,4 +152,14 @@ public class XmlIndex extends DefaultSchema {
 		return prefixes;
 	}
 
+	/**
+	 * @return the imports
+	 */
+
+	/**
+	 * @return the schemaImports
+	 */
+	public Map<String, String> getSchemaImports() {
+		return schemaImports;
+	}
 }
