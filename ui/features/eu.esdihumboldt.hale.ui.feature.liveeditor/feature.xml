@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.liveeditor"
       label="E4 Live Editor"
-      version="5.1.0.qualifier">
+      version="5.2.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
