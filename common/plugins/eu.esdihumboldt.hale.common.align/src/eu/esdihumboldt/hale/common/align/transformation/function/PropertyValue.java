@@ -35,10 +35,12 @@ public interface PropertyValue {
 	public abstract Object getValue();
 
 	/**
-	 * Get the property value converted to the given type.
+	 * 
+	 * Get the property value converted to the given type or if the property
+	 * value is an instance, the instance value converted to the given type
 	 * 
 	 * @param type the type the value should be converted to
-	 * @return the converted property value
+	 * @return the converted property value or the converted instance value
 	 * @throws ConversionException if the conversion service is not available or
 	 *             the conversion fails or is not supported
 	 */
