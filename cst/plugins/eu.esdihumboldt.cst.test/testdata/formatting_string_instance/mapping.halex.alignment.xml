@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C65e3f9d0-a6e3-4361-9271-7809dc90184b" priority="normal">
+        <source>
+            <class>
+                <type name="A" ns="source"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="T" ns="target"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="false" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.hale.align.formattedstring" id="Ccae1fa23-5d3e-41a4-b707-db5593e95cc0" priority="normal">
+        <source name="var">
+            <property>
+                <type name="A" ns="source"/>
+                <child name="a" ns="source"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="T" ns="target"/>
+                <child name="a" ns="target"/>
+            </property>
+        </target>
+        <parameter value="pref_{a}" name="pattern"/>
+    </cell>
+</alignment>

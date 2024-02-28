@@ -112,6 +112,7 @@ abstract class TransformationExamples {
 
 	public static final String XSL_XPATH_1 = 'xpath1'
 
+	public static final String FORMATTING_STRING_INSTANCE = 'formatting_string_instance'
 	public static final String INNER_JOIN = 'inner_join'
 	public static final String INNER_JOIN_FIRST_LEVEL = 'inner_join_first_level'
 	public static final String INNER_JOIN_CONDITIONS = 'inner_join_conditions'
@@ -233,6 +234,7 @@ abstract class TransformationExamples {
 		(XSL_XPATH_1): defaultExample(XSL_XPATH_1),
 
 		// builder based examples
+		(FORMATTING_STRING_INSTANCE): builderExample(FORMATTING_STRING_INSTANCE),
 		(INNER_JOIN): builderExample(INNER_JOIN),
 		(INNER_JOIN_FIRST_LEVEL): builderExample(INNER_JOIN_FIRST_LEVEL),
 		(INNER_JOIN_CONDITIONS): builderExample(INNER_JOIN_CONDITIONS),
