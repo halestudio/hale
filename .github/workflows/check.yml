@@ -1,43 +1,43 @@
-name: Check
+name: Pull Request Workflow
 
-# XXX disabled for now because we use Jenkins still, but at the time this was tested it was functional
-# on:
-#   pull_request:
-#     branches: [ master ]
+on:
+  pull_request:
+    branches:
+      - '*'  # Trigger on all branches for pull requests
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    # Note: Actually we don't need Maven CLI, only Java 17, but this may have additional benefits due to the Maven cache
-    - name: Setup Maven
-      uses: s4u/setup-maven-action@v1.5.1
-      with:
-        java-version: 17
-        java-distribution: temurin
-        maven-version: 3.8.6
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@v1.5.1
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.8.6
 
-    - name: Clean
-      run: ./build.sh clean
-      working-directory: ./build
+      - name: Clean
+        run: ./build.sh clean
+        working-directory: ./build
 
-    - name: Test (commitStage)
-      run: ./build.sh commitStage
-      # run: ./build.sh integrationStage
-      working-directory: ./build
+      - name: Test
+        run: ./build.sh commitStage
+        working-directory: ./build
+      
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always() # always run even if the previous step fails
+        with:
+          # fail if there are no test results
+          require_tests: true
 
-      # https://github.com/marketplace/actions/junit-report-action
-    - name: Publish Test Report
-      uses: mikepenz/action-junit-report@v3
-      if: always() # always run even if the previous step fails
-      with:
-        report_paths: 'build/target/testReports/*.xml'
-
-      # TODO allure report?
-      # build/target/allure-results
-
-      # TODO archive logs?
-      # build/target/testReports/*.out,build/target/testReports/*.err
+          # Workaround for check that is additionally created being associated
+          # to the wrong workflow/run. Instead no additional check is created.
+          # See https://github.com/mikepenz/action-junit-report/issues/40
+          annotate_only: true
+          detailed_summary: true  
+          report_paths: 'build/target/testReports/*.xml' 
