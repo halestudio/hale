@@ -1,0 +1,83 @@
+name: Master Branch Workflow
+
+on:
+  push:
+    branches:
+      #- master  # Trigger on pushes to the master branch
+      - build/ING-4164
+  workflow_dispatch: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@v1.5.1
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.8.6
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Clean
+        run: ./build.sh clean
+        working-directory: ./build
+
+      - name: Create hale-docker.conf file
+        run: |
+          mkdir -p ~/.hale
+          cat <<EOF > ~/.hale/hale-docker.conf
+          global {
+            dockerHost="unix:///var/run/docker.sock"
+          }
+          EOF
+
+      - name: Test
+        run: ./build.sh integrationStage
+        working-directory: ./build
+
+      - name: Product
+        run: ./build.sh product --arch x86_64 --os linux HALE
+             ./build.sh product --arch x86_64 --os windows HALE
+             ./build.sh product --arch x86_64 --os macosx HALE
+             ./build.sh product --arch x86_64 --os linux --publish Infocenter
+        working-directory: ./build    
+
+      - name: Install AWS CLI
+        uses: unfor19/install-aws-cli-action@v1
+        with:
+          version: 1
+
+      - name: Update site
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.BUILD_ARCHIVE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BUILD_ARCHIVE_SECRET_KEY }}
+        run: ./upload-site.sh
+        working-directory: ./build    
+
+      - name: Deploy Artifacts
+        run: ./build.sh deployArtifacts
+        working-directory: ./build   
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v4
+        if: always() # always run even if the previous step fails
+        with:
+          # fail if there are no test results
+          require_tests: true
+
+          # Workaround for check that is additionally created being associated
+          # to the wrong workflow/run. Instead no additional check is created.
+          # See https://github.com/mikepenz/action-junit-report/issues/40
+          annotate_only: true
+          detailed_summary: true  
+          report_paths: 'build/target/testReports/*.xml' 
