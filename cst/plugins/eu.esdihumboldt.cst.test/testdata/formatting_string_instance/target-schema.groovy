@@ -1,0 +1,5 @@
+schema('target') {
+	T {
+		a()
+	}
+}

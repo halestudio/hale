@@ -350,6 +350,17 @@ public class ConceptualSchemaTransformerTest extends DefaultTransformationTest {
 	 * @throws Exception if an error occurs executing the test
 	 */
 	@Test
+	public void testFormattingStringInstance() throws Exception {
+		testTransform(TransformationExamples
+				.getExample(TransformationExamples.FORMATTING_STRING_INSTANCE));
+	}
+
+	/**
+	 * Test a Join that has the innerJoin flag enabled.
+	 * 
+	 * @throws Exception if an error occurs executing the test
+	 */
+	@Test
 	public void testInnerJoin() throws Exception {
 		testTransform(TransformationExamples.getExample(TransformationExamples.INNER_JOIN));
 	}

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hale-project version="5.2.0.qualifier">
+    <name>mapping</name>
+    <author>EmanuelaEpure</author>
+    <created>2024-02-29T15:13:01.528+01:00</created>
+    <modified>2024-02-29T15:18:03.421+01:00</modified>
+    <save-config action-id="project.save" provider-id="eu.esdihumboldt.hale.io.project.hale25.xml.writer">
+        <setting name="charset">UTF-8</setting>
+        <setting name="projectFiles.separate">false</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.project.hale25.xml</setting>
+        <setting name="target">file:/C:/Users/EmanuelaEpure/Documents/GitHub/hale-studio-5_0/hale/cst/plugins/eu.esdihumboldt.cst.test/testdata/formatting_string_instance/mapping.halex</setting>
+    </save-config>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.source" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">87062879-c0a0-43d2-9af3-1444a2c321db</setting>
+        <setting name="source">file:/C:/Users/EmanuelaEpure/Documents/GitHub/hale-studio-5_0/hale/cst/plugins/eu.esdihumboldt.cst.test/testdata/formatting_string_instance/source-schema.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.schema.read.target" provider-id="eu.esdihumboldt.hale.io.schemabuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">fef220d5-4f13-4c63-abbd-6dbeb57dc079</setting>
+        <setting name="source">file:/C:/Users/EmanuelaEpure/Documents/GitHub/hale-studio-5_0/hale/cst/plugins/eu.esdihumboldt.cst.test/testdata/formatting_string_instance/target-schema.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.schemabuilder</setting>
+    </resource>
+    <resource action-id="eu.esdihumboldt.hale.io.instance.read.source" provider-id="eu.esdihumboldt.hale.io.instancebuilder">
+        <setting name="charset">UTF-8</setting>
+        <setting name="resourceId">42a12734-31f8-4e40-b75a-b46652ba8b17</setting>
+        <setting name="source">file:/C:/Users/EmanuelaEpure/Documents/GitHub/hale-studio-5_0/hale/cst/plugins/eu.esdihumboldt.cst.test/testdata/formatting_string_instance/source-instances.groovy</setting>
+        <setting name="contentType">eu.esdihumboldt.hale.io.instancebuilder</setting>
+    </resource>
+    <file name="alignment.xml" location="mapping.halex.alignment.xml"/>
+    <file name="styles.sld" location="mapping.halex.styles.sld"/>
+</hale-project>
