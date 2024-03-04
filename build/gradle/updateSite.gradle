@@ -161,6 +161,10 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) {
 	    pg.generateParentPomFile(parentPomConfig)
 		
 		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, project.ext.rootDir.path);
+		
+		// attempt to work around issue on GitHub Actions where downloading dependencies with Maven fails
+		System.setProperty( 'maven.wagon.httpconnectionManager.ttlSeconds', '120' )
+
 	    // build update site
 	    def res = new MavenCli().doMain([ 'package' ] as String[], project.ext.rootDir.path, System.out, System.err)
 	    if (res != 0) {
