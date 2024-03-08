@@ -49,7 +49,7 @@
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="http://build-artifacts.wetransform.to/p2/offline-resources/current"/>
-		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.2.21.bnd-Q1xqaw"/>
+		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.3.8.bnd-W1hqew"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/0342a0f0c4f57a1ec4109f1fbe6e6fecd7dc722b/updatesites/platform"/>
