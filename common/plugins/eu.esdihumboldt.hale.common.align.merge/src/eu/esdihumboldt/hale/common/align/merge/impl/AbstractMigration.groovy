@@ -22,6 +22,7 @@ import eu.esdihumboldt.hale.common.align.model.ChildContext
 import eu.esdihumboldt.hale.common.align.model.Condition
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition
+import eu.esdihumboldt.hale.common.align.model.impl.TypeEntityDefinition
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.extension.filter.FilterDefinitionManager
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
@@ -62,6 +63,8 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (matchedEntity.present) {
 			// entity contained contexts -> translate them if possible
 
+			//XXX target was determined (matchedEntity), do we need to know about how the match was found, e.g. if it was a join?
+
 			matchedEntity = Optional.ofNullable(translateContexts(entity, matchedEntity.get(), this, preferRoot, log));
 		}
 
@@ -94,7 +97,15 @@ abstract class AbstractMigration implements AlignmentMigration {
 				if (!sameEntity(original, target)) {
 					// replacements in filter if possible
 					if (filter instanceof EntityAwareFilter) {
-						def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, preferRoot, log)
+						// def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, preferRoot, log)
+
+						if (preferRoot == null) {
+							TypeEntityDefinition originalType = AlignmentUtil.getTypeEntity(original)
+							//FIXME if match for originalType is a Join and then set preferRoot to target type?
+						}
+
+						//FIXME for testing, replace preferRoot by target
+						def migrated = ((EntityAwareFilter) filter).migrateFilter(AlignmentUtil.getTypeEntity(original), migration, target.type, log)
 						if (migrated.present) {
 							filter = migrated.get()
 							//TODO mark automatically migrated?

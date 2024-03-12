@@ -188,7 +188,15 @@ public abstract class AbstractGeotoolsFilter
 	public Optional<eu.esdihumboldt.hale.common.instance.model.Filter> migrateFilter(
 			EntityDefinition context, AlignmentMigration migration, TypeDefinition preferRoot,
 			SimpleLog log) {
+		// TODO pass in target entity or target type, so we can use that
+		// information to determine, if filter conditions actually apply
+		// XXX can preferRoot be used or do we need to differ due to Join?
+
 		// split filter (AND operands)
+		// TODO split based on different operand based on if there is a join or
+		// not
+		// FIXME what about properties related to a Join -> we want to drop the
+		// AND parts - how do we know the context is a join?
 		List<Filter> andParts = splitAnd(internFilter);
 
 		// migrate each filter part
