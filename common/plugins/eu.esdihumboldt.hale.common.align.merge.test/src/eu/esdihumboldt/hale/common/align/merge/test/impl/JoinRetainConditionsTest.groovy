@@ -123,6 +123,81 @@ class JoinRetainConditionsTest extends AbstractMergeCellMigratorTest {
 		})
 	}
 
+	/**
+	 * Test if conditions on the type are properly migrated for property relations.
+	 */
+	@Test
+	void testRetypeConditionRenameTypeFiltered() {
+		def toMigrate = this.class.getResource('/testcases/retain-join-conditions-retype/S-to-T.halex')
+		def cellId = 'aRename'
+
+		def matching = this.class.getResource('/testcases/retain-join-conditions-retype/ABC-to-S.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+
+		def expectedFilterA = 'NOT (a = \'100\')'
+
+		assertNotNull(migrated[0].source)
+		assertEquals(1, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.type.displayName == 'A') {
+				// expect filter part to have been propagated to A
+				assertNotNull(filter)
+				assertEquals(expectedFilterA, filter.filterTerm)
+			}
+			else {
+				fail('Unexpected entity')
+			}
+		}
+
+		// there should be a message about the condition having been translated automatically
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+	}
+
+	/**
+	 * Test that a property relation that previously had no type filter still has no type filter after migration.
+	 */
+	@Test
+	void testRetypeConditionRenameTypeInherited() {
+		def toMigrate = this.class.getResource('/testcases/retain-join-conditions-retype/S-to-T.halex')
+		def cellId = 'bRename'
+
+		def matching = this.class.getResource('/testcases/retain-join-conditions-retype/ABC-to-S.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+
+		assertNotNull(migrated[0].source)
+		assertEquals(1, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.type.displayName == 'B') {
+				// there should be no filter
+				assertNull(filter)
+			}
+			else {
+				fail('Unexpected entity')
+			}
+		}
+	}
+
 	@Test
 	void testJoinCondition() {
 		def toMigrate = this.class.getResource('/testcases/retain-condition-join/B-to-C.halex')
