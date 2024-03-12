@@ -44,16 +44,16 @@
 <unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201606061308"/>
 </location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="http://build-artifacts.wetransform.to/p2/equinox-test/build_4"/>
-		<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202203220819"/>
-	</location>
-	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="http://build-artifacts.wetransform.to/p2/offline-resources/current"/>
 		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.3.8.bnd-W1hqew"/>
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/0342a0f0c4f57a1ec4109f1fbe6e6fecd7dc722b/updatesites/platform"/>
 		<unit id="eu.esdihumboldt.hale.platform.feature.group" version="5.0.0.i20240220"/>
+	</location>
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="http://build-artifacts.wetransform.to/p2/equinox-test/1.2.0.20240312"/>
+		<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202403121501"/>
 	</location>
 </locations>
 </target>
