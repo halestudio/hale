@@ -419,9 +419,32 @@ public class DefaultAlignment implements Alignment, MutableAlignment {
 					.getDefinition().getType();
 			if (target == null || DefinitionUtil.isSuperType(target, typeCellTarget)) {
 				// target matches
-				if (sources.isEmpty() || matchesSources(typeCell.getSource(), sources)) {
-					// source matches, too
-					result.add(typeCell);
+
+				if (sources.size() == 1) {
+					/*
+					 * Special case handling when there is exactly one type,
+					 * that in this case also allows to find a Join that only
+					 * uses one of the types.
+					 * 
+					 * Unclear if this is intended, but the else case does not
+					 * yield any results in such cases, which could be due to
+					 * the implementation of `matchesSources` in that case being
+					 * focused on property relations.
+					 */
+					TypeEntityDefinition type = sources.iterator().next();
+					if (sources.isEmpty() || matchesSources(type,
+							typeCell.getSource().values().stream()
+									.map(e -> AlignmentUtil.getTypeEntity(e.getDefinition()))
+									.toList())) {
+						// source matches, too
+						result.add(typeCell);
+					}
+				}
+				else {
+					if (sources.isEmpty() || matchesSources(typeCell.getSource(), sources)) {
+						// source matches, too
+						result.add(typeCell);
+					}
 				}
 			}
 		}
