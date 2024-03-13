@@ -35,7 +35,7 @@ public interface AlignmentMigration {
 	 * @param log the migration process log (may be cell specific)
 	 * @return the replacement entity, if the entity should be replaced
 	 */
-	default Optional<EntityDefinition> entityReplacement(EntityDefinition entity, SimpleLog log) {
+	default Optional<EntityMatch> entityReplacement(EntityDefinition entity, SimpleLog log) {
 		return entityReplacement(entity, null, log);
 	}
 
@@ -48,7 +48,7 @@ public interface AlignmentMigration {
 	 * @param log the migration process log (may be cell specific)
 	 * @return the replacement entity, if the entity should be replaced
 	 */
-	Optional<EntityDefinition> entityReplacement(EntityDefinition entity, TypeDefinition preferRoot,
+	Optional<EntityMatch> entityReplacement(EntityDefinition entity, TypeDefinition preferRoot,
 			SimpleLog log);
 
 }

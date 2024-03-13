@@ -29,6 +29,7 @@ import eu.esdihumboldt.hale.common.align.merge.MergeSettings;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMergeCellMigrator;
 import eu.esdihumboldt.hale.common.align.merge.impl.AbstractMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -188,9 +189,13 @@ public class JoinMergeMigrator extends AbstractMergeCellMigrator<JoinContext> {
 				Entity entity = entry.getValue();
 
 				if (transferContext.test(entity.getDefinition())) {
+					// XXX should the match be marked as from a Join? Unclear in
+					// this context
+					EntityMatch e = EntityMatch.of(entity.getDefinition());
+
 					// transfer filter and contexts if possible
-					EntityDefinition withContexts = AbstractMigration.translateContexts(source,
-							entity.getDefinition(), migration, null, log);
+					EntityDefinition withContexts = AbstractMigration
+							.translateContexts(source, e, migration, null, log).getMatch();
 					if (withContexts.getFilter() != null) {
 						context.addTypeFilter(withContexts.getType(), withContexts.getFilter());
 					}

@@ -33,6 +33,7 @@ import eu.esdihumboldt.cst.functions.groovy.GroovyConstants;
 import eu.esdihumboldt.cst.functions.groovy.GroovyJoin;
 import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.CellUtil;
@@ -245,12 +246,12 @@ public class JoinContext {
 		});
 		if (!isStripped) {
 			return (PropertyEntityDefinition) migration.entityReplacement(property, log)
-					.orElse(property);
+					.map(EntityMatch::getMatch).orElse(property);
 		}
 		else {
 			EntityDefinition stripped = AlignmentUtil.getAllDefaultEntity(property);
 			return (PropertyEntityDefinition) migration.entityReplacement(stripped, log)
-					.orElse(stripped);
+					.map(EntityMatch::getMatch).orElse(stripped);
 		}
 	}
 

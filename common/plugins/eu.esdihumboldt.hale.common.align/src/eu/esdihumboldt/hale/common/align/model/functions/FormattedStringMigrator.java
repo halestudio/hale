@@ -28,11 +28,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.Entity;
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.ParameterValue;
 import eu.esdihumboldt.hale.common.align.model.annotations.messages.CellLog;
@@ -85,8 +85,8 @@ public class FormattedStringMigrator extends DefaultCellMigrator {
 
 		Map<String, Object> replacements = new HashMap<>();
 		for (PropertyEntityDefinition var : oldVars) {
-			Optional<EntityDefinition> replacement = migration.entityReplacement(var, log);
-			replacement.ifPresent(repl -> {
+			Optional<EntityMatch> replacement = migration.entityReplacement(var, log);
+			replacement.map(m -> m.getMatch()).ifPresent(repl -> {
 				String newName = repl.getDefinition().getName().getLocalPart();
 				// XXX there might be name conflicts - check for those or use
 				// long names?

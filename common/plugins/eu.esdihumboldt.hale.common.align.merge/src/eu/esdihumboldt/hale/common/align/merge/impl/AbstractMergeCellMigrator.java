@@ -41,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.merge.MergeSettings;
 import eu.esdihumboldt.hale.common.align.merge.MergeUtil;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.migrate.impl.DefaultCellMigrator;
 import eu.esdihumboldt.hale.common.align.migrate.impl.MigrationOptionsImpl;
@@ -158,11 +159,12 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						AlignmentMigration cellMigration = new AbstractMigration() {
 
 							@Override
-							protected Optional<EntityDefinition> findMatch(EntityDefinition entity,
+							protected Optional<EntityMatch> findMatch(EntityDefinition entity,
 									TypeDefinition preferRoot) {
 								Entity target = CellUtil.getFirstEntity(originalCell.getTarget());
 								if (target != null) {
-									return Optional.ofNullable(target.getDefinition());
+									return Optional
+											.ofNullable(EntityMatch.of(target.getDefinition()));
 								}
 								return Optional.empty();
 							}
@@ -360,7 +362,8 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					Entity singleSource = CellUtil.getFirstEntity(newSource);
 					if (singleSource != null) {
 						EntityDefinition transferedSource = AbstractMigration.translateContexts(
-								original, singleSource.getDefinition(), migration, null, log);
+								original, EntityMatch.of(singleSource.getDefinition()), migration,
+								null, log).getMatch();
 						ListMultimap<String, Entity> s = ArrayListMultimap.create();
 						s.put(newSource.keySet().iterator().next(),
 								AlignmentUtil.createEntity(transferedSource));
@@ -437,9 +440,12 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						TypeDefinition inputType = input.getDefinition().getType();
 						if (input.getDefinition().getPropertyPath().isEmpty()
 								&& joinTypes.contains(inputType)) {
-							EntityDefinition transferedSource = AbstractMigration.translateContexts(
-									originalSource.getDefinition(), input.getDefinition(),
-									migration, inputType, log);
+							EntityDefinition transferedSource = AbstractMigration
+									.translateContexts(originalSource.getDefinition(),
+											new EntityMatch(input.getDefinition(),
+													joinTypes.size() > 0, true),
+											migration, inputType, log)
+									.getMatch();
 							joinTypeFilters.put(inputType, transferedSource.getFilter());
 							return AlignmentUtil.createEntity(transferedSource);
 						}
@@ -533,6 +539,8 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 		TypeEntityDefinition focus = joinConfig.getTypes().iterator().next();
 		AtomicReference<Filter> focusFilter = new AtomicReference<>();
 
+		boolean multipleSources = newCell.getSource().size() > 0;
+
 		// transfer context
 		newCell.setSource(ArrayListMultimap.create(Multimaps.transformValues(newCell.getSource(),
 				new com.google.common.base.Function<Entity, Entity>() {
@@ -541,9 +549,12 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					public Entity apply(Entity input) {
 						if (input.getDefinition().getPropertyPath().isEmpty()
 								&& input.getDefinition().getType().equals(focus.getType())) {
-							EntityDefinition transferedSource = AbstractMigration.translateContexts(
-									originalSource.getDefinition(), input.getDefinition(),
-									migration, focus.getType(), log);
+							EntityDefinition transferedSource = AbstractMigration
+									.translateContexts(originalSource.getDefinition(),
+											new EntityMatch(input.getDefinition(), multipleSources,
+													true),
+											migration, focus.getType(), log)
+									.getMatch();
 							focusFilter.set(transferedSource.getFilter());
 							return AlignmentUtil.createEntity(transferedSource);
 						}

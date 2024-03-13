@@ -31,6 +31,7 @@ import org.geotools.filter.text.cql2.CQLException;
 import org.geotools.util.factory.GeoTools;
 import org.opengis.filter.And;
 import org.opengis.filter.Filter;
+import org.opengis.filter.Or;
 import org.opengis.filter.expression.PropertyName;
 
 import de.fhg.igd.slf4jplus.ALogger;
@@ -40,6 +41,7 @@ import eu.esdihumboldt.hale.common.align.groovy.accessor.PathElement;
 import eu.esdihumboldt.hale.common.align.groovy.accessor.internal.EntityAccessorUtil;
 import eu.esdihumboldt.hale.common.align.instance.EntityAwareFilter;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.filter.internal.EntityReplacementVisitor;
@@ -58,6 +60,10 @@ import eu.esdihumboldt.util.groovy.paths.Path;
 @SuppressWarnings("restriction")
 public abstract class AbstractGeotoolsFilter
 		implements eu.esdihumboldt.hale.common.instance.model.Filter, EntityAwareFilter {
+
+	private static enum SplitType {
+		AND, OR
+	}
 
 	private static final ALogger log = ALoggerFactory.getLogger(AbstractGeotoolsFilter.class);
 
@@ -186,22 +192,18 @@ public abstract class AbstractGeotoolsFilter
 
 	@Override
 	public Optional<eu.esdihumboldt.hale.common.instance.model.Filter> migrateFilter(
-			EntityDefinition context, AlignmentMigration migration, TypeDefinition preferRoot,
-			SimpleLog log) {
-		// TODO pass in target entity or target type, so we can use that
-		// information to determine, if filter conditions actually apply
-		// XXX can preferRoot be used or do we need to differ due to Join?
+			EntityDefinition context, EntityMatch targetMatch, AlignmentMigration migration,
+			TypeDefinition preferRoot, SimpleLog log) {
+		// determine how to split filter
+		boolean join = targetMatch.isMatchPartOfJoin();
+		SplitType splitType = join ? SplitType.AND : SplitType.OR;
 
-		// split filter (AND operands)
-		// TODO split based on different operand based on if there is a join or
-		// not
-		// FIXME what about properties related to a Join -> we want to drop the
-		// AND parts - how do we know the context is a join?
-		List<Filter> andParts = splitAnd(internFilter);
+		// split filter
+		List<Filter> filterParts = splitFilter(internFilter, splitType);
 
 		// migrate each filter part
 		List<Filter> acceptedParts = new ArrayList<>();
-		for (Filter part : andParts) {
+		for (Filter part : filterParts) {
 			EntityReplacementVisitor visitor = new EntityReplacementVisitor(migration,
 					name -> resolveProperty(name, context, log), preferRoot, log);
 			Object extraData = null;
@@ -210,18 +212,19 @@ public abstract class AbstractGeotoolsFilter
 			/*
 			 * Determine if part is relevant. Only accept filter parts that are
 			 * not exclusively updated with other types than `preferRoot`. (This
-			 * is used to handle the different types from a Join individually)
+			 * is used to handle the different types from a Join individually,
+			 * also for properties that are mapped in the same context)
 			 * 
 			 * TODO is usage of preferRoot OK or should we have an additional
 			 * parameter to control this behavior?
 			 * 
-			 * Inform about parts that are dropped)
+			 * Inform about parts that are dropped
 			 */
 			TypeDefinition focusType = preferRoot;
 			String messagePrefix = (focusType == null) ? "" : focusType.getDisplayName() + ": ";
 			if (visitor.isAllMismatches(focusType)) {
 				// drop if there were no successful replacements at all
-				if (andParts.size() == 1) {
+				if (filterParts.size() == 1) {
 					try {
 						log.warn(
 								"{0}The filter \"{1}\" was removed because no matches for the respective properties were found",
@@ -235,12 +238,12 @@ public abstract class AbstractGeotoolsFilter
 				else {
 					try {
 						log.warn(
-								"{0}The filter operand \"{1}\" part of the filter''s AND condition was removed because no matches for the respective properties were found",
-								messagePrefix, toFilterTerm(part));
+								"{0}The filter operand \"{1}\" part of the filter''s {2} condition was removed because no matches for the respective properties were found",
+								messagePrefix, toFilterTerm(part), splitType);
 					} catch (CQLException e) {
 						log.error(
-								"{0}A filter operand part of the filter's AND condition was removed because no matches for the respective properties were found; error converting filter part to string",
-								messagePrefix, e);
+								"{0}A filter operand part of the filter's {1} condition was removed because no matches for the respective properties were found; error converting filter part to string",
+								messagePrefix, splitType, e);
 					}
 				}
 			}
@@ -254,12 +257,13 @@ public abstract class AbstractGeotoolsFilter
 					if (!otherReplacements.isEmpty()) {
 						try {
 							log.warn(
-									"{0}The filter operand \"{1}\" part of the filter''s AND condition contains references related to other types than {2}",
-									messagePrefix, toFilterTerm(part), focusType.getDisplayName());
+									"{0}The filter operand \"{1}\" part of the filter''s {3} condition contains references related to other types than {2}",
+									messagePrefix, toFilterTerm(part), focusType.getDisplayName(),
+									splitType);
 						} catch (CQLException e) {
 							log.error(
-									"{0}A filter operand part of the filter's AND condition contains references related to other types than {1}; error converting filter part to string",
-									messagePrefix, focusType.getDisplayName(), e);
+									"{0}A filter operand part of the filter's {2} condition contains references related to other types than {1}; error converting filter part to string",
+									messagePrefix, focusType.getDisplayName(), splitType, e);
 						}
 					}
 				}
@@ -271,8 +275,19 @@ public abstract class AbstractGeotoolsFilter
 		}
 
 		// combine accepted filter parts
-		Filter combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
-				.and(acceptedParts);
+		Filter combined;
+		switch (splitType) {
+		case AND:
+			combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
+					.and(acceptedParts);
+			break;
+		case OR:
+			combined = CommonFactoryFinder.getFilterFactory2(GeoTools.getDefaultHints())
+					.or(acceptedParts);
+			break;
+		default:
+			throw new IllegalStateException("Unsupported filter split type " + splitType);
+		}
 
 		try {
 			String filterString = toFilterTerm(combined);
@@ -284,20 +299,24 @@ public abstract class AbstractGeotoolsFilter
 	}
 
 	/**
-	 * Split a filter into separate AND conditions.
+	 * Split a filter into separate AND or OR conditions.
 	 * 
 	 * @param filter the filter to split
+	 * @param splitType on which operation to split
 	 * @return the split filters as list
 	 */
-	private List<Filter> splitAnd(Filter filter) {
+	private List<Filter> splitFilter(Filter filter, SplitType splitType) {
 		List<Filter> result = new ArrayList<>();
 
 		Deque<Filter> toCheck = new LinkedList<>();
 		toCheck.add(filter);
 		while (!toCheck.isEmpty()) {
 			Filter f = toCheck.poll();
-			if (f instanceof And) {
+			if (SplitType.AND.equals(splitType) && f instanceof And) {
 				toCheck.addAll(((And) f).getChildren());
+			}
+			else if (SplitType.OR.equals(splitType) && f instanceof Or) {
+				toCheck.addAll(((Or) f).getChildren());
 			}
 			else {
 				result.add(f);

@@ -26,6 +26,7 @@ import org.geotools.filter.visitor.DuplicatingFilterVisitor;
 import org.opengis.filter.expression.PropertyName;
 
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
@@ -78,8 +79,8 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 		if (resolved.isPresent()) {
 			total++;
 
-			Optional<EntityDefinition> replace = migration.entityReplacement(resolved.get(),
-					preferRoot, log);
+			Optional<EntityDefinition> replace = migration
+					.entityReplacement(resolved.get(), preferRoot, log).map(EntityMatch::getMatch);
 			if (replace.isPresent()) {
 				matched++;
 				replacements.add(replace.get());
@@ -143,7 +144,10 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 	 * were mismatches or matching entities with a different parent type.
 	 * 
 	 * @param expectedParent the expected parent type
-	 * @return
+	 * @return <code>true</code> if related to the given expected parent type
+	 *         all replacement attempts were mismatches or matching entities
+	 *         with a different parent type, <code>false</code> if there were
+	 *         successful matches with the given parent type
 	 */
 	public boolean isAllMismatches(TypeDefinition expectedParent) {
 		if (expectedParent == null) {
