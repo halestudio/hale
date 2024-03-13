@@ -446,6 +446,26 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		assertEquals(expectedFilter, filter.filterTerm)
 	}
 
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void typeFilterCheck(Cell migrated, String expectedFilter) {
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// the condition should be present on the source
+		def source = CellUtil.getFirstEntity(migrated.source).definition
+		assertNotNull(source.filter)
+		assertEquals(expectedFilter, source.filter.filterTerm)
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	private void filterCheckNull(Cell migrated) {
+		JaxbAlignmentIO.printCell(migrated, System.out)
+
+		// the condition should be present on the source
+		def source = CellUtil.getFirstEntity(migrated.source).definition
+		def filter = source.propertyPath.empty ? source.filter : source.propertyPath[0].condition?.filter
+		assertNull(filter)
+	}
+
 	@Test
 	void testTypeFilter1() {
 		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
@@ -481,7 +501,33 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// filter
 		assertEquals(1, migrated.size())
-		filterCheck(migrated[0], "bb = 'test'") // the filter should be retained
+		// filter is now dropped (because bb is not mapped for B2)
+		filterCheckNull(migrated[0])
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('removed because no matches')
+		})
+	}
+
+	@Test
+	void testTypeFilter2Present() {
+		def toMigrate = this.class.getResource('/testcases/type-filter-props-mapped/B-to-C.halex')
+		def cellId = 'B2-C2' // Retype
+
+		def matching = this.class.getResource('/testcases/type-filter-props-mapped/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		filterCheck(migrated[0], "ab = 'test'")
 
 		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated[0])
@@ -491,7 +537,6 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 	}
 
 	@Test
-	@CompileStatic(TypeCheckingMode.SKIP)
 	void testTypeFilter2Property() {
 		def toMigrate = this.class.getResource('/testcases/type-filter/B-to-C.halex')
 		def cellId = 'B2C2a' // Rename
@@ -502,11 +547,34 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// do checks
 
-		// type filter should be retained
-		def source = CellUtil.getFirstEntity(migrated[0].source).definition
-		def filter = source.filter
-		assertNotNull(filter)
-		assertEquals("bb = 'test'", filter.filterTerm)
+		// filter is now dropped (because bb is not mapped for B2)
+		assertEquals(1, migrated.size())
+		filterCheckNull(migrated[0])
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('removed because no matches')
+		})
+	}
+
+	@Test
+	void testTypeFilter2PropertyPresent() {
+		def toMigrate = this.class.getResource('/testcases/type-filter-props-mapped/B-to-C.halex')
+		def cellId = 'B2C2a' // Rename
+
+		def matching = this.class.getResource('/testcases/type-filter-props-mapped/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		typeFilterCheck(migrated[0], "ab = 'test'")
 
 		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated[0])
@@ -526,9 +594,34 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 
 		// do checks
 
+		// filter is now dropped (because bc is not mapped for B3)
+		assertEquals(1, migrated.size())
+		filterCheckNull(migrated[0])
+
+		// there should be a message about the condition
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('removed because no matches')
+		})
+	}
+
+	@Test
+	void testTypeFilter3Present() {
+		def toMigrate = this.class.getResource('/testcases/type-filter-props-mapped/B-to-C.halex')
+		def cellId = 'B3-C3' // Merge
+
+		def matching = this.class.getResource('/testcases/type-filter-props-mapped/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
 		// filter
 		assertEquals(1, migrated.size())
-		filterCheck(migrated[0], "bc = 'test'")
+		filterCheck(migrated[0], "ac = 'test'")
 
 		// there should be a message about the condition
 		def messages = getMigrationMessages(migrated[0])
@@ -582,8 +675,49 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		((Collection<Entity>) source).each { e ->
 			def filter = e.definition.filter
 			if (e.definition.definition.name.localPart == 'A5') {
+				// filter is now dropped (because ba and bb are not mapped for B5)
+				assertNull(filter)
+			}
+			else {
+				assertNull(filter)
+			}
+		}
+
+		// there should be a message about the conditions being dropped
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('removed because no matches')
+		})
+	}
+
+	@CompileStatic(TypeCheckingMode.SKIP)
+	@Test
+	void testTypeFilter5Present() {
+		def toMigrate = this.class.getResource('/testcases/type-filter-props-mapped/B-to-C.halex')
+		def cellId = 'Join' // Join
+
+		def matching = this.class.getResource('/testcases/type-filter-props-mapped/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		// expect filters to be present on A5 source
+		assertNotNull(migrated[0].source)
+		assertEquals(2, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			if (e.definition.definition.name.localPart == 'A5') {
 				assertNotNull(filter)
-				assertEquals('ba = \'test\' AND NOT (bb = \'test\')', filter.filterTerm)
+				assertEquals('(aa = \'test\' AND NOT (ab = \'test\'))', filter.filterTerm)
+				// assertEquals('aa = \'test\' and ab <> \'test\'', filter.filterTerm)
 			}
 			else {
 				assertNull(filter)
@@ -603,6 +737,39 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 		def cellId = 'GJoin' // Groovy Join
 
 		def matching = this.class.getResource('/testcases/type-filter/A-to-B.halex')
+
+		def migrated = merge(cellId, toMigrate, matching)
+
+		// do checks
+
+		// filter
+		assertEquals(1, migrated.size())
+		JaxbAlignmentIO.printCell(migrated[0], System.out)
+		// expect filters to be present on both sources
+		assertNotNull(migrated[0].source)
+		assertEquals(2, migrated[0].source.size())
+		Collection<? extends Entity> source = migrated[0].source.values()
+		((Collection<Entity>) source).each { e ->
+			def filter = e.definition.filter
+			assertNull(filter)
+		}
+
+		// there should be a message about the conditions being dropped
+		def messages = getMigrationMessages(migrated[0])
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('condition')
+		})
+		assertTrue(messages.any { msg ->
+			msg.text.toLowerCase().contains('removed because no matches')
+		})
+	}
+
+	@Test
+	void testTypeFilter6Present() {
+		def toMigrate = this.class.getResource('/testcases/type-filter-props-mapped/B-to-C.halex')
+		def cellId = 'GJoin' // Groovy Join
+
+		def matching = this.class.getResource('/testcases/type-filter-props-mapped/A-to-B.halex')
 
 		def migrated = merge(cellId, toMigrate, matching)
 

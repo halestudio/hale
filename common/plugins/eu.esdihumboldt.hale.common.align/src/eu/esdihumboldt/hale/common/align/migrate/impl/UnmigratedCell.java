@@ -24,11 +24,13 @@ import javax.xml.namespace.QName;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigration;
 import eu.esdihumboldt.hale.common.align.migrate.AlignmentMigrationNameLookupSupport;
 import eu.esdihumboldt.hale.common.align.migrate.CellMigrator;
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch;
 import eu.esdihumboldt.hale.common.align.migrate.MigrationOptions;
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition;
 import eu.esdihumboldt.hale.common.align.model.MutableCell;
 import eu.esdihumboldt.hale.common.align.model.impl.MutableCellDecorator;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 
 /**
  * Decorator for a {@link MutableCell} that allows to do lazy migration.
@@ -81,9 +83,10 @@ public class UnmigratedCell extends MutableCellDecorator {
 		AlignmentMigration migration = new AlignmentMigrationNameLookupSupport() {
 
 			@Override
-			public Optional<EntityDefinition> entityReplacement(EntityDefinition entity,
-					SimpleLog log) {
-				return Optional.ofNullable(joinedMappings.get(entity));
+			public Optional<EntityMatch> entityReplacement(EntityDefinition entity,
+					TypeDefinition preferRoot, SimpleLog log) {
+				return Optional
+						.ofNullable(new EntityMatch(joinedMappings.get(entity), false, false));
 			}
 
 			@Override

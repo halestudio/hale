@@ -118,10 +118,8 @@
     <cell relation="eu.esdihumboldt.hale.align.rename" id="B6b7toC4c4" priority="normal">
         <source>
             <property>
-                <type name="B6" ns="B">
-                    <condition lang="ECQL">b6 &lt;&gt; 10</condition>
-                </type>
-                <child name="b3" ns="B"/>
+                <type name="B6" ns="B"/>
+                <child name="b6" ns="B"/>
             </property>
         </source>
         <target>

@@ -17,11 +17,13 @@ package eu.esdihumboldt.hale.common.align.merge.impl
 
 import java.util.function.Function
 
+import eu.esdihumboldt.hale.common.align.migrate.EntityMatch
 import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
 import eu.esdihumboldt.hale.common.align.model.Cell
 import eu.esdihumboldt.hale.common.align.model.EntityDefinition
 import eu.esdihumboldt.hale.common.headless.impl.ProjectTransformationEnvironment;
 import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
+import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import groovy.transform.CompileStatic;;;
 
 /**
@@ -41,10 +43,54 @@ class MatchingMigration extends AbstractMigration {
 		this.reverse = reverse
 	}
 
-	protected Optional<EntityDefinition> findMatch(EntityDefinition entity) {
+	@Override
+	protected Optional<EntityMatch> findMatch(EntityDefinition entity, TypeDefinition preferRoot) {
 		findMatches(entity).flatMap({ list ->
-			list ? Optional.ofNullable(((List<EntityDefinition>)list)[0]) : Optional.empty()
+			findPreferredCandidate((List<EntityDefinition>)list, entity, preferRoot)
 		} as Function)
+	}
+
+	private Optional<EntityMatch> findPreferredCandidate(Collection<EntityDefinition> entities, EntityDefinition original, TypeDefinition preferRoot) {
+		if (entities.empty) {
+			return Optional.empty()
+		}
+
+		boolean multiple = entities.size() > 1
+		boolean join = false
+
+		if (original.propertyPath.isEmpty()) {
+			// this is about a type entity
+
+			/*
+			 * Currently, because findMatches only considers cases where exactly one cell is present,
+			 * we can assume that if there are multiple candidates that there is a join for the match.
+			 */
+			join = multiple
+		}
+		else {
+			// this is about a property entity
+
+			/*
+			 * For a property we need to determine if the respective type match is part of a join
+			 * and use that information. 
+			 */
+			def typeEntity = AlignmentUtil.getTypeEntity(original)
+			def typeMatch = findMatch(typeEntity, preferRoot)
+			if (typeMatch.isPresent()) {
+				join = typeMatch.get().matchPartOfJoin
+			}
+		}
+
+
+		/*
+		 * Note: preferRoot is used here to for example pick a specific type from a Join cell's sources 
+		 */
+		def firstPreferred = entities.find { EntityDefinition it -> it.type == preferRoot }
+		def match = firstPreferred ? Optional.of(firstPreferred) : Optional.of(entities.iterator().next())
+
+		match.map {
+			new EntityMatch(it, multiple, join)
+		}
 	}
 
 	public Optional<List<EntityDefinition>> findMatches(EntityDefinition entity) {
