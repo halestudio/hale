@@ -23,6 +23,8 @@
         '<unit id="to\\.wetransform\\.offlineresources\\.feature\\.feature\\.group" version="(?<currentValue>.*?)"\\/>'
       ],
       "versioningTemplate": "semver-coerced"
+      // fixed dependency name for now, but could in principle also be extracted and used in the custom data source
+      "depNameTemplate": "to.wetransform.offlineresources.feature"
     }
   ],
   customDatasources: {
