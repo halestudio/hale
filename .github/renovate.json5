@@ -22,7 +22,8 @@
         // https://regex101.com/r/OGGb5r/1
         '<unit id="to\\.wetransform\\.offlineresources\\.feature\\.feature\\.group" version="(?<currentValue>.*?)"\\/>'
       ],
-      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
+      // OSGi version with optional qualifier - https://regex101.com/r/SHYlv1/1
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(\\.(?<build>[\\w\\-]+))?$",
       // fixed dependency name for now, but could in principle also be extracted and used in the custom data source
       "depNameTemplate": "to.wetransform.offlineresources.feature"
     }
