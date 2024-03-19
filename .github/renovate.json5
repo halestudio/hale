@@ -1,0 +1,34 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: [
+    "config:recommended",
+    "helpers:pinGitHubActionDigestsToSemver",
+    "security:openssf-scorecard",
+    ":enableVulnerabilityAlertsWithLabel(security)",
+  ],
+  labels: [
+    "renovate",
+    "renovate/{{updateType}}",
+  ],
+  // Regex syntax: https://github.com/google/re2/wiki/Syntax
+  // If you're looking for an online regex testing tool that supports capture groups, try regex101.com. You must select the ECMAScript (JavaScript) flavor of regex. Be aware that backslashes ('\') of the resulting regex have to still be escaped e.g. \n\s --> \\n\\s. You can use the Code Generator in the sidebar and copy the regex in the generated "Alternative syntax" comment into JSON.
+  customManagers: [
+    {
+      "customType": "regex",
+      "fileMatch": ["\\.target$"],
+      "datasourceTemplate": "custom.p2OfflineResources",
+      "matchStrings": [
+        // Example: <unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.3.15.bnd-bQhqgw"/>
+        // https://regex101.com/r/OGGb5r/1
+        '<unit id="to\\.wetransform\\.offlineresources\\.feature\\.feature\\.group" version="(?<currentValue>.*?)"\\/>'
+      ],
+      "versioningTemplate": "semver-coerced"
+    }
+  ],
+  customDatasources: {
+    // custom datasource for feature "to.wetransform.offlineresources.feature" from offline-resources update site
+    p2OfflineResources: {
+      "defaultRegistryUrlTemplate": "http://build-artifacts.wetransform.to/p2/offline-resources/site/to.wetransform.offlineresources.feature_versions.json",
+    }
+  }
+}
