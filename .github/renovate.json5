@@ -22,7 +22,7 @@
         // https://regex101.com/r/OGGb5r/1
         '<unit id="to\\.wetransform\\.offlineresources\\.feature\\.feature\\.group" version="(?<currentValue>.*?)"\\/>'
       ],
-      "versioningTemplate": "semver-coerced",
+      "versioningTemplate": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
       // fixed dependency name for now, but could in principle also be extracted and used in the custom data source
       "depNameTemplate": "to.wetransform.offlineresources.feature"
     }
