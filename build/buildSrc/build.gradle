@@ -34,7 +34,7 @@ dependencies {
 	localGroovy()
 	implementation 'com.beust:jcommander:1.32'
 	implementation 'de.undercouch:gradle-download-task:3.4.3'
-	implementation 'org.apache.maven:maven-embedder:3.6.0'
+	implementation 'org.apache.maven:maven-embedder:3.9.6'
 	implementation 'org.apache.maven:maven-compat:3.6.0'
 	implementation 'org.slf4j:slf4j-simple:1.7.30'
 	implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
