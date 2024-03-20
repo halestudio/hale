@@ -50,7 +50,7 @@ dependencies {
 	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.24-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
-	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.11.0'
 		
 }
 
