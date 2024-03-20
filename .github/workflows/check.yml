@@ -14,7 +14,7 @@ jobs:
 
     # Note: Actually we don't need Maven CLI, only Java 17, but this may have additional benefits due to the Maven cache
     - name: Setup Maven
-      uses: s4u/setup-maven-action@4fdbe2a6a718a03bf4874636eed4311886cab6ba # v1.5.1
+      uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
       with:
         java-version: 17
         java-distribution: temurin
