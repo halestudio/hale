@@ -5,6 +5,7 @@
     "helpers:pinGitHubActionDigestsToSemver",
     "security:openssf-scorecard",
     ":enableVulnerabilityAlertsWithLabel(security)",
+    "group:allNonMajor",
   ],
   labels: [
     "renovate",
