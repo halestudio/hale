@@ -19,7 +19,10 @@ package eu.esdihumboldt.hale.common.align.io.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.URI;
+
+import org.apache.commons.io.output.CloseShieldOutputStream;
 
 import eu.esdihumboldt.hale.common.align.io.EntityResolver;
 import eu.esdihumboldt.hale.common.align.io.impl.internal.AlignmentToJaxb;
@@ -171,7 +174,21 @@ public class JaxbAlignmentIO {
 	}
 
 	/**
-	 * Print a cell to an output stream (intended for tests/debugging).
+	 * Print a cell to a {@link PrintStream} (intended for tests/debugging). The
+	 * stream is prevented from being closed, which is intended to prevent for
+	 * instance System.out from being closed.
+	 * 
+	 * @param cell the cell to print
+	 * @param out the output stream
+	 * @throws Exception if an error occurs trying to print the cell
+	 */
+	public static void printCell(MutableCell cell, PrintStream out) throws Exception {
+		printCell(cell, CloseShieldOutputStream.wrap(out));
+	}
+
+	/**
+	 * Print a cell to an output stream (intended for tests/debugging). The
+	 * stream is closed when the cell was written.
 	 * 
 	 * @param cell the cell to print
 	 * @param out the output stream

@@ -1,0 +1,22 @@
+---
+#
+# PLEASE NOTE: Managed workflow - do not change manually
+#
+name: Check commit conventions
+
+on:
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  verify-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+        # https://github.com/taskmedia/action-conventional-commits
+      - uses: taskmedia/action-conventional-commits@1aea91552f4a5d1407481066c5c9d83f1936b170 # v1.1.15
+        with:
+          types: "feat|fix|refactor|revert|ci|chore|docs|build|perf|test|style"
+          skip_revert: false
