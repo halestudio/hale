@@ -18,6 +18,10 @@ concurrency:
   # only run one publishing at a time to avoid conflicts
   group: publish-${{ github.ref }}
 
+env:
+  # instead of embedded Maven use local Maven CLI
+  HALE_BUILD_MAVEN_EMBEDDED: 'false'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,7 +32,7 @@ jobs:
         with:
           java-version: 17
           java-distribution: temurin
-          maven-version: 3.8.6
+          maven-version: 3.9.6
 
       - name: Login to Docker Hub
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0

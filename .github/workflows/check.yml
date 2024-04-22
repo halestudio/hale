@@ -5,6 +5,10 @@ on:
     branches:
       - '*'  # Trigger on all branches for pull requests
 
+env:
+  # instead of embedded Maven use local Maven CLI
+  HALE_BUILD_MAVEN_EMBEDDED: 'false'
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -15,7 +19,7 @@ jobs:
         with:
           java-version: 17
           java-distribution: temurin
-          maven-version: 3.8.6
+          maven-version: 3.9.6
 
       - name: Clean
         run: ./build.sh clean

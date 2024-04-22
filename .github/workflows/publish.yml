@@ -10,6 +10,10 @@ concurrency:
   # only run one publishing at a time to avoid conflicts
   group: publish-${{ github.ref }}
 
+env:
+  # instead of embedded Maven use local Maven CLI
+  HALE_BUILD_MAVEN_EMBEDDED: 'false'
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,7 +24,7 @@ jobs:
         with:
           java-version: 17
           java-distribution: temurin
-          maven-version: 3.8.6
+          maven-version: 3.9.6
 
       - name: Login to Docker Hub
         uses: docker/login-action@465a07811f14bebb1938fbed4728c6a1ff8901fc # v2.2.0
@@ -42,10 +46,7 @@ jobs:
           EOF
 
       - name: Test
-        # run: ./build.sh integrationStage
-        # XXX attempted workaround for frequent failures to download dependencies only occurring in GitHubActions
-        # XXX fall back to commitStage in the hope that this can succeed and the cache from a successful build helps on the next iteration
-        run: ./build.sh integrationStage || ./build.sh commitStage
+        run: ./build.sh integrationStage
         working-directory: ./build
 
       - name: Product
