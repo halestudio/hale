@@ -32,11 +32,11 @@ repositories {
 
 dependencies {
 	localGroovy()
-	implementation 'com.beust:jcommander:1.32'
+	implementation 'com.beust:jcommander:1.82'
 	implementation 'de.undercouch:gradle-download-task:3.4.3'
 	implementation 'org.apache.maven:maven-embedder:3.6.0'
 	implementation 'org.apache.maven:maven-compat:3.6.0'
-	implementation 'org.slf4j:slf4j-simple:1.7.30'
+	implementation 'org.slf4j:slf4j-simple:1.7.36'
 	implementation 'org.eclipse.aether:aether-connector-basic:1.1.0'
 	implementation 'org.eclipse.aether:aether-transport-wagon:1.1.0'
 	implementation 'org.apache.maven.wagon:wagon-http:3.5.3'
@@ -44,13 +44,13 @@ dependencies {
 	implementation 'org.apache.maven.wagon:wagon-http-lightweight:3.5.3'
 	implementation 'org.eclipse.tycho:org.eclipse.osgi:3.13.0.v20180226-1711'
 	implementation group: 'org.apache.maven.resolver', name: 'maven-resolver-api', version: '1.8.2'
-	implementation 'org.yaml:snakeyaml:1.13'
-	implementation 'org.eclipse.jgit:org.eclipse.jgit:3.2.0.201312181205-r'
+	implementation 'org.yaml:snakeyaml:1.33'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:3.7.1.201504261725-r'
 	
 	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.24-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
-	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.6.0'
+	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.12.0'
 		
 }
 
