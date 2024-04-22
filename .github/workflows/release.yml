@@ -88,3 +88,14 @@ jobs:
           annotate_only: true
           detailed_summary: true  
           report_paths: 'build/target/testReports/*.xml'
+
+        # https://github.com/marketplace/actions/slack-notify-build
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger
