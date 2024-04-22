@@ -162,7 +162,7 @@ task buildUpdateSite(dependsOn: [ createUpdateSiteFeature, generatePomFiles ]) {
 		
 		// build update site
 	    def res = Helper.runMaven(['package'], project.ext.rootDir, [
-    		(MavenCli.MULTIMODULE_PROJECT_DIRECTORY): projectRoot,
+    		(MavenCli.MULTIMODULE_PROJECT_DIRECTORY): project.ext.rootDir,
     		// attempt to work around issue on GitHub Actions where downloading dependencies with Maven fails
     		'maven.wagon.httpconnectionManager.ttlSeconds': '120'
     	])
