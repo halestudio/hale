@@ -18,9 +18,9 @@ concurrency:
   # only run one publishing at a time to avoid conflicts
   group: publish-${{ github.ref }}
 
-env:
+# env:
   # instead of embedded Maven use local Maven CLI
-  HALE_BUILD_MAVEN_EMBEDDED: 'false'
+  # HALE_BUILD_MAVEN_EMBEDDED: 'false'
 
 jobs:
   build:
