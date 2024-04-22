@@ -374,7 +374,7 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
         def artifactZipPathPart = new File(buildDir, f + '.part')
         def artifactDownloadUrl = project.ext.artifactsMirrorUrl + '/' + relsrcpath + '/' + f
         if (!artifactZipPath.exists()) {
-            download {
+            download.run {
                 src artifactDownloadUrl
                 dest artifactZipPathPart
                 overwrite true
