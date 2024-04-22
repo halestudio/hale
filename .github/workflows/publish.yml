@@ -64,6 +64,27 @@ jobs:
           ./build.sh product --arch x86_64 --os linux --publish Infocenter
         working-directory: ./build    
 
+      - name: Upload hale studio build (Linux)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hale studio (Linux)
+          path: build/target/hale-studio-*linux*.tar.gz
+          retention-days: 10
+
+      - name: Upload hale studio build (Windows)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hale studio (Linux)
+          path: build/target/hale-studio-*win32*.zip
+          retention-days: 10
+
+      - name: Upload hale studio build (macos)
+        uses: actions/upload-artifact@v4
+        with:
+          name: hale studio (Linux)
+          path: build/target/hale-studio-*macosx*.dmg
+          retention-days: 10
+
       - name: Install AWS CLI
         uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1.0.7
         with:
