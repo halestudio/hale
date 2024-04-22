@@ -1,0 +1,9 @@
+---
+# Repository configuration for wetransform managed repositories
+
+# Reference presets that should apply to this repository
+presets: []
+
+# List of custom required checks
+required_checks:
+  - check
