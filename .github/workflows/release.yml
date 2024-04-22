@@ -14,6 +14,10 @@ on:
   #     - release
   workflow_dispatch: {}
 
+concurrency:
+  # only run one publishing at a time to avoid conflicts
+  group: publish-${{ github.ref }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
