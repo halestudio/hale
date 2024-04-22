@@ -26,6 +26,8 @@ jobs:
           java-version: 17
           java-distribution: temurin
           maven-version: 3.9.6
+          # Note: currently not working because of https://github.com/actions/cache/issues/1315
+          # Fix in https://github.com/actions/cache/pull/1325 not merged yet
           cache-save-always: true
 
       - name: Install genisoimage # required for Mac build
