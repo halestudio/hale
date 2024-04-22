@@ -5,6 +5,12 @@ on:
     branches:
       - '*'  # Trigger on all branches for pull requests
 
+  # also run workflow to refresh cache
+  workflow_dispatch: {}
+  schedule:
+    - cron: '0 0 2,7,12,18,24,30 * *'
+
+
 env:
   # instead of embedded Maven use local Maven CLI
   HALE_BUILD_MAVEN_EMBEDDED: 'false'
