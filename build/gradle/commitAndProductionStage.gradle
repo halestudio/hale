@@ -22,8 +22,8 @@ import groovy.text.GStringTemplateEngine
 
 import java.nio.file.Files;
 import java.text.SimpleDateFormat
-import org.apache.maven.cli.MavenCli
 import org.yaml.snakeyaml.Yaml
+import org.apache.maven.cli.MavenCli
 import org.apache.tools.ant.taskdefs.condition.Os
 
 /**
@@ -1030,16 +1030,13 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
  * a path to a product file manually with the 'productFile' property.
  */
 task buildProduct(dependsOn: createProductFeature) {
-	doFirst{
-		def projectRoot = project.ext.rootDir.path
-		System.setProperty( MavenCli.MULTIMODULE_PROJECT_DIRECTORY, projectRoot);
-
-		// attempt to work around issue on GitHub Actions where downloading dependencies with Maven fails
-		System.setProperty( 'maven.wagon.httpconnectionManager.ttlSeconds', '120' )
-	}	
 	doLast {
 		def projectRoot = project.ext.rootDir.path
-	    def res = new MavenCli().doMain([ '-e', 'package'] as String[], project.ext.rootDir.path , System.out, System.err)
+	    def res = Helper.runMaven(['-e', 'package'], project.ext.rootDir, [
+    		(MavenCli.MULTIMODULE_PROJECT_DIRECTORY): projectRoot,
+    		// attempt to work around issue on GitHub Actions where downloading dependencies with Maven fails
+    		'maven.wagon.httpconnectionManager.ttlSeconds': '120'
+    	])
 	    if (res != 0) {
 	        throw new RuntimeException("Maven failed with exit code ${res}")
 	    }

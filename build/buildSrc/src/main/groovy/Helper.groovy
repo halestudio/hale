@@ -19,6 +19,7 @@
 // along with hale-build.  If not, see <http://www.gnu.org/licenses/>.
 
 import org.gradle.api.Project
+import org.apache.maven.cli.MavenCli
 
 class Helper {
 	
@@ -57,4 +58,45 @@ class Helper {
 	static def buildForMac(Project project) {
 		return project.ext.osgiOS == 'macosx'
 	}
+
+    static int runMaven(List<String> args, File workingDir, Map<String, String> systemProperties = null) {
+        // determine if embedded Maven should be used
+        // for now defaults to embedded if not provided (as this was the original behavior)
+        def useEmbedded = System.getenv('HALE_BUILD_MAVEN_EMBEDDED')?.toLowerCase() != 'false'
+
+        if (useEmbedded) {
+            if (systemProperties) {
+                systemProperties.each { key, value ->
+                    System.setProperty(key, value)
+                }
+            }
+
+            System.out.println "Running Maven embedded with arguments ${args.join(' ')}"
+            return new MavenCli().doMain(args as String[], workingDir.absolutePath, System.out, System.err)
+        }
+        else {
+            System.out.println "Running Maven from command line with arguments ${args.join(' ')}"
+            def command = ['mvn']
+            if (systemProperties) {
+                systemProperties.each { key, value ->
+                    command.add("-D${key}=${value}" as String)
+                }
+            }
+            command.addAll(args)
+            def processBuilder = new ProcessBuilder(command)
+            processBuilder.directory(workingDir)
+
+            // Start the process
+            def process = processBuilder.start()
+
+            // Redirect standard output and error
+            process.consumeProcessOutput(System.out, System.err)
+
+            // Wait for the process to finish
+            process.waitFor()
+
+            // Return exit code
+            return process.exitValue()
+        }
+    }
 }
