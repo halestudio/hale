@@ -8,7 +8,8 @@ on:
   # also run workflow to refresh cache
   workflow_dispatch: {}
   schedule:
-    - cron: '0 0 2,7,12,18,24,30 * *'
+    # roughly every 6 days
+    - cron: '0 0 2,6,10,16,22,28 * *'
 
 
 # env:
