@@ -20,15 +20,15 @@ jobs:
     
     steps:
       - name: Setup Maven
-        # uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
-        uses: stempler/setup-maven-action@bbe2be3e9698ff65c1afeeefca1e7c0ff7a9831f
+        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        # uses: stempler/setup-maven-action@feat/cache-save-always
         with:
           java-version: 17
           java-distribution: temurin
           maven-version: 3.9.6
           # Note: currently not working because of https://github.com/actions/cache/issues/1315
           # Fix in https://github.com/actions/cache/pull/1325 not merged yet
-          cache-save-always: true
+          # cache-save-always: true
 
       - name: Install genisoimage # required for Mac build
         run: sudo apt-get install -y genisoimage
