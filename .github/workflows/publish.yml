@@ -74,14 +74,14 @@ jobs:
       - name: Upload hale studio build (Windows)
         uses: actions/upload-artifact@v4
         with:
-          name: hale studio (Linux)
+          name: hale studio (Windows)
           path: build/target/hale-studio-*win32*.zip
           retention-days: 10
 
       - name: Upload hale studio build (macos)
         uses: actions/upload-artifact@v4
         with:
-          name: hale studio (Linux)
+          name: hale studio (macos)
           path: build/target/hale-studio-*macosx*.dmg
           retention-days: 10
 
