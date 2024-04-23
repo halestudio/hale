@@ -38,9 +38,7 @@ class GitHelper {
 		try {
 			println 'Trying to determine current commit from Git repository: ' + repository.getDirectory()
 
-			Iterable<RevCommit> logs = new Git(repository).log().all().call();
-			
-			return logs.iterator().next().id.name
+			return repository.resolve('HEAD').name
 		}
 		catch (e) {
 			println "Could not determine current commit (${e.message})"
