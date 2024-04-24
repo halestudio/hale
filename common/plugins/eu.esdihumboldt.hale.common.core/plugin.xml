@@ -225,4 +225,11 @@
             implementation="eu.esdihumboldt.hale.common.core.io.internal.AsValueMetaClass">
       </metaClass>
    </extension>
+   <extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.core.service.DelegateServiceProvider">
+      </allow>
+   </extension>
 </plugin>
