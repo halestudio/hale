@@ -70,6 +70,11 @@ public interface GroovyConstants {
 	public static final String BINDING_INSTANCE_INDEX = "_instanceIndex";
 
 	/**
+	 * Name of the service provider in the binding.
+	 */
+	public static final String BINDING_SERVICE_PROVIDER = "_serviceProvider";
+
+	/**
 	 * Name of the helper functions accessor.
 	 */
 	public static final String BINDING_HELPER_FUNCTIONS = "_";

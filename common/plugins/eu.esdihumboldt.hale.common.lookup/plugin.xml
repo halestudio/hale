@@ -36,5 +36,11 @@
             id="eu.esdihumboldt.hale.lookup.import.service">
       </advisor>
    </extension>
-
+	<extension
+         point="eu.esdihumboldt.util.groovy.sandbox">
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.lookup.internal.LookupServiceImpl">
+      </allow>
+   </extension>
 </plugin>

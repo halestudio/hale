@@ -43,6 +43,7 @@ import eu.esdihumboldt.hale.common.align.transformation.report.TransformationLog
 import eu.esdihumboldt.hale.common.core.io.Text;
 import eu.esdihumboldt.hale.common.core.io.project.ProjectInfoService;
 import eu.esdihumboldt.hale.common.core.report.SimpleLog;
+import eu.esdihumboldt.hale.common.core.service.DelegateServiceProvider;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder;
 import eu.esdihumboldt.hale.common.instance.index.InstanceIndexService;
 import eu.esdihumboldt.hale.common.instance.index.spatial.SpatialIndexService;
@@ -304,6 +305,9 @@ public class GroovyUtil implements GroovyConstants {
 
 		binding.setVariable(BINDING_INSTANCE_INDEX,
 				executionContext.getService(InstanceIndexService.class));
+
+		binding.setVariable(BINDING_SERVICE_PROVIDER,
+				new DelegateServiceProvider(executionContext));
 
 		return binding;
 	}
