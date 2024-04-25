@@ -28,5 +28,13 @@
     p2OfflineResources: {
       "defaultRegistryUrlTemplate": "http://build-artifacts.wetransform.to/p2/offline-resources/site/to.wetransform.offlineresources.feature_versions.json",
     }
-  }
+  },
+  packageRules: [
+    // Using current maven-embedder or maven-compat versions results in build errors like this:
+    // java.lang.NoSuchMethodError: 'java.util.List org.eclipse.aether.spi.connector.layout.RepositoryLayout.getChecksums(org.eclipse.aether.artifact.Artifact, boolean, java.net.URI)'
+    {
+      matchPackagePrefixes: ["org.apache.maven:maven-"],
+      allowedVersions: "< 3.9",
+    },
+  ]
 }
