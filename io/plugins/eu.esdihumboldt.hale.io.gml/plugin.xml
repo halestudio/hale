@@ -1533,6 +1533,42 @@
       <converter
             class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlTimeToTimestamp">
       </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlIntegerToInteger">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.IntegerToXmlInteger">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.FloatToXmlFloat">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlFloatToFloat">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.LongToXmlLong">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlLongToLong">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.DoubleToXmlDouble">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDoubleToDouble">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.BigDecimalToXmlDecimal">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlDecimalToBigDecimal">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.BigIntegerToXmlInteger">
+      </converter>
+      <converter
+            class="eu.esdihumboldt.hale.io.gml.internal.simpletype.converters.XmlIntegerToBigInteger">
+      </converter>
    </extension>
    <extension
          point="eu.esdihumboldt.util.groovy.sandbox">

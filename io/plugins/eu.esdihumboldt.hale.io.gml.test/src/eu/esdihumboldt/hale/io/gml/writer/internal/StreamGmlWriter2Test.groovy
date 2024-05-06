@@ -381,4 +381,151 @@ class StreamGmlWriter2Test {
 
 		result
 	}
+
+	@Test
+	void testNumbers() throws Exception {
+		/**test DOUBLE numbers*/
+		testNumber("doubleNumber", 12345.123456789, null)
+		testNumber("doubleNumber", 12345.123456789, "12345.123456789")
+		double doubleNumber = 123456789.123456789
+		double expected = java.lang.Double.parseDouble(doubleNumber.toString())
+		testNumber("doubleSimpleNumber", doubleNumber, expected)
+		testNumber("doubleSimpleNumber", doubleNumber, expected.toString())
+		testFloatingPointNumber(doubleNumber, "doubleNumber")
+
+		/**test INT, SHORT numbers*/
+		testNumber("integerNumber", 12345, null)
+		testNumber("integerNumber", 12345, "12345")
+		testNumber("shortNumber", 12345 as short, null)
+		testNumber("shortNumber", 12345 as short, "12345")
+
+		float smallDecimal = 0.12345F
+		float largeDecimal = 12345.6789F
+		float verySmall = 0.0000001F
+		float veryLarge = 12345678.9F
+		float negative = -98765.4321F
+		float scientific = 1.23E4F
+		float maxFloat = Float.MAX_VALUE
+		float minFloat = Float.MIN_VALUE
+
+		// for Float and Double we are expecting to use using scientific notation
+		testFloatingPointNumber(smallDecimal, "floatNumber")
+		testNumber("floatNumber", smallDecimal, "0.12345")
+		testFloatingPointNumber(largeDecimal, "floatNumber")
+		testNumber("floatNumber", largeDecimal, "12345.679")
+		testFloatingPointNumber(verySmall, "floatNumber")
+		testNumber("floatNumber", verySmall, "1.0E-7")
+		testFloatingPointNumber(veryLarge, "floatNumber")
+		testNumber("floatNumber", veryLarge, "1.2345679E7")
+		testFloatingPointNumber(negative, "floatNumber")
+		testFloatingPointNumber(scientific, "floatNumber")
+		testFloatingPointNumber(maxFloat, "floatNumber")
+		testFloatingPointNumber(minFloat, "floatNumber")
+
+		/**test LONG numbers*/
+		long smallPositive = 12345L
+		long largePositive = 1234567890123456789L
+		long smallNegative = -12345L
+		long largeNegative = -1234567890123456789L
+		long maxLong = Long.MAX_VALUE
+		long minLong = Long.MIN_VALUE
+		long zero = 0L
+		long powerOfTwo = 1024L
+		long negativePowerOfTwo = -1024L
+		long nearMaxLong = 9223372036854775806L
+		long nearMinLong = -9223372036854775807L
+
+		testNumber("longNumber", smallPositive, "12345")
+		testNumber("longNumber", largePositive, "1234567890123456789")
+		testNumber("longNumber", smallNegative, null)
+		testNumber("longNumber", largeNegative, null)
+		testNumber("longNumber", maxLong, null)
+		testNumber("longNumber", minLong, null)
+		testNumber("longNumber", zero, null)
+		testNumber("longNumber", powerOfTwo, null)
+		testNumber("longNumber", negativePowerOfTwo, null)
+		testNumber("longNumber", nearMaxLong, null)
+		testNumber("longNumber", nearMinLong, null)
+
+		/**test DECIMAL numbers*/
+		testNumber("decimalNumber", new BigDecimal("1234567890.123456789"), null)
+		testNumber("decimalNumber", new BigDecimal(doubleNumber), null)
+
+		doubleNumber = 1.23456789123456789E8
+		testNumber("decimalNumber", new BigDecimal(doubleNumber), null)
+
+		String numberAsString = "1.23456789123456789E8"
+		testNumber("decimalNumber", new BigDecimal(numberAsString), null)
+		testNumber("decimalNumber", new BigDecimal(numberAsString), "123456789.123456789")
+	}
+
+	void testNumber(String elementName, number, expected) throws Exception {
+		def schema = loadSchema(getClass().getResource("/data/numbers/numbers.xsd").toURI())
+
+		def instance = new InstanceBuilder(types: schema).PrimitiveTestType {
+			"$elementName"(number)
+		}
+
+		def writer = new GmlInstanceWriter()
+		File outFile = writeFile(instance, schema, writer)
+		def xmlFile = outFile.getAbsolutePath()
+		def xml = new XmlSlurper().parse(xmlFile)
+
+		String actualText = xml.featureMember.PrimitiveTest."$elementName".text()
+		if (expected != null) {
+			if (expected instanceof String) {
+				assertEquals(expected.toString(), xml.featureMember.PrimitiveTest."$elementName".text())
+			} else {
+				compareValues(expected, actualText)
+			}
+		} else {
+			compareValues(number, actualText)
+		}
+
+
+		if (DEL_TEMP_FILES) {
+			outFile.delete()
+		}
+	}
+
+	@CompileStatic
+	private File writeFile(Instance instance, Schema schema, InstanceWriter writer) {
+		writer.setParameter(GmlInstanceWriter.PARAM_PRETTY_PRINT, Value.of((Boolean)true))
+		writer.setParameter(GeoInstanceWriter.PARAM_UNIFY_WINDING_ORDER, Value.simple('noChanges'))
+		writer.setInstances(new DefaultInstanceCollection([instance]))
+		DefaultSchemaSpace schemaSpace = new DefaultSchemaSpace()
+		schemaSpace.addSchema(schema)
+		writer.setTargetSchema(schemaSpace)
+		File outFile = File.createTempFile('gml-writer', '.gml')
+		writer.setTarget(new FileIOSupplier(outFile))
+
+		IOReport report = writer.execute(null);
+		List<? extends Locatable> validationSchemas = writer.getValidationSchemas()
+
+		return outFile;
+	}
+
+	void testFloatingPointNumber(floatNumber, type) {
+		def expected = java.lang.Double.parseDouble(floatNumber.toString())
+		println expected
+		testNumber(type, floatNumber, expected)
+	}
+
+	void compareValues(expected, actualText) {
+		if (expected instanceof BigDecimal) {
+			assertEquals(((BigDecimal) expected), new BigDecimal(actualText))
+		} else if (expected instanceof Double || expected instanceof Float) {
+			assertEquals(expected.doubleValue(), new Double(actualText).doubleValue(), 0.0000001)
+		} else if (expected instanceof Long) {
+			assertEquals(expected.longValue(), new Long(actualText).longValue())
+		} else if (expected instanceof Integer) {
+			assertEquals(expected.intValue(), (new Integer(actualText)).intValue())
+		} else if (expected instanceof BigInteger) {
+			assertEquals(expected, new BigInteger(actualText))
+		} else if (expected instanceof Short) {
+			assertEquals(expected.shortValue(), (new Short(actualText)).shortValue())
+		} else {
+			assertEquals(expected, actual)
+		}
+	}
 }

@@ -22,6 +22,11 @@
             <xs:element name="note" type="xs:string" minOccurs="0"/>
             <xs:element name="quantity" type="xs:positiveInteger"/>
             <xs:element name="price" type="xs:decimal"/>
+            <xs:element name="priceInteger" type="xs:int"/>
+            <xs:element name="priceDouble" type="xs:double"/>
+            <xs:element name="priceFloat" type="xs:float"/>
+            <xs:element name="priceLong" type="xs:long"/>
+            <xs:element name="priceShort" type="xs:short"/>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
