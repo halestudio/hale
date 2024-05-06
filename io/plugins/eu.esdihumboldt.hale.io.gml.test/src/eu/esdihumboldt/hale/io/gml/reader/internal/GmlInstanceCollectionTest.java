@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Collection;
 
@@ -160,10 +161,12 @@ public class GmlInstanceCollectionTest {
 			Instance instance = it.next();
 			assertNotNull(instance);
 
-			Object[] orderid = instance.getProperty(new QName("orderid")); // attribute
-																			// form
-																			// not
-																			// qualified
+			Object[] orderid = instance.getProperty(new QName("orderid"));
+			// attribute
+			// form
+			// not
+			// qualified
+
 			assertNotNull(orderid);
 			assertEquals(1, orderid.length);
 			assertEquals("889923", orderid[0]);
@@ -213,6 +216,11 @@ public class GmlInstanceCollectionTest {
 			assertEquals(1, title1.length);
 			assertEquals("Empire Burlesque", title1[0]);
 
+			Object[] price1 = ((Instance) item1).getProperty(new QName(ns, "price"));
+			assertNotNull(price1);
+			BigDecimal bigDecimal = new BigDecimal("0.00000000000");
+			assertEquals(bigDecimal, price1[0]);
+
 			// item 2
 			Object item2 = items[1];
 			assertTrue(item2 instanceof Instance);
@@ -221,6 +229,35 @@ public class GmlInstanceCollectionTest {
 			assertNotNull(title2);
 			assertEquals(1, title2.length);
 			assertEquals("Hide your heart", title2[0]);
+
+			Object[] price2 = ((Instance) item2).getProperty(new QName(ns, "price"));
+			assertNotNull(price2);
+			bigDecimal = new BigDecimal("9.90");
+			assertEquals(bigDecimal, price2[0]);
+
+			Object[] priceInteger = ((Instance) item2).getProperty(new QName(ns, "priceInteger"));
+			int intNumber = 123;
+			assertEquals(intNumber, priceInteger[0]);
+
+			// Double
+			Object[] priceDouble = ((Instance) item2).getProperty(new QName(ns, "priceDouble"));
+			double doubleNumber = 12.3;
+			assertEquals(doubleNumber, priceDouble[0]);
+
+			// Float
+			Object[] priceFloat = ((Instance) item2).getProperty(new QName(ns, "priceFloat"));
+			float floatNumber = 123.456F;
+			assertEquals(floatNumber, priceFloat[0]);
+
+			// Long
+			Object[] priceLong = ((Instance) item2).getProperty(new QName(ns, "priceLong"));
+			long longNumber = 1234567890123456789L;
+			assertEquals(longNumber, priceLong[0]);
+
+			// short
+			Object[] priceShort = ((Instance) item2).getProperty(new QName(ns, "priceShort"));
+			short shortNumber = 12345;
+			assertEquals(shortNumber, priceShort[0]);
 
 			// only one object
 			assertFalse(it.hasNext());

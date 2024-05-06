@@ -29,6 +29,13 @@ import org.apache.xmlbeans.GDateBuilder;
 import org.apache.xmlbeans.XmlAnySimpleType;
 import org.apache.xmlbeans.XmlDate;
 import org.apache.xmlbeans.XmlDateTime;
+import org.apache.xmlbeans.XmlDecimal;
+import org.apache.xmlbeans.XmlDouble;
+import org.apache.xmlbeans.XmlFloat;
+import org.apache.xmlbeans.XmlInt;
+import org.apache.xmlbeans.XmlInteger;
+import org.apache.xmlbeans.XmlLong;
+import org.apache.xmlbeans.XmlShort;
 import org.apache.xmlbeans.XmlTime;
 import org.springframework.core.convert.ConversionException;
 import org.springframework.core.convert.ConversionService;
@@ -62,6 +69,14 @@ public class SimpleTypeUtil {
 		TYPE_MAP.put("dateTime", XmlDateTime.class); //$NON-NLS-1$
 		TYPE_MAP.put("date", XmlDate.class); //$NON-NLS-1$
 		TYPE_MAP.put("time", XmlTime.class); //$NON-NLS-1$
+
+		TYPE_MAP.put("decimal", XmlDecimal.class); //$NON-NLS-1$
+		TYPE_MAP.put("double", XmlDouble.class); //$NON-NLS-1$
+		TYPE_MAP.put("float", XmlFloat.class); //$NON-NLS-1$
+		TYPE_MAP.put("int", XmlInt.class); //$NON-NLS-1$
+		TYPE_MAP.put("integer", XmlInteger.class); //$NON-NLS-1$
+		TYPE_MAP.put("long", XmlLong.class); //$NON-NLS-1$
+		TYPE_MAP.put("short", XmlShort.class); //$NON-NLS-1$
 	}
 
 	/**
@@ -110,8 +125,8 @@ public class SimpleTypeUtil {
 
 					xmlDateTime.setGDateValue(gdate);
 				}
-
-				if (simpleTypeValue != null) {
+				else if (simpleTypeValue != null && simpleTypeValue instanceof XmlAnySimpleType) {
+					// Numbers should be handled here
 					return simpleTypeValue.getStringValue();
 				}
 			} catch (ConversionException e) {

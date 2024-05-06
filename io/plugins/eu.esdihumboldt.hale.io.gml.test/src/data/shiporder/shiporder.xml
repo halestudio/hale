@@ -14,11 +14,16 @@ xsi:schemaLocation="http://www.example.com shiporder.xsd">
     <title>Empire Burlesque</title>
     <note>Special Edition</note>
     <quantity>1</quantity>
-    <price>10.90</price>
+    <price>0E-11</price>
   </item>
   <item>
     <title>Hide your heart</title>
     <quantity>1</quantity>
     <price>9.90</price>
+    <priceInteger>123</priceInteger>
+    <priceDouble>12.3</priceDouble>
+    <priceFloat>123.456</priceFloat>
+    <priceLong>1234567890123456789</priceLong>
+    <priceShort>12345</priceShort>
   </item>
 </shiporder>
