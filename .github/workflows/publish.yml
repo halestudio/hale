@@ -98,6 +98,9 @@ jobs:
         working-directory: ./build    
 
       - name: Deploy Artifacts
+        env:
+          WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+          WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
         run: ./build.sh deployArtifacts
         working-directory: ./build   
 
