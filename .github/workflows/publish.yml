@@ -69,21 +69,21 @@ jobs:
         with:
           name: hale studio (Linux)
           path: build/target/hale-studio-*linux*.tar.gz
-          retention-days: 10
+          retention-days: 90
 
       - name: Upload hale studio build (Windows)
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: hale studio (Windows)
           path: build/target/hale-studio-*win32*.zip
-          retention-days: 10
+          retention-days: 90
 
       - name: Upload hale studio build (macos)
         uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
         with:
           name: hale studio (macos)
           path: build/target/hale-studio-*macosx*.dmg
-          retention-days: 10
+          retention-days: 90
 
       - name: Install AWS CLI
         uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1.0.7
