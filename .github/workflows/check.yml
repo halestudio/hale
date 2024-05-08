@@ -52,3 +52,83 @@ jobs:
 
       # TODO archive logs?
       # build/target/testReports/*.out,build/target/testReports/*.err
+  
+  build:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: artifacts-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+
+      - name: Install genisoimage # required for Mac build
+        run: sudo apt-get install -y genisoimage
+
+      - name: Clean
+        run: ./build.sh clean
+        working-directory: ./build
+
+      - name: Product
+        run: |
+          ./build.sh product --arch x86_64 --os linux HALE
+          ./build.sh product --arch x86_64 --os windows HALE
+          ./build.sh product --arch x86_64 --os macosx HALE
+        working-directory: ./build
+
+      - name: Upload hale studio build (Linux)
+        id: upload-linux
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: hale studio (Linux)
+          path: build/target/hale-studio-*linux*.tar.gz
+          retention-days: 14
+
+      - name: Upload hale studio build (Windows)
+        id: upload-windows
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: hale studio (Windows)
+          path: build/target/hale-studio-*win32*.zip
+          retention-days: 14
+
+      - name: Upload hale studio build (macos)
+        id: upload-macos
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: hale studio (macos)
+          path: build/target/hale-studio-*macosx*.dmg
+          retention-days: 14
+
+      - name: Find artifact comment if it exists
+        uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
+        id: find-comment
+        with:
+          token: ${{ github.token }}
+          issue-number: ${{github.event.pull_request.number}}
+          comment-author: github-actions[bot]
+          body-includes: "hale studio builds for this pull request:"
+
+      - name: Comment with links to artifacts
+        id: comment-plan
+        uses: peter-evans/create-or-update-comment@71345be0265236311c031f5c7866368bd1eff043 # v4.0.0
+        with:
+          token: ${{ github.token }}
+          edit-mode: replace
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{github.event.pull_request.number}}
+          body: |
+            hale studio builds for this pull request:
+
+            - [Linux x64](${{ steps.upload-linux.outputs.artifact-url }})
+            - [Windows x64](${{ steps.upload-windows.outputs.artifact-url }})
+            - [macos x64](${{ steps.upload-macos.outputs.artifact-url }})
+
+            Build triggered for commit *${{ github.sha }}*.
+            Artifacts are retained for 14 days.
