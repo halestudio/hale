@@ -1,0 +1,34 @@
+---
+branches: master
+
+plugins:
+  - - "@semantic-release/commit-analyzer"
+    - preset: conventionalcommits
+  - - "@semantic-release/release-notes-generator"
+    - preset: conventionalcommits
+  - "@semantic-release/changelog"
+  - - "@semantic-release/exec"
+    - # verify if a release can be created before taking any action
+      verifyReleaseCmd: ./build/verify-release.sh
+
+      # prepare - set release version, test and build if applicable
+      prepareCmd: ./build/prepare-release.sh "${nextRelease.version}"
+
+      # publish - perform publishing tasks
+      publishCmd: ./build/publish-release.sh
+
+      # success - update to use snapshot version, commit and push
+      successCmd: ./build/post-release.sh
+  - - "@semantic-release/git"
+    - assets:
+        # Changelog
+        - CHANGELOG.md
+        # Version changes
+        - ['**/MANIFEST.MF', '!build/**']
+        - '**/plugin.xml'
+        - '**/feature.xml'
+        - '**/*.product'
+        - build/config.groovy
+  - - "@semantic-release/github"
+    - assets:
+      - build/target/*

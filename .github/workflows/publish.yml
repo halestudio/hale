@@ -16,6 +16,9 @@ concurrency:
 
 jobs:
   build:
+    # Only on main repository (don't publish on forks)
+    if: github.repository_owner == 'halestudio'
+
     runs-on: ubuntu-latest
     
     steps:
@@ -117,7 +120,7 @@ jobs:
           # See https://github.com/mikepenz/action-junit-report/issues/40
           annotate_only: true
           detailed_summary: true  
-          report_paths: 'build/target/testReports/*.xml' 
+          report_paths: 'build/target/testReports/*.xml'
 
         # https://github.com/marketplace/actions/slack-notify-build
       - name: Notify failure to Slack

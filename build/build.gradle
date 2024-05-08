@@ -25,6 +25,8 @@ apply from: 'gradle/updateSite.gradle'
 apply from: 'gradle/commitAndProductionStage.gradle'
 apply from: 'gradle/deployArtifacts.gradle'
 // apply from: 'gradle/checkDependencies.gradle'
+ 
+apply from: 'gradle/releaseTasks.gradle'
 
 
 import java.text.DateFormat
