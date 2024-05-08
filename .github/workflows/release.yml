@@ -1,105 +1,139 @@
-name: Publish release
+name: Release
 
 #
 # Release workflow
 #
 # Open tasks:
-# - [ ] can we build the Windows installer?
-# - [ ] can we integrate semantic-release? (e.g. update versions, create tag, changelog, create GitHub release + upload artifacts)
+# - [ ] can we build the Windows installer? -> build in a dependent job if a release was created and add it to the release in hindsight? (would require windows runner)
 #
 
 on:
-  # push:
-  #   branches:
-  #     - release
-  workflow_dispatch: {}
+  # run manually on default branch
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        type: boolean
+        description: "Dry-Run"
+        default: false
 
 concurrency:
   # only run one publishing at a time to avoid conflicts
   group: publish-${{ github.ref }}
 
-# env:
+env:
   # instead of embedded Maven use local Maven CLI
   # HALE_BUILD_MAVEN_EMBEDDED: 'false'
 
+  # renovate: datasource=npm depName=@semantic-release/changelog
+  SEMANTIC_RELEASE_CHANGELOG_VERSION: 6.0.3
+
+  # renovate: datasource=npm depName=@semantic-release/exec
+  SEMANTIC_RELEASE_EXEC_VERSION: 6.0.3
+
+  # renovate: datasource=npm depName=@semantic-release/git
+  SEMANTIC_RELEASE_GIT_VERSION: 10.0.1
+
+  # renovate: datasource=npm depName=conventional-changelog-conventionalcommits
+  CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION: 7.0.2
+
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
     
+    outputs:
+      release-published: ${{ steps.release.outputs.new_release_published }}
+      release-version: ${{ steps.release.outputs.new_release_version }}
+
     steps:
+      - name: Determine app token for release
+        uses: actions/create-github-app-token@a0de6af83968303c8c955486bf9739a57d23c7f1 # v1.10.0
+        id: app-token
+        with:
+          app-id: ${{ secrets.WE_RELEASE_GITHUB_APP_ID }}
+          private-key: "${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}"
+
       - name: Setup Maven
         uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        # uses: stempler/setup-maven-action@feat/cache-save-always
         with:
           java-version: 17
           java-distribution: temurin
           maven-version: 3.9.6
+          checkout-fetch-depth: 0 # make sure to check out all tags
+          checkout-token: ${{ steps.app-token.outputs.token }}
+          checkout-persist-credentials: true # token and persisted credentials required for push (to protected branch)
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+          # Note: currently not working because of https://github.com/actions/cache/issues/1315
+          # Fix in https://github.com/actions/cache/pull/1325 not merged yet
+          # cache-save-always: true
+
+      - name: Install genisoimage # required for Mac build
+        run: sudo apt-get install -y genisoimage
+
+      - name: Install NodeJs
+        uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          node-version: 20
 
-      - name: Clean
-        run: ./build.sh clean
-        working-directory: ./build
+      # FIXME
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+      #   with:
+      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      #     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
-        
-      - name: Create hale-docker.conf file
-        run: |
-          mkdir -p ~/.hale
-          cat <<EOF > ~/.hale/hale-docker.conf
-          global {
-            dockerHost="unix:///var/run/docker.sock"
-          }
-          EOF
-
-      - name: Test
-        run: ./build.sh integrationStage
-        working-directory: ./build
-
-      - name: Product
-        run: | # TODO should --latest parameter be added for building Infocenter?
-          ./build.sh product --arch x86_64 --os linux HALE
-          ./build.sh product --arch x86_64 --os windows HALE
-          ./build.sh product --arch x86_64 --os macosx HALE
-          ./build.sh product --arch x86_64 --os linux --publish Infocenter
-        working-directory: ./build    
-
-      - name: Install AWS CLI
-        uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1.0.7
-        with:
-          version: 1
-
-      - name: Update site
-        run: ./upload-site.sh
-        working-directory: ./build    
-
-      - name: Deploy Artifacts
-        run: ./build.sh deployArtifacts
-        working-directory: ./build   
-
-      - name: Publish Test Report
-        uses: mikepenz/action-junit-report@9379f0ccddcab154835d4e2487555ee79614fe95 # v4.2.1
-        if: always() # always run even if the previous step fails
-        with:
-          # fail if there are no test results
-          require_tests: true
-
-          # Workaround for check that is additionally created being associated
-          # to the wrong workflow/run. Instead no additional check is created.
-          # See https://github.com/mikepenz/action-junit-report/issues/40
-          annotate_only: true
-          detailed_summary: true  
-          report_paths: 'build/target/testReports/*.xml'
-
-        # https://github.com/marketplace/actions/slack-notify-build
-      - name: Notify failure to Slack
-        if: failure()
+      - name: Release
+        id: release
+        uses: cycjimmy/semantic-release-action@cb425203a562475bca039ba4dbf90c7f9ac790f4 # v4.1.0
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+          # Permissions needed
+          #   contents: write
+          #   issues: write
+          #   pull-requests: write
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GIT_AUTHOR_NAME: wetransform Bot
+          GIT_AUTHOR_EMAIL: 113353961+wetransformer@users.noreply.github.com
+          GIT_COMMITTER_NAME: wetransform Bot
+          GIT_COMMITTER_EMAIL: 113353961+wetransformer@users.noreply.github.com
+          RUNNER_DEBUG: 1
+
+          # For release commands execution
+          
+          # Upload update site FIXME
+          # AWS_ACCESS_KEY_ID: ${{ secrets.BUILD_ARCHIVE_ACCESS_KEY }}
+          # AWS_SECRET_ACCESS_KEY: ${{ secrets.BUILD_ARCHIVE_SECRET_KEY }}
+
+          # Deploy artifacts FIXME
+          # WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+          # WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
+          # JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
         with:
-          channel: build-failures
-          status: FAILED
-          color: danger
+          dry_run: ${{ inputs.dryRun }}
+          semantic_version: 23.0.8
+
+          extra_plugins:
+            "@semantic-release/changelog@\
+            ${{ env.SEMANTIC_RELEASE_CHANGELOG_VERSION }} \
+            @semantic-release/exec@\
+            ${{ env.SEMANTIC_RELEASE_EXEC_VERSION }} \
+            @semantic-release/git@\
+            ${{ env.SEMANTIC_RELEASE_GIT_VERSION }} \
+            conventional-changelog-conventionalcommits@\
+            ${{ env.CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION }} \
+            "
+        # https://github.com/marketplace/actions/slack-notify-build
+        # FIXME
+      # - name: Notify failure to Slack
+      #   if: failure()
+      #   env:
+      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+      #   uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+      #   with:
+      #     channel: build-failures
+      #     status: FAILED
+      #     color: danger
+  
+  # Idea:
+  # Separate job could use output of release version to check out the release tag
+  # This would for instance also allow the job to be retriggered on failure independent of the release

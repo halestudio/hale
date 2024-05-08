@@ -1,0 +1,383 @@
+import java.util.jar.Manifest
+import groovy.ant.AntBuilder
+
+class VersionHelper {
+
+	AntBuilder ant
+
+	def buildDir
+	def rootDir
+
+	VersionHelper(Project project) {
+		buildDir = project.rootDir
+		rootDir = buildDir.parentFile
+
+		ant = new AntBuilder()
+
+		ant.patternset(id: 'manifests') {
+			include(name: '**/MANIFEST.MF')
+			exclude(name: '**/build/')
+			exclude(name: '**/.git/')
+			exclude(name: '**/bin/')
+			exclude(name: '**/classes/')
+			exclude(name: '**/platform/')
+			exclude(name: '**/target/')
+		}
+
+		ant.patternset(id: 'plugins') {
+			include(name: '**/plugin.xml')
+			exclude(name: '**/build/')
+			exclude(name: '**/.svn/')
+			exclude(name: '**/bin/')
+			exclude(name: '**/classes/')
+			exclude(name: '**/platform/')
+			exclude(name: '**/target/')
+		}
+
+		ant.patternset(id: 'features') {
+			include(name: '**/feature.xml')
+			exclude(name: '**/build/')
+			exclude(name: '**/.svn/')
+			exclude(name: '**/bin/')
+			exclude(name: '**/classes/')
+			exclude(name: '**/platform/')
+			exclude(name: '**/target/')
+		}
+
+		ant.patternset(id: 'products') {
+			include(name: '**/*.product')
+			exclude(name: '**/build/')
+			exclude(name: '**/.git/')
+			exclude(name: '**/bin/')
+			exclude(name: '**/classes/')
+			exclude(name: '**/platform/eclipse')
+			exclude(name: '**/platform/igd')
+			exclude(name: '**/platform/target')
+			exclude(name: '**/target/')
+		}
+	}
+
+	private def manifests(folders) {
+		ant.fileScanner {
+			folders.each {
+				fileset(dir: it) {
+					patternset(refid: 'manifests')
+				}
+			}
+		}
+	}
+
+	private def plugins(folders) {
+		ant.fileScanner {
+			folders.each {
+				fileset(dir: it) {
+					patternset(refid: 'plugins')
+				}
+			}
+		}
+	}
+
+	private def features(folders) {
+		ant.fileScanner {
+			folders.each {
+				fileset(dir: it) {
+					patternset(refid: 'features')
+				}
+			}
+		}
+	}
+
+	private def products(folders) {
+		ant.fileScanner {
+			folders.each {
+				fileset(dir: it) {
+					patternset(refid: 'products')
+				}
+			}
+		}
+	}
+
+	def listVersions(folders = [rootDir.absolutePath], doPrint = true) {
+		def vers = [:]
+		for (f in manifests(folders)) {
+			def fis = new FileInputStream(f)
+			def manifest = new Manifest(fis)
+			def attributes = manifest.getMainAttributes()
+			def name = attributes.getValue('Bundle-SymbolicName')
+			def ver = attributes.getValue('Bundle-Version')
+			if (vers[ver] == null)
+				vers[ver] = []
+			vers[ver] += name
+		}
+
+		for (f in features(folders)) {
+			def feature = new groovy.util.XmlSlurper().parse(f)
+			def name = feature.@id as String
+			def ver = feature.@version as String
+			if (vers[ver] == null)
+				vers[ver] = []
+			vers[ver] += "(feature) $name"
+		}
+
+		for (p in products(folders)) {
+			def product = new groovy.util.XmlSlurper().parse(p)
+			def name = product.@uid as String
+			def ver = product.@version as String
+			if (vers[ver] == null)
+				vers[ver] = []
+			vers[ver] += '(product) ' + name
+		}
+
+		if (doPrint) {
+			for (k in vers.sort()) {
+				println k.key + ':'
+				for (v in k.value) {
+					println '    ' + v
+				}
+			}
+		}
+
+		vers
+	}
+
+	private def updateBundles(o, n, folders) {
+		println 'Replacing bundle versions ...'
+		println manifests(folders).iterator().toList().size() + ' MANIFEST.MF files found.'
+		folders.each {
+			ant.replace(dir: it, summary: true, token: "Bundle-Version: ${o}", value: "Bundle-Version: ${n}") {
+				patternset(refid: 'manifests')
+			}
+		}
+	}
+
+	private def updatePlugins(o, n, folders) {
+		println 'Replacing plugin versions ...'
+		println plugins(folders).iterator().toList().size() + ' plugin.xml files found.'
+		folders.each {
+			ant.replace(dir: it, summary: true, token: "Version ${o}", value: "Version ${n}") {
+				patternset(refid: 'plugins')
+			}
+		}
+	}
+
+	private def updateFeatures(o, n, folders) {
+		println 'Replacing feature versions ...'
+		println features(folders).iterator().toList().size() + ' feature.xml files found.'
+		for (f in features(folders)) {
+			// check if a replacement should be done for the feature
+			def feature = new XmlSlurper().parse(f)
+			def version = feature.@version as String
+			if (version.startsWith(o)) {
+				def newVersion
+				if (version == o) {
+					newVersion = n
+				}
+				else {
+					newVersion = n + version[o.length()..-1]
+				}
+
+				// make sure to only replace the first occurrence
+				def fileText = f.text
+				f.text = fileText.replaceFirst(java.util.regex.Pattern.quote("version=\"$version\""), "version=\"$newVersion\"")
+
+				println "Updated feature ${feature.@id}"
+			}
+		}
+	}
+
+	private def updateProducts(o, n, folders) {
+		println 'Replacing product versions ...'
+		println products(folders).iterator().toList().size() + ' product files found.'
+		folders.each {
+			ant.replace(dir: it, summary: true, token: "version=\"${o}", value: "version=\"${n}") {
+				patternset(refid: 'products')
+			}
+		}
+		folders.each {
+			ant.replace(dir: it, summary: true, token: "Version ${o}", value: "Version ${n}") {
+				patternset(refid: 'products')
+			}
+		}
+	}
+
+	private def update(o, n) {
+		println "Old version: ${o}"
+		println "New version: ${n}"
+
+		def folders = [];
+		def oldVersions = [];
+		
+		// search in current folder
+		folders << rootDir.absolutePath
+		// and only with the specified version
+		oldVersions << o
+
+		oldVersions.each {
+			updateBundles(it, n, folders)
+		}
+		oldVersions.each {
+			updatePlugins(it, n, folders)
+		}
+		oldVersions.each {
+			updateFeatures(it, n, folders)
+		}
+		oldVersions.each {
+			updateProducts(it, n, folders)
+		}
+	}
+
+	private def updateApp(newVersion, release) {
+		// find application bundles
+		def dirs = (ant.fileScanner {
+			fileset(dir: '.') {
+				include name: '**/plugins/*.application'
+			}
+		}).directories().toList()
+
+		if (dirs) {
+			println 'Identified application bundles:'
+			dirs.each {
+				println it
+			}
+		}
+		else {
+			println 'No application bundles found'
+		}
+
+		// look for current versions in bundles
+		def versions = listVersions(dirs, false).keySet()
+		def oldVersions = []
+		println 'with versions:'
+		versions.each { version ->
+			if (version.endsWith('.qualifier')) {
+				version = version[0..-('.qualifier'.length() + 1)]
+			}
+			println version
+			oldVersions << version
+		}
+
+		// replace bundle versions
+		oldVersions.each {
+			updateBundles(it, newVersion, dirs)
+			updatePlugins(it, newVersion, dirs)
+			updateProducts(it, newVersion, dirs)
+		}
+
+		// update build configuration
+		def buildConfig = new File(buildDir, 'config.groovy')
+
+		// find current version
+		def pattern = /version\s+=\s+'([^']+)'/
+		def matcher = (buildConfig.text =~ pattern)
+		if (matcher) {
+			def oldVersion = matcher[0][1]
+			println "Old version in build config: $oldVersion"
+			def buildVersion = (release) ? (newVersion) : (newVersion + '-SNAPSHOT')
+
+			// replace version
+			ant.replace(file: buildConfig, summary: true, token: "'${oldVersion}'", value: "'${buildVersion}'")
+		}
+		else {
+			println 'Could not detect version in build config'
+		}
+	}
+
+	def getAppVersion() {
+		// update build configuration
+		def buildConfig = new File('config.groovy')
+
+		// find current version
+		def pattern = /version\s+=\s+'([^']+)'/
+		def matcher = (buildConfig.text =~ pattern)
+		if (matcher) {
+			return matcher[0][1]
+		}
+		else {
+			throw new IllegalStateException('Failed to extract current application version')
+		}
+	}
+
+	def getAppSemVer() {
+		def version = getAppVersion()
+		def suffix = '-SNAPSHOT'
+		if (version.endsWith(suffix)) {
+			version = version[0..-suffix.length() - 1]
+		}
+
+		return version
+	}
+
+	// original methods from CLI
+
+	def setAppVersionSnapshot(semVer) {
+		updateApp(semVer, false)
+	}
+
+	def setAppVersionRelease(semVer) {
+		updateApp(semVer, true)
+	}
+
+	def replaceVersions(oldSemVer, newSemVer) {
+		update(oldSemVer, newSemVer)
+	}
+
+	// release helpers
+	
+	def setNewReleaseVersion(semVer) {
+		def current = getAppSemVer()
+
+		if (current != semVer) {
+			replaceVersions(current, semVer)
+		}
+		setAppVersionRelease(semVer)
+	}
+
+	def setNewSnapshotVersion() {
+		def current = getAppSemVer()
+
+		def parts = current.split("\\.")
+
+		def major = parts[0] as int
+		def minor = parts[1] as int
+		def patch = parts[2] as int
+
+		// by default increase minor version for SNAPSHOT
+		minor++
+
+		def newVersion = "${major}.${minor}.${patch}"
+
+		replaceVersions(current, newVersion)
+		setAppVersionSnapshot(newVersion)
+	}
+	
+}
+
+
+/*
+ * Tasks
+ */
+
+task printVersion {
+	doLast {
+		def helper = new VersionHelper(project)
+		def version = helper.getAppVersion()
+		println "Current version: $version"
+	}
+}
+
+task setRelease {
+	doLast {
+		def newVersion = project.getProperty('newVersion')
+		assert newVersion
+
+		def helper = new VersionHelper(project)
+		helper.setNewReleaseVersion(newVersion)
+	}
+}
+
+task setSnapshot {
+	doLast {
+		def helper = new VersionHelper(project)
+		helper.setNewSnapshotVersion()
+	}
+}
