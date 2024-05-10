@@ -137,6 +137,7 @@ jobs:
   # Note: one reason deploy artifacts is handled as separate job is that it currently usually fails (connection reset issue)
   # and should not impact the main release job
   deploy-artifacts:
+    name: Deploy Maven artifacts
     runs-on: ubuntu-latest
     needs: [release]
     if: ${{ needs.release.outputs.release-published != 'false' }}
@@ -161,6 +162,7 @@ jobs:
         working-directory: ./build
 
   windows-build:
+    name: Build Windows installer
     runs-on: windows-latest
     needs: [release]
     if: ${{ needs.release.outputs.release-published != 'false' }}
@@ -173,16 +175,25 @@ jobs:
           maven-version: 3.9.6
           checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
 
-      - name: Add WiX toolkit to PATH
-        shell: bash
-        run: echo "${WIX}bin" >> $GITHUB_PATH
+      # WiX is already installed on default Windows runner (currently WiX 3.x)
+
+      # Note: adding to path not required as our build looks for the installation folder
+      # 
+      # - name: Add WiX toolkit to PATH
+      #   shell: bash
+      #   run: echo "${WIX}bin" >> $GITHUB_PATH
 
       - name: Build installer
         run: |
           build.bat product -o windows -a x86_64 HALE
+        shell: cmd
 
-        # FIXME
-      - name: Show result
+        # use GitHub CLI to upload asset to release
+        # see https://cli.github.com/manual/gh_release_upload
+      - name: Add installer to release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          ls -l build/target/
+          echo "Adding to release assets..."
+          gh release upload v${{needs.release.outputs.release-version}} build/target/*.msi --repo ${{ github.repository }}
         shell: bash
