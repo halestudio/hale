@@ -1,0 +1,35 @@
+name: Windows installer
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch: {}
+
+jobs:
+  installer:
+    # Only on main repository (don't publish on forks)
+    if: github.repository_owner == 'halestudio'
+
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+
+      - name: Build installer
+        run: |
+          build.bat product -o windows -a x86_64 HALE
+        shell: cmd
+
+      - name: Upload hale studio build (Installer)
+        id: upload-msi
+        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        with:
+          name: hale studio (Installer)
+          path: build/target/*.msi
+          retention-days: 90
