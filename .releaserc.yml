@@ -24,7 +24,7 @@ plugins:
         # Changelog
         - CHANGELOG.md
         # Version changes
-        - '**/MANIFEST.MF'
+        - ['**/MANIFEST.MF', '!build/**']
         - '**/plugin.xml'
         - '**/feature.xml'
         - '**/*.product'
