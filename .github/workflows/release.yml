@@ -134,6 +134,55 @@ jobs:
       #     status: FAILED
       #     color: danger
   
-  # Idea:
-  # Separate job could use output of release version to check out the release tag
-  # This would for instance also allow the job to be retriggered on failure independent of the release
+  # Note: one reason deploy artifacts is handled as separate job is that it currently usually fails (connection reset issue)
+  # and should not impact the main release job
+  deploy-artifacts:
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: ${{ needs.release.outputs.release-published != 'false' }}
+    steps:
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+          checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
+
+      - name: Deploy Artifacts
+        # env:
+        #   WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+        #   WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
+        #   JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
+        # run: ./build.sh deployArtifacts
+        # FIXME
+        run: |
+          echo "Would deploy artifacts for version ${{needs.release.outputs.release-version}}"
+        working-directory: ./build
+
+  windows-build:
+    runs-on: windows-latest
+    needs: [release]
+    if: ${{ needs.release.outputs.release-published != 'false' }}
+    steps:
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+          checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
+
+      - name: Add WiX toolkit to PATH
+        shell: bash
+        run: echo "${WIX}bin" >> $GITHUB_PATH
+
+      - name: Build installer
+        run: |
+          build.bat product -o windows -a x86_64 HALE
+
+        # FIXME
+      - name: Show result
+        run: |
+          ls -l build/target/
+        shell: bash
