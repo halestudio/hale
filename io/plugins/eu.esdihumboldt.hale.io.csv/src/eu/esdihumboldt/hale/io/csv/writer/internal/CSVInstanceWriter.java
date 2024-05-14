@@ -111,7 +111,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 
 					File outputFile = new File(filenameWithType);
 					try (FileOutputStream fos = new FileOutputStream(filePath)) {
-						addCSVFileByQName(reporter, new FileOutputStream(outputFile), instances);
+						addCSVFileByQName(new FileOutputStream(outputFile), instances);
 						fos.close();
 					} catch (FileNotFoundException fnfe) {
 						reporter.error(new IOMessageImpl("Cannot create csv file", fnfe));
@@ -121,7 +121,7 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 				}
 				else {
 					try (OutputStream os = getTarget().getOutput()) {
-						addCSVFileByQName(reporter, os, instances);
+						addCSVFileByQName(os, instances);
 						os.close();
 					} catch (FileNotFoundException fnfe) {
 						reporter.error(new IOMessageImpl("Cannot create csv file", fnfe));
@@ -144,8 +144,8 @@ public class CSVInstanceWriter extends AbstractTableInstanceWriter {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	private void addCSVFileByQName(IOReporter reporter, OutputStream outputStream,
-			InstanceCollection instances) throws IOException, FileNotFoundException {
+	private void addCSVFileByQName(OutputStream outputStream, InstanceCollection instances)
+			throws IOException, FileNotFoundException {
 
 		boolean solveNestedProperties = getParameter(
 				InstanceTableIOConstants.SOLVE_NESTED_PROPERTIES).as(Boolean.class, false);

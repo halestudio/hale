@@ -176,12 +176,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								49.8728337,
-								8.651
-							]
+							49.8728337,
+							8.651
 						]
 					],
 					properties: [
@@ -200,12 +198,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								48.13722,
-								11.5755
-							]
+							48.13722,
+							11.5755
 						]
 					],
 					properties: [
@@ -272,12 +268,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								49.8728337891123,
-								8.65122278912346
-							]
+							49.8728337891123,
+							8.65122278912346
 						]
 					],
 					properties: [
@@ -296,12 +290,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								48.13722289876544,
-								11.57555687654323
-							]
+							48.13722289876544,
+							11.57555687654323
 						]
 					],
 					properties: [
@@ -368,12 +360,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								49.87283378911236,
-								8.65122278912346
-							]
+							49.87283378911236,
+							8.65122278912346
 						]
 					],
 					properties: [
@@ -392,12 +382,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								48.13722289876544,
-								11.57555687654323
-							]
+							48.13722289876544,
+							11.57555687654323
 						]
 					],
 					properties: [
@@ -464,12 +452,10 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
+						type: "Point",
 						coordinates: [
-							[
-								49.8728337891123,
-								8.651222789123
-							]
+							49.8728337891123,
+							8.651222789123
 						]
 					],
 					properties: [
@@ -488,8 +474,8 @@ class InstanceToJsonTest {
 					type: "Feature",
 					"@type": "city",
 					geometry: [
-						type: "MultiPoint",
-						coordinates: [[48.137222, 11.575556]]
+						type: "Point",
+						coordinates: [48.137222, 11.575556]
 					],
 					properties: [
 						population: 1471508,
