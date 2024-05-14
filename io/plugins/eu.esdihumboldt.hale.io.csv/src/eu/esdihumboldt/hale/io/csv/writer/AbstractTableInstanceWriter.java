@@ -22,11 +22,16 @@ import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+
+import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
 import eu.esdihumboldt.hale.common.instance.model.TypeFilter;
+import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
 import eu.esdihumboldt.hale.common.schema.model.GroupPropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
@@ -57,6 +62,7 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 	 * @param useSchema <code>true</code> if properties should be defined from
 	 *            the schema, otherwise <code>false</code> and properties are
 	 *            defined from the Instances
+	 * @param reporter IOReporter
 	 * @return a map of properties with string of localpart of the QName of the
 	 *         property as key
 	 */
@@ -229,6 +235,18 @@ public abstract class AbstractTableInstanceWriter extends AbstractInstanceWriter
 		if (!headerRow.contains(propertyTypeName)) {
 			headerRow.add(propertyTypeName);
 		}
+
+		if (property instanceof GeometryProperty<?>) {
+			GeometryProperty<?> geometryProperty = (GeometryProperty<?>) property;
+
+			Geometry geometry = geometryProperty.getGeometry();
+			if (geometry instanceof GeometryCollection
+					&& ((GeometryCollection) geometry).getNumGeometries() == 1) {
+				property = new DefaultGeometryProperty<Geometry>(
+						geometryProperty.getCRSDefinition(), geometry.getGeometryN(0));
+			}
+		}
+
 		row.put(propertyTypeName, property);
 	}
 

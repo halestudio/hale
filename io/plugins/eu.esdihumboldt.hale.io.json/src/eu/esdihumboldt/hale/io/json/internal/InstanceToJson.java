@@ -31,6 +31,7 @@ import javax.xml.namespace.QName;
 import org.geotools.geojson.geom.GeometryJSON;
 import org.geotools.geometry.jts.JTS;
 import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
 import org.opengis.referencing.operation.MathTransform;
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -646,10 +647,16 @@ public class InstanceToJson implements InstanceJsonConstants {
 			}
 		}
 
+		Geometry geometry = geomProp.getGeometry();
+		if (geometry instanceof GeometryCollection
+				&& ((GeometryCollection) geometry).getNumGeometries() == 1) {
+			geometry = geometry.getGeometryN(0);
+		}
+
 		// correct winding order as per right-hand rule, i.e.,
 		// exterior rings are counterclockwise, and holes are
 		// clockwise.
-		geom = WindingOrder.unifyWindingOrder(geomProp.getGeometry(), true,
+		geom = WindingOrder.unifyWindingOrder(geometry, true,
 				geomProp.getCRSDefinition().getCRS());
 
 		// FIXME what to do in case of an invalid geometry?
