@@ -105,6 +105,10 @@ public class WFSGetFeatureSource extends AbstractWFSSource<ImportProvider> {
 				}
 			}
 
+			if (result.getResolveDepth() != null && !result.getResolveDepth().isEmpty()) {
+				builder.addParameter("resolveDepth", result.getResolveDepth());
+			}
+
 			try {
 				sourceURL.setStringValue(builder.build().toString());
 				getPage().setErrorMessage(null);
