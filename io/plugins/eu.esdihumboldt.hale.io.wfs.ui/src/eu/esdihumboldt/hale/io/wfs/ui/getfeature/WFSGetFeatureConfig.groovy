@@ -34,4 +34,5 @@ class WFSGetFeatureConfig {
 	BBox bbox
 	String bboxCrsUri
 	Integer maxFeatures
+	String resolveDepth
 }
