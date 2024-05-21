@@ -54,7 +54,7 @@ jobs:
           private-key: "${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}"
 
       - name: Setup Maven
-        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
         # uses: stempler/setup-maven-action@feat/cache-save-always
         with:
           java-version: 17
@@ -178,7 +178,7 @@ jobs:
     if: ${{ needs.release.outputs.release-published != 'false' }}
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
         with:
           java-version: 17
           java-distribution: temurin
@@ -211,7 +211,7 @@ jobs:
     if: ${{ needs.release.outputs.release-published != 'false' }}
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@6d44c18d67d9e1549907b8815efa5e4dada1801b # v1.12.0
+        uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
         with:
           java-version: 17
           java-distribution: temurin
