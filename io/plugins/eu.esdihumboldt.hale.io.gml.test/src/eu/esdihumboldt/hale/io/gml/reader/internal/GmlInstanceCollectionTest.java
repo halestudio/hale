@@ -24,16 +24,19 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
 import javax.xml.namespace.QName;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.model.Group;
 import eu.esdihumboldt.hale.common.instance.model.Instance;
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection;
@@ -42,6 +45,7 @@ import eu.esdihumboldt.hale.common.schema.io.SchemaReader;
 import eu.esdihumboldt.hale.common.schema.model.Schema;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.test.TestUtil;
+import eu.esdihumboldt.hale.io.gml.reader.internal.wfs.DuplicateIDsFilterIterator;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlElements;
 import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
 import eu.esdihumboldt.hale.io.xsd.reader.XmlSchemaReader;
@@ -61,6 +65,11 @@ public class GmlInstanceCollectionTest {
 	@BeforeClass
 	public static void waitForServices() {
 		TestUtil.startConversionService();
+	}
+
+	@Before
+	public void clearResolverCache() {
+		PropertyResolver.clearCache();
 	}
 
 	/**
@@ -264,6 +273,56 @@ public class GmlInstanceCollectionTest {
 		} finally {
 			it.close();
 		}
+	}
+
+	/**
+	 * Test loading a simple XML file with one instance
+	 * 
+	 * @throws Exception if an error occurs
+	 */
+	@Test
+	public void testLoadFilterNoDuplicates() throws Exception {
+
+		int uniqueInstanceCount = extractedUniqueInstances(
+				"/data/filter_doubles/filter_with_doubles.xml");
+		System.out.println(
+				"There are " + uniqueInstanceCount + " unique instances in the file with doubles.");
+		assertEquals(3, uniqueInstanceCount);
+
+		uniqueInstanceCount = extractedUniqueInstances(
+				"/data/filter_doubles/filter_no_doubles.xml");
+
+		System.out.println("There are " + uniqueInstanceCount
+				+ " unique instances in the file with unique instances.");
+		assertEquals(4, uniqueInstanceCount);
+	}
+
+	/**
+	 * @param pathToXML
+	 * @return how many unique instances are present
+	 * @throws IOException
+	 * @throws IOProviderConfigurationException
+	 * @throws URISyntaxException
+	 */
+	private int extractedUniqueInstances(String pathToXML)
+			throws IOException, IOProviderConfigurationException, URISyntaxException {
+		GmlInstanceCollection instances = loadInstances(
+				getClass().getResource("/data/filter_doubles/filter.xsd").toURI(),
+				getClass().getResource(pathToXML).toURI(), false);
+
+		int uniqueInstanceCount = 0;
+
+		try (DuplicateIDsFilterIterator duplicateIdIterator = new DuplicateIDsFilterIterator(
+				instances.iterator())) {
+			while (duplicateIdIterator.hasNext()) {
+				duplicateIdIterator.skip();
+				uniqueInstanceCount++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return uniqueInstanceCount;
 	}
 
 	/**

@@ -17,6 +17,7 @@ package eu.esdihumboldt.hale.io.gml.reader.internal
 
 import static org.junit.Assert.*;
 
+import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.opengis.referencing.crs.CoordinateReferenceSystem
@@ -24,6 +25,7 @@ import org.opengis.referencing.crs.CoordinateReferenceSystem
 import eu.esdihumboldt.hale.common.core.io.Value
 import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver
 import eu.esdihumboldt.hale.common.instance.model.Instance
 import eu.esdihumboldt.hale.common.instance.model.InstanceCollection
 import eu.esdihumboldt.hale.common.instance.model.ResourceIterator
@@ -41,6 +43,12 @@ import groovy.transform.CompileStatic
 @SuppressWarnings("restriction")
 @CompileStatic
 class StreamGmlReaderTest {
+
+	@Before
+	public void clearResolverCache() {
+		PropertyResolver.clearCache();
+	}
+
 	/**
 	 * Test whether the reader detects the CRS from the GML srsName attribute 
 	 * correctly.
@@ -134,6 +142,39 @@ class StreamGmlReaderTest {
 		}
 
 		println("$count instances skipped")
+		assertEquals(expected, count)
+	}
+
+	//	this test might not work anymore in the future. At that moment please ignore it
+	//	@Ignore
+	@Test
+	public void testWfsPagination() {
+		/*
+		 * FIXME relies on external resources that are not guaranteed to exist and is thus not enabled for automated testing.
+		 * Better would be a test that could mock the WFS responses (e.g. a mock service running w/ testcontainers)
+		 */
+		def schemaUrl = 'https://geodienste.komm.one/ows/services/org.107.7e499bca-5e63-4595-b3c4-eaece8b68608_wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=DescribeFeatureType'
+		def dataUrl = 'https://geodienste.komm.one/ows/services/org.107.7e499bca-5e63-4595-b3c4-eaece8b68608_wfs?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&typenames=xplan:BP_Plan&resolvedepth=*'
+		def paging = 100
+		def expected = 2262
+
+		def schema = loadSchema(URI.create(schemaUrl))
+
+		Map<String, String> params = [
+			(StreamGmlReader.PARAM_FEATURES_PER_WFS_REQUEST): paging as String,
+			(StreamGmlReader.PARAM_PAGINATE_REQUEST): 'true'
+		]
+
+		def instances = loadGml(URI.create(dataUrl), schema, params)
+
+		int count = 0
+		instances.iterator().withCloseable { it ->
+			while (it.hasNext()) {
+				((InstanceIterator) it).skip()
+				count++
+			}
+		}
+
 		assertEquals(expected, count)
 	}
 

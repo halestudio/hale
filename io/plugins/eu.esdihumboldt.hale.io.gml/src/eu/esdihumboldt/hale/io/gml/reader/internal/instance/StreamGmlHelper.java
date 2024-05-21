@@ -34,8 +34,9 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import com.google.common.collect.Iterables;
 import org.locationtech.jts.geom.Geometry;
+
+import com.google.common.collect.Iterables;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;

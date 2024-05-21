@@ -34,10 +34,10 @@ import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -56,6 +56,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier;
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil;
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver;
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter;
@@ -110,6 +111,11 @@ public class StreamGmlWriterTest {
 	 * The geometry factory
 	 */
 	private static final GeometryFactory geomFactory = new GeometryFactory();
+
+	@Before
+	public void clearResolverCache() {
+		PropertyResolver.clearCache();
+	}
 
 //	/**
 //	 * Test writing a simple feature from a simple schema (Watercourses VA)
@@ -653,7 +659,7 @@ public class StreamGmlWriterTest {
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
-				values, "geometryAggregate_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				values, "geometryAggregate_32_MultiPolygon_WindingOrder_CCW", DEF_SRS_NAME, //$NON-NLS-1$
 				false, false, EnumWindingOrderTypes.counterClockwise);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
@@ -676,7 +682,7 @@ public class StreamGmlWriterTest {
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
-				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon_WindingOrder_CW", DEF_SRS_NAME, //$NON-NLS-1$
 				false, false, EnumWindingOrderTypes.clockwise);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
@@ -700,7 +706,7 @@ public class StreamGmlWriterTest {
 
 		IOReport report = fillFeatureTest("AggregateTest", //$NON-NLS-1$
 				getClass().getResource("/data/geom_schema/geom-gml32.xsd").toURI(), //$NON-NLS-1$
-				values, "geometryPrimitive_32_MultiPolygon", DEF_SRS_NAME, //$NON-NLS-1$
+				values, "geometryPrimitive_32_MultiPolygon_WindingOrder", DEF_SRS_NAME, //$NON-NLS-1$
 				false, false, EnumWindingOrderTypes.noChanges);
 
 		assertTrue("Expected GML output to be valid", report.isSuccess()); //$NON-NLS-1$
