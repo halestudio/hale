@@ -444,17 +444,17 @@
                      value="clockwise">
                </enumerationValue>
                <enumerationValue
-                     value="counterClokwise">
+                     value="counterClockwise">
                </enumerationValue>
                <enumerationValue
-                     value="noChange">
+                     value="noChanges">
                </enumerationValue>
             </parameterEnumeration>
             <valueDescriptor
                   default="counterClockwise"
                   defaultDescription="By default, counterClockwise is set for GML instance"
-                  sample="clockwise, noChange"
-                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+                  sample="clockwise, noChanges"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChanges respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -722,17 +722,17 @@
                      value="clockwise">
                </enumerationValue>
                <enumerationValue
-                     value="counterClokwise">
+                     value="counterClockwise">
                </enumerationValue>
                <enumerationValue
-                     value="noChange">
+                     value="noChanges">
                </enumerationValue>
             </parameterEnumeration>
             <valueDescriptor
                   default="counterClockwise"
                   defaultDescription="By default, counterClockwise is set for GML instance"
-                  sample="clockwise, noChange"
-                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+                  sample="clockwise, noChanges"
+                  sampleDescription="Unifying order can be set as Clockwise or no changes in order (clockwise or noChanges respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -930,17 +930,17 @@
                      value="clockwise">
                </enumerationValue>
                <enumerationValue
-                     value="counterClokwise">
+                     value="counterClockwise">
                </enumerationValue>
                <enumerationValue
-                     value="noChange">
+                     value="noChanges">
                </enumerationValue>
             </parameterEnumeration>
             <valueDescriptor
                   default="counterClockwise"
                   defaultDescription="By default, counterClockwise is set for GML instance"
-                  sample="clockwise, noChange"
-                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+                  sample="clockwise, noChanges"
+                  sampleDescription="Unifying order can be set as Clockwise or no changes in order (clockwise or noChanges respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -1241,17 +1241,17 @@
                      value="clockwise">
                </enumerationValue>
                <enumerationValue
-                     value="counterClokwise">
+                     value="counterClockwise">
                </enumerationValue>
                <enumerationValue
-                     value="noChange">
+                     value="noChanges">
                </enumerationValue>
             </parameterEnumeration>
             <valueDescriptor
                   default="counterClockwise"
                   defaultDescription="By default, counterClockwise is set for GML instance"
-                  sample="clockwise, noChange"
-                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+                  sample="clockwise, noChanges"
+                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChanges respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
@@ -1423,17 +1423,17 @@
                      value="clockwise">
                </enumerationValue>
                <enumerationValue
-                     value="counterClokwise">
+                     value="counterClockwise">
                </enumerationValue>
                <enumerationValue
-                     value="noChange">
+                     value="noChanges">
                </enumerationValue>
             </parameterEnumeration>
             <valueDescriptor
                   default="counterClockwise"
                   defaultDescription="By default, counterClockwise is set for GML instance"
-                  sample="clockwise, noChange"
-                  sampleDescription="Unifying order can be set as Clockwise or no change in order (clockwise or noChange respectively).">
+                  sample="clockwise, noChanges"
+                  sampleDescription="Unifying order can be set as Clockwise or no changes in order (clockwise or noChanges respectively).">
             </valueDescriptor>
          </providerParameter>
          <providerParameter
