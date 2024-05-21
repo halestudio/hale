@@ -8,10 +8,27 @@ cd $CURRENT_DIR
 
 set -e
 
-# TODO perform all release tasks
-# XXX for now only build one product
-./build.sh product HALE -o linux -a x86_64
+#
+# Build products
+#
 
-# ./upload-site.sh
+./build.sh product --arch x86_64 --os linux HALE
+
+# Note: Windows installer is built in separate Job (on windows runner)
+./build.sh product --arch x86_64 --os windows HALE
+
+./build.sh product --arch x86_64 --os macosx HALE
+
+./build.sh product --arch x86_64 --os linux --publish Infocenter
+
+#
+# Upload update site
+#
+
+./upload-site.sh
+
+
+# Note: Deploying Maven artifacts is done in separate Job since it is currently prone to fail on GitHub Actions and should not fail the release
+
 
 cd $ORG_DIR

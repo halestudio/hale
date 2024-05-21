@@ -13,8 +13,5 @@ set -e
 
 # ideally all build tasks that don't publish would be done here to fail the release if it does not work
 # but for the product build we include the revision information (commit sha), which is not available for the release commit yet
-./build.sh clean
-
-# TODO run integration stage?
 
 cd $ORG_DIR

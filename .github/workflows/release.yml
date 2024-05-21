@@ -1,12 +1,5 @@
 name: Release
 
-#
-# Release workflow
-#
-# Open tasks:
-# - [ ] can we build the Windows installer? -> build in a dependent job if a release was created and add it to the release in hindsight? (would require windows runner)
-#
-
 on:
   # run manually on default branch
   workflow_dispatch:
@@ -15,6 +8,10 @@ on:
         type: boolean
         description: "Dry-Run"
         default: false
+      includeTests:
+        type: boolean
+        description: Include tests
+        default: true
 
 concurrency:
   # only run one publishing at a time to avoid conflicts
@@ -38,6 +35,9 @@ env:
 
 jobs:
   release:
+    # Only on main repository (don't release on forks)
+    if: github.repository_owner == 'halestudio'
+
     name: Release
     runs-on: ubuntu-latest
     
@@ -71,17 +71,48 @@ jobs:
       - name: Install genisoimage # required for Mac build
         run: sudo apt-get install -y genisoimage
 
+      - name: Clean
+        run: ./build.sh clean
+        working-directory: ./build
+
+      - name: Create hale-docker.conf file
+        run: |
+          mkdir -p ~/.hale
+          cat <<EOF > ~/.hale/hale-docker.conf
+          global {
+            dockerHost="unix:///var/run/docker.sock"
+          }
+          EOF
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Test
+        if: ${{ inputs.includeTests }}
+        run: ./build.sh integrationStage
+        working-directory: ./build
+
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@9379f0ccddcab154835d4e2487555ee79614fe95 # v4.2.1
+        if: ${{ always() && inputs.includeTests }}
+        with:
+          # fail if there are no test results
+          require_tests: true
+
+          # Workaround for check that is additionally created being associated
+          # to the wrong workflow/run. Instead no additional check is created.
+          # See https://github.com/mikepenz/action-junit-report/issues/40
+          annotate_only: true
+          detailed_summary: true  
+          report_paths: 'build/target/testReports/*.xml'
+
       - name: Install NodeJs
         uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
         with:
           node-version: 20
-
-      # FIXME
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@e92390c5fb421da1463c202d546fed0ec5c39f20 # v3.1.0
-      #   with:
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       - name: Release
         id: release
@@ -100,14 +131,14 @@ jobs:
 
           # For release commands execution
           
-          # Upload update site FIXME
-          # AWS_ACCESS_KEY_ID: ${{ secrets.BUILD_ARCHIVE_ACCESS_KEY }}
-          # AWS_SECRET_ACCESS_KEY: ${{ secrets.BUILD_ARCHIVE_SECRET_KEY }}
+          # Upload update site
+          AWS_ACCESS_KEY_ID: ${{ secrets.BUILD_ARCHIVE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.BUILD_ARCHIVE_SECRET_KEY }}
 
-          # Deploy artifacts FIXME
-          # WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
-          # WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
-          # JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
+          # Deploy artifacts
+          WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+          WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
+          JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
         with:
           dry_run: ${{ inputs.dryRun }}
           semantic_version: 23.0.8
@@ -123,16 +154,15 @@ jobs:
             ${{ env.CONVENTIONAL_CHANGELOG_CONVENTIONALCOMMITS_VERSION }} \
             "
         # https://github.com/marketplace/actions/slack-notify-build
-        # FIXME
-      # - name: Notify failure to Slack
-      #   if: failure()
-      #   env:
-      #     SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
-      #   uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
-      #   with:
-      #     channel: build-failures
-      #     status: FAILED
-      #     color: danger
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger
   
   # Note: one reason deploy artifacts is handled as separate job is that it currently usually fails (connection reset issue)
   # and should not impact the main release job
@@ -151,15 +181,23 @@ jobs:
           checkout-ref: refs/tags/v${{needs.release.outputs.release-version}} # check out release tag
 
       - name: Deploy Artifacts
-        # env:
-        #   WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
-        #   WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
-        #   JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
-        # run: ./build.sh deployArtifacts
-        # FIXME
-        run: |
-          echo "Would deploy artifacts for version ${{needs.release.outputs.release-version}}"
+        env:
+          WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+          WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
+          JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
+        run: ./build.sh deployArtifacts
         working-directory: ./build
+
+        # https://github.com/marketplace/actions/slack-notify-build
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger
 
   windows-build:
     name: Build Windows installer
@@ -197,3 +235,14 @@ jobs:
           echo "Adding to release assets..."
           gh release upload v${{needs.release.outputs.release-version}} build/target/*.msi --repo ${{ github.repository }}
         shell: bash
+
+        # https://github.com/marketplace/actions/slack-notify-build
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger

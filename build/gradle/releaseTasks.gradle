@@ -343,6 +343,8 @@ class VersionHelper {
 
 		// by default increase minor version for SNAPSHOT
 		minor++
+		// and set patch to zero
+		patch = 0
 
 		def newVersion = "${major}.${minor}.${patch}"
 
