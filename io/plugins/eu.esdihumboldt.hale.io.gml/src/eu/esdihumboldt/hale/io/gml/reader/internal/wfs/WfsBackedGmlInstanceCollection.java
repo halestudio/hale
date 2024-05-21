@@ -228,7 +228,8 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
 		int hits;
-		if (ignoreNumberMatched) {
+
+		if (ignoreNumberMatched || primordialQueryParams.containsKey("RESOLVEDEPTH")) {
 			hits = UNKNOWN_SIZE;
 		}
 		else {
