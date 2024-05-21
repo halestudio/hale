@@ -160,7 +160,7 @@ ext {
 		'eu.esdihumboldt.hale.ui.feature.linux': ['linux'],
 		'eu.esdihumboldt.hale.ui.feature.macosx': ['macosx']
 	]
-	
+
 	/*
 	 * List of bundles that are not platform specific, even if they are detected as such.
 	 */
@@ -184,8 +184,8 @@ ext {
             'gtk': [
                 'x86_64': 'OpenJDK17U-jre_x64_linux_hotspot_17.0.5_8.tar.gz'
             ]
-        ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`. 
-		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08` 
+        ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`.
+		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08`
 		   //is being stripped and the `Contents` folder is being copied into jre folder.
         'macosx': [
             'cocoa': [
@@ -253,7 +253,7 @@ configureEnvironment()
 
 def configureEnvironment() {
 	def wsMap = [win32: 'win32', linux: 'gtk', macosx: 'cocoa']
-	
+
 	def current_os = System.getProperty('os.name')
 	if (current_os.substring(0, 5).equalsIgnoreCase('linux'))
 	  current_os = 'linux'
@@ -267,7 +267,7 @@ def configureEnvironment() {
 	  current_arch = 'x86'
 	else if(current_arch == 'amd64')
 	  current_arch = 'x86_64'
-	
+
     if (!ext.properties.containsKey('osgiOS')) {
         ext.osgiOS = current_os
     }
