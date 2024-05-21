@@ -8,6 +8,8 @@ cd $CURRENT_DIR
 
 set -e
 
+# TODO: move these tasks also out to separate jobs to prevent a failure failing the release? Would allow to rerun the respective parts
+
 #
 # Build products
 #

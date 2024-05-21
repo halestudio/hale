@@ -1,10 +1,3 @@
-# Change Log
-
-All notable changes to this project will be documented in this file.
-See the [change log guidelines](http://keepachangelog.com/) for information on how to structure the file.
-
-## [Unreleased]
-
 ## [5.1.0]
 
 ### Added
@@ -450,9 +443,8 @@ See the [change log guidelines](http://keepachangelog.com/) for information on h
 
 ## 2.9.4 - 2015-11-01
 
-Changes so far have been documented in the [hale help](http://hale.igd.fraunhofer.de/2.9.4/help/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=2_1_0).
+Changes so far have been documented in the [hale help](http://help.halestudio.org/latest/topic/eu.esdihumboldt.hale.doc.user/html/new/2_9_0.xhtml?cp=0_2_13).
 
-[Unreleased]: https://github.com/halestudio/hale/compare/5.1.0...HEAD
 [5.1.0]: https://github.com/halestudio/hale/compare/5.0.1...5.1.0
 [5.0.1]: https://github.com/halestudio/hale/compare/5.0.0...5.0.1
 [5.0.0]: https://github.com/halestudio/hale/compare/4.1.0...5.0.0
