@@ -19,6 +19,7 @@ import static org.junit.Assert.*
 
 import java.util.function.Consumer
 
+import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Ignore
 import org.junit.Test
@@ -33,6 +34,7 @@ import eu.esdihumboldt.hale.common.core.io.supplier.FileIOSupplier
 import eu.esdihumboldt.hale.common.core.io.supplier.Locatable
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryUtil
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
+import eu.esdihumboldt.hale.common.instance.helper.PropertyResolver
 import eu.esdihumboldt.hale.common.instance.io.GeoInstanceWriter
 import eu.esdihumboldt.hale.common.instance.io.InstanceWriter
 import eu.esdihumboldt.hale.common.instance.model.Instance
@@ -65,6 +67,11 @@ class StreamGmlWriter2Test {
 	@BeforeClass
 	public static void initAll() {
 		TestUtil.startConversionService();
+	}
+
+	@Before
+	public void clearResolverCache() {
+		PropertyResolver.clearCache();
 	}
 
 	/**

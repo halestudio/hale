@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wfs:FeatureCollection xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs/2.0 http://schemas.opengis.net/wfs/2.0/wfs.xsd http://www.opengis.net/gml/3.2 http://schemas.opengis.net/gml/3.2.1/gml.xsd http://www.xplanung.de/xplangml/5/0 https://geodienste.komm.one/ows/services/org.107.7e499bca-5e63-4595-b3c4-eaece8b68608_wfs?SERVICE=WFS&amp;VERSION=2.0.0&amp;REQUEST=DescribeFeatureType&amp;OUTPUTFORMAT=application%2Fgml%2Bxml%3B+version%3D3.2&amp;TYPENAME=xplan:BP_Plan&amp;NAMESPACES=xmlns(xplan,http%3A%2F%2Fwww.xplanung.de%2Fxplangml%2F5%2F0)" xmlns:wfs="http://www.opengis.net/wfs/2.0" timeStamp="2024-06-17T12:23:37Z" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:ogc="http://www.opengis.net/ogc" xmlns:xplan="http://www.xplanung.de/xplangml/5/0" xmlns:xlink="http://www.w3.org/1999/xlink" numberMatched="unknown" numberReturned="0">
+  <!--NOTE: numberReturned attribute should be 'unknown' as well, but this would not validate against the current version of the WFS 2.0 schema (change upcoming). See change request (CR 144): https://portal.opengeospatial.org/files?artifact_id=43925.-->
+  <wfs:member>
+    <xplan:BP_Plan gml:id="GML_D4BF1E6F-133B-4F58-64A8-7F1C3652A5CB">
+      <gml:boundedBy>
+        <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+          <gml:lowerCorner>48.839927 10.086443</gml:lowerCorner>
+          <gml:upperCorner>48.841809 10.088140</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+      <xplan:name>Bohlstraße, Zeppelinstraße</xplan:name>
+      <xplan:nummer>III-03/3</xplan:nummer>
+      <xplan:internalId>0</xplan:internalId>
+      <xplan:beschreibung>Bohlstraße, Zeppelinstraße</xplan:beschreibung>
+      <xplan:technHerstellDatum>1933-06-08</xplan:technHerstellDatum>
+      <xplan:genehmigungsDatum>1933-06-08</xplan:genehmigungsDatum>
+      <xplan:raeumlicherGeltungsbereich>
+        <!--Inlined geometry '_C1577577-EA11-454E-6681-406BADB3A345'-->
+        <gml:MultiSurface gml:id="_C1577577-EA11-454E-6681-406BADB3A345" srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+          <gml:surfaceMember>
+            <gml:Polygon gml:id="_F8292D46-6CD0-4278-B689-5DC626131F51" srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>48.841773 10.087020 48.841648 10.087095 48.841642 10.087068 48.841452 10.087167 48.841380 10.086866 48.841288 10.086472 48.841100 10.086577 48.840931 10.086674 48.840884 10.086699 48.840847 10.086719 48.840812 10.086738 48.840777 10.086755 48.840741 10.086775 48.840700 10.086791 48.840659 10.086805 48.840618 10.086818 48.840577 10.086828 48.840549 10.086834 48.840516 10.086833 48.840465 10.086841 48.840414 10.086844 48.840323 10.086843 48.840270 10.086840 48.840218 10.086831 48.840166 10.086821 48.840163 10.086820 48.840161 10.086820 48.840158 10.086820 48.840155 10.086820 48.840153 10.086821 48.840150 10.086822 48.840147 10.086823 48.840145 10.086825 48.840142 10.086827 48.840139 10.086829 48.840137 10.086831 48.840135 10.086834 48.840133 10.086837 48.840131 10.086841 48.840129 10.086844 48.840128 10.086848 48.840127 10.086851 48.840126 10.086855 48.840125 10.086859 48.840124 10.086863 48.840124 10.086866 48.840104 10.087024 48.840023 10.087669 48.839992 10.087848 48.839988 10.087847 48.839985 10.087848 48.839983 10.087849 48.839981 10.087850 48.839979 10.087852 48.839977 10.087853 48.839975 10.087854 48.839973 10.087856 48.839971 10.087858 48.839969 10.087860 48.839967 10.087862 48.839965 10.087864 48.839963 10.087867 48.839961 10.087869 48.839960 10.087872 48.839958 10.087874 48.839957 10.087877 48.839955 10.087880 48.839954 10.087883 48.839953 10.087886 48.839952 10.087889 48.839951 10.087892 48.839927 10.088089 48.839966 10.088100 48.839992 10.087894 48.840043 10.087904 48.840088 10.087912 48.840098 10.087913 48.840169 10.087919 48.840243 10.087921 48.840349 10.087905 48.840473 10.087866 48.840537 10.087841 48.840658 10.087780 48.841365 10.087397 48.841521 10.087312 48.841691 10.087220 48.841803 10.087152 48.841797 10.087110 48.841773 10.087020</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </gml:surfaceMember>
+        </gml:MultiSurface>
+      </xplan:raeumlicherGeltungsbereich>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Legende Bebauungsplan III-03/3</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/af127430-f0f9-44a0-9e56-3a83ef7292ed/raw/III-03-3-Legende.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2020-06-04</xplan:datum>
+          <xplan:typ>1020</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Original Bebauungsplan III-03/3</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/af127430-f0f9-44a0-9e56-3a83ef7292ed/raw/III-03-3-Bplan.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2020-06-04</xplan:datum>
+          <xplan:typ>1030</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:gemeinde>
+        <xplan:XP_Gemeinde>
+          <xplan:rs>08136088</xplan:rs>
+          <xplan:gemeindeName>Aalen</xplan:gemeindeName>
+        </xplan:XP_Gemeinde>
+      </xplan:gemeinde>
+      <xplan:planArt>10000</xplan:planArt>
+      <xplan:verfahren>1000</xplan:verfahren>
+      <xplan:rechtsstand>4000</xplan:rechtsstand>
+      <xplan:rechtsverordnungsDatum>1933-06-08</xplan:rechtsverordnungsDatum>
+      <xplan:inkrafttretensDatum>9999-01-01</xplan:inkrafttretensDatum>
+      <xplan:bereich xlink:href="#GML_30FCB076-0DCC-45DA-C789-2EBBAD6653B7"/>
+    </xplan:BP_Plan>
+  </wfs:member>
+  <wfs:member>
+    <xplan:BP_Plan gml:id="GML_D4BF1E6F-133B-4F58-64A8-7F1C3652A5CB">
+      <gml:boundedBy>
+        <gml:Envelope srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+          <gml:lowerCorner>48.878401 10.043646</gml:lowerCorner>
+          <gml:upperCorner>48.879914 10.047683</gml:upperCorner>
+        </gml:Envelope>
+      </gml:boundedBy>
+      <xplan:name>Änderung des Bebauungsplanes Erweiterung Gewerbegebiet Mittelfeld nördlich der Straße Im Loh, Plan Nr. 66-02/6 bezüglich der planungsrechtlichen Festsetzungen zu Gewerbegebieten</xplan:name>
+      <xplan:nummer>66-02/8</xplan:nummer>
+      <xplan:internalId>0</xplan:internalId>
+      <xplan:beschreibung>Änderung des Bebauungsplanes Erweiterung Gewerbegebiet Mittelfeld nördlich der Straße Im Loh, Plan Nr. 66-02/6 bezüglich der planungsrechtlichen Festsetzungen zu Gewerbegebieten</xplan:beschreibung>
+      <xplan:technHerstellDatum>1998-02-19</xplan:technHerstellDatum>
+      <xplan:raeumlicherGeltungsbereich>
+        <!--Inlined geometry '_DFF2D4F3-C6CA-4D88-92A2-321C71C290B3'-->
+        <gml:MultiSurface gml:id="_DFF2D4F3-C6CA-4D88-92A2-321C71C290B3" srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+          <gml:surfaceMember>
+            <gml:Polygon gml:id="_0218ED21-3480-4AA2-FC94-187938FECD6D" srsName="http://www.opengis.net/def/crs/EPSG/0/4258">
+              <gml:exterior>
+                <gml:LinearRing>
+                  <gml:posList>48.879432 10.047267 48.879549 10.047228 48.879687 10.047181 48.879707 10.047175 48.879883 10.047115 48.879815 10.046829 48.879778 10.046670 48.879741 10.046515 48.879701 10.046344 48.879625 10.046020 48.879591 10.045873 48.879586 10.045856 48.879519 10.045617 48.879404 10.045209 48.879363 10.045062 48.879284 10.044792 48.879180 10.044433 48.879091 10.044129 48.878954 10.043657 48.878436 10.043798 48.878529 10.044115 48.878677 10.044617 48.878653 10.044703 48.878566 10.044735 48.878567 10.044742 48.878575 10.044739 48.878583 10.044737 48.878591 10.044736 48.878600 10.044735 48.878608 10.044735 48.878617 10.044735 48.878626 10.044737 48.878634 10.044739 48.878643 10.044742 48.878652 10.044745 48.878660 10.044750 48.878668 10.044755 48.878677 10.044761 48.878685 10.044767 48.878692 10.044774 48.878699 10.044782 48.878706 10.044791 48.878713 10.044799 48.878719 10.044809 48.878725 10.044819 48.878730 10.044829 48.878735 10.044839 48.878740 10.044850 48.878744 10.044861 48.878748 10.044871 48.878811 10.045082 48.878869 10.045276 48.878925 10.045470 48.878980 10.045664 48.879084 10.046057 48.879157 10.046339 48.879186 10.046452 48.879234 10.046650 48.879285 10.046847 48.879328 10.047055 48.879382 10.047284 48.879444 10.047601 48.879445 10.047607 48.879447 10.047612 48.879449 10.047618 48.879451 10.047624 48.879453 10.047630 48.879456 10.047635 48.879459 10.047641 48.879462 10.047646 48.879465 10.047650 48.879469 10.047655 48.879473 10.047659 48.879477 10.047662 48.879481 10.047665 48.879485 10.047668 48.879489 10.047670 48.879493 10.047672 48.879498 10.047674 48.879502 10.047675 48.879506 10.047675 48.879511 10.047675 48.879515 10.047675 48.879432 10.047267</gml:posList>
+                </gml:LinearRing>
+              </gml:exterior>
+            </gml:Polygon>
+          </gml:surfaceMember>
+        </gml:MultiSurface>
+      </xplan:raeumlicherGeltungsbereich>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Begründung Bebauungsplan 66-02/8</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/3ea9dbb7-05ba-45e9-9eac-50a563230e45/raw/66-02-8-Begruendung.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2008-03-06</xplan:datum>
+          <xplan:typ>1010</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Legende Bebauungsplan 66-02/8</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/3ea9dbb7-05ba-45e9-9eac-50a563230e45/raw/66-02-8-Legende.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2008-03-06</xplan:datum>
+          <xplan:typ>1020</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Textteil Bebauungsplan 66-02/8</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/3ea9dbb7-05ba-45e9-9eac-50a563230e45/raw/66-02-8-Textteil.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2008-03-06</xplan:datum>
+          <xplan:typ>9998</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:externeReferenz>
+        <xplan:XP_SpezExterneReferenz>
+          <xplan:art>Dokument</xplan:art>
+          <xplan:referenzName>Original Bebauungsplan 66-02/8</xplan:referenzName>
+          <xplan:referenzURL>https://geodienste.komm.one/store/attachments/buckets/org/107/3ea9dbb7-05ba-45e9-9eac-50a563230e45/raw/66-02-8-Bplan.pdf</xplan:referenzURL>
+          <xplan:referenzMimeType>application/pdf</xplan:referenzMimeType>
+          <xplan:datum>2008-03-06</xplan:datum>
+          <xplan:typ>1030</xplan:typ>
+        </xplan:XP_SpezExterneReferenz>
+      </xplan:externeReferenz>
+      <xplan:gemeinde>
+        <xplan:XP_Gemeinde>
+          <xplan:rs>08136088</xplan:rs>
+          <xplan:gemeindeName>Aalen</xplan:gemeindeName>
+        </xplan:XP_Gemeinde>
+      </xplan:gemeinde>
+      <xplan:planArt>10001</xplan:planArt>
+      <xplan:verfahren>1000</xplan:verfahren>
+      <xplan:rechtsstand>4000</xplan:rechtsstand>
+      <xplan:aufstellungsbeschlussDatum>1996-07-04</xplan:aufstellungsbeschlussDatum>
+      <xplan:auslegungsStartDatum>1998-04-27</xplan:auslegungsStartDatum>
+      <xplan:auslegungsEndDatum>1998-05-27</xplan:auslegungsEndDatum>
+      <xplan:traegerbeteiligungsStartDatum>1996-07-11</xplan:traegerbeteiligungsStartDatum>
+      <xplan:satzungsbeschlussDatum>2000-01-20</xplan:satzungsbeschlussDatum>
+      <xplan:rechtsverordnungsDatum>1998-02-19</xplan:rechtsverordnungsDatum>
+      <xplan:inkrafttretensDatum>2000-02-02</xplan:inkrafttretensDatum>
+      <xplan:ausfertigungsDatum>2000-02-02</xplan:ausfertigungsDatum>
+      <xplan:bereich xlink:href="#GML_6730AEF5-C86C-42E9-EF80-064BFD472CB9"/>
+    </xplan:BP_Plan>
+  </wfs:member>
+  <wfs:additionalObjects>
+    <wfs:SimpleFeatureCollection>
+      <wfs:member>
+        <xplan:BP_Bereich gml:id="GML_6730AEF5-C86C-42E9-EF80-064BFD472CB9">
+          <xplan:nummer>0</xplan:nummer>
+          <xplan:name>III-03/3</xplan:name>
+          <xplan:versionBauNVODatum>9999-01-01</xplan:versionBauNVODatum>
+          <xplan:versionBauNVOText>Andere Gesetzliche Bestimmung</xplan:versionBauNVOText>
+          <xplan:gehoertZuPlan xlink:href="#GML_D4BF1E6F-133B-4F58-64A8-7F1C3652A5CB"/>
+        </xplan:BP_Bereich>
+      </wfs:member>
+      <wfs:member>
+        <xplan:BP_Bereich gml:id="GML_6730AEF5-C86C-42E9-EF80-064BFD472CB9">
+          <xplan:nummer>0</xplan:nummer>
+          <xplan:name>66-02/8</xplan:name>
+          <xplan:versionBauNVODatum>1993-04-22</xplan:versionBauNVODatum>
+          <xplan:versionBauNVOText>BauNVO 1990 zul. geändert 22.04.1993</xplan:versionBauNVOText>
+          <xplan:gehoertZuPlan xlink:href="#GML_D4BF1E6F-133B-4F58-64A8-7F1C3652A5CB"/>
+        </xplan:BP_Bereich>
+      </wfs:member>
+	   <wfs:member>
+        <xplan:BP_Bereich gml:id="GML_6730AEF5-C86C-42E9-EF80-064BFD472CB1">
+          <xplan:nummer>0</xplan:nummer>
+          <xplan:name>66-02/8</xplan:name>
+          <xplan:versionBauNVODatum>1993-04-22</xplan:versionBauNVODatum>
+          <xplan:versionBauNVOText>BauNVO 1990 zul. geändert 22.04.1993</xplan:versionBauNVOText>
+          <xplan:gehoertZuPlan xlink:href="#GML_D4BF1E6F-133B-4F58-64A8-7F1C3652A5CB"/>
+        </xplan:BP_Bereich>
+      </wfs:member>
+    </wfs:SimpleFeatureCollection>
+  </wfs:additionalObjects>
+</wfs:FeatureCollection>
