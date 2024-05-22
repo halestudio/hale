@@ -61,7 +61,9 @@ public class AddParentConditionAction extends AddConditionAction {
 			// parent is not a type
 			property = "value." + property;
 		}
-		return property;
+		// Put property name in quotes to make sure that names that have a
+		// special meaning in CQL (e.g. "id") are properly quoted.
+		return "\"" + property + "\"";
 	}
 
 	@Override
