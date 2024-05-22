@@ -56,6 +56,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      pull-requests: write
+
     concurrency:
       group: artifacts-${{ github.ref }}
       cancel-in-progress: true
