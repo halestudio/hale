@@ -1,0 +1,65 @@
+---
+#
+# PLEASE NOTE: Managed workflow - do not change manually
+#
+name: Autosquash
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  autosquash:
+    env:
+      # for GitHub CLI
+      GH_TOKEN: ${{ github.token }}
+
+    # If a pull request is commented with /autosquash
+    if: ${{ github.event.issue.pull_request && contains(github.event.comment.body, '/autosquash') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Determine app token # so that later pushing can run check workflows
+        env:
+          WE_HELPER_GITHUB_PRIVATE_KEY: ${{ secrets.WE_HELPER_GITHUB_PRIVATE_KEY }}
+        if: env.WE_HELPER_GITHUB_PRIVATE_KEY # only if we have the required secret
+        uses: actions/create-github-app-token@a0de6af83968303c8c955486bf9739a57d23c7f1 # v1.10.0
+        id: app-token
+        with:
+          app-id: ${{ secrets.WE_HELPER_GITHUB_APP_ID }}
+          private-key: ${{ secrets.WE_HELPER_GITHUB_PRIVATE_KEY }}
+
+      - name: Checkout the repository and persist credentials
+        uses: actions/checkout@0ad4b8fadaa221de15dcec353f45205ec38ea70b # v4.1.4
+        with:
+          token: ${{ steps.app-token.outputs.token || github.token }}
+
+      - name: Determine PR head repo owner
+        run: |
+          echo "PR_OWNER=$(gh pr view ${{ github.event.issue.number }} --json headRepositoryOwner -q .headRepositoryOwner.login)" >> $GITHUB_ENV
+
+      - name: Checkout pull request
+        # Only do for PRs that are not from a fork (this condition is repeated for subsequent tasks)
+        # Otherwise likely write permissions are missing
+        if: env.PR_OWNER == github.repository_owner
+        run: gh pr checkout ${{ github.event.issue.number }}
+
+      - name: Set up git
+        if: env.PR_OWNER == github.repository_owner
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Perform interactive rebase with autosquash
+        if: env.PR_OWNER == github.repository_owner
+        env:
+          EDITOR: 'true' # to automatically complete the interactive rebase
+        run: |
+          BASE_REF=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)
+          git fetch origin
+          git rebase -i --autosquash origin/$BASE_REF
+
+      - name: Push changes
+        if: env.PR_OWNER == github.repository_owner
+        run: |
+          git push --force-with-lease
