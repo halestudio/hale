@@ -38,20 +38,44 @@ jobs:
         run: |
           echo "PR_OWNER=$(gh pr view ${{ github.event.issue.number }} --json headRepositoryOwner -q .headRepositoryOwner.login)" >> $GITHUB_ENV
 
+      - name: Verify not a fork PR
+        # Reason: We want to ensure that the token has write permissions to the repo the PR originated from, also that the user has write permissions to the main repo
+        run: |
+          if [ "$PR_OWNER" = "${{ github.repository_owner }}" ]; then
+            echo "PR is not from a fork"
+          else
+            echo "Not supported for PRs from a fork"
+            exit 1
+          fi
+
+      - name: Check if organization member
+        id: is_organization_member
+        if: github.event.sender.login != github.event.issue.user.login # avoid organization check if unnecessary
+        uses: JamesSingleton/is-organization-member@20f38a5b256765f86036beeea415021d3b1c9dc6
+        with:
+          organization: ${{ github.repository_owner }}
+          username: ${{ github.event.sender.login }}
+          token: ${{ github.token }}
+
+      - name: Verify user
+        if: ${{ steps.is_organization_member.outputs.result != 'true' }}
+        run: |
+          if [ "${{ github.event.sender.login }}" = "${{ github.event.issue.user.login }}" ]; then
+            echo "User is issue author"
+          else
+            echo "User is neither issue author nor organization member"
+            exit 1
+          fi
+
       - name: Checkout pull request
-        # Only do for PRs that are not from a fork (this condition is repeated for subsequent tasks)
-        # Otherwise likely write permissions are missing
-        if: env.PR_OWNER == github.repository_owner
         run: gh pr checkout ${{ github.event.issue.number }}
 
       - name: Set up git
-        if: env.PR_OWNER == github.repository_owner
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Perform interactive rebase with autosquash
-        if: env.PR_OWNER == github.repository_owner
         env:
           EDITOR: 'true' # to automatically complete the interactive rebase
         run: |
@@ -60,6 +84,5 @@ jobs:
           git rebase -i --autosquash origin/$BASE_REF
 
       - name: Push changes
-        if: env.PR_OWNER == github.repository_owner
         run: |
           git push --force-with-lease
