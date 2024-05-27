@@ -42,5 +42,13 @@
             allowAll="false"
             class="eu.esdihumboldt.hale.common.lookup.internal.LookupServiceImpl">
       </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.lookup.impl.LookupTableInfoImpl">
+      </allow>
+      <allow
+            allowAll="false"
+            class="eu.esdihumboldt.hale.common.lookup.impl.LookupTableImpl">
+      </allow>
    </extension>
 </plugin>
