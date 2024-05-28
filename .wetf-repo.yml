@@ -7,3 +7,4 @@ presets: []
 # List of custom required checks
 required_checks:
   - check
+  - require-challenge
