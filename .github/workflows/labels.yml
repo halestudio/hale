@@ -1,0 +1,24 @@
+name: Check labels
+
+on:
+  pull_request:
+    branches:
+      - master  # Trigger only on PRs to master
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+jobs:
+  require-challenge:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: mheap/github-action-required-labels@5847eef68201219cf0a4643ea7be61e77837bbce # v5.4.1
+        with:
+          mode: exactly
+          count: 1
+          labels: "challenged"
+          add_comment: ${{ ! github.event.pull_request.head.repo.fork }}
+          message: "This PR cannot be merged yet because a required label is missing: `{{ provided }}`. It needs to be added before this PR can be merged."
