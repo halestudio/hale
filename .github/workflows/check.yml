@@ -110,6 +110,26 @@ jobs:
           path: build/target/hale-studio-*macosx*.dmg
           retention-days: 14
 
+      - name: Set up Trivy
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install -y trivy
+          trivy --version
+
+      - name: Run Trivy scan
+        run: |
+          trivy rootfs --severity=CRITICAL,HIGH build/target/hale-studio-*linux* --format sarif --output trivy-results.sarif
+
+      - name: Upload Trivy scan results to file
+        uses: actions/upload-artifact@v2
+        with:
+          name: trivy-results
+          path: trivy-results.sarif    
+
       - name: Find artifact comment if it exists
         if: "! github.event.pull_request.head.repo.fork " # Only run with write permissions
         uses: peter-evans/find-comment@3eae4d37986fb5a8592848f6a574fdf654e61f9e # v3.1.0
