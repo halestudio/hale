@@ -14,49 +14,51 @@
       </topic>
       <anchor id="resources"/>
    </topic>
-   <topic label="What&apos;s new?">
-      <topic href="html/new/5_1_0.xhtml" label="New in 5.1.0">
-      </topic>
-      <topic href="html/new/5_0_1.xhtml" label="New in 5.0.1">
-      </topic>
-      <topic href="html/new/5_0_0.xhtml" label="New in 5.0">
-      </topic>
-      <topic href="html/new/4_1_0.xhtml" label="New in 4.1">
-      </topic>
-      <topic href="html/new/4_0_0.xhtml" label="New in 4.0">
-      </topic>
-      <topic href="html/new/3_5_0.xhtml" label="New in 3.5">
-      </topic>
-      <topic href="html/new/3_4_0.xhtml" label="New in 3.4">
-      </topic>
-      <topic href="html/new/3_3_2.xhtml" label="New in 3.3.2">
-      </topic>
-      <topic href="html/new/3_3_1.xhtml" label="New in 3.3.1">
-      </topic>
-      <topic href="html/new/3_3_0.xhtml" label="New in 3.3">
-      </topic>
-      <topic href="html/new/3_2_0.xhtml" label="New in 3.2">
-      </topic>
-      <topic href="html/new/3_1_0.xhtml" label="New in 3.1">
-      </topic>
-      <topic href="html/new/3_0_0.xhtml" label="New in 3.0">
-      </topic>
-      <topic href="html/new/2_9_0.xhtml" label="New in 2.9">
-      </topic>
-      <topic href="html/new/2_8_0.xhtml" label="New in 2.8">
-      </topic>
-      <topic href="html/new/2_7_0.xhtml" label="New in 2.7">
-      </topic>
-      <topic href="html/new/2_6_0.xhtml" label="New in 2.6">
-      </topic>
-      <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
-         <topic href="html/new/2_5_0_RC1.xhtml" label="2.5.0.RC1">
+   <topic href="html/new/latest.xhtml" label="What&apos;s new?">
+      <topic label="Previous versions (up to 5.1)">
+         <topic href="html/new/5_1_0.xhtml" label="New in 5.1.0">
          </topic>
-         <topic href="html/new/2_5_0_M2.xhtml" label="2.5.0.M2">
+         <topic href="html/new/5_0_1.xhtml" label="New in 5.0.1">
          </topic>
-         <topic href="html/new/2_5_0_M1.xhtml" label="2.5.0.M1">
+         <topic href="html/new/5_0_0.xhtml" label="New in 5.0">
          </topic>
-         <topic href="html/new/2_5_0_before_after.html" label="Before and after">
+         <topic href="html/new/4_1_0.xhtml" label="New in 4.1">
+         </topic>
+         <topic href="html/new/4_0_0.xhtml" label="New in 4.0">
+         </topic>
+         <topic href="html/new/3_5_0.xhtml" label="New in 3.5">
+         </topic>
+         <topic href="html/new/3_4_0.xhtml" label="New in 3.4">
+         </topic>
+         <topic href="html/new/3_3_2.xhtml" label="New in 3.3.2">
+         </topic>
+         <topic href="html/new/3_3_1.xhtml" label="New in 3.3.1">
+         </topic>
+         <topic href="html/new/3_3_0.xhtml" label="New in 3.3">
+         </topic>
+         <topic href="html/new/3_2_0.xhtml" label="New in 3.2">
+         </topic>
+         <topic href="html/new/3_1_0.xhtml" label="New in 3.1">
+         </topic>
+         <topic href="html/new/3_0_0.xhtml" label="New in 3.0">
+         </topic>
+         <topic href="html/new/2_9_0.xhtml" label="New in 2.9">
+         </topic>
+         <topic href="html/new/2_8_0.xhtml" label="New in 2.8">
+         </topic>
+         <topic href="html/new/2_7_0.xhtml" label="New in 2.7">
+         </topic>
+         <topic href="html/new/2_6_0.xhtml" label="New in 2.6">
+         </topic>
+         <topic href="html/new/2_5_0.xhtml" label="New in 2.5">
+            <topic href="html/new/2_5_0_RC1.xhtml" label="2.5.0.RC1">
+            </topic>
+            <topic href="html/new/2_5_0_M2.xhtml" label="2.5.0.M2">
+            </topic>
+            <topic href="html/new/2_5_0_M1.xhtml" label="2.5.0.M1">
+            </topic>
+            <topic href="html/new/2_5_0_before_after.html" label="Before and after">
+            </topic>
          </topic>
       </topic>
    </topic>
