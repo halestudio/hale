@@ -120,9 +120,14 @@ jobs:
           sudo apt-get install -y trivy
           trivy --version
 
+      - name: Extract the archive file
+        run: |
+          mkdir -p extracted
+          tar -xzf build/target/hale-studio-*linux*.tar.gz -C extracted
+
       - name: Run Trivy scan
         run: |
-          trivy fs --severity CRITICAL,HIGH build/target/hale-studio-*linux*.tar.gz --format sarif --output trivy-results.sarif
+          trivy fs --severity CRITICAL,HIGH build/target/hale-studio-*linux* --format sarif --output trivy-results.sarif
 
 
       - name: Upload Trivy scan results to file
