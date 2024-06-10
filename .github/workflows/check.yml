@@ -118,9 +118,10 @@ jobs:
       - name: Install Trivy
         run: |
           sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/download/latest/trivy_0.52.1_Linux-64bit.tar.gz
-          tar zxvf trivy_0.40.0_Linux-64bit.tar.gz
+          wget -qO- https://api.github.com/repos/aquasecurity/trivy/releases/latest \
+          | grep -oP '"tag_name": "\K(.*)(?=")' \
+          | xargs -I {} wget https://github.com/aquasecurity/trivy/releases/download/{}/trivy_{Linux-64bit.tar.gz} -O trivy_latest.tar.gz
+          tar zxvf trivy_latest.tar.gz
           sudo mv trivy /usr/local/bin/
 
       - name: Verify Trivy installation
