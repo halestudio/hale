@@ -112,9 +112,9 @@ jobs:
 
       - name: Extract the archive file
         run: |
-          mkdir -p extracted
-          tar -xzf build/target/hale-studio-*linux*.tar.gz -C extracted
- 
+          mkdir -p build/target/hale-studio-linux-trivy
+          tar -xzf build/target/hale-studio-*linux*.tar.gz -C build/target/hale-studio-linux-trivy
+
       - name: Install Trivy
         run: |
           sudo apt-get update
@@ -125,12 +125,16 @@ jobs:
 
       - name: Run Trivy scan
         run: |
-          trivy fs --severity CRITICAL,HIGH build/target/hale-studio-*linux* --format sarif --output trivy-results.sarif
+          trivy fs --severity CRITICAL,HIGH build/target/hale-studio-linux-trivy --format sarif --output trivy-results.sarif
 
       - name: Upload Trivy SARIF report
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: trivy-results.sarif
+
+      - name: Clean up Trivy folder
+        run: |
+          rm -rf build/target/hale-studio-linux-trivy    
 
       - name: Find artifact comment if it exists
         if: "! github.event.pull_request.head.repo.fork " # Only run with write permissions
