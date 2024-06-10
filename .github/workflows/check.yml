@@ -115,13 +115,13 @@ jobs:
           mkdir -p build/target/hale-studio-linux-trivy
           tar -xzf build/target/hale-studio-*linux*.tar.gz -C build/target/hale-studio-linux-trivy
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget
-          wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.40.0_Linux-64bit.tar.gz
-          tar zxvf trivy_0.40.0_Linux-64bit.tar.gz
-          sudo mv trivy /usr/local/bin/
+      # - name: Install Trivy
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y wget
+      #     wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.40.0_Linux-64bit.tar.gz
+      #     tar zxvf trivy_0.40.0_Linux-64bit.tar.gz
+      #     sudo mv trivy /usr/local/bin/
 
       - name: Run Trivy scan
         run: |
