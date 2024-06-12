@@ -225,6 +225,11 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 		}
 
+		// for a query containing RESOLVEDEPTH we disable the pagination
+		if (primordialQueryParams.containsKey("RESOLVEDEPTH")) {
+			featuresPerRequest = UNLIMITED;
+		}
+
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
 		int hits;
@@ -266,6 +271,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 					"featuresPerRequest must be a positive integer or {0} to disable pagination",
 					UNLIMITED));
 		}
+
 		this.featuresPerRequest = featuresPerRequest;
 	}
 
