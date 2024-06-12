@@ -651,8 +651,9 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 				}
 
 				String projectName = getProjectInfo().getName();
-				String title = appTitle + " - " + ((projectName == null || projectName.isEmpty())
-						? "Unnamed" : projectName);
+				String title = appTitle + " - "
+						+ ((projectName == null || projectName.isEmpty()) ? "Unnamed"
+								: projectName);
 				if (projectFile == null) {
 					// TODO Use scheme to discover plugin that can provide title
 					// information
@@ -884,8 +885,8 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 	@Override
 	public void update() {
-		// no change check as this is done by clean before a new project is
-		// loaded
+		// check if there are changes, as you are about to load the same project
+		changeCheck();
 
 		URI currentLocation = null;
 		synchronized (this) {
@@ -929,7 +930,11 @@ public class ProjectServiceImpl extends AbstractProjectService implements Projec
 
 			@Override
 			public void run() {
-				MessageBox mb = new MessageBox(display.getActiveShell(),
+				Shell shell = display.getActiveShell();
+				if (shell == null) {
+					shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+				}
+				MessageBox mb = new MessageBox(shell,
 						SWT.YES | SWT.NO | SWT.CANCEL | SWT.ICON_QUESTION);
 				mb.setMessage("Save changes to the current project?"); //$NON-NLS-1$
 				mb.setText("Unsaved changes"); //$NON-NLS-1$
