@@ -13,7 +13,7 @@ jobs:
   verify-commits:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
         # https://github.com/taskmedia/action-conventional-commits
       - uses: taskmedia/action-conventional-commits@866c0e6dba6aaaef9ad0939a40620b27888906c2 # v1.1.17
