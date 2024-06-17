@@ -23,9 +23,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+
+import javax.xml.namespace.QName;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.NameValuePair;
@@ -226,15 +229,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		}
 
 		// for a query containing RESOLVEDEPTH we disable the pagination
-		if (primordialQueryParams.containsKey("RESOLVEDEPTH")) {
-			featuresPerRequest = UNLIMITED;
-		}
+//		if (primordialQueryParams.containsKey("RESOLVEDEPTH")) {
+//			featuresPerRequest = UNLIMITED;
+//		}
 
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
 		int hits;
 
-		if (ignoreNumberMatched || primordialQueryParams.containsKey("RESOLVEDEPTH")) {
+		if (ignoreNumberMatched
+		// || primordialQueryParams.containsKey("RESOLVEDEPTH")
+		) {
 			hits = UNKNOWN_SIZE;
 		}
 		else {
@@ -424,6 +429,12 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		private GmlInstanceCollection currentCollection;
 		private GmlInstanceIterator iterator;
 		private int totalFeaturesProcessed;
+		// used just for debug - to be deleted
+		private int additionalFeatureProcessed = 0;
+		// store the additional objects
+		private final HashSet<String> uniqIDInstancesAdditionalObjects = new HashSet<String>();
+		// store the "main" features of the GML
+		private final HashSet<String> uniqIDInstances = new HashSet<String>();
 
 		/**
 		 * Create the iterator
@@ -563,9 +574,17 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		 *         number of results reported by the WFS.
 		 */
 		protected boolean isFeatureLimitReached() {
+			boolean condition = (maxNumberOfFeatures != UNLIMITED
+					&& totalFeaturesProcessed >= maxNumberOfFeatures)
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size)
+					|| (totalFeaturesProcessed == size && !iterator.hasNext());
+			System.out.println("condition: " + condition + ", totalFeaturesProcessed: "
+					+ totalFeaturesProcessed + ", maxNumberOfFeatures: " + maxNumberOfFeatures
+					+ ", size: " + size);
 			return (maxNumberOfFeatures != UNLIMITED
 					&& totalFeaturesProcessed >= maxNumberOfFeatures)
-					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size);
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size)
+					|| (totalFeaturesProcessed == size && !iterator.hasNext());
 		}
 
 		/**
@@ -578,7 +597,31 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 
 			Instance instance = iterator.next();
-			return new StreamGmlInstance(instance, totalFeaturesProcessed++);
+
+			Iterable<QName> mapPropertiess = instance.getPropertyNames();
+			for (QName qName : mapPropertiess) {
+				if (qName.getLocalPart().equals("id") && qName.getPrefix().equals("gml")) {
+					Object[] gmlID = instance.getProperty(qName);
+					String gmlIDToCheck = (String) gmlID[0];
+
+					if (instance.getMetaData("ADDITIONAL_OBJECTS") != null
+							&& !instance.getMetaData("ADDITIONAL_OBJECTS").isEmpty()) {
+
+						if (!uniqIDInstancesAdditionalObjects.contains(gmlIDToCheck)
+								&& !uniqIDInstances.contains(gmlIDToCheck)) {
+							uniqIDInstancesAdditionalObjects.add(gmlIDToCheck);
+							additionalFeatureProcessed++;
+//							System.out.println(
+//									"additionalFeatureProcessed: " + additionalFeatureProcessed);
+						}
+
+						return instance;
+					}
+				}
+			}
+			int totalFPToBeRemoved = totalFeaturesProcessed++;
+//			System.out.println("totalFeaturesProcessed: " + totalFPToBeRemoved);
+			return new StreamGmlInstance(instance, totalFPToBeRemoved);
 		}
 
 		/**
