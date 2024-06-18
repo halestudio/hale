@@ -50,6 +50,7 @@ import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollectio
 import eu.esdihumboldt.hale.common.instance.model.impl.IndexInstanceReference;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceCollection;
 import eu.esdihumboldt.hale.io.gml.reader.internal.GmlInstanceCollection.GmlInstanceIterator;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
@@ -574,17 +575,9 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		 *         number of results reported by the WFS.
 		 */
 		protected boolean isFeatureLimitReached() {
-			boolean condition = (maxNumberOfFeatures != UNLIMITED
-					&& totalFeaturesProcessed >= maxNumberOfFeatures)
-					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size)
-					|| (totalFeaturesProcessed == size && !iterator.hasNext());
-			System.out.println("condition: " + condition + ", totalFeaturesProcessed: "
-					+ totalFeaturesProcessed + ", maxNumberOfFeatures: " + maxNumberOfFeatures
-					+ ", size: " + size);
 			return (maxNumberOfFeatures != UNLIMITED
 					&& totalFeaturesProcessed >= maxNumberOfFeatures)
-					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size)
-					|| (totalFeaturesProcessed == size && !iterator.hasNext());
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size);
 		}
 
 		/**
@@ -598,30 +591,31 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 			Instance instance = iterator.next();
 
-			Iterable<QName> mapPropertiess = instance.getPropertyNames();
-			for (QName qName : mapPropertiess) {
-				if (qName.getLocalPart().equals("id") && qName.getPrefix().equals("gml")) {
-					Object[] gmlID = instance.getProperty(qName);
-					String gmlIDToCheck = (String) gmlID[0];
+			if (instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS) != null
+					&& !instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS).isEmpty()) {
 
-					if (instance.getMetaData("ADDITIONAL_OBJECTS") != null
-							&& !instance.getMetaData("ADDITIONAL_OBJECTS").isEmpty()) {
+				for (QName propertyName : instance.getPropertyNames()) {
+					if ((propertyName.getNamespaceURI().startsWith(GMLConstants.NS_WFS)
+							|| propertyName.getNamespaceURI()
+									.startsWith(GMLConstants.GML_NAMESPACE_CORE))
+							&& (propertyName.getLocalPart().equals("id")
+									&& propertyName.getPrefix().equals("gml"))) {
+						Object[] gmlID = instance.getProperty(propertyName);
+						if (gmlID[0] != null) {
+							String gmlIDToCheck = (String) gmlID[0];
 
-						if (!uniqIDInstancesAdditionalObjects.contains(gmlIDToCheck)
-								&& !uniqIDInstances.contains(gmlIDToCheck)) {
-							uniqIDInstancesAdditionalObjects.add(gmlIDToCheck);
-							additionalFeatureProcessed++;
-//							System.out.println(
-//									"additionalFeatureProcessed: " + additionalFeatureProcessed);
+							if (!uniqIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
+								uniqIDInstancesAdditionalObjects.add(gmlIDToCheck);
+								additionalFeatureProcessed++;
+							}
 						}
-
-						return instance;
+						return new StreamGmlInstance(instance, totalFeaturesProcessed);
 					}
 				}
+
 			}
-			int totalFPToBeRemoved = totalFeaturesProcessed++;
-//			System.out.println("totalFeaturesProcessed: " + totalFPToBeRemoved);
-			return new StreamGmlInstance(instance, totalFPToBeRemoved);
+
+			return new StreamGmlInstance(instance, totalFeaturesProcessed++);
 		}
 
 		/**

@@ -63,6 +63,7 @@ import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeIndex;
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.MappingRelevantFlag;
+import eu.esdihumboldt.hale.io.gml.geometry.GMLConstants;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlHelper;
 import eu.esdihumboldt.hale.io.gml.reader.internal.instance.StreamGmlInstance;
 import eu.esdihumboldt.hale.io.xsd.constraint.XmlAttributeFlag;
@@ -76,6 +77,8 @@ import eu.esdihumboldt.hale.io.xsd.model.XmlElement;
  * @partner 01 / Fraunhofer Institute for Computer Graphics Research
  */
 public class GmlInstanceCollection implements InstanceCollection, LogAware {
+
+	public static final String ADDITIONAL_OBJECTS = "ADDITIONAL_OBJECTS";
 
 	/**
 	 * Iterates over {@link Instance}s in an XML/GML stream
@@ -92,7 +95,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 		private Map<QName, TypeDefinition> allElements;
 
 		private TypeDefinition nextType;
-		private Map<TypeDefinition, String> nextTypeDetails = new HashMap<>();;
+		private Map<TypeDefinition, String> nextTypeDetails = new HashMap<>();
 
 		/**
 		 * The index in the stream for the element returned next with
@@ -112,7 +115,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 		 * Uses a linked list to allow null items.
 		 */
 		private final Deque<TypeDefinition> typeStack = new LinkedList<>();
-		private final Stack<String> elementStack = new Stack<>();
+		private final Stack<QName> elementStack = new Stack<>();
 
 		/**
 		 * Default constructor
@@ -121,7 +124,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 			super();
 
 			nextType = null;
-			nextTypeDetails = null;
+			nextTypeDetails = new HashMap<>();
 
 			try {
 				in = new BufferedInputStream(source.getInput());
@@ -210,12 +213,13 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 						}
 					}
 					typeStack.push(def);
-					elementStack.push(elementName.getLocalPart());
+					elementStack.push(elementName);
 
 					boolean isAnAdditionalObject = false;
 					// Now you want to find the parent element
 					for (int i = elementStack.size() - 1; i >= 0; i--) {
-						if ("additionalObjects".equals(elementStack.get(i))) {
+						if (elementStack.get(i).getNamespaceURI().startsWith(GMLConstants.NS_WFS)
+								&& elementStack.get(i).getLocalPart().equals("additionalObjects")) {
 							isAnAdditionalObject = true;
 							break;
 						}
@@ -236,7 +240,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 					if (def != null && isAllowedType(def)) {
 						nextType = def;
 						if (isAnAdditionalObject) {
-							nextTypeDetails.put(def, "ADDITIONAL_OBJECTS");
+							nextTypeDetails.put(def, ADDITIONAL_OBJECTS);
 						}
 					}
 				}
@@ -595,7 +599,7 @@ public class GmlInstanceCollection implements InstanceCollection, LogAware {
 					for (Map.Entry<TypeDefinition, String> entry : nextTypeDetails.entrySet()) {
 						TypeDefinition key = entry.getKey();
 						String val = entry.getValue();
-						((MutableInstance) instance).setMetaData("ADDITIONAL_OBJECTS", key);
+						((MutableInstance) instance).setMetaData(ADDITIONAL_OBJECTS, key);
 					}
 				}
 				return instance;
