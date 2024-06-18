@@ -53,7 +53,7 @@
 	</location>
 	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 		<repository location="http://build-artifacts.wetransform.to/p2/offline-resources/site"/>
-		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.6.13.bnd-DC5qw"/>
+		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.6.18.bnd-NmxrDQ"/>
 	</location>
 </locations>
 </target>
