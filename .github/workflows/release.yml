@@ -175,7 +175,7 @@ jobs:
     name: Deploy Maven artifacts
     runs-on: ubuntu-latest
     needs: [release]
-    if: ${{ needs.release.outputs.release-published != 'false' }}
+    if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
     steps:
       - name: Setup Maven
         uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
@@ -208,7 +208,7 @@ jobs:
     name: Publish products and update site
     runs-on: ubuntu-latest
     needs: [release]
-    if: ${{ needs.release.outputs.release-published != 'false' }}
+    if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
     steps:
       - name: Setup Maven
         uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
@@ -278,7 +278,7 @@ jobs:
     name: Build Windows installer
     runs-on: windows-latest
     needs: [release]
-    if: ${{ needs.release.outputs.release-published != 'false' }}
+    if: ${{ !inputs.dryRun && needs.release.outputs.release-published != 'false' }}
     steps:
       - name: Setup Maven
         uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
