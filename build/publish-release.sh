@@ -8,26 +8,27 @@ cd $CURRENT_DIR
 
 set -e
 
-# TODO: move these tasks also out to separate jobs to prevent a failure failing the release? Would allow to rerun the respective parts
+# Note: Build and publishing has been moved to separate jobs in order to avoid the release failing due to build errors
+# Build errors on GitHub actions happen from time to time due to issues with Maven dependency download on Azure
 
 #
 # Build products
 #
 
-./build.sh product --arch x86_64 --os linux HALE
+# ./build.sh product --arch x86_64 --os linux HALE
 
 # Note: Windows installer is built in separate Job (on windows runner)
-./build.sh product --arch x86_64 --os windows HALE
+# ./build.sh product --arch x86_64 --os windows HALE
 
-./build.sh product --arch x86_64 --os macosx HALE
+# ./build.sh product --arch x86_64 --os macosx HALE
 
-./build.sh product --arch x86_64 --os linux --publish Infocenter
+# ./build.sh product --arch x86_64 --os linux --publish Infocenter
 
 #
 # Upload update site
 #
 
-./upload-site.sh
+# ./upload-site.sh
 
 
 # Note: Deploying Maven artifacts is done in separate Job since it is currently prone to fail on GitHub Actions and should not fail the release
