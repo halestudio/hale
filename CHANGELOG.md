@@ -1,3 +1,36 @@
+## [5.2.0](https://github.com/halestudio/hale/compare/v5.1.0...v5.2.0) (2024-06-19)
+
+
+### Features
+
+* add binding to service provider for use in Groovy script ([990a152](https://github.com/halestudio/hale/commit/990a15297ab0d80d9ee84b7315011bec0a9d3c8b))
+* add paramter "resolvedepth" in UI when downloading data via WFS ([693b8b8](https://github.com/halestudio/hale/commit/693b8b8a38782f9686af3a310428515edc3674a6)), closes [#1085](https://github.com/halestudio/hale/issues/1085)
+* allow usage of LookupTableImpl and LookupTableInfoImpl in Groovy ([6b96ff9](https://github.com/halestudio/hale/commit/6b96ff9c7c8820aa86c92c75c5d75799085cb261))
+* CSV, Excel and JSON writer - reduce to single geometries if data does not contain multi geometry ([3aa38bf](https://github.com/halestudio/hale/commit/3aa38bf95074c90ee4cf070e659a5cece7d11d4c)), closes [#986](https://github.com/halestudio/hale/issues/986)
+* update version number to 5.2.0 for the next snapshot ([5fbde49](https://github.com/halestudio/hale/commit/5fbde49e3fd637522d824183df07443608716a99))
+
+
+### Bug Fixes
+
+*  functions not working for elements with value and attribute ([2493822](https://github.com/halestudio/hale/commit/2493822d4623911dd3b0d45b49d565b9f50efb7f))
+* add quotes to automatically generated condition contexts on parent ([72b243d](https://github.com/halestudio/hale/commit/72b243d9ef88a8ff35623ca98e08b750c21e5f09))
+* allow filtering for joins ([4309686](https://github.com/halestudio/hale/commit/4309686bfa04797ad6543172155501ffb8a6231e))
+* **deps:** update dependency de.undercouch:gradle-download-task to v5 ([9d9a370](https://github.com/halestudio/hale/commit/9d9a370008514482840af73bcdf3cfe68b38d85c))
+* **deps:** update dependency org.apache.maven.plugin-tools:maven-plugin-annotations to v3.13.0 ([b8241c1](https://github.com/halestudio/hale/commit/b8241c1b4835e7f38af885db197fd371deb3e8a1))
+* **deps:** update dependency org.apache.maven.resolver:maven-resolver-api to v1.9.20 ([d56e083](https://github.com/halestudio/hale/commit/d56e083333fd46f309c9088eee4820de9f44ae54))
+* **deps:** update dependency org.apache.maven.wagon:wagon-http to v3.5.3 ([f23c9fa](https://github.com/halestudio/hale/commit/f23c9fa710b23025c08279b9347d2e906f4955db))
+* **deps:** update dependency org.eclipse.jgit:org.eclipse.jgit to v6 ([4a6064f](https://github.com/halestudio/hale/commit/4a6064f7bd3e3636ff7ceb6f31e027a114e2960f))
+* **deps:** update dependency org.slf4j:slf4j-simple to v2 ([71567f7](https://github.com/halestudio/hale/commit/71567f78caeb2951fe85114a3a787137f4e9ac4c))
+* **deps:** update dependency org.yaml:snakeyaml to v2 ([7d321e3](https://github.com/halestudio/hale/commit/7d321e36e4b5c5c08950b77bca02b8a2f7fd53d1))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2024.5.23.bnd-osxq0g ([db6b415](https://github.com/halestudio/hale/commit/db6b415e243ceec677c87105eda26a42a0571cf1))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2024.6.13.bnd-dc5qw ([160ac42](https://github.com/halestudio/hale/commit/160ac42be45356a8d9b7882d92c64625f05908fd))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2024.6.18.bnd-nmxrdq ([ef6534f](https://github.com/halestudio/hale/commit/ef6534f90d202b8a651bf93061f3773e59403b48))
+* **deps:** update other org.apache.maven.wagon dependencies ([1e87ef5](https://github.com/halestudio/hale/commit/1e87ef58de6e345cba7ae097214d3286a8bbf1e7))
+* don't close PrintStream when using printCell ([ca99edf](https://github.com/halestudio/hale/commit/ca99edf3d6c93339c2dca623aaa9b7a4bf2db7e5))
+* fix provider definition for geometry.unifyWindingOrder parameters ([4cca094](https://github.com/halestudio/hale/commit/4cca0949262e3e5c80b7bb031c1ccfbb9b3d578e))
+* Reload and update schemas - saves the last  changes ([a80cf5a](https://github.com/halestudio/hale/commit/a80cf5a1936747853a1594b6a0e7a6142960800f)), closes [#956](https://github.com/halestudio/hale/issues/956)
+* use appropriate methods to convert the numbers in XML ([2baec50](https://github.com/halestudio/hale/commit/2baec50f5ba9117f09942c13725b031a449c17f0))
+
 ## [5.1.0]
 
 ### Added
