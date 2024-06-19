@@ -115,30 +115,21 @@ jobs:
           mkdir -p build/target/hale-studio-linux-trivy
           tar -xzf build/target/hale-studio-*linux*.tar.gz -C build/target/hale-studio-linux-trivy
 
-      - name: Install Trivy
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget apt-transport-https gnupg lsb-release
-          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
-          echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
-          sudo apt-get update
-          sudo apt-get install -y trivy
-          trivy --version
-
-      - name: Verify Trivy installation
-        run: |
-          trivy --version
-
-      - name: Run Trivy scan
-        run: |
-          trivy fs --severity CRITICAL,HIGH build/target/hale-studio-linux-trivy --format sarif --output trivy-results.sarif
+      - name: Run Trivy vulnerability scanner in fs mode
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'rootfs'
+          scan-ref: 'build/target/hale-studio-linux-trivy'
+          format: 'sarif'
+          severity: 'CRITICAL,HIGH'
+          output: 'trivy-results.sarif'
 
       - name: Upload Trivy SARIF report
         uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: trivy-results.sarif
 
-      - name: Clean up Trivy folder
+      - name: Cleanup extracted directory
         run: |
           rm -rf build/target/hale-studio-linux-trivy    
 
