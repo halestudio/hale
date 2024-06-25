@@ -19,8 +19,9 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ListMultimap;
 import org.locationtech.jts.geom.Geometry;
+
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -39,9 +40,9 @@ import eu.esdihumboldt.hale.common.schema.geometry.GeometryProperty;
  * 
  * @author Kevin Mais
  */
-public class CalculateLength extends
-		AbstractSingleTargetPropertyTransformation<TransformationEngine> implements
-		CalculateLengthFunction {
+public class CalculateLength
+		extends AbstractSingleTargetPropertyTransformation<TransformationEngine>
+		implements CalculateLengthFunction {
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractSingleTargetPropertyTransformation#evaluate(java.lang.String,
@@ -75,7 +76,7 @@ public class CalculateLength extends
 
 		if (geoms.size() > 1) {
 
-			int length = 0;
+			double length = 0;
 
 			for (GeometryProperty<?> geoProp : geoms) {
 				length += geoProp.getGeometry().getLength();

@@ -19,8 +19,9 @@ package eu.esdihumboldt.cst.functions.geometric;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.ListMultimap;
 import org.locationtech.jts.geom.Geometry;
+
+import com.google.common.collect.ListMultimap;
 
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
 import eu.esdihumboldt.hale.common.align.transformation.engine.TransformationEngine;
@@ -74,7 +75,7 @@ public class CalculateArea extends AbstractSingleTargetPropertyTransformation<Tr
 
 		if (geoms.size() > 1) {
 
-			int area = 0;
+			double area = 0;
 
 			for (GeometryProperty<?> geoProp : geoms) {
 				area += geoProp.getGeometry().getArea();
@@ -93,7 +94,8 @@ public class CalculateArea extends AbstractSingleTargetPropertyTransformation<Tr
 			return geom.getArea();
 		}
 		else {
-			throw new TransformationException("Geometry for calculate area could not be retrieved.");
+			throw new TransformationException(
+					"Geometry for calculate area could not be retrieved.");
 		}
 
 	}

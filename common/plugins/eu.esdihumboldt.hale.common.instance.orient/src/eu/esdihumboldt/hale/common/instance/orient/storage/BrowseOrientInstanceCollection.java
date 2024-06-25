@@ -228,7 +228,7 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 	 */
 	@Override
 	public int size() {
-		int size = 0;
+		long size = 0;
 		DatabaseReference<ODatabaseDocumentTx> ref = database.openRead();
 		ODatabaseDocumentTx db = ref.getDatabase();
 		try {
@@ -244,7 +244,11 @@ public class BrowseOrientInstanceCollection implements InstanceCollection {
 			ref.dispose();
 		}
 
-		return size;
+		if (size > Integer.MAX_VALUE) {
+			throw new IllegalArgumentException("The size exceeds the range of int.");
+		}
+
+		return (int) size;
 	}
 
 	/**
