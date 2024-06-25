@@ -146,12 +146,28 @@ public class INSPIRECodeListReader extends AbstractImportProvider implements Cod
 				}
 				DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
 				try {
+					// Prevent XXE by disabling external entities and DTDs
+					dbfac.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+					dbfac.setFeature("http://xml.org/sax/features/external-general-entities",
+							false);
+					dbfac.setFeature("http://xml.org/sax/features/external-parameter-entities",
+							false);
+					dbfac.setFeature(
+							"http://apache.org/xml/features/nonvalidating/load-external-dtd",
+							false);
+					dbfac.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
 					DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
-					return docBuilder.parse(entity.getContent());
+
+					try (InputStream content = entity.getContent()) {
+						return docBuilder.parse(content);
+					}
 				} catch (ParserConfigurationException ex) {
-					throw new IllegalStateException(ex);
+					throw new IllegalStateException("Parser configuration error", ex);
 				} catch (SAXException ex) {
 					throw new ClientProtocolException("Malformed XML document", ex);
+				} catch (IOException ex) {
+					throw new ClientProtocolException("IO error while parsing XML document", ex);
 				}
 			}
 		});

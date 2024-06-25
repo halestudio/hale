@@ -12,10 +12,13 @@ package org.jdesktop.swingx.mapviewer.util;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
@@ -24,6 +27,7 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.TileFactoryInfo;
 import org.jdesktop.swingx.mapviewer.TileProvider;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * These are math utilities for converting between pixels, tiles, and geographic
@@ -179,27 +183,50 @@ public final class GeoUtil {
 	 */
 	public static GeoPosition getPositionForAddress(String street, String city, String state)
 			throws IOException {
+		URL load = new URL("http://api.local.yahoo.com/MapsService/V1/geocode?" + "appid=joshy688"
+				+ "&street=" + street.replace(' ', '+') + "&city=" + city.replace(' ', '+')
+				+ "&state=" + state.replace(' ', '+'));
+
+		HttpURLConnection connection = null;
 		try {
-			URL load = new URL("http://api.local.yahoo.com/MapsService/V1/geocode?"
-					+ "appid=joshy688" + "&street=" + street.replace(' ', '+') + "&city="
-					+ city.replace(' ', '+') + "&state=" + state.replace(' ', '+'));
-			// System.out.println("using address: " + load);
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document doc = builder.parse(load.openConnection().getInputStream());
-			XPath xpath = XPathFactory.newInstance().newXPath();
-			// NodeList str =
-			// (NodeList)xpath.evaluate("//Result",doc,XPathConstants.NODESET);
-			Double lat = (Double) xpath.evaluate("//Result/Latitude/text()", doc,
-					XPathConstants.NUMBER);
-			Double lon = (Double) xpath.evaluate("//Result/Longitude/text()", doc,
-					XPathConstants.NUMBER);
-			// System.out.println("got address at: " + lat + " " + lon);
-			return new GeoPosition(lon, lat, GeoPosition.WGS_84_EPSG);
-		} catch (IOException e) {
-			throw e;
+			connection = (HttpURLConnection) load.openConnection();
+			connection.setRequestMethod("GET");
+
+			// Ensure secure XML processing
+			DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+			builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+			builderFactory.setFeature("http://xml.org/sax/features/external-general-entities",
+					false);
+			builderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities",
+					false);
+			builderFactory.setFeature(
+					"http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			builderFactory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
+			DocumentBuilder builder = builderFactory.newDocumentBuilder();
+
+			// Parse the response using try-with-resources
+			try (InputStream inputStream = connection.getInputStream()) {
+				Document doc = builder.parse(inputStream);
+
+				// Use XPath to extract data
+				XPath xpath = XPathFactory.newInstance().newXPath();
+				Double lat = (Double) xpath.evaluate("//Result/Latitude/text()", doc,
+						XPathConstants.NUMBER);
+				Double lon = (Double) xpath.evaluate("//Result/Longitude/text()", doc,
+						XPathConstants.NUMBER);
+
+				return new GeoPosition(lon, lat, GeoPosition.WGS_84_EPSG);
+			}
+
+		} catch (ParserConfigurationException | SAXException e) {
+			throw new IOException("Error parsing XML response", e);
 		} catch (Exception e) {
-			throw new IOException(
-					"Failed to retrieve location information from the internet: " + e.toString());
+			throw new IOException("Failed to retrieve location information: " + e.getMessage(), e);
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
 		}
 	}
 

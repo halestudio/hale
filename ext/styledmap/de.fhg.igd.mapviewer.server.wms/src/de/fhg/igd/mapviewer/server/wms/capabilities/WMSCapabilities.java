@@ -15,9 +15,11 @@
 package de.fhg.igd.mapviewer.server.wms.capabilities;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URI;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -254,14 +256,28 @@ public class WMSCapabilities {
 	 * @throws ParserConfigurationException if an error occurred configuring the
 	 *             document parser
 	 * @throws IOException if an error occurred reading the document
-	 * @throws SAXException if an error occurred parsing the document
 	 * @throws MalformedURLException if creating an URL from the given URI fails
 	 */
 	private static Document getDocument(URI uri)
-			throws ParserConfigurationException, MalformedURLException, SAXException, IOException {
+			throws ParserConfigurationException, MalformedURLException, IOException {
+		builderFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+		builderFactory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+		builderFactory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+		builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd",
+				false);
+		builderFactory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+
 		DocumentBuilder builder = builderFactory.newDocumentBuilder();
 		Proxy proxy = ProxyUtil.findProxy(uri);
-		return builder.parse(uri.toURL().openConnection(proxy).getInputStream());
+		URLConnection connection = uri.toURL().openConnection(proxy);
+
+		// Ensure the input stream is closed properly
+		try (InputStream inputStream = connection.getInputStream()) {
+			return builder.parse(inputStream);
+		} catch (IOException | SAXException e) {
+			// Handle exceptions related to input stream and XML parsing
+			throw new IOException("Error parsing the document from the URI: " + uri, e);
+		}
 	}
 
 	/**
