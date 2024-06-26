@@ -15,8 +15,8 @@
 
 package eu.esdihumboldt.hale.ui.service.groovy.internal;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -317,9 +317,9 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 			// not simply using hashCode, because it would be far to easy to
 			// modify the script in a undetectable way
 			try {
-				MessageDigest md = MessageDigest.getInstance("MD5");
+				MessageDigest md = MessageDigest.getInstance("SHA-256");
 				for (String script : scripts)
-					md.update(script.getBytes("UTF-8"));
+					md.update(script.getBytes(StandardCharsets.UTF_8));
 				byte[] hash = md.digest();
 				StringBuilder sb = new StringBuilder(2 * hash.length);
 				for (byte b : hash) {
@@ -329,9 +329,7 @@ public class PreferencesGroovyService extends DefaultGroovyService {
 				// Both exceptions cannot happen in a valid Java platform.
 				// Anyways, if they happen, execution should stop here!
 			} catch (NoSuchAlgorithmException e) {
-				throw new IllegalStateException("No MD5 MessageDigest!");
-			} catch (UnsupportedEncodingException e) {
-				throw new IllegalStateException("No UTF-8 Charset!");
+				throw new IllegalStateException("No SHA-256 MessageDigest!");
 			}
 		}
 		return scriptHash;
