@@ -30,13 +30,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.PlatformUI;
 
@@ -57,7 +55,6 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 	private CheckboxTableViewer featureTypeTable;
 	private Button selectAll = null;
 	private Group chooseFeatureTypes;
-	private Table table;
 
 	/**
 	 * 
@@ -122,23 +119,14 @@ public class InstanceExportConfigurationPage extends CommonInstanceExportConfigu
 				}
 			});
 
-			Label separatorLabel = new Label(page, SWT.NONE);
-			separatorLabel.setText("Warning! Feature types with no data are not selectable");
-
-			// Set the text colour of the label to yellow
-			Color greyLabel = PlatformUI.getWorkbench().getDisplay()
-					.getSystemColor(SWT.COLOR_DARK_GRAY);
-			separatorLabel.setForeground(greyLabel);
-
-			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
-			table.setHeaderVisible(false);
-			table.setLinesVisible(false);
-			table.setBackground(PlatformUI.getWorkbench().getDisplay()
-					.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-			GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
-			groupData.applyTo(table);
+			Table table = new Table(chooseFeatureTypes,
+					SWT.CHECK | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 
 			featureTypeTable = new CheckboxTableViewer(table);
+
+			// Configure the layout for the table using GridDataFactory
+			GridDataFactory.fillDefaults().grab(true, true).hint(300, 300).applyTo(table);
+
 			featureTypeTable.setLabelProvider(new LabelProvider() {
 
 				@Override
