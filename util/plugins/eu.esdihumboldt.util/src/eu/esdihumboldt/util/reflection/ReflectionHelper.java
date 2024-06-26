@@ -74,10 +74,9 @@ public class ReflectionHelper {
 		Method result = null;
 		Method[] methods = c.getMethods();
 		for (Method m : methods) {
-			if (m.getName().equals(setterName)
-					&& m.getParameterTypes().length == 1
-					&& (propertyType == null || m.getParameterTypes()[0]
-							.isAssignableFrom(propertyType))) {
+			if (m.getName().equals(setterName) && m.getParameterTypes().length == 1
+					&& (propertyType == null
+							|| m.getParameterTypes()[0].isAssignableFrom(propertyType))) {
 				result = m;
 				break;
 			}
@@ -109,10 +108,9 @@ public class ReflectionHelper {
 		// search visible and hidden methods in this class
 		Method[] methods = c.getDeclaredMethods();
 		for (Method m : methods) {
-			if (m.getName().equals(setterName)
-					&& m.getParameterTypes().length == 1
-					&& (propertyType == null || m.getParameterTypes()[0]
-							.isAssignableFrom(propertyType))) {
+			if (m.getName().equals(setterName) && m.getParameterTypes().length == 1
+					&& (propertyType == null
+							|| m.getParameterTypes()[0].isAssignableFrom(propertyType))) {
 				result = m;
 				break;
 			}
@@ -355,8 +353,8 @@ public class ReflectionHelper {
 	 * @throws InvocationTargetException if the getter throws an exception
 	 */
 	@SuppressWarnings("unchecked")
-	private static <T> T invokeGetter(Object bean, Method getter) throws IllegalArgumentException,
-			IllegalAccessException, InvocationTargetException {
+	private static <T> T invokeGetter(Object bean, Method getter)
+			throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		boolean accessible = getter.isAccessible();
 		getter.setAccessible(true);
 		T result = null;
@@ -432,8 +430,8 @@ public class ReflectionHelper {
 	 * @throws IllegalStateException is the field could be found or accessed
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getDeepPropertyOrField(Object bean, String propertyName, Class<T> valueClass)
-			throws IllegalArgumentException, InvocationTargetException {
+	public static <T> T getDeepPropertyOrField(Object bean, String propertyName,
+			Class<T> valueClass) throws IllegalArgumentException, InvocationTargetException {
 		try {
 			return ReflectionHelper.getDeepProperty(bean, propertyName);
 		} catch (NoSuchMethodException e) {/* ignore */
@@ -443,8 +441,8 @@ public class ReflectionHelper {
 		// there is no getter for the property. try to get the field directly
 		Field f = findDeepField(bean.getClass(), propertyName, valueClass);
 		if (f == null) {
-			throw new IllegalStateException("Could not find " + "field for property "
-					+ propertyName + " in class " + bean.getClass().getCanonicalName());
+			throw new IllegalStateException("Could not find " + "field for property " + propertyName
+					+ " in class " + bean.getClass().getCanonicalName());
 		}
 
 		boolean access = f.isAccessible();
@@ -562,12 +560,24 @@ public class ReflectionHelper {
 				}
 				while (entries.hasMoreElements()) {
 					JarEntry j = entries.nextElement();
-					if (j.getName().matches("^" + package_path + ".+\\..+")) { //$NON-NLS-1$ //$NON-NLS-2$
+					String entryName = j.getName();
+
+					// Ensure the entry name is properly normalized and checked
+					File targetFile = new File(package_path, entryName);
+					String canonicalTargetPath = targetFile.getCanonicalPath();
+					String canonicalBasePath = new File(package_path).getCanonicalPath();
+
+					if (!canonicalTargetPath.startsWith(canonicalBasePath + File.separator)) {
+						throw new IOException(
+								"Entry is outside of the target directory: " + entryName);
+					}
+
+					if (entryName.matches("^" + package_path + ".+\\..+")) { //$NON-NLS-1$ //$NON-NLS-2$
 						if (slashed) {
-							file_names.add("/" + j.getName()); //$NON-NLS-1$
+							file_names.add("/" + entryName); //$NON-NLS-1$
 						}
 						else {
-							file_names.add(j.getName());
+							file_names.add(entryName);
 						}
 					}
 				}
@@ -664,8 +674,8 @@ public class ReflectionHelper {
 		}
 	}
 
-	private static void getClassesFromPackage(String pkg, List<Class<?>> l,
-			ClassLoader classLoader, boolean recursive) throws IOException {
+	private static void getClassesFromPackage(String pkg, List<Class<?>> l, ClassLoader classLoader,
+			boolean recursive) throws IOException {
 		File[] files = getFilesFromPackage(pkg);
 		for (File f : files) {
 			String name = f.getName();
