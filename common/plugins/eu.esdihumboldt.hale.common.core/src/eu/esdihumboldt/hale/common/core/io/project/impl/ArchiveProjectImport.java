@@ -87,42 +87,48 @@ public class ArchiveProjectImport extends AbstractImportProvider implements Impo
 	// destination file has to be a directory
 	private void getZipFiles(InputStream file, File destination) throws IOException {
 		byte[] buf = new byte[1024];
-		ZipInputStream zipinputstream = null;
-		ZipEntry zipentry;
-		zipinputstream = new ZipInputStream(file);
+		try (ZipInputStream zipInputStream = new ZipInputStream(file)) {
+			ZipEntry zipEntry;
 
-		try {
-			while ((zipentry = zipinputstream.getNextEntry()) != null) {
-				String entryName = zipentry.getName();
-				int n;
-				FileOutputStream fileoutputstream;
-				File newFile = new File(entryName);
-				String directory = newFile.getParent();
+			while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+				String entryName = zipEntry.getName();
 
-				if (directory != null) {
-					File newF = new File(destination, directory);
-					try {
-						newF.mkdirs();
-					} catch (SecurityException e) {
-						log.debug("Can not create directories because of SecurityManager", e);
+				// Normalize the entry name and ensure it doesn't point outside
+				// the destination directory
+				File newFile = new File(destination, entryName).getCanonicalFile();
+
+				if (!newFile.getPath()
+						.startsWith(destination.getCanonicalPath() + File.separator)) {
+					throw new IOException(
+							"Entry is outside of the target dir: " + zipEntry.getName());
+				}
+
+				if (zipEntry.isDirectory()) {
+					if (!newFile.isDirectory() && !newFile.mkdirs()) {
+						throw new IOException("Failed to create directory " + newFile);
+					}
+				}
+				else {
+					// Ensure parent directories are created
+					File parent = newFile.getParentFile();
+					if (!parent.isDirectory() && !parent.mkdirs()) {
+						throw new IOException("Failed to create directory " + parent);
+					}
+
+					// Write the file content
+					try (FileOutputStream fos = new FileOutputStream(newFile)) {
+						int len;
+						while ((len = zipInputStream.read(buf)) > 0) {
+							fos.write(buf, 0, len);
+						}
 					}
 				}
 
-				File nf = new File(destination, entryName);
-				fileoutputstream = new FileOutputStream(nf);
-
-				while ((n = zipinputstream.read(buf, 0, 1024)) > -1)
-					fileoutputstream.write(buf, 0, n);
-
-				fileoutputstream.close();
-				zipinputstream.closeEntry();
-
+				zipInputStream.closeEntry();
 			}
 		} catch (FileNotFoundException e) {
 			throw new IOException("Destination directory not found", e);
 		}
-
-		zipinputstream.close();
 	}
 
 	@Override
