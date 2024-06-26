@@ -113,15 +113,14 @@ public class XLSInstanceExportConfigurationPage extends CommonInstanceExportConf
 				}
 			});
 
-			table = new Table(chooseFeatureTypes, SWT.CHECK | SWT.MULTI | SWT.SCROLL_PAGE);
-			table.setHeaderVisible(false);
-			table.setLinesVisible(false);
-			table.setBackground(PlatformUI.getWorkbench().getDisplay()
-					.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-			GridDataFactory groupData = GridDataFactory.fillDefaults().grab(true, false);
-			groupData.applyTo(table);
+			Table table = new Table(chooseFeatureTypes,
+					SWT.CHECK | SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL);
 
 			featureTypeTable = new CheckboxTableViewer(table);
+
+			// Configure the layout for the table using GridDataFactory
+			GridDataFactory.fillDefaults().grab(true, true).hint(300, 300).applyTo(table);
+
 			featureTypeTable.setLabelProvider(new LabelProvider() {
 
 				@Override
