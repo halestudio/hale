@@ -281,72 +281,66 @@ public class Servicemerger {
 	 * @param dir the directory of the jar files
 	 * @throws IOException
 	 */
-	private void merge(File dir) throws IOException{	
-		
-		File[] files = dir.listFiles();
-		Map <String, File> visited = new HashMap<String, File>();
-		//are jar files in the given directory?
-		if (files != null) {
-			for (int i = 0; i < files.length; i++) {
-				
-				//we only work with .jar files
-				JarFile jar = null;
-				
-				if(this.bndFlag == false){
-					if(files[i].getName().endsWith(".jar")){
-						jar = new JarFile(files[i]);
-					}
-				}
-				
-				else if(this.bndFlag == true){
-					if(files[i].getName().endsWith(".jar") && bndSpecifications.contains(files[i].getName())){
-						jar = new JarFile(files[i]);
-					}
-				}
-						
-					if(jar != null){
-					
-					Enumeration<JarEntry> jarenu = jar.entries();
-					//lets look at the entry of a specific jar file
-					 while (jarenu.hasMoreElements()){
-						 
-						 JarEntry entry = jarenu.nextElement();
-						 //do the jar file contains a servicefile?
-						if(entry.getName().contains("META-INF") 
-								&& entry.getName().contains("services") 
-								&& !entry.isDirectory()){
-							
-							if(visited.containsKey(entry.getName())){
-								
-								File mergedFile = visited.get(entry.getName());
-								writeMergedFile(mergedFile, readFile(jar.getInputStream(entry)));		
-							
-							}
-							
-							else {
-								File mergedFile = new File(dest + java.io.File.separator + entry.getName());
-								writeMergedFile(mergedFile, readFile(jar.getInputStream(entry)));
-								visited.put(entry.getName(), mergedFile);
-							}
-		
-						}
-								
-					 
-					 
-					 }
-				
-					 }
-			
-				
-				
-			
-				
-			}
-		}
+	private void merge(File dir) throws IOException {
+	    File[] files = dir.listFiles();
+	    Map<String, File> visited = new HashMap<>();
+
+	    // Are jar files in the given directory?
+	    if (files != null) {
+	        for (File file : files) {
+	            if (file.getName().endsWith(".jar") && shouldProcessJar(file)) {
+	                try (JarFile jar = new JarFile(file)) {
+	                    processJarFile(jar, visited);
+	                }
+	            }
+	        }
+	    }
 	}
-	
-	
-	
+
+	private boolean shouldProcessJar(File file) {
+	    return !this.bndFlag || bndSpecifications.contains(file.getName());
+	}
+
+	private void processJarFile(JarFile jar, Map<String, File> visited) throws IOException {
+	    Enumeration<JarEntry> jarEntries = jar.entries();
+	    while (jarEntries.hasMoreElements()) {
+	        JarEntry entry = jarEntries.nextElement();
+	        if (isServiceFile(entry)) {
+	            File mergedFile = visited.get(entry.getName());
+	            if (mergedFile == null) {
+	                mergedFile = new File(dest, entry.getName());
+	                if (isInsideDestinationDirectory(mergedFile)) {
+	                    visited.put(entry.getName(), mergedFile);
+	                } else {
+	                    throw new IOException("Entry is outside of the target dir: " + entry.getName());
+	                }
+	            }
+	            writeMergedFile(mergedFile, readJarFile(jar.getInputStream(entry)));
+	        }
+	    }
+	}
+
+	private boolean isServiceFile(JarEntry entry) {
+	    return entry.getName().contains("META-INF") && entry.getName().contains("services") && !entry.isDirectory();
+	}
+
+	private boolean isInsideDestinationDirectory(File file) throws IOException {
+	    Path destDirPath = Paths.get(dest).toAbsolutePath();
+	    Path filePath = file.toPath().toAbsolutePath();
+	    return filePath.startsWith(destDirPath);
+	}
+
+	private byte[] readJarFile(InputStream inputStream) throws IOException {
+	    return inputStream.readAllBytes();
+	}
+
+	private void writeMergedFile(File file, byte[] content) throws IOException {
+	    // Append content to the file, creating directories if necessary
+	    if (!file.getParentFile().exists()) {
+	        file.getParentFile().mkdirs();
+	    }
+	    Files.write(file.toPath(), content, java.nio.file.StandardOpenOption.CREATE, java.nio.file.StandardOpenOption.APPEND);
+	}
 	
 	/**
 	 * main method to start the Servicemerger
