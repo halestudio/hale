@@ -108,6 +108,7 @@ public class SimpleTypeUtil {
 					GDate gdate = builder.toGDate();
 
 					xmlDate.setGDateValue(gdate);
+					return xmlDate.getStringValue();
 				}
 				else if (simpleTypeValue instanceof XmlDateTime) {
 					XmlDateTime xmlDateTime = (XmlDateTime) simpleTypeValue;
@@ -124,6 +125,7 @@ public class SimpleTypeUtil {
 					GDate gdate = builder.toGDate();
 
 					xmlDateTime.setGDateValue(gdate);
+					return xmlDateTime.getStringValue();
 				}
 				else if (simpleTypeValue != null && simpleTypeValue instanceof XmlAnySimpleType) {
 					// Numbers should be handled here
