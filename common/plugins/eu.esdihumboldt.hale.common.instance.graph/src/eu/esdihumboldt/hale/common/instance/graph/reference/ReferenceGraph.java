@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -136,7 +135,7 @@ public class ReferenceGraph<T> {
 				List<InstanceReference> instances = getNextAtomicPart();
 				biggestAtom = Math.max(biggestAtom, instances.size());
 
-				if (part.size() + instances.size() > maxObjects) {
+				if (part.size() > 0 && part.size() + instances.size() > maxObjects) {
 					// add to part candidates for later use
 					nextCandidates.add(instances);
 					if (!verticesLeft()) {
@@ -199,7 +198,14 @@ public class ReferenceGraph<T> {
 		 */
 		private List<InstanceReference> getNextAtomicPart() {
 			// select an arbitrary vertex
-			Vertex vtx = graph.someVertex();
+			Vertex vtx = null;
+
+			if (handleFirst != null) {
+				vtx = graph.getVertex(handleFirst);
+			}
+			if (vtx == null) {
+				vtx = graph.someVertex();
+			}
 			if (vtx != null) {
 				// get all vertices associated with that vertex
 				final Set<Vertex> visited = new LinkedHashSet<>();
@@ -236,22 +242,20 @@ public class ReferenceGraph<T> {
 						result.add(ref);
 					}
 					else {
-						Iterable<Vertex> referers = associated.getVertices(Direction.IN);
 						Set<String> ids = new HashSet<>();
-						if (referers != null) {
-							for (Vertex referer : referers) {
-								Object ident = referer.getId();
-								if (ident != null) {
-									ids.add(ident.toString());
-								}
+						for (Vertex referer : associated.getVertices(Direction.IN)) {
+							Object ident = referer.getId();
+							if (ident != null) {
+								ids.add(ident.toString());
 							}
 						}
+
 						if (ids.isEmpty()) {
 							log.warn("Encountered referenced object w/o associated instance: "
 									+ associated.getId());
 						}
 						else {
-							String enumIds = ids.stream().collect(Collectors.joining(", "));
+							String enumIds = String.join(", ", ids);
 							log.warn("Encountered referenced object w/o associated instance: "
 									+ associated.getId() + " - referenced from " + enumIds);
 						}
@@ -294,21 +298,35 @@ public class ReferenceGraph<T> {
 
 	private boolean partitioned = false;
 
+	private final T handleFirst;
+
 	/**
 	 * Create a new reference graph from the given instance collection.
 	 * 
 	 * @param inspector the instance inspector to use
 	 * @param instances the
+	 * @param handleFirst the ID of the first instance to handle, optional and
+	 *            can be null
 	 */
-	public ReferenceGraph(IdentityReferenceInspector<T> inspector, InstanceCollection instances) {
+	public ReferenceGraph(IdentityReferenceInspector<T> inspector, InstanceCollection instances,
+			T handleFirst) {
 		this.graph = new CustomTinkerGraph();
 		this.inspector = inspector;
 		this.originalCollection = instances;
+		this.handleFirst = handleFirst;
 
 		populate(instances);
 
 		// identified vertices no longer needed after populate
 		identifiedVertices.clear();
+	}
+
+	/**
+	 * @param inspector the instance inspector to use
+	 * @param instances the
+	 */
+	public ReferenceGraph(IdentityReferenceInspector<T> inspector, InstanceCollection instances) {
+		this(inspector, instances, null);
 	}
 
 	/**
