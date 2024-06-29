@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
+        uses: s4u/setup-maven-action@2f53a7669c7543a045d0bb6c92436df0c5a726f8 # v1.14.0
         with:
           java-version: 17
           java-distribution: temurin
@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@489441643219d2b93ee2a127b2402eb640a1b947 # v1.13.0
+        uses: s4u/setup-maven-action@2f53a7669c7543a045d0bb6c92436df0c5a726f8 # v1.14.0
         with:
           java-version: 17
           java-distribution: temurin
