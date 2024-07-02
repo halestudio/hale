@@ -155,7 +155,7 @@ public class XPlanGmlInstanceWriter extends StreamGmlWriter {
 		for (String planId : planIdToInstancesMapping.keySet()) {
 			MultiInstanceCollection mic = new MultiInstanceCollection(
 					Arrays.asList(planIdToInstancesMapping.get(planId), nonPlanInstances));
-			ReferenceGraph<String> rg = new ReferenceGraph<String>(new XMLInspector(), mic);
+			ReferenceGraph<String> rg = new ReferenceGraph<String>(new XMLInspector(), mic, planId);
 
 			Iterator<InstanceCollection> p = rg.partition(1, reporter);
 			while (p.hasNext()) {
