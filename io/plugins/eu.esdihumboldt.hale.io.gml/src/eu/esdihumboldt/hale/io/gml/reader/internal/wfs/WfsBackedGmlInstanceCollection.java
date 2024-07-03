@@ -238,9 +238,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		// return anything at all
 		int hits;
 
-		if (ignoreNumberMatched
-		// || primordialQueryParams.containsKey("RESOLVEDEPTH")
-		) {
+		if (ignoreNumberMatched) {
 			hits = UNKNOWN_SIZE;
 		}
 		else {
@@ -430,12 +428,10 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		private GmlInstanceCollection currentCollection;
 		private GmlInstanceIterator iterator;
 		private int totalFeaturesProcessed;
-		// used just for debug - to be deleted
-		private int additionalFeatureProcessed = 0;
 		// store the additional objects
-		private final HashSet<String> uniqIDInstancesAdditionalObjects = new HashSet<String>();
+		private final HashSet<String> uniqueIDInstancesAdditionalObjects = new HashSet<String>();
 		// store the "main" features of the GML
-		private final HashSet<String> uniqIDInstances = new HashSet<String>();
+		private final HashSet<String> uniqueIDMainInstances = new HashSet<String>();
 
 		/**
 		 * Create the iterator
@@ -575,9 +571,14 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		 *         number of results reported by the WFS.
 		 */
 		protected boolean isFeatureLimitReached() {
+			// the condition (totalFeaturesProcessed >= size &&
+			// !iterator.hasNext()) should be there in order to process the
+			// instances coming from the additionalObjects after the last "main"
+			// instance
 			return (maxNumberOfFeatures != UNLIMITED
 					&& totalFeaturesProcessed >= maxNumberOfFeatures)
-					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size);
+					|| (size != UNKNOWN_SIZE && totalFeaturesProcessed >= size
+							&& !iterator.hasNext());
 		}
 
 		/**
@@ -591,31 +592,126 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 
 			Instance instance = iterator.next();
 
-			if (instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS) != null
-					&& !instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS).isEmpty()) {
+			if (primordialQueryParams.containsKey("RESOLVEDEPTH")) {
+				return processInstanceWithResolveDepth(instance);
+			}
+			else {
+				return new StreamGmlInstance(instance, totalFeaturesProcessed++);
+			}
+		}
 
-				for (QName propertyName : instance.getPropertyNames()) {
-					if ((propertyName.getNamespaceURI().startsWith(GMLConstants.NS_WFS)
-							|| propertyName.getNamespaceURI()
-									.startsWith(GMLConstants.GML_NAMESPACE_CORE))
-							&& (propertyName.getLocalPart().equals("id")
-									&& propertyName.getPrefix().equals("gml"))) {
-						Object[] gmlID = instance.getProperty(propertyName);
-						if (gmlID[0] != null) {
-							String gmlIDToCheck = (String) gmlID[0];
+		/**
+		 * @param instance Instance
+		 * @return Instance
+		 */
+		private Instance processInstanceWithResolveDepth(Instance instance) {
+			for (QName propertyName : instance.getPropertyNames()) {
+				if (isGmlIdProperty(propertyName)) {
+					Object[] gmlID = instance.getProperty(propertyName);
+					if (gmlID[0] != null) {
+						String gmlIDToCheck = (String) gmlID[0];
 
-							if (!uniqIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
-								uniqIDInstancesAdditionalObjects.add(gmlIDToCheck);
-								additionalFeatureProcessed++;
+						if (instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS) != null
+								&& !instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS)
+										.isEmpty()) {
+							if (!uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
+								if (uniqueIDMainInstances.contains(gmlIDToCheck)) {
+									if (iterator.hasNext()) {
+										return next();
+									}
+								}
+								uniqueIDInstancesAdditionalObjects.add(gmlIDToCheck);
+								return new StreamGmlInstance(instance, totalFeaturesProcessed);
 							}
 						}
-						return new StreamGmlInstance(instance, totalFeaturesProcessed);
+						else {
+							if (!uniqueIDMainInstances.contains(gmlIDToCheck)) {
+								uniqueIDMainInstances.add(gmlIDToCheck);
+								totalFeaturesProcessed++;
+								if (uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
+									uniqueIDInstancesAdditionalObjects.remove(gmlIDToCheck);
+									if (iterator.hasNext()) {
+										return next();
+									}
+								}
+								return new StreamGmlInstance(instance, totalFeaturesProcessed);
+							}
+						}
 					}
 				}
-
 			}
+			return processRemainingInstances();
+		}
 
-			return new StreamGmlInstance(instance, totalFeaturesProcessed++);
+		private Instance processRemainingInstances() {
+			if (iterator.hasNext()) {
+				return next();
+			}
+			else {
+				_closeAndRecreateIterator();
+				if (iterator.hasNext()) {
+					return next();
+				}
+				else {
+					return iterator.next();
+				}
+			}
+		}
+
+		private void _closeAndRecreateIterator() {
+			close();
+			createNextIterator();
+		}
+
+		private boolean isGmlIdProperty(QName propertyName) {
+			return (propertyName.getNamespaceURI().startsWith(GMLConstants.NS_WFS)
+					|| propertyName.getNamespaceURI().startsWith(GMLConstants.GML_NAMESPACE_CORE))
+					&& "id".equals(propertyName.getLocalPart())
+					&& "gml".equals(propertyName.getPrefix());
+		}
+
+		private String _getGmlId(Instance instance, QName propertyName) {
+			Object[] gmlID = instance.getProperty(propertyName);
+			return gmlID != null && gmlID.length > 0 ? (String) gmlID[0] : null;
+		}
+
+		private boolean _handleAdditionalObjects(Instance instance, String gmlIDToCheck) {
+			if (instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS) != null
+					&& !instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS).isEmpty()) {
+				if (!uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
+					if (uniqueIDMainInstances.contains(gmlIDToCheck) && iterator.hasNext()) {
+						next();
+						System.out.println("totalFeaturesProcessed:" + totalFeaturesProcessed
+								+ " - uniqueIDMainInstances:" + uniqueIDMainInstances.size()
+								+ " - uniqueIDInstancesAdditionalObjects:"
+								+ uniqueIDInstancesAdditionalObjects.size() + " 1SKIP");
+						return true;
+					}
+					uniqueIDInstancesAdditionalObjects.add(gmlIDToCheck);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private boolean _handleMainInstances(String gmlIDToCheck) {
+			if (!uniqueIDMainInstances.contains(gmlIDToCheck)) {
+				uniqueIDMainInstances.add(gmlIDToCheck);
+				totalFeaturesProcessed++;
+				if (uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
+					uniqueIDInstancesAdditionalObjects.remove(gmlIDToCheck);
+					if (iterator.hasNext()) {
+						System.out.println("totalFeaturesProcessed:" + totalFeaturesProcessed
+								+ " - uniqueIDMainInstances:" + uniqueIDMainInstances.size()
+								+ " - uniqueIDInstancesAdditionalObjects:"
+								+ uniqueIDInstancesAdditionalObjects.size() + " 2SKIP");
+						next();
+						return true;
+					}
+				}
+				return true;
+			}
+			return false;
 		}
 
 		/**
