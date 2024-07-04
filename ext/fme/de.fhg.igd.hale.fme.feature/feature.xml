@@ -2,7 +2,7 @@
 <feature
       id="de.fhg.igd.hale.fme.feature"
       label="HALE FME Plug-In Connector Feature"
-      version="5.3.0.qualifier"
+      version="5.2.1.qualifier"
       provider-name="Fraunhofer IGD"
       plugin="de.fhg.igd.hale.fme.branding">
 

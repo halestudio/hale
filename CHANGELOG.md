@@ -1,3 +1,13 @@
+## [5.2.1](https://github.com/halestudio/hale/compare/v5.2.0...v5.2.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* added scroll functionality to the CheckboxTableViewer for selecting export types for CSV and Excel ([2e0483b](https://github.com/halestudio/hale/commit/2e0483bca3daef7cb5861ed42148af91ce9c2155))
+* implicit narrowing conversion in compound assignment ([bfedff0](https://github.com/halestudio/hale/commit/bfedff036c14ce0132ce70f4e3bcf9d1793ad7b2))
+* resolve XML external entity in user-controlled data ([88ff8cc](https://github.com/halestudio/hale/commit/88ff8cc43051fee597599f621bd33320d389beba))
+* use correct representation of date and time when exporting XML/GML ([305b7ea](https://github.com/halestudio/hale/commit/305b7ea93292f43f4bf153c8d26c40d1c0b81007))
+
 ## [5.2.0](https://github.com/halestudio/hale/compare/v5.1.0...v5.2.0) (2024-06-19)
 
 
