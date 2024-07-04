@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.2.1.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
+<product name="halestudio Infocenter" uid="eu.esdihumboldt.hale.infocenter" id="eu.esdihumboldt.hale.doc.application.InfoCenter" application="eu.esdihumboldt.hale.doc.application.infocenterApplication" version="5.3.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="true">
 
    <configIni use="default">
    </configIni>
