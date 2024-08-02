@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:arok-="https://www.geoportal-raumordnung-bw.de/arok-fnp" xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified" targetNamespace="https://www.geoportal-raumordnung-bw.de/arok-fnp">
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <element name="fnpgelt" substitutionGroup="gml:AbstractFeature" type="arok-:fnpgelt"/>
+  <complexType name="fnpgelt">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="aktennr" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="arokstatus" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ars" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bearbeiter" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bemerk" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bezeich" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_erst" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_geneh" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="eigentum" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ergaenz" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="erst_ID" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="inkraft" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="laufzeit" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="lplan" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="oa_nr" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="quelle" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="UUID" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="geometrie" nillable="false" type="gml:MultiGeometryPropertyType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="fnp0" substitutionGroup="gml:AbstractFeature" type="arok-:fnp0"/>
+  <complexType name="fnp0">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="aktennr" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="arokstatus" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ars" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="art" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="attr_id" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="bearbeiter" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bemerk" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bezeich" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_erst" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_geneh" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="eigentum" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ergaenz" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="erst_ID" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="flaeschlus" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="herkunft" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="inkraft" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="oa_nr" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="quelle" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="UUID" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="geometrie" nillable="false" type="gml:MultiGeometryPropertyType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="fnppkt0" substitutionGroup="gml:AbstractFeature" type="arok-:fnppkt0"/>
+  <complexType name="fnppkt0">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="aktennr" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="arokstatus" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ars" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="art" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="attr_id" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="bearbeiter" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bemerk" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bezeich" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_erst" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_geneh" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="eigentum" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ergaenz" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="erst_ID" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="herkunft" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="inkraft" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="oa_nr" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="quelle" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="UUID" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="geometrie" nillable="false" type="gml:MultiGeometryPropertyType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="ikg" substitutionGroup="gml:AbstractFeature" type="arok-:ikg"/>
+  <complexType name="ikg">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element maxOccurs="1" minOccurs="0" name="aktennr" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="arokstatus" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="ars" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bearbeiter" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bemerk" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="bezeich" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_erst" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="dat_geneh" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="erst_ID" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="inkraft" nillable="false" type="dateTime"/>
+          <element maxOccurs="1" minOccurs="0" name="oa_nr" nillable="false" type="integer"/>
+          <element maxOccurs="1" minOccurs="0" name="quelle" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="0" name="UUID" nillable="false" type="string"/>
+          <element maxOccurs="1" minOccurs="1" name="geometrie" nillable="false" type="gml:MultiGeometryPropertyType"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+</schema>

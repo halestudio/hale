@@ -146,7 +146,11 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 				preferredName = name.getLocalPart();
 			}
 			Pair<TypeDefinition, Integer> tp = getMostCompatibleShapeType(getSourceSchema(),
-					dataType, preferredName);
+					dataType, preferredName, false);
+			if (tp == null) {
+				// try with types that don't use ShapeSchemaReader conventions
+				tp = getMostCompatibleShapeType(getSourceSchema(), dataType, preferredName, true);
+			}
 			if (tp == null) {
 				throw new IOProviderConfigurationException(
 						"No schema type specified and auto-detection failed");
@@ -193,22 +197,35 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * @param types the type index
 	 * @param dataType the Shapefile data type
 	 * @param preferredName the name of the preferred type
+	 * @param allowNonShapefileTypes if types should be considered that don't
+	 *            follow the conventions of the ShapeSchemaReader
 	 * @return the most compatible type found together with is compatibility
 	 *         rating or <code>null</code> if there is no type that at least has
 	 *         one matching property
 	 * 
-	 * @see #checkCompatibility(TypeDefinition, TypeDefinition)
+	 * @see #checkCompatibility(TypeDefinition, TypeDefinition, boolean)
 	 */
 	public static Pair<TypeDefinition, Integer> getMostCompatibleShapeType(TypeIndex types,
-			TypeDefinition dataType, String preferredName) {
+			TypeDefinition dataType, String preferredName, boolean allowNonShapefileTypes) {
 		int maxCompatibility = -1;
 		TypeDefinition maxType = null;
 
 		// check preferred name first
 		TypeDefinition preferredType = types
 				.getType(new QName(ShapefileConstants.SHAPEFILE_NS, preferredName));
+		if (allowNonShapefileTypes && preferredType == null) {
+			preferredType = types.getMappingRelevantTypes().stream()
+					.filter(t -> t.getName().getLocalPart().equals(preferredName)).findFirst()
+					.orElse(null);
+		}
+		if (allowNonShapefileTypes && preferredType == null) {
+			preferredType = types.getMappingRelevantTypes().stream()
+					// check displayname as well (e.g. in case of XSD where this
+					// represents the XML element)
+					.filter(t -> t.getDisplayName().equals(preferredName)).findFirst().orElse(null);
+		}
 		if (preferredType != null) {
-			int comp = checkCompatibility(preferredType, dataType);
+			int comp = checkCompatibility(preferredType, dataType, allowNonShapefileTypes);
 			if (comp >= 100) {
 				// return an exact match directly
 				return new Pair<TypeDefinition, Integer>(preferredType, 100);
@@ -220,10 +237,11 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		}
 
 		for (TypeDefinition schemaType : types.getMappingRelevantTypes()) {
-			if (ShapefileConstants.SHAPEFILE_NS.equals(schemaType.getName().getNamespaceURI())) {
+			if (allowNonShapefileTypes || ShapefileConstants.SHAPEFILE_NS
+					.equals(schemaType.getName().getNamespaceURI())) {
 				// is a shapefile type
 
-				int comp = checkCompatibility(schemaType, dataType);
+				int comp = checkCompatibility(schemaType, dataType, allowNonShapefileTypes);
 				if (comp >= 100) {
 					// return an exact match directly
 					return new Pair<TypeDefinition, Integer>(schemaType, 100);
@@ -252,11 +270,14 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 	 * 
 	 * @param schemaType the type to test for compatibility
 	 * @param dataType the type representing the data to read
+	 * @param allowNonShapefileProperties if properties should be considered
+	 *            that don't follow the conventions of the ShapeSchemaReader
 	 * @return the percentage of compatibility (value from <code>0</code> to
 	 *         <code>100</code>), where <code>100</code> represents an exact
 	 *         match and <code>0</code> no compatibility
 	 */
-	public static int checkCompatibility(TypeDefinition schemaType, TypeDefinition dataType) {
+	public static int checkCompatibility(TypeDefinition schemaType, TypeDefinition dataType,
+			boolean allowNonShapefileProperties) {
 		// Shapefile types are flat, so only regard properties
 		Collection<? extends PropertyDefinition> children = DefinitionUtil
 				.getAllProperties(dataType);
@@ -267,7 +288,8 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 		// name
 		int num = 0;
 		for (PropertyDefinition property : children) {
-			ChildDefinition<?> child = schemaType.getChild(property.getName());
+			ChildDefinition<?> child = getChild(schemaType, property.getName(),
+					allowNonShapefileProperties);
 			if (child != null && child.asProperty() != null) {
 				num++;
 			}
@@ -287,6 +309,27 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			// compatibility measure with a max of 99
 			return percentage;
 		}
+	}
+
+	/**
+	 * Get child of the given schema type with the given name.
+	 * 
+	 * @param schemaType the schema type.
+	 * @param propertyName the property name
+	 * @param allowNonShapefileProperties if properties should be considered
+	 *            even if the namespace does not match
+	 * @return the child that was found or <code>null</code>
+	 */
+	private static ChildDefinition<?> getChild(TypeDefinition schemaType, QName propertyName,
+			boolean allowNonShapefileProperties) {
+		ChildDefinition<?> result = schemaType.getChild(propertyName);
+		if (allowNonShapefileProperties && result == null) {
+			// also allow match by local name only
+			return schemaType.getChildren().stream()
+					.filter(c -> c.getName().getLocalPart().equals(propertyName.getLocalPart()))
+					.findFirst().orElse(null);
+		}
+		return result;
 	}
 
 	/**
