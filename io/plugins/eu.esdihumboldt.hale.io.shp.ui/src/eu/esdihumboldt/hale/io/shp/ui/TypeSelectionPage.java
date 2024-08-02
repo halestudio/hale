@@ -225,7 +225,12 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			if (lastType != null) {
 				Pair<TypeDefinition, Integer> pt = ShapeInstanceReader.getMostCompatibleShapeType(
 						getWizard().getProvider().getSourceSchema(), lastType,
-						lastType.getName().getLocalPart());
+						lastType.getName().getLocalPart(), false);
+				if (pt == null) {
+					pt = ShapeInstanceReader.getMostCompatibleShapeType(
+							getWizard().getProvider().getSourceSchema(), lastType,
+							lastType.getName().getLocalPart(), true);
+				}
 				if (pt != null) {
 					selector.setSelection(new StructuredSelection(pt.getFirst()));
 				}
@@ -287,7 +292,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 		TypeDefinition selected = selector.getSelectedObject();
 
 		if (selected != null) {
-			int comp = ShapeInstanceReader.checkCompatibility(selected, lastType);
+			int comp = ShapeInstanceReader.checkCompatibility(selected, lastType, true);
 
 			if (comp > 0) {
 				setPageComplete(true);
@@ -330,7 +335,7 @@ public class TypeSelectionPage extends InstanceReaderConfigurationPage
 			return false; // should not happen
 		}
 
-		return ShapeInstanceReader.checkCompatibility(schemaType, lastType) > 0;
+		return ShapeInstanceReader.checkCompatibility(schemaType, lastType, true) > 0;
 	}
 
 	/**

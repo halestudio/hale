@@ -16,21 +16,19 @@
 package eu.esdihumboldt.hale.io.geopackage.internal
 
 import java.sql.SQLException
+import java.util.function.Function
 
 import javax.xml.namespace.QName
 
 import org.locationtech.jts.io.WKBReader
 
-import eu.esdihumboldt.hale.common.align.helper.EntityFinder
-import eu.esdihumboldt.hale.common.align.model.AlignmentUtil
-import eu.esdihumboldt.hale.common.align.model.EntityDefinition
+import eu.esdihumboldt.hale.common.align.helper.GeometryPropertyFinder
 import eu.esdihumboldt.hale.common.core.report.SimpleLog
 import eu.esdihumboldt.hale.common.instance.geometry.DefaultGeometryProperty
 import eu.esdihumboldt.hale.common.instance.geometry.impl.CodeDefinition
 import eu.esdihumboldt.hale.common.instance.geometry.impl.WKTDefinition
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceBuilder
 import eu.esdihumboldt.hale.common.instance.model.Instance
-import eu.esdihumboldt.hale.common.schema.SchemaSpaceID
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition
 import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil
 import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition
@@ -38,7 +36,6 @@ import eu.esdihumboldt.hale.common.schema.model.TypeDefinition
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.Cardinality
 import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag
 import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryMetadata
-import eu.esdihumboldt.hale.common.schema.model.constraint.type.GeometryType
 import eu.esdihumboldt.hale.io.geopackage.GeopackageSchemaBuilder
 import groovy.transform.CompileStatic
 import mil.nga.geopackage.core.srs.SpatialReferenceSystem
@@ -125,57 +122,10 @@ class TableInstanceBuilder {
 
 	private QName getGeometryProperty(TypeDefinition type, final String geometryColumn) {
 		return cachedGeometryProperty.computeIfAbsent(type) { TypeDefinition t ->
-			// allow for geometry property types with choices
-			int checkLevels = 3
-
-			// create finder for geometry properties
-			EntityFinder finder = new EntityFinder({ EntityDefinition entity ->
-				// determine if the property classifies as
-				if (entity.getDefinition() instanceof PropertyDefinition) {
-					def propertyType = ((PropertyDefinition) entity.getDefinition()).getPropertyType()
-
-					boolean isGeometry = propertyType.getConstraint(GeometryType).isGeometry()
-					if (isGeometry) {
-						return true
-					}
-				}
-
-				false
-			}, checkLevels)
-
-			def parents = getProperties(type).collect { PropertyDefinition p ->
-				AlignmentUtil.createEntityFromDefinitions(type, [p], SchemaSpaceID.SOURCE, null)
+			Function<TypeDefinition, Collection<PropertyDefinition>> lister = { TypeDefinition tt ->
+				getProperties(tt)
 			}
-
-			def candidates = finder.find(parents)
-
-			if (candidates.empty) {
-				null
-			}
-			else {
-				// select candidate
-
-				// extract main property names; order matters because of traversal order for finding the candidates
-				Set<QName> names = new LinkedHashSet(candidates*.propertyPath[0]*.child*.name)
-
-				// prefer geometry column name w/o namespace
-				def preferred = new QName(geometryColumn)
-				if (names.contains(preferred)) {
-					return preferred
-				}
-
-				// otherwise prefer any with geometry column name
-				preferred = names.find { geometryColumn == it.localPart }
-
-				if (preferred == null) {
-					// otherwise use first one
-					preferred = names.iterator().next()
-				}
-
-				log.info("Identified property $preferred as geometry property for type ${type.name.localPart}")
-
-				preferred
-			}
+			GeometryPropertyFinder.findGeometryProperty(type, lister, geometryColumn, log)
 		}
 	}
 
@@ -284,5 +234,4 @@ class TableInstanceBuilder {
 			}
 		}
 	}
-
 }

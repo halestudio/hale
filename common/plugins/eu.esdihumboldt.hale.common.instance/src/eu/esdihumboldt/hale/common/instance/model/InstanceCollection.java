@@ -16,6 +16,9 @@
 
 package eu.esdihumboldt.hale.common.instance.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Basic instance collection interface.
  * 
@@ -72,5 +75,23 @@ public interface InstanceCollection extends InstanceResolver {
 
 	// TODO what else is needed?
 	// public InstanceCollection[] partition(...);
+
+	/**
+	 * Helper for converting to list of instances.
+	 * 
+	 * Use with care only in cases where it is clear that the data is not too
+	 * big.
+	 * 
+	 * @return a list containing all instances
+	 */
+	default List<Instance> toList() {
+		List<Instance> result = new ArrayList<Instance>();
+		try (ResourceIterator<Instance> iterator = iterator()) {
+			while (iterator.hasNext()) {
+				result.add(iterator.next());
+			}
+		}
+		return result;
+	}
 
 }

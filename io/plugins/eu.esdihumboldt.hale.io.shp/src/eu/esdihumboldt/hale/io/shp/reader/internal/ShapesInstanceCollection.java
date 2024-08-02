@@ -18,17 +18,20 @@ package eu.esdihumboldt.hale.io.shp.reader.internal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.AttributeDescriptor;
@@ -36,10 +39,11 @@ import org.opengis.feature.type.GeometryDescriptor;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 import com.google.common.collect.ImmutableMap;
-import org.locationtech.jts.geom.Geometry;
 
 import de.fhg.igd.slf4jplus.ALogger;
 import de.fhg.igd.slf4jplus.ALoggerFactory;
+import eu.esdihumboldt.hale.common.align.helper.GeometryPropertyFinder;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSDefinitionUtil;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSProvider;
 import eu.esdihumboldt.hale.common.instance.geometry.CRSResolveCache;
@@ -59,7 +63,10 @@ import eu.esdihumboldt.hale.common.instance.model.impl.FilteredInstanceCollectio
 import eu.esdihumboldt.hale.common.instance.model.impl.PseudoInstanceReference;
 import eu.esdihumboldt.hale.common.schema.geometry.CRSDefinition;
 import eu.esdihumboldt.hale.common.schema.model.ChildDefinition;
+import eu.esdihumboldt.hale.common.schema.model.DefinitionUtil;
+import eu.esdihumboldt.hale.common.schema.model.PropertyDefinition;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
+import eu.esdihumboldt.hale.common.schema.model.constraint.property.NillableFlag;
 import eu.esdihumboldt.hale.io.shp.ShapefileConstants;
 
 /**
@@ -79,6 +86,10 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 		private final SimpleFeatureIterator currentIterator;
 
 		private final Set<QName> missingProperties = new HashSet<QName>();
+
+		private QName geometryPropertyName = null;
+
+		private boolean lookedForGeometryProperty = false;
 
 		/**
 		 * Create a new iterator on the data store.
@@ -123,93 +134,153 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 
 			for (Property property : feature.getProperties()) {
 				Object value = property.getValue();
+				boolean isGeometry = value instanceof Geometry;
+
 				QName propertyName = new QName(property.getName().getNamespaceURI(),
 						property.getName().getLocalPart());
 
 				if (type.getChild(propertyName) == null) {
-					final QName currentPropertyName = propertyName;
+					// property with the same name does not exist
+
+					final QName lookForPropertyName = propertyName;
+					propertyName = null;
+
+					if (isGeometry) {
+						// look for geometry property
+
+						if (!lookedForGeometryProperty) {
+							geometryPropertyName = findGeometryProperty(type,
+									lookForPropertyName.getLocalPart());
+
+							lookedForGeometryProperty = true;
+						}
+
+						propertyName = geometryPropertyName;
+					}
+
 					List<? extends ChildDefinition<?>> candidates = new ArrayList<>();
-					if (matchShortPropertyNames) {
+
+					if (propertyName == null && candidates.isEmpty()) {
 						// Try to guess the property name in cases where the
 						// names in the source file are shortened versions of
 						// the target type properties
 
 						candidates = type.getChildren().stream()
 								.filter(c -> c.getName().getLocalPart()
-										.startsWith(currentPropertyName.getLocalPart()))
+										.equals(lookForPropertyName.getLocalPart()))
 								.collect(Collectors.toList());
 					}
+
+					if (propertyName == null && candidates.isEmpty() && matchShortPropertyNames) {
+						// Try to guess the property name in cases where the
+						// names in the source file are shortened versions of
+						// the target type properties
+
+						candidates = type.getChildren().stream()
+								.filter(c -> c.getName().getLocalPart()
+										.startsWith(lookForPropertyName.getLocalPart()))
+								.collect(Collectors.toList());
+					}
+
 					if (candidates.size() == 1) {
 						// unique child property found whose name starts with
 						// the source property's name
 						propertyName = candidates.get(0).getName();
 					}
-					else {
-						if (!missingProperties.contains(propertyName)) {
-							log.warn("Discarding values of property " + propertyName.getLocalPart()
+
+					if (propertyName == null) {
+						if (!missingProperties.contains(lookForPropertyName)) {
+							log.warn("Discarding values of property "
+									+ lookForPropertyName.getLocalPart()
 									+ " as it is not contained in the schema type.");
-							missingProperties.add(propertyName);
+							missingProperties.add(lookForPropertyName);
 						}
-						// only add values for properties contained in the type
-						continue;
 					}
 				}
 
-				// wrap geometry
-				if (value instanceof Geometry) {
-					// try to determine CRS
-					CoordinateReferenceSystem crs = null;
+				boolean addValue = propertyName != null;
 
-					// try user data of geometry
-					Object userData = ((Geometry) value).getUserData();
-					if (userData instanceof CoordinateReferenceSystem) {
-						crs = (CoordinateReferenceSystem) userData;
-					}
+				ChildDefinition<?> child = type.getChild(propertyName);
+				PropertyDefinition propDef = null;
+				if (child != null) {
+					propDef = child.asProperty();
+				}
 
-					if (crs == null) {
-						// try CRS associated to geometry descriptor
-						AttributeDescriptor pd = feature.getFeatureType()
-								.getDescriptor(property.getName());
-						if (pd != null && pd instanceof GeometryDescriptor) {
-							crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
+				if (value == null) {
+					// special handling for null value
+					// don't add if property is not nillable
+
+					if (propDef != null) {
+						boolean nillable = propDef.getConstraint(NillableFlag.class).isEnabled();
+						if (!nillable) {
+							addValue = false;
 						}
 					}
+				}
 
-					if (crs == null) {
-						// try CRS associated to feature type
-						crs = feature.getFeatureType().getCoordinateReferenceSystem();
-					}
+				if (addValue) {
+					// wrap geometry
+					if (value instanceof Geometry) {
+						// try to determine CRS
+						CoordinateReferenceSystem crs = null;
 
-					CRSDefinition crsDef;
-					if (crs != null) {
-						crsDef = CRSDefinitionUtil.createDefinition(crs, crsCache);
+						// try user data of geometry
+						Object userData = ((Geometry) value).getUserData();
+						if (userData instanceof CoordinateReferenceSystem) {
+							crs = (CoordinateReferenceSystem) userData;
+						}
 
-						if (crs.getIdentifiers().isEmpty()) {
-							// Force CRS dialog prompt if the WKT definition
-							// does not contain an EPSG code for the CRS. This
-							// is to prevent that a CRS definition without
-							// Bursa-Wolf parameters is used here silently. In
-							// cases of custom CRSs that don't have an EPSG
-							// code, the user can still provide the WKT
-							// definition in the dialog. In case of a headless
-							// transformation, the WKT definition will be used.
+						if (crs == null) {
+							// try CRS associated to geometry descriptor
+							AttributeDescriptor pd = feature.getFeatureType()
+									.getDescriptor(property.getName());
+							if (pd != null && pd instanceof GeometryDescriptor) {
+								crs = ((GeometryDescriptor) pd).getCoordinateReferenceSystem();
+							}
+						}
 
+						if (crs == null) {
+							// try CRS associated to feature type
+							crs = feature.getFeatureType().getCoordinateReferenceSystem();
+						}
+
+						CRSDefinition crsDef;
+						if (crs != null) {
+							crsDef = CRSDefinitionUtil.createDefinition(crs, crsCache);
+
+							if (crs.getIdentifiers().isEmpty()) {
+								// Force CRS dialog prompt if the WKT definition
+								// does not contain an EPSG code for the CRS.
+								// This
+								// is to prevent that a CRS definition without
+								// Bursa-Wolf parameters is used here silently.
+								// In
+								// cases of custom CRSs that don't have an EPSG
+								// code, the user can still provide the WKT
+								// definition in the dialog. In case of a
+								// headless
+								// transformation, the WKT definition will be
+								// used.
+
+								crsDef = crsProvider.getCRS(type,
+										Collections.singletonList(propertyName), crsDef);
+								// Update the cache with the definition of the
+								// CRSProvider
+								crsCache.reviseCache(crs, crsDef);
+							}
+						}
+						else {
+							// ask CRS provider
 							crsDef = crsProvider.getCRS(type,
-									Collections.singletonList(propertyName), crsDef);
-							// Update the cache with the definition of the
-							// CRSProvider
-							crsCache.reviseCache(crs, crsDef);
+									Collections.singletonList(propertyName));
 						}
+						value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
 					}
-					else {
-						// ask CRS provider
-						crsDef = crsProvider.getCRS(type, Collections.singletonList(propertyName));
-					}
-					value = new DefaultGeometryProperty<Geometry>(crsDef, (Geometry) value);
-				}
 
-				// TODO safe add? in respect to binding, existence of property
-				instance.addProperty(propertyName, value);
+					// TODO safe add? in respect to binding, existence of
+					// property
+					instance.addProperty(propertyName, value);
+				}
 			}
 
 			// add filename augmented property
@@ -222,6 +293,24 @@ public class ShapesInstanceCollection implements InstanceCollection2 {
 			}
 
 			return instance;
+		}
+
+		/**
+		 * Find the geometry property of the given type.
+		 * 
+		 * @param type the type to check
+		 * @param preferredName the preferred name for the property
+		 * @return the identified property or null
+		 */
+		private QName findGeometryProperty(TypeDefinition type, String preferredName) {
+			Function<TypeDefinition, Collection<? extends PropertyDefinition>> finder = (
+					TypeDefinition t) -> {
+				// FIXME OK to return properties from groups here? will they be
+				// picked up correctly?
+				return DefinitionUtil.getAllProperties(t);
+			};
+			return GeometryPropertyFinder.findGeometryProperty(type, finder, preferredName,
+					SimpleLog.fromLogger(log));
 		}
 
 		@Override
