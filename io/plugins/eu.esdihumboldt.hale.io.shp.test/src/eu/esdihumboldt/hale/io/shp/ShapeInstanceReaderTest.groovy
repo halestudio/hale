@@ -21,8 +21,10 @@ import static org.junit.Assert.assertNotNull
 import static org.junit.Assert.assertTrue
 
 import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 import java.util.function.Consumer
 
+import org.apache.commons.io.IOUtils
 import org.junit.Test
 import org.locationtech.jts.geom.Geometry
 
@@ -47,6 +49,9 @@ import groovy.transform.TypeCheckingMode
 @CompileStatic
 class ShapeInstanceReaderTest {
 
+	/**
+	 * Test reading Shapefile instances using the Shapefile as schema.
+	 */
 	@Test
 	void testReadShapeInstances() {
 		Schema xmlSchema = TestUtil.loadSchema(getClass().getClassLoader().getResource("testdata/arokfnp/ikg.shp").toURI())
@@ -63,6 +68,38 @@ class ShapeInstanceReaderTest {
 		validateArokFnpIkg(list, 'the_geom')
 	}
 
+	/**
+	 * Test reading a single Shapefile from a folder.
+	 */
+	@Test
+	void testReadFromFolder() {
+		Schema xmlSchema = TestUtil.loadSchema(getClass().getClassLoader().getResource("testdata/arokfnp/ikg.shp").toURI())
+
+		File tempDir = Files.createTempDirectory("read-shape").toFile()
+		try {
+			def ext = ['shp', 'dbf', 'prj', 'shx']
+			ext.each {
+				IOUtils.copy(getClass().getClassLoader().getResource("testdata/arokfnp/ikg.$it"), new File(tempDir, "ikg.$it"))
+			}
+
+			InstanceCollection instances = loadInstances(xmlSchema, tempDir.toURI())
+
+			assertNotNull(instances)
+			List<Instance> list = instances.toList()
+
+			// test count
+			assertThat(list).hasSize(14)
+
+			// instance validation
+			validateArokFnpIkg(list, 'the_geom')
+		} finally {
+			tempDir.deleteDir()
+		}
+	}
+
+	/**
+	 * Test reading Shapefile instances using an XML schema.
+	 */
 	@Test
 	void testReadXsdInstances() {
 		Schema xmlSchema = TestUtil.loadSchema(getClass().getClassLoader().getResource("testdata/arokfnp/arok-fnp.xsd").toURI())

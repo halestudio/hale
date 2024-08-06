@@ -15,7 +15,9 @@
  */
 package eu.esdihumboldt.hale.io.shp.reader.internal;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.Collection;
@@ -36,6 +38,7 @@ import eu.esdihumboldt.hale.common.core.io.impl.AbstractIOProvider;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
+import eu.esdihumboldt.hale.common.core.io.supplier.DefaultInputSupplier;
 import eu.esdihumboldt.hale.common.core.parameter.AbstractParameterValueDescriptor;
 import eu.esdihumboldt.hale.common.instance.io.InstanceReader;
 import eu.esdihumboldt.hale.common.instance.io.impl.AbstractInstanceReader;
@@ -98,7 +101,34 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			throws IOProviderConfigurationException, IOException {
 		progress.begin(Messages.getString("ShapeSchemaProvider.1"), ProgressIndicator.UNKNOWN); //$NON-NLS-1$
 
-		ShapefileDataStore store = new ShapefileDataStore(getSource().getLocation().toURL());
+		URI loc = getSource().getLocation();
+		try {
+			File file = new File(loc);
+
+			// special handling for directory as source -> load single Shapefile
+			if (file.exists() && file.isDirectory()) {
+				File[] candidates = file
+						.listFiles(f -> f.isFile() && f.getName().toLowerCase().endsWith(".shp"));
+				if (candidates != null && candidates.length > 0) {
+					// use first Shapefile found in folder
+					loc = candidates[0].toURI();
+
+					if (candidates.length > 1) {
+						reporter.warn(
+								"Picked file {} to load from folder, other Shapefiles in folder found but ignored",
+								candidates[0].getName());
+					}
+					else {
+						reporter.info("Picked file {} to load from folder",
+								candidates[0].getName());
+					}
+				}
+			}
+		} catch (IllegalArgumentException e) {
+			// ignore
+		}
+
+		ShapefileDataStore store = new ShapefileDataStore(loc.toURL());
 		store.setCharset(getCharset());
 
 		progress.setCurrentTask("Extracting shape instances");
@@ -136,7 +166,8 @@ public class ShapeInstanceReader extends AbstractInstanceReader implements Shape
 			reporter.info(new IOMessageImpl(
 					"No type name supplied as parameter, trying to auto-detect the schema type.",
 					null));
-			TypeDefinition dataType = ShapeSchemaReader.readShapeType(getSource());
+			TypeDefinition dataType = ShapeSchemaReader
+					.readShapeType(new DefaultInputSupplier(loc));
 			if (dataType == null) {
 				throw new IOException("Could not read shapefile structure information");
 			}
