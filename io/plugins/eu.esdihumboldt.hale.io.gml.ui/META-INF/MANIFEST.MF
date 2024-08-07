@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: GML/XML Instance I/O UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.ui;singleton:=true
-Bundle-Version: 5.3.0.qualifier
+Bundle-Version: 5.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",
  eu.esdihumboldt.hale.io.gml;bundle-version="2.2.0",

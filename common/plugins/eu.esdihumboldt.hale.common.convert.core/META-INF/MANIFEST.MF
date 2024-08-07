@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core Converters
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.convert.core;singleton:=true
-Bundle-Version: 5.3.0.qualifier
+Bundle-Version: 5.4.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: eu.esdihumboldt.hale.common.convert;bundle-version="2.5.0",
  groovy;bundle-version="2.5.19",
