@@ -1,3 +1,19 @@
+## [5.3.0](https://github.com/halestudio/hale/compare/v5.2.1...v5.3.0) (2024-08-07)
+
+
+### Features
+
+* support loading Shapefiles for XML schemas ([0f64ad3](https://github.com/halestudio/hale/commit/0f64ad32cd12bf375410a52a9b6672e254787175))
+* support loading single Shapefile from folder ([eb83a2f](https://github.com/halestudio/hale/commit/eb83a2f6f8b8351e8d8908e7e45e71b2694b98ba))
+
+
+### Bug Fixes
+
+* avoid arbitrary file access during archive extraction ("Zip Slip") ([5c82a4b](https://github.com/halestudio/hale/commit/5c82a4baa05f583326b60a0c5c6f4a72c8269717))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2024.7.31.bnd-fohraq ([5f8fbd7](https://github.com/halestudio/hale/commit/5f8fbd70c314c7594308a511185874d342ea6705))
+* replace broken or risky cryptographic algorithm ([9903a9f](https://github.com/halestudio/hale/commit/9903a9f9dc3f32ea1154e074f75d30a317c77746))
+* Xplan validation erroneously throws warning on missing objects ([23bcc04](https://github.com/halestudio/hale/commit/23bcc04dab77289d7953f7bb862e5cdc420305f8)), closes [#890](https://github.com/halestudio/hale/issues/890)
+
 ## [5.2.1](https://github.com/halestudio/hale/compare/v5.2.0...v5.2.1) (2024-07-04)
 
 
