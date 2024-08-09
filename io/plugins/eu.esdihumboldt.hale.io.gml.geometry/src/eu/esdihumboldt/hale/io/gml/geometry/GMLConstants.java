@@ -38,4 +38,9 @@ public interface GMLConstants {
 	 */
 	public static final String NS_GML_32 = "http://www.opengis.net/gml/3.2";
 
+	/**
+	 * The GML 3.2 namespace
+	 */
+	public static final String NS_WFS = "http://www.opengis.net/wfs";
+
 }
