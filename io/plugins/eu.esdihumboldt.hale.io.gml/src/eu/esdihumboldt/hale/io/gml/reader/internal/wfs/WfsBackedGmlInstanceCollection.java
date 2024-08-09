@@ -229,11 +229,6 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 		}
 
-		// for a query containing RESOLVEDEPTH we disable the pagination
-//		if (primordialQueryParams.containsKey("RESOLVEDEPTH")) {
-//			featuresPerRequest = UNLIMITED;
-//		}
-
 		// Use primordial URI and issue "hits" request to check if the WFS will
 		// return anything at all
 		int hits;
@@ -621,6 +616,11 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 									}
 								}
 								uniqueIDInstancesAdditionalObjects.add(gmlIDToCheck);
+								System.out
+										.println("totalFeaturesProcessed:" + totalFeaturesProcessed
+												+ " - uniqueIDInstancesAdditionalObjects:"
+												+ uniqueIDInstancesAdditionalObjects.size()
+												+ " ADD to additional");
 								return new StreamGmlInstance(instance, totalFeaturesProcessed);
 							}
 						}
@@ -630,10 +630,20 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 								totalFeaturesProcessed++;
 								if (uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
 									uniqueIDInstancesAdditionalObjects.remove(gmlIDToCheck);
+									System.out.println(
+											"totalFeaturesProcessed:" + totalFeaturesProcessed
+													+ " - uniqueIDInstancesAdditionalObjects:"
+													+ uniqueIDInstancesAdditionalObjects.size()
+													+ " Exists in ADDITIONAL SKIP");
 									if (iterator.hasNext()) {
 										return next();
 									}
 								}
+								System.out
+										.println("totalFeaturesProcessed:" + totalFeaturesProcessed
+												+ " - uniqueIDInstancesAdditionalObjects:"
+												+ uniqueIDInstancesAdditionalObjects.size()
+												+ " ADD to main");
 								return new StreamGmlInstance(instance, totalFeaturesProcessed);
 							}
 						}
@@ -644,12 +654,12 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 		}
 
 		private Instance processRemainingInstances() {
-			if (iterator.hasNext()) {
+			if (iterator != null && iterator.hasNext()) {
 				return next();
 			}
 			else {
-				_closeAndRecreateIterator();
-				if (iterator.hasNext()) {
+				closeAndRecreateIterator();
+				if (iterator != null && iterator.hasNext()) {
 					return next();
 				}
 				else {
@@ -658,7 +668,7 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 			}
 		}
 
-		private void _closeAndRecreateIterator() {
+		private void closeAndRecreateIterator() {
 			close();
 			createNextIterator();
 		}
@@ -668,50 +678,6 @@ public class WfsBackedGmlInstanceCollection implements InstanceCollection {
 					|| propertyName.getNamespaceURI().startsWith(GMLConstants.GML_NAMESPACE_CORE))
 					&& "id".equals(propertyName.getLocalPart())
 					&& "gml".equals(propertyName.getPrefix());
-		}
-
-		private String _getGmlId(Instance instance, QName propertyName) {
-			Object[] gmlID = instance.getProperty(propertyName);
-			return gmlID != null && gmlID.length > 0 ? (String) gmlID[0] : null;
-		}
-
-		private boolean _handleAdditionalObjects(Instance instance, String gmlIDToCheck) {
-			if (instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS) != null
-					&& !instance.getMetaData(GmlInstanceCollection.ADDITIONAL_OBJECTS).isEmpty()) {
-				if (!uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
-					if (uniqueIDMainInstances.contains(gmlIDToCheck) && iterator.hasNext()) {
-						next();
-						System.out.println("totalFeaturesProcessed:" + totalFeaturesProcessed
-								+ " - uniqueIDMainInstances:" + uniqueIDMainInstances.size()
-								+ " - uniqueIDInstancesAdditionalObjects:"
-								+ uniqueIDInstancesAdditionalObjects.size() + " 1SKIP");
-						return true;
-					}
-					uniqueIDInstancesAdditionalObjects.add(gmlIDToCheck);
-					return true;
-				}
-			}
-			return false;
-		}
-
-		private boolean _handleMainInstances(String gmlIDToCheck) {
-			if (!uniqueIDMainInstances.contains(gmlIDToCheck)) {
-				uniqueIDMainInstances.add(gmlIDToCheck);
-				totalFeaturesProcessed++;
-				if (uniqueIDInstancesAdditionalObjects.contains(gmlIDToCheck)) {
-					uniqueIDInstancesAdditionalObjects.remove(gmlIDToCheck);
-					if (iterator.hasNext()) {
-						System.out.println("totalFeaturesProcessed:" + totalFeaturesProcessed
-								+ " - uniqueIDMainInstances:" + uniqueIDMainInstances.size()
-								+ " - uniqueIDInstancesAdditionalObjects:"
-								+ uniqueIDInstancesAdditionalObjects.size() + " 2SKIP");
-						next();
-						return true;
-					}
-				}
-				return true;
-			}
-			return false;
 		}
 
 		/**
