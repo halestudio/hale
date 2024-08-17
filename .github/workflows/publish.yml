@@ -56,7 +56,7 @@ jobs:
           EOF
 
       - name: Test
-        run: ./build.sh integrationStage
+        run: ./build.sh commitStage # integrationStage no longer working due to outdated Docker client, tests are performed in hale-core
         working-directory: ./build
 
       - name: Product
