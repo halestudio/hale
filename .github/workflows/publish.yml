@@ -100,13 +100,13 @@ jobs:
         run: ./upload-site.sh
         working-directory: ./build    
 
-      - name: Deploy Artifacts
-        env:
-          WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
-          WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
-          JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
-        run: ./build.sh deployArtifacts
-        working-directory: ./build   
+      # - name: Deploy Artifacts
+      #   env:
+      #     WETF_ARTIFACTORY_USER: ${{ secrets.WETF_ARTIFACTORY_USER }}
+      #     WETF_ARTIFACTORY_PASSWORD: ${{ secrets.WETF_ARTIFACTORY_PASSWORD }}
+      #     JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
+      #   run: ./build.sh deployArtifacts
+      #   working-directory: ./build   
 
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@db71d41eb79864e25ab0337e395c352e84523afe # v4.3.1
