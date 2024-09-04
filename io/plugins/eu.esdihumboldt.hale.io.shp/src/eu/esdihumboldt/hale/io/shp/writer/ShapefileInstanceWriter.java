@@ -22,15 +22,11 @@ import java.io.Serializable;
 import java.net.URI;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.geotools.data.DefaultTransaction;
@@ -47,13 +43,18 @@ import org.locationtech.jts.geom.Geometry;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
+import org.springframework.core.convert.ConversionService;
 
+import com.google.common.collect.ImmutableMap;
+
+import eu.esdihumboldt.hale.common.core.HalePlatform;
 import eu.esdihumboldt.hale.common.core.io.IOProviderConfigurationException;
 import eu.esdihumboldt.hale.common.core.io.ProgressIndicator;
 import eu.esdihumboldt.hale.common.core.io.report.IOReport;
 import eu.esdihumboldt.hale.common.core.io.report.IOReporter;
 import eu.esdihumboldt.hale.common.core.io.report.impl.IOMessageImpl;
 import eu.esdihumboldt.hale.common.core.io.supplier.MultiLocationOutputSupplier;
+import eu.esdihumboldt.hale.common.core.report.SimpleLog;
 import eu.esdihumboldt.hale.common.instance.geometry.GeometryFinder;
 import eu.esdihumboldt.hale.common.instance.groovy.InstanceAccessor;
 import eu.esdihumboldt.hale.common.instance.helper.DepthFirstInstanceTraverser;
@@ -84,6 +85,22 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 * The identifier of the writer as registered to the I/O provider extension.
 	 */
 	public static final String ID = "eu.esdihumboldt.hale.io.shp.instance.writer";
+
+	/**
+	 * Map for different bindings to use for feature type fields for encountered
+	 * types.
+	 */
+	public static final Map<Class<?>, Class<?>> VALID_BINDING_MAP = ImmutableMap
+			.<Class<?>, Class<?>> builder() //
+			// Java 8 date + time
+			//
+			// Please note that regardless if there is a time component, Geotools will by
+			// default only use the date part when writing the DBF file, see
+			// https://github.com/geotools/geotools/blob/f802eb83131e1f7f346007791ce3a8bdde165ede/modules/plugin/shapefile/src/main/java/org/geotools/data/shapefile/ShapefileDataStore.java#L379
+			.put(LocalDate.class, Date.class) //
+			.put(LocalDateTime.class, Date.class) //
+			.put(Instant.class, Date.class) //
+			.build(); //
 
 	/**
 	 * Regular expression to split the camelCase, the snake_case, or the
@@ -303,6 +320,8 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				type);
 		for (PropertyDefinition prop : allNonComplexProperties) {
 			Class<?> binding = prop.getPropertyType().getConstraint(Binding.class).getBinding();
+			binding = toValidBinding(binding);
+
 			// ignore geometry and filename properties.
 			if (!prop.getPropertyType().getConstraint(GeometryType.class).isGeometry()
 					&& !prop.getName().getNamespaceURI()
@@ -319,6 +338,34 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Not all kind of bindings that might be used are supported to be written. Map
+	 * to a valid binding where possible / known.
+	 *
+	 * @param binding the original binding
+	 * @return the binding to use for the original binding, or the original binding
+	 *         if that is supported or no mapping known
+	 */
+	private Class<?> toValidBinding(Class<?> binding) {
+		/*
+		 * Supported binding can be found here:
+		 *
+		 * spotless:off
+		 * https://github.com/geotools/geotools/blob/f802eb83131e1f7f346007791ce3a8bdde165ede/modules/plugin/shapefile/src/main/java/org/geotools/data/shapefile/ShapefileDataStore.java#L344
+		 * spotless:on
+		 */
+		if (binding == null) {
+			return null;
+		}
+
+		Class<?> mappedBinding = VALID_BINDING_MAP.get(binding);
+
+		if (mappedBinding != null) {
+			return mappedBinding;
+		}
+		return binding;
 	}
 
 	/**
@@ -571,7 +618,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 				if (schemaFtMap.containsKey(localPart)) {
 					writeGeometryInstanceData(reporter, schemaFbMap, instance, localPart);
 					// add data for the rest of the properties.
-					writePropertiesInstanceData(schemaFbMap, instance, type, localPart);
+					writePropertiesInstanceData(schemaFbMap, instance, type, localPart, reporter);
 
 					// create list of simple features.
 					// fix in case geometries have multiple geometry types but
@@ -625,7 +672,7 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 	 */
 	private void writePropertiesInstanceData(
 			Map<String, Map<String, SimpleFeatureBuilder>> schemaFbMap, Instance instance,
-			TypeDefinition type, String localPart) {
+			TypeDefinition type, String localPart, SimpleLog log) {
 		Collection<? extends PropertyDefinition> allNonComplexProperties = getNonComplexProperties(
 				type);
 		for (PropertyDefinition prop : allNonComplexProperties) {
@@ -635,6 +682,28 @@ public class ShapefileInstanceWriter extends AbstractGeoInstanceWriter {
 					&& prop.getName().getLocalPart() != null) {
 				Object value = new InstanceAccessor(instance)
 						.findChildren(prop.getName().getLocalPart()).value();
+
+				if (value != null) {
+					Class<?> binding = toValidBinding(
+							prop.getPropertyType().getConstraint(Binding.class).getBinding());
+					if (!binding.isAssignableFrom(value.getClass())) {
+						// convert value
+						ConversionService cs = HalePlatform.getService(ConversionService.class);
+						if (cs != null) {
+							try {
+								value = cs.convert(value, binding);
+							} catch (Exception e) {
+								log.error("Could not convert value to binding {0}", binding, e);
+							}
+						}
+						else {
+							log.error(
+									"Could not access conversion service to convert to binding {0}",
+									binding);
+						}
+					}
+				}
+
 				List<GeometryProperty<?>> geoms = traverseInstanceForGeometries(instance);
 				// add value by traversing geometryType from instance
 				for (GeometryProperty<?> geoProp : geoms) {
