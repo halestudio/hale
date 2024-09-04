@@ -22,10 +22,7 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -252,9 +249,11 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 					}
 					else {
 						// Step 1: Parse the string into java.util.Date
+						// Note: The Geotools based Shapefile writer by default only creates dates
+						// w/o time component
 						try {
 							Date wrongDateFormat = parseStringToDate(textValue,
-									"EEE MMM dd HH:mm:ss z yyyy", true);
+									"EEE MMM dd HH:mm:ss z yyyy", false);
 
 							if (wrongDateFormat == null) {
 								wrongDateFormat = parseStringToDate(textValue, "yyyy-mm-dd", true);
@@ -263,33 +262,20 @@ public class TopoJsonInstanceWriter extends AbstractInstanceWriter {
 								// Step 2: Convert java.util.Date to
 								// java.time.Instant
 								Instant instant = wrongDateFormat.toInstant();
-
-								// Step 3: Convert java.time.Instant to
-								// java.time.LocalDateTime
-								LocalDateTime localDateTime;
-								if (wrongDateFormat.toString().contains("CET")) {
-									// Convert the Date object to LocalDateTime
-									localDateTime = LocalDateTime
-											.ofInstant(wrongDateFormat.toInstant(), ZoneOffset.UTC);
-
-								}
-								else {
-									localDateTime = instant.atZone(ZoneId.systemDefault())
-											.toLocalDateTime();
-								}
+								// assume only date because of default behavior of Shapefile writer
+								LocalDate localDate = instant.atZone(ZoneId.systemDefault())
+										.toLocalDate();
 
 								// Get the year from LocalDateTime
-								int year = localDateTime.getYear();
+								int year = localDate.getYear();
 								if (year == 2) {
+									// assume problem parsing date
+									// XXX seems to have occurred at some point, but reproduction
+									// case is unclear
 									objectNode.put(entry.getKey(), (String) null);
 								}
 								else {
-									// Create a DateTimeFormatter object with
-//									// the desired format
-//									DateTimeFormatter formatter = DateTimeFormatter
-//											.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
-
-									objectNode.put(entry.getKey(), textValue);
+									objectNode.put(entry.getKey(), localDate.toString());
 								}
 
 							}

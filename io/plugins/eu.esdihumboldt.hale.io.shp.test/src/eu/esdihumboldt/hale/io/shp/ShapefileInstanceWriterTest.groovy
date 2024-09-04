@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.io.shp
 
+import static org.assertj.core.api.Assertions.*
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
@@ -24,6 +25,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.function.Consumer
 
 import org.geotools.data.shapefile.ShapefileDataStore
@@ -1208,8 +1211,8 @@ class ShapefileInstanceWriterTest {
 					assert name
 
 					def a_date = inst.p.a_date.value()
-					assert a_date instanceof String
-					assert a_date == aDate.toString()
+					assert a_date instanceof Date
+					assert a_date == Date.from(aDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
 					def a_timestamp = inst.p.a_timestam.value()
 					assert a_timestamp == null
 					def ati = inst.p.ati.value()
@@ -1548,6 +1551,83 @@ class ShapefileInstanceWriterTest {
 				}
 			}
 			assertEquals(2, num)
+		}
+	}
+
+	@Test
+	void testWriteDates() {
+		Schema schema = new SchemaBuilder().schema {
+			abc {
+				a(Date)
+				b(LocalDate)
+				c(Instant)
+				d(LocalDateTime)
+				location(GeometryProperty)
+			}
+		}
+
+		def now = Instant.now()
+		def localDate = now.atZone(ZoneId.systemDefault()).toLocalDate()
+		def localDateTime = now.atZone(ZoneId.systemDefault()).toLocalDateTime()
+		def date = Date.from(now)
+
+		def expLocalDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			abc {
+				a(date)
+				b(localDate)
+				c(now)
+				d(localDateTime)
+				location( createGeometry('POINT(49.872833 8.651222)', 4326))
+			}
+		}
+
+		withNewShapefile(schema, instances) { file ->
+			// load instances again and test
+			def loaded = loadInstances(file)
+			int num = 0
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					num++
+
+					// test instance
+
+					/*
+					 * Note: Geotools will for Date binding always use a D field in the DBF which represents a date only, not a time.
+					 * To store data as date and time (@ field), a system property would need to be set, but this would then apply for all fields:
+					 * https://github.com/geotools/geotools/blob/f802eb83131e1f7f346007791ce3a8bdde165ede/modules/plugin/shapefile/src/main/java/org/geotools/data/shapefile/ShapefileDataStore.java#L379
+					 */
+
+					assertThat(inst.p.a.value() as Object)
+							.isNotNull()
+							.isInstanceOf(Date)
+							.isEqualTo(expLocalDate)
+
+					assertThat(inst.p.b.value() as Object)
+							.isNotNull()
+							.isInstanceOf(Date)
+							.isEqualTo(expLocalDate)
+
+					assertThat(inst.p.c.value() as Object)
+							.isNotNull()
+							.isInstanceOf(Date)
+							.isEqualTo(expLocalDate)
+
+					assertThat(inst.p.d.value() as Object)
+							.isNotNull()
+							.isInstanceOf(Date)
+							.isEqualTo(expLocalDate)
+
+					def the_geom = inst.p.the_geom.value()
+					assert the_geom
+					assert the_geom instanceof GeometryProperty
+				}
+			}
+
+			// two instances were loaded
+			assertEquals(1, num)
 		}
 	}
 }

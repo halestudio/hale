@@ -49,6 +49,9 @@
             class="eu.esdihumboldt.hale.common.convert.core.LocalDateToDateConverter">
       </converter>
       <converter
+              class="eu.esdihumboldt.hale.common.convert.core.LocalDateTimeToDateConverter">
+      </converter>
+      <converter
             class="eu.esdihumboldt.hale.common.convert.core.StringToInstantConverter">
       </converter>
       <converter
