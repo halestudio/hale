@@ -23,7 +23,7 @@ jobs:
     
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@2f53a7669c7543a045d0bb6c92436df0c5a726f8 # v1.14.0
+        uses: s4u/setup-maven-action@a37cecafbf1e8d86c1c93d51054a63e228b96b3e # v1.15.0
         # uses: stempler/setup-maven-action@feat/cache-save-always
         with:
           java-version: 17
