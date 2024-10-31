@@ -18,6 +18,7 @@ package eu.esdihumboldt.hale.common.headless.orient;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -227,7 +228,7 @@ public class OrientTransformationSink extends AbstractTransformationSink {
 
 	@Override
 	protected void internalAddInstance(final Instance instance) {
-		dbThread.execute(new Runnable() {
+		var future = dbThread.submit(new Runnable() {
 
 			@Override
 			public void run() {
@@ -240,6 +241,16 @@ public class OrientTransformationSink extends AbstractTransformationSink {
 				}
 			}
 		});
+
+		// wait for adding instance to database to complete, otherwise the
+		// transformation might complete before the instance is actually added
+		try {
+			future.get();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} catch (ExecutionException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
