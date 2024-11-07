@@ -42,6 +42,19 @@
 		</div>
 		<p>To create a condition, select a property on the left and on the
 			right side, then click on the button in the middle.</p>
+			
+		<h2>
+			<a name="condition">Index Join Handler (experimental)</a>
+		</h2>
+		<p>
+			To activate the use of the Index Join Handler for all Join and Groovy
+			Join transformations, set the Java system property <code>hale.functions.use_index_join_handler</code>
+			or the environment variable <code>HALE_FUNCTIONS_USE_INDEX_JOIN_HANDLER</code>.
+		</p>
+		<p>
+			The Index Join Handler is experimental and can potentially have a
+			negative impact on the performance of Join and Groovy Join transformations.
+		</p>
 	</div>
 </body>
 </html>
