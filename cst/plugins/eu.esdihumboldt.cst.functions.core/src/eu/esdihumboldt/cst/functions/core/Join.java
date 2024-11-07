@@ -21,7 +21,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.core.join.IndexJoinHandler;
+import eu.esdihumboldt.cst.functions.core.join.JoinHandler;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.functions.join.JoinParameter;
@@ -34,17 +37,38 @@ import eu.esdihumboldt.hale.common.instance.index.InstanceIndexContribution;
 /**
  * Type transformation that joins multiple instances of different source types
  * into one target instance, based on matching properties.
- * 
+ *
  * @author Kai Schwierczek
  */
 public class Join extends Retype implements JoinFunction, InstanceIndexContribution {
+
+	/**
+	 * The log
+	 */
+	private static final ALogger LOG = ALoggerFactory.getLogger(Join.class);
 
 	/**
 	 * @see eu.esdihumboldt.hale.common.align.transformation.function.impl.AbstractTypeTransformation#getInstanceHandler()
 	 */
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new IndexJoinHandler();
+		boolean useIndexJoinHandler = false;
+
+		String setting = System.getProperty("hale.functions.join.use_index_join_handler");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_FUNCTIONS_USE_INDEX_JOIN_HANDLER");
+		}
+
+		if (setting != null) {
+			try {
+				useIndexJoinHandler = Boolean.valueOf(setting);
+			} catch (Throwable e) {
+				LOG.error("Error applying index join handler setting: " + setting, e);
+			}
+		}
+
+		return useIndexJoinHandler ? new IndexJoinHandler() : new JoinHandler();
 	}
 
 	/**

@@ -19,8 +19,11 @@ package eu.esdihumboldt.cst.functions.groovy;
 import java.util.Collection;
 import java.util.List;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.core.Merge;
 import eu.esdihumboldt.cst.functions.core.merge.IndexMergeHandler;
+import eu.esdihumboldt.cst.functions.core.merge.PropertiesMergeHandler;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.MergeFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -33,10 +36,15 @@ import eu.esdihumboldt.hale.common.instance.index.InstanceIndexContribution;
  * into one target instance, based on matching properties. The transformation
  * also applies a Groovy script that can be used to control the target instance
  * creation.
- * 
+ *
  * @author Simon Templer
  */
 public class GroovyMerge extends GroovyRetype implements MergeFunction, InstanceIndexContribution {
+
+	/**
+	 * The log
+	 */
+	private static final ALogger LOG = ALoggerFactory.getLogger(GroovyMerge.class);
 
 	/**
 	 * The function ID. Not named <code>ID</code> to avoid shadowing
@@ -51,7 +59,23 @@ public class GroovyMerge extends GroovyRetype implements MergeFunction, Instance
 
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new IndexMergeHandler();
+		boolean useIndexMergeHandler = false;
+
+		String setting = System.getProperty("hale.functions.use_index_merge_handler");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_FUNCTIONS_USE_INDEX_MERGE_HANDLER");
+		}
+
+		if (setting != null) {
+			try {
+				useIndexMergeHandler = Boolean.valueOf(setting);
+			} catch (Throwable e) {
+				LOG.error("Error applying index merge handler setting: " + setting, e);
+			}
+		}
+
+		return useIndexMergeHandler ? new IndexMergeHandler() : new PropertiesMergeHandler();
 	}
 
 	/**
