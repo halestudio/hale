@@ -18,8 +18,11 @@ package eu.esdihumboldt.cst.functions.groovy;
 import java.util.Collection;
 import java.util.List;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
 import eu.esdihumboldt.cst.functions.core.Join;
 import eu.esdihumboldt.cst.functions.core.join.IndexJoinHandler;
+import eu.esdihumboldt.cst.functions.core.join.JoinHandler;
 import eu.esdihumboldt.hale.common.align.model.Cell;
 import eu.esdihumboldt.hale.common.align.model.functions.JoinFunction;
 import eu.esdihumboldt.hale.common.align.model.impl.PropertyEntityDefinition;
@@ -32,10 +35,15 @@ import eu.esdihumboldt.hale.common.instance.index.InstanceIndexContribution;
  * into one target instance, based on matching properties. The transformation
  * also applies a Groovy script that can be used to control the target instance
  * creation.
- * 
+ *
  * @author Simon Templer
  */
 public class GroovyJoin extends GroovyRetype implements JoinFunction, InstanceIndexContribution {
+
+	/**
+	 * The log
+	 */
+	private static final ALogger LOG = ALoggerFactory.getLogger(GroovyJoin.class);
 
 	/**
 	 * The function ID. Not named <code>ID</code> to avoid shadowing
@@ -50,7 +58,23 @@ public class GroovyJoin extends GroovyRetype implements JoinFunction, InstanceIn
 
 	@Override
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
-		return new IndexJoinHandler();
+		boolean useIndexJoinHandler = false;
+
+		String setting = System.getProperty("hale.functions.use_index_join_handler");
+
+		if (setting == null) {
+			setting = System.getenv("HALE_FUNCTIONS_USE_INDEX_JOIN_HANDLER");
+		}
+
+		if (setting != null) {
+			try {
+				useIndexJoinHandler = Boolean.valueOf(setting);
+			} catch (Throwable e) {
+				LOG.error("Error applying index join handler setting: " + setting, e);
+			}
+		}
+
+		return useIndexJoinHandler ? new IndexJoinHandler() : new JoinHandler();
 	}
 
 	/**
