@@ -146,7 +146,7 @@ class StreamGmlReaderTest {
 	}
 
 	//	this test might not work anymore in the future. At that moment please ignore it
-	//	@Ignore
+	@Ignore  // plan count changed
 	@Test
 	public void testWfsPagination() {
 		/*
