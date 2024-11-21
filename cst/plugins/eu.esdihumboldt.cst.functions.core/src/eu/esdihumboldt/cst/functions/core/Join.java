@@ -54,7 +54,7 @@ public class Join extends Retype implements JoinFunction, InstanceIndexContribut
 	public InstanceHandler<? super TransformationEngine> getInstanceHandler() {
 		boolean useIndexJoinHandler = false;
 
-		String setting = System.getProperty("hale.functions.join.use_index_join_handler");
+		String setting = System.getProperty("hale.functions.use_index_join_handler");
 
 		if (setting == null) {
 			setting = System.getenv("HALE_FUNCTIONS_USE_INDEX_JOIN_HANDLER");
