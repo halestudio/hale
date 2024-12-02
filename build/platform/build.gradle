@@ -92,6 +92,15 @@ dependencies {
     halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.legacy"
 
     halecore "eu.esdihumboldt.hale:eu.esdihumboldt.util.feature.resource"
+
+    // dependencies not contained in features
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.inspire"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.service.helper"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.schema.presets"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.schematron"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.codelist.xml"
 }
 
 /*
@@ -185,6 +194,11 @@ platform {
         versionStrategy = MINIMUM
     }
 
+    // SLf4J 2 is API compatible with version 1
+    imports (group: 'org.slf4j') {
+        versionStrategy = MINIMUM
+    }
+
     bnd group: 'si.uom', name: 'si-quantity', {
         prependImport 'javax.measure.*'
     }
@@ -275,6 +289,19 @@ platform {
 		// make some imports optional which showed up after upgrading bnd
 		optionalImport 'sun.misc', 'com.cloudius.util'
 	}
+
+    bnd group: 'org.lz4', name: 'lz4-java', {
+        def bundleVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'org.lz4' && it.moduleVersion.id.name == 'lz4-java' }.moduleVersion.id.version
+        // for some reason the dependency by default proclaims version 0.0.0 which is not correct
+        version = bundleVersion
+        symbolicName = 'org.lz4.lz4-java'
+        instruction 'Export-Package', "net.jpountz.lz4;version=$version"
+	}
+
+    bnd group: 'eu.esdihumboldt.hale', name: 'eu.esdihumboldt.hale.io.codelist.xml', {
+        // fix missing exported packages
+        instruction 'Export-Package', "eu.esdihumboldt.hale.io.codelist.*;version=$version"
+    }
 
     // merge {
 	// 	// merged bundle for javax.annotation packages

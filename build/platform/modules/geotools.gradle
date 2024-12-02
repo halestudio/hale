@@ -3,6 +3,13 @@ platform {
             instruction '-removeheaders', 'Require-Capability'
     }
 
+    def geotoolsVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'org.geotools' && it.moduleVersion.id.name == 'gt-main' }.moduleVersion.id.version
+
+    // include additional geotools dependencies
+
+    // used in style UI
+    bundle group: 'org.geotools', name: 'gt-render', version: geotoolsVersion
+
     // feature id: 'platform.shared.geotools',
     //         name: 'Geotools',
     //         version: geotoolsVersion, {
@@ -21,12 +28,11 @@ platform {
         bnd {
             symbolicName = 'org.geotools'
             bundleName = 'Geotools'
-            def bundleVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'org.geotools' && it.moduleVersion.id.name == 'gt-main' }.moduleVersion.id.version
-            version = bundleVersion
-            instruction 'Export-Package', "org.geotools.*;version=$bundleVersion"
+            version = geotoolsVersion
+            instruction 'Export-Package', "org.geotools.*;version=$geotoolsVersion"
             instruction 'Private-Package', '*'
             
-            def tokenizedVersion = bundleVersion.tokenize('.|-')
+            def tokenizedVersion = geotoolsVersion.tokenize('.|-')
             def majorVersion = tokenizedVersion[0] as int
             def jtsGeomPackage = (majorVersion < 20) ? 'com.vividsolutions.jts.geom' : 'org.locationtech.jts.geom'
 
