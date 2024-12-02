@@ -1,3 +1,0 @@
-Generiert einen Identifikator für das Attribut ${_target} basierend auf einer numerischen Sequenz. <% if (_params.sequence == "overall") { out << 'Die Sequenz wird mit allen anderen Verwendungen dieser Funktion geteilt die nicht explizit eine andere Sequenz verwenden.' } else {  out << 'Die Sequenz ist mit dem Typ des Ziel-Objekts assoziiert.' }%>  
-<% if (_params.prefix) out << "`${_params.prefix}` wird als Präfix für den Identifikator verwendet." %> 
-<% if (_params.suffix) out << "`${_params.suffix}` wird als Suffix für den Identifikator verwendet." %>
