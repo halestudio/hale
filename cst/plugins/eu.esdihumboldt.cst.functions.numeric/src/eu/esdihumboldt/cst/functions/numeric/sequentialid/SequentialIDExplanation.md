@@ -1,3 +1,0 @@
-Generates a sequential ID for ${_target}. <% if (_params.sequence == "overall") { out << 'An overall sequence is used that is shared with other uses of this function that don\'t explicitly use a different sequence.' } else {  out << 'The sequence used is associated to the target instance type.' }%>  
-<% if (_params.prefix) out << "The prefix used for the ID is `${_params.prefix}`." %> 
-<% if (_params.suffix) out << "The suffix used for the ID is `${_params.suffix}`." %>
