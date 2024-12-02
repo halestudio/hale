@@ -106,3 +106,42 @@ platform {
 	}
 
 }
+
+task generateTargetFile() {
+    /*
+     Add to base target file a location with the local update site similar to the following:
+     <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="<uri>"/>
+		<unit id="<id>" version="<version>"/>
+	 </location>
+     */
+    doLast {
+        def baseFile = file('../../platform/base-platform.target')
+        def targetFile = file('../../platform/local-platform.target')
+
+        def rootNode = new XmlParser().parse(baseFile)
+
+        def locations = rootNode.locations[0]
+
+        def localPlatform = new Node(locations, 'location')
+
+        localPlatform.@includeAllPlatforms = 'false'
+        localPlatform.@includeConfigurePhase = 'false'
+        localPlatform.@includeMode = 'slicer'
+        localPlatform.@includeSource = 'true'
+        localPlatform.@type = 'InstallableUnit'
+
+        localPlatform.appendNode('repository', [location: project.platform.updateSiteDir.getAbsoluteFile().toURI().toString()])
+        localPlatform.appendNode('unit', [id: project.platform.featureId, version: project.platform.featureVersion])
+
+        new XmlNodePrinter(new PrintWriter(new FileWriter(targetFile))).print(rootNode)
+    }
+}
+
+// always generate the target file when updating the site
+tasks.updateSite.dependsOn generateTargetFile
+
+tasks.clean.doLast {
+    // delete the local target file
+    delete file('../../platform/local-platform.target')
+}
