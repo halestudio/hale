@@ -1,30 +1,31 @@
 buildscript {
-	repositories {
+    repositories {
         mavenLocal() //XXX for testing
 
         gradlePluginPortal()
 
-		maven { // wetransform artifactory
-			url 'https://artifactory.wetransform.to/artifactory/local'
-		}
-		mavenCentral()
-		maven {
-			url 'https://oss.sonatype.org/content/repositories/snapshots/'
-		}
-	}
-	dependencies {
-		// classpath 'org.standardout:gradle-include-plugin:0.2.0'
-		classpath 'org.standardout:bnd-platform:3.2.0-SNAPSHOT'
-		// classpath 'zipdiff:zipdiff:0.4'
-		// classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.3.0"
-	}
-	configurations.all {
-		// ensure SNAPSHOTs are updated every time if needed
-		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-	}
+        maven { // wetransform artifactory
+            url 'https://artifactory.wetransform.to/artifactory/local'
+        }
+        mavenCentral()
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+    dependencies {
+        classpath 'org.standardout:gradle-include-plugin:0.2.0'
+        classpath 'org.standardout:bnd-platform:3.2.0-SNAPSHOT'
+        // classpath 'zipdiff:zipdiff:0.4'
+        // classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.3.0"
+    }
+    configurations.all {
+        // ensure SNAPSHOTs are updated every time if needed
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
 }
 
 apply plugin: 'org.standardout.bnd-platform'
+apply plugin: 'org.standardout.include'
 
 defaultTasks 'clean', 'updateSite'
 
@@ -42,78 +43,271 @@ repositories {
 }
 
 configurations {
-    bndplatform {
+    halecore // configuration with hale-core dependencies to be able to determine versions used there
+
+    halecore {
         attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
     }
+
+    bndplatform {
+        extendsFrom halecore
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+    }
+
+    /*
+     * Exclude bundles conflicting with JRE-provided packages.
+     *
+     * They have to be excluded as just removing the version constraint on
+     * corresponding package imports is not enough - bundles that only have
+     * optional imports may still bind to them, as they have no explicit
+     * dependency on the system bundle.
+     */
+    bndplatform.exclude group: 'javax.xml'
+    bndplatform.exclude group: 'javax.activation'
+    bndplatform.exclude group: 'xml-apis'
+    bndplatform.exclude group: 'dom4j'
+    bndplatform.exclude group: 'stax'
+    bndplatform.exclude group: 'org.w3c.dom'
+    bndplatform.exclude group: 'org.apache.batik'
+    bndplatform.exclude group: 'org.codehaus.woodstox'
+    //org.apache.geronimo.specs.geronimo-stax-api_1.0_spec
+    bndplatform.exclude group: 'org.apache.geronimo.specs'
 }
 
 dependencies {
     // use hale-core BOM
-    bndplatform(platform("eu.esdihumboldt.hale:bom:$version"))
+    halecore(platform("eu.esdihumboldt.hale:bom:$version"))
 
     // hale-core features
 
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.app.feature.cli"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.app.feature.cli"
 
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.core"
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.orient"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.core"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.orient"
 
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.cst.feature"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.cst.feature"
 
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.core"
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.html"
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.legacy"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.core"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.html"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.legacy"
 
-    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.util.feature.resource"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.util.feature.resource"
 }
 
+/*
+ * General platform settings
+ */
 platform {
-	fetchSources = true
-	determineImportVersions = true
-	addBndPlatformManifestHeaders = true
-	auxVersionedSymbolicNames = true
-	featureId = 'eu.esdihumboldt.hale.platform'
-	featureName = 'HALE Target Platform Libraries'
-	// hashQualifierMap = file('version-history.json')
-	// defaultQualifierMap.baseDate = DAY // to have a rather short default length, that seldom has to be exceeded
+    fetchSources = true
+    determineImportVersions = true
+    addBndPlatformManifestHeaders = true
+    auxVersionedSymbolicNames = true
+    featureId = 'eu.esdihumboldt.hale.platform'
+    featureName = 'HALE Target Platform Libraries'
+    // hashQualifierMap = file('version-history.json')
+    // defaultQualifierMap.baseDate = DAY // to have a rather short default length, that seldom has to be exceeded
 
-	// override behavior for all bundles to prevent package uses conflicts for packages provided by the JRE
-	override {
-		// ensure javax.annotation imports are w/o version
-		prependImport('javax.annotation.*')
-		prependImport('org.apache.commons.logging.*')
+    // override behavior for all bundles to prevent package uses conflicts for packages provided by the JRE
+    override {
+        // ensure javax.annotation imports are w/o version
+        prependImport('javax.annotation.*')
+        prependImport('org.apache.commons.logging.*')
 
-		optionalImport(
-				// no version requirement for certain JRE provided packages
-				// use wildcards to not enforce imports
-				// use optional imports as otherwise we suddenly get errors in Eclipse while resolving seemingly random optional(!) package imports
-				'javax.xml.*',
-				'org.w3c.dom.*',
-				'org.xml.sax.*',
-				'javax.activation.*',
-				'com.sun.xml.internal.*',
-				'sun.nio.*',
-				// cal10n.api
-				'javax.tools.*',
-				'javax.lang.model.*',
-				'javax.annotation.processing.*',
-				// also make JUnit optional everywhere - so we can exclude it from products
-				'junit.framework.*',
-				'org.junit.*',
-				'xml-apis.*',
-				'jakarta.xml.*'
-		)
+        optionalImport(
+                // no version requirement for certain JRE provided packages
+                // use wildcards to not enforce imports
+                // use optional imports as otherwise we suddenly get errors in Eclipse while resolving seemingly random optional(!) package imports
+                'javax.xml.*',
+                'xml-apis.*',
+                'jakarta.xml.*',
+                'org.w3c.dom.*',
+                'org.xml.sax.*',
+                'javax.activation.*',
+                'com.sun.xml.internal.*',
+                'sun.nio.*',
+                // cal10n.api
+                'javax.tools.*',
+                'javax.lang.model.*',
+                'javax.annotation.processing.*',
+                // also make JUnit optional everywhere - so we can exclude it from products
+                'junit.framework.*',
+                'org.junit.*',
+                // core java packages that for some reason cannot be resolved (imports included in hale-core bundles)
+                'java.util.*',
+                'java.io.*',
+                'java.net.*',
+                'java.nio.*',
+                'java.text.*',
+                'java.lang.*',
+                'java.security.*',
+                'java.sql.*',
+                'java.time.*',
+                'javax.script.*',
+                'java.awt.*',
+                'java.math.*'
+        )
+    }
+}
+
+/*
+ * Include modules
+ */
+include {
+    from 'modules/geotools.gradle'
+    from 'modules/groovy.gradle'
+    from 'modules/geopackage.gradle'
+    from 'modules/zest' // Zest 2 Snapshot - TODO instead use official release
+}
+
+/*
+ * UI specific dependencies
+ */
+platform {
+    // used for map component
+    bundle 'org.swinglabs:swingx:1.0', {
+        bnd {
+            symbolicName = 'org.jdesktop.swingx'
+        }
+    }
+
+    // used for dynamic help
+    bundle 'org.apache.velocity:velocity:1.6.2'
+}
+
+/*
+ * Adaptions to bundle configurations
+ */
+platform {
+    // use minimum version for Guava package imports
+    // otherwise import versions reject anything beyond the next major version
+    //FIXME does not work for com.google.protobuf.util! -> investigate
+    imports (group: 'com.google.guava', name: 'guava') {
+        versionStrategy = MINIMUM
+    }
+
+    bnd group: 'si.uom', name: 'si-quantity', {
+        prependImport 'javax.measure.*'
+    }
+    
+    bnd group: 'si.uom', name: 'si-units-java8', {
+        prependImport 'javax.measure.*'
+        prependImport 'si.uom.quantity.*'
+    }
+    
+    bnd group: 'systems.uom', name: 'systems-quantity', {
+        prependImport 'javax.measure.*'
+    }
+        
+    bnd group: 'tec.uom', name: 'uom-se', {
+        prependImport 'javax.measure.*'
+    }
+    
+    bnd group: 'tec.uom.lib', name: 'uom-lib-common', {
+        prependImport 'javax.measure.*'
+    }
+    
+    bnd group: 'tech.units', name: 'indriya', {
+        prependImport 'tec.uom.lib.common.*'
+    }
+    
+    bnd group: 'org.locationtech.jts', name: 'jts-core', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    bnd group: 'net.sf.trove4j', name: 'trove4j', {
+        instructions 'Eclipse-BuddyPolicy': 'registered'
+    }
+
+    bnd group: 'io.prometheus', name: 'simpleclient', {
+        optionalImport 'io.prometheus.client.exemplars.tracer.*'
+    }
+
+    bnd group: 'org.codehaus.castor', name: 'castor-xml', {
+        instruction 'Import-Package', 'org.springframework.*'
+        instruction 'Import-Package', 'org.apache.commons.lang3.*'
+        // required to run unit tests involving codehaus xml
+        instruction 'Require-Bundle', "org.codehaus.castor.core,xerces.xercesImpl"
+        addQualifier = true
+    }
+
+    /*
+     * Override bundle symbolic names (e.g. org.objectweb.asm) as they collide with
+     * bundles provided via an Eclipse update site, and both versions cannot be
+     * included in the (plugin-based) product if the symbolic name is the same.
+     *
+     * The problem seems to persist with feature-based products as well, even
+     * as the Tycho build seems to be able to handle it given fixed versions in
+     * the feature, Eclipse will not create the Run Configuration accordingly and
+     * will not validate the product correctly.
+     */
+    bnd group: 'org.ow2.asm', {
+        // -> use versioned symbolic names
+        def ov = org.osgi.framework.Version.parseVersion(version)
+        symbolicName = symbolicName + '-' + ov.major
+    }
+    bnd group: 'org.ow2.asm', name: 'asm-commons', {
+        // -> use versioned symbolic names
+        def ov = org.osgi.framework.Version.parseVersion(version)
+        // and fix problem with null symbolic name
+        symbolicName = 'org.ow2.asm.commons-' + ov.major
+    }
+
+    // ensure optional jdi imports for javassist
+    // not sure why bnd-platform adds those
+    bnd group: 'org.javassist', name: 'javassist', {
+        optionalImport 'com.sun.jdi.*'
+    }
+
+    // force package export versions for hsqldb
+    bnd group: 'org.hsqldb', name: 'hsqldb', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    bnd group: 'jakarta.activation', name: 'jakarta.activation-api', {
+        optionalImport 'com.sun.activation.registeries'
+    }
+
+    bnd group: 'org.apache.ws.commons.schema', name: 'XmlSchema', {
+        optionalImport 'org.w3c.dom'
+    }
+
+    bnd group: 'jline', name: 'jline', {
+		// make some imports optional which showed up after upgrading bnd
+		optionalImport 'sun.misc', 'com.cloudius.util'
 	}
 
+    // merge {
+	// 	// merged bundle for javax.annotation packages
+	// 	// because otherwise only one fragment seems to be used to provide
+	// 	// the javax.annotation package resulting in missing classes
+	// 	match {
+	// 		// merge all artifacts in org.geotools group, but not gt-opengis
+	// 		(it.group == 'javax.annotation' && it.name == 'javax.annotation-api') ||
+	// 				(it.group == 'com.google.code.findbugs' && it.name == 'jsr305')
+	// 	}
+
+	// 	bnd {
+	// 		symbolicName = 'javax.annotation.extensions'
+	// 		bundleName = 'javax.annotation Extensions'
+	// 		version = '1.2' // version should be equal to javax.annotation-api module version
+	// 		instruction 'Fragment-Host', 'system.bundle;extension:=framework'
+	// 		instruction 'Export-Package', "javax.annotation.*;version=$version;-noimport:=true"
+	// 		instruction 'Import-Package', '*'
+	// 	}
+	// }
 }
 
+
+/*
+ * Task to generate .target file
+ */
 task generateTargetFile() {
     /*
      Add to base target file a location with the local update site similar to the following:
      <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-		<repository location="<uri>"/>
-		<unit id="<id>" version="<version>"/>
-	 </location>
+        <repository location="<uri>"/>
+        <unit id="<id>" version="<version>"/>
+     </location>
      */
     doLast {
         def baseFile = file('../../platform/base-platform.target')

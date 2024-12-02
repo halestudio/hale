@@ -1,0 +1,14 @@
+platform {
+	feature id: 'eu.esdihumboldt.hale.platform.zest',
+			name: 'Zest',
+			version: '2.0.0.201204272302', {
+		// add existing bundle jars
+		bundle(fileTree(thisDir) { include '*.jar' })
+	}
+	
+	bnd(fileTree(thisDir) { include 'org.eclipse.zest.core_*.jar' }) {
+		// no version restriction
+		instruction 'Import-Package', 'com.ibm.icu.text'
+		addQualifier = true
+	}
+}

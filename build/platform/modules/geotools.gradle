@@ -1,0 +1,46 @@
+platform {
+    bnd group: 'xpp3', name: 'xpp3_min', {
+            instruction '-removeheaders', 'Require-Capability'
+    }
+
+    // feature id: 'platform.shared.geotools',
+    //         name: 'Geotools',
+    //         version: geotoolsVersion, {
+
+    // opengis
+    bnd group: 'org.geotools', name: 'gt-opengis', {
+        symbolicName = 'org.opengis'
+    }
+    
+    // merged geotools bundle
+    merge {
+        match {
+            it.group != null && it.group.startsWith('org.geotools') && it.name != 'gt-opengis'
+        }
+        
+        bnd {
+            symbolicName = 'org.geotools'
+            bundleName = 'Geotools'
+            def bundleVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'org.geotools' && it.moduleVersion.id.name == 'gt-main' }.moduleVersion.id.version
+            version = bundleVersion
+            instruction 'Export-Package', "org.geotools.*;version=$bundleVersion"
+            instruction 'Private-Package', '*'
+            
+            def tokenizedVersion = bundleVersion.tokenize('.|-')
+            def majorVersion = tokenizedVersion[0] as int
+            def jtsGeomPackage = (majorVersion < 20) ? 'com.vividsolutions.jts.geom' : 'org.locationtech.jts.geom'
+
+            prependImport(
+                // import eclipse xsd/emf w/o version (as the dependency does not export them)
+                'org.eclipse.xsd.*', 'org.eclipse.emf.*,',
+                // add missing imports that result in class loading issues
+                jtsGeomPackage // because the package is also included in the bundle! (EmptyGeometry)
+            )
+            //optional import for oracle.jdbc
+            optionalImport(
+                'oracle.*'
+            )
+        }
+    }
+    
+}

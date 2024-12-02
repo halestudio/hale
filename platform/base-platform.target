@@ -2,12 +2,12 @@
 <?pde version="3.8"?>
 <target name="eu.esdihumboldt.hale.platform" sequenceNumber="340">
 <locations>
-<!--
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
 <unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
 <repository location="http://build-artifacts.wetransform.to/p2/eclipse-util/import"/>
 </location>
+<!--
 <location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
 <repository location="http://build-artifacts.wetransform.to/p2/sqlite/build_7"/>

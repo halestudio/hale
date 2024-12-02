@@ -1,0 +1,45 @@
+configurations {
+    bndplatform {
+        // groovy
+        resolutionStrategy.eachDependency {
+            if (it.requested.group == 'org.codehaus.groovy') {
+                // always use groovy-all instead of (groovy-*)
+                //XXX classifier seems to be ignored here -> normal groovy-all will be added
+                it.useTarget "org.codehaus.groovy:${it.requested.name}:${it.requested.version}"
+            }
+        }
+    }
+}
+
+platform {
+    def customName = 'groovy'
+    def indy = false
+    def addDependency = false
+    // def groovyVersion = project.configurations.bndplatform.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'org.codehaus.groovy' && it.moduleVersion.id.name == 'groovy' }.moduleVersion.id.version
+
+    if (customName && !indy) {
+        // custom symbolic name
+        bnd('org.codehaus.groovy:groovy-all') {
+            symbolicName = customName
+        }
+    }
+
+    // if (addDependency || indy) {
+    //     feature id: 'platform.shared.groovy-all',
+    //             name: 'Groovy complete',
+    //             version: groovyVersion, {
+    //         bundle "org.codehaus.groovy:groovy-all:${groovyVersion}${indy ? ':indy' : ''}", {
+    //             bnd {
+    //                 instruction '-removeheaders', 'Require-Capability'
+    //                 if (customName) {
+    //                     symbolicName = customName
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    imports(group: 'org.codehaus.groovy') {
+        versionStrategy = MINIMUM // assume that groovy is backwards compatible
+    }
+}
