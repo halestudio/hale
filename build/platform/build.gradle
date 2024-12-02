@@ -1,0 +1,108 @@
+buildscript {
+	repositories {
+        mavenLocal() //XXX for testing
+
+        gradlePluginPortal()
+
+		maven { // wetransform artifactory
+			url 'https://artifactory.wetransform.to/artifactory/local'
+		}
+		mavenCentral()
+		maven {
+			url 'https://oss.sonatype.org/content/repositories/snapshots/'
+		}
+	}
+	dependencies {
+		// classpath 'org.standardout:gradle-include-plugin:0.2.0'
+		classpath 'org.standardout:bnd-platform:3.2.0-SNAPSHOT'
+		// classpath 'zipdiff:zipdiff:0.4'
+		// classpath "biz.aQute.bnd:biz.aQute.bnd.gradle:6.3.0"
+	}
+	configurations.all {
+		// ensure SNAPSHOTs are updated every time if needed
+		resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+	}
+}
+
+apply plugin: 'org.standardout.bnd-platform'
+
+defaultTasks 'clean', 'updateSite'
+
+// platform = hale-core version
+version = '6.1.0'
+
+repositories {
+    maven {
+        url 'https://artifactory.wetransform.to/artifactory/local'
+    }
+    maven {
+        url 'https://repo.osgeo.org/repository/release/'
+    }
+    mavenCentral()
+}
+
+configurations {
+    bndplatform {
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+    }
+}
+
+dependencies {
+    // use hale-core BOM
+    bndplatform(platform("eu.esdihumboldt.hale:bom:$version"))
+
+    // hale-core features
+
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.app.feature.cli"
+
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.core"
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.orient"
+
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.cst.feature"
+
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.core"
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.html"
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.legacy"
+
+    bndplatform "eu.esdihumboldt.hale:eu.esdihumboldt.util.feature.resource"
+}
+
+platform {
+	fetchSources = true
+	determineImportVersions = true
+	addBndPlatformManifestHeaders = true
+	auxVersionedSymbolicNames = true
+	featureId = 'eu.esdihumboldt.hale.platform'
+	featureName = 'HALE Target Platform Libraries'
+	// hashQualifierMap = file('version-history.json')
+	// defaultQualifierMap.baseDate = DAY // to have a rather short default length, that seldom has to be exceeded
+
+	// override behavior for all bundles to prevent package uses conflicts for packages provided by the JRE
+	override {
+		// ensure javax.annotation imports are w/o version
+		prependImport('javax.annotation.*')
+		prependImport('org.apache.commons.logging.*')
+
+		optionalImport(
+				// no version requirement for certain JRE provided packages
+				// use wildcards to not enforce imports
+				// use optional imports as otherwise we suddenly get errors in Eclipse while resolving seemingly random optional(!) package imports
+				'javax.xml.*',
+				'org.w3c.dom.*',
+				'org.xml.sax.*',
+				'javax.activation.*',
+				'com.sun.xml.internal.*',
+				'sun.nio.*',
+				// cal10n.api
+				'javax.tools.*',
+				'javax.lang.model.*',
+				'javax.annotation.processing.*',
+				// also make JUnit optional everywhere - so we can exclude it from products
+				'junit.framework.*',
+				'org.junit.*',
+				'xml-apis.*',
+				'jakarta.xml.*'
+		)
+	}
+
+}
