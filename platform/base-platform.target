@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="340">
+<locations>
+<!--
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
+<unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
+<repository location="http://build-artifacts.wetransform.to/p2/eclipse-util/import"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="platform.shared.sqlite.feature.group" version="3.8.7.bnd-uQXCA"/>
+<repository location="http://build-artifacts.wetransform.to/p2/sqlite/build_7"/>
+</location>
+-->
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.21.0.v20200205-0529"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.100.v20200303-1901"/>
+<unit id="org.eclipse.emf.mwe2.language.sdk.feature.group" version="2.11.2.v20200224-0816"/>
+<unit id="org.eclipse.emf.mwe2.runtime.sdk.feature.group" version="2.11.2.v20200224-0816"/>
+<unit id="org.eclipse.gmf.runtime.sdk.feature.group" version="1.12.2.201912020813"/>
+<unit id="org.eclipse.xtext.sdk.feature.group" version="2.21.0.v20200302-1509"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.500.v20200217-1548"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.300.v20191023-2007"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.700.v20200217-0016"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient45.feature.feature.group" version="1.0.300.v20200217-0016"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.200.v20191024-1546"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.15.0.v20200217-1230"/>
+<unit id="org.eclipse.sdk.ide" version="4.15.0.I20200305-0155"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-eclipse/"/>
+</location>
+<!--
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.slf4jplus.feature.feature.group" version="1.2.0.201503311443"/>
+<unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
+<repository location="http://build-artifacts.wetransform.to/p2/slf4jplus/import"/>
+</location>
+-->
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/jetty-8"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<repository location="http://build-artifacts.wetransform.to/p2/mirror/gef-legacy-releases/"/>
+<unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201606061308"/>
+</location>
+	
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="http://build-artifacts.wetransform.to/p2/equinox-test/96b3ede3cee11a98a1290edc330e421bb6ae2c86"/>
+		<unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202403131049"/>
+	</location>
+	<!--
+	<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+		<repository location="http://build-artifacts.wetransform.to/p2/offline-resources/site"/>
+		<unit id="to.wetransform.offlineresources.feature.feature.group" version="2024.11.27.bnd-w0RrmA"/>
+	</location>
+	-->
+</locations>
+</target>
