@@ -132,7 +132,7 @@ task generateTargetFile() {
         localPlatform.@type = 'InstallableUnit'
 
         localPlatform.appendNode('repository', [location: project.platform.updateSiteDir.getAbsoluteFile().toURI().toString()])
-        localPlatform.appendNode('unit', [id: project.platform.featureId, version: project.platform.featureVersion])
+        localPlatform.appendNode('unit', [id: project.platform.featureId + '.feature.group', version: project.platform.featureVersion + '.' + project.platform.testingQualifier])
 
         new XmlNodePrinter(new PrintWriter(new FileWriter(targetFile))).print(rootNode)
     }
