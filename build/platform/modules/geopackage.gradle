@@ -1,0 +1,41 @@
+platform {
+    def gpkgVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'mil.nga.geopackage' && it.moduleVersion.id.name == 'geopackage' }.moduleVersion.id.version
+    def ormliteVersion = project.configurations.halecore.resolvedConfiguration.resolvedArtifacts.find { it.moduleVersion.id.group == 'com.j256.ormlite' && it.moduleVersion.id.name == 'ormlite-core' }.moduleVersion.id.version
+
+    // merge bundle (because there are shared packages)
+	merge {
+		match {
+			it.group != null && it.group.startsWith('mil.nga.geopackage') && it.name.startsWith('geopackage')
+		}
+
+		bnd {
+			symbolicName = 'mil.nga.geopackage'
+			bundleName = 'Geopackage Java'
+			version = gpkgVersion
+			instruction 'Export-Package', "*;version=$gpkgVersion"
+		}
+	}
+	// merge ormlite bundle (because there are shared packages)
+	merge {
+		match {
+			it.group != null && it.group.startsWith('com.j256.ormlite') && it.name.startsWith('ormlite')
+		}
+
+		bnd {
+			symbolicName = 'com.j256.ormlite'
+			bundleName = 'ormlite'
+			version = ormliteVersion
+			instruction 'Export-Package', "*;version=$ormliteVersion"
+
+			// need to be able to access sqlite JDBC driver
+			optionalImport 'org.sqlite'
+		}
+	}
+	bnd group: 'mil.nga.sf', name: 'sf-geojson', {
+		prependImport 'com.fasterxml.jackson.*' // remove import versions (because we use an older jackson version)
+	}
+	// force correct package export versions for sqlite-jdbc
+	bnd group: 'org.xerial', name: 'sqlite-jdbc', {
+		instruction 'Export-Package', "*;version=$version"
+	}
+}

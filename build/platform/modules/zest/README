@@ -1,0 +1,6 @@
+ZEST 2.0 SNAPSHOT
+
+Builds downloaded from
+https://hudson.eclipse.org/hudson/job/gef-zest-nightly/
+
+zest.dot.core has been adapted to not require log4 as bundle but as package
