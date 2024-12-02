@@ -293,6 +293,11 @@ task cli {
     }
 }
 
+task generatePlatform(type: GradleBuild) {
+	dir = file('platform')
+	tasks = ['clean', 'updateSite']
+}
+
 clean {
 	doLast {
 	    project.delete(new File(project.rootDir, 'ObjectStore'))

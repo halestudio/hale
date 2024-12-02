@@ -40,3 +40,8 @@ Thumbs.db
 #.gitignore
 *.hprof
 *.tycho-consumer-pom.xml
+
+# vs code
+org.eclipse.m2e.core.prefs
+org.eclipse.core.resources.prefs
+
