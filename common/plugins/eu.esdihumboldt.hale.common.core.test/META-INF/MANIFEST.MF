@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Core API Tests
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.core.test
-Bundle-Version: 5.4.0.qualifier
+Bundle-Version: 5.5.0.qualifier
 Fragment-Host: eu.esdihumboldt.hale.common.core;bundle-version="2.5.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: data harmonisation panel

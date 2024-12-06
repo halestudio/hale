@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: HALE Logback Test Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.common.logback.config.test
-Bundle-Version: 5.4.0.qualifier
+Bundle-Version: 5.5.0.qualifier
 Fragment-Host: ch.qos.logback.classic;bundle-version="0.9.19"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: data harmonisation panel

@@ -2,4 +2,4 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Bundled Environmental Noise Directive (END) Schemas
 Bundle-SymbolicName: eu.esdihumboldt.util.resource.schemas.end;singleton:=true
-Bundle-Version: 5.4.0.qualifier
+Bundle-Version: 5.5.0.qualifier

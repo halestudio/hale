@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.dropins"
       label="Application Dropins Support"
-      version="5.4.0.qualifier">
+      version="5.5.0.qualifier">
 
    <license>
       Licenses of the individual features and plug-ins apply.
