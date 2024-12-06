@@ -45,7 +45,7 @@ dependencies {
 	implementation 'org.eclipse.tycho:org.eclipse.osgi:3.13.0.v20180226-1711'
 	implementation group: 'org.apache.maven.resolver', name: 'maven-resolver-api', version: '1.9.22'
 	implementation 'org.yaml:snakeyaml:2.3'
-	implementation 'org.eclipse.jgit:org.eclipse.jgit:6.10.0.202406032230-r'
+	implementation 'org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r'
 	
 	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.25-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
