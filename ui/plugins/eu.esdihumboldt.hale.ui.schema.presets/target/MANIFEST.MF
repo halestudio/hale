@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Prefedined Schema Source
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.schema.presets;singleton:=t
+ rue
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.5.0",eu.esdihu
+ mboldt.hale.common.schema;bundle-version="2.5.0",org.eclipse.ui;bundle-
+ version="3.7.0",org.eclipse.core.runtime;bundle-version="3.7.0"
+Import-Package: com.google.common.collect;version="15.0.0",de.fhg.igd.ec
+ lipse.util.extension.simple,eu.esdihumboldt.hale.common.core.io,eu.esdi
+ humboldt.hale.common.core.io.supplier,eu.esdihumboldt.hale.common.schem
+ a.presets.extension,eu.esdihumboldt.hale.ui.util.selector,eu.esdihumbol
+ dt.util.io
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.schema.presets
+

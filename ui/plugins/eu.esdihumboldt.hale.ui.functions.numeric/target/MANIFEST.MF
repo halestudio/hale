@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI for CST numeric functions
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.numeric;singleton
+ :=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.align,eu.esdihumboldt.hale.u
+ i,eu.esdihumboldt.hale.ui.common,org.eclipse.ui,com.google.guava,com.ia
+ bcinc.jmep;bundle-version="0.1.0",eu.esdihumboldt.cst.functions.numeric
+ ;bundle-version="2.5.0",eu.esdihumboldt.hale.common.core;bundle-version
+ ="3.2.0"
+Import-Package: de.fhg.igd.eclipse.util.extension,de.fhg.igd.eclipse.uti
+ l.extension.simple,eu.esdihumboldt.hale.common.core.io.supplier,eu.esdi
+ humboldt.hale.common.schema.model,eu.esdihumboldt.hale.common.schema.mo
+ del.constraint,eu.esdihumboldt.hale.common.schema.model.constraint.type
+ ,eu.esdihumboldt.hale.ui.functions.core,eu.esdihumboldt.hale.ui.util.vi
+ ewer,eu.esdihumboldt.util.validator
+Export-Package: eu.esdihumboldt.hale.ui.functions.numeric
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.numeric
+Bundle-Vendor: data harmonisation panel
+

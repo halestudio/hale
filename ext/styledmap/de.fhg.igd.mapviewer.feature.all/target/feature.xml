@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.fhg.igd.mapviewer.feature.all"
+      label="All Mapviewer bundles"
+      version="5.4.0.SNAPSHOT">
+
+   <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+
+   <includes
+         id="de.fhg.igd.mapviewer.feature.core"
+         version="5.4.0.SNAPSHOT"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.server.file"
+         download-size="22"
+         install-size="41"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.server.openstreetmap"
+         download-size="7"
+         install-size="12"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.server.wms"
+         download-size="84"
+         install-size="163"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.tools.boxzoom"
+         download-size="6"
+         install-size="9"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.tools.default"
+         download-size="5"
+         install-size="8"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.mapviewer.server.tiles"
+         download-size="26"
+         install-size="48"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+</feature>

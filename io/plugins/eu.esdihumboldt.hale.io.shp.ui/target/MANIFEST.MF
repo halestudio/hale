@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Shapefile I/O UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.shp.ui;singleton:=true
+Bundle-Vendor: data harmonisation panel
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.io;version="9.0.0",eu.esdihumboldt.hal
+ e.common.core.io,eu.esdihumboldt.hale.common.core.io.impl,eu.esdihumbol
+ dt.hale.common.core.io.supplier,eu.esdihumboldt.hale.common.instance.io
+ ,eu.esdihumboldt.hale.common.schema,eu.esdihumboldt.hale.common.schema.
+ model,eu.esdihumboldt.hale.common.schema.persist,eu.esdihumboldt.hale.u
+ i,eu.esdihumboldt.hale.ui.common.definition.selector,eu.esdihumboldt.ha
+ le.ui.io,eu.esdihumboldt.hale.ui.io.config,eu.esdihumboldt.hale.ui.io.i
+ nstance,eu.esdihumboldt.hale.ui.service.schema,eu.esdihumboldt.hale.ui.
+ util.io,eu.esdihumboldt.hale.ui.util.selector,eu.esdihumboldt.util
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",org.ecli
+ pse.ui;bundle-version="3.7.0",eu.esdihumboldt.hale.io.shp;bundle-versio
+ n="2.5.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.shp.ui
+

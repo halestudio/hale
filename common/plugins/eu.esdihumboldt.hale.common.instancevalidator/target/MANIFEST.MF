@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Instance Validation
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.instancevalidator;singl
+ eton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.eclipse.util.extension,de.fhg.igd.slf4jplus,e
+ u.esdihumboldt.hale.common.align.model,eu.esdihumboldt.hale.common.alig
+ n.model.impl,eu.esdihumboldt.hale.common.core.report,eu.esdihumboldt.ha
+ le.common.core.report.impl,eu.esdihumboldt.hale.common.core.service,eu.
+ esdihumboldt.hale.common.instance.extension.validation,eu.esdihumboldt.
+ hale.common.instance.extension.validation.report,eu.esdihumboldt.hale.c
+ ommon.instance.extension.validation.report.impl,eu.esdihumboldt.hale.co
+ mmon.instance.model,eu.esdihumboldt.hale.common.instance.model.impl,eu.
+ esdihumboldt.hale.common.schema,eu.esdihumboldt.hale.common.schema.mode
+ l,eu.esdihumboldt.hale.common.schema.model.constraint,eu.esdihumboldt.h
+ ale.common.schema.model.constraint.property,eu.esdihumboldt.hale.common
+ .schema.model.constraint.type,eu.esdihumboldt.hale.io.xsd.constraint,eu
+ .esdihumboldt.util.validator,org.osgi.framework;version="1.6.0",org.slf
+ 4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.common.instancevalidator
+Require-Bundle: org.eclipse.core.runtime
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.instancevalidator
+

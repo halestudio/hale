@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Enable Groovy Sandbox Service (for server side operation)
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.groovy.sandbox.enable;s
+ ingleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: eu.esdihumboldt.util.groovy.sandbox
+Require-Bundle: eu.esdihumboldt.hale.common.core
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.groovy.sandbox.enable
+

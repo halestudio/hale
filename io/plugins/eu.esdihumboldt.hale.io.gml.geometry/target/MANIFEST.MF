@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GML schema geometry support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base;version="9.0.0",com.google.common
+ .collect;version="9.0.0",de.fhg.igd.slf4jplus,eu.esdihumboldt.cst.funct
+ ions.geometric.extent,eu.esdihumboldt.hale.common.align.transformation.
+ function,eu.esdihumboldt.hale.common.align.transformation.function.impl
+ ,eu.esdihumboldt.hale.common.convert,eu.esdihumboldt.hale.common.core.i
+ o,eu.esdihumboldt.hale.common.core.io.supplier,eu.esdihumboldt.hale.com
+ mon.instance.geometry,eu.esdihumboldt.hale.common.instance.geometry.imp
+ l,eu.esdihumboldt.hale.common.instance.helper,eu.esdihumboldt.hale.comm
+ on.instance.model,eu.esdihumboldt.hale.common.schema.geometry,eu.esdihu
+ mboldt.hale.common.schema.model,eu.esdihumboldt.hale.common.schema.mode
+ l.constraint,eu.esdihumboldt.hale.common.schema.model.constraint.type,e
+ u.esdihumboldt.util.geometry,eu.esdihumboldt.util.geometry.interpolatio
+ n,eu.esdihumboldt.util.geometry.interpolation.model,eu.esdihumboldt.uti
+ l.geometry.interpolation.model.impl,eu.esdihumboldt.util.reflection,jav
+ ax.annotation;version="[1.2.0,1.2.0]",org.geotools.gml2;version="29.1.0
+ .combined",org.locationtech.jts.geom,org.opengis.referencing.crs;versio
+ n="29.1.0",org.slf4j;version="1.5.11",org.springframework.core.convert;
+ version="5.2.0"
+Export-Package: eu.esdihumboldt.hale.io.gml.geometry,eu.esdihumboldt.hal
+ e.io.gml.geometry.constraint,eu.esdihumboldt.hale.io.gml.geometry.handl
+ er
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.geometry
+

@@ -1,0 +1,32 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI Utilities
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.util;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Activator: eu.esdihumboldt.hale.ui.util.internal.UIUtilitiesPlugi
+ n
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.jfac
+ e.text;bundle-version="3.7.1",org.eclipse.core.net;bundle-version="1.3.
+ 800"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: eu.esdihumboldt.hale.ui.util,eu.esdihumboldt.hale.ui.uti
+ l.action,eu.esdihumboldt.hale.ui.util.components,eu.esdihumboldt.hale.u
+ i.util.dialog,eu.esdihumboldt.hale.ui.util.handler,eu.esdihumboldt.hale
+ .ui.util.internal;x-internal:=true,eu.esdihumboldt.hale.ui.util.io,eu.e
+ sdihumboldt.hale.ui.util.io.internal;x-internal:=true,eu.esdihumboldt.h
+ ale.ui.util.jobs,eu.esdihumboldt.hale.ui.util.proxy,eu.esdihumboldt.hal
+ e.ui.util.proxy.preferences,eu.esdihumboldt.hale.ui.util.selection,eu.e
+ sdihumboldt.hale.ui.util.selector,eu.esdihumboldt.hale.ui.util.source,e
+ u.esdihumboldt.hale.ui.util.swing,eu.esdihumboldt.hale.ui.util.tip,eu.e
+ sdihumboldt.hale.ui.util.tree,eu.esdihumboldt.hale.ui.util.viewer,eu.es
+ dihumboldt.hale.ui.util.viewer.tree,eu.esdihumboldt.hale.ui.util.wizard
+Import-Package: com.google.common.base;version="11.0.1",com.google.commo
+ n.util.concurrent;version="15.0.0",de.fhg.igd.osgi.util;version="1.0.0"
+ ,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.common.core,eu.esdihumboldt.
+ util,eu.esdihumboldt.util.http,org.apache.http,org.apache.http.auth,org
+ .apache.http.client,org.apache.http.conn.params,org.apache.http.impl.cl
+ ient,org.apache.http.params,org.eclipse.equinox.security.storage,org.ec
+ lipse.equinox.security.storage.provider,org.slf4j;version="1.5.11"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.util
+

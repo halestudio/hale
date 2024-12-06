@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.cst.feature.source" version="5.4.0.SNAPSHOT" plugin="eu.esdihumboldt.hale.ui.application" label="Conceptual Schema Transformer Feature Developer Resources" provider-name="data harmonisation panel">
+  <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+  <includes id="eu.esdihumboldt.cst.feature" version="5.4.0.SNAPSHOT"/>
+  <plugin id="eu.esdihumboldt.cst.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.core.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.geometric.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.groovy.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.inspire.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.numeric.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.string.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.common.scripting.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.custom.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.cst.functions.collector.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="groovy.source" version="2.5.19.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="groovy-xml.source" version="2.5.19.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="groovy-templates.source" version="2.5.19.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="groovy-json.source" version="2.5.19.i20231028" download-size="0" install-size="0" unpack="false"/>
+</feature>

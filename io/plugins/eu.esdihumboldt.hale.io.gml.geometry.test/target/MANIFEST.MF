@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GML Geometry Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.geometry.test
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.osgi.util;version="1.0.0",eu.esdihumboldt.hal
+ e.common.test,eu.esdihumboldt.util.geometry.interpolation,eu.esdihumbol
+ dt.util.geometry.interpolation.grid,eu.esdihumboldt.util.geometry.inter
+ polation.model,eu.esdihumboldt.util.geometry.interpolation.model.impl,e
+ u.esdihumboldt.util.geometry.interpolation.split,eu.esdihumboldt.util.s
+ vg.test,javax.annotation;version="[1.2.0,1.2.0]",org.osgi.framework;ver
+ sion="1.6.0",ru.yandex.qatools.allure.annotations;version="1.5.0"
+Require-Bundle: eu.esdihumboldt.hale.io.gml.geometry;bundle-version="2.5
+ .0",eu.esdihumboldt.hale.io.xsd;bundle-version="2.5.0",eu.esdihumboldt.
+ hale.io.gml;bundle-version="2.5.0",eu.esdihumboldt.hale.common.schema;b
+ undle-version="2.5.0",eu.esdihumboldt.hale.common.instance;bundle-versi
+ on="2.5.0",eu.esdihumboldt.hale.common.core;bundle-version="2.5.0",org.
+ locationtech.jts.jts-core;bundle-version="1.12.0",org.junit;bundle-vers
+ ion="4.13.0"
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.geometry.test
+

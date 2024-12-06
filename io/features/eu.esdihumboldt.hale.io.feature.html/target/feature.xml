@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.io.feature.html"
+      label="HTML Export Feature"
+      version="5.4.0.SNAPSHOT"
+      provider-name="data harmonisation panel"
+      plugin="eu.esdihumboldt.hale.ui.application">
+
+   <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.html.svg"
+         download-size="104"
+         install-size="238"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.odysseus.staxon"
+         download-size="149"
+         install-size="303"
+         version="1.3.0.i20231028"
+         unpack="false"/>
+
+</feature>

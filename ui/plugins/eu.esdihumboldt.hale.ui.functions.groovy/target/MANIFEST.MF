@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI for CST Groovy functions
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.groovy;singleton:
+ =true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui,com.google.guava,org.eclipse.jface.text;b
+ undle-version="3.7.1",eu.esdihumboldt.hale.ui;bundle-version="2.5.0",co
+ m.tinkerpop.blueprints.core;bundle-version="2.5.0",org.eclipse.core.run
+ time;bundle-version="3.7.0",com.tinkerpop.pipes;bundle-version="2.5.0",
+ com.tinkerpop.gremlin.java;bundle-version="2.5.0",com.tinkerpop.gremlin
+ .groovy;bundle-version="2.5.0",groovy;bundle-version="2.5.19"
+Import-Package: de.fhg.igd.slf4jplus,eu.esdihumboldt.cst.functions.core,
+ eu.esdihumboldt.cst.functions.groovy,eu.esdihumboldt.cst.functions.groo
+ vy.helper,eu.esdihumboldt.cst.functions.groovy.helper.spec,eu.esdihumbo
+ ldt.cst.functions.groovy.helper.spec.impl,eu.esdihumboldt.cst.functions
+ .groovy.internal,eu.esdihumboldt.hale.common.align.extension.function,e
+ u.esdihumboldt.hale.common.align.model,eu.esdihumboldt.hale.common.alig
+ n.model.functions,eu.esdihumboldt.hale.common.align.model.functions.joi
+ n,eu.esdihumboldt.hale.common.align.model.impl,eu.esdihumboldt.hale.com
+ mon.align.transformation.function,eu.esdihumboldt.hale.common.align.tra
+ nsformation.function.impl,eu.esdihumboldt.hale.common.align.transformat
+ ion.report,eu.esdihumboldt.hale.common.align.transformation.report.impl
+ ,eu.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core.r
+ eport,eu.esdihumboldt.hale.common.core.service,eu.esdihumboldt.hale.com
+ mon.instance.groovy,eu.esdihumboldt.hale.common.instance.model,eu.esdih
+ umboldt.hale.common.instance.model.impl,eu.esdihumboldt.hale.common.sch
+ ema,eu.esdihumboldt.hale.common.schema.groovy,eu.esdihumboldt.hale.comm
+ on.schema.model,eu.esdihumboldt.hale.common.schema.model.constraint,eu.
+ esdihumboldt.hale.common.schema.model.constraint.property,eu.esdihumbol
+ dt.hale.common.schema.model.constraint.type,eu.esdihumboldt.hale.common
+ .schema.model.impl,eu.esdihumboldt.hale.ui.common,eu.esdihumboldt.hale.
+ ui.common.definition,eu.esdihumboldt.hale.ui.common.definition.viewer,e
+ u.esdihumboldt.hale.ui.common.function.viewer,eu.esdihumboldt.hale.ui.f
+ unction.generic.pages,eu.esdihumboldt.hale.ui.functions.core,eu.esdihum
+ boldt.hale.ui.scripting.groovy,eu.esdihumboldt.hale.ui.util,eu.esdihumb
+ oldt.hale.ui.util.groovy,eu.esdihumboldt.hale.ui.util.groovy.ast,eu.esd
+ ihumboldt.hale.ui.util.groovy.ast.viewer,eu.esdihumboldt.hale.ui.util.s
+ ource,eu.esdihumboldt.hale.ui.util.viewer.tree,eu.esdihumboldt.hale.ui.
+ util.wizard,eu.esdihumboldt.util.groovy.paths,eu.esdihumboldt.util.groo
+ vy.sandbox,org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.ui.functions.groovy,eu.esdihumboldt
+ .hale.ui.functions.groovy.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.groovy
+Bundle-Vendor: data harmonisation panel
+

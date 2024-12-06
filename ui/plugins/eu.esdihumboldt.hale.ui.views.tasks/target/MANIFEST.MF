@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Tasks View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.tasks;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",eu.esdih
+ umboldt.hale.ui.views.properties;bundle-version="3.3.0",org.eclipse.jfa
+ ce,eu.esdihumboldt.hale.common.align;bundle-version="3.3.0",eu.esdihumb
+ oldt.hale.common.schema;bundle-version="3.3.0",eu.esdihumboldt.hale.ui,
+ eu.esdihumboldt.hale.common.core;bundle-version="3.3.0",org.eclipse.ui;
+ bundle-version="3.107.0",eu.esdihumboldt.hale.common.tasks;bundle-versi
+ on="3.3.0",de.fhg.igd.eclipse.util;bundle-version="1.0.0",eu.esdihumbol
+ dt.hale.ui.util.graph;bundle-version="3.3.0",eu.esdihumboldt.hale.ui.co
+ mmon;bundle-version="3.3.0",org.eclipse.ui.views.properties.tabbed;bund
+ le-version="3.6.100"
+Import-Package: com.google.common.collect;version="17.0.0",de.fhg.igd.sl
+ f4jplus,eu.esdihumboldt.hale.ui.common.graph.figures,eu.esdihumboldt.ha
+ le.ui.service.schema,eu.esdihumboldt.hale.ui.util.tree,eu.esdihumboldt.
+ hale.ui.util.viewer,eu.esdihumboldt.hale.ui.views.mapping,eu.esdihumbol
+ dt.hale.ui.views.schemas,org.eclipse.draw2d,org.eclipse.ui.services,org
+ .opengis.feature.type,org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.ui.views.tasks
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.views.tasks.internal.TasksView
+ Plugin
+Bundle-Vendor: wetransform GmbH
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.tasks
+

@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Box Zoom Tool
+Bundle-SymbolicName: de.fhg.igd.mapviewer.tools.boxzoom;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: Fraunhofer IGD
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.mapviewer;version="1.0.0",de.fhg.igd.mapviewe
+ r.tools;version="1.0.0",de.fhg.igd.mapviewer.tools.renderer;version="1.
+ 0.0",de.fhg.igd.mapviewer.view.arecalculation,org.jdesktop.swingx,org.j
+ desktop.swingx.mapviewer;version="1.0.0"
+Automatic-Module-Name: de.fhg.igd.mapviewer.tools.boxzoom
+

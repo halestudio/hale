@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.io.feature.legacy"
+      label="Legacy I/O providers"
+      version="5.4.0.SNAPSHOT"
+      provider-name="data harmonisation panel"
+      plugin="eu.esdihumboldt.hale.ui.application">
+
+   <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+
+   <includes
+         id="eu.esdihumboldt.hale.common.feature.core"
+         version="5.4.0.SNAPSHOT"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.io.project.jaxb"
+         download-size="20"
+         install-size="44"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.prefixmapper"
+         download-size="2"
+         install-size="3"
+         version="1.0.1.i20231028"
+         unpack="false"/>
+
+</feature>

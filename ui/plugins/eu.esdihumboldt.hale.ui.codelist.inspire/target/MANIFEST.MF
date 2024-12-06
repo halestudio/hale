@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: INSPIRE Registry code lists source
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.codelist.inspire;singleton:
+ =true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: Data Harmonisation Panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.collect;version="15.0.0",de.fhg.igd.ec
+ lipse.util.extension,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.common.c
+ odelist,eu.esdihumboldt.hale.common.codelist.io,eu.esdihumboldt.hale.io
+ .codelist.inspire.reader,eu.esdihumboldt.hale.ui.io,eu.esdihumboldt.hal
+ e.ui.io.source,eu.esdihumboldt.hale.ui.util.selector,org.apache.http.cl
+ ient;version="4.3.3",org.slf4j;version="1.7.5"
+Require-Bundle: eu.esdihumboldt.hale.common.core;bundle-version="2.8.0",
+ org.eclipse.ui;bundle-version="3.7.0",org.eclipse.core.runtime;bundle-v
+ ersion="3.7.0", groovy;bundle-version="2.5.19",eu.esdihumboldt.hale.com
+ mon.inspire;bundle-version="2.9.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.codelist.inspire
+

@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: hale Geopackage Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="4.0.0
+ ",eu.esdihumboldt.hale.common.instance;bundle-version="4.0.0",eu.esdihu
+ mboldt.hale.common.schema.persist,eu.esdihumboldt.hale.common.core;bund
+ le-version="4.0.0",org.eclipse.core.runtime;bundle-version="3.14.0",gro
+ ovy;bundle-version="2.5.19",mil.nga.geopackage;bundle-version="3.4.0",e
+ u.esdihumboldt.hale.common.schema.groovy;bundle-version="4.0.0",mil.nga
+ .sf;bundle-version="2.0.2",eu.esdihumboldt.hale.common.instance.groovy;
+ bundle-version="4.0.0",eu.esdihumboldt.util.groovy;bundle-version="4.0.
+ 0",mil.nga.sf.wkb;bundle-version="2.0.2",com.j256.ormlite;bundle-versio
+ n="5.1.0",eu.esdihumboldt.hale.common.convert;bundle-version="4.0.0",or
+ g.springframework.spring-core;bundle-version="5.2.0"
+Import-Package: com.google.common.cache;version="18.0.0",de.fhg.igd.slf4
+ jplus,eu.esdihumboldt.hale.common.align.helper,eu.esdihumboldt.hale.com
+ mon.align.model,eu.esdihumboldt.util.io,mil.nga.sf.proj;version="3.0.2"
+ ,org.geotools.geometry.jts;version="29.1.0.combined",org.geotools.refer
+ encing;version="29.1.0.combined",org.locationtech.jts.awt;version="1.13
+ .0",org.locationtech.jts.geom;version="1.13.0",org.locationtech.jts.io;
+ version="1.13.0",org.opengis.metadata;version="29.1.0",org.opengis.refe
+ rencing;version="29.1.0",org.opengis.referencing.crs;version="29.1.0",o
+ rg.opengis.referencing.operation;version="29.1.0",org.opengis.util;vers
+ ion="29.1.0",org.slf4j;version="1.7.2"
+Export-Package: eu.esdihumboldt.hale.io.geopackage
+

@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Schema Persistence
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.schema.persist;singleto
+ n:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.schema;bundle-version="2.8.0
+ ",eu.esdihumboldt.hale.common.core;bundle-version="2.8.0",org.eclipse.c
+ ore.runtime;bundle-version="3.7.0",groovy;bundle-version="2.5.19"
+Import-Package: com.google.common.collect;version="15.0.0",com.google.co
+ mmon.io;version="15.0.0",de.fhg.igd.eclipse.util.extension.simple,de.fh
+ g.igd.slf4jplus,eu.esdihumboldt.hale.util.nonosgi.contenttype.describer
+ ,eu.esdihumboldt.util,eu.esdihumboldt.util.groovy.json,eu.esdihumboldt.
+ util.groovy.xml,eu.esdihumboldt.util.io,net.jcip.annotations,org.slf4j;
+ version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.common.schema.persist,eu.esdihumbol
+ dt.hale.common.schema.persist.hsd,eu.esdihumboldt.hale.common.schema.pe
+ rsist.hsd.json
+Automatic-Module-Name: eu.esdihumboldt.hale.common.schema.persist
+

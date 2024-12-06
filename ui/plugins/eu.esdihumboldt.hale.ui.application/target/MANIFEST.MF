@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Application
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",org.ecli
+ pse.ui;bundle-version="3.6.2",org.eclipse.equinox.security;bundle-versi
+ on="1.0.200",org.opengis;bundle-version="29.1.0",eu.esdihumboldt.hale.u
+ i.launchaction;bundle-version="2.5.0",eu.esdihumboldt.hale.common.app;b
+ undle-version="2.5.0"
+Import-Package: com.google.common.collect;version="15.0.0",de.fhg.igd.ec
+ lipse.util.extension,de.fhg.igd.eclipse.util.extension.exclusive,de.fhg
+ .igd.osgi.util;version="1.0.0",de.fhg.igd.slf4jplus,edu.umd.cs.findbugs
+ .annotations,eu.esdihumboldt.hale.common.cache,eu.esdihumboldt.hale.com
+ mon.core.io.project,eu.esdihumboldt.hale.ui.common.crs,eu.esdihumboldt.
+ hale.ui.compatibility,eu.esdihumboldt.hale.ui.cst.contribution,eu.esdih
+ umboldt.hale.ui.function.contribution,eu.esdihumboldt.hale.ui.functions
+ .custom,eu.esdihumboldt.hale.ui.io,eu.esdihumboldt.hale.ui.io.action,eu
+ .esdihumboldt.hale.ui.service.instance.validation,eu.esdihumboldt.hale.
+ ui.service.project,eu.esdihumboldt.hale.ui.service.project.internal,eu.
+ esdihumboldt.hale.ui.util,eu.esdihumboldt.hale.ui.util.proxy,eu.esdihum
+ boldt.hale.ui.util.proxy.preferences,eu.esdihumboldt.hale.ui.util.selec
+ tion,eu.esdihumboldt.hale.ui.views.data,eu.esdihumboldt.hale.ui.views.f
+ unctions,eu.esdihumboldt.hale.ui.views.mapping,eu.esdihumboldt.hale.ui.
+ views.report,eu.esdihumboldt.hale.ui.views.schemas,eu.esdihumboldt.hale
+ .ui.views.tasks,eu.esdihumboldt.hale.ui.views.typehierarchy,org.apache.
+ commons.io,org.apache.commons.lang3;version="3.8.1",org.eclipse.e4.ui.c
+ ss.swt.theme,org.geotools.referencing;version="29.1.0.combined",org.slf
+ 4j;version="1.5.11",org.slf4j.bridge
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.ui.application.internal.HALEAppli
+ cationPlugin
+Export-Package: eu.esdihumboldt.hale.ui.application,eu.esdihumboldt.hale
+ .ui.application.handler,eu.esdihumboldt.hale.ui.application.internal;x-
+ internal:=true,eu.esdihumboldt.hale.ui.application.splash,eu.esdihumbol
+ dt.hale.ui.application.workbench,eu.esdihumboldt.hale.ui.application.wo
+ rkbench.extension
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.application
+

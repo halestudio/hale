@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.io.feature.deegree.source" version="5.4.0.SNAPSHOT" label="Deegree I/O Feature Developer Resources" provider-name="wetransform GmbH">
+  <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+  <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+  <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+  <includes id="eu.esdihumboldt.hale.io.feature.deegree" version="5.4.0.SNAPSHOT"/>
+  <includes id="eu.esdihumboldt.hale.platform.deegree.source" version="3.4.13.i202312141506"/>
+  <plugin id="eu.esdihumboldt.hale.io.deegree.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.deegree.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.common.config.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.util.config.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.yaml.snakeyaml.source" version="2.2.0.i20231129" download-size="0" install-size="0" unpack="false"/>
+</feature>

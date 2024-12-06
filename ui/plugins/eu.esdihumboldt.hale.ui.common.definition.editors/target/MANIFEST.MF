@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Attribute Editor Bundle
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.common.definition.editors;s
+ ingleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.eclipse.util.extension,de.fhg.igd.osgi.util,e
+ u.esdihumboldt.hale.common.align.extension.function,eu.esdihumboldt.hal
+ e.common.align.model,eu.esdihumboldt.hale.common.align.model.impl,eu.es
+ dihumboldt.hale.common.codelist,eu.esdihumboldt.hale.common.core,eu.esd
+ ihumboldt.hale.common.core.io.supplier,eu.esdihumboldt.hale.common.core
+ .io.util,eu.esdihumboldt.hale.common.core.parameter,eu.esdihumboldt.hal
+ e.common.schema.model,eu.esdihumboldt.hale.common.schema.model.constrai
+ nt,eu.esdihumboldt.hale.common.schema.model.constraint.type,eu.esdihumb
+ oldt.hale.common.scripting,eu.esdihumboldt.hale.ui.codelist.internal,eu
+ .esdihumboldt.hale.ui.codelist.selector,eu.esdihumboldt.hale.ui.codelis
+ t.service,eu.esdihumboldt.hale.ui.common,eu.esdihumboldt.hale.ui.common
+ .definition,eu.esdihumboldt.hale.ui.common.editors,eu.esdihumboldt.hale
+ .ui.scripting,eu.esdihumboldt.hale.ui.service.project,eu.esdihumboldt.u
+ til.validator,org.springframework.core.convert;version="5.2.0"
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime
+Export-Package: eu.esdihumboldt.hale.ui.common.definition.editors
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.common.definition.editors
+

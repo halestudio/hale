@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Type Hierarchy View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.typehierarchy; single
+ ton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Require-Bundle: org.eclipse.core.runtime,org.eclipse.ui,org.eclipse.ui.f
+ orms;bundle-version="3.5.2"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: eu.esdihumboldt.hale.common.align.model,eu.esdihumboldt.
+ hale.common.core.io.supplier,eu.esdihumboldt.hale.common.schema.model,e
+ u.esdihumboldt.hale.ui.common.definition.viewer,eu.esdihumboldt.hale.ui
+ .util.selection,eu.esdihumboldt.hale.ui.util.viewer,eu.esdihumboldt.hal
+ e.ui.views.properties,eu.esdihumboldt.hale.ui.views.properties.definiti
+ on,eu.esdihumboldt.hale.ui.views.properties.definition.childdefinition,
+ org.eclipse.ui.views.properties.tabbed
+Export-Package: eu.esdihumboldt.hale.ui.views.typehierarchy,eu.esdihumbo
+ ldt.hale.ui.views.typehierarchy.properties
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.typehierarchy
+

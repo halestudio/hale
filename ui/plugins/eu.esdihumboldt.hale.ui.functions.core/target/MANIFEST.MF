@@ -1,0 +1,47 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: UI for CST core functions
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.core;singleton:=t
+ rue
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.jfac
+ e.text;bundle-version="3.7.1",groovy;bundle-version="2.5.19",eu.esdihum
+ boldt.hale.common.instance
+Import-Package: com.google.common.base;version="9.0.0",com.google.common
+ .collect,de.fhg.igd.eclipse.util.extension.simple,de.fhg.igd.osgi.util;
+ version="1.0.0",de.fhg.igd.slf4jplus,eu.esdihumboldt.cst.functions.stri
+ ng,eu.esdihumboldt.hale.common.align.extension.function,eu.esdihumboldt
+ .hale.common.align.io,eu.esdihumboldt.hale.common.align.io.impl,eu.esdi
+ humboldt.hale.common.align.model,eu.esdihumboldt.hale.common.align.mode
+ l.functions,eu.esdihumboldt.hale.common.align.model.functions.join,eu.e
+ sdihumboldt.hale.common.align.model.impl,eu.esdihumboldt.hale.common.co
+ re,eu.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core
+ .io.impl,eu.esdihumboldt.hale.common.core.io.supplier,eu.esdihumboldt.h
+ ale.common.core.io.util,eu.esdihumboldt.hale.common.core.parameter,eu.e
+ sdihumboldt.hale.common.core.service,eu.esdihumboldt.hale.common.instan
+ ce.helper,eu.esdihumboldt.hale.common.instance.model,eu.esdihumboldt.ha
+ le.common.lookup,eu.esdihumboldt.hale.common.lookup.impl,eu.esdihumbold
+ t.hale.common.lookup.internal,eu.esdihumboldt.hale.common.schema,eu.esd
+ ihumboldt.hale.common.schema.groovy,eu.esdihumboldt.hale.common.schema.
+ model,eu.esdihumboldt.hale.common.schema.model.constraint,eu.esdihumbol
+ dt.hale.common.schema.model.constraint.property,eu.esdihumboldt.hale.co
+ mmon.schema.model.constraint.type,eu.esdihumboldt.hale.io.csv.ui,eu.esd
+ ihumboldt.hale.io.csv.writer.internal,eu.esdihumboldt.hale.ui,eu.esdihu
+ mboldt.hale.ui.common,eu.esdihumboldt.hale.ui.common.definition,eu.esdi
+ humboldt.hale.ui.common.definition.editors,eu.esdihumboldt.hale.ui.comm
+ on.definition.viewer,eu.esdihumboldt.hale.ui.common.editors,eu.esdihumb
+ oldt.hale.ui.function.generic,eu.esdihumboldt.hale.ui.function.generic.
+ pages,eu.esdihumboldt.hale.ui.io,eu.esdihumboldt.hale.ui.io.action,eu.e
+ sdihumboldt.hale.ui.lookup,eu.esdihumboldt.hale.ui.scripting.groovy,eu.
+ esdihumboldt.hale.ui.service.entity,eu.esdihumboldt.hale.ui.service.ent
+ ity.util,eu.esdihumboldt.hale.ui.service.project,eu.esdihumboldt.hale.u
+ i.service.schema,eu.esdihumboldt.hale.ui.service.values,eu.esdihumboldt
+ .hale.ui.transformation,eu.esdihumboldt.hale.ui.util.source,eu.esdihumb
+ oldt.hale.ui.util.viewer.tree,eu.esdihumboldt.hale.ui.util.wizard,eu.es
+ dihumboldt.util.groovy.paths,org.slf4j;version="1.5.11",org.springframe
+ work.core.convert;version="5.2.0"
+Export-Package: eu.esdihumboldt.hale.ui.functions.core
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.functions.core
+Bundle-Vendor: data harmonisation panel
+

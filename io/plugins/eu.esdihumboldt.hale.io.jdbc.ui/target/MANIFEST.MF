@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE JDBC Support UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.ui;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",org.ecli
+ pse.ui;bundle-version="3.7.0",eu.esdihumboldt.hale.ui;bundle-version="2
+ .5.0",eu.esdihumboldt.hale.common.schema;bundle-version="2.5.0",eu.esdi
+ humboldt.hale.common.core;bundle-version="2.5.0"
+Import-Package: com.google.common.io;version="15.0.0",de.fhg.igd.eclipse
+ .util.extension.simple,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.common
+ .instance.io,eu.esdihumboldt.hale.io.jdbc,eu.esdihumboldt.hale.io.jdbc.
+ extension,eu.esdihumboldt.hale.ui.common,eu.esdihumboldt.util,org.slf4j
+ ;version="1.7.10"
+Bundle-Vendor: data harmonisation panel
+Export-Package: eu.esdihumboldt.hale.io.jdbc.ui
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.ui
+

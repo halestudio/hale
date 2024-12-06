@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Groovy I/O Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.groovy.test
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Fragment-Host: eu.esdihumboldt.hale.io.groovy
+Automatic-Module-Name: eu.esdihumboldt.hale.io.groovy.test
+Require-Bundle: org.junit;bundle-version="4.13.0"
+

@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Protocol Buffer IO
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.pb;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Automatic-Module-Name: eu.esdihumboldt.hale.io.pb
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: wetransform GmbH
+Require-Bundle: eu.esdihumboldt.hale.common.instance,eu.esdihumboldt.hal
+ e.common.core;bundle-version="4.2.0",eu.esdihumboldt.hale.io.json;bundl
+ e-version="4.2.0",eu.esdihumboldt.hale.common.core.io.project.model.jax
+ b;bundle-version="2.9.4",eu.esdihumboldt.hale.common.instance.graph;bun
+ dle-version="4.2.0",eu.esdihumboldt.hale.common.instance.groovy;bundle-
+ version="4.2.0",eu.esdihumboldt.hale.common.instance.orient;bundle-vers
+ ion="4.2.0",org.eclipse.core.contenttype;bundle-version="3.7.600",eu.es
+ dihumboldt.hale.util.nonosgi;bundle-version="4.2.0",eu.esdihumboldt.hal
+ e.common.instancevalidator;bundle-version="4.2.0"
+Import-Package: eu.esdihumboldt.hale.common.schema.model,eu.esdihumboldt
+ .util.io,org.eclipse.core.runtime.content
+Bundle-ClassPath: lib/protobuf-java-3.21.7.jar,.,lib/protobuf-java-util-
+ 3.21.7.jar,lib/gson-2.8.9.jar
+Export-Package: .,com.google.protobuf,com.google.protobuf.util,eu.esdihu
+ mboldt.hale.io.pb
+

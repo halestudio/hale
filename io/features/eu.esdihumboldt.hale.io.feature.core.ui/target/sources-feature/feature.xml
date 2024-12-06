@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.io.feature.core.ui.source" version="5.4.0.SNAPSHOT" label="UI Support for Core I/O Providers Developer Resources" provider-name="data harmonisation panel">
+  <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+  <includes id="eu.esdihumboldt.hale.io.feature.core.ui" version="5.4.0.SNAPSHOT"/>
+  <plugin id="eu.esdihumboldt.hale.io.csv.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.gml.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.jdbc.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.shp.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.xls.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.xsd.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.wfs.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.interpolation.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.schematron.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.validation.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.haleconnect.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.groovy.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.geopackage.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.json.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+</feature>

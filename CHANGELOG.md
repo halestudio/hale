@@ -1,3 +1,20 @@
+## [5.4.0](https://github.com/halestudio/hale/compare/v5.3.0...v5.4.0) (2024-12-06)
+
+### Features
+
+* **shp:** support writing date fields with other bindings than Date ([24b35ba](https://github.com/halestudio/hale/commit/24b35baa3488765e5ba4496e92884d3676e0ed60))
+
+### Bug Fixes
+
+* adapt name of system property for join handler ([97ce343](https://github.com/halestudio/hale/commit/97ce34381b175e424b6b5ad0abe4f49bc3921422))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2024.11.27.bnd-w0rrma ([8950291](https://github.com/halestudio/hale/commit/8950291499421b04e8573108bc1b64af2546396f))
+* download linked objects in a WFS using "resolvedepth" ([35c5f85](https://github.com/halestudio/hale/commit/35c5f85fa3c4af1ad457ff8dccafce57bf3987fa)), closes [#1084](https://github.com/halestudio/hale/issues/1084)
+* wait until adding instance to sink is complete ([52044f5](https://github.com/halestudio/hale/commit/52044f5f8a3fc61c476a39e0a9e5fe141081c500))
+
+### Performance Improvements
+
+* make index join/merge handlers optional ([1cb5163](https://github.com/halestudio/hale/commit/1cb516367c1c7ed25480b0b55eb372edf2eb0f25))
+
 ## [5.3.0](https://github.com/halestudio/hale/compare/v5.2.1...v5.3.0) (2024-08-07)
 
 

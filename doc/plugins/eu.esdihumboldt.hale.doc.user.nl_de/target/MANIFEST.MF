@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Nl_de
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.nl_de
+Bundle-Version: 1.0.0.SNAPSHOT
+Fragment-Host: eu.esdihumboldt.hale.doc.user;bundle-version="2.5.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Vendor: data harmonisation panel
+

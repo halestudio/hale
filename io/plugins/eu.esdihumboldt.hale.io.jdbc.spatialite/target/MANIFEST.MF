@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE SpatiaLite Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.jdbc.spatialite;singleton:=
+ true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Activator: eu.esdihumboldt.hale.io.jdbc.spatialite.internal.Activ
+ ator
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.cache;version="17.0.0",de.fhg.igd.slf4
+ jplus,eu.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.i
+ nstance.geometry,eu.esdihumboldt.hale.common.instance.geometry.impl,eu.
+ esdihumboldt.hale.common.schema.persist,eu.esdihumboldt.util.io,org.geo
+ tools.geometry.jts;version="29.1.0.combined",org.geotools.referencing;v
+ ersion="29.1.0.combined",org.locationtech.jts.geom,org.locationtech.jts
+ .io,org.opengis.referencing.crs;version="29.1.0",org.opengis.referencin
+ g.operation;version="29.1.0",org.osgi.framework;version="1.3.0",org.slf
+ 4j;version="1.5.11"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: eu.esdihumboldt.hale.io.jdbc;bundle-version="2.9.1",eu.e
+ sdihumboldt.hale.common.schema;bundle-version="2.9.2",net.sourceforge.s
+ chemacrawler;bundle-version="12.4.2",org.eclipse.core.runtime;bundle-ve
+ rsion="3.7.0",eu.esdihumboldt.hale.common.core,eu.esdihumboldt.hale.com
+ mon.instance,org.xerial.sqlite-jdbc;bundle-version="3.28.0"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.jdbc.spatialite
+

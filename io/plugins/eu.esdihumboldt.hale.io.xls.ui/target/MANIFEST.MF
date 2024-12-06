@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: XLS UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.xls.ui;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,eu.esdihumboldt.
+ hale.ui,eu.esdihumboldt.hale.common.instance
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.eclipse.util.extension,de.fhg.igd.slf4jplus,e
+ u.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core.io.
+ project.model,eu.esdihumboldt.hale.common.core.io.supplier,eu.esdihumbo
+ ldt.hale.common.instance.io,eu.esdihumboldt.hale.common.schema,eu.esdih
+ umboldt.hale.common.schema.io,eu.esdihumboldt.hale.common.schema.model,
+ eu.esdihumboldt.hale.common.schema.model.constraint.type,eu.esdihumbold
+ t.hale.io.csv,eu.esdihumboldt.hale.io.csv.ui,eu.esdihumboldt.hale.io.xl
+ s,eu.esdihumboldt.hale.io.xls.reader,eu.esdihumboldt.hale.io.xls.writer
+ ,eu.esdihumboldt.util.io,org.apache.poi.hssf;version="5.2.3",org.apache
+ .poi.ss.usermodel;version="5.2.3",org.slf4j;version="1.5.11"
+Automatic-Module-Name: eu.esdihumboldt.hale.io.xls.ui
+

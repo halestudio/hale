@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Resource Utilities
+Bundle-SymbolicName: eu.esdihumboldt.util.resource;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.collect;version="9.0.0",de.fhg.igd.slf
+ 4jplus,eu.esdihumboldt.util.io,org.apache.commons.io,org.slf4j;version=
+ "1.5.11"
+Require-Bundle: de.fhg.igd.eclipse.util;bundle-version="1.0.0",org.eclip
+ se.core.runtime;bundle-version="3.7.0"
+Bundle-Activator: eu.esdihumboldt.util.resource.internal.ResourceBundle
+Bundle-ActivationPolicy: lazy
+Export-Package: eu.esdihumboldt.util.resource,eu.esdihumboldt.util.resou
+ rce.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.util.resource
+

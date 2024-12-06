@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CST Numeric Functions
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.numeric;singleton:=tr
+ ue
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
+Import-Package: com.google.common.base;version="9.0.0",com.google.common
+ .collect;version="9.0.0",com.iabcinc.jmep,com.iabcinc.jmep.hooks,eu.esd
+ ihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core.io.suppl
+ ier,eu.esdihumboldt.hale.common.core.service,eu.esdihumboldt.hale.commo
+ n.instance.model,eu.esdihumboldt.hale.common.schema.model,net.jcip.anno
+ tations,org.springframework.core.convert;version="5.2.0"
+Export-Package: eu.esdihumboldt.cst.functions.numeric,eu.esdihumboldt.cs
+ t.functions.numeric.sequentialid
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.numeric
+

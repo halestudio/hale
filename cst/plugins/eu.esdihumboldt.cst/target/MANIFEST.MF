@@ -1,0 +1,44 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Conceptual Schema Transformer
+Bundle-SymbolicName: eu.esdihumboldt.cst;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base;version="11.0.1",com.google.commo
+ n.collect;version="9.0.0",de.fhg.igd.eclipse.util.extension,de.fhg.igd.
+ eclipse.util.extension.selective,de.fhg.igd.osgi.util;version="1.0.0",d
+ e.fhg.igd.slf4jplus,eu.esdihumboldt.hale.common.align.compatibility,eu.
+ esdihumboldt.hale.common.align.extension.engine,eu.esdihumboldt.hale.co
+ mmon.align.extension.transformation,eu.esdihumboldt.hale.common.align.m
+ odel,eu.esdihumboldt.hale.common.align.model.impl,eu.esdihumboldt.hale.
+ common.align.model.transformation,eu.esdihumboldt.hale.common.align.mod
+ el.transformation.tree,eu.esdihumboldt.hale.common.align.model.transfor
+ mation.tree.context,eu.esdihumboldt.hale.common.align.model.transformat
+ ion.tree.context.impl.matcher,eu.esdihumboldt.hale.common.align.model.t
+ ransformation.tree.impl,eu.esdihumboldt.hale.common.align.model.transfo
+ rmation.tree.visitor,eu.esdihumboldt.hale.common.align.service,eu.esdih
+ umboldt.hale.common.align.transformation.engine,eu.esdihumboldt.hale.co
+ mmon.align.transformation.function,eu.esdihumboldt.hale.common.align.tr
+ ansformation.function.impl,eu.esdihumboldt.hale.common.align.transforma
+ tion.report,eu.esdihumboldt.hale.common.align.transformation.report.imp
+ l,eu.esdihumboldt.hale.common.align.transformation.service,eu.esdihumbo
+ ldt.hale.common.convert,eu.esdihumboldt.hale.common.core,eu.esdihumbold
+ t.hale.common.core.io,eu.esdihumboldt.hale.common.core.io.impl,eu.esdih
+ umboldt.hale.common.core.report,eu.esdihumboldt.hale.common.core.report
+ .impl,eu.esdihumboldt.hale.common.core.service,eu.esdihumboldt.hale.com
+ mon.filter,eu.esdihumboldt.hale.common.instance.extension.metadata,eu.e
+ sdihumboldt.hale.common.instance.model,eu.esdihumboldt.hale.common.inst
+ ance.model.impl,eu.esdihumboldt.hale.common.schema.model,eu.esdihumbold
+ t.hale.common.schema.model.constraint.property,eu.esdihumboldt.hale.com
+ mon.schema.model.constraint.type,eu.esdihumboldt.util,eu.esdihumboldt.u
+ til.groovy.collector,gnu.trove,net.jcip.annotations,org.slf4j;version="
+ 1.5.11",org.springframework.core.convert;version="5.2.0"
+Export-Package: eu.esdihumboldt.cst,eu.esdihumboldt.cst.extension.hooks,
+ eu.esdihumboldt.cst.extension.hooks.internal;x-internal:=true,eu.esdihu
+ mboldt.cst.internal;x-internal:=true,eu.esdihumboldt.cst.internal.util;
+ x-internal:=true
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",eu.esdih
+ umboldt.util.groovy.sandbox
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst
+

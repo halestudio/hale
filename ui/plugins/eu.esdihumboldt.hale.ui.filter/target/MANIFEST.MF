@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Filter UI Components
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.filter;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.eclipse.util.extension,eu.esdihumboldt.hale.c
+ ommon.align.model,eu.esdihumboldt.hale.common.align.model.impl,eu.esdih
+ umboldt.hale.common.core.io.supplier,eu.esdihumboldt.hale.common.filter
+ ,eu.esdihumboldt.hale.common.schema,eu.esdihumboldt.hale.common.schema.
+ model,eu.esdihumboldt.hale.common.schema.model.constraint,eu.esdihumbol
+ dt.hale.common.schema.model.impl,eu.esdihumboldt.hale.io.xsd.constraint
+ ,eu.esdihumboldt.hale.ui.common,eu.esdihumboldt.hale.ui.common.definiti
+ on.selector,eu.esdihumboldt.hale.ui.util.selector,org.geotools.filter.t
+ ext.cql2;version="29.1.0.combined",org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.ui.filter,eu.esdihumboldt.hale.ui.f
+ ilter.cql,eu.esdihumboldt.hale.ui.filter.extension,eu.esdihumboldt.hale
+ .ui.filter.internal;x-internal:=true
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",org.ecli
+ pse.ui;bundle-version="3.6.2",eu.esdihumboldt.hale.common.instance
+Bundle-Activator: eu.esdihumboldt.hale.ui.filter.internal.FilterUIPlugin
+Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.filter
+

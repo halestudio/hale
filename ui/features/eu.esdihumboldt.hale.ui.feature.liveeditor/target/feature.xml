@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.ui.feature.liveeditor"
+      label="E4 Live Editor"
+      version="5.4.0.SNAPSHOT">
+
+   <license>
+      Licenses of the individual features and plug-ins apply.
+   </license>
+
+   <plugin
+         id="org.eclipse.core.resources"
+         download-size="873"
+         install-size="1904"
+         version="3.13.700.v20200209-1624"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem"
+         download-size="65"
+         install-size="122"
+         version="1.7.700.v20200110-1734"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edit"
+         download-size="294"
+         install-size="658"
+         version="2.16.0.v20190920-0401"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.tools.services"
+         download-size="31"
+         install-size="57"
+         version="4.8.400.v20200217-1142"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.databinding"
+         download-size="90"
+         install-size="192"
+         version="1.5.0.v20180706-1146"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.databinding.edit"
+         download-size="52"
+         install-size="120"
+         version="1.6.0.v20190323-1031"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.tools.emf.ui"
+         download-size="1424"
+         install-size="3221"
+         version="4.6.700.v20200217-1230"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.core"
+         download-size="6879"
+         install-size="16078"
+         version="3.21.0.v20200304-1404"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.pde.core"
+         download-size="1325"
+         install-size="2834"
+         version="3.13.300.v20200217-1517"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filebuffers"
+         download-size="113"
+         install-size="247"
+         version="3.6.900.v20200117-0616"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.variables"
+         download-size="35"
+         install-size="65"
+         version="3.4.800.v20200120-1101"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ant.core"
+         download-size="106"
+         install-size="187"
+         version="3.5.700.v20191221-1203"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.debug.core"
+         download-size="391"
+         install-size="813"
+         version="3.15.0.v20200224-0654"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.frameworkadmin"
+         download-size="36"
+         install-size="67"
+         version="2.1.400.v20191002-0702"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.artifact.repository"
+         download-size="152"
+         install-size="334"
+         version="1.3.400.v20191224-0854"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.core"
+         download-size="74"
+         install-size="138"
+         version="2.6.300.v20200211-1504"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.director"
+         download-size="106"
+         install-size="247"
+         version="2.4.600.v20200211-1504"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.engine"
+         download-size="206"
+         install-size="463"
+         version="2.6.600.v20200110-2121"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.metadata"
+         download-size="352"
+         install-size="785"
+         version="2.4.700.v20191213-1911"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.metadata.repository"
+         download-size="130"
+         install-size="286"
+         version="1.3.400.v20191211-1528"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.repository"
+         download-size="138"
+         install-size="280"
+         version="2.4.700.v20200110-2121"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.repository.tools"
+         download-size="248"
+         install-size="515"
+         version="2.2.500.v20200110-2121"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.garbagecollector"
+         download-size="24"
+         install-size="44"
+         version="1.1.400.v20200221-1022"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.touchpoint.eclipse"
+         download-size="129"
+         install-size="279"
+         version="2.2.600.v20200114-1339"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.team.core"
+         download-size="398"
+         install-size="855"
+         version="3.8.900.v20200211-0946"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.update.configurator"
+         download-size="95"
+         install-size="192"
+         version="3.4.500.v20200225-0827"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.compare.core"
+         download-size="66"
+         install-size="128"
+         version="3.6.800.v20191213-2246"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jdt.launching"
+         download-size="540"
+         install-size="1050"
+         version="3.17.0.v20200215-0651"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.pde.build"
+         download-size="478"
+         install-size="564"
+         version="3.10.700.v20191228-1214"/>
+
+   <plugin
+         id="org.eclipse.jdt.debug"
+         download-size="970"
+         install-size="1078"
+         version="3.15.0.v20200224-0604"/>
+
+   <plugin
+         id="org.eclipse.equinox.simpleconfigurator.manipulator"
+         download-size="26"
+         install-size="49"
+         version="2.1.500.v20200211-1505"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.publisher"
+         download-size="98"
+         install-size="224"
+         version="1.5.300.v20191016-0507"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.frameworkadmin.equinox"
+         download-size="66"
+         install-size="140"
+         version="1.1.300.v20200211-1503"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.director.app"
+         download-size="56"
+         install-size="103"
+         version="1.1.500.v20200211-1504"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.jarprocessor"
+         download-size="71"
+         install-size="123"
+         version="1.1.600.v20200217-1130"
+         unpack="false"/>
+
+   <plugin
+         id="org.sat4j.core"
+         download-size="367"
+         install-size="704"
+         version="2.3.5.v201308161310"
+         unpack="false"/>
+
+   <plugin
+         id="org.sat4j.pb"
+         download-size="244"
+         install-size="504"
+         version="2.3.5.v201404071733"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.p2.publisher.eclipse"
+         download-size="234"
+         install-size="492"
+         version="1.3.500.v20200203-1449"
+         unpack="false"/>
+
+</feature>

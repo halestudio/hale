@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE UI Geometry Support
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.geometry;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Activator: eu.esdihumboldt.hale.ui.geometry.internal.GeometryUIBu
+ ndle
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base;version="9.0.0",org.locationtech.
+ jts.geom,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.common.align.model,e
+ u.esdihumboldt.hale.common.core.io.supplier,eu.esdihumboldt.hale.common
+ .instance.geometry,eu.esdihumboldt.hale.common.instance.model,eu.esdihu
+ mboldt.hale.common.schema.geometry,eu.esdihumboldt.hale.common.schema.m
+ odel,eu.esdihumboldt.hale.common.schema.model.constraint,eu.esdihumbold
+ t.hale.common.schema.model.constraint.property,eu.esdihumboldt.hale.com
+ mon.schema.model.constraint.type,eu.esdihumboldt.util,org.eclipse.core.
+ expressions,org.slf4j;version="1.5.11"
+Export-Package: eu.esdihumboldt.hale.ui.geometry,eu.esdihumboldt.hale.ui
+ .geometry.internal;x-internal:=true,eu.esdihumboldt.hale.ui.geometry.se
+ rvice,eu.esdihumboldt.hale.ui.geometry.service.impl
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.geometry
+Bundle-Vendor: data harmonisation panel
+

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Embedded OrientDB Test Bundle
+Bundle-SymbolicName: eu.esdihumboldt.util.orient.embedded.test
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: com.orientechnologies.common;bundle-version="1.5.1",com.
+ orientechnologies.orientdb-core;bundle-version="1.5.1",org.junit;bundle
+ -version="4.13.0"
+Automatic-Module-Name: eu.esdihumboldt.util.orient.embedded.test
+

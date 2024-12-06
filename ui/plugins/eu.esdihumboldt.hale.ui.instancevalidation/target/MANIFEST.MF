@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Statusbar component showing instance validation results
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.instancevalidation;singleto
+ n:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui,org.eclipse.core.runtime,org.eclipse.ui.v
+ iews;bundle-version="3.6.0"
+Import-Package: com.google.common.collect,de.fhg.igd.slf4jplus,eu.esdihu
+ mboldt.hale.common.align.transformation.service,eu.esdihumboldt.hale.co
+ mmon.core.report,eu.esdihumboldt.hale.common.instance.extension.validat
+ ion.report,eu.esdihumboldt.hale.common.instance.extension.validation.re
+ port.impl,eu.esdihumboldt.hale.common.instance.model,eu.esdihumboldt.ha
+ le.common.schema,eu.esdihumboldt.hale.common.schema.model,eu.esdihumbol
+ dt.hale.ui.common.definition.viewer,eu.esdihumboldt.hale.ui.selection,e
+ u.esdihumboldt.hale.ui.selection.impl,eu.esdihumboldt.hale.ui.service.i
+ nstance,eu.esdihumboldt.hale.ui.service.instance.validation,eu.esdihumb
+ oldt.hale.ui.service.schema,eu.esdihumboldt.hale.ui.util.viewer.tree,eu
+ .esdihumboldt.hale.ui.views.data,eu.esdihumboldt.hale.ui.views.properti
+ es,eu.esdihumboldt.hale.ui.views.properties.handler,eu.esdihumboldt.hal
+ e.ui.views.report,eu.esdihumboldt.hale.ui.views.report.properties.detai
+ ls.extension,eu.esdihumboldt.util,org.eclipse.ui.menus,org.eclipse.ui.v
+ iews.properties.tabbed,org.slf4j;version="1.5.11"
+Bundle-Activator: eu.esdihumboldt.hale.ui.instancevalidation.InstanceVal
+ idationUIPlugin
+Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.instancevalidation
+

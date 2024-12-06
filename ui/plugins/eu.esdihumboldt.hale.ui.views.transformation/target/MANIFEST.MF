@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: HALE Transformation View
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.views.transformation;single
+ ton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",org.eclipse.core.r
+ untime;bundle-version="3.7.0",org.eclipse.zest.core;bundle-version="2.0
+ .0",org.eclipse.zest.jface;bundle-version="2.0.0"
+Import-Package: eu.esdihumboldt.hale.common.align.model,eu.esdihumboldt.
+ hale.common.core.service,eu.esdihumboldt.hale.common.instance.model,eu.
+ esdihumboldt.hale.ui,eu.esdihumboldt.hale.ui.common.graph.content,eu.es
+ dihumboldt.hale.ui.common.graph.labels,eu.esdihumboldt.hale.ui.service.
+ align,eu.esdihumboldt.hale.ui.service.instance.sample,eu.esdihumboldt.h
+ ale.ui.views.data,eu.esdihumboldt.hale.ui.views.mapping,eu.esdihumboldt
+ .hale.ui.views.properties,eu.esdihumboldt.util,org.eclipse.ui.views.pro
+ perties.tabbed,org.eclipse.zest.layouts,org.eclipse.zest.layouts.algori
+ thms
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.views.transformation
+

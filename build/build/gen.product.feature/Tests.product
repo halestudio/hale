@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="5.4.0.qualifier" useFeatures="false" includeLaunchers="true" autoIncludeRequirements="false">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-consoleLog -clean
+      </programArgs>
+      <vmArgs>-Xmx10000M
+-Daj.weaving.verbose=true
+-Dorg.aspectj.weaver.showWeaveInfo=true
+-Dorg.aspectj.osgi.verbose=true
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="hale_tests">
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="antlr"/>
+      <plugin id="aopalliance"/>
+      <plugin id="assertj-core"/>
+      <plugin id="bcpkix"/>
+      <plugin id="bcprov"/>
+      <plugin id="ch.qos.logback.classic"/>
+      <plugin id="ch.qos.logback.core"/>
+      <plugin id="colt"/>
+      <plugin id="com.conversantmedia.disruptor"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-annotations"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-core"/>
+      <plugin id="com.fasterxml.jackson.core.jackson-databind"/>
+      <plugin id="com.fasterxml.jackson.datatype.jackson-datatype-guava"/>
+      <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-base"/>
+      <plugin id="com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider"/>
+      <plugin id="com.github.albfernandez.javadbf"/>
+      <plugin id="com.github.jnr.a64asm"/>
+      <plugin id="com.github.jnr.constants"/>
+      <plugin id="com.github.jnr.enxio"/>
+      <plugin id="com.github.jnr.ffi"/>
+      <plugin id="com.github.jnr.jffi"/>
+      <plugin id="com.github.jnr.jffi.native" fragment="true"/>
+      <plugin id="com.github.jnr.posix"/>
+      <plugin id="com.github.jnr.unixsocket"/>
+      <plugin id="com.github.jnr.x86asm"/>
+      <plugin id="com.github.virtuald.curvesapi"/>
+      <plugin id="com.github.wetransform-os.topojson-j"/>
+      <plugin id="com.google.gson"/>
+      <plugin id="com.google.guava"/>
+      <plugin id="com.google.re2j"/>
+      <plugin id="com.googlecode.json-simple"/>
+      <plugin id="com.haleconnect.api.haleconnect-bucket-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-project-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-projectstore-api"/>
+      <plugin id="com.haleconnect.api.haleconnect-user-api"/>
+      <plugin id="com.healthmarketscience.jackcess"/>
+      <plugin id="com.iabcinc.jmep"/>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.j256.ormlite"/>
+      <plugin id="com.orientechnologies.common"/>
+      <plugin id="com.orientechnologies.orientdb-client" fragment="true"/>
+      <plugin id="com.orientechnologies.orientdb-core"/>
+      <plugin id="com.orientechnologies.orientdb-enterprise"/>
+      <plugin id="com.spotify.docker-client"/>
+      <plugin id="com.squareup.okhttp"/>
+      <plugin id="com.squareup.okhttp.logging-interceptor"/>
+      <plugin id="com.squareup.okio"/>
+      <plugin id="com.sun.istack.commons-runtime"/>
+      <plugin id="com.sun.jna"/>
+      <plugin id="com.sun.xml.bind.jaxb-core"/>
+      <plugin id="com.sun.xml.bind.jaxb-impl"/>
+      <plugin id="com.sun.xml.fastinfoset.FastInfoset"/>
+      <plugin id="com.tinkerpop.blueprints.core"/>
+      <plugin id="com.tinkerpop.blueprints.orient-graph"/>
+      <plugin id="com.tinkerpop.gremlin.groovy"/>
+      <plugin id="com.tinkerpop.gremlin.java"/>
+      <plugin id="com.tinkerpop.pipes"/>
+      <plugin id="com.typesafe.config"/>
+      <plugin id="com.vladsch.flexmark"/>
+      <plugin id="com.vladsch.flexmark.all"/>
+      <plugin id="com.vladsch.flexmark.ext-abbreviation"/>
+      <plugin id="com.vladsch.flexmark.ext-admonition"/>
+      <plugin id="com.vladsch.flexmark.ext-anchorlink"/>
+      <plugin id="com.vladsch.flexmark.ext-aside"/>
+      <plugin id="com.vladsch.flexmark.ext-attributes"/>
+      <plugin id="com.vladsch.flexmark.ext-autolink"/>
+      <plugin id="com.vladsch.flexmark.ext-definition"/>
+      <plugin id="com.vladsch.flexmark.ext-emoji"/>
+      <plugin id="com.vladsch.flexmark.ext-enumerated-reference"/>
+      <plugin id="com.vladsch.flexmark.ext-escaped-character"/>
+      <plugin id="com.vladsch.flexmark.ext-footnotes"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-issues"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-strikethrough"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-tasklist"/>
+      <plugin id="com.vladsch.flexmark.ext-gfm-users"/>
+      <plugin id="com.vladsch.flexmark.ext-gitlab"/>
+      <plugin id="com.vladsch.flexmark.ext-ins"/>
+      <plugin id="com.vladsch.flexmark.ext-superscript"/>
+      <plugin id="com.vladsch.flexmark.ext-tables"/>
+      <plugin id="com.vladsch.flexmark.ext-toc"/>
+      <plugin id="com.vladsch.flexmark.ext-typographic"/>
+      <plugin id="com.vladsch.flexmark.ext-wikilink"/>
+      <plugin id="com.vladsch.flexmark.profile-pegdown"/>
+      <plugin id="com.vladsch.flexmark.util"/>
+      <plugin id="com.vladsch.flexmark.util-ast"/>
+      <plugin id="com.vladsch.flexmark.util-builder"/>
+      <plugin id="com.vladsch.flexmark.util-collection"/>
+      <plugin id="com.vladsch.flexmark.util-data"/>
+      <plugin id="com.vladsch.flexmark.util-dependency"/>
+      <plugin id="com.vladsch.flexmark.util-format"/>
+      <plugin id="com.vladsch.flexmark.util-html"/>
+      <plugin id="com.vladsch.flexmark.util-misc"/>
+      <plugin id="com.vladsch.flexmark.util-options"/>
+      <plugin id="com.vladsch.flexmark.util-sequence"/>
+      <plugin id="com.vladsch.flexmark.util-visitor"/>
+      <plugin id="com.vladsch.flexmark.youtrack-converter"/>
+      <plugin id="com.zaxxer.SparseBitSet"/>
+      <plugin id="commons-beanutils.commons-beanutils-core"/>
+      <plugin id="commons-digester"/>
+      <plugin id="concurrent"/>
+      <plugin id="de.fhg.igd.eclipse.ui.util"/>
+      <plugin id="de.fhg.igd.eclipse.util"/>
+      <plugin id="de.fhg.igd.equinox.test.app"/>
+      <plugin id="de.fhg.igd.geom"/>
+      <plugin id="de.fhg.igd.osgi.util"/>
+      <plugin id="de.fhg.igd.slf4jplus"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback"/>
+      <plugin id="de.fhg.igd.slf4jplus.logback.appender" fragment="true"/>
+      <plugin id="de.odysseus.staxon"/>
+      <plugin id="eu.esdihumboldt.config.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions.dummy" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.doc.functions.dynamic" fragment="true"/>
+      <plugin id="eu.esdihumboldt.cst.functions.core"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom"/>
+      <plugin id="eu.esdihumboldt.cst.functions.custom.test"/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.geometric.test"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers"/>
+      <plugin id="eu.esdihumboldt.cst.functions.groovy.helpers.test"/>
+      <plugin id="eu.esdihumboldt.cst.functions.inspire"/>
+      <plugin id="eu.esdihumboldt.cst.functions.numeric"/>
+      <plugin id="eu.esdihumboldt.cst.functions.string"/>
+      <plugin id="eu.esdihumboldt.cst.test"/>
+      <plugin id="eu.esdihumboldt.hale.adv.merge"/>
+      <plugin id="eu.esdihumboldt.hale.adv.merge.test"/>
+      <plugin id="eu.esdihumboldt.hale.app.transform"/>
+      <plugin id="eu.esdihumboldt.hale.app.transform.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.groovy.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.io.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.merge.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.align.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.app"/>
+      <plugin id="eu.esdihumboldt.hale.common.cache"/>
+      <plugin id="eu.esdihumboldt.hale.common.cli"/>
+      <plugin id="eu.esdihumboldt.hale.common.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.common.config"/>
+      <plugin id="eu.esdihumboldt.hale.common.config.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.convert.wkt"/>
+      <plugin id="eu.esdihumboldt.hale.common.core"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.io.project.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.common.core.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter"/>
+      <plugin id="eu.esdihumboldt.hale.common.filter.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.groovy.sandbox.enable"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless"/>
+      <plugin id="eu.esdihumboldt.hale.common.headless.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.graph.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.index"/>
+      <plugin id="eu.esdihumboldt.hale.common.instance.orient"/>
+      <plugin id="eu.esdihumboldt.hale.common.instancevalidator"/>
+      <plugin id="eu.esdihumboldt.hale.common.logback.config.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.lookup"/>
+      <plugin id="eu.esdihumboldt.hale.common.lookup.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.propertyaccessor" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.referencing" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.referencing.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.persist"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.persist.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.schema.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.scripting"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper"/>
+      <plugin id="eu.esdihumboldt.hale.common.service.helper.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.common.tasks"/>
+      <plugin id="eu.esdihumboldt.hale.common.test"/>
+      <plugin id="eu.esdihumboldt.hale.common.test.docker"/>
+      <plugin id="eu.esdihumboldt.hale.doc.util"/>
+      <plugin id="eu.esdihumboldt.hale.instance.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.skos"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.skos.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv"/>
+      <plugin id="eu.esdihumboldt.hale.io.csv.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage"/>
+      <plugin id="eu.esdihumboldt.hale.io.geopackage.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.geometry"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.geometry.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.gml.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.io.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.haleconnect"/>
+      <plugin id="eu.esdihumboldt.hale.io.html.svg"/>
+      <plugin id="eu.esdihumboldt.hale.io.html.svg.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.instancebuilder"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.msaccess.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.json"/>
+      <plugin id="eu.esdihumboldt.hale.io.json.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.oml.model.jaxb"/>
+      <plugin id="eu.esdihumboldt.hale.io.pb"/>
+      <plugin id="eu.esdihumboldt.hale.io.pb.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.schemabuilder"/>
+      <plugin id="eu.esdihumboldt.hale.io.schematron"/>
+      <plugin id="eu.esdihumboldt.hale.io.schematron.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.shp"/>
+      <plugin id="eu.esdihumboldt.hale.io.shp.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.io.topojson"/>
+      <plugin id="eu.esdihumboldt.hale.io.topojson.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.validation"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs"/>
+      <plugin id="eu.esdihumboldt.hale.io.wfs.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls"/>
+      <plugin id="eu.esdihumboldt.hale.io.xls.test"/>
+      <plugin id="eu.esdihumboldt.hale.io.xml"/>
+      <plugin id="eu.esdihumboldt.hale.io.xsd"/>
+      <plugin id="eu.esdihumboldt.hale.io.xsd.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.prefixmapper"/>
+      <plugin id="eu.esdihumboldt.hale.ui"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist"/>
+      <plugin id="eu.esdihumboldt.hale.ui.codelist.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common"/>
+      <plugin id="eu.esdihumboldt.hale.ui.common.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.filter"/>
+      <plugin id="eu.esdihumboldt.hale.ui.geometry"/>
+      <plugin id="eu.esdihumboldt.hale.ui.logback.config" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.graph"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy"/>
+      <plugin id="eu.esdihumboldt.hale.ui.util.groovy.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.hale.util.nonosgi"/>
+      <plugin id="eu.esdihumboldt.util"/>
+      <plugin id="eu.esdihumboldt.util.blueprints.entities"/>
+      <plugin id="eu.esdihumboldt.util.cli"/>
+      <plugin id="eu.esdihumboldt.util.config"/>
+      <plugin id="eu.esdihumboldt.util.geometry"/>
+      <plugin id="eu.esdihumboldt.util.geometry.test" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.extension"/>
+      <plugin id="eu.esdihumboldt.util.groovy.meta.fragment" fragment="true"/>
+      <plugin id="eu.esdihumboldt.util.groovy.sandbox"/>
+      <plugin id="eu.esdihumboldt.util.groovy.sandbox.test"/>
+      <plugin id="eu.esdihumboldt.util.groovy.test"/>
+      <plugin id="eu.esdihumboldt.util.http"/>
+      <plugin id="eu.esdihumboldt.util.metrics"/>
+      <plugin id="eu.esdihumboldt.util.orient.embedded.test"/>
+      <plugin id="eu.esdihumboldt.util.resource"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.citygml"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.inspire.annex1"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.opengis.net"/>
+      <plugin id="eu.esdihumboldt.util.resource.schemas.test"/>
+      <plugin id="eu.esdihumboldt.util.resource.w3.org"/>
+      <plugin id="eu.esdihumboldt.util.svg.test"/>
+      <plugin id="eu.esdihumboldt.util.test" fragment="true"/>
+      <plugin id="findbugsAnnotations"/>
+      <plugin id="gnu.trove"/>
+      <plugin id="groovy"/>
+      <plugin id="groovy-ant" fragment="true"/>
+      <plugin id="groovy-cli-commons" fragment="true"/>
+      <plugin id="groovy-cli-picocli" fragment="true"/>
+      <plugin id="groovy-console" fragment="true"/>
+      <plugin id="groovy-datetime" fragment="true"/>
+      <plugin id="groovy-json" fragment="true"/>
+      <plugin id="groovy-jsr223" fragment="true"/>
+      <plugin id="groovy-nio" fragment="true"/>
+      <plugin id="groovy-sql" fragment="true"/>
+      <plugin id="groovy-templates" fragment="true"/>
+      <plugin id="groovy-test" fragment="true"/>
+      <plugin id="groovy-xml" fragment="true"/>
+      <plugin id="io.airlift.aircompressor"/>
+      <plugin id="io.prometheus.simpleclient"/>
+      <plugin id="io.swagger.annotations"/>
+      <plugin id="it.geosolutions.imageio-ext.geocore"/>
+      <plugin id="it.geosolutions.imageio-ext.streams"/>
+      <plugin id="it.geosolutions.imageio-ext.tiff"/>
+      <plugin id="it.geosolutions.imageio-ext.utilities"/>
+      <plugin id="it.geosolutions.jaiext.algebra.jt-algebra"/>
+      <plugin id="it.geosolutions.jaiext.classifier.jt-classifier"/>
+      <plugin id="it.geosolutions.jaiext.colorconvert.jt-colorconvert"/>
+      <plugin id="it.geosolutions.jaiext.colorindexer.jt-colorindexer"/>
+      <plugin id="it.geosolutions.jaiext.iterators.jt-iterators"/>
+      <plugin id="it.geosolutions.jaiext.lookup.jt-lookup"/>
+      <plugin id="it.geosolutions.jaiext.piecewise.jt-piecewise"/>
+      <plugin id="it.geosolutions.jaiext.rlookup.jt-rlookup"/>
+      <plugin id="it.geosolutions.jaiext.scale.jt-scale"/>
+      <plugin id="it.geosolutions.jaiext.shadedrelief.jt-shadedrelief"/>
+      <plugin id="it.geosolutions.jaiext.stats.jt-stats"/>
+      <plugin id="it.geosolutions.jaiext.translate.jt-translate"/>
+      <plugin id="it.geosolutions.jaiext.utilities.jt-utilities"/>
+      <plugin id="it.geosolutions.jaiext.vectorbin.jt-vectorbin"/>
+      <plugin id="it.geosolutions.jaiext.warp.jt-warp"/>
+      <plugin id="it.geosolutions.jgridshift.core"/>
+      <plugin id="jai.jai-codec"/>
+      <plugin id="jai.jai-imageio"/>
+      <plugin id="jakarta.activation-api"/>
+      <plugin id="jakarta.xml.bind-api"/>
+      <plugin id="jakarta.xml.bind.jakarta.xml.bind-api-test"/>
+      <plugin id="javassist"/>
+      <plugin id="javax.annotation.extensions" fragment="true"/>
+      <plugin id="javax.el"/>
+      <plugin id="javax.inject"/>
+      <plugin id="javax.mail"/>
+      <plugin id="javax.measure.unit-api"/>
+      <plugin id="javax.media.jai_codec"/>
+      <plugin id="javax.media.jai_core"/>
+      <plugin id="javax.media.jai_imageio"/>
+      <plugin id="javax.servlet"/>
+      <plugin id="javax.servlet.jsp"/>
+      <plugin id="javax.transaction-api"/>
+      <plugin id="javax.vecmath"/>
+      <plugin id="javax.ws.rs-api"/>
+      <plugin id="javax.xml"/>
+      <plugin id="jaxb-api"/>
+      <plugin id="jaxen"/>
+      <plugin id="jcl.over.slf4j"/>
+      <plugin id="jgridshift"/>
+      <plugin id="jline"/>
+      <plugin id="joda-time"/>
+      <plugin id="jogl"/>
+      <plugin id="jul.to.slf4j"/>
+      <plugin id="log4j.over.slf4j"/>
+      <plugin id="mil.nga.geopackage"/>
+      <plugin id="mil.nga.oapi.features.oapi-features-json"/>
+      <plugin id="mil.nga.sf"/>
+      <plugin id="mil.nga.sf.geojson"/>
+      <plugin id="mil.nga.sf.proj"/>
+      <plugin id="mil.nga.sf.wkb"/>
+      <plugin id="mil.nga.tiff"/>
+      <plugin id="net.sf.ehcache.core"/>
+      <plugin id="net.sf.geographiclib.GeographicLib-Java"/>
+      <plugin id="net.sf.opencsv"/>
+      <plugin id="net.sf.ucanaccess"/>
+      <plugin id="net.sourceforge.schemacrawler"/>
+      <plugin id="org.antlr.runtime"/>
+      <plugin id="org.antlr.stringtemplate"/>
+      <plugin id="org.apache.batik.constants"/>
+      <plugin id="org.apache.batik.css"/>
+      <plugin id="org.apache.batik.i18n"/>
+      <plugin id="org.apache.batik.util"/>
+      <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.apache.commons.beanutils"/>
+      <plugin id="org.apache.commons.cli"/>
+      <plugin id="org.apache.commons.codec"/>
+      <plugin id="org.apache.commons.collections"/>
+      <plugin id="org.apache.commons.commons-codec"/>
+      <plugin id="org.apache.commons.commons-collections4"/>
+      <plugin id="org.apache.commons.commons-compress"/>
+      <plugin id="org.apache.commons.commons-io"/>
+      <plugin id="org.apache.commons.commons-text"/>
+      <plugin id="org.apache.commons.configuration"/>
+      <plugin id="org.apache.commons.dbcp"/>
+      <plugin id="org.apache.commons.io"/>
+      <plugin id="org.apache.commons.jxpath"/>
+      <plugin id="org.apache.commons.lang"/>
+      <plugin id="org.apache.commons.lang3"/>
+      <plugin id="org.apache.commons.logging"/>
+      <plugin id="org.apache.commons.math"/>
+      <plugin id="org.apache.commons.math3"/>
+      <plugin id="org.apache.commons.pool"/>
+      <plugin id="org.apache.felix.gogo.command"/>
+      <plugin id="org.apache.felix.gogo.runtime"/>
+      <plugin id="org.apache.felix.gogo.shell"/>
+      <plugin id="org.apache.felix.scr"/>
+      <plugin id="org.apache.httpcomponents.fluent-hc"/>
+      <plugin id="org.apache.httpcomponents.httpclient"/>
+      <plugin id="org.apache.httpcomponents.httpcore"/>
+      <plugin id="org.apache.james.apache-mime4j-core"/>
+      <plugin id="org.apache.logging.log4j.api"/>
+      <plugin id="org.apache.poi"/>
+      <plugin id="org.apache.tika.core"/>
+      <plugin id="org.apache.velocity"/>
+      <plugin id="org.apache.ws.commons.axiom.axiom-api"/>
+      <plugin id="org.apache.ws.commons.axiom.axiom-impl"/>
+      <plugin id="org.apache.ws.commons.schema.XmlSchema"/>
+      <plugin id="org.apache.xml.resolver"/>
+      <plugin id="org.apache.xmlbeans"/>
+      <plugin id="org.apache.xmlgraphics"/>
+      <plugin id="org.apiguardian.api"/>
+      <plugin id="org.aspectj.rt"/>
+      <plugin id="org.aspectj.weaver"/>
+      <plugin id="org.codehaus.castor.core"/>
+      <plugin id="org.codehaus.castor.xml"/>
+      <plugin id="org.codehaus.jackson"/>
+      <plugin id="org.codehaus.jackson.mapper"/>
+      <plugin id="org.codehaus.jettison.jettison"/>
+      <plugin id="org.deegree"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.net"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.draw2d"/>
+      <plugin id="org.eclipse.e4.core.commands"/>
+      <plugin id="org.eclipse.e4.core.contexts"/>
+      <plugin id="org.eclipse.e4.core.di"/>
+      <plugin id="org.eclipse.e4.core.di.annotations"/>
+      <plugin id="org.eclipse.e4.core.di.extensions"/>
+      <plugin id="org.eclipse.e4.core.di.extensions.supplier"/>
+      <plugin id="org.eclipse.e4.core.services"/>
+      <plugin id="org.eclipse.e4.emf.xpath"/>
+      <plugin id="org.eclipse.e4.ui.bindings"/>
+      <plugin id="org.eclipse.e4.ui.css.core"/>
+      <plugin id="org.eclipse.e4.ui.css.swt"/>
+      <plugin id="org.eclipse.e4.ui.css.swt.theme"/>
+      <plugin id="org.eclipse.e4.ui.di"/>
+      <plugin id="org.eclipse.e4.ui.dialogs"/>
+      <plugin id="org.eclipse.e4.ui.model.workbench"/>
+      <plugin id="org.eclipse.e4.ui.services"/>
+      <plugin id="org.eclipse.e4.ui.widgets"/>
+      <plugin id="org.eclipse.e4.ui.workbench"/>
+      <plugin id="org.eclipse.e4.ui.workbench.addons.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.renderers.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench.swt"/>
+      <plugin id="org.eclipse.e4.ui.workbench3"/>
+      <plugin id="org.eclipse.emf.common"/>
+      <plugin id="org.eclipse.emf.ecore"/>
+      <plugin id="org.eclipse.emf.ecore.change"/>
+      <plugin id="org.eclipse.emf.ecore.xmi"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.cm"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.console"/>
+      <plugin id="org.eclipse.equinox.event"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.region" fragment="true"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.equinox.security"/>
+      <plugin id="org.eclipse.equinox.simpleconfigurator"/>
+      <plugin id="org.eclipse.equinox.transforms.hook" fragment="true"/>
+      <plugin id="org.eclipse.equinox.weaving.caching"/>
+      <plugin id="org.eclipse.equinox.weaving.hook" fragment="true"/>
+      <plugin id="org.eclipse.gemini.blueprint.core"/>
+      <plugin id="org.eclipse.gemini.blueprint.extender"/>
+      <plugin id="org.eclipse.gemini.blueprint.io"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.jface.text"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.osgi.compatibility.state" fragment="true"/>
+      <plugin id="org.eclipse.osgi.services"/>
+      <plugin id="org.eclipse.osgi.util"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.text"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.eclipse.xsd"/>
+      <plugin id="org.eclipse.zest.core"/>
+      <plugin id="org.eclipse.zest.dot.export"/>
+      <plugin id="org.eclipse.zest.jface"/>
+      <plugin id="org.eclipse.zest.layouts"/>
+      <plugin id="org.ejml.core"/>
+      <plugin id="org.ejml.ddense"/>
+      <plugin id="org.geotools"/>
+      <plugin id="org.glassfish.hk2.api"/>
+      <plugin id="org.glassfish.hk2.locator"/>
+      <plugin id="org.glassfish.hk2.osgi-resource-locator"/>
+      <plugin id="org.glassfish.hk2.utils"/>
+      <plugin id="org.glassfish.jaxb.core"/>
+      <plugin id="org.glassfish.jaxb.runtime"/>
+      <plugin id="org.glassfish.jaxb.txw2"/>
+      <plugin id="org.glassfish.jersey.bundles.repackaged.jersey-guava"/>
+      <plugin id="org.glassfish.jersey.connectors.jersey-apache-connector"/>
+      <plugin id="org.glassfish.jersey.core.jersey-client"/>
+      <plugin id="org.glassfish.jersey.core.jersey-client.source"/>
+      <plugin id="org.glassfish.jersey.core.jersey-common"/>
+      <plugin id="org.glassfish.jersey.media.jersey-media-json-jackson"/>
+      <plugin id="org.hamcrest.core"/>
+      <plugin id="org.hsqldb.hsqldb"/>
+      <plugin id="org.iq80.snappy"/>
+      <plugin id="org.jaitools.jt-utils"/>
+      <plugin id="org.jaitools.jt-zonalstats"/>
+      <plugin id="org.junit"/>
+      <plugin id="org.jvnet.jaxb2_commons.jaxb2-basics-runtime"/>
+      <plugin id="org.kohsuke.groovy.sandbox"/>
+      <plugin id="org.locationtech.jts.jts-core"/>
+      <plugin id="org.locationtech.proj4j"/>
+      <plugin id="org.lz4.lz4-java"/>
+      <plugin id="org.nibor.autolink"/>
+      <plugin id="org.objectweb.asm-9"/>
+      <plugin id="org.opengis"/>
+      <plugin id="org.postgresql.jdbc"/>
+      <plugin id="org.reflections"/>
+      <plugin id="org.semanticweb.owlapi.osgi.skos"/>
+      <plugin id="org.springframework.spring-aop"/>
+      <plugin id="org.springframework.spring-beans"/>
+      <plugin id="org.springframework.spring-context"/>
+      <plugin id="org.springframework.spring-context-support"/>
+      <plugin id="org.springframework.spring-core"/>
+      <plugin id="org.springframework.spring-expression"/>
+      <plugin id="org.w3c.css.sac"/>
+      <plugin id="org.w3c.dom.events"/>
+      <plugin id="org.w3c.dom.smil"/>
+      <plugin id="org.w3c.dom.svg"/>
+      <plugin id="org.xerial.sqlite-jdbc"/>
+      <plugin id="org.yaml.snakeyaml"/>
+      <plugin id="oro"/>
+      <plugin id="picocli"/>
+      <plugin id="picocontainer"/>
+      <plugin id="ru.yandex.qatools.allure.java-adaptor-api"/>
+      <plugin id="ru.yandex.qatools.allure.java-annotations"/>
+      <plugin id="ru.yandex.qatools.allure.java-aspects"/>
+      <plugin id="ru.yandex.qatools.allure.model"/>
+      <plugin id="ru.yandex.qatools.properties.loader"/>
+      <plugin id="si-units"/>
+      <plugin id="si.uom.si-quantity"/>
+      <plugin id="slf4j.api"/>
+      <plugin id="slf4j.ext"/>
+      <plugin id="systems-common"/>
+      <plugin id="tech.units.indriya"/>
+      <plugin id="uom-lib-common"/>
+      <plugin id="xerces.xercesImpl"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.equinox.weaving.aspectj" autoStart="false" startLevel="2" />
+      <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="5" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.ui.feature.linux.source" version="5.4.0.SNAPSHOT" label="Linux specific HALE feature Developer Resources" provider-name="data harmonisation panel">
+  <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+  <includes id="eu.esdihumboldt.hale.ui.feature.linux" version="5.4.0.SNAPSHOT" os="linux"/>
+</feature>

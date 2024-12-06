@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: String Transformation Functions
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.string;singleton:=tru
+ e
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base;version="9.0.0",com.google.common
+ .collect;version="9.0.0",eu.esdihumboldt.hale.common.core.io,eu.esdihum
+ boldt.hale.common.core.parameter,eu.esdihumboldt.hale.common.schema.mod
+ el,org.springframework.core.convert;version="5.2.0"
+Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.5.0"
+Export-Package: eu.esdihumboldt.cst.functions.string
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.string
+

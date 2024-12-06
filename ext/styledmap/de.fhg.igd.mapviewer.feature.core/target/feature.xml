@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="de.fhg.igd.mapviewer.feature.core"
+      label="Mapviewer Core"
+      version="5.4.0.SNAPSHOT">
+
+   <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+
+   <plugin
+         id="de.fhg.igd.mapviewer"
+         download-size="210"
+         install-size="407"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdesktop.swingx.mapviewer"
+         download-size="88"
+         install-size="157"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.eclipse.ui.util"
+         download-size="34"
+         install-size="69"
+         version="1.0.0.201407081822"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.eclipse.util"
+         download-size="21"
+         install-size="38"
+         version="1.0.0.201407081822"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.swingrcp"
+         download-size="32"
+         install-size="58"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="gnu.trove"
+         download-size="738"
+         install-size="1390"
+         version="2.0.4.i20231028"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.http"
+         download-size="13"
+         install-size="26"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="org.swinglabs.swing-worker"
+         download-size="12"
+         install-size="19"
+         version="1.1.0.i20231028"
+         unpack="false"/>
+
+   <plugin
+         id="org.jdesktop.swingx"
+         download-size="1255"
+         install-size="2303"
+         version="1.0.0.i20231028"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.httpcomponents.httpclient"
+         download-size="763"
+         install-size="1607"
+         version="4.5.13.i20231028"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.httpcomponents.httpcore"
+         download-size="321"
+         install-size="617"
+         version="4.4.13.i20231028"
+         unpack="false"/>
+
+   <plugin
+         id="org.locationtech.jts.jts-core"
+         download-size="1077"
+         install-size="2165"
+         version="1.19.0.i20231214"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.codec"
+         download-size="364"
+         install-size="692"
+         version="1.13.0.v20200108-0001"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.geom"
+         download-size="52"
+         install-size="100"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.util.metrics"
+         download-size="4"
+         install-size="5"
+         version="5.4.0.SNAPSHOT"
+         unpack="false"/>
+
+   <plugin
+         id="io.prometheus.simpleclient"
+         download-size="88"
+         install-size="168"
+         version="0.16.0.i20231028"
+         unpack="false"/>
+
+</feature>

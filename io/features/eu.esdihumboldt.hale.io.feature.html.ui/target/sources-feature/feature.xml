@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.io.feature.html.ui.source" version="5.4.0.SNAPSHOT" plugin="eu.esdihumboldt.hale.ui.application" label="HTML Export UI Feature Developer Resources" provider-name="data harmonisation panel">
+  <license>
+      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
+   </license>
+  <includes id="eu.esdihumboldt.hale.io.feature.html.ui" version="5.4.0.SNAPSHOT"/>
+  <plugin id="eu.esdihumboldt.hale.io.html.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="eu.esdihumboldt.hale.io.html.ui.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.apache.velocity.source" version="1.6.2.i20231028" download-size="0" install-size="0" unpack="false"/>
+</feature>

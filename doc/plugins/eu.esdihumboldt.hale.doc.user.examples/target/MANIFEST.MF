@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Example Projects Help
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.examples;singleton:=t
+ rue
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100",org.eclipse.co
+ re.runtime;bundle-version="3.7.0"
+Import-Package: com.google.common.collect;version="9.0.0",com.google.com
+ mon.io;version="9.0.0",de.fhg.igd.eclipse.util.extension,de.fhg.igd.ecl
+ ipse.util.extension.simple,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.co
+ mmon.align.io,eu.esdihumboldt.hale.common.align.io.impl,eu.esdihumboldt
+ .hale.common.align.model,eu.esdihumboldt.hale.common.core.io,eu.esdihum
+ boldt.hale.common.core.io.extension,eu.esdihumboldt.hale.common.core.io
+ .impl,eu.esdihumboldt.hale.common.core.io.project,eu.esdihumboldt.hale.
+ common.core.io.project.model,eu.esdihumboldt.hale.common.core.io.projec
+ t.util,eu.esdihumboldt.hale.common.core.io.report,eu.esdihumboldt.hale.
+ common.core.io.supplier,eu.esdihumboldt.hale.common.core.report,eu.esdi
+ humboldt.hale.common.schema,eu.esdihumboldt.hale.common.schema.io,eu.es
+ dihumboldt.hale.common.schema.io.impl,eu.esdihumboldt.hale.common.schem
+ a.model,eu.esdihumboldt.hale.common.schema.model.impl,eu.esdihumboldt.h
+ ale.doc.util.content,eu.esdihumboldt.hale.doc.util.context,eu.esdihumbo
+ ldt.hale.doc.util.toc,eu.esdihumboldt.util.io,org.apache.velocity;versi
+ on="1.6.2",org.apache.velocity.context;version="1.6.2",org.slf4j;versio
+ n="1.5.11"
+Export-Package: eu.esdihumboldt.hale.doc.user.examples.internal;x-intern
+ al:=true,eu.esdihumboldt.hale.doc.user.examples.internal.content;x-inte
+ rnal:=true,eu.esdihumboldt.hale.doc.user.examples.internal.extension;x-
+ internal:=true,eu.esdihumboldt.hale.doc.user.examples.internal.toc;x-in
+ ternal:=true
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.doc.user.examples
+

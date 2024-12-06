@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Custom Functions Tests
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.custom.test
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: data harmonisation panel
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.cst.functions.custom;bundle-version="2.9
+ .3",eu.esdihumboldt.hale.common.core;bundle-version="2.9.1",org.junit;b
+ undle-version="4.13.0"
+Import-Package: eu.esdihumboldt.hale.common.align.extension.function,gro
+ ovy.xml;version="2.3.7"
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.custom.test
+

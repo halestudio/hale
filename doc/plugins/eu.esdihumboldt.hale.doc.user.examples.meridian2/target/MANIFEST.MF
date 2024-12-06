@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Meridian2 based example projects
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.examples.meridian2;si
+ ngleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Require-Bundle: eu.esdihumboldt.hale.doc.user.examples;bundle-version="2
+ .5.0"
+Bundle-Vendor: data harmonisation panel
+

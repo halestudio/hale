@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Common Scripting API
+Bundle-SymbolicName: eu.esdihumboldt.hale.common.scripting;singleton:=tr
+ ue
+Bundle-Version: 5.4.0.SNAPSHOT
+Require-Bundle: org.eclipse.core.runtime,eu.esdihumboldt.hale.common.ali
+ gn
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.google.common.base,com.google.common.collect,com.iab
+ cinc.jmep,com.iabcinc.jmep.hooks,de.fhg.igd.eclipse.util.extension,eu.e
+ sdihumboldt.hale.common.align.model,eu.esdihumboldt.hale.common.align.t
+ ransformation.function,eu.esdihumboldt.hale.common.core.io,eu.esdihumbo
+ ldt.hale.common.core.service,eu.esdihumboldt.hale.common.instance.model
+ ,eu.esdihumboldt.hale.common.schema.model,eu.esdihumboldt.util.groovy.s
+ andbox,groovy.lang,org.slf4j,org.springframework.core.convert;version="
+ 5.2.0"
+Export-Package: eu.esdihumboldt.hale.common.scripting,eu.esdihumboldt.ha
+ le.common.scripting.scripts.groovy,eu.esdihumboldt.hale.common.scriptin
+ g.scripts.mathematical,eu.esdihumboldt.hale.common.scripting.transforma
+ tion
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.common.scripting
+

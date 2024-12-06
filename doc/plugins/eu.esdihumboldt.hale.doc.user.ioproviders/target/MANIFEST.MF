@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Help on Instance I/O
+Bundle-SymbolicName: eu.esdihumboldt.hale.doc.user.ioproviders;singleton
+ :=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: de.fhg.igd.eclipse.util.extension,de.fhg.igd.slf4jplus,e
+ u.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core.io.
+ extension,eu.esdihumboldt.hale.common.core.parameter,eu.esdihumboldt.ha
+ le.common.instance.io,eu.esdihumboldt.hale.doc.util.content,eu.esdihumb
+ oldt.hale.doc.util.toc,eu.esdihumboldt.util.xml,org.apache.commons.lang
+ ;version="2.6.0",org.apache.velocity;version="1.6.2",org.apache.velocit
+ y.context;version="1.6.2",org.eclipse.core.expressions,org.slf4j;versio
+ n="1.7.5"
+Require-Bundle: org.eclipse.help;bundle-version="3.5.100",org.eclipse.co
+ re.runtime;bundle-version="3.7.0"
+Export-Package: eu.esdihumboldt.hale.doc.user.ioproviders;x-internal:=tr
+ ue,eu.esdihumboldt.hale.doc.user.ioproviders.content;x-internal:=true,e
+ u.esdihumboldt.hale.doc.user.ioproviders.toc;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.doc.user.ioproviders
+

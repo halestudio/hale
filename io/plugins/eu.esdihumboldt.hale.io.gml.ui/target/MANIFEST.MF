@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: GML/XML Instance I/O UI
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.gml.ui;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.ui;bundle-version="2.2.0",eu.esdihu
+ mboldt.hale.io.gml;bundle-version="2.2.0",eu.esdihumboldt.hale.common.i
+ nstance;bundle-version="2.2.0",eu.esdihumboldt.hale.common.core;bundle-
+ version="2.2.0",org.eclipse.ui;bundle-version="3.5.1",org.eclipse.core.
+ runtime;bundle-version="3.5.0",org.geotools;bundle-version="29.1.0",org
+ .opengis;bundle-version="29.1.0"
+Import-Package: com.google.common.io;version="1.6.0",org.locationtech.jt
+ s,org.locationtech.jts.geom,de.fhg.igd.slf4jplus,eu.esdihumboldt.hale.c
+ ommon.align.model,eu.esdihumboldt.hale.common.schema,eu.esdihumboldt.ha
+ le.common.schema.groovy,eu.esdihumboldt.hale.common.schema.model,eu.esd
+ ihumboldt.hale.common.schema.model.impl,eu.esdihumboldt.hale.io.gml.geo
+ metry,eu.esdihumboldt.hale.io.xsd.model,eu.esdihumboldt.hale.ui.common,
+ eu.esdihumboldt.hale.ui.common.definition,eu.esdihumboldt.hale.ui.util.
+ io,eu.esdihumboldt.util.format,eu.esdihumboldt.util.groovy.paths,eu.esd
+ ihumboldt.util.io,org.apache.commons.lang;version="2.6.0",org.slf4j;ver
+ sion="1.5.11"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: eu.esdihumboldt.hale.io.gml.ui.internal.GmlUIPlugin
+Bundle-Vendor: data harmonisation panel
+Export-Package: eu.esdihumboldt.hale.io.gml.ui,eu.esdihumboldt.hale.io.g
+ ml.ui.internal;x-internal:=true
+Automatic-Module-Name: eu.esdihumboldt.hale.io.gml.ui
+

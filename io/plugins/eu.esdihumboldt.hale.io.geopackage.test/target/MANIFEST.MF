@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geopackage Tests
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.geopackage.test
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-Vendor: wetransform GmbH
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.io.geopackage;bundle-version="4.0.0
+ ",mil.nga.geopackage;bundle-version="3.4.0";visibility:=reexport,eu.esd
+ ihumboldt.hale.common.core;bundle-version="4.0.0",eu.esdihumboldt.hale.
+ common.schema;bundle-version="4.0.0",eu.esdihumboldt.hale.common.instan
+ ce;bundle-version="4.0.0",eu.esdihumboldt.hale.common.schema.persist;bu
+ ndle-version="4.0.0",groovy;bundle-version="2.5.19",org.junit;bundle-ve
+ rsion="4.13.0",org.eclipse.core.runtime;bundle-version="3.14.0",eu.esdi
+ humboldt.hale.common.schema.groovy;bundle-version="4.0.0",eu.esdihumbol
+ dt.hale.common.instance.groovy;bundle-version="4.0.0",mil.nga.sf;bundle
+ -version="2.0.2",eu.esdihumboldt.cst.functions.geometric;bundle-version
+ ="4.0.0",eu.esdihumboldt.util;bundle-version="4.0.0",org.opengis;bundle
+ -version="29.1.0",eu.esdihumboldt.hale.common.test;bundle-version="4.2.
+ 0",eu.esdihumboldt.hale.common.align;bundle-version="4.2.0",assertj-cor
+ e;bundle-version="3.22.0"
+Import-Package: de.fhg.igd.slf4jplus,eu.esdihumboldt.util.groovy.paths,o
+ rg.locationtech.jts.geom;version="1.13.0"
+

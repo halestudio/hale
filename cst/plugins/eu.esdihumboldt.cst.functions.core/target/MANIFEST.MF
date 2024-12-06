@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CST Core Functions
+Bundle-SymbolicName: eu.esdihumboldt.cst.functions.core;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: eu.esdihumboldt.hale.common.align;bundle-version="2.2.0"
+ ,groovy;bundle-version="2.5.19"
+Import-Package: com.google.common.base;version="9.0.0",com.google.common
+ .collect,de.fhg.igd.osgi.util;version="1.0.0",de.fhg.igd.slf4jplus,eu.e
+ sdihumboldt.hale.common.convert,eu.esdihumboldt.hale.common.core,eu.esd
+ ihumboldt.hale.common.core.io,eu.esdihumboldt.hale.common.core.io.impl,
+ eu.esdihumboldt.hale.common.core.report,eu.esdihumboldt.hale.common.cor
+ e.service,eu.esdihumboldt.hale.common.instance.groovy,eu.esdihumboldt.h
+ ale.common.instance.helper,eu.esdihumboldt.hale.common.instance.index,e
+ u.esdihumboldt.hale.common.instance.model,eu.esdihumboldt.hale.common.i
+ nstance.model.impl,eu.esdihumboldt.hale.common.lookup,eu.esdihumboldt.h
+ ale.common.lookup.impl,eu.esdihumboldt.hale.common.schema,eu.esdihumbol
+ dt.hale.common.schema.geometry,eu.esdihumboldt.hale.common.schema.model
+ ,eu.esdihumboldt.hale.common.schema.model.constraint,eu.esdihumboldt.ha
+ le.common.schema.model.constraint.property,eu.esdihumboldt.hale.common.
+ schema.model.constraint.type,eu.esdihumboldt.hale.common.schema.model.i
+ mpl,eu.esdihumboldt.hale.common.scripting.transformation,eu.esdihumbold
+ t.util,eu.esdihumboldt.util.groovy.paths,net.jcip.annotations,org.locat
+ iontech.jts.geom;version="1.13.0",org.slf4j;version="1.7.36",org.spring
+ framework.core.convert;version="5.2.0"
+Export-Package: eu.esdihumboldt.cst.functions.core,eu.esdihumboldt.cst.f
+ unctions.core.join,eu.esdihumboldt.cst.functions.core.merge
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.cst.functions.core
+

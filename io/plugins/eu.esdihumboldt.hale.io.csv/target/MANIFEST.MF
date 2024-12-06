@@ -1,0 +1,41 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CSV Schema/Instance I/O
+Bundle-SymbolicName: eu.esdihumboldt.hale.io.csv;singleton:=true
+Bundle-Version: 5.4.0.SNAPSHOT
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: au.com.bytecode.opencsv;version="2.3.0",com.google.commo
+ n.collect;version="1.0.0",com.google.common.io;version="17.0.0",de.fhg.
+ igd.eclipse.util.extension,de.fhg.igd.eclipse.util.extension.simple,de.
+ fhg.igd.osgi.util;version="1.0.0",de.fhg.igd.slf4jplus,eu.esdihumboldt.
+ hale.common.align.extension.function,eu.esdihumboldt.hale.common.align.
+ io.impl,eu.esdihumboldt.hale.common.align.model,eu.esdihumboldt.hale.co
+ mmon.core,eu.esdihumboldt.hale.common.core.io,eu.esdihumboldt.hale.comm
+ on.core.io.impl,eu.esdihumboldt.hale.common.core.io.report,eu.esdihumbo
+ ldt.hale.common.core.io.report.impl,eu.esdihumboldt.hale.common.core.io
+ .supplier,eu.esdihumboldt.hale.common.core.parameter,eu.esdihumboldt.ha
+ le.common.core.report,eu.esdihumboldt.hale.common.filter,eu.esdihumbold
+ t.hale.common.instance.io,eu.esdihumboldt.hale.common.instance.io.impl,
+ eu.esdihumboldt.hale.common.instance.model,eu.esdihumboldt.hale.common.
+ instance.model.impl,eu.esdihumboldt.hale.common.lookup,eu.esdihumboldt.
+ hale.common.lookup.impl,eu.esdihumboldt.hale.common.schema,eu.esdihumbo
+ ldt.hale.common.schema.geometry,eu.esdihumboldt.hale.common.schema.io,e
+ u.esdihumboldt.hale.common.schema.io.impl,eu.esdihumboldt.hale.common.s
+ chema.model,eu.esdihumboldt.hale.common.schema.model.constraint.propert
+ y,eu.esdihumboldt.hale.common.schema.model.constraint.type,eu.esdihumbo
+ ldt.hale.common.schema.model.impl,eu.esdihumboldt.hale.common.schema.pe
+ rsist,eu.esdihumboldt.util.definition,eu.esdihumboldt.util.io,net.jcip.
+ annotations,org.apache.commons.io;version="2.4.0",org.eclipse.osgi.util
+ ;version="1.1.0",org.geotools.data;version="29.1.0.combined",org.locati
+ ontech.jts.geom,org.opengis.feature.simple,org.opengis.feature.type,org
+ .slf4j;version="1.5.11",org.springframework.core.convert;version="5.2.0
+ "
+Require-Bundle: eu.esdihumboldt.hale.common.instance,org.eclipse.core.ru
+ ntime;bundle-version="3.6.0",eu.esdihumboldt.hale.common.convert.wkt;bu
+ ndle-version="2.5.0"
+Export-Package: eu.esdihumboldt.hale.io.csv,eu.esdihumboldt.hale.io.csv.
+ reader,eu.esdihumboldt.hale.io.csv.reader.internal,eu.esdihumboldt.hale
+ .io.csv.writer,eu.esdihumboldt.hale.io.csv.writer.internal
+Bundle-Vendor: data harmonisation panel
+Automatic-Module-Name: eu.esdihumboldt.hale.io.csv
+

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.common.feature.base.source" version="5.4.0.SNAPSHOT" label="Equinox base feature Developer Resources">
+  <license>
+      Licenses of the individual features and plug-ins apply.
+   </license>
+  <includes id="eu.esdihumboldt.hale.common.feature.base" version="5.4.0.SNAPSHOT"/>
+  <plugin id="org.apache.felix.gogo.command.source" version="1.0.2.v20170914-1324" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.apache.felix.gogo.runtime.source" version="1.1.0.v20180713-1646" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.apache.felix.gogo.shell.source" version="1.1.0.v20180713-1646" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.equinox.console.source" version="1.4.0.v20190819-1430" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="ch.qos.logback.classic.source" version="1.2.12.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="ch.qos.logback.core.source" version="1.2.12.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.gemini.blueprint.extender.source" version="3.0.0.M01-i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.gemini.blueprint.io.source" version="3.0.0.M01-i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="jcl.over.slf4j.source" version="1.7.36.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="jul.to.slf4j.source" version="1.7.36.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="log4j.over.slf4j.source" version="1.7.36.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="slf4j.api.source" version="1.7.36.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="slf4j.ext.source" version="1.7.36.i20231129" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="aopalliance.source" version="1.0.0.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.tukaani.xz.source" version="1.8.0.v20180207-1613" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.gemini.blueprint.core.source" version="3.0.0.M01-i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="xerces.xercesImpl.source" version="2.12.2.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.codehaus.castor.core.source" version="1.4.1.i20231028" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.codehaus.castor.xml.source" version="1.4.1.i20231028" download-size="0" install-size="0" unpack="false"/>
+</feature>

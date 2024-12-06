@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.ui.feature.zest.source" version="5.4.0.SNAPSHOT" label="Eclipse Zest and dependencies Developer Resources">
+  <license>
+      Licenses of the individual features and plug-ins apply.
+   </license>
+  <includes id="eu.esdihumboldt.hale.ui.feature.zest" version="5.4.0.SNAPSHOT"/>
+  <includes id="org.eclipse.gef.source" version="3.11.0.201606061308"/>
+  <plugin id="org.eclipse.zest.jface.source" version="2.0.0.201204272302" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.zest.layouts.source" version="2.0.0.201204272302" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.zest.dot.export.source" version="2.0.0.201204272302" download-size="0" install-size="0" unpack="false"/>
+</feature>

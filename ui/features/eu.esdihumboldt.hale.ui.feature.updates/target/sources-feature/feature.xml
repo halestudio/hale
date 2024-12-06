@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature id="eu.esdihumboldt.hale.ui.feature.updates.source" version="5.4.0.SNAPSHOT" label="Software Updates Feature Developer Resources" provider-name="data harmonisation panel">
+  <license>
+  		Licenses of the individual features and plug-ins apply.
+   </license>
+  <includes id="eu.esdihumboldt.hale.ui.feature.updates" version="5.4.0.SNAPSHOT"/>
+  <plugin id="org.eclipse.equinox.p2.ui.source" version="2.5.800.v20200213-1530" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.equinox.p2.ui.sdk.source" version="1.1.500.v20191016-0512" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.equinox.security.ui.source" version="1.2.600.v20191213-1901" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.equinox.p2.operations.source" version="2.5.700.v20191211-1713" download-size="0" install-size="0" unpack="false"/>
+  <plugin id="org.eclipse.equinox.p2.updatechecker.source" version="1.2.300.v20200222-1600" download-size="0" install-size="0" unpack="false"/>
+</feature>
