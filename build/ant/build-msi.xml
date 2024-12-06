@@ -412,7 +412,12 @@
 			<arg value="${build}/${wxs.file.ui}.wixobj" />
 		</exec>
 		
-		<copy tofile="${dist}/${buildId}-${version}-${tag.hyphen}${language}-${wix.arch}.msi"
+		<!-- If the buildId is HALE, use the prefix hale-studio -->
+		<condition property="msiPrefix" value="hale-studio" else="${buildId}">
+			<equals arg1="${buildId}" arg2="HALE" />
+		</condition>
+
+		<copy tofile="${dist}/${msiPrefix}-${version}-${tag.hyphen}${language}-${wix.arch}.msi"
 			file="${build}/${buildId}.msi" overwrite="yes" />
 	</target>
 	
