@@ -793,7 +793,7 @@ def packageServer(productOutputPath) {
 
             // create Dockerfile
             new File(dockerDir, 'Dockerfile').text = """
-                |FROM ubuntu:16.04
+                |FROM ubuntu:24.04
                 |ADD ${packageName}.tar.gz /opt
                 |RUN sed -i "s/-Dserver_port=.*/-Dserver_port=80/" /opt/${packageName}/${launcherName}.ini && \\
                 |  sed -i "s/-Dserver_host=.*/-Dserver_host=0.0.0.0/" /opt/${packageName}/${launcherName}.ini
