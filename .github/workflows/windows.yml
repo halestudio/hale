@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Setup Maven
-        uses: s4u/setup-maven-action@382542f77617f34e56bf83868920a4d45b7451e7 # v1.16.0
+        uses: s4u/setup-maven-action@9a27433d289dd99d73851f653607c39d3444e8ba # v1.17.0
         with:
           java-version: 17
           java-distribution: temurin
