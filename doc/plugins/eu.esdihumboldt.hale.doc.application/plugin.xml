@@ -6,10 +6,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="eu.esdihumboldt.hale.doc.application.infocenterApplication"
-            name="halestudio Infocenter">
+            name="hale-studio Infocenter">
          <property
                name="appName"
-               value="halestudio Infocenter">
+               value="hale-studio Infocenter">
          </property>
       </product>
    </extension>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="hale studio User Guide">
+<toc label="hale»studio User Guide">
    <topic label="Introduction">
-      <topic href="html/introduction/introduction_HALE.html" label="hale studio - The HUMBOLDT Alignment Editor">
+      <topic href="html/introduction/introduction_HALE.html" label="hale»studio">
       </topic>
       <topic href="html/introduction/introduction_project.html" label="The HUMBOLDT project">
       </topic>
