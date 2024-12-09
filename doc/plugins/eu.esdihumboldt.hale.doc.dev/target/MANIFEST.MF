@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: HALE Developer Guide
-Bundle-SymbolicName: eu.esdihumboldt.hale.doc.dev;singleton:=true
-Bundle-Version: 5.4.0.SNAPSHOT
-Bundle-Vendor: data harmonisation panel
-Require-Bundle: org.eclipse.help;bundle-version="3.5.100"
-
