@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature id="eu.esdihumboldt.hale.io.feature.mssql.source" version="5.4.0.SNAPSHOT" plugin="eu.esdihumboldt.hale.ui.application" label="HALE MS-SQL Support Developer Resources" provider-name="wetransform GmbH">
-  <license url="">
-      GNU Lesser General Public License, license of included dependencies may vary (see the individual plug-ins).
-   </license>
-  <includes id="eu.esdihumboldt.hale.io.feature.mssql" version="5.4.0.SNAPSHOT"/>
-  <plugin id="eu.esdihumboldt.hale.io.jdbc.mssql.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
-</feature>
