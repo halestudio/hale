@@ -24,10 +24,10 @@ plugins:
         # Changelog
         - CHANGELOG.md
         # Version changes
-        - ['**/MANIFEST.MF', '!build/**']
-        - '**/plugin.xml'
-        - '**/feature.xml'
-        - '**/*.product'
+        - ['**/MANIFEST.MF', '!build/**', '!**/target/*']
+        - ['**/plugin.xml', '!build/**', '!**/target/*']
+        - ['**/feature.xml', '!build/**', '!**/target/**']
+        - ['**/*.product', '!build/**']
         - build/config.groovy
   - - "@semantic-release/github"
     - assets:
