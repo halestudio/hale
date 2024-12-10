@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<feature id="eu.esdihumboldt.util.feature.resource.source" version="5.4.0.SNAPSHOT" label="HALE resources feature Developer Resources">
-  <license>
-      Licenses of the individual features and plug-ins apply.
-   </license>
-  <includes id="eu.esdihumboldt.util.feature.resource" version="5.4.0.SNAPSHOT"/>
-  <plugin id="eu.esdihumboldt.util.resource.source" version="5.4.0.SNAPSHOT" download-size="0" install-size="0" unpack="false"/>
-</feature>
