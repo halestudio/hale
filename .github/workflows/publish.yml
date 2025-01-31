@@ -91,7 +91,7 @@ jobs:
       - name: Install AWS CLI
         uses: unfor19/install-aws-cli-action@e8b481e524a99f37fbd39fdc1dcb3341ab091367 # v1.0.7
         with:
-          version: 1
+          version: 2
 
       - name: Update site
         env:
