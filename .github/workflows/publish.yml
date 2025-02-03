@@ -65,13 +65,15 @@ jobs:
           ./build.sh product --arch x86_64 --os windows HALE
           ./build.sh product --arch x86_64 --os macosx HALE
           ./build.sh product --arch x86_64 --os linux --publish Infocenter
-        working-directory: ./build    
+        working-directory: ./build
 
       - name: Upload hale studio build (Linux)
         uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
         with:
           name: hale studio (Linux)
-          path: build/target/hale-studio-*linux*.tar.gz
+          path: |
+            build/target/hale-studio-*linux*.tar.gz
+            !build/target/hale-studio-Infocenter*
           retention-days: 90
 
       - name: Upload hale studio build (Windows)
