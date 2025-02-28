@@ -33,6 +33,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           token: ${{ steps.app-token.outputs.token || github.token }}
+          fetch-depth: 0 # otherwise rebase will fail if PR is not based on the latest commit
 
       - name: Determine PR head repo owner
         run: |
