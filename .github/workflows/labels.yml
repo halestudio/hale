@@ -17,8 +17,11 @@ jobs:
     steps:
       - uses: mheap/github-action-required-labels@d25134c992b943fb6ad00c25ea00eb5988c0a9dd # v5.4.2
         with:
-          mode: exactly
+          mode: minimum
           count: 1
-          labels: "challenged"
+          labels: |
+            challenged
+            renovate/patch
+            renovate/minor
           add_comment: ${{ ! github.event.pull_request.head.repo.fork }}
           message: "This PR cannot be merged yet because a required label is missing: `{{ provided }}`. It needs to be added before this PR can be merged."
