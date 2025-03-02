@@ -76,6 +76,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
+      - name: Remember author and email of last commit
+        run: |
+          LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
+          LAST_COMMIT_EMAIL=$(git log -1 --pretty=format:"%ae")
+          echo "LAST_COMMIT_AUTHOR=$LAST_COMMIT_AUTHOR" >> $GITHUB_ENV
+          echo "LAST_COMMIT_EMAIL=$LAST_COMMIT_EMAIL" >> $GITHUB_ENV
+
       - name: Perform interactive rebase with autosquash
         env:
           EDITOR: 'true' # to automatically complete the interactive rebase
@@ -83,6 +90,15 @@ jobs:
           BASE_REF=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)
           git fetch origin
           git rebase -i --autosquash origin/$BASE_REF
+
+      - name: Replace renovate author to prevent renovate overriding changes
+        env:
+          EDITOR: 'true' # to automatically complete the amend
+        run: |
+          COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
+            if [ "$COMMIT_AUTHOR" = "renovate[bot]" ] || [ "$COMMIT_AUTHOR" = "we-renovate[bot]" ]; then
+            git commit --amend --author="$LAST_COMMIT_AUTHOR <$LAST_COMMIT_EMAIL>"
+          fi
 
       - name: Push changes
         run: |
