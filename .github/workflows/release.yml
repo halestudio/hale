@@ -25,7 +25,7 @@ env:
   SEMANTIC_RELEASE_CHANGELOG_VERSION: 6.0.3
 
   # renovate: datasource=npm depName=@semantic-release/exec
-  SEMANTIC_RELEASE_EXEC_VERSION: 7.0.3
+  SEMANTIC_RELEASE_EXEC_VERSION: 7.1.0
 
   # renovate: datasource=npm depName=@semantic-release/git
   SEMANTIC_RELEASE_GIT_VERSION: 10.0.1
