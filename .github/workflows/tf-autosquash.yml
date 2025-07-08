@@ -89,7 +89,7 @@ jobs:
         run: |
           BASE_REF=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)
           git fetch origin
-          git rebase -i --autosquash origin/$BASE_REF
+          git rebase -i --autosquash --empty=drop origin/$BASE_REF
 
       - name: Replace renovate author to prevent renovate overriding changes
         env:
