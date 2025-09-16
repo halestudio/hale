@@ -107,7 +107,9 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: hale studio (macos)
-          path: build/target/hale-studio-*macosx*.dmg
+          path: |
+            build/target/hale-studio-*macosx*.dmg
+            build/target/hale-studio-*macosx*.tar.gz
           retention-days: 14
 
       - name: Find artifact comment if it exists
