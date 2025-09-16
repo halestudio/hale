@@ -997,8 +997,6 @@ task createProductFeature(dependsOn: [ generatePomFiles, makeProductFile, makePr
 	
 		new File("$productFeaturePath/HALE.p2.inf").text = '''
 	instructions.configure=\
-	  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:0,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
-	  addRepository(location:http${#58}//hale-geoserver.geo-solutions.it/,type:1,name:GeoServer App-Schema Plug-in for hale studio,enabled:true);\
 	  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:0,name:XtraServer Plug-in for hale studio,enabled:true);\
 	  addRepository(location:https${#58}//interactive-instruments.github.io/xtraserver-plugin-for-hale/,type:1,name:XtraServer Plug-in for hale studio,enabled:true);
 	'''
