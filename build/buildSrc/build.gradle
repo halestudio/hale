@@ -20,10 +20,12 @@
 
 repositories {
 	mavenCentral()
+	/*
 	maven { // Sonatype snapshots (for custom unpuzzle)
 		url 'http://oss.sonatype.org/content/repositories/snapshots/'
 		allowInsecureProtocol = true
 	}
+	*/
 }
 
 //configurations {
@@ -47,9 +49,11 @@ dependencies {
 	implementation 'org.yaml:snakeyaml:2.5'
 	implementation 'org.eclipse.jgit:org.eclipse.jgit:7.3.0.202506031305-r'
 	
+	/*
 	implementation 'org.standardout.unpuzzle:unpuzzle-plugin:0.0.25-SNAPSHOT', {
 		exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 	}
+	*/
 	compileOnly 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.15.1'
 		
 }
