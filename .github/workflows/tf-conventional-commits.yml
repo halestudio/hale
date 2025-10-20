@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
         # https://github.com/taskmedia/action-conventional-commits
-      - uses: taskmedia/action-conventional-commits@a708bda25c04fc82b2acd5eeeb88d97f9a19beb9 # v1.1.20
+      - uses: taskmedia/action-conventional-commits@851d8b8685588ffa1cf390ade7f126116020d844 # v1.1.23
         with:
           types: "feat|fix|refactor|revert|ci|chore|docs|build|perf|test|style"
           skip_revert: false
