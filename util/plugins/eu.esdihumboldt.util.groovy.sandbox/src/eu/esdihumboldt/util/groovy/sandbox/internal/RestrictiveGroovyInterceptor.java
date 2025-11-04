@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.codehaus.groovy.runtime.GStringImpl;
@@ -58,6 +59,7 @@ import org.kohsuke.groovy.sandbox.GroovyInterceptor;
 import eu.esdihumboldt.util.groovy.sandbox.GroovyRestrictionException;
 import groovy.lang.Closure;
 import groovy.lang.GString;
+import groovy.lang.IntRange;
 import groovy.lang.MissingPropertyException;
 import groovy.lang.Range;
 import groovy.lang.Script;
@@ -149,6 +151,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 
 		// regular expressions
 		allowedClasses.add(Pattern.class);
+		allowedClasses.add(Matcher.class);
 
 		// helper classes
 		allowedClasses.add(SimpleDateFormat.class);
@@ -159,6 +162,7 @@ public class RestrictiveGroovyInterceptor extends GroovyInterceptor {
 		allowedClasses.add(LinkedHashSet.class);
 		allowedClasses.add(ArrayList.class);
 		allowedClasses.add(Range.class);
+		allowedClasses.add(IntRange.class);
 		allowedClasses.add(GStringImpl.class);
 
 		// Some more collections
