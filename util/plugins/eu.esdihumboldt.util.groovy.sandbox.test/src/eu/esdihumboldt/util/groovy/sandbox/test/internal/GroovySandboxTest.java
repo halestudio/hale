@@ -54,6 +54,25 @@ public class GroovySandboxTest {
 		shell.evaluate("['foo', 'bar', 'list'].size()");
 		shell.evaluate("['foo':'bar', 'map':'value'].size()");
 		shell.evaluate("[1..3].size()");
+		// evaluate groovy pattern operator for e.g.: digitPattern = ~/\d*/
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\"\\\\d*\").matcher('2025')");
+		// evaluate find operator using java Pattern matching for e.g.:
+		// "abc123" =~ /\\d+/
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\"\\\\d+\").matcher(\"2025abc\")");
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\"\\\\d+\").matcher(\"abc\")");
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\"\\\\d+\").matcher(\"abc 2025\")");
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\"\\\\d+\").matcher(\"abc 2025/2026\")");
+		// evaluate groovy match operator for e.g.: 'foobar' ==~ /.*oba.*/
+		shell.evaluate(
+				"import java.util.regex.Pattern; Pattern.compile(\".*oba.*\").matcher(\"foobar\")");
+
+		shell.evaluate("(0..50).collect()");
+		shell.evaluate("(1..50).collect { num -> \"Y$num\" }");
 		interceptor.unregister();
 	}
 
