@@ -146,7 +146,7 @@ jobs:
           JAVA_TOOL_OPTIONS: '-Dmaven.wagon.httpconnectionManager.ttlSeconds=120'
         with:
           dry_run: ${{ inputs.dryRun }}
-          semantic_version: 25.0.1
+          semantic_version: 25.0.2
 
           extra_plugins:
             "@semantic-release/changelog@\
