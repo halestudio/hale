@@ -7,7 +7,7 @@ name: Check commit conventions
 on:
   pull_request:
     branches:
-      - '*'
+      - "*"
 
 jobs:
   verify-commits:
