@@ -37,7 +37,7 @@ jobs:
 
       - name: Determine PR head repo owner
         run: |
-          echo "PR_OWNER=$(gh pr view ${{ github.event.issue.number }} --json headRepositoryOwner -q .headRepositoryOwner.login)" >> $GITHUB_ENV
+          echo "PR_OWNER=$(gh pr view "${{ github.event.issue.number }}" --json headRepositoryOwner -q .headRepositoryOwner.login)" >> "$GITHUB_ENV"
 
       - name: Verify not a fork PR
         # Reason: We want to ensure that the token has write permissions to the repo the PR originated from, also that the user has write permissions to the main repo
@@ -80,8 +80,8 @@ jobs:
         run: |
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:"%an")
           LAST_COMMIT_EMAIL=$(git log -1 --pretty=format:"%ae")
-          echo "LAST_COMMIT_AUTHOR=$LAST_COMMIT_AUTHOR" >> $GITHUB_ENV
-          echo "LAST_COMMIT_EMAIL=$LAST_COMMIT_EMAIL" >> $GITHUB_ENV
+          echo "LAST_COMMIT_AUTHOR=$LAST_COMMIT_AUTHOR" >> "$GITHUB_ENV"
+          echo "LAST_COMMIT_EMAIL=$LAST_COMMIT_EMAIL" >> "$GITHUB_ENV"
 
       - name: Perform interactive rebase with autosquash
         env:
@@ -89,7 +89,7 @@ jobs:
         run: |
           BASE_REF=$(gh pr view ${{ github.event.issue.number }} --json baseRefName -q .baseRefName)
           git fetch origin
-          git rebase -i --autosquash --empty=drop origin/$BASE_REF
+          git rebase -i --autosquash --empty=drop "origin/$BASE_REF"
 
       - name: Replace renovate author to prevent renovate overriding changes
         env:
