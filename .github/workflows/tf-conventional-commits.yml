@@ -13,10 +13,10 @@ jobs:
   verify-commits:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
         # https://github.com/taskmedia/action-conventional-commits
-      - uses: taskmedia/action-conventional-commits@851d8b8685588ffa1cf390ade7f126116020d844 # v1.1.23
+      - uses: taskmedia/action-conventional-commits@443b9cf07a7c453dfd92533a7f0d0c67fb4d8140 # v1.1.25
         with:
           types: "feat|fix|refactor|revert|ci|chore|docs|build|perf|test|style"
           skip_revert: false
