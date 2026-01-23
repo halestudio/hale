@@ -282,7 +282,7 @@ def configureEnvironment() {
 }
 
 wrapper {
-    gradleVersion = '8.14.3'
+    gradleVersion = '8.14.4'
 }
 
 task cli {
