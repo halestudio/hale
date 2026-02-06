@@ -35,7 +35,7 @@ repositories {
 dependencies {
 	localGroovy()
 	implementation 'com.beust:jcommander:1.82'
-	implementation 'de.undercouch:gradle-download-task:5.6.0'
+	implementation 'de.undercouch:gradle-download-task:5.7.0'
 	implementation 'org.apache.maven:maven-embedder:3.8.9'
 	implementation 'org.apache.maven:maven-compat:3.8.9'
 	implementation 'org.slf4j:slf4j-simple:2.0.17'
