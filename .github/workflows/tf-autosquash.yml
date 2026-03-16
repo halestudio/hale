@@ -10,6 +10,7 @@ on:
 
 jobs:
   autosquash:
+    timeout-minutes: 15
     env:
       # for GitHub CLI
       GH_TOKEN: ${{ github.token }}
