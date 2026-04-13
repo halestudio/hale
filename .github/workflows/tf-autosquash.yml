@@ -24,7 +24,7 @@ jobs:
         env:
           WE_HELPER_GITHUB_PRIVATE_KEY: ${{ secrets.WE_HELPER_GITHUB_PRIVATE_KEY }}
         if: env.WE_HELPER_GITHUB_PRIVATE_KEY # only if we have the required secret
-        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
         id: app-token
         with:
           app-id: ${{ secrets.WE_HELPER_GITHUB_APP_ID }}
