@@ -242,7 +242,7 @@ public abstract class AbstractGeotoolsFilter
 								messagePrefix, toFilterTerm(part), splitType);
 					} catch (CQLException e) {
 						log.error(
-								"{0}A filter operand part of the filter's {1} condition was removed because no matches for the respective properties were found; error converting filter part to string",
+								"{0}A filter operand part of the filter''s {1} condition was removed because no matches for the respective properties were found; error converting filter part to string",
 								messagePrefix, splitType, e);
 					}
 				}
@@ -262,7 +262,7 @@ public abstract class AbstractGeotoolsFilter
 									splitType);
 						} catch (CQLException e) {
 							log.error(
-									"{0}A filter operand part of the filter's {2} condition contains references related to other types than {1}; error converting filter part to string",
+									"{0}A filter operand part of the filter''s {2} condition contains references related to other types than {1}; error converting filter part to string",
 									messagePrefix, focusType.getDisplayName(), splitType, e);
 						}
 					}

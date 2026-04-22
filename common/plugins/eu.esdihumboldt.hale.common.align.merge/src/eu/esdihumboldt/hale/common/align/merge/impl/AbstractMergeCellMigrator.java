@@ -361,12 +361,12 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					// try to transfer contexts
 					Entity singleSource = CellUtil.getFirstEntity(newSource);
 					if (singleSource != null) {
-						EntityDefinition transferedSource = AbstractMigration.translateContexts(
+						EntityDefinition transferredSource = AbstractMigration.translateContexts(
 								original, EntityMatch.of(singleSource.getDefinition()), migration,
 								null, log).getMatch();
 						ListMultimap<String, Entity> s = ArrayListMultimap.create();
 						s.put(newSource.keySet().iterator().next(),
-								AlignmentUtil.createEntity(transferedSource));
+								AlignmentUtil.createEntity(transferredSource));
 						newCell.setSource(s);
 					}
 				}
@@ -440,14 +440,14 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 						TypeDefinition inputType = input.getDefinition().getType();
 						if (input.getDefinition().getPropertyPath().isEmpty()
 								&& joinTypes.contains(inputType)) {
-							EntityDefinition transferedSource = AbstractMigration
+							EntityDefinition transferredSource = AbstractMigration
 									.translateContexts(originalSource.getDefinition(),
 											new EntityMatch(input.getDefinition(),
-													joinTypes.size() > 0, true),
+													joinTypes.size() > 1, true),
 											migration, inputType, log)
 									.getMatch();
-							joinTypeFilters.put(inputType, transferedSource.getFilter());
-							return AlignmentUtil.createEntity(transferedSource);
+							joinTypeFilters.put(inputType, transferredSource.getFilter());
+							return AlignmentUtil.createEntity(transferredSource);
 						}
 						else {
 							return input;
@@ -539,7 +539,7 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 		TypeEntityDefinition focus = joinConfig.getTypes().iterator().next();
 		AtomicReference<Filter> focusFilter = new AtomicReference<>();
 
-		boolean multipleSources = newCell.getSource().size() > 0;
+		boolean multipleSources = newCell.getSource().size() > 1;
 
 		// transfer context
 		newCell.setSource(ArrayListMultimap.create(Multimaps.transformValues(newCell.getSource(),
@@ -549,14 +549,14 @@ public abstract class AbstractMergeCellMigrator<C> extends DefaultCellMigrator
 					public Entity apply(Entity input) {
 						if (input.getDefinition().getPropertyPath().isEmpty()
 								&& input.getDefinition().getType().equals(focus.getType())) {
-							EntityDefinition transferedSource = AbstractMigration
+							EntityDefinition transferredSource = AbstractMigration
 									.translateContexts(originalSource.getDefinition(),
 											new EntityMatch(input.getDefinition(), multipleSources,
 													true),
 											migration, focus.getType(), log)
 									.getMatch();
-							focusFilter.set(transferedSource.getFilter());
-							return AlignmentUtil.createEntity(transferedSource);
+							focusFilter.set(transferredSource.getFilter());
+							return AlignmentUtil.createEntity(transferredSource);
 						}
 						else {
 							return input;

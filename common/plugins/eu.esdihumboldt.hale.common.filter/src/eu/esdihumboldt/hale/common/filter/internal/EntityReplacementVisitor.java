@@ -112,7 +112,7 @@ public class EntityReplacementVisitor extends DuplicatingFilterVisitor {
 	}
 
 	/**
-	 * @return if none the attempted replacements matched.
+	 * @return true if none of the attempted replacements matched.
 	 */
 	public boolean isAllMismatches() {
 		return total > 0 && matched == 0;

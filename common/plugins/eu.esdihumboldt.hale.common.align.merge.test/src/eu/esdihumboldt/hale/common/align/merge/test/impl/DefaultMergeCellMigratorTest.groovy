@@ -460,7 +460,7 @@ class DefaultMergeCellMigratorTest extends AbstractMergeCellMigratorTest {
 	private void filterCheckNull(Cell migrated) {
 		JaxbAlignmentIO.printCell(migrated, System.out)
 
-		// the condition should be present on the source
+		// the condition should be absent on the source
 		def source = CellUtil.getFirstEntity(migrated.source).definition
 		def filter = source.propertyPath.empty ? source.filter : source.propertyPath[0].condition?.filter
 		assertNull(filter)
