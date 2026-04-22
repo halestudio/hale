@@ -85,8 +85,8 @@ public class UnmigratedCell extends MutableCellDecorator {
 			@Override
 			public Optional<EntityMatch> entityReplacement(EntityDefinition entity,
 					TypeDefinition preferRoot, SimpleLog log) {
-				return Optional
-						.ofNullable(new EntityMatch(joinedMappings.get(entity), false, false));
+				EntityDefinition mapped = joinedMappings.get(entity);
+				return mapped == null ? Optional.empty() : Optional.of(EntityMatch.of(mapped));
 			}
 
 			@Override

@@ -56,7 +56,7 @@ abstract class AbstractMigration implements AlignmentMigration {
 		if (!matchedEntity.isPresent()) {
 			matchedEntity = findParentMatch(defaultEntity, preferRoot)
 			if (matchedEntity.present) {
-				log.warn "Inaccurate match of $entity to ${matchedEntity.get()} via parent entity"
+				log.warn "Inaccurate match of $entity to ${matchedEntity.get().match} via parent entity"
 			}
 		}
 

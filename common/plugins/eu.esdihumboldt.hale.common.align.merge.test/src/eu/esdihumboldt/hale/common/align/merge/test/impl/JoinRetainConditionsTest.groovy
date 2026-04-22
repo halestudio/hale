@@ -63,12 +63,12 @@ class JoinRetainConditionsTest extends AbstractMergeCellMigratorTest {
 				assertEquals(expectedFilterA, filter.filterTerm)
 			}
 			else if (e.definition.definition.displayName == 'B') {
-				// expect filter part to have been propagated to A
+				// expect filter part to have been propagated to B
 				assertNotNull(filter)
 				assertEquals(expectedFilterB, filter.filterTerm)
 			}
 			else if (e.definition.definition.displayName == 'C') {
-				// expect filter part to have been propagated to A
+				// expect filter part to have been propagated to C
 				assertNotNull(filter)
 				assertEquals(expectedFilterC, filter.filterTerm)
 			}
