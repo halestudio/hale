@@ -1,0 +1,59 @@
+name: Windows Build
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: "Release version without v prefix, e.g. 6.1.2"
+    secrets:
+      SLACK_NOTIFICATIONS_BOT_TOKEN:
+        required: true
+
+jobs:
+  windows-build:
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 # v1.20.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+          checkout-ref: refs/tags/v${{ inputs.version }} # check out release tag
+
+      # WiX is already installed on default Windows runner (currently WiX 3.x)
+
+      # Note: adding to path not required as our build looks for the installation folder
+      #
+      # - name: Add WiX toolkit to PATH
+      #   shell: bash
+      #   run: echo "${WIX}bin" >> $GITHUB_PATH
+
+      - name: Build installer
+        run: |
+          build.bat product -o windows -a x86_64 HALE
+        shell: cmd
+
+        # use GitHub CLI to upload asset to release
+        # see https://cli.github.com/manual/gh_release_upload
+      - name: Add installer to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Adding to release assets..."
+          gh release upload v${{ inputs.version }} build/target/*.msi --repo ${{ github.repository }} --clobber
+        shell: bash
+
+        # https://github.com/marketplace/actions/slack-notify-build
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger
