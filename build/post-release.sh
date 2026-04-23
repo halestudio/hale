@@ -8,7 +8,15 @@ cd $CURRENT_DIR
 
 set -e
 
-./gradlew printVersion
+current_version=$(./gradlew printVersion | grep "Current version:" | sed "s/.*Current version: //")
+echo "Current version: $current_version"
+
+if [[ "$current_version" == *-SNAPSHOT ]]; then
+  echo "Version is already $current_version — snapshot already set, nothing to do"
+  cd $ORG_DIR
+  exit 0
+fi
+
 ./gradlew setSnapshot
 
 git add -A
