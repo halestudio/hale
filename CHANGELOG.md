@@ -1,3 +1,19 @@
+## [5.5.0](https://github.com/halestudio/hale/compare/v5.4.0...v5.5.0) (2026-04-23)
+
+### Features
+
+* add IntRange to Groovy restriction whitelist ([c22f3a2](https://github.com/halestudio/hale/commit/c22f3a278b035de3c5b1de9284c397f903236228))
+* add regex Matcher to Groovy restriction whitelist ([181d18a](https://github.com/halestudio/hale/commit/181d18ada7961f770217a5389ff588d89b966695))
+* apply conditions to individually joined types ([a1dc79d](https://github.com/halestudio/hale/commit/a1dc79d432719e4eb81de13b8cdca7c59d6da47f))
+
+### Bug Fixes
+
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2025 ([69af7b8](https://github.com/halestudio/hale/commit/69af7b873f6d3c4b17dc5f1bb4b7cdb714fa9459))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2025.2.4.bnd-t8fqxa ([b326e37](https://github.com/halestudio/hale/commit/b326e37831afee58023b0566df38c4471516d796))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2025.3.19.bnd-ecge9w ([f4b0f89](https://github.com/halestudio/hale/commit/f4b0f898cf0a74d5b12c0369c55ce80d812f6dd5))
+* **deps:** update dependency to.wetransform.offlineresources.feature to v2025.9.19.bnd-lc2fcq ([477938a](https://github.com/halestudio/hale/commit/477938af0cc1687b7ec1d39bf003022b4b8a51dc))
+* fix use of EntityMatch and condition for multiple candidates ([ca15523](https://github.com/halestudio/hale/commit/ca155236dd51f7da7441572e2b72f36b97175bc4))
+
 ## [5.4.0](https://github.com/halestudio/hale/compare/v5.3.0...v5.4.0) (2024-12-06)
 
 ### Features
