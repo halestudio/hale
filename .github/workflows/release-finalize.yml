@@ -1,0 +1,113 @@
+name: Finalize Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        type: string
+        required: true
+        description: "Release version without v prefix (e.g. 6.1.2)"
+      runPostRelease:
+        type: boolean
+        default: true
+        description: "Run post-release snapshot bump (post-release.sh)"
+      publishProducts:
+        type: boolean
+        default: true
+        description: "Publish products and update site"
+      buildWindows:
+        type: boolean
+        default: true
+        description: "Build and publish Windows installer"
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify-tag:
+    name: Verify release tag
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'halestudio'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Verify release tag exists
+        run: |
+          if ! git rev-parse --verify "refs/tags/v${{ inputs.version }}" > /dev/null 2>&1; then
+            echo "Error: Tag v${{ inputs.version }} does not exist"
+            exit 1
+          fi
+          echo "Tag v${{ inputs.version }} verified"
+
+  post-release:
+    name: Post-release snapshot bump
+    needs: [verify-tag]
+    if: ${{ inputs.runPostRelease }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine app token for release
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 # v3.1.1
+        id: app-token
+        with:
+          app-id: ${{ secrets.WE_RELEASE_GITHUB_APP_ID }}
+          private-key: "${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}"
+
+      - name: Setup Maven
+        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 # v1.20.0
+        with:
+          java-version: 17
+          java-distribution: temurin
+          maven-version: 3.9.6
+          checkout-fetch-depth: 0
+          checkout-token: ${{ steps.app-token.outputs.token }}
+          checkout-persist-credentials: true
+
+      - name: Verify running on default branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          default=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+          if [ "${{ github.ref_name }}" != "$default" ]; then
+            echo "Error: post-release snapshot bump must run on the default branch ($default), got ${{ github.ref_name }}"
+            exit 1
+          fi
+
+      - name: Set Git identity
+        run: |
+          git config user.name "wetransform Bot"
+          git config user.email "113353961+wetransformer@users.noreply.github.com"
+
+      - name: Run post-release script
+        run: ./build/post-release.sh
+
+      - name: Notify failure to Slack
+        if: failure()
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_NOTIFICATIONS_BOT_TOKEN }}
+        uses: voxmedia/github-action-slack-notify-build@3665186a8c1a022b28a1dbe0954e73aa9081ea9e # v1.6.0
+        with:
+          channel: build-failures
+          status: FAILED
+          color: danger
+
+  publish-products:
+    name: Publish products and update site
+    needs: [verify-tag]
+    if: ${{ inputs.publishProducts }}
+    uses: ./.github/workflows/publish-products.yml
+    with:
+      version: ${{ inputs.version }}
+    secrets: inherit
+
+  windows-build:
+    name: Build Windows installer
+    needs: [verify-tag]
+    if: ${{ inputs.buildWindows }}
+    uses: ./.github/workflows/windows-build.yml
+    with:
+      version: ${{ inputs.version }}
+    secrets: inherit
