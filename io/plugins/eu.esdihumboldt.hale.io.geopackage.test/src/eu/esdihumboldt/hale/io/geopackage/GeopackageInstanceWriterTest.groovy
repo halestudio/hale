@@ -597,6 +597,65 @@ class GeopackageInstanceWriterTest {
 		}
 	}
 
+	/**
+	 * Test that boolean field values are read back as Boolean, not as Integer.
+	 * Regression test for https://github.com/halestudio/hale/issues/1223
+	 */
+	@Test
+	void testWriteReadBoolean() {
+		Schema schema = new SchemaBuilder().schema {
+			entity {
+				name(String)
+				active(Boolean)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			entity {
+				name 'Alice'
+				active(Boolean.TRUE)
+			}
+			entity {
+				name 'Bob'
+				active(Boolean.FALSE)
+			}
+		}
+
+		withNewGeopackage(schema, instances) { File file ->
+			// verify schema: boolean column must have Boolean binding
+			def loadedSchema = GeopackageSchemaReaderTest.loadSchema(file)
+			def type = loadedSchema.getType(new QName(GeopackageSchemaBuilder.DEFAULT_NAMESPACE, 'entity'))
+			def activeProp = type.getChild(new QName('active')).asProperty()
+			assert activeProp != null
+			assert activeProp.getPropertyType().getConstraint(Binding.class).getBinding() == Boolean.class
+
+			// load instances and verify values are Boolean, not Integer
+			def loaded = GeopackageInstanceReaderTest.loadInstances(loadedSchema, file)
+			assertEquals(2, loaded.size())
+
+			loaded.iterator().withCloseable {
+				while (it.hasNext()) {
+					Instance inst = it.next()
+					def name = inst.p.name.value()
+					def active = inst.p.active.value()
+
+					assert active instanceof Boolean : "Expected Boolean but got ${active?.class?.name}: $active"
+
+					switch (name) {
+						case 'Alice':
+							assert active == Boolean.TRUE
+							break
+						case 'Bob':
+							assert active == Boolean.FALSE
+							break
+						default:
+							throw new IllegalStateException("Unexpected name: $name")
+					}
+				}
+			}
+		}
+	}
+
 	@Test
 	void testNoSpatialIndexCreation() {
 		Schema schema = new SchemaBuilder().schema {
