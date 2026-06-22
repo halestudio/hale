@@ -133,7 +133,7 @@ public class XLSLookupTableWriter extends AbstractLookupExport {
 
 			Value entry = table.get(key);
 			cell = row.createCell(1);
-			cell.setCellValue(entry.as(String.class));
+			cell.setCellValue((entry != null) ? entry.as(String.class) : "");
 			cell.setCellStyle(rowStyle);
 			rownum++;
 		}
