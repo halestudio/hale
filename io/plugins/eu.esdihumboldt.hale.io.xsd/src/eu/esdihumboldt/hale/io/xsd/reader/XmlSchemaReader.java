@@ -1111,8 +1111,7 @@ public class XmlSchemaReader extends AbstractSchemaReader {
 		}
 		else if (particle instanceof XmlSchemaAny) {
 			// XXX ignore for now
-			reporter.info(new IOMessageImpl("Particle that allows any element is not supported.",
-					null, particle.getLineNumber(), particle.getLinePosition()));
+			_log.debug("Particle that allows any element is not supported.");
 		}
 		else {
 			reporter.error(new IOMessageImpl(
