@@ -28,6 +28,9 @@ import java.util.Set;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 
+import de.fhg.igd.slf4jplus.ALogger;
+import de.fhg.igd.slf4jplus.ALoggerFactory;
+
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.apache.ws.commons.schema.XmlSchemaFractionDigitsFacet;
@@ -93,7 +96,7 @@ import eu.esdihumboldt.util.validator.Validator;
  */
 public abstract class XmlTypeUtil {
 
-//	private static final ALogger log = ALoggerFactory.getLogger(TypeUtil.class);
+	private static final ALogger log = ALoggerFactory.getLogger(XmlTypeUtil.class);
 //	
 //	private static final AGroup TYPE_RESOLVE = AGroupFactory.getGroup(Messages.getString("TypeUtil.0")); //$NON-NLS-1$
 
@@ -414,8 +417,7 @@ public abstract class XmlTypeUtil {
 						Integer.parseInt(facet.getValue().toString())));
 			}
 			else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
-				reporter.info(new IOMessageImpl("White space facet not supported", null,
-						facet.getLineNumber(), facet.getLinePosition()));
+				log.debug("White space facet not supported");
 				// Nothing to validate according to w3.
 				// Values should be processed according to rule?
 			}
