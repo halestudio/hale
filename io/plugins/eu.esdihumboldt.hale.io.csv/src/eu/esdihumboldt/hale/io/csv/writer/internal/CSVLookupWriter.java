@@ -66,7 +66,9 @@ public class CSVLookupWriter extends AbstractLookupExport {
 		writer.writeNext(values);
 
 		for (Value key : table.keySet()) {
-			values = new String[] { key.as(String.class), table.get(key).as(String.class) };
+			Value targetValue = table.get(key);
+			String targetStr = (targetValue != null) ? targetValue.as(String.class) : "";
+			values = new String[] { key.as(String.class), targetStr };
 			writer.writeNext(values);
 		}
 		writer.close();
