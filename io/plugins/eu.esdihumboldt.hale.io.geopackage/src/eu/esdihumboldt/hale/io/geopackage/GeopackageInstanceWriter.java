@@ -199,7 +199,10 @@ public class GeopackageInstanceWriter extends AbstractGeoInstanceWriter {
 					.as(Boolean.class, false);
 			if (file.exists() && (file.length() == 0L || overwriteTargetFile)) {
 				// overwrite empty existing file or if requested via setting
-				file.delete();
+				if (!file.delete()) {
+					throw new IOException("Cannot overwrite existing GeoPackage file (file may be in use): "
+							+ file.getAbsolutePath());
+				}
 			}
 			if (!file.exists()) {
 				GeoPackageManager.create(file);
