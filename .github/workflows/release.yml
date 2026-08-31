@@ -54,7 +54,7 @@ jobs:
           private-key: "${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}"
 
       - name: Setup Maven
-        uses: s4u/setup-maven-action@ba34de01b7f4ba2ab8e2860df8993a29f4477056 # v1.20.0
+        uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
         # uses: stempler/setup-maven-action@feat/cache-save-always
         with:
           java-version: 17
