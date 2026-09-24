@@ -973,6 +973,14 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	}
 
 	/**
+	 * @return the GML namespace determined from the target schema (available after
+	 *         {@link #init()} has been called), may be <code>null</code>
+	 */
+	protected String getGmlNs() {
+		return gmlNs;
+	}
+
+	/**
 	 * @return if the output should be pretty printed
 	 */
 	public boolean isPrettyPrint() {
@@ -1199,7 +1207,7 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 						noNamespaceLocation);
 			}
 
-			writeAdditionalElements(writer, containerDefinition, reporter);
+			writeAdditionalElements(writer, instances, containerDefinition, reporter);
 
 			// write the instances
 			ResourceIterator<Instance> itInstance = instances.iterator();
@@ -1311,7 +1319,12 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 	 * @param containerDefinition the container type definition
 	 * @param reporter the reporter
 	 * @throws XMLStreamException if writing anything fails
+	 * @deprecated override
+	 *             {@link #writeAdditionalElements(XMLStreamWriter, InstanceCollection, TypeDefinition, IOReporter)}
+	 *             instead, which also provides access to the instances written to
+	 *             the container
 	 */
+	@Deprecated
 	protected void writeAdditionalElements(XMLStreamWriter writer,
 			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
 		// boundedBy is needed for GML 2 FeatureCollections
@@ -1326,6 +1339,25 @@ public class StreamGmlWriter extends AbstractGeoInstanceWriter
 			writer.writeEndElement();
 			writer.writeEndElement();
 		}
+	}
+
+	/**
+	 * This method is called after the container element is started and filled with
+	 * needed attributes. The default implementation delegates to
+	 * {@link #writeAdditionalElements(XMLStreamWriter, TypeDefinition, IOReporter)},
+	 * ignoring the instances.
+	 *
+	 * @param writer the XML stream writer
+	 * @param instances the instances that are written to the container (e.g. the
+	 *            current part when partitioning), allowing derived writers to
+	 *            compute aggregate information such as the overall extent
+	 * @param containerDefinition the container type definition
+	 * @param reporter the reporter
+	 * @throws XMLStreamException if writing anything fails
+	 */
+	protected void writeAdditionalElements(XMLStreamWriter writer, InstanceCollection instances,
+			TypeDefinition containerDefinition, IOReporter reporter) throws XMLStreamException {
+		writeAdditionalElements(writer, containerDefinition, reporter);
 	}
 
 	/**
