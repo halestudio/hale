@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:xplan="http://www.xplanung.de/xplangml/test"
+  xmlns:gml="http://www.opengis.net/gml/3.2" elementFormDefault="qualified"
+  targetNamespace="http://www.xplanung.de/xplangml/test">
+
+  <!--
+    Minimal XPlanAuszug-like container used to exercise
+    XPlanGmlInstanceWriter (GML 3.2). It is intentionally reduced to a
+    feature collection with a single feature type carrying a geometry,
+    which is all that is needed to test the gml:boundedBy / gml:Envelope
+    output (XPlanung conformance rule 2.1.3.1).
+  -->
+
+  <import namespace="http://www.opengis.net/gml/3.2"
+    schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd" />
+
+  <element name="XPlanAuszug" type="xplan:XPlanAuszugType"
+    substitutionGroup="gml:AbstractFeature" />
+
+  <complexType name="XPlanAuszugType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="featureMember" type="xplan:FeaturePropertyType"
+            minOccurs="0" maxOccurs="unbounded" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="FeaturePropertyType">
+    <sequence minOccurs="0">
+      <element ref="gml:AbstractFeature" />
+    </sequence>
+    <attributeGroup ref="gml:AssociationAttributeGroup" />
+  </complexType>
+
+  <element name="TestFeature" type="xplan:TestFeatureType"
+    substitutionGroup="gml:AbstractFeature" />
+
+  <complexType name="TestFeatureType">
+    <complexContent>
+      <extension base="gml:AbstractFeatureType">
+        <sequence>
+          <element name="geometry" type="gml:GeometricPrimitivePropertyType" />
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+</schema>
