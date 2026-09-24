@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020 wetransform GmbH
  * 
  * All rights reserved. This program and the accompanying materials are made
@@ -16,6 +16,7 @@
 package eu.esdihumboldt.hale.io.geopackage
 
 import static org.junit.Assert.assertEquals
+import static org.junit.Assert.assertFalse
 import static org.junit.Assert.assertTrue
 
 import java.nio.file.Files
@@ -26,6 +27,7 @@ import java.util.function.Consumer
 
 import javax.xml.namespace.QName
 
+import org.junit.Assume
 import org.junit.Test
 import org.locationtech.jts.geom.Geometry
 import org.locationtech.jts.geom.Point
@@ -653,6 +655,55 @@ class GeopackageInstanceWriterTest {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * Regression test for https://github.com/halestudio/hale/issues/1201
+	 * When the target GeoPackage file is locked (e.g. open in QGIS), the writer
+	 * must fail with an error instead of silently appending data to the existing file.
+	 */
+	@Test
+	void testOverwriteFailsWhenFileInUse() {
+		// On Linux, open file handles do not prevent deletion (File.delete() returns true
+		// regardless). The bug and the locking mechanism are Windows-specific.
+		Assume.assumeTrue("Test only valid on Windows", System.getProperty("os.name")?.toLowerCase()?.contains("windows"))
+
+		Schema schema = new SchemaBuilder().schema {
+			items {
+				name(String)
+			}
+		}
+
+		InstanceCollection instances = new InstanceBuilder(types: schema).createCollection {
+			items {
+				name 'test'
+			}
+		}
+
+		Path tmpFile = Files.createTempFile('overwrite_inuse_test', '.gpkg')
+		try {
+			// First write succeeds
+			writeInstances(tmpFile.toFile(), schema, instances)
+
+			// Simulate file in use by holding an open read-write handle (as QGIS would on Windows)
+			new RandomAccessFile(tmpFile.toFile(), 'rw').withCloseable {
+				// Attempt to overwrite while file is locked — writer must report failure
+				GeopackageInstanceWriter writer = new GeopackageInstanceWriter()
+				writer.setTarget(new FileIOSupplier(tmpFile.toFile()))
+				def ss = new DefaultSchemaSpace()
+				ss.addSchema(schema)
+				writer.setTargetSchema(ss)
+				writer.setInstances(instances)
+				writer.setOverwriteTargetFile(true)
+
+				IOReport report = writer.execute(new LogProgressIndicator())
+
+				assertFalse('Writer should fail when target file is in use', report.isSuccess())
+				assertFalse('Report should contain an error', report.getErrors().isEmpty())
+			}
+		} finally {
+			Files.deleteIfExists(tmpFile)
 		}
 	}
 
