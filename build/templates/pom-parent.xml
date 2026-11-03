@@ -127,16 +127,6 @@
               <goal>plugin-source</goal>
             </goals>
           </execution>
-          <!-- https://github.com/eclipse-tycho/tycho/blob/master/RELEASE_NOTES.md#tycho-source-feature-generation-moved-from-tycho-extras-to-tycho-core -->
-		  <execution>
-			<id>feature-source</id>
-				<goals>
-		    		<goal>feature-source</goal>
-				</goals>
-				<configuration>
-					<!-- put your configuration here -->
-				</configuration>
- 		  </execution>
         </executions>
       </plugin>
       <% } %>
