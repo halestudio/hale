@@ -21,6 +21,11 @@ platform {
             version = geotoolsVersion
             instruction 'Export-Package', "org.geotools.*;version=$geotoolsVersion"
             instruction 'Private-Package', '*'
+            // GeoTools reads META-INF/services of other bundles (e.g. hale's CRSAuthorityFactory and
+            // PropertyAccessorFactory) and provides its own factories (see the SPI Fly configuration in build.gradle)
+            instruction 'SPI-Consumer', '*'
+            instruction 'SPI-Provider', '*'
+            instruction 'Bundle-ActivationPolicy', 'lazy'
 
             prependImport(
                 // import Eclipse XSD/EMF without version (as the dependency does not export them)

@@ -271,6 +271,92 @@ platform {
 }
 
 /*
+ * Aries SPI Fly (OSGi Service Loader Mediator) makes java.util.ServiceLoader work across bundles,
+ * which hale-core's dependencies rely on (e.g. SLF4J 2 -> logback, jakarta.xml.bind-api -> jaxb-runtime,
+ * eclipse-collections-api -> eclipse-collections).
+ *
+ * Only bundles that call ServiceLoader for an interface they define and whose implementations live in
+ * other bundles are consumers (their ServiceLoader calls are woven), only bundles providing such
+ * implementations are providers. Providers get a lazy activation policy, as SPI Fly only registers
+ * services of bundles in the STARTING or ACTIVE state. The merged GeoTools bundle is configured in
+ * modules/geotools.gradle.
+ */
+platform {
+    // 1.3.7 is the latest release that runs on the OSGi R7 framework of Eclipse 2020-03 (1.3.8 requires
+    // org.osgi.framework 1.10)
+    bundle 'org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:1.3.7'
+    // ASM modules required by SPI Fly (asm itself comes in through hale-core and is aligned to this version)
+    bundle 'org.ow2.asm:asm-commons:9.11.1'
+    bundle 'org.ow2.asm:asm-util:9.11.1'
+
+    def spiConsumers = [
+        ['com.fasterxml.jackson.core', 'jackson-databind'],
+        ['it.geosolutions.imageio-ext', 'imageio-ext-geocore'],
+        ['jakarta.activation', 'jakarta.activation-api'],
+        ['jakarta.xml.bind', 'jakarta.xml.bind-api'],
+        ['javax.measure', 'unit-api'],
+        ['commons-logging', 'commons-logging'],
+        ['org.apache.logging.log4j', 'log4j-api'],
+        ['org.apache.poi', 'poi'],
+        ['org.deegree', 'deegree-core-db'],
+        ['org.deegree', 'deegree-core-moduleinfo'],
+        ['org.deegree', 'deegree-core-workspace'],
+        ['org.deegree', 'deegree-sqldialect-commons'],
+        ['org.eclipse.collections', 'eclipse-collections-api'],
+        ['org.eclipse.imagen', 'imagen-core'],
+        ['org.slf4j', 'slf4j-api'],
+        ['us.fatehi', 'schemacrawler'],
+        ['us.fatehi', 'schemacrawler-tools'],
+    ]
+    def spiProviders = [
+        ['org.eclipse.angus', 'angus-activation'],
+        ['ch.qos.logback', 'logback-classic'],
+        ['com.fasterxml.jackson.datatype', 'jackson-datatype-json-org'],
+        ['eu.esdihumboldt.hale', 'eu.esdihumboldt.hale.common.propertyaccessor'],
+        ['eu.esdihumboldt.hale', 'eu.esdihumboldt.hale.common.referencing'],
+        ['it.geosolutions.imageio-ext', 'imageio-ext-tiff'],
+        ['org.slf4j', 'jcl-over-slf4j'],
+        ['org.apache.logging.log4j', 'log4j-to-slf4j'],
+        ['org.apache.poi', 'poi-ooxml'],
+        ['org.deegree', 'deegree-core-annotations'],
+        ['org.deegree', 'deegree-core-base'],
+        ['org.deegree', 'deegree-core-commons'],
+        ['org.deegree', 'deegree-core-cs'],
+        ['org.deegree', 'deegree-core-db'],
+        ['org.deegree', 'deegree-core-geometry'],
+        ['org.deegree', 'deegree-core-workspace'],
+        ['org.deegree', 'deegree-featurestore-commons'],
+        ['org.deegree', 'deegree-featurestore-sql'],
+        ['org.deegree', 'deegree-protocol-commons'],
+        ['org.deegree', 'deegree-protocol-wfs'],
+        ['org.deegree', 'deegree-sqldialect-commons'],
+        ['org.deegree', 'deegree-sqldialect-postgis'],
+        ['org.eclipse.collections', 'eclipse-collections'],
+        ['org.glassfish.jaxb', 'jaxb-runtime'],
+        ['si.uom', 'si-units'],
+        ['systems.uom', 'systems-common'],
+        ['tech.units', 'indriya'],
+        ['us.fatehi', 'schemacrawler'],
+        ['us.fatehi', 'schemacrawler-loader'],
+        ['us.fatehi', 'schemacrawler-operations'],
+        ['us.fatehi', 'schemacrawler-postgresql'],
+        ['us.fatehi', 'schemacrawler-text'],
+        ['us.fatehi', 'schemacrawler-tools'],
+    ]
+    spiConsumers.each { gn ->
+        bnd group: gn[0], name: gn[1], {
+            instruction 'SPI-Consumer', '*'
+        }
+    }
+    spiProviders.each { gn ->
+        bnd group: gn[0], name: gn[1], {
+            instruction 'SPI-Provider', '*'
+            instruction 'Bundle-ActivationPolicy', 'lazy'
+        }
+    }
+}
+
+/*
  * Adaptions of the generated bundles
  */
 platform {
