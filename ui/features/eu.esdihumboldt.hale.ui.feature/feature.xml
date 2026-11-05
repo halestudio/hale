@@ -257,6 +257,14 @@
          unpack="false"/>
 
    <plugin
+         id="eu.esdihumboldt.hale.ui.contenttype.compat"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
          id="eu.esdihumboldt.hale.doc.user.examples.meridian2"
          download-size="0"
          install-size="0"
