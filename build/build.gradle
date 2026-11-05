@@ -109,7 +109,6 @@ ext {
 		file('../util/features'),
 		file('../app/plugins'),
 		file('../ext/styledmap'),
-		file('../ext/xslt'),
 		file('../ext/ageobw'),
 		file('../ext/fme'),
 		file('../ext/nonosgi'),
@@ -118,23 +117,7 @@ ext {
     ]
 
 	// bundles to exclude for the build (symbolic names)
-	excludeBundles = [
-	  // dependencies for this feature currently not included in platform
-    //'eu.esdihumboldt.hale.ui.feature.liveeditor'
-		'eu.esdihumboldt.hale.common.align.tgraph',
-		'eu.esdihumboldt.hale.common.align.tgraph.test',
-		'eu.esdihumboldt.hale.app.bgis.ade',
-		'eu.esdihumboldt.hale.functions.bgis',
-		'eu.esdihumboldt.hale.io.xslt',
-		'eu.esdihumboldt.hale.io.xslt.feature',
-		'eu.esdihumboldt.hale.io.xslt.feature.ui',
-		'eu.esdihumboldt.hale.io.xslt.test',
-		'eu.esdihumboldt.hale.io.xslt.ui',
-		'eu.esdihumboldt.hale.common.cache.test',
-		'eu.esdihumboldt.util.blueprints.entities.test',
-		'eu.esdihumboldt.hale.io.oml',
-		'eu.esdihumboldt.hale.io.oml.test',
-	]
+	excludeBundles = []
 
 	// bundles or fragments that are required additionally for compilation
 	extraRequirements = [
