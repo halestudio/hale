@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.ui.feature.tests"
       label="hale»studio tests"
-      version="5.6.0.qualifier">
+      version="6.0.0.qualifier">
 
    <description>
       Test fragments of hale»studio and the libraries needed to run them with the
