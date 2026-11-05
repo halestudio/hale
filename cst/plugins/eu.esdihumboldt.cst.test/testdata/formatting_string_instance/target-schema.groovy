@@ -1,5 +1,0 @@
-schema('target') {
-	T {
-		a()
-	}
-}

@@ -94,26 +94,14 @@ ext {
 
     // path to the bundles and features to build
     bundles = [
-		file('../common/plugins'),
-		file('../common/features'),
-		file('../cst/plugins'),
-		file('../cst/features'),
 		file('../doc/plugins'),
 		file('../io/plugins'),
 		file('../io/features'),
-		file('../server/plugins'),
-		file('../server/features'),
 		file('../ui/plugins'),
 		file('../ui/features'),
-		file('../util/plugins'),
-		file('../util/features'),
-		file('../app/plugins'),
 		file('../ext/styledmap'),
 		file('../ext/ageobw'),
-		file('../ext/fme'),
-		file('../ext/nonosgi'),
-		file('../ext/geom'),
-		file('../ext/adv')
+		file('../ext/fme')
     ]
 
 	// bundles to exclude for the build (symbolic names)
