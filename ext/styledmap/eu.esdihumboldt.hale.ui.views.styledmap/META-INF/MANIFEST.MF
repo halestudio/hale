@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.help;bundle-version="3.5.100"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  de.fhg.igd.eclipse.ui.util.extension.exclusive,
  de.fhg.igd.eclipse.util.extension,

@@ -7,7 +7,7 @@ Bundle-Activator: eu.esdihumboldt.hale.ui.geometry.internal.GeometryUIBundle
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.google.common.base;version="9.0.0",
  org.locationtech.jts.geom,
  de.fhg.igd.slf4jplus,

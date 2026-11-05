@@ -4,4 +4,4 @@ Bundle-Name: HALE UserStatus Configuration
 Bundle-SymbolicName: eu.esdihumboldt.hale.userstatus.config
 Bundle-Version: 6.0.0.qualifier
 Fragment-Host: de.fhg.igd.slf4jplus.ui.userstatus
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
