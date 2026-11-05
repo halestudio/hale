@@ -27,13 +27,28 @@ jobs:
       - name: Set up build
         uses: ./.github/actions/setup-build
 
+      - name: Restore generated platform
+        id: restore-platform
+        uses: ./.github/actions/restore-platform
+
       - name: Clean
         run: ./build.sh clean
+        working-directory: ./build
+
+      - name: Generate platform
+        run: ./gradlew generatePlatform
         working-directory: ./build
 
       - name: Test
         run: ./build.sh commitStage
         working-directory: ./build
+
+      - name: Save generated platform
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/save-platform
+        with:
+          platform-key: ${{ steps.restore-platform.outputs.platform-key }}
+          eclipse-cache-hit: ${{ steps.restore-platform.outputs.eclipse-cache-hit }}
       
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@a9170d5795813c01ab4901ffb045b52bab4ab09d # v6.5.0
