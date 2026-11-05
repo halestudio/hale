@@ -24,13 +24,22 @@ jobs:
     name: Publish products and update site
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Maven
-        uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          java-version: 17
-          java-distribution: temurin
-          maven-version: 3.9.6
-          checkout-ref: refs/tags/v${{ inputs.version }} # check out release tag
+          ref: refs/tags/v${{ inputs.version }} # check out release tag
+
+      # The setup action is taken from the revision of this workflow, as older release tags do not
+      # contain it
+      - name: Checkout setup action
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: .ci
+          sparse-checkout: .github/actions
+          persist-credentials: false
+
+      - name: Set up build
+        uses: ./.ci/.github/actions/setup-build
 
       - name: Install genisoimage # required for Mac build
         run: sudo apt-get install -y genisoimage
