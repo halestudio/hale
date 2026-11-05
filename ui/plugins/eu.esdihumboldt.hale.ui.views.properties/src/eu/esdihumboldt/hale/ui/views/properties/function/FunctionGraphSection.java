@@ -31,6 +31,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.FunctionGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.FunctionGraphLabelProvider;
 import eu.esdihumboldt.hale.ui.common.graph.layout.FunctionTreeLayoutAlgorithm;
+import eu.esdihumboldt.hale.ui.util.graph.CustomFigureGraphViewer;
 
 /**
  * Function section with source and target information modeled in a graph
@@ -65,7 +66,7 @@ public class FunctionGraphSection<F extends FunctionDefinition<?>> extends
 		data.bottom = new FormAttachment(100, -ITabbedPropertyConstants.VSPACE);
 		composite.setLayoutData(data);
 
-		viewer = new GraphViewer(composite, SWT.NONE);
+		viewer = new CustomFigureGraphViewer(composite, SWT.NONE);
 		viewer.setLayoutAlgorithm(treeAlgorithm, true);
 		viewer.setContentProvider(new FunctionGraphContentProvider());
 		viewer.setLabelProvider(new FunctionGraphLabelProvider(HaleUI.getServiceProvider(), true));

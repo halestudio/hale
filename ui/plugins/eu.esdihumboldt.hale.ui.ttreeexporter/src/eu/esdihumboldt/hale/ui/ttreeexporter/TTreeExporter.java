@@ -27,6 +27,7 @@ import eu.esdihumboldt.hale.common.instance.model.MutableInstance;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.TransformationTreeContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.TransformationTreeLabelProvider;
+import eu.esdihumboldt.hale.ui.util.graph.CustomFigureGraphViewer;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.graph.OffscreenGraph;
 
@@ -65,7 +66,7 @@ public class TTreeExporter implements TransformationTreeHook {
 					}
 				};
 				try {
-					GraphViewer viewer = new GraphViewer(offscreenGraph.getGraph(), SWT.NONE);
+					GraphViewer viewer = new CustomFigureGraphViewer(offscreenGraph.getGraph(), SWT.NONE);
 					// XXX if called during transformation, the active shell may
 					// be null and run will fail!
 					new ExportGraphAction(viewer).run();

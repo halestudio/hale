@@ -37,6 +37,7 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.ReverseCellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
+import eu.esdihumboldt.hale.ui.util.graph.CustomFigureGraphViewer;
 import eu.esdihumboldt.hale.ui.util.graph.ExportGraphAction;
 import eu.esdihumboldt.hale.ui.util.graph.LayoutAction;
 import eu.esdihumboldt.hale.ui.util.selection.SelectionProviderFacade;
@@ -59,7 +60,7 @@ public abstract class AbstractMappingView extends PropertiesViewPart
 
 	@Override
 	public void createViewControl(Composite parent) {
-		viewer = new GraphViewer(parent, SWT.BORDER);
+		viewer = new CustomFigureGraphViewer(parent, SWT.BORDER);
 		viewer.setContentProvider(createContentProvider());
 //		viewer.setContentProvider(new CellRelationshipContentProvider());
 //		viewer.setContentProvider(new NestedCellRelationshipContentProvider());
