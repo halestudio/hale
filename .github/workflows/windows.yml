@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+      # temporarily also for the integration branch of hale»studio on hale-core
+      - next
   workflow_dispatch: {}
 
 jobs:
