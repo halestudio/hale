@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.ui.style.editors;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.geotools.styling.LineSymbolizer;
+import org.geotools.api.style.LineSymbolizer;
 import org.geotools.styling.StyleBuilder;
 
 /**

@@ -17,7 +17,7 @@ Import-Package: de.fhg.igd.eclipse.util.extension,
  eu.esdihumboldt.hale.ui.common,
  eu.esdihumboldt.hale.ui.common.definition.selector,
  eu.esdihumboldt.hale.ui.util.selector,
- org.geotools.filter.text.cql2;version="29.1.0.combined",
+ org.geotools.filter.text.cql2;version="35",
  org.slf4j;version="1.5.11"
 Export-Package: eu.esdihumboldt.hale.ui.filter,
  eu.esdihumboldt.hale.ui.filter.cql,

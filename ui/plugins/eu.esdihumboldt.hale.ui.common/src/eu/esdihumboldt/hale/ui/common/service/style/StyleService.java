@@ -20,7 +20,7 @@ import java.net.URL;
 import javax.annotation.Nullable;
 
 import org.eclipse.swt.graphics.RGB;
-import org.geotools.styling.Style;
+import org.geotools.api.style.Style;
 
 import eu.esdihumboldt.hale.common.instance.model.DataSet;
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;

@@ -25,11 +25,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.PointSymbolizer;
-import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.api.style.LineSymbolizer;
+import org.geotools.api.style.PointSymbolizer;
+import org.geotools.api.style.PolygonSymbolizer;
 import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.Symbolizer;
+import org.geotools.api.style.Symbolizer;
 
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 

@@ -16,13 +16,13 @@ Import-Package: de.fhg.igd.eclipse.ui.util.extension,
  edu.umd.cs.findbugs.annotations,
  eu.esdihumboldt.util.http,
  org.apache.commons.logging,
- org.geotools.referencing;version="29.1.0.combined",
+ org.geotools.api.referencing;version="35",
+ org.geotools.api.referencing.crs;version="35",
+ org.geotools.referencing;version="35",
  org.jdesktop.swingx.graphics,
  org.jdesktop.swingx.mapviewer;version="1.0.0",
  org.jdesktop.swingx.mapviewer.empty;version="1.0.0",
- org.jdesktop.swingx.painter,
- org.opengis.referencing,
- org.opengis.referencing.crs
+ org.jdesktop.swingx.painter
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.0"
 Export-Package: de.fhg.igd.mapviewer.server.wms,

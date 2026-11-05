@@ -20,15 +20,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import org.opengis.feature.GeometryAttribute;
-import org.opengis.feature.IllegalAttributeException;
-import org.opengis.feature.Property;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
-import org.opengis.feature.type.AttributeDescriptor;
-import org.opengis.feature.type.Name;
-import org.opengis.filter.identity.FeatureId;
-import org.opengis.geometry.BoundingBox;
+import org.geotools.api.feature.GeometryAttribute;
+import org.geotools.api.feature.IllegalAttributeException;
+import org.geotools.api.feature.Property;
+import org.geotools.api.feature.simple.SimpleFeature;
+import org.geotools.api.feature.simple.SimpleFeatureType;
+import org.geotools.api.feature.type.AttributeDescriptor;
+import org.geotools.api.feature.type.Name;
+import org.geotools.api.filter.identity.FeatureId;
+import org.geotools.api.geometry.BoundingBox;
 
 /**
  * An empty Dummy class used to trick geotools Stylefactory wich only works with
@@ -39,7 +39,7 @@ import org.opengis.geometry.BoundingBox;
 public class DummyFeature implements SimpleFeature {
 
 	/**
-	 * @see org.opengis.feature.Feature#getBounds()
+	 * @see org.geotools.api.feature.Feature#getBounds()
 	 */
 	@Override
 	public BoundingBox getBounds() {
@@ -48,7 +48,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Feature#getDefaultGeometryProperty()
+	 * @see org.geotools.api.feature.Feature#getDefaultGeometryProperty()
 	 */
 	@Override
 	public GeometryAttribute getDefaultGeometryProperty() {
@@ -57,7 +57,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Feature#getIdentifier()
+	 * @see org.geotools.api.feature.Feature#getIdentifier()
 	 */
 	@Override
 	public FeatureId getIdentifier() {
@@ -66,7 +66,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Feature#setDefaultGeometryProperty(org.opengis.feature.GeometryAttribute)
+	 * @see org.geotools.api.feature.Feature#setDefaultGeometryProperty(org.geotools.api.feature.GeometryAttribute)
 	 */
 	@Override
 	public void setDefaultGeometryProperty(GeometryAttribute arg0) {
@@ -75,7 +75,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getProperties()
+	 * @see org.geotools.api.feature.ComplexAttribute#getProperties()
 	 */
 	@Override
 	public Collection<Property> getProperties() {
@@ -84,7 +84,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getProperties(org.opengis.feature.type.Name)
+	 * @see org.geotools.api.feature.ComplexAttribute#getProperties(org.geotools.api.feature.type.Name)
 	 */
 	@Override
 	public Collection<Property> getProperties(Name arg0) {
@@ -93,7 +93,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getProperties(java.lang.String)
+	 * @see org.geotools.api.feature.ComplexAttribute#getProperties(java.lang.String)
 	 */
 	@Override
 	public Collection<Property> getProperties(String arg0) {
@@ -102,7 +102,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getProperty(org.opengis.feature.type.Name)
+	 * @see org.geotools.api.feature.ComplexAttribute#getProperty(org.geotools.api.feature.type.Name)
 	 */
 	@Override
 	public Property getProperty(Name arg0) {
@@ -111,7 +111,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getProperty(java.lang.String)
+	 * @see org.geotools.api.feature.ComplexAttribute#getProperty(java.lang.String)
 	 */
 	@Override
 	public Property getProperty(String arg0) {
@@ -120,7 +120,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#getValue()
+	 * @see org.geotools.api.feature.ComplexAttribute#getValue()
 	 */
 	@Override
 	public Collection<? extends Property> getValue() {
@@ -129,7 +129,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#setValue(java.util.Collection)
+	 * @see org.geotools.api.feature.ComplexAttribute#setValue(java.util.Collection)
 	 */
 	@Override
 	public void setValue(Collection<Property> arg0) {
@@ -138,7 +138,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.ComplexAttribute#validate()
+	 * @see org.geotools.api.feature.ComplexAttribute#validate()
 	 */
 	@Override
 	public void validate() throws IllegalAttributeException {
@@ -147,7 +147,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Attribute#getDescriptor()
+	 * @see org.geotools.api.feature.Attribute#getDescriptor()
 	 */
 	@Override
 	public AttributeDescriptor getDescriptor() {
@@ -156,7 +156,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Property#getName()
+	 * @see org.geotools.api.feature.Property#getName()
 	 */
 	@Override
 	public Name getName() {
@@ -165,7 +165,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Property#getUserData()
+	 * @see org.geotools.api.feature.Property#getUserData()
 	 */
 	@Override
 	public Map<Object, Object> getUserData() {
@@ -174,7 +174,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Property#isNillable()
+	 * @see org.geotools.api.feature.Property#isNillable()
 	 */
 	@Override
 	public boolean isNillable() {
@@ -183,7 +183,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.Property#setValue(java.lang.Object)
+	 * @see org.geotools.api.feature.Property#setValue(java.lang.Object)
 	 */
 	@Override
 	public void setValue(Object arg0) {
@@ -192,7 +192,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getAttribute(java.lang.String)
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getAttribute(java.lang.String)
 	 */
 	@Override
 	public Object getAttribute(String arg0) {
@@ -201,7 +201,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getAttribute(org.opengis.feature.type.Name)
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getAttribute(org.geotools.api.feature.type.Name)
 	 */
 	@Override
 	public Object getAttribute(Name arg0) {
@@ -210,7 +210,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getAttribute(int)
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getAttribute(int)
 	 */
 	@Override
 	public Object getAttribute(int arg0) throws IndexOutOfBoundsException {
@@ -219,7 +219,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getAttributeCount()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getAttributeCount()
 	 */
 	@Override
 	public int getAttributeCount() {
@@ -228,7 +228,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getAttributes()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getAttributes()
 	 */
 	@Override
 	public List<Object> getAttributes() {
@@ -237,7 +237,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getDefaultGeometry()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getDefaultGeometry()
 	 */
 	@Override
 	public Object getDefaultGeometry() {
@@ -246,7 +246,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getFeatureType()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getFeatureType()
 	 */
 	@Override
 	public SimpleFeatureType getFeatureType() {
@@ -255,7 +255,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getID()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getID()
 	 */
 	@Override
 	public String getID() {
@@ -264,7 +264,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#getType()
+	 * @see org.geotools.api.feature.simple.SimpleFeature#getType()
 	 */
 	@Override
 	public SimpleFeatureType getType() {
@@ -273,7 +273,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(java.lang.String,
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setAttribute(java.lang.String,
 	 *      java.lang.Object)
 	 */
 	@Override
@@ -283,7 +283,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(org.opengis.feature.type.Name,
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setAttribute(org.geotools.api.feature.type.Name,
 	 *      java.lang.Object)
 	 */
 	@Override
@@ -293,7 +293,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttribute(int,
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setAttribute(int,
 	 *      java.lang.Object)
 	 */
 	@Override
@@ -303,7 +303,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttributes(java.util.List)
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setAttributes(java.util.List)
 	 */
 	@Override
 	public void setAttributes(List<Object> arg0) {
@@ -312,7 +312,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setAttributes(java.lang.Object[])
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setAttributes(java.lang.Object[])
 	 */
 	@Override
 	public void setAttributes(Object[] arg0) {
@@ -321,7 +321,7 @@ public class DummyFeature implements SimpleFeature {
 	}
 
 	/**
-	 * @see org.opengis.feature.simple.SimpleFeature#setDefaultGeometry(java.lang.Object)
+	 * @see org.geotools.api.feature.simple.SimpleFeature#setDefaultGeometry(java.lang.Object)
 	 */
 	@Override
 	public void setDefaultGeometry(Object arg0) {
