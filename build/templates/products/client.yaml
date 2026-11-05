@@ -140,7 +140,6 @@ HALE:
   - eu.esdihumboldt.hale.io.jdbc.ui
   - eu.esdihumboldt.hale.io.json
   - eu.esdihumboldt.hale.io.json.ui
-  - eu.esdihumboldt.hale.io.oml
   - eu.esdihumboldt.hale.io.project.jaxb
   - eu.esdihumboldt.hale.io.shp@0
   - eu.esdihumboldt.hale.io.shp.ui

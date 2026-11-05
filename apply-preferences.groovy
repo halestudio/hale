@@ -335,6 +335,4 @@ searchPaths.each {
 
 // external contributions w/ different project settings
 
-apply('platform/preferences/xslt' as File, 'ext/xslt' as File)
 apply('platform/preferences/xslt' as File, 'ext/ageobw' as File)
-apply('platform/preferences/mdl' as File, 'ext/mdl' as File)
