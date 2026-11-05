@@ -206,6 +206,7 @@ The following problems occurred with the move to Eclipse 2026-09:
 | the non-OSGi registry of hale-core cannot be installed | its import range of `org.osgi.framework` excludes OSGi R8 | wider import range (hale-core workaround) |
 | Groovy bundles are not compiled ("signer information does not match") | unsigned copies of Eclipse classes in groovy-eclipse-batch clash with the signed Eclipse bundles | compiler in its own process (`fork`) |
 | mapping views show only the connections, the nodes are invisible | `CGraphNode` of GEF Classic does not pass text and style to its figure, hale's figures get no text and no border | `CustomFigureGraphViewer` creates `CustomFigureGraphNode`s, which update their figure like the nodes of Zest 2 |
+| mapping views: the columns are left aligned instead of centered, target nodes extend beyond the right edge | since GEF Classic 3.21 the location computed by a layout algorithm is the top left corner of the node, not its center as in Zest 2 | `CustomFigureGraphViewer` wraps the layout algorithms in `CenteredLayoutAlgorithm` |
 | Infocenter: topics and table of contents return 404 | the help servlets are DS components and Felix SCR was not started | start `org.apache.felix.scr` |
 
 ## Building
