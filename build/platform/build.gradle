@@ -305,9 +305,8 @@ platform {
  * modules/geotools.gradle.
  */
 platform {
-    // 1.3.7 is the latest release that runs on the OSGi R7 framework of Eclipse 2020-03 (1.3.8 requires
-    // org.osgi.framework 1.10)
-    bundle 'org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:1.3.7'
+    // 1.3.8 and later require the OSGi R8 framework (org.osgi.framework 1.10), provided since Eclipse 2023-12
+    bundle 'org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:1.3.8'
     // ASM modules required by SPI Fly (asm itself comes in through hale-core and is aligned to this version)
     bundle 'org.ow2.asm:asm-commons:9.11.1'
     bundle 'org.ow2.asm:asm-util:9.11.1'
