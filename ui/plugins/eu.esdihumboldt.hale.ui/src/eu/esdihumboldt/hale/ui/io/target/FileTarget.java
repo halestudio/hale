@@ -15,6 +15,7 @@
 
 package eu.esdihumboldt.hale.ui.io.target;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -96,7 +97,10 @@ public class FileTarget<P extends ExportProvider> extends AbstractTarget<P> {
 				@Override
 				public OutputStream getOutput() throws IOException {
 					File file = new File(location);
-					return new FileOutputStream(file);
+					// buffer the output, as writers may write in very small
+					// chunks (e.g. the JDK StAX implementation writes every
+					// character separately)
+					return new BufferedOutputStream(new FileOutputStream(file));
 
 					// XXX other URIs unsupported for now
 				}
