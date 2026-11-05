@@ -28,7 +28,7 @@ project = {
 		serviceExeName = 'hale_srvc'
 
 		// test product
-		testProduct = '../common/plugins/eu.esdihumboldt.hale.common.test/Tests.product'
+		testProduct = '../ui/plugins/eu.esdihumboldt.hale.ui.application/Tests.product'
 		testProductLauncher = 'hale_tests'
 
 		// Product aliases pointing to product file locations

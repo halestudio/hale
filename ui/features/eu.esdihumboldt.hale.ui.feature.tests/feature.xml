@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="eu.esdihumboldt.hale.ui.feature.tests"
+      label="hale»studio tests"
+      version="5.6.0.qualifier">
+
+   <description>
+      Test fragments of hale»studio and the libraries needed to run them with the
+      Equinox test runner (Tests.product).
+   </description>
+
+   <license>
+      Licenses of the individual features and plug-ins apply.
+   </license>
+
+   <includes
+         id="de.fhg.igd.equinox.test.feature"
+         version="0.0.0"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.ui.codelist.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="eu.esdihumboldt.hale.ui.util.groovy.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.hamcrest.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
