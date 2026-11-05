@@ -146,6 +146,12 @@ configurations {
     // competes and slf4j-api picks the first one
     bndplatform.exclude group: 'org.slf4j', module: 'slf4j-jdk14'
     bndplatform.exclude group: 'org.slf4j', module: 'slf4j-nop'
+
+    // hale-core workaround: deegree-core-coverage only arrives through the deegree-core-base aggregate POM
+    // and is not used by hale. Its class CachedRasterDataContainer references org.ehcache.CacheManager,
+    // which has no exporter, which makes the Aries SPI Fly weaving hook fail when the class is woven.
+    // deegree-core-geometry, which io.deegree needs, arrived only through it (see below).
+    bndplatform.exclude group: 'org.deegree', module: 'deegree-core-coverage'
 }
 
 dependencies {
@@ -182,6 +188,10 @@ dependencies {
     halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.deegree"
     halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.jdbc.msaccess"
     halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.jdbc.mssql"
+    // hale-core workaround: fragment of the Groovy bundle that installs hale's MetaClassCreationHandle
+    // (instance property access in Groovy scripts, e.g. `p` on instances); not contained in any hale-core
+    // aggregate
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.util.groovy.meta.fragment"
 }
 
 /*
@@ -551,6 +561,61 @@ platform {
             // from two bundles and e4 injection would silently ignore one of them.
             instruction 'Export-Package', "javax.annotation.*;version=$jsr305Version;-noimport:=true," +
                     "javax.annotation~;version=$annotationApiVersion;-noimport:=true"
+        }
+    }
+}
+
+/*
+ * Workarounds for hale-core bundles that do not resolve or load in OSGi
+ */
+platform {
+    // io.deegree needs deegree-core-geometry, which only arrived through the excluded
+    // deegree-core-coverage; same version as resolved for hale-core
+    bundle "org.deegree:deegree-core-geometry:${resolvedHaleCoreVersion('org.deegree', 'deegree-core-geometry')}"
+
+    /*
+     * Bundles that compile Groovy scripts or templates at runtime pass their own class loader to
+     * GroovyShell/TemplateEngine. The generated classes link against org.codehaus.groovy.runtime.* etc.,
+     * which bnd cannot derive from the bytecode (e.g. common.cache: "Cache initialization failed ...
+     * Failed to create Script instance for class SimpleTemplateScript1").
+     */
+    [
+        'eu.esdihumboldt.hale.app.transform',
+        'eu.esdihumboldt.hale.common.align',
+        'eu.esdihumboldt.hale.common.cache',
+        'eu.esdihumboldt.hale.io.html.svg',
+        'eu.esdihumboldt.hale.io.instancebuilder',
+        'eu.esdihumboldt.hale.io.schemabuilder',
+        'eu.esdihumboldt.util.groovy.sandbox',
+    ].each { name ->
+        bnd group: 'eu.esdihumboldt.hale', name: name, {
+            instruction 'DynamicImport-Package', 'groovy.*,org.codehaus.groovy.*'
+        }
+    }
+
+    /*
+     * Classes named only as strings in plugin.xml (content describers, geometry algorithms, JDBC type
+     * bindings) or in the Castor mapping of the alignment bundle are invisible to bnd's bytecode
+     * analysis, so the contributing bundles do not import their packages ("Could not create content
+     * describer for <id>. Content type has been disabled.", which leaves hale without a provider for
+     * loading the alignment of a project).
+     */
+    def describerPackage = 'eu.esdihumboldt.hale.util.nonosgi.contenttype.describer'
+    def coreIoUtilPackage = 'eu.esdihumboldt.hale.common.core.io.util'
+    [
+        'eu.esdihumboldt.hale.common.align': [describerPackage, 'eu.esdihumboldt.hale.common.core.io.project.model.internal'],
+        'eu.esdihumboldt.hale.common.instance': ['org.locationtech.jts.algorithm'],
+        'eu.esdihumboldt.hale.common.schema.persist': [describerPackage, coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.codelist.xml': [describerPackage],
+        'eu.esdihumboldt.hale.io.gml': [describerPackage, coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.jdbc.mssql': ['microsoft.sql'],
+        'eu.esdihumboldt.hale.io.project.jaxb': [describerPackage],
+        'eu.esdihumboldt.hale.io.schematron': [describerPackage],
+        'eu.esdihumboldt.hale.io.xml': [coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.xsd': [describerPackage],
+    ].each { name, packages ->
+        bnd group: 'eu.esdihumboldt.hale', name: name, {
+            optionalImport(*packages)
         }
     }
 }
