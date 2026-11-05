@@ -585,12 +585,17 @@ def packageClient(productOutputPath) {
                 exclude(name: '**/*.sh')
                 exclude(name: '**/*.so')
                 exclude(name: '**/jre/bin/*')
+                // executables of the JRE outside of bin (jspawnhelper starts external processes)
+                exclude(name: '**/jre/lib/jspawnhelper')
+                exclude(name: '**/jre/lib/jexec')
             }
             tarfileset(dir: productOutputPath, prefix: packageName, filemode: '755') {
                 include(name: getProductLauncher())
                 include(name: '**/*.sh')
                 include(name: '**/*.so')
                 include(name: '**/jre/bin/*')
+                include(name: '**/jre/lib/jspawnhelper')
+                include(name: '**/jre/lib/jexec')
             }
         }
     } else {
@@ -1122,6 +1127,7 @@ def runTests(args = []) {
 	ant.chmod(file: launcherFile, perm:'a+x')
 	// make JRE executable (linux)
 	ant.chmod(dir: new File(productOutputPath, 'jre/bin'), perm: 'a+x', includes: '*')
+	ant.chmod(dir: new File(productOutputPath, 'jre/lib'), perm: 'a+x', includes: 'jspawnhelper,jexec')
 
 	println 'Starting test product...'
 	outFile.withOutputStream { out ->
