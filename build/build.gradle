@@ -97,6 +97,7 @@ ext {
     // path to the bundles and features to build
     bundles = [
 		file('../doc/plugins'),
+		file('../doc/features'),
 		file('../io/plugins'),
 		file('../io/features'),
 		file('../ui/plugins'),
