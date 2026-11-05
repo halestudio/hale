@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Resolver hook for dynamic imports of META-INF packages
+Bundle-SymbolicName: eu.esdihumboldt.hale.ui.resolver.hook
+Bundle-Version: 6.0.0.qualifier
+Bundle-Activator: eu.esdihumboldt.hale.ui.resolver.hook.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Automatic-Module-Name: eu.esdihumboldt.hale.ui.resolver.hook
+Import-Package: org.osgi.framework;version="[1.8.0,2.0.0)",
+ org.osgi.framework.hooks.resolver;version="[1.0.0,2.0.0)",
+ org.osgi.framework.namespace;version="[1.1.0,2.0.0)",
+ org.osgi.framework.wiring;version="[1.2.0,2.0.0)",
+ org.osgi.resource;version="[1.0.0,2.0.0)"

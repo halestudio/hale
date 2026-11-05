@@ -102,6 +102,7 @@ https://www.wetransform.to/services/support/
            in config.ini) before the simple configurator installs ASM, which SPI Fly requires.
            ServiceLoader consumers started early (logback via SLF4J, POI) start at level 3. -->
       <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
+      <plugin id="eu.esdihumboldt.hale.ui.resolver.hook" autoStart="true" startLevel="1" />
       <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="3" />
       <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
