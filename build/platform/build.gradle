@@ -233,6 +233,44 @@ apply from: 'modules/groovy.gradle'
 apply from: 'modules/geopackage.gradle'
 
 /*
+ * Libraries used by hale»studio that are not dependencies of hale-core
+ */
+platform {
+    // map component
+    bundle 'org.swinglabs:swingx:1.0', {
+        bnd {
+            symbolicName = 'org.jdesktop.swingx'
+        }
+    }
+
+    // dynamic help
+    bundle 'org.apache.velocity:velocity:1.6.2'
+
+    // com.tinkerpop.gremlin.groovy (ui.functions.groovy); same version as gremlin-java from hale-core
+    bundle 'com.tinkerpop.gremlin:gremlin-groovy:2.5.0-orientDB151'
+
+    // org.codehaus.groovy.jsr223 (required by gremlin-groovy); version managed by the hale-core BOM (groovy-bom)
+    bundle 'org.codehaus.groovy:groovy-jsr223'
+
+    // groovyx.net.http (ui.templates)
+    bundle 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+
+    // gnu.trove (ui, mapviewer, styledmap); the UI uses the 2.x API (gnu.trove.TIntObjectHashMap etc.), which 3.x removed
+    bundle 'net.sf.trove4j:trove4j:2.1.0'
+
+    // edu.umd.cs.findbugs.annotations (ui.application, mapviewer, swingx-mapviewer, doc)
+    bundle 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+
+    // net.jcip.annotations (ui.common.graph)
+    bundle 'net.jcip:jcip-annotations:1.0'
+
+    bnd group: 'net.sf.trove4j', name: 'trove4j', {
+        // symbolic name referenced by hale»studio features
+        symbolicName = 'gnu.trove'
+    }
+}
+
+/*
  * Adaptions of the generated bundles
  */
 platform {
