@@ -148,7 +148,6 @@
                     <!-- <configScript>config.groovy</configScript> -->
                 </compilerArguments>
                 <verbose>true</verbose>
-                <extensions>true</extensions>
                 <!-- more detailed compiler output: -->
                 <!-- <showWarnings>true</showWarnings> -->
                 <excludeResources>

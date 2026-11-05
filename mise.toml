@@ -1,3 +1,3 @@
 [tools]
 # JDK for the build; Maven is embedded in the build (build/buildSrc)
-java = "temurin-17"
+java = "temurin-21"

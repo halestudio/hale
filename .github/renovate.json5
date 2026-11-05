@@ -38,11 +38,16 @@
     }
   },
   packageRules: [
-    // Using current maven-embedder or maven-compat versions results in build errors like this:
-    // java.lang.NoSuchMethodError: 'java.util.List org.eclipse.aether.spi.connector.layout.RepositoryLayout.getChecksums(org.eclipse.aether.artifact.Artifact, boolean, java.net.URI)'
+    // The Maven embedded in the build (build/buildSrc) runs Tycho 5, which requires Maven 3.9.9 or
+    // later; Maven 4 is not supported by the build. The resolver modules must match the resolver
+    // version of Maven 3.9 (1.9.x).
     {
       matchPackagePrefixes: ["org.apache.maven:maven-"],
-      allowedVersions: "< 3.9",
+      allowedVersions: "< 4",
+    },
+    {
+      matchPackagePrefixes: ["org.apache.maven.resolver:"],
+      allowedVersions: "< 2",
     },
     // bnd-platform 4 requires Gradle 9
     {
