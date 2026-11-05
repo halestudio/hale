@@ -20,6 +20,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 import javax.imageio.ImageIO;
 
@@ -36,7 +38,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.widgets.Graph;
-import org.eclipse.zest.internal.dot.DotExport;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 
 import eu.esdihumboldt.hale.ui.util.swing.SwingRcpUtilities;
@@ -248,14 +249,8 @@ public abstract class OffscreenGraph {
 	 * @throws IOException if writing to the output stream fails
 	 */
 	public static void saveDot(Graph graph, OutputStream out) throws IOException {
-		OutputStreamWriter writer = null;
-		try {
-			writer = new OutputStreamWriter(out);
-			writer.write(new DotExport(graph).toDotString());
-		} finally {
-			if (writer != null)
-				writer.close();
-			out.close();
+		try (Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
+			new DotWriter(writer).write(graph);
 		}
 	}
 

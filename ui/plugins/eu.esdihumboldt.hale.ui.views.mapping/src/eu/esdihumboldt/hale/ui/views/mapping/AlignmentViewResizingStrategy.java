@@ -18,7 +18,7 @@ package eu.esdihumboldt.hale.ui.views.mapping;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.widgets.Item;
-import org.eclipse.zest.core.widgets.custom.CGraphNode;
+import org.eclipse.zest.core.widgets.CGraphNode;
 import org.eclipse.zest.layouts.interfaces.EntityLayout;
 import org.eclipse.zest.layouts.interfaces.LayoutContext;
 

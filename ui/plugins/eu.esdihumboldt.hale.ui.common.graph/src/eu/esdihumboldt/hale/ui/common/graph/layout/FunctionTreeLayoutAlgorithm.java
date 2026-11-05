@@ -70,14 +70,13 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 		internalApplyLayout();
 	}
 
-	@SuppressWarnings("unchecked")
 	private void internalApplyLayout() {
 		TreeNode superRoot = treeObserver.getSuperRoot();
 		bounds = context.getBounds();
 		int line = 1;
-		List<TreeNode> children = new ArrayList<TreeNode>();
+		List<? extends TreeNode> children = new ArrayList<TreeNode>();
 		int count = superRoot.getChildren().size();
-		for (Iterator<TreeNode> iterator = superRoot.getChildren().iterator(); iterator.hasNext();) {
+		for (Iterator<? extends TreeNode> iterator = superRoot.getChildren().iterator(); iterator.hasNext();) {
 
 			TreeNode rootInfo = iterator.next();
 			computePosition(rootInfo, count, line, 0);
@@ -91,7 +90,7 @@ public class FunctionTreeLayoutAlgorithm implements LayoutAlgorithm {
 			Object child = children.get(0);
 			TreeNode newrootInfo = ((TreeNode) child);
 			computeMiddlePosition(newrootInfo, 4);
-			List<TreeNode> thirdchildren = newrootInfo.getChildren();
+			List<? extends TreeNode> thirdchildren = newrootInfo.getChildren();
 			if (!thirdchildren.isEmpty()) {
 				Object currentchild = thirdchildren.get(0);
 				TreeNode newsuperrootInfo = ((TreeNode) currentchild);

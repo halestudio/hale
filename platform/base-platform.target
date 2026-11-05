@@ -43,6 +43,8 @@
 <unit id="org.apache.felix.scr" version="2.2.18"/>
 <!-- Draw2D, GEF and Zest -->
 <unit id="org.eclipse.gef.feature.group" version="3.29.0.202608071137"/>
+<unit id="org.eclipse.zest.core" version="1.19.0.202608121925"/>
+<unit id="org.eclipse.zest.layouts" version="2.0.700.202608071137"/>
 <!-- ECF file transfer used by p2 (org.eclipse.equinox.p2.transport.ecf); there are no ECF file transfer features anymore -->
 <unit id="org.eclipse.ecf.filetransfer" version="5.1.103.v20230705-0614"/>
 <unit id="org.eclipse.ecf.provider.filetransfer" version="3.3.100.v20250115-0406"/>
@@ -110,14 +112,6 @@
 <unit id="org.apache.lucene.analysis-common" version="10.5.1.v20260812-1000"/>
 <unit id="org.apache.lucene.analysis-smartcn" version="10.5.1.v20260812-1000"/>
 <repository location="https://download.eclipse.org/releases/2026-09/"/>
-</location>
-<!-- Zest 2 (2012 snapshot), taken from the former platform site until it is replaced by GEF Classic -->
-<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.zest.core" version="2.0.0.201204272302-i20231028"/>
-<unit id="org.eclipse.zest.jface" version="2.0.0.201204272302"/>
-<unit id="org.eclipse.zest.layouts" version="2.0.0.201204272302"/>
-<unit id="org.eclipse.zest.dot.export" version="2.0.0.201204272302"/>
-<repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/0342a0f0c4f57a1ec4109f1fbe6e6fecd7dc722b/updatesites/platform"/>
 </location>
 <!-- Eclipse utilities of Fraunhofer IGD (de.fhg.igd.eclipse.util, also used by hale-core) -->
 <location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
