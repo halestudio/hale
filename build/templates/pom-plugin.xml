@@ -97,6 +97,31 @@
       </plugin>
       <% } %>
       <% if (needsGroovy) { %>
+      <!-- Always compile the Groovy bundles completely: groovy-eclipse-compiler only recompiles
+           sources that are more than one day newer than their class files (staleMillis is fixed to
+           one day), so changes were silently missing from local builds. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <id>clean-groovy-classes</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <filesets>
+                <fileset>
+                  <directory>\${project.build.outputDirectory}</directory>
+                </fileset>
+              </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
          <groupId>org.eclipse.tycho</groupId>
 		 <artifactId>tycho-compiler-plugin</artifactId>
