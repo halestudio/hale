@@ -100,8 +100,7 @@ ext {
 		file('../ui/plugins'),
 		file('../ui/features'),
 		file('../ext/styledmap'),
-		file('../ext/ageobw'),
-		file('../ext/fme')
+		file('../ext/ageobw')
     ]
 
 	// bundles to exclude for the build (symbolic names)
