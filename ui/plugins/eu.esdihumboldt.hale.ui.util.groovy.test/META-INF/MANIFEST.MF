@@ -5,6 +5,6 @@ Bundle-SymbolicName: eu.esdihumboldt.hale.ui.util.groovy.test
 Bundle-Version: 5.6.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.ui.util.groovy;bundle-version="2.8.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Automatic-Module-Name: eu.esdihumboldt.hale.ui.util.groovy.test
 Require-Bundle: org.junit;bundle-version="4.13.0"
