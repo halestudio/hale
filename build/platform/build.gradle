@@ -655,3 +655,55 @@ tasks.updateSite.dependsOn generateTargetFile
 tasks.clean.doLast {
     delete file('../../platform/local-platform.target')
 }
+
+/*
+ * Skip the platform generation if nothing it is generated from changed since the last successful run.
+ *
+ * The fingerprint covers the platform build configuration (build scripts, modules), the base target,
+ * the resolved dependencies (snapshots with their unique version, so a newly published hale-core
+ * snapshot triggers a regeneration) and the location of the update site, which the generated target
+ * refers to by its absolute path. The check only needs the dependency metadata, not the artifacts.
+ * Pass -PforceGeneratePlatform to generate the platform anyway.
+ *
+ * Note that Gradle checks for new snapshots only once per day by default, use --refresh-dependencies
+ * to pick up a hale-core snapshot published in the meantime.
+ */
+def platformFingerprintFile = new File(buildDir, 'platform-fingerprint.txt')
+def localTargetFile = file('../../platform/local-platform.target')
+
+def computePlatformFingerprint = {
+    def lines = []
+    def inputFiles = fileTree(projectDir) { exclude 'build/**', '.gradle/**' }.files +
+        file('../../platform/base-platform.target')
+    inputFiles.sort { it.absolutePath }.each { f ->
+        lines << "file ${projectDir.toPath().relativize(f.toPath())} ${f.bytes.digest('SHA-256')}"
+    }
+    lines << "updateSite=${project.platform.updateSiteDir.absolutePath}"
+    configurations.bndplatform.incoming.resolutionResult.allComponents.collect { c ->
+        "component ${c.id.displayName}"
+    }.sort().each { lines << it }
+    lines.join('\n') + '\n'
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (!graph.hasTask(tasks.updateSite)) {
+        return
+    }
+    def fingerprint = computePlatformFingerprint()
+    def upToDate = !project.hasProperty('forceGeneratePlatform') && platformFingerprintFile.exists() && localTargetFile.exists() &&
+        project.platform.updateSiteDir.exists() && platformFingerprintFile.text == fingerprint
+    if (upToDate) {
+        logger.lifecycle('Platform is up to date, skipping its generation (pass -PforceGeneratePlatform to generate it anyway)')
+        graph.allTasks.each { it.enabled = false }
+    }
+    else {
+        // written once the update site was generated successfully
+        project.ext.platformFingerprint = fingerprint
+    }
+}
+
+tasks.updateSite.doLast {
+    if (project.ext.has('platformFingerprint')) {
+        platformFingerprintFile.text = project.ext.platformFingerprint
+    }
+}
