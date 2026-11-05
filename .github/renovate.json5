@@ -7,6 +7,9 @@
     // Updates to build dependencies use build commits to not trigger a release
     ":pathSemanticCommitType(build/**/build.gradle,build)",
 
+    // Updates to the generated target platform (hale-core, UI libraries) change the product, use fix commits to trigger a release
+    ":pathSemanticCommitType(build/platform/**,fix)",
+
     // Updates to target platform use fix commits to trigger a release
     ":pathSemanticCommitType(**/*.target,fix)",
   ],
@@ -40,6 +43,23 @@
     {
       matchPackagePrefixes: ["org.apache.maven:maven-"],
       allowedVersions: "< 3.9",
+    },
+    // bnd-platform 4 requires Gradle 9
+    {
+      matchPackageNames: ["org.standardout:bnd-platform"],
+      allowedVersions: "< 4",
+    },
+    // The hale»studio UI uses the trove4j 2.x API (gnu.trove), which was removed in 3.x.
+    // Ranges use the Maven/Gradle notation, which the Gradle versioning of Renovate validates.
+    {
+      matchPackageNames: ["net.sf.trove4j:trove4j"],
+      allowedVersions: "[,3)",
+    },
+    // Aries SPI Fly 1.3.8 and later require an OSGi R8 framework, while hale»studio runs on the
+    // OSGi R7 framework of Eclipse 2020-03 (Equinox 3.15).
+    {
+      matchPackageNames: ["org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle"],
+      allowedVersions: "[,1.3.8)",
     },
   ]
 }
