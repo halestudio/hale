@@ -1,3 +1,11 @@
+## [5.5.1](https://github.com/halestudio/hale/compare/v5.5.0...v5.5.1) (2026-11-05)
+
+### Bug Fixes
+
+* **geopackage:** read boolean fields as Boolean instead of Integer ([#1223](https://github.com/halestudio/hale/issues/1223)) ([1b17da8](https://github.com/halestudio/hale/commit/1b17da8d77c9ad01466f6d2a1a973040ad34d814))
+* make the spawn helper of the bundled JRE executable on Linux ([9f64f76](https://github.com/halestudio/hale/commit/9f64f76572184404398a2bd216ab655c32d95130))
+* **xplan:** add default CRS to XPlanGML (XPlanAuszug) export ([09f9e69](https://github.com/halestudio/hale/commit/09f9e69e596d6377c83823871528fda957b19d99))
+
 ## [5.5.0](https://github.com/halestudio/hale/compare/v5.4.0...v5.5.0) (2026-04-23)
 
 ### Features
