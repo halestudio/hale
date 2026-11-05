@@ -138,6 +138,12 @@
            <source>${javaSource.isInteger() && javaSource.toInteger() > 15 ? '15' : javaSource}</source>
            <target>${javaTarget.isInteger() && javaTarget.toInteger() > 15 ? '15' : javaTarget}</target>
                 <compilerId>groovy-eclipse-compiler</compilerId>
+                <!-- Run the compiler in its own process: groovy-eclipse-batch contains unsigned copies of
+                     org.eclipse.core.runtime classes; within the Maven process they clash with the signed
+                     Eclipse bundles of the class path ("class org.eclipse.core.runtime.Plugin's
+                     signer information does not match signer information of other classes in the same
+                     package") and nothing is compiled. -->
+                <fork>true</fork>
                 <compilerArguments>
                 	<% if (artifactId != 'eu.esdihumboldt.cst.functions.groovy') {
 						// XXX fails with a compiler error if using indy -> maybe fixed for newer compiler versions?

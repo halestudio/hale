@@ -549,6 +549,16 @@ platform {
         instruction 'Export-Package', "*;version=$version"
     }
 
+    /*
+     * hale-core workaround: bnd derives a provider range for org.osgi.framework ([1.9,1.10), OSGi R7)
+     * for the non-OSGi registry, as it implements framework interfaces. Equinox exports 1.10 (OSGi R8)
+     * since Eclipse 2023-12, so the bundle (included in the platform feature) cannot be installed.
+     * Remove once hale-core declares a consumer range or the bundle is no longer part of the platform.
+     */
+    bnd group: 'eu.esdihumboldt.hale', name: 'org.eclipse.equinox.nonosgi.registry', {
+        instruction 'Import-Package', 'org.osgi.framework;version="[1.9,2)",*'
+    }
+
     // io.codelist.xml does not export its packages
     bnd group: 'eu.esdihumboldt.hale', name: 'eu.esdihumboldt.hale.io.codelist.xml', {
         instruction 'Export-Package', "eu.esdihumboldt.hale.io.codelist.*;version=$version"
@@ -647,7 +657,8 @@ task generateTargetFile() {
         def locations = rootNode.locations[0]
 
         def localPlatform = new Node(locations, 'location')
-        localPlatform.@includeAllPlatforms = 'false'
+        // Tycho requires the same value for all locations, take it from the base target
+        localPlatform.@includeAllPlatforms = locations.location[0].@includeAllPlatforms ?: 'false'
         localPlatform.@includeConfigurePhase = 'false'
         localPlatform.@includeMode = 'slicer'
         localPlatform.@includeSource = 'true'

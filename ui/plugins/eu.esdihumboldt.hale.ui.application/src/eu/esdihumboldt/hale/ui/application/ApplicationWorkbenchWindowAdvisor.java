@@ -83,7 +83,6 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 												// selection of perspectives.
 		configurer.setShowMenuBar(true);
 		configurer.setShowProgressIndicator(true);
-		configurer.setShowFastViewBars(true);
 
 		// show curved view tabs
 		PlatformUI.getPreferenceStore()

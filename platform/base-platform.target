@@ -4,37 +4,115 @@
   Base of the target platform of hale»studio. The platform build (build/platform) generates
   local-platform.target from this file, adding a location with the libraries generated from the
   hale-core BOM. The wetransform repositories are only available via http.
+
+  The locations use the slicer, which follows feature inclusions, but not package or bundle
+  requirements. Libraries required by the Eclipse bundles are therefore listed explicitly.
+  The locations include all platforms, so the target is the same for all products and units
+  restricted to one platform (e.g. httpclient5-win) can be listed.
 -->
-<target name="eu.esdihumboldt.hale.platform" sequenceNumber="1">
+<target name="eu.esdihumboldt.hale.platform" sequenceNumber="2">
 <locations>
-<!-- Eclipse platform, EMF, Equinox and ECF (Eclipse 2020-03) -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.21.0.v20200205-0529"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.20.100.v20200303-1901"/>
-<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.500.v20200217-1548"/>
-<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.300.v20191023-2007"/>
-<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.700.v20200217-0016"/>
-<unit id="org.eclipse.ecf.filetransfer.httpclient45.feature.feature.group" version="1.0.300.v20200217-0016"/>
-<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.200.v20191024-1546"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-releases/"/>
-</location>
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.e4.core.tools.feature.source.feature.group" version="4.15.0.v20200217-1230"/>
-<unit id="org.eclipse.sdk.ide" version="4.15.0.I20200305-0155"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/2020-03-eclipse/"/>
-</location>
-<!-- help system (Jetty 8) -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.jetty.bundles.f.feature.group" version="8.1.18.201510140934"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/jetty-8"/>
-</location>
-<!-- Draw2D (GEF legacy), required by Zest -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.gef.all.feature.group" version="3.11.0.201606061308"/>
-<repository location="http://build-artifacts.wetransform.to/p2/mirror/gef-legacy-releases/"/>
+<!-- Eclipse platform, EMF, Equinox, ECF and GEF Classic (Eclipse 2026-09) -->
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.sdk.ide" version="4.41.0.I20260828-1142"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.47.0.v20260704-1256"/>
+<unit id="org.eclipse.equinox.sdk.feature.group" version="3.23.2200.v20260821-1846"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.7.100.v20260415-2025"/>
+<!-- OSGi service and utility APIs; the Equinox features require them with version ranges, which the slicer does not follow -->
+<unit id="org.osgi.service.component" version="1.5.1.202212101352"/>
+<unit id="org.osgi.service.cm" version="1.6.1.202109301733"/>
+<unit id="org.osgi.service.event" version="1.4.1.202109301733"/>
+<unit id="org.osgi.service.prefs" version="1.1.2.202109301733"/>
+<unit id="org.osgi.service.metatype" version="1.4.1.202109301733"/>
+<unit id="org.osgi.service.coordinator" version="1.0.2.201505202024"/>
+<unit id="org.osgi.service.device" version="1.1.1.202109301733"/>
+<unit id="org.osgi.service.provisioning" version="1.2.0.201505202024"/>
+<unit id="org.osgi.service.upnp" version="1.2.1.202109301733"/>
+<unit id="org.osgi.service.useradmin" version="1.1.1.202109301733"/>
+<unit id="org.osgi.service.wireadmin" version="1.0.2.202109301733"/>
+<unit id="org.osgi.service.http.whiteboard" version="1.1.1.202109301733"/>
+<unit id="org.osgi.service.log.stream" version="1.0.0.202109301733"/>
+<unit id="org.osgi.util.function" version="1.2.0.202109301733"/>
+<unit id="org.osgi.util.measurement" version="1.0.2.201802012109"/>
+<unit id="org.osgi.util.position" version="1.0.1.201505202026"/>
+<unit id="org.osgi.util.promise" version="1.3.0.202212101352"/>
+<unit id="org.osgi.util.pushstream" version="1.1.0.202212101352"/>
+<unit id="org.osgi.util.xml" version="1.0.2.202109301733"/>
+<unit id="org.eclipse.equinox.http.service.api" version="1.2.202.v20260307-0016"/>
+<!-- Declarative Services (started in the products) -->
+<unit id="org.apache.felix.scr" version="2.2.18"/>
+<!-- Draw2D, GEF and Zest -->
+<unit id="org.eclipse.gef.feature.group" version="3.29.0.202608071137"/>
+<!-- ECF file transfer used by p2 (org.eclipse.equinox.p2.transport.ecf); there are no ECF file transfer features anymore -->
+<unit id="org.eclipse.ecf.filetransfer" version="5.1.103.v20230705-0614"/>
+<unit id="org.eclipse.ecf.provider.filetransfer" version="3.3.100.v20250115-0406"/>
+<!-- file transfer providers required by org.eclipse.equinox.p2.core.feature with version ranges -->
+<unit id="org.eclipse.ecf.provider.filetransfer.httpclient5" version="1.1.200.v20260320-2342"/>
+<unit id="org.eclipse.ecf.provider.filetransfer.httpclient5.win32" version="1.1.200.v20250122-1953"/>
+<unit id="org.eclipse.ecf.provider.filetransfer.httpclientjava" version="2.1.1.v20250818-1641"/>
+<!-- HTTP client of the ECF file transfer provider httpclient5 (included in org.eclipse.equinox.p2.core.feature) -->
+<unit id="org.apache.httpcomponents.client5.httpclient5" version="5.6.4.v20260809-1000"/>
+<!-- Windows only (provider httpclient5.win32); listing it requires includeAllPlatforms -->
+<unit id="org.apache.httpcomponents.client5.httpclient5-win" version="5.2.3.v20231203-1619"/>
+<unit id="org.apache.httpcomponents.core5.httpcore5" version="5.4.3.v20260625-1000"/>
+<unit id="org.apache.httpcomponents.core5.httpcore5-h2" version="5.4.3.v20260625-1000"/>
+<!-- jakarta.annotation 2 or later for the e4 dependency injection; hale-core only provides jakarta.annotation-api 1.3, which
+     still uses the javax namespace -->
+<unit id="jakarta.annotation-api" version="3.0.0"/>
+<!-- SVG support of SWT (org.eclipse.swt.svg) -->
+<unit id="com.github.weisj.jsvg" version="2.1.0"/>
+<!-- CSS styling of the workbench (org.eclipse.e4.ui.css.core) -->
+<unit id="org.apache.batik.constants" version="1.19.0.v20250506-1400"/>
+<unit id="org.apache.batik.css" version="1.19.0.v20250506-1400"/>
+<unit id="org.apache.batik.i18n" version="1.19.0.v20250506-1400"/>
+<unit id="org.apache.batik.util" version="1.19.0.v20250506-1400"/>
+<unit id="org.apache.xmlgraphics" version="2.11.0.v20250506-1400"/>
+<unit id="org.eclipse.orbit.xml-apis-ext" version="1.0.0.v20240917-0534"/>
+<!-- imported by eu.esdihumboldt.hale.ui and ui.views.schemas; the copy from hale-core is excluded in favour of the Eclipse one -->
+<unit id="com.ibm.icu" version="78.3.0"/>
+<!-- JNA 5 for org.eclipse.urischeme and the Eclipse file system and network bundles; JNA 3.5.2 from hale-core (OrientDB)
+     stays next to it -->
+<unit id="com.sun.jna" version="5.19.1.v20260612-1000"/>
+<unit id="com.sun.jna.platform" version="5.19.1"/>
+<!-- Equinox p2 (signature verification, metadata, planner) and the OSGi console -->
+<unit id="bcpg" version="1.85.0"/>
+<unit id="bcprov" version="1.85.2"/>
+<unit id="bcutil" version="1.85.0"/>
+<unit id="bcpkix" version="1.85.0"/>
+<unit id="org.tukaani.xz" version="1.12.0"/>
+<unit id="org.sat4j.core" version="2.3.6.v20201214"/>
+<unit id="org.sat4j.pb" version="2.3.6.v20201214"/>
+<unit id="org.apache.felix.gogo.command" version="1.1.2"/>
+<unit id="org.apache.felix.gogo.runtime" version="1.1.6"/>
+<unit id="org.apache.felix.gogo.shell" version="1.1.4"/>
+<!-- SSH console (org.eclipse.equinox.console.jaas.fragment, Equinox core SDK feature in the products) -->
+<unit id="org.apache.sshd.osgi" version="2.19.0"/>
+<!-- JUnit 4 of the test product -->
+<unit id="org.junit" version="4.13.2.v20240929-1000"/>
+<unit id="org.hamcrest.core" version="2.2.0.v20230809-1000"/>
+<unit id="org.hamcrest" version="3.0.0"/>
+<!-- web server of the help system (org.eclipse.equinox.http.jetty, Jetty 12 with the ee8/javax.servlet API) -->
+<unit id="org.eclipse.jetty.servlet-api" version="4.0.9"/>
+<unit id="org.eclipse.jetty.http" version="12.1.12"/>
+<unit id="org.eclipse.jetty.io" version="12.1.12"/>
+<unit id="org.eclipse.jetty.security" version="12.1.12"/>
+<unit id="org.eclipse.jetty.server" version="12.1.12"/>
+<unit id="org.eclipse.jetty.session" version="12.1.12"/>
+<unit id="org.eclipse.jetty.util" version="12.1.12"/>
+<unit id="org.eclipse.jetty.ee8.security" version="12.1.12"/>
+<unit id="org.eclipse.jetty.ee8.server" version="12.1.12"/>
+<unit id="org.eclipse.jetty.ee8.servlet" version="12.1.12"/>
+<!-- JSP support of the help system (org.eclipse.equinox.jsp.jasper) -->
+<unit id="org.mortbay.jasper.mortbay-apache-jsp" version="9.0.119"/>
+<unit id="org.mortbay.jasper.mortbay-apache-el" version="9.0.119"/>
+<!-- search of the help system (org.eclipse.help.base) -->
+<unit id="org.apache.lucene.core" version="10.5.1.v20260812-1000"/>
+<unit id="org.apache.lucene.analysis-common" version="10.5.1.v20260812-1000"/>
+<unit id="org.apache.lucene.analysis-smartcn" version="10.5.1.v20260812-1000"/>
+<repository location="https://download.eclipse.org/releases/2026-09/"/>
 </location>
 <!-- Zest 2 (2012 snapshot), taken from the former platform site until it is replaced by GEF Classic -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.zest.core" version="2.0.0.201204272302-i20231028"/>
 <unit id="org.eclipse.zest.jface" version="2.0.0.201204272302"/>
 <unit id="org.eclipse.zest.layouts" version="2.0.0.201204272302"/>
@@ -42,20 +120,22 @@
 <repository location="https://gitlab.wetransform.to/hale/hale-build-support/raw/0342a0f0c4f57a1ec4109f1fbe6e6fecd7dc722b/updatesites/platform"/>
 </location>
 <!-- Eclipse utilities of Fraunhofer IGD (de.fhg.igd.eclipse.util, also used by hale-core) -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.eclipse.ui.util.feature.feature.group" version="1.0.0.201407081822"/>
 <unit id="de.fhg.igd.eclipse.util.feature.feature.group" version="1.0.0.201407081822"/>
 <repository location="http://build-artifacts.wetransform.to/p2/eclipse-util/import"/>
 </location>
-<!-- slf4jplus UI (ui.userstatus, ui.errorlog); the slf4jplus core bundles come from hale-core -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
-<unit id="de.fhg.igd.slf4jplus.ui.feature.feature.group" version="1.2.0.201503311443"/>
+<!-- slf4jplus UI (ui.userstatus, ui.errorlog); the slf4jplus core bundles come from hale-core.
+     Not the UI feature: it includes the Orbit bundle org.slf4j.api, which no longer exists; SLF4J comes from hale-core. -->
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="de.fhg.igd.slf4jplus.ui.errorlog" version="1.2.0.201503311443"/>
+<unit id="de.fhg.igd.slf4jplus.ui.userstatus" version="1.2.0.201503311443"/>
 <!-- required by ui.userstatus, not provided by hale-core -->
 <unit id="de.fhg.igd.slf4jplus.logback.observer" version="1.2.0.201503311443"/>
 <repository location="http://build-artifacts.wetransform.to/p2/slf4jplus/import"/>
 </location>
 <!-- test runner of the test product -->
-<location includeAllPlatforms="false" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<location includeAllPlatforms="true" includeConfigurePhase="false" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="de.fhg.igd.equinox.test.feature.feature.group" version="1.2.0.202403131049"/>
 <repository location="http://build-artifacts.wetransform.to/p2/equinox-test/96b3ede3cee11a98a1290edc330e421bb6ae2c86"/>
 </location>

@@ -72,7 +72,6 @@ https://www.wetransform.to/services/support/
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.win32"/>
-      <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.rcp"/>
@@ -93,10 +92,6 @@ https://www.wetransform.to/services/support/
       <feature id="org.eclipse.equinox.core.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
       <feature id="eu.esdihumboldt.hale.platform" installMode="root"/>
       <feature id="de.fhg.igd.mapviewer.feature.core" installMode="root"/>
    </features>
@@ -133,7 +128,7 @@ https://www.wetransform.to/services/support/
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.p2.reconciler.dropins" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />

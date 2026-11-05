@@ -9,10 +9,6 @@
    </license>
 
    <includes
-         id="de.fhg.igd.slf4jplus.ui.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.e4.rcp"
          version="0.0.0"/>
 
@@ -23,6 +19,27 @@
    <includes
          id="org.eclipse.emf.common"
          version="0.0.0"/>
+
+   <plugin
+         id="de.fhg.igd.slf4jplus.ui.errorlog"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.slf4jplus.ui.userstatus"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="de.fhg.igd.slf4jplus.logback.observer"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.eclipse.ui"
@@ -134,7 +151,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.servlet.jsp"
+         id="org.mortbay.jasper.mortbay-apache-jsp"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -148,7 +165,7 @@
          unpack="false"/>
 
    <plugin
-         id="javax.el"
+         id="org.mortbay.jasper.mortbay-apache-el"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -204,13 +221,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.apache.jasper.glassfish"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.equinox.jsp.jasper"
          download-size="0"
          install-size="0"
@@ -225,21 +235,21 @@
          unpack="false"/>
 
    <plugin
-         id="javax.servlet"
+         id="org.eclipse.jetty.servlet-api"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.lucene.analyzers-common"
+         id="org.apache.lucene.analysis-common"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.apache.lucene.analyzers-smartcn"
+         id="org.apache.lucene.analysis-smartcn"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -302,14 +312,28 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.servlet"
+         id="org.eclipse.jetty.session"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jetty.continuation"
+         id="org.eclipse.jetty.ee8.server"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jetty.ee8.security"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.jetty.ee8.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
