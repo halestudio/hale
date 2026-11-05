@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="eu.esdihumboldt.hale.platform.deegree"
-         version="0.0.0"/>
-
    <plugin
          id="eu.esdihumboldt.hale.io.deegree"
          download-size="0"

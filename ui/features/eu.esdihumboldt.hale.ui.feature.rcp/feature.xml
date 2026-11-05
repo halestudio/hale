@@ -9,10 +9,6 @@
    </license>
 
    <includes
-         id="eu.esdihumboldt.hale.common.feature.base"
-         version="0.0.0"/>
-
-   <includes
          id="de.fhg.igd.slf4jplus.ui.feature"
          version="0.0.0"/>
 
