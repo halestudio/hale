@@ -332,7 +332,3 @@ searchPaths.each {
   // Java 8
 //  apply(java18, it as File, isJava8 as ProjectFilter)
 //}
-
-// external contributions w/ different project settings
-
-apply('platform/preferences/xslt' as File, 'ext/ageobw' as File)
