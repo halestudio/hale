@@ -1,0 +1,35 @@
+platform {
+    def geotoolsVersion = resolvedHaleCoreVersion('org.geotools', 'gt-main')
+
+    // GeoTools modules used by the UI, but not by hale-core
+    bundle group: 'org.geotools', name: 'gt-render', version: geotoolsVersion
+
+    // xpp3_min declares a Require-Capability that cannot be satisfied in the target
+    bnd group: 'xpp3', name: 'xpp3_min', {
+        instruction '-removeheaders', 'Require-Capability'
+    }
+
+    // merged GeoTools bundle, as GeoTools modules share packages
+    merge {
+        match {
+            it.group != null && it.group.startsWith('org.geotools')
+        }
+
+        bnd {
+            symbolicName = 'org.geotools'
+            bundleName = 'Geotools'
+            version = geotoolsVersion
+            instruction 'Export-Package', "org.geotools.*;version=$geotoolsVersion"
+            instruction 'Private-Package', '*'
+
+            prependImport(
+                // import Eclipse XSD/EMF without version (as the dependency does not export them)
+                'org.eclipse.xsd.*', 'org.eclipse.emf.*',
+                // also contained in the bundle (EmptyGeometry), import it to prevent class loading issues
+                'org.locationtech.jts.geom'
+            )
+            // Oracle support is not used
+            optionalImport 'oracle.*'
+        }
+    }
+}
