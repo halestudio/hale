@@ -37,6 +37,10 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
+      - name: Restore generated platform
+        id: restore-platform
+        uses: ./.github/actions/restore-platform
+
       - name: Clean
         run: ./build.sh clean
         working-directory: ./build
@@ -61,6 +65,13 @@ jobs:
           ./build.sh product --arch x86_64 --os macosx HALE
           ./build.sh product --arch x86_64 --os linux --publish Infocenter
         working-directory: ./build
+
+      - name: Save generated platform
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/save-platform
+        with:
+          platform-key: ${{ steps.restore-platform.outputs.platform-key }}
+          eclipse-cache-hit: ${{ steps.restore-platform.outputs.eclipse-cache-hit }}
 
       - name: Upload hale studio build (Linux)
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

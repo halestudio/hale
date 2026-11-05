@@ -88,6 +88,10 @@ jobs:
       - name: Install genisoimage # required for Mac build
         run: sudo apt-get install -y genisoimage
 
+      - name: Restore generated platform
+        id: restore-platform
+        uses: ./.github/actions/restore-platform
+
       - name: Clean
         run: ./build.sh clean
         working-directory: ./build
@@ -98,6 +102,13 @@ jobs:
           ./build.sh product --arch x86_64 --os windows HALE
           ./build.sh product --arch x86_64 --os macosx HALE
         working-directory: ./build
+
+      - name: Save generated platform
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/save-platform
+        with:
+          platform-key: ${{ steps.restore-platform.outputs.platform-key }}
+          eclipse-cache-hit: ${{ steps.restore-platform.outputs.eclipse-cache-hit }}
 
       - name: Upload hale studio build (Linux)
         id: upload-linux
