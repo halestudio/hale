@@ -90,6 +90,10 @@ it finds there, without checking the version, and an older Eclipse can silently 
 update site. The platform build therefore uses a pinned Eclipse release (`eclipseMirror`) in a
 directory of its own.
 
+The publisher Eclipse does not have to be the release of the target platform. It stays at 2023-09,
+which runs on Java 21 and is available from archive.eclipse.org; current releases are only on
+download.eclipse.org, where they are removed later.
+
 ### Skip the generation if its inputs did not change
 
 `generatePlatform` only regenerates the platform if its inputs changed. The fingerprint is stored in
@@ -114,6 +118,36 @@ snapshot that was published in the meantime.
   fingerprint.
 - The archive of the publisher Eclipse is cached separately. Its key contains the Eclipse release and
   has to be changed together with `eclipseMirror`.
+
+### Eclipse 2026-09, Java 21 and Tycho 5
+
+hale»studio runs on the current Eclipse release, 2026-09 (4.41), instead of 2020-03 (4.15). Eclipse
+requires Java 21, so the build, CI and the products use Java 21:
+
+- **Build:** Tycho 5 (requires Maven 3.9.9 or later, so the embedded Maven of `build/buildSrc` is
+  3.9) and the JDK from `mise.toml`. The groovy-eclipse compiler of Groovy 2.5 works on Java 21, but
+  runs in a separate process, and the Groovy-compiled bundles stay at Java 15 byte code.
+- **Manifests:** all bundles require `JavaSE-21`. Tycho resolves the dependencies of a bundle with the
+  constraints of its execution environment, and the Eclipse bundles require Java 21.
+- **JREs:** Eclipse Temurin 21 JREs are downloaded directly from Adoptium (GitHub releases), not from
+  the artifacts mirror in hale-build-support. The downloads are checked against the SHA-256
+  checksums in `artifactChecksums` (`build/build.gradle`); update them together with the URLs (the
+  Adoptium API lists them).
+- **Target:** the Eclipse units come directly from `https://download.eclipse.org/releases/2026-09/`.
+  The locations use the slicer, which follows feature inclusions, but neither package and bundle
+  requirements nor requirements with version ranges. The libraries required by the Eclipse bundles
+  are therefore listed explicitly in `platform/base-platform.target`, each with a comment why. All
+  locations include all platforms (Tycho requires the same value for all of them), so that units
+  restricted to Windows can be listed.
+- **GEF Classic** replaces GEF legacy 3.11 and the unreleased Zest 2 snapshot of 2012. Its Zest has
+  the Zest 2 API. The DOT export of Zest 2 is not part of it; hale»studio writes DOT itself
+  (`DotWriter` in `ui.util.graph`).
+- **Help system:** Jetty 12 (ee8, javax.servlet 4), the Apache JSP of Mortbay and Lucene 10 replace
+  Jetty 8, Glassfish Jasper and Lucene 8. The servlets of the help web application are Declarative
+  Services components, so every product with help (including the Infocenter) has to start
+  `org.apache.felix.scr`.
+- **Removed:** the live editor feature (e4 model editor), which was part of no product and would have
+  needed PDE with bnd and bndtools in the target.
 
 ### Remove unused and unmaintained parts
 
@@ -163,6 +197,16 @@ problems to expect after updates of hale-core or its dependencies.
 | "No such property: p for class DefaultInstance" in Groovy scripts | hale's meta class fragment is part of no hale-core feature | add `eu.esdihumboldt.util.groovy.meta.fragment` to the platform |
 | Tycho: logback "could not be found" | an older Eclipse used by the p2 publisher dropped bundles | pinned publisher Eclipse |
 
+The following problems occurred with the move to Eclipse 2026-09:
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| "Could not create content describer", the transformations create no instances | the XML content describers of hale-core call `org.eclipse.core.internal.content.Activator`, which no longer exists | fragment `eu.esdihumboldt.hale.ui.contenttype.compat` provides a stand-in (hale-core workaround) |
+| the alignment of a project cannot be loaded (JAXB runtime not found) | `org.eclipse.jdt.core.compiler.batch` exports `META-INF.services`; bundles with `DynamicImport-Package: *` wire it and no longer see their own service files | resolver hook `eu.esdihumboldt.hale.ui.resolver.hook` at start level 1 |
+| the non-OSGi registry of hale-core cannot be installed | its import range of `org.osgi.framework` excludes OSGi R8 | wider import range (hale-core workaround) |
+| Groovy bundles are not compiled ("signer information does not match") | unsigned copies of Eclipse classes in groovy-eclipse-batch clash with the signed Eclipse bundles | compiler in its own process (`fork`) |
+| Infocenter: topics and table of contents return 404 | the help servlets are DS components and Felix SCR was not started | start `org.apache.felix.scr` |
+
 ## Building
 
 ```
@@ -175,7 +219,12 @@ cd build
 
 On hosts that bnd-platform 3.2.1 does not know (e.g. Linux on aarch64), applying the plugin fails.
 Build bnd-platform with support for them, publish it to the local Maven repository and pass its
-version with `-PbndPlatformVersion=<version>`.
+version with `-PbndPlatformVersion=<version>` to Gradle, or with the environment variable
+`ORG_GRADLE_PROJECT_bndPlatformVersion` to `build.sh`. There is no JRE for aarch64 products, so
+`commitStage` fails there; run the smoke test on the product instead.
+
+Tycho only recompiles a bundle if its sources changed. After a change of the target platform, remove
+the `target` folders of the bundles to get a clean build.
 
 ## Updating hale-core
 
