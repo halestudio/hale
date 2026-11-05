@@ -363,16 +363,19 @@ def replaceIconPaths(productFile) {
 
 /*
  * Downloads platform specific artifacts from '<artifactsMirrorUrl>/relsrcpath'
+ * (or from the given URL if an artifact is specified as https URL)
  * and unzips them to 'reldstpath'. Prints 'name' to the console.
  */
 def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath, name) {
     if (artifacts.containsKey(project.ext.osgiOS) && artifacts[project.ext.osgiOS].containsKey(project.ext.osgiWS) &&
             artifacts[project.ext.osgiOS][project.ext.osgiWS].containsKey(project.ext.osgiArch)) {
         // Download artifact
-        def f = artifacts[project.ext.osgiOS][project.ext.osgiWS][project.ext.osgiArch]
+        def artifact = artifacts[project.ext.osgiOS][project.ext.osgiWS][project.ext.osgiArch]
+        def isUrl = artifact.startsWith('https://')
+        def f = isUrl ? artifact.substring(artifact.lastIndexOf('/') + 1) : artifact
         def artifactZipPath = new File(buildDir, f)
         def artifactZipPathPart = new File(buildDir, f + '.part')
-        def artifactDownloadUrl = project.ext.artifactsMirrorUrl + '/' + relsrcpath + '/' + f
+        def artifactDownloadUrl = isUrl ? artifact : project.ext.artifactsMirrorUrl + '/' + relsrcpath + '/' + f
         if (!artifactZipPath.exists()) {
             download.run {
                 src artifactDownloadUrl
@@ -382,14 +385,37 @@ def includeAdditionalFiles(artifacts, relsrcpath, productOutputPath, reldstpath,
             artifactZipPathPart.renameTo(artifactZipPath)
         }
 
+        // verify the checksum (if known), also for an artifact downloaded earlier
+        def expectedChecksum = project.ext.artifactChecksums[f]
+        if (expectedChecksum) {
+            def actualChecksum = artifactZipPath.bytes.digest('SHA-256')
+            if (actualChecksum != expectedChecksum) {
+                artifactZipPath.delete()
+                throw new GradleException("Checksum mismatch for $f (downloaded from $artifactDownloadUrl): expected SHA-256 $expectedChecksum, got $actualChecksum. The file was deleted.")
+            }
+        }
+        else if (isUrl) {
+            throw new GradleException("No checksum known for $f (downloaded from $artifactDownloadUrl), add it to artifactChecksums")
+        }
+
         // Unzip artifact
         println('Copying ' + name + ' ...')
         def artifactInstallPath = new File(productOutputPath, reldstpath)
         if (artifactZipPath.name.endsWith('.zip')) {
-            ant.unzip(src: artifactZipPath, dest: artifactInstallPath)
+            ant.unzip(src: artifactZipPath, dest: artifactInstallPath) {
+                // archives downloaded from their origin (e.g. Temurin JREs) contain a root folder
+                if (isUrl) {
+                    cutdirsmapper(dirs: 1)
+                }
+            }
         } else {
 		    if (!Helper.buildForMac(project)) {
-		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip')
+		        ant.untar(src: artifactZipPath, dest: artifactInstallPath, compression: 'gzip') {
+		            // archives downloaded from their origin (e.g. Temurin JREs) contain a root folder
+		            if (isUrl) {
+		                cutdirsmapper(dirs: 1)
+		            }
+		        }
 		    } else {
 				//It is certain that this code will run when creating build for mac.
 				//Therefore, the jre must be copied into the `Eclipse` folder of the bundled application.
