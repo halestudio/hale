@@ -82,7 +82,9 @@ public abstract class OffscreenGraph {
 		configureViewer(viewer);
 
 		if (graph.getLayoutAlgorithm() == null) {
-			graph.setLayoutAlgorithm(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT), true);
+			graph.setLayoutAlgorithm(
+					CustomFigureGraphViewer.center(new TreeLayoutAlgorithm(TreeLayoutAlgorithm.LEFT_RIGHT)),
+					true);
 		}
 		graph.setBounds(0, 0, width, height);
 		graph.getViewport().setBounds(new Rectangle(0, 0, width, height));

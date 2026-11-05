@@ -60,7 +60,7 @@ class DotWriter {
 	 */
 	void write(Graph graph) throws IOException {
 		boolean directed = graph.getConnectionStyle() == ZestStyles.CONNECTIONS_DIRECTED;
-		LayoutAlgorithm algorithm = graph.getLayoutAlgorithm();
+		LayoutAlgorithm algorithm = CenteredLayoutAlgorithm.unwrap(graph.getLayoutAlgorithm());
 
 		writer.write(directed ? "digraph" : "graph");
 		writer.write(" {\n");

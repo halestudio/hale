@@ -22,12 +22,19 @@ import org.eclipse.zest.core.viewers.GraphViewer;
 import org.eclipse.zest.core.viewers.IFigureProvider;
 import org.eclipse.zest.core.widgets.Graph;
 import org.eclipse.zest.core.widgets.GraphNode;
+import org.eclipse.zest.layouts.LayoutAlgorithm;
 
 /**
- * Graph viewer that creates {@link CustomFigureGraphNode}s for the figures of
- * an {@link IFigureProvider}, so that the figures get the text and style of
- * their node. Use it instead of {@link GraphViewer} if the label provider
- * provides figures.
+ * Graph viewer that keeps the behavior of the Zest 2 viewer hale was written
+ * for:
+ * <ul>
+ * <li>it creates {@link CustomFigureGraphNode}s for the figures of an
+ * {@link IFigureProvider}, so that the figures get the text and style of their
+ * node</li>
+ * <li>it places the nodes with their center on the locations computed by the
+ * layout algorithm (see {@link CenteredLayoutAlgorithm})</li>
+ * </ul>
+ * Use it instead of {@link GraphViewer}.
  */
 public class CustomFigureGraphViewer extends GraphViewer {
 
@@ -44,6 +51,25 @@ public class CustomFigureGraphViewer extends GraphViewer {
 	@Override
 	protected GraphNode createNodeObject(Graph graphModel, IFigure figure) {
 		return new CustomFigureGraphNode(graphModel, SWT.NONE, figure);
+	}
+
+	@Override
+	public void setLayoutAlgorithm(LayoutAlgorithm algorithm, boolean runLayout) {
+		super.setLayoutAlgorithm(center(algorithm), runLayout);
+	}
+
+	/**
+	 * Wrap a layout algorithm so that the nodes are centered on the computed
+	 * locations.
+	 * 
+	 * @param algorithm the layout algorithm, may be <code>null</code>
+	 * @return the wrapped algorithm or <code>null</code>
+	 */
+	public static LayoutAlgorithm center(LayoutAlgorithm algorithm) {
+		if (algorithm == null || algorithm instanceof CenteredLayoutAlgorithm) {
+			return algorithm;
+		}
+		return new CenteredLayoutAlgorithm(algorithm);
 	}
 
 }
