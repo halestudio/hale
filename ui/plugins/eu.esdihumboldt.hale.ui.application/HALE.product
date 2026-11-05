@@ -102,9 +102,12 @@ https://www.wetransform.to/services/support/
    </features>
 
    <configurations>
-      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded -->
-      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="1" />
-      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="2" />
+      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded.
+           Not at start level 1: bundles of that level are installed by the framework (osgi.bundles
+           in config.ini) before the simple configurator installs ASM, which SPI Fly requires.
+           ServiceLoader consumers started early (logback via SLF4J, POI) start at level 3. -->
+      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="3" />
       <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
@@ -126,7 +129,7 @@ https://www.wetransform.to/services/support/
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.poi" autoStart="true" startLevel="2" />
+      <plugin id="org.apache.poi" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />

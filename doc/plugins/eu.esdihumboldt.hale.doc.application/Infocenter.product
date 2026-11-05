@@ -34,8 +34,10 @@
    </features>
 
    <configurations>
-      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded -->
-      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="1" />
+      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded.
+           Not at start level 1: bundles of that level are installed by the framework (osgi.bundles
+           in config.ini) before the simple configurator installs ASM, which SPI Fly requires. -->
+      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.http.jetty" autoStart="false" startLevel="0" />
       <plugin id="org.eclipse.help" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.help.base" autoStart="true" startLevel="0" />
