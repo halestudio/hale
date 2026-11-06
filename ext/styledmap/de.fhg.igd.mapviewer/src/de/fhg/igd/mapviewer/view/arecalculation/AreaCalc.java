@@ -30,8 +30,8 @@ import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.GeotoolsConverter;
 import org.jdesktop.swingx.mapviewer.IllegalGeoPositionException;
 import org.jdesktop.swingx.mapviewer.JXMapViewer;
-import org.opengis.referencing.cs.CoordinateSystem;
-import org.opengis.referencing.cs.CoordinateSystemAxis;
+import org.geotools.api.referencing.cs.CoordinateSystem;
+import org.geotools.api.referencing.cs.CoordinateSystemAxis;
 
 import de.fhg.igd.geom.Point3D;
 import de.fhg.igd.geom.algorithm.FaceTriangulation;

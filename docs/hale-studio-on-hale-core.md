@@ -10,9 +10,9 @@ hale-core is a plain Java library. It is released to the wetransform Artifactory
 and other projects use it without OSGi.
 
 hale»studio is an Eclipse RCP application and needs all its libraries as OSGi bundles in a target
-platform. Until now it got its third-party libraries from a prebuilt p2 site in the repository
-hale-build-support, which was committed as binaries and referenced by a fixed commit in
-`platform/hale-platform.target`.
+platform. Before, it got its third-party libraries from a prebuilt p2 site in the repository
+hale-build-support, which was committed as binaries and referenced by a fixed commit in the target
+definition, and it built the hale-core modules from source copies in this repository.
 
 Goal: build hale»studio on released hale-core artifacts, so that
 
@@ -115,11 +115,62 @@ snapshot that was published in the meantime.
 - The archive of the publisher Eclipse is cached separately. Its key contains the Eclipse release and
   has to be changed together with `eclipseMirror`.
 
+### Remove unused and unmaintained parts
+
+Building on hale-core is a breaking change anyway, so parts that were not built or not maintained
+any more were removed: the FME integration (its bundles only existed in the old platform), the
+AGeoBw extension (only shipped by its own product definition) and bundles that were excluded from
+the build.
+
+### Version 6.0.0
+
+All bundles, features and products have the same version, 6.0.0. `setSnapshotVersion
+-PnewVersion=…` sets a given version (`setSnapshot` can only increase the minor version).
+
+### Test in OSGi: feature-based test product and smoke test
+
+hale-core tests its bundles on a flat class path, so it cannot see problems that only occur in OSGi:
+unresolved bundles, packages exported by two bundles, ServiceLoader lookups across bundles, classes
+only named in plugin.xml and Groovy compiled at runtime that cannot see the Groovy runtime.
+
+- **Test product** (`ui/plugins/eu.esdihumboldt.hale.ui.application/Tests.product`): feature based
+  like `HALE.product`. It contains the hale»studio features, the platform feature and
+  `eu.esdihumboldt.hale.ui.feature.tests` with the test fragments of this repository, JUnit and the
+  Equinox test runner.
+- **Smoke test** (`build/gradle/smokeTest.gradle`): part of `commitStage`, runs on the test
+  product. It starts the product without UI, checks that all bundles resolve (Equinox console `ss`)
+  and runs headless transformations of two sample projects of the user documentation: the Groovy
+  sample (alignment format 2.6) and the Meridian 2 hydrography example (format 2.5, which is only told
+  apart from 2.6 by content type detection). The logs must not contain known error patterns. It works
+  for any built product: `./gradlew smokeTest -PsmokeTestProductDir=build/eu.esdihumboldt.hale`.
+
+The smoke test does not start the workbench, so problems that only affect the UI are not caught.
+
+## Problems found in OSGi and their fixes
+
+The following problems occurred when hale»studio was first built on hale-core. They are the kinds of
+problems to expect after updates of hale-core or its dependencies.
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| UI does not start: uses constraint violation for commons-configuration | commons-beanutils-core embeds and exports `org.apache.commons.collections`, a second exporter next to commons-collections | exclude commons-beanutils-core, unversioned import of the collections in commons-digester |
+| uses constraint violation in `io.gml.ui` | hale-core contains the `io.gml.geometry` packages in two bundles | `io.gml.ui` takes them only through `Require-Bundle` of io.gml |
+| `NoClassDefFoundError: javax/annotation/PostConstruct`, the workbench does not start | the e4 import is wired to jsr305, which splits `javax.annotation` with the Common Annotations API | one merged bundle exporting both versions |
+| logging falls back to NOP; "Source is no valid project file" (JAXB not found); Help › Examples empty | ServiceLoader lookups across bundles | SPI Fly, configured per library |
+| "Cache initialization failed … SimpleTemplateScript1", failing Groovy templates | classes compiled by Groovy at runtime cannot see `org.codehaus.groovy.runtime.*` | `DynamicImport-Package` of the Groovy packages on the bundles compiling Groovy |
+| "Could not create content describer", no provider for loading the alignment | classes only named in plugin.xml or Castor mappings are not imported (invisible to bnd) | optional imports of their packages |
+| SPI Fly weaving hook fails and disables the mediation | `deegree-core-coverage` (unused) references `org.ehcache`, which has no exporter | exclude it, add `deegree-core-geometry` explicitly |
+| "No such property: p for class DefaultInstance" in Groovy scripts | hale's meta class fragment is part of no hale-core feature | add `eu.esdihumboldt.util.groovy.meta.fragment` to the platform |
+| Tycho: logback "could not be found" | an older Eclipse used by the p2 publisher dropped bundles | pinned publisher Eclipse |
+
 ## Building
 
 ```
 cd build
+./build.sh product HALE                  # generates the platform if needed, then builds the product
+./build.sh commitStage                   # test product, unit tests, smoke test
 ./gradlew generatePlatform [-PforceGeneratePlatform]
+./gradlew smokeTest -PsmokeTestProductDir=build/eu.esdihumboldt.hale
 ```
 
 On hosts that bnd-platform 3.2.1 does not know (e.g. Linux on aarch64), applying the plugin fails.
@@ -130,8 +181,10 @@ version with `-PbndPlatformVersion=<version>`.
 
 1. Renovate proposes updates of the hale-core BOM (`haleCoreVersion`). Updates under
    `build/platform/` use `fix:` commits, as they change the product.
-2. CI regenerates the platform, because the version change also changes the fingerprint.
+2. CI regenerates the platform, because the version change also changes the fingerprint, builds
+   the test product and runs the unit tests and the smoke test.
 3. If the platform does not resolve or the product shows problems, fix the platform configuration in
    the same PR: bnd instructions for new or changed libraries, the SPI Fly lists for new ServiceLoader
-   users, excludes for duplicate exporters.
+   users, excludes for duplicate exporters (see "Problems found in OSGi and their fixes"). The smoke
+   test does not detect every problem, so also check the logs in `build/build/smokeTest/`.
 4. Remove workarounds for hale-core bundles that the new release makes unnecessary.

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Tests" uid="eu.esdihumboldt.hale.tests" id="eu.esdihumboldt.hale.common.test.Tests" application="de.fhg.igd.equinox.test" version="6.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-consoleLog -clean
+      </programArgs>
+      <vmArgs>-Xmx4g
+--add-exports=java.base/sun.nio.ch=ALL-UNNAMED
+--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED
+      </vmArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages/>
+
+   <launcher name="hale_tests">
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="eu.esdihumboldt.hale.ui.feature"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.win32"/>
+      <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
+      <feature id="org.eclipse.equinox.core.feature"/>
+      <feature id="org.eclipse.draw2d"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.rcp"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.zest"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.gef"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.linux"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.macosx"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.core.ui"/>
+      <feature id="eu.esdihumboldt.hale.ui.views.styledmap.feature"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.html.ui"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
+      <feature id="eu.esdihumboldt.hale.io.feature.mssql"/>
+      <feature id="org.eclipse.equinox.core.sdk"/>
+      <feature id="org.eclipse.equinox.p2.core.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
+      <feature id="eu.esdihumboldt.hale.platform" installMode="root"/>
+      <feature id="eu.esdihumboldt.hale.ui.feature.tests"/>
+      <feature id="de.fhg.igd.mapviewer.feature.core" installMode="root"/>
+   </features>
+
+   <configurations>
+      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded.
+           Not at start level 1: bundles of that level are installed by the framework (osgi.bundles
+           in config.ini) before the simple configurator installs ASM, which SPI Fly requires.
+           ServiceLoader consumers started early (logback via SLF4J, POI) start at level 3. -->
+      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="3" />
+      <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.core" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.convert.wkt" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.core" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.common.instance" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.codelist.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.csv" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.gml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.postgresql" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.jdbc.spatialite" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.schematron" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.shp" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.xml" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.io.xsd" autoStart="true" startLevel="0" />
+      <plugin id="eu.esdihumboldt.hale.ui.cst" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
+      <plugin id="org.apache.poi" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.gemini.blueprint.extender" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.update.configurator" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.spring-aop" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.spring-beans" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.spring-context" autoStart="true" startLevel="0" />
+      <plugin id="org.springframework.spring-core" autoStart="true" startLevel="0" />
+      <property name="org.eclipse.update.reconcile" value="false" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>

@@ -17,8 +17,8 @@ package eu.esdihumboldt.hale.ui.style.editors;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.geotools.styling.Mark;
-import org.geotools.styling.PointSymbolizer;
+import org.geotools.api.style.Mark;
+import org.geotools.api.style.PointSymbolizer;
 import org.geotools.styling.SLD;
 import org.geotools.styling.StyleBuilder;
 

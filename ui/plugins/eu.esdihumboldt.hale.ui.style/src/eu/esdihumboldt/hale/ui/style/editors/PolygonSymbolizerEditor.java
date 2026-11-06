@@ -21,7 +21,7 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.geotools.styling.PolygonSymbolizer;
+import org.geotools.api.style.PolygonSymbolizer;
 import org.geotools.styling.StyleBuilder;
 
 import eu.esdihumboldt.hale.ui.style.internal.Messages;

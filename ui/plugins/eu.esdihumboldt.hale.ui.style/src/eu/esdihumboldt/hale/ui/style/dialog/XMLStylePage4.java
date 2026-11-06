@@ -17,7 +17,7 @@ package eu.esdihumboldt.hale.ui.style.dialog;
 
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.widgets.Composite;
-import org.geotools.styling.Style;
+import org.geotools.api.style.Style;
 
 import eu.esdihumboldt.hale.ui.style.internal.Messages;
 

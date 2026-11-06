@@ -2,7 +2,7 @@
 <feature
       id="eu.esdihumboldt.hale.io.feature.deegree"
       label="Deegree I/O Feature"
-      version="5.6.0.qualifier"
+      version="6.0.0.qualifier"
       provider-name="wetransform GmbH">
 
    <description url="http://www.example.com/description">
@@ -16,10 +16,6 @@
    <license url="http://www.example.com/license">
       [Enter License Description here.]
    </license>
-
-   <includes
-         id="eu.esdihumboldt.hale.platform.deegree"
-         version="0.0.0"/>
 
    <plugin
          id="eu.esdihumboldt.hale.io.deegree"

@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Internal Browser for Help
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.application.help.internal
-Bundle-Version: 5.6.0.qualifier
+Bundle-Version: 6.0.0.qualifier
 Bundle-Vendor: Data Harmonisation Panel
 Fragment-Host: eu.esdihumboldt.hale.ui.application;bundle-version="2.5.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Eclipse-PlatformFilter: (| (osgi.os=win32) (osgi.os=macosx))

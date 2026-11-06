@@ -127,8 +127,16 @@
 		 <artifactId>tycho-compiler-plugin</artifactId>
 		 <version>\${tycho-version}</version>
          <configuration>
-           <source>$javaSource</source>
-           <target>$javaTarget</target>
+           <!-- The JDT embedded in groovy-eclipse-batch of the Groovy 2.5 line (2.5.19-01, the
+                version pinned below) accepts source/target levels up to 15 only; anything higher
+                is rejected with "source level should be in '1.1'...'1.8','9'...'15'" and the
+                compilation fails without a message. The Groovy 3 batch would accept 17 but emits
+                indy call sites bound to org.codehaus.groovy.vmplugin.v8.IndyInterface, which the
+                Groovy 2.5.23 runtime of the target platform does not have - so the Groovy 2.5
+                compiler stays and the Java level of the Groovy-enabled bundles is capped at 15
+                instead. The OSGi execution environment (JavaSE-17) is unaffected. -->
+           <source>${javaSource.isInteger() && javaSource.toInteger() > 15 ? '15' : javaSource}</source>
+           <target>${javaTarget.isInteger() && javaTarget.toInteger() > 15 ? '15' : javaTarget}</target>
                 <compilerId>groovy-eclipse-compiler</compilerId>
                 <compilerArguments>
                 	<% if (artifactId != 'eu.esdihumboldt.cst.functions.groovy') {

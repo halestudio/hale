@@ -1,2 +1,0 @@
-# Turn on debugging for the eclipse contexts
-org.eclipse.equinox.nonosgi.registry/debug=false

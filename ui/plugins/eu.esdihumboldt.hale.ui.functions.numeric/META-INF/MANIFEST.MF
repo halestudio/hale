@@ -2,17 +2,18 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI for CST numeric functions
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.numeric;singleton:=true
-Bundle-Version: 5.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: eu.esdihumboldt.hale.common.align,
  eu.esdihumboldt.hale.ui,
  eu.esdihumboldt.hale.ui.common,
  org.eclipse.ui,
  com.google.guava,
- com.iabcinc.jmep;bundle-version="0.1.0",
  eu.esdihumboldt.cst.functions.numeric;bundle-version="2.5.0",
  eu.esdihumboldt.hale.common.core;bundle-version="3.2.0"
-Import-Package: de.fhg.igd.eclipse.util.extension,
+Import-Package: com.iabcinc.jmep,
+ com.iabcinc.jmep.hooks,
+ de.fhg.igd.eclipse.util.extension,
  de.fhg.igd.eclipse.util.extension.simple,
  eu.esdihumboldt.hale.common.core.io.supplier,
  eu.esdihumboldt.hale.common.schema.model,

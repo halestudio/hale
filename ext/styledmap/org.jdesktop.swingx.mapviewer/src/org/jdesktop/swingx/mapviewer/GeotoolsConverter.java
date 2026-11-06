@@ -15,14 +15,14 @@ import java.util.concurrent.ConcurrentMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.geometry.GeneralDirectPosition;
+import org.geotools.geometry.GeneralPosition;
 import org.geotools.referencing.CRS;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.NoSuchAuthorityCodeException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
+import org.geotools.api.geometry.Position;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.NoSuchAuthorityCodeException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.cs.AxisDirection;
+import org.geotools.api.referencing.operation.MathTransform;
 
 import com.google.common.cache.CacheBuilder;
 
@@ -99,17 +99,17 @@ public class GeotoolsConverter implements GeoConverter {
 			MathTransform math = getTransform(pos.getEpsgCode(), targetEpsg, sourceCRS, targetCRS);
 
 			int dimension = sourceCRS.getCoordinateSystem().getDimension();
-			DirectPosition pt1;
+			Position pt1;
 
 			boolean flipSource = flipCRS(sourceCRS);
 
 			switch (dimension) {
 			case 2:
-				pt1 = new GeneralDirectPosition((flipSource) ? (pos.getY()) : (pos.getX()),
+				pt1 = new GeneralPosition((flipSource) ? (pos.getY()) : (pos.getX()),
 						(flipSource) ? (pos.getX()) : (pos.getY()));
 				break;
 			case 3:
-				pt1 = new GeneralDirectPosition((flipSource) ? (pos.getY()) : (pos.getX()),
+				pt1 = new GeneralPosition((flipSource) ? (pos.getY()) : (pos.getX()),
 						(flipSource) ? (pos.getX()) : (pos.getY()), 0);
 				break;
 			default:
@@ -117,7 +117,7 @@ public class GeotoolsConverter implements GeoConverter {
 				throw new IllegalArgumentException("Unsupported dimension: " + dimension);
 			}
 
-			DirectPosition pt2 = math.transform(pt1, null);
+			Position pt2 = math.transform(pt1, null);
 
 			if (flipCRS(targetCRS))
 				return new GeoPosition(pt2.getOrdinate(1), pt2.getOrdinate(0), targetEpsg);

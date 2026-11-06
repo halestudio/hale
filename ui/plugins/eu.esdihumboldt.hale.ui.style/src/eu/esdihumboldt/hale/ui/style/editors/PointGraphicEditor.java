@@ -41,8 +41,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.geotools.styling.Graphic;
-import org.geotools.styling.PointSymbolizer;
+import org.geotools.api.style.Graphic;
+import org.geotools.api.style.PointSymbolizer;
 import org.geotools.styling.StyleBuilder;
 
 import de.fhg.igd.slf4jplus.ALogger;
