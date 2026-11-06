@@ -424,8 +424,9 @@ platform {
     }
 
     bnd group: 'org.codehaus.castor', name: 'castor-xml', {
-        instruction 'Import-Package', 'org.springframework.*'
-        instruction 'Import-Package', 'org.apache.commons.lang3.*'
+        // Spring is only used by the Spring configuration of Castor (XmlConfigurations), which hale does not use
+        optionalImport 'org.springframework.*'
+        prependImport 'org.apache.commons.lang3.*'
         instruction 'Require-Bundle', 'org.codehaus.castor.core'
         addQualifier = true
     }
