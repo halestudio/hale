@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: HALE Main UI
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui;singleton:=true
 Bundle-Version: 6.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.1",
  org.eclipse.core.expressions;bundle-version="3.4.200",
@@ -15,7 +15,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  com.google.common.collect;version="1.6.0",
  com.google.common.io;version="1.6.0",
  com.google.common.util.concurrent;version="15.0.0",
- com.ibm.icu.text;version="4.4.2.1",
+ com.ibm.icu.text,
  com.orientechnologies.orient.core.db,
  com.orientechnologies.orient.core.db.document,
  com.orientechnologies.orient.core.metadata,
@@ -98,6 +98,7 @@ Import-Package: com.google.common.base;version="1.6.0",
  eu.esdihumboldt.hale.ui.common.function.viewer,
  eu.esdihumboldt.hale.ui.common.graph.content,
  eu.esdihumboldt.hale.ui.common.graph.labels,
+ eu.esdihumboldt.hale.ui.util.graph,
  eu.esdihumboldt.hale.ui.common.help,
  eu.esdihumboldt.hale.ui.common.service.compatibility,
  eu.esdihumboldt.hale.ui.common.service.population,

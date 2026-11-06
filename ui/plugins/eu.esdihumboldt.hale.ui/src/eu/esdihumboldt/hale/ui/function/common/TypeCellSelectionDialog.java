@@ -37,6 +37,7 @@ import eu.esdihumboldt.hale.ui.HaleUI;
 import eu.esdihumboldt.hale.ui.common.graph.content.ReverseCellGraphContentProvider;
 import eu.esdihumboldt.hale.ui.common.graph.labels.GraphLabelProvider;
 import eu.esdihumboldt.hale.ui.service.align.AlignmentService;
+import eu.esdihumboldt.hale.ui.util.graph.CustomFigureGraphViewer;
 import eu.esdihumboldt.hale.ui.util.selector.AbstractViewerSelectionDialog;
 
 /**
@@ -70,7 +71,7 @@ public class TypeCellSelectionDialog extends AbstractViewerSelectionDialog<Cell,
 	 */
 	@Override
 	protected GraphViewer createViewer(Composite parent) {
-		GraphViewer viewer = new GraphViewer(parent, SWT.BORDER);
+		GraphViewer viewer = new CustomFigureGraphViewer(parent, SWT.BORDER);
 		// disable node movement
 		viewer.getGraphControl().getLightweightSystem()
 				.setEventDispatcher(new SWTEventDispatcher() {

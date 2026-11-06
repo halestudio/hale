@@ -143,26 +143,34 @@ ext {
 	artifactsCommit = '72905ccbd66be2da610ccc776ee4221371f5c63d'
 	artifactsMirrorUrl = "https://gitlab.wetransform.to/hale/hale-build-support/raw/${artifactsCommit}"
 
-    // Names of zip files containing Java Runtimes (sorted by their respective platform)
+    // Java Runtimes (sorted by their respective platform): names of archives in the artifacts mirror
+    // or download URLs (Eclipse Temurin JREs from Adoptium)
     jreArtifacts = [
         'win32': [
             'win32': [
                 'x86': 'OpenJDK8U-jre_x86-32_windows_hotspot_8u232b09.tar.gz',
-                'x86_64': 'OpenJDK17U-jre_x64_windows_hotspot_17.0.5_8.zip'
+                'x86_64': 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_windows_hotspot_21.0.13_9.zip'
             ]
         ],
         'linux': [
             'gtk': [
-                'x86_64': 'OpenJDK17U-jre_x64_linux_hotspot_17.0.5_8.tar.gz'
+                'x86_64': 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz'
             ]
         ], //Make sure when `tar.gz` is extracted then the hirarchy should be `<jdk-name>/Contents/...`.
 		   //For e.g. `jdk8u282-b08/Contents/...` becuase during extraction, root folder named `jdk8u282-b08`
 		   //is being stripped and the `Contents` folder is being copied into jre folder.
         'macosx': [
             'cocoa': [
-                'x86_64': 'OpenJDK17U-jre_x64_mac_hotspot_17.0.5_8.tar.gz'
+                'x86_64': 'https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.13%2B9/OpenJDK21U-jre_x64_mac_hotspot_21.0.13_9.tar.gz'
             ]
         ]
+    ]
+
+    // SHA-256 checksums of downloaded artifacts (by file name); checked before an artifact is used
+    artifactChecksums = [
+        'OpenJDK21U-jre_x64_linux_hotspot_21.0.13_9.tar.gz': 'a535a1df9c6284d9618872984e026ae0352d1f7e9e0605425c0e6114f47351dd',
+        'OpenJDK21U-jre_x64_mac_hotspot_21.0.13_9.tar.gz': 'c909674b1c10c261b9a3fb7e9c0efebd303e33f88a4fe84be7135b5e2d711f89',
+        'OpenJDK21U-jre_x64_windows_hotspot_21.0.13_9.zip': '2332c0b4cff6bed722da3567c91d5e47568bcba863fa4945d0a8d6fc76158628'
     ]
 
     // Names of zip files containing mongodb instances (sorted by their respective platform)

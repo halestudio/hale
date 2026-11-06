@@ -4,7 +4,7 @@ Bundle-Name: Mapviewer
 Bundle-SymbolicName: de.fhg.igd.mapviewer;singleton:=true
 Bundle-Version: 6.0.0.qualifier
 Bundle-Vendor: Fraunhofer IGD
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Import-Package: com.google.common.base,
  com.google.common.collect,
  de.fhg.igd.eclipse.ui.util.extension,

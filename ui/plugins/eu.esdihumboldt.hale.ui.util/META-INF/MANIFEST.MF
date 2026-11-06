@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text;bundle-version="3.7.1",
  org.eclipse.core.net;bundle-version="1.3.800"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-17
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Export-Package: eu.esdihumboldt.hale.ui.util,
  eu.esdihumboldt.hale.ui.util.action,
  eu.esdihumboldt.hale.ui.util.components,

@@ -34,7 +34,6 @@
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.win32"/>
-      <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
       <feature id="org.eclipse.draw2d"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.rcp"/>
@@ -55,10 +54,6 @@
       <feature id="org.eclipse.equinox.core.sdk"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
       <feature id="eu.esdihumboldt.hale.platform" installMode="root"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.tests"/>
       <feature id="de.fhg.igd.mapviewer.feature.core" installMode="root"/>
@@ -70,6 +65,7 @@
            in config.ini) before the simple configurator installs ASM, which SPI Fly requires.
            ServiceLoader consumers started early (logback via SLF4J, POI) start at level 3. -->
       <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
+      <plugin id="eu.esdihumboldt.hale.ui.resolver.hook" autoStart="true" startLevel="1" />
       <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="3" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
@@ -95,7 +91,7 @@
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />
-      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.gemini.blueprint.core" autoStart="true" startLevel="0" />

@@ -147,8 +147,7 @@ public class ImageContent {
 	}
 
 	private static Dimension computeSize(Graph graph) {
-		@SuppressWarnings("unchecked")
-		List<GraphNode> list = graph.getNodes();
+		List<? extends GraphNode> list = graph.getNodes();
 		int height = 0;
 		int width = 0;
 		List<GraphNode> tempSourceList = new ArrayList<GraphNode>();
@@ -160,8 +159,8 @@ public class ImageContent {
 				tempSourceList.add(gn);
 			}
 			else if (sourceCons >= 1 && targetCons >= 1) {
-				width = width + gn.getFigure().getBounds().width + 10;
-				height = height + gn.getFigure().getBounds().height;
+				width = width + gn.getNodeFigure().getBounds().width + 10;
+				height = height + gn.getNodeFigure().getBounds().height;
 			}
 			else {
 				tempTargetList.add(gn);
@@ -171,7 +170,7 @@ public class ImageContent {
 		int accuSourceHeight = 0;
 		int accuHeight = 0;
 		for (GraphNode node : tempSourceList) {
-			Rectangle rec = node.getFigure().getBounds();
+			Rectangle rec = node.getNodeFigure().getBounds();
 			int sourceWidth = rec.width;
 			int sourceHeight = rec.height;
 
@@ -189,7 +188,7 @@ public class ImageContent {
 		int accuTargetWidth = 0;
 		int accuTargetHeight = 0;
 		for (GraphNode node : tempTargetList) {
-			Rectangle rec = node.getFigure().getBounds();
+			Rectangle rec = node.getNodeFigure().getBounds();
 			int targetWidth = rec.width;
 			int targetHeight = rec.height;
 

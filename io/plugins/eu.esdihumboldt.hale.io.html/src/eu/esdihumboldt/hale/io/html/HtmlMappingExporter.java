@@ -296,8 +296,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 	}
 
 	private Dimension computeSize(Graph graph) {
-		@SuppressWarnings("unchecked")
-		List<GraphNode> graphNodes = graph.getNodes();
+		List<? extends GraphNode> graphNodes = graph.getNodes();
 		int height = 0;
 		int width = 0;
 		List<GraphNode> tempSourceList = new ArrayList<GraphNode>();
@@ -309,8 +308,8 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 				tempSourceList.add(node);
 			}
 			else if (sourceConnections >= 1 && targetConnections >= 1) {
-				width = width + node.getFigure().getBounds().width + 10;
-				height = height + node.getFigure().getBounds().height;
+				width = width + node.getNodeFigure().getBounds().width + 10;
+				height = height + node.getNodeFigure().getBounds().height;
 			}
 			else {
 				tempTargetList.add(node);
@@ -320,7 +319,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 		int accuSourceHeight = 0;
 		int accuHeight = 0;
 		for (GraphNode node : tempSourceList) {
-			Rectangle rec = node.getFigure().getBounds();
+			Rectangle rec = node.getNodeFigure().getBounds();
 			int sourceWidth = rec.width;
 			int sourceHeight = rec.height;
 
@@ -338,7 +337,7 @@ public class HtmlMappingExporter extends AbstractAlignmentWriter implements Proj
 		int accuTargetWidth = 0;
 		int accuTargetHeight = 0;
 		for (GraphNode node : tempTargetList) {
-			Rectangle rec = node.getFigure().getBounds();
+			Rectangle rec = node.getNodeFigure().getBounds();
 			int targetWidth = rec.width;
 			int targetHeight = rec.height;
 

@@ -34,6 +34,8 @@ import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
 import com.tinkerpop.blueprints.util.io.graphml.GraphMLReader;
 
+import eu.esdihumboldt.hale.ui.util.graph.CustomFigureGraphViewer;
+
 /**
  * Dialog for displaying a GraphML graph via zest
  * 
@@ -102,7 +104,7 @@ public class GraphMLDialog extends Dialog {
 		in = new ByteArrayInputStream(graphString.getBytes(("UTF-8")));
 		greader.inputGraph(in);
 
-		GraphViewer viewer = new GraphViewer(viewerContainer, SWT.NONE);
+		GraphViewer viewer = new CustomFigureGraphViewer(viewerContainer, SWT.NONE);
 		TreeLayoutAlgorithm la = new TreeLayoutAlgorithm(TreeLayoutAlgorithm.RIGHT_LEFT);
 		viewer.setLabelProvider(new GraphMLLabelProvider());
 		viewer.setContentProvider(new GraphMLContentProvider());

@@ -57,9 +57,7 @@
   </distributionManagement -->
 
   <properties>
-      <tycho-version>3.0.1</tycho-version> 
-    <!-- <tycho-version>2.7.0</tycho-version> --> 
-    <!-- <tycho-version>2.7.5</tycho-version> -->
+    <tycho-version>5.0.4</tycho-version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <!--     <scala.version>2.10.4</scala.version> -->
 	<maven.compiler.target>17</maven.compiler.target>
@@ -90,7 +88,6 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>\${tycho-version}</version>
         <configuration>
-          <resolver>p2</resolver>
           <target>
             <artifact>
               <groupId>${groupId}</groupId>
@@ -99,7 +96,6 @@
               <classifier>${platformClassifier}</classifier>
             </artifact>
           </target>
-          <ignoreTychoRepositories>true</ignoreTychoRepositories>
           <environments>
             <environment>
               <os>${envOs}</os>
