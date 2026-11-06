@@ -1,0 +1,39 @@
+platform {
+    def gpkgVersion = resolvedHaleCoreVersion('mil.nga.geopackage', 'geopackage')
+    def ormliteVersion = resolvedHaleCoreVersion('com.j256.ormlite', 'ormlite-jdbc')
+
+    // merged bundle, as the GeoPackage modules share packages
+    merge {
+        match {
+            it.group != null && it.group.startsWith('mil.nga.geopackage') && it.name.startsWith('geopackage')
+        }
+
+        bnd {
+            symbolicName = 'mil.nga.geopackage'
+            bundleName = 'Geopackage Java'
+            version = gpkgVersion
+            instruction 'Export-Package', "*;version=$gpkgVersion"
+        }
+    }
+
+    // ormlite-jdbc includes the ormlite-core packages; wrap it under the symbolic name hale expects
+    bnd group: 'com.j256.ormlite', name: 'ormlite-jdbc', {
+        symbolicName = 'com.j256.ormlite'
+        bundleName = 'ormlite'
+        version = ormliteVersion
+        instruction 'Export-Package', "*;version=$ormliteVersion"
+
+        // needs to be able to access the SQLite JDBC driver
+        optionalImport 'org.sqlite'
+    }
+
+    bnd group: 'mil.nga.sf', name: 'sf-geojson', {
+        // do not import the own packages: the import version would be derived from mil.nga.sf:sf (2.2.x) instead of sf-geojson (3.x)
+        instruction 'Export-Package', "*;version=$version;-noimport:=true"
+    }
+
+    // sqlite-jdbc exports its packages without version
+    bnd group: 'org.xerial', name: 'sqlite-jdbc', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+}

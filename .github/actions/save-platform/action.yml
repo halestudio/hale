@@ -1,0 +1,44 @@
+name: Save generated platform
+description: >-
+  Save the generated target platform and the Eclipse archive restored by the restore-platform action
+  if they changed. Run it after the build steps, also if they failed.
+inputs:
+  platform-key:
+    description: platform-key output of the restore-platform action
+    required: false
+    default: ''
+  eclipse-cache-hit:
+    description: eclipse-cache-hit output of the restore-platform action
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+    - name: Determine platform cache key
+      id: key
+      shell: bash
+      run: |
+        if [ -f build/platform/build/platform-fingerprint.txt ] && [ -f platform/local-platform.target ]; then
+          echo "key=hale-platform-${{ runner.os }}-${{ hashFiles('build/platform/build/platform-fingerprint.txt') }}" >> "$GITHUB_OUTPUT"
+        fi
+        if ls ~/.gradle/bnd-platform/eclipse-rcp-2023-09-R/*.tar.gz > /dev/null 2>&1; then
+          echo "eclipse=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    # the key is derived from the fingerprint, so only a newly generated platform is saved
+    - name: Save generated platform
+      if: steps.key.outputs.key != '' && steps.key.outputs.key != inputs.platform-key
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          build/platform/build/updatesite
+          build/platform/build/platform-fingerprint.txt
+          platform/local-platform.target
+        key: ${{ steps.key.outputs.key }}
+
+    - name: Save Eclipse for publishing the platform
+      if: steps.key.outputs.eclipse == 'true' && inputs.eclipse-cache-hit != 'true'
+      uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.gradle/bnd-platform/eclipse-rcp-2023-09-R/*.tar.gz
+        key: bnd-platform-eclipse-rcp-2023-09-R-${{ runner.os }}

@@ -1,0 +1,745 @@
+/*
+ * Generates the target platform of hale»studio from the hale-core BOM.
+ *
+ * The hale-core bundles and their dependencies are resolved with the versions of the hale-core BOM,
+ * wrapped as OSGi bundles where needed and published as a p2 update site (build/updatesite). The
+ * target definition platform/local-platform.target combines the update site with the Eclipse
+ * locations of platform/base-platform.target.
+ *
+ * Run with "./gradlew generatePlatform" in the build directory.
+ */
+buildscript {
+    // a locally built bnd-platform can be used with -PbndPlatformVersion=<version> (after publishToMavenLocal)
+    def bndPlatformVersion = project.findProperty('bndPlatformVersion') ?: '3.2.1'
+    repositories {
+        if (project.hasProperty('bndPlatformVersion')) {
+            mavenLocal()
+        }
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.standardout:bnd-platform:$bndPlatformVersion"
+    }
+}
+
+/*
+ * The environment is not relevant for the platform, which only contains platform independent
+ * bundles. Configure it, so bnd-platform does not try to detect it.
+ */
+ext.osgiOS = 'linux'
+ext.osgiWS = 'gtk'
+ext.osgiArch = 'x86_64'
+
+apply plugin: 'org.standardout.bnd-platform'
+// derive version constraints from POM-only BOMs imported by the hale-core BOM (jackson-bom, slf4j-bom, groovy-bom)
+apply plugin: 'jvm-ecosystem'
+
+defaultTasks 'clean', 'updateSite'
+
+// version of hale-core the platform is generated from (version of the hale-core BOM)
+def haleCoreVersion = '6.5.2'
+
+// the platform feature has the version of hale-core
+version = haleCoreVersion
+
+/**
+ * Version of a module as resolved in the dependency graph of the given configuration. Uses the
+ * resolution result, which does not require downloading the artifacts.
+ */
+def resolvedVersion(String configuration, String group, String name) {
+    def component = configurations[configuration].incoming.resolutionResult.allComponents.find {
+        it.moduleVersion?.group == group && it.moduleVersion?.name == name
+    }
+    if (!component) {
+        throw new GradleException("$group:$name is not part of the resolved dependencies of $configuration")
+    }
+    component.moduleVersion.version
+}
+
+// version of a module as resolved in the hale-core dependency graph
+ext.resolvedHaleCoreVersion = { String group, String name ->
+    resolvedVersion('halecore', group, name)
+}
+
+repositories {
+    maven { // hale-core
+        url 'https://artifactory.wetransform.to/artifactory/local'
+    }
+    maven { // GeoTools
+        url 'https://repo.osgeo.org/repository/release/'
+        content {
+            // OSGeo serves java3d:vecmath:1.5.2 with a POM declaring <packaging>java-source</packaging>,
+            // which makes the jar look like a source artifact (no bundle generated) -> use Maven Central
+            excludeGroup 'java3d'
+        }
+    }
+    maven { // deegree (required by eu.esdihumboldt.hale.io.deegree)
+        url 'https://repo.deegree.org/content/groups/public'
+    }
+    mavenCentral()
+}
+
+configurations {
+    // hale-core dependencies, also used to determine the versions used by hale-core
+    halecore
+
+    // hale-core publishes both runtimeElements and shadowRuntimeElements; we want the non-shadowed jars for bnd wrapping
+    halecore {
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+        attributes.attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
+    }
+
+    bndplatform {
+        extendsFrom halecore
+        attributes.attribute(Attribute.of("org.gradle.jvm.environment", String), "standard-jvm")
+        attributes.attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling, Bundling.EXTERNAL))
+    }
+
+    /*
+     * Exclude bundles conflicting with JRE-provided packages.
+     *
+     * They have to be excluded as just removing the version constraint on
+     * corresponding package imports is not enough - bundles that only have
+     * optional imports may still bind to them, as they have no explicit
+     * dependency on the system bundle.
+     */
+    bndplatform.exclude group: 'javax.xml'
+    bndplatform.exclude group: 'javax.activation'
+    bndplatform.exclude group: 'xml-apis'
+    bndplatform.exclude group: 'dom4j'
+    bndplatform.exclude group: 'stax'
+    bndplatform.exclude group: 'org.w3c.dom'
+    bndplatform.exclude group: 'org.apache.batik'
+    // e.g. geronimo-stax-api
+    bndplatform.exclude group: 'org.apache.geronimo.specs'
+
+    /*
+     * Exclude Eclipse/Equinox framework bundles that hale-core depends on as plain Maven artifacts
+     * (repackaged as eu.esdihumboldt.unpuzzled / org.eclipse.tycho). They are provided by the Eclipse
+     * SDK and eclipse-util p2 locations of the target; rewrapping them with bnd produces duplicate
+     * framework bundles with unsatisfiable internal imports (e.g. org.eclipse.core.internal.runtime.auth).
+     */
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'com.ibm.icu'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.core.contenttype'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.core.jobs'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.core.runtime'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.equinox.app'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.equinox.common'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.equinox.preferences'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.equinox.registry'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.osgi.services'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.osgi.util'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'org.eclipse.osgi'
+    bndplatform.exclude group: 'eu.esdihumboldt.unpuzzled', module: 'de.fhg.igd.eclipse.util'
+    bndplatform.exclude group: 'org.eclipse.tycho', module: 'org.eclipse.osgi'
+    // EMF 2.15 (via gt-xsd); the Eclipse SDK location provides newer emf.common/ecore/ecore.xmi singletons
+    // (org.eclipse.xsd is not provided by the SDK and stays)
+    bndplatform.exclude group: 'org.eclipse.emf'
+
+    // commons-beanutils-core 1.8.0 (via commons-configuration 1.6) embeds and exports a few
+    // org.apache.commons.collections classes; a second exporter next to commons-collections 3.2.2
+    // makes commons-configuration fail with a uses constraint violation at runtime.
+    // commons-beanutils provides the beanutils packages.
+    bndplatform.exclude group: 'commons-beanutils', module: 'commons-beanutils-core'
+    // further SLF4J providers next to logback-classic; with SLF4J 2 every provider found via ServiceLoader
+    // competes and slf4j-api picks the first one
+    bndplatform.exclude group: 'org.slf4j', module: 'slf4j-jdk14'
+    bndplatform.exclude group: 'org.slf4j', module: 'slf4j-nop'
+
+    // hale-core workaround: deegree-core-coverage only arrives through the deegree-core-base aggregate POM
+    // and is not used by hale. Its class CachedRasterDataContainer references org.ehcache.CacheManager,
+    // which has no exporter, which makes the Aries SPI Fly weaving hook fail when the class is woven.
+    // deegree-core-geometry, which io.deegree needs, arrived only through it (see below).
+    bndplatform.exclude group: 'org.deegree', module: 'deegree-core-coverage'
+}
+
+dependencies {
+    // versions of the hale-core BOM
+    halecore(platform("eu.esdihumboldt.hale:bom:$haleCoreVersion"))
+
+    // hale-core features
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.app.feature.cli"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.core"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.feature.orient"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.cst.feature"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.core"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.html"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.feature.legacy"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.util.feature.resource"
+
+    // hale-core bundles used by hale»studio, but not part of any hale-core feature
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.inspire"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.service.helper"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.common.schema.presets"
+
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.schematron"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.codelist.xml"
+
+    // app.feature.cli does not include the CLI application bundle itself
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.app.cli"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.adv.merge"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.deegree"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.jdbc.msaccess"
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.jdbc.mssql"
+    // hale-core workaround: fragment of the Groovy bundle that installs hale's MetaClassCreationHandle
+    // (instance property access in Groovy scripts, e.g. `p` on instances); not contained in any hale-core
+    // aggregate
+    halecore "eu.esdihumboldt.hale:eu.esdihumboldt.util.groovy.meta.fragment"
+}
+
+/*
+ * General platform settings
+ */
+platform {
+    fetchSources = true
+    determineImportVersions = true
+    addBndPlatformManifestHeaders = true
+    auxVersionedSymbolicNames = true
+    featureId = 'eu.esdihumboldt.hale.platform'
+    featureName = 'HALE Target Platform Libraries'
+    // Eclipse used to publish the update site. bnd-platform reuses any Eclipse it finds in its
+    // downloads directory without checking the version, and older ones (e.g. the former default
+    // eclipse-p2-minimal, Eclipse 4.7) silently drop bundles from the update site. A directory
+    // specific to the Eclipse release makes sure the pinned release is used.
+    eclipseMirror = 'https://archive.eclipse.org/technology/epp/downloads/release/2023-09/R/eclipse-rcp-2023-09-R-linux-gtk-x86_64.tar.gz'
+    downloadsDir = new File(gradle.gradleUserHomeDir, 'bnd-platform/eclipse-rcp-2023-09-R')
+
+    /*
+     * Import packages without version that have exporters with differing or no versions, for all
+     * bundles (replacing the imports inferred from the dependencies).
+     */
+    override {
+        // Mandatory imports, the bundles do not resolve without a provider:
+        // - javax.annotation: library, exported at the JSR-305 and the Common Annotations version by the
+        //   merged javax.annotation bundle (see below) and as 1.2.0 by the Eclipse SDK
+        prependImport('javax.annotation.*')
+        // - org.apache.commons.logging: library, exported by commons-logging and jcl-over-slf4j with
+        //   different versions
+        prependImport('org.apache.commons.logging.*')
+        // - javax.transaction.xa: JRE (java.transaction.xa module), the system bundle exports it without
+        //   version (e.g. commons-dbcp2 imports version 1.1.0)
+        prependImport('javax.transaction.xa.*')
+
+        // Optional imports, the bundles resolve without a provider (and fail at runtime only if they
+        // use a missing package)
+        optionalImport(
+                // JRE (except javax.xml.bind, see below), the system bundle exports them without version
+                'javax.xml.*',
+                'org.w3c.dom.*',
+                'org.xml.sax.*',
+                'com.sun.xml.internal.*',
+                'sun.nio.*',
+                // cal10n.api
+                'javax.tools.*',
+                'javax.lang.model.*',
+                'javax.annotation.processing.*',
+                // libraries, no longer part of the JRE since Java 11: JAXB (jakarta.xml.bind-api) and
+                // JavaBeans Activation; javax.xml.bind and javax.activation have no provider in the platform
+                'jakarta.xml.*',
+                'javax.activation.*'
+        )
+    }
+}
+
+/*
+ * Platform modules
+ */
+apply from: 'modules/geotools.gradle'
+apply from: 'modules/groovy.gradle'
+apply from: 'modules/geopackage.gradle'
+
+/*
+ * Libraries used by hale»studio that are not dependencies of hale-core
+ */
+platform {
+    // map component
+    bundle 'org.swinglabs:swingx:1.0', {
+        bnd {
+            symbolicName = 'org.jdesktop.swingx'
+        }
+    }
+
+    // dynamic help
+    bundle 'org.apache.velocity:velocity:1.6.2'
+
+    // com.tinkerpop.gremlin.groovy (ui.functions.groovy); same version as gremlin-java from hale-core
+    bundle "com.tinkerpop.gremlin:gremlin-groovy:${resolvedHaleCoreVersion('com.tinkerpop.gremlin', 'gremlin-java')}"
+
+    // org.codehaus.groovy.jsr223 (required by gremlin-groovy); version managed by the hale-core BOM (groovy-bom)
+    bundle 'org.codehaus.groovy:groovy-jsr223'
+
+    // groovyx.net.http (ui.templates)
+    bundle 'org.codehaus.groovy.modules.http-builder:http-builder:0.7.1'
+
+    // gnu.trove (ui, mapviewer, styledmap); the UI uses the 2.x API (gnu.trove.TIntObjectHashMap etc.), which 3.x removed
+    bundle 'net.sf.trove4j:trove4j:2.1.0'
+
+    // edu.umd.cs.findbugs.annotations (ui.application, mapviewer, swingx-mapviewer, doc)
+    bundle 'com.github.spotbugs:spotbugs-annotations:4.10.5'
+
+    // net.jcip.annotations (ui.common.graph)
+    bundle 'net.jcip:jcip-annotations:1.0'
+
+    bnd group: 'net.sf.trove4j', name: 'trove4j', {
+        // symbolic name referenced by hale»studio features
+        symbolicName = 'gnu.trove'
+    }
+}
+
+/*
+ * Aries SPI Fly (OSGi Service Loader Mediator) makes java.util.ServiceLoader work across bundles,
+ * which hale-core's dependencies rely on (e.g. SLF4J 2 -> logback, jakarta.xml.bind-api -> jaxb-runtime,
+ * eclipse-collections-api -> eclipse-collections).
+ *
+ * Only bundles that call ServiceLoader for an interface they define and whose implementations live in
+ * other bundles are consumers (their ServiceLoader calls are woven), only bundles providing such
+ * implementations are providers. Providers get a lazy activation policy, as SPI Fly only registers
+ * services of bundles in the STARTING or ACTIVE state. The merged GeoTools bundle is configured in
+ * modules/geotools.gradle.
+ */
+platform {
+    // 1.3.7 is the latest release that runs on the OSGi R7 framework of Eclipse 2020-03 (1.3.8 requires
+    // org.osgi.framework 1.10)
+    bundle 'org.apache.aries.spifly:org.apache.aries.spifly.dynamic.bundle:1.3.7'
+    // ASM modules required by SPI Fly (asm itself comes in through hale-core and is aligned to this version)
+    bundle 'org.ow2.asm:asm-commons:9.11.1'
+    bundle 'org.ow2.asm:asm-util:9.11.1'
+
+    def spiConsumers = [
+        ['com.fasterxml.jackson.core', 'jackson-databind'],
+        ['it.geosolutions.imageio-ext', 'imageio-ext-geocore'],
+        ['jakarta.activation', 'jakarta.activation-api'],
+        ['jakarta.xml.bind', 'jakarta.xml.bind-api'],
+        ['javax.measure', 'unit-api'],
+        ['commons-logging', 'commons-logging'],
+        ['org.apache.logging.log4j', 'log4j-api'],
+        ['org.apache.poi', 'poi'],
+        ['org.deegree', 'deegree-core-db'],
+        ['org.deegree', 'deegree-core-moduleinfo'],
+        ['org.deegree', 'deegree-core-workspace'],
+        ['org.deegree', 'deegree-sqldialect-commons'],
+        ['org.eclipse.collections', 'eclipse-collections-api'],
+        ['org.eclipse.imagen', 'imagen-core'],
+        ['org.slf4j', 'slf4j-api'],
+        ['us.fatehi', 'schemacrawler'],
+        ['us.fatehi', 'schemacrawler-tools'],
+    ]
+    def spiProviders = [
+        ['org.eclipse.angus', 'angus-activation'],
+        ['ch.qos.logback', 'logback-classic'],
+        ['com.fasterxml.jackson.datatype', 'jackson-datatype-json-org'],
+        ['eu.esdihumboldt.hale', 'eu.esdihumboldt.hale.common.propertyaccessor'],
+        ['eu.esdihumboldt.hale', 'eu.esdihumboldt.hale.common.referencing'],
+        ['it.geosolutions.imageio-ext', 'imageio-ext-tiff'],
+        ['org.slf4j', 'jcl-over-slf4j'],
+        ['org.apache.logging.log4j', 'log4j-to-slf4j'],
+        ['org.apache.poi', 'poi-ooxml'],
+        ['org.deegree', 'deegree-core-annotations'],
+        ['org.deegree', 'deegree-core-base'],
+        ['org.deegree', 'deegree-core-commons'],
+        ['org.deegree', 'deegree-core-cs'],
+        ['org.deegree', 'deegree-core-db'],
+        ['org.deegree', 'deegree-core-geometry'],
+        ['org.deegree', 'deegree-core-workspace'],
+        ['org.deegree', 'deegree-featurestore-commons'],
+        ['org.deegree', 'deegree-featurestore-sql'],
+        ['org.deegree', 'deegree-protocol-commons'],
+        ['org.deegree', 'deegree-protocol-wfs'],
+        ['org.deegree', 'deegree-sqldialect-commons'],
+        ['org.deegree', 'deegree-sqldialect-postgis'],
+        ['org.eclipse.collections', 'eclipse-collections'],
+        ['org.glassfish.jaxb', 'jaxb-runtime'],
+        ['si.uom', 'si-units'],
+        ['systems.uom', 'systems-common'],
+        ['tech.units', 'indriya'],
+        ['us.fatehi', 'schemacrawler'],
+        ['us.fatehi', 'schemacrawler-loader'],
+        ['us.fatehi', 'schemacrawler-operations'],
+        ['us.fatehi', 'schemacrawler-postgresql'],
+        ['us.fatehi', 'schemacrawler-text'],
+        ['us.fatehi', 'schemacrawler-tools'],
+    ]
+    spiConsumers.each { gn ->
+        bnd group: gn[0], name: gn[1], {
+            instruction 'SPI-Consumer', '*'
+        }
+    }
+    spiProviders.each { gn ->
+        bnd group: gn[0], name: gn[1], {
+            instruction 'SPI-Provider', '*'
+            instruction 'Bundle-ActivationPolicy', 'lazy'
+        }
+    }
+}
+
+/*
+ * Adaptions of the generated bundles
+ */
+platform {
+    // versions as resolved for hale-core (to be determined outside of the bnd configurations, where
+    // methods of the build script are not available)
+    def lz4Version = resolvedHaleCoreVersion('at.yawk.lz4', 'lz4-java')
+    def jnaVersion = resolvedHaleCoreVersion('net.java.dev.jna', 'jna')
+    def jsr305Version = resolvedHaleCoreVersion('com.google.code.findbugs', 'jsr305')
+    def annotationApiVersion = resolvedHaleCoreVersion('jakarta.annotation', 'jakarta.annotation-api')
+
+    // use the minimum version for Guava package imports, otherwise the imports reject anything beyond
+    // the next major version
+    imports (group: 'com.google.guava', name: 'guava') {
+        versionStrategy = MINIMUM
+    }
+
+    // SLF4J 2 is API compatible with version 1
+    imports (group: 'org.slf4j') {
+        versionStrategy = MINIMUM
+    }
+
+    // javax.measure (unit-api) is imported with the version of the implementation otherwise
+    bnd group: 'si.uom', name: 'si-quantity', {
+        prependImport 'javax.measure.*'
+    }
+    bnd group: 'si.uom', name: 'si-units-java8', {
+        prependImport 'javax.measure.*'
+        prependImport 'si.uom.quantity.*'
+    }
+    bnd group: 'systems.uom', name: 'systems-quantity', {
+        prependImport 'javax.measure.*'
+    }
+    bnd group: 'tec.uom', name: 'uom-se', {
+        prependImport 'javax.measure.*'
+    }
+    bnd group: 'tec.uom.lib', name: 'uom-lib-common', {
+        prependImport 'javax.measure.*'
+    }
+    bnd group: 'tech.units', name: 'indriya', {
+        prependImport 'tec.uom.lib.common.*'
+    }
+
+    // commons-digester 1.8 imports org.apache.commons.collections [1.7,2), matching the copies embedded
+    // in commons-beanutils-core, which is excluded; commons-collections 3.2.2 exports the package
+    bnd group: 'commons-digester', name: 'commons-digester', {
+        prependImport 'org.apache.commons.collections.*'
+    }
+
+    bnd group: 'org.locationtech.jts', name: 'jts-core', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    bnd group: 'io.prometheus', name: 'simpleclient', {
+        optionalImport 'io.prometheus.client.exemplars.tracer.*'
+    }
+
+    bnd group: 'org.codehaus.castor', name: 'castor-xml', {
+        // Spring is only used by the Spring configuration of Castor (XmlConfigurations), which hale does not use
+        optionalImport 'org.springframework.*'
+        prependImport 'org.apache.commons.lang3.*'
+        instruction 'Require-Bundle', 'org.codehaus.castor.core'
+        addQualifier = true
+    }
+
+    /*
+     * Use versioned symbolic names for ASM, as its symbolic names collide with the ASM bundles of the
+     * Eclipse SDK, and both versions cannot be included in a product if the symbolic name is the same.
+     */
+    bnd group: 'org.ow2.asm', {
+        def ov = org.osgi.framework.Version.parseVersion(version)
+        symbolicName = symbolicName + '-' + ov.major
+    }
+    bnd group: 'org.ow2.asm', name: 'asm-commons', {
+        def ov = org.osgi.framework.Version.parseVersion(version)
+        // the symbolic name would be null otherwise
+        symbolicName = 'org.ow2.asm.commons-' + ov.major
+    }
+
+    // the JDI imports of javassist are only needed for its hot swapping support
+    bnd group: 'org.javassist', name: 'javassist', {
+        optionalImport 'com.sun.jdi.*'
+    }
+
+    // hsqldb exports its packages without version
+    bnd group: 'org.hsqldb', name: 'hsqldb', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    bnd group: 'jakarta.activation', name: 'jakarta.activation-api', {
+        optionalImport 'com.sun.activation.registeries'
+    }
+
+    bnd group: 'org.apache.ws.commons.schema', name: 'XmlSchema', {
+        optionalImport 'org.w3c.dom'
+    }
+
+    bnd group: 'jline', name: 'jline', {
+        optionalImport 'sun.misc', 'com.cloudius.util'
+    }
+
+    // lz4-java was relocated from org.lz4 to at.yawk.lz4 (maintained fork); its manifest declares version 0.0.0
+    bnd group: 'at.yawk.lz4', name: 'lz4-java', {
+        version = lz4Version
+        symbolicName = 'org.lz4.lz4-java'
+        instruction 'Export-Package', "net.jpountz.lz4;version=$version"
+    }
+
+    // joda-convert is an optional dependency of joda-time, but its import was generated as mandatory
+    bnd group: 'joda-time', name: 'joda-time', {
+        optionalImport 'org.joda.convert'
+    }
+
+    // commons-configuration 1.6 imports optional integrations (mail, servlet, ant) as mandatory
+    bnd group: 'commons-configuration', name: 'commons-configuration', {
+        optionalImport 'javax.mail.*', 'javax.servlet.*', 'org.apache.tools.ant.*'
+    }
+
+    // log4j-api exports its packages with differing package-info versions (2.20.2 - 2.25.3), but xmlbeans imports [2.26,3.0)
+    bnd group: 'org.apache.logging.log4j', name: 'log4j-api', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // axiom-api exports org.apache.axiom.om.xpath without a version, but deegree-core-commons imports [2.0,3.0)
+    bnd group: 'org.apache.ws.commons.axiom', name: 'axiom-api', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // jackcess does not export its impl packages by default, but ucanaccess imports them (com.healthmarketscience.jackcess.impl.*)
+    bnd group: 'com.healthmarketscience.jackcess', name: 'jackcess', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // jakarta.transaction-api 1.3.3 (via deegree -> commons-dbcp2) imports CDI/interceptor packages that are only needed in a CDI container
+    bnd group: 'jakarta.transaction', name: 'jakarta.transaction-api', {
+        optionalImport 'javax.enterprise.*', 'javax.interceptor.*'
+    }
+
+    // topojson-j was built against GeoTools 32.x, hale-core uses GeoTools 35 (merged org.geotools bundle)
+    bnd group: 'com.github.wetransform-os', name: 'topojson-j', {
+        prependImport 'org.geotools.*'
+    }
+
+    // jing (2009) uses Saxon only optionally and was built against Saxon 8.x
+    bnd group: 'com.thaiopensource', name: 'jing', {
+        optionalImport 'net.sf.saxon.*'
+    }
+
+    // vecmath exports javax.vecmath without a version, but deegree-core-cs imports [1.5,2.0)
+    bnd group: 'java3d', name: 'vecmath', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // jna 3.5.2 ships an OSGi manifest declaring Bundle-Version 3.0.0 and unversioned exports,
+    // but jna platform 3.5.2 imports com.sun.jna.* [3.5,4.0)
+    bnd group: 'net.java.dev.jna', name: 'jna', {
+        version = jnaVersion
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // deegree-sqldialect-postgis was built against postgis-jdbc 2023.x, the hale-core BOM provides 2025.x
+    bnd group: 'org.deegree', name: 'deegree-sqldialect-postgis', {
+        prependImport 'net.postgis.*'
+    }
+
+    // systems-common exports systems.uom.common without a version, but gt-main (org.geotools) imports [2.1,3.0)
+    bnd group: 'systems.uom', name: 'systems-common', {
+        instruction 'Export-Package', "*;version=$version"
+    }
+
+    // io.codelist.xml does not export its packages
+    bnd group: 'eu.esdihumboldt.hale', name: 'eu.esdihumboldt.hale.io.codelist.xml', {
+        instruction 'Export-Package', "eu.esdihumboldt.hale.io.codelist.*;version=$version"
+    }
+
+    merge {
+        // single provider for the javax.annotation packages: jsr305 (javax.annotation.Nullable etc.)
+        // and the Common Annotations API (javax.annotation.PostConstruct etc.) split the package.
+        // With separate bundles unversioned importers such as org.eclipse.e4.core.di are wired to the
+        // highest exporter, jsr305 3.0.2, which has no PostConstruct, and the workbench fails to start.
+        match {
+            (it.group == 'jakarta.annotation' && it.name == 'jakarta.annotation-api') ||
+                    (it.group == 'com.google.code.findbugs' && it.name == 'jsr305')
+        }
+
+        bnd {
+            symbolicName = 'eu.esdihumboldt.hale.platform.javax.annotation'
+            bundleName = 'javax.annotation (Common Annotations and JSR-305)'
+            version = annotationApiVersion
+            // Export the packages at the JSR-305 version (hale UI bundles import javax.annotation [3,4),
+            // unversioned importers pick the highest exporter) and javax.annotation additionally at the
+            // Common Annotations version, so importers with a [1,2) range are not wired to the
+            // javax.annotation 1.2.0 bundle of the Eclipse SDK. Otherwise @PostConstruct would be loaded
+            // from two bundles and e4 injection would silently ignore one of them.
+            instruction 'Export-Package', "javax.annotation.*;version=$jsr305Version;-noimport:=true," +
+                    "javax.annotation~;version=$annotationApiVersion;-noimport:=true"
+        }
+    }
+}
+
+/*
+ * Workarounds for hale-core bundles that do not resolve or load in OSGi
+ */
+platform {
+    // io.deegree needs deegree-core-geometry, which only arrived through the excluded
+    // deegree-core-coverage; same version as resolved for hale-core
+    bundle "org.deegree:deegree-core-geometry:${resolvedHaleCoreVersion('org.deegree', 'deegree-core-geometry')}"
+
+    /*
+     * Bundles that compile Groovy scripts or templates at runtime pass their own class loader to
+     * GroovyShell/TemplateEngine. The generated classes link against org.codehaus.groovy.runtime.* etc.,
+     * which bnd cannot derive from the bytecode (e.g. common.cache: "Cache initialization failed ...
+     * Failed to create Script instance for class SimpleTemplateScript1").
+     */
+    [
+        'eu.esdihumboldt.hale.app.transform',
+        'eu.esdihumboldt.hale.common.align',
+        'eu.esdihumboldt.hale.common.cache',
+        'eu.esdihumboldt.hale.io.html.svg',
+        'eu.esdihumboldt.hale.io.instancebuilder',
+        'eu.esdihumboldt.hale.io.schemabuilder',
+        'eu.esdihumboldt.util.groovy.sandbox',
+    ].each { name ->
+        bnd group: 'eu.esdihumboldt.hale', name: name, {
+            instruction 'DynamicImport-Package', 'groovy.*,org.codehaus.groovy.*'
+        }
+    }
+
+    /*
+     * Classes named only as strings in plugin.xml (content describers, geometry algorithms, JDBC type
+     * bindings) or in the Castor mapping of the alignment bundle are invisible to bnd's bytecode
+     * analysis, so the contributing bundles do not import their packages ("Could not create content
+     * describer for <id>. Content type has been disabled.", which leaves hale without a provider for
+     * loading the alignment of a project).
+     */
+    def describerPackage = 'eu.esdihumboldt.hale.util.nonosgi.contenttype.describer'
+    def coreIoUtilPackage = 'eu.esdihumboldt.hale.common.core.io.util'
+    [
+        'eu.esdihumboldt.hale.common.align': [describerPackage, 'eu.esdihumboldt.hale.common.core.io.project.model.internal'],
+        'eu.esdihumboldt.hale.common.instance': ['org.locationtech.jts.algorithm'],
+        'eu.esdihumboldt.hale.common.schema.persist': [describerPackage, coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.codelist.xml': [describerPackage],
+        'eu.esdihumboldt.hale.io.gml': [describerPackage, coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.jdbc.mssql': ['microsoft.sql'],
+        'eu.esdihumboldt.hale.io.project.jaxb': [describerPackage],
+        'eu.esdihumboldt.hale.io.schematron': [describerPackage],
+        'eu.esdihumboldt.hale.io.xml': [coreIoUtilPackage],
+        'eu.esdihumboldt.hale.io.xsd': [describerPackage],
+    ].each { name, packages ->
+        bnd group: 'eu.esdihumboldt.hale', name: name, {
+            optionalImport(*packages)
+        }
+    }
+}
+
+/*
+ * Generates platform/local-platform.target: the locations of platform/base-platform.target and a
+ * location with the generated update site.
+ */
+task generateTargetFile() {
+    doLast {
+        def baseFile = file('../../platform/base-platform.target')
+        def targetFile = file('../../platform/local-platform.target')
+
+        def rootNode = new XmlParser().parse(baseFile)
+        def locations = rootNode.locations[0]
+
+        def localPlatform = new Node(locations, 'location')
+        localPlatform.@includeAllPlatforms = 'false'
+        localPlatform.@includeConfigurePhase = 'false'
+        localPlatform.@includeMode = 'slicer'
+        localPlatform.@includeSource = 'true'
+        localPlatform.@type = 'InstallableUnit'
+
+        localPlatform.appendNode('repository', [location: project.platform.updateSiteDir.getAbsoluteFile().toURI().toString()])
+        // the update site only contains one version of the feature
+        localPlatform.appendNode('unit', [id: project.platform.featureId + '.feature.group', version: '0.0.0'])
+
+        targetFile.withWriter('UTF-8') { writer ->
+            new XmlNodePrinter(new PrintWriter(writer)).print(rootNode)
+        }
+    }
+}
+
+// always generate the target file when updating the site
+tasks.updateSite.dependsOn generateTargetFile
+
+tasks.clean.doLast {
+    delete file('../../platform/local-platform.target')
+}
+
+/*
+ * Skip the platform generation if nothing it is generated from changed since the last successful run.
+ *
+ * The fingerprint covers the platform build configuration (build scripts, modules), the base target,
+ * the bnd-platform plugin with its dependencies (the buildscript classpath, so a locally built
+ * bnd-platform selected with -PbndPlatformVersion triggers a regeneration), the resolved dependencies
+ * (snapshots with their unique version, so a newly published hale-core snapshot triggers a
+ * regeneration) and the location of the update site, which the generated target refers to by its
+ * absolute path. The check only needs the dependency metadata, not the artifacts.
+ * Pass -PforceGeneratePlatform to generate the platform anyway.
+ *
+ * Note that Gradle checks for new snapshots only once per day by default, use --refresh-dependencies
+ * to pick up a hale-core snapshot published in the meantime.
+ */
+def platformFingerprintFile = new File(buildDir, 'platform-fingerprint.txt')
+def localTargetFile = file('../../platform/local-platform.target')
+
+def computePlatformFingerprint = {
+    def lines = []
+    def inputFiles = fileTree(projectDir) { exclude 'build/**', '.gradle/**' }.files +
+        file('../../platform/base-platform.target')
+    inputFiles.sort { it.absolutePath }.each { f ->
+        lines << "file ${projectDir.toPath().relativize(f.toPath())} ${f.bytes.digest('SHA-256')}"
+    }
+    // content instead of version, as a locally republished snapshot keeps its version
+    buildscript.configurations.classpath.files.sort { it.name }.each { f ->
+        lines << "buildscript ${f.name} ${f.bytes.digest('SHA-256')}"
+    }
+    lines << "updateSite=${project.platform.updateSiteDir.absolutePath}"
+    // only external modules, the project itself is named differently in a nested build (generatePlatform)
+    configurations.bndplatform.incoming.resolutionResult.allComponents.findAll { c ->
+        c.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
+    }.collect { c ->
+        "component ${c.id.displayName}"
+    }.sort().each { lines << it }
+    lines.join('\n') + '\n'
+}
+
+gradle.taskGraph.whenReady { graph ->
+    if (!graph.hasTask(tasks.updateSite)) {
+        return
+    }
+    def fingerprint = computePlatformFingerprint()
+    def upToDate = !project.hasProperty('forceGeneratePlatform') && platformFingerprintFile.exists() && localTargetFile.exists() &&
+        project.platform.updateSiteDir.exists() && platformFingerprintFile.text == fingerprint
+    if (upToDate) {
+        logger.lifecycle('Platform is up to date, skipping its generation (pass -PforceGeneratePlatform to generate it anyway)')
+        /*
+         * Only skip the generation (updateSite and the tasks it depends on), tasks using the existing
+         * update site (e.g. updateSiteZip) still need to run. Also skip clean, which generatePlatform
+         * runs before updateSite and which would delete the platform.
+         */
+        def skipped = [tasks.clean] as Set
+        def skipWithDependencies
+        skipWithDependencies = { task ->
+            if (skipped.add(task)) {
+                graph.getDependencies(task).each(skipWithDependencies)
+            }
+        }
+        skipWithDependencies(tasks.updateSite)
+        skipped.each { it.enabled = false }
+    }
+    else {
+        // written once the update site was generated successfully
+        project.ext.platformFingerprint = fingerprint
+    }
+}
+
+tasks.updateSite.doLast {
+    if (project.ext.has('platformFingerprint')) {
+        platformFingerprintFile.text = project.ext.platformFingerprint
+    }
+}
