@@ -96,6 +96,8 @@ directory of its own.
 `build/platform/build/platform-fingerprint.txt` and covers:
 
 - the files under `build/platform` and `platform/base-platform.target`;
+- the bnd-platform plugin with its dependencies, so a locally built bnd-platform (`-PbndPlatformVersion`)
+  triggers a regeneration;
 - the resolved dependencies, with the unique version of snapshots;
 - the location of the update site, which the generated target refers to by its absolute path.
 
