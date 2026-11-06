@@ -56,10 +56,8 @@ from the hale-core BOM), PR2 (UI on hale-core) and PR3 (current Eclipse); this w
 - **bnd-platform** lives in `stempler/bnd-platform`. Changes go in as PRs from Florian; releases are
   made by the maintainer, so there is some (expected short) waiting time for a release. Releases are
   made with semantic-release from conventional commits (`feat:` gives a minor release).
-- bnd-platform 4.0.0 fails on Linux aarch64 when applied (environment detection), even if
-  `osgiOS`/`osgiWS`/`osgiArch` are configured. CI (x86_64) and macOS hosts are not affected. Local
-  verification on Linux aarch64 (e.g. a Linux VM on Apple Silicon) needs a locally built bnd-platform from
-  `master` with the aarch64 changes (PR A below), used via `-PbndPlatformVersion` and `mavenLocal()`.
+- bnd-platform 4.0.0 fails to apply on Linux aarch64 (environment detection), even if
+  `osgiOS`/`osgiWS`/`osgiArch` are configured; PR A below fixes this.
 - bnd-platform 4.0.0 fails on Gradle 9 when sources are fetched (`fetchSources = true`, as in the
   hale»studio platform build): `DependencyHelper` calls `LenientConfiguration.getFirstLevelModuleDependencies(Spec)`
   and `LenientConfiguration.getArtifacts(Spec)`, which Gradle 9 removed. The functional tests of
@@ -69,6 +67,9 @@ from the hale-core BOM), PR2 (UI on hale-core) and PR3 (current Eclipse); this w
 - The nested platform build runs via a `GradleBuild` task and therefore always uses the Gradle
   version of the hale»studio build.
 - The build uses Java 21 (mise), which Gradle 9 supports.
+- Minimum requirements for building products: more than 8 GB of free memory
+  (`org.gradle.jvmargs=-Xmx8048m` in `build/gradle.properties`) and network access to Maven Central,
+  the Gradle Plugin Portal, archive.eclipse.org and the p2 repositories of the target platform.
 - Commits follow Conventional Commits with the Jira key ING-5508 in the footer.
 
 ## How it is split (decided)
@@ -98,8 +99,8 @@ from the hale-core BOM), PR2 (UI on hale-core) and PR3 (current Eclipse); this w
 
 ## PR 4 in detail
 
-Findings of a spike with Gradle 9.8.2 (configuration, platform generation, and a Linux product
-build up to the Tycho build, where the machine ran out of memory):
+Findings of a spike with Gradle 9.8.2 (configuration, platform generation, and a product build
+up to the start of the Tycho build):
 
 - Wrapper: `build/gradle/wrapper/gradle-wrapper.properties` and the `wrapper { gradleVersion }` block
   in `build/build.gradle`; regenerate the wrapper files with the new Gradle.
@@ -137,9 +138,6 @@ Verification:
   smoke test) pass.
 - The generated update site has the same bundles (symbolic names and upstream versions) as with
   Gradle 8 / bnd-platform 3.2.1; differences are explained.
-
-The Linux product build could not run to the end on the spike machine (about 7 GB of memory,
-while the build sets `-Xmx8048m`); the product builds are verified by CI.
 
 ## Testing mode (PR B and PR 5)
 
