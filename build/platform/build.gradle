@@ -257,7 +257,7 @@ platform {
     bundle 'org.apache.velocity:velocity:1.6.2'
 
     // com.tinkerpop.gremlin.groovy (ui.functions.groovy); same version as gremlin-java from hale-core
-    bundle 'com.tinkerpop.gremlin:gremlin-groovy:2.5.0-orientDB151'
+    bundle "com.tinkerpop.gremlin:gremlin-groovy:${resolvedHaleCoreVersion('com.tinkerpop.gremlin', 'gremlin-java')}"
 
     // org.codehaus.groovy.jsr223 (required by gremlin-groovy); version managed by the hale-core BOM (groovy-bom)
     bundle 'org.codehaus.groovy:groovy-jsr223'
