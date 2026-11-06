@@ -58,12 +58,18 @@ from the hale-core BOM), PR2 (UI on hale-core) and PR3 (current Eclipse); this w
   made with semantic-release from conventional commits (`feat:` gives a minor release).
 - bnd-platform 4.0.0 fails on Linux aarch64 when applied (environment detection), even if
   `osgiOS`/`osgiWS`/`osgiArch` are configured. CI (x86_64) and macOS hosts are not affected. Local
-  verification on Linux aarch64 (e.g. the development sandbox) needs a locally built bnd-platform from
+  verification on Linux aarch64 (e.g. a Linux VM on Apple Silicon) needs a locally built bnd-platform from
   `master` with the aarch64 changes (PR A below), used via `-PbndPlatformVersion` and `mavenLocal()`.
+- bnd-platform 4.0.0 fails on Gradle 9 when sources are fetched (`fetchSources = true`, as in the
+  hale»studio platform build): `DependencyHelper` calls `LenientConfiguration.getFirstLevelModuleDependencies(Spec)`
+  and `LenientConfiguration.getArtifacts(Spec)`, which Gradle 9 removed. The functional tests of
+  bnd-platform all run with `fetchSources = false`, so this went unnoticed. Found in a spike with
+  Gradle 9.8.2; with both calls replaced, the platform generation of hale»studio succeeded and
+  produced the same bundles (symbolic names and upstream versions) as with Gradle 8.
 - The nested platform build runs via a `GradleBuild` task and therefore always uses the Gradle
   version of the hale»studio build.
 - The build uses Java 21 (mise), which Gradle 9 supports.
-- Commits follow Conventional Commits with the Jira key ING-4439 in the footer.
+- Commits follow Conventional Commits with the Jira key ING-5508 in the footer.
 
 ## How it is split (decided)
 
@@ -74,40 +80,48 @@ from the hale-core BOM), PR2 (UI on hale-core) and PR3 (current Eclipse); this w
     detected as x86_64 before), with tests;
   - `fix: only detect the environment if it is not configured`.
   Adapted to the code base of `master` (Groovy 4, formatting conventions) as needed.
+- **PR C: Gradle 9 dependency resolution.** Replace the two calls of APIs removed in Gradle 9 in
+  `DependencyHelper` (`fix:`), with a functional test that fetches sources.
 - **PR B: testing mode.** Implemented anew on `master`; the spike branch is based on 3.1 and only
-  serves as a reference. PR A and PR B may be released together or separately.
+  serves as a reference.
+- PR C and PR A come first and should be released together (or PR C alone if PR A is delayed);
+  PR B may follow in a later release.
 
 ### hale»studio
 
-- **PR 4: Gradle 9** on `ING-4439-current-eclipse`, with bnd-platform **4.0.0**. Merged without
-  waiting for a bnd-platform release with PR A and PR B.
+- **PR 4: Gradle 9** on `ING-4439-current-eclipse`, with the first released bnd-platform 4.x that
+  contains PR C. PR 4 waits for that release (decided; the alternative of a temporary
+  `fetchSources = false` was rejected).
 - **PR 5: testing mode**, a small follow-up as soon as the first released bnd-platform 4.x version
   that contains both PR A and PR B is available: bump bnd-platform to that version and enable the
   testing mode in the platform build.
 
 ## PR 4 in detail
 
-Known places to look at (from a code search, not yet verified against Gradle 9):
+Findings of a spike with Gradle 9.8.2 (configuration, platform generation, and a Linux product
+build up to the Tycho build, where the machine ran out of memory):
 
 - Wrapper: `build/gradle/wrapper/gradle-wrapper.properties` and the `wrapper { gradleVersion }` block
   in `build/build.gradle`; regenerate the wrapper files with the new Gradle.
-- Groovy 4 removed `groovy.util.XmlSlurper`/`XmlParser` (moved to `groovy.xml` with Groovy 3):
-  unqualified and `groovy.util.`-qualified uses in `build/gradle/commitAndProductionStage.gradle`,
-  `releaseTasks.gradle`, `smokeTest.gradle`, `build/platform/build.gradle` and
-  `build/buildSrc/src/main/groovy/BundleParser.groovy`.
-- `buildDir` / `project.buildDir` (deprecated in favour of `layout.buildDirectory`) in
-  `commitAndProductionStage.gradle`, `updateSite.gradle`, `smokeTest.gradle`, `deployArtifacts.gradle`
-  and `build/platform/build.gradle`.
-- `GradleBuild` with `startParameter.projectProperties` (`generatePlatform` in `build/build.gradle`).
-- `buildSrc` (`localGroovy()` becomes Groovy 4; dependencies such as maven-embedder, jgit, jcommander).
+- **The only change that was required:** Groovy 4 removed `groovy.util.XmlSlurper`/`XmlParser`/
+  `XmlNodePrinter` (moved to `groovy.xml` with Groovy 3). Unqualified and `groovy.util.`-qualified
+  uses in `build/buildSrc/src/main/groovy/BundleParser.groovy` (fails compiling `buildSrc`),
+  `build/gradle/commitAndProductionStage.gradle`, `releaseTasks.gradle`, `smokeTest.gradle` and
+  `build/platform/build.gradle`.
+- Deprecations announcing a removal in Gradle 10 (allowed to stay, see below):
+  - `propName value` assignments (`group`, `description`, `url`) in `build/platform/build.gradle`
+    and its module scripts;
+  - multi-string dependency notation in `build/buildSrc/build.gradle` and in the platform build;
+  - `Task.project` at execution time in `commitAndProductionStage.gradle` and `tycho.gradle`.
+- `buildDir` and `GradleBuild` with `startParameter.projectProperties` still work on Gradle 9.
 - Plugin `de.undercouch.download` 5.7.0 (latest release) is kept. Its release notes list integration
   tests up to Gradle 9.3.1; that it works with the chosen Gradle version is verified by the builds
   below. A replacement is only considered if it actually fails.
 - `build/gradle/deployArtifacts.gradle` and `checkDependencies.gradle` are not applied; they only need
   to stay parseable if they are referenced anywhere, otherwise they are left as they are.
-- `build/platform/build.gradle`: default `bndPlatformVersion` to `4.0.0`, the latest release at the
-  time of writing (the dependency updates on `master` after 4.0.0 are not released yet). If a newer
-  4.x release is available when PR 4 is implemented, use the latest one.
+- `build/platform/build.gradle`: default `bndPlatformVersion` to the first released 4.x that contains
+  PR C (or the latest 4.x release, if newer). Until it is released, PR 4 is developed against a
+  locally built bnd-platform via `-PbndPlatformVersion`.
 - `.github/renovate.json5`: remove the rule limiting `org.standardout:bnd-platform` to `< 4`.
 - `docs/hale-studio-on-hale-core.md`: update where it mentions Gradle or bnd-platform versions.
 
@@ -123,6 +137,9 @@ Verification:
   smoke test) pass.
 - The generated update site has the same bundles (symbolic names and upstream versions) as with
   Gradle 8 / bnd-platform 3.2.1; differences are explained.
+
+The Linux product build could not run to the end on the spike machine (about 7 GB of memory,
+while the build sets `-Xmx8048m`); the product builds are verified by CI.
 
 ## Testing mode (PR B and PR 5)
 
