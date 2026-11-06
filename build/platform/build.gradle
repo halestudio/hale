@@ -701,7 +701,20 @@ gradle.taskGraph.whenReady { graph ->
         project.platform.updateSiteDir.exists() && platformFingerprintFile.text == fingerprint
     if (upToDate) {
         logger.lifecycle('Platform is up to date, skipping its generation (pass -PforceGeneratePlatform to generate it anyway)')
-        graph.allTasks.each { it.enabled = false }
+        /*
+         * Only skip the generation (updateSite and the tasks it depends on), tasks using the existing
+         * update site (e.g. updateSiteZip) still need to run. Also skip clean, which generatePlatform
+         * runs before updateSite and which would delete the platform.
+         */
+        def skipped = [tasks.clean] as Set
+        def skipWithDependencies
+        skipWithDependencies = { task ->
+            if (skipped.add(task)) {
+                graph.getDependencies(task).each(skipWithDependencies)
+            }
+        }
+        skipWithDependencies(tasks.updateSite)
+        skipped.each { it.enabled = false }
     }
     else {
         // written once the update site was generated successfully
