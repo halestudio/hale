@@ -661,9 +661,11 @@ tasks.clean.doLast {
  * Skip the platform generation if nothing it is generated from changed since the last successful run.
  *
  * The fingerprint covers the platform build configuration (build scripts, modules), the base target,
- * the resolved dependencies (snapshots with their unique version, so a newly published hale-core
- * snapshot triggers a regeneration) and the location of the update site, which the generated target
- * refers to by its absolute path. The check only needs the dependency metadata, not the artifacts.
+ * the bnd-platform plugin with its dependencies (the buildscript classpath, so a locally built
+ * bnd-platform selected with -PbndPlatformVersion triggers a regeneration), the resolved dependencies
+ * (snapshots with their unique version, so a newly published hale-core snapshot triggers a
+ * regeneration) and the location of the update site, which the generated target refers to by its
+ * absolute path. The check only needs the dependency metadata, not the artifacts.
  * Pass -PforceGeneratePlatform to generate the platform anyway.
  *
  * Note that Gradle checks for new snapshots only once per day by default, use --refresh-dependencies
@@ -678,6 +680,10 @@ def computePlatformFingerprint = {
         file('../../platform/base-platform.target')
     inputFiles.sort { it.absolutePath }.each { f ->
         lines << "file ${projectDir.toPath().relativize(f.toPath())} ${f.bytes.digest('SHA-256')}"
+    }
+    // content instead of version, as a locally republished snapshot keeps its version
+    buildscript.configurations.classpath.files.sort { it.name }.each { f ->
+        lines << "buildscript ${f.name} ${f.bytes.digest('SHA-256')}"
     }
     lines << "updateSite=${project.platform.updateSiteDir.absolutePath}"
     configurations.bndplatform.incoming.resolutionResult.allComponents.collect { c ->
