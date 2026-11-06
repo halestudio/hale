@@ -686,7 +686,10 @@ def computePlatformFingerprint = {
         lines << "buildscript ${f.name} ${f.bytes.digest('SHA-256')}"
     }
     lines << "updateSite=${project.platform.updateSiteDir.absolutePath}"
-    configurations.bndplatform.incoming.resolutionResult.allComponents.collect { c ->
+    // only external modules, the project itself is named differently in a nested build (generatePlatform)
+    configurations.bndplatform.incoming.resolutionResult.allComponents.findAll { c ->
+        c.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
+    }.collect { c ->
         "component ${c.id.displayName}"
     }.sort().each { lines << it }
     lines.join('\n') + '\n'
