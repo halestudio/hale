@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload hale studio build (Linux)
         id: upload-linux
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hale studio (Linux)
           path: build/target/hale-studio-*linux*.tar.gz
@@ -96,7 +96,7 @@ jobs:
 
       - name: Upload hale studio build (Windows)
         id: upload-windows
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hale studio (Windows)
           path: build/target/hale-studio-*win32*.zip
@@ -104,7 +104,7 @@ jobs:
 
       - name: Upload hale studio build (macos)
         id: upload-macos
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: hale studio (macos)
           path: |
