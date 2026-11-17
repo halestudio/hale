@@ -57,7 +57,7 @@ jobs:
           private-key: "${{ secrets.WE_RELEASE_GITHUB_PRIVATE_KEY }}"
 
       - name: Setup Maven
-        uses: s4u/setup-maven-action@4a02cbd99769e46198135c31d5097c94618ba3f5 # v1.21.0
+        uses: s4u/setup-maven-action@5d4481650d2563723ad6c5e8f009ac8fd746e3e8 # v1.22.0
         with:
           java-version: 17
           java-distribution: temurin
