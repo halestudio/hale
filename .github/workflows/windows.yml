@@ -22,10 +22,21 @@ jobs:
       - name: Set up build
         uses: ./.github/actions/setup-build
 
+      - name: Restore generated platform
+        id: restore-platform
+        uses: ./.github/actions/restore-platform
+
       - name: Build installer
         run: |
           build.bat product -o windows -a x86_64 HALE
         shell: cmd
+
+      - name: Save generated platform
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/save-platform
+        with:
+          platform-key: ${{ steps.restore-platform.outputs.platform-key }}
+          eclipse-cache-hit: ${{ steps.restore-platform.outputs.eclipse-cache-hit }}
 
       - name: Upload hale studio build (Installer)
         id: upload-msi

@@ -1,0 +1,241 @@
+/*
+ * OSGi smoke test for a built product.
+ *
+ * hale-core tests its bundles on a flat class path, so problems that only show
+ * in an OSGi runtime (unresolved bundles, packages exported by two bundles,
+ * ServiceLoader lookups across bundles, classes only referenced from plugin.xml,
+ * runtime-compiled Groovy) are not caught there. This task starts the built
+ * product without UI and checks
+ *
+ *  1. that all bundles resolve (Equinox console `ss`) and
+ *  2. that headless transformations of sample projects (hale.transform)
+ *     succeed without known error patterns in the logs.
+ *
+ * The product is taken from the product build (build/<product uid>) or from the
+ * `smokeTestProductDir` property, e.g. after `./build.sh product HALE`:
+ *
+ *   ./gradlew smokeTest -PsmokeTestProductDir=build/eu.esdihumboldt.hale
+ *
+ * Bundles that are expected not to resolve on the current machine (e.g. native
+ * libraries missing for the architecture) can be listed in the comma separated
+ * property `smokeTestAllowUnresolved` (bundle symbolic names).
+ */
+
+import java.util.concurrent.TimeUnit
+
+/** Log patterns that indicate a broken OSGi runtime. */
+def smokeTestErrorPatterns = [
+	'SLF4J(W)', // no SLF4J provider: ServiceLoader mediation (SPI Fly) not working
+	'Could not create content describer', // classes referenced from plugin.xml not visible
+	'Cache initialization failed', // runtime-compiled Groovy cannot see the Groovy runtime
+	'No provider for loading', // content types disabled or providers not loadable
+	'Unexpected error from weaving hook', // SPI Fly weaving failed and was disabled
+	'ClassFormatError',
+	'NoClassDefFoundError',
+	'Uses constraint violation',
+	'JAXBException',
+]
+
+def smokeTestProductDir = {
+	if (project.hasProperty('smokeTestProductDir')) {
+		return project.file(project.property('smokeTestProductDir'))
+	}
+	if (!project.ext.has('productFile')) {
+		throw new GradleException('Specify the product to test with -PsmokeTestProductDir=<dir> or run the task as part of a product build')
+	}
+	def uid = new XmlSlurper().parse(project.file(project.ext.productFile)).@uid.toString()
+	new File(buildDir, uid)
+}
+
+/** Locate the folder containing plugins and configuration (differs for macOS app bundles). */
+def findEclipseDir = { File productDir ->
+	def candidates = [productDir]
+	productDir.eachFileRecurse(groovy.io.FileType.DIRECTORIES) { dir ->
+		if (dir.name == 'Eclipse' && dir.parentFile?.name == 'Contents') {
+			candidates << dir
+		}
+	}
+	def eclipseDir = candidates.find { new File(it, 'plugins').isDirectory() && new File(it, 'configuration').isDirectory() }
+	if (!eclipseDir) {
+		throw new GradleException("No product with plugins and configuration found in $productDir")
+	}
+	eclipseDir
+}
+
+/** Java executable: the JRE shipped with the product or the one running Gradle. */
+def findJava = { File eclipseDir ->
+	def candidates = [
+		new File(eclipseDir, 'jre/bin/java'),
+		new File(eclipseDir, 'jre/Contents/Home/bin/java'),
+		new File(eclipseDir, 'jre/bin/java.exe')
+	]
+	def productJava = candidates.find { it.canExecute() }
+	def javaHomeJava = new File(System.getProperty('java.home'), 'bin/java')
+	// the product's JRE may not run on the build machine (other OS or architecture)
+	if (productJava && project.ext.osgiOS == currentOsgiOS() && project.ext.osgiArch == currentOsgiArch()) {
+		return productJava.absolutePath
+	}
+	javaHomeJava.absolutePath
+}
+
+def currentOsgiOS() {
+	def os = System.getProperty('os.name').toLowerCase()
+	os.startsWith('linux') ? 'linux' : (os.startsWith('windows') ? 'win32' : (os.contains('mac') ? 'macosx' : os))
+}
+
+def currentOsgiArch() {
+	def arch = System.getProperty('os.arch')
+	arch == 'amd64' ? 'x86_64' : arch
+}
+
+/**
+ * Run the product's Equinox launcher with a fresh copy of its configuration.
+ * @param jvmArgs additional JVM arguments
+ * @param args program arguments
+ * @param consoleCommands commands to send to the OSGi console, if any
+ * @return [exitCode, output]
+ */
+def runProduct = { File eclipseDir, File workDir, List<String> jvmArgs, List<String> args, List<String> consoleCommands ->
+	def configDir = new File(workDir, 'configuration')
+	project.delete(configDir)
+	project.copy {
+		from new File(eclipseDir, 'configuration')
+		into configDir
+	}
+	def launcher = new File(eclipseDir, 'plugins').listFiles().find { it.name ==~ /org\.eclipse\.equinox\.launcher_.*\.jar/ }
+	def command = [findJava(eclipseDir),
+		'--add-exports=java.base/sun.nio.ch=ALL-UNNAMED',
+		'--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED'] + jvmArgs + [
+		// plain file: URLs, the launcher does not decode escaped characters (e.g. spaces in "hale studio.app")
+		"-Dosgi.install.area=file:${eclipseDir.absolutePath}/".toString(),
+		'-jar', launcher.absolutePath,
+		'-configuration', "file:${configDir.absolutePath}/".toString(),
+		'-os', project.ext.osgiOS, '-ws', project.ext.osgiWS, '-arch', project.ext.osgiArch,
+		'-nosplash', '-consoleLog'] + args
+
+	def process = new ProcessBuilder(command).directory(workDir).redirectErrorStream(true).start()
+	def output = new StringBuffer()
+	// read character-wise: the console prompt is not terminated by a line break
+	def reader = Thread.start {
+		def input = new InputStreamReader(process.inputStream)
+		def buffer = new char[8192]
+		int count
+		while ((count = input.read(buffer)) >= 0) {
+			output.append(buffer, 0, count)
+		}
+	}
+	def waitFor = { Closure<Boolean> condition, long timeoutSeconds ->
+		def deadline = System.currentTimeMillis() + timeoutSeconds * 1000
+		while (!condition() && process.alive && System.currentTimeMillis() < deadline) {
+			sleep(200)
+		}
+	}
+	if (consoleCommands) {
+		def writer = new PrintWriter(process.outputStream, true)
+		consoleCommands.each { cmd ->
+			def prompts = output.toString().count('osgi>')
+			waitFor({ output.toString().count('osgi>') > prompts || (prompts > 0 && cmd == consoleCommands[0]) }, 180)
+			writer.println(cmd)
+		}
+		writer.println('y') // confirm closing the framework
+		writer.close()
+	}
+	if (!process.waitFor(10, TimeUnit.MINUTES)) {
+		process.destroyForcibly()
+		throw new GradleException("Product did not terminate, output:\n$output")
+	}
+	reader.join(10000)
+	[process.exitValue(), output.toString()]
+}
+
+task smokeTest {
+	description = 'Checks bundle resolution and a headless transformation in the built product'
+	mustRunAfter 'buildProduct', 'runUnitTests'
+
+	doLast {
+		def eclipseDir = findEclipseDir(smokeTestProductDir())
+		def workDir = new File(buildDir, 'smokeTest')
+		project.delete(workDir)
+		workDir.mkdirs()
+		def failures = []
+		def allowUnresolved = project.hasProperty('smokeTestAllowUnresolved') ?
+			project.property('smokeTestAllowUnresolved').split(',')*.trim().findAll() : []
+
+		// 1. bundle resolution
+		println "Smoke test: checking bundle resolution of $eclipseDir"
+		def (resolveExit, resolveOutput) = runProduct(eclipseDir, workDir,
+			['-Dosgi.noShutdown=true', '-Declipse.ignoreApp=true'], ['-console'], ['ss', 'close'])
+		new File(workDir, 'resolve.log').text = resolveOutput
+		def bundles = resolveOutput.readLines().collect { it =~ /^(\d+)\s+(ACTIVE|RESOLVED|STARTING|INSTALLED|<<LAZY>>)\s+(\S+?)_\S+$/ }.findAll { it.matches() }
+		if (!bundles) {
+			failures << 'No bundle list received from the OSGi console (see resolve.log)'
+		}
+		def unresolved = bundles.findAll { it[0][2] == 'INSTALLED' }.collect { it[0][3] }
+		def unexpected = unresolved - allowUnresolved
+		println "  ${bundles.size()} bundles, ${unresolved.size()} unresolved"
+		if (unexpected) {
+			failures << "Unresolved bundles: ${unexpected.join(', ')}"
+		}
+
+		// 2. headless transformations of sample projects of the user documentation:
+		// the Groovy sample (alignment format 2.6) and the Meridian 2 hydrography example
+		// (alignment format 2.5, which is told apart from 2.6 by content type detection)
+		def outputs = [resolve: resolveOutput]
+		[
+			[name: 'groovy', dir: 'doc/plugins/eu.esdihumboldt.hale.doc.user/projects/groovy',
+				project: 'groovy.halex', source: 'example.xml'],
+			[name: 'hydro', dir: 'doc/plugins/eu.esdihumboldt.hale.doc.user.examples.meridian2/hydro',
+				project: 'hydroEx_inspire.halex', source: 'hydroEx_River.gml.gz'],
+		].each { sample ->
+			def sampleDir = new File(workDir, sample.name)
+			def projectDir = new File(sampleDir, 'project')
+			project.copy {
+				from new File(project.ext.rootDir, sample.dir)
+				into projectDir
+			}
+			def target = new File(sampleDir, 'result.gml')
+			def statistics = new File(sampleDir, 'statistics.json')
+			println "Smoke test: running a headless transformation of the ${sample.name} sample"
+			def (transformExit, transformOutput) = runProduct(eclipseDir, workDir, [], [
+				'-application', 'hale.transform',
+				'-project', new File(projectDir, sample.project).toURI().toString(),
+				'-source', new File(projectDir, sample.source).toURI().toString(),
+				'-target', target.absolutePath,
+				'-providerId', 'eu.esdihumboldt.hale.io.gml.writer',
+				'-statisticsOut', statistics.absolutePath,
+				'-stacktrace'], [])
+			def logName = "transform-${sample.name}"
+			new File(workDir, "${logName}.log").text = transformOutput
+			outputs[logName] = transformOutput
+			if (transformExit != 0) {
+				failures << "Transformation of the ${sample.name} sample failed with exit code $transformExit"
+			}
+			def created = statistics.exists() ?
+				new groovy.json.JsonSlurper().parse(statistics)?.aggregated?.get('eu.esdihumboldt.hale.transform')?.createdPerType : null
+			if (!created) {
+				failures << "Transformation of the ${sample.name} sample did not create any instances"
+			}
+			else {
+				println "  created instances: $created"
+			}
+		}
+
+		// known error patterns in both runs
+		outputs.each { name, output ->
+			smokeTestErrorPatterns.each { pattern ->
+				def lines = output.readLines().findAll { it.contains(pattern) }
+				if (lines) {
+					failures << "'$pattern' in ${name}.log (${lines.size()}x), e.g.: ${lines[0].trim()}"
+				}
+			}
+		}
+
+		if (failures) {
+			throw new GradleException("Smoke test failed (logs in $workDir):\n - " + failures.join('\n - '))
+		}
+		println "Smoke test passed (logs in $workDir)"
+	}
+}
+
+commitStage.dependsOn smokeTest
+smokeTest.mustRunAfter runUnitTests

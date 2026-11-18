@@ -19,12 +19,12 @@ import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.geotools.styling.LineSymbolizer;
-import org.geotools.styling.PointSymbolizer;
+import org.geotools.api.style.LineSymbolizer;
+import org.geotools.api.style.PointSymbolizer;
 import org.geotools.styling.SLD;
-import org.geotools.styling.Style;
+import org.geotools.api.style.Style;
 import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.Symbolizer;
+import org.geotools.api.style.Symbolizer;
 
 import eu.esdihumboldt.hale.ui.style.editors.PointSymbolizerEditor;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;

@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: UI for CST core functions
 Bundle-SymbolicName: eu.esdihumboldt.hale.ui.functions.core;singleton:=true
-Bundle-Version: 5.6.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Version: 6.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-17
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.text;bundle-version="3.7.1",
@@ -64,6 +64,7 @@ Import-Package: com.google.common.base;version="9.0.0",
  eu.esdihumboldt.hale.ui.util.viewer.tree,
  eu.esdihumboldt.hale.ui.util.wizard,
  eu.esdihumboldt.util.groovy.paths,
+ javax.annotation;version="[3.0.0,4.0.0)",
  org.slf4j;version="1.5.11",
  org.springframework.core.convert;version="5.2.0"
 Export-Package: eu.esdihumboldt.hale.ui.functions.core

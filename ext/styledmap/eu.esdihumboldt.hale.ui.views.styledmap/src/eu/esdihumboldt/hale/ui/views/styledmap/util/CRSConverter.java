@@ -19,14 +19,14 @@ package eu.esdihumboldt.hale.ui.views.styledmap.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.geotools.geometry.DirectPosition2D;
+import org.geotools.geometry.Position2D;
 import org.geotools.referencing.CRS;
-import org.opengis.geometry.DirectPosition;
-import org.opengis.referencing.FactoryException;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
-import org.opengis.referencing.cs.AxisDirection;
-import org.opengis.referencing.operation.MathTransform;
-import org.opengis.referencing.operation.TransformException;
+import org.geotools.api.geometry.Position;
+import org.geotools.api.referencing.FactoryException;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.cs.AxisDirection;
+import org.geotools.api.referencing.operation.MathTransform;
+import org.geotools.api.referencing.operation.TransformException;
 
 import de.fhg.igd.geom.BoundingBox;
 import de.fhg.igd.geom.Point3D;
@@ -39,13 +39,13 @@ import de.fhg.igd.geom.Point3D;
 public class CRSConverter {
 
 	/**
-	 * Thread local direct position initialized with a {@link DirectPosition2D}.
+	 * Thread local direct position initialized with a {@link Position2D}.
 	 */
-	public static class ThreadLocalDirectPosition2D extends ThreadLocal<DirectPosition> {
+	public static class ThreadLocalPosition2D extends ThreadLocal<Position> {
 
 		@Override
-		protected DirectPosition initialValue() {
-			return new DirectPosition2D();
+		protected Position initialValue() {
+			return new Position2D();
 		}
 
 	}
@@ -101,8 +101,8 @@ public class CRSConverter {
 	/*
 	 * temporary positions to lower the impact on GC
 	 */
-	private final ThreadLocal<DirectPosition> _tempPos2A = new ThreadLocalDirectPosition2D();
-	private final ThreadLocal<DirectPosition> _tempPos2B = new ThreadLocalDirectPosition2D();
+	private final ThreadLocal<Position> _tempPos2A = new ThreadLocalPosition2D();
+	private final ThreadLocal<Position> _tempPos2B = new ThreadLocalPosition2D();
 
 	/**
 	 * Create a CRS converter between the given coordinate reference systems.
@@ -179,7 +179,7 @@ public class CRSConverter {
 	 * @throws TransformException if the coordinate transformation fails
 	 */
 	public Point3D convert(double x, double y, double z) throws TransformException {
-		DirectPosition position = _tempPos2A.get();
+		Position position = _tempPos2A.get();
 		if (this.initialFlip) {
 			position.setOrdinate(0, y);
 			position.setOrdinate(1, x);
@@ -189,7 +189,7 @@ public class CRSConverter {
 			position.setOrdinate(1, y);
 		}
 
-		DirectPosition targetPosition = _tempPos2B.get();
+		Position targetPosition = _tempPos2B.get();
 		math.transform(position, targetPosition);
 
 		return createPoint3D(targetPosition.getOrdinate(0), targetPosition.getOrdinate(1), z);

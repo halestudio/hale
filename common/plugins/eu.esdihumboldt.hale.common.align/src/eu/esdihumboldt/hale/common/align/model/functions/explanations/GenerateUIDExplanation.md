@@ -1,1 +1,0 @@
-Generates a unique identifier for the $_target property.

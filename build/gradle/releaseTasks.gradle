@@ -377,6 +377,24 @@ task setRelease {
 	}
 }
 
+/**
+ * Sets a specific snapshot version, e.g. for a new major version:
+ *   ./gradlew setSnapshotVersion -PnewVersion=6.0.0
+ */
+task setSnapshotVersion {
+	doLast {
+		def newVersion = project.getProperty('newVersion')
+		assert newVersion
+
+		def helper = new VersionHelper(project)
+		def current = helper.getAppSemVer()
+		if (current != newVersion) {
+			helper.replaceVersions(current, newVersion)
+		}
+		helper.setAppVersionSnapshot(newVersion)
+	}
+}
+
 task setSnapshot {
 	doLast {
 		def helper = new VersionHelper(project)

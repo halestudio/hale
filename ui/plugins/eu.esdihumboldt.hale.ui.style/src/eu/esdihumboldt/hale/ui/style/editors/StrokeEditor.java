@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.geotools.styling.SLD;
-import org.geotools.styling.Stroke;
+import org.geotools.api.style.Stroke;
 import org.geotools.styling.StyleBuilder;
 
 import eu.esdihumboldt.hale.ui.style.internal.Messages;

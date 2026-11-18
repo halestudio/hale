@@ -23,6 +23,7 @@ apply plugin: 'java'
 apply from: 'gradle/tycho.gradle'
 apply from: 'gradle/updateSite.gradle'
 apply from: 'gradle/commitAndProductionStage.gradle'
+apply from: 'gradle/smokeTest.gradle'
 // apply from: 'gradle/deployArtifacts.gradle'
 // apply from: 'gradle/checkDependencies.gradle'
  
@@ -77,8 +78,9 @@ ext {
     // path to the platform bundle
     platformBundle = file('../platform')
 
-	// name of the platform definition file (w/o extension [.target])
-	platformFileName = 'hale-platform'
+	// name of the platform definition file (w/o extension [.target]),
+	// generated from the hale-core BOM by the generatePlatform task
+	platformFileName = 'local-platform'
 
 	// pattern for recognizing unit test bundles
 	testBundlePattern = '*.test_*.jar'
@@ -94,36 +96,20 @@ ext {
 
     // path to the bundles and features to build
     bundles = [
-		file('../common/plugins'),
-		file('../common/features'),
-		file('../cst/plugins'),
-		file('../cst/features'),
 		file('../doc/plugins'),
+		file('../doc/features'),
 		file('../io/plugins'),
 		file('../io/features'),
-		file('../server/plugins'),
-		file('../server/features'),
 		file('../ui/plugins'),
 		file('../ui/features'),
-		file('../util/plugins'),
-		file('../util/features'),
-		file('../app/plugins'),
-		file('../ext/styledmap'),
-		file('../ext/ageobw'),
-		file('../ext/fme'),
-		file('../ext/nonosgi'),
-		file('../ext/geom'),
-		file('../ext/adv')
+		file('../ext/styledmap')
     ]
 
 	// bundles to exclude for the build (symbolic names)
 	excludeBundles = []
 
 	// bundles or fragments that are required additionally for compilation
-	extraRequirements = [
-		// this system bundle extension fragment is otherwise not found by tycho
-		'javax.annotation.extensions'
-	]
+	extraRequirements = []
 
 	/*
 	 * Specify OS specific bundles or features. Maps symbolic names
@@ -285,6 +271,10 @@ task generatePlatform(type: GradleBuild) {
 	tasks = ['clean', 'updateSite']
 	startParameter.projectProperties = gradle.startParameter.projectProperties
 }
+
+// The POMs reference the generated local-platform.target, so generate the
+// platform first (skipped if it is up to date).
+generatePomFiles.dependsOn generatePlatform
 
 clean {
 	doLast {

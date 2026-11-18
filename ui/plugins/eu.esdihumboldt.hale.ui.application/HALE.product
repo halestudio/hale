@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="5.6.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
+<product name="hale studio" uid="eu.esdihumboldt.hale" id="eu.esdihumboldt.hale.ui.application.HALE" application="eu.esdihumboldt.hale.ui.application" version="6.0.0.qualifier" useFeatures="true" includeLaunchers="true" autoIncludeRequirements="false">
 
    <aboutInfo>
       <image path="/eu.esdihumboldt.hale.ui.application/images/hale_about.png"/>
@@ -72,7 +72,6 @@ https://www.wetransform.to/services/support/
    <features>
       <feature id="eu.esdihumboldt.hale.ui.feature"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.win32"/>
-      <feature id="eu.esdihumboldt.hale.common.feature.base"/>
       <feature id="de.fhg.igd.slf4jplus.ui.feature"/>
       <feature id="org.eclipse.equinox.core.feature"/>
       <feature id="org.eclipse.draw2d"/>
@@ -81,20 +80,12 @@ https://www.wetransform.to/services/support/
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.zest"/>
       <feature id="org.eclipse.emf.common"/>
-      <feature id="de.fhg.igd.slf4jplus.feature"/>
-      <feature id="eu.esdihumboldt.util.feature.resource"/>
-      <feature id="eu.esdihumboldt.hale.common.feature.core"/>
       <feature id="org.eclipse.gef"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.linux"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.macosx"/>
-      <feature id="eu.esdihumboldt.hale.common.feature.orient"/>
-      <feature id="eu.esdihumboldt.cst.feature"/>
       <feature id="eu.esdihumboldt.hale.io.feature.core.ui"/>
-      <feature id="eu.esdihumboldt.hale.io.feature.legacy"/>
       <feature id="eu.esdihumboldt.hale.ui.views.styledmap.feature"/>
       <feature id="eu.esdihumboldt.hale.io.feature.html.ui"/>
-      <feature id="eu.esdihumboldt.hale.io.feature.core"/>
-      <feature id="eu.esdihumboldt.hale.io.feature.html"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.dropins"/>
       <feature id="eu.esdihumboldt.hale.ui.feature.updates"/>
       <feature id="eu.esdihumboldt.hale.io.feature.msaccess"/>
@@ -106,12 +97,17 @@ https://www.wetransform.to/services/support/
       <feature id="org.eclipse.ecf.core.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
       <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature"/>
-      <feature id="eu.esdihumboldt.hale.platform.deegree" installMode="root"/>
+      <feature id="eu.esdihumboldt.hale.platform" installMode="root"/>
       <feature id="de.fhg.igd.mapviewer.feature.core" installMode="root"/>
    </features>
 
    <configurations>
-      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="2" />
+      <!-- OSGi Service Loader Mediator, must be active before ServiceLoader consumers are loaded.
+           Not at start level 1: bundles of that level are installed by the framework (osgi.bundles
+           in config.ini) before the simple configurator installs ASM, which SPI Fly requires.
+           ServiceLoader consumers started early (logback via SLF4J, POI) start at level 3. -->
+      <plugin id="org.apache.aries.spifly.dynamic.bundle" autoStart="true" startLevel="2" />
+      <plugin id="de.fhg.igd.slf4jplus.logback" autoStart="true" startLevel="3" />
       <plugin id="de.fhg.igd.slf4jplus.ui.errorlog" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.cst" autoStart="true" startLevel="0" />
       <plugin id="eu.esdihumboldt.hale.common.align" autoStart="true" startLevel="0" />
@@ -133,7 +129,7 @@ https://www.wetransform.to/services/support/
       <plugin id="org.apache.felix.gogo.command" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.apache.felix.gogo.shell" autoStart="true" startLevel="0" />
-      <plugin id="org.apache.poi" autoStart="true" startLevel="2" />
+      <plugin id="org.apache.poi" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.console" autoStart="true" startLevel="0" />

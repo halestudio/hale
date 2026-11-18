@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.geotools.styling.Mark;
+import org.geotools.api.style.Mark;
 import org.geotools.styling.StyleBuilder;
 
 import eu.esdihumboldt.hale.ui.style.internal.Messages;

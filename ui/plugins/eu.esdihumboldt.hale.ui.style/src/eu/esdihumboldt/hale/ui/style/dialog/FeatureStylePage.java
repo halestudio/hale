@@ -16,7 +16,7 @@
 package eu.esdihumboldt.hale.ui.style.dialog;
 
 import org.eclipse.jface.dialogs.DialogPage;
-import org.geotools.styling.Style;
+import org.geotools.api.style.Style;
 
 /**
  * Dialog page for the {@link FeatureStyleDialog}

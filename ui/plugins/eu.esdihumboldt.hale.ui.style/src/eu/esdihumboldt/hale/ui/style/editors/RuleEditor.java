@@ -22,10 +22,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.geotools.styling.Rule;
+import org.geotools.api.style.Rule;
 import org.geotools.styling.StyleBuilder;
-import org.geotools.styling.Symbolizer;
-import org.opengis.filter.Filter;
+import org.geotools.api.style.Symbolizer;
+import org.geotools.api.filter.Filter;
 
 import eu.esdihumboldt.hale.common.schema.model.TypeDefinition;
 import eu.esdihumboldt.hale.ui.style.internal.Messages;

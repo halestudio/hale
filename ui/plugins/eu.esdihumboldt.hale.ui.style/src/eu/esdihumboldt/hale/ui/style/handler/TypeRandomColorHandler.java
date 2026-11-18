@@ -21,7 +21,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.PlatformUI;
-import org.geotools.styling.Style;
+import org.geotools.api.style.Style;
 
 import com.google.common.collect.SetMultimap;
 

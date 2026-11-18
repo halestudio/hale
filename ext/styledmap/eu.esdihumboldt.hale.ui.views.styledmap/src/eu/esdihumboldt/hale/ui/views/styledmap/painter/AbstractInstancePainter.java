@@ -41,7 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import org.jdesktop.swingx.image.FastBlurFilter;
 import org.jdesktop.swingx.mapviewer.GeoPosition;
 import org.jdesktop.swingx.mapviewer.PixelConverter;
-import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.geotools.api.referencing.crs.CoordinateReferenceSystem;
 
 import org.locationtech.jts.geom.Geometry;
 

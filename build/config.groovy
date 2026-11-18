@@ -5,7 +5,7 @@
 project = {
 	// version
 	// major.minor.micro-SNAPSHOT - remove -SNAPSHOT for releases
-	version = '5.6.0-SNAPSHOT'
+	version = '6.0.0-SNAPSHOT'
 
 	// when increasing the version number, at least the version of the .application bundles
 	// should be increased so they state an updated application version
@@ -28,7 +28,7 @@ project = {
 		serviceExeName = 'hale_srvc'
 
 		// test product
-		testProduct = '../common/plugins/eu.esdihumboldt.hale.common.test/Tests.product'
+		testProduct = '../ui/plugins/eu.esdihumboldt.hale.ui.application/Tests.product'
 		testProductLauncher = 'hale_tests'
 
 		// Product aliases pointing to product file locations
