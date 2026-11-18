@@ -202,6 +202,26 @@ platform {
     determineImportVersions = true
     addBndPlatformManifestHeaders = true
     auxVersionedSymbolicNames = true
+
+    /*
+     * Give every wrapped bundle and the feature a qualifier with the time of the generation instead
+     * of the hash of their bnd configuration (e.g. 2.7.4.i20261118143012 instead of 2.7.4.bnd-VRwj2Q).
+     *
+     * Eclipse (PDE) and Tycho cache bundles by symbolic name and version. If a regenerated bundle
+     * keeps its version, they keep using the cached bundle. The hash only changes with the bnd
+     * configuration of the bundle, not with other changes of the manifest (e.g. import versions
+     * derived from other bundles, or another bnd version), and a new hash may sort lower than the
+     * previous one. As the generation is skipped if its inputs did not change (see below), new
+     * versions are only created if something changed.
+     *
+     * Same format as the qualifiers of earlier hale platforms (e.g. 5.0.0.i20240220), so the new
+     * versions are higher.
+     */
+    def generationQualifier = 'i' + new Date().format('yyyyMMddHHmmss', TimeZone.getTimeZone('UTC'))
+    hashQualifierMap = { String type, String name, org.osgi.framework.Version version, String hash ->
+        generationQualifier
+    } as org.standardout.gradle.plugin.platform.internal.util.VersionQualifierMap
+
     featureId = 'eu.esdihumboldt.hale.platform'
     featureName = 'HALE Target Platform Libraries'
     // Eclipse used to publish the update site. bnd-platform reuses any Eclipse it finds in its
