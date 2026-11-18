@@ -90,6 +90,21 @@ it finds there, without checking the version, and an older Eclipse can silently 
 update site. The platform build therefore uses a pinned Eclipse release (`eclipseMirror`) in a
 directory of its own.
 
+### Qualifiers with the time of the generation
+
+Eclipse (PDE) and Tycho cache bundles by symbolic name and version. A regenerated bundle that keeps
+its version, but has a different manifest, is not picked up. Every wrapped bundle and the feature
+therefore get the time of the generation as qualifier (`hashQualifierMap` in
+`build/platform/build.gradle`), e.g. `2.7.4.i20261118143012`.
+
+- Rejected: the default of bnd-platform, a hash of the bnd configuration of the bundle
+  (`2.7.4.bnd-VRwj2Q`). It does not change with other changes of the manifest (e.g. import versions
+  derived from other bundles, a new bnd version), and a new hash may sort lower than the previous one.
+- Rejected: the version history of bnd-platform (`hashQualifierMap` with a file). It also only
+  creates a new qualifier if the hash changes, and the history would have to be kept between builds.
+- As the generation is skipped if its inputs did not change, a build only creates new versions if
+  something changed.
+
 ### Skip the generation if its inputs did not change
 
 `generatePlatform` only regenerates the platform if its inputs changed. The fingerprint is stored in
