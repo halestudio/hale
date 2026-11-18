@@ -195,6 +195,66 @@ dependencies {
 }
 
 /*
+ * Qualifier of the wrapped bundles and the feature.
+ *
+ * Eclipse (PDE) and Tycho cache bundles by symbolic name and version (Tycho in ~/.m2/repository/p2,
+ * which CI caches). If a regenerated bundle keeps its version, they keep using the cached bundle.
+ * The default qualifier of bnd-platform, a hash of the bnd configuration of the bundle, does not
+ * change with other changes of the manifest (e.g. import versions derived from other bundles, or
+ * another bnd version), and a new hash may sort lower than the previous one.
+ *
+ * The qualifier is a timestamp instead, in the format of the qualifiers of earlier hale platforms
+ * (e.g. 5.0.0.i20240220), so the new versions are higher:
+ * - commit (default in CI): the commit time of the last commit that changed an input of the
+ *   platform (the files under build/platform and platform/base-platform.target). The same commit
+ *   always yields the same versions, and every change of the platform yields new versions. Needs
+ *   the history of these files, i.e. no shallow clone.
+ * - time (default otherwise): the time of the generation, so that uncommitted changes, a locally
+ *   built bnd-platform or a new hale-core snapshot also yield new versions.
+ * Pass -PplatformQualifierMode=commit|time to choose the mode.
+ */
+def platformQualifierMode = project.findProperty('platformQualifierMode') ?: (System.getenv('CI') ? 'commit' : 'time')
+if (!(platformQualifierMode in ['commit', 'time'])) {
+    throw new GradleException("Unknown platformQualifierMode '$platformQualifierMode', use 'commit' or 'time'")
+}
+
+def runGit = { String... args ->
+    def command = ['git', '-C', projectDir.absolutePath] + args.toList()
+    def process = command.execute()
+    def out = new StringBuilder(), err = new StringBuilder()
+    process.waitForProcessOutput(out, err)
+    if (process.exitValue() != 0) {
+        throw new GradleException("${command.join(' ')} failed: $err")
+    }
+    out.toString().trim()
+}
+
+// determined on first use, so that tasks that do not generate the platform do not need git
+def platformQualifierValue = null
+def platformQualifier = {
+    if (platformQualifierValue == null) {
+        def date
+        if (platformQualifierMode == 'commit') {
+            if (runGit('rev-parse', '--is-shallow-repository') == 'true') {
+                throw new GradleException('The qualifier of the platform is derived from the git history, which a ' +
+                    'shallow clone lacks (use fetch-depth: 0 with actions/checkout, or -PplatformQualifierMode=time)')
+            }
+            def seconds = runGit('log', '-1', '--format=%ct', '--', '.', '../../platform/base-platform.target')
+            if (!seconds) {
+                throw new GradleException('No commit found that changed an input of the platform')
+            }
+            date = new Date(seconds.toLong() * 1000)
+        }
+        else {
+            date = new Date()
+        }
+        platformQualifierValue = 'i' + date.format('yyyyMMddHHmmss', TimeZone.getTimeZone('UTC'))
+        logger.lifecycle("Qualifier of the platform: $platformQualifierValue (mode $platformQualifierMode)")
+    }
+    platformQualifierValue
+}
+
+/*
  * General platform settings
  */
 platform {
@@ -204,22 +264,12 @@ platform {
     auxVersionedSymbolicNames = true
 
     /*
-     * Give every wrapped bundle and the feature a qualifier with the time of the generation instead
-     * of the hash of their bnd configuration (e.g. 2.7.4.i20261118143012 instead of 2.7.4.bnd-VRwj2Q).
-     *
-     * Eclipse (PDE) and Tycho cache bundles by symbolic name and version. If a regenerated bundle
-     * keeps its version, they keep using the cached bundle. The hash only changes with the bnd
-     * configuration of the bundle, not with other changes of the manifest (e.g. import versions
-     * derived from other bundles, or another bnd version), and a new hash may sort lower than the
-     * previous one. As the generation is skipped if its inputs did not change (see below), new
-     * versions are only created if something changed.
-     *
-     * Same format as the qualifiers of earlier hale platforms (e.g. 5.0.0.i20240220), so the new
-     * versions are higher.
+     * Give every wrapped bundle and the feature the same qualifier instead of the hash of their bnd
+     * configuration (e.g. 2.7.4.i20261118143012 instead of 2.7.4.bnd-VRwj2Q), see
+     * platformQualifierMode and platformQualifier below.
      */
-    def generationQualifier = 'i' + new Date().format('yyyyMMddHHmmss', TimeZone.getTimeZone('UTC'))
     hashQualifierMap = { String type, String name, org.osgi.framework.Version version, String hash ->
-        generationQualifier
+        platformQualifier()
     } as org.standardout.gradle.plugin.platform.internal.util.VersionQualifierMap
 
     featureId = 'eu.esdihumboldt.hale.platform'
@@ -697,8 +747,9 @@ tasks.clean.doLast {
  * the bnd-platform plugin with its dependencies (the buildscript classpath, so a locally built
  * bnd-platform selected with -PbndPlatformVersion triggers a regeneration), the resolved dependencies
  * (snapshots with their unique version, so a newly published hale-core snapshot triggers a
- * regeneration) and the location of the update site, which the generated target refers to by its
- * absolute path. The check only needs the dependency metadata, not the artifacts.
+ * regeneration), the location of the update site, which the generated target refers to by its
+ * absolute path, and the qualifier mode. The check only needs the dependency metadata, not the
+ * artifacts.
  * Pass -PforceGeneratePlatform to generate the platform anyway.
  *
  * Note that Gradle checks for new snapshots only once per day by default, use --refresh-dependencies
@@ -719,6 +770,8 @@ def computePlatformFingerprint = {
         lines << "buildscript ${f.name} ${f.bytes.digest('SHA-256')}"
     }
     lines << "updateSite=${project.platform.updateSiteDir.absolutePath}"
+    // a platform generated in another mode has other versions
+    lines << "qualifierMode=${platformQualifierMode}"
     // only external modules, the project itself is named differently in a nested build (generatePlatform)
     configurations.bndplatform.incoming.resolutionResult.allComponents.findAll { c ->
         c.id instanceof org.gradle.api.artifacts.component.ModuleComponentIdentifier
