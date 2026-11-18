@@ -1,0 +1,6 @@
+platform {
+    // assume that Groovy is backwards compatible
+    imports(group: 'org.codehaus.groovy') {
+        versionStrategy = MINIMUM
+    }
+}

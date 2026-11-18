@@ -276,6 +276,16 @@ task cli {
     }
 }
 
+/*
+ * Generates the target platform from the hale-core BOM (see platform/build.gradle).
+ * Project properties are passed on (e.g. -PforceGeneratePlatform).
+ */
+task generatePlatform(type: GradleBuild) {
+	dir = file('platform')
+	tasks = ['clean', 'updateSite']
+	startParameter.projectProperties = gradle.startParameter.projectProperties
+}
+
 clean {
 	doLast {
 	    project.delete(new File(project.rootDir, 'ObjectStore'))

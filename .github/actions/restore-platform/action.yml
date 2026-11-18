@@ -1,0 +1,36 @@
+name: Restore generated platform
+description: >-
+  Restore the target platform generated from the hale-core BOM and the archive of the Eclipse used to
+  publish it, so that the build only regenerates the platform if its inputs changed.
+outputs:
+  platform-key:
+    description: Key of the restored platform cache entry (empty if none was restored)
+    value: ${{ steps.platform.outputs.cache-matched-key }}
+  eclipse-cache-hit:
+    description: Whether the Eclipse archive was restored
+    value: ${{ steps.eclipse.outputs.cache-hit }}
+runs:
+  using: composite
+  steps:
+    # Restores the most recent platform of this OS. The build compares the fingerprint of the platform
+    # with its current inputs (configuration, resolved dependencies, update site location) and
+    # regenerates the platform if they differ, so an outdated entry is safe to use.
+    - name: Restore generated platform
+      id: platform
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: |
+          build/platform/build/updatesite
+          build/platform/build/platform-fingerprint.txt
+          platform/local-platform.target
+        key: hale-platform-${{ runner.os }}-${{ github.sha }}
+        restore-keys: hale-platform-${{ runner.os }}-
+
+    # Archive of the Eclipse used by bnd-platform to publish the update site; only the archive is cached,
+    # bnd-platform extracts it if needed. Keep the key in sync with eclipseMirror in build/platform/build.gradle.
+    - name: Restore Eclipse for publishing the platform
+      id: eclipse
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: ~/.gradle/bnd-platform/eclipse-rcp-2023-09-R/*.tar.gz
+        key: bnd-platform-eclipse-rcp-2023-09-R-${{ runner.os }}
