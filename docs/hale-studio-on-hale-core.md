@@ -90,18 +90,29 @@ it finds there, without checking the version, and an older Eclipse can silently 
 update site. The platform build therefore uses a pinned Eclipse release (`eclipseMirror`) in a
 directory of its own.
 
-### Qualifiers with the time of the generation
+### Qualifiers from the last change of the platform
 
-Eclipse (PDE) and Tycho cache bundles by symbolic name and version. A regenerated bundle that keeps
-its version, but has a different manifest, is not picked up. Every wrapped bundle and the feature
-therefore get the time of the generation as qualifier (`hashQualifierMap` in
-`build/platform/build.gradle`), e.g. `2.7.4.i20261118143012`.
+Eclipse (PDE) and Tycho cache bundles by symbolic name and version (Tycho in
+`~/.m2/repository/p2`, which CI caches). A regenerated bundle that keeps its version, but has a
+different manifest, is not picked up. Every wrapped bundle and the feature therefore get the same
+timestamp as qualifier (`hashQualifierMap` in `build/platform/build.gradle`), e.g.
+`2.7.4.i20261118143012`. Its source depends on `-PplatformQualifierMode`:
+
+- `commit` (default in CI): the commit time of the last commit that changed an input of the platform
+  (`build/platform`, `platform/base-platform.target`). Building the same commit, e.g. a release tag,
+  yields the same versions. Needs the git history of these files: workflows that generate the
+  platform check out with `fetch-depth: 0`, the build fails in a shallow clone.
+- `time` (default otherwise): the time of the generation. Also covers uncommitted changes, a locally
+  built bnd-platform and new hale-core snapshots.
+
+The jars themselves are not byte-identical between two generations, only their versions.
 
 - Rejected: the default of bnd-platform, a hash of the bnd configuration of the bundle
   (`2.7.4.bnd-VRwj2Q`). It does not change with other changes of the manifest (e.g. import versions
   derived from other bundles, a new bnd version), and a new hash may sort lower than the previous one.
 - Rejected: the version history of bnd-platform (`hashQualifierMap` with a file). It also only
-  creates a new qualifier if the hash changes, and the history would have to be kept between builds.
+  creates a new qualifier if the hash changes, and the history would have to be committed.
+- Rejected: the time of the generation in CI as well. The same commit would yield different versions.
 - As the generation is skipped if its inputs did not change, a build only creates new versions if
   something changed.
 
@@ -114,7 +125,8 @@ therefore get the time of the generation as qualifier (`hashQualifierMap` in
 - the bnd-platform plugin with its dependencies, so a locally built bnd-platform (`-PbndPlatformVersion`)
   triggers a regeneration;
 - the resolved dependencies, with the unique version of snapshots;
-- the location of the update site, which the generated target refers to by its absolute path.
+- the location of the update site, which the generated target refers to by its absolute path;
+- the qualifier mode.
 
 The check only needs the dependency metadata, not the artifacts. `-PforceGeneratePlatform` forces the
 generation. Gradle checks for new snapshots once a day; use `--refresh-dependencies` to get a hale-core
